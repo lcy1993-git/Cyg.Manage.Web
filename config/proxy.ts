@@ -7,10 +7,10 @@
  */
 export default {
   dev: {
-    '/api/': {
+    '/api': {
       target: 'http://10.6.1.36:8016',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      pathRewrite: { '^/api': '/' },
     },
   },
   test: {

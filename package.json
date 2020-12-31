@@ -18,7 +18,6 @@
     "lint:js": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src",
     "lint:prettier": "prettier --check \"src/**/*\" --end-of-line auto",
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
-    "precommit": "lint-staged",
     "prettier": "prettier -c --write \"src/**/*\"",
     "start": "umi dev",
     "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
@@ -32,12 +31,11 @@
     "test:component": "umi test ./src/components",
     "tsc": "tsc --noEmit"
   },
-  "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
-    "**/*.{js,jsx,ts,tsx}": "npm run lint-staged:js",
-    "**/*.{js,jsx,tsx,ts,less,md,json}": ["prettier --write"]
-  },
-  "browserslist": ["> 1%", "last 2 versions", "not ie <= 10"],
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
   "dependencies": {
     "@ant-design/icons": "^4.0.0",
     "@ant-design/pro-descriptions": "^1.0.19",
@@ -55,7 +53,8 @@
     "react-dev-inspector": "^1.1.1",
     "react-dom": "^17.0.0",
     "react-helmet-async": "^1.0.4",
-    "umi": "^3.2.14",
+    "react-loadable": "^5.5.0",
+    "umi": "^3.3.3",
     "umi-request": "^1.0.8",
     "use-merge-value": "^1.0.1"
   },
@@ -70,6 +69,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-helmet": "^6.1.0",
+    "@types/react-loadable": "^5.5.4",
     "@umijs/fabric": "^2.3.0",
     "@umijs/plugin-blocks": "^2.0.5",
     "@umijs/plugin-esbuild": "^1.0.1",
@@ -93,5 +93,7 @@
     "puppeteer-core": "^5.0.0",
     "typescript": "^4.0.3"
   },
-  "engines": { "node": ">=10.0.0" }
+  "engines": {
+    "node": ">=10.0.0"
+  }
 }

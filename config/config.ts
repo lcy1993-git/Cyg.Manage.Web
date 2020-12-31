@@ -3,6 +3,8 @@ import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 
+const path = require('path');
+
 const { REACT_APP_ENV } = process.env;
 
 export default defineConfig({
@@ -42,4 +44,11 @@ export default defineConfig({
   resolve: {
     includes: ['src/components'],
   },
+  lessLoader: {
+    modifyVars: {
+      // 或者可以通过 less 文件覆盖（文件路径为绝对路径）
+      'hack': `true; @import "~@/styles/base.less";`
+    }
+  },
+  
 });

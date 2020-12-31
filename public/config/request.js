@@ -1,0 +1,1 @@
+export const requestBaseUrl = "http://10.6.1.36:8016";
