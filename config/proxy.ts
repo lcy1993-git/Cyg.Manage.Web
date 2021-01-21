@@ -8,11 +8,18 @@
 export default {
   dev: {
     '/api': {
-      target: 'http://10.6.1.36:8016',
+      target: 'http://10.6.1.36:8026',
       changeOrigin: true,
-      pathRewrite: { '^/api': '/' },
+      pathRewrite: { '^': '' },
     },
   },
+  // dev: {
+  //   '/api': {
+  //     target: 'http://10.6.1.36:8026',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^/api': '/' },
+  //   },
+  // },
   test: {
     '/api/': {
       target: 'https://preview.pro.ant.design',

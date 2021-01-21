@@ -1,5 +1,5 @@
-import React from "react";
-import { useRequest } from "umi";
+import React, {useMemo} from "react";
+import { useRequest } from "ahooks";
 import {tableCommonRequest} from "@/services/table"
 import {Table,Pagination, message} from "antd"
 import styles from "./index.less";
@@ -20,12 +20,38 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         refreshDeps: [JSON.stringify(extractParams)]
     });
 
+    const tableResultData = useMemo(() => {
+        if(data) {
+            const {items, pageIndex, pageSize, total, totalPage} = data;
+            return {
+                items,
+                pageIndex,
+                pageSize,
+                total,
+                totalPage,
+            }
+        }
+        return {
+            items:[],
+            pageIndex: 1,
+            pageSize: 20,
+            total:0,
+            totalPage: 1,
+        }
+    }, [JSON.stringify(data)])
+
     const refreshTable = () => {
         run();
         message.success("刷新成功");
     }
 
     const fullScreen = () => {
+
+    }
+
+    const tableConfigMenu = "";
+
+    const changeView = () => {
 
     }
 

@@ -1,4 +1,4 @@
-import { ReconciliationOutlined } from "@ant-design/icons";
+
 import { Dropdown, Menu } from "antd";
 import React from "react";
 import styles from "./index.less"
@@ -42,13 +42,10 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
     )
 
     return (
-        <div>
-            <Dropdown overlay={menuElement}>
+        <div className={styles.layoutHeaderMenuItemContent}>
+            <Dropdown overlay={menuElement} className="headerMenuItem">
                 <div>
                     <div className={styles.layoutHeaderMenuItem}>
-                        <div className={styles.layoutHeaderMenuItemIcon}>
-                            <ReconciliationOutlined />
-                        </div>
                         <div className={styles.layoutHeaderMenuItemName}>
                             {name}
                         </div>

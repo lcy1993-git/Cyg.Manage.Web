@@ -1,5 +1,5 @@
 import {request} from "umi";
-import { cyRequest } from "./common";
+import { baseUrl, cyRequest } from "./common";
 
 interface TableCommonRequestParams {
     PageIndex: number
@@ -8,7 +8,7 @@ interface TableCommonRequestParams {
     extraParams?: object
 }
 
-interface TableRequestResult {
+export interface TableRequestResult {
     pageIndex: number
     pageSize: number
     total: number
@@ -16,6 +16,16 @@ interface TableRequestResult {
     items: object[]
 }
 
-export const tableCommonRequest = (params: TableCommonRequestParams) => {
+export const tableCommonRequest = (params: TableCommonRequestParams): Promise<TableRequestResult> => {
     return cyRequest<TableRequestResult>(() => request(params.url,{method: "Post", requestType: "form", data: {...params.extraParams,PageIndex: params.PageIndex, PageSize: params.PageSize}}))
+}
+
+interface TreeTableParams {
+    url: string
+    params?: object
+}
+
+export const treeTableCommonRequeset = <T>(data: TreeTableParams) => {
+    const {url, params = {}} = data
+    return cyRequest<T[]>(() => request(`${baseUrl}${url}`,{method: "GET", params}));
 }

@@ -1,50 +1,58 @@
 .layoutHeader {
   .layoutHeaderContainer {
     display: flex;
-    height: 80px;
-    background-color: @layout-header-bg-color;
-    min-width: 1366px;
-
+    height: 53px;
+    background-color: @white-color;
+    padding: 7px 20px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.16);
     .layoutHeaderLogo {
-      width: 355px;
       box-sizing: border-box;
-      padding-left: 20px;
-
       img {
-        height: 80px;
+        width: 144px;
+        height: 39px;
       }
     }
-
     .layoutHeaderContent {
       flex: 1 1;
       display: flex;
-      padding: 8px 0 0 20px;
       box-sizing: border-box;
+      padding-left: 68px;
     }
 
     .layoutMyBaseInfo {
-      padding-top: 24px;
-      padding-right: 20px;
-      height: 80px;
+      height: 32px;
+      padding-top: 8px;
       box-sizing: border-box;
-
       .myBaseInfo {
         cursor: pointer;
         display: flex;
-        height: 56px;
-
-        .layoutHeaderImage {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-        }
-
+        height: 32px;
+        text-align: right;
         .myBaseInfoWord {
           line-height: 1.4;
           color: #fff;
           padding-left: 12px;
         }
+
+        .myHeadPortait {
+          width: 26px;
+          height: 26px;
+          border-radius: 26px;
+        }
+      }
+      .foldIcon {
+        margin-left: 8px;
+        line-height: 24px;
       }
     }
   }
+  
+}
+.myNameContent {
+  font-size: 23px;
+  color: @black-color;
+  padding: 6px 12px;
+}
+.headerMenuIcon {
+  margin-right: 12px;
 }

@@ -4,7 +4,7 @@ import GeneralTable from "@/components/general-table"
 const Index:React.FC = () => {
     return (
         <div>
-            <GeneralTable requestUrl="/api/WareHouse/GetPageListAsync" />
+            index
         </div>
     )
 }

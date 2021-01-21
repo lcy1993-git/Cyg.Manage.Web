@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from "react"
 import { IRouteComponentProps } from 'umi'
-import { Tabs,ConfigProvider } from "antd";
+import { Tabs, ConfigProvider } from "antd";
 import LayoutHeader from './components/layout-header'
-import {getTabsComponent} from "@/utils/tabs-config.tsx"
+import { getTabsComponent, RouteListItem } from "@/utils/tabs-config.tsx"
 import zhCN from 'antd/lib/locale/zh_CN';
+
+import styles from "./index.less"
+import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
 
+interface ElementDiv extends Element {
+    style?: {
+        transform?: string
+    }
+    offsetWidth?: number
+}
+
 const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, history, match }) => {
     const [activeKey, setActiveKey] = useState<string>("/index");
-    const [routeList, setRouteList] = useState<any[]>([]);
+    const [routeList, setRouteList] = useState<RouteListItem[]>([
+        {
+            title: "首页",
+            tabKey: "/index"
+        }
+    ]);
+    const [layoutIsFold, setLayoutIsFold] = useState(false);
 
     useEffect(() => {
-        const historyRoutes = JSON.parse(JSON.stringify(routeList));
+        const historyRoutes: RouteListItem[] = JSON.parse(JSON.stringify(routeList));
+
         const routeIndex = historyRoutes.findIndex((item) => item.tabKey === location.pathname + "" + location.search);
         if (routeIndex > -1) {
             setActiveKey(historyRoutes[routeIndex].tabKey)
@@ -30,8 +47,11 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
 
     const routeShowElement = routeList.map((item) => {
         const tabsInfo = getTabsComponent(item.tabKey);
+        // 如果tabKey 是index,那么就不能进行关闭
+        const isIndex = item.tabKey === "/index";
+
         return (
-            <TabPane key={item.tabKey} tab={<span>{tabsInfo.title}</span>}>
+            <TabPane key={item.tabKey} closable={!isIndex} tab={<span>{tabsInfo.title}</span>}>
                 {
                     tabsInfo.component
                 }
@@ -39,8 +59,13 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
         )
     })
 
-    const tabChangeEvent = (key) => {
+    const tabChangeEvent = (key: string) => {
         setActiveKey(key)
+        history.push(key);
+    }
+
+    const flodTheLayout = () => {
+        setLayoutIsFold(!layoutIsFold)
     }
 
     const editTabsEvent = (key: string | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>, action: "add" | "remove") => {
@@ -55,22 +80,86 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
                 setActiveKey(copyRouteList[needActiveIndex].tabKey);
             } else if (copyRouteList.length > 1 && keyIndex === 0) {
                 needActiveIndex = keyIndex + 1;
-                setActiveKey(copyRouteList[needActiveIndex].id);
+                setActiveKey(copyRouteList[needActiveIndex].tabKey);
             }
+            history.push(copyRouteList[needActiveIndex].tabKey)
         }
 
-        if(keyIndex > -1) {
-            copyRouteList.splice(keyIndex,1);
+        if (keyIndex > -1) {
+            copyRouteList.splice(keyIndex, 1);
         }
         setRouteList(copyRouteList);
     }
 
+    const tabsTranslateLeft = () => {
+        const tabContent: ElementDiv = document.getElementById("layoutTabs")?.querySelector(".ant-tabs-nav-list")!;
+        if (tabContent) {
+            tabContent.style!.transform = 'translate(0px, 0px)';
+        }
+    }
+
+    const tabsTranslateRight = () => {
+        const tabContent: ElementDiv = document.getElementById("layoutTabs")?.querySelector(".ant-tabs-nav-list")!;
+        const singleTabpane: HTMLCollectionOf<ElementDiv> = document.getElementById("layoutTabs")?.getElementsByClassName("ant-tabs-tab")!;
+
+        let widthTotal = 0;
+        for (let i = 0; i < singleTabpane.length; i++) {
+            widthTotal += (singleTabpane[i].offsetWidth) ?? 0;
+        }
+
+        const tabNavWrap: ElementDiv = document.getElementById("layoutTabs")?.querySelector(".ant-tabs-nav-wrap")!;
+        const tabNavWrapWidth = tabNavWrap.offsetWidth ?? 0;
+
+
+        if (tabContent) {
+            if (tabNavWrapWidth - widthTotal < 0) {
+                tabContent.style!.transform = `translate(${tabNavWrapWidth - widthTotal}px, 0px)`;
+            }
+        }
+    }
+
+    const OperationsSlot = {
+        left: (
+            <div className={styles.tabsLeftContent}>
+                <BackwardOutlined onClick={() => tabsTranslateLeft()} />
+            </div>
+        ),
+        right: (
+            <div className={styles.tabsRightContent}>
+                <div className={styles.layoutFoldIcon}>
+                    {
+                        layoutIsFold ?
+                            <DownOutlined onClick={() => flodTheLayout()} /> :
+                            <UpOutlined onClick={() => flodTheLayout()} />
+                    }
+
+                </div>
+                <div className={styles.tabsRightClickButton}>
+                    <ForwardOutlined onClick={() => tabsTranslateRight()} />
+                </div>
+            </div>
+        ),
+    };
+
     return (
         <ConfigProvider locale={zhCN}>
-            <LayoutHeader />
-            <Tabs hideAdd defaultActiveKey="/index" onEdit={editTabsEvent} type="editable-card" onChange={tabChangeEvent} activeKey={activeKey}>
-                {routeShowElement}
-            </Tabs>
+            <div className={styles.layoutContent}>
+                <div className={layoutIsFold ? "hide" : ""}>
+                    <LayoutHeader />
+                </div>
+                <div className={styles.tabsContent} id="layoutTabs">
+                    <Tabs
+                        hideAdd
+                        tabBarGutter={0}
+                        tabBarExtraContent={OperationsSlot}
+                        onEdit={editTabsEvent}
+                        type="editable-card"
+                        onChange={tabChangeEvent}
+                        activeKey={activeKey}>
+                        {routeShowElement}
+                    </Tabs>
+                </div>
+            </div>
         </ConfigProvider>
     )
 }
