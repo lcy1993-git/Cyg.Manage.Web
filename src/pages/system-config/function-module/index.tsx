@@ -196,6 +196,7 @@ const FunctionModule: React.FC = () => {
                 rightButtonSlot={functionModuleButton}
                 getSelectData={(data) => setTableSelectRow(data)}
                 columns={functionTableColumns}
+                
                 url="/Module/GetTreeList" />
             <Modal
                 title="添加-模块"

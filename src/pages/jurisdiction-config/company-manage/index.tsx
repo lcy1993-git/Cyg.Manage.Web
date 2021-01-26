@@ -40,7 +40,7 @@ const CompanyManage: React.FC = () => {
       index: 'name',
     },
     {
-      title: '新增用户库存',
+      title: '公司用户库存',
       dataIndex: 'userStock',
       index: 'userStock',
       width: 240,
@@ -106,6 +106,7 @@ const CompanyManage: React.FC = () => {
     const editDataId = editData.id;
 
     const CompanyManageData = await run(editDataId);
+
     editForm.setFieldsValue({
       ...CompanyManageData,
       userStock: null,
@@ -146,6 +147,7 @@ const CompanyManage: React.FC = () => {
     <PageCommonWrap>
       <TreeTable
         ref={tableRef}
+        tableTitle="公司管理"
         columns={companyTableColumns}
         getSelectData={(data) => setTableSelectRow(data)}
         rightButtonSlot={companyManageButton}
@@ -161,7 +163,7 @@ const CompanyManage: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <CompanyManageForm />
+          <CompanyManageForm type="add" />
         </Form>
       </Modal>
       <Modal
