@@ -1,18 +1,22 @@
-import Loadable from "react-loadable";
 import React from "react";
-import Loading from "@ant-design/pro-layout/es/PageLoading";
 
-const Index = Loadable({ loader: () => import("@/pages/index"), loading: Loading, delay: 150 })
-const FunctionModule = Loadable({ loader: () => import("@/pages/system-config/function-module"), loading: Loading, delay: 150 })
-const CompanyManage = Loadable({ loader: () => import("@/pages/system-config/company-manage"), loading: Loading, delay: 150 })
+import IndexRoute from "@/pages/index/route"
+import SystemConfigRoutes from "@/pages/system-config/route";
+import JurisdictionConfig from "@/pages/jurisdiction-config/route";
 export interface RouteListItem {
   title: string
-  tabKey: string
+  path: string
 }
 
 interface TabRouteListItem extends RouteListItem {
   component: React.ReactNode
 }
+
+const routeList:TabRouteListItem[] = [
+  ...IndexRoute,
+  ...SystemConfigRoutes,
+  ...JurisdictionConfig
+]
 
 export const getTabsComponent = (key: string): TabRouteListItem => {
   let newKey = key
@@ -20,24 +24,5 @@ export const getTabsComponent = (key: string): TabRouteListItem => {
     // eslint-disable-next-line prefer-destructuring
     newKey = key.split('?')[0];
   }
-  let tab: TabRouteListItem = {
-    title: "",
-    tabKey: key,
-    component: null
-  }
-  switch (newKey) {
-    case '/index':
-      tab.title = '首页'
-      tab.component = <Index />
-      break;
-    case '/system-config/function-module':
-      tab.title = '功能模块'
-      tab.component = <FunctionModule />
-      break;
-    case '/system-config/company-management':
-      tab.title = '公司管理'
-      tab.component = <CompanyManage />
-      break;
-  }
-  return tab;
+  return routeList.find((item) => item.path === newKey)!
 }
