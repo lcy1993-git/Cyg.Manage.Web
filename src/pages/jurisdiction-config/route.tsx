@@ -8,7 +8,7 @@ const CompanyManage = Loadable({ loader: () => import("@/pages/jurisdiction-conf
 
 export default [
     {
-        title: "电力公司",
+        title: "公司管理",
         path: "/jurisdiction-config/company-manage",
         component: <CompanyManage />
     },

@@ -31,6 +31,18 @@ const testData = [
             },
             
         ]
+    },
+    {
+        name: "权限管理",
+        icon: "",
+        menuData: [
+            {
+                name: "基础数据",
+                icon: "",
+                path: "/all"
+            },
+            
+        ]
     }
 ]
 
