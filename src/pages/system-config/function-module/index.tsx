@@ -175,11 +175,12 @@ const FunctionModule: React.FC = () => {
         const editData = tableSelectRows[0];
         const editDataId = editData.id;
         
+        setEditFormVisible(true)
         const functionModuleData = await run(editDataId);
         await getSelectTreeData();
 
         editForm.setFieldsValue({...functionModuleData, category: String(functionModuleData.category)});
-        setEditFormVisible(true)
+        
     }
 
     const addEvent = async () => {
