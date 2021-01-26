@@ -47,25 +47,23 @@ const FunctionModule: React.FC = () => {
             title: "模块名称",
             dataIndex: "name",
             index: "name",
-            width: 240
         },
         {
             title: "请求地址",
             dataIndex: "url",
             index: "url",
-            width: 300
         },
         {
             title: "数据类型",
             dataIndex: "categoryText",
             index: "categoryText",
-            width: 100
+            width: 140
         },
         {
             title: "授权码",
             dataIndex: "authCode",
             index: "authCode",
-            width: 100
+            width: 200
         },
         {
             title: "排序",
