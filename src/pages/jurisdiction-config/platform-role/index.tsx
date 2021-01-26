@@ -45,6 +45,7 @@ const PlatformRole: React.FC = () => {
         <PageCommonWrap>
             <GeneralTable
                 buttonRightContentSlot={rightButton}
+                needCommonButton={true}
                 tableTitle="角色管理"
                 url="/Role/GetPagedList"
                 columns={columns}

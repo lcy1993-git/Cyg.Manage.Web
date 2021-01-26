@@ -1,5 +1,11 @@
 .cyGeneralTable {
     width: 100%;
+    &:fullscreen {
+        width: 100vw;
+        height: 100vw;
+        background-color: @white-color;
+        padding: 20px;
+    }
     .cyGeneralTableButtonContent {
         display: flex;
         padding: 20px 0px;
@@ -8,6 +14,19 @@
         }
         .cyGeneralTableButtonRightContent {
             
+        }
+    }
+    .cyGeneralTableTitleContnet {
+        display: flex;
+        .cyGeneralTableTitleShowContent {
+            flex: 1;
+        }
+        .cyGeneralTableCommonButton {
+            .tableCommonButton {
+                cursor: pointer;
+                font-size: 18px;
+                margin-right: 8px;
+            }
         }
     }
     .cyGeneralTablePaging {

@@ -1,9 +1,10 @@
-import React, { forwardRef, Ref, useMemo, useState,useImperativeHandle } from "react";
+import React, { forwardRef, Ref, useMemo, useState, useImperativeHandle, useRef } from "react";
 import { useRequest } from "ahooks";
 import { tableCommonRequest } from "@/services/table"
-import { Table, Pagination, message } from "antd"
+import { Table, Pagination, message, Tooltip } from "antd"
 import styles from "./index.less";
 import CommonTitle from "../common-title";
+import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from "@ant-design/icons";
 
 interface GeneralTableProps {
     // 列表请求的url
@@ -26,13 +27,15 @@ interface GeneralTableProps {
 
 const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (props: P & GeneralTableProps, ref: Ref<any>) => {
     const { url, tableTitle, needCommonButton = false, getSelectData, extractParams, buttonLeftContentSlot, buttonRightContentSlot, otherSlot, ...rest } = props;
-    
+
     const [pageSize, setPageSize] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const { data, run } = useRequest(() => tableCommonRequest({ url: url, extraParams: extractParams, pageIndex: currentPage, pageSize}), {
+    const tableRef = useRef<HTMLDivElement>(null)
+
+    const { data, run } = useRequest(() => tableCommonRequest({ url: url, extraParams: extractParams, pageIndex: currentPage, pageSize }), {
         ready: !!url,
-        refreshDeps: [JSON.stringify(extractParams),currentPage,pageSize]
+        refreshDeps: [JSON.stringify(extractParams), currentPage, pageSize]
     });
 
     const tableResultData = useMemo(() => {
@@ -74,10 +77,17 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     }
     // 全屏
     const fullScreen = () => {
-
+        if (!tableRef.current || !document.fullscreenEnabled) {
+            return;
+        }
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            tableRef.current.requestFullscreen();
+        }
     }
-    // 列显示处理
 
+    // 列显示处理
     const currentPageChange = (page: any, pageSize: any) => {
         setCurrentPage(page)
         setPageSize(pageSize)
@@ -91,7 +101,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     }));
 
     return (
-        <div className={styles.cyGeneralTable}>
+        <div className={styles.cyGeneralTable} ref={tableRef}>
             <div className={styles.cyGeneralTableButtonContent}>
                 <div className={styles.cyGeneralTableButtonLeftContent}>
                     {buttonLeftContentSlot?.()}
@@ -109,14 +119,24 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
                 <div className={styles.cyGeneralTableTitleShowContent}>
                     {
                         tableTitle &&
-                        <CommonTitle>{tableTitle}</CommonTitle>
+                        <CommonTitle>
+                            {tableTitle}
+                        </CommonTitle>
                     }
                 </div>
                 <div className={styles.cyGeneralTableCommonButton}>
                     {
                         needCommonButton &&
                         <div>
-                            公用
+                            <Tooltip title="全屏">
+                                <FullscreenOutlined onClick={() => fullScreen()} className={styles.tableCommonButton} />
+                            </Tooltip>
+                            <Tooltip title="刷新">
+                                <RedoOutlined onClick={() => refreshTable()} className={styles.tableCommonButton} />
+                            </Tooltip>
+                            <Tooltip title="列设置">
+                                <UnorderedListOutlined className={styles.tableCommonButton} />
+                            </Tooltip>
                         </div>
                     }
                 </div>
