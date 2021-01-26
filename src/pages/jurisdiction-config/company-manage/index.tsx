@@ -1,14 +1,13 @@
 import React, { useRef, useState } from 'react';
-import { Button, Modal, Form, Popconfirm, message } from 'antd';
+import { Button, Modal, Form, message } from 'antd';
 import TreeTable from '@/components/tree-table/index';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import PageCommonWrap from '@/components/page-common-wrap';
 import {
   updateCompanyManageItem,
   addCompanyManageItem,
   getCompanyManageDetail,
-  delectCompanyItem,
 } from '@/services/jurisdiction-config/company-manage/company-manage';
 import { isArray } from 'lodash';
 import CompanyManageForm from './components/form';
