@@ -1,9 +1,15 @@
 import React from "react";
+import styles from "./index.less";
 
-const CommonTitle:React.FC = () => {
+const CommonTitle:React.FC = (props) => {
     return (
-        <div>
-            
+        <div className={styles.commonTitle}>
+            <span className={styles.commonTitleIcon}></span>
+            <span className={styles.commonTitleWord}>
+                {
+                    props.children
+                }
+            </span>
         </div>
     )
 }
