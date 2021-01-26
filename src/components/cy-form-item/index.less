@@ -1,0 +1,121 @@
+.cyFormItem {
+  display: flex;
+
+  .cyFormItemLabel {
+    font-size: 13px;
+    min-width: 80px;
+    line-height: 27px;
+    color: @second-black-color;
+    padding-right: 20px;
+    text-align: left;
+
+    &.right {
+      text-align: right;
+    }
+
+    .required {
+      position: relative;
+
+      &::before {
+        content: "*";
+        position: absolute;
+        left: -10px;
+        color: @red-color;
+      }
+    }
+  }
+
+  .cyFormItemContent {
+    flex: 1;
+  }
+
+  :global {
+    .ant-form-item {
+      height: 27px;
+      min-height: 27px;
+      margin-bottom: 20px;
+    }
+
+    .ant-input {
+      height: 27px;
+      padding: 4px 7px;
+      border: 1px solid @border-gray-color;
+
+      &:hover {
+        border: 1px solid @primary-color;
+      }
+
+      &:focus {
+        border: 1px solid @primary-color;
+      }
+
+      ::-webkit-input-placeholder {
+        color: @gray-color;
+      }
+
+      :-moz-placeholder {
+        color: @gray-color;
+      }
+
+      ::-moz-placeholder {
+        color: @gray-color;
+      }
+
+      ::-ms-input-placeholder {
+        color: @gray-color;
+      }
+    }
+
+    .ant-form-item-has-error .ant-input{
+        border: 1px solid @red-color;
+    }
+
+    .ant-select {
+      height: 27px;
+      line-height: 27px;
+    }
+
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+      height: 27px;
+    }
+
+    .ant-select-selection-item {
+      line-height: 25px !important;
+    }
+
+    .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      border: 1px solid @border-gray-color;
+
+      &:hover {
+        border: 1px solid @primary-color;
+      }
+
+      &:focus {
+        border: 1px solid @primary-color;
+      }
+    }
+
+    .ant-form-item-has-error .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+        border: 1px solid @red-color !important;
+    }
+
+    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-search-input {
+      height: 27px;
+      line-height: 27px;
+    }
+
+    .ant-select-single .ant-select-selector .ant-select-selection-item,
+    .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+      line-height: 25px;
+    }
+
+    .ant-form-item-explain.ant-form-item-explain-error {
+      color: @red-color;
+    }
+
+    .ant-form-item-explain, .ant-form-item-extra {
+        line-height: 1;
+        font-size: 12px;
+    }
+  }
+}

@@ -19,6 +19,10 @@
       {
         path: '/system-config/function-module',
         component: "./system-config/function-module"
+      },
+      {
+        path: '/system-config/company-manage',
+        component: "./system-config/company-manage"
       }
     ]
   }

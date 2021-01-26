@@ -2,7 +2,7 @@ import {request} from "umi";
 import { cyRequest,baseUrl } from "./common";
 
 export enum BelongModuleEnum {
-    "菜单",
+    "菜单" = 1,
     "视图",
     "功能"
 }
@@ -24,6 +24,12 @@ interface FunctionModuleItemParams  {
     url: string,
     // 排序
     sort: number,
+    // 是否禁用
+    isDisable: boolean
+}
+
+interface ItemDetailData extends FunctionModuleItemParams {
+    id: string
 }
 
 export interface TreeDataItem extends FunctionModuleItemParams {
@@ -40,23 +46,35 @@ export const getFunctionModuleTreeList = (): Promise<TreeDataItem[]> => {
 }
 // 新增一条数据
 export const addFunctionModuleItem = (params: FunctionModuleItemParams) => {
-    return cyRequest(() => request(`${baseUrl}/Module/Create`, {method: "POST", params}))
+    return cyRequest(() => request(`${baseUrl}/Module/Create`, {method: "POST", data: params}))
 }
 // 更改状态
 export const updateFunctionItemStatus = (id: string) => {
-    return cyRequest(() => request(`${baseUrl}/Module/ChangeState`, {method: "GET", data: {id}}))
+    return cyRequest(() => request(`${baseUrl}/Module/ChangeState`, {method: "GET", params: {id}}))
 }
 // 更新数据
 export const updateFunctionModuleItem = (params: TreeDataItem) => {
-    return cyRequest(() => request(`${baseUrl}/Module/Modify`, {method: "POST", params}))
+    return cyRequest(() => request(`${baseUrl}/Module/Modify`, {method: "POST", data: params}))
 }
+
+// 获取一条数据
+export const getFunctionModuleDetail = (id: string) => {
+    return cyRequest<ItemDetailData>(() => request(`${baseUrl}/Module/GetById`, {method: "GET", params: {id}}))
+}
+
+export interface FunctionModuleTreeData {
+    text: string
+    id: string
+    children: FunctionModuleTreeData[]
+}
+
 // 下拉选择获取数据
 export const getTreeSelectData = () => {
-    return cyRequest(() => request(`${baseUrl}/Module/GetTree`, {method: "GET"}))
+    return cyRequest<FunctionModuleTreeData[]>(() => request(`${baseUrl}/Module/GetTree`, {method: "GET"}))
 }
 // 删除
 export const delectFunctionItem = (id: string) => {
-    return cyRequest(() => request(`${baseUrl}/Module/DeleteById`, {method: "GET",  data: {id}}))
+    return cyRequest(() => request(`${baseUrl}/Module/DeleteById`, {method: "GET",  params: {id}}))
 }
 
 

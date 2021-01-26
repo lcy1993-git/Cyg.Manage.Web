@@ -1,11 +1,12 @@
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
 import { Button, Table, Spin } from "antd";
-import React, {useImperativeHandle,Ref,forwardRef,ReactElement} from "react";
+import React, { useImperativeHandle, Ref, forwardRef, useState } from "react";
 import styles from "./index.less";
 import { useRequest } from "ahooks";
 import { treeTableCommonRequeset } from "@/services/table";
 import { MinusSquareOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { TableProps } from "antd/lib/table";
+import {flatten} from "@/utils/utils"
 
 type TreeTableSelectType = "radio" | "checkbox";
 
@@ -22,12 +23,15 @@ interface TreeTableProps<T> extends TableProps<T> {
     url?: string
 }
 
-const TreeTable = <T extends {}>(props: TreeTableProps<T>,ref?: Ref<any>) => {
-    const {dataSource = [], rightButtonSlot, leftButtonsSlot, url = "", type = "radio", getSelectData, ...rest } = props;
+const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<any>) => {
+    const { dataSource = [], rightButtonSlot, leftButtonsSlot, url = "", type = "radio", getSelectData, ...rest } = props;
 
-    const { data = [], loading, run} = useRequest(() => treeTableCommonRequeset<T>({ url }), { ready: !!url })
+    const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
-    const finalyDataSource = url ? data : dataSource
+    const { data = [], loading, run } = useRequest(() => treeTableCommonRequeset<T>({ url }), { ready: !!url })
+
+    const finalyDataSource = url ? data : dataSource;
+    
 
     const rowSelection = {
         onChange: (values: any[], selectedRows: any[]) => {
@@ -42,6 +46,28 @@ const TreeTable = <T extends {}>(props: TreeTableProps<T>,ref?: Ref<any>) => {
         }
     }));
 
+    const expandEvent = (expanded: boolean, record: T) => {
+        //@ts-ignore
+        const {id} = record;
+        const copyExpandedRowKeys = [...expandedRowKeys];
+        if(expanded) {
+            copyExpandedRowKeys.push(id);
+        }else {
+            const idIndex = copyExpandedRowKeys.findIndex((item) => item === id);
+            copyExpandedRowKeys.splice(idIndex,1);
+        }
+        setExpandedRowKeys(copyExpandedRowKeys);
+    }
+    // 全部展开
+    const allOpenEvent = () => {
+        const flattenData = flatten(finalyDataSource).filter((item) => item.children && item.children.length > 0).map((item) => item.id);
+        setExpandedRowKeys(flattenData);
+    }
+    // 全部折叠
+    const allCloseEvent = () => {
+        setExpandedRowKeys([]);
+    }
+
     return (
         <div className={styles.treeTableData}>
             <div className={styles.treeTbaleButtonsContent}>
@@ -55,11 +81,11 @@ const TreeTable = <T extends {}>(props: TreeTableProps<T>,ref?: Ref<any>) => {
                         }
                     </div>
                     <div className={styles.treeTableButtonCommon}>
-                        <Button className={styles.foldButton}>
+                        <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
                             <UpOutlined />
                             全部展开
                         </Button>
-                        <Button>
+                        <Button onClick={() => allCloseEvent()}>
                             <DownOutlined />
                             全部折叠
                         </Button>
@@ -71,6 +97,7 @@ const TreeTable = <T extends {}>(props: TreeTableProps<T>,ref?: Ref<any>) => {
                     <Table
                         dataSource={finalyDataSource}
                         expandable={{
+                            expandedRowKeys: expandedRowKeys,
                             expandIcon: ({ expanded, onExpand, record }) => {
                                 //@ts-ignore 因为传入T是有children 的，但是目前还没有想到解决办法
                                 const { children } = record;
@@ -91,6 +118,7 @@ const TreeTable = <T extends {}>(props: TreeTableProps<T>,ref?: Ref<any>) => {
                                         />
                                     );
                             },
+                            onExpand: expandEvent
                         }}
                         size="small"
                         rowKey="id"
@@ -109,6 +137,6 @@ const TreeTable = <T extends {}>(props: TreeTableProps<T>,ref?: Ref<any>) => {
             </div>
         </div>
     )
-}
+})
 
-export default forwardRef(TreeTable)
+export default TreeTable

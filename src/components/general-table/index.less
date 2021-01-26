@@ -1,3 +1,39 @@
 .cyGeneralTable {
     width: 100%;
+    :global {
+        .ant-table {
+            .ant-table-container {
+                .ant-table-content {
+                    td,th {
+                        border-color: @table-line-color !important;
+                    }
+                    thead {
+                        th {
+                            font-size: 13px;
+                            color: @black-color;
+                            font-weight: 500;
+                            padding: 12px 4px 12px 10px;
+                            background-color: @table-thead-color;
+                            line-height: 1;
+                        }
+                    }
+                    tbody {
+                        td {
+                            font-size: 13px;
+                            color: @gray-color;
+                            padding: 7px 4px 10px 7px;
+                        }
+                    }
+                    .ant-table-row-selected {
+                        td {
+                            background-color: @table-select-color !important;
+                        }
+                    }
+                }
+            }
+        }
+        .ant-radio-inner {
+            border-radius: 0 !important;
+        }
+    }
 }
