@@ -6,7 +6,8 @@ import { useRequest } from "ahooks";
 import { treeTableCommonRequeset } from "@/services/table";
 import { MinusSquareOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { TableProps } from "antd/lib/table";
-import {flatten} from "@/utils/utils"
+import { flatten } from "@/utils/utils"
+import CommonTitle from "../common-title";
 
 type TreeTableSelectType = "radio" | "checkbox";
 
@@ -15,6 +16,10 @@ interface TreeTableProps<T> extends TableProps<T> {
     leftButtonsSlot?: () => React.ReactNode
     // 右侧插入按钮的slot
     rightButtonSlot?: () => React.ReactNode
+    // 按钮下方可能插入slot
+    otherSlot?: () => React.ReactNode
+    // 表的title
+    tableTitle?: string | React.ReactNode
     // 单选还是多选
     type?: TreeTableSelectType
     // 获取被勾选的数据
@@ -24,14 +29,14 @@ interface TreeTableProps<T> extends TableProps<T> {
 }
 
 const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<any>) => {
-    const { dataSource = [], rightButtonSlot, leftButtonsSlot, url = "", type = "radio", getSelectData, ...rest } = props;
+    const { dataSource = [], rightButtonSlot, otherSlot,tableTitle,leftButtonsSlot, url = "", type = "radio", getSelectData, ...rest } = props;
 
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
     const { data = [], loading, run } = useRequest(() => treeTableCommonRequeset<T>({ url }), { ready: !!url })
 
     const finalyDataSource = url ? data : dataSource;
-    
+
 
     const rowSelection = {
         onChange: (values: any[], selectedRows: any[]) => {
@@ -48,13 +53,13 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
 
     const expandEvent = (expanded: boolean, record: T) => {
         //@ts-ignore
-        const {id} = record;
+        const { id } = record;
         const copyExpandedRowKeys = [...expandedRowKeys];
-        if(expanded) {
+        if (expanded) {
             copyExpandedRowKeys.push(id);
-        }else {
+        } else {
             const idIndex = copyExpandedRowKeys.findIndex((item) => item === id);
-            copyExpandedRowKeys.splice(idIndex,1);
+            copyExpandedRowKeys.splice(idIndex, 1);
         }
         setExpandedRowKeys(copyExpandedRowKeys);
     }
@@ -91,6 +96,18 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
                         </Button>
                     </div>
                 </div>
+            </div>
+            <div className={styles.treeTableOtherSlots}>
+                {
+                    otherSlot?.()
+                }
+            </div>
+            <div className={styles.treeTableTitleShowContent}>
+                {
+                    tableTitle ?
+                    <CommonTitle>{tableTitle}</CommonTitle> :
+                    null
+                }
             </div>
             <div className={styles.treeTableContent}>
                 <Spin spinning={loading}>

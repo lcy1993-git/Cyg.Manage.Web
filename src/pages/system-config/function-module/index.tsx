@@ -1,6 +1,6 @@
 import PageCommonWrap from "@/components/page-common-wrap";
 import React, { useRef, useState } from "react";
-import { Button, Switch, Modal, Form, Popconfirm, message } from "antd";
+import { Button, Switch, Modal, Form, Popconfirm, message, Spin } from "antd";
 import TreeTable from "@/components/tree-table/index";
 import { TreeDataItem,addFunctionModuleItem,updateFunctionModuleItem,getFunctionModuleDetail } from "@/services/function-module"
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
@@ -21,7 +21,7 @@ const FunctionModule: React.FC = () => {
     const [addForm] = Form.useForm();
     const [editForm] = Form.useForm();
 
-    const {data, run} = useRequest(getFunctionModuleDetail,{
+    const {data, run, loading: editDataLoading} = useRequest(getFunctionModuleDetail,{
         manual: true
     })
 
@@ -192,6 +192,7 @@ const FunctionModule: React.FC = () => {
         <PageCommonWrap>
             <TreeTable
                 ref={tableRef}
+                tableTitle="模块列表"
                 rightButtonSlot={functionModuleButton}
                 getSelectData={(data) => setTableSelectRow(data)}
                 columns={functionTableColumns}
@@ -217,7 +218,9 @@ const FunctionModule: React.FC = () => {
                 onCancel={() => setEditFormVisible(false)}
                 cancelText="取消">
                 <Form form={editForm}>
-                    <FunctionModuleForm treeData={selectTreeData} />
+                    <Spin spinning={editDataLoading}>
+                        <FunctionModuleForm treeData={selectTreeData} />
+                    </Spin>
                 </Form>
             </Modal>
         </PageCommonWrap>

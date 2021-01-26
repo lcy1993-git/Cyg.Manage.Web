@@ -3,6 +3,7 @@ import React from "react";
 import IndexRoute from "@/pages/index/route"
 import SystemConfigRoutes from "@/pages/system-config/route";
 import JurisdictionConfig from "@/pages/jurisdiction-config/route";
+
 export interface RouteListItem {
   title: string
   path: string
