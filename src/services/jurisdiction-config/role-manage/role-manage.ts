@@ -1,6 +1,11 @@
 import { request } from 'umi';
 import { cyRequest, baseUrl } from '../../common';
 
+export enum BelongModuleEnum {
+  '管理员' = 1,
+  '超级管理员',
+  '公司管理员',
+}
 interface RoleManageItemParams {
   //角色名
   roleName: string;
@@ -12,7 +17,7 @@ interface RoleManageItemParams {
   remark: string;
 
   //角色类型名称
-  // roleTypeText: string;
+  roleTypeText: string;
 }
 
 interface ItemDetailData extends RoleManageItemParams {

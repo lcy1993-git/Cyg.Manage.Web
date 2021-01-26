@@ -1,6 +1,8 @@
 import React from 'react';
 import { Input } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
+import EnumRadio from '@/components/enum-radio';
+import { BelongModuleEnum } from '@/services/jurisdiction-config/role-manage/role-manage';
 
 import rules from './rule';
 
@@ -18,7 +20,7 @@ const RoleManageForm: React.FC<RoleManageForm> = (props) => {
 
       {type === 'add' && (
         <CyFormItem label="角色类型" name="roleType" required>
-          <Input placeholder="请选择角色类型" />
+          <EnumRadio enumList={BelongModuleEnum} />
         </CyFormItem>
       )}
 

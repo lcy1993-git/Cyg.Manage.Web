@@ -2,11 +2,11 @@ import PageCommonWrap from "@/components/page-common-wrap";
 import React, { useRef, useState } from "react";
 import { Button, Switch, Modal, Form, Popconfirm, message, Spin } from "antd";
 import TreeTable from "@/components/tree-table/index";
-import { TreeDataItem,addFunctionModuleItem,updateFunctionModuleItem,getFunctionModuleDetail } from "@/services/function-module"
+import { TreeDataItem,addFunctionModuleItem,updateFunctionModuleItem,getFunctionModuleDetail } from "@/services/system-config/function-module/function-module"
 import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import FunctionModuleForm from "./components/form";
 
-import { updateFunctionItemStatus,getTreeSelectData,delectFunctionItem } from "@/services/function-module"
+import { updateFunctionItemStatus,getTreeSelectData,delectFunctionItem } from "@/services/system-config/function-module/function-module"
 import { isArray } from "lodash";
 import { useRequest } from "ahooks";
 

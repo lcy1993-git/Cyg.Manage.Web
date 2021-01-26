@@ -10,7 +10,7 @@ import {
   addRoleManageItem,
   getRoleManageDetail,
 } from '@/services/jurisdiction-config/role-manage/role-manage';
-import { useRequest } from 'umi';
+import { useRequest } from 'ahooks';
 
 const PlatformRole: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -79,9 +79,7 @@ const PlatformRole: React.FC = () => {
     const editDataId = editData.id;
 
     const RoleManageData = await run(editDataId);
-
     editForm.setFieldsValue(RoleManageData);
-    console.log(RoleManageData);
 
     setEditFormVisible(true);
   };
@@ -92,6 +90,7 @@ const PlatformRole: React.FC = () => {
       return;
     }
     const editData = data!;
+    console.log(data);
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -132,6 +131,7 @@ const PlatformRole: React.FC = () => {
   return (
     <PageCommonWrap>
       <GeneralTable
+        ref={tableRef}
         buttonRightContentSlot={rightButton}
         getSelectData={(data) => setTableSelectRow(data)}
         tableTitle="角色管理"

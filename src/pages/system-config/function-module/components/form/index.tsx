@@ -3,7 +3,7 @@ import {Input, TreeSelect} from "antd";
 import CyFormItem from "@/components/cy-form-item";
 import FormSwitch from "@/components/form-switch";
 import EnumSelect from "@/components/enum-select";
-import {BelongModuleEnum,FunctionModuleTreeData} from "@/services/function-module"
+import {BelongModuleEnum,FunctionModuleTreeData} from "@/services/system-config/function-module/function-module"
 
 import rules from "./rule"
 

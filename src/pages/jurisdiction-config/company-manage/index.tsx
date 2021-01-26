@@ -25,6 +25,7 @@ const CompanyManage: React.FC = () => {
   const { data, run } = useRequest(getCompanyManageDetail, {
     manual: true,
   });
+
   //数据修改，局部刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
@@ -121,7 +122,6 @@ const CompanyManage: React.FC = () => {
       return;
     }
     const editData = data!;
-    console.log(data);
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
