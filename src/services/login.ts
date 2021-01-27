@@ -1,13 +1,21 @@
 import {request} from "umi";
-import {baseUrl} from "@/services/common"
-
+import {baseUrl, cyRequest} from "@/services/common"
+import {ModulesItem,UserInfo} from "./common.d";
 export interface UserLoginParams {
     userName: string
     pwd: string
 }
 
+
+
+interface LoginSuccessInfo {
+    accessToken: string
+    modules: ModulesItem[]
+    user: UserInfo
+}
+
 export const userLoginRequest = (params: UserLoginParams) => {
-    return request(`${baseUrl.project}/Manage/SignIn`,{method: "POST", data: params});
+    return cyRequest<LoginSuccessInfo>(() => request(`${baseUrl.project}/Manage/SignIn`,{method: "POST", data: params}));
 }
 
 export interface PhoneLoginParams {
@@ -16,5 +24,5 @@ export interface PhoneLoginParams {
 }
 
 export const phoneLoginRequest = (params: PhoneLoginParams) => {
-    return request(`${baseUrl.project}/Manage/SignInByPhone`,{method: "POST", data: params});
+    return cyRequest<LoginSuccessInfo>(() => request(`${baseUrl.project}/Manage/SignInByPhone`,{method: "POST", data: params}))
 }

@@ -1,4 +1,4 @@
-import {RequestDataType} from "./common.d";
+import {RequestDataType,RequestDataCommonType} from "./common.d";
 import {requestBaseUrl} from "../../public/config/request";
 import {message} from "antd";
 import {request} from "umi";
@@ -26,6 +26,20 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
     })
 }
 
+export const cyCommonRequest = <T extends {}>(func: () => Promise<RequestDataCommonType>): Promise<T> => {
+    return new Promise(async (resolve, reject) => {
+        const res = await func();
+        
+        const {code,isSuccess} = res;
+        if(isSuccess && code === 200) {
+            resolve(res as unknown as T)
+        }else {
+            message.error(res.message)
+            reject(res.message)
+        }
+    })
+}
+
 
 export enum SendSmsType {
     "登录",
@@ -43,7 +57,7 @@ interface GetSmsCodeProps {
 
 
 export const getSmsCode = (params: GetSmsCodeProps) => {
-    return cyRequest(() => request(`${baseUrl.common}/ExternalApi/SendSms`, {method: "GET", params: {...params,sendSmsType: params.sendSmsType}}))
+    return cyCommonRequest(() => request(`${baseUrl.common}/ExternalApi/SendSms`, {method: "GET", params: {...params,sendSmsType: params.sendSmsType}}))
 }
 
 

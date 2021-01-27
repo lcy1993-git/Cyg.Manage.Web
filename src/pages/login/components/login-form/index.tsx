@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Form, Input, Tabs } from "antd";
+import { Button, Form, Input, message, Tabs } from "antd";
 import styles from "./index.less"
 import ImageIcon from "@/components/image-icon";
 
@@ -9,6 +9,8 @@ import VerificationCode from "@/components/verification-code";
 import {phoneNumberRule} from "@/utils/common-rule"
 
 import {userLoginRequest,phoneLoginRequest} from "@/services/login"
+
+import {history} from "umi"
 
 const { TabPane } = Tabs;
 
@@ -38,7 +40,15 @@ const LoginForm: React.FC = () => {
             }else {
                 resData = await phoneLoginRequest(values);
             }
-            console.log(resData)
+
+            const {accessToken,modules,user} = resData;
+            
+            localStorage.setItem("Authorization",accessToken)
+            localStorage.setItem("functionModules",JSON.stringify(modules))
+            localStorage.setItem("userInfo",JSON.stringify(user))
+
+            message.success("登录成功");
+            history.push("/index")
         })
     }
 
@@ -50,7 +60,7 @@ const LoginForm: React.FC = () => {
         }
     }
 
-    // 失去焦点获取手机号是否符合格式，不符合格式不能进行点击
+    
 
     return (
         <Form form={form} onValuesChange={formChangeEvent}>
