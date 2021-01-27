@@ -7,7 +7,7 @@ import {
   addFunctionModuleItem,
   updateFunctionModuleItem,
   getFunctionModuleDetail,
-} from '@/services/system-config/function-module/function-module';
+} from '@/services/system-config/function-module';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import FunctionModuleForm from './components/form';
 
@@ -15,7 +15,7 @@ import {
   updateFunctionItemStatus,
   getTreeSelectData,
   delectFunctionItem,
-} from '@/services/system-config/function-module/function-module';
+} from '@/services/system-config/function-module';
 import { isArray } from 'lodash';
 import { useRequest } from 'ahooks';
 

@@ -8,7 +8,7 @@ import {
   updateCompanyManageItem,
   addCompanyManageItem,
   getCompanyManageDetail,
-} from '@/services/jurisdiction-config/company-manage/company-manage';
+} from '@/services/jurisdiction-config/company-manage';
 import { isArray } from 'lodash';
 import CompanyManageForm from './components/form';
 

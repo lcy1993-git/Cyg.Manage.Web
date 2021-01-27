@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { cyRequest, baseUrl } from '../../common';
+import request from '@/utils/request';
+import { cyRequest, baseUrl } from '../common';
 
 export enum BelongModuleEnum {
   '管理员' = 1,
@@ -33,10 +33,14 @@ export const getRoleManageDetail = (id: string) => {
 
 //新增角色
 export const addRoleManageItem = (params: RoleManageItemParams) => {
-  return cyRequest(() => request(`${baseUrl.project}/Role/Create`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Role/Create`, { method: 'POST', data: params }),
+  );
 };
 
 //编辑角色名
 export const updateRoleManageItem = (params: ItemDetailData) => {
-  return cyRequest(() => request(`${baseUrl.project}/Role/Modify`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Role/Modify`, { method: 'POST', data: params }),
+  );
 };

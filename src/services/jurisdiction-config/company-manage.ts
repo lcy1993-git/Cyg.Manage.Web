@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { cyRequest, baseUrl } from '../../common';
+import request from "@/utils/request";
+import { cyRequest, baseUrl } from '../common';
 
 interface CompanyManageItemParams {
   // 数据的父亲id

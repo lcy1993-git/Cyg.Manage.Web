@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { cyRequest, baseUrl } from '../../common';
+import request from "@/utils/request";
+import { cyRequest, baseUrl } from '../common';
 
 export enum BelongManageEnum {
   '启用' = 1,

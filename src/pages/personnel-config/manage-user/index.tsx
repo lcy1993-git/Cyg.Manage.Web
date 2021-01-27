@@ -11,10 +11,10 @@ import {
   getManageUserDetail,
   updateItemStatus,
   ItemDetailData,
-} from '@/services/personnel-config/manage-user/manage-user';
+} from '@/services/personnel-config/manage-user';
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
-import { BelongManageEnum } from '@/services/personnel-config/manage-user/manage-user';
+import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 
 const { Search } = Input;
 

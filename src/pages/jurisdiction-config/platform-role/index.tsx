@@ -9,7 +9,7 @@ import {
   updateRoleManageItem,
   addRoleManageItem,
   getRoleManageDetail,
-} from '@/services/jurisdiction-config/role-manage/role-manage';
+} from '@/services/jurisdiction-config/role-manage';
 import { useRequest } from 'ahooks';
 
 const PlatformRole: React.FC = () => {
