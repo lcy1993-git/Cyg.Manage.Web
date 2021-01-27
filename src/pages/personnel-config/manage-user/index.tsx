@@ -89,16 +89,15 @@ const ManageUser: React.FC = () => {
   };
 
   const resetEvent = () => {
-    setResetFormVisible(true);
-  };
-
-  //重置密码
-  const resetPwd = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
     }
+    setResetFormVisible(true);
   };
+
+  //重置密码
+  const resetPwd = () => {};
 
   //
   const addEvent = async () => {
