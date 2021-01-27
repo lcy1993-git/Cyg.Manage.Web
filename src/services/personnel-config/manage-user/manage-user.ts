@@ -40,37 +40,42 @@ interface AddManageUserItem extends ManageUserItemParams {
   companyId: string;
 }
 
-interface ItemDetailData extends ManageUserItemParams {
+export interface ItemDetailData extends ManageUserItemParams {
   id: string;
+  isDisable: true;
 }
 
 //获取选中数据
 export const getManageUserDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl}/ManageUser/GetById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/ManageUser/GetById`, { method: 'GET', params: { id } }),
   );
 };
 
 //新增用户
 export const addManageUserItem = (params: AddManageUserItem) => {
-  return cyRequest(() => request(`${baseUrl}/ManageUser/Create`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/ManageUser/Create`, { method: 'POST', data: params }),
+  );
 };
 
 //编辑用户
 export const updateManageUserItem = (params: ItemDetailData) => {
-  return cyRequest(() => request(`${baseUrl}/ManageUser/Modify`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/ManageUser/Modify`, { method: 'POST', data: params }),
+  );
 };
 
 //修改（重置）密码
 export const resetItemPwd = (params: ItemDetailData) => {
   return cyRequest(() =>
-    request(`${baseUrl}/ManageUser/ResetPwd`, { method: 'POST', data: params }),
+    request(`${baseUrl.project}/ManageUser/ResetPwd`, { method: 'POST', data: params }),
   );
 };
 
 // 更改状态
 export const updateItemStatus = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl}/ManageUser/ChangeState`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/ManageUser/ChangeState`, { method: 'GET', params: { id } }),
   );
 };

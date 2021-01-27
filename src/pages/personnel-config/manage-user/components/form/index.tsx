@@ -65,6 +65,17 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       <CyFormItem label="状态" name="userStatus" required>
         <EnumRadio enumList={BelongManageEnum} />
       </CyFormItem>
+
+      {type === 'reset' && (
+        <CyFormItem label="密码" name="pwd" required>
+          <Input type="password" placeholder="请输入密码" />
+        </CyFormItem>
+      )}
+      {type === 'reset' && (
+        <CyFormItem label="确认密码" name="confirmPwd" required rules={rules.confirmPwd}>
+          <Input type="password" placeholder="请再次输入密码" />
+        </CyFormItem>
+      )}
     </>
   );
 };

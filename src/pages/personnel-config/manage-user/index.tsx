@@ -1,15 +1,17 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, Row, Col } from 'antd';
+import { Button, Modal, Form, message, Input, Row, Col, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import ManageUserForm from './components/form';
 import { isArray } from 'lodash';
 import {
-  updateRoleManageItem,
-  addRoleManageItem,
-  getRoleManageDetail,
-} from '@/services/jurisdiction-config/role-manage/role-manage';
+  updateManageUserItem,
+  addManageUserItem,
+  getManageUserDetail,
+  updateItemStatus,
+  ItemDetailData,
+} from '@/services/personnel-config/manage-user/manage-user';
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user/manage-user';
@@ -26,27 +28,28 @@ const ManageUser: React.FC = () => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-  const { data, run } = useRequest(getRoleManageDetail, {
+  const { data, run } = useRequest(getManageUserDetail, {
     manual: true,
   });
 
   const handleData = [
-    // {
-    //   userName: '艾格尼',
-    //   nickName: '火鸟',
-    //   name: '鲁邦',
-    //   phone: '166883322',
-    //   email: 'JKL@jsx.com',
-    //   companyName: '双蛇',
-    //   province: '龙堡',
-    //   userStatus: 1,
-    //   lastLoginIp: '10.1.1.0',
-    //   lastLoginDate: '2077-1-1',
-    //   roleType: '1',
-    //   roleName: 'SuperAdmin',
-    // },
     {
       id: '1',
+      userName: '艾格尼',
+      nickName: '火鸟',
+      name: '鲁邦',
+      phone: '166883322',
+      email: 'JKL@jsx.com',
+      companyName: '双蛇',
+      province: '龙堡',
+      userStatus: 1,
+      lastLoginIp: '10.1.1.0',
+      lastLoginDate: '2077-1-1',
+      roleType: '1',
+      roleName: 'SuperAdmin',
+    },
+    {
+      id: '2',
       userName: '拉拉菲尔',
       nickName: '阿卜',
       name: '卓一',
@@ -104,17 +107,23 @@ const ManageUser: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddRoleManageItem = () => {
+  const sureAddManageUserItem = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          roleName: '',
-          roleType: '',
-          remark: '',
+          userName: '',
+          pwd: '',
+          roleId: '',
+          province: '',
+          companyId: '',
+          email: '',
+          nickName: '',
+          name: '',
+          userStatus: 1,
         },
         value,
       );
-      await addRoleManageItem(submitInfo);
+      await addManageUserItem(submitInfo);
       tableFresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -136,7 +145,7 @@ const ManageUser: React.FC = () => {
     setEditFormVisible(true);
   };
 
-  const sureEditRoleManage = () => {
+  const sureEditManageUser = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请先选择一条数据进行编辑');
       return;
@@ -153,13 +162,22 @@ const ManageUser: React.FC = () => {
         },
         values,
       );
-      await updateRoleManageItem(submitInfo);
+      await updateManageUserItem(submitInfo);
       tableFresh();
       message.success('更新成功');
       editForm.resetFields();
       setEditFormVisible(false);
     });
   };
+
+  //数据改变状态
+  const updateStatus = async (record: ItemDetailData) => {
+    const { id } = record;
+    await updateItemStatus(id);
+    tableFresh();
+    message.success('状态修改成功');
+  };
+
   const columns = [
     {
       title: '用户名',
@@ -202,6 +220,10 @@ const ManageUser: React.FC = () => {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
+      render: (record: ItemDetailData) => {
+        const isChecked = !record.isDisable;
+        return <Switch checked={isChecked} onChange={() => updateStatus(record)} />;
+      },
     },
     {
       title: '最后登录IP',
@@ -258,7 +280,7 @@ const ManageUser: React.FC = () => {
         width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddRoleManageItem()}
+        onOk={() => sureAddManageUserItem()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
@@ -271,7 +293,7 @@ const ManageUser: React.FC = () => {
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditRoleManage()}
+        onOk={() => sureEditManageUser()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
@@ -289,7 +311,7 @@ const ManageUser: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <ManageUserForm />
+          <ManageUserForm type="reset" />
         </Form>
       </Modal>
     </PageCommonWrap>

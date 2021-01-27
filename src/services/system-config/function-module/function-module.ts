@@ -43,28 +43,32 @@ export interface TreeDataItem extends FunctionModuleItemParams {
 // 获取模块列表的数据
 export const getFunctionModuleTreeList = (): Promise<TreeDataItem[]> => {
   return cyRequest<TreeDataItem[]>(() =>
-    request(`${baseUrl}/Module/GetTreeList`, { method: 'GET' }),
+    request(`${baseUrl.project}/Module/GetTreeList`, { method: 'GET' }),
   );
 };
 // 新增一条数据
 export const addFunctionModuleItem = (params: FunctionModuleItemParams) => {
-  return cyRequest(() => request(`${baseUrl}/Module/Create`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Module/Create`, { method: 'POST', data: params }),
+  );
 };
 // 更改状态
 export const updateFunctionItemStatus = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl}/Module/ChangeState`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/Module/ChangeState`, { method: 'GET', params: { id } }),
   );
 };
 // 更新数据
 export const updateFunctionModuleItem = (params: TreeDataItem) => {
-  return cyRequest(() => request(`${baseUrl}/Module/Modify`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Module/Modify`, { method: 'POST', data: params }),
+  );
 };
 
 // 获取一条数据
 export const getFunctionModuleDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl}/Module/GetById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/Module/GetById`, { method: 'GET', params: { id } }),
   );
 };
 
