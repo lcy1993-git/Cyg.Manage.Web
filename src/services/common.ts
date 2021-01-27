@@ -1,10 +1,16 @@
 import {RequestDataType} from "./common.d";
 import {requestBaseUrl} from "../../public/config/request";
 import {message} from "antd";
+import {request} from "umi";
 
 const {NODE_ENV} = process.env;
 
-export const baseUrl = NODE_ENV === "development" ? "/api" : requestBaseUrl;
+const devBaseUrl = {
+    project: "/project/api",
+    common: "/common/api"
+}
+
+export const baseUrl = NODE_ENV === "development" ? devBaseUrl : requestBaseUrl;
 
 export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>): Promise<T> => {
     return new Promise(async (resolve, reject) => {
@@ -18,6 +24,26 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
             reject(res.message)
         }
     })
+}
+
+
+export enum SendSmsType {
+    "登录",
+    "账户绑定",
+    "修改密码",
+    "重置密码",
+    "修改注册手机号"
+}
+
+// 获取短信接口
+interface GetSmsCodeProps {
+    phoneNum: string
+    sendSmsType: SendSmsType
+}
+
+
+export const getSmsCode = (params: GetSmsCodeProps) => {
+    return cyRequest(() => request(`${baseUrl.common}/ExternalApi/SendSms`, {method: "GET", params: {...params,sendSmsType: params.sendSmsType}}))
 }
 
 

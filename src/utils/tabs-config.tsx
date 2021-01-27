@@ -25,5 +25,13 @@ export const getTabsComponent = (key: string): TabRouteListItem => {
     // eslint-disable-next-line prefer-destructuring
     newKey = key.split('?')[0];
   }
-  return routeList.find((item) => item.path === newKey)!
+  const itemInArray = routeList.find((item) => item.path === newKey);
+  if(!itemInArray) {
+    return {
+      title: "404",
+      path: "/404",
+      component: null
+    }
+  }
+  return itemInArray
 }

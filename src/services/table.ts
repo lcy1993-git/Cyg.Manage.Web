@@ -17,7 +17,7 @@ export interface TableRequestResult {
 }
 
 export const tableCommonRequest = (params: TableCommonRequestParams): Promise<TableRequestResult> => {
-    return cyRequest<TableRequestResult>(() => request(`${baseUrl}${params.url}`,{method: "Post", data: {...params.extraParams,PageIndex: params.pageIndex, PageSize: params.pageSize}}))
+    return cyRequest<TableRequestResult>(() => request(`${baseUrl.project}${params.url}`,{method: "Post", data: {...params.extraParams,PageIndex: params.pageIndex, PageSize: params.pageSize}}))
 }
 
 interface TreeTableParams {
@@ -27,5 +27,5 @@ interface TreeTableParams {
 
 export const treeTableCommonRequeset = <T>(data: TreeTableParams) => {
     const {url, params = {}} = data
-    return cyRequest<T[]>(() => request(`${baseUrl}${url}`,{method: "GET", params}));
+    return cyRequest<T[]>(() => request(`${baseUrl.project}${url}`,{method: "GET", params}));
 }
