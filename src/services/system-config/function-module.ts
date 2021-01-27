@@ -81,12 +81,12 @@ export interface FunctionModuleTreeData {
 // 下拉选择获取数据
 export const getTreeSelectData = () => {
   return cyRequest<FunctionModuleTreeData[]>(() =>
-    request(`${baseUrl}/Module/GetTree`, { method: 'GET' }),
+    request(`${baseUrl.project}/Module/GetTree`, { method: 'GET' }),
   );
 };
 // 删除
 export const delectFunctionItem = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl}/Module/DeleteById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/Module/DeleteById`, { method: 'GET', params: { id } }),
   );
 };
