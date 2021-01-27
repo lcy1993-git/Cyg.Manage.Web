@@ -1,3 +1,5 @@
+import {phoneNumberRule} from "@/utils/common-rule"
+
 export const loginRules = {
     "account": {
         account: [
@@ -34,7 +36,15 @@ export const loginRules = {
         ],
         phone: [
             {
-                required: true, message: "请输入手机号"
+                validator: async (rule, value) => {
+                    if(!value) {
+                        throw new Error('请输入手机号');
+                    }
+                    console.log(phoneNumberRule.test(value))
+                    if(!(phoneNumberRule.test(value))) {
+                        throw new Error('手机号格式不符合规范');
+                    }
+                  } 
             }
         ],
         verificationCode: [

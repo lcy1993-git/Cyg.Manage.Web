@@ -1,14 +1,18 @@
 import { Button, Input, message } from "antd";
-import React, { useState } from "react";
+import React, { useState,useMemo } from "react";
 import styles from "./index.less";
 import {useInterval} from "ahooks";
+import {SendSmsType,getSmsCode} from "@/services/common"
 
 interface VerificationCodeProps {
+    type: SendSmsType,
+    phoneNumber: string,
     onChange?: (value: string) => void
+    canSend?: boolean
 }
 
 const VerificationCode:React.FC<VerificationCodeProps> = (props) => {
-    const {onChange} = props;
+    const {onChange,type,phoneNumber,canSend = false} = props;
     const [delayNumber, setDelayNumber] = useState<number>();
     const [residueNumber, setResidueNumber] = useState<number>(0);
 
@@ -26,7 +30,8 @@ const VerificationCode:React.FC<VerificationCodeProps> = (props) => {
     const buttonShowWord = delayNumber ? `倒计时${residueNumber}秒` : "发送验证码";
 
     // TODO 发送请求验证码请求
-    const sendVerificationCode = () => {
+    const sendVerificationCode = async () => {
+        await getSmsCode({phoneNum: phoneNumber, sendSmsType: type});
         setDelayNumber(1000)
         setResidueNumber(60)
         message.success("验证码发送成功");
@@ -37,13 +42,26 @@ const VerificationCode:React.FC<VerificationCodeProps> = (props) => {
         onChange?.(value);
     }
 
+    const canSendSmsFlag = useMemo(() => {
+        // delayNumber不是0的时候，都不能进行发送
+        if(delayNumber) {
+            return false
+        }
+        // delayNumber是0， 并且canSend 是false的时候，不能发送
+        if(!delayNumber && !canSend) {
+            return false
+        }
+
+        return true
+    }, [delayNumber,canSend])
+
     return (
         <div className={styles.verificationCodeComponent}>
             <div className={styles.verificationCodeComponentInputContent}>
                 <Input value={inputValue} onChange={(e) => InputValueChangeEvent(e.target.value)} placeholder="验证码" className={styles.verificationCodeComponentInput} />
             </div>
             <div className={styles.verificationCodeComponentButtonContent}>
-                <Button onClick={() => sendVerificationCode()} disabled={!!delayNumber} className={styles.verificationCodeComponentButton} type="primary">
+                <Button onClick={() => sendVerificationCode()} disabled={!canSendSmsFlag} className={styles.verificationCodeComponentButton} type="primary">
                     {buttonShowWord}
                 </Button>
             </div>
