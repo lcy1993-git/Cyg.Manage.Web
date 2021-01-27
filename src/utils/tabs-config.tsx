@@ -1,26 +1,28 @@
-import React from "react";
+import React from 'react';
 
-import IndexRoute from "@/pages/index/route"
-import SystemConfigRoutes from "@/pages/system-config/route";
-import JurisdictionConfig from "@/pages/jurisdiction-config/route";
+import IndexRoute from '@/pages/index/route';
+import SystemConfigRoutes from '@/pages/system-config/route';
+import JurisdictionConfig from '@/pages/jurisdiction-config/route';
+import PersonnelConfig from '@/pages/personnel-config/route';
 
 export interface RouteListItem {
-  title: string
-  path: string
+  title: string;
+  path: string;
 }
 
 interface TabRouteListItem extends RouteListItem {
-  component: React.ReactNode
+  component: React.ReactNode;
 }
 
-const routeList:TabRouteListItem[] = [
+const routeList: TabRouteListItem[] = [
   ...IndexRoute,
   ...SystemConfigRoutes,
-  ...JurisdictionConfig
-]
+  ...JurisdictionConfig,
+  ...PersonnelConfig,
+];
 
 export const getTabsComponent = (key: string): TabRouteListItem => {
-  let newKey = key
+  let newKey = key;
   if (key.includes('?')) {
     // eslint-disable-next-line prefer-destructuring
     newKey = key.split('?')[0];

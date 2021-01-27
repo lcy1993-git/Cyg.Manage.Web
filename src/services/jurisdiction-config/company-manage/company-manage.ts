@@ -27,11 +27,11 @@ export interface TreeDataItem extends CompanyManageItemParams {
 }
 
 //获取公司列表数据
-export const getCompanyManageTreeList = (): Promise<TreeDataItem[]> => {
-  return cyRequest<TreeDataItem[]>(() =>
-    request(`${baseUrl}/Company/GetTreeList`, { method: 'GET' }),
-  );
-};
+// export const getCompanyManageTreeList = (): Promise<TreeDataItem[]> => {
+//   return cyRequest<TreeDataItem[]>(() =>
+//     request(`${baseUrl}/Company/GetTreeList`, { method: 'GET' }),
+//   );
+// };
 
 //获取某条数据
 export const getCompanyManageDetail = (id: string) => {

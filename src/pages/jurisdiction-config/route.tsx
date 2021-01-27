@@ -1,6 +1,6 @@
-import Loadable from "react-loadable";
-import React from "react";
-import Loading from "@ant-design/pro-layout/es/PageLoading";
+import Loadable from 'react-loadable';
+import React from 'react';
+import Loading from '@ant-design/pro-layout/es/PageLoading';
 
 
 const CompanyManage = Loadable({ loader: () => import("@/pages/jurisdiction-config/company-manage"), loading: Loading, delay: 150 })
