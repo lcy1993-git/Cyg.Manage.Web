@@ -1,9 +1,9 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, Row, Col, Switch } from 'antd';
+import { EyeOutlined } from '@ant-design/icons';
+import { Button, Modal, Form, message, Input, Row, Col } from 'antd';
 import React, { useRef, useState } from 'react';
-import ManageUserForm from './components/form';
+// import ManageUserForm from './components/form';
 import { isArray } from 'lodash';
 import {
   updateManageUserItem,
@@ -32,52 +32,50 @@ const ManageUser: React.FC = () => {
     manual: true,
   });
 
-  const handleData = [
-    {
-      id: '1',
-      userName: '艾格尼',
-      nickName: '火鸟',
-      name: '鲁邦',
-      phone: '166883322',
-      email: 'JKL@jsx.com',
-      companyName: '双蛇',
-      province: '龙堡',
-      userStatus: 1,
-      lastLoginIp: '10.1.1.0',
-      lastLoginDate: '2077-1-1',
-      roleType: '1',
-      roleName: 'SuperAdmin',
-    },
-    {
-      id: '2',
-      userName: '拉拉菲尔',
-      nickName: '阿卜',
-      name: '卓一',
-      phone: '146783322',
-      email: 'HJK@tsx.com',
-      companyName: '恒辉',
-      province: '森都',
-      userStatus: 2,
-      lastLoginIp: '10.3.10.0',
-      lastLoginDate: '1984-1-1',
-      roleType: '2',
-      roleName: 'Admin',
-    },
-  ];
+  //   const handleData = [
+  //     {
+  //       id: '1',
+  //       userName: '艾格尼',
+  //       nickName: '火鸟',
+  //       name: '鲁邦',
+  //       phone: '166883322',
+  //       email: 'JKL@jsx.com',
+  //       companyName: '双蛇',
+  //       province: '龙堡',
+  //       userStatus: 1,
+  //       lastLoginIp: '10.1.1.0',
+  //       lastLoginDate: '2077-1-1',
+  //       roleType: '1',
+  //       roleName: 'SuperAdmin',
+  //     },
+  //     {
+  //       id: '2',
+  //       userName: '拉拉菲尔',
+  //       nickName: '阿卜',
+  //       name: '卓一',
+  //       phone: '146783322',
+  //       email: 'HJK@tsx.com',
+  //       companyName: '恒辉',
+  //       province: '森都',
+  //       userStatus: 2,
+  //       lastLoginIp: '10.3.10.0',
+  //       lastLoginDate: '1984-1-1',
+  //       roleType: '2',
+  //       roleName: 'Admin',
+  //     },
+  //   ];
   const rightButton = () => {
     return (
       <div>
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
+          查询
         </Button>
         <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
+          重置
         </Button>
-        <Button onClick={() => resetEvent()}>
-          <ReloadOutlined />
-          重置密码
+        <Button type="primary" onClick={() => resetEvent()}>
+          <EyeOutlined />
+          详情
         </Button>
       </div>
     );
@@ -98,9 +96,6 @@ const ManageUser: React.FC = () => {
     }
     setResetFormVisible(true);
   };
-
-  //重置密码
-  const resetPwd = () => {};
 
   //
   const addEvent = async () => {
@@ -157,8 +152,6 @@ const ManageUser: React.FC = () => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
-          roleName: editData.roleName,
-          remark: editData.remark,
         },
         values,
       );
@@ -170,109 +163,73 @@ const ManageUser: React.FC = () => {
     });
   };
 
-  //数据改变状态
-  const updateStatus = async (record: ItemDetailData) => {
-    const { id } = record;
-    await updateItemStatus(id);
-    tableFresh();
-    message.success('状态修改成功');
-  };
-
   const columns = [
     {
-      title: '用户名',
-      dataIndex: 'userName',
-      index: 'userName',
+      title: '应用程序',
+      dataIndex: 'application',
+      index: 'application',
       width: 240,
     },
     {
-      title: '昵称',
-      dataIndex: 'nickName',
-      index: 'nickName',
+      title: '跟踪编号',
+      dataIndex: 'traceId',
+      index: 'traceId',
       width: 240,
     },
     {
-      title: '真实姓名',
-      dataIndex: 'name',
-      index: 'name',
+      title: '日志级别',
+      dataIndex: 'logLevel',
+      index: 'logLevel',
     },
     {
-      title: '手机号',
-      dataIndex: 'phone',
-      index: 'phone',
+      title: 'Api',
+      dataIndex: 'reqQueryString',
+      index: 'reqQueryString',
     },
     {
-      title: '邮箱',
-      dataIndex: 'email',
-      index: 'email',
+      title: '内容',
+      dataIndex: 'resContent',
+      index: 'resContent',
     },
     {
-      title: '所属公司',
-      dataIndex: 'companyName',
-      index: 'companyName',
+      title: '执行日期',
+      dataIndex: 'executeDate',
+      index: 'executeDate',
     },
     {
-      title: '区域',
-      dataIndex: 'provinceName',
-      index: 'provinceName',
-    },
-    {
-      title: '状态',
-      dataIndex: 'userStatus',
-      index: 'userStatus',
-      render: (record: ItemDetailData) => {
-        const isChecked = !record.isDisable;
-        return <Switch checked={isChecked} onChange={() => updateStatus(record)} />;
-      },
-    },
-    {
-      title: '最后登录IP',
-      dataIndex: 'lastLoginIp',
-      index: 'lastLoginIp',
-    },
-    {
-      title: '最后登录日期',
-      dataIndex: 'lastLoginDate',
-      index: 'lastLoginDate',
-    },
-    {
-      title: '角色类型',
-      dataIndex: 'roleType',
-      index: 'roleType',
-    },
-    {
-      title: '角色',
-      dataIndex: 'roleName',
-      index: 'roleName',
+      title: '耗时',
+      dataIndex: 'timeCost',
+      index: 'timeCost',
     },
   ];
   const leftSearch = () => {
     return (
-      <Row gutter={16}>
-        <Col span={4}>
-          <Form.Item label="关键词">
-            <Search placeholder="请输入关键词" enterButton />
-          </Form.Item>
-        </Col>
-        <Col span={2}>
-          <Form.Item label="状态">
-            <EnumSelect enumList={BelongManageEnum} />
-          </Form.Item>
-        </Col>
-      </Row>
+      <Form>
+        <Row gutter={16}>
+          <Col span={4}>
+            <Form.Item label="关键词">
+              <Search placeholder="请输入关键词" enterButton />
+            </Form.Item>
+          </Col>
+          <Col span={2}>
+            <Form.Item label="状态">
+              <EnumSelect enumList={BelongManageEnum} />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
     );
   };
 
   return (
     <PageCommonWrap>
       <GeneralTable
-        dataSource={handleData}
         ref={tableRef}
         buttonRightContentSlot={rightButton}
         otherSlot={leftSearch}
-        getSelectData={(handleData) => setTableSelectRow(handleData)}
-        tableTitle="管理用户"
-        url="/ManageUser/GetPagedList"
+        getSelectData={(data) => setTableSelectRow(data)}
+        tableTitle="日志管理"
+        url="/Log/GetPagedList"
         columns={columns}
       />
       <Modal
@@ -284,35 +241,9 @@ const ManageUser: React.FC = () => {
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
-        <Form form={addForm}>
-          <ManageUserForm type="add" />
-        </Form>
-      </Modal>
-      <Modal
-        title="编辑-管理用户"
-        width="680px"
-        visible={editFormVisible}
-        okText="确认"
-        onOk={() => sureEditManageUser()}
-        onCancel={() => setEditFormVisible(false)}
-        cancelText="取消"
-      >
-        <Form form={editForm}>
-          <ManageUserForm />
-        </Form>
-      </Modal>
-      <Modal
-        title="重置密码"
-        width="680px"
-        visible={resetFormVisible}
-        okText="确认"
-        onOk={() => resetPwd()}
-        onCancel={() => setResetFormVisible(false)}
-        cancelText="取消"
-      >
-        <Form form={editForm}>
-          <ManageUserForm type="reset" />
-        </Form>
+        {/* <Form form={addForm}>
+          <LogManageForm />
+        </Form> */}
       </Modal>
     </PageCommonWrap>
   );

@@ -1,8 +1,9 @@
-import request from "@/utils/request";
+import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
 export enum BelongManageEnum {
-  '启用' = 1,
+  '全部状态',
+  '启用',
   '禁用',
 }
 
@@ -10,12 +11,6 @@ export enum BelongUserRoleEnum {
   '管理员' = 1,
   '超级管理员',
   '公司管理员',
-}
-export enum BelongProvinceEnum {
-  北京 = '北京',
-  南京 = '南京',
-  四川 = '四川',
-  云南 = '云南',
 }
 
 interface ManageUserItemParams {
@@ -77,5 +72,12 @@ export const resetItemPwd = (params: ItemDetailData) => {
 export const updateItemStatus = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/ManageUser/ChangeState`, { method: 'GET', params: { id } }),
+  );
+};
+
+//获取省份
+export const getProvince = (pid: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Area/GetList`, { method: 'GET', params: { pid } }),
   );
 };
