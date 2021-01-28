@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { cyRequest, baseUrl } from '../../common';
+import request from "@/utils/request";
+import { cyRequest, baseUrl } from '../common';
 
 interface CompanyManageItemParams {
   // 数据的父亲id
@@ -36,18 +36,18 @@ export interface TreeDataItem extends CompanyManageItemParams {
 //获取某条数据
 export const getCompanyManageDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl}/Company/GetById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/Company/GetById`, { method: 'GET', params: { id } }),
   );
 };
 
 //新增一条数据
 export const addCompanyManageItem = (params: CompanyManageItemParams) => {
-  return cyRequest(() => request(`${baseUrl}/Company/Create`, { method: 'POST', data: params }));
+  return cyRequest(() => request(`${baseUrl.project}/Company/Create`, { method: 'POST', data: params }));
 };
 
 //编辑接口
 export const updateCompanyManageItem = (params: TreeDataItem) => {
-  return cyRequest(() => request(`${baseUrl}/Company/Modify`, { method: 'POST', data: params }));
+  return cyRequest(() => request(`${baseUrl.project}/Company/Modify`, { method: 'POST', data: params }));
 };
 
 

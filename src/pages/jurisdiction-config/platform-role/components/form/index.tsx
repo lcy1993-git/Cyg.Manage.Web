@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumRadio from '@/components/enum-radio';
-import { BelongModuleEnum } from '@/services/jurisdiction-config/role-manage/role-manage';
+import { BelongModuleEnum } from '@/services/jurisdiction-config/role-manage';
 
 import rules from './rule';
 
@@ -25,7 +25,7 @@ const RoleManageForm: React.FC<RoleManageForm> = (props) => {
       )}
 
       <CyFormItem label="备注" name="remark">
-        <Input placeholder="请输入库存" />
+        <Input placeholder="请输入备注" />
       </CyFormItem>
     </>
   );

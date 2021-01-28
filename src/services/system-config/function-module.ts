@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { cyRequest, baseUrl } from '../../common';
+import request from '@/utils/request';
+import { cyRequest, baseUrl } from '../common';
 
 export enum BelongModuleEnum {
   '菜单' = 1,
@@ -48,7 +48,9 @@ export const getFunctionModuleTreeList = (): Promise<TreeDataItem[]> => {
 };
 // 新增一条数据
 export const addFunctionModuleItem = (params: FunctionModuleItemParams) => {
-  return cyRequest(() => request(`${baseUrl.project}/Module/Create`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Module/Create`, { method: 'POST', data: params }),
+  );
 };
 // 更改状态
 export const updateFunctionItemStatus = (id: string) => {
@@ -58,7 +60,9 @@ export const updateFunctionItemStatus = (id: string) => {
 };
 // 更新数据
 export const updateFunctionModuleItem = (params: TreeDataItem) => {
-  return cyRequest(() => request(`${baseUrl.project}/Module/Modify`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Module/Modify`, { method: 'POST', data: params }),
+  );
 };
 
 // 获取一条数据
