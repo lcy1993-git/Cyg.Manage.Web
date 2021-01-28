@@ -1,5 +1,5 @@
 import React, { forwardRef, Ref, useMemo, useState, useImperativeHandle, useRef } from "react";
-import { useRequest } from "ahooks";
+import { useMount, useRequest } from "ahooks";
 import { tableCommonRequest } from "@/services/table"
 import { Table, Pagination, message, Tooltip } from "antd"
 import styles from "./index.less";
@@ -33,11 +33,12 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
     const tableRef = useRef<HTMLDivElement>(null)
 
-    const { data, run } = useRequest(() => tableCommonRequest({ url: url, extraParams: extractParams, pageIndex: currentPage, pageSize }), {
+    const { data, run } = useRequest(tableCommonRequest, {
         ready: !!url,
-        refreshDeps: [JSON.stringify(extractParams), currentPage, pageSize]
+        refreshDeps: [JSON.stringify(extractParams), currentPage, pageSize],
+        manual: true
     });
-
+    
     const tableResultData = useMemo(() => {
         if (data) {
             const { items, pageIndex, pageSize, total } = data;
@@ -72,7 +73,9 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     }
     // 刷新列表
     const refreshTable = () => {
-        run();
+        run({
+            url: url, extraParams: extractParams, pageIndex: currentPage, pageSize
+        });
         message.success("刷新成功");
     }
     // 全屏
@@ -96,9 +99,26 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     useImperativeHandle(ref, () => ({
         // changeVal 就是暴露给父组件的方法
         refresh: () => {
-            run()
+            run({
+                url: url, extraParams: extractParams, pageIndex: currentPage, pageSize
+            })
+        },
+        search: (params: any) => {
+             run({
+                 url,
+                 pageSize,
+                 pageIndex: 1,
+                 extraParams: {...params}
+             })
         }
     }));
+
+
+    useMount(() => {
+        run({
+            url: url, extraParams: extractParams, pageIndex: currentPage, pageSize
+        })
+    })
 
     return (
         <div className={styles.cyGeneralTable} ref={tableRef}>
