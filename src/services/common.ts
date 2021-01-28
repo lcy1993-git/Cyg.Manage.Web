@@ -1,7 +1,7 @@
 import {RequestDataType,RequestDataCommonType} from "./common.d";
 import {requestBaseUrl} from "../../public/config/request";
 import {message} from "antd";
-import {request} from "umi";
+import {request,history} from "umi";
 
 const {NODE_ENV} = process.env;
 
@@ -20,6 +20,9 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
         if(isSuccess && code === 200) {
             resolve(content)
         }else {
+            if(code === 401) {
+                history.push("/login");
+            }
             message.error(res.message)
             reject(res.message)
         }
