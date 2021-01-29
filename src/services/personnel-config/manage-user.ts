@@ -36,8 +36,8 @@ interface AddManageUserItem extends ManageUserItemParams {
 
 export interface ItemDetailData extends ManageUserItemParams {
   id: string;
+  pwd: string;
 }
-
 
 //获取选中数据
 export const getManageUserDetail = (id: string) => {

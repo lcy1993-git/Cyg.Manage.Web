@@ -4,13 +4,13 @@ import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Row, Col, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
-import { isArray } from 'lodash';
+import { identity, isArray } from 'lodash';
 import {
   updateManageUserItem,
   addManageUserItem,
   getManageUserDetail,
   updateItemStatus,
-  ItemDetailData,
+  resetItemPwd,
 } from '@/services/personnel-config/manage-user';
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
@@ -67,17 +67,29 @@ const ManageUser: React.FC = () => {
 
   const resetEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
+      message.warning('请选择一条数据进行编辑');
       return;
     }
     setResetFormVisible(true);
   };
 
   //重置密码
-  const resetPwd = () => {};
+  const resetPwd = async () => {
+    editForm.validateFields().then(async (values) => {
+      const editData = tableSelectRows[0];
+      const editDataId = editData.id;
+      const newPassword = Object.assign({ id: editDataId, pwd: values.pwd });
+      console.log(newPassword);
 
-  //
-  const addEvent = async () => {
+      await resetItemPwd(newPassword);
+      tableFresh();
+      message.success('更新成功');
+      editForm.resetFields();
+      setResetFormVisible(false);
+    });
+  };
+
+  const addEvent = () => {
     setAddFormVisible(true);
   };
 
@@ -114,7 +126,6 @@ const ManageUser: React.FC = () => {
     const editDataId = editData.id;
 
     const ManageUserData = await run(editDataId);
-    console.log(ManageUserData);
 
     editForm.setFieldsValue(ManageUserData);
 

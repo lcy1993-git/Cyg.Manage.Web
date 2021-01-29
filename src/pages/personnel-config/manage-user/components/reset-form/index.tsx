@@ -7,7 +7,7 @@ import rules from '../rule';
 const ResetPasswordForm: React.FC = () => {
   return (
     <>
-      <CyFormItem label="密码" name="pwd" required>
+      <CyFormItem label="密码" name="pwd" required rules={rules.pwd}>
         <Input type="password" placeholder="请输入密码" />
       </CyFormItem>
 
