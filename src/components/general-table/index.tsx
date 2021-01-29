@@ -23,10 +23,12 @@ interface GeneralTableProps {
     needCommonButton?: boolean
     // 外部获取被选中的数据
     getSelectData?: (value: object[]) => void
+    // 在title旁边插入东西
+    titleSlot?: () => React.ReactNode
 }
 
 const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (props: P & GeneralTableProps, ref: Ref<any>) => {
-    const { url, tableTitle, needCommonButton = false, getSelectData, extractParams, buttonLeftContentSlot, buttonRightContentSlot, otherSlot, ...rest } = props;
+    const { url, tableTitle, needCommonButton = false, getSelectData,titleSlot, extractParams, buttonLeftContentSlot, buttonRightContentSlot, otherSlot, ...rest } = props;
 
     const [pageSize, setPageSize] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -142,6 +144,11 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
                         <CommonTitle>
                             {tableTitle}
                         </CommonTitle>
+                    }
+                </div>
+                <div className={styles.cyGeneralTableTitleSlot}>
+                    {
+                        titleSlot?.()
                     }
                 </div>
                 <div className={styles.cyGeneralTableCommonButton}>

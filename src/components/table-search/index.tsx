@@ -4,7 +4,7 @@ import styles from "./index.less";
 interface TableSearchProps {
     label?: string | React.ReactNode
     className?: string
-    width: string
+    width?: string
 }
 
 

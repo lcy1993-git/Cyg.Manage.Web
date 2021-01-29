@@ -33,6 +33,7 @@ const PlatformAuthorization:React.FC = () => {
 
     const searchElement = () => {
         return (
+            
             <TableSearch label="关键词" width="203px">
                 <Search value={searchKeyWord} onSearch={() => search({keyWord: searchKeyWord})} onChange={(e) => setSearchKeyWord(e.target.value)} placeholder="模板名称" enterButton />
             </TableSearch>
