@@ -26,17 +26,18 @@ interface TreeTableProps<T> extends TableProps<T> {
     getSelectData?: (value: T | T[]) => void
     // 请求数据的url，如果使用外面的数据，就不传，用Table原来的dataSource
     url?: string
+    // 是否需要勾选选项
+    needCheck?: boolean
 }
 
 const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<any>) => {
-    const { dataSource = [], rightButtonSlot, otherSlot,tableTitle,leftButtonsSlot, url = "", type = "radio", getSelectData, ...rest } = props;
+    const { dataSource = [],needCheck = true, rightButtonSlot, otherSlot,tableTitle,leftButtonsSlot, url = "", type = "radio", getSelectData, ...rest } = props;
 
     const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
     const { data = [], loading, run } = useRequest(() => treeTableCommonRequeset<T>({ url }), { ready: !!url })
 
     const finalyDataSource = url ? data : dataSource;
-
 
     const rowSelection = {
         onChange: (values: any[], selectedRows: any[]) => {
@@ -72,6 +73,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
     const allCloseEvent = () => {
         setExpandedRowKeys([]);
     }
+
+
 
     return (
         <div className={styles.treeTableData}>
@@ -141,12 +144,14 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
                         rowKey="id"
                         bordered={true}
                         rowSelection={
+                            needCheck ?
                             {
-                                type: 'radio',
+                                type: type,
                                 columnWidth: '30px',
                                 checkStrictly: false,
                                 ...rowSelection,
                             }
+                            : undefined
                         }
                         pagination={false}
                         {...rest} />
