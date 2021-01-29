@@ -1,79 +1,43 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EyeOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, Row, Col } from 'antd';
+import { Button, Modal, Form, message, Input, DatePicker } from 'antd';
 import React, { useRef, useState } from 'react';
 // import ManageUserForm from './components/form';
 import { isArray } from 'lodash';
 import {
-  updateManageUserItem,
-  addManageUserItem,
-  getManageUserDetail,
-  updateItemStatus,
-  ItemDetailData,
-} from '@/services/personnel-config/manage-user';
+  getLogManageList,
+  getLogManageDetail,
+  getApplicationsList,
+  getLogLevelsList,
+} from '@/services/system-config/log-manage';
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
-import { BelongManageEnum } from '@/services/personnel-config/manage-user';
+import TableSearch from '@/components/table-search';
+import styles from './index.less';
+import LogDetailTab from '../log-manage/tabs';
+import moment, { Moment } from 'moment';
+import UrlSelect from '@/components/url-select';
 
 const { Search } = Input;
 
 const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
+  const [searchContentKeyWord, setSearchContentKeyWord] = useState<string>('');
 
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [resetFormVisible, setResetFormVisible] = useState<boolean>(false);
+  const [beginDate, setBeginDate] = useState<Moment | null>();
+  const [endDate, setEndDate] = useState<Moment | null>();
+  const [applications, setApplications] = useState<string | undefined>();
+  const [level, setLevel] = useState<string | undefined>();
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
-  const { data, run } = useRequest(getManageUserDetail, {
-    manual: true,
-  });
+  const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
 
-  //   const handleData = [
-  //     {
-  //       id: '1',
-  //       userName: '艾格尼',
-  //       nickName: '火鸟',
-  //       name: '鲁邦',
-  //       phone: '166883322',
-  //       email: 'JKL@jsx.com',
-  //       companyName: '双蛇',
-  //       province: '龙堡',
-  //       userStatus: 1,
-  //       lastLoginIp: '10.1.1.0',
-  //       lastLoginDate: '2077-1-1',
-  //       roleType: '1',
-  //       roleName: 'SuperAdmin',
-  //     },
-  //     {
-  //       id: '2',
-  //       userName: '拉拉菲尔',
-  //       nickName: '阿卜',
-  //       name: '卓一',
-  //       phone: '146783322',
-  //       email: 'HJK@tsx.com',
-  //       companyName: '恒辉',
-  //       province: '森都',
-  //       userStatus: 2,
-  //       lastLoginIp: '10.3.10.0',
-  //       lastLoginDate: '1984-1-1',
-  //       roleType: '2',
-  //       roleName: 'Admin',
-  //     },
-  //   ];
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          查询
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          重置
-        </Button>
-        <Button type="primary" onClick={() => resetEvent()}>
+        <Button type="primary" onClick={() => checkDetailEvent()}>
           <EyeOutlined />
           详情
         </Button>
@@ -81,6 +45,115 @@ const ManageUser: React.FC = () => {
     );
   };
 
+  const searchEvent = () => {
+    console.log(applications, level);
+  };
+
+  const checkDetailEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据查看详情');
+      return;
+    }
+    setLogDetailVisible(true);
+  };
+
+  //重置后，条件添加onChange事件重新获取value
+  const handleBeginDate = (value: any) => {
+    setBeginDate(value);
+  };
+  const handleEndDate = (value: any) => {
+    setBeginDate(value);
+  };
+
+  const handleAppSelect = (value: any) => {
+    setApplications(value);
+  };
+  const handleLevelSelect = (value: any) => {
+    setLevel(value);
+  };
+
+  const leftSearchElement = () => {
+    return (
+      <div className={styles.searchGroup}>
+        <TableSearch label="搜索" width="208px">
+          <Search
+            value={searchApiKeyWord}
+            onSearch={() => search({ keyWord: searchApiKeyWord })}
+            onChange={(e) => setSearchApiKeyWord(e.target.value)}
+            placeholder="跟踪编号/Api地址"
+            enterButton
+          />
+        </TableSearch>
+        <TableSearch label="" width="208px">
+          <Search
+            value={searchContentKeyWord}
+            onSearch={() => search({ keyWord: searchContentKeyWord })}
+            onChange={(e) => setSearchContentKeyWord(e.target.value)}
+            placeholder="(请求、响应、异常)内容"
+            enterButton
+          />
+        </TableSearch>
+        <TableSearch label="筛选" width="800px" marginLeft="15px">
+          <div className={styles.filter}>
+            <UrlSelect
+              titleKey="text"
+              valueKey="value"
+              className={styles.appWidth}
+              url="/Log/GetApplications"
+              placeholder="应用"
+              value={applications}
+              onChange={handleAppSelect}
+            />
+            <UrlSelect
+              titleKey="text"
+              valueKey="value"
+              className={styles.levelWidth}
+              url="/Log/GetLevels"
+              placeholder="级别"
+              value={level}
+              onChange={handleLevelSelect}
+            />
+            <DatePicker
+              value={beginDate}
+              showTime={{ format: 'HH:mm' }}
+              onChange={handleBeginDate}
+              format="YYYY-MM-DD HH:mm"
+              onOk={chooseBeginDate}
+              placeholder="开始日期"
+            />
+            <DatePicker
+              value={endDate}
+              showTime={{ format: 'HH:mm' }}
+              onChange={handleEndDate}
+              format="YYYY-MM-DD HH:mm"
+              placeholder="结束日期"
+              onOk={chooseEndDate}
+            />
+            <Button type="primary" className="mr7" onClick={() => searchEvent()}>
+              查询
+            </Button>
+            <Button className="mr7" onClick={() => resetEvent()}>
+              重置
+            </Button>
+          </div>
+        </TableSearch>
+      </div>
+    );
+  };
+
+  const chooseBeginDate = (value: any) => {
+    console.log('onOk: ', value);
+  };
+  const chooseEndDate = (value: any) => {
+    console.log('onOk: ', value);
+  };
+
+  const search = (params: any) => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current?.search(params);
+    }
+  };
   //数据修改刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
@@ -89,78 +162,15 @@ const ManageUser: React.FC = () => {
     }
   };
 
+  //重置搜索条件
   const resetEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
-    }
-    setResetFormVisible(true);
-  };
-
-  //
-  const addEvent = async () => {
-    setAddFormVisible(true);
-  };
-
-  const sureAddManageUserItem = () => {
-    addForm.validateFields().then(async (value) => {
-      const submitInfo = Object.assign(
-        {
-          userName: '',
-          pwd: '',
-          roleId: '',
-          province: '',
-          companyId: '',
-          email: '',
-          nickName: '',
-          name: '',
-          userStatus: 1,
-        },
-        value,
-      );
-      await addManageUserItem(submitInfo);
-      tableFresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
-
-  const editEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
-    }
-
-    const editData = tableSelectRows[0];
-    // const editDataId = editData.id;
-
-    // const RoleManageData = await run(editDataId);
-    editForm.setFieldsValue(editData);
-
-    setEditFormVisible(true);
-  };
-
-  const sureEditManageUser = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请先选择一条数据进行编辑');
-      return;
-    }
-    const editData = data!;
-    console.log(data);
-
-    editForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-        },
-        values,
-      );
-      await updateManageUserItem(submitInfo);
-      tableFresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
+    setSearchApiKeyWord('');
+    setSearchContentKeyWord('');
+    setBeginDate(null);
+    setEndDate(null);
+    setApplications(undefined);
+    setLevel(undefined);
+    tableFresh();
   };
 
   const columns = [
@@ -183,67 +193,53 @@ const ManageUser: React.FC = () => {
     },
     {
       title: 'Api',
-      dataIndex: 'reqQueryString',
-      index: 'reqQueryString',
+      dataIndex: 'reqUrl',
+      index: 'reqUrl',
+      width: 140,
     },
     {
       title: '内容',
       dataIndex: 'resContent',
       index: 'resContent',
+      width: 240,
     },
     {
       title: '执行日期',
       dataIndex: 'executeDate',
       index: 'executeDate',
+      render: (text: any, record: any) => {
+        return moment(record.executeDate).format('YYYY-MM-DD');
+      },
     },
     {
       title: '耗时',
       dataIndex: 'timeCost',
       index: 'timeCost',
+      render: (text: any, record: any) => {
+        return record.timeCost.toFixed(2);
+      },
     },
   ];
-  const leftSearch = () => {
-    return (
-      <Form>
-        <Row gutter={16}>
-          <Col span={4}>
-            <Form.Item label="关键词">
-              <Search placeholder="请输入关键词" enterButton />
-            </Form.Item>
-          </Col>
-          <Col span={2}>
-            <Form.Item label="状态">
-              <EnumSelect enumList={BelongManageEnum} />
-            </Form.Item>
-          </Col>
-        </Row>
-      </Form>
-    );
-  };
 
   return (
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
         buttonRightContentSlot={rightButton}
-        otherSlot={leftSearch}
+        buttonLeftContentSlot={leftSearchElement}
         getSelectData={(data) => setTableSelectRow(data)}
         tableTitle="日志管理"
         url="/Log/GetPagedList"
         columns={columns}
       />
       <Modal
-        title="添加-管理用户"
-        width="680px"
-        visible={addFormVisible}
-        okText="确认"
-        onOk={() => sureAddManageUserItem()}
-        onCancel={() => setAddFormVisible(false)}
-        cancelText="取消"
+        title="日志-详情"
+        width="900px"
+        visible={logDetailVisible}
+        onCancel={() => setLogDetailVisible(false)}
+        footer={null}
       >
-        {/* <Form form={addForm}>
-          <LogManageForm />
-        </Form> */}
+        <LogDetailTab />
       </Modal>
     </PageCommonWrap>
   );

@@ -20,7 +20,7 @@ export default [
     component: <FunctionModule />,
   },
   {
-    title: '功能管理',
+    title: '日志管理',
     path: '/system-config/log-manage',
     component: <LogManage />,
   },

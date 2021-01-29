@@ -49,7 +49,7 @@ export const getLogManageList = (parmas: SearchLogItemParams) => {
 };
 
 // 获取一条数据
-export const getFunctionModuleDetail = (id: string) => {
+export const getLogManageDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
     request(`${baseUrl.project}/Log/GetById`, { method: 'GET', params: { id } }),
   );

@@ -35,8 +35,6 @@ interface ItemDetailData extends FunctionModuleItemParams {
 export interface TreeDataItem extends FunctionModuleItemParams {
   // 数据id
   id: string;
-  // 是否禁用
-  isDisable: true;
   children?: TreeDataItem[];
 }
 

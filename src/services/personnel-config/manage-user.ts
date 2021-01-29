@@ -2,8 +2,7 @@ import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
 export enum BelongManageEnum {
-  '全部状态',
-  '启用',
+  '启用' = 1,
   '禁用',
 }
 
@@ -37,8 +36,8 @@ interface AddManageUserItem extends ManageUserItemParams {
 
 export interface ItemDetailData extends ManageUserItemParams {
   id: string;
-  isDisable: true;
 }
+
 
 //获取选中数据
 export const getManageUserDetail = (id: string) => {
