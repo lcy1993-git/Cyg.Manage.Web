@@ -36,7 +36,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
       });
     }
     if (data) {
-      return data.content.map((item: any) => {
+      return data.map((item: any) => {
         return { label: item[titleKey], value: item[valueKey] };
       });
     }

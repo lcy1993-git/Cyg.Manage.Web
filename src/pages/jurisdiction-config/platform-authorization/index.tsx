@@ -31,23 +31,6 @@ const PlatformAuthorization: React.FC = () => {
     },
   ];
 
-<<<<<<< HEAD
-    const searchElement = () => {
-        return (
-            
-            <TableSearch label="关键词" width="203px">
-                <Search value={searchKeyWord} onSearch={() => search({keyWord: searchKeyWord})} onChange={(e) => setSearchKeyWord(e.target.value)} placeholder="模板名称" enterButton />
-            </TableSearch>
-        )
-    }
-
-    const refresh = () => {
-        if(tableRef && tableRef.current) {
-            //@ts-ignore
-            tableRef.current?.refresh();
-        }
-    }
-=======
   const searchElement = () => {
     return (
       <TableSearch label="关键词" width="203px">
@@ -61,7 +44,6 @@ const PlatformAuthorization: React.FC = () => {
       </TableSearch>
     );
   };
->>>>>>> f90a1347954d305c642ba25dfdfdf9562392885a
 
   const refresh = () => {
     if (tableRef && tableRef.current) {
