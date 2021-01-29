@@ -3,7 +3,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Row, Col, Switch } from 'antd';
 import React, { useRef, useState } from 'react';
-import ManageUserForm from './components/form';
+import ManageUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
 import {
   updateManageUserItem,
@@ -15,12 +15,18 @@ import {
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
+import ResetPasswordForm from './components/reset-form';
+import moment from 'moment';
+import TableSearch from '@/components/table-search';
+import styles from './index.less';
 
 const { Search } = Input;
 
 const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+
+  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -32,38 +38,6 @@ const ManageUser: React.FC = () => {
     manual: true,
   });
 
-  const handleData = [
-    {
-      id: '1',
-      userName: '艾格尼',
-      nickName: '火鸟',
-      name: '鲁邦',
-      phone: '166883322',
-      email: 'JKL@jsx.com',
-      companyName: '双蛇',
-      province: '龙堡',
-      userStatus: 1,
-      lastLoginIp: '10.1.1.0',
-      lastLoginDate: '2077-1-1',
-      roleType: '1',
-      roleName: 'SuperAdmin',
-    },
-    {
-      id: '2',
-      userName: '拉拉菲尔',
-      nickName: '阿卜',
-      name: '卓一',
-      phone: '146783322',
-      email: 'HJK@tsx.com',
-      companyName: '恒辉',
-      province: '森都',
-      userStatus: 2,
-      lastLoginIp: '10.3.10.0',
-      lastLoginDate: '1984-1-1',
-      roleType: '2',
-      roleName: 'Admin',
-    },
-  ];
   const rightButton = () => {
     return (
       <div>
@@ -137,10 +111,12 @@ const ManageUser: React.FC = () => {
     }
 
     const editData = tableSelectRows[0];
-    // const editDataId = editData.id;
+    const editDataId = editData.id;
 
-    // const RoleManageData = await run(editDataId);
-    editForm.setFieldsValue(editData);
+    const ManageUserData = await run(editDataId);
+    console.log(ManageUserData);
+
+    editForm.setFieldsValue(ManageUserData);
 
     setEditFormVisible(true);
   };
@@ -151,14 +127,13 @@ const ManageUser: React.FC = () => {
       return;
     }
     const editData = data!;
-    console.log(data);
-
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
-          roleName: editData.roleName,
-          remark: editData.remark,
+          email: editData.email,
+          nickName: editData.nickName,
+          userStatus: editData.userStatus,
         },
         values,
       );
@@ -171,9 +146,8 @@ const ManageUser: React.FC = () => {
   };
 
   //数据改变状态
-  const updateStatus = async (record: ItemDetailData) => {
-    const { id } = record;
-    await updateItemStatus(id);
+  const updateStatus = async (record: any) => {
+    await updateItemStatus(record);
     tableFresh();
     message.success('状态修改成功');
   };
@@ -200,6 +174,7 @@ const ManageUser: React.FC = () => {
       title: '手机号',
       dataIndex: 'phone',
       index: 'phone',
+      width: 120,
     },
     {
       title: '邮箱',
@@ -220,9 +195,12 @@ const ManageUser: React.FC = () => {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      render: (record: ItemDetailData) => {
-        const isChecked = !record.isDisable;
-        return <Switch checked={isChecked} onChange={() => updateStatus(record)} />;
+      render: (text: any, record: any) => {
+        return record.userStatus === 1 ? (
+          <Switch defaultChecked onChange={() => updateStatus(record.id)} />
+        ) : (
+          <Switch onChange={() => updateStatus(record.id)} />
+        );
       },
     },
     {
@@ -234,6 +212,9 @@ const ManageUser: React.FC = () => {
       title: '最后登录日期',
       dataIndex: 'lastLoginDate',
       index: 'lastLoginDate',
+      render: (text: any, record: any) => {
+        return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
+      },
     },
     {
       title: '角色类型',
@@ -246,32 +227,36 @@ const ManageUser: React.FC = () => {
       index: 'roleName',
     },
   ];
+
+  const search = (keyword: any) => {};
   const leftSearch = () => {
     return (
-      <Row gutter={16}>
-        <Col span={4}>
-          <Form.Item label="关键词">
-            <Search placeholder="请输入关键词" enterButton />
-          </Form.Item>
-        </Col>
-        <Col span={2}>
-          <Form.Item label="状态">
-            <EnumSelect enumList={BelongManageEnum} />
-          </Form.Item>
-        </Col>
-      </Row>
+      <div className={styles.search}>
+        <TableSearch label="关键词" width="208px">
+          <Search
+            value={searchApiKeyWord}
+            onSearch={() => search({ keyWord: searchApiKeyWord })}
+            onChange={(e) => setSearchApiKeyWord(e.target.value)}
+            placeholder="请输入关键词"
+            enterButton
+          />
+        </TableSearch>
+        <TableSearch label="状态" width="200px" marginLeft="20px">
+          <EnumSelect enumList={BelongManageEnum} needAll defaultValue="" />
+        </TableSearch>
+      </div>
     );
   };
 
   return (
     <PageCommonWrap>
       <GeneralTable
-        dataSource={handleData}
+        // dataSource={handleData}
         ref={tableRef}
         buttonRightContentSlot={rightButton}
-        otherSlot={leftSearch}
-        getSelectData={(handleData) => setTableSelectRow(handleData)}
-        tableTitle="角色管理"
+        buttonLeftContentSlot={leftSearch}
+        getSelectData={(data) => setTableSelectRow(data)}
+        tableTitle="管理用户"
         url="/ManageUser/GetPagedList"
         columns={columns}
       />
@@ -311,7 +296,7 @@ const ManageUser: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <ManageUserForm type="reset" />
+          <ResetPasswordForm />
         </Form>
       </Modal>
     </PageCommonWrap>
