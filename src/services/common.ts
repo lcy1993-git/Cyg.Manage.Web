@@ -2,7 +2,7 @@ import { RequestDataType, RequestDataCommonType } from './common.d';
 import { requestBaseUrl } from '../../public/config/request';
 import { message } from 'antd';
 import { request, history } from 'umi';
-import tokenRequest from "@/utils/request"
+import tokenRequest from '@/utils/request';
 
 const { NODE_ENV } = process.env;
 
@@ -70,5 +70,7 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 };
 
 export const getDataByUrl = (url: string, params: object) => {
-  return cyRequest<any[]>(() => tokenRequest(`${baseUrl.project}${url}`, { method: 'Get', data: params }));
+  return cyRequest<any[]>(() =>
+    tokenRequest(`${baseUrl.project}${url}`, { method: 'Get', data: params }),
+  );
 };

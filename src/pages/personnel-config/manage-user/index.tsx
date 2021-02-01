@@ -79,7 +79,6 @@ const ManageUser: React.FC = () => {
       const editData = tableSelectRows[0];
       const editDataId = editData.id;
       const newPassword = Object.assign({ id: editDataId, pwd: values.pwd });
-      console.log(newPassword);
 
       await resetItemPwd(newPassword);
       tableFresh();

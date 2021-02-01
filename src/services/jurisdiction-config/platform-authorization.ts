@@ -1,23 +1,15 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
-export enum BelongModuleEnum {
-  '管理员' = 1,
-  '超级管理员',
-  '公司管理员',
-}
 interface AuthorizationItemParams {
-  //角色名
-  roleName: string;
+  //模板名
+  name: string;
 
-  //角色类型
-  roleType: number;
+  //是否禁用
+  isDisable: number;
 
   //备注
   remark: string;
-
-  //角色类型名称
-  roleTypeText: string;
 }
 
 interface ItemDetailData extends AuthorizationItemParams {
@@ -25,22 +17,36 @@ interface ItemDetailData extends AuthorizationItemParams {
 }
 
 //获取选中数据
-export const getRoleManageDetail = (id: string) => {
+export const getAuthorizationDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
     request(`${baseUrl.project}/Role/GetById`, { method: 'GET', params: { id } }),
   );
 };
 
 //新增角色
-export const addRoleManageItem = (params: RoleManageItemParams) => {
+export const addAuthorizationItem = (params: AuthorizationItemParams) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Role/Create`, { method: 'POST', data: params }),
+    request(`${baseUrl.project}/Authorization/Create`, { method: 'POST', data: params }),
   );
 };
 
 //编辑角色名
-export const updateRoleManageItem = (params: ItemDetailData) => {
+export const updateAuthorizationItem = (params: ItemDetailData) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Role/Modify`, { method: 'POST', data: params }),
+    request(`${baseUrl.project}/Authorization/Modify`, { method: 'POST', data: params }),
+  );
+};
+
+// 删除
+export const delectAuthorizationItem = (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Authorization/DeleteById`, { method: 'GET', params: { id } }),
+  );
+};
+
+// 更改状态
+export const updateAuthorizationItemStatus = (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Authorization/ChangeState`, { method: 'GET', params: { id } }),
   );
 };

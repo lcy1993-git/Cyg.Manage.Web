@@ -43,7 +43,13 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       )}
       {type === 'add' && (
         <CyFormItem label="区域" name="province" required rules={rules.role}>
-          <UrlSelect url="/Area/GetList?pId=-1" titleKey="text" valueKey="value" placeholder="请选择省份" />
+          <UrlSelect
+            showSearch
+            url="/Area/GetList?pId=-1"
+            titleKey="text"
+            valueKey="value"
+            placeholder="请选择省份"
+          />
         </CyFormItem>
       )}
 

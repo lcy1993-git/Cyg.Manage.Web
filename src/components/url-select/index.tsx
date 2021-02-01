@@ -43,7 +43,13 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     return [];
   }, [JSON.stringify(data), JSON.stringify(defaultData)]);
 
-  return <WrapperComponent options={afterHanldeData} {...((rest as unknown) as P)} />;
+  return (
+    <WrapperComponent
+      options={afterHanldeData}
+      {...((rest as unknown) as P)}
+      filterOption={(input: any, option: any) => option.label.indexOf(input) >= 0}
+    />
+  );
 };
 
 export default withUrlSelect(Select);
