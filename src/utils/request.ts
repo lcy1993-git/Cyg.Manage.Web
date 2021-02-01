@@ -9,15 +9,11 @@ const request = extend({
 request.interceptors.request.use(async (url: string, options: RequestOptionsInit) => {
   let c_token = localStorage.getItem("Authorization");
   if (c_token) {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': c_token
-    };
+    const {headers} = options;
     return (
       {
         url: url,
-        options: { ...options, headers: headers },
+        options: { ...options, headers: {...headers,'Authorization': c_token} },
       }
     );
   }

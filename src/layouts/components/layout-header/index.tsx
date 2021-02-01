@@ -9,24 +9,23 @@ import headPortraitSrc from '@/assets/image/head-portrait.jpg';
 
 const testData = [
   {
-    name: '工程项目管理',
-    icon: '',
-    menuData: [
-      {
-        name: '所有项目',
-        icon: '',
-        path: '/index',
-      },
-    ],
-  },
-  {
     name: '系统管理',
     icon: '',
     menuData: [
       {
-        name: '基础数据',
+        name: '字典管理',
         icon: '',
-        path: '/all',
+        path: '/system-config/dictionary-manage',
+      },
+      {
+        name: '功能管理',
+        icon: '',
+        path: '/system-config/function-module',
+      },
+      {
+        name: '日志管理',
+        icon: '',
+        path: '/system-config/log-manage',
       },
     ],
   },
@@ -35,9 +34,19 @@ const testData = [
     icon: '',
     menuData: [
       {
-        name: '基础数据',
+        name: '公司管理',
         icon: '',
-        path: '/all',
+        path: '/jurisdiction-config/company-manage',
+      },
+      {
+        name: '平台角色',
+        icon: '',
+        path: '/jurisdiction-config/platform-role',
+      },
+      {
+        name: '平台授权',
+        icon: '',
+        path: '/jurisdiction-config/platform-authorization',
       },
     ],
   },
@@ -46,15 +55,20 @@ const testData = [
     icon: '',
     menuData: [
       {
-        name: '基础数据',
+        name: '管理用户',
         icon: '',
-        path: '/all',
+        path: '/personnel-config/manage-user',
       },
     ],
   },
 ];
 
 const LayoutHeader: React.FC = () => {
+  const loginOut = () => {
+    history.push("/login");
+    localStorage.setItem("Authorization", "")
+  }
+
   // TODO 点击个人信息对应的一些方法都还么写
   const myBaseInfoMenu = (
     <Menu>
@@ -77,7 +91,7 @@ const LayoutHeader: React.FC = () => {
         </span>
         <span>切换账号</span>
       </Menu.Item>
-      <Menu.Item>
+      <Menu.Item onClick={() => loginOut()}>
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="out.png" />
         </span>

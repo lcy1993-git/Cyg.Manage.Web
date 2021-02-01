@@ -34,7 +34,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
       (item) => item.tabKey === location.pathname + '' + location.search,
     );
     if (routeIndex > -1) {
-      setActiveKey(historyRoutes[routeIndex].tabKey);
+      setActiveKey(historyRoutes[routeIndex].tabKey!);
     } else {
       historyRoutes.push({
         ...location,
@@ -47,7 +47,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   }, [JSON.stringify(location)]);
 
   const routeShowElement = routeList.map((item) => {
-    const tabsInfo = getTabsComponent(item.tabKey);
+    const tabsInfo = getTabsComponent(item.tabKey!);
 
     // 如果tabKey 是index,那么就不能进行关闭
     const isIndex = item.tabKey === '/index';
@@ -80,12 +80,12 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     if (activeKey === key) {
       if (copyRouteList.length > 1 && keyIndex === copyRouteList.length - 1) {
         needActiveIndex = keyIndex - 1;
-        setActiveKey(copyRouteList[needActiveIndex].tabKey);
+        setActiveKey(copyRouteList[needActiveIndex].tabKey!);
       } else if (copyRouteList.length > 1 && keyIndex === 0) {
         needActiveIndex = keyIndex + 1;
-        setActiveKey(copyRouteList[needActiveIndex].tabKey);
+        setActiveKey(copyRouteList[needActiveIndex].tabKey!);
       }
-      history.push(copyRouteList[needActiveIndex].tabKey);
+      history.push(copyRouteList[needActiveIndex].tabKey!);
     }
 
     if (keyIndex > -1) {

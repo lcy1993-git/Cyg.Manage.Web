@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, Row, Col, Switch } from 'antd';
+import { Button, Modal, Form, message, Input, Row, Col, Switch, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
 import { identity, isArray } from 'lodash';
@@ -34,7 +34,7 @@ const ManageUser: React.FC = () => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-  const { data, run } = useRequest(getManageUserDetail, {
+  const { data, run, loading } = useRequest(getManageUserDetail, {
     manual: true,
   });
 
@@ -74,6 +74,7 @@ const ManageUser: React.FC = () => {
   };
 
   //重置密码
+<<<<<<< HEAD
   const resetPwd = async () => {
     editForm.validateFields().then(async (values) => {
       const editData = tableSelectRows[0];
@@ -87,6 +88,9 @@ const ManageUser: React.FC = () => {
       setResetFormVisible(false);
     });
   };
+=======
+  const resetPwd = () => { };
+>>>>>>> aad93b29ed3802111d4a6e839107fe768207001d
 
   const addEvent = () => {
     setAddFormVisible(true);
@@ -124,11 +128,15 @@ const ManageUser: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
+<<<<<<< HEAD
     const ManageUserData = await run(editDataId);
+=======
+    setEditFormVisible(true);
+>>>>>>> aad93b29ed3802111d4a6e839107fe768207001d
 
+    const ManageUserData = await run(editDataId);
     editForm.setFieldsValue(ManageUserData);
 
-    setEditFormVisible(true);
   };
 
   const sureEditManageUser = () => {
@@ -209,8 +217,8 @@ const ManageUser: React.FC = () => {
         return record.userStatus === 1 ? (
           <Switch defaultChecked onChange={() => updateStatus(record.id)} />
         ) : (
-          <Switch onChange={() => updateStatus(record.id)} />
-        );
+            <Switch onChange={() => updateStatus(record.id)} />
+          );
       },
     },
     {
@@ -238,7 +246,7 @@ const ManageUser: React.FC = () => {
     },
   ];
 
-  const search = (keyword: any) => {};
+  const search = (keyword: any) => { };
   const leftSearch = () => {
     return (
       <div className={styles.search}>
@@ -293,7 +301,10 @@ const ManageUser: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <ManageUserForm />
+          <Spin spinning={loading}>
+            <ManageUserForm />
+          </Spin>
+
         </Form>
       </Modal>
       <Modal

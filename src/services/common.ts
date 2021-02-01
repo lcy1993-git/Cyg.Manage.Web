@@ -74,3 +74,12 @@ export const getDataByUrl = (url: string, params: object) => {
     tokenRequest(`${baseUrl.project}${url}`, { method: 'Get', data: params }),
   );
 };
+
+
+export const testUpload = (files: any) => {
+  const formData = new FormData();
+  files.forEach((item) => {
+    formData.append("file",item.originFileObj)
+  });
+  return cyRequest<any[]>(() => tokenRequest(`${baseUrl.project}/Dictionary/Import`, { method: 'POST',data: formData, requestType: "form"}));
+}

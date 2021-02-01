@@ -7,7 +7,8 @@ import PersonnelConfig from '@/pages/personnel-config/route';
 
 export interface RouteListItem {
   title: string;
-  path: string;
+  path?: string;
+  tabKey?: string
 }
 
 interface TabRouteListItem extends RouteListItem {
