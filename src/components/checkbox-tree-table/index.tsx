@@ -30,7 +30,6 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
 
     const [tableShowData, setTableShowData] = useState<TreeDataItem[]>([]);
 
-
     const columns = [
         {
             title: "模块",

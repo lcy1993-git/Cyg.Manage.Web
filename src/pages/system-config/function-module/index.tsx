@@ -82,7 +82,7 @@ const FunctionModule: React.FC = () => {
       width: 100,
     },
     {
-      title: '',
+      title: '状态',
       render: (record: TreeDataItem) => {
         const isChecked = !record.isDisable;
         return <Switch checked={isChecked} onChange={() => updateStatus(record)} />;

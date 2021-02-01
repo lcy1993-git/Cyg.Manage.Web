@@ -100,9 +100,9 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
     useImperativeHandle(ref, () => ({
         // changeVal 就是暴露给父组件的方法
-        refresh: () => {
+        refresh: (params: any) => {
             run({
-                url: url, extraParams: extractParams, pageIndex: currentPage, pageSize
+                url: url, extraParams: {...params}, pageIndex: currentPage, pageSize
             })
         },
         search: (params: any) => {

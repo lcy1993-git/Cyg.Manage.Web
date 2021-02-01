@@ -16,37 +16,59 @@ interface ItemDetailData extends AuthorizationItemParams {
   id: string;
 }
 
+interface FunctionItem {
+  id: string;
+  name: string;
+  hasPermission: boolean;
+}
+
+interface TreeDataItem {
+  // 数据id
+  id: string;
+  name: string;
+  hasPermission: boolean;
+  functions: FunctionItem[];
+  children: TreeDataItem[];
+}
+
 //获取选中数据
 export const getAuthorizationDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Role/GetById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/AuthTemplate/GetById`, { method: 'GET', params: { id } }),
   );
 };
 
-//新增角色
+//新增模板
 export const addAuthorizationItem = (params: AuthorizationItemParams) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Authorization/Create`, { method: 'POST', data: params }),
+    request(`${baseUrl.project}/AuthTemplate/Create`, { method: 'POST', data: params }),
   );
 };
 
-//编辑角色名
+//编辑模板
 export const updateAuthorizationItem = (params: ItemDetailData) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Authorization/Modify`, { method: 'POST', data: params }),
+    request(`${baseUrl.project}/AuthTemplate/Modify`, { method: 'POST', data: params }),
   );
 };
 
-// 删除
-export const delectAuthorizationItem = (id: string) => {
+// 删除模板
+export const deleteAuthorizationItem = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Authorization/DeleteById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/AuthTemplate/DeleteById`, { method: 'GET', params: { id } }),
   );
 };
 
 // 更改状态
 export const updateAuthorizationItemStatus = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Authorization/ChangeState`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/AuthTemplate/ChangeState`, { method: 'GET', params: { id } }),
+  );
+};
+
+// 获取功能模块列表的数据
+export const getAuthorizationTreeList = (id: string): Promise<TreeDataItem[]> => {
+  return cyRequest<TreeDataItem[]>(() =>
+    request(`${baseUrl.project}/AuthTemplate/GetModules`, { method: 'GET', params: { id } }),
   );
 };

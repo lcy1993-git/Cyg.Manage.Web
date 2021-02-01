@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Button, Input, Modal, Form, Spin, Popconfirm, message } from 'antd';
+import { Button, Input, Modal, Form, Popconfirm, message, Switch } from 'antd';
 import React, { useState } from 'react';
 import { EditOutlined, PlusOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
@@ -10,11 +10,13 @@ import {
   getAuthorizationDetail,
   updateAuthorizationItem,
   updateAuthorizationItemStatus,
-  delectAuthorizationItem,
+  deleteAuthorizationItem,
   addAuthorizationItem,
+  getAuthorizationTreeList,
 } from '@/services/jurisdiction-config/platform-authorization';
 import { isArray } from 'lodash';
-import AuthorizationForm from './components/form';
+import AuthorizationForm from './components/add-edit-form';
+import CheckboxTreeTable from '@/components/checkbox-tree-table';
 
 const { Search } = Input;
 
@@ -26,13 +28,22 @@ const PlatformAuthorization: React.FC = () => {
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [distributeFormVisible, setDistributeFormVisible] = useState<boolean>(false);
+  const [authorizationFormVisible, setAuthorizationFormVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading: editDataLoading } = useRequest(getAuthorizationDetail, {
+  const { data, run } = useRequest(getAuthorizationDetail, {
     manual: true,
   });
+
+  const { data: MoudleTreeData = [], run: getModuleTreeData } = useRequest(
+    getAuthorizationTreeList,
+    {
+      manual: true,
+    },
+  );
 
   const columns = [
     {
@@ -46,6 +57,10 @@ const PlatformAuthorization: React.FC = () => {
       dataIndex: 'isDisable',
       index: 'isDisable',
       width: 130,
+      render: (text: any, record: any) => {
+        const isChecked = !record.isDisable;
+        return <Switch checked={isChecked} onChange={() => updateStatus(record)} />;
+      },
     },
     {
       title: '备注',
@@ -53,6 +68,15 @@ const PlatformAuthorization: React.FC = () => {
       index: 'remark',
     },
   ];
+
+  const updateStatus = async (record: any) => {
+    const { id } = record;
+    console.log(record);
+
+    await updateAuthorizationItemStatus(id);
+    tableFresh();
+    message.success('状态修改成功');
+  };
 
   const searchElement = () => {
     return (
@@ -90,9 +114,43 @@ const PlatformAuthorization: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await delectFunctionItem(editDataId);
+    await deleteAuthorizationItem(editDataId);
     tableFresh();
     message.success('删除成功');
+  };
+
+  const distributeEvent = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    const editData = tableSelectRows[0];
+    const editDataId = editData.id;
+
+    setDistributeFormVisible(true);
+    await getModuleTreeData(editDataId);
+  };
+
+  const sureDistribute = () => {};
+
+  //授权
+  const authorizationEvent = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    const editData = tableSelectRows[0];
+    const editDataId = editData.id;
+
+    setAuthorizationFormVisible(true);
+    await getModuleTreeData(editDataId);
+  };
+
+  const sureAuthorization = () => {};
+
+  //添加
+  const addEvent = () => {
+    setAddFormVisible(true);
   };
 
   const sureAddAuthorization = () => {
@@ -112,46 +170,7 @@ const PlatformAuthorization: React.FC = () => {
     });
   };
 
-  const sureEditAuthorization = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
-    }
-    const editData = data!;
-
-    editForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          authCode: editData.authCode,
-          category: editData.category,
-          icon: editData.icon,
-          id: editData.id,
-          isDisable: editData.isDisable,
-          name: editData.name,
-          parentId: editData.parentId,
-          sort: editData.sort,
-          url: editData.url,
-        },
-        values,
-      );
-      await updateFunctionModuleItem(submitInfo);
-      tableFresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
-
-  // const deleteTip = () => {
-  //   if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-  //     message.error('请选择一条数据进行删除');
-  //     return;
-  //   }
-  // };
-  const addEvent = async () => {
-    setAddFormVisible(true);
-  };
-
+  //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
@@ -162,8 +181,34 @@ const PlatformAuthorization: React.FC = () => {
 
     setEditFormVisible(true);
     const AuthorizationData = await run(editDataId);
+    console.log(AuthorizationData);
 
-    editForm.setFieldsValue({ AuthorizationData });
+    editForm.setFieldsValue(AuthorizationData);
+  };
+
+  const sureEditAuthorization = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    const editData = data!;
+
+    editForm.validateFields().then(async (values) => {
+      const submitInfo = Object.assign(
+        {
+          id: editData.id,
+          name: editData.name,
+          isDisable: editData.isDisable,
+          remark: editData.remark,
+        },
+        values,
+      );
+      await updateAuthorizationItem(submitInfo);
+      tableFresh();
+      message.success('更新成功');
+      editForm.resetFields();
+      setEditFormVisible(false);
+    });
   };
 
   const buttonElement = () => {
@@ -189,11 +234,11 @@ const PlatformAuthorization: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <Button className="mr7">
+        <Button className="mr7" onClick={() => distributeEvent()}>
           <ApartmentOutlined />
           分配功能模块
         </Button>
-        <Button className="mr7">
+        <Button className="mr7" onClick={() => authorizationEvent()}>
           <i className="iconfont iconshouquan" />
           授权
         </Button>
@@ -235,10 +280,30 @@ const PlatformAuthorization: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <Spin spinning={editDataLoading}>
-            <AuthorizationForm />
-          </Spin>
+          <AuthorizationForm />
         </Form>
+      </Modal>
+      <Modal
+        title="分配功能模块"
+        width="90%"
+        visible={distributeFormVisible}
+        okText="确认"
+        onOk={() => sureDistribute()}
+        onCancel={() => setDistributeFormVisible(false)}
+        cancelText="取消"
+      >
+        <CheckboxTreeTable treeData={MoudleTreeData} />
+      </Modal>
+      <Modal
+        title="授权"
+        width="90%"
+        visible={authorizationFormVisible}
+        okText="确认"
+        onOk={() => sureAuthorization()}
+        onCancel={() => setAuthorizationFormVisible(false)}
+        cancelText="取消"
+      >
+        <CheckboxTreeTable />
       </Modal>
     </PageCommonWrap>
   );
