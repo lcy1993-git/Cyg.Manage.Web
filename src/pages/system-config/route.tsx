@@ -19,6 +19,12 @@ const DictionaryManage = Loadable({
   delay: 150,
 });
 
+const ElectricCompany = Loadable({
+  loader: () => import('@/pages/system-config/electric-company'),
+  loading: Loading,
+  delay: 150,
+});
+
 export default [
   {
     title: '功能管理',
@@ -31,8 +37,13 @@ export default [
     component: <LogManage />,
   },
   {
-    title: "字典管理",
-    path: "/system-config/dictionary-manage",
-    component: <DictionaryManage />
-},
+    title: '字典管理',
+    path: '/system-config/dictionary-manage',
+    component: <DictionaryManage />,
+  },
+  {
+    title: '电力公司',
+    path: '/system-config/electric-company',
+    component: <ElectricCompany />,
+  },
 ];
