@@ -9,7 +9,6 @@ import {
   getLogManageList,
   getLogManageDetail,
   getApplicationsList,
-  getLogLevelsList,
 } from '@/services/system-config/log-manage';
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
@@ -30,7 +29,6 @@ const ManageUser: React.FC = () => {
   const [beginDate, setBeginDate] = useState<Moment | null>();
   const [endDate, setEndDate] = useState<Moment | null>();
   const [applications, setApplications] = useState<string | undefined>();
-  const [level, setLevel] = useState<string | undefined>();
 
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
 
@@ -45,9 +43,7 @@ const ManageUser: React.FC = () => {
     );
   };
 
-  const searchEvent = () => {
-    console.log(applications, level);
-  };
+  const searchEvent = () => {};
 
   const checkDetailEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -62,35 +58,24 @@ const ManageUser: React.FC = () => {
     setBeginDate(value);
   };
   const handleEndDate = (value: any) => {
-    setBeginDate(value);
+    setEndDate(value);
   };
 
   const handleAppSelect = (value: any) => {
     setApplications(value);
   };
-  const handleLevelSelect = (value: any) => {
-    setLevel(value);
-  };
 
   const leftSearchElement = () => {
     return (
       <div className={styles.searchGroup}>
-        <TableSearch label="搜索" width="208px">
+        <TableSearch label="搜索" width="220px">
           <Search
             value={searchApiKeyWord}
             onSearch={() => search({ keyWord: searchApiKeyWord })}
             onChange={(e) => setSearchApiKeyWord(e.target.value)}
-            placeholder="跟踪编号/Api地址"
+            placeholder="文件/ip/用户"
             enterButton
-          />
-        </TableSearch>
-        <TableSearch label="" width="208px">
-          <Search
-            value={searchContentKeyWord}
-            onSearch={() => search({ keyWord: searchContentKeyWord })}
-            onChange={(e) => setSearchContentKeyWord(e.target.value)}
-            placeholder="(请求、响应、异常)内容"
-            enterButton
+            allowClear
           />
         </TableSearch>
         <TableSearch label="筛选" width="800px" marginLeft="15px">
@@ -99,26 +84,17 @@ const ManageUser: React.FC = () => {
               titleKey="text"
               valueKey="value"
               className={styles.appWidth}
-              url="/Log/GetApplications"
+              url="/FileLog/GetApplications"
               placeholder="应用"
               value={applications}
               onChange={handleAppSelect}
-            />
-            <UrlSelect
-              titleKey="text"
-              valueKey="value"
-              className={styles.levelWidth}
-              url="/Log/GetLevels"
-              placeholder="级别"
-              value={level}
-              onChange={handleLevelSelect}
+              allowClear
             />
             <DatePicker
               value={beginDate}
               showTime={{ format: 'HH:mm' }}
               onChange={handleBeginDate}
               format="YYYY-MM-DD HH:mm"
-              onOk={chooseBeginDate}
               placeholder="开始日期"
             />
             <DatePicker
@@ -127,7 +103,6 @@ const ManageUser: React.FC = () => {
               onChange={handleEndDate}
               format="YYYY-MM-DD HH:mm"
               placeholder="结束日期"
-              onOk={chooseEndDate}
             />
             <Button type="primary" className="mr7" onClick={() => searchEvent()}>
               查询
@@ -139,13 +114,6 @@ const ManageUser: React.FC = () => {
         </TableSearch>
       </div>
     );
-  };
-
-  const chooseBeginDate = (value: any) => {
-    console.log('onOk: ', value);
-  };
-  const chooseEndDate = (value: any) => {
-    console.log('onOk: ', value);
   };
 
   const search = (params: any) => {
@@ -169,7 +137,6 @@ const ManageUser: React.FC = () => {
     setBeginDate(null);
     setEndDate(null);
     setApplications(undefined);
-    setLevel(undefined);
     tableFresh();
   };
 
@@ -181,42 +148,30 @@ const ManageUser: React.FC = () => {
       width: 240,
     },
     {
-      title: '跟踪编号',
-      dataIndex: 'traceId',
-      index: 'traceId',
+      title: '文件名',
+      dataIndex: 'fileName',
+      index: 'fileName',
       width: 240,
     },
     {
-      title: '日志级别',
-      dataIndex: 'logLevel',
-      index: 'logLevel',
+      title: '用户名',
+      dataIndex: 'userIdentity',
+      index: 'userIdentity',
+      width: 240,
     },
     {
-      title: 'Api',
-      dataIndex: 'reqUrl',
-      index: 'reqUrl',
+      title: '客户端IP',
+      dataIndex: 'clientIp',
+      index: 'clientIp',
       width: 140,
     },
     {
-      title: '内容',
-      dataIndex: 'resContent',
-      index: 'resContent',
+      title: '上报日期',
+      dataIndex: 'upTime',
+      index: 'upTime',
       width: 240,
-    },
-    {
-      title: '执行日期',
-      dataIndex: 'executeDate',
-      index: 'executeDate',
       render: (text: any, record: any) => {
-        return moment(record.executeDate).format('YYYY-MM-DD');
-      },
-    },
-    {
-      title: '耗时',
-      dataIndex: 'timeCost',
-      index: 'timeCost',
-      render: (text: any, record: any) => {
-        return record.timeCost.toFixed(2);
+        return moment(record.upTime).format('YYYY-MM-DD');
       },
     },
   ];
@@ -228,8 +183,8 @@ const ManageUser: React.FC = () => {
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}
         getSelectData={(data) => setTableSelectRow(data)}
-        tableTitle="日志管理"
-        url="/Log/GetPagedList"
+        tableTitle="上报日志"
+        url="/FileLog/GetPagedList"
         columns={columns}
         checkType="radio"
       />
@@ -240,7 +195,7 @@ const ManageUser: React.FC = () => {
         onCancel={() => setLogDetailVisible(false)}
         footer={null}
       >
-        <LogDetailTab />
+        {/* <ReportLogDetail /> */}
       </Modal>
     </PageCommonWrap>
   );

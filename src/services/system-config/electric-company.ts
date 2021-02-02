@@ -41,4 +41,7 @@ export const deleteElectricityCompanyItem = (id: string) => {
   );
 };
 
-//导入 导出
+// export const getProvince = () => {
+//   return cyRequest(() => request(`${baseUrl.project}/Area/GetList?pId=-1`, { method: 'GET' }));
+// };
+

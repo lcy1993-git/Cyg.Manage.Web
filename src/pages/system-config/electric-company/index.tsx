@@ -1,13 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import {
-  EditOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  ImportOutlined,
-  ExportOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
 import React, { useState } from 'react';
 import ElectricCompanyForm from './components/add-edit-form';
@@ -18,16 +12,19 @@ import {
   addElectricCompanyItem,
   updateElectricityCompanyItem,
   deleteElectricityCompanyItem,
+  // getProvince,
 } from '@/services/system-config/electric-company';
 import { isArray } from 'lodash';
 import UrlSelect from '@/components/url-select';
+import TableImportButton from '@/components/table-import-button';
+import TableExportButton from '@/components/table-export-button';
 
 const { Search } = Input;
 
 const DictionaryManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
-
+  const [ids, setIds] = useState<string[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -38,6 +35,10 @@ const DictionaryManage: React.FC = () => {
   const { data, run, loading } = useRequest(getElectricCompanyDetail, {
     manual: true,
   });
+
+  // const { data: province = [] } = useRequest(getProvince, {
+  //   manual: true,
+  // });
 
   const searchComponent = () => {
     return (
@@ -51,17 +52,26 @@ const DictionaryManage: React.FC = () => {
             placeholder="区域/公司/供电所"
           />
         </TableSearch>
-        <TableSearch label="选择区域" width="230px">
+        <TableSearch marginLeft="20px" label="选择区域" width="230px">
           <UrlSelect
             showSearch
             url="/Area/GetList?pId=-1"
             titleKey="text"
             valueKey="value"
             placeholder="请选择"
+            onChange={searchBySelectProvince}
           />
         </TableSearch>
       </div>
     );
+  };
+
+  //选择省份onChange事件
+  const searchBySelectProvince = (text: any) => {
+    console.log(text);
+    search({
+      keyWord: text,
+    });
   };
 
   const sureDeleteData = async () => {
@@ -196,9 +206,13 @@ const DictionaryManage: React.FC = () => {
     });
   };
 
+  tableSelectRows.map((item: any) => {
+    ids.push(item.id);
+  });
+
   const tableElement = () => {
     return (
-      <>
+      <div className={styles.buttonArea}>
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
           <PlusOutlined />
           添加
@@ -219,15 +233,9 @@ const DictionaryManage: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <Button className="mr7">
-          <ImportOutlined />
-          导入
-        </Button>
-        <Button>
-          <ExportOutlined />
-          导出
-        </Button>
-      </>
+        <TableImportButton className={styles.importBtn} importUrl="/ElectricityCompany/Import" />
+        <TableExportButton selectIds={ids} exportUrl="/ElectricityCompany/Export" />
+      </div>
     );
   };
 
@@ -247,6 +255,7 @@ const DictionaryManage: React.FC = () => {
         url="/ElectricityCompany/GetPagedList"
         tableTitle="电力公司"
         getSelectData={(data) => setTableSelectRow(data)}
+        checkType="checkbox"
       />
       <Modal
         title="添加-公司"

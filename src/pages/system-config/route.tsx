@@ -24,6 +24,11 @@ const ElectricCompany = Loadable({
   loading: Loading,
   delay: 150,
 });
+const ReportLog = Loadable({
+  loader: () => import('@/pages/system-config/report-log'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -45,5 +50,10 @@ export default [
     title: '电力公司',
     path: '/system-config/electric-company',
     component: <ElectricCompany />,
+  },
+  {
+    title: '上报日志',
+    path: '/system-config/report-log',
+    component: <ReportLog />,
   },
 ];
