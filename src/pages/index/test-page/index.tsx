@@ -4,6 +4,8 @@ import React from "react";
 import TableImportButton from "@/components/table-import-button";
 import TableExportButton from "@/components/table-export-button";
 import ReadonlyItem from "@/components/readonly-item";
+import ReplyComponent from "@/components/reply-component";
+import TableStatus from "@/components/table-status";
 
 const {TabPane} = Tabs;
 
@@ -57,6 +59,43 @@ const TestPage = () => {
             <pre>
                 {JSON.stringify(testJson, null, 2) }
             </pre>
+
+            <span className="tipInfo">
+                2020-01-12
+            </span>
+
+            <ReplyComponent name="黄卓" time="2020-02-02 10:20:24">
+                反馈功能希望美化界面
+            </ReplyComponent>
+
+            <TableStatus>
+                普通管理员
+            </TableStatus>
+
+            <TableStatus color="orange">
+                普通管理员
+            </TableStatus>
+
+            <TableStatus color="greenOne">
+                普通管理员
+            </TableStatus>
+
+            <TableStatus color="greenTwo">
+                普通管理员
+            </TableStatus>
+
+            <TableStatus color="greenThree">
+                普通管理员
+            </TableStatus>
+
+            <TableStatus color="greenFour">
+                普通管理员
+            </TableStatus>
+
+            <TableStatus color="greenFive">
+                普通管理员
+            </TableStatus>
+
         </Form>
     )
 }

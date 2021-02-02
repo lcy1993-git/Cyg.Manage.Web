@@ -1,10 +1,14 @@
-import React, { forwardRef, Ref, useMemo, useState, useImperativeHandle, useRef } from "react";
+import React, { forwardRef, Ref, useMemo, useState, useImperativeHandle, useRef, useEffect } from "react";
 import { useMount, useRequest } from "ahooks";
 import { tableCommonRequest } from "@/services/table"
-import { Table, Pagination, message, Tooltip } from "antd"
+import { Table, Pagination, message, Tooltip, Menu, Dropdown, Checkbox } from "antd"
 import styles from "./index.less";
 import CommonTitle from "../common-title";
 import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from "@ant-design/icons";
+import EmptyTip from "../empty-tip";
+import Item from "antd/lib/list/Item";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
+
 
 interface GeneralTableProps {
     // 列表请求的url
@@ -25,13 +29,18 @@ interface GeneralTableProps {
     getSelectData?: (value: object[]) => void
     // 在title旁边插入东西
     titleSlot?: () => React.ReactNode
+    // columns
+    columns: any[]
 }
 
 const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (props: P & GeneralTableProps, ref: Ref<any>) => {
-    const { url, tableTitle, needCommonButton = false, getSelectData,titleSlot, extractParams, buttonLeftContentSlot, buttonRightContentSlot, otherSlot, ...rest } = props;
+    const { url, columns = [], tableTitle, needCommonButton = false, getSelectData, titleSlot, extractParams, buttonLeftContentSlot, buttonRightContentSlot, otherSlot, ...rest } = props;
 
     const [pageSize, setPageSize] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
+
+    const [lineConfigVisible, setLineConfigVisible] = useState(false);
+    const [finallyColumns, setFinalyColumns] = useState<any[]>([]);
 
     const tableRef = useRef<HTMLDivElement>(null)
 
@@ -40,7 +49,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         refreshDeps: [JSON.stringify(extractParams), currentPage, pageSize],
         manual: true
     });
-    
+
     const tableResultData = useMemo(() => {
         if (data) {
             const { items, pageIndex, pageSize, total } = data;
@@ -73,6 +82,33 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     const changeView = () => {
 
     }
+
+    const columnChangeEvent = (value: boolean, dataIndex: string) => {
+        const copyColumns = [...finallyColumns];
+        const changeIndex = copyColumns.findIndex((item) => item.dataIndex === dataIndex)
+        if(changeIndex > -1) {
+            copyColumns.splice(changeIndex,1,{...copyColumns[changeIndex], checked: value})
+            setFinalyColumns(copyColumns)
+        }
+    }
+
+    // 菜单
+    const columnsMenu = finallyColumns.map((item) => {
+        return (
+            <Menu.Item key={item.dataIndex}>
+                <Checkbox checked={item.checked} onChange={(e: CheckboxChangeEvent) => columnChangeEvent(e.target.checked, item.dataIndex)}>
+                    {item.title}
+                </Checkbox>
+            </Menu.Item>
+        )
+    })
+
+    const columnsMenuElement = (
+        <Menu>
+            {columnsMenu}
+        </Menu>
+    )
+
     // 刷新列表
     const refreshTable = () => {
         run({
@@ -102,16 +138,16 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         // changeVal 就是暴露给父组件的方法
         refresh: (params: any) => {
             run({
-                url: url, extraParams: {...params}, pageIndex: currentPage, pageSize
+                url: url, extraParams: { ...params }, pageIndex: currentPage, pageSize
             })
         },
         search: (params: any) => {
-             run({
-                 url,
-                 pageSize,
-                 pageIndex: 1,
-                 extraParams: {...params}
-             })
+            run({
+                url,
+                pageSize,
+                pageIndex: 1,
+                extraParams: { ...params }
+            })
         }
     }));
 
@@ -121,6 +157,11 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
             url: url, extraParams: extractParams, pageIndex: currentPage, pageSize
         })
     })
+
+    useEffect(() => {
+        const newColumns = columns.map((item) => ({...item,checked: true}))
+        setFinalyColumns(newColumns)
+    }, [JSON.stringify(columns)])
 
     return (
         <div className={styles.cyGeneralTable} ref={tableRef}>
@@ -161,9 +202,16 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
                             <Tooltip title="刷新">
                                 <RedoOutlined onClick={() => refreshTable()} className={styles.tableCommonButton} />
                             </Tooltip>
-                            <Tooltip title="列设置">
-                                <UnorderedListOutlined className={styles.tableCommonButton} />
-                            </Tooltip>
+                            <Dropdown
+                                overlay={columnsMenuElement}
+                                visible={lineConfigVisible}
+                            >
+                                <Tooltip title="列设置">
+                                    <UnorderedListOutlined onClick={() => setLineConfigVisible(!lineConfigVisible)} className={styles.tableCommonButton} />
+                                </Tooltip>
+
+                            </Dropdown>
+
                         </div>
                     }
                 </div>
@@ -174,6 +222,12 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
                     dataSource={tableResultData.items}
                     pagination={false}
                     rowKey="id"
+                    columns={
+                        finallyColumns.filter((item) => item.checked)
+                    }
+                    locale={{
+                        emptyText: <EmptyTip className="pt20 pb20" />
+                    }}
                     rowSelection={
                         {
                             type: 'radio',

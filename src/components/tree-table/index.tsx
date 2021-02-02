@@ -8,6 +8,7 @@ import { MinusSquareOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { TableProps } from "antd/lib/table";
 import { flatten } from "@/utils/utils"
 import CommonTitle from "../common-title";
+import EmptyTip from "@/components/empty-tip";
 
 type TreeTableSelectType = "radio" | "checkbox";
 
@@ -139,6 +140,9 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
                                     );
                             },
                             onExpand: expandEvent
+                        }}
+                        locale={{
+                            emptyText: <EmptyTip />
                         }}
                         size="small"
                         rowKey="id"
