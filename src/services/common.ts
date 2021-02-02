@@ -75,11 +75,14 @@ export const getDataByUrl = (url: string, params: object) => {
   );
 };
 
-
-export const testUpload = (files: any) => {
+export const commonUpload = (url: string,files: any[],name: string = "file") => {
   const formData = new FormData();
   files.forEach((item) => {
-    formData.append("file",item.originFileObj)
+    formData.append(name,item)
   });
-  return cyRequest<any[]>(() => tokenRequest(`${baseUrl.project}/Dictionary/Import`, { method: 'POST',data: formData, requestType: "form"}));
+  return cyRequest<any[]>(() => tokenRequest(`${baseUrl.project}${url}`, { method: 'POST',data: formData, requestType: "form"}));
+}
+
+export const commonExport = (url:string, params: any, selectIds: string[]) => {
+  return tokenRequest(`${baseUrl.project}${url}`, { method: 'POST',data: {...params, ids: selectIds}, responseType: "blob"});
 }

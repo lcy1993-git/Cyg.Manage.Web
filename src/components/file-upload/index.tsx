@@ -16,10 +16,11 @@ const { Dragger } = Upload;
 interface FileUploadProps extends UploadProps {
     onChange?: (value: any) => {}
     maxSize?: number
+    maxCount: number
 }
 
 const FileUpload: React.FC<FileUploadProps> = (props) => {
-    const { onChange,maxSize = 16 } = props;
+    const { onChange,maxSize = 16, maxCount, ...rest} = props;
 
     const [fileList, setFileList] = useState<any[]>([]);
 
@@ -28,6 +29,15 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
         if (!isBeyoundSize) {
             message.error(`${file.name}大小超出限制${maxSize}MB，请修改后重新上传`);
             return isBeyoundSize;
+        }
+
+        // 如果maxCount 是1的时候，那么就要随时把上传的替换成最新的哪一个
+        if(maxCount && maxCount == 1) {
+            const newArray: any[] = [];
+            newArray.push(file);
+            setFileList(newArray)
+            onChange?.(newArray)
+            return false
         }
         
         const copyFileList = [...fileList];
@@ -40,7 +50,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
     }
 
     const params = {
-        ...props,
+        ...rest,
         beforeUpload: beforeUploadEvent,
         showUploadList: false
     };

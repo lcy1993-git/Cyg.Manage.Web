@@ -4,7 +4,7 @@ import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Row, Col, Switch, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
-import { identity, isArray } from 'lodash';
+import {isArray } from 'lodash';
 import {
   updateManageUserItem,
   addManageUserItem,
