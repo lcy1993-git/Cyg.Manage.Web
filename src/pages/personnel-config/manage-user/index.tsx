@@ -4,7 +4,7 @@ import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Row, Col, Switch, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
-import { identity, isArray } from 'lodash';
+import {isArray } from 'lodash';
 import {
   updateManageUserItem,
   addManageUserItem,
@@ -74,7 +74,6 @@ const ManageUser: React.FC = () => {
   };
 
   //重置密码
-<<<<<<< HEAD
   const resetPwd = async () => {
     editForm.validateFields().then(async (values) => {
       const editData = tableSelectRows[0];
@@ -88,9 +87,6 @@ const ManageUser: React.FC = () => {
       setResetFormVisible(false);
     });
   };
-=======
-  const resetPwd = () => { };
->>>>>>> aad93b29ed3802111d4a6e839107fe768207001d
 
   const addEvent = () => {
     setAddFormVisible(true);
@@ -128,11 +124,7 @@ const ManageUser: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-<<<<<<< HEAD
-    const ManageUserData = await run(editDataId);
-=======
     setEditFormVisible(true);
->>>>>>> aad93b29ed3802111d4a6e839107fe768207001d
 
     const ManageUserData = await run(editDataId);
     editForm.setFieldsValue(ManageUserData);
