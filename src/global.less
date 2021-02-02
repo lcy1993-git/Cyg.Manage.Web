@@ -110,3 +110,21 @@ ol {
   font-size: 18px;
   padding: 4px 10px;
 }
+
+.normalTabs.ant-tabs {
+  .ant-tabs-nav {
+    .ant-tabs-nav-wrap {
+      .ant-tabs-nav-list {
+        .ant-tabs-tab {
+          padding: 8px 0 !important;
+          &.ant-tabs-tab-active {
+            background-color: @white-color !important;
+          }
+          &::before {
+            display: none !important;
+          }
+        }
+      }
+    }
+  }
+}
