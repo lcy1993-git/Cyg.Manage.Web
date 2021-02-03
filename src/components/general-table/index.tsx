@@ -14,7 +14,6 @@ import styles from './index.less';
 import CommonTitle from '../common-title';
 import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import EmptyTip from '../empty-tip';
-import Item from 'antd/lib/list/Item';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 interface GeneralTableProps {
@@ -81,12 +80,12 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     if (data) {
       const { items, pageIndex, pageSize, total } = data;
       return {
-        items,
+        items: items ?? [],
         pageIndex,
         pageSize,
         total,
         dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
-        dataEndIndex: Math.floor((pageIndex - 1) * pageSize + items.length),
+        dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
       };
     }
     return {
@@ -106,7 +105,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   // 改变视图
-  const changeView = () => {};
+  const changeView = () => { };
 
   const columnChangeEvent = (value: boolean, dataIndex: string) => {
     const copyColumns = [...finallyColumns];
@@ -156,27 +155,43 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   // 列显示处理
-  const currentPageChange = (page: any, pageSize: any) => {
-    setCurrentPage(page);
-    setPageSize(pageSize);
+  const currentPageChange = (page: any, size: any) => {
+    // 判断当前page是否改变, 没有改变代表是change页面触发
+    if(pageSize === size) {
+      setCurrentPage(page === 0 ? 1 : page);
+    }
   };
+
+  const pageSizeChange = (page: any, size: any) => {
+    setCurrentPage(1);
+    setPageSize(size);
+  }
+
+  useEffect(() => {
+    run({
+      url: url,
+      extraParams: extractParams,
+      pageIndex: currentPage,
+      pageSize,
+    })
+  }, [pageSize, currentPage])
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
-    refresh: (params: any) => {
+    refresh: () => {
       run({
         url: url,
-        extraParams: { ...params },
+        extraParams: extractParams,
         pageIndex: currentPage,
         pageSize,
       });
     },
-    search: (params: any) => {
+    search: () => {
       run({
         url,
         pageSize,
         pageIndex: 1,
-        extraParams: { ...params },
+        extraParams: extractParams,
       });
     },
   }));
@@ -263,11 +278,13 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           <Pagination
             pageSize={pageSize}
             onChange={currentPageChange}
-            defaultCurrent={1}
             size="small"
             total={tableResultData.total}
+            current={currentPage}
+            hideOnSinglePage={true}
             showSizeChanger
             showQuickJumper
+            onShowSizeChange={pageSizeChange}
           />
         </div>
       </div>
