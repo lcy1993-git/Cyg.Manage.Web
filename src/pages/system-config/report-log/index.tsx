@@ -186,7 +186,7 @@ const ManageUser: React.FC = () => {
         tableTitle="上报日志"
         url="/FileLog/GetPagedList"
         columns={columns}
-        checkType="radio"
+        type="radio"
       />
       <Modal
         title="日志-详情"
