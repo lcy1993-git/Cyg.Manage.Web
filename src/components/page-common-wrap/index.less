@@ -3,11 +3,35 @@
     height: 100%;
     min-height: 100%;
     background-color: @bg-primary-color;
-    padding: 10px;
+    padding: 10px 10px 27px 10px;
     .pageCommonWrapContent {
         background-color: @white-color;
         width: 100%;
         min-height: 100%;
         padding: 0px 20px;
+        &.noPadding {
+            padding: none;
+        }
+    }
+    .explainContent {
+        height: 27px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: @bg-primary-color;
+        line-height: 27px;
+        font-size: 10px;
+        text-align: center;
+        .explainContentImportant {
+            color: @black-color;
+        }
+        .explainContentCopyTip {
+            color: @gray-color;
+        }
+        .explainHref {
+            color: @primary-color;
+            cursor: pointer;
+        }
     }
 }
