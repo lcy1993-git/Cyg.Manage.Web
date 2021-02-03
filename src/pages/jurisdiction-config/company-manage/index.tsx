@@ -39,6 +39,7 @@ const CompanyManage: React.FC = () => {
       title: '公司名称',
       dataIndex: 'name',
       index: 'name',
+      width: 160,
     },
     {
       title: '公司用户库存',
@@ -50,13 +51,11 @@ const CompanyManage: React.FC = () => {
       title: '详细地址',
       dataIndex: 'address',
       index: 'address',
-      width: 540,
     },
     {
       title: '备注',
       dataIndex: 'remark',
       index: 'remark',
-      width: 500,
     },
   ];
 

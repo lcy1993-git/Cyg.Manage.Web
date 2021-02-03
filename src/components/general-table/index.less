@@ -1,5 +1,7 @@
 .cyGeneralTable {
     width: 100%;
+    height: 100%;
+    min-height: 100%;
     &:fullscreen {
         width: 100vw;
         height: 100vw;
@@ -32,6 +34,9 @@
                 margin-right: 8px;
             }
         }
+    }
+    .cyGeneralTableConetnt {
+        min-height: calc(100% - 160px);
     }
     .cyGeneralTablePaging {
         padding-top: 20px;
