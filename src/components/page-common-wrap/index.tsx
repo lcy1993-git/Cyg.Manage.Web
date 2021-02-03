@@ -3,7 +3,7 @@ import styles from "./index.less";
 import {explainUrl} from "../../../public/config/request"
 
 interface PageCommonWrapProps {
-    noPadding: boolean
+    noPadding?: boolean
 }
 
 const PageCommonWrap:React.FC<PageCommonWrapProps> = (props) => {
