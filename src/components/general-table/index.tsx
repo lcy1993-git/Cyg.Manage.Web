@@ -36,10 +36,13 @@ interface GeneralTableProps {
   getSelectData?: (value: object[]) => void;
   // 在title旁边插入东西
   titleSlot?: () => React.ReactNode;
-  checkType: string;
   // columns
   columns: any[];
+
+  type?: TableSelectType;
 }
+
+type TableSelectType = 'radio' | 'checkbox';
 
 const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
   props: P & GeneralTableProps,
@@ -56,7 +59,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     buttonLeftContentSlot,
     buttonRightContentSlot,
     otherSlot,
-    checkType,
+    type = 'radio',
     ...rest
   } = props;
 
@@ -104,6 +107,32 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   // 改变视图
   const changeView = () => {};
+
+  const columnChangeEvent = (value: boolean, dataIndex: string) => {
+    const copyColumns = [...finallyColumns];
+    const changeIndex = copyColumns.findIndex((item) => item.dataIndex === dataIndex);
+    if (changeIndex > -1) {
+      copyColumns.splice(changeIndex, 1, { ...copyColumns[changeIndex], checked: value });
+      setFinalyColumns(copyColumns);
+    }
+  };
+
+  // 菜单
+  const columnsMenu = finallyColumns.map((item) => {
+    return (
+      <Menu.Item key={item.dataIndex}>
+        <Checkbox
+          checked={item.checked}
+          onChange={(e: CheckboxChangeEvent) => columnChangeEvent(e.target.checked, item.dataIndex)}
+        >
+          {item.title}
+        </Checkbox>
+      </Menu.Item>
+    );
+  });
+
+  const columnsMenuElement = <Menu>{columnsMenu}</Menu>;
+
   // 刷新列表
   const refreshTable = () => {
     run({
@@ -119,67 +148,17 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     if (!tableRef.current || !document.fullscreenEnabled) {
       return;
     }
-
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
       tableRef.current.requestFullscreen();
     }
+  };
 
-    const columnChangeEvent = (value: boolean, dataIndex: string) => {
-      const copyColumns = [...finallyColumns];
-      const changeIndex = copyColumns.findIndex((item) => item.dataIndex === dataIndex);
-      if (changeIndex > -1) {
-        copyColumns.splice(changeIndex, 1, { ...copyColumns[changeIndex], checked: value });
-        setFinalyColumns(copyColumns);
-      }
-    };
-
-    // 菜单
-    const columnsMenu = finallyColumns.map((item) => {
-      return (
-        <Menu.Item key={item.dataIndex}>
-          <Checkbox
-            checked={item.checked}
-            onChange={(e: CheckboxChangeEvent) =>
-              columnChangeEvent(e.target.checked, item.dataIndex)
-            }
-          >
-            {item.title}
-          </Checkbox>
-        </Menu.Item>
-      );
-    });
-
-    const columnsMenuElement = <Menu>{columnsMenu}</Menu>;
-
-    // 刷新列表
-    const refreshTable = () => {
-      run({
-        url: url,
-        extraParams: extractParams,
-        pageIndex: currentPage,
-        pageSize,
-      });
-      message.success('刷新成功');
-    };
-    // 全屏
-    const fullScreen = () => {
-      if (!tableRef.current || !document.fullscreenEnabled) {
-        return;
-      }
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        tableRef.current.requestFullscreen();
-      }
-    };
-
-    // 列显示处理
-    const currentPageChange = (page: any, pageSize: any) => {
-      setCurrentPage(page);
-      setPageSize(pageSize);
-    };
+  // 列显示处理
+  const currentPageChange = (page: any, pageSize: any) => {
+    setCurrentPage(page);
+    setPageSize(pageSize);
   };
 
   useImperativeHandle(ref, () => ({
@@ -210,6 +189,11 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       pageSize,
     });
   });
+
+  useEffect(() => {
+    const newColumns = columns.map((item) => ({ ...item, checked: true }));
+    setFinalyColumns(newColumns);
+  }, [JSON.stringify(columns)]);
 
   return (
     <div className={styles.cyGeneralTable} ref={tableRef}>
@@ -258,7 +242,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
             emptyText: <EmptyTip className="pt20 pb20" />,
           }}
           rowSelection={{
-            type: checkType,
+            type: type,
             columnWidth: '38px',
             ...rowSelection,
           }}
