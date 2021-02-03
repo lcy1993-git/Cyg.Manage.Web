@@ -4,6 +4,7 @@ import IndexRoute from '@/pages/index/route';
 import SystemConfigRoutes from '@/pages/system-config/route';
 import JurisdictionConfig from '@/pages/jurisdiction-config/route';
 import PersonnelConfig from '@/pages/personnel-config/route';
+import NoJurisdiction from "@/pages/401/route"
 
 export interface RouteListItem {
   title: string;
@@ -20,6 +21,7 @@ const routeList: TabRouteListItem[] = [
   ...SystemConfigRoutes,
   ...JurisdictionConfig,
   ...PersonnelConfig,
+  ...NoJurisdiction
 ];
 
 export const getTabsComponent = (key: string): TabRouteListItem => {

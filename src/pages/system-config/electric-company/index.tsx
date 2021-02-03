@@ -23,7 +23,7 @@ const { Search } = Input;
 
 const DictionaryManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [ids, setIds] = useState<string[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
@@ -255,7 +255,7 @@ const DictionaryManage: React.FC = () => {
         url="/ElectricityCompany/GetPagedList"
         tableTitle="电力公司"
         getSelectData={(data) => setTableSelectRow(data)}
-        checkType="checkbox"
+        type="checkbox"
       />
       <Modal
         title="添加-公司"
