@@ -4,7 +4,7 @@ import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Row, Col, Switch, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
-import {isArray } from 'lodash';
+import { isArray } from 'lodash';
 import {
   updateManageUserItem,
   addManageUserItem,
@@ -58,10 +58,10 @@ const ManageUser: React.FC = () => {
   };
 
   //数据修改刷新
-  const tableFresh = () => {
+  const refresh = () => {
     if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current?.refresh();
+      // @ts-ignore
+      tableRef.current.refresh();
     }
   };
 
@@ -81,7 +81,7 @@ const ManageUser: React.FC = () => {
       const newPassword = Object.assign({ id: editDataId, pwd: values.pwd });
 
       await resetItemPwd(newPassword);
-      tableFresh();
+      refresh();
       message.success('更新成功');
       editForm.resetFields();
       setResetFormVisible(false);
@@ -109,7 +109,7 @@ const ManageUser: React.FC = () => {
         value,
       );
       await addManageUserItem(submitInfo);
-      tableFresh();
+      refresh();
       setAddFormVisible(false);
       addForm.resetFields();
     });
@@ -128,14 +128,9 @@ const ManageUser: React.FC = () => {
 
     const ManageUserData = await run(editDataId);
     editForm.setFieldsValue(ManageUserData);
-
   };
 
   const sureEditManageUser = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请先选择一条数据进行编辑');
-      return;
-    }
     const editData = data!;
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -148,7 +143,7 @@ const ManageUser: React.FC = () => {
         values,
       );
       await updateManageUserItem(submitInfo);
-      tableFresh();
+      refresh();
       message.success('更新成功');
       editForm.resetFields();
       setEditFormVisible(false);
@@ -158,7 +153,7 @@ const ManageUser: React.FC = () => {
   //数据改变状态
   const updateStatus = async (record: any) => {
     await updateItemStatus(record);
-    tableFresh();
+    refresh();
     message.success('状态修改成功');
   };
 
@@ -209,8 +204,8 @@ const ManageUser: React.FC = () => {
         return record.userStatus === 1 ? (
           <Switch defaultChecked onChange={() => updateStatus(record.id)} />
         ) : (
-            <Switch onChange={() => updateStatus(record.id)} />
-          );
+          <Switch onChange={() => updateStatus(record.id)} />
+        );
       },
     },
     {
@@ -238,7 +233,14 @@ const ManageUser: React.FC = () => {
     },
   ];
 
-  const search = (keyword: any) => { };
+  // 列表搜索
+  const search = (params: object) => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.search(params);
+    }
+  };
+
   const leftSearch = () => {
     return (
       <div className={styles.search}>
@@ -261,7 +263,6 @@ const ManageUser: React.FC = () => {
   return (
     <PageCommonWrap>
       <GeneralTable
-        // dataSource={handleData}
         ref={tableRef}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearch}
@@ -269,6 +270,7 @@ const ManageUser: React.FC = () => {
         tableTitle="管理用户"
         url="/ManageUser/GetPagedList"
         columns={columns}
+        checkType="radio"
       />
       <Modal
         title="添加-管理用户"
@@ -296,7 +298,6 @@ const ManageUser: React.FC = () => {
           <Spin spinning={loading}>
             <ManageUserForm />
           </Spin>
-
         </Form>
       </Modal>
       <Modal

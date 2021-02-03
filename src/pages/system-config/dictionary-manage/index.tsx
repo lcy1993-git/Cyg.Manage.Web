@@ -21,6 +21,8 @@ import {
   deleteDictionaryItem,
 } from '@/services/system-config/dictyionary-manage';
 import { isArray } from 'lodash';
+import TableImportButton from '@/components/table-import-button';
+import TableExportButton from '@/components/table-export-button';
 
 const { Search } = Input;
 
@@ -36,6 +38,7 @@ const DictionaryManage: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [ids, setIds] = useState<string[]>([]);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -254,7 +257,7 @@ const DictionaryManage: React.FC = () => {
 
   const tableElement = () => {
     return (
-      <>
+      <div className={styles.buttonArea}>
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
           <PlusOutlined />
           添加
@@ -275,17 +278,15 @@ const DictionaryManage: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <Button className="mr7">
-          <ImportOutlined />
-          导入
-        </Button>
-        <Button>
-          <ExportOutlined />
-          导出
-        </Button>
-      </>
+        <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
+        <TableExportButton selectIds={ids} exportUrl="/Dictionary/Export" />
+      </div>
     );
   };
+//存入选中的数据id 导出
+  tableSelectRows.map((item: any) => {
+    ids.push(item.id);
+  });
 
   const routeItemClickEvent = (id: string, name: string) => {
     const copyRouteList = [...routeList];
@@ -335,6 +336,7 @@ const DictionaryManage: React.FC = () => {
         url="/Dictionary/GetPagedList"
         tableTitle="系统字典"
         getSelectData={(data) => setTableSelectRow(data)}
+        checkType="checkbox"
       />
       <Modal
         title="添加-字典"

@@ -50,13 +50,13 @@ const PlatformAuthorization: React.FC = () => {
       title: '名称',
       dataIndex: 'name',
       index: 'name',
-      width: 180,
+      width: 220,
     },
     {
       title: '状态',
       dataIndex: 'isDisable',
       index: 'isDisable',
-      width: 130,
+      width: 120,
       render: (text: any, record: any) => {
         const isChecked = !record.isDisable;
         return <Switch checked={isChecked} onChange={() => updateStatus(record)} />;
@@ -285,7 +285,7 @@ const PlatformAuthorization: React.FC = () => {
       </Modal>
       <Modal
         title="分配功能模块"
-        width="90%"
+        width="80%"
         visible={distributeFormVisible}
         okText="确认"
         onOk={() => sureDistribute()}
