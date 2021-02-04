@@ -29,6 +29,21 @@ const ReportLog = Loadable({
   loading: Loading,
   delay: 150,
 });
+const FeedBack = Loadable({
+  loader: () => import('@/pages/system-config/platform-feedback'),
+  loading: Loading,
+  delay: 150,
+});
+const MapField = Loadable({
+  loader: () => import('@/pages/system-config/map-field'),
+  loading: Loading,
+  delay: 150,
+});
+const TerminalUnit = Loadable({
+  loader: () => import('@/pages/system-config/terminal-unit'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -55,5 +70,20 @@ export default [
     title: '上报日志',
     path: '/system-config/report-log',
     component: <ReportLog />,
+  },
+  {
+    title: '平台反馈',
+    path: '/system-config/platform-feedback',
+    component: <FeedBack />,
+  },
+  {
+    title: '数据映射',
+    path: '/system-config/map-field',
+    component: <MapField />,
+  },
+  {
+    title: '终端设备',
+    path: '/system-config/terminal-unit',
+    component: <TerminalUnit />,
   },
 ];

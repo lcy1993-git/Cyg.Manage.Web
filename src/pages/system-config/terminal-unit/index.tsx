@@ -4,24 +4,23 @@ import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
 import React, { useState } from 'react';
-import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
-  getElectricCompanyDetail,
-  addElectricCompanyItem,
-  updateElectricityCompanyItem,
-  deleteElectricityCompanyItem,
-  // getProvince,
-} from '@/services/system-config/electric-company';
+  getTerminalUnitDetail,
+  addTerminalUnitItem,
+  updateTerminalUnitItem,
+  deleteTerminalUnitItem,
+} from '@/services/system-config/terminal-unit';
 import { isArray } from 'lodash';
-import UrlSelect from '@/components/url-select';
 import TableImportButton from '@/components/table-import-button';
 import TableExportButton from '@/components/table-export-button';
+import MapFieldForm from './components/add-edit-form';
+import moment from 'moment';
 
 const { Search } = Input;
 
-const ElectricCompany: React.FC = () => {
+const MapField: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [ids, setIds] = useState<string[]>([]);
@@ -32,13 +31,9 @@ const ElectricCompany: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getElectricCompanyDetail, {
+  const { data, run, loading } = useRequest(getTerminalUnitDetail, {
     manual: true,
   });
-
-  // const { data: province = [] } = useRequest(getProvince, {
-  //   manual: true,
-  // });
 
   const searchComponent = () => {
     return (
@@ -49,29 +44,11 @@ const ElectricCompany: React.FC = () => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => tableSearchEvent()}
             enterButton
-            placeholder="区域/公司/供电所"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="选择区域" width="230px">
-          <UrlSelect
-            showSearch
-            url="/Area/GetList?pId=-1"
-            titleKey="text"
-            valueKey="value"
-            placeholder="请选择"
-            onChange={searchBySelectProvince}
+            placeholder="请输入关键词搜索"
           />
         </TableSearch>
       </div>
     );
-  };
-
-  //选择省份onChange事件
-  const searchBySelectProvince = (text: any) => {
-    console.log(text);
-    search({
-      keyWord: text,
-    });
   };
 
   const sureDeleteData = async () => {
@@ -82,7 +59,7 @@ const ElectricCompany: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteElectricityCompanyItem(editDataId);
+    await deleteTerminalUnitItem(editDataId);
     refresh();
     message.success('删除成功');
   };
@@ -111,33 +88,54 @@ const ElectricCompany: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'id',
-      index: 'id',
-      title: '公司编号',
+      dataIndex: 'serialNumber',
+      index: 'serialNumber',
+      title: '设备号',
       width: 150,
     },
     {
-      dataIndex: 'provinceName',
-      index: 'provinceName',
-      title: '区域',
-      width: 150,
+      dataIndex: 'provice',
+      index: 'provice',
+      title: '省区',
+      width: 180,
     },
     {
-      dataIndex: 'companyName',
-      index: 'companyName',
-      title: '所属公司',
+      dataIndex: 'company',
+      index: 'company',
+      title: '单位公司',
+      width: 240,
+    },
+    {
+      dataIndex: 'orderNumber',
+      index: 'orderNumber',
+      title: '序号',
+      width: 120,
+    },
+    {
+      dataIndex: 'differentialAccount',
+      index: 'differentialAccount',
+      title: '差分账号',
       width: 200,
     },
     {
-      dataIndex: 'countyCompany',
-      index: 'countyCompany',
-      title: '所属县公司',
+      dataIndex: 'differentialPwd',
+      index: 'differentialPwd',
+      title: '差分密码',
       width: 200,
     },
     {
-      dataIndex: 'powerSupply',
-      index: 'powerSupply',
-      title: '供电所/班组',
+      dataIndex: 'expiryTime',
+      index: 'expiryTime',
+      title: '到期时间',
+      width: 200,
+      render: (text: any, record: any) => {
+        return moment(record.expiryTime).format('YYYY-MM-DD HH:mm ');
+      },
+    },
+    {
+      dataIndex: 'remark',
+      index: 'remark',
+      title: '备注',
       width: 200,
     },
   ];
@@ -147,18 +145,22 @@ const ElectricCompany: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddElectricCompany = () => {
+  const sureAddTerminalUnit = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          province: '',
-          companyName: '',
-          countyCompany: '',
-          powerSupply: '',
+          serialNumber: '',
+          differentialAccount: '',
+          differentialPwd: '',
+          expiryTime: '',
+          orderNumber: 0,
+          provice: '',
+          company: '',
+          remark: '',
         },
         value,
       );
-      await addElectricCompanyItem(submitInfo);
+      await addTerminalUnitItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -175,12 +177,15 @@ const ElectricCompany: React.FC = () => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const ElectricCompanyData = await run(editDataId);
+    const TerminalUnitData = await run(editDataId);
 
-    editForm.setFieldsValue(ElectricCompanyData);
+    TerminalUnitData.expiryTime = moment(TerminalUnitData.expiryTime);
+    console.log(TerminalUnitData.expiryTime);
+
+    editForm.setFieldsValue(TerminalUnitData);
   };
 
-  const sureEditAuthorization = () => {
+  const sureEditTerminalUnit = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -191,14 +196,18 @@ const ElectricCompany: React.FC = () => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
-          province: editData.province,
-          companyName: editData.companyName,
-          countyCompany: editData.countyCompany,
-          powerSupply: editData.powerSupply,
+          provice: editData.provice,
+          orderNumber: editData.orderNumber,
+          serialNumber: editData.serialNumber,
+          differentialAccount: editData.differentialAccount,
+          differentialPwd: editData.differentialPwd,
+          expiryTime: editData.expiryTime,
+          company: editData.company,
+          remark: editData.remark,
         },
         values,
       );
-      await updateElectricityCompanyItem(submitInfo);
+      await updateTerminalUnitItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -226,15 +235,14 @@ const ElectricCompany: React.FC = () => {
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
-          // disabled
         >
           <Button className="mr7">
             <DeleteOutlined />
             删除
           </Button>
         </Popconfirm>
-        <TableImportButton className={styles.importBtn} importUrl="/ElectricityCompany/Import" />
-        <TableExportButton selectIds={ids} exportUrl="/ElectricityCompany/Export" />
+        <TableImportButton className={styles.importBtn} importUrl="/TerminalUnit/Import" />
+        <TableExportButton selectIds={ids} exportUrl="/TerminalUnit/Export" />
       </div>
     );
   };
@@ -252,36 +260,37 @@ const ElectricCompany: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/ElectricityCompany/GetPagedList"
-        tableTitle="电力公司"
+        url="/TerminalUnit/GetPagedList"
+        tableTitle="终端设备"
         getSelectData={(data) => setTableSelectRow(data)}
-        type="checkbox"
       />
       <Modal
-        title="添加-公司"
-        width="680px"
+        title="添加-映射"
+        width="720px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddElectricCompany()}
+        onOk={() => sureAddTerminalUnit()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
         <Form form={addForm}>
-          <ElectricCompanyForm />
+          <Spin spinning={loading}>
+            <MapFieldForm />
+          </Spin>
         </Form>
       </Modal>
       <Modal
-        title="编辑-公司"
+        title="编辑-映射"
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditAuthorization()}
+        onOk={() => sureEditTerminalUnit()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
         <Form form={editForm}>
           <Spin spinning={loading}>
-            <ElectricCompanyForm />
+            <MapFieldForm />
           </Spin>
         </Form>
       </Modal>
@@ -289,4 +298,4 @@ const ElectricCompany: React.FC = () => {
   );
 };
 
-export default ElectricCompany;
+export default MapField;

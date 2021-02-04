@@ -27,6 +27,31 @@ const testData = [
         icon: '',
         path: '/system-config/log-manage',
       },
+      {
+        name: '上传日志',
+        icon: '',
+        path: '/system-config/report-log',
+      },
+      {
+        name: '电力公司',
+        icon: '',
+        path: '/system-config/electric-company',
+      },
+      {
+        name: '平台反馈',
+        icon: '',
+        path: '/system-config/platform-feedback',
+      },
+      {
+        name: '数据映射',
+        icon: '',
+        path: '/system-config/map-field',
+      },
+      {
+        name: '终端设备',
+        icon: '',
+        path: '/system-config/terminal-unit',
+      },
     ],
   },
   {
@@ -59,15 +84,31 @@ const testData = [
         icon: '',
         path: '/personnel-config/manage-user',
       },
+      {
+        name: '公司用户',
+        icon: '',
+        path: '/personnel-config/company-user',
+      },
+    ],
+  },
+  {
+    name: '运维管理',
+    icon: '',
+    menuData: [
+      {
+        name: '部组管理',
+        icon: '',
+        path: '/operation-config/company-group',
+      },
     ],
   },
 ];
 
 const LayoutHeader: React.FC = () => {
   const loginOut = () => {
-    history.push("/login");
-    localStorage.setItem("Authorization", "")
-  }
+    history.push('/login');
+    localStorage.setItem('Authorization', '');
+  };
 
   // TODO 点击个人信息对应的一些方法都还么写
   const myBaseInfoMenu = (

@@ -4,24 +4,22 @@ import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
 import React, { useState } from 'react';
-import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
-  getElectricCompanyDetail,
-  addElectricCompanyItem,
-  updateElectricityCompanyItem,
-  deleteElectricityCompanyItem,
-  // getProvince,
-} from '@/services/system-config/electric-company';
+  getMapFieldDetail,
+  updateMapFieldItem,
+  deleteMapFieldItem,
+  addMapFieldItem,
+} from '@/services/system-config/map-field';
 import { isArray } from 'lodash';
-import UrlSelect from '@/components/url-select';
 import TableImportButton from '@/components/table-import-button';
 import TableExportButton from '@/components/table-export-button';
+import MapFieldForm from './components/add-edit-form';
 
 const { Search } = Input;
 
-const ElectricCompany: React.FC = () => {
+const MapField: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [ids, setIds] = useState<string[]>([]);
@@ -32,13 +30,9 @@ const ElectricCompany: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getElectricCompanyDetail, {
+  const { data, run, loading } = useRequest(getMapFieldDetail, {
     manual: true,
   });
-
-  // const { data: province = [] } = useRequest(getProvince, {
-  //   manual: true,
-  // });
 
   const searchComponent = () => {
     return (
@@ -49,29 +43,11 @@ const ElectricCompany: React.FC = () => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => tableSearchEvent()}
             enterButton
-            placeholder="区域/公司/供电所"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="选择区域" width="230px">
-          <UrlSelect
-            showSearch
-            url="/Area/GetList?pId=-1"
-            titleKey="text"
-            valueKey="value"
-            placeholder="请选择"
-            onChange={searchBySelectProvince}
+            placeholder="请输入关键词搜索"
           />
         </TableSearch>
       </div>
     );
-  };
-
-  //选择省份onChange事件
-  const searchBySelectProvince = (text: any) => {
-    console.log(text);
-    search({
-      keyWord: text,
-    });
   };
 
   const sureDeleteData = async () => {
@@ -82,7 +58,7 @@ const ElectricCompany: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteElectricityCompanyItem(editDataId);
+    await deleteMapFieldItem(editDataId);
     refresh();
     message.success('删除成功');
   };
@@ -111,33 +87,39 @@ const ElectricCompany: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'id',
-      index: 'id',
-      title: '公司编号',
+      dataIndex: 'deviceType',
+      index: 'deviceType',
+      title: '表类型',
       width: 150,
     },
     {
-      dataIndex: 'provinceName',
-      index: 'provinceName',
-      title: '区域',
+      dataIndex: 'dsName',
+      index: 'dsName',
+      title: '控件字段',
       width: 150,
     },
     {
-      dataIndex: 'companyName',
-      index: 'companyName',
-      title: '所属公司',
+      dataIndex: 'responseName',
+      index: 'responseName',
+      title: '服务端字段',
+      width: 150,
+    },
+    {
+      dataIndex: 'postGISName',
+      index: 'postGISName',
+      title: 'PostGis字段',
       width: 200,
     },
     {
-      dataIndex: 'countyCompany',
-      index: 'countyCompany',
-      title: '所属县公司',
+      dataIndex: 'pgModelName',
+      index: 'pgModelName',
+      title: 'postGis实体字段',
       width: 200,
     },
     {
-      dataIndex: 'powerSupply',
-      index: 'powerSupply',
-      title: '供电所/班组',
+      dataIndex: 'description',
+      index: 'description',
+      title: '字段描述',
       width: 200,
     },
   ];
@@ -147,18 +129,20 @@ const ElectricCompany: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddElectricCompany = () => {
+  const sureAddMapField = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          province: '',
-          companyName: '',
-          countyCompany: '',
-          powerSupply: '',
+          deviceType: '',
+          dsName: '',
+          responseName: '',
+          postGISName: '',
+          pgModelName: '',
+          description: '',
         },
         value,
       );
-      await addElectricCompanyItem(submitInfo);
+      await addMapFieldItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -175,12 +159,12 @@ const ElectricCompany: React.FC = () => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const ElectricCompanyData = await run(editDataId);
+    const MapFieldData = await run(editDataId);
 
-    editForm.setFieldsValue(ElectricCompanyData);
+    editForm.setFieldsValue(MapFieldData);
   };
 
-  const sureEditAuthorization = () => {
+  const sureEditMapField = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -191,14 +175,16 @@ const ElectricCompany: React.FC = () => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
-          province: editData.province,
-          companyName: editData.companyName,
-          countyCompany: editData.countyCompany,
-          powerSupply: editData.powerSupply,
+          deviceType: editData.deviceType,
+          dsName: editData.dsName,
+          responseName: editData.responseName,
+          postGISName: editData.postGISName,
+          pgModelName: editData.pgModelName,
+          description: editData.description,
         },
         values,
       );
-      await updateElectricityCompanyItem(submitInfo);
+      await updateMapFieldItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -226,15 +212,14 @@ const ElectricCompany: React.FC = () => {
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
-          // disabled
         >
           <Button className="mr7">
             <DeleteOutlined />
             删除
           </Button>
         </Popconfirm>
-        <TableImportButton className={styles.importBtn} importUrl="/ElectricityCompany/Import" />
-        <TableExportButton selectIds={ids} exportUrl="/ElectricityCompany/Export" />
+        <TableImportButton className={styles.importBtn} importUrl="/MapField/Import" />
+        <TableExportButton selectIds={ids} exportUrl="/MapField/Export" />
       </div>
     );
   };
@@ -252,36 +237,38 @@ const ElectricCompany: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/ElectricityCompany/GetPagedList"
-        tableTitle="电力公司"
+        url="/MapField/GetPagedList"
+        tableTitle="数据映射"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
       />
       <Modal
-        title="添加-公司"
-        width="680px"
+        title="添加-映射"
+        width="720px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddElectricCompany()}
+        onOk={() => sureAddMapField()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
         <Form form={addForm}>
-          <ElectricCompanyForm />
+          <Spin spinning={loading}>
+            <MapFieldForm />
+          </Spin>
         </Form>
       </Modal>
       <Modal
-        title="编辑-公司"
+        title="编辑-映射"
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditAuthorization()}
+        onOk={() => sureEditMapField()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
         <Form form={editForm}>
           <Spin spinning={loading}>
-            <ElectricCompanyForm />
+            <MapFieldForm />
           </Spin>
         </Form>
       </Modal>
@@ -289,4 +276,4 @@ const ElectricCompany: React.FC = () => {
   );
 };
 
-export default ElectricCompany;
+export default MapField;

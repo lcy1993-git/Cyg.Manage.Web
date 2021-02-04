@@ -8,10 +8,21 @@ const ManageUser = Loadable({
   delay: 150,
 });
 
+const CompanyUser = Loadable({
+  loader: () => import('@/pages/personnel-config/company-user'),
+  loading: Loading,
+  delay: 150,
+});
+
 export default [
   {
     title: '管理用户',
     path: '/personnel-config/manage-user',
     component: <ManageUser />,
+  },
+  {
+    title: '公司用户',
+    path: '/personnel-config/company-user',
+    component: <CompanyUser />,
   },
 ];

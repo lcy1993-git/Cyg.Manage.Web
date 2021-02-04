@@ -80,6 +80,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const tableResultData = useMemo(() => {
     if (data) {
       const { items, pageIndex, pageSize, total } = data;
+
       return {
         items,
         pageIndex,

@@ -4,12 +4,13 @@ import IndexRoute from '@/pages/index/route';
 import SystemConfigRoutes from '@/pages/system-config/route';
 import JurisdictionConfig from '@/pages/jurisdiction-config/route';
 import PersonnelConfig from '@/pages/personnel-config/route';
-import NoJurisdiction from "@/pages/401/route"
+import OperationConfig from '@/pages/operation-config/route';
+import NoJurisdiction from '@/pages/401/route';
 
 export interface RouteListItem {
   title: string;
   path?: string;
-  tabKey?: string
+  tabKey?: string;
 }
 
 interface TabRouteListItem extends RouteListItem {
@@ -21,7 +22,8 @@ const routeList: TabRouteListItem[] = [
   ...SystemConfigRoutes,
   ...JurisdictionConfig,
   ...PersonnelConfig,
-  ...NoJurisdiction
+  ...OperationConfig,
+  ...NoJurisdiction,
 ];
 
 export const getTabsComponent = (key: string): TabRouteListItem => {
@@ -31,12 +33,12 @@ export const getTabsComponent = (key: string): TabRouteListItem => {
     newKey = key.split('?')[0];
   }
   const itemInArray = routeList.find((item) => item.path === newKey);
-  if(!itemInArray) {
+  if (!itemInArray) {
     return {
-      title: "404",
-      path: "/404",
-      component: null
-    }
+      title: '404',
+      path: '/404',
+      component: null,
+    };
   }
-  return itemInArray
-}
+  return itemInArray;
+};

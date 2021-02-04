@@ -39,13 +39,13 @@ const CompanyManage: React.FC = () => {
       title: '公司名称',
       dataIndex: 'name',
       index: 'name',
-      width: 160,
+      width: 320,
     },
     {
       title: '公司用户库存',
       dataIndex: 'userStock',
       index: 'userStock',
-      width: 240,
+      width: 180,
     },
     {
       title: '详细地址',

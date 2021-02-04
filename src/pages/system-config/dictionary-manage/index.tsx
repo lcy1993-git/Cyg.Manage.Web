@@ -33,7 +33,7 @@ interface RouteListItem {
 
 const DictionaryManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
@@ -283,7 +283,7 @@ const DictionaryManage: React.FC = () => {
       </div>
     );
   };
-//存入选中的数据id 导出
+  //存入选中的数据id 导出
   tableSelectRows.map((item: any) => {
     ids.push(item.id);
   });
@@ -336,7 +336,7 @@ const DictionaryManage: React.FC = () => {
         url="/Dictionary/GetPagedList"
         tableTitle="系统字典"
         getSelectData={(data) => setTableSelectRow(data)}
-        checkType="checkbox"
+        type="checkbox"
       />
       <Modal
         title="添加-字典"

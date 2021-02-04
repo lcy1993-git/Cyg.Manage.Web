@@ -1,24 +1,23 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import { EyeOutlined } from '@ant-design/icons';
+import { FormOutlined } from '@ant-design/icons';
 import { Button, Modal, message, Input, DatePicker } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import {
   getLogManageDetail,
-  getApplicationsList,
-  getLogLevelsList,
-} from '@/services/system-config/log-manage';
+} from '@/services/system-config/platform-feedback';
 import { useRequest } from 'ahooks';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
-import LogDetailTab from '../log-manage/tabs';
+import FeedBackFormfrom from './components/deal-form';
 import moment, { Moment } from 'moment';
-import UrlSelect from '@/components/url-select';
+import { CateGory, SourceType, Status } from '@/services/system-config/platform-feedback';
+import EnumSelect from '@/components/enum-select';
 
 const { Search } = Input;
 
-const LogManage: React.FC = () => {
+const PlatFormFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
@@ -26,32 +25,31 @@ const LogManage: React.FC = () => {
 
   const [beginDate, setBeginDate] = useState<Moment | null>();
   const [endDate, setEndDate] = useState<Moment | null>();
-  const [applications, setApplications] = useState<string | undefined>();
-  const [level, setLevel] = useState<string | undefined>();
+  const [sourceType, setSourceType] = useState<string | undefined>();
+  const [category, setCategory] = useState<string | undefined>();
+  const [feedbackStatus, setFeedbackStatus] = useState<string | undefined>();
 
-  const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
+  const [feedbackDetailVisible, setFeedBackDetailVisible] = useState<boolean>(false);
 
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" onClick={() => checkDetailEvent()}>
-          <EyeOutlined />
-          详情
+        <Button type="primary" onClick={() => dealEvent()}>
+          <FormOutlined />
+          处理
         </Button>
       </div>
     );
   };
 
-  const searchEvent = () => {
-    console.log(applications, level);
-  };
+  const searchEvent = () => {};
 
-  const checkDetailEvent = () => {
+  const dealEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据查看详情');
       return;
     }
-    setLogDetailVisible(true);
+    setFeedBackDetailVisible(true);
   };
 
   //重置后，条件添加onChange事件重新获取value
@@ -59,14 +57,7 @@ const LogManage: React.FC = () => {
     setBeginDate(value);
   };
   const handleEndDate = (value: any) => {
-    setBeginDate(value);
-  };
-
-  const handleAppSelect = (value: any) => {
-    setApplications(value);
-  };
-  const handleLevelSelect = (value: any) => {
-    setLevel(value);
+    setEndDate(value);
   };
 
   const leftSearchElement = () => {
@@ -77,38 +68,30 @@ const LogManage: React.FC = () => {
             value={searchApiKeyWord}
             onSearch={() => search({ keyWord: searchApiKeyWord })}
             onChange={(e) => setSearchApiKeyWord(e.target.value)}
-            placeholder="跟踪编号/Api地址"
+            placeholder="搜索关键词"
             enterButton
           />
         </TableSearch>
-        <TableSearch label="" width="208px">
-          <Search
-            value={searchContentKeyWord}
-            onSearch={() => search({ keyWord: searchContentKeyWord })}
-            onChange={(e) => setSearchContentKeyWord(e.target.value)}
-            placeholder="(请求、响应、异常)内容"
-            enterButton
-          />
-        </TableSearch>
-        <TableSearch label="筛选" width="800px" marginLeft="15px">
+
+        <TableSearch label="筛选" width="900px" marginLeft="15px">
           <div className={styles.filter}>
-            <UrlSelect
-              titleKey="text"
-              valueKey="value"
-              className={styles.appWidth}
-              url="/Log/GetApplications"
-              placeholder="应用"
-              value={applications}
-              onChange={handleAppSelect}
+            <EnumSelect
+              value={sourceType}
+              className={styles.enumSelect}
+              enumList={SourceType}
+              placeholder="来源"
             />
-            <UrlSelect
-              titleKey="text"
-              valueKey="value"
-              className={styles.levelWidth}
-              url="/Log/GetLevels"
-              placeholder="级别"
-              value={level}
-              onChange={handleLevelSelect}
+            <EnumSelect
+              value={category}
+              className={styles.enumSelect}
+              enumList={CateGory}
+              placeholder="类别"
+            />
+            <EnumSelect
+              value={feedbackStatus}
+              className={styles.enumSelect}
+              enumList={Status}
+              placeholder="状态"
             />
             <DatePicker
               value={beginDate}
@@ -165,57 +148,85 @@ const LogManage: React.FC = () => {
     setSearchContentKeyWord('');
     setBeginDate(null);
     setEndDate(null);
-    setApplications(undefined);
-    setLevel(undefined);
+    setCategory(undefined);
+    setFeedbackStatus(undefined);
+    setSourceType(undefined);
     tableFresh();
   };
 
   const columns = [
     {
-      title: '应用程序',
-      dataIndex: 'application',
-      index: 'application',
-      width: 240,
-    },
-    {
-      title: '跟踪编号',
-      dataIndex: 'traceId',
-      index: 'traceId',
-      width: 240,
-    },
-    {
-      title: '日志级别',
-      dataIndex: 'logLevel',
-      index: 'logLevel',
-      width: 120,
-    },
-    {
-      title: 'Api',
-      dataIndex: 'reqUrl',
-      index: 'reqUrl',
-      width: 280,
-    },
-    {
-      title: '内容',
-      dataIndex: 'resContent',
-      index: 'resContent',
-    },
-    {
-      title: '执行日期',
-      dataIndex: 'executeDate',
-      index: 'executeDate',
-      width: 180,
+      title: '来源',
+      dataIndex: 'sourceType',
+      index: 'sourceType',
+      width: 150,
       render: (text: any, record: any) => {
-        return moment(record.executeDate).format('YYYY-MM-DD');
+        return record.sourceTypeText;
       },
     },
     {
-      title: '耗时',
-      dataIndex: 'timeCost',
-      index: 'timeCost',
-      width: 100,
+      title: '类别',
+      dataIndex: 'category',
+      index: 'category',
+      width: 150,
       render: (text: any, record: any) => {
-        return record.timeCost.toFixed(2);
+        return record.categoryText;
+      },
+    },
+    {
+      title: '标题',
+      dataIndex: 'title',
+      index: 'title',
+      width: 180,
+    },
+    {
+      title: '公司',
+      dataIndex: 'companyName',
+      index: 'companyName',
+      width: 240,
+    },
+    {
+      title: '联系电话',
+      dataIndex: 'phone',
+      index: 'phone',
+      width: 150,
+    },
+    {
+      title: '反馈用户',
+      dataIndex: 'createdBy',
+      index: 'createdBy',
+      width: 200,
+      render: (text: any, record: any) => {
+        return record.createdByUserName;
+      },
+    },
+    {
+      title: '反馈日期',
+      dataIndex: 'createdOn',
+      index: 'createdOn',
+      width: 200,
+      render: (text: any, record: any) => {
+        return moment(record.createdOn).format('YYYY-MM-DD hh:mm:ss');
+      },
+    },
+    {
+      title: '状态',
+      dataIndex: 'processStatus',
+      index: 'processStatus',
+      width: 180,
+      render: (text: any, record: any) => {
+        return record.processStatusText;
+      },
+    },
+    {
+      title: '处理日期',
+      dataIndex: 'lastProcessDate',
+      index: 'lastProcessDate',
+      width: 200,
+      render: (text: any, record: any) => {
+        return record.lastProcessDate
+          ? moment(record.lastProcessDate).format('YYYY-MM-DD hh:mm:ss')
+          : null;
       },
     },
   ];
@@ -227,21 +238,21 @@ const LogManage: React.FC = () => {
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}
         getSelectData={(data) => setTableSelectRow(data)}
-        tableTitle="日志管理"
-        url="/Log/GetPagedList"
+        tableTitle="反馈列表"
+        url="/Feedback/GetPagedList"
         columns={columns}
       />
       <Modal
-        title="日志-详情"
+        title="反馈处理"
         width="900px"
-        visible={logDetailVisible}
-        onCancel={() => setLogDetailVisible(false)}
+        visible={feedbackDetailVisible}
+        onCancel={() => setFeedBackDetailVisible(false)}
         footer={null}
       >
-        <LogDetailTab />
+        <FeedBackFormfrom />
       </Modal>
     </PageCommonWrap>
   );
 };
 
-export default LogManage;
+export default PlatFormFeedBack;

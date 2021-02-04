@@ -3,15 +3,16 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Row, Col, Switch, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
-import ManageUserForm from './components/add-edit-form';
+import CompanyUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
 import {
-  updateManageUserItem,
-  addManageUserItem,
-  getManageUserDetail,
+  getCompanyUserDetail,
+  addCompanyUserItem,
+  BatchAddCompanyUserItem,
+  updateCompanyUserItem,
   updateItemStatus,
   resetItemPwd,
-} from '@/services/personnel-config/manage-user';
+} from '@/services/personnel-config/company-user';
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
@@ -22,7 +23,7 @@ import styles from './index.less';
 
 const { Search } = Input;
 
-const ManageUser: React.FC = () => {
+const CompanyUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
 
@@ -34,13 +35,17 @@ const ManageUser: React.FC = () => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-  const { data, run, loading } = useRequest(getManageUserDetail, {
+  const { data, run, loading } = useRequest(getCompanyUserDetail, {
     manual: true,
   });
 
   const rightButton = () => {
     return (
       <div>
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          批量添加
+        </Button>
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
           <PlusOutlined />
           添加
@@ -98,8 +103,6 @@ const ManageUser: React.FC = () => {
         {
           userName: '',
           pwd: '',
-          roleId: '',
-          province: '',
           companyId: '',
           email: '',
           nickName: '',
@@ -108,7 +111,7 @@ const ManageUser: React.FC = () => {
         },
         value,
       );
-      await addManageUserItem(submitInfo);
+      await addCompanyUserItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -142,7 +145,7 @@ const ManageUser: React.FC = () => {
         },
         values,
       );
-      await updateManageUserItem(submitInfo);
+      await updateCompanyUserItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -189,16 +192,10 @@ const ManageUser: React.FC = () => {
       width: 200,
     },
     {
-      title: '所属公司',
-      dataIndex: 'companyName',
-      index: 'companyName',
+      title: '部组',
+      dataIndex: 'companyGroups',
+      index: 'companyGroups',
       width: 200,
-    },
-    {
-      title: '区域',
-      dataIndex: 'provinceName',
-      index: 'provinceName',
-      width: 220,
     },
     {
       title: '状态',
@@ -214,6 +211,12 @@ const ManageUser: React.FC = () => {
       },
     },
     {
+      title: '授权端口',
+      dataIndex: 'authorizeClient',
+      index: 'authorizeClient',
+      width: 180,
+    },
+    {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
       index: 'lastLoginIp',
@@ -227,18 +230,6 @@ const ManageUser: React.FC = () => {
       render: (text: any, record: any) => {
         return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
       },
-    },
-    {
-      title: '角色类型',
-      dataIndex: 'roleType',
-      index: 'roleType',
-      width: 120,
-    },
-    {
-      title: '角色',
-      dataIndex: 'roleName',
-      index: 'roleName',
-      width: 120,
     },
   ];
 
@@ -276,12 +267,12 @@ const ManageUser: React.FC = () => {
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearch}
         getSelectData={(data) => setTableSelectRow(data)}
-        tableTitle="管理用户"
-        url="/ManageUser/GetPagedList"
+        tableTitle="公司用户"
+        url="/CompanyUser/GetPagedList"
         columns={columns}
       />
       <Modal
-        title="添加-管理用户"
+        title="添加-公司用户"
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -290,11 +281,11 @@ const ManageUser: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <ManageUserForm type="add" />
+          <CompanyUserForm type="add" />
         </Form>
       </Modal>
       <Modal
-        title="编辑-管理用户"
+        title="编辑-公司用户"
         width="680px"
         visible={editFormVisible}
         okText="确认"
@@ -304,7 +295,7 @@ const ManageUser: React.FC = () => {
       >
         <Form form={editForm}>
           <Spin spinning={loading}>
-            <ManageUserForm />
+            <CompanyUserForm />
           </Spin>
         </Form>
       </Modal>
@@ -325,4 +316,4 @@ const ManageUser: React.FC = () => {
   );
 };
 
-export default ManageUser;
+export default CompanyUser;
