@@ -28,7 +28,6 @@ const LogManage: React.FC = () => {
   const [endDate, setEndDate] = useState<Moment | null>();
   const [applications, setApplications] = useState<string | undefined>();
   const [level, setLevel] = useState<string | undefined>();
-
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
 
   const rightButton = () => {
@@ -43,7 +42,7 @@ const LogManage: React.FC = () => {
   };
 
   const searchEvent = () => {
-    console.log(applications, level);
+    search()
   };
 
   const checkDetailEvent = () => {
@@ -75,7 +74,7 @@ const LogManage: React.FC = () => {
         <TableSearch label="搜索" width="208px">
           <Search
             value={searchApiKeyWord}
-            onSearch={() => search({ keyWord: searchApiKeyWord })}
+            onSearch={() => search()}
             onChange={(e) => setSearchApiKeyWord(e.target.value)}
             placeholder="跟踪编号/Api地址"
             enterButton
@@ -84,7 +83,7 @@ const LogManage: React.FC = () => {
         <TableSearch label="" width="208px">
           <Search
             value={searchContentKeyWord}
-            onSearch={() => search({ keyWord: searchContentKeyWord })}
+            onSearch={() => search()}
             onChange={(e) => setSearchContentKeyWord(e.target.value)}
             placeholder="(请求、响应、异常)内容"
             enterButton
@@ -145,10 +144,10 @@ const LogManage: React.FC = () => {
     console.log('onOk: ', value);
   };
 
-  const search = (params: any) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search(params);
+      tableRef.current?.search();
     }
   };
   //数据修改刷新
@@ -224,6 +223,14 @@ const LogManage: React.FC = () => {
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
+        extractParams={{
+          keyWord: searchApiKeyWord,
+          logLevel: level,
+          application: applications,
+          message: searchContentKeyWord,
+          beginTime: beginDate,
+          endTime: endDate
+        }}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}
         getSelectData={(data) => setTableSelectRow(data)}
