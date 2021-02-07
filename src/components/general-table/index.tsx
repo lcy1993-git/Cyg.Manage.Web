@@ -106,7 +106,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   // 改变视图
-  const changeView = () => { };
+  const changeView = () => {};
 
   const columnChangeEvent = (value: boolean, dataIndex: string) => {
     const copyColumns = [...finallyColumns];
@@ -158,7 +158,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   // 列显示处理
   const currentPageChange = (page: any, size: any) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
-    if(pageSize === size) {
+    if (pageSize === size) {
       setCurrentPage(page === 0 ? 1 : page);
     }
   };
@@ -166,7 +166,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const pageSizeChange = (page: any, size: any) => {
     setCurrentPage(1);
     setPageSize(size);
-  }
+  };
 
   useEffect(() => {
     run({
@@ -174,8 +174,8 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       extraParams: extractParams,
       pageIndex: currentPage,
       pageSize,
-    })
-  }, [pageSize, currentPage])
+    });
+  }, [pageSize, currentPage]);
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法

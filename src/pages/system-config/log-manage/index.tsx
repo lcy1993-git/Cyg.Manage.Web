@@ -4,12 +4,6 @@ import { EyeOutlined } from '@ant-design/icons';
 import { Button, Modal, message, Input, DatePicker } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
-import {
-  getLogManageDetail,
-  getApplicationsList,
-  getLogLevelsList,
-} from '@/services/system-config/log-manage';
-import { useRequest } from 'ahooks';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
 import LogDetailTab from '../log-manage/tabs';
@@ -42,7 +36,7 @@ const LogManage: React.FC = () => {
   };
 
   const searchEvent = () => {
-    search()
+    search();
   };
 
   const checkDetailEvent = () => {
@@ -58,7 +52,7 @@ const LogManage: React.FC = () => {
     setBeginDate(value);
   };
   const handleEndDate = (value: any) => {
-    setBeginDate(value);
+    setEndDate(value);
   };
 
   const handleAppSelect = (value: any) => {
@@ -80,7 +74,7 @@ const LogManage: React.FC = () => {
             enterButton
           />
         </TableSearch>
-        <TableSearch label="" width="208px">
+        <TableSearch label="" width="228px">
           <Search
             value={searchContentKeyWord}
             onSearch={() => search()}
@@ -114,7 +108,7 @@ const LogManage: React.FC = () => {
               showTime={{ format: 'HH:mm' }}
               onChange={handleBeginDate}
               format="YYYY-MM-DD HH:mm"
-              onOk={chooseBeginDate}
+              // onOk={chooseBeginDate}
               placeholder="开始日期"
             />
             <DatePicker
@@ -123,7 +117,7 @@ const LogManage: React.FC = () => {
               onChange={handleEndDate}
               format="YYYY-MM-DD HH:mm"
               placeholder="结束日期"
-              onOk={chooseEndDate}
+              // onOk={chooseEndDate}
             />
             <Button type="primary" className="mr7" onClick={() => searchEvent()}>
               查询
@@ -135,13 +129,6 @@ const LogManage: React.FC = () => {
         </TableSearch>
       </div>
     );
-  };
-
-  const chooseBeginDate = (value: any) => {
-    console.log('onOk: ', value);
-  };
-  const chooseEndDate = (value: any) => {
-    console.log('onOk: ', value);
   };
 
   const search = () => {
@@ -209,7 +196,7 @@ const LogManage: React.FC = () => {
       },
     },
     {
-      title: '耗时',
+      title: '耗时(秒)',
       dataIndex: 'timeCost',
       index: 'timeCost',
       width: 100,
@@ -229,7 +216,7 @@ const LogManage: React.FC = () => {
           application: applications,
           message: searchContentKeyWord,
           beginTime: beginDate,
-          endTime: endDate
+          endTime: endDate,
         }}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}

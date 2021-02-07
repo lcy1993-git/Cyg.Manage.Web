@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
-export enum BelongManageEnum {
+export enum CompanyUserEnum {
   '启用' = 1,
   '禁用',
 }

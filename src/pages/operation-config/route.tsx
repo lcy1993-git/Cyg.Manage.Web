@@ -7,11 +7,21 @@ const CompanyGroup = Loadable({
   loading: Loading,
   delay: 150,
 });
+const CompanyFile = Loadable({
+  loader: () => import('@/pages/operation-config/company-file'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
     title: '部组管理',
-    path: '/system-config/company-group',
+    path: '/operation-config/company-group',
     component: <CompanyGroup />,
+  },
+  {
+    title: '公司文件',
+    path: '/operation-config/company-file',
+    component: <CompanyFile />,
   },
 ];

@@ -4,6 +4,9 @@ import { Tabs, ConfigProvider } from 'antd';
 import LayoutHeader from './components/layout-header';
 import { getTabsComponent, RouteListItem } from '@/utils/tabs-config.tsx';
 import zhCN from 'antd/lib/locale/zh_CN';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+moment.locale('zh-cn');
 
 import styles from './index.less';
 import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons';

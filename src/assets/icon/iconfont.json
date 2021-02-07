@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1817691",
+      "name": "参数",
+      "font_class": "canshu",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
       "icon_id": "10139425",
       "name": "授权",
       "font_class": "shouquan",

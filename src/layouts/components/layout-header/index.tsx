@@ -28,7 +28,7 @@ const testData = [
         path: '/system-config/log-manage',
       },
       {
-        name: '上传日志',
+        name: '上报日志',
         icon: '',
         path: '/system-config/report-log',
       },
@@ -99,6 +99,11 @@ const testData = [
         name: '部组管理',
         icon: '',
         path: '/operation-config/company-group',
+      },
+      {
+        name: '公司文件',
+        icon: '',
+        path: '/operation-config/company-file',
       },
     ],
   },

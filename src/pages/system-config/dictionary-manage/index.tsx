@@ -1,13 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import {
-  EditOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  ImportOutlined,
-  ExportOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
 import React, { useState } from 'react';
 import DictionaryForm from './components/add-edit-form';
@@ -76,9 +70,7 @@ const DictionaryManage: React.FC = () => {
     const editDataId = editData.id;
 
     await deleteDictionaryItem(editDataId);
-    refresh({
-      parentId: routeList[routeList.length - 1].id,
-    });
+    refresh();
     message.success('删除成功');
   };
 
@@ -87,9 +79,7 @@ const DictionaryManage: React.FC = () => {
     console.log(record);
 
     await updateDictionaryItemStatus(id);
-    refresh({
-      parentId: routeList[routeList.length - 1].id,
-    });
+    refresh();
     message.success('状态修改成功');
   };
 
@@ -100,10 +90,10 @@ const DictionaryManage: React.FC = () => {
   };
 
   // 列表刷新
-  const refresh = (params: any) => {
+  const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh(params);
+      tableRef.current.refresh();
     }
   };
 
@@ -121,7 +111,9 @@ const DictionaryManage: React.FC = () => {
       name,
       id,
     });
+    console.log(copyRouteList);
     setRouteList(copyRouteList);
+
     setSearchKeyWord('');
     search({
       keyWord: '',
@@ -201,9 +193,7 @@ const DictionaryManage: React.FC = () => {
         value,
       );
       await addDictionaryItem(submitInfo);
-      refresh({
-        parentId: routeList[routeList.length - 1].id,
-      });
+      refresh();
       setAddFormVisible(false);
       addForm.resetFields();
     });
@@ -246,9 +236,7 @@ const DictionaryManage: React.FC = () => {
         values,
       );
       await updateDictionaryItem(submitInfo);
-      refresh({
-        parentId: routeList[routeList.length - 1].id,
-      });
+      refresh();
       message.success('更新成功');
       editForm.resetFields();
       setEditFormVisible(false);
@@ -337,6 +325,7 @@ const DictionaryManage: React.FC = () => {
         tableTitle="系统字典"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
+        extractParams={{ keyWord: searchKeyWord, parentId: }}
       />
       <Modal
         title="添加-字典"
