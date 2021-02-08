@@ -4,4 +4,61 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: left top;
+    display: flex;
+    .indexPageLeft {
+        padding-top: 20px;
+        margin-left: 20px;
+        width: 23.93%;
+        height: 100%;
+        box-sizing: border-box;
+        .toDoStatistic {
+            width: 100%;
+            height: 195px;
+            margin-bottom: 20px;
+        }
+        .leftStatisticOtherChart {
+            height: calc(100% - 241px);
+            .deliveryManage {
+                height: 50%;
+                margin-bottom: 16px;
+            }
+            .costInformation {
+                height: 50%;
+                margin-bottom: 10px;
+            }
+        }
+    }
+    .indexPageCenter {
+        flex: 1;
+        padding: 0 20px 10px 20px;
+        .indexPageCenterChart {
+            height: 248px;
+        }
+        .indexPageCenterChartGl {
+            height: calc(100% - 248px);
+        }
+    }
+    .indexPageRight {
+        padding-top: 20px;
+        margin-right: 20px;
+        width: 23.93%;
+        height: 100%;
+        box-sizing: border-box;
+        .projectType {
+            width: 100%;
+            height: 195px;
+            margin-bottom: 20px;
+        }
+        .rightStatisticOtherChart {
+            height: calc(100% - 241px);
+        }
+        .PersonnelLoad {
+            height: 45%;
+            margin-bottom: 16px;
+        }
+        .ProjectPhase {
+            height: 55%;
+            margin-bottom: 10px;
+        }
+    }
 }
