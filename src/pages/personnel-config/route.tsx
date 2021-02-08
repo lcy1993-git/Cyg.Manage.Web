@@ -14,6 +14,12 @@ const CompanyUser = Loadable({
   delay: 150,
 });
 
+const UserFeedBack = Loadable({
+  loader: () => import('@/pages/personnel-config/feedback'),
+  loading: Loading,
+  delay: 150,
+});
+
 export default [
   {
     title: '管理用户',
@@ -24,5 +30,10 @@ export default [
     title: '公司用户',
     path: '/personnel-config/company-user',
     component: <CompanyUser />,
+  },
+  {
+    title: '用户反馈',
+    path: '/personnel-config/feedback',
+    component: <UserFeedBack />,
   },
 ];

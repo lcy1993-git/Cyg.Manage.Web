@@ -1,13 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { Button, Modal, Form, message } from 'antd';
 import TreeTable from '@/components/tree-table/index';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import PageCommonWrap from '@/components/page-common-wrap';
 import {
   updateCompanyManageItem,
   addCompanyManageItem,
   getCompanyManageDetail,
+  getTreeSelectData,
 } from '@/services/jurisdiction-config/company-manage';
 import { isArray } from 'lodash';
 import CompanyManageForm from './components/form';
@@ -21,6 +22,10 @@ const CompanyManage: React.FC = () => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
+
+  const { data: selectTreeData = [], run: getSelectTreeData } = useRequest(getTreeSelectData, {
+    manual: true,
+  });
 
   const { data, run } = useRequest(getCompanyManageDetail, {
     manual: true,
@@ -70,11 +75,18 @@ const CompanyManage: React.FC = () => {
           <EditOutlined />
           编辑
         </Button>
+        <Button className="mr7" onClick={() => deleteEvent()}>
+          <DeleteOutlined />
+          删除
+        </Button>
       </>
     );
   };
 
+  const deleteEvent = () => {};
+
   const addEvent = async () => {
+    await getSelectTreeData();
     setAddFormVisible(true);
   };
 
@@ -90,6 +102,8 @@ const CompanyManage: React.FC = () => {
         },
         value,
       );
+      console.log(submitInfo);
+
       await addCompanyManageItem(submitInfo);
       tableFresh();
       setAddFormVisible(false);
@@ -105,14 +119,13 @@ const CompanyManage: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
+    setEditFormVisible(true);
     const CompanyManageData = await run(editDataId);
-
+    await getSelectTreeData();
     editForm.setFieldsValue({
       ...CompanyManageData,
       userStock: null,
     });
-
-    setEditFormVisible(true);
   };
 
   const sureEditCompanyManage = () => {
@@ -162,7 +175,7 @@ const CompanyManage: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <CompanyManageForm type="add" />
+          <CompanyManageForm type="add" treeData={selectTreeData} />
         </Form>
       </Modal>
       <Modal
@@ -175,7 +188,7 @@ const CompanyManage: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <CompanyManageForm />
+          <CompanyManageForm treeData={selectTreeData} />
         </Form>
       </Modal>
     </PageCommonWrap>

@@ -29,7 +29,13 @@ interface TreeDataItem {
   hasPermission: boolean;
   functions: FunctionItem[];
   children: TreeDataItem[];
+  isDisable: boolean;
 }
+
+// interface updateModules {
+//   templateId: string;
+//   mouduleIds: string[];
+// }
 
 //获取选中数据
 export const getAuthorizationDetail = (id: string) => {
@@ -70,5 +76,12 @@ export const updateAuthorizationItemStatus = (id: string) => {
 export const getAuthorizationTreeList = (id: string): Promise<TreeDataItem[]> => {
   return cyRequest<TreeDataItem[]>(() =>
     request(`${baseUrl.project}/AuthTemplate/GetModules`, { method: 'GET', params: { id } }),
+  );
+};
+
+// 更新功能模块列表的数据
+export const updateAuthorizationModules = (params: any) => {
+  return cyRequest<TreeDataItem[]>(() =>
+    request(`${baseUrl.project}/AuthTemplate/UpdateModules`, { method: 'POST', data: params }),
   );
 };

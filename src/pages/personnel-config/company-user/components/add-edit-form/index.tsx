@@ -6,11 +6,11 @@ import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import rules from '../rule';
 import UrlSelect from '@/components/url-select';
 
-interface ManageUserForm {
+interface CompanyUserForm {
   type?: 'add' | 'edit';
 }
 
-const ManageUserForm: React.FC<ManageUserForm> = (props) => {
+const CompanyUserForm: React.FC<CompanyUserForm> = (props) => {
   const { type = 'edit' } = props;
   return (
     <>
@@ -47,10 +47,10 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="状态" name="userStatus" required>
-        <EnumRadio enumList={BelongManageEnum} defaultValue="1" />
+        <EnumRadio enumList={BelongManageEnum} />
       </CyFormItem>
     </>
   );
 };
 
-export default ManageUserForm;
+export default CompanyUserForm;

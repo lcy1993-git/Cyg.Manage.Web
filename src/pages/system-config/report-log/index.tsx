@@ -1,15 +1,11 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import { EyeOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, DatePicker } from 'antd';
+import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Modal, message, Input, DatePicker, Popconfirm } from 'antd';
 import React, { useRef, useState } from 'react';
 // import ManageUserForm from './components/form';
 import { isArray } from 'lodash';
-import {
-  getLogManageList,
-  getLogManageDetail,
-  getApplicationsList,
-} from '@/services/system-config/log-manage';
+import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
 import TableSearch from '@/components/table-search';
@@ -35,12 +31,36 @@ const ManageUser: React.FC = () => {
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" onClick={() => checkDetailEvent()}>
+        <Button type="primary" className="mr7" onClick={() => checkDetailEvent()}>
           <EyeOutlined />
           详情
         </Button>
+        <Popconfirm
+          title="您确定要删除该条数据?"
+          onConfirm={sureDeleteData}
+          okText="确认"
+          cancelText="取消"
+        >
+          <Button>
+            <DeleteOutlined />
+            删除
+          </Button>
+        </Popconfirm>
       </div>
     );
+  };
+
+  const sureDeleteData = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行删除');
+      return;
+    }
+    const editData = tableSelectRows[0];
+    const editDataId = editData.id;
+
+    await deleteReportLog(editDataId);
+    tableFresh();
+    message.success('删除成功');
   };
 
   const searchEvent = () => {};

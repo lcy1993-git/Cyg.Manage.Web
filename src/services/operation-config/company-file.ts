@@ -16,7 +16,7 @@ interface ItemDetailData extends CompanyFileItemParams {
 }
 
 //获取选中数据
-export const getMapFieldDetail = (id: string) => {
+export const getCompanyFileDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
     request(`${baseUrl.project}/CompanyFile/GetById`, { method: 'GET', params: { id } }),
   );
@@ -30,14 +30,14 @@ export const addCompanyFileItem = (params: CompanyFileItemParams) => {
 };
 
 //编辑字段映射
-export const updateCompanyFileItemItem = (params: ItemDetailData) => {
+export const updateCompanyFileItem = (params: ItemDetailData) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyFile/Modify`, { method: 'POST', data: params }),
   );
 };
 
 // 删除字段映射
-export const deleteCompanyFileItemdItem = (id: string) => {
+export const deleteCompanyFileItem = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyFile/DeleteById`, { method: 'GET', params: { id } }),
   );

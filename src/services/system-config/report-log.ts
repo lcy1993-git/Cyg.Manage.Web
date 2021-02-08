@@ -23,31 +23,18 @@ interface SearchLogItemParams {
 interface ItemDetailData extends SearchLogItemParams {
   id: string;
   clientIp: string;
-
 }
 
-// 获取搜索结果列表
-export const getLogManageList = (parmas: SearchLogItemParams) => {
-  return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Log/GetPagedList`, { method: 'POST', data: parmas }),
-  );
-};
-
 // 获取一条数据
-export const getLogManageDetail = (id: string) => {
+export const getFileLogDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Log/GetById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/FileLog/GetById`, { method: 'GET', params: { id } }),
   );
-};
-
-// 获取应用程序列表
-export const getApplicationsList = () => {
-  return cyRequest(() => request(`${baseUrl.project}/Log/GetApplications`, { method: 'GET' }));
 };
 
 // 删除
-export const delectReportLog = (id: string) => {
-    return cyRequest(() =>
-      request(`${baseUrl.project}/Module/DeleteById`, { method: 'GET', params: { id } }),
-    );
-  };
+export const deleteReportLog = (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/FileLog/DeleteById`, { method: 'GET', params: { id } }),
+  );
+};

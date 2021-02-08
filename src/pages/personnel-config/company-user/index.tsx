@@ -97,7 +97,7 @@ const CompanyUser: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddManageUserItem = () => {
+  const sureAddCompanyUserItem = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
@@ -133,7 +133,7 @@ const CompanyUser: React.FC = () => {
     editForm.setFieldsValue(ManageUserData);
   };
 
-  const sureEditManageUser = () => {
+  const sureEditCompanyUser = () => {
     const editData = data!;
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -276,7 +276,7 @@ const CompanyUser: React.FC = () => {
         width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddManageUserItem()}
+        onOk={() => sureAddCompanyUserItem()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
@@ -289,7 +289,7 @@ const CompanyUser: React.FC = () => {
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditManageUser()}
+        onOk={() => sureEditCompanyUser()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >

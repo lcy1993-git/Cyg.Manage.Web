@@ -28,11 +28,12 @@ interface RouteListItem {
 const DictionaryManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
-
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [ids, setIds] = useState<string[]>([]);
+
+  const [currentId, setCurrentId] = useState<string>('');
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -111,7 +112,8 @@ const DictionaryManage: React.FC = () => {
       name,
       id,
     });
-    console.log(copyRouteList);
+    // console.log(copyRouteList[copyRouteList.length - 1].id);
+    setCurrentId(copyRouteList[copyRouteList.length - 1].id);
     setRouteList(copyRouteList);
 
     setSearchKeyWord('');
@@ -284,6 +286,7 @@ const DictionaryManage: React.FC = () => {
       copyRouteList.splice(currentDataIndex + 1, copyRouteList.length);
     }
     setRouteList(copyRouteList);
+    setCurrentId(copyRouteList[copyRouteList.length - 1].id);
     setSearchKeyWord('');
     search({
       keyWord: '',
@@ -325,7 +328,7 @@ const DictionaryManage: React.FC = () => {
         tableTitle="系统字典"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
-        extractParams={{ keyWord: searchKeyWord, parentId: }}
+        extractParams={{ keyWord: searchKeyWord, parentId: currentId }}
       />
       <Modal
         title="添加-字典"

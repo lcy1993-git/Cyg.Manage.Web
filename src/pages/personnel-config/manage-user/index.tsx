@@ -104,10 +104,12 @@ const ManageUser: React.FC = () => {
           email: '',
           nickName: '',
           name: '',
-          userStatus: 1,
+          userStatus: 0,
         },
         value,
       );
+      console.log(submitInfo);
+
       await addManageUserItem(submitInfo);
       refresh();
       setAddFormVisible(false);

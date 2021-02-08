@@ -1,4 +1,4 @@
-import request from "@/utils/request";
+import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
 interface CompanyManageItemParams {
@@ -27,11 +27,11 @@ export interface TreeDataItem extends CompanyManageItemParams {
 }
 
 //获取公司列表数据
-// export const getCompanyManageTreeList = (): Promise<TreeDataItem[]> => {
-//   return cyRequest<TreeDataItem[]>(() =>
-//     request(`${baseUrl}/Company/GetTreeList`, { method: 'GET' }),
-//   );
-// };
+export const getTreeSelectData = (): Promise<TreeDataItem[]> => {
+  return cyRequest<TreeDataItem[]>(() =>
+    request(`${baseUrl.project}/Company/GetTree`, { method: 'GET' }),
+  );
+};
 
 //获取某条数据
 export const getCompanyManageDetail = (id: string) => {
@@ -42,12 +42,14 @@ export const getCompanyManageDetail = (id: string) => {
 
 //新增一条数据
 export const addCompanyManageItem = (params: CompanyManageItemParams) => {
-  return cyRequest(() => request(`${baseUrl.project}/Company/Create`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Company/Create`, { method: 'POST', data: params }),
+  );
 };
 
 //编辑接口
 export const updateCompanyManageItem = (params: TreeDataItem) => {
-  return cyRequest(() => request(`${baseUrl.project}/Company/Modify`, { method: 'POST', data: params }));
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Company/Modify`, { method: 'POST', data: params }),
+  );
 };
-
-

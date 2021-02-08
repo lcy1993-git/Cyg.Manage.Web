@@ -13,10 +13,9 @@ import {
   deleteAuthorizationItem,
   addAuthorizationItem,
   getAuthorizationTreeList,
-  updateAuthorizationModules,
 } from '@/services/jurisdiction-config/platform-authorization';
 import { isArray } from 'lodash';
-import AuthorizationForm from './components/add-edit-form';
+import RolePermissionsForm from './components/add-edit-form';
 import CheckboxTreeTable from '@/components/checkbox-tree-table';
 
 const { Search } = Input;
@@ -24,7 +23,6 @@ const { Search } = Input;
 const PlatformAuthorization: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
-  const [moduleIds, setModuleIds] = useState<string[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
@@ -46,6 +44,7 @@ const PlatformAuthorization: React.FC = () => {
       manual: true,
     },
   );
+  console.log(MoudleTreeData);
 
   const columns = [
     {
@@ -65,9 +64,9 @@ const PlatformAuthorization: React.FC = () => {
       },
     },
     {
-      title: '备注',
-      dataIndex: 'remark',
-      index: 'remark',
+      title: '授权人员',
+      dataIndex: 'users',
+      index: 'users',
     },
   ];
 
@@ -87,7 +86,7 @@ const PlatformAuthorization: React.FC = () => {
           value={searchKeyWord}
           onSearch={() => search({ keyWord: searchKeyWord })}
           onChange={(e) => setSearchKeyWord(e.target.value)}
-          placeholder="模板名称"
+          placeholder="角色名称"
           enterButton
         />
       </TableSearch>
@@ -133,20 +132,7 @@ const PlatformAuthorization: React.FC = () => {
     await getModuleTreeData(editDataId);
   };
 
-  // const setCheckedIds = (checkedValue: string[]) => {
-  //   setModuleIds(checkedValue);
-  // };
-
-  //保存分配功能
-  const sureDistribute = async () => {
-    const templateId = tableSelectRows[0].id;
-    console.log(moduleIds);
-
-    const modulesInfo = { templateId, moduleIds };
-    await updateAuthorizationModules(modulesInfo);
-    setDistributeFormVisible(false);
-    tableFresh();
-  };
+  const sureDistribute = () => {};
 
   //授权
   const authorizationEvent = async () => {
@@ -168,7 +154,7 @@ const PlatformAuthorization: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddAuthorization = () => {
+  const sureAddRolePermissions = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
@@ -201,7 +187,7 @@ const PlatformAuthorization: React.FC = () => {
     editForm.setFieldsValue(AuthorizationData);
   };
 
-  const sureEditAuthorization = () => {
+  const sureEditRolePermissions = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -270,47 +256,44 @@ const PlatformAuthorization: React.FC = () => {
         getSelectData={(data) => setTableSelectRow(data)}
         url="/AuthTemplate/GetPagedList"
         columns={columns}
-        tableTitle="授权管理"
+        tableTitle="角色权限管理"
       />
       <Modal
-        title="添加-模板"
+        title="添加-角色"
         width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddAuthorization()}
+        onOk={() => sureAddRolePermissions()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
         <Form form={addForm}>
-          <AuthorizationForm />
+          <RolePermissionsForm />
         </Form>
       </Modal>
       <Modal
-        title="编辑-模板"
+        title="编辑-角色"
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditAuthorization()}
+        onOk={() => sureEditRolePermissions()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
         <Form form={editForm}>
-          <AuthorizationForm />
+          <RolePermissionsForm />
         </Form>
       </Modal>
       <Modal
         title="分配功能模块"
-        width="80%"
+        width="90%"
         visible={distributeFormVisible}
         okText="确认"
         onOk={() => sureDistribute()}
         onCancel={() => setDistributeFormVisible(false)}
         cancelText="取消"
       >
-        <CheckboxTreeTable
-          treeData={MoudleTreeData}
-          onChange={(checkedValue: string[]) => setModuleIds(checkedValue)}
-        />
+        <CheckboxTreeTable treeData={MoudleTreeData} />
       </Modal>
       <Modal
         title="授权"

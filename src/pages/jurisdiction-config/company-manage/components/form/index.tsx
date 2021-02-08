@@ -1,17 +1,45 @@
-import React from 'react';
-import { Input } from 'antd';
+import React, { useMemo } from 'react';
+import { Input, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
+import { TreeDataItem } from '@/services/jurisdiction-config/company-manage';
 
 import rules from './rule';
 
-interface CompanyManageForm {
+interface CompanyManageForm {}
+
+interface CompanyManageFormProps {
+  treeData: TreeDataItem[];
   type?: 'add' | 'edit';
 }
 
-const CompanyManageForm: React.FC<CompanyManageForm> = (props) => {
-  const { type = 'edit' } = props;
+const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
+  const { type = 'edit', treeData = [] } = props;
+  const mapTreeData = (data: any) => {
+    return {
+      title: data.text,
+      value: data.id,
+      children: data.children.map(mapTreeData),
+    };
+  };
+
+  const handleData = useMemo(() => {
+    return treeData.map(mapTreeData);
+  }, [JSON.stringify(treeData)]);
+
   return (
     <>
+      {type === 'add' && (
+        <CyFormItem label="所属公司" name="parentId">
+          <TreeSelect
+            style={{ width: '100%' }}
+            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+            treeData={handleData}
+            placeholder="请选择"
+            treeDefaultExpandAll
+            allowClear
+          />
+        </CyFormItem>
+      )}
       <CyFormItem label="公司名称" name="name" required rules={rules.name}>
         <Input placeholder="请输入公司名" />
       </CyFormItem>

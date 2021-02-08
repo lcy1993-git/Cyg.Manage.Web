@@ -73,6 +73,16 @@ const testData = [
         icon: '',
         path: '/jurisdiction-config/platform-authorization',
       },
+      {
+        name: '角色权限',
+        icon: '',
+        path: '/jurisdiction-config/role-permissions',
+      },
+      {
+        name: '下辖公司',
+        icon: '',
+        path: '/jurisdiction-config/subordinate-company',
+      },
     ],
   },
   {
@@ -88,6 +98,11 @@ const testData = [
         name: '公司用户',
         icon: '',
         path: '/personnel-config/company-user',
+      },
+      {
+        name: '用户反馈',
+        icon: '',
+        path: '/personnel-config/feedback',
       },
     ],
   },

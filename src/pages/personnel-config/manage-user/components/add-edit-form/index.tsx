@@ -66,7 +66,7 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="状态" name="userStatus" required>
-        <EnumRadio enumList={BelongManageEnum} defaultValue="1" />
+        <EnumRadio enumList={BelongManageEnum} />
       </CyFormItem>
     </>
   );

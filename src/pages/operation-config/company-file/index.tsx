@@ -6,15 +6,15 @@ import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
-import {
-  getMapFieldDetail,
-  updateMapFieldItem,
-  deleteMapFieldItem,
-  addMapFieldItem,
-} from '@/services/system-config/map-field';
 import { isArray } from 'lodash';
 import '@/assets/icon/iconfont.css';
 import CompanyFileForm from './components/add-edit-form';
+import {
+  updateCompanyFileItem,
+  addCompanyFileItem,
+  deleteCompanyFileItem,
+  getCompanyFileDetail,
+} from '@/services/operation-config/company-file';
 
 const { Search } = Input;
 
@@ -29,7 +29,7 @@ const CompanyFile: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getMapFieldDetail, {
+  const { data, run, loading } = useRequest(getCompanyFileDetail, {
     manual: true,
   });
 
@@ -57,7 +57,7 @@ const CompanyFile: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteMapFieldItem(editDataId);
+    await deleteCompanyFileItem(editDataId);
     refresh();
     message.success('删除成功');
   };
@@ -116,7 +116,7 @@ const CompanyFile: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddMapField = () => {
+  const sureAddCompanyFile = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
@@ -127,7 +127,7 @@ const CompanyFile: React.FC = () => {
         },
         value,
       );
-      await addMapFieldItem(submitInfo);
+      await addCompanyFileItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -144,12 +144,12 @@ const CompanyFile: React.FC = () => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const MapFieldData = await run(editDataId);
+    const CompanyFileData = await run(editDataId);
 
-    editForm.setFieldsValue(MapFieldData);
+    editForm.setFieldsValue(CompanyFileData);
   };
 
-  const sureEditMapField = () => {
+  const sureEditCompanyFile = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -160,16 +160,13 @@ const CompanyFile: React.FC = () => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
-          deviceType: editData.deviceType,
-          dsName: editData.dsName,
-          responseName: editData.responseName,
-          postGISName: editData.postGISName,
-          pgModelName: editData.pgModelName,
-          description: editData.description,
+          name: editData.name,
+          fileId: editData.fileId,
+          describe: editData.describe,
         },
         values,
       );
-      await updateMapFieldItem(submitInfo);
+      await updateCompanyFileItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -225,31 +222,30 @@ const CompanyFile: React.FC = () => {
         needCommonButton={true}
         columns={columns}
         url="/CompanyFile/GetPagedList"
-        tableTitle="数据映射"
+        tableTitle="公司文件"
         getSelectData={(data) => setTableSelectRow(data)}
-        type="checkbox"
       />
       <Modal
-        title="添加-映射"
+        title="添加-文件"
         width="720px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddMapField()}
+        onOk={() => sureAddCompanyFile()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
         <Form form={addForm}>
           <Spin spinning={loading}>
-            <CompanyFileForm />
+            <CompanyFileForm type="add" />
           </Spin>
         </Form>
       </Modal>
       <Modal
-        title="编辑-映射"
+        title="编辑-文件"
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditMapField()}
+        onOk={() => sureEditCompanyFile()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
