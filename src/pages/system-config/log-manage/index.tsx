@@ -27,7 +27,9 @@ const LogManage: React.FC = () => {
   const [level, setLevel] = useState<string | undefined>();
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
 
-  const {loading, run: getDetailData, data: detailData = {}} = useRequest(getLogManageDetail,{manual: true})
+  const { loading, run: getDetailData, data: detailData = {} } = useRequest(getLogManageDetail, {
+    manual: true,
+  });
 
   const rightButton = () => {
     return (
@@ -52,7 +54,6 @@ const LogManage: React.FC = () => {
     setLogDetailVisible(true);
 
     await getDetailData(tableSelectRows[0].id);
-
   };
 
   //重置后，条件添加onChange事件重新获取value
@@ -82,16 +83,16 @@ const LogManage: React.FC = () => {
             enterButton
           />
         </TableSearch>
-        <TableSearch label="" width="228px">
+        <TableSearch label="" width="200px">
           <Search
             value={searchContentKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchContentKeyWord(e.target.value)}
-            placeholder="(请求、响应、异常)内容"
+            placeholder="请求/响应/异常/内容搜索"
             enterButton
           />
         </TableSearch>
-        <TableSearch label="筛选" width="800px" marginLeft="15px">
+        <TableSearch label="筛选" width="730px" marginLeft="15px">
           <div className={styles.filter}>
             <UrlSelect
               titleKey="text"
@@ -240,7 +241,7 @@ const LogManage: React.FC = () => {
         onCancel={() => setLogDetailVisible(false)}
         footer={null}
         bodyStyle={{
-          paddingTop: "10px"
+          paddingTop: '10px',
         }}
       >
         <Spin spinning={loading}>

@@ -1,10 +1,10 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { FormOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Select } from 'antd';
+import { Button, Modal, message, Input, DatePicker } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
-import { getFeedbackList } from '@/services/system-config/platform-feedback';
+import { getFeedbackDetail } from '@/services/system-config/platform-feedback';
 import { useRequest } from 'ahooks';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
@@ -15,7 +15,6 @@ import { Spin } from 'antd';
 import { SourceType, Category, Status } from '@/services/system-config/platform-feedback';
 
 const { Search } = Input;
-const { Option } = Select;
 
 const PlatFormFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -30,7 +29,9 @@ const PlatFormFeedBack: React.FC = () => {
 
   const [feedbackDetailVisible, setFeedBackDetailVisible] = useState<boolean>(false);
 
-  const { data: detailData, loading, run: getDetailData } = useRequest(getLogManageDetail, { manual: true })
+  const { data: detailData, loading, run: getDetailData } = useRequest(getFeedbackDetail, {
+    manual: true,
+  });
 
   const rightButton = () => {
     return (
@@ -43,7 +44,7 @@ const PlatFormFeedBack: React.FC = () => {
     );
   };
 
-  const searchEvent = () => { };
+  const searchEvent = () => {};
 
   const dealEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -53,7 +54,6 @@ const PlatFormFeedBack: React.FC = () => {
     setFeedBackDetailVisible(true);
 
     await getDetailData(tableSelectRows[0].id);
-
   };
 
   const leftSearchElement = () => {
@@ -219,7 +219,6 @@ const PlatFormFeedBack: React.FC = () => {
       },
     },
   ];
-
 
   return (
     <PageCommonWrap>

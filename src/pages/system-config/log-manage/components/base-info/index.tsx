@@ -12,9 +12,9 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         <div>
             <div className="flex">
                 <div className="flex1">
-                    <ReadonlyItem label="反馈用户">
+                    <ReadonlyItem label="请求标识">
                         {
-                            baseInfo.userIdentityName
+                            baseInfo.id
                         }
                     </ReadonlyItem>
                 </div>
@@ -28,9 +28,9 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <ReadonlyItem label="反馈标题">
+                    <ReadonlyItem label="追踪编号">
                         {
-                            baseInfo.id
+                            baseInfo.traceId
                         }
                     </ReadonlyItem>
                 </div>
@@ -44,7 +44,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <ReadonlyItem label="请求方式s">
+                    <ReadonlyItem label="请求方式">
                         {
                             baseInfo.reqMethod
                         }

@@ -48,8 +48,8 @@ export const getFeedbackList = (parmas: SearchLogItemParams) => {
 };
 
 // 获取一条数据
-export const getLogManageDetail = (id: string) => {
+export const getFeedbackDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Log/GetById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/Feedback/GetById`, { method: 'GET', params: { id } }),
   );
 };

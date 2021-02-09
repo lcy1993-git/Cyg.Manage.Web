@@ -9,10 +9,11 @@ import UrlSelect from '@/components/url-select';
 
 interface ManageUserForm {
   type?: 'add' | 'edit';
+  status: number | undefined;
 }
 
 const ManageUserForm: React.FC<ManageUserForm> = (props) => {
-  const { type = 'edit' } = props;
+  const { type = 'edit', status = 0 } = props;
   return (
     <>
       {type === 'add' && (
@@ -66,7 +67,7 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="状态" name="userStatus" required>
-        <EnumRadio enumList={BelongManageEnum} />
+        <EnumRadio enumList={BelongManageEnum} defaultValue="1" value={status} />
       </CyFormItem>
     </>
   );
