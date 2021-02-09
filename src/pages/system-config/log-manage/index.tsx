@@ -6,9 +6,12 @@ import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
-import LogDetailTab from '../log-manage/tabs';
+import LogDetailTab from './components/tabs';
 import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
+import { useRequest } from 'ahooks';
+import { getLogManageDetail } from '@/services/system-config/log-manage';
+import { Spin } from 'antd';
 
 const { Search } = Input;
 
@@ -23,6 +26,8 @@ const LogManage: React.FC = () => {
   const [applications, setApplications] = useState<string | undefined>();
   const [level, setLevel] = useState<string | undefined>();
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
+
+  const {loading, run: getDetailData, data: detailData = {}} = useRequest(getLogManageDetail,{manual: true})
 
   const rightButton = () => {
     return (
@@ -39,12 +44,15 @@ const LogManage: React.FC = () => {
     search();
   };
 
-  const checkDetailEvent = () => {
+  const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据查看详情');
       return;
     }
     setLogDetailVisible(true);
+
+    await getDetailData(tableSelectRows[0].id);
+
   };
 
   //重置后，条件添加onChange事件重新获取value
@@ -231,8 +239,13 @@ const LogManage: React.FC = () => {
         visible={logDetailVisible}
         onCancel={() => setLogDetailVisible(false)}
         footer={null}
+        bodyStyle={{
+          paddingTop: "10px"
+        }}
       >
-        <LogDetailTab />
+        <Spin spinning={loading}>
+          <LogDetailTab detailData={detailData} />
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

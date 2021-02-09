@@ -2,7 +2,7 @@ import React,{useRef,useEffect} from "react";
 import * as echarts from "echarts/lib/echarts"
 import 'echarts/lib/chart/pie';
 import 'echarts/lib/component/tooltip';
-import { useMount } from "ahooks";
+import { useMount,useSize } from "ahooks";
 
 interface BarChartProps {
     options: object
@@ -14,8 +14,9 @@ const AnnularFighure:React.FC<BarChartProps> = (props) => {
     const divRef = useRef<HTMLDivElement>(null);
     let myChart:any = null;
 
-    const initChart = () => {
+    const size = useSize(divRef);
 
+    const initChart = () => {
         if(divRef && divRef.current) {
             myChart = echarts.init(divRef.current as unknown as HTMLDivElement);
             myChart.setOption(options)
@@ -23,9 +24,11 @@ const AnnularFighure:React.FC<BarChartProps> = (props) => {
     }
 
     const resize = () => {
-        setTimeout(() => {
-            myChart.resize()
-        },100)
+        if(myChart) {
+            setTimeout(() => {
+                myChart.resize()
+            },100)
+        }
     }
 
     useEffect(() => {
@@ -43,9 +46,11 @@ const AnnularFighure:React.FC<BarChartProps> = (props) => {
         }
     });
 
-    useMount(() => {
-        initChart();
-    })
+    useEffect(() => {
+        if(size.width || size.height) {
+            initChart();
+        }
+    }, [JSON.stringify(size)])
 
     return (
         <div ref={divRef} style={{width: "100%", height: "100%"}} />

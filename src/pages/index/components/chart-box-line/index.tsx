@@ -52,8 +52,10 @@ const ChartBoxLine: React.FC<ChartBoxLineProps> = (props) => {
     }
 
     useEffect(() => {
-        initLine();
-    })
+        if(width) {
+            initLine();
+        }
+    },[width])
 
     return (
         <canvas ref={divRef} width={width} height={7}></canvas>

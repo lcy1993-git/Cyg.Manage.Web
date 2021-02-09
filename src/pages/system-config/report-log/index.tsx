@@ -10,7 +10,7 @@ import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
-import LogDetailTab from '../log-manage/tabs';
+import LogDetailTab from '../log-manage/components/tabs';
 import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
 

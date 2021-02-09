@@ -1,12 +1,10 @@
-import React,{useRef,useEffect} from "react";
+import React,{useRef,useEffect,useMemo} from "react";
 
 import * as echarts from "echarts/lib/echarts"
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 
-import styles from "./index.less"
-
-import { useMount } from "ahooks";
+import { useMount, useSize } from "ahooks";
 
 interface BarChartProps {
     options: object
@@ -18,6 +16,8 @@ const BarChart:React.FC<BarChartProps> = (props) => {
     const divRef = useRef<HTMLDivElement>(null);
     let myChart: any = null;
 
+    const size = useSize(divRef);
+
     const initChart = () => {
         if(divRef && divRef.current) {
             myChart = echarts.init(divRef.current as unknown as HTMLDivElement);
@@ -26,10 +26,13 @@ const BarChart:React.FC<BarChartProps> = (props) => {
     }
 
     const resize = () => {
-        setTimeout(() => {
-            myChart.resize()
-        },100)
+        if(myChart) {
+            setTimeout(() => {
+                myChart.resize()
+            },100)
+        }
     }
+
 
     useEffect(() => {
         window.addEventListener('resize', () => {
@@ -46,9 +49,11 @@ const BarChart:React.FC<BarChartProps> = (props) => {
         }
     });
 
-    useMount(() => {
-        initChart();
-    })
+    useEffect(() => {
+        if(size.width || size.height) {
+            initChart();
+        }
+    }, [JSON.stringify(size)])
 
     return (
         <div style={{width: "100%", height: "100%"}} ref={divRef} />

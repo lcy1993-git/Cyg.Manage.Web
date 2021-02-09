@@ -5,7 +5,7 @@ import xinjiang from "../../json/xinjiang.json";
 import * as echarts from 'echarts';
 import "echarts/lib/chart/map";
 import 'echarts/lib/component/tooltip';
-import { useMount } from "ahooks";
+import { useSize } from "ahooks";
 
 
 
@@ -13,6 +13,8 @@ const MapChart:React.FC = () => {
 
     const divRef = useRef<HTMLDivElement>(null);
     let myChart:any = null;
+
+    const size = useSize(divRef);
 
     const initChart = () => {
         if (divRef && divRef.current) {
@@ -70,7 +72,11 @@ const MapChart:React.FC = () => {
     };
 
     const resize = () => {
-        myChart.resize()
+        if(myChart) {
+            setTimeout(() => {
+                myChart.resize()
+            },100)
+        }
     }
 
     useEffect(() => {
@@ -88,9 +94,11 @@ const MapChart:React.FC = () => {
         }
     });
 
-    useMount(() => {
-        initChart();
-    })
+    useEffect(() => {
+        if(size.width || size.height) {
+            initChart();
+        }
+    }, [JSON.stringify(size)])
 
     return (
         <div style={{width: "100%", height: "100%"}}  ref={divRef} />
