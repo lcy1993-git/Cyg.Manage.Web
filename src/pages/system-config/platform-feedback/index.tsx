@@ -219,7 +219,7 @@ const PlatFormFeedBack: React.FC = () => {
       },
     },
   ];
-  console.log(sourceType);
+
 
   return (
     <PageCommonWrap>
