@@ -3,7 +3,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
-import React, { useState, useMemo, useCallback, useReducer } from 'react';
+import React, { useState,useMemo,useCallback } from 'react';
 import DictionaryForm from './components/add-edit-form';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -25,43 +25,18 @@ interface RouteListItem {
   id: string;
 }
 
-const ROUTE_LIST_STATE = {
-  "routeList": [{
-    name: '根目录',
-    id: '',
-  }]
-}
-
-interface State {
-  routeList: RouteListItem[]
-}
-
-const reducer = (state: State, action: any) => {
-  switch (action.code) {
-    case "add":
-      return { routeList: [...state.routeList, { id: action.id, name: action.name }], }
-    case "edit":
-      const routeList = [...state.routeList];
-      const currentDataIndex = routeList.findIndex((item) => item.id === action.id);
-      if (currentDataIndex !== routeList.length) {
-        routeList.splice(currentDataIndex + 1, routeList.length);
-      }
-      return {routeList: routeList}
-    default:
-      throw new Error("传入值不对")
-  }
-}
-
 const DictionaryManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
-  const [state, dispatch] = useReducer(reducer, ROUTE_LIST_STATE);
-
-  const [selectIds, setSelectIds] = useState<string[]>([]);
+  const [routeList, setRouteList] = useState<RouteListItem[]>([
+    {
+      name: '根目录',
+      id: '',
+    },
+  ]);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -99,7 +74,7 @@ const DictionaryManage: React.FC = () => {
 
   const updateStatus = async (record: any) => {
     const { id } = record;
-
+  
     await updateDictionaryItemStatus(id);
     refresh();
     message.success('状态修改成功');
@@ -133,14 +108,14 @@ const DictionaryManage: React.FC = () => {
   }
 
   const keyCellClickEvent = (id: string, name: string) => {
-    dispatch({ code: "add", id, name })
-    //setRouteList([...routeList, { id, name }]);
+
+    setRouteList([...routeList,{id,name}]);
     setSearchKeyWord('');
     searchByParams({
       keyWord: "", parentId: id
     });
   };
-
+  
   const columns = [
     {
       dataIndex: 'key',
@@ -202,7 +177,7 @@ const DictionaryManage: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          parentId: state.routeList[state.routeList.length - 1].id ?? "",
+          parentId: routeList[routeList.length - 1].id,
           key: '',
           value: '',
           extensionColumn: '',
@@ -274,13 +249,12 @@ const DictionaryManage: React.FC = () => {
           <EditOutlined />
           编辑
         </Button>
-
         <Popconfirm
           title="您确定要删除该条数据?"
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
-        // disabled
+          // disabled
         >
           <Button className="mr7">
             <DeleteOutlined />
@@ -288,23 +262,29 @@ const DictionaryManage: React.FC = () => {
           </Button>
         </Popconfirm>
         <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
-        <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" />
+        <TableExportButton selectIds={[]} exportUrl="/Dictionary/Export" />
       </div>
     );
   };
-
+ 
   const routeItemClickEvent = (id: string, name: string) => {
-    dispatch({code: "edit", id})
+    const copyRouteList = [...routeList];
+    const currentDataIndex = copyRouteList.findIndex((item) => item.id === id);
+
+    if (currentDataIndex !== copyRouteList.length) {
+      copyRouteList.splice(currentDataIndex + 1, copyRouteList.length);
+    }
+    setRouteList(copyRouteList);
     setSearchKeyWord('');
     searchByParams({
       keyWord: "", parentId: id
     });
   };
 
-  const routeElement = state.routeList.map((item) => {
+  const routeElement = routeList.map((item) => {
     return (
       <div
-        key={`menu_${item.id}`}
+        key={item.id}
         className={styles.routeItem}
         onClick={() => routeItemClickEvent(item.id, item.name)}
       >
@@ -322,10 +302,12 @@ const DictionaryManage: React.FC = () => {
     );
   };
 
-  const tableSelectEvent = (data: any) => {
-    setTableSelectRow(data)
-    setSelectIds(data.map((item: any) => item.id))
-  }
+  const currentId = useMemo(() => {
+    if(routeList && routeList.length > 1) {
+      return routeList[routeList.length - 1].id
+    }
+    return ""
+  }, [JSON.stringify(routeList)])
 
   return (
     <PageCommonWrap>
@@ -338,9 +320,9 @@ const DictionaryManage: React.FC = () => {
         columns={columns}
         url="/Dictionary/GetPagedList"
         tableTitle="系统字典"
-        getSelectData={tableSelectEvent}
+        getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
-        extractParams={{ keyWord: searchKeyWord, parentId: state.routeList[state.routeList.length - 1].id ?? "" }}
+        extractParams={{ keyWord: searchKeyWord, parentId: currentId}}
       />
       <Modal
         title="添加-字典"
@@ -352,7 +334,7 @@ const DictionaryManage: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ""} />
+          <DictionaryForm parentName={routeList[routeList.length - 1].name} />
         </Form>
       </Modal>
       <Modal
@@ -365,7 +347,7 @@ const DictionaryManage: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ""} />
+          <DictionaryForm parentName={routeList[routeList.length - 1].name} />
         </Form>
       </Modal>
     </PageCommonWrap>

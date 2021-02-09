@@ -70,6 +70,9 @@ ol {
 .flex {
   display: flex;
 }
+.flex1 {
+  flex: 1;
+}
 
 .mr7 {
   margin-right: 7px;
@@ -118,6 +121,9 @@ ol {
 
 .normalTabs.ant-tabs {
   .ant-tabs-nav {
+    &::before {
+      display: none;
+    }
     .ant-tabs-nav-wrap {
       .ant-tabs-nav-list {
         .ant-tabs-tab {

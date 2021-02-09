@@ -1,0 +1,78 @@
+.deliveryMange {
+  width: 100%;
+    height: 100%;
+  .deliveryManageStatisticCondition {
+    display: flex;
+
+    .deliverySelect {
+      flex: 1;
+
+      :global {
+        .ant-select {
+          .ant-select-selector {
+            height: 16px;
+
+            .ant-select-selection-item {
+              color: @index-to-do-item-color;
+              font-size: 10px;
+              line-height: 16px;
+            }
+          }
+
+          .ant-select-arrow {
+            color: @index-to-do-item-color;
+          }
+        }
+      }
+    }
+  }
+
+  .deliveryChart {
+    height: calc(100% - 56px);
+  }
+
+  .deliveryTime {
+    height: 16px;
+    display: flex;
+    .deliveryChooseTimeLabel {
+      font-size: 11px;
+      line-height: 20px;
+      color: @table-status-green-three;
+      padding-left: 18px;
+      padding-right: 14px;
+    }
+    .delivertChooseTime {
+      height: 20px;
+      width: 196px;
+      padding-left: 4px;
+      padding-right: 16px;
+      background-color: @time-choose-input-bg;
+      :global {
+        .ant-picker {
+          padding: 0;
+          height: 16px;
+          line-height: 1;
+          border: none;
+          .ant-picker-input {
+            height: 16px;
+            input {
+              height: 16px;
+              font-size: 12px;
+              line-height: 1;
+              color: @index-to-do-item-color;
+            }
+          }
+          .ant-picker-active-bar {
+            display: none;
+          }
+          .ant-picker-suffix {
+            color: @index-to-do-item-color;
+          }
+          .anticon-swap-right {
+            color: @index-to-do-item-color;
+          }
+        }
+      }
+    }
+  }
+}

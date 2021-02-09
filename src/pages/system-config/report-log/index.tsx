@@ -9,6 +9,7 @@ import { getFileLogDetail, deleteReportLog } from '@/services/system-config/repo
 import { useRequest } from 'ahooks';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
+import LogDetailTab from '../log-manage/components/tabs';
 import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
 
