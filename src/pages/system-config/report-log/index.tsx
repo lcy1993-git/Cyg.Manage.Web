@@ -1,13 +1,12 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Popconfirm } from 'antd';
+import { Button, Modal, message, Input, DatePicker, Popconfirm, Form } from 'antd';
 import React, { useRef, useState } from 'react';
 // import ManageUserForm from './components/form';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
 import { useRequest } from 'ahooks';
-import EnumSelect from '@/components/enum-select';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
 import LogDetailTab from '../log-manage/components/tabs';
@@ -15,18 +14,30 @@ import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
 
 const { Search } = Input;
+// const testJson = {
+//   Accept: 'application/json',
+//   Authorization:
+//     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzMDI5MjI3NzYwNTk4NjMwNDAiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNTk4NjMwNDEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDb21wYW55IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9jb21wYW55IjoiMTMwMjkyMjAwNzQyODQ4OTIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvaXNzdXBlcmFkbWluIjoiRmFsc2UiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2NsaWVudGlwIjoiMTAuNi45LjIzMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvZXhwaXJhdGlvbiI6IjIwMjEvMi8zIDE0OjUxOjAwIiwibmJmIjoxNjEyMjQ4NjYwLCJleHAiOjE2MTIzMzUwNjAsImlzcyI6ImN5Z0AyMDE5IiwiYXVkIjoiY3lnQDIwMTkifQ.OBKGGqa0vDYn9MqEn2yb93WWlWc6KyeMFCzESMaanKc',
+//   'Content-Length': '596',
+//   'Content-Type': 'application/json; charset=utf-8',
+//   Expect: '100-continue',
+//   Host: '10.6.1.36:8015',
+//   'X-Request-Id': '1356510666121211904',
+// };
 
 const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
-  const [searchContentKeyWord, setSearchContentKeyWord] = useState<string>('');
-
+  const [detail, setDetail] = useState<object>({});
   const [beginDate, setBeginDate] = useState<Moment | null>();
   const [endDate, setEndDate] = useState<Moment | null>();
   const [applications, setApplications] = useState<string | undefined>();
-
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
+
+  const { data, run } = useRequest(getFileLogDetail, {
+    manual: true,
+  });
 
   const rightButton = () => {
     return (
@@ -63,14 +74,20 @@ const ManageUser: React.FC = () => {
     message.success('删除成功');
   };
 
-  const searchEvent = () => {};
+  const searchEvent = () => {
+    search();
+  };
 
-  const checkDetailEvent = () => {
+  const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据查看详情');
       return;
     }
     setLogDetailVisible(true);
+    const checkId = tableSelectRows[0].id;
+    const LogDetail = await run(checkId);
+    setDetail(LogDetail);
+    console.log(detail);
   };
 
   //重置后，条件添加onChange事件重新获取value
@@ -91,9 +108,9 @@ const ManageUser: React.FC = () => {
         <TableSearch label="搜索" width="220px">
           <Search
             value={searchApiKeyWord}
-            onSearch={() => search({ keyWord: searchApiKeyWord })}
+            onSearch={() => search()}
             onChange={(e) => setSearchApiKeyWord(e.target.value)}
-            placeholder="文件/ip/用户"
+            placeholder="文件名/ip/用户"
             enterButton
             allowClear
           />
@@ -136,10 +153,10 @@ const ManageUser: React.FC = () => {
     );
   };
 
-  const search = (params: any) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search(params);
+      tableRef.current?.search();
     }
   };
   //数据修改刷新
@@ -153,7 +170,6 @@ const ManageUser: React.FC = () => {
   //重置搜索条件
   const resetEvent = () => {
     setSearchApiKeyWord('');
-    setSearchContentKeyWord('');
     setBeginDate(null);
     setEndDate(null);
     setApplications(undefined);
@@ -200,6 +216,12 @@ const ManageUser: React.FC = () => {
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
+        extractParams={{
+          keyWord: searchApiKeyWord,
+          application: applications,
+          beginTime: beginDate,
+          endTime: endDate,
+        }}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}
         getSelectData={(data) => setTableSelectRow(data)}
@@ -210,12 +232,12 @@ const ManageUser: React.FC = () => {
       />
       <Modal
         title="日志-详情"
-        width="900px"
+        width="980px"
         visible={logDetailVisible}
         onCancel={() => setLogDetailVisible(false)}
         footer={null}
       >
-        {/* <ReportLogDetail /> */}
+        <pre>{JSON.stringify(detail, null, 2)}</pre>
       </Modal>
     </PageCommonWrap>
   );

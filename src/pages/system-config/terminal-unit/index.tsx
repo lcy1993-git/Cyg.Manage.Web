@@ -263,9 +263,12 @@ const MapField: React.FC = () => {
         url="/TerminalUnit/GetPagedList"
         tableTitle="终端设备"
         getSelectData={(data) => setTableSelectRow(data)}
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
       />
       <Modal
-        title="添加-映射"
+        title="添加-终端设备"
         width="720px"
         visible={addFormVisible}
         okText="确认"
@@ -280,7 +283,7 @@ const MapField: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-        title="编辑-映射"
+        title="编辑-终端设备"
         width="680px"
         visible={editFormVisible}
         okText="确认"

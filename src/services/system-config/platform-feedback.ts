@@ -8,7 +8,7 @@ export enum SourceType {
   '管理端',
 }
 
-export enum CateGory {
+export enum Category {
   '全部',
   'Bug',
   '建议',
@@ -41,9 +41,9 @@ interface ItemDetailData extends SearchLogItemParams {
 }
 
 // 获取搜索结果列表
-export const getLogManageList = (parmas: SearchLogItemParams) => {
+export const getFeedbackList = (parmas: SearchLogItemParams) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Log/GetPagedList`, { method: 'POST', data: parmas }),
+    request(`${baseUrl.project}/Feedback/GetPagedList`, { method: 'POST', data: parmas }),
   );
 };
 
