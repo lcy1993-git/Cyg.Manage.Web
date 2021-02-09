@@ -21,6 +21,11 @@ export enum Status {
   '处理完成',
 }
 
+export enum HanleStatus {
+  "处理中" = 1,
+  "处理完成"
+}
+
 interface SearchLogItemParams {
   //开始搜索日期
   startDate: Date;
@@ -48,8 +53,8 @@ export const getFeedbackList = (parmas: SearchLogItemParams) => {
 };
 
 // 获取一条数据
-export const getLogManageDetail = (id: string) => {
+export const getFeedbackDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Log/GetById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/Feedback/GetDetailById`, { method: 'GET', params: { id } }),
   );
 };

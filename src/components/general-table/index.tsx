@@ -7,7 +7,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import { useMount, useRequest } from 'ahooks';
+import { useRequest } from 'ahooks';
 import { tableCommonRequest } from '@/services/table';
 import { Table, Pagination, message, Tooltip, Menu, Dropdown, Checkbox } from 'antd';
 import styles from './index.less';
@@ -204,15 +204,6 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       });
     }
   }));
-
-  useMount(() => {
-    run({
-      url: url,
-      extraParams: extractParams,
-      pageIndex: currentPage,
-      pageSize,
-    });
-  });
 
   useEffect(() => {
     const newColumns = columns.map((item) => ({ ...item, checked: true }));
