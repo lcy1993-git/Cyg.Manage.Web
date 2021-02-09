@@ -21,9 +21,10 @@ export enum Status {
   '处理完成',
 }
 
-export enum HanleStatus {
-  "处理中" = 1,
-  "处理完成"
+export enum HandleStatus {
+  '处理中' = 1,
+  '处理完成',
+  '待处理',
 }
 
 interface SearchLogItemParams {
@@ -45,6 +46,12 @@ interface ItemDetailData extends SearchLogItemParams {
   createdBy: string;
 }
 
+interface HandleFeedbackParams {
+  feedbackId: string;
+  content: string;
+  processStatus: number;
+}
+
 // 获取搜索结果列表
 export const getFeedbackList = (parmas: SearchLogItemParams) => {
   return cyRequest<ItemDetailData>(() =>
@@ -56,5 +63,11 @@ export const getFeedbackList = (parmas: SearchLogItemParams) => {
 export const getFeedbackDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
     request(`${baseUrl.project}/Feedback/GetDetailById`, { method: 'GET', params: { id } }),
+  );
+};
+// 保存反馈数据
+export const handleFeedback = (params: HandleFeedbackParams) => {
+  return cyRequest<ItemDetailData>(() =>
+    request(`${baseUrl.project}/Feedback/Handle`, { method: 'POST', data: params }),
   );
 };

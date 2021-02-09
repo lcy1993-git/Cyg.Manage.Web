@@ -1,10 +1,10 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { FormOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Select, Form } from 'antd';
+import { Button, Modal, message, Input, DatePicker, Form } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
-import { getFeedbackDetail } from '@/services/system-config/platform-feedback';
+import { getFeedbackDetail, handleFeedback } from '@/services/system-config/platform-feedback';
 import { useRequest } from 'ahooks';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
@@ -45,8 +45,6 @@ const PlatFormFeedBack: React.FC = () => {
       </div>
     );
   };
-
-  const searchEvent = () => {};
 
   const dealEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -206,7 +204,7 @@ const PlatFormFeedBack: React.FC = () => {
       index: 'processStatus',
       width: 180,
       render: (text: any, record: any) => {
-        return record.processStatusText;
+        return record.processStatus ? record.processStatusText : '待处理';
       },
     },
     {
@@ -224,8 +222,21 @@ const PlatFormFeedBack: React.FC = () => {
 
   const replyEvent = () => {
     form.validateFields().then(async (values) => {
-      console.log(values);
+      // console.log(values);
+      const dealData = tableSelectRows[0];
+      const dealInfo = Object.assign(
+        {
+          feedbackId: dealData.id,
+          content: dealData.content,
+          processStatus: dealData.processStatus,
+        },
+        values,
+      );
+      console.log(dealInfo);
+
+      await handleFeedback(dealInfo);
       message.success('信息提交成功');
+      tableFresh();
       setFeedBackDetailVisible(false);
     });
   };

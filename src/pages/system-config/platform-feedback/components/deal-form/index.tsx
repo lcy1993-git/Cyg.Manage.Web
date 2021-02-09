@@ -4,11 +4,11 @@ import ReadonlyItem from '@/components/readonly-item';
 import ReplyComponent from '@/components/reply-component';
 import moment from 'moment';
 import React from 'react';
-import styles from "./index.less";
-import {HanleStatus} from "@/services/system-config/platform-feedback";
-import {Input} from "antd";
+import styles from './index.less';
+import { HandleStatus } from '@/services/system-config/platform-feedback';
+import { Input } from 'antd';
 interface FeedBackFormProps {
-  detailData: any
+  detailData: any;
 }
 
 const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
@@ -18,11 +18,16 @@ const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
 
   const replyElement = replys.map((item: any, index: number) => {
     return (
-      <ReplyComponent className={styles.replyItem} time={item.createdOn} key={`reply_${index}`} name={item.userName}>
+      <ReplyComponent
+        className={styles.replyItem}
+        time={item.createdOn}
+        key={`reply_${index}`}
+        name={item.userName}
+      >
         {item.content}
       </ReplyComponent>
-    )
-  })
+    );
+  });
 
   return (
     <div className={styles.feedBackForm}>
@@ -30,57 +35,39 @@ const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
         <div className="flex">
           <div className="flex1">
             <ReadonlyItem label="反馈用户" align="left">
-              {
-                detailData.companyName
-              }
+              {detailData.companyName}
             </ReadonlyItem>
           </div>
           <div>
-            <span className="tipInfo">
-              {
-                detailData.phone ?? ""
-              }
-            </span>
+            <span className="tipInfo">{detailData.phone ?? ''}</span>
           </div>
           <div>
             <span className="tipInfo">
-              {
-                detailData.createdOn ? moment(detailData.createdOn).format("YYYY-MM-DD hh:mm:ss") : ""
-              }
+              {detailData.createdOn
+                ? moment(detailData.createdOn).format('YYYY-MM-DD hh:mm:ss')
+                : ''}
             </span>
           </div>
         </div>
         <div>
           <ReadonlyItem label="反馈标题" align="left">
-            {
-              detailData.title ?? ""
-            }
+            {detailData.title ?? ''}
           </ReadonlyItem>
         </div>
         <div>
           <ReadonlyItem label="内容" align="left">
-            {
-              detailData.describe ?? ""
-            }
+            {detailData.describe ?? ''}
           </ReadonlyItem>
         </div>
       </div>
-      {
-        replys &&
-        <div className={styles.handleInfo}>
-          {
-            replyElement
-          }
-        </div>
-      }
+      {replys && <div className={styles.handleInfo}>{replyElement}</div>}
       <div className={styles.handleForm}>
         <CyFormItem label="回复" labelWidth={50} name="processStatus">
-          <EnumSelect enumList={HanleStatus} />
+          <EnumSelect enumList={HandleStatus} />
         </CyFormItem>
-        <div style={{marginTop: "-14px"}}>
+        <div style={{ marginTop: '-14px' }}>
           <CyFormItem labelWidth={50} name="content">
             <Input.TextArea rows={4} />
-          
           </CyFormItem>
         </div>
       </div>
