@@ -171,13 +171,13 @@ const ProjectType: React.FC = () => {
                     </div>
                 </div>
                 <div className={styles.projectTypeChart}>
-                    <div className="flex1">
+                    <div style={{width: "33.3%"}}>
                         <AnnularFighure options={option} />
                     </div>
-                    <div className="flex1">
+                    <div style={{width: "33.3%"}}>
                         <AnnularFighure options={option1} />
                     </div>
-                    <div className="flex1">
+                    <div style={{width: "33.3%"}}>
                         <AnnularFighure options={option2} />
                     </div>
                 </div>

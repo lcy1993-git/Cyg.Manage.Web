@@ -5,17 +5,19 @@ import xinjiang from "../../json/xinjiang.json";
 import * as echarts from 'echarts';
 import "echarts/lib/chart/map";
 import 'echarts/lib/component/tooltip';
+import { useMount } from "ahooks";
 
 
 
 const MapChart:React.FC = () => {
 
     const divRef = useRef<HTMLDivElement>(null);
+    let myChart:any = null;
 
     const initChart = () => {
         if (divRef && divRef.current) {
             echarts.registerMap("xinjiang", xinjiang)
-            let myChart = echarts.init(divRef.current as HTMLDivElement);
+            myChart = echarts.init(divRef.current as HTMLDivElement);
             let option = {
                 tooltip: {
                     trigger: "item",
@@ -67,9 +69,28 @@ const MapChart:React.FC = () => {
 
     };
 
+    const resize = () => {
+        myChart.resize()
+    }
+
     useEffect(() => {
-        initChart();
+        window.addEventListener('resize', () => {
+			if (!divRef.current) { // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
+		        window.removeEventListener('resize', resize);
+		        return;
+		    }else {
+                resize()
+            }
+		});
+       
+        () => {
+            window.removeEventListener('resize', resize);
+        }
     });
+
+    useMount(() => {
+        initChart();
+    })
 
     return (
         <div style={{width: "100%", height: "100%"}}  ref={divRef} />

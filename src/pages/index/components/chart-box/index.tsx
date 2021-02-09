@@ -1,4 +1,4 @@
-import React,{useRef, useState} from "react";
+import React,{useRef, useState, useEffect} from "react";
 import styles from "./index.less";
 import ChartBoxLine from "@/pages/index/components/chart-box-line"
 import ChartBoxHalo from "../chart-box-halo";
@@ -13,16 +13,34 @@ const ChartBox: React.FC<ChartBoxProps> = (props) => {
     const divRef = useRef<HTMLDivElement>(null);
 
     const [thisBoxWidth, setThisBoxWidth] = useState(0);
-
+ 
     const { titleAlign = "center", title } = props;
     
     const boxAlignClassName = titleAlign === "center" ? styles.center : styles.left;
 
-    //const thisBoxWidth = divRef.current ? divRef.current.clientHeight : 500;
-
     useMount(() => {
         setThisBoxWidth(divRef.current ? divRef.current.clientWidth : 0)
     })
+
+    const setLineWidth = () => {
+        setThisBoxWidth(divRef.current ? divRef.current.clientWidth : 0)
+    }
+
+    useEffect(() => {
+        window.addEventListener('resize', () => {
+			if (!divRef.current) { // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
+		        window.removeEventListener('resize', setLineWidth);
+		        return;
+		    }else {
+                setLineWidth()
+            }
+		});
+       
+        () => {
+            window.removeEventListener('resize', setLineWidth);
+        }
+    })
+
 
     return (
         <div className={`${styles.chartBox} ${boxAlignClassName}`} ref={divRef}>

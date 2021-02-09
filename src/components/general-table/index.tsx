@@ -195,6 +195,14 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         extraParams: extractParams,
       });
     },
+    searchByParams: (params: object) => {
+      run({
+        url,
+        pageSize,
+        pageIndex: 1,
+        extraParams: params,
+      });
+    }
   }));
 
   useMount(() => {

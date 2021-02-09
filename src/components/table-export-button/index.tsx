@@ -32,6 +32,7 @@ const TableExportButton:React.FC<TableExportButtonProps> = (props) => {
             link.click();
             window.URL.revokeObjectURL(link.href);
         }
+        message.success("导出成功");
     }
 
     const exportAllRow = async () => {
@@ -53,6 +54,7 @@ const TableExportButton:React.FC<TableExportButtonProps> = (props) => {
             link.click();
             window.URL.revokeObjectURL(link.href);
         }
+        message.success("导出成功");
     }
 
     const importButoonMenu = (
