@@ -24,8 +24,6 @@ const { Search } = Input;
 const PlatformAuthorization: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
-  const [moduleIds, setModuleIds] = useState<string[]>([]);
-
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
@@ -35,6 +33,7 @@ const PlatformAuthorization: React.FC = () => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
+  const [apportionForm] = Form.useForm();
 
   const { data, run } = useRequest(getAuthorizationDetail, {
     manual: true,
@@ -73,7 +72,6 @@ const PlatformAuthorization: React.FC = () => {
 
   const updateStatus = async (record: any) => {
     const { id } = record;
-    console.log(record);
 
     await updateAuthorizationItemStatus(id);
     tableFresh();
@@ -133,19 +131,18 @@ const PlatformAuthorization: React.FC = () => {
     await getModuleTreeData(editDataId);
   };
 
-  // const setCheckedIds = (checkedValue: string[]) => {
-  //   setModuleIds(checkedValue);
-  // };
-
   //保存分配功能
   const sureDistribute = async () => {
-    const templateId = tableSelectRows[0].id;
-    console.log(moduleIds);
+    apportionForm.validateFields().then(async (values) => {
+      const templateId = tableSelectRows[0].id;
+      const {moduleIds} = values;
+      // console.log(moduleIds);
 
-    const modulesInfo = { templateId, moduleIds };
-    await updateAuthorizationModules(modulesInfo);
-    setDistributeFormVisible(false);
-    tableFresh();
+      // const modulesInfo = { templateId, moduleIds };
+      await updateAuthorizationModules({templateId,moduleIds});
+      setDistributeFormVisible(false);
+      tableFresh();
+    })
   };
 
   //授权
@@ -161,7 +158,7 @@ const PlatformAuthorization: React.FC = () => {
     await getModuleTreeData(editDataId);
   };
 
-  const sureAuthorization = () => {};
+  const sureAuthorization = () => { };
 
   //添加
   const addEvent = () => {
@@ -242,7 +239,7 @@ const PlatformAuthorization: React.FC = () => {
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
-          // disabled
+        // disabled
         >
           <Button className="mr7">
             <DeleteOutlined />
@@ -307,10 +304,13 @@ const PlatformAuthorization: React.FC = () => {
         onCancel={() => setDistributeFormVisible(false)}
         cancelText="取消"
       >
-        <CheckboxTreeTable
-          treeData={MoudleTreeData}
-          onChange={(checkedValue: string[]) => setModuleIds(checkedValue)}
-        />
+        <Form form={apportionForm}>
+          <Form.Item name="moduleIds">
+            <CheckboxTreeTable
+              treeData={MoudleTreeData}
+            />
+          </Form.Item>
+        </Form>
       </Modal>
       <Modal
         title="授权"
@@ -321,7 +321,7 @@ const PlatformAuthorization: React.FC = () => {
         onCancel={() => setAuthorizationFormVisible(false)}
         cancelText="取消"
       >
-        <CheckboxTreeTable />
+        {/* <CheckboxTreeTable /> */}
       </Modal>
     </PageCommonWrap>
   );
