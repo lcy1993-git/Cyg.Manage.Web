@@ -120,6 +120,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
       });
 
       setTableShowData(toTreeData(newData));
+      getSelectIds(toTreeData(newData))
     } else {
       const newData = flattenCopyData.map((item) => {
         if (childrenData.findIndex((ite: any) => item.id === ite.id) > -1) {
@@ -140,6 +141,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
       });
 
       setTableShowData(toTreeData(newData));
+      getSelectIds(toTreeData(newData))
     }
   };
 
@@ -176,6 +178,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
           return item;
         });
         setTableShowData(toTreeData(newData));
+        getSelectIds(toTreeData(newData))
         return;
       } else {
         const hasThisIdParentData: TreeDataItem[] = [];
@@ -203,6 +206,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
         });
 
         setTableShowData(toTreeData(newData));
+        getSelectIds(toTreeData(newData))
       }
     } else {
       const newData = flattenCopyData.map((item) => {
@@ -223,6 +227,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
         return item;
       });
       setTableShowData(toTreeData(newData));
+      getSelectIds(toTreeData(newData))
     }
   };
 
@@ -230,11 +235,10 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
    *  根据数据，获取被勾选的checkbox，返回出去
    *
    * */
-  useMemo(() => {
-    const copyData = JSON.parse(JSON.stringify(tableShowData));
+  const getSelectIds = (data: TreeDataItem[]) => {
+    const copyData = JSON.parse(JSON.stringify(data));
     const flattenCopyData = flatten<TreeDataItem>(copyData);
-    console.log(flattenCopyData);
-
+  
     // 左侧模块没被勾选。那么右侧一定不会有被勾选的。
     const checkedDataArray: string[] = [];
     flattenCopyData
@@ -247,14 +251,13 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
           }
         });
       });
-    console.log(checkedDataArray);
-
     onChange?.(checkedDataArray);
-  }, [JSON.stringify(tableShowData)]);
+  }
 
   useEffect(() => {
     const afterHandleData = handleJurisdictionData(treeData);
     setTableShowData(afterHandleData);
+    getSelectIds(afterHandleData)
   }, [JSON.stringify(treeData)]);
 
   const mapDataAllFalse = (data: any) => {
@@ -277,12 +280,14 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     const copyData: TreeDataItem[] = JSON.parse(JSON.stringify(tableShowData));
     const newData = copyData.map(mapAllDataTrue);
     setTableShowData(newData);
+    getSelectIds(toTreeData(newData))
   };
 
   const allNoCheckEvent = () => {
     const copyData: TreeDataItem[] = JSON.parse(JSON.stringify(tableShowData));
     const newData = copyData.map(mapDataAllFalse);
     setTableShowData(newData);
+    getSelectIds(toTreeData(newData))
   };
 
   const tableAllCheckedButton = () => {

@@ -32,8 +32,6 @@ const ManageUser: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [resetFormVisible, setResetFormVisible] = useState<boolean>(false);
 
-  const [status, setStatus] = useState<number>();
-
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const { data, run, loading } = useRequest(getManageUserDetail, {
@@ -130,10 +128,9 @@ const ManageUser: React.FC = () => {
     setEditFormVisible(true);
 
     const ManageUserData = await run(editDataId);
-    console.log(ManageUserData);
-    editForm.setFieldsValue(ManageUserData);
-    setStatus(ManageUserData.userStatus);
-    console.log(status);
+
+    editForm.setFieldsValue({...ManageUserData, userStatus: String(ManageUserData.userStatus)});
+   
   };
 
   const sureEditManageUser = () => {
@@ -303,7 +300,7 @@ const ManageUser: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <ManageUserForm type="add" status={status} />
+          <ManageUserForm type="add" />
         </Form>
       </Modal>
       <Modal
@@ -317,7 +314,7 @@ const ManageUser: React.FC = () => {
       >
         <Form form={editForm}>
           <Spin spinning={loading}>
-            <ManageUserForm status={status} />
+            <ManageUserForm />
           </Spin>
         </Form>
       </Modal>
