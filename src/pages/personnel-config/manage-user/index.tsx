@@ -26,7 +26,7 @@ const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
 
-  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -235,6 +235,9 @@ const ManageUser: React.FC = () => {
       dataIndex: 'roleType',
       index: 'roleType',
       width: 120,
+      render: (text: any, record: any) => {
+        return record.roleType ? record.roleTypeText : record.roleType;
+      },
     },
     {
       title: '角色',
@@ -255,12 +258,12 @@ const ManageUser: React.FC = () => {
   const leftSearch = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="关键词" width="208px">
+        <TableSearch label="关键词" width="280px">
           <Search
-            value={searchApiKeyWord}
-            onSearch={() => search({ keyWord: searchApiKeyWord })}
-            onChange={(e) => setSearchApiKeyWord(e.target.value)}
-            placeholder="请输入关键词"
+            value={searchKeyWord}
+            onSearch={() => search({ keyWord: searchKeyWord })}
+            onChange={(e) => setSearchKeyWord(e.target.value)}
+            placeholder="输入用户名/昵称/姓名搜索"
             enterButton
           />
         </TableSearch>
@@ -281,6 +284,9 @@ const ManageUser: React.FC = () => {
         tableTitle="管理用户"
         url="/ManageUser/GetPagedList"
         columns={columns}
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
       />
       <Modal
         title="添加-管理用户"

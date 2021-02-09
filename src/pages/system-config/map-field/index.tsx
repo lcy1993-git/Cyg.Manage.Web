@@ -151,10 +151,14 @@ const MapField: React.FC = () => {
 
   //编辑
   const editEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
       message.error('请选择一条数据进行编辑');
       return;
     }
+
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
@@ -241,6 +245,9 @@ const MapField: React.FC = () => {
         tableTitle="数据映射"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
       />
       <Modal
         title="添加-映射"

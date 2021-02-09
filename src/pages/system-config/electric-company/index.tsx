@@ -47,19 +47,19 @@ const ElectricCompany: React.FC = () => {
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            onSearch={() => tableSearchEvent()}
+            onSearch={() => search()}
             enterButton
             placeholder="区域/公司/供电所"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="选择区域" width="230px">
+        <TableSearch marginLeft="20px" label="选择区域" width="260px">
           <UrlSelect
             showSearch
             url="/Area/GetList?pId=-1"
             titleKey="text"
             valueKey="value"
             placeholder="请选择"
-            onChange={searchBySelectProvince}
+            onChange={(value: any) => searchBySelectProvince(value)}
           />
         </TableSearch>
       </div>
@@ -67,11 +67,9 @@ const ElectricCompany: React.FC = () => {
   };
 
   //选择省份onChange事件
-  const searchBySelectProvince = (text: any) => {
-    console.log(text);
-    search({
-      keyWord: text,
-    });
+  const searchBySelectProvince = (value: any) => {
+    console.log(value);
+    search();
   };
 
   const sureDeleteData = async () => {
@@ -87,12 +85,6 @@ const ElectricCompany: React.FC = () => {
     message.success('删除成功');
   };
 
-  const tableSearchEvent = () => {
-    search({
-      keyWord: searchKeyWord,
-    });
-  };
-
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
@@ -102,10 +94,10 @@ const ElectricCompany: React.FC = () => {
   };
 
   // 列表搜索
-  const search = (params: object) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search(params);
+      tableRef.current.search();
     }
   };
 
@@ -256,6 +248,9 @@ const ElectricCompany: React.FC = () => {
         tableTitle="电力公司"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
       />
       <Modal
         title="添加-公司"

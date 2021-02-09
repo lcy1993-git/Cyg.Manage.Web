@@ -1,27 +1,25 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { FormOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker } from 'antd';
+import { Button, Modal, message, Input, DatePicker, Select } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
-import {
-  getLogManageDetail,
-} from '@/services/system-config/platform-feedback';
+import { getFeedbackList } from '@/services/system-config/platform-feedback';
 import { useRequest } from 'ahooks';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
 import FeedBackFormfrom from './components/deal-form';
 import moment, { Moment } from 'moment';
-import { CateGory, SourceType, Status } from '@/services/system-config/platform-feedback';
 import EnumSelect from '@/components/enum-select';
+import { SourceType, Category, Status } from '@/services/system-config/platform-feedback';
 
 const { Search } = Input;
+const { Option } = Select;
 
 const PlatFormFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
-  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
-  const [searchContentKeyWord, setSearchContentKeyWord] = useState<string>('');
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const [beginDate, setBeginDate] = useState<Moment | null>();
   const [endDate, setEndDate] = useState<Moment | null>();
@@ -42,8 +40,6 @@ const PlatFormFeedBack: React.FC = () => {
     );
   };
 
-  const searchEvent = () => {};
-
   const dealEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据查看详情');
@@ -52,23 +48,15 @@ const PlatFormFeedBack: React.FC = () => {
     setFeedBackDetailVisible(true);
   };
 
-  //重置后，条件添加onChange事件重新获取value
-  const handleBeginDate = (value: any) => {
-    setBeginDate(value);
-  };
-  const handleEndDate = (value: any) => {
-    setEndDate(value);
-  };
-
   const leftSearchElement = () => {
     return (
       <div className={styles.searchGroup}>
         <TableSearch label="搜索" width="208px">
           <Search
-            value={searchApiKeyWord}
-            onSearch={() => search({ keyWord: searchApiKeyWord })}
-            onChange={(e) => setSearchApiKeyWord(e.target.value)}
-            placeholder="搜索关键词"
+            value={searchKeyWord}
+            onSearch={() => search()}
+            onChange={(e) => setSearchKeyWord(e.target.value)}
+            placeholder="输入标题搜索"
             enterButton
           />
         </TableSearch>
@@ -76,40 +64,41 @@ const PlatFormFeedBack: React.FC = () => {
         <TableSearch label="筛选" width="900px" marginLeft="15px">
           <div className={styles.filter}>
             <EnumSelect
+              enumList={SourceType}
               value={sourceType}
               className={styles.enumSelect}
-              enumList={SourceType}
               placeholder="来源"
+              onChange={(value: any) => setSourceType(value)}
             />
             <EnumSelect
+              enumList={Category}
               value={category}
               className={styles.enumSelect}
-              enumList={CateGory}
               placeholder="类别"
+              onChange={(value: any) => setCategory(value)}
             />
             <EnumSelect
+              enumList={Status}
               value={feedbackStatus}
               className={styles.enumSelect}
-              enumList={Status}
               placeholder="状态"
+              onChange={(value: any) => setFeedbackStatus(value)}
             />
             <DatePicker
               value={beginDate}
               showTime={{ format: 'HH:mm' }}
-              onChange={handleBeginDate}
+              onChange={(value: any) => setBeginDate(value)}
               format="YYYY-MM-DD HH:mm"
-              onOk={chooseBeginDate}
               placeholder="开始日期"
             />
             <DatePicker
               value={endDate}
               showTime={{ format: 'HH:mm' }}
-              onChange={handleEndDate}
+              onChange={(value: any) => setEndDate(value)}
               format="YYYY-MM-DD HH:mm"
               placeholder="结束日期"
-              onOk={chooseEndDate}
             />
-            <Button type="primary" className="mr7" onClick={() => searchEvent()}>
+            <Button type="primary" className="mr7" onClick={() => search()}>
               查询
             </Button>
             <Button className="mr7" onClick={() => resetEvent()}>
@@ -121,17 +110,10 @@ const PlatFormFeedBack: React.FC = () => {
     );
   };
 
-  const chooseBeginDate = (value: any) => {
-    console.log('onOk: ', value);
-  };
-  const chooseEndDate = (value: any) => {
-    console.log('onOk: ', value);
-  };
-
-  const search = (params: any) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search(params);
+      tableRef.current?.search();
     }
   };
   //数据修改刷新
@@ -144,8 +126,7 @@ const PlatFormFeedBack: React.FC = () => {
 
   //重置搜索条件
   const resetEvent = () => {
-    setSearchApiKeyWord('');
-    setSearchContentKeyWord('');
+    setSearchKeyWord('');
     setBeginDate(null);
     setEndDate(null);
     setCategory(undefined);
@@ -206,7 +187,7 @@ const PlatFormFeedBack: React.FC = () => {
       index: 'createdOn',
       width: 200,
       render: (text: any, record: any) => {
-        return moment(record.createdOn).format('YYYY-MM-DD hh:mm:ss');
+        return moment(record.createdOn).format('YYYY-MM-DD hh:mm');
       },
     },
     {
@@ -225,11 +206,12 @@ const PlatFormFeedBack: React.FC = () => {
       width: 200,
       render: (text: any, record: any) => {
         return record.lastProcessDate
-          ? moment(record.lastProcessDate).format('YYYY-MM-DD hh:mm:ss')
+          ? moment(record.lastProcessDate).format('YYYY-MM-DD hh:mm')
           : null;
       },
     },
   ];
+  console.log(sourceType);
 
   return (
     <PageCommonWrap>
@@ -241,6 +223,14 @@ const PlatFormFeedBack: React.FC = () => {
         tableTitle="反馈列表"
         url="/Feedback/GetPagedList"
         columns={columns}
+        extractParams={{
+          keyWord: searchKeyWord,
+          sourceType: sourceType,
+          category: category,
+          status: feedbackStatus,
+          startDate: beginDate,
+          endDate: endDate,
+        }}
       />
       <Modal
         title="反馈处理"

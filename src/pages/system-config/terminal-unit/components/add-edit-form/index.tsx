@@ -1,7 +1,8 @@
 import React from 'react';
 import { Input, DatePicker } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
-import rule from '../rules';
+import rule from '../rule';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 const MapFieldForm: React.FC = () => {
   return (
@@ -20,7 +21,7 @@ const MapFieldForm: React.FC = () => {
       </CyFormItem>
 
       <CyFormItem label="差分密码" name="differentialPwd" required rules={rule.differentialPwd}>
-        <Input placeholder="请输入密码" />
+        <Input type="password" placeholder="请输入密码" />
       </CyFormItem>
 
       <CyFormItem label="到期时间" name="expiryTime" required rules={rule.expiryTime}>
