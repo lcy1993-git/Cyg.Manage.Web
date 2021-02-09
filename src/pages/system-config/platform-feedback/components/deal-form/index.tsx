@@ -1,26 +1,52 @@
-import { Tabs } from 'antd';
+import ReadonlyItem from '@/components/readonly-item';
 import React from 'react';
+import styles from "./index.less";
 
-const { TabPane } = Tabs;
+interface FeedBackFormProps {
+  detailData: any
+}
 
-const FeedBackForm: React.FC = () => {
-  const callback = (key: any) => {
-    console.log(key);
-  };
+const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
+  const { detailData } = props;
+
   return (
-    <>
-      <Tabs onChange={callback} type="card">
-        <TabPane tab="Tab 1" key="1">
-          Content of Tab Pane 1
-        </TabPane>
-        <TabPane tab="Tab 2" key="2">
-          Content of Tab Pane 2
-        </TabPane>
-        <TabPane tab="Tab 3" key="3">
-          Content of Tab Pane 3
-        </TabPane>
-      </Tabs>
-    </>
+    <div style={styles.feedBackForm}>
+      <div className={styles.feedBackInfo}>
+        <div className="flex">
+          <div className="flex1">
+            <ReadonlyItem label="反馈用户" align="left">
+
+            </ReadonlyItem>
+          </div>
+          <div>
+            <span className="tipInfo">
+
+            </span>
+          </div>
+          <div>
+            <span className="tipInfo">
+
+            </span>
+          </div>
+        </div>
+        <div>
+          <ReadonlyItem label="反馈标题" align="left">
+
+          </ReadonlyItem>
+        </div>
+        <div>
+          <ReadonlyItem label="内容" align="left">
+
+          </ReadonlyItem>
+        </div>
+      </div>
+      <div className={styles.handleInfo}>
+      
+      </div>
+      <div className={styles.handleForm}>
+
+      </div>
+    </div>
   );
 };
 

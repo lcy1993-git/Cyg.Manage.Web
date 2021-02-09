@@ -14,6 +14,7 @@ import FeedBackFormfrom from './components/deal-form';
 import moment, { Moment } from 'moment';
 import { CateGory, SourceType, Status } from '@/services/system-config/platform-feedback';
 import EnumSelect from '@/components/enum-select';
+import { Spin } from 'antd';
 
 const { Search } = Input;
 
@@ -31,6 +32,8 @@ const PlatFormFeedBack: React.FC = () => {
 
   const [feedbackDetailVisible, setFeedBackDetailVisible] = useState<boolean>(false);
 
+  const { data: detailData, loading, run: getDetailData } = useRequest(getLogManageDetail, { manual: true })
+
   const rightButton = () => {
     return (
       <div>
@@ -42,14 +45,17 @@ const PlatFormFeedBack: React.FC = () => {
     );
   };
 
-  const searchEvent = () => {};
+  const searchEvent = () => { };
 
-  const dealEvent = () => {
+  const dealEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据查看详情');
       return;
     }
     setFeedBackDetailVisible(true);
+
+    await getDetailData(tableSelectRows[0].id);
+
   };
 
   //重置后，条件添加onChange事件重新获取value
@@ -249,7 +255,9 @@ const PlatFormFeedBack: React.FC = () => {
         onCancel={() => setFeedBackDetailVisible(false)}
         footer={null}
       >
-        <FeedBackFormfrom />
+        <Spin spinning={loading}>
+          <FeedBackFormfrom detailData={detailData} />
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );
