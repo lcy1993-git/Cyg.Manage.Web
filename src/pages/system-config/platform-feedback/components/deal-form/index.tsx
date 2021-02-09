@@ -1,50 +1,88 @@
+import CyFormItem from '@/components/cy-form-item';
+import EnumSelect from '@/components/enum-select';
 import ReadonlyItem from '@/components/readonly-item';
+import ReplyComponent from '@/components/reply-component';
+import moment from 'moment';
 import React from 'react';
 import styles from "./index.less";
-
+import {HanleStatus} from "@/services/system-config/platform-feedback";
+import {Input} from "antd";
 interface FeedBackFormProps {
   detailData: any
 }
 
 const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
-  const { detailData } = props;
+  const { detailData = {} } = props;
+
+  const { replys = [] } = detailData;
+
+  const replyElement = replys.map((item: any, index: number) => {
+    return (
+      <ReplyComponent className={styles.replyItem} time={item.createdOn} key={`reply_${index}`} name={item.userName}>
+        {item.content}
+      </ReplyComponent>
+    )
+  })
 
   return (
-    <div style={styles.feedBackForm}>
+    <div className={styles.feedBackForm}>
       <div className={styles.feedBackInfo}>
         <div className="flex">
           <div className="flex1">
             <ReadonlyItem label="反馈用户" align="left">
-
+              {
+                detailData.companyName
+              }
             </ReadonlyItem>
           </div>
           <div>
             <span className="tipInfo">
-
+              {
+                detailData.phone ?? ""
+              }
             </span>
           </div>
           <div>
             <span className="tipInfo">
-
+              {
+                detailData.createdOn ? moment(detailData.createdOn).format("YYYY-MM-DD hh:mm:ss") : ""
+              }
             </span>
           </div>
         </div>
         <div>
           <ReadonlyItem label="反馈标题" align="left">
-
+            {
+              detailData.title ?? ""
+            }
           </ReadonlyItem>
         </div>
         <div>
           <ReadonlyItem label="内容" align="left">
-
+            {
+              detailData.describe ?? ""
+            }
           </ReadonlyItem>
         </div>
       </div>
-      <div className={styles.handleInfo}>
-      
-      </div>
+      {
+        replys &&
+        <div className={styles.handleInfo}>
+          {
+            replyElement
+          }
+        </div>
+      }
       <div className={styles.handleForm}>
-
+        <CyFormItem label="回复" labelWidth={50} name="processStatus">
+          <EnumSelect enumList={HanleStatus} />
+        </CyFormItem>
+        <div style={{marginTop: "-14px"}}>
+          <CyFormItem labelWidth={50} name="content">
+            <Input.TextArea rows={4} />
+          
+          </CyFormItem>
+        </div>
       </div>
     </div>
   );

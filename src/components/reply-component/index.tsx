@@ -5,12 +5,13 @@ import styles from "./index.less";
 interface ReplyComponentProps {
     name:string,
     time: string | Moment
+    className: string
 }
 
 const ReplyComponent:React.FC<ReplyComponentProps> = (props) => {
-    const {name,time} = props;
+    const {name,time,className} = props;
     return (
-        <div className={styles.replyComponent}>
+        <div className={`${styles.replyComponent} ${className}`}>
             <div className={styles.replyComponentTitle}>
                 <span className={styles.replyPerson}>
                     {name}

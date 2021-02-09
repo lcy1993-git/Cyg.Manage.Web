@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { FormOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker } from 'antd';
+import { Button, Modal, message, Input, DatePicker, Select, Form } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFeedbackDetail } from '@/services/system-config/platform-feedback';
@@ -32,6 +32,8 @@ const PlatFormFeedBack: React.FC = () => {
   const { data: detailData, loading, run: getDetailData } = useRequest(getFeedbackDetail, {
     manual: true,
   });
+
+  const [form] = Form.useForm();
 
   const rightButton = () => {
     return (
@@ -220,6 +222,14 @@ const PlatFormFeedBack: React.FC = () => {
     },
   ];
 
+  const replyEvent = () => {
+    form.validateFields().then(async (values) => {
+      console.log(values);
+      message.success('信息提交成功');
+      setFeedBackDetailVisible(false);
+    });
+  };
+
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -241,13 +251,16 @@ const PlatFormFeedBack: React.FC = () => {
       />
       <Modal
         title="反馈处理"
-        width="900px"
+        width="650px"
         visible={feedbackDetailVisible}
         onCancel={() => setFeedBackDetailVisible(false)}
-        footer={null}
+        okText="提交"
+        onOk={replyEvent}
       >
         <Spin spinning={loading}>
-          <FeedBackFormfrom detailData={detailData} />
+          <Form form={form}>
+            <FeedBackFormfrom detailData={detailData} />
+          </Form>
         </Spin>
       </Modal>
     </PageCommonWrap>
