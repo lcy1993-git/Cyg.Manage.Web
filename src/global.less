@@ -120,6 +120,11 @@ ol {
 }
 
 .normalTabs.ant-tabs {
+  &.noMargin {
+    .ant-tabs-nav {
+      margin-bottom: 0px;
+    }
+  }
   .ant-tabs-nav {
     &::before {
       display: none;
@@ -143,4 +148,11 @@ ol {
 .tipInfo {
   font-size: 12px;
   color: @gray-color;
+}
+
+.colorPrimary {
+  color: @primary-color;
+}
+.colorRed {
+  color: @red-color;
 }

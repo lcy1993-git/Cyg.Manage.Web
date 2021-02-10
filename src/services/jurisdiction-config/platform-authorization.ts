@@ -85,3 +85,24 @@ export const updateAuthorizationModules = (params: any) => {
     request(`${baseUrl.project}/AuthTemplate/UpdateModules`, { method: 'POST', data: params }),
   );
 };
+
+interface BatchAddAuthorizationParams {
+  templateId: string
+  authorizeType: 1 | 2
+  objectIds: string[]
+}
+
+// 批量授权
+export const batchAddAuthorization = (params: BatchAddAuthorizationParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/AuthTemplate/AddAuthorize`, { method: 'POST', data: params }),
+  );
+}
+
+// 批量移除授权
+// 批量授权
+export const batchRemoveAuthorization = (params: BatchAddAuthorizationParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/AuthTemplate/RemoveAuthorize`, { method: 'POST', data: params }),
+  );
+}

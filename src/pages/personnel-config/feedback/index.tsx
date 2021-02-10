@@ -6,30 +6,27 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import {
   getUserFeedBackDetail,
   addUserFeedBackItem,
-  getFeedBackList,
+  replyTheFeedback,
 } from '@/services/personnel-config/feedback';
-import { isArray } from 'lodash';
-import UserFeedBackForm from '../feedback/form';
+import UserFeedBackForm from './components/form';
 import GeneralTable from '@/components/general-table';
+import moment from 'moment';
+import { Spin } from 'antd';
+import FeedbackDetail from './components/detail';
 
 const UserFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [checkFormVisible, setCheckFormVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [replyForm] = Form.useForm();
 
-  //   const { data, run } = useRequest(getUserFeedBackDetail, {
-  //     manual: true,
-  //   });
-
-  const { data } = useRequest(getFeedBackList, {
+  const { data: detailData = {}, run: getDetailData , loading} = useRequest(getUserFeedBackDetail, {
     manual: true,
   });
-  console.log(data);
 
   //数据修改，局部刷新
   const tableFresh = () => {
@@ -50,21 +47,33 @@ const UserFeedBack: React.FC = () => {
       title: '标题',
       dataIndex: 'title',
       index: 'title',
+      width: 140,
     },
     {
       title: '处理日期',
-      dataIndex: 'lastProcessData',
-      index: 'lastProcessData',
+      dataIndex: 'lastProcessDate',
+      index: 'lastProcessDate',
+      render: (text: string) => {
+        return (
+          <span>{text ? moment(text).format("YYYY-MM-DD hh:mm:ss") : ""}</span>
+        )
+      }
     },
     {
       title: '状态',
-      dataIndex: 'processStatus',
-      index: 'processStatus',
+      dataIndex: 'processStatusText',
+      index: 'processStatusText',
+      width: 170,
     },
     {
       title: '反馈日期',
       dataIndex: 'createdOn',
       index: 'createdOn',
+      render: (text: string) => {
+        return (
+          <span>{text ? moment(text).format("YYYY-MM-DD hh:mm:ss") : ""}</span>
+        )
+      }
     },
   ];
 
@@ -83,11 +92,33 @@ const UserFeedBack: React.FC = () => {
     );
   };
 
-  const checkEvent = () => {
+  const checkEvent = async () => {
+    if (tableSelectRows && tableSelectRows.length === 0) {
+      message.error("请至少选择一条数据");
+      return
+    }
+    await getDetailData(tableSelectRows[0].id);
     setCheckFormVisible(true);
   };
 
-  const sureCheckFeedBack = async () => {};
+  const sureCheckFeedBack = () => {
+    replyForm.validateFields().then(async (values) => {
+      if (tableSelectRows && tableSelectRows.length === 0) {
+        message.error("请至少选择一条数据");
+        return
+      }
+
+      const {content} = values;
+
+      const feedbackId = tableSelectRows[0].id;
+
+      await replyTheFeedback({feedbackId,content});
+
+      message.success("回复成功");
+      setCheckFormVisible(false);
+      tableFresh();
+    })
+  };
 
   const addEvent = async () => {
     setAddFormVisible(true);
@@ -104,8 +135,6 @@ const UserFeedBack: React.FC = () => {
         },
         value,
       );
-      console.log(submitInfo);
-
       await addUserFeedBackItem(submitInfo);
       tableFresh();
       setAddFormVisible(false);
@@ -116,6 +145,8 @@ const UserFeedBack: React.FC = () => {
   return (
     <PageCommonWrap>
       <GeneralTable
+        noPaging={true}
+        requestSource="common"
         ref={tableRef}
         tableTitle="用户反馈"
         columns={feedBackColumns}
@@ -137,7 +168,7 @@ const UserFeedBack: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-        title="查看-公司"
+        title="回复-反馈"
         width="680px"
         visible={checkFormVisible}
         okText="确认"
@@ -145,9 +176,11 @@ const UserFeedBack: React.FC = () => {
         onCancel={() => setCheckFormVisible(false)}
         cancelText="取消"
       >
-        <Form form={editForm}>
-          <UserFeedBackForm />
-        </Form>
+        <Spin spinning={loading}>
+          <Form form={replyForm}>
+            <FeedbackDetail detailInfo={detailData} />
+          </Form>
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

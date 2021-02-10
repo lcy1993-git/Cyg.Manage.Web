@@ -30,17 +30,21 @@ export interface ItemDetailData extends UserFeedBackItemParams {
 //获取选中数据
 export const getUserFeedBackDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Feedback/GetDetail`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.common}/Feedback/GetDetail`, { method: 'GET', params: { id } }),
   );
 };
 
 //新增公司用户
 export const addUserFeedBackItem = (params: AddUserFeedBackItem) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Feedback/Create`, { method: 'POST', data: params }),
+    request(`${baseUrl.common}/Feedback/Create`, { method: 'POST', data: params }),
   );
 };
 
 export const getFeedBackList = () => {
   return cyRequest(() => request(`${baseUrl.common}/Feedback/GetList`, { method: 'POST' }));
 };
+
+export const replyTheFeedback = (params: any) => {
+  return cyRequest(() => request(`${baseUrl.common}/Feedback/Reply`, { method: 'POST', data: params }));
+}

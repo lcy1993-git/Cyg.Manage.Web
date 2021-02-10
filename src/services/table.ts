@@ -6,6 +6,7 @@ interface TableCommonRequestParams {
     pageSize: number
     url: string
     extraParams?: object
+    requestSource?: "project" | "common"
 }
 
 export interface TableRequestResult {
@@ -17,7 +18,11 @@ export interface TableRequestResult {
 }
 
 export const tableCommonRequest = (params: TableCommonRequestParams): Promise<TableRequestResult> => {
-    return cyRequest<TableRequestResult>(() => request(`${baseUrl.project}${params.url}`,{method: "Post", data: {...params.extraParams,PageIndex: params.pageIndex, PageSize: params.pageSize}}))
+    let requestBaseUrl = baseUrl.project;
+    if(params.requestSource === "common") {
+        requestBaseUrl = baseUrl.common
+    }
+    return cyRequest<TableRequestResult>(() => request(`${requestBaseUrl}${params.url}`,{method: "Post", data: {...params.extraParams,PageIndex: params.pageIndex, PageSize: params.pageSize}}))
 }
 
 interface TreeTableParams {

@@ -16,7 +16,7 @@ const withCyFormItemProps = <P extends {}>(WrapperComponent: React.ComponentType
   const { className = '', labelWidth = 90, label = '', align = 'left', required, ...rest } = props;
 
   const isRequiredClassName = required ? styles.required : '';
-  const lableAlign = align === 'right' ? styles.right : '';
+  const lableAlign = (align === 'right') ? styles.right : '';
 
   return (
     <div className={`${styles.cyFormItem} ${className}`}>

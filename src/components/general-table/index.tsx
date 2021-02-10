@@ -39,6 +39,12 @@ interface GeneralTableProps {
   columns: any[];
 
   type?: TableSelectType;
+
+  rowKey?: string
+
+  requestSource?: "project" | "common"
+
+  noPaging?: boolean
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -59,6 +65,9 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     buttonRightContentSlot,
     otherSlot,
     type = 'radio',
+    rowKey = "id",
+    requestSource = "project",
+    noPaging = false,
     ...rest
   } = props;
 
@@ -71,42 +80,53 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const tableRef = useRef<HTMLDivElement>(null);
 
   const { data, run } = useRequest(tableCommonRequest, {
-    ready: !!url,
-    refreshDeps: [JSON.stringify(extractParams), currentPage, pageSize],
     manual: true,
   });
 
   const tableResultData = useMemo(() => {
-    if (data) {
-      const { items, pageIndex, pageSize, total } = data;
-
+    if (!noPaging) {
+      if (data) {
+        const { items, pageIndex, pageSize, total } = data;
+        return {
+          items: items ?? [],
+          pageIndex,
+          pageSize,
+          total,
+          dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
+          dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
+        };
+      }
       return {
-        items: items ?? [],
-        pageIndex,
-        pageSize,
-        total,
-        dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
-        dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
+        items: [],
+        pageIndex: 1,
+        pageSize: 20,
+        total: 0,
+        dataStartIndex: 0,
+        dataEndIndex: 0,
+      };
+    } else {
+      if (data) {
+        return {
+          items: data ?? [],
+        };
+      }
+      return {
+        items: [],
       };
     }
-    return {
-      items: [],
-      pageIndex: 1,
-      pageSize: 20,
-      total: 0,
-      dataStartIndex: 0,
-      dataEndIndex: 0,
-    };
   }, [JSON.stringify(data)]);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
+      setSelectedRowKeys(selectedRows.map((item) => item[rowKey]));
       getSelectData?.(selectedRows);
     },
   };
 
   // 改变视图
-  const changeView = () => {};
+  const changeView = () => { };
 
   const columnChangeEvent = (value: boolean, dataIndex: string) => {
     const copyColumns = [...finallyColumns];
@@ -140,6 +160,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       extraParams: extractParams,
       pageIndex: currentPage,
       pageSize,
+      requestSource
     });
     message.success('刷新成功');
   };
@@ -174,6 +195,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       extraParams: extractParams,
       pageIndex: currentPage,
       pageSize,
+      requestSource
     });
   }, [pageSize, currentPage]);
 
@@ -185,23 +207,32 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         extraParams: extractParams,
         pageIndex: currentPage,
         pageSize,
+        requestSource
       });
     },
     search: () => {
+      setCurrentPage(1);
       run({
         url,
         pageSize,
         pageIndex: 1,
         extraParams: extractParams,
+        requestSource
       });
     },
     searchByParams: (params: object) => {
+      setCurrentPage(1);
       run({
         url,
         pageSize,
         pageIndex: 1,
         extraParams: params,
+        requestSource
       });
+    },
+    reset: () => {
+      setCurrentPage(1);
+      setSelectedRowKeys([]);
     }
   }));
 
@@ -251,7 +282,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           bordered={true}
           dataSource={tableResultData.items}
           pagination={false}
-          rowKey="id"
+          rowKey={rowKey}
           columns={finallyColumns.filter((item) => item.checked)}
           locale={{
             emptyText: <EmptyTip className="pt20 pb20" />,
@@ -259,35 +290,39 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           rowSelection={{
             type: type,
             columnWidth: '38px',
+            selectedRowKeys: selectedRowKeys,
             ...rowSelection,
           }}
           {...((rest as unknown) as P)}
         />
       </div>
-      <div className={styles.cyGeneralTablePaging}>
-        <div className={styles.cyGeneralTablePagingLeft}>
-          <span>显示第</span>
-          <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
-          <span>到第</span>
-          <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
-          <span>条记录,总共</span>
-          <span className={styles.importantTip}>{tableResultData.total}</span>
-          <span>条记录</span>
+      {
+        !noPaging &&
+        <div className={styles.cyGeneralTablePaging}>
+          <div className={styles.cyGeneralTablePagingLeft}>
+            <span>显示第</span>
+            <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
+            <span>到第</span>
+            <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
+            <span>条记录,总共</span>
+            <span className={styles.importantTip}>{tableResultData.total}</span>
+            <span>条记录</span>
+          </div>
+          <div className={styles.cyGeneralTablePagingRight}>
+            <Pagination
+              pageSize={pageSize}
+              onChange={currentPageChange}
+              size="small"
+              total={tableResultData.total}
+              current={currentPage}
+              hideOnSinglePage={true}
+              showSizeChanger
+              showQuickJumper
+              onShowSizeChange={pageSizeChange}
+            />
+          </div>
         </div>
-        <div className={styles.cyGeneralTablePagingRight}>
-          <Pagination
-            pageSize={pageSize}
-            onChange={currentPageChange}
-            size="small"
-            total={tableResultData.total}
-            current={currentPage}
-            hideOnSinglePage={true}
-            showSizeChanger
-            showQuickJumper
-            onShowSizeChange={pageSizeChange}
-          />
-        </div>
-      </div>
+      }
     </div>
   );
 };

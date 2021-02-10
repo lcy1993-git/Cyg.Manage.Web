@@ -5,7 +5,7 @@ import styles from "./index.less";
 interface ReplyComponentProps {
     name:string,
     time: string | Moment
-    className: string
+    className?: string
 }
 
 const ReplyComponent:React.FC<ReplyComponentProps> = (props) => {

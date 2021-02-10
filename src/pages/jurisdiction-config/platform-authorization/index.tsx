@@ -5,7 +5,7 @@ import { Button, Input, Modal, Form, Popconfirm, message, Switch } from 'antd';
 import React, { useState } from 'react';
 import { EditOutlined, PlusOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
-import { useRequest } from 'ahooks';
+import { useBoolean, useRequest } from 'ahooks';
 import {
   getAuthorizationDetail,
   updateAuthorizationItem,
@@ -18,18 +18,20 @@ import {
 import { isArray } from 'lodash';
 import AuthorizationForm from './components/add-edit-form';
 import CheckboxTreeTable from '@/components/checkbox-tree-table';
+import SuperManageAuthorization from './components/super-manage-authorization';
 
 const { Search } = Input;
 
 const PlatformAuthorization: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [distributeFormVisible, setDistributeFormVisible] = useState<boolean>(false);
-  const [authorizationFormVisible, setAuthorizationFormVisible] = useState<boolean>(false);
+  const [authorizationFormVisible, {setFalse: authorizationFormHide, setTrue: authorizationFormShow}] = useBoolean(false);
+
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -151,14 +153,8 @@ const PlatformAuthorization: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
-
-    setAuthorizationFormVisible(true);
-    await getModuleTreeData(editDataId);
+    authorizationFormShow();
   };
-
-  const sureAuthorization = () => { };
 
   //添加
   const addEvent = () => {
@@ -193,8 +189,7 @@ const PlatformAuthorization: React.FC = () => {
 
     setEditFormVisible(true);
     const AuthorizationData = await run(editDataId);
-    console.log(AuthorizationData);
-
+ 
     editForm.setFieldsValue(AuthorizationData);
   };
 
@@ -222,6 +217,8 @@ const PlatformAuthorization: React.FC = () => {
       setEditFormVisible(false);
     });
   };
+
+  
 
   const buttonElement = () => {
     return (
@@ -258,6 +255,10 @@ const PlatformAuthorization: React.FC = () => {
     );
   };
 
+  const cancelAuthorization = () => {
+    authorizationFormHide();
+  }
+  
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -316,12 +317,12 @@ const PlatformAuthorization: React.FC = () => {
         title="授权"
         width="90%"
         visible={authorizationFormVisible}
-        okText="确认"
-        onOk={() => sureAuthorization()}
-        onCancel={() => setAuthorizationFormVisible(false)}
-        cancelText="取消"
+        destroyOnClose={true}
+        footer={false}
+        onCancel={() => cancelAuthorization()}
+        bodyStyle={{paddingTop: "10px"}}
       >
-        {/* <CheckboxTreeTable /> */}
+        <SuperManageAuthorization visibleFlag={authorizationFormVisible} extractParams={{templateId: (isArray(tableSelectRows) && tableSelectRows.length > 0 ? tableSelectRows[0].id : "") }} />
       </Modal>
     </PageCommonWrap>
   );
