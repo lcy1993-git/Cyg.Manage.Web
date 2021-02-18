@@ -17,14 +17,12 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/common': '/' },
     },
+    '/upload/api': {
+      target: 'http://10.6.1.36:8023/',
+      changeOrigin: true,
+      pathRewrite: { '^/upload': '/' },
+    },
   },
-  // dev: {
-  //   '/api': {
-  //     target: 'http://10.6.1.36:8026',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/api': '/' },
-  //   },
-  // },
   test: {
     '/api/': {
       target: 'https://preview.pro.ant.design',

@@ -2,21 +2,26 @@ import { DeleteOutlined, EditOutlined, LinkOutlined } from "@ant-design/icons";
 import React from "react";
 import styles from "./index.less"
 
+export type UploadStatusType = "error" | "normal"
+
 interface FileUploadShowItemProps {
     name: string
     uid: string
     deleteEvent: (uid: string) => void
+    status?: "error" | "normal"
 }
 
 const FileUploadShowItem:React.FC<FileUploadShowItemProps> = (props) => {
-    const {name,uid,deleteEvent} = props;
+    const {name,uid,deleteEvent,status = "normal"} = props;
 
     const deleteFunction = () => {
         deleteEvent?.(uid);
     }
 
+    const statusClassName = status === "normal" ? "" : styles.error;
+
     return (
-        <div className={styles.hasUploadFileShowItem}>
+        <div className={`${styles.hasUploadFileShowItem} ${statusClassName}`}>
             <div className={styles.hasUploadFileShowItemNameContent}>
                 <LinkOutlined className={styles.hasUploadFileShowItemNameIcon} />
                 <span className={styles.hasUploadFileShowItemName}>

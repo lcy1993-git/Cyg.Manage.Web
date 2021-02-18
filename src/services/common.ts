@@ -9,6 +9,7 @@ const { NODE_ENV } = process.env;
 const devBaseUrl = {
   project: '/project/api',
   common: '/common/api',
+  upload: '/upload/api'
 };
 
 export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;

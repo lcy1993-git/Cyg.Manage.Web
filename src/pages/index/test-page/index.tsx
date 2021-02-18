@@ -1,13 +1,14 @@
 import FileUpload from "@/components/file-upload";
-import {Button, Form, Tabs} from "antd";
+import { Button, Form, Tabs } from "antd";
 import React from "react";
 import TableImportButton from "@/components/table-import-button";
 import TableExportButton from "@/components/table-export-button";
 import ReadonlyItem from "@/components/readonly-item";
 import ReplyComponent from "@/components/reply-component";
 import TableStatus from "@/components/table-status";
+import FileUploadOnline from "@/components/file-upload-online";
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 const testJson = {
     "Accept": "application/json",
@@ -17,10 +18,16 @@ const testJson = {
     "Expect": "100-continue",
     "Host": "10.6.1.36:8015",
     "X-Request-Id": "1356510666121211904"
-  }
+}
 
 const TestPage = () => {
     const [form] = Form.useForm();
+
+    const getFormValue = () => {
+        form.validateFields().then(async (value) => {
+            console.log(value)
+        })
+    }
 
     return (
         <Form form={form}>
@@ -45,7 +52,7 @@ const TestPage = () => {
             </ReadonlyItem>
 
             <Tabs className="normalTabs" tabBarGutter={25}>
-                <TabPane key="1" tab="基本信息"> 
+                <TabPane key="1" tab="基本信息">
                     12
                 </TabPane>
                 <TabPane tab="内容" key="2">
@@ -57,7 +64,7 @@ const TestPage = () => {
             </Tabs>
             {/* json数据展示 */}
             <pre>
-                {JSON.stringify(testJson, null, 2) }
+                {JSON.stringify(testJson, null, 2)}
             </pre>
 
             <span className="tipInfo">
@@ -96,6 +103,13 @@ const TestPage = () => {
                 普通管理员
             </TableStatus>
 
+            <Form.Item name="fileId">
+                <FileUploadOnline action="/Upload/StaticFile" />
+            </Form.Item>
+
+            <Button onClick={() => getFormValue()}>
+                测试
+            </Button>
         </Form>
     )
 }
