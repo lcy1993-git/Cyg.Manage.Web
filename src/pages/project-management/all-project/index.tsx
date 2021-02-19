@@ -31,7 +31,7 @@ const ProjectManagement: React.FC = () => {
     const [kvLevel, setKvLevel] = useState<string>();
     const [status, setStatus] = useState<string>();
     const [statisticalCategory, setStatisticalCategory] = useState<string>();
-    
+
     const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, { manual: true });
 
     const handleStatisticsData = (statisticsDataItem?: number) => {
@@ -182,9 +182,10 @@ const ProjectManagement: React.FC = () => {
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
                                 <EnumSelect
-                                    enumList={ProjectNature}
+
+                                    enumList={ProjectVoltageClasses}
                                     value={kvLevel}
-                                    dropdownMatchSelectWidth={168}
+
                                     onChange={(value) => setKvLevel(String(value))}
                                     className="widthAll"
                                     placeholder="电压等级"
@@ -193,8 +194,9 @@ const ProjectManagement: React.FC = () => {
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
                                 <EnumSelect
-                                    enumList={ProjectVoltageClasses}
+                                    enumList={ProjectNature}
                                     value={nature}
+                                    dropdownMatchSelectWidth={168}
                                     onChange={(value) => setNature(String(value))}
                                     className="widthAll"
                                     placeholder="项目性质"
