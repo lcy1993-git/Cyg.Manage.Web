@@ -44,6 +44,11 @@ const TerminalUnit = Loadable({
   loading: Loading,
   delay: 150,
 });
+const BasicData = Loadable({
+  loader: () => import('@/pages/system-config/basic-data'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -85,5 +90,15 @@ export default [
     title: '终端设备',
     path: '/system-config/terminal-unit',
     component: <TerminalUnit />,
+  },
+  {
+    title: '终端设备',
+    path: '/system-config/terminal-unit',
+    component: <TerminalUnit />,
+  },
+  {
+    title: '基础数据',
+    path: '/system-config/basic-data',
+    component: <BasicData />,
   },
 ];

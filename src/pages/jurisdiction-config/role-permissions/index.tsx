@@ -5,7 +5,7 @@ import { Button, Input, Modal, Form, Popconfirm, message, Switch } from 'antd';
 import React, { useState } from 'react';
 import { EditOutlined, PlusOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
-import { useRequest } from 'ahooks';
+import { useRequest, useBoolean } from 'ahooks';
 import {
   getAuthorizationDetail,
   updateAuthorizationItem,
@@ -17,22 +17,30 @@ import {
 import { isArray } from 'lodash';
 import RolePermissionsForm from './components/add-edit-form';
 import CheckboxTreeTable from '@/components/checkbox-tree-table';
+import styles from './index.less';
+import { BelongRoleEnum } from '@/services/jurisdiction-config/platform-authorization';
+import EnumSelect from '@/components/enum-select';
+import UserAuthorization from '../platform-authorization/components/user-authorization';
 
 const { Search } = Input;
 
-const PlatformAuthorization: React.FC = () => {
+const RolePermissions: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
-
+  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [currentId, setCurrentId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [distributeFormVisible, setDistributeFormVisible] = useState<boolean>(false);
-  const [authorizationFormVisible, setAuthorizationFormVisible] = useState<boolean>(false);
+  const [
+    authorizationFormVisible,
+    { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
+  ] = useBoolean(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
+  const [apportionForm] = Form.useForm();
 
   const { data, run } = useRequest(getAuthorizationDetail, {
     manual: true,
@@ -44,6 +52,7 @@ const PlatformAuthorization: React.FC = () => {
       manual: true,
     },
   );
+
   console.log(MoudleTreeData);
 
   const columns = [
@@ -67,6 +76,13 @@ const PlatformAuthorization: React.FC = () => {
       title: '授权人员',
       dataIndex: 'users',
       index: 'users',
+      render: (text: any, record: any) => {
+        return record.users
+          ? record.users.map((item: any) => {
+              return <span className={styles.users}>{item.text}</span>;
+            })
+          : null;
+      },
     },
   ];
 
@@ -81,15 +97,20 @@ const PlatformAuthorization: React.FC = () => {
 
   const searchElement = () => {
     return (
-      <TableSearch label="关键词" width="203px">
-        <Search
-          value={searchKeyWord}
-          onSearch={() => search({ keyWord: searchKeyWord })}
-          onChange={(e) => setSearchKeyWord(e.target.value)}
-          placeholder="角色名称"
-          enterButton
-        />
-      </TableSearch>
+      <div className={styles.search}>
+        <TableSearch label="关键词" width="203px">
+          <Search
+            value={searchKeyWord}
+            onSearch={() => search({ keyWord: searchKeyWord })}
+            onChange={(e) => setSearchKeyWord(e.target.value)}
+            placeholder="角色名称"
+            enterButton
+          />
+        </TableSearch>
+        <TableSearch label="全部状态" width="203px" marginLeft="20px">
+          <EnumSelect enumList={BelongRoleEnum} needAll defaultValue="" />
+        </TableSearch>
+      </div>
     );
   };
 
@@ -140,14 +161,13 @@ const PlatformAuthorization: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
-
-    setAuthorizationFormVisible(true);
-    await getModuleTreeData(editDataId);
+    authorizationFormShow();
+    setCurrentId(tableSelectRows[0].id);
   };
 
-  const sureAuthorization = () => {};
+  const cancelAuthorization = () => {
+    authorizationFormHide();
+  };
 
   //添加
   const addEvent = () => {
@@ -286,28 +306,36 @@ const PlatformAuthorization: React.FC = () => {
       </Modal>
       <Modal
         title="分配功能模块"
-        width="90%"
+        width="80%"
         visible={distributeFormVisible}
         okText="确认"
         onOk={() => sureDistribute()}
         onCancel={() => setDistributeFormVisible(false)}
         cancelText="取消"
       >
-        <CheckboxTreeTable treeData={MoudleTreeData} />
+        <Form form={apportionForm}>
+          <Form.Item name="moduleIds">
+            <CheckboxTreeTable treeData={MoudleTreeData} />
+          </Form.Item>
+        </Form>
       </Modal>
       <Modal
+        footer=""
         title="授权"
         width="90%"
         visible={authorizationFormVisible}
         okText="确认"
-        onOk={() => sureAuthorization()}
-        onCancel={() => setAuthorizationFormVisible(false)}
+        onCancel={() => cancelAuthorization()}
         cancelText="取消"
       >
-        <CheckboxTreeTable />
+        <UserAuthorization
+          extractParams={{
+            templateId: currentId,
+          }}
+        />
       </Modal>
     </PageCommonWrap>
   );
 };
 
-export default PlatformAuthorization;
+export default RolePermissions;

@@ -1,18 +1,17 @@
 import React, { useMemo } from 'react';
 import { Input, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
-import EnumSelect from '@/components/enum-select';
-import { BelongModuleEnum, CompanyGroupTreeData } from '@/services/operation-config/company-group';
+import UrlSelect from '@/components/url-select';
+import { CompanyGroupTreeData } from '@/services/operation-config/company-group';
 
 import rules from './rule';
 
 interface CompanyGroupFormProps {
   treeData: CompanyGroupTreeData[];
-  usersData: object[];
 }
 
 const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
-  const { treeData = [], usersData = [] } = props;
+  const { treeData = [] } = props;
   // console.log(treeData);
 
   const mapTreeData = (data: any) => {
@@ -27,8 +26,6 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
     return treeData?.map(mapTreeData);
   }, [JSON.stringify(treeData)]);
 
-  // console.log();
-  
   return (
     <>
       <CyFormItem label="所属部组" name="parentId">
@@ -46,10 +43,23 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="部组管理员" name="adminUserId" required rules={rules.adminUserId}>
-        <EnumSelect placeholder="请选择" enumList={BelongModuleEnum} />
+        <UrlSelect
+          showSearch
+          url="/CompanyUser/GetList"
+          titleKey="text"
+          valueKey="value"
+          placeholder="请选择部组管理员"
+        />
       </CyFormItem>
       <CyFormItem label="部组成员" name="userIds">
-        <Input placeholder="请输入" />
+        <UrlSelect
+          mode="multiple"
+          showSearch
+          url="/CompanyUser/GetList"
+          titleKey="text"
+          valueKey="value"
+          placeholder="请选择部组成员"
+        />
       </CyFormItem>
     </>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from 'antd';
-import FileUpload from '@/components/file-upload';
+import FileUploadOnline from '@/components/file-upload-online';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
 import rules from './rule';
@@ -22,13 +22,12 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
             valueKey="value"
             url="/CompanyFile/GetCategorys"
             placeholder="应用"
-            // value={applications}
           />
         </CyFormItem>
       )}
 
-      <CyFormItem label="上传文件" name="fileld" required rules={rules.fileld}>
-        <FileUpload maxCount={1} />
+      <CyFormItem label="上传文件" name="fileId" required rules={rules.fileld}>
+        <FileUploadOnline action="/Upload/CompanyFile" maxCount={1} />
       </CyFormItem>
 
       <CyFormItem label="备注" name="describe">

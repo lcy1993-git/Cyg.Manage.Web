@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, Row, Col, Switch, Spin } from 'antd';
+import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
 import CompanyUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
@@ -13,6 +13,7 @@ import {
   updateItemStatus,
   resetItemPwd,
 } from '@/services/personnel-config/company-user';
+import { getTreeSelectData } from '@/services/operation-config/company-group';
 import { useRequest } from 'ahooks';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
@@ -20,6 +21,7 @@ import ResetPasswordForm from './components/reset-form';
 import moment from 'moment';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
+import BatchAddCompanyUser from './components/batch-add-form';
 
 const { Search } = Input;
 
@@ -30,6 +32,7 @@ const CompanyUser: React.FC = () => {
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [batchAddFormVisible, setBatchAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [resetFormVisible, setResetFormVisible] = useState<boolean>(false);
 
@@ -39,10 +42,14 @@ const CompanyUser: React.FC = () => {
     manual: true,
   });
 
+  const { data: selectTreeData = [], run: getSelectTreeData } = useRequest(getTreeSelectData, {
+    manual: true,
+  });
+
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+        <Button type="primary" className="mr7" onClick={() => batchAddEvent()}>
           <PlusOutlined />
           批量添加
         </Button>
@@ -93,7 +100,8 @@ const CompanyUser: React.FC = () => {
     });
   };
 
-  const addEvent = () => {
+  const addEvent = async () => {
+    await getSelectTreeData();
     setAddFormVisible(true);
   };
 
@@ -118,6 +126,12 @@ const CompanyUser: React.FC = () => {
     });
   };
 
+  const batchAddEvent = async () => {
+    await getSelectTreeData();
+    setBatchAddFormVisible(true);
+  };
+
+  const sureBatchAddCompanyUser = () => {};
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
@@ -127,6 +141,7 @@ const CompanyUser: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
+    await getSelectTreeData();
     setEditFormVisible(true);
 
     const ManageUserData = await run(editDataId);
@@ -215,6 +230,9 @@ const CompanyUser: React.FC = () => {
       dataIndex: 'authorizeClient',
       index: 'authorizeClient',
       width: 180,
+      render: (text: any, record: any) => {
+        return record.authorizeClient ? <span>{record.authorizeClientTexts}</span> : null;
+      },
     },
     {
       title: '最后登录IP',
@@ -281,7 +299,20 @@ const CompanyUser: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <CompanyUserForm type="add" />
+          <CompanyUserForm treeData={selectTreeData} type="add" />
+        </Form>
+      </Modal>
+      <Modal
+        title="批量添加-公司用户"
+        width="680px"
+        visible={batchAddFormVisible}
+        okText="确认"
+        onOk={() => sureBatchAddCompanyUser()}
+        onCancel={() => setBatchAddFormVisible(false)}
+        cancelText="取消"
+      >
+        <Form form={addForm}>
+          <BatchAddCompanyUser treeData={selectTreeData} />
         </Form>
       </Modal>
       <Modal
@@ -295,7 +326,7 @@ const CompanyUser: React.FC = () => {
       >
         <Form form={editForm}>
           <Spin spinning={loading}>
-            <CompanyUserForm />
+            <CompanyUserForm treeData={selectTreeData} />
           </Spin>
         </Form>
       </Modal>

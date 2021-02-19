@@ -1,6 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import React, { useRef, useState } from 'react';
-import { Button, Switch, Modal, Form, Popconfirm, message, Spin } from 'antd';
+import { Button,  Modal, Form, Popconfirm, message, Spin } from 'antd';
 import TreeTable from '@/components/tree-table/index';
 import {
   addCompanyGroupItem,
