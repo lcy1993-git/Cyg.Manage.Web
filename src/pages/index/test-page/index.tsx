@@ -104,7 +104,7 @@ const TestPage = () => {
             </TableStatus>
 
             <Form.Item name="fileId">
-                <FileUploadOnline action="/Upload/StaticFile" />
+                <FileUploadOnline action="/Upload/StaticFile" maxCount={1} />
             </Form.Item>
 
             <Button onClick={() => getFormValue()}>

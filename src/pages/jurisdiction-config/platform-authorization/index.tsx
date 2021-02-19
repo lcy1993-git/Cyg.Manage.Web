@@ -322,7 +322,7 @@ const PlatformAuthorization: React.FC = () => {
         onCancel={() => cancelAuthorization()}
         bodyStyle={{paddingTop: "10px"}}
       >
-        <SuperManageAuthorization visibleFlag={authorizationFormVisible} extractParams={{templateId: (isArray(tableSelectRows) && tableSelectRows.length > 0 ? tableSelectRows[0].id : "") }} />
+        <SuperManageAuthorization extractParams={{templateId: (isArray(tableSelectRows) && tableSelectRows.length > 0 ? tableSelectRows[0].id : "") }} />
       </Modal>
     </PageCommonWrap>
   );

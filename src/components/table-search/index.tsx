@@ -9,11 +9,11 @@ interface TableSearchProps {
 }
 
 const TableSearch: React.FC<TableSearchProps> = (props) => {
-  const { marginLeft, label, width, ...rest } = props;
+  const { marginLeft, label, width,className, ...rest } = props;
   return (
     <div
       {...rest}
-      className={styles.tableSearchComponent}
+      className={`${styles.tableSearchComponent} ${className}`}
       style={{ width: width, marginLeft: marginLeft }}
     >
       <div className={styles.tableSearchLabel}>{label}</div>
