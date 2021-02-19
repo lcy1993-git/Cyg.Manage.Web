@@ -13,6 +13,11 @@ const testData = [
     icon: '',
     menuData: [
       {
+        name: '基础数据',
+        icon: '',
+        path: '/system-config/basic-data',
+      },
+      {
         name: '字典管理',
         icon: '',
         path: '/system-config/dictionary-manage',
@@ -119,6 +124,22 @@ const testData = [
         name: '公司文件',
         icon: '',
         path: '/operation-config/company-file',
+      },
+    ],
+  },
+  {
+    name: '资源库管理',
+    icon: '',
+    menuData: [
+      {
+        name: '资源库',
+        icon: '',
+        path: '/resource-config/resource-lib',
+      },
+      {
+        name: '图纸',
+        icon: '',
+        path: '/resource-config/drawing',
       },
     ],
   },

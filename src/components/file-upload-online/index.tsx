@@ -1,7 +1,6 @@
 
 import { CloudUploadOutlined } from "@ant-design/icons";
-import { message, UploadProps } from "antd";
-import Dragger from "antd/lib/upload/Dragger";
+import { message, UploadProps,Upload } from "antd";
 import React, { useState } from "react"
 import FileUploadShowItem, { UploadStatusType } from "../file-upload-show-item";
 import { baseUrl } from "@/services/common"
@@ -10,6 +9,7 @@ import styles from "./index.less"
 import { ReactElement } from "react";
 import { UploadFile } from "antd/lib/upload/interface";
 
+const { Dragger } = Upload;
 
 interface FileUploadOnlineProps extends UploadProps {
     uploadUrlType?: "project" | "common" | "upload"
@@ -49,7 +49,7 @@ const FileUploadOnline: React.FC<FileUploadOnlineProps> = (props) => {
     }
 
     const getNeedIdArray = (fileArray: any) => {
-        const idArray = fileArray.filter((item: any) => item.response && item.response.code === 200).map((item) => item.response.traceId);
+        const idArray = fileArray.filter((item: any) => item.response && item.response.code === 200).map((item:any) => item.response.traceId);
         onChange?.(idArray)
     }
 

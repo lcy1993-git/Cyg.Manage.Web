@@ -1,24 +1,24 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useState } from 'react';
+// import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
-import { isArray } from 'lodash';
-import '@/assets/icon/iconfont.css';
-import CompanyFileForm from './components/add-edit-form';
 import {
-  updateCompanyFileItem,
-  addCompanyFileItem,
-  deleteCompanyFileItem,
-  getCompanyFileDetail,
-} from '@/services/operation-config/company-file';
+  getElectricCompanyDetail,
+  addElectricCompanyItem,
+  updateElectricityCompanyItem,
+} from '@/services/system-config/electric-company';
+import { isArray } from 'lodash';
+import UrlSelect from '@/components/url-select';
+import TableImportButton from '@/components/table-import-button';
 
 const { Search } = Input;
 
-const CompanyFile: React.FC = () => {
+const ResourceLib: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -28,43 +28,40 @@ const CompanyFile: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getCompanyFileDetail, {
+  const { data, run, loading } = useRequest(getElectricCompanyDetail, {
     manual: true,
   });
 
   const searchComponent = () => {
     return (
-      <div>
+      <div className={styles.searchArea}>
         <TableSearch label="关键词" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            onSearch={() => tableSearchEvent()}
+            onSearch={() => search()}
             enterButton
-            placeholder="请输入关键词搜索"
+            placeholder="区域/公司/供电所"
+          />
+        </TableSearch>
+        <TableSearch marginLeft="20px" label="选择区域" width="260px">
+          <UrlSelect
+            showSearch
+            url="/Area/GetList?pId=-1"
+            titleKey="text"
+            valueKey="value"
+            placeholder="请选择"
+            onChange={(value: any) => searchBySelectProvince(value)}
           />
         </TableSearch>
       </div>
     );
   };
 
-  const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
-    }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
-
-    await deleteCompanyFileItem(editDataId);
-    refresh();
-    message.success('删除成功');
-  };
-
-  const tableSearchEvent = () => {
-    search({
-      keyWord: searchKeyWord,
-    });
+  //选择省份onChange事件
+  const searchBySelectProvince = (value: any) => {
+    console.log(value);
+    search();
   };
 
   // 列表刷新
@@ -76,37 +73,43 @@ const CompanyFile: React.FC = () => {
   };
 
   // 列表搜索
-  const search = (params: object) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search(params);
+      tableRef.current.search();
     }
   };
 
   const columns = [
     {
-      dataIndex: 'name',
-      index: 'name',
-      title: '名称',
+      dataIndex: 'id',
+      index: 'id',
+      title: '编号',
       width: 150,
     },
     {
-      dataIndex: 'id',
-      index: 'id',
-      title: '文件编号',
+      dataIndex: 'libName',
+      index: 'libName',
+      title: '区域',
+      width: 150,
+    },
+    {
+      dataIndex: 'dbName',
+      index: 'dbName',
+      title: '数据库',
       width: 200,
     },
     {
-      dataIndex: 'fileCategory',
-      index: 'fileCategory',
-      title: '类别',
-      width: 150,
+      dataIndex: 'version',
+      index: 'version',
+      title: '版本',
+      width: 200,
     },
     {
-      dataIndex: 'describe',
-      index: 'describe',
-      title: '描述',
-      // width: 200,
+      dataIndex: 'remark',
+      index: 'remark',
+      title: '备注',
+      //   width: 200,
     },
   ];
 
@@ -115,20 +118,18 @@ const CompanyFile: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddCompanyFile = () => {
+  const sureAddElectricCompany = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          name: '',
-          fieldId: '',
-          fileCategory: 0,
-          describe: '',
+          province: '',
+          companyName: '',
+          countyCompany: '',
+          powerSupply: '',
         },
         value,
       );
-      console.log(submitInfo);
-
-      await addCompanyFileItem(submitInfo);
+      await addElectricCompanyItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -145,12 +146,12 @@ const CompanyFile: React.FC = () => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const CompanyFileData = await run(editDataId);
+    const ElectricCompanyData = await run(editDataId);
 
-    editForm.setFieldsValue(CompanyFileData);
+    editForm.setFieldsValue(ElectricCompanyData);
   };
 
-  const sureEditCompanyFile = () => {
+  const sureEditAuthorization = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -161,13 +162,14 @@ const CompanyFile: React.FC = () => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
-          name: editData.name,
-          fileId: editData.fileId,
-          describe: editData.describe,
+          province: editData.province,
+          companyName: editData.companyName,
+          countyCompany: editData.countyCompany,
+          powerSupply: editData.powerSupply,
         },
         values,
       );
-      await updateCompanyFileItem(submitInfo);
+      await updateElectricityCompanyItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -180,75 +182,65 @@ const CompanyFile: React.FC = () => {
       <div className={styles.buttonArea}>
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
           <PlusOutlined />
-          添加
+          创建
         </Button>
         <Button className="mr7" onClick={() => editEvent()}>
           <EditOutlined />
           编辑
         </Button>
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
-          </Button>
-        </Popconfirm>
-        <Button className={styles.iconParams}>
-          <i className="iconfont iconcanshu" />
-          成果默认参数
-        </Button>
+
+        <TableImportButton className={styles.importBtn} importUrl="/ElectricityCompany/Import" />
       </div>
     );
+  };
+
+  const titleSlotElement = () => {
+    return <div className={styles.routeComponent}></div>;
   };
 
   return (
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
+        titleSlot={titleSlotElement}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/CompanyFile/GetPagedList"
-        tableTitle="公司文件"
+        url="/ResourceLib/GetPageList"
+        tableTitle="电力公司"
         getSelectData={(data) => setTableSelectRow(data)}
+        type="checkbox"
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
       />
       <Modal
-        title="添加-文件"
-        width="720px"
+        title="添加-公司"
+        width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddCompanyFile()}
+        onOk={() => sureAddElectricCompany()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
-        <Form form={addForm}>
-          <Spin spinning={loading}>
-            <CompanyFileForm type="add" />
-          </Spin>
-        </Form>
+        <Form form={addForm}>{/* <ElectricCompanyForm /> */}</Form>
       </Modal>
       <Modal
-        title="编辑-文件"
+        title="编辑-公司"
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditCompanyFile()}
+        onOk={() => sureEditAuthorization()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
         <Form form={editForm}>
-          <Spin spinning={loading}>
-            <CompanyFileForm />
-          </Spin>
+          <Spin spinning={loading}>{/* <ElectricCompanyForm /> */}</Spin>
         </Form>
       </Modal>
     </PageCommonWrap>
   );
 };
 
-export default CompanyFile;
+export default ResourceLib;

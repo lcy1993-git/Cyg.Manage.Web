@@ -30,8 +30,10 @@ const PlatformAuthorization: React.FC = () => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [distributeFormVisible, setDistributeFormVisible] = useState<boolean>(false);
-  const [authorizationFormVisible, {setFalse: authorizationFormHide, setTrue: authorizationFormShow}] = useBoolean(false);
-
+  const [
+    authorizationFormVisible,
+    { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
+  ] = useBoolean(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -47,7 +49,6 @@ const PlatformAuthorization: React.FC = () => {
       manual: true,
     },
   );
-
   const columns = [
     {
       title: '名称',
@@ -137,14 +138,14 @@ const PlatformAuthorization: React.FC = () => {
   const sureDistribute = async () => {
     apportionForm.validateFields().then(async (values) => {
       const templateId = tableSelectRows[0].id;
-      const {moduleIds} = values;
+      const { moduleIds } = values;
       // console.log(moduleIds);
 
       // const modulesInfo = { templateId, moduleIds };
-      await updateAuthorizationModules({templateId,moduleIds});
+      await updateAuthorizationModules({ templateId, moduleIds });
       setDistributeFormVisible(false);
       tableFresh();
-    })
+    });
   };
 
   //授权
@@ -189,7 +190,7 @@ const PlatformAuthorization: React.FC = () => {
 
     setEditFormVisible(true);
     const AuthorizationData = await run(editDataId);
- 
+
     editForm.setFieldsValue(AuthorizationData);
   };
 
@@ -218,8 +219,6 @@ const PlatformAuthorization: React.FC = () => {
     });
   };
 
-  
-
   const buttonElement = () => {
     return (
       <div>
@@ -236,7 +235,7 @@ const PlatformAuthorization: React.FC = () => {
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
-        // disabled
+          // disabled
         >
           <Button className="mr7">
             <DeleteOutlined />
@@ -257,8 +256,8 @@ const PlatformAuthorization: React.FC = () => {
 
   const cancelAuthorization = () => {
     authorizationFormHide();
-  }
-  
+  };
+
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -307,9 +306,7 @@ const PlatformAuthorization: React.FC = () => {
       >
         <Form form={apportionForm}>
           <Form.Item name="moduleIds">
-            <CheckboxTreeTable
-              treeData={MoudleTreeData}
-            />
+            <CheckboxTreeTable treeData={MoudleTreeData} />
           </Form.Item>
         </Form>
       </Modal>
@@ -320,9 +317,15 @@ const PlatformAuthorization: React.FC = () => {
         destroyOnClose={true}
         footer={false}
         onCancel={() => cancelAuthorization()}
-        bodyStyle={{paddingTop: "10px"}}
+        bodyStyle={{ paddingTop: '10px' }}
       >
-        <SuperManageAuthorization visibleFlag={authorizationFormVisible} extractParams={{templateId: (isArray(tableSelectRows) && tableSelectRows.length > 0 ? tableSelectRows[0].id : "") }} />
+        <SuperManageAuthorization
+          visibleFlag={authorizationFormVisible}
+          extractParams={{
+            templateId:
+              isArray(tableSelectRows) && tableSelectRows.length > 0 ? tableSelectRows[0].id : '',
+          }}
+        />
       </Modal>
     </PageCommonWrap>
   );

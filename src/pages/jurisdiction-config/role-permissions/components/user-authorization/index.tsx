@@ -1,5 +1,5 @@
 import GeneralTable from '@/components/general-table';
-import TableStatus from '@/components/table-status';
+// import TableStatus from '@/components/table-status';
 import TableSearch from '@/components/table-search';
 import { Input, Button, message } from 'antd';
 import React, { useRef, useState } from 'react';
@@ -21,10 +21,11 @@ interface UserAuthorizationProps {
 const { Search } = Input;
 
 const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
-
   const tableRef = useRef<HTMLDivElement>(null);
+  console.log(props);
 
   const { extractParams } = props;
+  console.log(extractParams);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [selectRows, setSelectRows] = useState<any[]>([]);
@@ -32,42 +33,23 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
   const columns = [
     {
       title: '用户名',
-      dataIndex: 'roleName',
-      index: 'roleName',
+      dataIndex: 'userName',
+      index: 'userName',
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       index: 'phone',
-      width: 160,
     },
     {
       title: '昵称',
       dataIndex: 'nickName',
       index: 'nickName',
-      width: 220,
     },
     {
       title: '姓名',
       dataIndex: 'name',
-      index: 'namec',
-      width: 220,
-    },
-    {
-      title: '角色',
-      dataIndex: 'roleTypeText',
-      index: 'roleTypeText',
-      render: (text: string, record: any) => {
-        switch (record.userType) {
-          case 1:
-            return <TableStatus color="gray">{record.userTypeText}</TableStatus>;
-          case 2:
-            return <TableStatus color="orange">{record.userTypeText}</TableStatus>;
-          default:
-            return <TableStatus color="gray">{record.userTypeText}</TableStatus>;
-        }
-      },
-      width: 120,
+      index: 'name',
     },
     {
       title: '授权状态',
@@ -139,7 +121,7 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
 
     await batchAddAuthorization({
       templateId,
-      authorizeType: 2,
+      authorizeType: 1,
       objectIds: batchObjectIds,
     });
     refresh();
@@ -157,7 +139,7 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
 
     await batchRemoveAuthorization({
       templateId,
-      authorizeType: 2,
+      authorizeType: 1,
       objectIds: batchObjectIds,
     });
     refresh();

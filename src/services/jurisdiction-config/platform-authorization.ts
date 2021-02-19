@@ -1,6 +1,11 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
+export enum BelongRoleEnum {
+  '启用' = 1,
+  '禁用',
+}
+
 interface AuthorizationItemParams {
   //模板名
   name: string;
@@ -87,9 +92,9 @@ export const updateAuthorizationModules = (params: any) => {
 };
 
 interface BatchAddAuthorizationParams {
-  templateId: string
-  authorizeType: 1 | 2
-  objectIds: string[]
+  templateId: string;
+  authorizeType: 1 | 2;
+  objectIds: string[];
 }
 
 // 批量授权
@@ -97,7 +102,7 @@ export const batchAddAuthorization = (params: BatchAddAuthorizationParams) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/AuthTemplate/AddAuthorize`, { method: 'POST', data: params }),
   );
-}
+};
 
 // 批量移除授权
 // 批量授权
@@ -105,4 +110,4 @@ export const batchRemoveAuthorization = (params: BatchAddAuthorizationParams) =>
   return cyRequest(() =>
     request(`${baseUrl.project}/AuthTemplate/RemoveAuthorize`, { method: 'POST', data: params }),
   );
-}
+};
