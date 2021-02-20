@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { Input } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 // import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import UrlSelect from '@/components/url-select';
@@ -17,9 +17,16 @@ const Drawing: React.FC = () => {
   // const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [resourceLibId, setResourceLibId] = useState<string | null>('');
-  const { data } = useRequest(getUploadUrl, {
+  const { data } = useRequest(getUploadUrl(), {
     manual: true,
   });
+
+  // const uploadData = useMemo(() => {
+  //   if (data) {
+  //     return data;
+  //   }
+  // }, [JSON.stringify(data)]);
+
   console.log(data);
 
   const searchComponent = () => {
@@ -117,7 +124,7 @@ const Drawing: React.FC = () => {
           buttonTitle="导入图纸"
           modalTitle="导入图纸"
           className={styles.importBtn}
-          importUrl="/Chart/GetUrlSetting"
+          importUrl="/Upload/Chart"
         />
       </div>
     );
@@ -134,7 +141,6 @@ const Drawing: React.FC = () => {
         requestSource="resource"
         url="/Chart/GetPageList"
         tableTitle="图纸"
-        // getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
           resourceLibId: resourceLibId,

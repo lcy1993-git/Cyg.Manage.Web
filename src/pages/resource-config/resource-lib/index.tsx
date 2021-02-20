@@ -233,7 +233,7 @@ const ResourceLib: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-        title="编辑-公司"
+        title="编辑-资源库"
         width="680px"
         visible={editFormVisible}
         okText="确认"

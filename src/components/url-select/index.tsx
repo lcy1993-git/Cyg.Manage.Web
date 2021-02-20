@@ -21,7 +21,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     titleKey = 'Title',
     valueKey = 'ID',
     defaultData,
-    extraParams = {},
+    extraParams,
     requestSource = 'project',
     ...rest
   } = props;

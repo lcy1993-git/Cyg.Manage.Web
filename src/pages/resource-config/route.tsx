@@ -12,6 +12,11 @@ const Drawing = Loadable({
   loading: Loading,
   delay: 150,
 });
+const Material = Loadable({
+  loader: () => import('@/pages/resource-config/material'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -23,5 +28,10 @@ export default [
     title: '图纸',
     path: '/resource-config/drawing',
     component: <Drawing />,
+  },
+  {
+    title: '物料',
+    path: '/resource-config/material',
+    component: <Material />,
   },
 ];
