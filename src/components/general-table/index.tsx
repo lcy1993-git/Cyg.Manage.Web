@@ -40,11 +40,11 @@ interface GeneralTableProps {
 
   type?: TableSelectType;
 
-  rowKey?: string
+  rowKey?: string;
 
-  requestSource?: "project" | "common"
+  requestSource?: 'project' | 'common' | 'resource';
 
-  noPaging?: boolean
+  noPaging?: boolean;
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -65,8 +65,8 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     buttonRightContentSlot,
     otherSlot,
     type = 'radio',
-    rowKey = "id",
-    requestSource = "project",
+    rowKey = 'id',
+    requestSource = 'project',
     noPaging = false,
     ...rest
   } = props;
@@ -126,7 +126,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   // 改变视图
-  const changeView = () => { };
+  const changeView = () => {};
 
   const columnChangeEvent = (value: boolean, dataIndex: string) => {
     const copyColumns = [...finallyColumns];
@@ -160,7 +160,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       extraParams: extractParams,
       pageIndex: currentPage,
       pageSize,
-      requestSource
+      requestSource,
     });
     message.success('刷新成功');
   };
@@ -195,7 +195,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       extraParams: extractParams,
       pageIndex: currentPage,
       pageSize,
-      requestSource
+      requestSource,
     });
   }, [pageSize, currentPage]);
 
@@ -207,7 +207,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         extraParams: extractParams,
         pageIndex: currentPage,
         pageSize,
-        requestSource
+        requestSource,
       });
     },
     search: () => {
@@ -217,7 +217,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         pageSize,
         pageIndex: 1,
         extraParams: extractParams,
-        requestSource
+        requestSource,
       });
     },
     searchByParams: (params: object) => {
@@ -227,13 +227,13 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         pageSize,
         pageIndex: 1,
         extraParams: params,
-        requestSource
+        requestSource,
       });
     },
     reset: () => {
       setCurrentPage(1);
       setSelectedRowKeys([]);
-    }
+    },
   }));
 
   useEffect(() => {
@@ -296,8 +296,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           {...((rest as unknown) as P)}
         />
       </div>
-      {
-        !noPaging &&
+      {!noPaging && (
         <div className={styles.cyGeneralTablePaging}>
           <div className={styles.cyGeneralTablePagingLeft}>
             <span>显示第</span>
@@ -322,7 +321,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
             />
           </div>
         </div>
-      }
+      )}
     </div>
   );
 };

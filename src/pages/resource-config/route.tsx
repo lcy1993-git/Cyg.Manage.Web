@@ -16,12 +16,12 @@ const Drawing = Loadable({
 export default [
   {
     title: '资源库',
-    path: '/pages/resource-manage/resource-lib',
+    path: '/resource-config/resource-lib',
     component: <ResourceLib />,
   },
   {
     title: '图纸',
-    path: '/pages/resource-config/drawing',
+    path: '/resource-config/drawing',
     component: <Drawing />,
   },
 ];

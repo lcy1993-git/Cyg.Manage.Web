@@ -5,6 +5,7 @@ import SystemConfigRoutes from '@/pages/system-config/route';
 import JurisdictionConfig from '@/pages/jurisdiction-config/route';
 import PersonnelConfig from '@/pages/personnel-config/route';
 import OperationConfig from '@/pages/operation-config/route';
+import ResourceConfig from '@/pages/resource-config/route';
 import NoJurisdiction from '@/pages/401/route';
 
 export interface RouteListItem {
@@ -23,6 +24,7 @@ const routeList: TabRouteListItem[] = [
   ...JurisdictionConfig,
   ...PersonnelConfig,
   ...OperationConfig,
+  ...ResourceConfig,
   ...NoJurisdiction,
 ];
 

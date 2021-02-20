@@ -13,6 +13,7 @@ interface TableImportButtonProps extends ButtonProps {
   accept?: string;
   name?: string;
   labelTitle?: string;
+  buttonTitle?: string;
 }
 
 const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
@@ -22,6 +23,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     modalTitle = '导入',
     labelTitle = '导入',
     name = 'file',
+    buttonTitle = '导入',
     extraParams,
     ...rest
   } = props;
@@ -49,7 +51,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     <div>
       <Button {...rest} onClick={() => setImportModalVisible(true)}>
         <ExportOutlined />
-        <span>导入</span>
+        <span>{buttonTitle}</span>
       </Button>
       <Modal
         title={modalTitle}

@@ -10,6 +10,7 @@ interface UrlSelectProps {
   valueKey?: string;
   extraParams?: object;
   defaultData?: any[];
+  requestSource: 'project' | 'resource';
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
@@ -21,10 +22,11 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     valueKey = 'ID',
     defaultData,
     extraParams = {},
+    requestSource = 'project',
     ...rest
   } = props;
 
-  const { data } = useRequest(() => getDataByUrl(url, extraParams), {
+  const { data } = useRequest(() => getDataByUrl(url, { requestSource }), {
     ready: !!(url && !defaultData),
     refreshDeps: [url, JSON.stringify(extraParams)],
   });

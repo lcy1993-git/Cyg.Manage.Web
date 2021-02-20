@@ -14,16 +14,6 @@ import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
 
 const { Search } = Input;
-// const testJson = {
-//   Accept: 'application/json',
-//   Authorization:
-//     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEzMDI5MjI3NzYwNTk4NjMwNDAiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiNTk4NjMwNDEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDb21wYW55IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9jb21wYW55IjoiMTMwMjkyMjAwNzQyODQ4OTIxNiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvaXNzdXBlcmFkbWluIjoiRmFsc2UiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2NsaWVudGlwIjoiMTAuNi45LjIzMSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvZXhwaXJhdGlvbiI6IjIwMjEvMi8zIDE0OjUxOjAwIiwibmJmIjoxNjEyMjQ4NjYwLCJleHAiOjE2MTIzMzUwNjAsImlzcyI6ImN5Z0AyMDE5IiwiYXVkIjoiY3lnQDIwMTkifQ.OBKGGqa0vDYn9MqEn2yb93WWlWc6KyeMFCzESMaanKc',
-//   'Content-Length': '596',
-//   'Content-Type': 'application/json; charset=utf-8',
-//   Expect: '100-continue',
-//   Host: '10.6.1.36:8015',
-//   'X-Request-Id': '1356510666121211904',
-// };
 
 const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);

@@ -1,20 +1,20 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, PoweroffOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useState } from 'react';
-// import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
-  getElectricCompanyDetail,
-  addElectricCompanyItem,
-  updateElectricityCompanyItem,
-} from '@/services/system-config/electric-company';
+  getResourceLibDetail,
+  addResourceLibItem,
+  updateResourceLibItem,
+  restartResourceLib,
+} from '@/services/resource-config/resource-lib';
 import { isArray } from 'lodash';
-import UrlSelect from '@/components/url-select';
 import TableImportButton from '@/components/table-import-button';
+import ResourceLibForm from './components/add-edit-form';
 
 const { Search } = Input;
 
@@ -28,7 +28,7 @@ const ResourceLib: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getElectricCompanyDetail, {
+  const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
   });
 
@@ -41,27 +41,11 @@ const ResourceLib: React.FC = () => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="区域/公司/供电所"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="选择区域" width="260px">
-          <UrlSelect
-            showSearch
-            url="/Area/GetList?pId=-1"
-            titleKey="text"
-            valueKey="value"
-            placeholder="请选择"
-            onChange={(value: any) => searchBySelectProvince(value)}
+            placeholder="关键词"
           />
         </TableSearch>
       </div>
     );
-  };
-
-  //选择省份onChange事件
-  const searchBySelectProvince = (value: any) => {
-    console.log(value);
-    search();
   };
 
   // 列表刷新
@@ -85,25 +69,25 @@ const ResourceLib: React.FC = () => {
       dataIndex: 'id',
       index: 'id',
       title: '编号',
-      width: 150,
+      width: 180,
     },
     {
       dataIndex: 'libName',
       index: 'libName',
       title: '区域',
-      width: 150,
+      width: 180,
     },
     {
       dataIndex: 'dbName',
       index: 'dbName',
       title: '数据库',
-      width: 200,
+      width: 240,
     },
     {
       dataIndex: 'version',
       index: 'version',
       title: '版本',
-      width: 200,
+      width: 140,
     },
     {
       dataIndex: 'remark',
@@ -118,18 +102,17 @@ const ResourceLib: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddElectricCompany = () => {
+  const sureAddResourceLib = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          province: '',
-          companyName: '',
-          countyCompany: '',
-          powerSupply: '',
+          libName: '',
+          version: '',
+          remark: '',
         },
         value,
       );
-      await addElectricCompanyItem(submitInfo);
+      await addResourceLibItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -146,12 +129,12 @@ const ResourceLib: React.FC = () => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const ElectricCompanyData = await run(editDataId);
+    const ResourceLibData = await run(editDataId);
 
-    editForm.setFieldsValue(ElectricCompanyData);
+    editForm.setFieldsValue(ResourceLibData);
   };
 
-  const sureEditAuthorization = () => {
+  const sureEditResourceLib = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -162,19 +145,24 @@ const ResourceLib: React.FC = () => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
-          province: editData.province,
-          companyName: editData.companyName,
-          countyCompany: editData.countyCompany,
-          powerSupply: editData.powerSupply,
+          libName: editData.libName,
+          version: editData.version,
+          remark: editData.remark,
         },
         values,
       );
-      await updateElectricityCompanyItem(submitInfo);
+      await updateResourceLibItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
       setEditFormVisible(false);
     });
+  };
+
+  //重启资源服务
+  const restartLib = async () => {
+    await restartResourceLib();
+    message.success('操作成功');
   };
 
   const tableElement = () => {
@@ -188,55 +176,75 @@ const ResourceLib: React.FC = () => {
           <EditOutlined />
           编辑
         </Button>
-
-        <TableImportButton className={styles.importBtn} importUrl="/ElectricityCompany/Import" />
+        <TableImportButton
+          buttonTitle="导入图纸"
+          modalTitle="导入图纸"
+          className={styles.importBtn}
+          importUrl="/ResourceLib/SaveImport"
+        />
+        <TableImportButton
+          buttonTitle="导入资源库"
+          modalTitle="导入资源库"
+          className={styles.importBtn}
+          importUrl="/ResourceLib/SaveImport"
+        />
+        <TableImportButton
+          buttonTitle="导入应力弧垂表"
+          modalTitle="导入应力弧垂表"
+          className={styles.importBtn}
+          importUrl="/ResourceLib/SaveImportLineStressSag"
+        />
+        <Button className="mr7" onClick={() => restartLib()}>
+          <PoweroffOutlined />
+          重启资源服务
+        </Button>
       </div>
     );
-  };
-
-  const titleSlotElement = () => {
-    return <div className={styles.routeComponent}></div>;
   };
 
   return (
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
-        titleSlot={titleSlotElement}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
+        requestSource="resource"
         url="/ResourceLib/GetPageList"
-        tableTitle="电力公司"
+        tableTitle="资源库管理"
         getSelectData={(data) => setTableSelectRow(data)}
-        type="checkbox"
+        type="radio"
         extractParams={{
           keyWord: searchKeyWord,
         }}
       />
       <Modal
-        title="添加-公司"
+        title="创建资源库"
         width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddElectricCompany()}
+        onOk={() => sureAddResourceLib()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
-        <Form form={addForm}>{/* <ElectricCompanyForm /> */}</Form>
+        <Form form={addForm}>
+          <ResourceLibForm />
+        </Form>
       </Modal>
       <Modal
         title="编辑-公司"
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditAuthorization()}
+        onOk={() => sureEditResourceLib()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
         <Form form={editForm}>
-          <Spin spinning={loading}>{/* <ElectricCompanyForm /> */}</Spin>
+          <Spin spinning={loading}>
+            <ResourceLibForm />
+          </Spin>
         </Form>
       </Modal>
     </PageCommonWrap>

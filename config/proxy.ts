@@ -22,6 +22,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/upload': '/' },
     },
+    '/resource/api': {
+      target: 'http://10.6.1.36:8020/',
+      changeOrigin: true,
+      pathRewrite: { '^/resource': '/' },
+    },
   },
   test: {
     '/api/': {
