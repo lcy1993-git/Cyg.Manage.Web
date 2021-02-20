@@ -73,9 +73,17 @@ ol {
 .flex1 {
   flex: 1;
 }
-
+.mr2 {
+  margin-right: 2px;
+}
 .mr7 {
   margin-right: 7px;
+}
+.mr10 {
+  margin-right: 10px;
+}
+.mr22 {
+  margin-right: 22px;
 }
 .mr33 {
   margin-right: 33px;
@@ -85,6 +93,9 @@ ol {
 }
 .pb20 {
   padding-bottom: 20px;
+}
+.widthAll {
+  width: 100%;
 }
 .noCopy {
   -webkit-touch-callout: none;
@@ -107,10 +118,16 @@ ol {
 
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
   background-color: @light-primary-color !important;
+  .ant-select-item-option-content {
+    color: @primary-color !important;
+  }
 }
 
 .ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
   background-color: @light-primary-color !important;
+  .ant-select-item-option-content {
+    color: @primary-color !important;
+  }
 }
 
 
@@ -143,6 +160,22 @@ ol {
       }
     }
   }
+}
+
+.ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background-color: @light-primary-color !important;
+  .ant-select-item-option-content {
+    color: @primary-color !important;
+  }
+  &:hover {
+    background-color: @light-primary-color;
+  }
+}
+
+
+
+.ant-btn {
+  padding: 4px 8px !important;
 }
 
 .tipInfo {
