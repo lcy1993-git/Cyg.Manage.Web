@@ -1,5 +1,5 @@
-import { useMount, useRequest } from "ahooks"
-import React, { useState } from "react"
+import { useRequest } from "ahooks"
+import React, { forwardRef, Ref, useImperativeHandle, useState } from "react"
 import { AllProjectStatisticsParams, getProjectTableList } from "@/services/project-management/all-project"
 
 import styles from "./index.less"
@@ -7,6 +7,12 @@ import { useMemo } from "react"
 import { Pagination } from "antd"
 import { useEffect } from "react"
 import ProjectTableItem from "../project-table-item"
+
+import uuid from 'node-uuid'
+import TableStatus from "@/components/table-status"
+import { BarsOutlined } from "@ant-design/icons"
+import { Spin } from "antd"
+import EmptyTip from "@/components/empty-tip"
 
 interface ExtractParams extends AllProjectStatisticsParams {
     statisticalCategory?: string
@@ -17,9 +23,9 @@ interface ProjectTableProps {
     onSelect?: (checkedValue: any[]) => {}
 }
 
-const ProjectTable: React.FC<ProjectTableProps> = (props) => {
+const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
     const { extractParams, onSelect } = props;
-    const [pageIndex, setParginIndex] = useState<number>(1);
+    const [pageIndex, setPageIndex] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
 
     const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
@@ -57,78 +63,111 @@ const ProjectTable: React.FC<ProjectTableProps> = (props) => {
         {
             title: "项目分类",
             dataIndex: "categoryText",
-            width: ""
+            width: 80
         },
         {
             title: "电压等级",
             dataIndex: "kvLevelText",
-            width: ""
+            width: 80
         },
         {
             title: "项目性质",
             dataIndex: "natureTexts",
-            width: "",
-            render: (record) => {
-
+            width: 100,
+            render: (record: any) => {
+                const { natureTexts = [] } = record;
+                return natureTexts.map((item: any) => {
+                    return (
+                        <span key={uuid.v1()}>
+                            {item}
+                        </span>
+                    )
+                })
             }
         },
         {
             title: "专业类别",
             dataIndex: "majorCategoryText",
-            width: ""
+            width: 80
         },
         {
             title: "建设类型",
             dataIndex: "dataSourceTypeText",
-            width: ""
+            width: 80
         },
         {
             title: "项目批次",
             dataIndex: "batchText",
-            width: ""
+            width: 80
         },
         {
             title: "项目阶段",
             dataIndex: "stageText",
-            width: ""
+            width: 80
         },
         {
             title: "现场数据来源",
             dataIndex: "dataSourceTypeText",
-            width: ""
+            width: 100
         },
         {
             title: "项目状态",
             dataIndex: "statusText",
-            width: ""
+            width: 80,
+            render: (record: any) => {
+                const { stateInfo } = record;
+                return (
+                    <span>
+                        {stateInfo?.statusText}
+                    </span>
+                )
+            }
         },
         {
             title: "项目来源",
             dataIndex: "sources",
-            width: "",
-            render: (record) => {
-
+            width: 80,
+            render: (record: any) => {
+                const { sources = [] } = record;
+                return sources.map((item: any) => {
+                    return (
+                        <span key={uuid.v1()}>
+                            <TableStatus>
+                                {item}
+                            </TableStatus>
+                        </span>
+                    )
+                })
             }
         },
         {
             title: "项目身份",
             dataIndex: "identitys",
-            width: "",
-            render: (record) => {
-
+            width: 100,
+            render: (record: any) => {
+                const { identitys = [] } = record;
+                return identitys.map((item: any) => {
+                    return (
+                        <span className="mr7" key={uuid.v1()}>
+                            <TableStatus>
+                                {item.text}
+                            </TableStatus>
+                        </span>
+                    )
+                })
             }
         },
         {
             title: "操作",
             dataIndex: "operationAuthority",
-            width: "",
+            width: 60,
             render: (record) => {
-
+                return <BarsOutlined />
             }
         },
     ]
-    console.log(tableResultData)
-    const projectTableShow = tableResultData.items.map((item: any) => {
+
+    const projectTableShow = tableResultData.items.map((item: any, index: number) => {
         return (
             <ProjectTableItem columns={projectTableColumns} key={item.id} projectInfo={item} />
         )
@@ -138,14 +177,42 @@ const ProjectTable: React.FC<ProjectTableProps> = (props) => {
     const currentPageChange = (page: any, size: any) => {
         // 判断当前page是否改变, 没有改变代表是change页面触发
         if (pageSize === size) {
-            setParginIndex(page === 0 ? 1 : page);
+            setPageIndex(page === 0 ? 1 : page);
         }
     };
 
     const pageSizeChange = (page: any, size: any) => {
-        setParginIndex(1);
+        setPageIndex(1);
         setPageSize(size);
     };
+
+    useImperativeHandle(ref, () => ({
+        // changeVal 就是暴露给父组件的方法
+        refresh: () => {
+            run({
+                ...extractParams,
+                pageIndex,
+                pageSize
+            });
+        },
+        search: () => {
+            setPageIndex(1);
+            run({
+                ...extractParams,
+                pageIndex: 1,
+                pageSize
+            });
+        },
+        searchByParams: (params: object) => {
+            setPageIndex(1);
+            run({
+                ...params,
+                pageIndex: 1,
+                pageSize
+            });
+        },
+    }));
+
     // 页码发生变化，重新进行请求
     useEffect(() => {
         run({
@@ -157,9 +224,16 @@ const ProjectTable: React.FC<ProjectTableProps> = (props) => {
 
     return (
         <div className={styles.projectTable}>
+
             <div className={styles.projectTableContent}>
-                {projectTableShow}
+                <Spin spinning={loading}>
+                    {tableResultData.items.length > 0 && projectTableShow}
+                    {tableResultData.items.length === 0 &&
+                        <EmptyTip className="pt20" />
+                    }
+                </Spin>
             </div>
+
             <div className={styles.projectTablePaging}>
                 <div className={styles.projectTablePagingLeft}>
                     <span>显示第</span>
@@ -188,4 +262,4 @@ const ProjectTable: React.FC<ProjectTableProps> = (props) => {
     )
 }
 
-export default ProjectTable
+export default forwardRef(ProjectTable)

@@ -1,12 +1,12 @@
 import PageCommonWrap from "@/components/page-common-wrap";
 import TableSearch from "@/components/table-search";
-import React from "react";
+import React, { useRef } from "react";
 
-import { Button, Input, } from "antd";
+import { Button, Input, message, Modal, } from "antd";
 
 import styles from "./index.less";
 import EnumSelect from "@/components/enum-select";
-import { BuildType, getProjectTableStatistics, ProjectCategory, ProjectNature, ProjectStage, ProjectStatus, ProjectType, ProjectVoltageClasses } from "@/services/project-management/all-project";
+import { addEngineer, AllProjectStatisticsParams, BuildType, getProjectTableStatistics, ProjectCategory, ProjectNature, ProjectStage, ProjectStatus, ProjectType, ProjectVoltageClasses } from "@/services/project-management/all-project";
 import AllStatistics from "./components/all-statistics";
 import SingleStatistics from "./components/single-statistics";
 import CommonTitle from "@/components/common-title";
@@ -17,8 +17,18 @@ import TableExportButton from "@/components/table-export-button";
 import { useState } from "react";
 import { useMount, useRequest } from "ahooks";
 import ProjectTable from "./components/project-table";
+import { Form } from "antd";
+import CreateEngineer from "./components/create-engineer";
 
 const { Search } = Input;
+
+const statisticsObject = {
+    "-1": "全部项目",
+    "1": "待处理项目",
+    "2": "进行中的项目",
+    "3": "委托的项目",
+    "4": "被共享的项目",
+}
 
 const ProjectManagement: React.FC = () => {
 
@@ -30,7 +40,15 @@ const ProjectManagement: React.FC = () => {
     const [nature, setNature] = useState<string>();
     const [kvLevel, setKvLevel] = useState<string>();
     const [status, setStatus] = useState<string>();
-    const [statisticalCategory, setStatisticalCategory] = useState<string>();
+    const [statisticalCategory, setStatisticalCategory] = useState<string>("-1");
+
+    const [addEngineerModalFlag, setAddEngineerModalFlag] = useState(false);
+
+    const [saveLoading, setSaveLoading] = useState(false)
+
+    const tableRef = useRef<HTMLDivElement>(null)
+
+    const [form] = Form.useForm();
 
     const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, { manual: true });
 
@@ -42,6 +60,38 @@ const ProjectManagement: React.FC = () => {
             return statisticsDataItem
         }
         return "0"
+    }
+
+    const refresh = () => {
+        if (tableRef && tableRef.current) {
+            //@ts-ignore
+            tableRef.current.refresh();
+        }
+    }
+
+    const search = () => {
+        if (tableRef && tableRef.current) {
+            //@ts-ignore
+            tableRef.current.search();
+            getStatisticsData({
+                keyWord,
+                category: category ?? "-1",
+                pCategory: pCategory ?? "-1",
+                stage: stage ?? "-1",
+                constructType: constructType ?? "-1",
+                nature: nature ?? "-1",
+                kvLevel: kvLevel ?? "-1",
+                status: status ?? "-1",
+            })
+        }
+    }
+
+    const searchByParams = (params: any) => {
+        if (tableRef && tableRef.current) {
+            //@ts-ignore
+            tableRef.current.searchByParams(params);
+            getStatisticsData({ ...params as AllProjectStatisticsParams })
+        }
     }
 
     const arrangeMenu = (
@@ -123,6 +173,48 @@ const ProjectManagement: React.FC = () => {
         setKvLevel(undefined);
         setStatus(undefined);
         // TODO 重置完是否进行查询
+        searchByParams({
+            keyWord,
+            category: category ?? "-1",
+            pCategory: pCategory ?? "-1",
+            stage: stage ?? "-1",
+            constructType: constructType ?? "-1",
+            nature: nature ?? "-1",
+            kvLevel: kvLevel ?? "-1",
+            status: status ?? "-1",
+            statisticalCategory: statisticalCategory ?? "-1",
+        })
+    }
+
+    const statisticsClickEvent = (statisticsType: string) => {
+        setStatisticalCategory(statisticsType)
+        searchByParams({
+            keyWord,
+            category: category ?? "-1",
+            pCategory: pCategory ?? "-1",
+            stage: stage ?? "-1",
+            constructType: constructType ?? "-1",
+            nature: nature ?? "-1",
+            kvLevel: kvLevel ?? "-1",
+            status: status ?? "-1",
+            statisticalCategory: statisticsType,
+        })
+    }
+
+    const sureAddEngineerEvent = () => {
+        form.validateFields().then(async (values) => {
+            const { project, name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } = values;
+            await addEngineer({ project, engineer: { name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } });
+            message.success("立项成功");
+            modalCloseEvent();
+            refresh();
+        })
+    }
+
+    const modalCloseEvent = () => {
+        setAddEngineerModalFlag(false)
+        form.resetFields();
+        form.setFieldsValue({"project": [{name: ""}]})
     }
 
     return (
@@ -182,10 +274,8 @@ const ProjectManagement: React.FC = () => {
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
                                 <EnumSelect
-
                                     enumList={ProjectVoltageClasses}
                                     value={kvLevel}
-
                                     onChange={(value) => setKvLevel(String(value))}
                                     className="widthAll"
                                     placeholder="电压等级"
@@ -215,7 +305,7 @@ const ProjectManagement: React.FC = () => {
                             </TableSearch>
                         </div>
                         <div>
-                            <Button className="mr7" type="primary">
+                            <Button className="mr7" type="primary" onClick={() => search()}>
                                 查询
                             </Button>
                             <Button className="mr7" onClick={() => resetSearch()}>
@@ -227,29 +317,39 @@ const ProjectManagement: React.FC = () => {
                 <div className={styles.projectManagementStatistic}>
                     <div className="flex">
                         <div className="flex1">
-                            <AllStatistics>
-                                {handleStatisticsData(statisticsData?.total)}
-                            </AllStatistics>
+                            <div onClick={() => statisticsClickEvent("-1")}>
+                                <AllStatistics>
+                                    {handleStatisticsData(statisticsData?.total)}
+                                </AllStatistics>
+                            </div>
                         </div>
                         <div className={styles.projectManagementStatisticItem}>
-                            <SingleStatistics label="待处理" icon="awaitProcess">
-                                {handleStatisticsData(statisticsData?.awaitProcess)}
-                            </SingleStatistics>
+                            <div onClick={() => statisticsClickEvent("1")}>
+                                <SingleStatistics label="待处理" icon="awaitProcess">
+                                    {handleStatisticsData(statisticsData?.awaitProcess)}
+                                </SingleStatistics>
+                            </div>
                         </div>
                         <div className={styles.projectManagementStatisticItem}>
-                            <SingleStatistics label="进行中" icon="inProgress">
-                                {handleStatisticsData(statisticsData?.inProgress)}
-                            </SingleStatistics>
+                            <div onClick={() => statisticsClickEvent("2")}>
+                                <SingleStatistics label="进行中" icon="inProgress">
+                                    {handleStatisticsData(statisticsData?.inProgress)}
+                                </SingleStatistics>
+                            </div>
                         </div>
                         <div className={styles.projectManagementStatisticItem}>
-                            <SingleStatistics label="委托" icon="delegation">
-                                {handleStatisticsData(statisticsData?.delegation)}
-                            </SingleStatistics>
+                            <div onClick={() => statisticsClickEvent("3")}>
+                                <SingleStatistics label="委托" icon="delegation">
+                                    {handleStatisticsData(statisticsData?.delegation)}
+                                </SingleStatistics>
+                            </div>
                         </div>
                         <div className={styles.projectManagementStatisticItem}>
-                            <SingleStatistics label="被共享" icon="beShared">
-                                {handleStatisticsData(statisticsData?.beShared)}
-                            </SingleStatistics>
+                            <div onClick={() => statisticsClickEvent("4")}>
+                                <SingleStatistics label="被共享" icon="beShared">
+                                    {handleStatisticsData(statisticsData?.beShared)}
+                                </SingleStatistics>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -258,11 +358,11 @@ const ProjectManagement: React.FC = () => {
                         <div className="flex">
                             <div className="flex1">
                                 <CommonTitle>
-                                    全部项目
-                            </CommonTitle>
+                                    {statisticsObject[statisticalCategory]}
+                                </CommonTitle>
                             </div>
                             <div className="flex">
-                                <Button className="mr7" type="primary">
+                                <Button className="mr7" type="primary" onClick={() => setAddEngineerModalFlag(true)}>
                                     <FileAddOutlined />
                                     立项
                                 </Button>
@@ -298,20 +398,37 @@ const ProjectManagement: React.FC = () => {
                         </div>
                     </div>
                     <div className={styles.projectManagementTableContent}>
-                        <ProjectTable extractParams={{
+                        <ProjectTable ref={tableRef} extractParams={{
                             keyWord,
-                            category,
-                            pCategory,
-                            stage,
-                            constructType,
-                            nature,
-                            kvLevel,
-                            status,
-                            statisticalCategory,
+                            category: category ?? "-1",
+                            pCategory: pCategory ?? "-1",
+                            stage: stage ?? "-1",
+                            constructType: constructType ?? "-1",
+                            nature: nature ?? "-1",
+                            kvLevel: kvLevel ?? "-1",
+                            status: status ?? "-1",
+                            statisticalCategory: statisticalCategory ?? "-1",
                         }} />
                     </div>
                 </div>
             </div>
+            <Modal
+                visible={addEngineerModalFlag}
+                footer={[
+                    <Button key="cancle" onClick={() => modalCloseEvent()}>
+                        取消
+                    </Button>,
+                    <Button key="save" type="primary" loading={saveLoading} onClick={() => sureAddEngineerEvent()}>
+                        保存
+                    </Button>,
+                ]}
+                width={820}
+                onCancel={() => modalCloseEvent()}
+                title="项目立项">
+                <Form form={form}>
+                    <CreateEngineer form={form} />
+                </Form>
+            </Modal>
         </PageCommonWrap>
     )
 }

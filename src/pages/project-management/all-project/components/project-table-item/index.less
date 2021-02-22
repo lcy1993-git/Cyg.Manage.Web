@@ -1,0 +1,82 @@
+.projectTableItem {
+    font-size: 0;
+    line-height: 1;
+   
+    .ProjectTitle {
+        display: flex;
+        height: 33px;
+        border-left: 1px solid @table-line-color;
+        border-bottom: 1px solid @table-line-color;
+        font-size: 13px;
+        .foldButton {
+            width: 44px;
+            height: 33px;
+            text-align: center;
+            line-height: 33px;
+            font-size: 14px;
+            cursor: pointer;
+            border-right: 1px solid @table-line-color;
+        }
+        .projectName {
+            flex: 2;
+            padding-left: 10px;
+            padding-top: 8px;
+            border-right: 1px solid @table-line-color;
+        }
+        .projectTime {
+
+            width: 420px;
+            padding-left: 10px;
+            padding-top: 8px;
+            border-right: 1px solid @table-line-color;
+            color: @black-color;
+        }
+        .createTime {
+            width: 420px;
+            padding-left: 10px;
+            padding-top: 8px;
+            color: @black-color;
+        }
+        .label {
+            color: @gray-color;
+        }
+    }
+    .engineerTable {
+        &.foldClassName {
+
+        }
+        :global {
+            .ant-checkbox-group {
+                line-height: 1;
+            }
+        }
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-left: 1px solid @table-line-color;
+            border-collapse: collapse;
+            thead {
+                th {
+                    border-right: 1px solid @table-line-color;
+                    border-bottom: 1px solid @table-line-color;
+                    padding-left: 10px;
+                    padding-top: 11px;
+                    padding-bottom: 11px;
+                    &.checkboxTh {
+                        width: 44px;
+                    }
+                }
+            }
+            tbody {
+                td {
+                    border-right: 1px solid @table-line-color;
+                    border-bottom: 1px solid @table-line-color;
+                    padding-left: 10px;
+                    padding-top: 11px;
+                    padding-bottom: 11px;
+                    color: @gray-color;
+                }
+            }
+        }
+    }
+}
