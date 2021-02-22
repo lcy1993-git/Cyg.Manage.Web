@@ -22,6 +22,7 @@ interface MaterialParams {
   forProject: string;
   forDesign: string;
   remark: string;
+  chartIds: string[];
 }
 
 interface ItemDetailData extends MaterialParams {
@@ -29,10 +30,10 @@ interface ItemDetailData extends MaterialParams {
   id: string;
 }
 
-//获取资源库详情
-export const getMaterialDetail = (id: string) => {
+//获取物料详情
+export const getMaterialDetail = (libId: string, id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.resource}/Material/GetById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.resource}/Material/GetById`, { method: 'GET', params: { libId, id } }),
   );
 };
 
@@ -46,19 +47,13 @@ export const addMaterialItem = (params: MaterialParams) => {
 //编辑物料
 export const updateMaterialItem = (params: ItemDetailData) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/Material/Modify`, { method: 'POST', data: params }),
+    request(`${baseUrl.resource}/Material/SaveModify`, { method: 'POST', data: params }),
   );
 };
 
-// 删除资源库.?
-export const deleteResourceLibItem = (id: string) => {
+// 删除物料
+export const deleteMaterialItem = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/ResourceLib/Delete`, { method: 'GET', params: { id } }),
-  );
-};
-
-export const restartResourceLib = () => {
-  return cyRequest(() =>
-    request(`${baseUrl.resource}/ResourceLib/RestartService`, { method: 'POST' }),
+    request(`${baseUrl.resource}/Material/Delete`, { method: 'GET', params: { id } }),
   );
 };

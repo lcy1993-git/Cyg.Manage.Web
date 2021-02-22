@@ -146,6 +146,26 @@ const testData = [
         icon: '',
         path: '/resource-config/material',
       },
+      {
+        name: '组件',
+        icon: '',
+        path: '/resource-config/component',
+      },
+      {
+        name: '电气设备',
+        icon: '',
+        path: '/resource-config/electrical-equipment',
+      },
+      {
+        name: '电缆设计',
+        icon: '',
+        path: '/resource-config/cable-design',
+      },
+      {
+        name: '架空设计',
+        icon: '',
+        path: '/resource-config/overhead-design',
+      },
     ],
   },
 ];

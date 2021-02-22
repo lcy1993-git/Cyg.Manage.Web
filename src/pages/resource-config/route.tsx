@@ -17,6 +17,26 @@ const Material = Loadable({
   loading: Loading,
   delay: 150,
 });
+const Component = Loadable({
+  loader: () => import('@/pages/resource-config/component'),
+  loading: Loading,
+  delay: 150,
+});
+const ElectricalEquipment = Loadable({
+  loader: () => import('@/pages/resource-config/electrical-equipment'),
+  loading: Loading,
+  delay: 150,
+});
+const CableDesign = Loadable({
+  loader: () => import('@/pages/resource-config/cable-design'),
+  loading: Loading,
+  delay: 150,
+});
+// const OverheadDesign = Loadable({
+//   loader: () => import('@/pages/resource-config/overhead-design'),
+//   loading: Loading,
+//   delay: 150,
+// });
 
 export default [
   {
@@ -34,4 +54,24 @@ export default [
     path: '/resource-config/material',
     component: <Material />,
   },
+  {
+    title: '组件',
+    path: '/resource-config/component',
+    component: <Component />,
+  },
+  {
+    title: '电气设备',
+    path: '/resource-config/electrical-equipment',
+    component: <ElectricalEquipment />,
+  },
+  {
+    title: '电缆设计',
+    path: '/resource-config/cable-design',
+    component: <CableDesign />,
+  },
+  // {
+  //   title: '架空设计',
+  //   path: '/resource-config/overhead-design',
+  //   component: <OverheadDesign />,
+  // },
 ];

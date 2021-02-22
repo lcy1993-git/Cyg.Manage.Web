@@ -133,6 +133,7 @@ const Drawing: React.FC = () => {
   return (
     <PageCommonWrap>
       <GeneralTable
+        rowKey="chartId"
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
@@ -141,7 +142,8 @@ const Drawing: React.FC = () => {
         requestSource="resource"
         url="/Chart/GetPageList"
         tableTitle="图纸"
-        type="checkbox"
+        type="radio"
+        // getSelectData={(data) => setTableSelectRow(data)}
         extractParams={{
           resourceLibId: resourceLibId,
           keyWord: searchKeyWord,

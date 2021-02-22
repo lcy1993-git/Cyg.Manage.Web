@@ -7,19 +7,19 @@ import React, { useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
-  getMaterialDetail,
-  updateMaterialItem,
-  deleteMaterialItem,
-  addMaterialItem,
-} from '@/services/resource-config/material';
+  getComponentDetail,
+  addComponentItem,
+  updateComponentItem,
+  deleteComponentItem,
+} from '@/services/resource-config/component';
 import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
-import MaterialForm from './component/add-edit-form';
+// import ComponentForm from './components/add-edit-form';
 
 const { Search } = Input;
 
-const Material: React.FC = () => {
+const CableWell: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
@@ -28,12 +28,12 @@ const Material: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
-  const [cableTerminalVisible, setCableTerminalVisible] = useState<boolean>(false);
+  const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getMaterialDetail, {
+  const { data, run, loading } = useRequest(getComponentDetail, {
     manual: true,
   });
 
@@ -49,7 +49,7 @@ const Material: React.FC = () => {
             placeholder="关键词"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="300px">
+        <TableSearch marginLeft="20px" label="选择资源" width="200px">
           <UrlSelect
             allowClear
             showSearch
@@ -57,6 +57,18 @@ const Material: React.FC = () => {
             url="/ResourceLib/GetList"
             titleKey="libName"
             valueKey="id"
+            placeholder="请选择"
+            onChange={(value: any) => searchByLib(value)}
+          />
+        </TableSearch>
+        <TableSearch marginLeft="20px" label="组件" width="220px">
+          <UrlSelect
+            allowClear
+            showSearch
+            requestSource="resource"
+            url="/Component/GetDeviceCategory"
+            titleKey="name"
+            valueKey="value"
             placeholder="请选择"
             onChange={(value: any) => searchByLib(value)}
           />
@@ -90,28 +102,28 @@ const Material: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'materialId',
-      index: 'materialId',
+      dataIndex: 'cableWellId',
+      index: 'cableWellId',
       title: '编号',
       width: 180,
     },
     {
-      dataIndex: 'category',
-      index: 'category',
-      title: '类型',
-      width: 180,
-    },
-    {
-      dataIndex: 'materialName',
-      index: 'materialName',
+      dataIndex: 'cableWellName',
+      index: 'cableWellName',
       title: '名称',
-      width: 320,
+      width: 240,
     },
     {
-      dataIndex: 'spec',
-      index: 'spec',
+      dataIndex: 'shortName',
+      index: 'shortName',
       title: '规格型号',
       width: 320,
+    },
+    {
+      dataIndex: 'typicalCode',
+      index: 'typicalCode',
+      title: '典设编码',
+      width: 220,
     },
     {
       dataIndex: 'unit',
@@ -120,68 +132,23 @@ const Material: React.FC = () => {
       width: 140,
     },
     {
-      dataIndex: 'pieceWeight',
-      index: 'pieceWeight',
-      title: '单重(kg)',
+      dataIndex: 'deviceCategory',
+      index: 'deviceCategory',
+      title: '设备类别',
       width: 180,
     },
     {
-      dataIndex: 'unitPrice',
-      index: 'unitPrice',
-      title: '单价(元)',
+      dataIndex: 'componentType',
+      index: 'componentType',
+      title: '组件分类',
       width: 180,
     },
 
-    {
-      dataIndex: 'materialType',
-      index: 'materialType',
-      title: '类别',
-      width: 180,
-    },
-
-    {
-      dataIndex: 'usage',
-      index: 'usage',
-      title: '用途',
-      width: 320,
-    },
-
-    {
-      dataIndex: 'inspection',
-      index: 'inspection',
-      title: '物料(运检)',
-      width: 240,
-    },
-
-    {
-      dataIndex: 'code',
-      index: 'code',
-      title: '物资编号',
-      width: 220,
-    },
-    {
-      dataIndex: 'supplySide',
-      index: 'supplySide',
-      title: '供给方',
-      width: 150,
-    },
-    {
-      dataIndex: 'transportationType',
-      index: 'transportationType',
-      title: '运输类型',
-      width: 240,
-    },
-    {
-      dataIndex: 'statisticType',
-      index: 'statisticType',
-      title: '统计类型',
-      width: 240,
-    },
     {
       dataIndex: 'kvLevel',
       index: 'kvLevel',
       title: '电压等级',
-      width: 240,
+      width: 180,
     },
     {
       dataIndex: 'forProject',
@@ -199,7 +166,7 @@ const Material: React.FC = () => {
       dataIndex: 'remark',
       index: 'remark',
       title: '描述',
-      width: 320,
+      width: 220,
     },
   ];
 
@@ -217,21 +184,13 @@ const Material: React.FC = () => {
       const submitInfo = Object.assign(
         {
           libId: resourceLibId,
-          materialId: '',
-          category: '',
-          materialName: '',
-          spec: '',
+          componentId: '',
+          componentName: '',
+          componentSpec: '',
+          typicalCode: '',
           unit: '',
-          pieceWeight: 0,
-          unitPrice: 0,
-          materialType: '',
-          usage: '',
-          inspection: '',
-          description: '',
-          code: '',
-          supplySide: '',
-          transportationType: '',
-          statisticType: '',
+          deviceCategory: '',
+          componentType: '',
           kvLevel: '',
           forProject: '',
           forDesign: '',
@@ -240,7 +199,7 @@ const Material: React.FC = () => {
         },
         value,
       );
-      await addMaterialItem(submitInfo);
+      await addComponentItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -275,23 +234,14 @@ const Material: React.FC = () => {
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          id: editData.id,
           libId: resourceLibId,
-          materialId: editData.materialId,
-          category: editData.category,
-          materialName: editData.materialName,
-          spec: editData.spec,
+          id: editData.id,
+          componentName: editData.componentName,
+          componentSpec: editData.componentSpec,
+          typicalCode: editData.typicalCode,
           unit: editData.unit,
-          pieceWeight: editData.pieceWeight,
-          unitPrice: editData.unitPrice,
-          materialType: editData.materialType,
-          usage: editData.usage,
-          inspection: editData.inspection,
-          description: editData.description,
-          code: editData.code,
-          supplySide: editData.supplySide,
-          transportationType: editData.transportationType,
-          statisticType: editData.statisticType,
+          deviceCategory: editData.deviceCategory,
+          componentType: editData.componentType,
           kvLevel: editData.kvLevel,
           forProject: editData.forProject,
           forDesign: editData.forDesign,
@@ -300,7 +250,7 @@ const Material: React.FC = () => {
         },
         values,
       );
-      await updateMaterialItem(submitInfo);
+      await updateComponentItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -331,16 +281,16 @@ const Material: React.FC = () => {
           </Button>
         </Popconfirm>
         <TableImportButton
-          buttonTitle="导入物料"
-          modalTitle="导入物料"
+          buttonTitle="导入组件"
+          modalTitle="导入组件"
           className={styles.importBtn}
           importUrl="/Material/Import"
         />
-        <Button className={styles.importBtn} onClick={() => openWireAttribute()}>
-          导线属性
+        <Button className={styles.importBtn} onClick={() => openDetail()}>
+          组件明细
         </Button>
-        <Button className={styles.importBtn} onClick={() => openCableTerminal()}>
-          电缆终端头映射
+        <Button className={styles.importBtn} onClick={() => openAttribute()}>
+          组件属性
         </Button>
       </div>
     );
@@ -354,27 +304,27 @@ const Material: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteMaterialItem(editDataId);
+    await deleteComponentItem(editDataId);
     refresh();
     message.success('删除成功');
   };
 
-  //展示导线属性
-  const openWireAttribute = () => {
+  //展示组件明细
+  const openDetail = () => {
+    if (!resourceLibId) {
+      message.warning('请先选择资源库');
+      return;
+    }
+    setDetailVisible(true);
+  };
+
+  //展示组件属性
+  const openAttribute = () => {
     if (!resourceLibId) {
       message.warning('请先选择资源库');
       return;
     }
     setAttributeVisible(true);
-  };
-
-  //展示电缆终端头映射
-  const openCableTerminal = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
-    setCableTerminalVisible(true);
   };
 
   return (
@@ -386,8 +336,8 @@ const Material: React.FC = () => {
         needCommonButton={true}
         columns={columns}
         requestSource="resource"
-        url="/Material/GetPageList"
-        tableTitle="物料列表"
+        url="/Component/GetPageList"
+        tableTitle="组件列表"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
@@ -396,42 +346,40 @@ const Material: React.FC = () => {
         }}
       />
       <Modal
-        title="添加-物料"
+        title="添加-组件"
         width="680px"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddMaterial()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Form form={addForm}>
-          <MaterialForm resourceLibId={resourceLibId} />
+          <ComponentForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>
       <Modal
-        title="编辑-物料"
+        title="编辑-组件"
         width="680px"
         visible={editFormVisible}
         okText="确认"
         onOk={() => sureEditMaterial()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Form form={editForm}>
           <Spin spinning={loading}>
-            <MaterialForm resourceLibId={resourceLibId} />
+            <ComponentForm resourceLibId={resourceLibId} />
           </Spin>
         </Form>
       </Modal>
 
       <Modal
         footer=""
-        title="导线属性"
+        title="组件明细"
         width="680px"
-        visible={attributeVisible}
-        onCancel={() => setAttributeVisible(false)}
+        visible={detailVisible}
+        onCancel={() => setDetailVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
@@ -441,10 +389,10 @@ const Material: React.FC = () => {
 
       <Modal
         footer=""
-        title="电缆终端头映射"
+        title="组件属性"
         width="680px"
-        visible={cableTerminalVisible}
-        onCancel={() => setCableTerminalVisible(false)}
+        visible={attributeVisible}
+        onCancel={() => setAttributeVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
@@ -455,4 +403,4 @@ const Material: React.FC = () => {
   );
 };
 
-export default Material;
+export default CableWell;
