@@ -4,4 +4,4 @@ export const requestBaseUrl = {
     upload: "http://10.6.1.36:8022/api"
 }
 
-export const explainUrl = "http://service.sirenmap.com:8200/management"
+export const explainUrl = "http://service.pwcloud.cdsrth.com:8200/management"

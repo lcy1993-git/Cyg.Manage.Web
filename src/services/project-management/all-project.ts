@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import { Moment } from 'moment';
 import { cyRequest, baseUrl } from '../common';
 import { TableRequestResult } from '../table';
 
@@ -12,6 +13,15 @@ export enum ProjectType {
     "农网改造升级项目" = 1,
     "城镇配网工程",
     "无电地区电力建设"
+}
+
+export enum ProjectFormType {
+    "优化网架结构" = 1,
+    "改善供电质量",
+    "提高装备标准",
+    "提升智能水平",
+    "深化新技术应用",
+    "其他",
 }
 
 export enum ProjectStage {
@@ -66,6 +76,108 @@ export enum StatisticalCategory {
     "被共享"
 }
 
+export enum FormImportantLevel {
+    "重大" = 1,
+    "重要",
+    "一般"
+}
+
+export enum ProjectLevel {
+    "省级项目" = 1,
+    "市级项目",
+    "县级项目"
+}
+
+export enum AssetsNature {
+    "子公司" = 1,
+    "用户",
+    "总公司",
+    "分部",
+    "省（直辖市、自治区）公司)"
+}
+
+export enum MajorCategory {
+    "配电线路" = 1,
+    "配电电缆",
+    "配电通道",
+    "配电站室",
+    "配电自动化",
+    "配网通信",
+    "配电附属设施"
+}
+
+
+export enum ReformCause {
+    "网架结构不合理" = 1,
+    "供电能力不足",
+    "设备老化",
+    "落实安措（安全防护）及反措要求",
+    "设备故障",
+    "设备质量缺陷",
+    "电能质量问题",
+    "运行环境恶化",
+    "电网发展需求需提高主要技术参数水平",
+    "新技术应用",
+    "配合市政建设",
+    "落实国家政策",
+    "其他",
+}
+
+export enum ReformAim {
+    "提升电网安全稳定水平" = 1,
+    "提升设备运行可靠性",
+    "提升电网输送能力",
+    "提升电网经济运行水平",
+    "提升电网智能化水平",
+    "提升电网环保水平",
+    "其他",
+}
+
+export enum RegionAttribute {
+    "A+" = 1,
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+}
+
+export enum Batch {
+    "第一批" = 1,
+    "第二批",
+    "第三批",
+    "第四批",
+    "第五批",
+    "第六批",
+}
+
+export enum PAttribute {
+    "贫困地区农网建设与改造项目" = 1,
+    "新接收小水电供区电网改造项目",
+    "运行异常配变改造项目",
+    "小康电示范县电网建设与改造项目",
+    "新增机井通电工程",
+    "农网配电自动化改造项目",
+    "易地扶贫搬迁项目",
+    "常规农网项目",
+    "其他项目",
+}
+
+export enum Meteorologic {
+    "无",
+    "A类",
+    "B类",
+    "C类",
+    "D类",
+    "E类",
+    "F类",
+}
+
+export enum DataSourceType {
+    "勘察",
+    "导入",
+}
+
 export interface AllProjectStatisticsParams {
     keyWord?: string
     category?: string,
@@ -99,6 +211,64 @@ interface ProjectTableStatisticsResult {
 // 获取统计的值
 export const getProjectTableStatistics = (params: AllProjectStatisticsParams) => {
     return cyRequest<ProjectTableStatisticsResult>(() => request(`${baseUrl.project}/Porject/GetStatistical`,{method: "POST", data: params}))
+}
+
+interface EngineerParams {
+    name: string,
+    province: string
+    libId: string
+    inventoryOverviewId: string
+    warehouseId: string
+    compiler: string
+    compileTime: Moment
+    organization: string
+    startTime: Moment
+    endTime: Moment
+    company: string
+    importance: string
+    plannedYear: string
+    grade: string
+}
+
+interface ProjectParams {
+    name: string
+    category: string
+    pType: string
+    kvLevel: string
+    totalInvest: string
+    natures: string[]
+    startTime: Moment
+    endTime: Moment
+    assetsNature: string
+    majorCategory: string
+    isAcrossYear: string
+    reformCause: string
+    reformAim: string
+    powerSupply: string
+    assetsOrganization: string
+    cityCompany: string
+    regionAttribute: string
+    countyCompany: string
+    constructType: string
+    pCategory: string
+    stage: string
+    batch: string
+    pAttribute: string
+    meteorologic: string
+    disclosureRange: string
+    pileRange: string
+    deadline: Moment,
+    dataSourceType: string
+}
+
+interface AddEngineerParams {
+    engineer: EngineerParams,
+    project: ProjectParams[]
+}
+
+// 立项保存接口
+export const addEngineer = (params: AddEngineerParams) => {
+    return cyRequest<ProjectTableStatisticsResult>(() => request(`${baseUrl.project}/Porject/CreateMultipleProject`,{method: "POST", data: params}))
 }
 
 

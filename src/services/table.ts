@@ -18,7 +18,7 @@ export interface TableRequestResult {
 }
 
 export const tableCommonRequest = (params: TableCommonRequestParams): Promise<TableRequestResult> => {
-    let requestBaseUrl = baseUrl.project[params.requestSource];
+    let requestBaseUrl = baseUrl[params.requestSource];
     return cyRequest<TableRequestResult>(() => request(`${requestBaseUrl}${params.url}`,{method: "Post", data: {...params.extraParams,PageIndex: params.pageIndex, PageSize: params.pageSize}}))
 }
 

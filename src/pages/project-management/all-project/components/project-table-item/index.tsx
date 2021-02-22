@@ -5,7 +5,10 @@ import React from "react"
 import styles from "./index.less"
 
 import uuid from 'node-uuid'
-import {Checkbox} from "antd";
+import { Checkbox } from "antd";
+import { useMemo } from "react";
+import { CheckboxValueType } from "antd/lib/checkbox/Group";
+import EmptyTip from "@/components/empty-tip";
 
 interface ProjectTableItemProps {
     // TODO 完善信息
@@ -15,28 +18,52 @@ interface ProjectTableItemProps {
 
 const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     const [isFold, { toggle: foldEvent }] = useBoolean(false)
-    const { projectInfo = {}, columns = [] } = props;
+
+    const [checkedList, setCheckedList] = React.useState<CheckboxValueType[]>([]);
+    const [indeterminate, setIndeterminate] = React.useState(false);
+    const [checkAll, setCheckAll] = React.useState(false);
+
+    const { projectInfo = {}, columns = []} = props;
 
     const theadElement = columns.map((item) => {
         return (
-            <th key={uuid.v1()}>
+            <th key={uuid.v1()} style={item.width ? { width: `${item.width}px` } : undefined}>
                 {item.title}
             </th>
         )
     })
 
+    const valueList = useMemo(() => {
+        if (projectInfo.projects) {
+            return projectInfo.projects.map((item: any) => item.id);
+        }
+        return []
+    }, [JSON.stringify(projectInfo.projects)])
+
+    const checkboxChange = (list: CheckboxValueType[]) => {
+        setCheckedList(list);
+        setIndeterminate(!!list.length && list.length < valueList.length);
+        setCheckAll(list.length === valueList.length);
+    };
+
+    const checkAllEvent = (e: any) => {
+        setCheckedList(e.target.checked ? valueList : []);
+        setIndeterminate(false);
+        setCheckAll(e.target.checked);
+    };
+
     const tbodyElement = (projectInfo.projects ?? []).map((item: any) => {
         return (
             <tr key={uuid.v1()}>
                 <td>
-                    <Checkbox value={item.id} />
+                    <Checkbox style={{ marginLeft: "4px" }} value={item.id} />
                 </td>
                 {
                     columns.map((ite) => {
                         return (
-                            <th key={uuid.v1()}>
-                                {ite.render ? ite.render() : item[ite.dataIndex]}
-                            </th>
+                            <td key={uuid.v1()}>
+                                {ite.render ? ite.render(item) : item[ite.dataIndex]}
+                            </td>
                         )
                     })
                 }
@@ -46,7 +73,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
 
 
     return (
-        <div className={styles.projectTableItem}>
+        <div className={`${styles.projectTableItem}`}>
             <div className={styles.ProjectTitle}>
                 <div className={styles.foldButton}>
                     <span onClick={() => foldEvent()}>
@@ -54,12 +81,15 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                     </span>
                 </div>
                 <div className={styles.projectName}>
-                    {
-                        projectInfo.name
-                    }
+                    <Checkbox onChange={checkAllEvent} style={{ marginRight: "7px" }} indeterminate={indeterminate} checked={checkAll} />
+                    <span>
+                        {
+                            projectInfo.name
+                        }
+                    </span>
                 </div>
                 <div className={styles.projectTime}>
-                    <span>
+                    <span className={styles.label}>
                         工程日期:
                     </span>
                     <span>
@@ -75,7 +105,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                     </span>
                 </div>
                 <div className={styles.createTime}>
-                    <span>
+                    <span className={styles.label}>
                         编制日期:
                     </span>
                     <span>
@@ -85,26 +115,37 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                     </span>
                 </div>
             </div>
-            <div className={styles.engineerTable}>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            {
-                                theadElement
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            tbodyElement
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <div className={styles.noEngineerData}>
+            {
+                !isFold && projectInfo.projects.length > 0 &&
+                <Checkbox.Group value={checkedList} onChange={checkboxChange}>
+                    <div className={styles.engineerTable}>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th className={styles.checkboxTh}>
 
-            </div>
+                                    </th>
+                                    {
+                                        theadElement
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    tbodyElement
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </Checkbox.Group>
+            }
+            {
+                !isFold && projectInfo.projects.length === 0 &&
+                <div className={styles.noEngineerData}>
+                    <EmptyTip className="pt20" />
+                </div>
+            }
         </div>
     )
 }
