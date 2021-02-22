@@ -1,0 +1,105 @@
+import React from 'react';
+import { Input } from 'antd';
+import CyFormItem from '@/components/cy-form-item';
+import UrlSelect from '@/components/url-select';
+
+interface ChartListFromLibParams {
+  resourceLibId: string;
+}
+
+const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
+  const { resourceLibId } = props;
+  console.log(resourceLibId);
+
+  return (
+    <>
+      <CyFormItem label="编号" name="materialId" required>
+        <Input placeholder="请输入编号"></Input>
+      </CyFormItem>
+
+      <CyFormItem label="类型" name="category" required>
+        <Input placeholder="请输入类型" />
+      </CyFormItem>
+
+      <CyFormItem label="名称" name="materialName" required>
+        <Input placeholder="请输入资源库名称"></Input>
+      </CyFormItem>
+
+      <CyFormItem label="规格型号" name="spec">
+        <Input placeholder="请输入规格型号" />
+      </CyFormItem>
+
+      <CyFormItem label="单位" name="unit">
+        <Input placeholder="请输入单位" />
+      </CyFormItem>
+
+      <CyFormItem label="单重(kg)" name="pieceWeight">
+        <Input placeholder="请输入单重" />
+      </CyFormItem>
+
+      <CyFormItem label="单价(元)" name="unitPrice">
+        <Input placeholder="请输入单价" />
+      </CyFormItem>
+
+      <CyFormItem label="类别" name="materialType">
+        <Input placeholder="请输入类别" />
+      </CyFormItem>
+
+      <CyFormItem label="用途" name="usage">
+        <Input placeholder="请输入用途" />
+      </CyFormItem>
+      <CyFormItem label="物料(运检)" name="inspection">
+        <Input placeholder="请输入" />
+      </CyFormItem>
+      <CyFormItem label="描述" name="description">
+        <Input placeholder="请输入描述" />
+      </CyFormItem>
+
+      <CyFormItem label="物资编号" name="code">
+        <Input placeholder="请输入物资编号" />
+      </CyFormItem>
+
+      <CyFormItem label="供给方" name="supplySide">
+        <Input placeholder="请输入供给方" />
+      </CyFormItem>
+
+      <CyFormItem label="运输类型" name="transportationType">
+        <Input placeholder="请输入运输类型" />
+      </CyFormItem>
+
+      <CyFormItem label="统计类型" name="statisticType">
+        <Input placeholder="请输入统计类型" />
+      </CyFormItem>
+
+      <CyFormItem label="电压等级" name="kvLevel">
+        <Input placeholder="请输入电压等级" />
+      </CyFormItem>
+
+      <CyFormItem label="所属工程" name="forProject">
+        <Input placeholder="请输入所属工程" />
+      </CyFormItem>
+
+      <CyFormItem label="所属设计" name="forDesign">
+        <Input placeholder="请输入所属设计" />
+      </CyFormItem>
+
+      <CyFormItem label="备注" name="remark">
+        <Input placeholder="请输入备注" />
+      </CyFormItem>
+
+      <CyFormItem label="图纸" name="chartIds">
+        <UrlSelect
+          mode="multiple"
+          requestSource="resource"
+          showSearch
+          url="/Chart/GetList"
+          titleKey="chartName"
+          valueKey="chartId"
+          placeholder="请选择图纸"
+        />
+      </CyFormItem>
+    </>
+  );
+};
+
+export default MaterialForm;

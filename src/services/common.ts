@@ -9,8 +9,13 @@ const { NODE_ENV } = process.env;
 const devBaseUrl = {
   project: '/project/api',
   common: '/common/api',
-  upload: '/upload/api'
+  upload: '/upload/api',
+  resource: '/resource/api',
 };
+
+interface UrlSelectParams {
+  requestSource: 'project' | 'resource';
+}
 
 export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;
 
@@ -24,7 +29,7 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
     } else {
       if (code === 401) {
         history.push('/401');
-      }else {
+      } else {
         message.error(res.message);
       }
       reject(res.message);
@@ -99,5 +104,3 @@ export const commonExport = (url: string, params: any, selectIds: string[]) => {
     responseType: 'blob',
   });
 };
-
-

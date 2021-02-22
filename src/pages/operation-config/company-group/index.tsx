@@ -1,6 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import React, { useRef, useState } from 'react';
-import { Button,  Modal, Form, Popconfirm, message, Spin } from 'antd';
+import { Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
 import TreeTable from '@/components/tree-table/index';
 import {
   addCompanyGroupItem,
@@ -8,7 +8,6 @@ import {
   getTreeSelectData,
   updateCompanyGroupItem,
   getCompanyGroupDetail,
-  getCompanyGroupTreeList,
 } from '@/services/operation-config/company-group';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import CompanyGroupForm from './components/add-edit-form';
@@ -32,11 +31,6 @@ const CompanyGroup: React.FC = () => {
   });
 
   const { data: selectTreeData = [], run: getSelectTreeData } = useRequest(getTreeSelectData, {
-    manual: true,
-  });
-
-  //获取公司成员  接口未定
-  const { data: users = [] } = useRequest(getCompanyGroupTreeList, {
     manual: true,
   });
 
@@ -69,7 +63,11 @@ const CompanyGroup: React.FC = () => {
       index: 'users',
       render: (text: any, record: any) => {
         return record.users.map((item: any) => {
-          return <span className={styles.users}>{item.text}</span>;
+          return (
+            <span key={item.value} className={styles.users}>
+              {item.text}
+            </span>
+          );
         });
       },
     },
@@ -199,7 +197,7 @@ const CompanyGroup: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <CompanyGroupForm treeData={selectTreeData} usersData={users} />
+          <CompanyGroupForm treeData={selectTreeData} />
         </Form>
       </Modal>
       <Modal
@@ -213,7 +211,7 @@ const CompanyGroup: React.FC = () => {
       >
         <Form form={editForm}>
           <Spin spinning={editDataLoading}>
-            <CompanyGroupForm treeData={selectTreeData} usersData={users} />
+            <CompanyGroupForm treeData={selectTreeData} />
           </Spin>
         </Form>
       </Modal>

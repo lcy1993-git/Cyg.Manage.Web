@@ -141,6 +141,11 @@ const testData = [
         icon: '',
         path: '/resource-config/drawing',
       },
+      {
+        name: '物料',
+        icon: '',
+        path: '/resource-config/material',
+      },
     ],
   },
 ];

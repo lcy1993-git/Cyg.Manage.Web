@@ -12,16 +12,26 @@ const Drawing = Loadable({
   loading: Loading,
   delay: 150,
 });
+const Material = Loadable({
+  loader: () => import('@/pages/resource-config/material'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
     title: '资源库',
-    path: '/pages/resource-manage/resource-lib',
+    path: '/resource-config/resource-lib',
     component: <ResourceLib />,
   },
   {
     title: '图纸',
-    path: '/pages/resource-config/drawing',
+    path: '/resource-config/drawing',
     component: <Drawing />,
+  },
+  {
+    title: '物料',
+    path: '/resource-config/material',
+    component: <Material />,
   },
 ];

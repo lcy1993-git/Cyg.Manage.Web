@@ -56,6 +56,7 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
       <CyFormItem label="授权端口" name="clientCategorys">
         <UrlSelect
           mode="multiple"
+          requestSource="project"
           showSearch
           url="/CompanyUser/GetClientCategorys"
           titleKey="text"
