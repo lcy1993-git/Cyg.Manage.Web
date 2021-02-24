@@ -166,6 +166,32 @@ const testData = [
         icon: '',
         path: '/resource-config/overhead-design',
       },
+      {
+        name: '应力弧垂表',
+        icon: '',
+        path: '/resource-config/line-stress-sag',
+      },
+      {
+        name: '版本对比',
+        icon: '',
+        path: '/resource-config/source-compare',
+      },
+    ],
+  },
+  {
+    name: '物料管理',
+    icon: '',
+    menuData: [
+      {
+        name: '协议库存管理',
+        icon: '',
+        path: '/material-config/inventory',
+      },
+      {
+        name: '物料利库管理',
+        icon: '',
+        path: '/material-config/ware-house',
+      },
     ],
   },
 ];

@@ -1,29 +1,26 @@
-import { Tabs } from 'antd';
+import { Tabs, Input } from 'antd';
 import React from 'react';
 import CableWell from '../cable-well';
 import CableChannel from '../cable-channel';
+import TableSearch from '@/components/table-search';
 
 const { TabPane } = Tabs;
+const { Search } = Input;
 
-interface ExtractParams {
-  templateId: string;
+interface CableDesignParams {
+  libId: string;
 }
-
-interface SuperManageAuthorizationProps {
-  extractParams: ExtractParams;
-}
-
-const CableDesignTab: React.FC<SuperManageAuthorizationProps> = (props) => {
-  const { extractParams } = props;
+const CableDesignTab: React.FC<CableDesignParams> = (props) => {
+  const { libId } = props;
 
   return (
     <div>
       <Tabs className="normalTabs noMargin">
-        <TabPane key="role" tab="电缆井">
-          <CableWell extractParams={extractParams} />
+        <TabPane key="well" tab="电缆井">
+          <CableWell libId={libId} />
         </TabPane>
-        <TabPane key="user" tab="电缆通道">
-          <CableChannel extractParams={extractParams} />
+        <TabPane key="channel" tab="电缆通道">
+          <CableChannel libId={libId} />
         </TabPane>
       </Tabs>
     </div>

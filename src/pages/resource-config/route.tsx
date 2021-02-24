@@ -32,6 +32,16 @@ const CableDesign = Loadable({
   loading: Loading,
   delay: 150,
 });
+const LineStressSag = Loadable({
+  loader: () => import('@/pages/resource-config/line-stress-sag'),
+  loading: Loading,
+  delay: 150,
+});
+const SourceCompare = Loadable({
+  loader: () => import('@/pages/resource-config/source-compare'),
+  loading: Loading,
+  delay: 150,
+});
 // const OverheadDesign = Loadable({
 //   loader: () => import('@/pages/resource-config/overhead-design'),
 //   loading: Loading,
@@ -74,4 +84,14 @@ export default [
   //   path: '/resource-config/overhead-design',
   //   component: <OverheadDesign />,
   // },
+  {
+    title: '应力弧垂表',
+    path: '/resource-config/line-stress-sag',
+    component: <LineStressSag />,
+  },
+  {
+    title: '版本对比',
+    path: '/resource-config/source-compare',
+    component: <SourceCompare />,
+  },
 ];

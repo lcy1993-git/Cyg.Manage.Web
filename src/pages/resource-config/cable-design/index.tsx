@@ -7,6 +7,7 @@ import styles from './index.less';
 import CommonTitle from '@/components/common-title';
 import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
+import CableDesignTab from './components/cableDesign-tab';
 
 const { Search } = Input;
 
@@ -76,30 +77,42 @@ const CableDesign: React.FC = () => {
   //   };
 
   return (
-    <div>
-      <PageCommonWrap className={styles.titleArea}>
-        <CommonTitle>电缆设计</CommonTitle>
-        <TableSearch label="资源库" width="240px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
-          />
-        </TableSearch>
-        <TableImportButton
-          buttonTitle="导入(电缆井+电缆通道)"
-          modalTitle="导入(电缆井+电缆通道)"
-          className={styles.importBtn}
-          importUrl="/CableWell/SaveImport"
-        />
-      </PageCommonWrap>
-      <PageCommonWrap className={styles.tabArea}>111</PageCommonWrap>
-    </div>
+    <PageCommonWrap noPadding={true}>
+      <div className={styles.cableDesign}>
+        <div className={styles.cableTitle}>
+          <div className="flex1">
+            <CommonTitle>电缆设计</CommonTitle>
+          </div>
+          <div className="flex">
+            <div className="flex1 flex">
+              <TableSearch className={styles.libSearch} label="资源库" width="240px">
+                <UrlSelect
+                  allowClear
+                  showSearch
+                  requestSource="resource"
+                  url="/ResourceLib/GetList"
+                  titleKey="libName"
+                  valueKey="id"
+                  placeholder="请选择"
+                  onChange={(value: any) => searchByLib(value)}
+                />
+              </TableSearch>
+            </div>
+            <div>
+              <TableImportButton
+                buttonTitle="导入(电缆井+电缆通道)"
+                modalTitle="导入(电缆井+电缆通道)"
+                className={styles.importBtn}
+                importUrl="/CableWell/SaveImport"
+              />
+            </div>
+          </div>
+        </div>
+        <div className={styles.cableTable}>
+          <CableDesignTab libId={resourceLibId} />
+        </div>
+      </div>
+    </PageCommonWrap>
   );
 };
 

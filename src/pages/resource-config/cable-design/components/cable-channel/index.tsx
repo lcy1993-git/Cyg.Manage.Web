@@ -3,23 +3,29 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
-  getComponentDetail,
-  addComponentItem,
-  updateComponentItem,
-  deleteComponentItem,
-} from '@/services/resource-config/component';
+  getCableChannelDetail,
+  deleteCableChannelItem,
+  updateCableChannelItem,
+  addCableChannelItem,
+} from '@/services/resource-config/cable-channel';
 import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
-import ComponentForm from './components/add-edit-form';
+// import ComponentForm from './components/add-edit-form';
 
 const { Search } = Input;
 
-const CableChannel: React.FC = () => {
+interface CableDesignParams {
+  libId: string;
+}
+
+const CableChannel: React.FC<CableDesignParams> = (props) => {
+  const { libId } = props;
+
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
@@ -33,7 +39,7 @@ const CableChannel: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getComponentDetail, {
+  const { data, run, loading } = useRequest(getCableChannelDetail, {
     manual: true,
   });
 
@@ -49,30 +55,6 @@ const CableChannel: React.FC = () => {
             placeholder="关键词"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="200px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="组件" width="220px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/Component/GetDeviceCategory"
-            titleKey="name"
-            valueKey="value"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
-          />
-        </TableSearch>
       </div>
     );
   };
@@ -83,6 +65,10 @@ const CableChannel: React.FC = () => {
     setResourceLibId(value);
     search();
   };
+
+  useEffect(() => {
+    searchByLib(libId);
+  }, [libId]);
 
   // 列表刷新
   const refresh = () => {
@@ -102,21 +88,21 @@ const CableChannel: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'componentId',
-      index: 'componentId',
+      dataIndex: 'channelId',
+      index: 'channelId',
       title: '编号',
       width: 180,
     },
     {
-      dataIndex: 'componentName',
-      index: 'componentName',
+      dataIndex: 'channelName',
+      index: 'channelName',
       title: '名称',
       width: 240,
     },
     {
-      dataIndex: 'componentSpec',
-      index: 'componentName',
-      title: '规格型号',
+      dataIndex: 'shortName',
+      index: 'shortName',
+      title: '简称',
       width: 320,
     },
     {
@@ -126,28 +112,70 @@ const CableChannel: React.FC = () => {
       width: 220,
     },
     {
-      dataIndex: 'unit',
-      index: 'unit',
-      title: '单位',
+      dataIndex: 'channelCode',
+      index: 'channelCode',
+      title: '规格简号',
       width: 140,
     },
     {
-      dataIndex: 'deviceCategory',
-      index: 'deviceCategory',
-      title: '设备类别',
+      dataIndex: 'unit',
+      index: 'unit',
+      title: '单位',
       width: 180,
     },
     {
-      dataIndex: 'componentType',
-      index: 'componentType',
-      title: '组件分类',
+      dataIndex: 'reservedWidth',
+      index: 'reservedWidth',
+      title: '预留宽度(mm)',
       width: 180,
     },
 
     {
-      dataIndex: 'kvLevel',
-      index: 'kvLevel',
-      title: '电压等级',
+      dataIndex: 'digDepth',
+      index: 'digDepth',
+      title: '挖深',
+      width: 180,
+    },
+    {
+      dataIndex: 'layingMode',
+      index: 'layingMode',
+      title: '敷设方式',
+      width: 180,
+    },
+    {
+      dataIndex: 'cableNumber',
+      index: 'cableNumber',
+      title: '电缆数量',
+      width: 180,
+    },
+    {
+      dataIndex: 'pavement',
+      index: 'pavement',
+      title: '路面环境',
+      width: 180,
+    },
+    {
+      dataIndex: 'protectionMode',
+      index: 'protectionMode',
+      title: '保护方式',
+      width: 180,
+    },
+    {
+      dataIndex: 'ductMaterialId',
+      index: 'ductMaterialId',
+      title: '电缆管材质编号',
+      width: 180,
+    },
+    {
+      dataIndex: 'arrangement',
+      index: 'arrangement',
+      title: '排列方式',
+      width: 180,
+    },
+    {
+      dataIndex: 'bracketNumber',
+      index: 'bracketNumber',
+      title: '支架层数',
       width: 180,
     },
     {
@@ -165,7 +193,7 @@ const CableChannel: React.FC = () => {
     {
       dataIndex: 'remark',
       index: 'remark',
-      title: '描述',
+      title: '备注',
       width: 220,
     },
   ];
@@ -183,15 +211,22 @@ const CableChannel: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
-          componentId: '',
-          componentName: '',
-          componentSpec: '',
+          libId: libId,
+          channelId: '',
+          channelName: '',
+          shortName: '',
           typicalCode: '',
+          channelCode: '',
           unit: '',
-          deviceCategory: '',
-          componentType: '',
-          kvLevel: '',
+          reserveWidth: 0,
+          digDepth: 0,
+          layingMode: '',
+          cableNumber: 0,
+          pavement: '',
+          protectionMode: '',
+          ductMaterialId: '',
+          arrangement: '',
+          bracketNumber: 0,
           forProject: '',
           forDesign: '',
           remark: '',
@@ -199,7 +234,7 @@ const CableChannel: React.FC = () => {
         },
         value,
       );
-      await addComponentItem(submitInfo);
+      await addCableChannelItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -234,15 +269,22 @@ const CableChannel: React.FC = () => {
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
+          libId: libId,
           id: editData.id,
-          componentName: editData.componentName,
-          componentSpec: editData.componentSpec,
+          channelName: editData.channelName,
+          shortName: editData.shortName,
           typicalCode: editData.typicalCode,
+          channelCode: editData.channelCode,
           unit: editData.unit,
-          deviceCategory: editData.deviceCategory,
-          componentType: editData.componentType,
-          kvLevel: editData.kvLevel,
+          reserveWidth: editData.reserveWidth,
+          digDepth: editData.digDepth,
+          layingMode: editData.layingMode,
+          cableNumber: editData.cableNumber,
+          pavement: editData.pavement,
+          protectionMode: editData.protectionMode,
+          ductMaterialId: editData.ductMaterialId,
+          arrangement: editData.arrangement,
+          bracketNumber: editData.bracketNumber,
           forProject: editData.forProject,
           forDesign: editData.forDesign,
           remark: editData.remark,
@@ -250,7 +292,7 @@ const CableChannel: React.FC = () => {
         },
         values,
       );
-      await updateComponentItem(submitInfo);
+      await updateCableChannelItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -280,17 +322,8 @@ const CableChannel: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <TableImportButton
-          buttonTitle="导入组件"
-          modalTitle="导入组件"
-          className={styles.importBtn}
-          importUrl="/Material/Import"
-        />
         <Button className={styles.importBtn} onClick={() => openDetail()}>
-          组件明细
-        </Button>
-        <Button className={styles.importBtn} onClick={() => openAttribute()}>
-          组件属性
+          电缆通道明细
         </Button>
       </div>
     );
@@ -304,7 +337,7 @@ const CableChannel: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteComponentItem(editDataId);
+    await deleteCableChannelItem(editDataId);
     refresh();
     message.success('删除成功');
   };
@@ -331,22 +364,21 @@ const CableChannel: React.FC = () => {
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
+        buttonLeftContentSlot={searchComponent}
         needCommonButton={true}
         columns={columns}
         requestSource="resource"
-        url="/Component/GetPageList"
-        tableTitle="组件列表"
+        url="/CableChannel"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
-          resourceLibId: resourceLibId,
+          libId: libId,
           keyWord: searchKeyWord,
         }}
       />
       <Modal
-        title="添加-组件"
+        title="添加-电缆通道"
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -355,11 +387,11 @@ const CableChannel: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <ComponentForm resourceLibId={resourceLibId} type="add" />
+          {/* <ComponentForm resourceLibId={resourceLibId} type="add" /> */}
         </Form>
       </Modal>
       <Modal
-        title="编辑-组件"
+        title="编辑-电缆通道"
         width="680px"
         visible={editFormVisible}
         okText="确认"
@@ -368,31 +400,16 @@ const CableChannel: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <Spin spinning={loading}>
-            <ComponentForm resourceLibId={resourceLibId} />
-          </Spin>
+          <Spin spinning={loading}>{/* <ComponentForm resourceLibId={resourceLibId} /> */}</Spin>
         </Form>
       </Modal>
 
       <Modal
         footer=""
-        title="组件明细"
+        title="电缆通道明细"
         width="680px"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-      >
-        11
-      </Modal>
-
-      <Modal
-        footer=""
-        title="组件属性"
-        width="680px"
-        visible={attributeVisible}
-        onCancel={() => setAttributeVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}

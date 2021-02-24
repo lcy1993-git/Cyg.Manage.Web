@@ -14,7 +14,7 @@ const ResourceLibForm: React.FC = () => {
         <Input placeholder="请输入版本号" />
       </CyFormItem>
 
-      <CyFormItem label="版本" name="remark">
+      <CyFormItem label="备注" name="remark">
         <TextArea showCount maxLength={100} placeholder="备注说明" />
       </CyFormItem>
     </>

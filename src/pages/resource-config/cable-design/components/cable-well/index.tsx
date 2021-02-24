@@ -3,7 +3,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -19,7 +19,13 @@ import UrlSelect from '@/components/url-select';
 
 const { Search } = Input;
 
-const CableWell: React.FC = () => {
+interface CableDesignParams {
+  libId: string;
+}
+
+const CableWell: React.FC<CableDesignParams> = (props) => {
+  const { libId } = props;
+
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
@@ -40,37 +46,13 @@ const CableWell: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="搜索" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
             placeholder="关键词"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="200px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="组件" width="220px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/Component/GetDeviceCategory"
-            titleKey="name"
-            valueKey="value"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
           />
         </TableSearch>
       </div>
@@ -83,6 +65,10 @@ const CableWell: React.FC = () => {
     setResourceLibId(value);
     search();
   };
+
+  useEffect(() => {
+    searchByLib(libId);
+  }, [libId]);
 
   // 列表刷新
   const refresh = () => {
@@ -151,9 +137,15 @@ const CableWell: React.FC = () => {
       width: 180,
     },
     {
+      dataIndex: 'feature',
+      index: 'feature',
+      title: '特征',
+      width: 180,
+    },
+    {
       dataIndex: 'pavement',
       index: 'pavement',
-      title: '特征',
+      title: '路面环境',
       width: 180,
     },
     {
@@ -311,17 +303,8 @@ const CableWell: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <TableImportButton
-          buttonTitle="导入组件"
-          modalTitle="导入组件"
-          className={styles.importBtn}
-          importUrl="/Material/Import"
-        />
         <Button className={styles.importBtn} onClick={() => openDetail()}>
-          组件明细
-        </Button>
-        <Button className={styles.importBtn} onClick={() => openAttribute()}>
-          组件属性
+          电缆井明细
         </Button>
       </div>
     );
@@ -367,17 +350,16 @@ const CableWell: React.FC = () => {
         needCommonButton={true}
         columns={columns}
         requestSource="resource"
-        url="/Component/GetPageList"
-        tableTitle="组件列表"
+        url="/CableWell/GetPageList"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
-          resourceLibId: resourceLibId,
+          resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
       />
       <Modal
-        title="添加-组件"
+        title="添加-电缆井"
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -386,11 +368,11 @@ const CableWell: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <ComponentForm resourceLibId={resourceLibId} type="add" />
+          {/* <ComponentForm resourceLibId={resourceLibId} type="add" /> */}
         </Form>
       </Modal>
       <Modal
-        title="编辑-组件"
+        title="编辑-电缆井"
         width="680px"
         visible={editFormVisible}
         okText="确认"
@@ -399,31 +381,16 @@ const CableWell: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <Spin spinning={loading}>
-            <ComponentForm resourceLibId={resourceLibId} />
-          </Spin>
+          <Spin spinning={loading}>{/* <ComponentForm resourceLibId={resourceLibId} /> */}</Spin>
         </Form>
       </Modal>
 
       <Modal
         footer=""
-        title="组件明细"
+        title="电缆井明细"
         width="680px"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-      >
-        11
-      </Modal>
-
-      <Modal
-        footer=""
-        title="组件属性"
-        width="680px"
-        visible={attributeVisible}
-        onCancel={() => setAttributeVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
