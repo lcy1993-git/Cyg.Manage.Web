@@ -8,6 +8,7 @@ import OperationConfig from '@/pages/operation-config/route';
 import ResourceConfig from '@/pages/resource-config/route';
 import NoJurisdiction from '@/pages/401/route';
 import ProjectManagement from '@/pages/project-management/route';
+import VisualizationResults from "@/pages/visualization-results/route"
 
 export interface RouteListItem {
   title: string;
@@ -27,7 +28,8 @@ const routeList: TabRouteListItem[] = [
   ...OperationConfig,
   ...ResourceConfig,
   ...NoJurisdiction,
-  ...ProjectManagement
+  ...ProjectManagement,
+  ...VisualizationResults
 ];
 
 export const getTabsComponent = (key: string): TabRouteListItem => {

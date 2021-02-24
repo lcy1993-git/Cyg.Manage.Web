@@ -4,9 +4,9 @@ import { AllProjectStatisticsParams, getProjectTableList } from "@/services/proj
 
 import styles from "./index.less"
 import { useMemo } from "react"
-import { Pagination } from "antd"
+import { Dropdown, Menu, Pagination } from "antd"
 import { useEffect } from "react"
-import ProjectTableItem from "../project-table-item"
+import ProjectTableItem, { TableItemCheckedInfo } from "../project-table-item"
 
 import uuid from 'node-uuid'
 import TableStatus from "@/components/table-status"
@@ -20,7 +20,12 @@ interface ExtractParams extends AllProjectStatisticsParams {
 
 interface ProjectTableProps {
     extractParams: ExtractParams
-    onSelect?: (checkedValue: any[]) => {}
+    onSelect?: (checkedValue: TableItemCheckedInfo[]) => void
+}
+
+interface JurisdictionInfo {
+    canEdit: boolean
+    canCopy: boolean
 }
 
 const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
@@ -28,10 +33,11 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
 
+    const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([])
+
     const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
     const tableResultData = useMemo(() => {
-
         if (tableData) {
             const { items, pageIndex, pageSize, total } = tableData;
             return {
@@ -53,6 +59,29 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
         };
 
     }, [JSON.stringify(tableData)]);
+
+    const projectItemMenu = (jurisdictionInfo: JurisdictionInfo) => {
+        return (
+            <Menu>
+                <Menu.Item>
+                    查看详情
+                </Menu.Item>
+                {
+                    jurisdictionInfo.canEdit &&
+                    <Menu.Item>
+                        编辑
+                    </Menu.Item>
+                }
+                {
+                    jurisdictionInfo.canCopy &&
+                    <Menu.Item>
+                        复制项目
+                    </Menu.Item>
+                }
+
+            </Menu>
+        )
+    }
 
     const projectTableColumns = [
         {
@@ -161,15 +190,36 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
             title: "操作",
             dataIndex: "operationAuthority",
             width: 60,
-            render: (record) => {
-                return <BarsOutlined />
+            render: (record: any) => {
+                const {operationAuthority} = record;
+        
+                return (
+                    <Dropdown overlay={() => projectItemMenu(operationAuthority)} placement="bottomLeft" arrow>
+                        <BarsOutlined />
+                    </Dropdown>
+                )
             }
         },
     ]
 
+    const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
+        // 监测现在数组是否含有此id的数据
+        const hasData = tableSelectData.findIndex((item) => item.projectInfo.id === projectSelectInfo.projectInfo.id);
+        const copyData: TableItemCheckedInfo[] = JSON.parse(JSON.stringify(tableSelectData));
+        if (hasData > -1) {
+            copyData.splice(hasData, 1, projectSelectInfo)
+            setTableSelectData(copyData)
+            onSelect?.(copyData)
+        } else {
+            // 代表没有数据，那就直接插进去
+            setTableSelectData([...tableSelectData, projectSelectInfo])
+            onSelect?.([...tableSelectData, projectSelectInfo])
+        }
+    }
+
     const projectTableShow = tableResultData.items.map((item: any, index: number) => {
         return (
-            <ProjectTableItem columns={projectTableColumns} key={item.id} projectInfo={item} />
+            <ProjectTableItem onChange={tableItemSelectEvent} columns={projectTableColumns} key={item.id} projectInfo={item} />
         )
     })
 
@@ -194,6 +244,7 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
                 pageIndex,
                 pageSize
             });
+            setTableSelectData([])
         },
         search: () => {
             setPageIndex(1);
@@ -202,6 +253,7 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
                 pageIndex: 1,
                 pageSize
             });
+            setTableSelectData([])
         },
         searchByParams: (params: object) => {
             setPageIndex(1);
@@ -210,6 +262,7 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
                 pageIndex: 1,
                 pageSize
             });
+            setTableSelectData([])
         },
     }));
 
@@ -220,6 +273,7 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
             pageIndex,
             pageSize
         })
+        setTableSelectData([])
     }, [pageSize, pageIndex]);
 
     return (

@@ -83,13 +83,14 @@ export const getDataByUrl = (url: string, params: object, requestSource: "common
   );
 };
 
-export const commonUpload = (url: string, files: any[], name: string = 'file') => {
+export const commonUpload = (url: string, files: any[], name: string = 'file', requestSource: "project" | "upload" = "project") => {
+  const requestUrl = baseUrl[requestSource]
   const formData = new FormData();
   files.forEach((item) => {
     formData.append(name, item);
   });
   return cyRequest<any[]>(() =>
-    tokenRequest(`${baseUrl.project}${url}`, {
+    tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',
       data: formData,
       requestType: 'form',

@@ -1,5 +1,5 @@
 import FileUpload from "@/components/file-upload";
-import { Button, Form, Tabs } from "antd";
+import { Button, Form, Select, Tabs } from "antd";
 import React from "react";
 import TableImportButton from "@/components/table-import-button";
 import TableExportButton from "@/components/table-export-button";
@@ -7,6 +7,8 @@ import ReadonlyItem from "@/components/readonly-item";
 import ReplyComponent from "@/components/reply-component";
 import TableStatus from "@/components/table-status";
 import FileUploadOnline from "@/components/file-upload-online";
+import EditFormTable from "@/components/edit-form-table";
+import { Input } from "antd";
 
 const { TabPane } = Tabs;
 
@@ -28,6 +30,33 @@ const TestPage = () => {
             console.log(value)
         })
     }
+
+    const columns = [
+        {
+            title: "姓名",
+            dataIndex: "name",
+            index: "name",
+            rules: [
+                { required: true, message: "该值必填" }
+            ],
+            render: () => {
+                return (
+                    <Input />
+                )
+            }
+        },
+        {
+            title: "下拉选择",
+            dataIndex: "select",
+            index: "slect",
+            width: 280,
+            render: () => {
+                return (
+                    <Select></Select>
+                )
+            }
+        },
+    ]
 
     return (
         <Form form={form}>
@@ -106,6 +135,8 @@ const TestPage = () => {
             <Form.Item name="fileId">
                 <FileUploadOnline action="/Upload/StaticFile" maxCount={1} />
             </Form.Item>
+
+            <EditFormTable formName="project" columns={columns}></EditFormTable>
 
             <Button onClick={() => getFormValue()}>
                 测试
