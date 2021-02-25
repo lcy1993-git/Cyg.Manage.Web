@@ -24,35 +24,45 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
       <CyFormItem label="名称" name="poleTypeName" required>
         <Input placeholder="请输入名称" />
       </CyFormItem>
+
       <CyFormItem label="类别" name="category">
         <Input placeholder="请输入类别" />
       </CyFormItem>
+
       <CyFormItem label="电压等级" name="kvLevel">
         <Input placeholder="请输入电压等级" />
       </CyFormItem>
+
       <CyFormItem label="类型" name="type">
         <Input placeholder="请输入类型" />
       </CyFormItem>
+
       <CyFormItem label="转角" name="corner">
         <Input placeholder="请输入转角" />
       </CyFormItem>
+
       <CyFormItem label="材质" name="material">
         <Input placeholder="请输入材质" />
       </CyFormItem>
+
       <CyFormItem label="回路数" name="loopNumber">
         <Input placeholder="请输入回路数" />
       </CyFormItem>
+
       <CyFormItem label="是否耐张" name="isTension">
         <Radio.Group value={1} defaultValue={2}>
           <Radio value={1}>是</Radio>
           <Radio value={2}>否</Radio>
         </Radio.Group>
       </CyFormItem>
+
       <CyFormItem label="描述" name="remark">
         <TextArea showCount maxLength={100} placeholder="备注说明" />
       </CyFormItem>
-      <CyFormItem label="图纸" name="chartIds" required>
+
+      <CyFormItem label="图纸" name="chartIds">
         <UrlSelect
+          requestType="post"
           mode="multiple"
           showSearch
           requestSource="resource"
@@ -60,7 +70,7 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
           titleKey="chartName"
           valueKey="chartId"
           placeholder="请选择图纸"
-          extraParams={{ libId: resourceLibId }}
+          extraParams={resourceLibId}
         />
       </CyFormItem>
     </>

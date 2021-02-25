@@ -76,20 +76,31 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
   );
 };
 
-export const getDataByUrl = (url: string, params: object, requestSource: "common" | "project" | "resource",requestType = "get") => {
+export const getDataByUrl = (
+  url: string,
+  params: object,
+  requestSource: 'common' | 'project' | 'resource',
+  requestType = 'get',
+) => {
   const requestBaseUrl = baseUrl[requestSource];
-  if(requestType === "get") {
+  if (requestType === 'get') {
     return cyRequest<any[]>(() =>
-    tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),
-  );
+      tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),
+    );
   }
+  // else if(request)
   return cyRequest<any[]>(() =>
     tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, data: params }),
   );
 };
 
-export const commonUpload = (url: string, files: any[], name: string = 'file', requestSource: "project" | "upload" = "project") => {
-  const requestUrl = baseUrl[requestSource]
+export const commonUpload = (
+  url: string,
+  files: any[],
+  name: string = 'file',
+  requestSource: 'project' | 'upload' = 'project',
+) => {
+  const requestUrl = baseUrl[requestSource];
   const formData = new FormData();
   files.forEach((item) => {
     formData.append(name, item);

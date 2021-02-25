@@ -5,15 +5,15 @@ import { useRequest } from 'ahooks';
 import { getDataByUrl } from '@/services/common';
 
 interface UrlSelectProps {
-  url?: string
-  titleKey?: string
-  valueKey?: string
-  extraParams?: object
-  defaultData?: any[]
-  needFilter?: boolean
-  requestSource?: "project" | "common" | "resource"
-  requestType?: "post" | "get"
-  paramsMust?: string[]
+  url?: string;
+  titleKey?: string;
+  valueKey?: string;
+  extraParams?: object | string;
+  defaultData?: any[];
+  needFilter?: boolean;
+  requestSource?: 'project' | 'common' | 'resource';
+  requestType?: 'post' | 'get';
+  paramsMust?: string[];
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
@@ -26,9 +26,9 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     defaultData,
     extraParams = {},
     needFilter = true,
-    requestSource = "project",
+    requestSource = 'project',
     paramsMust = [],
-    requestType = "get",
+    requestType = 'get',
     ...rest
   } = props;
 
@@ -36,10 +36,17 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
   // defaultData 没有数值
   // 必须传的参数不为空
 
-  const { data: resData } = useRequest(() => getDataByUrl(url, extraParams, requestSource,requestType), {
-    ready: !!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0)),
-    refreshDeps: [url, JSON.stringify(extraParams)],
-  });
+  const { data: resData } = useRequest(
+    () => getDataByUrl(url, extraParams, requestSource, requestType),
+    {
+      ready: !!(
+        url &&
+        !defaultData &&
+        !(paramsMust.filter((item) => !extraParams[item]).length > 0)
+      ),
+      refreshDeps: [url, JSON.stringify(extraParams)],
+    },
+  );
 
   const afterHanldeData = useMemo(() => {
     if (defaultData) {
@@ -47,8 +54,8 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
         return { label: item[titleKey], value: item[valueKey] };
       });
     }
-    if(!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0))) {
-      return []
+    if (!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0))) {
+      return [];
     }
     if (resData) {
       return resData.map((item: any) => {
