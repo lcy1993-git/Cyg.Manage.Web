@@ -76,10 +76,15 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
   );
 };
 
-export const getDataByUrl = (url: string, params: object, requestSource: "common" | "project" | "resource") => {
+export const getDataByUrl = (url: string, params: object, requestSource: "common" | "project" | "resource",requestType = "get") => {
   const requestBaseUrl = baseUrl[requestSource];
+  if(requestType === "get") {
+    return cyRequest<any[]>(() =>
+    tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),
+  );
+  }
   return cyRequest<any[]>(() =>
-    tokenRequest(`${requestBaseUrl}${url}`, { method: 'Get', params }),
+    tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, data: params }),
   );
 };
 

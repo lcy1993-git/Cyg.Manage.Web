@@ -118,7 +118,11 @@ iframe {
   user-select: none;
   /* Non-prefixed version, currently not supported by any browser */
 }
-
+.canClick {
+  color: @can-click-color;
+  .noCopy();
+  cursor: pointer;
+}
 .f16 {
   font-size: 16px;
 }

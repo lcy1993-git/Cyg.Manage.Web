@@ -5,7 +5,7 @@ import React from "react"
 import styles from "./index.less"
 
 import uuid from 'node-uuid'
-import { Checkbox } from "antd";
+import { Button, Checkbox } from "antd";
 import { useMemo } from "react";
 import { CheckboxValueType } from "antd/lib/checkbox/Group";
 import EmptyTip from "@/components/empty-tip";
@@ -25,6 +25,7 @@ interface ProjectTableItemProps {
     projectInfo: any
     columns: any[]
     onChange?: (checkedValue: TableItemCheckedInfo) => void
+    getClickProjectId: (clickProjectId: string) => void
 }
 
 const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
@@ -34,7 +35,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     const [indeterminate, setIndeterminate] = React.useState(false);
     const [checkAll, setCheckAll] = React.useState(false);
 
-    const { projectInfo = {}, columns = [], onChange } = props;
+    const { projectInfo = {}, columns = [], onChange, getClickProjectId } = props;
 
     const theadElement = columns.map((item) => {
         return (
@@ -98,6 +99,10 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         )
     })
 
+    const projectNameClickEvent = (projectId) => {
+        getClickProjectId?.(projectId)
+    }
+
     return (
         <div className={`${styles.projectTableItem}`}>
             <div className={styles.ProjectTitle}>
@@ -108,11 +113,11 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                 </div>
                 <div className={styles.projectName}>
                     <Checkbox onChange={checkAllEvent} style={{ marginRight: "7px" }} indeterminate={indeterminate} checked={checkAll} />
-                    <span>
+                    <u className="canClick" onClick={() => projectNameClickEvent(projectInfo.id)}>
                         {
                             projectInfo.name
                         }
-                    </span>
+                    </u>
                 </div>
                 <div className={styles.projectTime}>
                     <span className={styles.label}>
@@ -139,6 +144,14 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                             projectInfo.compileTime ? moment(projectInfo.compileTime).format("YYYY/MM/DD") : ""
                         }
                     </span>
+                </div>
+                <div className={styles.projectButtons}>
+                    <Button className="mr10" ghost type="primary">
+                        新增项目
+                    </Button>
+                    <Button>
+                        编辑
+                    </Button>
                 </div>
             </div>
             {

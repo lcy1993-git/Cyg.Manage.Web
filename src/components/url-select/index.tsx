@@ -28,6 +28,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     needFilter = true,
     requestSource = "project",
     paramsMust = [],
+    requestType = "get",
     ...rest
   } = props;
 
@@ -35,7 +36,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
   // defaultData 没有数值
   // 必须传的参数不为空
 
-  const { data: resData } = useRequest(() => getDataByUrl(url, extraParams, requestSource), {
+  const { data: resData } = useRequest(() => getDataByUrl(url, extraParams, requestSource,requestType), {
     ready: !!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0)),
     refreshDeps: [url, JSON.stringify(extraParams)],
   });

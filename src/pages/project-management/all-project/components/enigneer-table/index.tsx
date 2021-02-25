@@ -6,19 +6,21 @@ import styles from "./index.less"
 import { useMemo } from "react"
 import { Dropdown, Menu, Pagination } from "antd"
 import { useEffect } from "react"
-import ProjectTableItem, { TableItemCheckedInfo } from "../project-table-item"
+import ProjectTableItem, { TableItemCheckedInfo } from "../engineer-table-item"
 
 import uuid from 'node-uuid'
 import TableStatus from "@/components/table-status"
 import { BarsOutlined } from "@ant-design/icons"
 import { Spin } from "antd"
 import EmptyTip from "@/components/empty-tip"
+import EngineerDetailInfo from "../engineer-detail-info"
+import ProjectDetailInfo from "../project-detail-info"
 
 interface ExtractParams extends AllProjectStatisticsParams {
     statisticalCategory?: string
 }
 
-interface ProjectTableProps {
+interface EngineerTableProps {
     extractParams: ExtractParams
     onSelect?: (checkedValue: TableItemCheckedInfo[]) => void
 }
@@ -28,12 +30,18 @@ interface JurisdictionInfo {
     canCopy: boolean
 }
 
-const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
+const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     const { extractParams, onSelect } = props;
     const [pageIndex, setPageIndex] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
 
     const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([])
+
+    const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>("");
+    const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
+
+    const [currentClickProjectId, setCurrentClickProjectId] = useState("");
+    const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
 
     const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
@@ -63,9 +71,6 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
     const projectItemMenu = (jurisdictionInfo: JurisdictionInfo) => {
         return (
             <Menu>
-                <Menu.Item>
-                    查看详情
-                </Menu.Item>
                 {
                     jurisdictionInfo.canEdit &&
                     <Menu.Item>
@@ -87,7 +92,14 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
         {
             title: "项目名称",
             dataIndex: "name",
-            width: ""
+            width: "",
+            render: (record: any) => {
+                return (
+                    <u className="canClick">
+                        {record.name}
+                    </u>
+                )
+            }
         },
         {
             title: "项目分类",
@@ -217,9 +229,14 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
         }
     }
 
+    const projectNameClickEvent = (engineerId: string) => {
+        setCurrentClickEngineerId(engineerId)
+        setEngineerModalVisible(true)
+    }
+
     const projectTableShow = tableResultData.items.map((item: any, index: number) => {
         return (
-            <ProjectTableItem onChange={tableItemSelectEvent} columns={projectTableColumns} key={item.id} projectInfo={item} />
+            <ProjectTableItem getClickProjectId={projectNameClickEvent} onChange={tableItemSelectEvent} columns={projectTableColumns} key={item.id} projectInfo={item} />
         )
     })
 
@@ -312,8 +329,10 @@ const ProjectTable = (props: ProjectTableProps, ref: Ref<any>) => {
                     />
                 </div>
             </div>
+            <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible}  />
+            <ProjectDetailInfo projectId="" visible={projectModalVisible} onChange={setProjectModalVisible} />
         </div>
     )
 }
 
-export default forwardRef(ProjectTable)
+export default forwardRef(EngineerTable)
