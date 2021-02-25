@@ -7,6 +7,7 @@ import {
   PoweroffOutlined,
   DeleteOutlined,
   EyeOutlined,
+  ImportOutlined,
 } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
 import React, { useState } from 'react';
@@ -18,10 +19,12 @@ import {
   updateWareHouseItem,
   deleteWareHouseItem,
   restartWareHouse,
+  importWareHouseItem,
 } from '@/services/material-config/ware-house';
 import { isArray } from 'lodash';
-// import TableImportButton from '@/components/table-import-button';
 import WareHouseForm from './components/add-edit-form';
+import WareHouseDetail from './components/detail-table';
+import ImportWareHouse from './components/import-form';
 
 const { Search } = Input;
 
@@ -31,6 +34,10 @@ const WareHouse: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [currentSelectedId, setCurrentSelectedId] = useState<string>('');
+  const [selectedData, setSelectedData] = useState<object>({});
+  const [checkDetailVisible, setCheckDetailVisible] = useState<boolean>(false);
+  const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -201,7 +208,36 @@ const WareHouse: React.FC = () => {
   };
 
   //查看详情
-  const checkDetail = () => {};
+  const checkDetail = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据查看');
+      return;
+    }
+    const DetailId = tableSelectRows[0].id;
+    setCurrentSelectedId(DetailId);
+    setCheckDetailVisible(true);
+  };
+
+  //导入利库
+  const importWareHouse = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择需要导入的利库');
+      return;
+    }
+    const currentData = tableSelectRows[0];
+    setSelectedData(currentData);
+    setImportFormVisible(true);
+  };
+
+  const importWareHouseEvent = () => {
+    const companyId = tableSelectRows[0].companyId;
+    const overviewId = tableSelectRows[0].id;
+    const province = tableSelectRows[0].province;
+    const importInfo = { companyId, overviewId, province };
+    console.log(importInfo);
+
+    importWareHouseItem(importInfo);
+  };
 
   const tableElement = () => {
     return (
@@ -225,7 +261,10 @@ const WareHouse: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <Button className={styles.importBtn}>导入</Button>
+        <Button className="mr7" onClick={() => importWareHouse()}>
+          <ImportOutlined />
+          导入
+        </Button>
         <Button className="mr7" onClick={() => checkDetail()}>
           <EyeOutlined />
           查看物料
@@ -256,7 +295,7 @@ const WareHouse: React.FC = () => {
         }}
       />
       <Modal
-        title="创建资源库"
+        title="创建-利库"
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -269,7 +308,7 @@ const WareHouse: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-        title="编辑-资源库"
+        title="编辑-利库"
         width="680px"
         visible={editFormVisible}
         okText="确认"
@@ -282,6 +321,33 @@ const WareHouse: React.FC = () => {
             <WareHouseForm />
           </Spin>
         </Form>
+      </Modal>
+      <Modal
+        footer=""
+        destroyOnClose
+        title="查看利库物料详情"
+        width="1500px"
+        visible={checkDetailVisible}
+        okText="确认"
+        onCancel={() => setCheckDetailVisible(false)}
+        cancelText="取消"
+      >
+        <Spin spinning={loading}>
+          <WareHouseDetail overviewId={currentSelectedId} />
+        </Spin>
+      </Modal>
+      <Modal
+        title="导入利库"
+        width="680px"
+        visible={importFormVisible}
+        okText="确定"
+        onCancel={() => setImportFormVisible(false)}
+        onOk={() => importWareHouseEvent()}
+        cancelText="取消"
+      >
+        <Spin spinning={loading}>
+          <ImportWareHouse currentData={selectedData} />
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

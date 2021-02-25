@@ -1,4 +1,5 @@
 import GeneralTable from '@/components/general-table';
+import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
@@ -22,7 +23,7 @@ interface CableDesignParams {
   libId: string;
 }
 
-const CableChannel: React.FC<CableDesignParams> = (props) => {
+const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const { libId } = props;
 
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -419,4 +420,4 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   );
 };
 
-export default CableChannel;
+export default ModulesProperty;

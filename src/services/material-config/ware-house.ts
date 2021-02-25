@@ -10,7 +10,7 @@ interface WareHouseParams {
 }
 
 interface ItemDetailData extends WareHouseParams {
-  //公司编号
+  //利库编号
   id: string;
   overviewId: string;
 }

@@ -1,7 +1,7 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 // import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Popconfirm } from 'antd';
+import { Input } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 import CommonTitle from '@/components/common-title';

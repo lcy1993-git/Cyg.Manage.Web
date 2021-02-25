@@ -31,3 +31,10 @@ export const useUrlSelectData = (url:string ,params: UrlSelectDataParams = {}) =
       return {data: afterHanldeData}
       
 }
+
+
+export const useGetUserInfo = () => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo") ?? "{}");
+  console.log(userInfo)
+  return userInfo
+}

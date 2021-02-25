@@ -42,11 +42,12 @@ const SourceCompare = Loadable({
   loading: Loading,
   delay: 150,
 });
-// const OverheadDesign = Loadable({
-//   loader: () => import('@/pages/resource-config/overhead-design'),
-//   loading: Loading,
-//   delay: 150,
-// });
+
+const OverheadDesign = Loadable({
+  loader: () => import('@/pages/resource-config/overhead-design'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -79,11 +80,11 @@ export default [
     path: '/resource-config/cable-design',
     component: <CableDesign />,
   },
-  // {
-  //   title: '架空设计',
-  //   path: '/resource-config/overhead-design',
-  //   component: <OverheadDesign />,
-  // },
+  {
+    title: '架空设计',
+    path: '/resource-config/overhead-design',
+    component: <OverheadDesign />,
+  },
   {
     title: '应力弧垂表',
     path: '/resource-config/line-stress-sag',

@@ -2,19 +2,17 @@ import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
-  getCableChannelDetail,
-  deleteCableChannelItem,
-  updateCableChannelItem,
-  addCableChannelItem,
-} from '@/services/resource-config/cable-channel';
+  getPoleTypeDetail,
+  updatePoleTypeItem,
+  deletePoleTypeItem,
+  addPoleTypeItem,
+} from '@/services/resource-config/pole-type';
 import { isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
-import UrlSelect from '@/components/url-select';
-// import ComponentForm from './components/add-edit-form';
+import PoleTypeForm from './components/add-edit-form';
 
 const { Search } = Input;
 
@@ -22,7 +20,7 @@ interface CableDesignParams {
   libId: string;
 }
 
-const CableChannel: React.FC<CableDesignParams> = (props) => {
+const PoleType: React.FC<CableDesignParams> = (props) => {
   const { libId } = props;
 
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -32,20 +30,19 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
-  const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getCableChannelDetail, {
+  const { data, run, loading } = useRequest(getPoleTypeDetail, {
     manual: true,
   });
 
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="搜索" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -87,113 +84,62 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'channelId',
-      index: 'channelId',
-      title: '编号',
+      dataIndex: 'poleTypeCode',
+      index: 'poleTypeCode',
+      title: '简号编码',
       width: 180,
     },
     {
-      dataIndex: 'channelName',
-      index: 'channelName',
+      dataIndex: 'poleTypeName',
+      index: 'poleTypeName',
       title: '名称',
-      width: 240,
+      width: 280,
     },
     {
-      dataIndex: 'shortName',
-      index: 'shortName',
-      title: '简称',
-      width: 320,
+      dataIndex: 'category',
+      index: 'category',
+      title: '类别',
+      width: 200,
     },
     {
-      dataIndex: 'typicalCode',
-      index: 'typicalCode',
-      title: '典设编码',
-      width: 220,
-    },
-    {
-      dataIndex: 'channelCode',
-      index: 'channelCode',
-      title: '规格简号',
-      width: 140,
-    },
-    {
-      dataIndex: 'unit',
-      index: 'unit',
-      title: '单位',
+      dataIndex: 'kvLevel',
+      index: 'kvLevel',
+      title: '电压等级',
       width: 180,
     },
     {
-      dataIndex: 'reservedWidth',
-      index: 'reservedWidth',
-      title: '预留宽度(mm)',
+      dataIndex: 'corner',
+      index: 'corner',
+      title: '转角',
+      width: 180,
+    },
+    {
+      dataIndex: 'material',
+      index: 'material',
+      title: '材质',
+      width: 180,
+    },
+    {
+      dataIndex: 'loopNumber',
+      index: 'loopNumber',
+      title: '回路数',
       width: 180,
     },
 
     {
-      dataIndex: 'digDepth',
-      index: 'digDepth',
-      title: '挖深',
+      dataIndex: 'isTension',
+      index: 'isTension',
+      title: '是否耐张',
       width: 180,
-    },
-    {
-      dataIndex: 'layingMode',
-      index: 'layingMode',
-      title: '敷设方式',
-      width: 180,
-    },
-    {
-      dataIndex: 'cableNumber',
-      index: 'cableNumber',
-      title: '电缆数量',
-      width: 180,
-    },
-    {
-      dataIndex: 'pavement',
-      index: 'pavement',
-      title: '路面环境',
-      width: 180,
-    },
-    {
-      dataIndex: 'protectionMode',
-      index: 'protectionMode',
-      title: '保护方式',
-      width: 180,
-    },
-    {
-      dataIndex: 'ductMaterialId',
-      index: 'ductMaterialId',
-      title: '电缆管材质编号',
-      width: 180,
-    },
-    {
-      dataIndex: 'arrangement',
-      index: 'arrangement',
-      title: '排列方式',
-      width: 180,
-    },
-    {
-      dataIndex: 'bracketNumber',
-      index: 'bracketNumber',
-      title: '支架层数',
-      width: 180,
-    },
-    {
-      dataIndex: 'forProject',
-      index: 'forProject',
-      title: '所属工程',
-      width: 240,
-    },
-    {
-      dataIndex: 'forDesign',
-      index: 'forDesign',
-      title: '所属设计',
-      width: 240,
+      render: (text: any, record: any) => {
+        return record.isTension == true ? '是' : '否';
+      },
     },
     {
       dataIndex: 'remark',
       index: 'remark',
       title: '备注',
-      width: 220,
+      width: 180,
     },
   ];
 
@@ -206,34 +152,26 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     setAddFormVisible(true);
   };
 
-  const sureAddMaterial = () => {
+  const sureAddPoleType = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          libId: libId,
-          channelId: '',
-          channelName: '',
-          shortName: '',
-          typicalCode: '',
-          channelCode: '',
-          unit: '',
-          reserveWidth: 0,
-          digDepth: 0,
-          layingMode: '',
-          cableNumber: 0,
-          pavement: '',
-          protectionMode: '',
-          ductMaterialId: '',
-          arrangement: '',
-          bracketNumber: 0,
-          forProject: '',
-          forDesign: '',
+          libId: resourceLibId,
+          poleTypeCode: '',
+          poleTypeName: '',
+          category: '',
+          kvLevel: '',
+          type: '',
+          corner: '',
+          material: '',
+          loopNumber: '',
+          isTension: false,
           remark: '',
-          chartIds: '',
+          chartIds: [],
         },
         value,
       );
-      await addCableChannelItem(submitInfo);
+      await addPoleTypeItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -258,7 +196,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     editForm.setFieldsValue(ResourceLibData);
   };
 
-  const sureEditMaterial = () => {
+  const sureEditPoleType = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -268,30 +206,22 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          libId: libId,
+          libId: resourceLibId,
           id: editData.id,
-          channelName: editData.channelName,
-          shortName: editData.shortName,
-          typicalCode: editData.typicalCode,
-          channelCode: editData.channelCode,
-          unit: editData.unit,
-          reserveWidth: editData.reserveWidth,
-          digDepth: editData.digDepth,
-          layingMode: editData.layingMode,
-          cableNumber: editData.cableNumber,
-          pavement: editData.pavement,
-          protectionMode: editData.protectionMode,
-          ductMaterialId: editData.ductMaterialId,
-          arrangement: editData.arrangement,
-          bracketNumber: editData.bracketNumber,
-          forProject: editData.forProject,
-          forDesign: editData.forDesign,
+          poleTypeName: editData.poleTypeName,
+          category: editData.category,
+          kvLevel: editData.kvLevel,
+          type: editData.type,
+          corner: editData.corner,
+          material: editData.material,
+          loopNumber: editData.loopNumber,
+          isTension: editData.isTension,
           remark: editData.remark,
           chartIds: editData.chartIds,
         },
         values,
       );
-      await updateCableChannelItem(submitInfo);
+      await updatePoleTypeItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -321,9 +251,6 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
             删除
           </Button>
         </Popconfirm>
-        <Button className={styles.importBtn} onClick={() => openDetail()}>
-          电缆通道明细
-        </Button>
       </div>
     );
   };
@@ -336,87 +263,58 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteCableChannelItem(editDataId);
+    await deletePoleTypeItem(editDataId);
     refresh();
     message.success('删除成功');
-  };
-
-  //展示组件明细
-  const openDetail = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
-    setDetailVisible(true);
-  };
-
-  //展示组件属性
-  const openAttribute = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
-    setAttributeVisible(true);
   };
 
   return (
     <>
       <GeneralTable
         ref={tableRef}
-        buttonRightContentSlot={tableElement}
         buttonLeftContentSlot={searchComponent}
+        buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
         requestSource="resource"
-        url="/CableChannel"
+        url="/PoleType/GetPageList"
         getSelectData={(data) => setTableSelectRow(data)}
-        type="checkbox"
+        type="radio"
         extractParams={{
-          libId: libId,
+          resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
       />
       <Modal
-        title="添加-电缆通道"
+        title="添加-杆型"
         width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddMaterial()}
+        onOk={() => sureAddPoleType()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
         <Form form={addForm}>
-          {/* <ComponentForm resourceLibId={resourceLibId} type="add" /> */}
+          <PoleTypeForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>
       <Modal
-        title="编辑-电缆通道"
+        title="编辑-杆型"
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditMaterial()}
+        onOk={() => sureEditPoleType()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
         <Form form={editForm}>
-          <Spin spinning={loading}>{/* <ComponentForm resourceLibId={resourceLibId} /> */}</Spin>
+          <Spin spinning={loading}>
+            <PoleTypeForm resourceLibId={resourceLibId} />
+          </Spin>
         </Form>
-      </Modal>
-
-      <Modal
-        footer=""
-        title="电缆通道明细"
-        width="680px"
-        visible={detailVisible}
-        onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-      >
-        11
       </Modal>
     </>
   );
 };
 
-export default CableChannel;
+export default PoleType;

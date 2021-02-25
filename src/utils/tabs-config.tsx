@@ -9,6 +9,7 @@ import ResourceConfig from '@/pages/resource-config/route';
 import NoJurisdiction from '@/pages/401/route';
 import ProjectManagement from '@/pages/project-management/route';
 import MaterialConfig from '@/pages/material-config/route';
+import VisualizationResults from '@/pages/visualization-results/route';
 
 export interface RouteListItem {
   title: string;
@@ -30,6 +31,7 @@ const routeList: TabRouteListItem[] = [
   ...NoJurisdiction,
   ...ProjectManagement,
   ...MaterialConfig,
+  ...VisualizationResults,
 ];
 
 export const getTabsComponent = (key: string): TabRouteListItem => {

@@ -1,5 +1,4 @@
 import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
@@ -7,14 +6,13 @@ import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
-  getComponentDetail,
-  addComponentItem,
-  updateComponentItem,
-  deleteComponentItem,
-} from '@/services/resource-config/component';
+  getCableWellDetail,
+  updateCableWellItem,
+  deleteCableWellItem,
+  addCableWellItem,
+} from '@/services/resource-config/cable-well';
 import { isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
-import UrlSelect from '@/components/url-select';
+
 // import ComponentForm from './components/add-edit-form';
 
 const { Search } = Input;
@@ -39,7 +37,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getComponentDetail, {
+  const { data, run, loading } = useRequest(getCableWellDetail, {
     manual: true,
   });
 
@@ -143,7 +141,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       width: 180,
     },
     {
-      dataIndex: 'pavement',
+      coverMode: 'pavement',
       index: 'pavement',
       title: '路面环境',
       width: 180,
@@ -218,11 +216,11 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
           forProject: '',
           forDesign: '',
           remark: '',
-          chartIds: '',
+          chartIds: [],
         },
         value,
       );
-      await addComponentItem(submitInfo);
+      await addCableWellItem(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -247,7 +245,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
     editForm.setFieldsValue(ResourceLibData);
   };
 
-  const sureEditMaterial = () => {
+  const sureEditCableWell = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -257,15 +255,22 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
+          libId: libId,
           id: editData.id,
-          componentName: editData.componentName,
-          componentSpec: editData.componentSpec,
+          cableWellName: editData.cableWellName,
+          shortName: editData.shortName,
           typicalCode: editData.typicalCode,
+          type: editData.type,
           unit: editData.unit,
-          deviceCategory: editData.deviceCategory,
-          componentType: editData.componentType,
-          kvLevel: editData.kvLevel,
+          width: editData.width,
+          depth: editData.depth,
+          isConfined: editData.isConfined,
+          isSwitchingPipe: editData.isSwitchingPipe,
+          feature: editData.feature,
+          pavement: editData.pavement,
+          size: editData.size,
+          coverMode: editData.coverMode,
+          grooveStructure: editData.grooveStructure,
           forProject: editData.forProject,
           forDesign: editData.forDesign,
           remark: editData.remark,
@@ -273,7 +278,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         },
         values,
       );
-      await updateComponentItem(submitInfo);
+      await updateCableWellItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -318,7 +323,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteComponentItem(editDataId);
+    await deleteCableWellItem(editDataId);
     refresh();
     message.success('删除成功');
   };
@@ -342,7 +347,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   };
 
   return (
-    <PageCommonWrap>
+    <>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -358,6 +363,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
           keyWord: searchKeyWord,
         }}
       />
+
       <Modal
         title="添加-电缆井"
         width="680px"
@@ -376,7 +382,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditMaterial()}
+        onOk={() => sureEditCableWell()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
@@ -397,7 +403,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       >
         11
       </Modal>
-    </PageCommonWrap>
+    </>
   );
 };
 

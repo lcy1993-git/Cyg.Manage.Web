@@ -10,10 +10,21 @@ import { useMemo } from "react";
 import { CheckboxValueType } from "antd/lib/checkbox/Group";
 import EmptyTip from "@/components/empty-tip";
 
+interface TableCheckedItemProjectInfo {
+    id: string
+    isAllChecked: boolean
+}
+
+export interface TableItemCheckedInfo {
+    projectInfo: TableCheckedItemProjectInfo,
+    checkedArray: string[]
+}
+
 interface ProjectTableItemProps {
     // TODO 完善信息
     projectInfo: any
     columns: any[]
+    onChange?: (checkedValue: TableItemCheckedInfo) => void
 }
 
 const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
@@ -23,7 +34,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     const [indeterminate, setIndeterminate] = React.useState(false);
     const [checkAll, setCheckAll] = React.useState(false);
 
-    const { projectInfo = {}, columns = []} = props;
+    const { projectInfo = {}, columns = [], onChange } = props;
 
     const theadElement = columns.map((item) => {
         return (
@@ -44,12 +55,28 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         setCheckedList(list);
         setIndeterminate(!!list.length && list.length < valueList.length);
         setCheckAll(list.length === valueList.length);
+
+        onChange?.({
+            projectInfo: {
+                id: projectInfo.id,
+                isAllChecked: list.length === valueList.length
+            },
+            checkedArray: checkedList as string[]
+        })
     };
 
     const checkAllEvent = (e: any) => {
         setCheckedList(e.target.checked ? valueList : []);
         setIndeterminate(false);
         setCheckAll(e.target.checked);
+
+        onChange?.({
+            projectInfo: {
+                id: projectInfo.id,
+                isAllChecked: e.target.checked
+            },
+            checkedArray: e.target.checked ? valueList : []
+        })
     };
 
     const tbodyElement = (projectInfo.projects ?? []).map((item: any) => {
@@ -70,7 +97,6 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
             </tr>
         )
     })
-
 
     return (
         <div className={`${styles.projectTableItem}`}>

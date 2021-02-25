@@ -19,6 +19,7 @@ import { useMount, useRequest } from "ahooks";
 import ProjectTable from "./components/project-table";
 import { Form } from "antd";
 import CreateEngineer from "./components/create-engineer";
+import { TableItemCheckedInfo } from "./components/project-table-item";
 
 const { Search } = Input;
 
@@ -41,6 +42,8 @@ const ProjectManagement: React.FC = () => {
     const [kvLevel, setKvLevel] = useState<string>();
     const [status, setStatus] = useState<string>();
     const [statisticalCategory, setStatisticalCategory] = useState<string>("-1");
+    // 被勾选中的数据
+    const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
     const [addEngineerModalFlag, setAddEngineerModalFlag] = useState(false);
 
@@ -104,9 +107,6 @@ const ProjectManagement: React.FC = () => {
             </Menu.Item>
             <Menu.Item>
                 撤回安排
-            </Menu.Item>
-            <Menu.Item>
-                删除
             </Menu.Item>
         </Menu>
     )
@@ -203,8 +203,10 @@ const ProjectManagement: React.FC = () => {
 
     const sureAddEngineerEvent = () => {
         form.validateFields().then(async (values) => {
+            setSaveLoading(true)
             const { project, name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } = values;
             await addEngineer({ project, engineer: { name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } });
+            setSaveLoading(false)
             message.success("立项成功");
             modalCloseEvent();
             refresh();
@@ -215,6 +217,10 @@ const ProjectManagement: React.FC = () => {
         setAddEngineerModalFlag(false)
         form.resetFields();
         form.setFieldsValue({"project": [{name: ""}]})
+    }
+
+    const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
+        setTableSelectData(checkedValue)
     }
 
     return (
@@ -398,7 +404,7 @@ const ProjectManagement: React.FC = () => {
                         </div>
                     </div>
                     <div className={styles.projectManagementTableContent}>
-                        <ProjectTable ref={tableRef} extractParams={{
+                        <ProjectTable ref={tableRef} onSelect={tableSelectEvent} extractParams={{
                             keyWord,
                             category: category ?? "-1",
                             pCategory: pCategory ?? "-1",

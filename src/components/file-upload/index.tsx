@@ -16,7 +16,7 @@ const { Dragger } = Upload;
 interface FileUploadProps extends UploadProps {
     onChange?: (value: any) => {}
     maxSize?: number
-    maxCount: number
+    maxCount?: number
 }
 
 const FileUpload: React.FC<FileUploadProps> = (props) => {
