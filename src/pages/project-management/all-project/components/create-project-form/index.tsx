@@ -5,17 +5,20 @@ import { AssetsNature, Batch, BuildType, DataSourceType, MajorCategory, Meteorol
 import { useUrlSelectData } from "@/utils/hooks"
 import { DatePicker, Input, Select } from "antd"
 import { isEmpty } from "lodash"
-import React from "react"
+import React, { memo } from "react"
 
 
 import Rule from "./project-form-rule"
 
 interface CreateProjectFormProps {
     field?: any
+    areaId?: string
+    company?: string
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
-    const {field = {}} = props;
+    const {field = {},areaId,company} = props;
+    console.log(areaId,company)
     return (
         <>
             <div className="flex">
@@ -50,7 +53,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 </div>
                 <div className="flex1">
                     <CyFormItem label="项目性质" labelWidth={120} align="right" rules={Rule.required} fieldKey={[field.fieldKey, 'natures']} name={isEmpty(field) ? "natures" : [field.name, 'natures']} required>
-                        <EnumSelect enumList={ProjectNature} placeholder="请选择" />
+                        <EnumSelect enumList={ProjectNature} mode="multiple" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>
@@ -101,7 +104,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 </div>
                 <div className="flex1">
                     <CyFormItem label="供电所/班组" fieldKey={[field.fieldKey, 'powerSupply']} name={isEmpty(field) ? "powerSupply" : [field.name, 'powerSupply']} labelWidth={120} align="right" required>
-                        <UrlSelect url="/ElectricityCompany/GetPowerSupplys" placeholder="请选择" titleKey="text" valueKey="value" />
+                        <UrlSelect url="/ElectricityCompany/GetPowerSupplys" extraParams={{areaId,company}} paramsMust={["areaId","company"]} requestType="post" placeholder="请选择" titleKey="text" valueKey="value" />
                     </CyFormItem>
                 </div>
             </div>
@@ -193,4 +196,4 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     )
 }
 
-export default CreateProjectForm
+export default memo(CreateProjectForm)

@@ -263,7 +263,7 @@ interface ProjectParams {
 
 interface AddEngineerParams {
     engineer: EngineerParams,
-    project: ProjectParams[]
+    projects: ProjectParams[]
 }
 
 // 立项保存接口
@@ -271,4 +271,91 @@ export const addEngineer = (params: AddEngineerParams) => {
     return cyRequest<ProjectTableStatisticsResult>(() => request(`${baseUrl.project}/Porject/CreateMultipleProject`,{method: "POST", data: params}))
 }
 
+interface EngineerInfoParams {
+    id: string
+    name: string
+    province: string
+    provinceName: string
+    libId: string
+    libName: string
+    inventoryOverviewId: string
+    inventoryOverviewName: string
+    warehouseId: string
+    warehouseName: string
+    compiler: string
+    compileTime: string
+    organization: string
+    startTime: string
+    endTime: string
+    company: string
+    importance: string
+    importanceText: string
+    plannedYear: string
+    grade: string
+    gradeText: string
+}
+
+// 获取工程详细信息接口
+export const getEngineerInfo = (engineerId: string) => {
+    return cyRequest<EngineerInfoParams>(() => request(`${baseUrl.project}/Engineer/GetById`,{method: "GET", params: {id: engineerId}}))
+}
+
+
+interface ProjectInfoParams {
+    id: string
+    name: string
+    category: string
+    categoryText: string
+    pType: string
+    pTypeText: string
+    kvLevel: string
+    kvLevelText: string
+    totalInvest: string
+    natures: string
+    startTime: string
+    endTime: string
+    assetsNature: string
+    assetsNatureText: string
+    majorCategory: string
+    majorCategoryText: string
+    isAcrossYear: string
+    reformCause: string
+    reformCauseText: string
+    reformAim: string
+    reformAimText: string
+    powerSupply: string
+    assetsOrganization: string
+    cityCompany: string
+    regionAttribute: string
+    regionAttributeText: string
+    countyCompany: string
+    constructType: string
+    constructTypeText: string
+    pCategory: string
+    pCategoryText: string
+    stage: string
+    stageText: string
+    batch: string
+    batchText: string
+    pAttribute: string
+    pAttributeText: string
+    meteorologic: string
+    meteorologicText: string
+    disclosureRange: string
+    pileRange: string
+    deadline: string
+    dataSourceType: string
+    dataSourceTypeText: string
+    createdOn: string
+    createdCompanyName: string
+    stateInfo: string
+    sources: string
+    identitys: string[]
+    allots: string
+}
+
+// 获取项目详细信息接口
+export const getProjectInfo = (projectId: string) => {
+    return cyRequest<ProjectInfoParams>(() => request(`${baseUrl.project}/Porject/GetById`,{method: "GET", params: {id: projectId}}))
+}
 

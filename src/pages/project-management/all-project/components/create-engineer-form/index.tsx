@@ -7,7 +7,12 @@ import { FormImportantLevel, ProjectLevel } from "@/services/project-management/
 
 import Rule from "./engineer-form-rule"
 
-const CreateEngineerForm: React.FC = () => {
+interface CreateEngineerForm {
+    exportDataChange?: (exportData: any) => void
+}
+
+const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
+    const {exportDataChange} = props;
 
     const [areaId,SetAreaId] = useState<string>("");
     const [libId, setLibId] = useState<string>("");
@@ -16,9 +21,19 @@ const CreateEngineerForm: React.FC = () => {
     
         if(prevValues.province !== curValues.province) {
             SetAreaId(curValues.province)
+            exportDataChange?.({
+                areaId: curValues.province,
+                company: curValues.company
+            })
         }
         if(prevValues.libId !== curValues.libId) {
             setLibId(curValues.libId)
+        }
+        if(prevValues.company !== curValues.company) {
+            exportDataChange?.({
+                areaId: curValues.province,
+                company: curValues.company
+            })
         }
         return false
     }

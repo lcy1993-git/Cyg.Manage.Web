@@ -21,14 +21,14 @@
             flex: 2;
             padding-left: 10px;
             padding-top: 8px;
-            border-right: 1px solid @table-line-color;
+         
         }
         .projectTime {
 
             width: 420px;
             padding-left: 10px;
             padding-top: 8px;
-            border-right: 1px solid @table-line-color;
+    
             color: @black-color;
         }
         .createTime {
@@ -39,6 +39,17 @@
         }
         .label {
             color: @gray-color;
+        }
+
+        .projectButtons {
+            padding-right: 20px;
+            :global {
+                .ant-btn {
+                    height: 28px !important;
+                    line-height: 1 !important;
+                    margin-top: 2px;
+                }
+            }
         }
     }
     .engineerTable {

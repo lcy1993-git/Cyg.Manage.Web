@@ -16,10 +16,10 @@ import { Dropdown } from "antd";
 import TableExportButton from "@/components/table-export-button";
 import { useState } from "react";
 import { useMount, useRequest } from "ahooks";
-import ProjectTable from "./components/project-table";
+import EnigneerTable from "./components/enigneer-table";
 import { Form } from "antd";
 import CreateEngineer from "./components/create-engineer";
-import { TableItemCheckedInfo } from "./components/project-table-item";
+import { TableItemCheckedInfo } from "./components/engineer-table-item";
 
 const { Search } = Input;
 
@@ -203,20 +203,25 @@ const ProjectManagement: React.FC = () => {
 
     const sureAddEngineerEvent = () => {
         form.validateFields().then(async (values) => {
-            setSaveLoading(true)
-            const { project, name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } = values;
-            await addEngineer({ project, engineer: { name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } });
-            setSaveLoading(false)
-            message.success("立项成功");
-            modalCloseEvent();
-            refresh();
+            try {
+                setSaveLoading(true)
+                const { projects, name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } = values;
+                await addEngineer({ projects, engineer: { name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } });
+                message.success("立项成功");
+                modalCloseEvent();
+                refresh();
+            } catch (msg) {
+
+            } finally {
+                setSaveLoading(false)
+            }
         })
     }
 
     const modalCloseEvent = () => {
         setAddEngineerModalFlag(false)
         form.resetFields();
-        form.setFieldsValue({"project": [{name: ""}]})
+        form.setFieldsValue({ "projects": [{ name: "" }] })
     }
 
     const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
@@ -404,7 +409,7 @@ const ProjectManagement: React.FC = () => {
                         </div>
                     </div>
                     <div className={styles.projectManagementTableContent}>
-                        <ProjectTable ref={tableRef} onSelect={tableSelectEvent} extractParams={{
+                        <EnigneerTable ref={tableRef} onSelect={tableSelectEvent} extractParams={{
                             keyWord,
                             category: category ?? "-1",
                             pCategory: pCategory ?? "-1",
