@@ -95,7 +95,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             width: "",
             render: (record: any) => {
                 return (
-                    <u className="canClick">
+                    <u className="canClick" onClick={() => {
+                        setCurrentClickProjectId(record.id)
+                        setProjectModalVisible(true)
+                    }}>
                         {record.name}
                     </u>
                 )
@@ -330,7 +333,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 </div>
             </div>
             <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible}  />
-            <ProjectDetailInfo projectId="" visible={projectModalVisible} onChange={setProjectModalVisible} />
+            <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />
         </div>
     )
 }
