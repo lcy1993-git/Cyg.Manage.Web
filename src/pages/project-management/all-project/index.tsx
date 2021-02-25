@@ -53,6 +53,8 @@ const ProjectManagement: React.FC = () => {
 
     const [form] = Form.useForm();
 
+    console.log(tableSelectData)
+
     const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, { manual: true });
 
     const handleStatisticsData = (statisticsDataItem?: number) => {

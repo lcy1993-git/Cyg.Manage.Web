@@ -1,12 +1,13 @@
-import React,{ Dispatch, SetStateAction } from "react"
+import React, { Dispatch, memo, SetStateAction } from "react"
 
-import ReadonlyItem from "@/components/readonly-item";
 import { getProjectInfo } from "@/services/project-management/all-project";
 import { useControllableValue, useRequest } from "ahooks";
 import { Modal, Tabs } from "antd"
 import ProjectBaseInfo from "../project-base-info";
 
-const {TabPane} = Tabs;
+import styles from "./index.less"
+
+const { TabPane } = Tabs;
 
 interface ProjectDetailInfoProps {
     projectId: string
@@ -19,23 +20,25 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
 
     const { projectId } = props;
 
-    const { data: projectInfo} = useRequest(() => getProjectInfo(projectId), {
+    const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
         ready: !!projectId,
         refreshDeps: [projectId]
     })
 
     return (
-        <Modal title="项目详情" width={680} bodyStyle={{padding: "0px"}} visible={state as boolean} footer={null} onCancel={() => setState(false)}>
-            <Tabs className="normalTabs">
-                <TabPane key="base" tab="基本信息">
-                    <ProjectBaseInfo projectInfo={projectInfo} />
-                </TabPane>
-                <TabPane key="process" tab="项目进度">
-
-                </TabPane>
-            </Tabs>
+        <Modal title="项目详情" width={680} bodyStyle={{ padding: "0px" }} visible={state as boolean} footer={null} onCancel={() => setState(false)}>
+            <div className={styles.projectDetailInfo}>
+                <Tabs className="normalTabs">
+                    <TabPane key="base" tab="基本信息">
+                        <ProjectBaseInfo projectInfo={projectInfo} />
+                    </TabPane>
+                    <TabPane key="process" tab="项目进度">
+                            
+                    </TabPane>
+                </Tabs>
+            </div>
         </Modal>
     )
 }
 
-export default ProjectDetailInfo
+export default memo(ProjectDetailInfo)
