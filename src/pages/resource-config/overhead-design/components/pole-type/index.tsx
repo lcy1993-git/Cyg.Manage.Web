@@ -108,6 +108,12 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       width: 180,
     },
     {
+      dataIndex: 'type',
+      index: 'type',
+      title: '类型',
+      width: 180,
+    },
+    {
       dataIndex: 'corner',
       index: 'corner',
       title: '转角',
@@ -263,7 +269,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deletePoleTypeItem(editDataId);
+    await deletePoleTypeItem(resourceLibId, editDataId);
     refresh();
     message.success('删除成功');
   };

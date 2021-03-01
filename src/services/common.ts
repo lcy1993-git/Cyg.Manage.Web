@@ -81,17 +81,23 @@ export const getDataByUrl = (
   params: object,
   requestSource: 'common' | 'project' | 'resource',
   requestType = 'get',
+  postType = 'body',
+  libId: string,
 ) => {
   const requestBaseUrl = baseUrl[requestSource];
   if (requestType === 'get') {
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),
     );
+  } else if (postType === 'body') {
+    return cyRequest<any[]>(() =>
+      tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, data: params }),
+    );
+  } else {
+    return cyRequest<any[]>(() =>
+      tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params: { libId } }),
+    );
   }
-  // else if(request)
-  return cyRequest<any[]>(() =>
-    tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, data: params }),
-  );
 };
 
 export const commonUpload = (

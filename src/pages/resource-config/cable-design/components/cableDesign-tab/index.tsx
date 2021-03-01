@@ -1,11 +1,9 @@
-import { Tabs, Input } from 'antd';
+import { Tabs } from 'antd';
 import React from 'react';
 import CableWell from '../cable-well';
 import CableChannel from '../cable-channel';
-import TableSearch from '@/components/table-search';
 
 const { TabPane } = Tabs;
-const { Search } = Input;
 
 interface CableDesignParams {
   libId: string;

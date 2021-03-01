@@ -1,7 +1,6 @@
-import { Tabs, Input } from 'antd';
+import { Tabs } from 'antd';
 import React from 'react';
 import PoleType from '../pole-type';
-import TableSearch from '@/components/table-search';
 import ModulesProperty from '../modules-property';
 
 const { TabPane } = Tabs;

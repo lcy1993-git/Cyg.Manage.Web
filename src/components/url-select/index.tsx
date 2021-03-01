@@ -8,12 +8,14 @@ interface UrlSelectProps {
   url?: string;
   titleKey?: string;
   valueKey?: string;
-  extraParams?: object | string;
+  extraParams?: object;
   defaultData?: any[];
   needFilter?: boolean;
   requestSource?: 'project' | 'common' | 'resource';
   requestType?: 'post' | 'get';
   paramsMust?: string[];
+  postType?: 'query' | 'body';
+  libId?: string;
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
@@ -29,6 +31,8 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     requestSource = 'project',
     paramsMust = [],
     requestType = 'get',
+    postType = 'body',
+    libId = '',
     ...rest
   } = props;
 
@@ -37,7 +41,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
   // 必须传的参数不为空
 
   const { data: resData } = useRequest(
-    () => getDataByUrl(url, extraParams, requestSource, requestType),
+    () => getDataByUrl(url, extraParams, requestSource, requestType, postType, libId),
     {
       ready: !!(
         url &&

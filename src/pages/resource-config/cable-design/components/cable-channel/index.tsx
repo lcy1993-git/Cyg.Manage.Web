@@ -12,9 +12,7 @@ import {
   addCableChannelItem,
 } from '@/services/resource-config/cable-channel';
 import { isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
-import UrlSelect from '@/components/url-select';
-// import ComponentForm from './components/add-edit-form';
+import CableChannelForm from './components/add-edit-form';
 
 const { Search } = Input;
 
@@ -31,6 +29,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [ids, setIds] = useState<string[]>([]);
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
@@ -60,7 +59,6 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    // console.log(value);
     setResourceLibId(value);
     search();
   };
@@ -96,7 +94,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       dataIndex: 'channelName',
       index: 'channelName',
       title: '名称',
-      width: 240,
+      width: 480,
     },
     {
       dataIndex: 'shortName',
@@ -114,7 +112,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       dataIndex: 'channelCode',
       index: 'channelCode',
       title: '规格简号',
-      width: 140,
+      width: 320,
     },
     {
       dataIndex: 'unit',
@@ -139,31 +137,31 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       dataIndex: 'layingMode',
       index: 'layingMode',
       title: '敷设方式',
-      width: 180,
+      width: 240,
     },
     {
       dataIndex: 'cableNumber',
       index: 'cableNumber',
       title: '电缆数量',
-      width: 180,
+      width: 240,
     },
     {
       dataIndex: 'pavement',
       index: 'pavement',
       title: '路面环境',
-      width: 180,
+      width: 240,
     },
     {
       dataIndex: 'protectionMode',
       index: 'protectionMode',
       title: '保护方式',
-      width: 180,
+      width: 240,
     },
     {
       dataIndex: 'ductMaterialId',
       index: 'ductMaterialId',
       title: '电缆管材质编号',
-      width: 180,
+      width: 320,
     },
     {
       dataIndex: 'arrangement',
@@ -235,6 +233,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       );
       await addCableChannelItem(submitInfo);
       refresh();
+      message.success('添加成功');
       setAddFormVisible(false);
       addForm.resetFields();
     });
@@ -333,10 +332,11 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    tableSelectRows.map((item) => {
+      ids.push(item.id);
+    });
 
-    await deleteCableChannelItem(editDataId);
+    await deleteCableChannelItem({ libId, ids });
     refresh();
     message.success('删除成功');
   };
@@ -384,9 +384,10 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
         onOk={() => sureAddMaterial()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        bodyStyle={{ height: '680px', overflowY: 'auto' }}
       >
         <Form form={addForm}>
-          {/* <ComponentForm resourceLibId={resourceLibId} type="add" /> */}
+          <CableChannelForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>
       <Modal
@@ -397,9 +398,12 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
         onOk={() => sureEditMaterial()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        bodyStyle={{ height: '680px', overflowY: 'auto' }}
       >
         <Form form={editForm}>
-          <Spin spinning={loading}>{/* <ComponentForm resourceLibId={resourceLibId} /> */}</Spin>
+          <Spin spinning={loading}>
+            <CableChannelForm resourceLibId={resourceLibId} />
+          </Spin>
         </Form>
       </Modal>
 

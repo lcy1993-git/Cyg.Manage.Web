@@ -51,8 +51,8 @@ export const updateCableChannelItem = (params: ItemDetailData) => {
 };
 
 // 删除电缆通道
-export const deleteCableChannelItem = (id: string) => {
+export const deleteCableChannelItem = (params: object) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/CableChannel/Delete`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.resource}/CableChannel/Delete`, { method: 'POST', data: params }),
   );
 };

@@ -51,8 +51,8 @@ export const updateCableWellItem = (params: ItemDetailData) => {
 };
 
 // 删除电缆通道
-export const deleteCableWellItem = (id: string) => {
+export const deleteCableWellItem = (params: object) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/CableWell/Delete`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.resource}/CableWell/Delete`, { method: 'POST', data: params }),
   );
 };

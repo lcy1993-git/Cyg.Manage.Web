@@ -43,8 +43,8 @@ export const updatePoleTypeItem = (params: ItemDetailData) => {
 };
 
 // 删除
-export const deletePoleTypeItem = (id: string) => {
+export const deletePoleTypeItem = (libId: string, id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/PoleType/Delete`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.resource}/PoleType/Delete`, { method: 'POST', params: { libId, id } }),
   );
 };

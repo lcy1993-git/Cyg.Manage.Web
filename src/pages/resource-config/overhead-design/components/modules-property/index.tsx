@@ -1,5 +1,4 @@
 import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
@@ -7,15 +6,13 @@ import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
-  getCableChannelDetail,
-  deleteCableChannelItem,
-  updateCableChannelItem,
-  addCableChannelItem,
-} from '@/services/resource-config/cable-channel';
+  getModulesPropertyDetail,
+  updateModulesPropertyItem,
+  deleteModulesPropertyItem,
+  addModulesPropertyItem,
+} from '@/services/resource-config/modules-property';
 import { isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
-import UrlSelect from '@/components/url-select';
-// import ComponentForm from './components/add-edit-form';
+import ModulesPropertyForm from './components/add-edit-form';
 
 const { Search } = Input;
 
@@ -32,14 +29,14 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
-  const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
+  const [ids, setIds] = useState<string[]>([]);
+  const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getCableChannelDetail, {
+  const { data, run, loading } = useRequest(getModulesPropertyDetail, {
     manual: true,
   });
 
@@ -88,107 +85,59 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'channelId',
-      index: 'channelId',
+      dataIndex: 'moduleId',
+      index: 'moduleId',
       title: '编号',
       width: 180,
     },
     {
-      dataIndex: 'channelName',
-      index: 'channelName',
+      dataIndex: 'moduleName',
+      index: 'moduleName',
       title: '名称',
-      width: 240,
+      width: 500,
     },
     {
       dataIndex: 'shortName',
       index: 'shortName',
       title: '简称',
-      width: 320,
+      width: 280,
     },
     {
       dataIndex: 'typicalCode',
       index: 'typicalCode',
       title: '典设编码',
-      width: 220,
+      width: 180,
     },
     {
-      dataIndex: 'channelCode',
-      index: 'channelCode',
-      title: '规格简号',
-      width: 140,
+      dataIndex: 'poleTypeCode',
+      index: 'poleTypeCode',
+      title: '杆型简称编码',
+      width: 220,
     },
     {
       dataIndex: 'unit',
       index: 'unit',
       title: '单位',
-      width: 180,
+      width: 100,
     },
     {
-      dataIndex: 'reservedWidth',
-      index: 'reservedWidth',
-      title: '预留宽度(mm)',
-      width: 180,
+      dataIndex: 'moduleType',
+      index: 'moduleType',
+      title: '模块分类',
+      width: 150,
     },
 
-    {
-      dataIndex: 'digDepth',
-      index: 'digDepth',
-      title: '挖深',
-      width: 180,
-    },
-    {
-      dataIndex: 'layingMode',
-      index: 'layingMode',
-      title: '敷设方式',
-      width: 180,
-    },
-    {
-      dataIndex: 'cableNumber',
-      index: 'cableNumber',
-      title: '电缆数量',
-      width: 180,
-    },
-    {
-      dataIndex: 'pavement',
-      index: 'pavement',
-      title: '路面环境',
-      width: 180,
-    },
-    {
-      dataIndex: 'protectionMode',
-      index: 'protectionMode',
-      title: '保护方式',
-      width: 180,
-    },
-    {
-      dataIndex: 'ductMaterialId',
-      index: 'ductMaterialId',
-      title: '电缆管材质编号',
-      width: 180,
-    },
-    {
-      dataIndex: 'arrangement',
-      index: 'arrangement',
-      title: '排列方式',
-      width: 180,
-    },
-    {
-      dataIndex: 'bracketNumber',
-      index: 'bracketNumber',
-      title: '支架层数',
-      width: 180,
-    },
     {
       dataIndex: 'forProject',
       index: 'forProject',
       title: '所属工程',
-      width: 240,
+      width: 200,
     },
     {
       dataIndex: 'forDesign',
       index: 'forDesign',
       title: '所属设计',
-      width: 240,
+      width: 200,
     },
     {
       dataIndex: 'remark',
@@ -207,35 +156,28 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     setAddFormVisible(true);
   };
 
-  const sureAddMaterial = () => {
+  const sureAddModuleProperty = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
           libId: libId,
-          channelId: '',
-          channelName: '',
+          moduleId: '',
+          moduleName: '',
           shortName: '',
           typicalCode: '',
-          channelCode: '',
+          poleTypeCode: '',
           unit: '',
-          reserveWidth: 0,
-          digDepth: 0,
-          layingMode: '',
-          cableNumber: 0,
-          pavement: '',
-          protectionMode: '',
-          ductMaterialId: '',
-          arrangement: '',
-          bracketNumber: 0,
+          moduleType: '',
           forProject: '',
           forDesign: '',
           remark: '',
-          chartIds: '',
+          chartIds: [],
         },
         value,
       );
-      await addCableChannelItem(submitInfo);
+      await addModulesPropertyItem(submitInfo);
       refresh();
+      message.success('添加成功');
       setAddFormVisible(false);
       addForm.resetFields();
     });
@@ -259,7 +201,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     editForm.setFieldsValue(ResourceLibData);
   };
 
-  const sureEditMaterial = () => {
+  const sureEditModuleProperty = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -269,22 +211,12 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          libId: libId,
           id: editData.id,
-          channelName: editData.channelName,
+          libId: libId,
+          moduleName: editData.moduleName,
           shortName: editData.shortName,
-          typicalCode: editData.typicalCode,
-          channelCode: editData.channelCode,
           unit: editData.unit,
-          reserveWidth: editData.reserveWidth,
-          digDepth: editData.digDepth,
-          layingMode: editData.layingMode,
-          cableNumber: editData.cableNumber,
-          pavement: editData.pavement,
-          protectionMode: editData.protectionMode,
-          ductMaterialId: editData.ductMaterialId,
-          arrangement: editData.arrangement,
-          bracketNumber: editData.bracketNumber,
+          moduleType: editData.moduleType,
           forProject: editData.forProject,
           forDesign: editData.forDesign,
           remark: editData.remark,
@@ -292,7 +224,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         },
         values,
       );
-      await updateCableChannelItem(submitInfo);
+      await updateModulesPropertyItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -311,6 +243,10 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           <EditOutlined />
           编辑
         </Button>
+
+        <Button className="mr7" onClick={() => editAttributeEvent()}>
+          编辑属性
+        </Button>
         <Popconfirm
           title="您确定要删除该条数据?"
           onConfirm={sureDeleteData}
@@ -322,28 +258,35 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
             删除
           </Button>
         </Popconfirm>
-        <Button className={styles.importBtn} onClick={() => openDetail()}>
-          电缆通道明细
+        <Button className="mr7" onClick={() => checkDetailEvent()}>
+          详情
+        </Button>
+        <Button className="mr7" onClick={() => openModuleDetail()}>
+          模块明细
         </Button>
       </div>
     );
   };
 
+  //详情
+  const checkDetailEvent = () => {};
+
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
+      message.error('请选择一条数据删除');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    tableSelectRows.map((item) => {
+      ids.push(item.id);
+    });
 
-    await deleteCableChannelItem(editDataId);
+    await deleteModulesPropertyItem({ libId, ids });
     refresh();
     message.success('删除成功');
   };
 
-  //展示组件明细
-  const openDetail = () => {
+  //展示模块明细
+  const openModuleDetail = () => {
     if (!resourceLibId) {
       message.warning('请先选择资源库');
       return;
@@ -351,13 +294,20 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     setDetailVisible(true);
   };
 
-  //展示组件属性
-  const openAttribute = () => {
+  //编辑模块属性
+  const editAttributeEvent = () => {
     if (!resourceLibId) {
       message.warning('请先选择资源库');
       return;
     }
-    setAttributeVisible(true);
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    setEditAttributeVisible(true);
   };
 
   return (
@@ -369,50 +319,60 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         needCommonButton={true}
         columns={columns}
         requestSource="resource"
-        url="/CableChannel"
+        url="/Modules/GetPageList"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
-          libId: libId,
+          resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
       />
       <Modal
-        title="添加-电缆通道"
+        title="添加-模块"
         width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddMaterial()}
+        onOk={() => sureAddModuleProperty()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
         <Form form={addForm}>
-          {/* <ComponentForm resourceLibId={resourceLibId} type="add" /> */}
+          <ModulesPropertyForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>
       <Modal
-        title="编辑-电缆通道"
+        title="编辑-模块"
         width="680px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditMaterial()}
+        onOk={() => sureEditModuleProperty()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
         <Form form={editForm}>
-          <Spin spinning={loading}>{/* <ComponentForm resourceLibId={resourceLibId} /> */}</Spin>
+          <Spin spinning={loading}>
+            <ModulesPropertyForm resourceLibId={resourceLibId} />
+          </Spin>
         </Form>
       </Modal>
 
       <Modal
         footer=""
-        title="电缆通道明细"
+        title="编辑-模块属性"
+        width="680px"
+        visible={editAttributeVisible}
+        onCancel={() => setEditAttributeVisible(false)}
+        okText="确认"
+        cancelText="取消"
+      >
+        11
+      </Modal>
+      <Modal
+        footer=""
+        title="详情"
         width="680px"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         11
       </Modal>

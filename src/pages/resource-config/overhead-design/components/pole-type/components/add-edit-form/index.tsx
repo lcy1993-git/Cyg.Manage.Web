@@ -49,10 +49,10 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         <Input placeholder="请输入回路数" />
       </CyFormItem>
 
-      <CyFormItem label="是否耐张" name="isTension">
-        <Radio.Group value={1} defaultValue={2}>
-          <Radio value={1}>是</Radio>
-          <Radio value={2}>否</Radio>
+      <CyFormItem label="是否耐张" name="isTension" initialValue={false}>
+        <Radio.Group>
+          <Radio value={true}>是</Radio>
+          <Radio value={false}>否</Radio>
         </Radio.Group>
       </CyFormItem>
 
@@ -70,7 +70,8 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
           titleKey="chartName"
           valueKey="chartId"
           placeholder="请选择图纸"
-          extraParams={resourceLibId}
+          postType="query"
+          libId={resourceLibId}
         />
       </CyFormItem>
     </>

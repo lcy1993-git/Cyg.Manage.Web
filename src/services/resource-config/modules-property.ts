@@ -3,8 +3,8 @@ import { cyRequest, baseUrl } from '../common';
 
 interface ModulesPropertyParams {
   libId: string;
-  ModuleId: string;
-  ModuleName: string;
+  moduleId: string;
+  moduleName: string;
   shortName: string;
   typicalCode: string;
   poleTypeCode: string;
@@ -20,6 +20,11 @@ interface ItemDetailData extends ModulesPropertyParams {
   //模块id
   id: string;
 }
+
+// interface ModulePropertyDeleteParams {
+//   libId: string;
+//   ids: string[];
+// }
 
 //获取单条模块数据
 export const getModulesPropertyDetail = (libId: string, id: string) => {
@@ -43,8 +48,8 @@ export const updateModulesPropertyItem = (params: ItemDetailData) => {
 };
 
 // 删除
-export const deleteModulesPropertyItem = (id: string) => {
+export const deleteModulesPropertyItem = (params: object) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/Modules/Delete`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.resource}/Modules/Delete`, { method: 'POST', data: params }),
   );
 };
