@@ -7,7 +7,6 @@ export enum Arrangement {
   '项目委托' = 1,
   '公司成员',
   '公司部组',
-  '部组成员',
 }
 
 export enum ProjectCategory {
@@ -241,7 +240,6 @@ interface EngineerParams {
 }
 
 interface ProjectParams {
-<<<<<<< HEAD
     name: string
     category: string
     pType: string
@@ -270,36 +268,6 @@ interface ProjectParams {
     pileRange: string
     deadline: Moment,
     dataSourceType: string
-=======
-  name: string;
-  category: string;
-  pType: string;
-  kvLevel: string;
-  totalInvest: string;
-  natures: string[];
-  startTime: Moment;
-  endTime: Moment;
-  assetsNature: string;
-  majorCategory: string;
-  isAcrossYear: string;
-  reformCause: string;
-  reformAim: string;
-  powerSupply: string;
-  assetsOrganization: string;
-  cityCompany: string;
-  regionAttribute: string;
-  countyCompany: string;
-  constructType: string;
-  pCategory: string;
-  stage: string;
-  batch: string;
-  pAttribute: string;
-  meteorologic: string;
-  disclosureRange: string;
-  pileRange: string;
-  deadline: Moment;
-  dataSourceType: string;
->>>>>>> a006783058427713859dbafdd5e61af55df4ee20
 }
 
 interface AddEngineerParams {
@@ -404,7 +372,6 @@ interface ProjectInfoParams {
 
 // 获取项目详细信息接口
 export const getProjectInfo = (projectId: string) => {
-<<<<<<< HEAD
     return cyRequest<ProjectInfoParams>(() => request(`${baseUrl.project}/Porject/GetById`,{method: "GET", params: {id: projectId}}))
 }
 
@@ -456,9 +423,13 @@ export const recallShare = (projectIds: string[]) => {
 export const revokeAllot = (projectIds: string[]) => {
     return cyRequest(() => request(`${baseUrl.project}/Porject/RevokeAllot`,{method: "POST", data: {projectIds}}))
 }
-=======
-  return cyRequest<ProjectInfoParams>(() =>
-    request(`${baseUrl.project}/Porject/GetById`, { method: 'GET', params: { id: projectId } }),
-  );
-};
->>>>>>> a006783058427713859dbafdd5e61af55df4ee20
+
+
+// 检查是否可以一起被安排
+export const checkCanArrange = (projectIds: string[]) => {
+  return cyRequest(() => request(`${baseUrl.project}/Porject/CheckAllotPrerequisites`,{method: "POST", data: projectIds}))
+}
+
+export const getGroupInfo = (clientType: string) => {
+  return cyRequest<any[]>(() => request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`,{method: "POST", data: {clientType}}))
+}
