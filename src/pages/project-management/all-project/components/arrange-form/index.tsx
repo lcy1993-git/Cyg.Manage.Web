@@ -2,16 +2,22 @@ import React, { useState } from 'react';
 import { TreeSelect, Divider } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumSelect from '@/components/enum-select';
-import { Arrangement, getGroupInfo } from '@/services/project-management/all-project';
+import { Arrangement, getCompanyName, getGroupInfo } from '@/services/project-management/all-project';
 import { useRequest } from 'ahooks';
 import Search from 'antd/lib/input/Search';
+import ReadonlyItem from '@/components/readonly-item';
 
 interface GetGroupUserProps {
-  onChange?: (checkedValue: string) => void 
+  onChange?: (checkedValue: string) => void
+  getCompanyInfo?: (companyInfo: any) => void
 }
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
-  const { onChange } = props;
+  const { onChange,getCompanyInfo } = props;
+
+  const {data: conpanyInfo = {}, run: getCompanyInfoEvent} = useRequest(getCompanyName,{
+    manual: true
+  })
 
   const [checkedValue, setCheckedValue] = useState<string>("2");
 
@@ -29,9 +35,23 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     };
   };
 
+  const noChildrenMap = (data: any) => {
+    return {
+      title: data.text,
+      value: data.id,
+      children: [],
+    };
+  };
+
+
   const typeChange = (value: string) => {
     setCheckedValue(value)
     onChange?.(value)
+  }
+
+  const searchEvent = async (value: string) => {
+    const res = await getCompanyInfoEvent(value)
+    getCompanyInfo?.(res)
   }
 
   return (
@@ -106,9 +126,32 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       }
       {
         checkedValue === "1" &&
-        <CyFormItem label="单位" name="unit">
-          <Search placeholder="请输入单位" />
-        </CyFormItem>
+        <>
+          <CyFormItem label="单位" name="unit">
+            <div>
+              <Search placeholder="请输入单位" onSearch={(value) => searchEvent(value)} />
+            </div>
+          </CyFormItem>
+          <ReadonlyItem label="单位名称" align="left">
+            {
+              conpanyInfo?.text
+            }
+          </ReadonlyItem>
+        </>
+      }
+      {
+        checkedValue === "3" &&
+        <>
+          <CyFormItem label="部组" required name="designAssessUser3">
+            <TreeSelect
+              style={{ width: '100%' }}
+              treeData={surveyData.map(noChildrenMap)}
+              placeholder="请选择"
+              treeDefaultExpandAll
+              allowClear
+            />
+          </CyFormItem>
+        </>
       }
     </>
   );

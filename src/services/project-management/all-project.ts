@@ -433,3 +433,7 @@ export const checkCanArrange = (projectIds: string[]) => {
 export const getGroupInfo = (clientType: string) => {
   return cyRequest<any[]>(() => request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`,{method: "POST", data: {clientType}}))
 }
+
+export const getCompanyName = (userName: string) => {
+  return cyRequest(() => request(`${baseUrl.project}/ManageUser/GetCompanyNameByUserName`,{method: "POST", data: {userName}}))
+}
