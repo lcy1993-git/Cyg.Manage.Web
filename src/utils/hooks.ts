@@ -1,4 +1,5 @@
 import { getDataByUrl } from "@/services/common";
+import { getEngineerEnum } from "@/services/project-management/all-project";
 import { useRequest } from "ahooks"
 import { useMemo } from "react";
 
@@ -35,6 +36,50 @@ export const useUrlSelectData = (url:string ,params: UrlSelectDataParams = {}) =
 
 export const useGetUserInfo = () => {
   const userInfo = JSON.parse(localStorage.getItem("userInfo") ?? "{}");
-  console.log(userInfo)
   return userInfo
+}
+
+export const useGetProjectEnum = () => {
+  const { data: resData} = useRequest(() => getEngineerEnum(), {});
+  const {
+    meteorologicLevel,
+    projectAssetsNature,
+    projectAttribute,
+    projectBatch,
+    projectCategory,
+    projectClassification,
+    projectConstructType,
+    projectDataSourceType,
+    projectGrade,
+    projectImportance,
+    projectKvLevel,
+    projectMajorCategory,
+    projectNature,
+    projectPType,
+    projectReformAim,
+    projectReformCause,
+    projectRegionAttribute,
+    projectStage
+  } = resData ?? {}
+
+  return {
+    meteorologicLevel,
+    projectAssetsNature,
+    projectAttribute,
+    projectBatch,
+    projectCategory,
+    projectClassification,
+    projectConstructType,
+    projectDataSourceType,
+    projectGrade,
+    projectImportance,
+    projectKvLevel,
+    projectMajorCategory,
+    projectNature,
+    projectPType,
+    projectReformAim,
+    projectReformCause,
+    projectRegionAttribute,
+    projectStage
+  }
 }

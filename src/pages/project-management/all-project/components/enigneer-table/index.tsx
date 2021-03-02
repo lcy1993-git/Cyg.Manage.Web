@@ -6,7 +6,7 @@ import styles from "./index.less"
 import { useMemo } from "react"
 import { Dropdown, Menu, Pagination } from "antd"
 import { useEffect } from "react"
-import ProjectTableItem, { TableItemCheckedInfo } from "../engineer-table-item"
+import ProjectTableItem, { AddProjectValue, TableItemCheckedInfo } from "../engineer-table-item"
 
 import uuid from 'node-uuid'
 import TableStatus from "@/components/table-status"
@@ -15,6 +15,10 @@ import { Spin } from "antd"
 import EmptyTip from "@/components/empty-tip"
 import EngineerDetailInfo from "../engineer-detail-info"
 import ProjectDetailInfo from "../project-detail-info"
+import CyTag from "@/components/cy-tag"
+import AddProjectModal from "../add-project-modal"
+import EditEnigneerModal from "../edit-engineer-modal"
+import EditProjectModal from "../edit-project-modal"
 
 interface ExtractParams extends AllProjectStatisticsParams {
     statisticalCategory?: string
@@ -43,6 +47,24 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     const [currentClickProjectId, setCurrentClickProjectId] = useState("");
     const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
 
+    const [currentEditEngineerId, setCurrentEditEngineerId] = useState<string>("");
+    const [currentEditProjectInfo, setCurrentEditProjectInfo] = useState<any>({});
+    const [addProjectVisible, setAddProjectVisible] = useState<boolean>(false);
+    const [editProjectVisible, setEditProjectVisible] = useState<boolean>(false);
+    const [editEngineerVisible, setEditEngineerVisible] = useState<boolean>(false);
+    const [projectNeedInfo, setProjectNeedInfo] = useState({
+        engineerId: "",
+        areaId: "",
+        company: ""
+    })
+
+
+
+    const addProjectEvent = (projectNeedValue: AddProjectValue) => {
+        setAddProjectVisible(true)
+        setProjectNeedInfo(projectNeedValue)
+    }
+
     const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
     const tableResultData = useMemo(() => {
@@ -68,12 +90,16 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
     }, [JSON.stringify(tableData)]);
 
-    const projectItemMenu = (jurisdictionInfo: JurisdictionInfo) => {
+    const projectItemMenu = (jurisdictionInfo: JurisdictionInfo, tableItemData: any, engineerInfo: any) => {
         return (
             <Menu>
                 {
                     jurisdictionInfo.canEdit &&
-                    <Menu.Item>
+                    <Menu.Item onClick={() => editProjectEvent({
+                        projectId: tableItemData.id,
+                        areaId: engineerInfo.province,
+                        company: engineerInfo.company
+                    })}>
                         编辑
                     </Menu.Item>
                 }
@@ -122,9 +148,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 const { natureTexts = [] } = record;
                 return natureTexts.map((item: any) => {
                     return (
-                        <span key={uuid.v1()}>
+                        <CyTag key={uuid.v1()} className="mr7">
                             {item}
-                        </span>
+                        </CyTag>
                     )
                 })
             }
@@ -205,11 +231,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             title: "操作",
             dataIndex: "operationAuthority",
             width: 60,
-            render: (record: any) => {
+            render: (record: any, engineerInfo: any) => {
                 const {operationAuthority} = record;
         
                 return (
-                    <Dropdown overlay={() => projectItemMenu(operationAuthority)} placement="bottomLeft" arrow>
+                    <Dropdown overlay={() => projectItemMenu(operationAuthority, record, engineerInfo)} placement="bottomLeft" arrow>
                         <BarsOutlined />
                     </Dropdown>
                 )
@@ -237,9 +263,19 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         setEngineerModalVisible(true)
     }
 
+    const editProjectEvent = (projectNeedInfo: any) => {
+        setEditProjectVisible(true)
+        setCurrentEditProjectInfo(projectNeedInfo)
+    }
+
+    const editEngineerEvent = (data: AddProjectValue) => {
+        setEditEngineerVisible(true)
+        setCurrentEditEngineerId(data.engineerId);
+    }
+
     const projectTableShow = tableResultData.items.map((item: any, index: number) => {
         return (
-            <ProjectTableItem getClickProjectId={projectNameClickEvent} onChange={tableItemSelectEvent} columns={projectTableColumns} key={item.id} projectInfo={item} />
+            <ProjectTableItem editEngineer={editEngineerEvent} addProject={addProjectEvent} getClickProjectId={projectNameClickEvent} onChange={tableItemSelectEvent} columns={projectTableColumns} key={item.id} projectInfo={item} />
         )
     })
 
@@ -285,6 +321,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             setTableSelectData([])
         },
     }));
+
+    const tableItemEventFinish = () => {
+        run({
+            ...extractParams,
+            pageIndex,
+            pageSize
+        });
+        setTableSelectData([])
+    }
 
     // 页码发生变化，重新进行请求
     useEffect(() => {
@@ -334,6 +379,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             </div>
             <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible}  />
             <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />
+            <EditEnigneerModal engineerId={currentEditEngineerId} visible={editEngineerVisible} onChange={setEditEngineerVisible} changeFinishEvent={tableItemEventFinish} />
+            <EditProjectModal projectId={currentEditProjectInfo.projectId} company={currentEditProjectInfo.company} areaId={currentEditProjectInfo.areaId} visible={editProjectVisible} onChange={setEditProjectVisible} changeFinishEvent={tableItemEventFinish} />
+            <AddProjectModal changeFinishEvent={tableItemEventFinish} visible={addProjectVisible} onChange={setAddProjectVisible} engineerId={projectNeedInfo.engineerId} areaId={projectNeedInfo.areaId} company={projectNeedInfo.company} />
         </div>
     )
 }

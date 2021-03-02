@@ -6,7 +6,7 @@ import { Button, Input, message, Modal, } from "antd";
 
 import styles from "./index.less";
 import EnumSelect from "@/components/enum-select";
-import { addEngineer, AllProjectStatisticsParams, BuildType, getProjectTableStatistics, ProjectCategory, ProjectNature, ProjectStage, ProjectStatus, ProjectType, ProjectVoltageClasses } from "@/services/project-management/all-project";
+import { addEngineer, AllProjectStatisticsParams, applyKnot, auditKnot, BuildType, deleteProject, getProjectTableStatistics, noAuditKnot, ProjectCategory, ProjectNature, ProjectStage, ProjectStatus, ProjectType, ProjectVoltageClasses, recallShare, revokeAllot, revokeKnot } from "@/services/project-management/all-project";
 import AllStatistics from "./components/all-statistics";
 import SingleStatistics from "./components/single-statistics";
 import CommonTitle from "@/components/common-title";
@@ -20,6 +20,7 @@ import EnigneerTable from "./components/enigneer-table";
 import { Form } from "antd";
 import CreateEngineer from "./components/create-engineer";
 import { TableItemCheckedInfo } from "./components/engineer-table-item";
+import { Popconfirm } from "antd";
 
 const { Search } = Input;
 
@@ -45,6 +46,8 @@ const ProjectManagement: React.FC = () => {
     // 被勾选中的数据
     const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
+    const [shareModalVisible, setShareModalVisible] = useState<boolean>(false);
+
     const [addEngineerModalFlag, setAddEngineerModalFlag] = useState(false);
 
     const [saveLoading, setSaveLoading] = useState(false)
@@ -52,8 +55,6 @@ const ProjectManagement: React.FC = () => {
     const tableRef = useRef<HTMLDivElement>(null)
 
     const [form] = Form.useForm();
-
-    console.log(tableSelectData)
 
     const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, { manual: true });
 
@@ -99,6 +100,19 @@ const ProjectManagement: React.FC = () => {
         }
     }
 
+    const revokeAllotEvent = async () => {
+        if (tableSelectData.length === 0) {
+            message.error("请至少选择一个项目");
+            return
+        }
+
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        await revokeAllot(projectIds)
+        message.success("撤回安排成功");
+        refresh();
+    }
+
     const arrangeMenu = (
         <Menu>
             <Menu.Item>
@@ -107,18 +121,40 @@ const ProjectManagement: React.FC = () => {
             <Menu.Item>
                 修改安排
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item onClick={() => revokeAllotEvent()}>
                 撤回安排
             </Menu.Item>
         </Menu>
     )
 
+    const recallShareEvent = async () => {
+        if (tableSelectData.length === 0) {
+            message.error("请至少选择一个项目");
+            return
+        }
+
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        await recallShare(projectIds)
+        message.success("申请结项成功");
+        refresh();
+    }
+
+    const shareEvent = async () => {
+        if (tableSelectData.length === 0) {
+            message.error("请至少选择一个项目");
+            return
+        }
+
+        setShareModalVisible(true)
+    }
+
     const shareMenu = (
         <Menu>
-            <Menu.Item>
+            <Menu.Item onClick={() => shareEvent()}>
                 共享
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item onClick={() => recallShareEvent()}>
                 撤回共享
             </Menu.Item>
         </Menu>
@@ -135,18 +171,67 @@ const ProjectManagement: React.FC = () => {
         </Menu>
     )
 
+    const applyKnotEvent = async () => {
+        if (tableSelectData.length === 0) {
+            message.error("请至少选择一个项目");
+            return
+        }
+
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        await applyKnot(projectIds)
+        message.success("申请结项成功");
+        refresh();
+    }
+
+    const revokeKnotEvent = async () => {
+        if (tableSelectData.length === 0) {
+            message.error("请至少选择一个项目");
+            return
+        }
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        await revokeKnot(projectIds)
+        message.success("撤回结项成功");
+        refresh();
+    }
+
+    const auditKnotEvent = async () => {
+        if (tableSelectData.length === 0) {
+            message.error("请至少选择一个项目");
+            return
+        }
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        await auditKnot(projectIds)
+        message.success("结项通过成功");
+        refresh();
+    }
+
+    const noAuditKnotEvent = async () => {
+        if (tableSelectData.length === 0) {
+            message.error("请至少选择一个项目");
+            return
+        }
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        await noAuditKnot(projectIds)
+        message.success("结项退回成功");
+        refresh();
+    }
+
     const postProjectMenu = (
         <Menu>
-            <Menu.Item>
+            <Menu.Item onClick={() => applyKnotEvent}>
                 申请结项
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item onClick={() => revokeKnotEvent}>
                 撤回结项
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item onClick={() => auditKnotEvent}>
                 结项通过
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item onClick={() => noAuditKnotEvent}>
                 结项退回
             </Menu.Item>
         </Menu>
@@ -229,6 +314,20 @@ const ProjectManagement: React.FC = () => {
     const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
         setTableSelectData(checkedValue)
     }
+
+    const sureDeleteProject = async () => {
+        if (tableSelectData.length === 0) {
+            message.error("请至少勾选一条数据");
+            return
+        }
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        await deleteProject(projectIds)
+        message.success("删除成功")
+        refresh();
+    }
+
+
 
     return (
         <PageCommonWrap noPadding={true}>
@@ -379,10 +478,12 @@ const ProjectManagement: React.FC = () => {
                                     <FileAddOutlined />
                                     立项
                                 </Button>
-                                <Button className="mr7">
-                                    <DeleteOutlined />
+                                <Popconfirm title="确认对勾选的项目进行删除吗?" okText="确认" cancelText="取消" onConfirm={sureDeleteProject}>
+                                    <Button className="mr7">
+                                        <DeleteOutlined />
                                     删除
                                 </Button>
+                                </Popconfirm>
                                 <Dropdown overlay={arrangeMenu}>
                                     <Button className="mr7">
                                         安排管理 <DownOutlined />
@@ -393,13 +494,18 @@ const ProjectManagement: React.FC = () => {
                                         安排共享 <DownOutlined />
                                     </Button>
                                 </Dropdown>
-                                <Dropdown overlay={importMenu}>
-                                    <Button className="mr7">
-                                        导入 <DownOutlined />
-                                    </Button>
-                                </Dropdown>
                                 <div className="mr7">
-                                    <TableExportButton exportUrl="" />
+                                    <TableExportButton exportUrl="/Porject/Export" selectIds={tableSelectData.map((item) => item.checkedArray).flat()} extraParams={{
+                                        keyWord,
+                                        category: category ?? "-1",
+                                        pCategory: pCategory ?? "-1",
+                                        stage: stage ?? "-1",
+                                        constructType: constructType ?? "-1",
+                                        nature: nature ?? "-1",
+                                        kvLevel: kvLevel ?? "-1",
+                                        status: status ?? "-1",
+                                        statisticalCategory: statisticalCategory ?? "-1",
+                                    }} />
                                 </div>
                                 <Dropdown overlay={postProjectMenu}>
                                     <Button>

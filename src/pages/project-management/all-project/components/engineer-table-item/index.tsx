@@ -20,12 +20,20 @@ export interface TableItemCheckedInfo {
     checkedArray: string[]
 }
 
+export interface AddProjectValue {
+    engineerId: string
+    areaId: string
+    company: string
+}
+
 interface ProjectTableItemProps {
     // TODO 完善信息
     projectInfo: any
     columns: any[]
     onChange?: (checkedValue: TableItemCheckedInfo) => void
     getClickProjectId: (clickProjectId: string) => void
+    addProject?: (needValue: AddProjectValue) => void
+    editEngineer?: (needValue: AddProjectValue) => void
 }
 
 const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
@@ -35,7 +43,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     const [indeterminate, setIndeterminate] = React.useState(false);
     const [checkAll, setCheckAll] = React.useState(false);
 
-    const { projectInfo = {}, columns = [], onChange, getClickProjectId } = props;
+    const { projectInfo = {}, columns = [], onChange, getClickProjectId, addProject,editEngineer} = props;
 
     const theadElement = columns.map((item) => {
         return (
@@ -90,7 +98,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                     columns.map((ite) => {
                         return (
                             <td key={uuid.v1()}>
-                                {ite.render ? ite.render(item) : item[ite.dataIndex]}
+                                {ite.render ? ite.render(item,projectInfo) : item[ite.dataIndex]}
                             </td>
                         )
                     })
@@ -99,8 +107,24 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         )
     })
 
-    const projectNameClickEvent = (projectId) => {
+    const projectNameClickEvent = (projectId: string) => {
         getClickProjectId?.(projectId)
+    }
+
+    const addProjectEvent = () => {
+        addProject?.({
+            engineerId: projectInfo.id,
+            areaId: projectInfo.province,
+            company: projectInfo.company
+        })
+    }
+
+    const editEngineerEvent = () => {
+        editEngineer?.({
+            engineerId: projectInfo.id,
+            areaId: projectInfo.province,
+            company: projectInfo.company
+        })
     }
 
     return (
@@ -146,10 +170,10 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                     </span>
                 </div>
                 <div className={styles.projectButtons}>
-                    <Button className="mr10" ghost type="primary">
+                    <Button className="mr10" ghost type="primary" onClick={() => addProjectEvent()}>
                         新增项目
                     </Button>
-                    <Button>
+                    <Button onClick={() => editEngineerEvent()}>
                         编辑
                     </Button>
                 </div>
