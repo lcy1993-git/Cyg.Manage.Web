@@ -24,6 +24,7 @@ const CompanyFile: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [resultFormVisible, setResultFormVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -39,7 +40,7 @@ const CompanyFile: React.FC = () => {
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            onSearch={() => tableSearchEvent()}
+            onSearch={() => search()}
             enterButton
             placeholder="请输入关键词搜索"
           />
@@ -61,12 +62,6 @@ const CompanyFile: React.FC = () => {
     message.success('删除成功');
   };
 
-  const tableSearchEvent = () => {
-    search({
-      keyWord: searchKeyWord,
-    });
-  };
-
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
@@ -76,10 +71,10 @@ const CompanyFile: React.FC = () => {
   };
 
   // 列表搜索
-  const search = (params: object) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search(params);
+      tableRef.current.search();
     }
   };
 
@@ -101,6 +96,9 @@ const CompanyFile: React.FC = () => {
       index: 'fileCategory',
       title: '类别',
       width: 150,
+      render: (text: any, record: any) => {
+        return record.fileCategoryText;
+      },
     },
     {
       dataIndex: 'describe',
@@ -175,6 +173,12 @@ const CompanyFile: React.FC = () => {
     });
   };
 
+  const resultEvent = () => {
+    setResultFormVisible(true);
+  };
+
+  const saveResultEvent = () => {};
+
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -197,7 +201,7 @@ const CompanyFile: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <Button className={styles.iconParams}>
+        <Button className={styles.iconParams} onClick={() => resultEvent()}>
           <i className="iconfont iconcanshu" />
           成果默认参数
         </Button>
@@ -216,6 +220,9 @@ const CompanyFile: React.FC = () => {
         url="/CompanyFile/GetPagedList"
         tableTitle="公司文件"
         getSelectData={(data) => setTableSelectRow(data)}
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
       />
       <Modal
         title="添加-文件"
@@ -246,6 +253,23 @@ const CompanyFile: React.FC = () => {
             <CompanyFileForm />
           </Spin>
         </Form>
+      </Modal>
+
+      <Modal
+        title="成果默认参数"
+        width="680px"
+        visible={resultFormVisible}
+        okText="确认"
+        onOk={() => saveResultEvent()}
+        onCancel={() => setResultFormVisible(false)}
+        cancelText="取消"
+      >
+        11
+        {/* <Form form={editForm}>
+          <Spin spinning={loading}>
+            <CompanyFileForm />
+          </Spin>
+        </Form> */}
       </Modal>
     </PageCommonWrap>
   );

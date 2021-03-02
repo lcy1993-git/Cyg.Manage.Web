@@ -12,6 +12,10 @@ interface GetGroupUserProps {
   treeData?: CompanyGroupTreeData[];
 }
 
+interface ArrangeType {
+  type: 'users' | 'entrust';
+}
+
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const { treeData = [] } = props;
 
@@ -33,10 +37,12 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
   console.log(handleData);
 
+  const arrangementEvent = (value: any) => {};
+
   return (
     <>
       <CyFormItem label="安排方式" name="allotType" initialValue={'2'}>
-        <EnumSelect enumList={Arrangement} />
+        <EnumSelect enumList={Arrangement} onChange={(value) => arrangementEvent(value)} />
       </CyFormItem>
 
       <CyFormItem label="勘察" name="surveyUser" required>
@@ -49,7 +55,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           allowClear
         />
       </CyFormItem>
-
       <CyFormItem label="设计" name="designUser" required>
         <TreeSelect
           style={{ width: '100%' }}
@@ -60,9 +65,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           allowClear
         />
       </CyFormItem>
-
       <Divider>设计校审</Divider>
-
       <CyFormItem label="校对" name="designAssessUser1">
         <TreeSelect
           style={{ width: '100%' }}
@@ -103,10 +106,14 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           allowClear
         />
       </CyFormItem>
-
-      <CyFormItem label="单位" name="unit">
-        <Search placeholder="请输入单位" />
-      </CyFormItem>
+      {/* <div className='flex'>
+        <CyFormItem label="单位账户" name="unit">
+          <Search placeholder="请输入单位" />
+        </CyFormItem>
+        <CyFormItem label="单位名称" name="unit">
+          <Search placeholder="请输入单位" />
+        </CyFormItem>
+      </div> */}
     </>
   );
 };

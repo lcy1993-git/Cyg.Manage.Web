@@ -29,7 +29,7 @@ const CompanyUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
 
-  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [batchAddFormVisible, setBatchAddFormVisible] = useState<boolean>(false);
@@ -109,9 +109,8 @@ const CompanyUser: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          userName: '',
           pwd: '',
-          companyId: '',
+          groupIds: [],
           email: '',
           nickName: '',
           name: '',
@@ -180,7 +179,7 @@ const CompanyUser: React.FC = () => {
       title: '用户名',
       dataIndex: 'userName',
       index: 'userName',
-      width: 180,
+      width: 150,
     },
     {
       title: '昵称',
@@ -192,7 +191,7 @@ const CompanyUser: React.FC = () => {
       title: '真实姓名',
       dataIndex: 'name',
       index: 'name',
-      width: 180,
+      width: 150,
     },
     {
       title: '手机号',
@@ -208,9 +207,12 @@ const CompanyUser: React.FC = () => {
     },
     {
       title: '部组',
-      dataIndex: 'companyGroups',
-      index: 'companyGroups',
+      dataIndex: 'comapnyGroups',
+      index: 'comapnyGroups',
       width: 200,
+      render: (text: any, record: any) => {
+        return record.comapnyGroups ? record.comapnyGroups[0] : '';
+      },
     },
     {
       title: '状态',
@@ -229,7 +231,7 @@ const CompanyUser: React.FC = () => {
       title: '授权端口',
       dataIndex: 'authorizeClient',
       index: 'authorizeClient',
-      width: 180,
+      width: 240,
       render: (text: any, record: any) => {
         return record.authorizeClient ? <span>{record.authorizeClientTexts}</span> : null;
       },
@@ -252,10 +254,10 @@ const CompanyUser: React.FC = () => {
   ];
 
   // 列表搜索
-  const search = (params: object) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search(params);
+      tableRef.current.search();
     }
   };
 
@@ -264,9 +266,9 @@ const CompanyUser: React.FC = () => {
       <div className={styles.search}>
         <TableSearch label="关键词" width="208px">
           <Search
-            value={searchApiKeyWord}
-            onSearch={() => search({ keyWord: searchApiKeyWord })}
-            onChange={(e) => setSearchApiKeyWord(e.target.value)}
+            value={searchKeyWord}
+            onSearch={() => search()}
+            onChange={(e) => setSearchKeyWord(e.target.value)}
             placeholder="请输入关键词"
             enterButton
           />
@@ -288,6 +290,9 @@ const CompanyUser: React.FC = () => {
         tableTitle="公司用户"
         url="/CompanyUser/GetPagedList"
         columns={columns}
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
       />
       <Modal
         title="添加-公司用户"
