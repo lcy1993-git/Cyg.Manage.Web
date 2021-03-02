@@ -2,14 +2,23 @@ import React, { useState } from 'react';
 import { TreeSelect, Divider } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumSelect from '@/components/enum-select';
+<<<<<<< HEAD
 import { Arrangement, getCompanyName, getGroupInfo } from '@/services/project-management/all-project';
 import { useRequest } from 'ahooks';
+=======
+import { Arrangement, getGroupInfo } from '@/services/project-management/all-project';
+import { useMount, useRequest } from 'ahooks';
+>>>>>>> 1632e1c86a1e5c3a6189ce7e6fb3737928df1042
 import Search from 'antd/lib/input/Search';
 import ReadonlyItem from '@/components/readonly-item';
 
 interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void
   getCompanyInfo?: (companyInfo: any) => void
+}
+
+interface ArrangeType {
+  type: 'users' | 'entrust';
 }
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
@@ -49,10 +58,18 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     onChange?.(value)
   }
 
+<<<<<<< HEAD
   const searchEvent = async (value: string) => {
     const res = await getCompanyInfoEvent(value)
     getCompanyInfo?.(res)
   }
+=======
+  const arrangementEvent = (value: any) => {};
+
+  useMount(() => {
+    onChange?.("2")
+  })
+>>>>>>> 1632e1c86a1e5c3a6189ce7e6fb3737928df1042
 
   return (
     <>

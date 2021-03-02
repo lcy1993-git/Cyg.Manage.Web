@@ -125,10 +125,9 @@ const ProjectManagement: React.FC = () => {
         }
 
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
-        console.log(tableSelectData)
-        console.log(projectIds)
+    
         await checkCanArrange(projectIds);
-
+        setSelectProjectIds(projectIds)
         setArrangeModalVisible(true)
     }
 

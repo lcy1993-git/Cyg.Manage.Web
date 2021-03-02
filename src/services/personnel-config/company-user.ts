@@ -7,6 +7,7 @@ export enum CompanyUserEnum {
 }
 
 interface CompanyUserItemParams {
+  comapnyGroups: object[];
   companyName: string;
   userName: string;
   phone: string;
