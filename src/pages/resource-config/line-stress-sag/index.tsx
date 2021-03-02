@@ -68,12 +68,12 @@ const LineStressSag: React.FC = () => {
   }, [resourceLibId]);
 
   // 列表刷新
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh();
-    }
-  };
+  // const refresh = () => {
+  //   if (tableRef && tableRef.current) {
+  //     // @ts-ignore
+  //     tableRef.current.refresh();
+  //   }
+  // };
 
   // 列表搜索
   const search = () => {
@@ -150,7 +150,6 @@ const LineStressSag: React.FC = () => {
         url="/LineStressSag/GetPageList"
         tableTitle="应力弧垂表"
         type="radio"
-        // getSelectData={(data) => setTableSelectRow(data)}
         extractParams={{
           resourceLibId: resourceLibId,
           keyWord: searchKeyWord,

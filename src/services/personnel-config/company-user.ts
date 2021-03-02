@@ -70,3 +70,21 @@ export const updateItemStatus = (id: string) => {
     request(`${baseUrl.project}/CompanyUser/ChangeState`, { method: 'GET', params: { id } }),
   );
 };
+
+export interface GetUserTreeByGroup {
+  text: string;
+  id: string;
+  children: GetUserTreeByGroup[];
+}
+
+interface CompanyGroupTree {
+  companyGroupId: string;
+  clientType: number;
+}
+
+//按部组获取公司用户
+export const getUserTreeByGroup = (params: CompanyGroupTree) => {
+  return cyRequest<GetUserTreeByGroup[]>(() =>
+    request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`, { method: 'POST', data: params }),
+  );
+};

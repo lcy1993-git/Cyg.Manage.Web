@@ -7,7 +7,7 @@ interface BaseInfoProps {
 }
 
 const BaseInfo: React.FC<BaseInfoProps> = (props) => {
-    const { baseInfo } = props;
+    const { baseInfo = {} } = props;
     return (
         <div>
             <div className="flex">
