@@ -6,65 +6,102 @@ import * as echarts from 'echarts';
 import "echarts/lib/chart/map";
 import 'echarts/lib/component/tooltip';
 import { useSize } from "ahooks";
+import { useRequest } from "ahooks";
+import { getMapStatisticsData } from "@/services/index";
 
 
 
 const MapChart:React.FC = () => {
+
+    const {data: mapData = []} = useRequest(() => getMapStatisticsData(), {
+        onSuccess: () => {
+            initChart();
+        }
+    });
 
     const divRef = useRef<HTMLDivElement>(null);
     let myChart:any = null;
 
     const size = useSize(divRef);
 
+    const option = {
+        tooltip: {
+            trigger: "item",
+            formatter: function(params: any) {  
+                const {name} = params;
+                const nameIndex = mapData?.findIndex((item) => item.area === name);
+                if(nameIndex > -1) {
+                    return `
+                        ${name} <br />
+                        项目数量: ${mapData[nameIndex].engineerQuantity}
+                    `
+                }
+                return `
+                    ${name} <br />
+                    项目数量: 0
+                `
+            }  
+        },
+        series: [{
+            type: 'map',
+            map: 'xinjiang',
+            tooltip: {
+                show: true
+            },
+            layoutCenter: ["50%", "50%"], //地图位置
+            layoutSize: '100%',
+            roam: false,
+            geoIndex: 1,
+            itemStyle: {
+                normal: {
+                    borderColor: 'rgba(255, 255, 255, 0.6)',
+                    borderWidth: 0.8,
+                    borderType: "dotted",
+                    areaColor: {
+                        type: 'linear',
+                        x: 0,
+                        y: 1500,
+                        x2: 1000,
+                        y2: 0,
+                        colorStops: [{
+                            offset: 0.4,
+                            color: '#005A4F' // 0% 处的颜色
+                        }, {
+                            offset: 1,
+                            color: '#00DECD' // 100% 处的颜色
+                        }],
+                        global: true // 缺省为 false
+                    },
+                },
+                emphasis: {
+                    areaColor: {
+                        type: 'linear',
+                        x: 0,
+                        y: 2,
+                        x2: 1,
+                        y2: 0,
+                        colorStops: [{
+                            offset: 0.1,
+                            color: '#18A59B' // 0% 处的颜色
+                        }, {
+                            offset: 1,
+                            color: '#2AF8DE' // 100% 处的颜色
+                        }],
+                    },
+                    label: {
+                        show: false
+                    }
+                }
+            },
+            zlevel: 100
+        }],
+    };
+
     const initChart = () => {
         if (divRef && divRef.current) {
             echarts.registerMap("xinjiang", xinjiang)
             myChart = echarts.init(divRef.current as HTMLDivElement);
-            let option = {
-                tooltip: {
-                    trigger: "item",
-                },
-                series: [{
-                    type: 'map',
-                    map: 'xinjiang',
-                    tooltip: {
-                        show: true
-                    },
-                    layoutCenter: ["50%", "50%"], //地图位置
-                    layoutSize: '100%',
-                    roam: true,
-                    geoIndex: 1,
-                    itemStyle: {
-                        normal: {
-                            borderColor: 'rgba(255, 255, 255, 0.6)',
-                            borderWidth: 0.8,
-                            borderType: "dotted",
-                            areaColor: {
-                                type: 'linear',
-                                x: 0,
-                                y: 1500,
-                                x2: 1000,
-                                y2: 0,
-                                colorStops: [{
-                                    offset: 0.4,
-                                    color: '#00481E' // 0% 处的颜色
-                                }, {
-                                    offset: 1,
-                                    color: '#2AFE97' // 100% 处的颜色
-                                }],
-                                global: true // 缺省为 false
-                            },
-                        },
-                        emphasis: {
-                            areaColor: "#2AFE97",
-                            label: {
-                                show: false
-                            }
-                        }
-                    },
-                    zlevel: 100
-                }],
-            };
+            
             // @ts-ignore
             myChart.setOption(option);
         }

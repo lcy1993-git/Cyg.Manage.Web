@@ -6,6 +6,7 @@ import { Modal, Tabs } from "antd"
 import ProjectBaseInfo from "../project-base-info";
 
 import styles from "./index.less"
+import ProjectProcessInfo from "../project-process-info";
 
 const { TabPane } = Tabs;
 
@@ -33,7 +34,7 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
                         <ProjectBaseInfo projectInfo={projectInfo} />
                     </TabPane>
                     <TabPane key="process" tab="项目进度">
-                            
+                         <ProjectProcessInfo projectInfo={projectInfo} />   
                     </TabPane>
                 </Tabs>
             </div>

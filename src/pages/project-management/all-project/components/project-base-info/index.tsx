@@ -1,6 +1,8 @@
+import CyTag from "@/components/cy-tag";
 import ReadonlyItem from "@/components/readonly-item";
 import moment from "moment";
-import React, { Dispatch, SetStateAction } from "react"
+import uuid from "node-uuid";
+import React from "react"
 
 import styles from "./index.less"
 
@@ -11,6 +13,17 @@ interface ProjectBaseInfoProps {
 const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
 
     const { projectInfo } = props;
+    const tagElement = (projectInfo?.identitys ?? []).map((item: any) => {
+        return (
+            <CyTag className="mr7" key={uuid.v1()}>{item.text}</CyTag>
+        )
+    })
+
+    const natureElement = (projectInfo?.natures ?? []).map((item: any) => {
+        return (
+            <CyTag className="mr7" key={uuid.v1()}>{item.text}</CyTag>
+        )
+    })
 
     return (
         <div className={styles.projectBaseInfo}>
@@ -25,7 +38,7 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="立项日期" labelWidth={100}>
                         {
-                            projectInfo?.createdOn ? moment(projectInfo?.createdOn).format("YYYY-MM-DD") : ""
+                            projectInfo?.createdOn ? moment(projectInfo?.createdOn).format("YYYY-MM-DD HH:mm:ss") : ""
                         }
                     </ReadonlyItem>
                 </div>
@@ -41,7 +54,7 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="身份" labelWidth={100}>
                         {
-                            projectInfo?.libName
+                            tagElement
                         }
                     </ReadonlyItem>
                 </div>
@@ -64,16 +77,16 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <ReadonlyItem label="勘察评审状态" labelWidth={100}> 
+                    <ReadonlyItem label="勘察评审状态" labelWidth={100}>
                         {
-                            projectInfo?.name
+                            projectInfo?.stateInfo?.isResetSurvey ? "已评审" : "未评审"
                         }
                     </ReadonlyItem>
                 </div>
                 <div className="flex1">
                     <ReadonlyItem label="勘察评审状态" labelWidth={100}>
                         {
-                            projectInfo?.libName
+                            projectInfo?.stateInfo?.isResetSurvey ? "已评审" : "未评审"
                         }
                     </ReadonlyItem>
                 </div>
@@ -98,7 +111,7 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="项目性质" labelWidth={100}>
                         {
-                            projectInfo?.natures
+                            natureElement
                         }
                     </ReadonlyItem>
                 </div>
@@ -121,11 +134,11 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="项目日期" labelWidth={100}>
                         {
-                            projectInfo?.startTime
+                            projectInfo?.startTime ? moment(projectInfo?.startTime).format("YYYY-MM-DD") : ""
                         }
-                        -
+                        至
                         {
-                            projectInfo?.endTime
+                            projectInfo?.endTime ? moment(projectInfo?.endTime).format("YYYY-MM-DD") : ""
                         }
                     </ReadonlyItem>
                 </div>
@@ -150,14 +163,14 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="跨年项目" labelWidth={100}>
                         {
-                            projectInfo?.isAcrossYear
+                            projectInfo?.isAcrossYear ? "是" : "否"
                         }
                     </ReadonlyItem>
                 </div>
                 <div className="flex1">
                     <ReadonlyItem label="供电所/班组" labelWidth={100}>
                         {
-                            projectInfo?.powerSupply
+                            projectInfo?.powerSupplyText
                         }
                     </ReadonlyItem>
                 </div>
@@ -189,7 +202,7 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="区域属性" labelWidth={100}>
                         {
-                            projectInfo?.regionAttribute
+                            projectInfo?.regionAttributeText
                         }
                     </ReadonlyItem>
                 </div>
@@ -198,7 +211,7 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="建筑类型" labelWidth={100}>
                         {
-                            projectInfo?.constructType
+                            projectInfo?.constructTypeText
                         }
                     </ReadonlyItem>
                 </div>
@@ -221,7 +234,7 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="项目类别" labelWidth={100}>
                         {
-                            projectInfo?.majorCategoryText
+                            projectInfo?.pCategoryText
                         }
                     </ReadonlyItem>
                 </div>
@@ -271,7 +284,7 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="截止日期" labelWidth={100}>
                         {
-                            projectInfo?.deadline
+                            projectInfo?.deadline ? moment(projectInfo?.deadline).format("YYYY-MM-DD") : ""
                         }
                     </ReadonlyItem>
                 </div>

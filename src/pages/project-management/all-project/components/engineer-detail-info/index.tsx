@@ -2,6 +2,7 @@ import ReadonlyItem from "@/components/readonly-item";
 import { getEngineerInfo } from "@/services/project-management/all-project";
 import { useControllableValue, useRequest } from "ahooks";
 import { Modal } from "antd"
+import moment from "moment";
 import React, { Dispatch, SetStateAction } from "react"
 
 interface EngineerDetailInfoProps {
@@ -58,11 +59,11 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="工程日期">
                         {
-                            engineerInfo?.startTime
+                            engineerInfo?.startTime ? moment(engineerInfo?.startTime).format("YYYY-MM-DD") : ""
                         }
-                        -
+                         至 
                         {
-                            engineerInfo?.endTime
+                            engineerInfo?.endTime ? moment(engineerInfo?.endTime).format("YYYY-MM-DD") : ""
                         }
                     </ReadonlyItem>
                 </div>
@@ -117,7 +118,7 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="编制时间">
                         {
-                            engineerInfo?.compileTime
+                            engineerInfo?.compileTime ? moment(engineerInfo?.compileTime).format("YYYY-MM-DD") : ""
                         }
                     </ReadonlyItem>
                 </div>

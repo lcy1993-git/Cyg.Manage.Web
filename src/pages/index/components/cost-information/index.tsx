@@ -1,74 +1,103 @@
 import BarChart from "@/components/bar-chart";
+import { getBuildType } from "@/services/index";
+import * as echarts from "echarts/lib/echarts"
+import { useRequest } from "ahooks";
 import React from "react";
 import ChartBox from "../chart-box";
 
 const CostInformation: React.FC = () => {
+
+    const { data: projectNatures } = useRequest(() => getBuildType(), {
+        pollingWhenHidden: false
+    })
+
+    const dataArray = projectNatures?.map((item) => item.key);
+
+    const valueArray = projectNatures?.map((item) => item.value);
+
     const option = {
+        grid: {
+            left: 60,
+            bottom: 50,
+            top: 20
+        },
         tooltip: {
             trigger: 'axis',
             axisPointer: {
                 type: 'shadow'
             }
         },
-        color: ["#2AFE97","#FDFA88"],
-        legend: {
-            data: ['工程总价/万元', '设计费/万元'],
-            right: 20,
-            itemWidth: 12,
-            itemHeight: 12,
-            textStyle: {
-                lineHeight: 16,
-                color: "#74AC91"
-            }
-        },
-        grid: {
-            left: 40,
-            right: 10,
-            bottom: 50,
-            top: 35
+        xAxis: {
+            type: 'category',
+            data: dataArray,
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    color: "#74AC91"
+                }
+            },
+            axisLabel: {
+                textStyle: {
+                    color: '#74AC91'
+                },
+                fontSize: 10,
+                align: "center",
+            },
         },
         yAxis: {
             type: 'value',
-            boundaryGap: [0, 0.01],
             axisLine: {
                 show: true,
+                lineStyle: {
+                    color: "#74AC91"
+                }
+            },
+            axisLabel: {
                 lineStyle: {
                     color: "#74AC91"
                 }
             },
             splitLine: {
                 lineStyle: {
-                    color: "#74AC91"
+                    color: "#355345",
+                    type: "dashed"
                 }
-            }
-        },
-        xAxis: {
-            type: 'category',
-            data: ['项目名称一', '项目名称一', '项目名称一', '项目名称一', '项目名称一', '项目名称一'],
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    color: "#74AC91"
-                }
-            }
-        },
-        series: [
-            {
-                name: '工程总价/万元',
-                type: 'bar',
-                data: [20, 40, 80, 120, 63, 25],
                 
+            }
+        },
+        series: [{
+            data: valueArray,
+            type: 'bar',
+            itemStyle: {
+                normal: {
+                    color: function (params: any) {
+                        let colorList = [
+                            ['#104444','#26FDEC'],
+                            ['#104444','#2AFE97'],
+                            ['#104444','#26DDFD'],
+                            ['#104444','#26DDFD'],
+                        ]
+                        let index = params.dataIndex
+                 
+                        return new echarts.graphic.LinearGradient(0, 1, 0, 0,
+                            [
+                                {
+                                    offset: 0,
+                                    color: colorList[index][0] // 0% 处的颜色
+                                },
+                                {
+                                    offset: 1,
+                                    color: colorList[index][1] // 100% 处的颜色
+                                }
+                            ])
+                    }
+                }
             },
-            {
-                name: '设计费/万元',
-                type: 'bar',
-                data: [15, 30, 48, 21, 35, 25],
-                
-            }
-        ]
-    }
+        }]
+    };
+    
     return (
-        <ChartBox title="造价信息">
+        <ChartBox title="建设类型">
             <div style={{ width: "100%", height: "100%" }}>
                 <BarChart options={option} />
             </div>

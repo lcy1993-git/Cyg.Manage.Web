@@ -1,8 +1,6 @@
 import CyFormItem from "@/components/cy-form-item"
-import EnumSelect from "@/components/enum-select"
 import UrlSelect from "@/components/url-select"
-import { AssetsNature, Batch, BuildType, DataSourceType, MajorCategory, Meteorologic, PAttribute, ProjectCategory, ProjectFormType, ProjectNature, ProjectStage, ProjectType, ProjectVoltageClasses, ReformAim, ReformCause, RegionAttribute } from "@/services/project-management/all-project"
-import { useUrlSelectData } from "@/utils/hooks"
+import { useGetProjectEnum, useUrlSelectData } from "@/utils/hooks"
 import { DatePicker, Input, Select } from "antd"
 import { isEmpty } from "lodash"
 import React, { memo } from "react"
@@ -17,8 +15,10 @@ interface CreateProjectFormProps {
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
-    const {field = {},areaId,company} = props;
-    console.log(areaId,company)
+    const { field = {}, areaId, company } = props;
+
+    const { projectCategory, projectPType, projectKvLevel, projectNature, projectAssetsNature, projectMajorCategory, projectReformCause, projectReformAim, projectRegionAttribute, projectConstructType, projectClassification, projectStage, projectBatch, projectAttribute, meteorologicLevel, projectDataSourceType } = useGetProjectEnum();
+
     return (
         <>
             <div className="flex">
@@ -28,20 +28,20 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     </CyFormItem>
                 </div>
                 <div className="flex1">
-                    <CyFormItem label="项目分类" fieldKey={[field.fieldKey, 'category']} initialValue={"1"} name={isEmpty(field) ? "category" : [field.name, 'category']} labelWidth={120} align="right" rules={Rule.required} required>
-                        <EnumSelect enumList={ProjectCategory} placeholder="请选择" />
+                    <CyFormItem label="项目分类" fieldKey={[field.fieldKey, 'category']} initialValue={1} name={isEmpty(field) ? "category" : [field.name, 'category']} labelWidth={120} align="right" rules={Rule.required} required>
+                        <UrlSelect defaultData={projectCategory} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <CyFormItem label="项目类型" fieldKey={[field.fieldKey, 'pType']} initialValue={"1"} name={isEmpty(field) ? "pType" : [field.name, 'pType']} labelWidth={120} align="right" rules={Rule.required} required>
-                        <EnumSelect enumList={ProjectFormType} placeholder="请选择" />
+                    <CyFormItem label="项目类型" fieldKey={[field.fieldKey, 'pType']} initialValue={1} name={isEmpty(field) ? "pType" : [field.name, 'pType']} labelWidth={120} align="right" rules={Rule.required} required>
+                        <UrlSelect defaultData={projectPType} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
                 <div className="flex1">
-                    <CyFormItem label="电压等级" fieldKey={[field.fieldKey, 'kvLevel']} initialValue={"1"} name={isEmpty(field) ? "kvLevel" : [field.name, 'kvLevel']} labelWidth={120} align="right" rules={Rule.required} required>
-                        <EnumSelect enumList={ProjectVoltageClasses} placeholder="请选择" />
+                    <CyFormItem label="电压等级" fieldKey={[field.fieldKey, 'kvLevel']} initialValue={1} name={isEmpty(field) ? "kvLevel" : [field.name, 'kvLevel']} labelWidth={120} align="right" rules={Rule.required} required>
+                        <UrlSelect defaultData={projectKvLevel} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>
@@ -53,7 +53,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 </div>
                 <div className="flex1">
                     <CyFormItem label="项目性质" labelWidth={120} align="right" rules={Rule.required} fieldKey={[field.fieldKey, 'natures']} name={isEmpty(field) ? "natures" : [field.name, 'natures']} required>
-                        <EnumSelect enumList={ProjectNature} mode="multiple" placeholder="请选择" />
+                        <UrlSelect defaultData={projectNature} mode="multiple" valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>
@@ -71,13 +71,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <CyFormItem label="资产性质" fieldKey={[field.fieldKey, 'assetsNature']} initialValue={"1"} name={isEmpty(field) ? "assetsNature" : [field.name, 'assetsNature']} labelWidth={120} align="right" rules={Rule.required} required>
-                        <EnumSelect enumList={AssetsNature} placeholder="请选择" />
+                    <CyFormItem label="资产性质" fieldKey={[field.fieldKey, 'assetsNature']} initialValue={1} name={isEmpty(field) ? "assetsNature" : [field.name, 'assetsNature']} labelWidth={120} align="right" rules={Rule.required} required>
+                        <UrlSelect defaultData={projectAssetsNature} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
                 <div className="flex1">
-                    <CyFormItem label="专业类别" fieldKey={[field.fieldKey, 'majorCategory']} initialValue={"1"} name={isEmpty(field) ? "majorCategory" : [field.name, 'majorCategory']} labelWidth={120} align="right" rules={Rule.required} required>
-                        <EnumSelect enumList={MajorCategory} placeholder="请选择" />
+                    <CyFormItem label="专业类别" fieldKey={[field.fieldKey, 'majorCategory']} initialValue={1} name={isEmpty(field) ? "majorCategory" : [field.name, 'majorCategory']} labelWidth={120} align="right" rules={Rule.required} required>
+                        <UrlSelect defaultData={projectMajorCategory} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>
@@ -91,20 +91,20 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     </CyFormItem>
                 </div>
                 <div className="flex1">
-                    <CyFormItem label="改造原因" initialValue={"1"} fieldKey={[field.fieldKey, 'reformCause']} name={isEmpty(field) ? "reformCause" : [field.name, 'reformCause']} labelWidth={120} align="right" rules={Rule.required} required>
-                        <EnumSelect enumList={ReformCause} placeholder="请选择" />
+                    <CyFormItem label="改造原因" initialValue={1} fieldKey={[field.fieldKey, 'reformCause']} name={isEmpty(field) ? "reformCause" : [field.name, 'reformCause']} labelWidth={120} align="right" rules={Rule.required} required>
+                        <UrlSelect defaultData={projectReformCause} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <CyFormItem label="建设改造目的" initialValue={"1"} fieldKey={[field.fieldKey, 'reformAim']} name={isEmpty(field) ? "reformAim" : [field.name, 'reformAim']} labelWidth={120} align="right" rules={Rule.required} required>
-                        <EnumSelect enumList={ReformAim} placeholder="请选择" />
+                    <CyFormItem label="建设改造目的" initialValue={1} fieldKey={[field.fieldKey, 'reformAim']} name={isEmpty(field) ? "reformAim" : [field.name, 'reformAim']} labelWidth={120} align="right" rules={Rule.required} required>
+                        <UrlSelect defaultData={projectReformAim} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
                 <div className="flex1">
                     <CyFormItem label="供电所/班组" fieldKey={[field.fieldKey, 'powerSupply']} name={isEmpty(field) ? "powerSupply" : [field.name, 'powerSupply']} labelWidth={120} align="right" required>
-                        <UrlSelect url="/ElectricityCompany/GetPowerSupplys" extraParams={{areaId,company}} paramsMust={["areaId","company"]} requestType="post" placeholder="请选择" titleKey="text" valueKey="value" />
+                        <UrlSelect url="/ElectricityCompany/GetPowerSupplys" extraParams={{ areaId, company }} paramsMust={["areaId", "company"]} requestType="post" placeholder="请选择" titleKey="text" valueKey="value" />
                     </CyFormItem>
                 </div>
             </div>
@@ -122,8 +122,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <CyFormItem label="区域属性" initialValue={"1"} fieldKey={[field.fieldKey, 'regionAttribute']} name={isEmpty(field) ? "regionAttribute" : [field.name, 'regionAttribute']} labelWidth={120} align="right" rules={Rule.required} required>
-                        <EnumSelect enumList={RegionAttribute} placeholder="请选择" />
+                    <CyFormItem label="区域属性" initialValue={1} fieldKey={[field.fieldKey, 'regionAttribute']} name={isEmpty(field) ? "regionAttribute" : [field.name, 'regionAttribute']} labelWidth={120} align="right" rules={Rule.required} required>
+                        <UrlSelect defaultData={projectRegionAttribute} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
                 <div className="flex1">
@@ -134,37 +134,37 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <CyFormItem label="建设类型" initialValue={"1"} fieldKey={[field.fieldKey, 'constructType']} name={isEmpty(field) ? "constructType" : [field.name, 'constructType']} required labelWidth={120} align="right" rules={Rule.required}>
-                        <EnumSelect enumList={BuildType} placeholder="请选择" />
+                    <CyFormItem label="建设类型" initialValue={1} fieldKey={[field.fieldKey, 'constructType']} name={isEmpty(field) ? "constructType" : [field.name, 'constructType']} required labelWidth={120} align="right" rules={Rule.required}>
+                        <UrlSelect defaultData={projectConstructType} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
                 <div className="flex1">
-                    <CyFormItem label="项目类别" initialValue={"1"} fieldKey={[field.fieldKey, 'pCategory']} name={isEmpty(field) ? "pCategory" : [field.name, 'pCategory']} required labelWidth={120} align="right" rules={Rule.required}>
-                        <EnumSelect enumList={ProjectType} placeholder="请选择" />
-                    </CyFormItem>
-                </div>
-            </div>
-            <div className="flex">
-                <div className="flex1">
-                    <CyFormItem label="项目阶段" initialValue={"1"} fieldKey={[field.fieldKey, 'stage']} name={isEmpty(field) ? "stage" : [field.name, 'stage']} required labelWidth={120} align="right" rules={Rule.required}>
-                        <EnumSelect enumList={ProjectStage} placeholder="请选择" />
-                    </CyFormItem>
-                </div>
-                <div className="flex1">
-                    <CyFormItem label="项目批次" initialValue={"1"} fieldKey={[field.fieldKey, 'batch']} name={isEmpty(field) ? "batch" : [field.name, 'batch']} required labelWidth={120} align="right" rules={Rule.required}>
-                        <EnumSelect enumList={Batch} placeholder="请选择" />
+                    <CyFormItem label="项目类别" initialValue={1} fieldKey={[field.fieldKey, 'pCategory']} name={isEmpty(field) ? "pCategory" : [field.name, 'pCategory']} required labelWidth={120} align="right" rules={Rule.required}>
+                        <UrlSelect defaultData={projectClassification} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <CyFormItem label="项目属性" initialValue={"1"} fieldKey={[field.fieldKey, 'category']} name={isEmpty(field) ? "pAttribute" : [field.name, 'pAttribute']} required labelWidth={120} align="right" rules={Rule.required}>
-                        <EnumSelect enumList={PAttribute} placeholder="请选择" />
+                    <CyFormItem label="项目阶段" initialValue={2} fieldKey={[field.fieldKey, 'stage']} name={isEmpty(field) ? "stage" : [field.name, 'stage']} required labelWidth={120} align="right" rules={Rule.required}>
+                        <UrlSelect defaultData={projectStage} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
                 <div className="flex1">
-                    <CyFormItem label="气象区" initialValue={"1"} fieldKey={[field.fieldKey, 'category']} name={isEmpty(field) ? "meteorologic" : [field.name, 'meteorologic']} required labelWidth={120} align="right" rules={Rule.required}>
-                        <EnumSelect enumList={Meteorologic} placeholder="请选择" />
+                    <CyFormItem label="项目批次" initialValue={1} fieldKey={[field.fieldKey, 'batch']} name={isEmpty(field) ? "batch" : [field.name, 'batch']} required labelWidth={120} align="right" rules={Rule.required}>
+                        <UrlSelect defaultData={projectBatch} valueKey="value" titleKey="text" placeholder="请选择" />
+                    </CyFormItem>
+                </div>
+            </div>
+            <div className="flex">
+                <div className="flex1">
+                    <CyFormItem label="项目属性" initialValue={1} fieldKey={[field.fieldKey, 'category']} name={isEmpty(field) ? "pAttribute" : [field.name, 'pAttribute']} required labelWidth={120} align="right" rules={Rule.required}>
+                        <UrlSelect defaultData={projectAttribute} valueKey="value" titleKey="text" placeholder="请选择" />
+                    </CyFormItem>
+                </div>
+                <div className="flex1">
+                    <CyFormItem label="气象区" initialValue={1} fieldKey={[field.fieldKey, 'category']} name={isEmpty(field) ? "meteorologic" : [field.name, 'meteorologic']} required labelWidth={120} align="right" rules={Rule.required}>
+                        <UrlSelect defaultData={meteorologicLevel} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>
@@ -187,8 +187,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     </CyFormItem>
                 </div>
                 <div className="flex1">
-                    <CyFormItem label="现场数据来源" initialValue={"1"} fieldKey={[field.fieldKey, 'dataSourceType']} name={isEmpty(field) ? "dataSourceType" : [field.name, 'dataSourceType']} required labelWidth={120} align="right" rules={Rule.required}>
-                        <EnumSelect enumList={DataSourceType} placeholder="请选择" />
+                    <CyFormItem label="现场数据来源" initialValue={1} fieldKey={[field.fieldKey, 'dataSourceType']} name={isEmpty(field) ? "dataSourceType" : [field.name, 'dataSourceType']} required labelWidth={120} align="right" rules={Rule.required}>
+                        <UrlSelect defaultData={projectDataSourceType} valueKey="value" titleKey="text" placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>

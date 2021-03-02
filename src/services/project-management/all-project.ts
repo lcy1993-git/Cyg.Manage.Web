@@ -7,7 +7,6 @@ export enum Arrangement {
   '项目委托' = 1,
   '公司成员',
   '公司部组',
-  '部组成员',
 }
 
 export enum ProjectCategory {
@@ -246,7 +245,7 @@ interface ProjectParams {
   pType: string;
   kvLevel: string;
   totalInvest: string;
-  natures: string[];
+  natures: any[];
   startTime: Moment;
   endTime: Moment;
   assetsNature: string;
@@ -280,6 +279,12 @@ interface AddEngineerParams {
 export const addEngineer = (params: AddEngineerParams) => {
   return cyRequest<ProjectTableStatisticsResult>(() =>
     request(`${baseUrl.project}/Porject/CreateMultipleProject`, { method: 'POST', data: params }),
+  );
+};
+
+export const editEngineer = (params: EngineerParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Engineer/Modify`, { method: 'POST', data: params }),
   );
 };
 
@@ -371,5 +376,118 @@ interface ProjectInfoParams {
 export const getProjectInfo = (projectId: string) => {
   return cyRequest<ProjectInfoParams>(() =>
     request(`${baseUrl.project}/Porject/GetById`, { method: 'GET', params: { id: projectId } }),
+  );
+};
+
+// 编辑项目信息
+export const editProject = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/Modify`, { method: 'POST', data: params }),
+  );
+};
+
+// 获取项目的枚举
+export const getEngineerEnum = () => {
+  return cyRequest<any>(() => request(`${baseUrl.project}/Engineer/GetEnums`, { method: 'GET' }));
+};
+
+// 删除项目
+export const deleteProject = (projectIds: string[]) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.project}/Porject/Delete`, { method: 'POST', data: { projectIds } }),
+  );
+};
+
+// 新增项目
+export const addProject = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/Create`, { method: 'POST', data: params }),
+  );
+};
+
+// 申请结项
+export const applyKnot = (projectIds: string[]) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ApplyKnot`, { method: 'POST', data: { projectIds } }),
+  );
+};
+
+// 撤回结项
+export const revokeKnot = (projectIds: string[]) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/RevokeKnot`, { method: 'POST', data: { projectIds } }),
+  );
+};
+
+// 结项通过
+export const auditKnot = (projectIds: string[]) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/AuditKnot`, {
+      method: 'POST',
+      data: { isPass: 'true', projectIds },
+    }),
+  );
+};
+// 结项退回
+export const noAuditKnot = (projectIds: string[]) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/AuditKnot`, {
+      method: 'POST',
+      data: { isPass: 'false', projectIds },
+    }),
+  );
+};
+
+// 撤回共享
+export const recallShare = (projectIds: string[]) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/RevokeShare`, {
+      method: 'POST',
+      data: { shareIds: projectIds },
+    }),
+  );
+};
+
+// 撤回安排
+export const revokeAllot = (projectIds: string[]) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/RevokeAllot`, { method: 'POST', data: { projectIds } }),
+  );
+};
+
+// 检查是否可以一起被安排
+export const checkCanArrange = (projectIds: string[]) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/CheckAllotPrerequisites`, {
+      method: 'POST',
+      data: projectIds,
+    }),
+  );
+};
+
+export const getGroupInfo = (clientType: string) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`, {
+      method: 'POST',
+      data: { clientType },
+    }),
+  );
+};
+
+interface AllotParams {
+  allotType: number;
+  allotCompanyGroup: string;
+  allotOrganizeUser: string;
+  surveyUser: string;
+  designUser: string;
+  designAssessUser1: string;
+  designAssessUser2: string;
+  designAssessUser3: string;
+  designAssessUser4: string;
+}
+
+export const saveArrange = (params: AllotParams) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/Porject/Allot`, { method: 'POST', data: params }),
   );
 };

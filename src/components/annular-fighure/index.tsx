@@ -2,7 +2,7 @@ import React,{useRef,useEffect} from "react";
 import * as echarts from "echarts/lib/echarts"
 import 'echarts/lib/chart/pie';
 import 'echarts/lib/component/tooltip';
-import { useMount,useSize } from "ahooks";
+import { useSize } from "ahooks";
 
 interface BarChartProps {
     options: object
@@ -51,6 +51,10 @@ const AnnularFighure:React.FC<BarChartProps> = (props) => {
             initChart();
         }
     }, [JSON.stringify(size)])
+
+    useEffect(() => {
+        initChart();
+    }, [JSON.stringify(options)])
 
     return (
         <div ref={divRef} style={{width: "100%", height: "100%"}} />
