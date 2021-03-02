@@ -9,10 +9,12 @@ interface ArrangeModalProps {
   projectIds: string[];
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
+  getCompanyInfo: object;
 }
 
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [companyInfo, setCompanyInfo] = useState<any>();
   const { projectIds } = props;
   console.log(projectIds);
 
@@ -20,25 +22,52 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
 
   const [form] = Form.useForm();
 
+  const getCompanyInfo = (companyInfo: any) => {
+    setCompanyInfo(companyInfo);
+  };
+
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
-      console.log(projectIds);
-      const arrangeInfo = Object.assign(
-        {
-          allotType: selectType,
-          projectIds: projectIds,
-          surveyUser: '',
-          designUser: '',
-          designAssessUser1: '',
-          designAssessUser2: '',
-          designAssessUser3: '',
-          designAssessUser4: '',
-          allotCompanyGroup: '',
-          allotOrganizeUser: '',
-        },
-        values,
-      );
-      await saveArrange(arrangeInfo);
+      //   console.log(companyInfo);
+      if (selectType === '2') {
+        const arrangeInfo = Object.assign(
+          {
+            allotType: selectType,
+            projectIds: projectIds,
+            surveyUser: '',
+            designUser: '',
+            designAssessUser1: '',
+            designAssessUser2: '',
+            designAssessUser3: '',
+            designAssessUser4: '',
+          },
+          values,
+        );
+        await saveArrange(arrangeInfo);
+      }
+      if (selectType === '1') {
+        const arrangeInfo = Object.assign(
+          {
+            allotType: selectType,
+            projectIds: projectIds,
+            allotOrganizeUser: companyInfo.value,
+          },
+          values,
+        );
+        await saveArrange(arrangeInfo);
+      }
+
+      if (selectType === '3') {
+        const arrangeInfo = Object.assign(
+          {
+            allotType: selectType,
+            projectIds: projectIds,
+            allotCompanyGroup: '',
+          },
+          values,
+        );
+        await saveArrange(arrangeInfo);
+      }
       message.success('操作成功！');
     });
   };
@@ -53,7 +82,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form}>
-        <ArrangeForm onChange={(value) => setSelectType(value)} />
+        <ArrangeForm getCompanyInfo={getCompanyInfo} onChange={(value) => setSelectType(value)} />
       </Form>
     </Modal>
   );

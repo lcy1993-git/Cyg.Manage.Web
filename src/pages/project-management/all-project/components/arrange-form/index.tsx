@@ -2,19 +2,18 @@ import React, { useState } from 'react';
 import { TreeSelect, Divider } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumSelect from '@/components/enum-select';
-<<<<<<< HEAD
-import { Arrangement, getCompanyName, getGroupInfo } from '@/services/project-management/all-project';
-import { useRequest } from 'ahooks';
-=======
-import { Arrangement, getGroupInfo } from '@/services/project-management/all-project';
+import {
+  Arrangement,
+  getCompanyName,
+  getGroupInfo,
+} from '@/services/project-management/all-project';
 import { useMount, useRequest } from 'ahooks';
->>>>>>> 1632e1c86a1e5c3a6189ce7e6fb3737928df1042
 import Search from 'antd/lib/input/Search';
 import ReadonlyItem from '@/components/readonly-item';
 
 interface GetGroupUserProps {
-  onChange?: (checkedValue: string) => void
-  getCompanyInfo?: (companyInfo: any) => void
+  onChange?: (checkedValue: string) => void;
+  getCompanyInfo?: (companyInfo: any) => void;
 }
 
 interface ArrangeType {
@@ -22,19 +21,19 @@ interface ArrangeType {
 }
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
-  const { onChange,getCompanyInfo } = props;
+  const { onChange, getCompanyInfo } = props;
 
-  const {data: conpanyInfo = {}, run: getCompanyInfoEvent} = useRequest(getCompanyName,{
-    manual: true
-  })
+  const { data: companyInfo = {}, run: getCompanyInfoEvent } = useRequest(getCompanyName, {
+    manual: true,
+  });
 
-  const [checkedValue, setCheckedValue] = useState<string>("2");
+  const [checkedValue, setCheckedValue] = useState<string>('2');
 
-  const {data: surveyData = []} = useRequest(() => getGroupInfo("4"))
+  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4'));
 
-  const {data: designData = []} = useRequest(() => getGroupInfo("8"))
+  const { data: designData = [] } = useRequest(() => getGroupInfo('8'));
 
-  const {data: auditData = []} = useRequest(() => getGroupInfo("16"))
+  const { data: auditData = [] } = useRequest(() => getGroupInfo('16'));
 
   const mapTreeData = (data: any) => {
     return {
@@ -52,34 +51,36 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     };
   };
 
-
   const typeChange = (value: string) => {
-    setCheckedValue(value)
-    onChange?.(value)
-  }
+    setCheckedValue(value);
+    onChange?.(value);
+  };
 
-<<<<<<< HEAD
-  const searchEvent = async (value: string) => {
-    const res = await getCompanyInfoEvent(value)
-    getCompanyInfo?.(res)
-  }
-=======
   const arrangementEvent = (value: any) => {};
 
   useMount(() => {
-    onChange?.("2")
-  })
->>>>>>> 1632e1c86a1e5c3a6189ce7e6fb3737928df1042
+    onChange?.('2');
+  });
+
+  const searchEvent = async (value: string) => {
+    const res = await getCompanyInfoEvent(value);
+    console.log(res);
+
+    getCompanyInfo?.(res);
+  };
 
   return (
     <>
       <CyFormItem label="安排方式">
         <div>
-          <EnumSelect defaultValue="2" onChange={(value) => typeChange(value as string)} enumList={Arrangement} />
+          <EnumSelect
+            defaultValue="2"
+            onChange={(value) => typeChange(value as string)}
+            enumList={Arrangement}
+          />
         </div>
       </CyFormItem>
-      {
-        checkedValue === "2" &&
+      {checkedValue === '2' && (
         <>
           <CyFormItem label="勘察" name="surveyUser" required>
             <TreeSelect
@@ -140,26 +141,22 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             />
           </CyFormItem>
         </>
-      }
-      {
-        checkedValue === "1" &&
+      )}
+      {checkedValue === '1' && (
         <>
-          <CyFormItem label="单位" name="unit">
+          <CyFormItem label="单位">
             <div>
               <Search placeholder="请输入单位" onSearch={(value) => searchEvent(value)} />
             </div>
           </CyFormItem>
-          <ReadonlyItem label="单位名称" align="left">
-            {
-              conpanyInfo?.text
-            }
+          <ReadonlyItem label="单位名称" name="allotOrganizeUser" align="left">
+            {companyInfo?.text}
           </ReadonlyItem>
         </>
-      }
-      {
-        checkedValue === "3" &&
+      )}
+      {checkedValue === '3' && (
         <>
-          <CyFormItem label="部组" required name="designAssessUser3">
+          <CyFormItem label="部组" name="allotCompanyGroup">
             <TreeSelect
               style={{ width: '100%' }}
               treeData={surveyData.map(noChildrenMap)}
@@ -169,7 +166,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             />
           </CyFormItem>
         </>
-      }
+      )}
     </>
   );
 };
