@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { Input } from 'antd';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import UrlSelect from '@/components/url-select';
@@ -20,14 +20,6 @@ const Drawing: React.FC = () => {
   const { data } = useRequest(getUploadUrl(), {
     manual: true,
   });
-
-  // const uploadData = useMemo(() => {
-  //   if (data) {
-  //     return data;
-  //   }
-  // }, [JSON.stringify(data)]);
-
-  console.log(data);
 
   const searchComponent = () => {
     return (
@@ -64,13 +56,17 @@ const Drawing: React.FC = () => {
     search();
   };
 
+  useEffect(() => {
+    searchByLib(resourceLibId);
+  }, [resourceLibId]);
+
   // 列表刷新
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh();
-    }
-  };
+  // const refresh = () => {
+  //   if (tableRef && tableRef.current) {
+  //     // @ts-ignore
+  //     tableRef.current.refresh();
+  //   }
+  // };
 
   // 列表搜索
   const search = () => {
@@ -143,7 +139,6 @@ const Drawing: React.FC = () => {
         url="/Chart/GetPageList"
         tableTitle="图纸"
         type="radio"
-        // getSelectData={(data) => setTableSelectRow(data)}
         extractParams={{
           resourceLibId: resourceLibId,
           keyWord: searchKeyWord,

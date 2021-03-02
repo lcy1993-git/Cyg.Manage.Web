@@ -10,9 +10,14 @@ import {
   updateModulesPropertyItem,
   deleteModulesPropertyItem,
   addModulesPropertyItem,
+  getModuleAttribute,
+  saveModuleAttributeItem,
 } from '@/services/resource-config/modules-property';
 import { isArray } from 'lodash';
 import ModulesPropertyForm from './components/add-edit-form';
+import ModuleAttributeForm from './components/attribute-form';
+import ModuleDetailTab from './components/detail-tabs';
+import ModuleDetailTable from './components/detail-table';
 
 const { Search } = Input;
 
@@ -26,17 +31,24 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [detailId, setDetailId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [ids, setIds] = useState<string[]>([]);
   const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
+  const [moduleDetailVisible, setModuleDetailVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
+  const [editAttributeForm] = Form.useForm();
 
   const { data, run, loading } = useRequest(getModulesPropertyDetail, {
+    manual: true,
+  });
+
+  const { data: AttributeData, run: getAttribute } = useRequest(getModuleAttribute, {
     manual: true,
   });
 
@@ -202,10 +214,6 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   };
 
   const sureEditModuleProperty = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
-    }
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
@@ -269,10 +277,21 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   };
 
   //详情
-  const checkDetailEvent = () => {};
+  const checkDetailEvent = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据删除');
+      return;
+    }
+    setDetailVisible(true);
+
+    await run(resourceLibId, tableSelectRows[0].id);
+  };
 
   const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
       message.error('请选择一条数据删除');
       return;
     }
@@ -291,11 +310,12 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       message.warning('请先选择资源库');
       return;
     }
-    setDetailVisible(true);
+    setModuleDetailVisible(true);
+    setDetailId(tableSelectRows[0].id);
   };
 
   //编辑模块属性
-  const editAttributeEvent = () => {
+  const editAttributeEvent = async () => {
     if (!resourceLibId) {
       message.warning('请先选择资源库');
       return;
@@ -308,6 +328,50 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       return;
     }
     setEditAttributeVisible(true);
+    const editData = tableSelectRows[0];
+    const editDataId = editData.id;
+
+    setEditAttributeVisible(true);
+    const AttributeData = await getAttribute(resourceLibId, editDataId);
+
+    editAttributeForm.setFieldsValue(AttributeData);
+  };
+
+  //保存修改的模块属性
+  const sureEditAttribute = () => {
+    const editData = AttributeData!;
+    console.log(editData);
+
+    editAttributeForm.validateFields().then(async (values) => {
+      const submitInfo = Object.assign(
+        {
+          libId: libId,
+          moduleId: editData.id,
+          height: editData.height,
+          depth: editData.depth,
+          nominalHeight: editData.nominalHeight,
+          steelStrength: editData.steelStrength,
+          poleStrength: editData.poleStrength,
+          rodDimaeter: editData.rodDimaeter,
+          baseWeight: editData.baseWeight,
+          segmentMode: editData.segmentMode,
+          earthwork: editData.earthwork,
+          arrangement: editData.arrangement,
+          meteorologic: editData.meteorologic,
+          loopNumber: editData.loopNumber,
+          lineNumber: editData.lineNumber,
+          conductorType: editData.conductorType,
+          conductorSpec: editData.conductorSpec,
+        },
+        values,
+      );
+
+      await saveModuleAttributeItem(submitInfo);
+      refresh();
+      message.success('更新成功');
+      editAttributeForm.resetFields();
+      setEditAttributeVisible(false);
+    });
   };
 
   return (
@@ -357,24 +421,42 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       </Modal>
 
       <Modal
-        footer=""
         title="编辑-模块属性"
         width="680px"
         visible={editAttributeVisible}
         onCancel={() => setEditAttributeVisible(false)}
-        okText="确认"
+        onOk={() => sureEditAttribute()}
+        okText="保存"
         cancelText="取消"
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <Form form={editAttributeForm}>
+          <Spin spinning={loading}>
+            <ModuleAttributeForm resourceLibId={resourceLibId} />
+          </Spin>
+        </Form>
       </Modal>
       <Modal
         footer=""
         title="详情"
-        width="680px"
+        width="980px"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
       >
-        11
+        <Spin spinning={loading}>
+          <ModuleDetailTab detailData={data} />
+        </Spin>
+      </Modal>
+      <Modal
+        footer=""
+        title="模块明细"
+        width="980px"
+        visible={moduleDetailVisible}
+        onCancel={() => setModuleDetailVisible(false)}
+      >
+        <Spin spinning={loading}>
+          <ModuleDetailTable libId={libId} id={detailId} />
+        </Spin>
       </Modal>
     </>
   );

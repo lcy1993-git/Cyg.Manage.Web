@@ -1,19 +1,18 @@
-import BarChart from "@/components/bar-chart";
-import { getBuildType } from "@/services/index";
+import BarChart from "@/components/bar-chart"
+import { getProjectNatures } from "@/services/index"
 import * as echarts from "echarts/lib/echarts"
-import { useRequest } from "ahooks";
-import React from "react";
-import ChartBox from "../chart-box";
+import { useRequest } from "ahooks"
+import React from "react"
 
-const CostInformation: React.FC = () => {
-
-    const { data: projectNatures } = useRequest(() => getBuildType(), {
+const ProjectNatures: React.FC = () => {
+    const { data: projectNatures } = useRequest(() => getProjectNatures(), {
         pollingWhenHidden: false
     })
 
     const dataArray = projectNatures?.map((item) => item.key);
 
     const valueArray = projectNatures?.map((item) => item.value);
+
 
     const option = {
         grid: {
@@ -42,6 +41,29 @@ const CostInformation: React.FC = () => {
                 },
                 fontSize: 10,
                 align: "center",
+                formatter:function(params: any) {
+                    let newParamsName = "";
+                    let paramsNameNumber = params.length;
+                    let provideNumber = 3;  //一行显示几个字
+                    let rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+                    if (paramsNameNumber > provideNumber) {
+                        for (let p = 0; p < rowNumber; p++) {
+                            let tempStr = "";
+                            let start = p * provideNumber;
+                            let end = start + provideNumber;
+                            if (p == rowNumber - 1) {
+                                tempStr = params.substring(start, paramsNameNumber);
+                            } else {
+                                tempStr = params.substring(start, end) + "\n";
+                            }
+                            newParamsName += tempStr;
+                        }
+
+                    } else {
+                        newParamsName = params;
+                    }
+                    return newParamsName ;
+                },
             },
         },
         yAxis: {
@@ -70,24 +92,16 @@ const CostInformation: React.FC = () => {
             type: 'bar',
             itemStyle: {
                 normal: {
-                    color: function (params: any) {
-                        let colorList = [
-                            ['#104444','#26FDEC'],
-                            ['#104444','#2AFE97'],
-                            ['#104444','#26DDFD'],
-                            ['#104444','#26DDFD'],
-                        ]
-                        let index = params.dataIndex
-                 
+                    color: function () {
                         return new echarts.graphic.LinearGradient(0, 1, 0, 0,
                             [
                                 {
                                     offset: 0,
-                                    color: colorList[index][0] // 0% 处的颜色
+                                    color: "#104444" // 0% 处的颜色
                                 },
                                 {
                                     offset: 1,
-                                    color: colorList[index][1] // 100% 处的颜色
+                                    color: "#26FDEC" // 100% 处的颜色
                                 }
                             ])
                     }
@@ -95,15 +109,10 @@ const CostInformation: React.FC = () => {
             },
         }]
     };
-    
-    return (
-        <ChartBox title="建设类型">
-            <div style={{ width: "100%", height: "100%" }}>
-                <BarChart options={option} />
-            </div>
 
-        </ChartBox>
+    return (
+        <BarChart options={option} />
     )
 }
 
-export default CostInformation
+export default ProjectNatures

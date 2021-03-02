@@ -61,7 +61,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
     }
 
     return (
-        <Modal title="编辑工程信息" width={750} visible={state as boolean} destroyOnClose
+        <Modal title="编辑工程信息" width={750} visible={state as boolean} destroyOnClose={true}
             footer={[
                 <Button key="cancle" onClick={() => setState(false)}>
                     取消

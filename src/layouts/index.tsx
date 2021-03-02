@@ -54,7 +54,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
 
     // 如果tabKey 是index,那么就不能进行关闭
     const isIndex = item.tabKey === '/index';
-
+    
     return (
       <TabPane key={item.tabKey} closable={!isIndex} tab={<span>{tabsInfo.title}</span>}>
         {tabsInfo.component}

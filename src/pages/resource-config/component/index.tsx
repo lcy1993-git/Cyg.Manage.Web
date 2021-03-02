@@ -3,7 +3,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -83,6 +83,10 @@ const Component: React.FC = () => {
     setResourceLibId(value);
     search();
   };
+
+  useEffect(() => {
+    searchByLib(resourceLibId);
+  }, [resourceLibId]);
 
   // 列表刷新
   const refresh = () => {

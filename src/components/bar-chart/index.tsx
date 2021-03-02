@@ -1,10 +1,10 @@
-import React,{useRef,useEffect,useMemo} from "react";
+import React,{useRef,useEffect} from "react";
 
 import * as echarts from "echarts/lib/echarts"
 import 'echarts/lib/chart/bar';
 import 'echarts/lib/component/tooltip';
 
-import { useMount, useSize } from "ahooks";
+import { useSize } from "ahooks";
 
 interface BarChartProps {
     options: object
@@ -48,6 +48,10 @@ const BarChart:React.FC<BarChartProps> = (props) => {
             window.removeEventListener('resize', resize);
         }
     });
+
+    useEffect(() => {
+        initChart();
+    }, [JSON.stringify(options)])
 
     useEffect(() => {
         if(size.width || size.height) {

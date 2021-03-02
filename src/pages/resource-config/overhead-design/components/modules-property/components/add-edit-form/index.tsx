@@ -36,8 +36,16 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
       )}
 
       {type == 'add' && (
-        <CyFormItem label="杆型简称" name="poleTypeCode">
-          <Input placeholder="请输杆型简称" />
+        <CyFormItem label="杆型简称" name="poleTypeCode" required>
+          <UrlSelect
+            showSearch
+            requestSource="resource"
+            url="/PoleType/GetList"
+            titleKey="poleTypeCode"
+            valueKey="poleTypeName"
+            placeholder="请选择杆型简称"
+            extraParams={{ libId: resourceLibId }}
+          />
         </CyFormItem>
       )}
 

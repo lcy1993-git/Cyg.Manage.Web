@@ -21,14 +21,27 @@ interface ItemDetailData extends ModulesPropertyParams {
   id: string;
 }
 
-// interface ModulePropertyDeleteParams {
-//   libId: string;
-//   ids: string[];
-// }
+interface ModuleAttributeParams extends ItemDetailData {
+  height: number;
+  depth: number;
+  nominalHeight: number;
+  steelStrength: string;
+  poleStrength: string;
+  rodDimaeter: number;
+  baseWeight: number;
+  segmentMode: string;
+  earthwork: string;
+  arrangement: string;
+  meteorologic: string;
+  loopNumber: string;
+  lineNumber: number;
+  conductorType: string;
+  conductorSpec: string;
+}
 
-//获取单条模块数据
+//获取单条模块数据详情
 export const getModulesPropertyDetail = (libId: string, id: string) => {
-  return cyRequest<ItemDetailData>(() =>
+  return cyRequest<ModuleAttributeParams>(() =>
     request(`${baseUrl.resource}/Modules/GetById`, { method: 'GET', params: { libId, id } }),
   );
 };
@@ -51,5 +64,64 @@ export const updateModulesPropertyItem = (params: ItemDetailData) => {
 export const deleteModulesPropertyItem = (params: object) => {
   return cyRequest(() =>
     request(`${baseUrl.resource}/Modules/Delete`, { method: 'POST', data: params }),
+  );
+};
+
+//获取单条数据属性数据
+export const getModuleAttribute = (libId: string, mid: string) => {
+  return cyRequest<ModuleAttributeParams>(() =>
+    request(`${baseUrl.resource}/ModulesProperty/GetById`, {
+      method: 'GET',
+      params: { libId, mid },
+    }),
+  );
+};
+
+export const saveModuleAttributeItem = (params: ModuleAttributeParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/ModulesProperty/SaveModify`, { method: 'POST', data: params }),
+  );
+};
+
+/**模块明细部分接口 */
+
+interface ModuleDetailParams {
+  id: string;
+  componentId: string;
+  materialId: string;
+  moduleId: string;
+  moduleName: string;
+  part: string;
+  itemId: string;
+  itemName: string;
+  itemNumber: number;
+  isComponent: number;
+}
+
+//获取单条明细数据
+export const getModuleDetailItem = (libId: string, id: string) => {
+  return cyRequest<ModuleDetailParams>(() =>
+    request(`${baseUrl.resource}/ModulesDetails/GetById`, { method: 'GET', params: { libId, id } }),
+  );
+};
+
+//新增明细
+export const addModuleDetailItem = (params: ModuleDetailParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/ModulesDetails/SaveCreate`, { method: 'POST', data: params }),
+  );
+};
+
+//编辑明细
+export const updateModulesDetailItem = (params: ModuleDetailParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/ModulesDetails/SaveModify`, { method: 'POST', data: params }),
+  );
+};
+
+// 删除明细
+export const deleteModulesDetailItem = (params: object) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/ModulesDetails/Delete`, { method: 'POST', data: params }),
   );
 };

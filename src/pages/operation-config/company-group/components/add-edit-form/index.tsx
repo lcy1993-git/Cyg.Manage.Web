@@ -2,12 +2,12 @@ import React, { useMemo } from 'react';
 import { Input, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
-import { CompanyGroupTreeData } from '@/services/operation-config/company-group';
+import { GetUserTreeByGroup } from '@/services/personnel-config/company-user';
 
 import rules from './rule';
 
 interface CompanyGroupFormProps {
-  treeData: CompanyGroupTreeData[];
+  treeData: GetUserTreeByGroup[];
 }
 
 const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {

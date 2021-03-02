@@ -14,15 +14,15 @@ interface CreateEngineerForm {
 }
 
 const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
-    const {exportDataChange} = props;
+    const {exportDataChange,areaId: province,libId: inputLibId} = props;
 
-    const [areaId,SetAreaId] = useState<string>("");
+    const [areaId,setAreaId] = useState<string>("");
     const [libId, setLibId] = useState<string>("");
 
     const valueChangeEvenet = (prevValues: any, curValues: any): boolean => {
     
         if(prevValues.province !== curValues.province) {
-            SetAreaId(curValues.province)
+            setAreaId(curValues.province)
             exportDataChange?.({
                 areaId: curValues.province,
                 company: curValues.company
@@ -39,6 +39,15 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         }
         return false
     }
+
+    useEffect(() => {
+        if(province) {
+            setAreaId(province)
+        }
+        if(inputLibId) {
+            setLibId(inputLibId)
+        }
+    }, [province,inputLibId])
 
    
     return (

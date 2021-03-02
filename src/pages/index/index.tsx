@@ -7,7 +7,7 @@ import ToDo from "./components/to-do";
 import DeliveryManage from "./components/delivery-manage";
 import CostInformation from "./components/cost-information";
 import PersonnelLoad from "./components/personnel-load";
-import ProjectPhase from "./components/project-phase";
+import ProjectStatus from "./components/project-status";
 import ProjectType from "./components/project-type";
 import MapChart from "./components/map-chart";
 import ProjectSchedule from "./components/project-schedule";
@@ -45,8 +45,8 @@ const Index: React.FC = () => {
                     <div className={styles.PersonnelLoad}>
                         <PersonnelLoad />
                     </div>
-                    <div className={styles.ProjectPhase}>
-                        <ProjectPhase />
+                    <div className={styles.ProjectStatus}>
+                        <ProjectStatus />
                     </div>
                 </div>
             </div>
