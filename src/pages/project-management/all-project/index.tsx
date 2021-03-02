@@ -197,7 +197,7 @@ const ProjectManagement: React.FC = () => {
         }
 
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-
+        console.log(projectIds)
         await applyKnot(projectIds)
         message.success("申请结项成功");
         refresh();
@@ -241,16 +241,16 @@ const ProjectManagement: React.FC = () => {
 
     const postProjectMenu = (
         <Menu>
-            <Menu.Item onClick={() => applyKnotEvent}>
+            <Menu.Item onClick={() => applyKnotEvent()}>
                 申请结项
             </Menu.Item>
-            <Menu.Item onClick={() => revokeKnotEvent}>
+            <Menu.Item onClick={() => revokeKnotEvent()}>
                 撤回结项
             </Menu.Item>
-            <Menu.Item onClick={() => auditKnotEvent}>
+            <Menu.Item onClick={() => auditKnotEvent()}>
                 结项通过
             </Menu.Item>
-            <Menu.Item onClick={() => noAuditKnotEvent}>
+            <Menu.Item onClick={() => noAuditKnotEvent()}>
                 结项退回
             </Menu.Item>
         </Menu>

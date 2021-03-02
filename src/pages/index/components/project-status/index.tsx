@@ -7,7 +7,6 @@ import ChartBox from "../chart-box";
 const ProjectStatus: React.FC = () => {
 
     const { data: projectStatus } = useRequest(() => getProjectStatus(), {
-        pollingInterval: 5000,
         pollingWhenHidden: false
     })
 
