@@ -20,17 +20,17 @@ interface ArrangeType {
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const { onChange,getCompanyInfo,defaultType = "2"} = props;
 
-  const {data: conpanyInfo = {}, run: getCompanyInfoEvent} = useRequest(getCompanyName,{
-    manual: true
-  })
+  const { data: companyInfo = {}, run: getCompanyInfoEvent } = useRequest(getCompanyName, {
+    manual: true,
+  });
 
-  const [checkedValue, setCheckedValue] = useState<string>("2");
+  const [checkedValue, setCheckedValue] = useState<string>('2');
 
-  const {data: surveyData = []} = useRequest(() => getGroupInfo("4"))
+  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4'));
 
-  const {data: designData = []} = useRequest(() => getGroupInfo("8"))
+  const { data: designData = [] } = useRequest(() => getGroupInfo('8'));
 
-  const {data: auditData = []} = useRequest(() => getGroupInfo("16"))
+  const { data: auditData = [] } = useRequest(() => getGroupInfo('16'));
 
   const mapTreeData = (data: any) => {
     return {
@@ -48,11 +48,10 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     };
   };
 
-
   const typeChange = (value: string) => {
-    setCheckedValue(value)
-    onChange?.(value)
-  }
+    setCheckedValue(value);
+    onChange?.(value);
+  };
 
   const searchEvent = async (value: string) => {
     const res = await getCompanyInfoEvent(value)
@@ -70,11 +69,14 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     <>
       <CyFormItem label="安排方式">
         <div>
-          <EnumSelect defaultValue="2" onChange={(value) => typeChange(value as string)} enumList={Arrangement} />
+          <EnumSelect
+            defaultValue="2"
+            onChange={(value) => typeChange(value as string)}
+            enumList={Arrangement}
+          />
         </div>
       </CyFormItem>
-      {
-        checkedValue === "2" &&
+      {checkedValue === '2' && (
         <>
           <CyFormItem label="勘察" name="surveyUser" required>
             <TreeSelect
@@ -135,26 +137,22 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             />
           </CyFormItem>
         </>
-      }
-      {
-        checkedValue === "1" &&
+      )}
+      {checkedValue === '1' && (
         <>
-          <CyFormItem label="单位" name="unit">
+          <CyFormItem label="单位">
             <div>
               <Search placeholder="请输入单位" onSearch={(value) => searchEvent(value)} />
             </div>
           </CyFormItem>
-          <ReadonlyItem label="单位名称" align="left">
-            {
-              conpanyInfo?.text
-            }
+          <ReadonlyItem label="单位名称" name="allotOrganizeUser" align="left">
+            {companyInfo?.text}
           </ReadonlyItem>
         </>
-      }
-      {
-        checkedValue === "3" &&
+      )}
+      {checkedValue === '3' && (
         <>
-          <CyFormItem label="部组" required name="designAssessUser3">
+          <CyFormItem label="部组" name="allotCompanyGroup">
             <TreeSelect
               style={{ width: '100%' }}
               treeData={surveyData.map(noChildrenMap)}
@@ -164,7 +162,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             />
           </CyFormItem>
         </>
-      }
+      )}
     </>
   );
 };
