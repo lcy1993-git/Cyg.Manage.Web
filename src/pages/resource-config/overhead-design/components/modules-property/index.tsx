@@ -31,7 +31,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
-  const [detailId, setDetailId] = useState<string>('');
+  const [detailId, setDetailId] = useState<string[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -311,7 +311,10 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       return;
     }
     setModuleDetailVisible(true);
-    setDetailId(tableSelectRows[0].id);
+    tableSelectRows.map((item) => {
+      detailId.push(item.id);
+    });
+    console.log(detailId);
   };
 
   //编辑模块属性
@@ -450,12 +453,12 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       <Modal
         footer=""
         title="模块明细"
-        width="980px"
+        width="1080px"
         visible={moduleDetailVisible}
         onCancel={() => setModuleDetailVisible(false)}
       >
         <Spin spinning={loading}>
-          <ModuleDetailTable libId={libId} id={detailId} />
+          <ModuleDetailTable libId={libId} moduleIds={detailId} />
         </Spin>
       </Modal>
     </>

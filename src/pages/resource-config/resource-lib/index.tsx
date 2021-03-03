@@ -24,6 +24,7 @@ const ResourceLib: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [libId, setLibId] = useState<string>('');
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -179,19 +180,24 @@ const ResourceLib: React.FC = () => {
         <TableImportButton
           buttonTitle="导入图纸"
           modalTitle="导入图纸"
+          requestSource="upload"
           className={styles.importBtn}
-          importUrl="/ResourceLib/SaveImport"
+          importUrl="/Upload/Chart"
         />
         <TableImportButton
+          onClick={() => setLibId(tableSelectRows[0].id)}
           buttonTitle="导入资源库"
           modalTitle="导入资源库"
           className={styles.importBtn}
+          requestSource="resource"
           importUrl="/ResourceLib/SaveImport"
+          extraParams={{ libId: libId }}
         />
         <TableImportButton
           buttonTitle="导入应力弧垂表"
           modalTitle="导入应力弧垂表"
           className={styles.importBtn}
+          requestSource="resource"
           importUrl="/ResourceLib/SaveImportLineStressSag"
         />
         <Button className="mr7" onClick={() => restartLib()}>

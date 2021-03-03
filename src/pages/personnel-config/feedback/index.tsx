@@ -24,7 +24,7 @@ const UserFeedBack: React.FC = () => {
   const [addForm] = Form.useForm();
   const [replyForm] = Form.useForm();
 
-  const { data: detailData = {}, run: getDetailData , loading} = useRequest(getUserFeedBackDetail, {
+  const { data: detailData = {}, run: getDetailData, loading } = useRequest(getUserFeedBackDetail, {
     manual: true,
   });
 
@@ -54,10 +54,8 @@ const UserFeedBack: React.FC = () => {
       dataIndex: 'lastProcessDate',
       index: 'lastProcessDate',
       render: (text: string) => {
-        return (
-          <span>{text ? moment(text).format("YYYY-MM-DD hh:mm:ss") : ""}</span>
-        )
-      }
+        return <span>{text ? moment(text).format('YYYY-MM-DD hh:mm:ss') : ''}</span>;
+      },
     },
     {
       title: '状态',
@@ -70,10 +68,8 @@ const UserFeedBack: React.FC = () => {
       dataIndex: 'createdOn',
       index: 'createdOn',
       render: (text: string) => {
-        return (
-          <span>{text ? moment(text).format("YYYY-MM-DD hh:mm:ss") : ""}</span>
-        )
-      }
+        return <span>{text ? moment(text).format('YYYY-MM-DD hh:mm:ss') : ''}</span>;
+      },
     },
   ];
 
@@ -94,8 +90,8 @@ const UserFeedBack: React.FC = () => {
 
   const checkEvent = async () => {
     if (tableSelectRows && tableSelectRows.length === 0) {
-      message.error("请至少选择一条数据");
-      return
+      message.error('请至少选择一条数据');
+      return;
     }
     await getDetailData(tableSelectRows[0].id);
     setCheckFormVisible(true);
@@ -104,20 +100,20 @@ const UserFeedBack: React.FC = () => {
   const sureCheckFeedBack = () => {
     replyForm.validateFields().then(async (values) => {
       if (tableSelectRows && tableSelectRows.length === 0) {
-        message.error("请至少选择一条数据");
-        return
+        message.error('请至少选择一条数据');
+        return;
       }
 
-      const {content} = values;
+      const { content } = values;
 
       const feedbackId = tableSelectRows[0].id;
 
-      await replyTheFeedback({feedbackId,content});
+      await replyTheFeedback({ feedbackId, content });
 
-      message.success("回复成功");
+      message.success('回复成功');
       setCheckFormVisible(false);
       tableFresh();
-    })
+    });
   };
 
   const addEvent = async () => {
@@ -128,6 +124,7 @@ const UserFeedBack: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
+          SourceType: 1,
           category: '',
           title: '',
           phone: '',

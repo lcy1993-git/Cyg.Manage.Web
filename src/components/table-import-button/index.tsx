@@ -14,6 +14,7 @@ interface TableImportButtonProps extends ButtonProps {
   name?: string;
   labelTitle?: string;
   buttonTitle?: string;
+  requestSource?: 'project' | 'resource' | 'upload';
 }
 
 const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
@@ -25,6 +26,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     name = 'file',
     buttonTitle = '导入',
     extraParams,
+    requestSource = 'project',
     ...rest
   } = props;
 
@@ -40,7 +42,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     form.validateFields().then(async (values) => {
       const { file } = values;
       console.log(file);
-      await commonUpload(importUrl, file);
+      await commonUpload(importUrl, file, name, requestSource);
       message.success('导入成功');
       setImportModalVisible(false);
       form.resetFields();

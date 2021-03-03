@@ -8,7 +8,18 @@ const WareHouse = Loadable({
   delay: 150,
 });
 
+const Inventroy = Loadable({
+  loader: () => import('@/pages/material-config/inventory'),
+  loading: Loading,
+  delay: 150,
+});
+
 export default [
+  {
+    title: '协议库存列表',
+    path: '/material-config/inventory',
+    component: <Inventroy />,
+  },
   {
     title: '物料利库管理',
     path: '/material-config/ware-house',

@@ -16,13 +16,13 @@ import { useRequest } from 'ahooks';
 
 interface ModuleDetailParams {
   libId: string;
-  id?: string | undefined;
+  moduleIds?: string[];
 }
 
 const { Search } = Input;
 
 const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, id } = props;
+  const { libId, moduleIds } = props;
 
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
@@ -257,7 +257,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
         columns={columns}
         type="radio"
         requestSource="resource"
-        extractParams={{ libId: libId, Id: id }}
+        extractParams={{ libId: libId, moduleIds: moduleIds }}
       />
     </div>
   );
