@@ -9,13 +9,13 @@ interface ArrangeModalProps {
   projectIds: string[];
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: () => void
+  finishEvent?: () => void;
 }
 
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyInfo, setCompanyInfo] = useState<any>();
-  const { projectIds,finishEvent } = props;
+  const { projectIds, finishEvent } = props;
 
   const [selectType, setSelectType] = useState<string>('');
 
@@ -71,7 +71,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       form.resetFields();
       finishEvent?.();
     });
-    
   };
 
   return (
