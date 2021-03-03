@@ -23,20 +23,20 @@ import { TableItemCheckedInfo } from "./components/engineer-table-item";
 import { Popconfirm } from "antd";
 import ArrangeModal from "./components/arrange-modal";
 import ShareModal from "./components/share-modal";
+import EditArrangeModal from "./components/edit-arrange-modal";
 
 const { Search } = Input;
 
 const statisticsObject = {
-    "-1": "全部项目",
-    "1": "待处理项目",
-    "2": "进行中的项目",
-    "3": "委托的项目",
-    "4": "被共享的项目",
-}
+    '-1': '全部项目',
+    '1': '待处理项目',
+    '2': '进行中的项目',
+    '3': '委托的项目',
+    '4': '被共享的项目',
+};
 
 const ProjectManagement: React.FC = () => {
-
-    const [keyWord, setKeyWord] = useState<string>("");
+    const [keyWord, setKeyWord] = useState<string>('');
     const [category, setCategory] = useState<string>();
     const [pCategory, setPCategory] = useState<string>();
     const [stage, setStage] = useState<string>();
@@ -44,7 +44,7 @@ const ProjectManagement: React.FC = () => {
     const [nature, setNature] = useState<string>();
     const [kvLevel, setKvLevel] = useState<string>();
     const [status, setStatus] = useState<string>();
-    const [statisticalCategory, setStatisticalCategory] = useState<string>("-1");
+    const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
     // 被勾选中的数据
     const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
@@ -52,34 +52,38 @@ const ProjectManagement: React.FC = () => {
 
     const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
 
+    const [editArrangeModalVisible, setEditArrangeModalVisible] = useState<boolean>(false);
+
     const [addEngineerModalFlag, setAddEngineerModalFlag] = useState(false);
 
     const [saveLoading, setSaveLoading] = useState(false);
 
     const [selectProjectIds, setSelectProjectIds] = useState<string[]>([]);
 
-    const tableRef = useRef<HTMLDivElement>(null)
+    const tableRef = useRef<HTMLDivElement>(null);
 
     const [form] = Form.useForm();
 
-    const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, { manual: true });
+    const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, {
+        manual: true,
+    });
 
     const handleStatisticsData = (statisticsDataItem?: number) => {
         if (statisticsDataItem) {
             if (statisticsDataItem < 10) {
-                return `0${statisticsDataItem}`
+                return `0${statisticsDataItem}`;
             }
-            return statisticsDataItem
+            return statisticsDataItem;
         }
-        return "0"
-    }
+        return '0';
+    };
 
     const refresh = () => {
         if (tableRef && tableRef.current) {
             //@ts-ignore
             tableRef.current.refresh();
         }
-    }
+    };
 
     const search = () => {
         if (tableRef && tableRef.current) {
@@ -87,191 +91,179 @@ const ProjectManagement: React.FC = () => {
             tableRef.current.search();
             getStatisticsData({
                 keyWord,
-                category: category ?? "-1",
-                pCategory: pCategory ?? "-1",
-                stage: stage ?? "-1",
-                constructType: constructType ?? "-1",
-                nature: nature ?? "-1",
-                kvLevel: kvLevel ?? "-1",
-                status: status ?? "-1",
-            })
+                category: category ?? '-1',
+                pCategory: pCategory ?? '-1',
+                stage: stage ?? '-1',
+                constructType: constructType ?? '-1',
+                nature: nature ?? '-1',
+                kvLevel: kvLevel ?? '-1',
+                status: status ?? '-1',
+            });
         }
-    }
+    };
 
     const searchByParams = (params: any) => {
         if (tableRef && tableRef.current) {
             //@ts-ignore
             tableRef.current.searchByParams(params);
-            getStatisticsData({ ...params as AllProjectStatisticsParams })
+            getStatisticsData({ ...(params as AllProjectStatisticsParams) });
         }
-    }
+    };
 
     const revokeAllotEvent = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少选择一个项目");
-            return
+            message.error('请至少选择一个项目');
+            return;
         }
 
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-        await revokeAllot(projectIds)
-        message.success("撤回安排成功");
+        await revokeAllot(projectIds);
+        message.success('撤回安排成功');
         refresh();
-    }
+    };
 
     const arrangeEvent = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少选择一个项目");
-            return
+            message.error('请至少选择一个项目');
+            return;
         }
 
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
-    
+
         await checkCanArrange(projectIds);
-        setSelectProjectIds(projectIds)
-        setArrangeModalVisible(true)
-    }
+        setSelectProjectIds(projectIds);
+        setArrangeModalVisible(true);
+    };
+
+    const editArrangeEvent = async () => {
+        if (tableSelectData && tableSelectData.length === 0) {
+            message.error('请选择修改安排的项目！');
+            return;
+        }
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
+        setSelectProjectIds(projectIds);
+        setEditArrangeModalVisible(true);
+    };
 
     const arrangeMenu = (
         <Menu>
-            <Menu.Item onClick={() => arrangeEvent()}>
-                安排
-            </Menu.Item>
-            <Menu.Item>
-                修改安排
-            </Menu.Item>
-            <Menu.Item onClick={() => revokeAllotEvent()}>
-                撤回安排
-            </Menu.Item>
+            <Menu.Item onClick={() => arrangeEvent()}>安排</Menu.Item>
+            <Menu.Item onClick={() => editArrangeEvent()}>修改安排</Menu.Item>
+            <Menu.Item onClick={() => revokeAllotEvent()}>撤回安排</Menu.Item>
         </Menu>
-    )
+    );
 
     const recallShareEvent = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少选择一个项目");
-            return
+            message.error('请至少选择一个项目');
+            return;
         }
 
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-        await recallShare(projectIds)
-        message.success("申请结项成功");
+        await recallShare(projectIds);
+        message.success('申请结项成功');
         refresh();
-    }
+    };
 
     const shareEvent = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少选择一个项目");
-            return
+            message.error('请至少选择一个项目');
+            return;
         }
 
-        setSelectProjectIds(tableSelectData.map((item) => item.checkedArray).flat())
-        setShareModalVisible(true)
-    }
+        setSelectProjectIds(tableSelectData.map((item) => item.checkedArray).flat());
+        setShareModalVisible(true);
+    };
 
     const shareMenu = (
         <Menu>
-            <Menu.Item onClick={() => shareEvent()}>
-                共享
-            </Menu.Item>
-            <Menu.Item onClick={() => recallShareEvent()}>
-                撤回共享
-            </Menu.Item>
+            <Menu.Item onClick={() => shareEvent()}>共享</Menu.Item>
+            <Menu.Item onClick={() => recallShareEvent()}>撤回共享</Menu.Item>
         </Menu>
-    )
+    );
 
     const importMenu = (
         <Menu>
-            <Menu.Item>
-                下载模板
-            </Menu.Item>
-            <Menu.Item>
-                导入项目
-            </Menu.Item>
+            <Menu.Item>下载模板</Menu.Item>
+            <Menu.Item>导入项目</Menu.Item>
         </Menu>
-    )
+    );
 
     const applyKnotEvent = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少选择一个项目");
-            return
+            message.error('请至少选择一个项目');
+            return;
         }
 
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-        console.log(projectIds)
-        await applyKnot(projectIds)
-        message.success("申请结项成功");
+        console.log(projectIds);
+        await applyKnot(projectIds);
+        message.success('申请结项成功');
         refresh();
-    }
+    };
 
     const revokeKnotEvent = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少选择一个项目");
-            return
+            message.error('请至少选择一个项目');
+            return;
         }
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-        await revokeKnot(projectIds)
-        message.success("撤回结项成功");
+        await revokeKnot(projectIds);
+        message.success('撤回结项成功');
         refresh();
-    }
+    };
 
     const auditKnotEvent = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少选择一个项目");
-            return
+            message.error('请至少选择一个项目');
+            return;
         }
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-        await auditKnot(projectIds)
-        message.success("结项通过成功");
+        await auditKnot(projectIds);
+        message.success('结项通过成功');
         refresh();
-    }
+    };
 
     const noAuditKnotEvent = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少选择一个项目");
-            return
+            message.error('请至少选择一个项目');
+            return;
         }
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-        await noAuditKnot(projectIds)
-        message.success("结项退回成功");
+        await noAuditKnot(projectIds);
+        message.success('结项退回成功');
         refresh();
-    }
+    };
 
     const postProjectMenu = (
         <Menu>
-            <Menu.Item onClick={() => applyKnotEvent()}>
-                申请结项
-            </Menu.Item>
-            <Menu.Item onClick={() => revokeKnotEvent()}>
-                撤回结项
-            </Menu.Item>
-            <Menu.Item onClick={() => auditKnotEvent()}>
-                结项通过
-            </Menu.Item>
-            <Menu.Item onClick={() => noAuditKnotEvent()}>
-                结项退回
-            </Menu.Item>
+            <Menu.Item onClick={() => applyKnotEvent()}>申请结项</Menu.Item>
+            <Menu.Item onClick={() => revokeKnotEvent()}>撤回结项</Menu.Item>
+            <Menu.Item onClick={() => auditKnotEvent()}>结项通过</Menu.Item>
+            <Menu.Item onClick={() => noAuditKnotEvent()}>结项退回</Menu.Item>
         </Menu>
-    )
+    );
 
     useMount(() => {
         getStatisticsData({
-            keyWord: "",
-            category: "-1",
-            pCategory: "-1",
-            stage: "-1",
-            constructType: "-1",
-            nature: "-1",
-            kvLevel: "-1",
-            status: "-1"
-        })
-    })
+            keyWord: '',
+            category: '-1',
+            pCategory: '-1',
+            stage: '-1',
+            constructType: '-1',
+            nature: '-1',
+            kvLevel: '-1',
+            status: '-1',
+        });
+    });
 
     const resetSearch = () => {
-        setKeyWord("");
+        setKeyWord('');
         setCategory(undefined);
         setPCategory(undefined);
         setStage(undefined);
@@ -282,75 +274,113 @@ const ProjectManagement: React.FC = () => {
         // TODO 重置完是否进行查询
         searchByParams({
             keyWord,
-            category: category ?? "-1",
-            pCategory: pCategory ?? "-1",
-            stage: stage ?? "-1",
-            constructType: constructType ?? "-1",
-            nature: nature ?? "-1",
-            kvLevel: kvLevel ?? "-1",
-            status: status ?? "-1",
-            statisticalCategory: statisticalCategory ?? "-1",
-        })
-    }
+            category: category ?? '-1',
+            pCategory: pCategory ?? '-1',
+            stage: stage ?? '-1',
+            constructType: constructType ?? '-1',
+            nature: nature ?? '-1',
+            kvLevel: kvLevel ?? '-1',
+            status: status ?? '-1',
+            statisticalCategory: statisticalCategory ?? '-1',
+        });
+    };
 
     const statisticsClickEvent = (statisticsType: string) => {
-        setStatisticalCategory(statisticsType)
+        setStatisticalCategory(statisticsType);
         searchByParams({
             keyWord,
-            category: category ?? "-1",
-            pCategory: pCategory ?? "-1",
-            stage: stage ?? "-1",
-            constructType: constructType ?? "-1",
-            nature: nature ?? "-1",
-            kvLevel: kvLevel ?? "-1",
-            status: status ?? "-1",
+            category: category ?? '-1',
+            pCategory: pCategory ?? '-1',
+            stage: stage ?? '-1',
+            constructType: constructType ?? '-1',
+            nature: nature ?? '-1',
+            kvLevel: kvLevel ?? '-1',
+            status: status ?? '-1',
             statisticalCategory: statisticsType,
-        })
-    }
+        });
+    };
 
     const sureAddEngineerEvent = () => {
         form.validateFields().then(async (values) => {
             try {
-                setSaveLoading(true)
-                const { projects, name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } = values;
-                await addEngineer({ projects, engineer: { name, province, libId, inventoryOverviewId, warehouseId, compiler, compileTime, organization, startTime, endTime, company, plannedYear, importance, grade } });
-                message.success("立项成功");
+                setSaveLoading(true);
+                const {
+                    projects,
+                    name,
+                    province,
+                    libId,
+                    inventoryOverviewId,
+                    warehouseId,
+                    compiler,
+                    compileTime,
+                    organization,
+                    startTime,
+                    endTime,
+                    company,
+                    plannedYear,
+                    importance,
+                    grade,
+                } = values;
+                await addEngineer({
+                    projects,
+                    engineer: {
+                        name,
+                        province,
+                        libId,
+                        inventoryOverviewId,
+                        warehouseId,
+                        compiler,
+                        compileTime,
+                        organization,
+                        startTime,
+                        endTime,
+                        company,
+                        plannedYear,
+                        importance,
+                        grade,
+                    },
+                });
+                message.success('立项成功');
                 modalCloseEvent();
                 refresh();
             } catch (msg) {
-
             } finally {
-                setSaveLoading(false)
+                setSaveLoading(false);
             }
-        })
-    }
+        });
+    };
 
     const modalCloseEvent = () => {
-        setAddEngineerModalFlag(false)
+        setAddEngineerModalFlag(false);
         form.resetFields();
-        form.setFieldsValue({ "projects": [{ name: "" }] })
-    }
+        form.setFieldsValue({ projects: [{ name: '' }] });
+    };
 
     const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
-        setTableSelectData(checkedValue)
-    }
+        setTableSelectData(checkedValue);
+    };
 
     const sureDeleteProject = async () => {
         if (tableSelectData.length === 0) {
-            message.error("请至少勾选一条数据");
-            return
+            message.error('请至少勾选一条数据');
+            return;
         }
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-        await deleteProject(projectIds)
-        message.success("删除成功")
+        await deleteProject(projectIds);
+        message.success('删除成功');
         refresh();
-    }
+    };
 
     const arrangeFinishEvent = () => {
-        setArrangeModalVisible(false)
+        setArrangeModalVisible(false);
         refresh();
-    }
+    };
+
+    const changeArrangeFinishEvent = () => {
+        setEditArrangeModalVisible(false);
+        refresh();
+    };
 
     return (
         <PageCommonWrap noPadding={true}>
@@ -374,7 +404,8 @@ const ProjectManagement: React.FC = () => {
                                     onChange={(value) => setCategory(String(value))}
                                     placeholder="项目分类"
                                     needAll={true}
-                                    allValue="-1" />
+                                    allValue="-1"
+                                />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
                                 <EnumSelect
@@ -385,7 +416,8 @@ const ProjectManagement: React.FC = () => {
                                     className="widthAll"
                                     placeholder="项目类别"
                                     needAll={true}
-                                    allValue="-1" />
+                                    allValue="-1"
+                                />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
                                 <EnumSelect
@@ -395,7 +427,8 @@ const ProjectManagement: React.FC = () => {
                                     onChange={(value) => setStage(String(value))}
                                     placeholder="项目阶段"
                                     needAll={true}
-                                    allValue="-1" />
+                                    allValue="-1"
+                                />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
                                 <EnumSelect
@@ -405,7 +438,8 @@ const ProjectManagement: React.FC = () => {
                                     placeholder="建设类型"
                                     onChange={(value) => setConstructType(String(value))}
                                     needAll={true}
-                                    allValue="-1" />
+                                    allValue="-1"
+                                />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
                                 <EnumSelect
@@ -415,7 +449,8 @@ const ProjectManagement: React.FC = () => {
                                     className="widthAll"
                                     placeholder="电压等级"
                                     needAll={true}
-                                    allValue="-1" />
+                                    allValue="-1"
+                                />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
                                 <EnumSelect
@@ -426,7 +461,8 @@ const ProjectManagement: React.FC = () => {
                                     className="widthAll"
                                     placeholder="项目性质"
                                     needAll={true}
-                                    allValue="-1" />
+                                    allValue="-1"
+                                />
                             </TableSearch>
                             <TableSearch width="111px">
                                 <EnumSelect
@@ -436,7 +472,8 @@ const ProjectManagement: React.FC = () => {
                                     className="widthAll"
                                     placeholder="项目状态"
                                     needAll={true}
-                                    allValue="-1" />
+                                    allValue="-1"
+                                />
                             </TableSearch>
                         </div>
                         <div>
@@ -452,35 +489,33 @@ const ProjectManagement: React.FC = () => {
                 <div className={styles.projectManagementStatistic}>
                     <div className="flex">
                         <div className="flex1">
-                            <div onClick={() => statisticsClickEvent("-1")}>
-                                <AllStatistics>
-                                    {handleStatisticsData(statisticsData?.total)}
-                                </AllStatistics>
+                            <div onClick={() => statisticsClickEvent('-1')}>
+                                <AllStatistics>{handleStatisticsData(statisticsData?.total)}</AllStatistics>
                             </div>
                         </div>
                         <div className={styles.projectManagementStatisticItem}>
-                            <div onClick={() => statisticsClickEvent("1")}>
+                            <div onClick={() => statisticsClickEvent('1')}>
                                 <SingleStatistics label="待处理" icon="awaitProcess">
                                     {handleStatisticsData(statisticsData?.awaitProcess)}
                                 </SingleStatistics>
                             </div>
                         </div>
                         <div className={styles.projectManagementStatisticItem}>
-                            <div onClick={() => statisticsClickEvent("2")}>
+                            <div onClick={() => statisticsClickEvent('2')}>
                                 <SingleStatistics label="进行中" icon="inProgress">
                                     {handleStatisticsData(statisticsData?.inProgress)}
                                 </SingleStatistics>
                             </div>
                         </div>
                         <div className={styles.projectManagementStatisticItem}>
-                            <div onClick={() => statisticsClickEvent("3")}>
+                            <div onClick={() => statisticsClickEvent('3')}>
                                 <SingleStatistics label="委托" icon="delegation">
                                     {handleStatisticsData(statisticsData?.delegation)}
                                 </SingleStatistics>
                             </div>
                         </div>
                         <div className={styles.projectManagementStatisticItem}>
-                            <div onClick={() => statisticsClickEvent("4")}>
+                            <div onClick={() => statisticsClickEvent('4')}>
                                 <SingleStatistics label="被共享" icon="beShared">
                                     {handleStatisticsData(statisticsData?.beShared)}
                                 </SingleStatistics>
@@ -492,16 +527,23 @@ const ProjectManagement: React.FC = () => {
                     <div className={styles.projectManagementTableButtonContent}>
                         <div className="flex">
                             <div className="flex1">
-                                <CommonTitle>
-                                    {statisticsObject[statisticalCategory]}
-                                </CommonTitle>
+                                <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
                             </div>
                             <div className="flex">
-                                <Button className="mr7" type="primary" onClick={() => setAddEngineerModalFlag(true)}>
+                                <Button
+                                    className="mr7"
+                                    type="primary"
+                                    onClick={() => setAddEngineerModalFlag(true)}
+                                >
                                     <FileAddOutlined />
                                     立项
-                                </Button>
-                                <Popconfirm title="确认对勾选的项目进行删除吗?" okText="确认" cancelText="取消" onConfirm={sureDeleteProject}>
+                                    </Button>
+                                <Popconfirm
+                                    title="确认对勾选的项目进行删除吗?"
+                                    okText="确认"
+                                    cancelText="取消"
+                                    onConfirm={sureDeleteProject}
+                                >
                                     <Button className="mr7">
                                         <DeleteOutlined />
                                     删除
@@ -518,39 +560,46 @@ const ProjectManagement: React.FC = () => {
                                     </Button>
                                 </Dropdown>
                                 <div className="mr7">
-                                    <TableExportButton exportUrl="/Porject/Export" selectIds={tableSelectData.map((item) => item.checkedArray).flat()} extraParams={{
-                                        keyWord,
-                                        category: category ?? "-1",
-                                        pCategory: pCategory ?? "-1",
-                                        stage: stage ?? "-1",
-                                        constructType: constructType ?? "-1",
-                                        nature: nature ?? "-1",
-                                        kvLevel: kvLevel ?? "-1",
-                                        status: status ?? "-1",
-                                        statisticalCategory: statisticalCategory ?? "-1",
-                                    }} />
+                                    <TableExportButton
+                                        exportUrl="/Porject/Export"
+                                        selectIds={tableSelectData.map((item) => item.checkedArray).flat()}
+                                        extraParams={{
+                                            keyWord,
+                                            category: category ?? '-1',
+                                            pCategory: pCategory ?? '-1',
+                                            stage: stage ?? '-1',
+                                            constructType: constructType ?? '-1',
+                                            nature: nature ?? '-1',
+                                            kvLevel: kvLevel ?? '-1',
+                                            status: status ?? '-1',
+                                            statisticalCategory: statisticalCategory ?? '-1',
+                                        }}
+                                    />
                                 </div>
                                 <Dropdown overlay={postProjectMenu}>
                                     <Button>
                                         结项 <DownOutlined />
                                     </Button>
                                 </Dropdown>
-
                             </div>
                         </div>
-                    </div>
-                    <div className={styles.projectManagementTableContent}>
-                        <EnigneerTable ref={tableRef} onSelect={tableSelectEvent} extractParams={{
-                            keyWord,
-                            category: category ?? "-1",
-                            pCategory: pCategory ?? "-1",
-                            stage: stage ?? "-1",
-                            constructType: constructType ?? "-1",
-                            nature: nature ?? "-1",
-                            kvLevel: kvLevel ?? "-1",
-                            status: status ?? "-1",
-                            statisticalCategory: statisticalCategory ?? "-1",
-                        }} />
+                        <div className={styles.projectManagementTableContent}>
+                            <EnigneerTable
+                                ref={tableRef}
+                                onSelect={tableSelectEvent}
+                                extractParams={{
+                                    keyWord,
+                                    category: category ?? '-1',
+                                    pCategory: pCategory ?? '-1',
+                                    stage: stage ?? '-1',
+                                    constructType: constructType ?? '-1',
+                                    nature: nature ?? '-1',
+                                    kvLevel: kvLevel ?? '-1',
+                                    status: status ?? '-1',
+                                    statisticalCategory: statisticalCategory ?? '-1',
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -559,22 +608,40 @@ const ProjectManagement: React.FC = () => {
                 footer={[
                     <Button key="cancle" onClick={() => modalCloseEvent()}>
                         取消
-                    </Button>,
-                    <Button key="save" type="primary" loading={saveLoading} onClick={() => sureAddEngineerEvent()}>
+                            </Button>,
+                    <Button
+                        key="save"
+                        type="primary"
+                        loading={saveLoading}
+                        onClick={() => sureAddEngineerEvent()}
+                    >
                         保存
-                    </Button>,
+                            </Button>,
                 ]}
                 width={820}
                 onCancel={() => modalCloseEvent()}
-                title="项目立项">
+                title="项目立项"
+            >
                 <Form form={form}>
                     <CreateEngineer form={form} />
                 </Form>
             </Modal>
-            <ArrangeModal finishEvent={arrangeFinishEvent} visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={selectProjectIds}  />
-            <ShareModal finishEvent={arrangeFinishEvent} visible={shareModalVisible} onChange={setShareModalVisible} projectIds={selectProjectIds}  />
+            <ArrangeModal
+                finishEvent={arrangeFinishEvent}
+                visible={arrangeModalVisible}
+                onChange={setArrangeModalVisible}
+                projectIds={selectProjectIds}
+            />
+            <EditArrangeModal
+                changeFinishEvent={changeArrangeFinishEvent}
+                visible={editArrangeModalVisible}
+                onChange={setEditArrangeModalVisible}
+                projectIds={selectProjectIds}
+            />
+            <ShareModal finishEvent={arrangeFinishEvent} visible={shareModalVisible} onChange={setShareModalVisible} projectIds={selectProjectIds} />
         </PageCommonWrap>
-    )
-}
+    );
+};
 
-export default ProjectManagement
+export default ProjectManagement;
+

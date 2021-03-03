@@ -473,13 +473,23 @@ export const checkCanArrange = (projectIds: string[]) => {
 };
 
 export const getGroupInfo = (clientType: string) => {
-  return cyRequest<any[]>(() => request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`,{method: "POST", data: {clientType}}))
-}
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`, {
+      method: 'POST',
+      data: { clientType },
+    }),
+  );
+};
 
 export const getCompanyName = (userName: string) => {
-  return cyRequest(() => request(`${baseUrl.project}/ManageUser/GetCompanyNameByUserName`,{method: "POST", data: {userName}}))
-}
-  
+  return cyRequest(() =>
+    request(`${baseUrl.project}/ManageUser/GetCompanyNameByUserName`, {
+      method: 'POST',
+      data: { userName },
+    }),
+  );
+};
+
 interface AllotParams {
   allotType: number;
   allotCompanyGroup: string;
@@ -495,5 +505,12 @@ interface AllotParams {
 export const saveArrange = (params: AllotParams) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.project}/Porject/Allot`, { method: 'POST', data: params }),
+  );
+};
+
+//修改安排
+export const editArrange = (params: AllotParams) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/Porject/ModifyProjectAllot`, { method: 'POST', data: params }),
   );
 };
