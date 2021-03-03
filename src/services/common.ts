@@ -104,8 +104,10 @@ export const commonUpload = (
   url: string,
   files: any[],
   name: string = 'file',
-  requestSource: 'project' | 'upload' = 'project',
+  requestSource: 'project' | 'resource' | 'upload',
 ) => {
+  console.log(requestSource);
+
   const requestUrl = baseUrl[requestSource];
   const formData = new FormData();
   files.forEach((item) => {

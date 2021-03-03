@@ -22,6 +22,7 @@ import moment from 'moment';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
 import BatchAddCompanyUser from './components/batch-add-form';
+import TableStatus from '@/components/table-status';
 
 const { Search } = Input;
 
@@ -233,7 +234,7 @@ const CompanyUser: React.FC = () => {
       index: 'authorizeClient',
       width: 240,
       render: (text: any, record: any) => {
-        return record.authorizeClient ? <span>{record.authorizeClientTexts}</span> : null;
+        return record.authorizeClientTexts;
       },
     },
     {

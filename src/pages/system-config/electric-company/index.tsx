@@ -200,6 +200,7 @@ const ElectricCompany: React.FC = () => {
 
   tableSelectRows.map((item: any) => {
     ids.push(item.id);
+    console.log(ids);
   });
 
   const tableElement = () => {
