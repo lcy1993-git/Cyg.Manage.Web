@@ -51,6 +51,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
                 })
                 message.success("工程信息更新成功")
                 setState(false)
+                form.resetFields();
                 changeFinishEvent?.()
             } catch (msg) {
                 console.error(msg)

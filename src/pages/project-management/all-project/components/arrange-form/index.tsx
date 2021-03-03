@@ -10,7 +10,7 @@ import ReadonlyItem from '@/components/readonly-item';
 interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void
   getCompanyInfo?: (companyInfo: any) => void
-  defaultType: string
+  defaultType?: string
 }
 
 interface ArrangeType {

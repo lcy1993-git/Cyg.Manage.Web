@@ -115,7 +115,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     </CyFormItem>
                 </div>
                 <div className="flex1">
-                    <CyFormItem label="所属市公司" fieldKey={[field.fieldKey, 'cityCompany']} name={isEmpty(field) ? "cityCompany" : [field.name, 'cityCompany']} labelWidth={120} align="right">
+                    <CyFormItem label="所属市" fieldKey={[field.fieldKey, 'cityCompany']} name={isEmpty(field) ? "cityCompany" : [field.name, 'cityCompany']} labelWidth={120} align="right">
                         <Input placeholder="请输入" />
                     </CyFormItem>
                 </div>

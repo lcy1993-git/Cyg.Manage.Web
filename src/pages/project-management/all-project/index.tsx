@@ -346,7 +346,10 @@ const ProjectManagement: React.FC = () => {
         refresh();
     }
 
-
+    const arrangeFinishEvent = () => {
+        setArrangeModalVisible(false)
+        refresh();
+    }
 
     return (
         <PageCommonWrap noPadding={true}>
@@ -567,7 +570,7 @@ const ProjectManagement: React.FC = () => {
                     <CreateEngineer form={form} />
                 </Form>
             </Modal>
-            <ArrangeModal visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={selectProjectIds}  />
+            <ArrangeModal finishEvent={arrangeFinishEvent} visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={selectProjectIds}  />
         </PageCommonWrap>
     )
 }

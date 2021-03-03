@@ -48,6 +48,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
                 })
                 message.success("项目信息更新成功")
                 setState(false)
+                form.resetFields();
                 changeFinishEvent?.()
             } catch (msg) {
                 console.error(msg)
