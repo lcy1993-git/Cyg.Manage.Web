@@ -8,6 +8,6 @@ export const requestBaseUrl = {
 export const explainUrl = "http://service.pwcloud.cdsrth.com:8200/management";
 
 
-export const visualUrl = "http://171.223.214.154:8021/index.html";
+export const visualUrl = "http://47.108.63.23:8021/index.html";
 
-export const areaStatisticsUrl = "http://171.223.214.154:8029/index.html"
+export const areaStatisticsUrl = "http://47.108.63.23:8029/index.html"

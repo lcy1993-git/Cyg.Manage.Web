@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Input, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumRadio from '@/components/enum-radio';
+import UrlSelect from '@/components/url-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import rules from '../rule';
 import { CompanyGroupTreeData } from '@/services/operation-config/company-group';
@@ -31,6 +32,7 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
       <CyFormItem label="所属部组" name="groupIds">
         <TreeSelect
           style={{ width: '100%' }}
+          multiple
           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
           treeData={handleData}
           placeholder="请选择部组(非必选)"
@@ -59,6 +61,18 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
 
       <CyFormItem label="真实姓名" name="name">
         <Input placeholder="请输入真实姓名" />
+      </CyFormItem>
+      
+      <CyFormItem label="授权端口" name="clientCategorys">
+        <UrlSelect
+          mode="multiple"
+          requestSource="project"
+          showSearch
+          url="/CompanyUser/GetClientCategorys"
+          titleKey="text"
+          valueKey="value"
+          placeholder="请选择授权端口"
+        />
       </CyFormItem>
 
       <CyFormItem label="状态" name="userStatus" initialValue={'1'}>

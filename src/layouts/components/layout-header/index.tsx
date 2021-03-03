@@ -42,45 +42,66 @@ const testData = [
         icon: '',
         path: '/system-config/basic-data',
       },
+      // {
+      //   name: '字典管理',
+      //   icon: '',
+      //   path: '/system-config/dictionary-manage',
+      // },
+      // {
+      //   name: '功能管理',
+      //   icon: '',
+      //   path: '/system-config/function-module',
+      // },
+      // {
+      //   name: '日志管理',
+      //   icon: '',
+      //   path: '/system-config/log-manage',
+      // },
+      // {
+      //   name: '上报日志',
+      //   icon: '',
+      //   path: '/system-config/report-log',
+      // },
+      // {
+      //   name: '电力公司',
+      //   icon: '',
+      //   path: '/system-config/electric-company',
+      // },
+      // {
+      //   name: '平台反馈',
+      //   icon: '',
+      //   path: '/system-config/platform-feedback',
+      // },
+      // {
+      //   name: '数据映射',
+      //   icon: '',
+      //   path: '/system-config/map-field',
+      // },
+      // {
+      //   name: '终端设备',
+      //   icon: '',
+      //   path: '/system-config/terminal-unit',
+      // },
+    ],
+  },
+  {
+    name: '人员管理',
+    icon: '',
+    menuData: [
       {
-        name: '字典管理',
+        name: '管理用户',
         icon: '',
-        path: '/system-config/dictionary-manage',
+        path: '/personnel-config/manage-user',
       },
       {
-        name: '功能管理',
+        name: '公司用户',
         icon: '',
-        path: '/system-config/function-module',
+        path: '/personnel-config/company-user',
       },
       {
-        name: '日志管理',
+        name: '用户反馈',
         icon: '',
-        path: '/system-config/log-manage',
-      },
-      {
-        name: '上报日志',
-        icon: '',
-        path: '/system-config/report-log',
-      },
-      {
-        name: '电力公司',
-        icon: '',
-        path: '/system-config/electric-company',
-      },
-      {
-        name: '平台反馈',
-        icon: '',
-        path: '/system-config/platform-feedback',
-      },
-      {
-        name: '数据映射',
-        icon: '',
-        path: '/system-config/map-field',
-      },
-      {
-        name: '终端设备',
-        icon: '',
-        path: '/system-config/terminal-unit',
+        path: '/personnel-config/feedback',
       },
     ],
   },
@@ -112,27 +133,6 @@ const testData = [
         name: '下辖公司',
         icon: '',
         path: '/jurisdiction-config/subordinate-company',
-      },
-    ],
-  },
-  {
-    name: '人员管理',
-    icon: '',
-    menuData: [
-      {
-        name: '管理用户',
-        icon: '',
-        path: '/personnel-config/manage-user',
-      },
-      {
-        name: '公司用户',
-        icon: '',
-        path: '/personnel-config/company-user',
-      },
-      {
-        name: '用户反馈',
-        icon: '',
-        path: '/personnel-config/feedback',
       },
     ],
   },
