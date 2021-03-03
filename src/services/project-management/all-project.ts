@@ -386,6 +386,13 @@ export const editProject = (params: any) => {
   );
 };
 
+// 复制项目信息
+export const copyProject = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/Copy`, { method: 'POST', data: params }),
+  );
+}
+
 // 获取项目的枚举
 export const getEngineerEnum = () => {
   return cyRequest<any>(() => request(`${baseUrl.project}/Engineer/GetEnums`, { method: 'GET' }));

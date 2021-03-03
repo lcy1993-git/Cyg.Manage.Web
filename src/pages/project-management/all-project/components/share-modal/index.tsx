@@ -10,71 +10,76 @@ interface ShareModalProps {
     projectIds: string[]
     visible: boolean
     onChange: Dispatch<SetStateAction<boolean>>
+    finishEvent: () => void
 }
 
 const ShareModal: React.FC<ShareModalProps> = (props) => {
-    const [companyInfoArray, setCompanyInfoArray] = useState();
+    const [companyInfoArray, setCompanyInfoArray] = useState<any[]>([
+        { user: "", companyInfo: null }
+    ]);
     const [state, setState] = useControllableValue(props, { valuePropName: "visible" });
 
-    const { projectIds } = props;
+    const { projectIds,finishEvent } = props;
 
-    const {run: getCompanyInfo} = useRequest(getCompanyName,{
+    const { run: getCompanyInfo } = useRequest(getCompanyName, {
         manual: true
     })
 
+    const saveShareInfo = () => {
+        finishEvent?.()
+    }
+
+    const addEvent = () => {
+
+    }
+
+    const removeEvent = () => {
+
+    }
+
     return (
         <Modal title="共享" width={680} visible={state as boolean} onCancel={() => setState(false)} cancelText="取消" okText="确认">
-            <Form>
-                <Form.List name="shareInfo" initialValue={[{}]}>
+            <table>
+                <thead>
+                    <tr>
+                        <th style={{ width: "50px" }}>序号</th>
+                        <th>用户</th>
+                        <th>公司名称</th>
+                        <th style={{ width: "60px" }}>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
                     {
-                        (fields, { add, remove }) => (
-                            <>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th style={{ width: "50px" }}>序号</th>
-                                            <th>用户</th>
-                                            <th>公司名称</th>
-                                            <th style={{ width: "60px" }}>操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                        companyInfoArray.map((item, index) => {
+                            return (
+                                <tr key={uuid.v1()}>
+                                    <td>{index + 1}</td>
+                                    <td>
+                                        <Form.Item noStyle>
+                                            <Input />
+                                        </Form.Item>
+                                    </td>
+                                    <td>
+                                        {item?.companyName}
+                                    </td>
+                                    <td>
+                                        <span className="mr7" onClick={() => addEvent()}>
+                                            <PlusOutlined />
+                                        </span>
                                         {
-                                            fields.map((field, index) => {
-                                                return (
-                                                    <tr key={uuid.v1()}>
-                                                        <td>{index + 1}</td>
-                                                        <td>
-                                                            <Form.Item {...field} name={[field.name, "userName"]} fieldKey={[field.fieldKey, "userName"]}>
-                                                                <Input />
-                                                            </Form.Item>
-                                                        </td>
-                                                        <td>
-                                                            
-                                                        </td>
-                                                        <td>
-                                                            <span className="mr7" onClick={() => add()}>
-                                                                <PlusOutlined />
-                                                            </span>
-                                                            {
-                                                                fields.length > 1 &&
-                                                                <span onClick={() => remove(field.name)}>
-                                                                    <MinusOutlined />
-                                                                </span>
-                                                            }
-                                                        </td>
-                                                    </tr>
-
-                                                )
-                                            })
+                                            companyInfoArray.length > 1 &&
+                                            <span onClick={() => removeEvent()}>
+                                                <MinusOutlined />
+                                            </span>
                                         }
-                                    </tbody>
-                                </table>
-                            </>
-                        )
+                                    </td>
+                                </tr>
+
+                            )
+                        })
                     }
-                </Form.List>
-            </Form>
+                </tbody>
+            </table>
         </Modal>
     )
 }
