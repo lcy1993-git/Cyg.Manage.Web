@@ -22,6 +22,7 @@ import CreateEngineer from "./components/create-engineer";
 import { TableItemCheckedInfo } from "./components/engineer-table-item";
 import { Popconfirm } from "antd";
 import ArrangeModal from "./components/arrange-modal";
+import ShareModal from "./components/share-modal";
 
 const { Search } = Input;
 
@@ -571,6 +572,7 @@ const ProjectManagement: React.FC = () => {
                 </Form>
             </Modal>
             <ArrangeModal finishEvent={arrangeFinishEvent} visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={selectProjectIds}  />
+            <ShareModal finishEvent={arrangeFinishEvent} visible={shareModalVisible} onChange={setShareModalVisible} projectIds={selectProjectIds}  />
         </PageCommonWrap>
     )
 }

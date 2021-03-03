@@ -19,6 +19,7 @@ import CyTag from "@/components/cy-tag"
 import AddProjectModal from "../add-project-modal"
 import EditEnigneerModal from "../edit-engineer-modal"
 import EditProjectModal from "../edit-project-modal"
+import CopyProjectModal from "../copy-project-modal"
 
 interface ExtractParams extends AllProjectStatisticsParams {
     statisticalCategory?: string
@@ -49,6 +50,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
     const [currentEditEngineerId, setCurrentEditEngineerId] = useState<string>("");
     const [currentEditProjectInfo, setCurrentEditProjectInfo] = useState<any>({});
+    const [currentCopyProjectInfo, setCurrentCopyProjectInfo] = useState<any>({});
+    const [copyProjectVisible, setCopyProjectVisible] = useState<boolean>(false);
     const [addProjectVisible, setAddProjectVisible] = useState<boolean>(false);
     const [editProjectVisible, setEditProjectVisible] = useState<boolean>(false);
     const [editEngineerVisible, setEditEngineerVisible] = useState<boolean>(false);
@@ -105,7 +108,12 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 }
                 {
                     jurisdictionInfo.canCopy &&
-                    <Menu.Item>
+                    <Menu.Item onClick={() => copyProjectEvent({
+                        projectId: tableItemData.id,
+                        areaId: engineerInfo.province,
+                        company: engineerInfo.company,
+                        engineerId: engineerInfo.id
+                    })}>
                         复制项目
                     </Menu.Item>
                 }
@@ -268,6 +276,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         setCurrentEditProjectInfo(projectNeedInfo)
     }
 
+    const copyProjectEvent = (projectNeedInfo: any) => {
+        setCopyProjectVisible(true)
+        setCurrentCopyProjectInfo(projectNeedInfo)
+    }
+
     const editEngineerEvent = (data: AddProjectValue) => {
         setEditEngineerVisible(true)
         setCurrentEditEngineerId(data.engineerId);
@@ -381,6 +394,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />
             <EditEnigneerModal engineerId={currentEditEngineerId} visible={editEngineerVisible} onChange={setEditEngineerVisible} changeFinishEvent={tableItemEventFinish} />
             <EditProjectModal projectId={currentEditProjectInfo.projectId} company={currentEditProjectInfo.company} areaId={currentEditProjectInfo.areaId} visible={editProjectVisible} onChange={setEditProjectVisible} changeFinishEvent={tableItemEventFinish} />
+            <CopyProjectModal projectId={currentCopyProjectInfo.projectId} engineerId={currentCopyProjectInfo.engineerId} company={currentCopyProjectInfo.company} areaId={currentCopyProjectInfo.areaId} visible={copyProjectVisible} onChange={setCopyProjectVisible} changeFinishEvent={tableItemEventFinish} />
             <AddProjectModal changeFinishEvent={tableItemEventFinish} visible={addProjectVisible} onChange={setAddProjectVisible} engineerId={projectNeedInfo.engineerId} areaId={projectNeedInfo.areaId} company={projectNeedInfo.company} />
         </div>
     )
