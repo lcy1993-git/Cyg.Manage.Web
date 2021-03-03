@@ -15,6 +15,11 @@ interface ItemDetailData extends WareHouseParams {
   overviewId: string;
 }
 
+export enum CreateMethod {
+  '自动' = 1,
+  '手动',
+}
+
 //获取协议库存列表
 export const getInventoryOverviewList = () => {
   return cyRequest<any[]>(() =>
