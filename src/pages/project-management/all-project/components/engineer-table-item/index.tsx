@@ -206,7 +206,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
             {
                 !isFold && projectInfo.projects.length === 0 &&
                 <div className={styles.noEngineerData}>
-                    <EmptyTip className="pt20" />
+                    <EmptyTip className="pt20 pb20" description="该工程下没有项目" />
                 </div>
             }
         </div>

@@ -38,7 +38,7 @@ const ProjectProcessItem: React.FC<ProjectProcessItemProps> = (props) => {
     return (
         <div className={styles.projectProcessItem}>
             <div className={styles.projectProcessItemTime}>
-                {time ? moment(time).format("YYYY-MM-DD HH:DD:SS") : ""}
+                {time ? moment(time).format("YYYY-MM-DD HH:mm:ss") : ""}
             </div>
             <div className={styles.projectProcessItemTitle}>
                 {title}

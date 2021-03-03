@@ -35,6 +35,13 @@ interface JurisdictionInfo {
     canCopy: boolean
 }
 
+const colorMap = {
+    "立项": "green",
+    "委托": "blue",
+    "共享": "yellow",
+    "执行": "yellow",
+}
+
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     const { extractParams, onSelect } = props;
     const [pageIndex, setPageIndex] = useState<number>(1);
@@ -126,7 +133,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "项目名称",
             dataIndex: "name",
-            width: "",
             render: (record: any) => {
                 return (
                     <u className="canClick" onClick={() => {
@@ -151,7 +157,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "项目性质",
             dataIndex: "natureTexts",
-            width: 100,
+            width: 190,
             render: (record: any) => {
                 const { natureTexts = [] } = record;
                 return natureTexts.map((item: any) => {
@@ -210,9 +216,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 return sources.map((item: any) => {
                     return (
                         <span key={uuid.v1()}>
-                            <TableStatus>
-                                {item}
-                            </TableStatus>
+                            <CyTag color={colorMap[item.text] ? colorMap[item.text] : "green"}>
+                                <span>{item}</span>
+                            </CyTag>
                         </span>
                     )
                 })
@@ -227,9 +233,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 return identitys.map((item: any) => {
                     return (
                         <span className="mr7" key={uuid.v1()}>
-                            <TableStatus>
+                            <CyTag color={colorMap[item.text] ? colorMap[item.text] : "green"}>
                                 {item.text}
-                            </TableStatus>
+                            </CyTag>
                         </span>
                     )
                 })

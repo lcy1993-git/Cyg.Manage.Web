@@ -5,12 +5,17 @@ import rules from '../rule';
 import { CompanyGroupTreeData } from '@/services/operation-config/company-group';
 import styles from './index.less';
 import UrlSelect from '@/components/url-select';
+import { useRequest } from 'ahooks';
+import { getCompanyInfo } from '@/services/personnel-config/company-user';
 interface CompanyUserFormProps {
   treeData: CompanyGroupTreeData[];
 }
 
 const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
   const { treeData = [] } = props;
+
+  const {data: companyInfo} = useRequest(() => getCompanyInfo())
+
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
@@ -26,19 +31,21 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
     <>
       <CyFormItem
         className={styles.qtyNumber}
+        noStyle
         label="生成数量"
         name="qty"
         rules={rules.qtyNumber}
+        initialValue={1}
         required
       >
-        <InputNumber min={1} max={99} defaultValue={0} />
-        <div className={styles.remainQty}>用户库存:</div>
+        <InputNumber min={1} max={companyInfo?.userStock} />
       </CyFormItem>
-
+      <div className={styles.remainQty}>用户库存: {companyInfo?.userStock}</div>
       <CyFormItem label="所属部组" name="groupIds">
         <TreeSelect
           style={{ width: '100%' }}
           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+          multiple
           treeData={handleData}
           placeholder="请选择部组(非必选)"
           treeDefaultExpandAll

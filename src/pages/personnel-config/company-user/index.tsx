@@ -8,10 +8,10 @@ import { isArray } from 'lodash';
 import {
   getCompanyUserDetail,
   addCompanyUserItem,
-  BatchAddCompanyUserItem,
   updateCompanyUserItem,
   updateItemStatus,
   resetItemPwd,
+  batchAddCompanyUserItem,
 } from '@/services/personnel-config/company-user';
 import { getTreeSelectData } from '@/services/operation-config/company-group';
 import { useRequest } from 'ahooks';
@@ -23,8 +23,19 @@ import TableSearch from '@/components/table-search';
 import styles from './index.less';
 import BatchAddCompanyUser from './components/batch-add-form';
 import TableStatus from '@/components/table-status';
+import uuid from 'node-uuid';
+import CyTag from '@/components/cy-tag';
 
 const { Search } = Input;
+
+const mapColor = {
+  "无": "gray",
+  "管理端": "greenOne",
+  "勘察端": "greenTwo",
+  "评审端": "greenThree",
+  "技经端": "greenFour",
+  "设计端": "greenFive"
+}
 
 const CompanyUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -38,6 +49,7 @@ const CompanyUser: React.FC = () => {
   const [resetFormVisible, setResetFormVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
+  const [batchAddForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const { data, run, loading } = useRequest(getCompanyUserDetail, {
     manual: true,
@@ -131,7 +143,15 @@ const CompanyUser: React.FC = () => {
     setBatchAddFormVisible(true);
   };
 
-  const sureBatchAddCompanyUser = () => {};
+  const sureBatchAddCompanyUser = () => {
+    batchAddForm.validateFields().then(async (values) => {
+      console.log(values)
+      await batchAddCompanyUserItem({...values});
+      message.success("批量增加成功")
+      refresh();
+      setBatchAddFormVisible(false)
+    })
+  };
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
@@ -145,7 +165,11 @@ const CompanyUser: React.FC = () => {
     setEditFormVisible(true);
 
     const ManageUserData = await run(editDataId);
-    editForm.setFieldsValue(ManageUserData);
+    editForm.setFieldsValue({
+      ...ManageUserData,
+      groupIds: ManageUserData.comapnyGroups.map((item: any) => item.value),
+      userStatus: String(ManageUserData.userStatus)
+    });
   };
 
   const sureEditCompanyUser = () => {
@@ -186,7 +210,7 @@ const CompanyUser: React.FC = () => {
       title: '昵称',
       dataIndex: 'nickName',
       index: 'nickName',
-      width: 180,
+      width: 160,
     },
     {
       title: '真实姓名',
@@ -210,22 +234,35 @@ const CompanyUser: React.FC = () => {
       title: '部组',
       dataIndex: 'comapnyGroups',
       index: 'comapnyGroups',
-      width: 200,
+      width: 210,
       render: (text: any, record: any) => {
-        return record.comapnyGroups ? record.comapnyGroups[0] : '';
+        const {comapnyGroups = []} = record;
+        return comapnyGroups.map((item: any) => {
+          return (
+            <CyTag key={uuid.v1()} className="mr7">
+              {item.text}
+            </CyTag>
+          )
+        })
       },
     },
     {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      width: 100,
+      width: 120,
       render: (text: any, record: any) => {
         return record.userStatus === 1 ? (
-          <Switch defaultChecked onChange={() => updateStatus(record.id)} />
+          <>
+            <Switch defaultChecked onChange={() => updateStatus(record.id)} />
+            <span className="formSwitchOpenTip">启用</span>
+          </>
         ) : (
-          <Switch onChange={() => updateStatus(record.id)} />
-        );
+          <>
+            <Switch onChange={() => updateStatus(record.id)} />
+            <span className="formSwitchCloseTip">禁用</span>
+          </>  
+          );
       },
     },
     {
@@ -233,21 +270,31 @@ const CompanyUser: React.FC = () => {
       dataIndex: 'authorizeClient',
       index: 'authorizeClient',
       width: 240,
-      render: (text: any, record: any) => {
-        return record.authorizeClientTexts;
+      render: (text: any, record: any) => { 
+        const {authorizeClientTexts} = record;
+        const element = authorizeClientTexts.map((item: string) => {
+          return (
+            <TableStatus className="mr7" color={mapColor[item] ?? "gray" } key={uuid.v1()}>{item}</TableStatus>
+          )
+        })
+        return (
+          <>
+            {element}
+          </>
+        )
       },
     },
     {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
       index: 'lastLoginIp',
-      width: 180,
+      width: 140,
     },
     {
       title: '最后登录日期',
       dataIndex: 'lastLoginDate',
       index: 'lastLoginDate',
-      width: 160,
+      width: 120,
       render: (text: any, record: any) => {
         return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
       },
@@ -319,7 +366,7 @@ const CompanyUser: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={batchAddForm}>
           <BatchAddCompanyUser treeData={selectTreeData} />
         </Form>
       </Modal>

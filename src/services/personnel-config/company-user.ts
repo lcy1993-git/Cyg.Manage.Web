@@ -42,7 +42,7 @@ export const addCompanyUserItem = (params: CompanyUserItemParams) => {
 };
 
 //批量新增公司用户
-export const BatchAddCompanyUserItem = (params: CompanyUserItemParams) => {
+export const batchAddCompanyUserItem = (params: any) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyUser/BatchCreate`, { method: 'POST', data: params }),
   );
@@ -86,3 +86,21 @@ export const getUserTreeByGroup = (params: CompanyGroupTree) => {
     request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`, { method: 'POST', data: params }),
   );
 };
+
+interface CompanyResult {
+  userStock: number
+  remark: string
+  address: string
+  parentId: string
+  id: string
+  name: string
+}
+
+// 获取用户库存数量
+export const getCompanyInfo = () => {
+  const {companyId = ""} = JSON.parse(localStorage.getItem("userInfo") ?? "{}");
+
+  return cyRequest<CompanyResult>(() =>
+    request(`${baseUrl.project}/Company/GetById`, { method: 'GET', params: {id: companyId} }),
+  );
+}

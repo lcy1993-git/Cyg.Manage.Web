@@ -14,7 +14,7 @@ const ToDo: React.FC = () => {
         <ChartBox title="待处理事务">
             <div className="flex">
                 <div className="flex1">
-                    <ToDoItem icon="wait-review" number={toDoStatisticsInfo?.awaitKnot ?? 0} status={"待评审"} />
+                    <ToDoItem icon="wait-review" number={toDoStatisticsInfo?.awaitKnot ?? 0} status={"待结项"} />
                 </div>
                 <div className="flex1">
                     <ToDoItem icon="wait-plan" number={toDoStatisticsInfo?.awaitAllot ?? 0} status={"待安排"} />
