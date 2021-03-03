@@ -79,7 +79,7 @@ const CompanyUser: React.FC = () => {
 
   const resetEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择一条数据进行编辑');
+      message.warning('请选择需要重置密码的用户！');
       return;
     }
     setResetFormVisible(true);
@@ -302,6 +302,7 @@ const CompanyUser: React.FC = () => {
         onOk={() => sureAddCompanyUserItem()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
         <Form form={addForm}>
           <CompanyUserForm treeData={selectTreeData} type="add" />
@@ -315,6 +316,7 @@ const CompanyUser: React.FC = () => {
         onOk={() => sureBatchAddCompanyUser()}
         onCancel={() => setBatchAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
         <Form form={addForm}>
           <BatchAddCompanyUser treeData={selectTreeData} />
@@ -343,6 +345,7 @@ const CompanyUser: React.FC = () => {
         onOk={() => resetPwd()}
         onCancel={() => setResetFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
         <Form form={editForm}>
           <ResetPasswordForm />

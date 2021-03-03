@@ -8,6 +8,7 @@ export enum CategoryEnum {
 }
 
 interface UserFeedBackItemParams {
+  sourceType: number;
   category: number;
   categoryText: string;
   title: string;
@@ -34,7 +35,7 @@ export const getUserFeedBackDetail = (id: string) => {
   );
 };
 
-//新增公司用户
+//新增用户反馈
 export const addUserFeedBackItem = (params: AddUserFeedBackItem) => {
   return cyRequest(() =>
     request(`${baseUrl.common}/Feedback/Create`, { method: 'POST', data: params }),
@@ -46,5 +47,7 @@ export const getFeedBackList = () => {
 };
 
 export const replyTheFeedback = (params: any) => {
-  return cyRequest(() => request(`${baseUrl.common}/Feedback/Reply`, { method: 'POST', data: params }));
-}
+  return cyRequest(() =>
+    request(`${baseUrl.common}/Feedback/Reply`, { method: 'POST', data: params }),
+  );
+};

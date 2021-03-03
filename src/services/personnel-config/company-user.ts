@@ -7,6 +7,7 @@ export enum CompanyUserEnum {
 }
 
 interface CompanyUserItemParams {
+  groupIds: string[];
   comapnyGroups: object[];
   companyName: string;
   userName: string;
@@ -18,10 +19,6 @@ interface CompanyUserItemParams {
   lastLoginIp: string;
   lastLoginDate: Date;
   authorizeClient: number;
-  pwd: string;
-}
-
-interface AddCompanyUserItem extends CompanyUserItemParams {
   pwd: string;
 }
 
@@ -38,14 +35,14 @@ export const getCompanyUserDetail = (id: string) => {
 };
 
 //新增公司用户
-export const addCompanyUserItem = (params: AddCompanyUserItem) => {
+export const addCompanyUserItem = (params: CompanyUserItemParams) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyUser/Create`, { method: 'POST', data: params }),
   );
 };
 
 //批量新增公司用户
-export const BatchAddCompanyUserItem = (params: AddCompanyUserItem) => {
+export const BatchAddCompanyUserItem = (params: CompanyUserItemParams) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyUser/BatchCreate`, { method: 'POST', data: params }),
   );
