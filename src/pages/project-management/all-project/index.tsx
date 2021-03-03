@@ -6,7 +6,7 @@ import { Button, Input, message, Modal, } from "antd";
 
 import styles from "./index.less";
 import EnumSelect from "@/components/enum-select";
-import { addEngineer, AllProjectStatisticsParams, applyKnot, auditKnot, BuildType, checkCanArrange, deleteProject, getProjectTableStatistics, noAuditKnot, ProjectCategory, ProjectNature, ProjectStage, ProjectStatus, ProjectType, ProjectVoltageClasses, recallShare, revokeAllot, revokeKnot } from "@/services/project-management/all-project";
+import { addEngineer, AllProjectStatisticsParams, applyKnot, auditKnot, BuildType, checkCanArrange, deleteProject, getProjectTableStatistics, noAuditKnot, ProjectStatus, recallShare, revokeAllot, revokeKnot } from "@/services/project-management/all-project";
 import AllStatistics from "./components/all-statistics";
 import SingleStatistics from "./components/single-statistics";
 import CommonTitle from "@/components/common-title";
@@ -24,6 +24,9 @@ import { Popconfirm } from "antd";
 import ArrangeModal from "./components/arrange-modal";
 import ShareModal from "./components/share-modal";
 import EditArrangeModal from "./components/edit-arrange-modal";
+import { useGetProjectEnum } from "@/utils/hooks";
+import UrlSelect from "@/components/url-select"
+
 
 const { Search } = Input;
 
@@ -67,6 +70,8 @@ const ProjectManagement: React.FC = () => {
     const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, {
         manual: true,
     });
+
+    const { projectCategory, projectPType, projectNature, projectConstructType, projectStage, projectKvLevel } = useGetProjectEnum();
 
     const handleStatisticsData = (statisticsDataItem?: number) => {
         if (statisticsDataItem) {
@@ -394,25 +399,30 @@ const ProjectManagement: React.FC = () => {
                                     enterButton
                                     value={keyWord}
                                     onChange={(e) => setKeyWord(e.target.value)}
+                                    onSearch={() => search()}
                                 />
                             </TableSearch>
                             <TableSearch className="mr2" label="全部状态" width="178px">
-                                <EnumSelect
-                                    enumList={ProjectCategory}
+                                <UrlSelect
+                                    valueKey="value"
+                                    titleKey="text"
+                                    defaultData={projectCategory}
                                     className="widthAll"
                                     value={category}
-                                    onChange={(value) => setCategory(String(value))}
+                                    onChange={(value) => setCategory(value as string)}
                                     placeholder="项目分类"
                                     needAll={true}
                                     allValue="-1"
                                 />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
-                                <EnumSelect
-                                    enumList={ProjectType}
+                                <UrlSelect
+                                    valueKey="value"
+                                    titleKey="text"
+                                    defaultData={projectPType}
                                     value={pCategory}
                                     dropdownMatchSelectWidth={168}
-                                    onChange={(value) => setPCategory(String(value))}
+                                    onChange={(value) => setPCategory(value as string)}
                                     className="widthAll"
                                     placeholder="项目类别"
                                     needAll={true}
@@ -420,32 +430,38 @@ const ProjectManagement: React.FC = () => {
                                 />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
-                                <EnumSelect
-                                    enumList={ProjectStage}
+                                <UrlSelect
+                                    valueKey="value"
+                                    titleKey="text"
+                                    defaultData={projectStage}
                                     value={stage}
                                     className="widthAll"
-                                    onChange={(value) => setStage(String(value))}
+                                    onChange={(value) => setStage(value as string)}
                                     placeholder="项目阶段"
                                     needAll={true}
                                     allValue="-1"
                                 />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
-                                <EnumSelect
-                                    enumList={BuildType}
+                                <UrlSelect
+                                    valueKey="value"
+                                    titleKey="text"
+                                    defaultData={projectConstructType}
                                     value={constructType}
                                     className="widthAll"
                                     placeholder="建设类型"
-                                    onChange={(value) => setConstructType(String(value))}
+                                    onChange={(value) => setConstructType(value as string)}
                                     needAll={true}
                                     allValue="-1"
                                 />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
-                                <EnumSelect
-                                    enumList={ProjectVoltageClasses}
+                                <UrlSelect
+                                    valueKey="value"
+                                    titleKey="text"
+                                    defaultData={projectKvLevel}
                                     value={kvLevel}
-                                    onChange={(value) => setKvLevel(String(value))}
+                                    onChange={(value) => setKvLevel(value as string)}
                                     className="widthAll"
                                     placeholder="电压等级"
                                     needAll={true}
@@ -453,11 +469,13 @@ const ProjectManagement: React.FC = () => {
                                 />
                             </TableSearch>
                             <TableSearch className="mr2" width="111px">
-                                <EnumSelect
-                                    enumList={ProjectNature}
+                                <UrlSelect
+                                    valueKey="value"
+                                    titleKey="text"
+                                    defaultData={projectNature}
                                     value={nature}
                                     dropdownMatchSelectWidth={168}
-                                    onChange={(value) => setNature(String(value))}
+                                    onChange={(value) => setNature(value as string)}
                                     className="widthAll"
                                     placeholder="项目性质"
                                     needAll={true}

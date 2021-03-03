@@ -1,6 +1,6 @@
 import CyFormItem from "@/components/cy-form-item"
 import UrlSelect from "@/components/url-select"
-import { useGetProjectEnum, useUrlSelectData } from "@/utils/hooks"
+import { useGetProjectEnum } from "@/utils/hooks"
 import { DatePicker, Input, Select } from "antd"
 import { isEmpty } from "lodash"
 import React, { memo } from "react"

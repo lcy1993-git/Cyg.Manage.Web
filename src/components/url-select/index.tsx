@@ -16,6 +16,8 @@ interface UrlSelectProps {
   paramsMust?: string[];
   postType?: 'query' | 'body';
   libId?: string;
+  needAll?: boolean
+  allValue?: string
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
@@ -32,7 +34,9 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     paramsMust = [],
     requestType = 'get',
     postType = 'body',
+    needAll = false,
     libId = '',
+    allValue = "",
     ...rest
   } = props;
 
@@ -54,7 +58,14 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
 
   const afterHanldeData = useMemo(() => {
     if (defaultData) {
-      return defaultData.map((item: any) => {
+      const copyData = [...defaultData];
+      if(needAll) {
+        const newObject = {};
+        newObject[titleKey] = "全部";
+        newObject[valueKey] = allValue;
+        copyData.unshift(newObject)
+      }
+      return copyData.map((item: any) => {
         return { label: item[titleKey], value: item[valueKey] };
       });
     }
