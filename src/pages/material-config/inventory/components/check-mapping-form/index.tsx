@@ -126,7 +126,7 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
           placeholder="关键词"
         />
       </TableSearch>
-      <TableSearch marginLeft="20px" label="创建方式" width="220px">
+      <TableSearch className={styles.createMethod} marginLeft="20px" label="创建方式" width="220px">
         <EnumSelect
           allowClear
           allLabel="-选择创建方式-"
@@ -137,7 +137,7 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
       </TableSearch>
       <TableSearch
         className={styles.inventorySelect}
-        // marginLeft="20px"
+        marginLeft="20px"
         label="当前协议库存"
         width="400px"
       >
