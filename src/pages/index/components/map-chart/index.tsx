@@ -5,11 +5,8 @@ import xinjiang from "../../json/xinjiang.json";
 import * as echarts from 'echarts';
 import "echarts/lib/chart/map";
 import 'echarts/lib/component/tooltip';
-import { useSize } from "ahooks";
-import { useRequest } from "ahooks";
+import { useRequest, useSize } from "ahooks";
 import { getMapStatisticsData } from "@/services/index";
-
-
 
 const MapChart:React.FC = () => {
 
@@ -21,8 +18,6 @@ const MapChart:React.FC = () => {
 
     const divRef = useRef<HTMLDivElement>(null);
     let myChart:any = null;
-
-    const size = useSize(divRef);
 
     const option = {
         tooltip: {
@@ -97,6 +92,8 @@ const MapChart:React.FC = () => {
         }],
     };
 
+    const size = useSize(divRef);
+
     const initChart = () => {
         if (divRef && divRef.current) {
             echarts.registerMap("xinjiang", xinjiang)
@@ -132,8 +129,9 @@ const MapChart:React.FC = () => {
     });
 
     useEffect(() => {
-        if(size.width || size.height) {
-            initChart();
+        if(size.width) {
+            const myEvent = new Event("resize");
+            window.dispatchEvent(myEvent)
         }
     }, [JSON.stringify(size)])
 

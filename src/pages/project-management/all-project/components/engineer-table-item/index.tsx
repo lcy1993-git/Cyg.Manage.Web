@@ -43,13 +43,13 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     const [indeterminate, setIndeterminate] = React.useState(false);
     const [checkAll, setCheckAll] = React.useState(false);
 
-    const { projectInfo = {}, columns = [], onChange, getClickProjectId, addProject,editEngineer} = props;
+    const { projectInfo = {}, columns = [], onChange, getClickProjectId, addProject, editEngineer } = props;
 
-    const theadElement = columns.map((item) => {
+    const theadElement = columns.map((item) => {        
         return (
-            <th key={uuid.v1()} style={item.width ? { width: `${item.width}px` } : undefined}>
+            <div className={styles.engineerTableTh} key={uuid.v1()} style={item.width ? { width: `${item.width}` } : {flex: "1"}}>
                 {item.title}
-            </th>
+            </div>
         )
     })
 
@@ -90,20 +90,20 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
 
     const tbodyElement = (projectInfo.projects ?? []).map((item: any) => {
         return (
-            <tr key={uuid.v1()}>
-                <td>
+            <div key={uuid.v1()} className={styles.engineerTableTr}>
+                <div className={styles.engineerTableTd} style={{width: "44px"}}>
                     <Checkbox style={{ marginLeft: "4px" }} value={item.id} />
-                </td>
+                </div>
                 {
                     columns.map((ite) => {
                         return (
-                            <td key={uuid.v1()}>
-                                {ite.render ? ite.render(item,projectInfo) : item[ite.dataIndex]}
-                            </td>
+                            <div className={styles.engineerTableTd} key={uuid.v1()} style={ite.width ? { width: `${ite.width}` } : {flex: "1"}}>
+                                {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
+                            </div>
                         )
                     })
                 }
-            </tr>
+            </div>
         )
     })
 
@@ -129,7 +129,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
 
     return (
         <div className={`${styles.projectTableItem}`}>
-            <div className={styles.ProjectTitle}>
+            <div className={styles.projectTitle}>
                 <div className={styles.foldButton}>
                     <span onClick={() => foldEvent()}>
                         {isFold ? <CaretUpOutlined /> : <CaretDownOutlined />}
@@ -182,24 +182,19 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                 !isFold && projectInfo.projects.length > 0 &&
                 <Checkbox.Group value={checkedList} onChange={checkboxChange}>
                     <div className={styles.engineerTable}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th className={styles.checkboxTh}>
-
-                                    </th>
-                                    {
-                                        theadElement
-                                    }
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div className={styles.engineerTableContent}>
+                            <div className={styles.engineerTableHeader}>
+                                <div className={styles.engineerTableTh} style={{width: "44px"}}></div>
+                                {
+                                    theadElement
+                                }
+                            </div>
+                            <div className={styles.engineerTableBody}>
                                 {
                                     tbodyElement
                                 }
-                            </tbody>
-                        </table>
-
+                            </div>
+                        </div>
                     </div>
                 </Checkbox.Group>
             }

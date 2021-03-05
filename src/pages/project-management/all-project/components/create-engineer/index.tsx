@@ -48,12 +48,24 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
     const exportDataChange = (data: any) => {
         setAreaId(data.areaId)
         setCompany(data.company)
+        resetCompanyDep()
+    }
+
+    const resetCompanyDep = () => {
+        const nowData = form.getFieldValue("projects");
+        const newData = nowData.map((item: any) => {
+            return {
+                ...item,
+                powerSupply:undefined
+            }
+        })
+        form.setFieldsValue({projects: newData})
     }
 
     return (
         <div>
             <CommonTitle>工程信息</CommonTitle>
-            <CreateEngineerForm exportDataChange={exportDataChange} />
+            <CreateEngineerForm form={form} exportDataChange={exportDataChange} />
             <CommonTitle>项目信息</CommonTitle>
             <Form.List name="projects" initialValue={[{ name: "" }]}>
                 {
@@ -87,7 +99,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                                 {
                                     fields.map((field, key) => (
                                         <TabPane key={key} tab={`项目${key + 1}`}>
-                                            <CreateProjectForm areaId={areaId} company={company}  field={field} />
+                                            <CreateProjectForm areaId={areaId} company={company} field={field} />
                                         </TabPane>
                                     ))
                                 }

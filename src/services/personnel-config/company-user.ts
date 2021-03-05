@@ -19,6 +19,7 @@ interface CompanyUserItemParams {
   lastLoginIp: string;
   lastLoginDate: Date;
   authorizeClient: number;
+  authorizeClientList: any[]
   pwd: string;
 }
 

@@ -147,17 +147,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "项目分类",
             dataIndex: "categoryText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "电压等级",
             dataIndex: "kvLevelText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "项目性质",
             dataIndex: "natureTexts",
-            width: 190,
+            width: "8%",
             render: (record: any) => {
                 const { natureTexts = [] } = record;
                 return natureTexts.map((item: any) => {
@@ -172,32 +172,32 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "专业类别",
             dataIndex: "majorCategoryText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "建设类型",
             dataIndex: "dataSourceTypeText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "项目批次",
             dataIndex: "batchText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "项目阶段",
             dataIndex: "stageText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "现场数据来源",
             dataIndex: "dataSourceTypeText",
-            width: 100
+            width: "8%",
         },
         {
             title: "项目状态",
+            width: "6.15%",
             dataIndex: "statusText",
-            width: 80,
             render: (record: any) => {
                 const { stateInfo } = record;
                 return (
@@ -210,7 +210,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "项目来源",
             dataIndex: "sources",
-            width: 80,
+            width: "6.15%",
             render: (record: any) => {
                 const { sources = [] } = record;
                 return sources.map((item: any) => {
@@ -227,7 +227,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "项目身份",
             dataIndex: "identitys",
-            width: 100,
+            width: "8%",
             render: (record: any) => {
                 const { identitys = [] } = record;
                 return identitys.map((item: any) => {
@@ -244,7 +244,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "操作",
             dataIndex: "operationAuthority",
-            width: 60,
+            width: "60px",
             render: (record: any, engineerInfo: any) => {
                 const {operationAuthority} = record;
         

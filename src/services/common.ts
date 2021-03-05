@@ -1,8 +1,8 @@
-import { RequestDataType, RequestDataCommonType } from './common.d';
-import { requestBaseUrl } from '../../public/config/request';
 import { message } from 'antd';
 import { request, history } from 'umi';
 import tokenRequest from '@/utils/request';
+import { requestBaseUrl } from '../../public/config/request';
+import { RequestDataType, RequestDataCommonType } from './common.d';
 
 const { NODE_ENV } = process.env;
 
@@ -89,15 +89,41 @@ export const getDataByUrl = (
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),
     );
-  } else if (postType === 'body') {
+  } if (postType === 'body') {
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, data: params }),
     );
-  } else {
+  } 
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params: { libId } }),
     );
+  
+};
+
+interface GetCommonSelectDataParams {
+  url: string;
+  params?: any;
+  requestSource?: 'common' | 'project' | 'resource';
+  method?: 'get' | 'post';
+  postType?: 'body';
+}
+
+export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) => {
+  const { url, params, requestSource = 'project', method = 'get', postType } = data;
+
+  const requestBaseUrl = baseUrl[requestSource];
+
+  if (method === 'post') {
+    return cyRequest<T[]>(() =>
+      tokenRequest(`${requestBaseUrl}${url}`, { method, data: params }),
+    );
   }
+  if (method === 'get' && postType) {
+    return cyRequest<T[]>(() =>
+      tokenRequest(`${requestBaseUrl}${url}`, { method, data: params }),
+    );
+  }
+  return cyRequest<T[]>(() => tokenRequest(`${requestBaseUrl}${url}`, { method, params }));
 };
 
 export const commonUpload = (
@@ -106,7 +132,6 @@ export const commonUpload = (
   name: string = 'file',
   requestSource: 'project' | 'resource' | 'upload',
 ) => {
-  console.log(requestSource);
 
   const requestUrl = baseUrl[requestSource];
   const formData = new FormData();

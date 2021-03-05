@@ -1,9 +1,10 @@
 import { useControllableValue } from 'ahooks';
 import { Button } from 'antd';
 import { Form, message, Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import EditArrangeForm from '../edit-arrange-form';
-import { editArrange } from '@/services/project-management/all-project';
+import { editArrange, getProjectInfo } from '@/services/project-management/all-project';
+import { useRequest } from 'ahooks';
 
 interface EditArrangeProps {
   projectIds: string[];
@@ -18,6 +19,13 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const [form] = Form.useForm();
 
   const { projectIds, changeFinishEvent } = props;
+
+  const {data: projectInfo, run} = useRequest(getProjectInfo,{
+    manual: true,
+    onSuccess: () => {
+      console.log(projectInfo)
+    }
+  })
 
   const edit = () => {
     form.validateFields().then(async (value) => {
@@ -46,6 +54,12 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       }
     });
   };
+
+  useEffect(() => {
+    if(projectIds.length === 1) {
+      run(projectIds[0])
+    }
+  }, [JSON.stringify(projectIds)])
 
   return (
     <Modal

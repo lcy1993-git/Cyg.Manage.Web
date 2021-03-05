@@ -17,7 +17,23 @@ interface CreateProjectFormProps {
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     const { field = {}, areaId, company } = props;
 
-    const { projectCategory, projectPType, projectKvLevel, projectNature, projectAssetsNature, projectMajorCategory, projectReformCause, projectReformAim, projectRegionAttribute, projectConstructType, projectClassification, projectStage, projectBatch, projectAttribute, meteorologicLevel, projectDataSourceType } = useGetProjectEnum();
+    const {
+        projectCategory,
+        projectPType,
+        projectKvLevel,
+        projectNature,
+        projectAssetsNature,
+        projectMajorCategory,
+        projectReformCause,
+        projectReformAim,
+        projectRegionAttribute,
+        projectConstructType,
+        projectClassification,
+        projectStage,
+        projectBatch,
+        projectAttribute,
+        meteorologicLevel,
+        projectDataSourceType } = useGetProjectEnum();
 
     return (
         <>
