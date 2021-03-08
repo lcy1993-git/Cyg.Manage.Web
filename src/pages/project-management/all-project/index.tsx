@@ -147,7 +147,7 @@ const ProjectManagement: React.FC = () => {
             return;
         }
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
-        //await canEditArrange(projectIds)
+        await canEditArrange(projectIds)
         setSelectProjectIds(projectIds);
         setEditArrangeModalVisible(true);
     };

@@ -370,7 +370,7 @@ interface ProjectInfoParams {
   stateInfo: string;
   sources: string;
   identitys: string[];
-  allots: string;
+  allots: any[];
 }
 
 // 获取项目详细信息接口
@@ -473,16 +473,16 @@ export const checkCanArrange = (projectIds: string[]) => {
   );
 };
 
-export const getGroupInfo = (clientType: string) => {
+export const getGroupInfo = (clientType: string,companyGroupId: string = "") => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`, {
       method: 'POST',
-      data: { clientType },
+      data: { clientType, companyGroupId},
     }),
   );
 };
 
-export const getCompanyName = (userName: string) => {
+export const getCompanyName = (userName: string): Promise<any> => {
   if(!userName) {
     return new Promise((resolve) => {
       resolve(undefined)

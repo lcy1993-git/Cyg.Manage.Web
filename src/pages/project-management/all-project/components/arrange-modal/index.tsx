@@ -10,12 +10,14 @@ interface ArrangeModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   finishEvent?: () => void;
+  defaultSelectType?: string
+  allotCompanyId?: string
 }
 
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyInfo, setCompanyInfo] = useState<any>();
-  const { projectIds, finishEvent } = props;
+  const { projectIds, finishEvent,defaultSelectType = "2", allotCompanyId} = props;
 
   const [selectType, setSelectType] = useState<string>('');
 
@@ -28,6 +30,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
       //   console.log(companyInfo);
+      
       if (selectType === '2') {
         const arrangeInfo = Object.assign(
           {
@@ -79,11 +82,12 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       width={680}
       visible={state as boolean}
       okText="提交"
+      destroyOnClose
       onOk={() => saveInfo()}
       onCancel={() => setState(false)}
     >
       <Form form={form}>
-        <ArrangeForm getCompanyInfo={getCompanyInfo} onChange={(value) => setSelectType(value)} />
+        <ArrangeForm defaultType={defaultSelectType} allotCompanyId={allotCompanyId} getCompanyInfo={getCompanyInfo} onChange={(value) => setSelectType(value)} />
       </Form>
     </Modal>
   );

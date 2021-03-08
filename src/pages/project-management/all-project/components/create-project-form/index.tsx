@@ -1,6 +1,7 @@
 import CyFormItem from "@/components/cy-form-item"
+import DataSelect from "@/components/data-select"
 import UrlSelect from "@/components/url-select"
-import { useGetProjectEnum } from "@/utils/hooks"
+import { useGetProjectEnum, useGetSelectData } from "@/utils/hooks"
 import { DatePicker, Input, Select } from "antd"
 import { isEmpty } from "lodash"
 import React, { memo } from "react"
@@ -16,6 +17,8 @@ interface CreateProjectFormProps {
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     const { field = {}, areaId, company } = props;
+
+    const { data: areaSelectData } = useGetSelectData({ url: "/Area/GetList", extraParams: { pId: areaId } });
 
     const {
         projectCategory,
@@ -132,7 +135,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 </div>
                 <div className="flex1 flowHidden">
                     <CyFormItem label="所属市" fieldKey={[field.fieldKey, 'cityCompany']} name={isEmpty(field) ? "cityCompany" : [field.name, 'cityCompany']} labelWidth={120} align="right">
-                        <Input placeholder="请输入" />
+                        <DataSelect options={areaSelectData} placeholder="请选择" />
                     </CyFormItem>
                 </div>
             </div>

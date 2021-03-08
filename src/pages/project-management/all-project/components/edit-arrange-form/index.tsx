@@ -24,6 +24,7 @@ const EditArrangeForm: React.FC = (props) => {
     <>
       <CyFormItem label="勘察" name="surveyUser" required>
         <TreeSelect
+          key="editSurveyUser"
           style={{ width: '100%' }}
           treeData={surveyData.map(mapTreeData)}
           placeholder="请选择"
@@ -34,6 +35,7 @@ const EditArrangeForm: React.FC = (props) => {
 
       <CyFormItem label="设计" name="designUser" required>
         <TreeSelect
+          key="editDesignUser"
           style={{ width: '100%' }}
           treeData={designData.map(mapTreeData)}
           placeholder="请选择"
@@ -46,6 +48,7 @@ const EditArrangeForm: React.FC = (props) => {
 
       <CyFormItem label="校对" name="designAssessUser1">
         <TreeSelect
+          key="editDesignAssessUser1"
           style={{ width: '100%' }}
           treeData={auditData.map(mapTreeData)}
           placeholder="请选择"
@@ -55,6 +58,7 @@ const EditArrangeForm: React.FC = (props) => {
       </CyFormItem>
       <CyFormItem label="校核" name="designAssessUser2">
         <TreeSelect
+          key="editDesignAssessUser2"
           style={{ width: '100%' }}
           treeData={auditData.map(mapTreeData)}
           placeholder="请选择"
@@ -64,6 +68,7 @@ const EditArrangeForm: React.FC = (props) => {
       </CyFormItem>
       <CyFormItem label="审核" name="designAssessUser3">
         <TreeSelect
+          key="editDesignAssessUser3"
           style={{ width: '100%' }}
           treeData={auditData.map(mapTreeData)}
           placeholder="请选择"
@@ -73,6 +78,7 @@ const EditArrangeForm: React.FC = (props) => {
       </CyFormItem>
       <CyFormItem label="审定" name="designAssessUser4" required>
         <TreeSelect
+          key="editDesignAssessUser4"
           style={{ width: '100%' }}
           treeData={auditData.map(mapTreeData)}
           placeholder="请选择"

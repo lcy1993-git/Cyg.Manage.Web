@@ -13,6 +13,7 @@ interface EditArrangeProps {
   changeFinishEvent: () => void;
 }
 
+
 const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [requestLoading, setRequestLoading] = useState(false);
@@ -23,7 +24,37 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const {data: projectInfo, run} = useRequest(getProjectInfo,{
     manual: true,
     onSuccess: () => {
-      console.log(projectInfo)
+      const {allots} = projectInfo ?? {};
+      if(allots && allots.length > 0) {
+        const latestAllot = allots[allots?.length - 1];
+        const allotType = latestAllot.allotType;
+        const users = latestAllot.users;
+        if(allotType === 2) {
+          console.log(users)
+          let personObj = {};
+          users.filter((item: any) => item.key.value === 1 || item.key.value === 2).forEach((item: any) => {
+            if(item.key.value === 1) {
+              personObj["surveyUser"] = (item.value ?? [])[0].userId;
+            }
+            if(item.key.value === 2) {
+              personObj["designUser"] = (item.value ?? [])[0].userId;
+            }
+          })
+          let auditPersonObj = {};
+          users.filter((item: any) => item.key.value === 4).forEach((item: any) => {
+            const auditPersonArray = item.value ?? [];
+            auditPersonArray.forEach((ite: any) => {
+              if(ite.auditSubType !== 0) {
+                auditPersonObj[`designAssessUser${ite.auditSubType}`] = ite.userId;
+              }
+            })
+          })
+          form.setFieldsValue({
+            ...personObj,
+            ...auditPersonObj
+          })
+        }
+      }
     }
   })
 

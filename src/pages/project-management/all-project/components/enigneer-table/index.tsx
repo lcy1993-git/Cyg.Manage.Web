@@ -20,6 +20,7 @@ import AddProjectModal from "../add-project-modal"
 import EditEnigneerModal from "../edit-engineer-modal"
 import EditProjectModal from "../edit-project-modal"
 import CopyProjectModal from "../copy-project-modal"
+import ArrangeModal from "../arrange-modal"
 
 interface ExtractParams extends AllProjectStatisticsParams {
     statisticalCategory?: string
@@ -68,7 +69,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         company: ""
     })
 
-
+    const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
+    const [currentArrageProjectId, setCurrentArrageProjectId] = useState<string>("");
+    const [currentProjectArrangeType, setCurrentProjectArrageType] = useState<string>();
+    const [arrangeAllotCompanyId, setArrangeAllotCompanyId] = useState<string>();
 
     const addProjectEvent = (projectNeedValue: AddProjectValue) => {
         setAddProjectVisible(true)
@@ -127,6 +131,23 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
             </Menu>
         )
+    }
+
+    const arrange = (projectId: string, projectType?: number, allotCompanyId?: string) => {
+        setCurrentArrageProjectId(projectId)
+        setCurrentProjectArrageType(projectType ? String(projectType) : undefined)
+        setArrangeAllotCompanyId(allotCompanyId)
+        setArrangeModalVisible(true)
+    }
+
+    const arrangeFinish = () => {
+        setArrangeModalVisible(false)
+        run({
+            ...extractParams,
+            pageIndex,
+            pageSize
+        });
+        setTableSelectData([])
     }
 
     const projectTableColumns = [
@@ -199,10 +220,19 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             width: "6.15%",
             dataIndex: "statusText",
             render: (record: any) => {
-                const { stateInfo } = record;
+                const { stateInfo,allot,identitys } = record;
+                let arrangeType: any = null;
+                let allotCompanyId = null;
+
+                if(allot) {
+                    arrangeType = allot.allotType
+                    allotCompanyId = allot.allotCompanyGroup
+                }
                 return (
                     <span>
-                        {stateInfo?.statusText}
+                        {
+                            !(stateInfo.isArrange) && (identitys.findIndex((item: any) => item.value === 4)) > -1 ? <span className="canClick" onClick={() => arrange(record.id, arrangeType, allotCompanyId)}>{stateInfo?.statusText}</span> : <span>{stateInfo?.statusText}</span>
+                        }
                     </span>
                 )
             }
@@ -398,6 +428,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             </div>
             <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible}  />
             <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />
+            <ArrangeModal allotCompanyId={arrangeAllotCompanyId} finishEvent={arrangeFinish} visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={[currentArrageProjectId]} defaultSelectType={currentProjectArrangeType} />
             <EditEnigneerModal engineerId={currentEditEngineerId} visible={editEngineerVisible} onChange={setEditEngineerVisible} changeFinishEvent={tableItemEventFinish} />
             <EditProjectModal projectId={currentEditProjectInfo.projectId} company={currentEditProjectInfo.company} areaId={currentEditProjectInfo.areaId} visible={editProjectVisible} onChange={setEditProjectVisible} changeFinishEvent={tableItemEventFinish} />
             <CopyProjectModal projectId={currentCopyProjectInfo.projectId} engineerId={currentCopyProjectInfo.engineerId} company={currentCopyProjectInfo.company} areaId={currentCopyProjectInfo.areaId} visible={copyProjectVisible} onChange={setCopyProjectVisible} changeFinishEvent={tableItemEventFinish} />
