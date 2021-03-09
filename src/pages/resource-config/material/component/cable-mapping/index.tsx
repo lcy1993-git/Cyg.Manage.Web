@@ -10,7 +10,7 @@ interface WareHouseDetailParams {
 
 const { Search } = Input;
 
-const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
+const CableMapping: React.FC<WareHouseDetailParams> = (props) => {
   const { libId, materialIds } = props;
 
   const tableRef = useRef<HTMLDivElement>(null);
@@ -19,31 +19,46 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
 
   const columns = [
     {
-      title: '物料编码',
-      dataIndex: 'materialId',
-      index: 'materialId',
+      title: '电缆物料编码',
+      dataIndex: 'lineMaterialID',
+      index: 'lineMaterialID',
       width: 200,
     },
     {
       title: '物料名称',
-      dataIndex: 'materialName',
-      index: 'materialName',
+      dataIndex: 'lineMaterialName',
+      index: 'lineMaterialName',
       width: 220,
     },
     {
-      title: '截面积(mm²)',
-      dataIndex: 'crossSectionArea',
-      index: 'crossSectionArea',
+      title: '规格型号',
+      dataIndex: 'lineMaterialSpec',
+      index: 'lineMaterialSpec',
       width: 220,
+    },
+    {
+      title: '电缆终端物料编码',
+      dataIndex: 'headMaterialID',
+      index: 'headMaterialID',
+      width: 220,
+    },
+    {
+      title: '物料名称',
+      dataIndex: 'headMaterialName',
+      index: 'headMaterialName',
+      width: 240,
+    },
+    {
+      title: '规格型号',
+      dataIndex: 'headMaterialSpec',
+      index: 'headMaterialSpec',
+      width: 240,
     },
     {
       title: '是否可下户',
-      dataIndex: 'isUsedHousehold',
-      index: 'isUsedHousehold',
-      width: 220,
-      render: (text: any, record: any) => {
-        return record.isUsedHousehold === true ? '是' : '否';
-      },
+      dataIndex: 'isOutDoors',
+      index: 'isOutDoors',
+      width: 180,
     },
   ];
 
@@ -54,13 +69,6 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
     }
   };
 
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current.refresh();
-    }
-  };
-
   const tableLeftSlot = (
     <TableSearch label="关键词" width="230px">
       <Search
@@ -68,7 +76,7 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
         onChange={(e) => setSearchKeyWord(e.target.value)}
         onSearch={() => search()}
         enterButton
-        placeholder="物料编码/名称"
+        placeholder="物料编码/名称/型号"
         allowClear
       />
     </TableSearch>
@@ -79,7 +87,7 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
       <GeneralTable
         buttonLeftContentSlot={() => tableLeftSlot}
         ref={tableRef}
-        url="/Material/GetLinePropertyList"
+        url="/Material/GetCableHeadMapList"
         columns={columns}
         type="radio"
         requestSource="resource"
@@ -93,4 +101,4 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
   );
 };
 
-export default LineProperty;
+export default CableMapping;

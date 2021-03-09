@@ -14,6 +14,7 @@ import {
 import { isArray } from 'lodash';
 
 import CableWellForm from './components/add-edit-form';
+import CableWellDetail from './components/detail-table/index';
 
 const { Search } = Input;
 
@@ -401,14 +402,21 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       <Modal
         footer=""
         title="电缆井明细"
-        width="680px"
+        width="92%"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <Spin spinning={loading}>
+          <CableWellDetail
+            libId={libId}
+            cableWellId={tableSelectRows.map((item) => {
+              return item.id;
+            })}
+          ></CableWellDetail>
+        </Spin>
       </Modal>
     </>
   );

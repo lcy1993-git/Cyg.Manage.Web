@@ -178,6 +178,7 @@ const ResourceLib: React.FC = () => {
           编辑
         </Button>
         <TableImportButton
+          isChecked
           buttonTitle="导入图纸"
           modalTitle="导入图纸"
           requestSource="upload"
@@ -185,7 +186,7 @@ const ResourceLib: React.FC = () => {
           importUrl="/Upload/Chart"
         />
         <TableImportButton
-          onClick={() => setLibId(tableSelectRows[0].id)}
+          isChecked
           buttonTitle="导入资源库"
           modalTitle="导入资源库"
           className={styles.importBtn}
@@ -194,6 +195,7 @@ const ResourceLib: React.FC = () => {
           extraParams={{ libId: libId }}
         />
         <TableImportButton
+          isChecked
           buttonTitle="导入应力弧垂表"
           modalTitle="导入应力弧垂表"
           className={styles.importBtn}

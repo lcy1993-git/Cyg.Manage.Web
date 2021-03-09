@@ -18,6 +18,8 @@ const { Search } = Input;
 const CheckMapping: React.FC<CheckMappingParams> = (props) => {
   const { inventoryOverviewId, currentInv } = props;
 
+  console.log(inventoryOverviewId);
+
   const tableRef = useRef<HTMLDivElement>(null);
   const [createMethod, setCreateMethod] = useState('');
 
@@ -143,7 +145,7 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
       >
         <UrlSelect
           disabled
-          defaultValue={inventoryOverviewId}
+          value={inventoryOverviewId}
           allowClear
           showSearch
           defaultData={currentInv}

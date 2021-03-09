@@ -61,13 +61,16 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
 
       <CyFormItem label="图纸" name="chartIds">
         <UrlSelect
+          requestType="post"
           mode="multiple"
-          requestSource="resource"
           showSearch
+          requestSource="resource"
           url="/Chart/GetList"
           titleKey="chartName"
           valueKey="chartId"
           placeholder="请选择图纸"
+          postType="query"
+          libId={resourceLibId}
         />
       </CyFormItem>
     </>

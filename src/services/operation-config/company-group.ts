@@ -74,7 +74,7 @@ export const getTreeSelectData = () => {
   );
 };
 // 删除
-export const delectCompanyGroupItem = (id: string) => {
+export const deleteCompanyGroupItem = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyGroup/DeleteById`, { method: 'GET', params: { id } }),
   );

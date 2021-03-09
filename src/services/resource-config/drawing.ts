@@ -7,6 +7,24 @@ export const getDrawingList = (libId: string) => {
   );
 };
 
+//密钥接口
+interface SecurityParams {
+  storageApi: string;
+  uploadChartApiSecurity: string;
+  uploadCompanyFileApiSecurity: string;
+  uploadLineStressChartApiSecurity: string;
+  logFileApiSecurity: string;
+  projectEarlyWarnDay: string;
+  setCompanyFileByCompanyId: string;
+  webGisUrl: string;
+  userNamePrefix: string;
+  logoUrl: string;
+  companyName: string;
+  publicApi: string;
+}
+
 export const getUploadUrl = () => {
-  return cyRequest(() => request(`${baseUrl.resource}/Chart/GetUrlSetting`, { method: 'GET' }));
+  return cyRequest<SecurityParams>(() =>
+    request(`${baseUrl.resource}/Chart/GetUrlSetting`, { method: 'GET' }),
+  );
 };

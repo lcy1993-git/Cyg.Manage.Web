@@ -16,6 +16,8 @@ import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 import ComponentForm from './components/add-edit-form';
+import ComponentDetail from './components/detail-table';
+import ComponentProperty from './components/property-table';
 
 const { Search } = Input;
 
@@ -26,6 +28,8 @@ const Component: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+
+  const [deviceCategory, setDeviceCategory] = useState<string>('');
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
@@ -67,15 +71,25 @@ const Component: React.FC = () => {
             showSearch
             requestSource="resource"
             url="/Component/GetDeviceCategory"
-            titleKey="name"
+            titleKey="key"
             valueKey="value"
             placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
+            onChange={(value: any) => searchByCategory(value)}
           />
         </TableSearch>
       </div>
     );
   };
+
+  //选择设备类别搜索
+  const searchByCategory = (value: any) => {
+    setDeviceCategory(value);
+    search();
+  };
+
+  useEffect(() => {
+    searchByCategory(deviceCategory);
+  }, [deviceCategory]);
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
@@ -115,7 +129,7 @@ const Component: React.FC = () => {
       dataIndex: 'componentName',
       index: 'componentName',
       title: '名称',
-      width: 240,
+      width: 380,
     },
     {
       dataIndex: 'componentSpec',
@@ -133,7 +147,7 @@ const Component: React.FC = () => {
       dataIndex: 'unit',
       index: 'unit',
       title: '单位',
-      width: 140,
+      width: 120,
     },
     {
       dataIndex: 'deviceCategory',
@@ -158,13 +172,13 @@ const Component: React.FC = () => {
       dataIndex: 'forProject',
       index: 'forProject',
       title: '所属工程',
-      width: 240,
+      width: 150,
     },
     {
       dataIndex: 'forDesign',
       index: 'forDesign',
       title: '所属设计',
-      width: 240,
+      width: 150,
     },
     {
       dataIndex: 'remark',
@@ -293,7 +307,7 @@ const Component: React.FC = () => {
         <Button className={styles.importBtn} onClick={() => openDetail()}>
           组件明细
         </Button>
-        <Button className={styles.importBtn} onClick={() => openAttribute()}>
+        <Button className={styles.importBtn} onClick={() => openProperty()}>
           组件属性
         </Button>
       </div>
@@ -305,10 +319,11 @@ const Component: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const selectedDataId = tableSelectRows.map((item) => {
+      return item.id;
+    });
 
-    await deleteComponentItem(editDataId);
+    await deleteComponentItem(resourceLibId, selectedDataId);
     refresh();
     message.success('删除成功');
   };
@@ -323,9 +338,16 @@ const Component: React.FC = () => {
   };
 
   //展示组件属性
-  const openAttribute = () => {
+  const openProperty = () => {
     if (!resourceLibId) {
       message.warning('请先选择资源库');
+      return;
+    }
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.error('请选择需要查看的行');
       return;
     }
     setAttributeVisible(true);
@@ -346,6 +368,8 @@ const Component: React.FC = () => {
         type="checkbox"
         extractParams={{
           resourceLibId: resourceLibId,
+          isElectricalEquipment: false,
+          deviceCategory: deviceCategory,
           keyWord: searchKeyWord,
         }}
       />
@@ -381,27 +405,41 @@ const Component: React.FC = () => {
       <Modal
         footer=""
         title="组件明细"
-        width="680px"
+        width="92%"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <Spin spinning={loading}>
+          <ComponentDetail
+            libId={resourceLibId}
+            componentId={tableSelectRows.map((item) => {
+              return item.id;
+            })}
+          />
+        </Spin>
       </Modal>
 
       <Modal
         footer=""
         title="组件属性"
-        width="680px"
+        width="60%"
         visible={attributeVisible}
         onCancel={() => setAttributeVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <Spin spinning={loading}>
+          <ComponentProperty
+            libId={resourceLibId}
+            componentId={tableSelectRows.map((item) => {
+              return item.id;
+            })}
+          />
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

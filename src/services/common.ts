@@ -89,15 +89,15 @@ export const getDataByUrl = (
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),
     );
-  } if (postType === 'body') {
+  }
+  if (postType === 'body') {
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, data: params }),
     );
-  } 
-    return cyRequest<any[]>(() =>
-      tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params: { libId } }),
-    );
-  
+  }
+  return cyRequest<any[]>(() =>
+    tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params: { libId } }),
+  );
 };
 
 interface GetCommonSelectDataParams {
@@ -114,14 +114,10 @@ export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) =>
   const requestBaseUrl = baseUrl[requestSource];
 
   if (method === 'post') {
-    return cyRequest<T[]>(() =>
-      tokenRequest(`${requestBaseUrl}${url}`, { method, data: params }),
-    );
+    return cyRequest<T[]>(() => tokenRequest(`${requestBaseUrl}${url}`, { method, data: params }));
   }
   if (method === 'get' && postType) {
-    return cyRequest<T[]>(() =>
-      tokenRequest(`${requestBaseUrl}${url}`, { method, data: params }),
-    );
+    return cyRequest<T[]>(() => tokenRequest(`${requestBaseUrl}${url}`, { method, data: params }));
   }
   return cyRequest<T[]>(() => tokenRequest(`${requestBaseUrl}${url}`, { method, params }));
 };
@@ -131,13 +127,15 @@ export const commonUpload = (
   files: any[],
   name: string = 'file',
   requestSource: 'project' | 'resource' | 'upload',
+  postType: 'body' | 'query',
 ) => {
-
   const requestUrl = baseUrl[requestSource];
   const formData = new FormData();
   files.forEach((item) => {
     formData.append(name, item);
   });
+  console.log(postType);
+
   return cyRequest<any[]>(() =>
     tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',

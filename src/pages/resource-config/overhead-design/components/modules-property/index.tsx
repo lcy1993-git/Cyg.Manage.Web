@@ -30,8 +30,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
 
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
-  const [detailId, setDetailId] = useState<string[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -310,11 +309,11 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       message.warning('请先选择资源库');
       return;
     }
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择模块查看明细');
+      return;
+    }
     setModuleDetailVisible(true);
-    tableSelectRows.map((item) => {
-      detailId.push(item.id);
-    });
-    console.log(detailId);
   };
 
   //编辑模块属性
@@ -349,7 +348,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       const submitInfo = Object.assign(
         {
           libId: libId,
-          moduleId: editData.id,
+          moduleId: editData.moduleId,
           height: editData.height,
           depth: editData.depth,
           nominalHeight: editData.nominalHeight,
@@ -387,8 +386,8 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         columns={columns}
         requestSource="resource"
         url="/Modules/GetPageList"
-        getSelectData={(data) => setTableSelectRow(data)}
-        type="checkbox"
+        getSelectData={(data) => setTableSelectRows(data)}
+        type="radio"
         extractParams={{
           resourceLibId: libId,
           keyWord: searchKeyWord,
@@ -453,12 +452,18 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       <Modal
         footer=""
         title="模块明细"
-        width="1080px"
+        width="90%"
         visible={moduleDetailVisible}
         onCancel={() => setModuleDetailVisible(false)}
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Spin spinning={loading}>
-          <ModuleDetailTable libId={libId} moduleIds={detailId} />
+          <ModuleDetailTable
+            libId={libId}
+            moduleId={tableSelectRows.map((item) => {
+              return item.id;
+            })}
+          />
         </Spin>
       </Modal>
     </>

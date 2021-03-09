@@ -16,6 +16,8 @@ import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 import MaterialForm from './component/add-edit-form';
+import LineProperty from './component/line-property';
+import CableMapping from './component/cable-mapping';
 
 const { Search } = Input;
 
@@ -433,27 +435,27 @@ const Material: React.FC = () => {
       <Modal
         footer=""
         title="导线属性"
-        width="680px"
+        width="880px"
         visible={attributeVisible}
         onCancel={() => setAttributeVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <LineProperty libId={resourceLibId} materialIds={[]} />
       </Modal>
 
       <Modal
         footer=""
         title="电缆终端头映射"
-        width="680px"
+        width="92%"
         visible={cableTerminalVisible}
         onCancel={() => setCableTerminalVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <CableMapping libId={resourceLibId} materialIds={[]} />
       </Modal>
     </PageCommonWrap>
   );
