@@ -13,6 +13,7 @@ import {
 } from '@/services/resource-config/cable-channel';
 import { isArray } from 'lodash';
 import CableChannelForm from './components/add-edit-form';
+import CableChannelDetail from './components/detail-table';
 
 const { Search } = Input;
 
@@ -31,7 +32,6 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [ids, setIds] = useState<string[]>([]);
 
-  const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
@@ -350,15 +350,6 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     setDetailVisible(true);
   };
 
-  //展示组件属性
-  const openAttribute = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
-    setAttributeVisible(true);
-  };
-
   return (
     <>
       <GeneralTable
@@ -410,14 +401,21 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       <Modal
         footer=""
         title="电缆通道明细"
-        width="680px"
+        width="92%"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <Spin spinning={loading}>
+          <CableChannelDetail
+            libId={libId}
+            cableChannelId={tableSelectRows.map((item) => {
+              return item.id;
+            })}
+          />
+        </Spin>
       </Modal>
     </>
   );

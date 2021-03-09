@@ -120,8 +120,10 @@ export const updateModulesDetailItem = (params: ModuleDetailParams) => {
 };
 
 // 删除明细
-export const deleteModulesDetailItem = (params: object) => {
+export const deleteModulesDetailItem = (libId: string, id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/ModulesDetails/Delete`, { method: 'POST', data: params }),
+    request(`${baseUrl.resource}/ModulesDetails/Delete`, { method: 'POST', params: { libId, id } }),
   );
 };
+
+/**模块明细操作 */

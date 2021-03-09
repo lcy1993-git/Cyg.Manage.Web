@@ -127,7 +127,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-          <CyFormItem label="审定" name="designAssessUser4" required>
+          <CyFormItem label="审定" name="designAssessUser4">
             <TreeSelect
               style={{ width: '100%' }}
               treeData={auditData.map(mapTreeData)}

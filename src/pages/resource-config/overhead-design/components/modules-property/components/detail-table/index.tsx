@@ -1,6 +1,6 @@
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
-import { Input, Button, message, Form } from 'antd';
+import { Input, Button, message, Form, Modal } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Popconfirm } from 'antd';
@@ -13,36 +13,43 @@ import {
   getModuleDetailItem,
 } from '@/services/resource-config/modules-property';
 import { useRequest } from 'ahooks';
-
+import UrlSelect from '@/components/url-select';
+import AddModuleDetailTable from './add-form';
+import EditModuleDetail from './edit-form';
 interface ModuleDetailParams {
   libId: string;
-  moduleIds?: string[];
+  moduleId: string[];
 }
 
 const { Search } = Input;
 
 const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, moduleIds } = props;
+  const { libId, moduleId } = props;
 
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [modulePart, setModulePart] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [ids, setIds] = useState<string[]>([]);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getModuleDetailItem, {
+  const { data, run } = useRequest(getModuleDetailItem, {
     manual: true,
   });
+
+  useEffect(() => {
+    search();
+  }, [moduleId]);
+
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
         <TableSearch label="关键词" width="230px">
           <Search
+            allowClear
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
@@ -50,20 +57,30 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
             placeholder="关键词"
           />
         </TableSearch>
+        <TableSearch width="230px">
+          <UrlSelect
+            requestSource="resource"
+            url="/ModulesDetails/GetParts"
+            valueKey="value"
+            titleKey="key"
+            allowClear
+            onChange={(value: any) => searchByPart(value)}
+            placeholder="--所属部件--"
+          />
+        </TableSearch>
       </div>
     );
   };
 
   //选择资源库传libId
-  const searchByLib = (value: any) => {
-    // console.log(value);
-    setResourceLibId(value);
+  const searchByPart = (value: any) => {
+    setModulePart(value);
     search();
   };
 
   useEffect(() => {
-    searchByLib(libId);
-  }, [libId]);
+    searchByPart(modulePart);
+  }, [modulePart]);
 
   // 列表刷新
   const refresh = () => {
@@ -124,40 +141,30 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
       index: 'isComponent',
       title: '是否组件',
       width: 220,
+      render: (text: any, record: any) => {
+        return record.isComponent === 1 ? '是' : '否';
+      },
     },
   ];
 
   //添加
   const addEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库！');
-      return;
-    }
     setAddFormVisible(true);
   };
 
   const sureAddModuleDetail = () => {
     addForm.validateFields().then(async (value) => {
-      const submitInfo = Object.assign(
+      const saveInfo = Object.assign(
         {
           libId: libId,
-          moduleId: '',
-          moduleName: '',
-          shortName: '',
-          typicalCode: '',
-          poleTypeCode: '',
-          unit: '',
-          moduleType: '',
-          forProject: '',
-          forDesign: '',
-          remark: '',
-          chartIds: [],
+          moduleId: moduleId[0],
         },
         value,
       );
-      await addModuleDetailItem(submitInfo);
-      refresh();
+
+      await addModuleDetailItem(saveInfo);
       message.success('添加成功');
+      refresh();
       setAddFormVisible(false);
       addForm.resetFields();
     });
@@ -165,10 +172,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
 
   //编辑
   const editEvent = async () => {
-    if (
-      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
-      tableSelectRows.length > 1
-    ) {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
     }
@@ -176,12 +180,16 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const ResourceLibData = await run(resourceLibId, editDataId);
+    const ModuleDetailData = await run(libId, editDataId);
+    ModuleDetailData.componentId = ModuleDetailData.isComponent == 1 ? ModuleDetailData.itemId : '';
+    ModuleDetailData.materialId = ModuleDetailData.isComponent == 0 ? ModuleDetailData.itemId : '';
 
-    editForm.setFieldsValue(ResourceLibData);
+    console.log(ModuleDetailData);
+
+    editForm.setFieldsValue(ModuleDetailData);
   };
 
-  const sureEditModuleProperty = () => {
+  const sureEditModuleDetail = () => {
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
@@ -189,10 +197,10 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
         {
           id: editData.id,
           libId: libId,
-          moduleName: editData.moduleName,
           part: editData.part,
           componentId: editData.componentId,
           materialId: editData.materialId,
+          itemId: editData.itemId,
           itemNumber: editData.itemNumber,
           isComponent: editData.isComponent,
         },
@@ -207,20 +215,15 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
   };
 
   const sureDeleteData = async () => {
-    if (
-      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
-      tableSelectRows.length > 1
-    ) {
-      message.error('请选择一条数据删除');
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条模块明细删除！');
       return;
     }
-    tableSelectRows.map((item) => {
-      ids.push(item.id);
-    });
-
-    await deleteModulesDetailItem({ libId, ids });
+    const selectDataId = tableSelectRows[0].id;
+    await deleteModulesDetailItem(libId, selectDataId);
     refresh();
     message.success('删除成功');
+    setTableSelectRows([]);
   };
 
   const tableRightSlot = (
@@ -257,8 +260,41 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
         columns={columns}
         type="radio"
         requestSource="resource"
-        extractParams={{ libId: libId, moduleIds: moduleIds }}
+        getSelectData={(data) => setTableSelectRows(data)}
+        extractParams={{
+          libId: libId,
+          moduleIds: moduleId,
+          part: modulePart,
+          keyWord: searchKeyWord,
+        }}
       />
+      <Modal
+        title="添加-模块明细"
+        width="980px"
+        visible={addFormVisible}
+        okText="确认"
+        onOk={() => sureAddModuleDetail()}
+        onCancel={() => setAddFormVisible(false)}
+        cancelText="取消"
+      >
+        <Form form={addForm}>
+          <AddModuleDetailTable addForm={addForm} resourceLibId={libId} />
+        </Form>
+      </Modal>
+
+      <Modal
+        title="编辑-模块明细"
+        width="980px"
+        visible={editFormVisible}
+        okText="保存"
+        onOk={() => sureEditModuleDetail()}
+        onCancel={() => setEditFormVisible(false)}
+        cancelText="取消"
+      >
+        <Form form={editForm}>
+          <EditModuleDetail resourceLibId={libId} />
+        </Form>
+      </Modal>
     </div>
   );
 };

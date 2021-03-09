@@ -17,10 +17,17 @@ export interface TableRequestResult {
   items: object[];
 }
 
-export const tableCommonRequest = (params: TableCommonRequestParams): Promise<TableRequestResult> => {
-    let requestBaseUrl = baseUrl[params.requestSource];
-    return cyRequest<TableRequestResult>(() => request(`${requestBaseUrl}${params.url}`,{method: "Post", data: {...params.extraParams,PageIndex: params.pageIndex, PageSize: params.pageSize}}))
-}
+export const tableCommonRequest = (
+  params: TableCommonRequestParams,
+): Promise<TableRequestResult> => {
+  let requestBaseUrl = baseUrl[params.requestSource];
+  return cyRequest<TableRequestResult>(() =>
+    request(`${requestBaseUrl}${params.url}`, {
+      method: 'Post',
+      data: { ...params.extraParams, PageIndex: params.pageIndex, PageSize: params.pageSize },
+    }),
+  );
+};
 interface TreeTableParams {
   url: string;
   params?: object;

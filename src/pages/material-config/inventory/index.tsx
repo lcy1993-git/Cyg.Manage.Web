@@ -1,7 +1,6 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './index.less';
@@ -49,7 +48,7 @@ const Inventroy: React.FC = () => {
             placeholder="关键词"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="搜索" width="230px">
+        <TableSearch marginLeft="20px" label="" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -58,7 +57,7 @@ const Inventroy: React.FC = () => {
             placeholder="需求公司"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="选择协议库存" width="400px">
+        <TableSearch marginLeft="20px" label="选择协议库存" width="440px">
           <UrlSelect
             allowClear
             showSearch
@@ -154,7 +153,7 @@ const Inventroy: React.FC = () => {
       dataIndex: 'materialName',
       index: 'materialName',
       title: '物料描述',
-      width: 280,
+      width: 320,
     },
     {
       dataIndex: 'orderPrice',
@@ -312,6 +311,7 @@ const Inventroy: React.FC = () => {
       message.warning('请先选择协议库存');
       return;
     }
+    setInventoryId(inventoryId);
     setCheckMappingVisible(true);
   };
 
@@ -359,9 +359,9 @@ const Inventroy: React.FC = () => {
         bodyStyle={{ height: '680px', overflowY: 'auto' }}
       >
         <Form form={checkForm}>
-          {/* <Spin spinning={loading}> */}
-          <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
-          {/* </Spin> */}
+          <Spin spinning>
+            <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
+          </Spin>
         </Form>
       </Modal>
     </PageCommonWrap>

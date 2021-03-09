@@ -4,7 +4,7 @@ import { Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
 import TreeTable from '@/components/tree-table/index';
 import {
   addCompanyGroupItem,
-  delectCompanyGroupItem,
+  deleteCompanyGroupItem,
   getTreeSelectData,
   updateCompanyGroupItem,
   getCompanyGroupDetail,
@@ -81,9 +81,10 @@ const CompanyGroup: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await delectCompanyGroupItem(editDataId);
+    await deleteCompanyGroupItem(editDataId);
     tableFresh();
     message.success('删除成功');
+    setTableSelectRow([]);
   };
 
   const sureAddCompanyGroup = () => {

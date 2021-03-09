@@ -105,14 +105,15 @@ export const commonUpload = (
   files: any[],
   name: string = 'file',
   requestSource: 'project' | 'resource' | 'upload',
+  postType: 'body' | 'query',
 ) => {
-  console.log(requestSource);
-
   const requestUrl = baseUrl[requestSource];
   const formData = new FormData();
   files.forEach((item) => {
     formData.append(name, item);
   });
+  console.log(postType);
+
   return cyRequest<any[]>(() =>
     tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',
