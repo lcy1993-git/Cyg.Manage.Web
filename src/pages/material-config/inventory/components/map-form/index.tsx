@@ -1,33 +1,47 @@
 import GeneralTable from "@/components/general-table";
-import React, { useReducer } from "react"
+import TableSearch from "@/components/table-search";
+import React from "react";
 
-import {MapFormContext,mapFormReducer,defaultState} from "./context";
+import { Input } from "antd";
 
 import styles from "./index.less";
 
-const MapForm:React.FC = () => {
-    const [state, dispatch] = useReducer(mapFormReducer, defaultState);
+const { Search } = Input;
+
+const MapForm: React.FC = () => {
 
     const resourceLibColumns = [
         {}
     ]
 
+    const resourceLibSearch = () => {
+        return (
+            <TableSearch width="208px">
+                <Search
+                    placeholder="物料编号/名称"
+                    enterButton
+
+                />
+            </TableSearch>
+        )
+    }
+
     return (
-        <MapFormContext.Provider value={{state, dispatch: dispatch}}>
-            <div className={styles.mapForm}>
-                <div className={styles.resourceTable}>
-                    <GeneralTable columns={resourceLibColumns} url="/Material/GetPageList" requestSource="resource" tableTitle="资源库列表" />
+
+        <div className={styles.mapForm}>
+            <div className={styles.resourceTable}>
+                <GeneralTable columns={resourceLibColumns} buttonLeftContentSlot={resourceLibSearch} url="/Material/GetPageList" requestSource="resource" tableTitle="资源库列表" />
+            </div>
+            <div className={styles.resultTable}>
+                <div className={styles.currentMapTable}>
+
                 </div>
-                <div className={styles.resultTable}>
-                    <div className={styles.currentMapTable}>
-                        <GeneralTable columns={resourceLibColumns} url="/Inventory/GetHasMappingInventoryList" requestSource="resource" tableTitle="当前映射关系" />
-                    </div>
-                    <div className={styles.inventoryTable}>
-                        <GeneralTable columns={resourceLibColumns} url="/Inventory/GetMappingInventoryList" requestSource="resource" tableTitle="协议库表" />
-                    </div>
+                <div className={styles.inventoryTable}>
+
                 </div>
             </div>
-        </MapFormContext.Provider>
+        </div>
+
     )
 }
 

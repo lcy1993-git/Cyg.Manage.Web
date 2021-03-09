@@ -22,7 +22,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     const [requestLoading, setRequestLoading] = useState(false);
     const [form] = Form.useForm();
 
-    const { projectId, changeFinishEvent, areaId, company,engineerId} = props;
+    const { projectId, changeFinishEvent, areaId, company, engineerId } = props;
 
     const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
         ready: !!projectId,
