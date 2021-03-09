@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { useRequest } from 'ahooks';
 import { tableCommonRequest } from '@/services/table';
-import { Table, Pagination, message, Tooltip, Menu, Dropdown, Checkbox } from 'antd';
+import { Table, Pagination, message, Tooltip, Menu, Dropdown, Checkbox, Spin } from 'antd';
 import styles from './index.less';
 import CommonTitle from '../common-title';
 import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-design/icons';
@@ -79,7 +79,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   const tableRef = useRef<HTMLDivElement>(null);
 
-  const { data, run } = useRequest(tableCommonRequest, {
+  const { data, run, loading } = useRequest(tableCommonRequest, {
     manual: true,
   });
 
@@ -284,6 +284,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           pagination={false}
           rowKey={rowKey}
           columns={finallyColumns.filter((item) => item.checked)}
+          loading={loading}
           locale={{
             emptyText: <EmptyTip className="pt20 pb20" />,
           }}

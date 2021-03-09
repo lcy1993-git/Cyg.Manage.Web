@@ -11,6 +11,7 @@ import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 // import CreatMappingForm from './components/create-mapping-form';
 import CheckMapping from './components/check-mapping-form';
+import CreateMap from './components/create-map';
 
 const { Search } = Input;
 
@@ -19,10 +20,9 @@ const Inventroy: React.FC = () => {
   const [inventoryId, setInventoryId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [checkMappingVisible, setCheckMappingVisible] = useState<boolean>(false);
+  const [addMapVisible, setAddMapVisible] = useState<boolean>(false);
 
-  const [addForm] = Form.useForm();
   const [checkForm] = Form.useForm();
 
   const { data: inventoryData = [] } = useRequest(() => getInventoryOverviewList());
@@ -286,7 +286,7 @@ const Inventroy: React.FC = () => {
           className={styles.importBtn}
           importUrl="/ElectricalEquipment/Import"
         />
-        <Button className={styles.importBtn} onClick={() => creatMappingEvent()}>
+        <Button className={styles.importBtn} onClick={() => setAddMapVisible(true)}>
           创建映射
         </Button>
         <Button className={styles.importBtn} onClick={() => checkMappingEvent()}>
@@ -336,19 +336,6 @@ const Inventroy: React.FC = () => {
         }}
       />
       <Modal
-        title="创建映射"
-        width="90%"
-        visible={addFormVisible}
-        okText="确认"
-        // onOk={() => sureAddMaterial()}
-        onCancel={() => setAddFormVisible(false)}
-        cancelText="取消"
-      >
-        <Form form={addForm}>
-          {/* <ElectricalEquipmentForm inventoryId={inventoryId} type="add" /> */}
-        </Form>
-      </Modal>
-      <Modal
         footer=""
         title="查看映射关系"
         width="90%"
@@ -364,6 +351,7 @@ const Inventroy: React.FC = () => {
           </Spin>
         </Form>
       </Modal>
+      <CreateMap visible={addMapVisible} onChange={setAddMapVisible} />
     </PageCommonWrap>
   );
 };

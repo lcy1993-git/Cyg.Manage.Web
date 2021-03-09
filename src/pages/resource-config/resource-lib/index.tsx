@@ -3,7 +3,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, PoweroffOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -15,6 +15,8 @@ import {
 import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import ResourceLibForm from './components/add-edit-form';
+import UploadDrawing from './components/upload-drawing';
+import { getUploadUrl } from '@/services/resource-config/drawing';
 
 const { Search } = Input;
 
@@ -24,7 +26,8 @@ const ResourceLib: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [libId, setLibId] = useState<string>('');
+  const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false);
+  const { data: keyData } = useRequest(() => getUploadUrl());
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -177,14 +180,9 @@ const ResourceLib: React.FC = () => {
           <EditOutlined />
           编辑
         </Button>
-        <TableImportButton
-          isChecked
-          buttonTitle="导入图纸"
-          modalTitle="导入图纸"
-          requestSource="upload"
-          className={styles.importBtn}
-          importUrl="/Upload/Chart"
-        />
+        <Button className="mr7" onClick={() => setUploadDrawingVisible(true)}>
+          导入图纸
+        </Button>
         <TableImportButton
           isChecked
           buttonTitle="导入资源库"
@@ -209,6 +207,17 @@ const ResourceLib: React.FC = () => {
       </div>
     );
   };
+
+  const uploadFinishEvent = () => {
+    refresh();
+  }
+
+  const libId = useMemo(() => {
+    if(tableSelectRows && tableSelectRows.length > 0) {
+      return tableSelectRows[0].id
+    }
+    return undefined
+  }, [JSON.stringify(tableSelectRows)])
 
   return (
     <PageCommonWrap>
@@ -255,6 +264,8 @@ const ResourceLib: React.FC = () => {
           </Spin>
         </Form>
       </Modal>
+
+      <UploadDrawing libId={libId} securityKey={keyData?.uploadChartApiSecurity} visible={uploadDrawingVisible} changeFinishEvent={() => uploadFinishEvent()} onChange={setUploadDrawingVisible} />
     </PageCommonWrap>
   );
 };

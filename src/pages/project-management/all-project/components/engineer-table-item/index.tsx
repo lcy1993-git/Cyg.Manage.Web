@@ -130,8 +130,8 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     return (
         <div className={`${styles.projectTableItem}`}>
             <div className={styles.projectTitle}>
-                <div className={styles.foldButton}>
-                    <span onClick={() => foldEvent()}>
+                <div className={styles.foldButton} onClick={() => foldEvent()}>
+                    <span>
                         {isFold ? <CaretUpOutlined /> : <CaretDownOutlined />}
                     </span>
                 </div>

@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import qs from 'qs';
 import { cyRequest, baseUrl } from '../common';
 
 interface ResourceLibParams {
@@ -47,3 +48,21 @@ export const restartResourceLib = () => {
     request(`${baseUrl.resource}/ResourceLib/RestartService`, { method: 'POST' }),
   );
 };
+
+export const uploadDrawing = (files: any[],params: any) => {
+  const formData = new FormData();
+  files.forEach((item) => {
+    formData.append("file", item);
+  });
+  
+  const uploadUrl = `${baseUrl.upload}/Upload/LineStressSag?${qs.stringify(params)}`;
+
+  return cyRequest<any[]>(() =>
+  request(uploadUrl, {
+      method: 'POST',
+      data: formData,
+      requestType: 'form',
+    }),
+  );
+
+}
