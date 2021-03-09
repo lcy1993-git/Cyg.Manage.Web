@@ -22,10 +22,10 @@ const ProjectProcessItem: React.FC<ProjectProcessItemProps> = (props) => {
                 </div>
                 <div className={styles.userItemContent}>
                     {
-                        item.value?.map((ite: string) => {
+                        item.value?.map((ite: any) => {
                             return (
                                 <CyTag className="mr7" key={uuid.v1()}>
-                                    {ite}
+                                    {ite.userNameText}
                                 </CyTag>
                             )
                         })

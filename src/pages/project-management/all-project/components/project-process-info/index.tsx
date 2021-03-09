@@ -13,9 +13,22 @@ const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = (props) => {
     const { allots } = projectInfo;
 
     const allotsElement = allots.map((item: any) => {
+        let showTitle = "";
+        switch(item.allotType) {
+            case 1:
+                showTitle = `项目委托给: ${item.allotOrganizeName}`;
+            break;
+            case 3:
+                showTitle = `${item.allotOrganizeName} => 部组: ${item.allotCompanyGroupName}(${item.allotCompanyGroupAdmin})`;
+                break;
+            case 2:
+                showTitle = item.allotOrganizeName
+                break;    
+        }
+        
         return (
             <Timeline.Item key={uuid.v1()} color="#0E7B3B">
-                <ProjectProcessItem time={item.allotTime} title={item.allotOrganizeName} isArrangePerson={item.isArrange} users={item.users} />
+                <ProjectProcessItem time={item.allotTime} title={showTitle} isArrangePerson={item.isArrange} users={item.users} />
             </Timeline.Item>
         )
     })

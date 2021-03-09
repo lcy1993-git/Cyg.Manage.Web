@@ -20,6 +20,13 @@ const CutAccount = (props: EditPasswordProps) => {
             const { userName, pwd } = value;
             // TODO 快捷切换
             const resData = await userLoginRequest({userName, pwd});
+
+            const { accessToken, modules, user } = resData;
+
+            localStorage.setItem('Authorization', accessToken);
+            localStorage.setItem('functionModules', JSON.stringify(modules));
+            localStorage.setItem('userInfo', JSON.stringify(user));
+
             setState(false)
             message.success("账户切换成功")
             location.reload();

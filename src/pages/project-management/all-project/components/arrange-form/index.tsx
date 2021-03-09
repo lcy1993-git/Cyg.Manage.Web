@@ -7,30 +7,34 @@ import {
   getCompanyName,
   getGroupInfo,
 } from '@/services/project-management/all-project';
-import { useMount, useRequest } from 'ahooks';
+import { useRequest } from 'ahooks';
 import Search from 'antd/lib/input/Search';
 import ReadonlyItem from '@/components/readonly-item';
+import { getTreeSelectData } from '@/services/operation-config/company-group';
 
 interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void;
   getCompanyInfo?: (companyInfo: any) => void;
   defaultType?: string;
+  allotCompanyId?: string
 }
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
-  const { onChange, getCompanyInfo, defaultType = '2' } = props;
+  const { onChange, getCompanyInfo, defaultType = '2', allotCompanyId = "" } = props;
 
-  const { data: companyInfo = {}, run: getCompanyInfoEvent } = useRequest(getCompanyName, {
+  const { data: companyInfo, run: getCompanyInfoEvent } = useRequest(getCompanyName, {
     manual: true,
   });
 
   const [checkedValue, setCheckedValue] = useState<string>('2');
 
-  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4'));
+  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4',allotCompanyId));
 
-  const { data: designData = [] } = useRequest(() => getGroupInfo('8'));
+  const { data: designData = [] } = useRequest(() => getGroupInfo('8',allotCompanyId));
 
-  const { data: auditData = [] } = useRequest(() => getGroupInfo('16'));
+  const { data: auditData = [] } = useRequest(() => getGroupInfo('16',allotCompanyId));
+
+  const { data: groupData = []} = useRequest(() => getTreeSelectData());
 
   const mapTreeData = (data: any) => {
     return {
@@ -40,13 +44,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     };
   };
 
-  const noChildrenMap = (data: any) => {
-    return {
-      title: data.text,
-      value: data.id,
-      children: [],
-    };
-  };
 
   const typeChange = (value: string) => {
     setCheckedValue(value);
@@ -70,7 +67,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       <CyFormItem label="安排方式">
         <div>
           <EnumSelect
-            defaultValue="2"
+            value={checkedValue}
             onChange={(value) => typeChange(value as string)}
             enumList={Arrangement}
           />
@@ -80,6 +77,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         <>
           <CyFormItem label="勘察" name="surveyUser" required>
             <TreeSelect
+              key="surveyUser"
               style={{ width: '100%' }}
               treeData={surveyData.map(mapTreeData)}
               placeholder="请选择"
@@ -90,6 +88,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
           <CyFormItem label="设计" name="designUser" required>
             <TreeSelect
+              key="designUser"
               style={{ width: '100%' }}
               treeData={designData.map(mapTreeData)}
               placeholder="请选择"
@@ -102,6 +101,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
           <CyFormItem label="校对" name="designAssessUser1">
             <TreeSelect
+              key="designAssessUser1"
               style={{ width: '100%' }}
               treeData={auditData.map(mapTreeData)}
               placeholder="请选择"
@@ -111,6 +111,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           </CyFormItem>
           <CyFormItem label="校核" name="designAssessUser2">
             <TreeSelect
+              key="designAssessUser2"
               style={{ width: '100%' }}
               treeData={auditData.map(mapTreeData)}
               placeholder="请选择"
@@ -120,6 +121,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           </CyFormItem>
           <CyFormItem label="审核" name="designAssessUser3">
             <TreeSelect
+              key="designAssessUser3"
               style={{ width: '100%' }}
               treeData={auditData.map(mapTreeData)}
               placeholder="请选择"
@@ -129,6 +131,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           </CyFormItem>
           <CyFormItem label="审定" name="designAssessUser4">
             <TreeSelect
+              key="designAssessUser4"
               style={{ width: '100%' }}
               treeData={auditData.map(mapTreeData)}
               placeholder="请选择"
@@ -145,7 +148,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               <Search placeholder="请输入单位" onSearch={(value) => searchEvent(value)} />
             </div>
           </CyFormItem>
-          <ReadonlyItem label="单位名称" name="allotOrganizeUser" align="left">
+          <ReadonlyItem label="单位名称" align="left">
             {companyInfo?.text}
           </ReadonlyItem>
         </>
@@ -155,7 +158,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           <CyFormItem label="部组" name="allotCompanyGroup">
             <TreeSelect
               style={{ width: '100%' }}
-              treeData={surveyData.map(noChildrenMap)}
+              treeData={groupData?.map(mapTreeData)}
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear

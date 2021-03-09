@@ -1,10 +1,10 @@
-import { getCompanyName } from "@/services/project-management/all-project"
+import { shareProject } from "@/services/project-management/all-project"
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons"
-import { useControllableValue, useRequest } from "ahooks"
-import { Form, Input, Modal } from "antd"
-import uuid from "node-uuid"
+import { useControllableValue } from "ahooks"
+import { Input, message, Modal } from "antd"
 import React, { Dispatch, useState } from "react"
 import { SetStateAction } from "react"
+import ShowCompanyInfoChunk from "../show-company-info-chunk"
 
 import styles from "./index.less"
 
@@ -20,18 +20,23 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
         { user: "", companyInfo: null }
     ]);
 
-    const [getCompanyInfoArray, setGetCompanyInfoArray] = useState<any[]>([]);
-
     const [state, setState] = useControllableValue(props, { valuePropName: "visible" });
 
     const { projectIds,finishEvent } = props;
 
-    const { run: getCompanyInfo } = useRequest(getCompanyName, {
-        manual: true,
-        debounceInterval: 300
-    })
-
-    const saveShareInfo = () => {
+    const saveShareInfo = async () => {
+        const userIds = companyInfoArray.filter((item) => item.companyInfo).map((item) => item.companyInfo).map((item) => item.value);
+        console.log(companyInfoArray.filter((item) => item.companyInfo))
+        console.log(userIds)
+        if(userIds.length === 0) {
+            message.error("至少需要一个存在的管理员用户信息");
+            return
+        }
+        await shareProject({
+            userIds,projectIds
+        })
+        message.success("共享成果")
+        setState(false)
         finishEvent?.()
     }
 
@@ -39,22 +44,26 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
         setCompanyInfoArray([...companyInfoArray, {user: "", companyInfo: null}])
     }
 
-    const removeEvent = () => {
-
+    const removeEvent = (index: number) => {
+        const copyData = JSON.parse(JSON.stringify(companyInfoArray));
+        copyData.splice(index,1);
+        setCompanyInfoArray(copyData)
     }
 
     const userChangeEvent = async (value: string, index: number) => {
         const copyData = JSON.parse(JSON.stringify(companyInfoArray));
-        copyData.splice(index,1,{user: value,companyInfo: null});
+        copyData.splice(index,1,{user: value,companyInfo: copyData[index].companyInfo});
         setCompanyInfoArray(copyData)
-
-        // const companyInfo = await getCompanyInfo(value);
-        // setGetCompanyInfoArray([...getCompanyInfoArray, {index: index, companyInfo: companyInfo}])
     }
 
+    const getCompanyInfoChange = (companyInfo: any, index: number) => {
+        const copyData = JSON.parse(JSON.stringify(companyInfoArray));
+        copyData.splice(index,1,{user: copyData[index].user,companyInfo: companyInfo});
+        setCompanyInfoArray(copyData)
+    }
 
     return (
-        <Modal title="共享" width={680} visible={state as boolean} onCancel={() => setState(false)} cancelText="取消" okText="确认">
+        <Modal title="共享" width={680} visible={state as boolean} onCancel={() => setState(false)} onOk={() => saveShareInfo()} cancelText="取消" okText="确认">
             <table className={styles.shareTable}>
                 <thead>
                     <tr>
@@ -68,13 +77,13 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
                     {
                         companyInfoArray.map((item, index) => {
                             return (
-                                <tr key={uuid.v1()}>
+                                <tr key={`shabeTable_${index}`}>
                                     <td>{index + 1}</td>
                                     <td>
-                                        
+                                        <Input value={item.user} onChange={(e) => userChangeEvent(e.target.value, index)} />
                                     </td>
                                     <td>
-                                        {item?.companyName}
+                                        <ShowCompanyInfoChunk user={item.user} onChange={(companyInfo) => getCompanyInfoChange(companyInfo, index)} />
                                     </td>
                                     <td>
                                         <span className={`${styles.canClickButton} mr7`} onClick={() => addEvent()}>
@@ -82,7 +91,7 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
                                         </span>
                                         {
                                             companyInfoArray.length > 1 &&
-                                            <span className={styles.canClickButton} onClick={() => removeEvent()}>
+                                            <span className={styles.canClickButton} onClick={() => removeEvent(index)}>
                                                 <MinusOutlined />
                                             </span>
                                         }

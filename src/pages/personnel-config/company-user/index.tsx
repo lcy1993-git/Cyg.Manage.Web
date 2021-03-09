@@ -167,8 +167,9 @@ const CompanyUser: React.FC = () => {
     const ManageUserData = await run(editDataId);
     editForm.setFieldsValue({
       ...ManageUserData,
-      groupIds: ManageUserData.comapnyGroups.map((item: any) => item.value),
-      userStatus: String(ManageUserData.userStatus)
+      groupIds: (ManageUserData.comapnyGroups ?? []).map((item: any) => item.value),
+      userStatus: String(ManageUserData.userStatus),
+      clientCategorys: (ManageUserData.authorizeClientList ?? []).map((item: any) => item.value).filter((item: any) => item > 1)
     });
   };
 
@@ -236,8 +237,8 @@ const CompanyUser: React.FC = () => {
       index: 'comapnyGroups',
       width: 210,
       render: (text: any, record: any) => {
-        const {comapnyGroups = []} = record;
-        return comapnyGroups.map((item: any) => {
+        const {comapnyGroups} = record;
+        return (comapnyGroups ?? []).map((item: any) => {
           return (
             <CyTag key={uuid.v1()} className="mr7">
               {item.text}
@@ -272,7 +273,7 @@ const CompanyUser: React.FC = () => {
       width: 240,
       render: (text: any, record: any) => { 
         const {authorizeClientTexts} = record;
-        const element = authorizeClientTexts.map((item: string) => {
+        const element = (authorizeClientTexts ?? []).map((item: string) => {
           return (
             <TableStatus className="mr7" color={mapColor[item] ?? "gray" } key={uuid.v1()}>{item}</TableStatus>
           )

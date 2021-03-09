@@ -2,10 +2,11 @@
     font-size: 0;
     line-height: 1;
    
-    .ProjectTitle {
+    .projectTitle {
         display: flex;
         height: 33px;
         border-left: 1px solid @table-line-color;
+        border-right: 1px solid @table-line-color;
         border-bottom: 1px solid @table-line-color;
         font-size: 13px;
         .foldButton {
@@ -25,14 +26,14 @@
         }
         .projectTime {
 
-            width: 420px;
+            width: 26.45%;
             padding-left: 10px;
             padding-top: 8px;
     
             color: @black-color;
         }
         .createTime {
-            width: 420px;
+            width: 26.45%;
             padding-left: 10px;
             padding-top: 8px;
             color: @black-color;
@@ -42,6 +43,8 @@
         }
 
         .projectButtons {
+            width: calc(8% + 60px);
+            text-align: right;
             padding-right: 20px;
             :global {
                 .ant-btn {
@@ -52,22 +55,23 @@
             }
         }
     }
+    :global {
+        .ant-checkbox-group {
+            line-height: 1;
+            width: 100%;
+        }
+    }
     .engineerTable {
         &.foldClassName {
 
         }
-        :global {
-            .ant-checkbox-group {
-                line-height: 1;
-            }
-        }
-        table {
+        .engineerTableContent {
             width: 100%;
-            table-layout: fixed;
             border-left: 1px solid @table-line-color;
-            border-collapse: collapse;
-            thead {
-                th {
+            .engineerTableHeader {
+                display: flex;
+                width: 100%;
+                .engineerTableTh {
                     border-right: 1px solid @table-line-color;
                     border-bottom: 1px solid @table-line-color;
                     padding-left: 10px;
@@ -79,8 +83,11 @@
                     }
                 }
             }
-            tbody {
-                td {
+            .engineerTableBody {
+                .engineerTableTr {
+                    display: flex;
+                }
+                .engineerTableTd {
                     border-right: 1px solid @table-line-color;
                     border-bottom: 1px solid @table-line-color;
                     padding-left: 10px;
@@ -94,5 +101,6 @@
     .noEngineerData {
         border-left: 1px solid @table-line-color;
         border-bottom: 1px solid @table-line-color;
+        border-right: 1px solid @table-line-color;
     }
 }

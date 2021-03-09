@@ -20,6 +20,7 @@ import AddProjectModal from "../add-project-modal"
 import EditEnigneerModal from "../edit-engineer-modal"
 import EditProjectModal from "../edit-project-modal"
 import CopyProjectModal from "../copy-project-modal"
+import ArrangeModal from "../arrange-modal"
 
 interface ExtractParams extends AllProjectStatisticsParams {
     statisticalCategory?: string
@@ -68,7 +69,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         company: ""
     })
 
-
+    const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
+    const [currentArrageProjectId, setCurrentArrageProjectId] = useState<string>("");
+    const [currentProjectArrangeType, setCurrentProjectArrageType] = useState<string>();
+    const [arrangeAllotCompanyId, setArrangeAllotCompanyId] = useState<string>();
 
     const addProjectEvent = (projectNeedValue: AddProjectValue) => {
         setAddProjectVisible(true)
@@ -129,6 +133,23 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         )
     }
 
+    const arrange = (projectId: string, projectType?: number, allotCompanyId?: string) => {
+        setCurrentArrageProjectId(projectId)
+        setCurrentProjectArrageType(projectType ? String(projectType) : undefined)
+        setArrangeAllotCompanyId(allotCompanyId)
+        setArrangeModalVisible(true)
+    }
+
+    const arrangeFinish = () => {
+        setArrangeModalVisible(false)
+        run({
+            ...extractParams,
+            pageIndex,
+            pageSize
+        });
+        setTableSelectData([])
+    }
+
     const projectTableColumns = [
         {
             title: "项目名称",
@@ -147,17 +168,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "项目分类",
             dataIndex: "categoryText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "电压等级",
             dataIndex: "kvLevelText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "项目性质",
             dataIndex: "natureTexts",
-            width: 190,
+            width: "8%",
             render: (record: any) => {
                 const { natureTexts = [] } = record;
                 return natureTexts.map((item: any) => {
@@ -172,37 +193,46 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "专业类别",
             dataIndex: "majorCategoryText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "建设类型",
             dataIndex: "dataSourceTypeText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "项目批次",
             dataIndex: "batchText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "项目阶段",
             dataIndex: "stageText",
-            width: 80
+            width: "6.15%",
         },
         {
             title: "现场数据来源",
             dataIndex: "dataSourceTypeText",
-            width: 100
+            width: "8%",
         },
         {
             title: "项目状态",
+            width: "6.15%",
             dataIndex: "statusText",
-            width: 80,
             render: (record: any) => {
-                const { stateInfo } = record;
+                const { stateInfo,allot,identitys } = record;
+                let arrangeType: any = null;
+                let allotCompanyId = null;
+
+                if(allot) {
+                    arrangeType = allot.allotType
+                    allotCompanyId = allot.allotCompanyGroup
+                }
                 return (
                     <span>
-                        {stateInfo?.statusText}
+                        {
+                            !(stateInfo.isArrange) && (identitys.findIndex((item: any) => item.value === 4)) > -1 ? <span className="canClick" onClick={() => arrange(record.id, arrangeType, allotCompanyId)}>{stateInfo?.statusText}</span> : <span>{stateInfo?.statusText}</span>
+                        }
                     </span>
                 )
             }
@@ -210,7 +240,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "项目来源",
             dataIndex: "sources",
-            width: 80,
+            width: "6.15%",
             render: (record: any) => {
                 const { sources = [] } = record;
                 return sources.map((item: any) => {
@@ -227,7 +257,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "项目身份",
             dataIndex: "identitys",
-            width: 100,
+            width: "8%",
             render: (record: any) => {
                 const { identitys = [] } = record;
                 return identitys.map((item: any) => {
@@ -244,7 +274,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {
             title: "操作",
             dataIndex: "operationAuthority",
-            width: 60,
+            width: "60px",
             render: (record: any, engineerInfo: any) => {
                 const {operationAuthority} = record;
         
@@ -398,6 +428,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             </div>
             <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible}  />
             <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />
+            <ArrangeModal allotCompanyId={arrangeAllotCompanyId} finishEvent={arrangeFinish} visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={[currentArrageProjectId]} defaultSelectType={currentProjectArrangeType} />
             <EditEnigneerModal engineerId={currentEditEngineerId} visible={editEngineerVisible} onChange={setEditEngineerVisible} changeFinishEvent={tableItemEventFinish} />
             <EditProjectModal projectId={currentEditProjectInfo.projectId} company={currentEditProjectInfo.company} areaId={currentEditProjectInfo.areaId} visible={editProjectVisible} onChange={setEditProjectVisible} changeFinishEvent={tableItemEventFinish} />
             <CopyProjectModal projectId={currentCopyProjectInfo.projectId} engineerId={currentCopyProjectInfo.engineerId} company={currentCopyProjectInfo.company} areaId={currentCopyProjectInfo.areaId} visible={copyProjectVisible} onChange={setCopyProjectVisible} changeFinishEvent={tableItemEventFinish} />

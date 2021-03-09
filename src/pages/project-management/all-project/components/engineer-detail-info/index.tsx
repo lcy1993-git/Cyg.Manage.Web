@@ -22,7 +22,7 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
     })
 
     return (
-        <Modal title="工程详情" width={680} visible={state as boolean} footer={null} onCancel={() => setState(false)}>
+        <Modal title="工程详情" width={680} destroyOnClose visible={state as boolean} footer={null} onCancel={() => setState(false)}>
             <div className="flex">
                 <div className="flex1">
                     <ReadonlyItem label="工程名称">

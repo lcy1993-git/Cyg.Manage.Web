@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { Moment } from 'moment';
+import { resolveConfig } from 'prettier';
 import { cyRequest, baseUrl } from '../common';
 import { TableRequestResult } from '../table';
 
@@ -369,7 +370,7 @@ interface ProjectInfoParams {
   stateInfo: string;
   sources: string;
   identitys: string[];
-  allots: string;
+  allots: any[];
 }
 
 // 获取项目详细信息接口
@@ -472,23 +473,37 @@ export const checkCanArrange = (projectIds: string[]) => {
   );
 };
 
-export const getGroupInfo = (clientType: string) => {
+export const getGroupInfo = (clientType: string,companyGroupId: string = "") => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`, {
       method: 'POST',
-      data: { clientType },
+      data: { clientType, companyGroupId},
     }),
   );
 };
 
-export const getCompanyName = (userName: string) => {
-  return cyRequest(() =>
+export const getCompanyName = (userName: string): Promise<any> => {
+  if(!userName) {
+    return new Promise((resolve) => {
+      resolve(undefined)
+    })
+  }
+  return cyRequest<any>(() =>
     request(`${baseUrl.project}/ManageUser/GetCompanyNameByUserName`, {
       method: 'POST',
       data: { userName },
     }),
   );
 };
+ 
+export const shareProject = (params: any) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.project}/Porject/Share`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+}
 
 interface AllotParams {
   allotType: number;
@@ -514,3 +529,13 @@ export const editArrange = (params: AllotParams) => {
     request(`${baseUrl.project}/Porject/ModifyProjectAllot`, { method: 'POST', data: params }),
   );
 };
+
+// 检查是否可以进行修改安排
+export const canEditArrange = (projectIds: string[]) => {
+  return cyRequest(() =>
+  request(`${baseUrl.project}/Porject/CheckModifyAllotPrerequisites`, {
+    method: 'POST',
+    data: projectIds,
+  }),
+);
+}

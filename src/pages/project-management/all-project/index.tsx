@@ -6,7 +6,7 @@ import { Button, Input, message, Modal, } from "antd";
 
 import styles from "./index.less";
 import EnumSelect from "@/components/enum-select";
-import { addEngineer, AllProjectStatisticsParams, applyKnot, auditKnot, BuildType, checkCanArrange, deleteProject, getProjectTableStatistics, noAuditKnot, ProjectStatus, recallShare, revokeAllot, revokeKnot } from "@/services/project-management/all-project";
+import { addEngineer, AllProjectStatisticsParams, applyKnot, auditKnot, BuildType, canEditArrange, checkCanArrange, deleteProject, getProjectTableStatistics, noAuditKnot, ProjectStatus, recallShare, revokeAllot, revokeKnot } from "@/services/project-management/all-project";
 import AllStatistics from "./components/all-statistics";
 import SingleStatistics from "./components/single-statistics";
 import CommonTitle from "@/components/common-title";
@@ -147,6 +147,7 @@ const ProjectManagement: React.FC = () => {
             return;
         }
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
+        await canEditArrange(projectIds)
         setSelectProjectIds(projectIds);
         setEditArrangeModalVisible(true);
     };
@@ -357,8 +358,7 @@ const ProjectManagement: React.FC = () => {
 
     const modalCloseEvent = () => {
         setAddEngineerModalFlag(false);
-        form.resetFields();
-        form.setFieldsValue({ projects: [{ name: '' }] });
+       
     };
 
     const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
@@ -386,6 +386,12 @@ const ProjectManagement: React.FC = () => {
         setEditArrangeModalVisible(false);
         refresh();
     };
+
+    const openAddEngineerModal = () => {
+        setAddEngineerModalFlag(true)
+        form.resetFields();
+        form.setFieldsValue({ projects: [{ name: '' }] });
+    }
 
     return (
         <PageCommonWrap noPadding={true}>
@@ -551,7 +557,7 @@ const ProjectManagement: React.FC = () => {
                                 <Button
                                     className="mr7"
                                     type="primary"
-                                    onClick={() => setAddEngineerModalFlag(true)}
+                                    onClick={() => openAddEngineerModal()}
                                 >
                                     <FileAddOutlined />
                                     立项
@@ -601,25 +607,26 @@ const ProjectManagement: React.FC = () => {
                                 </Dropdown>
                             </div>
                         </div>
-                        <div className={styles.projectManagementTableContent}>
-                            <EnigneerTable
-                                ref={tableRef}
-                                onSelect={tableSelectEvent}
-                                extractParams={{
-                                    keyWord,
-                                    category: category ?? '-1',
-                                    pCategory: pCategory ?? '-1',
-                                    stage: stage ?? '-1',
-                                    constructType: constructType ?? '-1',
-                                    nature: nature ?? '-1',
-                                    kvLevel: kvLevel ?? '-1',
-                                    status: status ?? '-1',
-                                    statisticalCategory: statisticalCategory ?? '-1',
-                                }}
-                            />
-                        </div>
+                    </div>
+                    <div className={styles.projectManagementTableContent}>
+                        <EnigneerTable
+                            ref={tableRef}
+                            onSelect={tableSelectEvent}
+                            extractParams={{
+                                keyWord,
+                                category: category ?? '-1',
+                                pCategory: pCategory ?? '-1',
+                                stage: stage ?? '-1',
+                                constructType: constructType ?? '-1',
+                                nature: nature ?? '-1',
+                                kvLevel: kvLevel ?? '-1',
+                                status: status ?? '-1',
+                                statisticalCategory: statisticalCategory ?? '-1',
+                            }}
+                        />
                     </div>
                 </div>
+
             </div>
             <Modal
                 visible={addEngineerModalFlag}

@@ -72,7 +72,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
             </Button>,
             ]} onOk={() => edit()} onCancel={() => setState(false)}>
             <Form form={form}>
-                <CreateEngineerForm areaId={areaId} libId={libId} />
+                <CreateEngineerForm form={form} areaId={areaId} libId={libId} />
             </Form>
         </Modal>
     )

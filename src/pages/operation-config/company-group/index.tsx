@@ -11,9 +11,10 @@ import {
 } from '@/services/operation-config/company-group';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import CompanyGroupForm from './components/add-edit-form';
-import styles from './index.less';
+
 import { isArray } from 'lodash';
 import { useRequest } from 'ahooks';
+import CyTag from '@/components/cy-tag';
 
 const CompanyGroup: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -64,9 +65,9 @@ const CompanyGroup: React.FC = () => {
       render: (text: any, record: any) => {
         return record.users.map((item: any) => {
           return (
-            <span key={item.value} className={styles.users}>
+            <CyTag key={item.value} className="mr7">
               {item.text}
-            </span>
+            </CyTag>
           );
         });
       },

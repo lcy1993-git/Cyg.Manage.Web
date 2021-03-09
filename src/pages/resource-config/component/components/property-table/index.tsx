@@ -27,7 +27,6 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
