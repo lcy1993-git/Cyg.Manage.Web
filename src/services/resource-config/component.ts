@@ -118,21 +118,21 @@ export const getComponentPropertyItem = (libId: string, id: string) => {
   );
 };
 
-//新增电缆井明细
+//新增组件属性
 export const addComponentPropertyItem = (params: ComponentPropertyParams) => {
   return cyRequest(() =>
     request(`${baseUrl.resource}/ComponentProperty/SaveCreate`, { method: 'POST', data: params }),
   );
 };
 
-//编辑明细
+//编辑组件属性
 export const updateComponentPropertyItem = (params: ComponentPropertyParams) => {
   return cyRequest(() =>
     request(`${baseUrl.resource}/ComponentProperty/SaveModify`, { method: 'POST', data: params }),
   );
 };
 
-// 删除明细
+// 删除组件属性
 export const deleteComponentPropertyItem = (libId: string, id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.resource}/ComponentProperty/Delete`, {

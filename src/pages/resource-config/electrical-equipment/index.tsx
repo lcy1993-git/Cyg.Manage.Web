@@ -16,6 +16,8 @@ import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 import ElectricalEquipmentForm from './components/add-edit-form';
+import ElectricProperty from './components/property-table';
+import ElectricDetail from './components/detail-table';
 
 const { Search } = Input;
 
@@ -285,7 +287,7 @@ const ElectricalEquipment: React.FC = () => {
         <Button className={styles.importBtn} onClick={() => openDetail()}>
           组件明细
         </Button>
-        <Button className={styles.importBtn} onClick={() => openAttribute()}>
+        <Button className={styles.importBtn} onClick={() => openProperty()}>
           组件属性
         </Button>
       </div>
@@ -315,9 +317,16 @@ const ElectricalEquipment: React.FC = () => {
   };
 
   //展示组件属性
-  const openAttribute = () => {
+  const openProperty = () => {
     if (!resourceLibId) {
       message.warning('请先选择资源库');
+      return;
+    }
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.error('请选择要查看的行');
       return;
     }
     setAttributeVisible(true);
@@ -374,27 +383,41 @@ const ElectricalEquipment: React.FC = () => {
       <Modal
         footer=""
         title="组件明细"
-        width="680px"
+        width="92%"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <Spin spinning={loading}>
+          <ElectricDetail
+            libId={resourceLibId}
+            componentId={tableSelectRows.map((item) => {
+              return item.id;
+            })}
+          />
+        </Spin>
       </Modal>
 
       <Modal
         footer=""
         title="组件属性"
-        width="680px"
+        width="60%"
         visible={attributeVisible}
         onCancel={() => setAttributeVisible(false)}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        11
+        <Spin spinning={loading}>
+          <ElectricProperty
+            libId={resourceLibId}
+            componentId={tableSelectRows.map((item) => {
+              return item.id;
+            })}
+          />
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

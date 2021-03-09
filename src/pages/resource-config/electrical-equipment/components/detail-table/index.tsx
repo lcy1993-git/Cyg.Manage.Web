@@ -1,38 +1,63 @@
 import GeneralTable from '@/components/general-table';
-import { Button, message, Form, Modal } from 'antd';
-import React, { useState } from 'react';
+import TableSearch from '@/components/table-search';
+import { Input, Button, message, Form, Modal } from 'antd';
+import React, { useState, useEffect } from 'react';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Popconfirm } from 'antd';
 // import styles from './index.less';
 import { isArray } from 'lodash';
 import {
-  getComponentPropertyItem,
-  updateComponentPropertyItem,
-  addComponentPropertyItem,
-  deleteComponentPropertyItem,
+  getComponentDetailItem,
+  addComponentDetailItem,
+  updateComponentDetailItem,
+  deleteComponentDetailItem,
 } from '@/services/resource-config/component';
 import { useRequest } from 'ahooks';
-import AddComponentProperty from './add-form';
-import EditComponentProperty from './edit-form';
+import AddComponentDetail from './add-form';
+import EditComponentDetail from './edit-form';
 interface ModuleDetailParams {
   libId: string;
   componentId: string[];
 }
 
-const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
+const { Search } = Input;
+
+const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
   const { libId, componentId } = props;
 
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run } = useRequest(getComponentPropertyItem, {
+  const { data, run } = useRequest(getComponentDetailItem, {
     manual: true,
   });
+
+  useEffect(() => {
+    search();
+  }, [componentId]);
+
+  const searchComponent = () => {
+    return (
+      <div>
+        <TableSearch label="关键词" width="230px">
+          <Search
+            allowClear
+            value={searchKeyWord}
+            onChange={(e) => setSearchKeyWord(e.target.value)}
+            onSearch={() => search()}
+            enterButton
+            placeholder="编号/名称"
+          />
+        </TableSearch>
+      </div>
+    );
+  };
 
   // 列表刷新
   const refresh = () => {
@@ -42,17 +67,55 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
     }
   };
 
+  // 列表搜索
+  const search = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.search();
+    }
+  };
+
   const columns = [
     {
-      dataIndex: 'propertyName',
-      index: 'propertyName',
-      title: '属性名称',
+      dataIndex: 'componentId',
+      index: 'componentId',
+      title: '所属组件编码',
       width: 280,
     },
     {
-      dataIndex: 'propertyValue',
-      index: 'propertyValue',
-      title: '属性值',
+      dataIndex: 'componentName',
+      index: 'componentName',
+      title: '所属组件名称',
+      width: 450,
+    },
+
+    {
+      dataIndex: 'itemId',
+      index: 'itemId',
+      title: '物料/组件编码',
+      width: 180,
+    },
+    {
+      dataIndex: 'itemName',
+      index: 'itemName',
+      title: '物料/组件名称',
+      width: 350,
+    },
+
+    {
+      dataIndex: 'itemNumber',
+      index: 'itemNumber',
+      title: '数量',
+      width: 150,
+    },
+    {
+      dataIndex: 'isComponent',
+      index: 'isComponent',
+      title: '是否组件',
+      width: 220,
+      render: (text: any, record: any) => {
+        return record.isComponent === 1 ? '是' : '否';
+      },
     },
   ];
 
@@ -71,7 +134,7 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
         value,
       );
 
-      await addComponentPropertyItem(saveInfo);
+      await addComponentDetailItem(saveInfo);
       message.success('添加成功');
       refresh();
       setAddFormVisible(false);
@@ -90,6 +153,10 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
 
     setEditFormVisible(true);
     const ComponentDetailData = await run(libId, editDataId);
+    ComponentDetailData.componentId =
+      ComponentDetailData.isComponent == 1 ? ComponentDetailData.itemId : '';
+    ComponentDetailData.materialId =
+      ComponentDetailData.isComponent == 0 ? ComponentDetailData.itemId : '';
 
     editForm.setFieldsValue(ComponentDetailData);
   };
@@ -102,12 +169,15 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
         {
           id: editData.id,
           libId: libId,
-          propertyName: editData.propertyName,
-          propertyValue: editData.propertyValue,
+          componentId: editData.componentId,
+          materialId: editData.materialId,
+          itemId: editData.itemId,
+          itemNumber: editData.itemNumber,
+          isComponent: editData.isComponent,
         },
         values,
       );
-      await updateComponentPropertyItem(submitInfo);
+      await updateComponentDetailItem(submitInfo);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -121,7 +191,7 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
       return;
     }
     const selectDataId = tableSelectRows[0].id;
-    await deleteComponentPropertyItem(libId, selectDataId);
+    await deleteComponentDetailItem(libId, selectDataId);
     refresh();
     message.success('删除成功');
     setTableSelectRows([]);
@@ -153,18 +223,18 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
 
   return (
     <div>
-      {/* <Table dataSource={propertyData} columns={columns} /> */}
       <GeneralTable
-        noPaging
+        buttonLeftContentSlot={() => searchComponent()}
         buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
-        url="/ComponentProperty/GetList"
+        url="/ComponentDetail/GetPageList"
         columns={columns}
         requestSource="resource"
         getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           libId: libId,
-          componentId: componentId[0],
+          componentIds: componentId,
+          keyWord: searchKeyWord,
         }}
       />
       <Modal
@@ -180,7 +250,7 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm}>
-          <AddComponentProperty addForm={addForm} />
+          <AddComponentDetail addForm={addForm} resourceLibId={libId} />
         </Form>
       </Modal>
 
@@ -195,11 +265,11 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
         centered
       >
         <Form form={editForm}>
-          <EditComponentProperty />
+          <EditComponentDetail resourceLibId={libId} />
         </Form>
       </Modal>
     </div>
   );
 };
 
-export default ComponentProperty;
+export default ElectricDetail;

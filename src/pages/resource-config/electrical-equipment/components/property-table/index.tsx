@@ -19,7 +19,7 @@ interface ModuleDetailParams {
   componentId: string[];
 }
 
-const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
+const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
   const { libId, componentId } = props;
 
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -202,4 +202,4 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
   );
 };
 
-export default ComponentProperty;
+export default ElectricProperty;
