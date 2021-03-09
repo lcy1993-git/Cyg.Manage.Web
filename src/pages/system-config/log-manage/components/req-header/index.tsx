@@ -1,4 +1,3 @@
-import ReadonlyItem from '@/components/readonly-item';
 import React from 'react';
 
 interface ReqHeaderProps {
@@ -8,8 +7,10 @@ interface ReqHeaderProps {
 const ReqHeader: React.FC<ReqHeaderProps> = (props) => {
   const { info } = props;
   return (
-    <div>
-      <ReadonlyItem label="请求头">{info.reqHeader}</ReadonlyItem>
+    <div style={{width: "100%", overflowX: "auto"}}>
+        <pre>
+          {info.reqHeader}
+        </pre>
     </div>
   );
 };

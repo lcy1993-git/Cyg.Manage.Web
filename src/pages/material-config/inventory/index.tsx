@@ -364,6 +364,7 @@ const Inventroy: React.FC = () => {
           {/* </Spin> */}
         </Form>
       </Modal>
+      
     </PageCommonWrap>
   );
 };
