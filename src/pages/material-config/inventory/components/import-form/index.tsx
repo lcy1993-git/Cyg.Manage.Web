@@ -8,14 +8,7 @@ import { SetStateAction } from 'react';
 import { Input, Form, message, Row, Col, Modal, Button } from 'antd';
 import UrlSelect from '@/components/url-select';
 
-// interface CurrentDataParams {
-//   id?: string;
-//   provinceName?: string;
-//   province?: string;
-//   companyId?: string;
-// }
-
-interface ImportWareHouseProps {
+interface ImportInventoryProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: () => void;
@@ -27,7 +20,7 @@ interface ImportWareHouseProps {
   overviewId: string;
 }
 
-const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
+const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyId, setCompanyId] = useState<string>('');
   const {
@@ -104,4 +97,4 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
   );
 };
 
-export default ImportWareHouse;
+export default ImportInventory;

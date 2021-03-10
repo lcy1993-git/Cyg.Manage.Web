@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
+import qs from 'qs';
 
 export const getDrawingList = (libId: string) => {
   return cyRequest(() =>
@@ -26,5 +27,28 @@ interface SecurityParams {
 export const getUploadUrl = () => {
   return cyRequest<SecurityParams>(() =>
     request(`${baseUrl.resource}/Chart/GetUrlSetting`, { method: 'GET' }),
+  );
+};
+
+//上传应力弧垂表图纸
+export const uploadLineStressSag = (
+  files: any[],
+  params: any,
+  requestSource: 'project' | 'resource' | 'upload',
+  url: string,
+) => {
+  const formData = new FormData();
+  files.forEach((item) => {
+    formData.append('file', item);
+  });
+
+  const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`;
+
+  return cyRequest<any[]>(() =>
+    request(uploadUrl, {
+      method: 'POST',
+      data: formData,
+      requestType: 'form',
+    }),
   );
 };

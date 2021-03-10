@@ -184,7 +184,6 @@ const ResourceLib: React.FC = () => {
           导入图纸
         </Button>
         <TableImportButton
-          isChecked
           buttonTitle="导入资源库"
           modalTitle="导入资源库"
           className={styles.importBtn}
@@ -193,7 +192,6 @@ const ResourceLib: React.FC = () => {
           extraParams={{ libId: libId }}
         />
         <TableImportButton
-          isChecked
           buttonTitle="导入应力弧垂表"
           modalTitle="导入应力弧垂表"
           className={styles.importBtn}
@@ -210,14 +208,14 @@ const ResourceLib: React.FC = () => {
 
   const uploadFinishEvent = () => {
     refresh();
-  }
+  };
 
   const libId = useMemo(() => {
-    if(tableSelectRows && tableSelectRows.length > 0) {
-      return tableSelectRows[0].id
+    if (tableSelectRows && tableSelectRows.length > 0) {
+      return tableSelectRows[0].id;
     }
-    return undefined
-  }, [JSON.stringify(tableSelectRows)])
+    return undefined;
+  }, [JSON.stringify(tableSelectRows)]);
 
   return (
     <PageCommonWrap>
@@ -265,7 +263,13 @@ const ResourceLib: React.FC = () => {
         </Form>
       </Modal>
 
-      <UploadDrawing libId={libId} securityKey={keyData?.uploadChartApiSecurity} visible={uploadDrawingVisible} changeFinishEvent={() => uploadFinishEvent()} onChange={setUploadDrawingVisible} />
+      <UploadDrawing
+        libId={libId}
+        securityKey={keyData?.uploadChartApiSecurity}
+        visible={uploadDrawingVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setUploadDrawingVisible}
+      />
     </PageCommonWrap>
   );
 };
