@@ -14,7 +14,11 @@ import {
   addCompanyFileItem,
   deleteCompanyFileItem,
   getCompanyFileDetail,
+  getCompanyDefaultOptions,
+  updateCompanyDefaultOptions,
 } from '@/services/operation-config/company-file';
+import DefaultParams from './components/default-params';
+import { getUploadUrl, uploadLineStressSag } from '@/services/resource-config/drawing';
 
 const { Search } = Input;
 
@@ -24,12 +28,21 @@ const CompanyFile: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [resultFormVisible, setResultFormVisible] = useState<boolean>(false);
+  const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
+  const [defaultForm] = Form.useForm();
+
+  const { data: keyData } = useRequest(() => getUploadUrl());
+
+  const CompanyFileKey = keyData?.uploadCompanyFileApiSecurity;
 
   const { data, run, loading } = useRequest(getCompanyFileDetail, {
+    manual: true,
+  });
+
+  const { data: defaultOptions, run: getDefaultOptions } = useRequest(getCompanyDefaultOptions, {
     manual: true,
   });
 
@@ -128,6 +141,7 @@ const CompanyFile: React.FC = () => {
 
       await addCompanyFileItem(submitInfo);
       refresh();
+      message.success('添加成功');
       setAddFormVisible(false);
       addForm.resetFields();
     });
@@ -168,16 +182,38 @@ const CompanyFile: React.FC = () => {
       await updateCompanyFileItem(submitInfo);
       refresh();
       message.success('更新成功');
-      editForm.resetFields();
       setEditFormVisible(false);
     });
   };
 
-  const resultEvent = () => {
-    setResultFormVisible(true);
+  const defaultParamsEvent = async () => {
+    setDefaultParamsVisible(true);
+    const defaultOptions = await getDefaultOptions();
+    defaultForm.setFieldsValue(defaultOptions);
   };
 
-  const saveResultEvent = () => {};
+  const saveDefaultOptionsEvent = () => {
+    const defaultData = defaultOptions!;
+    defaultForm.validateFields().then(async (values) => {
+      const submitInfo = Object.assign(
+        {
+          designOrganize: defaultData.designOrganize,
+          frameTemplate: defaultData.frameTemplate,
+          directoryTemplate: defaultData.directoryTemplate,
+          descriptionTemplate: defaultData.descriptionTemplate,
+          approve: defaultData.approve,
+          audit: defaultData.audit,
+          calibration: defaultData.calibration,
+          designSurvey: defaultData.designSurvey,
+        },
+        values,
+      );
+      await updateCompanyDefaultOptions(submitInfo);
+      refresh();
+      message.success('更新成功');
+      setDefaultParamsVisible(false);
+    });
+  };
 
   const tableElement = () => {
     return (
@@ -201,7 +237,7 @@ const CompanyFile: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <Button className={styles.iconParams} onClick={() => resultEvent()}>
+        <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
           <i className="iconfont iconcanshu" />
           成果默认参数
         </Button>
@@ -235,7 +271,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={addForm}>
           <Spin spinning={loading}>
-            <CompanyFileForm type="add" />
+            <CompanyFileForm type="add" securityKey={CompanyFileKey} />
           </Spin>
         </Form>
       </Modal>
@@ -250,26 +286,25 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={editForm}>
           <Spin spinning={loading}>
-            <CompanyFileForm />
+            <CompanyFileForm securityKey={CompanyFileKey} />
           </Spin>
         </Form>
       </Modal>
 
       <Modal
         title="成果默认参数"
-        width="680px"
-        visible={resultFormVisible}
+        width="780px"
+        visible={defaultParamsVisible}
         okText="确认"
-        onOk={() => saveResultEvent()}
-        onCancel={() => setResultFormVisible(false)}
+        onOk={() => saveDefaultOptionsEvent()}
+        onCancel={() => setDefaultParamsVisible(false)}
         cancelText="取消"
       >
-        11
-        {/* <Form form={editForm}>
+        <Form form={defaultForm}>
           <Spin spinning={loading}>
-            <CompanyFileForm />
+            <DefaultParams />
           </Spin>
-        </Form> */}
+        </Form>
       </Modal>
     </PageCommonWrap>
   );

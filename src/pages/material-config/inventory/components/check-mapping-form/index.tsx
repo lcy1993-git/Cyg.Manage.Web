@@ -18,10 +18,8 @@ const { Search } = Input;
 const CheckMapping: React.FC<CheckMappingParams> = (props) => {
   const { inventoryOverviewId, currentInv } = props;
 
-  console.log(inventoryOverviewId);
-
   const tableRef = useRef<HTMLDivElement>(null);
-  const [createMethod, setCreateMethod] = useState('');
+  const [createMethod, setCreateMethod] = useState<string>('');
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
@@ -72,7 +70,7 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
       title: '需求公司',
       dataIndex: 'demandCompany',
       index: 'demandCompany',
-      width: 360,
+      width: 380,
     },
     {
       title: '订单净价',
@@ -88,9 +86,12 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
     },
     {
       title: '创建方式',
-      dataIndex: 'howToCreateText',
-      index: 'howToCreateText',
+      dataIndex: 'howToCreate',
+      index: 'howToCreate',
       width: 150,
+      render: (text: any, record: any) => {
+        return record.howToCreateText;
+      },
     },
   ];
 

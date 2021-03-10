@@ -39,8 +39,6 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
   } = props;
   const [form] = Form.useForm();
 
-  console.log(companyId);
-
   const saveLineStreesSagEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;

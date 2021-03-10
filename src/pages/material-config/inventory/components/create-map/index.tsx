@@ -9,17 +9,17 @@ import GeneralTable from "@/components/general-table";
 import TableSearch from "@/components/table-search";
 
 interface CreateMapProps {
-    inventoryOverviewId: string
-    visible: boolean
-    onChange: Dispatch<SetStateAction<boolean>>
-    changeFinishEvent?: () => void
+  inventoryOverviewId: string;
+  visible: boolean;
+  onChange: Dispatch<SetStateAction<boolean>>;
+  changeFinishEvent?: () => void;
 }
 
 const { Search } = Input;
 
 const CreateMap: React.FC<CreateMapProps> = (props) => {
-    const [state, setState] = useControllableValue(props, { valuePropName: "visible" });
-    const { inventoryOverviewId = "" } = props;
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const { inventoryOverviewId = '' } = props;
 
     const { data: resourceData } = useRequest(() => getResourceLibId(inventoryOverviewId), {
         ready: !!inventoryOverviewId,
@@ -35,96 +35,96 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         }))
     }, [JSON.stringify(areaList)])
 
-    const resourceLibColumns = [
-        {
-            dataIndex: 'materialId',
-            index: 'materialId',
-            title: '编号',
-            width: 180,
-        },
-        {
-            dataIndex: 'category',
-            index: 'category',
-            title: '类型',
-            width: 180,
-        },
-        {
-            dataIndex: 'materialName',
-            index: 'materialName',
-            title: '名称',
-            width: 320,
-        },
-        {
-            dataIndex: 'spec',
-            index: 'spec',
-            title: '规格型号',
-            width: 320,
-        },
-        {
-            dataIndex: 'unit',
-            index: 'unit',
-            title: '单位',
-            width: 140,
-        },
-        {
-            dataIndex: 'pieceWeight',
-            index: 'pieceWeight',
-            title: '单重(kg)',
-            width: 180,
-        },
-        {
-            dataIndex: 'unitPrice',
-            index: 'unitPrice',
-            title: '单价(元)',
-            width: 180,
-        },
+  const resourceLibColumns = [
+    {
+      dataIndex: 'materialId',
+      index: 'materialId',
+      title: '编号',
+      width: 180,
+    },
+    {
+      dataIndex: 'category',
+      index: 'category',
+      title: '类型',
+      width: 180,
+    },
+    {
+      dataIndex: 'materialName',
+      index: 'materialName',
+      title: '名称',
+      width: 320,
+    },
+    {
+      dataIndex: 'spec',
+      index: 'spec',
+      title: '规格型号',
+      width: 320,
+    },
+    {
+      dataIndex: 'unit',
+      index: 'unit',
+      title: '单位',
+      width: 140,
+    },
+    {
+      dataIndex: 'pieceWeight',
+      index: 'pieceWeight',
+      title: '单重(kg)',
+      width: 180,
+    },
+    {
+      dataIndex: 'unitPrice',
+      index: 'unitPrice',
+      title: '单价(元)',
+      width: 180,
+    },
 
-        {
-            dataIndex: 'materialType',
-            index: 'materialType',
-            title: '类别',
-            width: 180,
-        },
-    ]
+    {
+      dataIndex: 'materialType',
+      index: 'materialType',
+      title: '类别',
+      width: 180,
+    },
+  ];
 
-    const inventoryTableColumns = [
-        {
-            dataIndex: 'materialCode',
-            index: 'materialCode',
-            title: '物料编号',
-            width: 180,
-        },
-        {
-            dataIndex: 'materialName',
-            index: 'materialName',
-            title: '物料描述',
-            width: 180,
-        },
-        {
-            dataIndex: 'orderPrice',
-            index: 'orderPrice',
-            title: '订单净价',
-            width: 80,
-        },
-        {
-            dataIndex: 'area',
-            index: 'area',
-            title: '区域',
-            width: 80,
-        },
-        {
-            dataIndex: 'demandCompany',
-            index: 'demandCompany',
-            title: '需求公司',
-            width: 140,
-        },
-        {
-            dataIndex: 'measurementUnit',
-            index: 'measurementUnit',
-            title: '计量单位',
-            width: 80,
-        },
-    ]
+  const inventoryTableColumns = [
+    {
+      dataIndex: 'materialCode',
+      index: 'materialCode',
+      title: '物料编号',
+      width: 180,
+    },
+    {
+      dataIndex: 'materialName',
+      index: 'materialName',
+      title: '物料描述',
+      width: 180,
+    },
+    {
+      dataIndex: 'orderPrice',
+      index: 'orderPrice',
+      title: '订单净价',
+      width: 80,
+    },
+    {
+      dataIndex: 'area',
+      index: 'area',
+      title: '区域',
+      width: 80,
+    },
+    {
+      dataIndex: 'demandCompany',
+      index: 'demandCompany',
+      title: '需求公司',
+      width: 140,
+    },
+    {
+      dataIndex: 'measurementUnit',
+      index: 'measurementUnit',
+      title: '计量单位',
+      width: 80,
+    },
+  ];
 
     const hasMapTableColumns = [
         {
@@ -216,6 +216,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         )
     }
 
+
     return (
         <Modal title="创建映射" visible={state as boolean} bodyStyle={{ padding: "0px 10px 10px 10px", height: "880px", overflowY: "auto", backgroundColor: "#F7F7F7" }} width="90%" destroyOnClose footer={[
             <Button key="cancle" onClick={() => setState(false)}>
@@ -250,4 +251,4 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
     )
 }
 
-export default CreateMap
+export default CreateMap;

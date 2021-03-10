@@ -7,7 +7,6 @@ import styles from './index.less';
 
 import { useRequest } from 'ahooks';
 import { getInventoryOverviewList } from '@/services/material-config/inventory';
-import { isArray } from 'lodash';
 // import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 // import CreatMappingForm from './components/create-mapping-form';
@@ -29,7 +28,7 @@ const Inventroy: React.FC = () => {
 
   const [checkForm] = Form.useForm();
 
-  const { data: inventoryData = [] } = useRequest(() => getInventoryOverviewList());
+  const { data: inventoryData = [], loading } = useRequest(() => getInventoryOverviewList());
 
   const handleInvData = useMemo(() => {
     return inventoryData.map((item) => {
@@ -119,7 +118,7 @@ const Inventroy: React.FC = () => {
       dataIndex: 'supplier',
       index: 'supplier',
       title: '供应商',
-      width: 320,
+      width: 400,
     },
     {
       dataIndex: 'isEnd0702',
@@ -156,7 +155,7 @@ const Inventroy: React.FC = () => {
       dataIndex: 'materialName',
       index: 'materialName',
       title: '物料描述',
-      width: 320,
+      width: 500,
     },
     {
       dataIndex: 'orderPrice',
@@ -180,7 +179,7 @@ const Inventroy: React.FC = () => {
       dataIndex: 'demandCompany',
       index: 'demandCompany',
       title: '需求公司',
-      width: 280,
+      width: 560,
     },
     {
       dataIndex: 'targetNumber',
@@ -299,10 +298,6 @@ const Inventroy: React.FC = () => {
 
   //导入
   const importInventoryEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
-      return;
-    }
     setImportFormVisible(true);
   };
 
@@ -359,9 +354,9 @@ const Inventroy: React.FC = () => {
         cancelText="取消"
       >
         <Form form={checkForm}>
-
-          <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
-
+          <Spin spinning={loading}>
+            <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
+          </Spin>
         </Form>
       </Modal>
       {
@@ -371,15 +366,13 @@ const Inventroy: React.FC = () => {
       {
         importFormVisible &&
         <ImportInventory
-          province={tableSelectRows[0]?.province}
-          provinceName={tableSelectRows[0]?.provinceName}
-          overviewId={tableSelectRows[0]?.id}
           requestSource="resource"
           visible={importFormVisible}
           changeFinishEvent={() => uploadFinishEvent()}
           onChange={setImportFormVisible}
         />
       }
+    
     </PageCommonWrap>
   );
 };
