@@ -19,7 +19,6 @@ import {
   updateWareHouseItem,
   deleteWareHouseItem,
   restartWareHouse,
-  importWareHouseItem,
 } from '@/services/material-config/ware-house';
 import { isArray } from 'lodash';
 import WareHouseForm from './components/add-edit-form';
@@ -35,7 +34,7 @@ const WareHouse: React.FC = () => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [currentSelectedId, setCurrentSelectedId] = useState<string>('');
-  const [selectedData, setSelectedData] = useState<object>({});
+  // const [selectedData, setSelectedData] = useState<object>({});
   const [checkDetailVisible, setCheckDetailVisible] = useState<boolean>(false);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
 
@@ -218,25 +217,16 @@ const WareHouse: React.FC = () => {
     setCheckDetailVisible(true);
   };
 
-  //导入利库
-  const importWareHouse = () => {
+  const importWareHouseEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择需要导入的利库');
+      message.error('请选择要操作的行');
       return;
     }
-    const currentData = tableSelectRows[0];
-    setSelectedData(currentData);
     setImportFormVisible(true);
   };
 
-  const importWareHouseEvent = () => {
-    const companyId = tableSelectRows[0].companyId;
-    const overviewId = tableSelectRows[0].id;
-    const province = tableSelectRows[0].province;
-    const importInfo = { companyId, overviewId, province };
-    console.log(importInfo);
-
-    importWareHouseItem(importInfo);
+  const uploadFinishEvent = () => {
+    refresh();
   };
 
   const tableElement = () => {
@@ -261,7 +251,7 @@ const WareHouse: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <Button className="mr7" onClick={() => importWareHouse()}>
+        <Button className="mr7" onClick={() => importWareHouseEvent()}>
           <ImportOutlined />
           导入
         </Button>
@@ -336,19 +326,15 @@ const WareHouse: React.FC = () => {
           <WareHouseDetail overviewId={currentSelectedId} />
         </Spin>
       </Modal>
-      <Modal
-        title="导入利库"
-        width="680px"
+      <ImportWareHouse
+        province={tableSelectRows[0]?.province}
+        provinceName={tableSelectRows[0]?.provinceName}
+        overviewId={tableSelectRows[0]?.id}
+        requestSource="resource"
         visible={importFormVisible}
-        okText="确定"
-        onCancel={() => setImportFormVisible(false)}
-        onOk={() => importWareHouseEvent()}
-        cancelText="取消"
-      >
-        <Spin spinning={loading}>
-          <ImportWareHouse currentData={selectedData} />
-        </Spin>
-      </Modal>
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportFormVisible}
+      />
     </PageCommonWrap>
   );
 };

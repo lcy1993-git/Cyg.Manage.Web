@@ -27,7 +27,7 @@ const WareHouseDetail: React.FC<WareHouseDetailParams> = (props) => {
       title: '所属公司',
       dataIndex: 'companyName',
       index: 'companyName',
-      width: 220,
+      width: 380,
     },
     {
       title: '物料编号',

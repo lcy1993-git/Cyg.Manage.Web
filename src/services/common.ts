@@ -134,7 +134,6 @@ export const commonUpload = (
   files.forEach((item) => {
     formData.append(name, item);
   });
-  console.log(postType);
 
   return cyRequest<any[]>(() =>
     tokenRequest(`${requestUrl}${url}`, {
@@ -144,6 +143,10 @@ export const commonUpload = (
     }),
   );
 };
+
+
+
+
 
 export const commonExport = (url: string, params: any, selectIds: string[]) => {
   return tokenRequest(`${baseUrl.project}${url}`, {

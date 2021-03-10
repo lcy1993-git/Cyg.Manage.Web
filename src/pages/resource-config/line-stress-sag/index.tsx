@@ -1,28 +1,31 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Input, Button, Modal } from 'antd';
+import { Input, Button } from 'antd';
 import React, { useEffect, useState } from 'react';
 // import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import UrlSelect from '@/components/url-select';
-import TableImportButton from '@/components/table-import-button';
+// import TableImportButton from '@/components/table-import-button';
 import { getUploadUrl } from '@/services/resource-config/drawing';
 import { useRequest } from 'ahooks';
-import FileUploadOnline from '@/components/file-upload-online';
-import CygFormItem from '@/components/cy-form-item';
+import UploadLineStressSag from './components/upload-lineStressSag';
+import ImportLineStressSag from './components/import-lineStressSag';
+// import FileUploadOnline from '@/components/file-upload-online';
+// import CygFormItem from '@/components/cy-form-item';
 
 const { Search } = Input;
 
 const LineStressSag: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [resourceLibId, setResourceLibId] = useState<string | null>('');
-  const [importModalVisible, setImportModalVisible] = useState<boolean>(false);
+  const [resourceLibId, setResourceLibId] = useState<string | undefined>('');
+  const [uploadLineStressSagVisible, setUploadLineStreesSagVisible] = useState<boolean>(false);
+  const [importLineStressSagVisible, setImportLineStreesSagVisible] = useState<boolean>(false);
+
   const { data: keyData } = useRequest(() => getUploadUrl());
 
   const LineStressChartApiSecurity = keyData?.uploadLineStressChartApiSecurity;
-  console.log(LineStressChartApiSecurity);
 
   const searchComponent = () => {
     return (
@@ -106,35 +109,27 @@ const LineStressSag: React.FC = () => {
     },
   ];
 
-  const importLineStress = () => {
-    setImportModalVisible(true);
+  const uploadFinishEvent = () => {
+    refresh();
   };
 
-  const saveImport = () => {};
+  // 列表刷新
+  const refresh = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.refresh();
+    }
+  };
 
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* <Button className="mr7" onClick={() => importLineStress()}>
+        <Button className="mr7" onClick={() => setImportLineStreesSagVisible(true)}>
           导入应力弧垂表
-        </Button> */}
-        <TableImportButton
-          requestSource="resource"
-          buttonTitle="导入应力弧垂表"
-          modalTitle="导入应力弧垂表"
-          className={styles.importBtn}
-          importUrl="/LineStressSag/SaveImport"
-          extraParams={{ libId: resourceLibId }}
-          postType="query"
-        />
-        <TableImportButton
-          requestSource="upload"
-          buttonTitle="上传图纸"
-          modalTitle="导入应力弧垂表-图纸"
-          className={styles.importBtn}
-          importUrl="/Upload/LineStressSag"
-          extraParams={{ libId: resourceLibId, securityKey: LineStressChartApiSecurity }}
-        />
+        </Button>
+        <Button className="mr7" onClick={() => setUploadLineStreesSagVisible(true)}>
+          上传图纸
+        </Button>
       </div>
     );
   };
@@ -157,19 +152,22 @@ const LineStressSag: React.FC = () => {
           keyWord: searchKeyWord,
         }}
       />
-      {/* <Modal
-        visible={importModalVisible}
-        onCancel={() => setImportModalVisible(false)}
-        onOk={() => saveImport()}
-      >
-        <CygFormItem label="导入应力弧垂表" labelWidth={112} className={styles.importLineSag}>
-          <FileUploadOnline
-            action="/Upload/LineStressSag"
-            maxCount={1}
-            extramParams={{ libId: resourceLibId, securityKey: LineStressChartApiSecurity }}
-          ></FileUploadOnline>
-        </CygFormItem>
-      </Modal> */}
+
+      <UploadLineStressSag
+        libId={resourceLibId}
+        securityKey={LineStressChartApiSecurity}
+        visible={uploadLineStressSagVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setUploadLineStreesSagVisible}
+      />
+
+      <ImportLineStressSag
+        libId={resourceLibId}
+        requestSource="resource"
+        visible={importLineStressSagVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportLineStreesSagVisible}
+      />
     </PageCommonWrap>
   );
 };

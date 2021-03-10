@@ -49,10 +49,3 @@ export const restartWareHouse = () => {
     request(`${baseUrl.resource}/WareHouse/RestartService`, { method: 'POST' }),
   );
 };
-
-//导入
-export const importWareHouseItem = (params: ItemDetailData) => {
-  return cyRequest(() =>
-    request(`${baseUrl.resource}/WareHouse/SaveImport`, { method: 'POST', data: params }),
-  );
-};

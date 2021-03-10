@@ -49,20 +49,19 @@ export const restartResourceLib = () => {
   );
 };
 
-export const uploadDrawing = (files: any[],params: any) => {
+export const uploadDrawing = (files: any[], params: any) => {
   const formData = new FormData();
   files.forEach((item) => {
-    formData.append("file", item);
+    formData.append('file', item);
   });
-  
-  const uploadUrl = `${baseUrl.upload}/Upload/LineStressSag?${qs.stringify(params)}`;
+
+  const uploadUrl = `${baseUrl.upload}/Upload/Chart?${qs.stringify(params)}`;
 
   return cyRequest<any[]>(() =>
-  request(uploadUrl, {
+    request(uploadUrl, {
       method: 'POST',
       data: formData,
       requestType: 'form',
     }),
   );
-
-}
+};

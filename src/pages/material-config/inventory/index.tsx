@@ -4,14 +4,17 @@ import TableSearch from '@/components/table-search';
 import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './index.less';
+
 import { useRequest } from 'ahooks';
 import { getInventoryOverviewList } from '@/services/material-config/inventory';
-// import { divide, isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
+import { isArray } from 'lodash';
+// import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 // import CreatMappingForm from './components/create-mapping-form';
 import CheckMapping from './components/check-mapping-form';
 import CreateMap from './components/create-map';
+import { ImportOutlined } from '@ant-design/icons';
+import ImportInventory from './components/import-form';
 
 const { Search } = Input;
 
@@ -22,6 +25,7 @@ const Inventroy: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [checkMappingVisible, setCheckMappingVisible] = useState<boolean>(false);
   const [addMapVisible, setAddMapVisible] = useState<boolean>(false);
+  const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
 
   const [checkForm] = Form.useForm();
 
@@ -280,12 +284,10 @@ const Inventroy: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <TableImportButton
-          buttonTitle="导入"
-          modalTitle="导入"
-          className={styles.importBtn}
-          importUrl="/ElectricalEquipment/Import"
-        />
+        <Button className="mr7" onClick={() => importInventoryEvent()}>
+          <ImportOutlined />
+          导入
+        </Button>
         <Button className={styles.importBtn} onClick={() => setAddMapVisible(true)}>
           创建映射
         </Button>
@@ -294,6 +296,19 @@ const Inventroy: React.FC = () => {
         </Button>
       </div>
     );
+  };
+
+  //导入
+  const importInventoryEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    setImportFormVisible(true);
+  };
+
+  const uploadFinishEvent = () => {
+    refresh();
   };
 
   //创建映射
@@ -352,6 +367,15 @@ const Inventroy: React.FC = () => {
         </Form>
       </Modal>
       <CreateMap visible={addMapVisible} onChange={setAddMapVisible} />
+      <ImportInventory
+        province={tableSelectRows[0]?.province}
+        provinceName={tableSelectRows[0]?.provinceName}
+        overviewId={tableSelectRows[0]?.id}
+        requestSource="resource"
+        visible={importFormVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportFormVisible}
+      />
     </PageCommonWrap>
   );
 };
