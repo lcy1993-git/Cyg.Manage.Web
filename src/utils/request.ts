@@ -1,19 +1,20 @@
 import { extend, RequestOptionsInit } from 'umi-request';
 
 const request = extend({
-  credentials: 'include', // 默认请求是否带上cookie
+  //credentials: 'include', // 默认请求是否带上cookie
 });
+
 
 // request拦截器, 改变url 或 options.
 // @ts-ignore
 request.interceptors.request.use(async (url: string, options: RequestOptionsInit) => {
   let c_token = localStorage.getItem("Authorization");
+  const {headers} = options;
   if (c_token) {
-    const {headers} = options;
     return (
       {
         url: url,
-        options: { ...options, headers: {...headers,'Authorization': c_token} },
+        options: { ...options, headers: {...headers,'Authorization': c_token,'Access-Control-Allow-Credentials': true,'Access-Control-Allow-Headers': 'x-requested-with'} },
       }
     );
   }
@@ -21,7 +22,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   return (
     {
       url: url,
-      options: { ...options },
+      options: { ...options,headers: {'Access-Control-Allow-Credentials': true,'Access-Control-Allow-Headers': 'x-requested-with'}},
     }
   );
 })

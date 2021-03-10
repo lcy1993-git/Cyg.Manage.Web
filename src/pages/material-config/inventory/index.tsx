@@ -364,16 +364,22 @@ const Inventroy: React.FC = () => {
 
         </Form>
       </Modal>
-      <CreateMap visible={addMapVisible} inventoryOverviewId={inventoryId} onChange={setAddMapVisible} />
-      <ImportInventory
-        province={tableSelectRows[0]?.province}
-        provinceName={tableSelectRows[0]?.provinceName}
-        overviewId={tableSelectRows[0]?.id}
-        requestSource="resource"
-        visible={importFormVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setImportFormVisible}
-      />
+      {
+        addMapVisible &&
+        <CreateMap visible={addMapVisible} inventoryOverviewId={inventoryId} onChange={setAddMapVisible} />
+      }
+      {
+        importFormVisible &&
+        <ImportInventory
+          province={tableSelectRows[0]?.province}
+          provinceName={tableSelectRows[0]?.provinceName}
+          overviewId={tableSelectRows[0]?.id}
+          requestSource="resource"
+          visible={importFormVisible}
+          changeFinishEvent={() => uploadFinishEvent()}
+          onChange={setImportFormVisible}
+        />
+      }
     </PageCommonWrap>
   );
 };

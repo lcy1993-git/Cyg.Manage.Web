@@ -17,7 +17,7 @@ interface UrlSelectParams {
   requestSource: 'project' | 'resource';
 }
 
-export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : devBaseUrl;
+export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;
 
 export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>): Promise<T> => {
   return new Promise(async (resolve, reject) => {

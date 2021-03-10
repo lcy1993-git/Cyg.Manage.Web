@@ -75,3 +75,10 @@ export const getResourceLibId = (inventoryOverviewId: string) => {
     request(`${baseUrl.resource}/Inventory/GetInventoryOverview`, { method: 'GET', params: {inventoryOverviewId}}),
   );
 }
+
+// 获取创建映射的地区
+export const getAreaList = (inventoryOverviewId: string) => {
+  return cyRequest<string[]>(() =>
+    request(`${baseUrl.resource}/Inventory/GetInventoryAreaList`, { method: 'GET', params: {inventoryOverviewId}}),
+  );
+}
