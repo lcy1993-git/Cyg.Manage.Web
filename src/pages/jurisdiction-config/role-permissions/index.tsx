@@ -48,12 +48,7 @@ const RolePermissions: React.FC = () => {
 
   const { data: MoudleTreeData = [], run: getModuleTreeData } = useRequest(
     getAuthorizationTreeList,
-    {
-      manual: true,
-    },
   );
-
-  console.log(MoudleTreeData);
 
   const columns = [
     {
@@ -150,7 +145,9 @@ const RolePermissions: React.FC = () => {
     const editDataId = editData.id;
 
     setDistributeFormVisible(true);
-    await getModuleTreeData(editDataId);
+
+    const functionData = await getModuleTreeData(editDataId);
+    console.log(functionData);
   };
 
   const sureDistribute = () => {};

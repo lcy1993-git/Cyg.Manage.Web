@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
+import qs from 'qs';
 
 interface CompanyFileItemParams {
   name: string;
@@ -80,6 +81,23 @@ export const updateCompanyDefaultOptions = (params: DefaultOptionsParams) => {
     request(`${baseUrl.project}/CompanyFile/ModifyCompanyDefaultOptions`, {
       method: 'POST',
       data: params,
+    }),
+  );
+};
+
+export const uploadCompanyFile = (files: any[], params: any, url: string) => {
+  const formData = new FormData();
+  files.forEach((item) => {
+    formData.append('file', item);
+  });
+
+  const uploadUrl = `${baseUrl.upload}${url}?${qs.stringify(params)}`;
+
+  return cyRequest<any[]>(() =>
+    request(uploadUrl, {
+      method: 'POST',
+      data: formData,
+      requestType: 'form',
     }),
   );
 };

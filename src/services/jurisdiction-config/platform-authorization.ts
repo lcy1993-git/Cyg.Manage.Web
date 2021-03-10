@@ -37,11 +37,6 @@ interface TreeDataItem {
   isDisable: boolean;
 }
 
-// interface updateModules {
-//   templateId: string;
-//   mouduleIds: string[];
-// }
-
 //获取选中数据
 export const getAuthorizationDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>

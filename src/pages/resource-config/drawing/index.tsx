@@ -1,25 +1,26 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Input } from 'antd';
+import { Input, Button, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 // import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import UrlSelect from '@/components/url-select';
-import TableImportButton from '@/components/table-import-button';
 import { getUploadUrl } from '@/services/resource-config/drawing';
 import { useRequest } from 'ahooks';
+import { ImportOutlined } from '@ant-design/icons';
+import ImportChartModal from './component/import-form';
 
 const { Search } = Input;
 
 const Drawing: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  // const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [resourceLibId, setResourceLibId] = useState<string | null>('');
-  const { data } = useRequest(getUploadUrl(), {
-    manual: true,
-  });
+  const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
+  const [resourceLibId, setResourceLibId] = useState<string | undefined>('');
+  const { data: keyData } = useRequest(() => getUploadUrl());
+
+  const chartSecurityKey = keyData?.uploadChartApiSecurity;
 
   const searchComponent = () => {
     return (
@@ -51,7 +52,6 @@ const Drawing: React.FC = () => {
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    console.log(value);
     setResourceLibId(value);
     search();
   };
@@ -61,12 +61,16 @@ const Drawing: React.FC = () => {
   }, [resourceLibId]);
 
   // 列表刷新
-  // const refresh = () => {
-  //   if (tableRef && tableRef.current) {
-  //     // @ts-ignore
-  //     tableRef.current.refresh();
-  //   }
-  // };
+  const refresh = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.refresh();
+    }
+  };
+
+  const uploadFinishEvent = () => {
+    refresh();
+  };
 
   // 列表搜索
   const search = () => {
@@ -116,14 +120,20 @@ const Drawing: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <TableImportButton
-          buttonTitle="导入图纸"
-          modalTitle="导入图纸"
-          className={styles.importBtn}
-          importUrl="/Upload/Chart"
-        />
+        <Button className="mr7" onClick={() => importChartEvent()}>
+          <ImportOutlined />
+          导入
+        </Button>
       </div>
     );
+  };
+
+  const importChartEvent = () => {
+    if (!resourceLibId) {
+      message.error('请先选择资源库');
+      return;
+    }
+    setImportFormVisible(true);
   };
 
   return (
@@ -143,6 +153,14 @@ const Drawing: React.FC = () => {
           resourceLibId: resourceLibId,
           keyWord: searchKeyWord,
         }}
+      />
+      <ImportChartModal
+        libId={resourceLibId}
+        securityKey={chartSecurityKey}
+        requestSource="upload"
+        visible={importFormVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportFormVisible}
       />
     </PageCommonWrap>
   );

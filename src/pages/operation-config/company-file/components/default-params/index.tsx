@@ -1,13 +1,8 @@
 import CyFormItem from '@/components/cy-form-item';
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useRequest } from 'ahooks';
-import { Input, Form, message, Row, Col, Button, TreeSelect } from 'antd';
+import { Input, Row, Col, TreeSelect } from 'antd';
 import { getCompanyFileTree } from '@/services/operation-config/company-file';
-// import { GetTreeByCategory } from '@/services/operation-config/company-file';
-
-// interface DefaultOptionsParams {
-//   categoryData: GetTreeByCategory[];
-// }
 
 const DefaultParams: React.FC = () => {
   const { data: categoryData = [] } = useRequest(() => getCompanyFileTree());

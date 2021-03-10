@@ -1,36 +1,33 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Button, Input } from 'antd';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Button, message, Modal, Spin } from 'antd';
+import React, { useState } from 'react';
 // import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import UrlSelect from '@/components/url-select';
-import TableImportButton from '@/components/table-import-button';
-import { getUploadUrl } from '@/services/resource-config/drawing';
+import { SearchOutlined, FileTextOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-
-const { Search } = Input;
+import { isArray } from 'lodash';
+import SourceCompareDetailTab from './components/detail-tab';
+import { getSourceCompareDetail } from '@/services/resource-config/source-compare';
 
 const SourceCompare: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  // const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [resourceLibId, setResourceLibId] = useState<string | null>('');
-  const { data } = useRequest(getUploadUrl(), {
+  const [dataBase1, setDataBase1] = useState<string>('');
+  const [dataBase2, setDataBase2] = useState<string>('');
+  const [detailTabVisible, setDetailTabVisible] = useState<boolean>(false);
+
+  const { data, run, loading } = useRequest(getSourceCompareDetail, {
     manual: true,
   });
-
-  // const uploadData = useMemo(() => {
-  //   if (data) {
-  //     return data;
-  //   }
-  // }, [JSON.stringify(data)]);
 
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch marginLeft="20px" label="资源库" width="230px">
+        <TableSearch label="源资源库" width="260px">
           <UrlSelect
             allowClear
             showSearch
@@ -39,10 +36,10 @@ const SourceCompare: React.FC = () => {
             titleKey="libName"
             valueKey="id"
             placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
+            onChange={(value: any) => setDataBase1(value)}
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="资源库" width="230px">
+        <TableSearch label="目标资源库" width="260px">
           <UrlSelect
             allowClear
             showSearch
@@ -51,24 +48,16 @@ const SourceCompare: React.FC = () => {
             titleKey="libName"
             valueKey="id"
             placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
+            onChange={(value: any) => setDataBase2(value)}
           />
         </TableSearch>
-        <Button>搜索</Button>
+        <Button style={{ marginLeft: '10px' }} onClick={() => search()}>
+          <SearchOutlined />
+          搜索
+        </Button>
       </div>
     );
   };
-
-  //选择资源库传libId
-  const searchByLib = (value: any) => {
-    console.log(value);
-    setResourceLibId(value);
-    search();
-  };
-
-  useEffect(() => {
-    searchByLib(resourceLibId);
-  }, [resourceLibId]);
 
   // 列表刷新
   const refresh = () => {
@@ -141,46 +130,64 @@ const SourceCompare: React.FC = () => {
 
   const tableElement = () => {
     return (
-      <div className={styles.buttonArea}>
-        <TableImportButton
-          buttonTitle="导入应力弧垂表"
-          modalTitle="导入应力弧垂表"
-          className={styles.importBtn}
-          importUrl="/LineStressSag/SaveImport"
-        />
-        <TableImportButton
-          buttonTitle="上传图纸"
-          modalTitle="导入应力弧垂表-图纸"
-          className={styles.importBtn}
-          importUrl="/LineStressSag/SaveImport"
-        />
-      </div>
+      <>
+        <Button className="mr7" onClick={() => checkDetailEvent()}>
+          <FileTextOutlined />
+          详情
+        </Button>
+        <Button className="mr7" onClick={() => checkDifferEvent()}>
+          <FileTextOutlined />
+          差异明细
+        </Button>
+      </>
     );
   };
 
+  const checkDetailEvent = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    setDetailTabVisible(true);
+    await run(tableSelectRows[0].id);
+  };
+
+  const checkDifferEvent = () => {};
+
   return (
     <PageCommonWrap>
-      <div className={styles.sourceTable}>
-        <GeneralTable
-          // scroll={{ x: 1000 }}
-          rowKey="id"
-          ref={tableRef}
-          buttonLeftContentSlot={searchComponent}
-          buttonRightContentSlot={tableElement}
-          needCommonButton={true}
-          columns={columns}
-          requestSource="resource"
-          url="/SourceCompare/GetCompareCategoryPageList"
-          tableTitle="版本对比"
-          type="radio"
-          // getSelectData={(data) => setTableSelectRow(data)}
-          extractParams={{
-            db1: '',
-            db2: '',
-            keyWord: searchKeyWord,
-          }}
-        />
-      </div>
+      <GeneralTable
+        rowKey="id"
+        ref={tableRef}
+        buttonLeftContentSlot={searchComponent}
+        buttonRightContentSlot={tableElement}
+        needCommonButton={true}
+        columns={columns}
+        requestSource="resource"
+        url="/SourceCompare/GetCompareCategoryPageList"
+        tableTitle="版本对比"
+        type="radio"
+        getSelectData={(data) => setTableSelectRow(data)}
+        extractParams={{
+          db1: dataBase1,
+          db2: dataBase2,
+          keyWord: searchKeyWord,
+        }}
+      />
+      <Modal
+        footer=""
+        title="比对类目-详情"
+        width="720px"
+        visible={detailTabVisible}
+        okText="确认"
+        onCancel={() => setDetailTabVisible(false)}
+        cancelText="取消"
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+      >
+        <Spin spinning={loading}>
+          <SourceCompareDetailTab detailData={data} />
+        </Spin>
+      </Modal>
     </PageCommonWrap>
   );
 };

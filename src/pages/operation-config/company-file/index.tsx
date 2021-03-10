@@ -16,9 +16,10 @@ import {
   getCompanyFileDetail,
   getCompanyDefaultOptions,
   updateCompanyDefaultOptions,
+  uploadCompanyFile,
 } from '@/services/operation-config/company-file';
 import DefaultParams from './components/default-params';
-import { getUploadUrl, uploadLineStressSag } from '@/services/resource-config/drawing';
+import { getUploadUrl } from '@/services/resource-config/drawing';
 
 const { Search } = Input;
 
@@ -36,7 +37,7 @@ const CompanyFile: React.FC = () => {
 
   const { data: keyData } = useRequest(() => getUploadUrl());
 
-  const CompanyFileKey = keyData?.uploadCompanyFileApiSecurity;
+  const securityKey = keyData?.uploadCompanyFileApiSecurity;
 
   const { data, run, loading } = useRequest(getCompanyFileDetail, {
     manual: true,
@@ -127,15 +128,18 @@ const CompanyFile: React.FC = () => {
   };
 
   const sureAddCompanyFile = () => {
-    addForm.validateFields().then(async (value) => {
+    addForm.validateFields().then(async (values) => {
+      const { file } = values;
+      const fileId = await uploadCompanyFile(file, { securityKey }, '/Upload/CompanyFile');
+
       const submitInfo = Object.assign(
         {
           name: '',
-          fieldId: '',
+          fileId: fileId,
           fileCategory: 0,
           describe: '',
         },
-        value,
+        values,
       );
       console.log(submitInfo);
 
@@ -170,11 +174,13 @@ const CompanyFile: React.FC = () => {
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
+      const { file } = values;
+      const fileId = await uploadCompanyFile(file, { securityKey }, '/Upload/CompanyFile');
       const submitInfo = Object.assign(
         {
           id: editData.id,
           name: editData.name,
-          fileId: editData.fileId,
+          fileId: fileId,
           describe: editData.describe,
         },
         values,
@@ -271,7 +277,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={addForm}>
           <Spin spinning={loading}>
-            <CompanyFileForm type="add" securityKey={CompanyFileKey} />
+            <CompanyFileForm type="add" />
           </Spin>
         </Form>
       </Modal>
@@ -286,7 +292,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={editForm}>
           <Spin spinning={loading}>
-            <CompanyFileForm securityKey={CompanyFileKey} />
+            <CompanyFileForm />
           </Spin>
         </Form>
       </Modal>
