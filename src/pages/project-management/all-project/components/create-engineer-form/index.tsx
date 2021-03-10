@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import CyFormItem from "@/components/cy-form-item"
 import { DatePicker, Input } from "antd"
-import UrlSelect from "@/components/url-select"
 import EnumSelect from "@/components/enum-select"
 import { FormImportantLevel, ProjectLevel } from "@/services/project-management/all-project"
 

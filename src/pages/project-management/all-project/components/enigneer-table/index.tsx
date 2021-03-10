@@ -9,7 +9,6 @@ import { useEffect } from "react"
 import ProjectTableItem, { AddProjectValue, TableItemCheckedInfo } from "../engineer-table-item"
 
 import uuid from 'node-uuid'
-import TableStatus from "@/components/table-status"
 import { BarsOutlined } from "@ant-design/icons"
 import { Spin } from "antd"
 import EmptyTip from "@/components/empty-tip"
@@ -21,6 +20,7 @@ import EditEnigneerModal from "../edit-engineer-modal"
 import EditProjectModal from "../edit-project-modal"
 import CopyProjectModal from "../copy-project-modal"
 import ArrangeModal from "../arrange-modal"
+import CheckResultModal from "../check-result-modal"
 
 interface ExtractParams extends AllProjectStatisticsParams {
     statisticalCategory?: string
@@ -74,6 +74,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     const [currentProjectArrangeType, setCurrentProjectArrageType] = useState<string>();
     const [arrangeAllotCompanyId, setArrangeAllotCompanyId] = useState<string>();
 
+    const [checkResultVisible, setCheckResultVisible] = useState<boolean>(false);
+    const [checkResultPorjectInfo, setCheckResultProjectInfo] = useState({
+        projectId: "",
+        projectName: "",
+        projectStatus: ""
+    });
+
     const addProjectEvent = (projectNeedValue: AddProjectValue) => {
         setAddProjectVisible(true)
         setProjectNeedInfo(projectNeedValue)
@@ -105,6 +112,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }, [JSON.stringify(tableData)]);
 
     const projectItemMenu = (jurisdictionInfo: JurisdictionInfo, tableItemData: any, engineerInfo: any) => {
+        
         return (
             <Menu>
                 {
@@ -128,9 +136,21 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                         复制项目
                     </Menu.Item>
                 }
-
+                <Menu.Item onClick={() => checkResult({
+                    projectId: tableItemData.id,
+                    projectName: tableItemData.name,
+                    projectStatus: tableItemData.stateInfo.statusText,
+                })}>
+                    查看成果
+                </Menu.Item>
             </Menu>
         )
+    }
+
+    const checkResult = (projectInfo: any) => {
+        console.log(projectInfo)
+        setCheckResultProjectInfo(projectInfo)
+        setCheckResultVisible(true)
     }
 
     const arrange = (projectId: string, projectType?: number, allotCompanyId?: string) => {
@@ -220,11 +240,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             width: "6.15%",
             dataIndex: "statusText",
             render: (record: any) => {
-                const { stateInfo,allot,identitys } = record;
+                const { stateInfo, allot, identitys } = record;
                 let arrangeType: any = null;
-                let allotCompanyId = null;
+                let allotCompanyId: any = null;
 
-                if(allot) {
+                if (allot) {
                     arrangeType = allot.allotType
                     allotCompanyId = allot.allotCompanyGroup
                 }
@@ -276,8 +296,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             dataIndex: "operationAuthority",
             width: "60px",
             render: (record: any, engineerInfo: any) => {
-                const {operationAuthority} = record;
-        
+                const { operationAuthority } = record;
+
                 return (
                     <Dropdown overlay={() => projectItemMenu(operationAuthority, record, engineerInfo)} placement="bottomLeft" arrow>
                         <BarsOutlined />
@@ -426,7 +446,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     />
                 </div>
             </div>
-            <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible}  />
+            <CheckResultModal visible={checkResultVisible} onChange={setCheckResultVisible}  changeFinishEvent={arrangeFinish} projectInfo={checkResultPorjectInfo} />
+            <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible} />
             <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />
             <ArrangeModal allotCompanyId={arrangeAllotCompanyId} finishEvent={arrangeFinish} visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={[currentArrageProjectId]} defaultSelectType={currentProjectArrangeType} />
             <EditEnigneerModal engineerId={currentEditEngineerId} visible={editEngineerVisible} onChange={setEditEngineerVisible} changeFinishEvent={tableItemEventFinish} />

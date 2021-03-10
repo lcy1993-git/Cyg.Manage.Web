@@ -26,6 +26,7 @@ import ShareModal from "./components/share-modal";
 import EditArrangeModal from "./components/edit-arrange-modal";
 import { useGetProjectEnum } from "@/utils/hooks";
 import UrlSelect from "@/components/url-select"
+import ResourceLibraryManageModal from "./components/resource-library-manage-modal";
 
 
 const { Search } = Input;
@@ -60,6 +61,8 @@ const ProjectManagement: React.FC = () => {
     const [addEngineerModalFlag, setAddEngineerModalFlag] = useState(false);
 
     const [saveLoading, setSaveLoading] = useState(false);
+
+    const [libVisible, setLibVisible] = useState(false);
 
     const [selectProjectIds, setSelectProjectIds] = useState<string[]>([]);
 
@@ -204,7 +207,6 @@ const ProjectManagement: React.FC = () => {
         }
 
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-        console.log(projectIds);
         await applyKnot(projectIds);
         message.success('申请结项成功');
         refresh();
@@ -601,10 +603,13 @@ const ProjectManagement: React.FC = () => {
                                     />
                                 </div>
                                 <Dropdown overlay={postProjectMenu}>
-                                    <Button>
+                                    <Button className="mr7">
                                         结项 <DownOutlined />
                                     </Button>
                                 </Dropdown>
+                                <Button onClick={() => setLibVisible(true)}>
+                                    资源库迭代
+                                </Button>
                             </div>
                         </div>
                     </div>
@@ -664,6 +669,7 @@ const ProjectManagement: React.FC = () => {
                 projectIds={selectProjectIds}
             />
             <ShareModal finishEvent={arrangeFinishEvent} visible={shareModalVisible} onChange={setShareModalVisible} projectIds={selectProjectIds} />
+            <ResourceLibraryManageModal visible={libVisible} onChange={setLibVisible} changeFinishEvent={arrangeFinishEvent} />
         </PageCommonWrap>
     );
 };

@@ -68,3 +68,10 @@ export const importWareHouseItem = (params: ItemDetailData) => {
     request(`${baseUrl.resource}/WareHouse/SaveImport`, { method: 'POST', data: params }),
   );
 };
+
+// 根据InventoryOverviewId 获得 ResourceLibId
+export const getResourceLibId = (inventoryOverviewId: string) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/Inventory/GetInventoryOverview`, { method: 'GET', params: {inventoryOverviewId}}),
+  );
+}

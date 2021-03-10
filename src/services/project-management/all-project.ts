@@ -539,3 +539,42 @@ export const canEditArrange = (projectIds: string[]) => {
   }),
 );
 }
+
+
+// 迭代资源库
+export const modifyMultipleEngineerLib = (params: any) => {
+  return cyRequest(() =>
+  request(`${baseUrl.project}/Engineer/ModifyMultipleEngineerLib`, {
+    method: 'POST',
+    data: params,
+  }),
+);
+}
+
+// 获取成果树状结构
+export const getResultTreeData = (projectId: string) => {
+  return cyRequest<any[]>(() =>
+  request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory`, {
+    method: 'GET',
+    params: {projectId},
+  }));
+}
+
+// 生成成果
+export const createResult = (params: any) => {
+  return cyRequest(() =>
+  request(`${baseUrl.upload}/Find/GetProjectOutcomeFileDownloadPath`, {
+    method: 'POST',
+    data: params,
+  }),
+);
+}
+
+// 根据编号下载文件
+export const downloadFile = (params: any) => {
+  return request(`${baseUrl.upload}/Download/GetProjectOutcomeFile`, {
+    method: 'GET',
+    params,
+    responseType: 'blob',
+  })
+}

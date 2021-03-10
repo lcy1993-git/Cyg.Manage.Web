@@ -45,6 +45,10 @@ interface GeneralTableProps {
   requestSource?: 'project' | 'common' | 'resource';
 
   noPaging?: boolean;
+
+  needTitleLine?: boolean;
+
+  defaultPageSize?: number
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -68,6 +72,8 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     rowKey = 'id',
     requestSource = 'project',
     noPaging = false,
+    needTitleLine = true,
+    defaultPageSize = 10,
     ...rest
   } = props;
 
@@ -126,7 +132,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   // 改变视图
-  const changeView = () => {};
+  const changeView = () => { };
 
   const columnChangeEvent = (value: boolean, dataIndex: string) => {
     const copyColumns = [...finallyColumns];
@@ -241,6 +247,12 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     setFinalyColumns(newColumns);
   }, [JSON.stringify(columns)]);
 
+  useEffect(() => {
+    if(defaultPageSize) {
+      setPageSize(defaultPageSize)
+    }
+  }, [defaultPageSize])
+
   return (
     <div className={styles.cyGeneralTable} ref={tableRef}>
       <div className={styles.cyGeneralTableButtonContent}>
@@ -248,35 +260,38 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         <div className={styles.cyGeneralTableButtonRightContent}>{buttonRightContentSlot?.()}</div>
       </div>
       <div className={styles.cyGeneralTableOtherSlot}>{otherSlot?.()}</div>
-      <div className={styles.cyGeneralTableTitleContnet}>
-        <div className={styles.cyGeneralTableTitleShowContent}>
-          {tableTitle && <CommonTitle>{tableTitle}</CommonTitle>}
-        </div>
-        <div className={styles.cyGeneralTableTitleSlot}>{titleSlot?.()}</div>
-        <div className={styles.cyGeneralTableCommonButton}>
-          {needCommonButton && (
-            <div>
-              <Tooltip title="全屏">
-                <FullscreenOutlined
-                  onClick={() => fullScreen()}
-                  className={styles.tableCommonButton}
-                />
-              </Tooltip>
-              <Tooltip title="刷新">
-                <RedoOutlined onClick={() => refreshTable()} className={styles.tableCommonButton} />
-              </Tooltip>
-              <Dropdown overlay={columnsMenuElement} visible={lineConfigVisible}>
-                <Tooltip title="列设置">
-                  <UnorderedListOutlined
-                    onClick={() => setLineConfigVisible(!lineConfigVisible)}
+      {
+        needTitleLine &&
+        <div className={styles.cyGeneralTableTitleContnet}>
+          <div className={styles.cyGeneralTableTitleShowContent}>
+            {tableTitle && <CommonTitle>{tableTitle}</CommonTitle>}
+          </div>
+          <div className={styles.cyGeneralTableTitleSlot}>{titleSlot?.()}</div>
+          <div className={styles.cyGeneralTableCommonButton}>
+            {needCommonButton && (
+              <div>
+                <Tooltip title="全屏">
+                  <FullscreenOutlined
+                    onClick={() => fullScreen()}
                     className={styles.tableCommonButton}
                   />
                 </Tooltip>
-              </Dropdown>
-            </div>
-          )}
+                <Tooltip title="刷新">
+                  <RedoOutlined onClick={() => refreshTable()} className={styles.tableCommonButton} />
+                </Tooltip>
+                <Dropdown overlay={columnsMenuElement} visible={lineConfigVisible}>
+                  <Tooltip title="列设置">
+                    <UnorderedListOutlined
+                      onClick={() => setLineConfigVisible(!lineConfigVisible)}
+                      className={styles.tableCommonButton}
+                    />
+                  </Tooltip>
+                </Dropdown>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      }
       <div className={styles.cyGeneralTableConetnt}>
         <WrapperComponent
           bordered={true}

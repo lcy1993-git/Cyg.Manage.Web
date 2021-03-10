@@ -74,7 +74,6 @@ const Inventroy: React.FC = () => {
 
   //选择协议库存传InvId
   const searchByInv = (value: any) => {
-    console.log(value);
     setInventoryId(value);
     search();
   };
@@ -338,20 +337,19 @@ const Inventroy: React.FC = () => {
       <Modal
         footer=""
         title="查看映射关系"
-        width="90%"
+        width="95%"
         visible={checkMappingVisible}
         okText="确认"
         onCancel={() => setCheckMappingVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '680px', overflowY: 'auto' }}
       >
         <Form form={checkForm}>
-          <Spin spinning>
-            <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
-          </Spin>
+
+          <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
+
         </Form>
       </Modal>
-      <CreateMap visible={addMapVisible} onChange={setAddMapVisible} />
+      <CreateMap visible={addMapVisible} inventoryOverviewId={inventoryId} onChange={setAddMapVisible} />
     </PageCommonWrap>
   );
 };
