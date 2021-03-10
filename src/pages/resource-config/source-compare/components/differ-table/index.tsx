@@ -1,12 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import GeneralTable from '@/components/general-table';
 
 import PageCommonWrap from '@/components/page-common-wrap';
 
-const DifferTable: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
+interface DifferTableParams {
+  categoryId: string;
+}
 
-  const companyTableColumns = [
+const DifferTable: React.FC<DifferTableParams> = (props) => {
+  const { categoryId } = props;
+  const tableRef = useRef<HTMLDivElement>(null);
+  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+
+  const columns = [
     {
       title: '条目',
       dataIndex: 'id',
@@ -47,14 +53,19 @@ const DifferTable: React.FC = () => {
   ];
 
   return (
-    <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        tableTitle="差异明细"
-        columns={companyTableColumns}
-        url="/Company/GetSubordinateTreeList"
-      />
-    </PageCommonWrap>
+    <GeneralTable
+      ref={tableRef}
+      needCommonButton={true}
+      columns={columns}
+      requestSource="resource"
+      url="/SourceCompare/GetCompareCategoryPageList"
+      tableTitle="差异明细"
+      type="radio"
+      getSelectData={(data) => setTableSelectRow(data)}
+      extractParams={{
+        categoryId: categoryId,
+      }}
+    />
   );
 };
 

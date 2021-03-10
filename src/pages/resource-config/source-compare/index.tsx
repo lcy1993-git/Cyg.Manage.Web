@@ -11,6 +11,7 @@ import { useRequest } from 'ahooks';
 import { isArray } from 'lodash';
 import SourceCompareDetailTab from './components/detail-tab';
 import { getSourceCompareDetail } from '@/services/resource-config/source-compare';
+import DifferTable from './components/differ-table';
 
 const SourceCompare: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -19,6 +20,7 @@ const SourceCompare: React.FC = () => {
   const [dataBase1, setDataBase1] = useState<string>('');
   const [dataBase2, setDataBase2] = useState<string>('');
   const [detailTabVisible, setDetailTabVisible] = useState<boolean>(false);
+  const [differTableVisible, setDifferTableVisible] = useState<boolean>(false);
 
   const { data, run, loading } = useRequest(getSourceCompareDetail, {
     manual: true,
@@ -145,14 +147,20 @@ const SourceCompare: React.FC = () => {
 
   const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
+      message.error('请选择要操作的行');
       return;
     }
     setDetailTabVisible(true);
     await run(tableSelectRows[0].id);
   };
 
-  const checkDifferEvent = () => {};
+  const checkDifferEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    setDifferTableVisible(true);
+  };
 
   return (
     <PageCommonWrap>
@@ -179,13 +187,23 @@ const SourceCompare: React.FC = () => {
         title="比对类目-详情"
         width="720px"
         visible={detailTabVisible}
-        okText="确认"
         onCancel={() => setDetailTabVisible(false)}
-        cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Spin spinning={loading}>
           <SourceCompareDetailTab detailData={data} />
+        </Spin>
+      </Modal>
+      <Modal
+        footer=""
+        title="差异明细"
+        width="96%"
+        visible={differTableVisible}
+        onCancel={() => setDifferTableVisible(false)}
+        bodyStyle={{ height: '720px', overflowY: 'auto' }}
+      >
+        <Spin spinning={loading}>
+          <DifferTable categoryId={tableSelectRows[0]?.id} />
         </Spin>
       </Modal>
     </PageCommonWrap>
