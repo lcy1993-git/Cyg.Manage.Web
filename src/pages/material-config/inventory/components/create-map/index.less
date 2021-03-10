@@ -20,6 +20,14 @@
       padding: 0 12px;
       margin-bottom: 10px;
       box-sizing: border-box;
+      .currentMapTableButtonContent {
+        padding: 20px 0;
+        display: flex;
+      }
+      .currentMapTableContent {
+        height: calc(100% - 120px);
+        overflow-y: auto;
+      }
     }
 
     .inventoryTable {
@@ -35,7 +43,6 @@
     .ant-table {
       .ant-table-container {
         border-color: @table-line-color  !important;
-
         .ant-table-content {
 
           td,

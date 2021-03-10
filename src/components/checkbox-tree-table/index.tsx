@@ -238,7 +238,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
   const getSelectIds = (data: TreeDataItem[]) => {
     const copyData = JSON.parse(JSON.stringify(data));
     const flattenCopyData = flatten<TreeDataItem>(copyData);
-  
+
     // 左侧模块没被勾选。那么右侧一定不会有被勾选的。
     const checkedDataArray: string[] = [];
     flattenCopyData
@@ -255,9 +255,11 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
   }
 
   useEffect(() => {
-    const afterHandleData = handleJurisdictionData(treeData);
-    setTableShowData(afterHandleData);
-    getSelectIds(afterHandleData)
+    if (treeData) {
+      const afterHandleData = handleJurisdictionData(treeData);
+      setTableShowData(afterHandleData);
+      getSelectIds(afterHandleData)
+    }
   }, [JSON.stringify(treeData)]);
 
   const mapDataAllFalse = (data: any) => {

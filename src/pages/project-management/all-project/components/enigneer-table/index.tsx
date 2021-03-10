@@ -112,7 +112,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }, [JSON.stringify(tableData)]);
 
     const projectItemMenu = (jurisdictionInfo: JurisdictionInfo, tableItemData: any, engineerInfo: any) => {
-        
+       
         return (
             <Menu>
                 {
@@ -120,7 +120,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     <Menu.Item onClick={() => editProjectEvent({
                         projectId: tableItemData.id,
                         areaId: engineerInfo.province,
-                        company: engineerInfo.company
+                        company: engineerInfo.companyId,
+                        companyName: engineerInfo.company
                     })}>
                         编辑
                     </Menu.Item>
@@ -130,8 +131,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     <Menu.Item onClick={() => copyProjectEvent({
                         projectId: tableItemData.id,
                         areaId: engineerInfo.province,
-                        company: engineerInfo.company,
-                        engineerId: engineerInfo.id
+                        company: engineerInfo.companyId,
+                        engineerId: engineerInfo.id,
+                        companyName: engineerInfo.company
                     })}>
                         复制项目
                     </Menu.Item>
@@ -451,8 +453,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />
             <ArrangeModal allotCompanyId={arrangeAllotCompanyId} finishEvent={arrangeFinish} visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={[currentArrageProjectId]} defaultSelectType={currentProjectArrangeType} />
             <EditEnigneerModal engineerId={currentEditEngineerId} visible={editEngineerVisible} onChange={setEditEngineerVisible} changeFinishEvent={tableItemEventFinish} />
-            <EditProjectModal projectId={currentEditProjectInfo.projectId} company={currentEditProjectInfo.company} areaId={currentEditProjectInfo.areaId} visible={editProjectVisible} onChange={setEditProjectVisible} changeFinishEvent={tableItemEventFinish} />
-            <CopyProjectModal projectId={currentCopyProjectInfo.projectId} engineerId={currentCopyProjectInfo.engineerId} company={currentCopyProjectInfo.company} areaId={currentCopyProjectInfo.areaId} visible={copyProjectVisible} onChange={setCopyProjectVisible} changeFinishEvent={tableItemEventFinish} />
+            <EditProjectModal companyName={currentEditProjectInfo.companyName} projectId={currentEditProjectInfo.projectId} company={currentEditProjectInfo.company} areaId={currentEditProjectInfo.areaId} visible={editProjectVisible} onChange={setEditProjectVisible} changeFinishEvent={tableItemEventFinish} />
+            <CopyProjectModal companyName={currentCopyProjectInfo.companyName}  projectId={currentCopyProjectInfo.projectId} engineerId={currentCopyProjectInfo.engineerId} company={currentCopyProjectInfo.company} areaId={currentCopyProjectInfo.areaId} visible={copyProjectVisible} onChange={setCopyProjectVisible} changeFinishEvent={tableItemEventFinish} />
             <AddProjectModal changeFinishEvent={tableItemEventFinish} visible={addProjectVisible} onChange={setAddProjectVisible} engineerId={projectNeedInfo.engineerId} areaId={projectNeedInfo.areaId} company={projectNeedInfo.company} />
         </div>
     )

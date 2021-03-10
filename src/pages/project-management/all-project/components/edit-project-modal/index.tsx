@@ -14,6 +14,7 @@ interface EditProjectProps {
     changeFinishEvent: () => void
     areaId: string
     company: string
+    companyName?: string
 }
 
 const EditProjectModal: React.FC<EditProjectProps> = (props) => {
@@ -21,7 +22,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     const [requestLoading, setRequestLoading] = useState(false);
     const [form] = Form.useForm();
 
-    const { projectId, changeFinishEvent, areaId, company } = props;
+    const { projectId, changeFinishEvent, areaId, company,companyName } = props;
 
     const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
         ready: !!projectId,
@@ -69,7 +70,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
             </Button>,
             ]} onOk={() => edit()} onCancel={() => setState(false)}>
             <Form form={form}>
-                <CreateProjectForm areaId={areaId} company={company} />
+                <CreateProjectForm areaId={areaId} company={company} companyName={companyName} />
             </Form>
         </Modal>
     )

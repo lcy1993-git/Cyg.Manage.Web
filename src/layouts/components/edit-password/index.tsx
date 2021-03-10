@@ -4,6 +4,7 @@ import { useControllableValue } from "ahooks";
 import { Form, Input, message, Modal } from "antd";
 import React, { Dispatch } from "react";
 import { SetStateAction } from "react";
+import { history } from 'umi';
 
 interface EditPasswordProps {
     visible: boolean
@@ -21,7 +22,10 @@ const EditPassword = (props: EditPasswordProps) => {
             await editPassword({pwd,newPwd})
             
             setState(false)
-            message.success("密码修改成功")
+            message.success("密码修改成功,请重新登录")
+            
+            history.push('/login');
+            localStorage.setItem('Authorization', '');
         })
     }
 

@@ -82,3 +82,17 @@ export const getAreaList = (inventoryOverviewId: string) => {
     request(`${baseUrl.resource}/Inventory/GetInventoryAreaList`, { method: 'GET', params: {inventoryOverviewId}}),
   );
 }
+
+// 获取已经映射了的数据 
+export const getHasMapData = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.resource}/Inventory/GetHasMappingInventoryList`, { method: 'POST', data: params }),
+  );
+};
+
+// 保存映射
+export const saveMapData = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.resource}/Inventory/SaveCreateMapping`, { method: 'POST', data: params }),
+  );
+};

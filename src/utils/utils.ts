@@ -70,7 +70,7 @@ export const toTreeData = <P, T>(data: P[], options: ToTreeDataOptions = {}): T[
  * */
 
 export const handleJurisdictionData = (needHandleData: any[]) => {
-  return needHandleData.map(mapJurisdictionData);
+  return needHandleData?.map(mapJurisdictionData);
 };
 
 const mapJurisdictionData = (data: any) => {
