@@ -359,18 +359,20 @@ const Inventroy: React.FC = () => {
           </Spin>
         </Form>
       </Modal>
-      
-      <CreateMap
-        visible={addMapVisible}
-        inventoryOverviewId={inventoryId}
-        onChange={setAddMapVisible}
-      />
-      <ImportInventory
-        requestSource="resource"
-        visible={importFormVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setImportFormVisible}
-      />
+      {
+        addMapVisible &&
+        <CreateMap visible={addMapVisible} inventoryOverviewId={inventoryId} onChange={setAddMapVisible} />
+      }
+      {
+        importFormVisible &&
+        <ImportInventory
+          requestSource="resource"
+          visible={importFormVisible}
+          changeFinishEvent={() => uploadFinishEvent()}
+          onChange={setImportFormVisible}
+        />
+      }
+    
     </PageCommonWrap>
   );
 };

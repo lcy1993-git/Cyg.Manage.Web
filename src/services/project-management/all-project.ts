@@ -578,3 +578,4 @@ export const downloadFile = (params: any) => {
     responseType: 'blob',
   })
 }
+
