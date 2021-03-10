@@ -347,12 +347,11 @@ const Inventroy: React.FC = () => {
       <Modal
         footer=""
         title="查看映射关系"
-        width="90%"
+        width="95%"
         visible={checkMappingVisible}
         okText="确认"
         onCancel={() => setCheckMappingVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '680px', overflowY: 'auto' }}
       >
         <Form form={checkForm}>
           <Spin spinning={loading}>
@@ -360,8 +359,12 @@ const Inventroy: React.FC = () => {
           </Spin>
         </Form>
       </Modal>
-      <CreateMap visible={addMapVisible} onChange={setAddMapVisible} />
-
+      
+      <CreateMap
+        visible={addMapVisible}
+        inventoryOverviewId={inventoryId}
+        onChange={setAddMapVisible}
+      />
       <ImportInventory
         requestSource="resource"
         visible={importFormVisible}

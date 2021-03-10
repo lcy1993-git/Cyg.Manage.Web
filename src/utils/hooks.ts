@@ -4,7 +4,7 @@ import { useRequest } from 'ahooks';
 import { useMemo } from 'react';
 
 interface UrlSelectDataParams {
-  url: string
+  url: string;
   method?: 'post' | 'get';
   extraParams?: any;
   titleKey?: string;
@@ -41,7 +41,7 @@ export const useUrlSelectData = (url: string, params: UrlSelectDataParams = {}) 
 };
 
 interface GetSelectDataParams {
-  url: string
+  url: string;
   method?: 'post' | 'get';
   extraParams?: any;
   titleKey?: string;
@@ -59,9 +59,12 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
     requestSource = 'project',
   } = params;
 
-  const { data: resData = [], loading, run } = useRequest(() => getCommonSelectData({url,method,params: extraParams,requestSource}), {
-    ...options
-  });
+  const { data: resData = [], loading, run } = useRequest(
+    () => getCommonSelectData({ url, method, params: extraParams, requestSource }),
+    {
+      ...options,
+    },
+  );
 
   const afterHanldeData = useMemo(() => {
     if (resData) {
@@ -72,11 +75,8 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
     return [];
   }, [JSON.stringify(resData)]);
 
-  return { data: afterHanldeData,loading,run };
-}
-
-
-
+  return { data: afterHanldeData, loading, run };
+};
 
 export const useGetUserInfo = () => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo') ?? '{}');

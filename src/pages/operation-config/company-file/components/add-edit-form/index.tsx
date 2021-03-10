@@ -6,10 +6,16 @@ import UrlSelect from '@/components/url-select';
 import rules from './rule';
 interface CompanyFileForm {
   type?: 'add' | 'edit';
+  securityKey?: string;
 }
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
-  const { type = 'edit' } = props;
+  const { type = 'edit', securityKey } = props;
+  
+
+
+
+
   return (
     <>
       <CyFormItem label="名称" name="name" required rules={rules.name}>
@@ -26,8 +32,8 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         </CyFormItem>
       )}
 
-      <CyFormItem label="上传文件" name="fileId" required rules={rules.fileld}>
-        <FileUploadOnline action="/Upload/CompanyFile" maxCount={1} />
+      <CyFormItem label="上传文件" name="file" required rules={rules.fileld}>
+        <FileUploadOnline maxCount={1} />
       </CyFormItem>
 
       <CyFormItem label="备注" name="describe">

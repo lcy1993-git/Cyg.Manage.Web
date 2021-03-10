@@ -1,0 +1,27 @@
+.mapForm {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding-top: 20px;
+    .resourceTable {
+        flex: 1;
+        background-color: @white-color;
+        margin-right: 20px;
+        padding: 0 12px;
+    }
+    .resultTable {
+        flex: 1;
+        .currentMapTable {
+            height: calc(50% - 20px);
+            background-color: @white-color;
+            padding: 0 12px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .inventoryTable {
+            height: 50%;
+            background-color: @white-color;
+            padding: 0 12px;
+        }
+    }
+}
