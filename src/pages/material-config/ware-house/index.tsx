@@ -218,10 +218,6 @@ const WareHouse: React.FC = () => {
   };
 
   const importWareHouseEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
-      return;
-    }
     setImportFormVisible(true);
   };
 

@@ -15,33 +15,25 @@ interface ImportInventoryProps {
   libId?: string;
   securityKey?: string;
   requestSource: 'project' | 'resource' | 'upload';
-  province: string;
-  provinceName: string;
-  overviewId: string;
 }
 
 const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [companyId, setCompanyId] = useState<string>('');
-  const {
-    province = '',
-    provinceName = '',
-    overviewId = '',
-    requestSource,
-    changeFinishEvent,
-  } = props;
+
+  const [resourceLibId, setResourceLibId] = useState<string>('');
+  const [province, setProvince] = useState<string>('');
+  const [versionName, setVersionName] = useState<string>('');
+  const { requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
 
-  console.log(companyId);
-
-  const saveLineStreesSagEvent = () => {
+  const saveInventoryEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;
       await uploadLineStressSag(
         file,
-        { province, companyId, overviewId },
+        { province, resourceLibId, versionName },
         requestSource,
-        '/WareHouse/SaveImport',
+        '/Inventory/SaveImport',
       );
       message.success('导入成功');
       setState(false);
@@ -53,13 +45,13 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
     <Modal
       destroyOnClose
       width="780px"
-      title="导入应力弧垂表"
+      title="导入"
       visible={state as boolean}
       footer={[
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveLineStreesSagEvent()}>
+        <Button key="save" type="primary" onClick={() => saveInventoryEvent()}>
           保存
         </Button>,
       ]}
@@ -68,28 +60,47 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       <Form form={form}>
         <Row gutter={24}>
           <Col>
-            <CyFormItem labelWidth={80} label="区域" name="province">
-              <Input defaultValue={provinceName} disabled />
+            <CyFormItem labelWidth={50} label="区域" name="province">
+              <UrlSelect
+                style={{ width: '160px' }}
+                allowClear
+                showSearch
+                url="/Area/GetList?pId=-1"
+                titleKey="text"
+                valueKey="value"
+                placeholder="请选择"
+                onChange={(value: any) => setProvince(value)}
+              />
             </CyFormItem>
           </Col>
           <Col>
-            <CyFormItem labelWidth={120} label="所属供电公司" name="companyId">
+            <CyFormItem labelWidth={70} label="资源库" name="reousourceLib">
               <UrlSelect
-                style={{ width: '330px' }}
-                requestSource="project"
-                url="/ElectricityCompany/GetListByAreaId"
-                titleKey="text"
-                valueKey="value"
-                placeholder="请选择供电公司"
-                extraParams={{ areaId: province }}
+                style={{ width: '160px' }}
                 allowClear
-                onChange={(value: any) => setCompanyId(value)}
+                showSearch
+                requestSource="resource"
+                url="/ResourceLib/GetList"
+                titleKey="libName"
+                valueKey="id"
+                placeholder="请选择"
+                onChange={(value: any) => setResourceLibId(value)}
+              />
+            </CyFormItem>
+          </Col>
+
+          <Col>
+            <CyFormItem labelWidth={50} label="版本" name="version">
+              <Input
+                style={{ width: '160px' }}
+                placeholder="--请输入版本--"
+                onChange={(e) => setVersionName(e.target.value)}
               />
             </CyFormItem>
           </Col>
         </Row>
 
-        <CyFormItem labelWidth={80} label="导入" name="file" required>
+        <CyFormItem labelWidth={50} label="导入" name="file" required>
           <FileUpload maxCount={1} />
         </CyFormItem>
       </Form>
