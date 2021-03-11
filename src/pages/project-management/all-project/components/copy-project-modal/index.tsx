@@ -15,6 +15,7 @@ interface CopyProjectModalProps {
     areaId: string
     company: string
     engineerId: string
+    companyName: string
 }
 
 const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
@@ -22,7 +23,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     const [requestLoading, setRequestLoading] = useState(false);
     const [form] = Form.useForm();
 
-    const { projectId, changeFinishEvent, areaId, company, engineerId } = props;
+    const { projectId, changeFinishEvent, areaId, company, engineerId,companyName} = props;
 
     const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
         ready: !!projectId,
@@ -70,7 +71,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
             </Button>,
             ]} onOk={() => edit()} onCancel={() => setState(false)}>
             <Form form={form}>
-                <CreateProjectForm areaId={areaId} company={company} />
+                <CreateProjectForm companyName={companyName} areaId={areaId} company={company} />
             </Form>
         </Modal>
     )

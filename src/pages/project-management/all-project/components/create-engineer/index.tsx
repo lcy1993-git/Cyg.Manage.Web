@@ -17,6 +17,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
     const [activeProjectKey, setActiveProjectKey] = useState<string>("0");
     const [areaId, setAreaId] = useState<string>("");
     const [company, setCompany] = useState<string>("");
+    const [companyName, setCompanyName] = useState<string>("");
 
     const tabChangeEvent = (activeKey: string) => {
         setActiveProjectKey(activeKey)
@@ -48,6 +49,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
     const exportDataChange = (data: any) => {
         setAreaId(data.areaId)
         setCompany(data.company)
+        setCompanyName(data.companyName)
         resetCompanyDep()
     }
 
@@ -99,7 +101,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                                 {
                                     fields.map((field, key) => (
                                         <TabPane key={key} tab={`项目${key + 1}`}>
-                                            <CreateProjectForm areaId={areaId} company={company} field={field} />
+                                            <CreateProjectForm companyName={companyName} areaId={areaId} company={company} field={field} />
                                         </TabPane>
                                     ))
                                 }

@@ -54,7 +54,7 @@ const UserFeedBack: React.FC = () => {
       dataIndex: 'lastProcessDate',
       index: 'lastProcessDate',
       render: (text: string) => {
-        return <span>{text ? moment(text).format('YYYY-MM-DD hh:mm:ss') : ''}</span>;
+        return <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>;
       },
     },
     {
@@ -68,7 +68,7 @@ const UserFeedBack: React.FC = () => {
       dataIndex: 'createdOn',
       index: 'createdOn',
       render: (text: string) => {
-        return <span>{text ? moment(text).format('YYYY-MM-DD hh:mm:ss') : ''}</span>;
+        return <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>;
       },
     },
   ];

@@ -33,7 +33,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             setAreaId(curValues.province)
             exportDataChange?.({
                 areaId: curValues.province,
-                company: curValues.company
+                company: curValues.company,
+                companyName: companySelectData?.find((item: any) => item.value == curValues.company)?.label ?? ""
             })
             // 因为发生了改变，所以之前选择的应该重置
             if (form) {
@@ -54,7 +55,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         if (prevValues.company !== curValues.company) {
             exportDataChange?.({
                 areaId: curValues.province,
-                company: curValues.company
+                company: curValues.company,
+                companyName: companySelectData?.find((item: any) => item.value == curValues.company)?.label ?? ""
             })
         }
         return false

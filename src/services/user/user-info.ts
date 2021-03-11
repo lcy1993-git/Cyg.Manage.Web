@@ -8,6 +8,6 @@ interface EditPasswordParams {
 
 export const editPassword = (params: EditPasswordParams) => {
     return cyRequest(() =>
-        request(`${baseUrl.project}/Manage/ModifyCurrentUserPwd`, { method: 'POST'}),
+        request(`${baseUrl.project}/Manage/ModifyCurrentUserPwd`, { method: 'POST', data: params}),
     );
 }
