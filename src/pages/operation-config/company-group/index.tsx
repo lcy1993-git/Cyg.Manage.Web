@@ -88,6 +88,11 @@ const CompanyGroup: React.FC = () => {
     setTableSelectRow([]);
   };
 
+  const addEvent = async () => {
+    await getSelectTreeData();
+    setAddFormVisible(true);
+  };
+
   const sureAddCompanyGroup = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
@@ -103,6 +108,24 @@ const CompanyGroup: React.FC = () => {
       tableFresh();
       setAddFormVisible(false);
       addForm.resetFields();
+    });
+  };
+
+  const editEvent = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    const editData = tableSelectRows[0];
+    const editDataId = editData.id;
+
+    await getSelectTreeData();
+    setEditFormVisible(true);
+    const CompanyGroupData = await run(editDataId);
+
+    editForm.setFieldsValue({
+      ...CompanyGroupData,
+      userIds: (CompanyGroupData.users ?? []).map((item: any) => item.value),
     });
   };
 
@@ -157,29 +180,6 @@ const CompanyGroup: React.FC = () => {
     );
   };
 
-  const editEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
-    }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
-
-    await getSelectTreeData();
-    setEditFormVisible(true);
-    const companyGroupData = await run(editDataId);
-    console.log(companyGroupData);
-
-    editForm.setFieldsValue({
-      ...companyGroupData,
-    });
-  };
-
-  const addEvent = async () => {
-    await getSelectTreeData();
-    setAddFormVisible(true);
-  };
-
   return (
     <PageCommonWrap>
       <TreeTable
@@ -211,10 +211,11 @@ const CompanyGroup: React.FC = () => {
         onOk={() => sureEditCompanyGroup()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
         <Form form={editForm}>
           <Spin spinning={editDataLoading}>
-            <CompanyGroupForm treeData={selectTreeData} />
+            <CompanyGroupForm treeData={selectTreeData} id={tableSelectRows[0]?.id} />
           </Spin>
         </Form>
       </Modal>

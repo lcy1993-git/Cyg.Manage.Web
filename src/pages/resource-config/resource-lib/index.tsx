@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, PoweroffOutlined } from '@ant-design/icons';
+import { EditOutlined, ImportOutlined, PlusOutlined, PoweroffOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useMemo, useState } from 'react';
 import styles from './index.less';
@@ -16,7 +16,9 @@ import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import ResourceLibForm from './components/add-edit-form';
 import UploadDrawing from './components/upload-drawing';
-import { getUploadUrl } from '@/services/resource-config/drawing';
+import { getUploadUrl, uploadLineStressSag } from '@/services/resource-config/drawing';
+import SaveImportLib from './components/upload-lib';
+import SaveImportLineStressSag from './components/upload-lineStressSag';
 
 const { Search } = Input;
 
@@ -26,7 +28,11 @@ const ResourceLib: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false);
+  const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false);
+  const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false);
+
   const { data: keyData } = useRequest(() => getUploadUrl());
 
   const [addForm] = Form.useForm();
@@ -169,6 +175,30 @@ const ResourceLib: React.FC = () => {
     message.success('操作成功');
   };
 
+  const importLibEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    setUploadLibVisible(true);
+  };
+
+  const uploadDrawingEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    setUploadDrawingVisible(true);
+  };
+
+  const importLineStreeSagEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    setUploadLineStressSagVisible(true);
+  };
+
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -180,24 +210,19 @@ const ResourceLib: React.FC = () => {
           <EditOutlined />
           编辑
         </Button>
-        <Button className="mr7" onClick={() => setUploadDrawingVisible(true)}>
+        <Button className="mr7" onClick={() => uploadDrawingEvent()}>
+          <ImportOutlined />
           导入图纸
         </Button>
-        <TableImportButton
-          buttonTitle="导入资源库"
-          modalTitle="导入资源库"
-          className={styles.importBtn}
-          requestSource="resource"
-          importUrl="/ResourceLib/SaveImport"
-          extraParams={{ libId: libId }}
-        />
-        <TableImportButton
-          buttonTitle="导入应力弧垂表"
-          modalTitle="导入应力弧垂表"
-          className={styles.importBtn}
-          requestSource="resource"
-          importUrl="/ResourceLib/SaveImportLineStressSag"
-        />
+        <Button className="mr7" onClick={() => importLibEvent()}>
+          <ImportOutlined />
+          导入资源库
+        </Button>
+        <Button className="mr7" onClick={() => importLineStreeSagEvent()}>
+          <ImportOutlined />
+          导入应力弧垂表
+        </Button>
+
         <Button className="mr7" onClick={() => restartLib()}>
           <PoweroffOutlined />
           重启资源服务
@@ -269,6 +294,21 @@ const ResourceLib: React.FC = () => {
         visible={uploadDrawingVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setUploadDrawingVisible}
+      />
+      <SaveImportLib
+        libId={libId}
+        requestSource="resource"
+        visible={uploadLibVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setUploadLibVisible}
+      />
+
+      <SaveImportLineStressSag
+        libId={libId}
+        requestSource="resource"
+        visible={uploadLineStressSagVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setUploadLineStressSagVisible}
       />
     </PageCommonWrap>
   );

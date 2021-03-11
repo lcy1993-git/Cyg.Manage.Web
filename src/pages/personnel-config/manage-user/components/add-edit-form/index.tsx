@@ -12,23 +12,43 @@ interface ManageUserForm {
 }
 
 const ManageUserForm: React.FC<ManageUserForm> = (props) => {
-  const { type = 'edit'} = props;
- 
+  const { type = 'edit' } = props;
+
   return (
     <>
       {type === 'add' && (
-        <CyFormItem label="用户名" name="userName" rules={rules.userName}>
+        <CyFormItem label="用户名" name="userName" required rules={rules.userName}>
           <Input placeholder="请输入用户名" />
         </CyFormItem>
       )}
 
       {type === 'add' && (
-        <CyFormItem label="密码" name="pwd" required>
+        <CyFormItem label="密码" name="pwd" required hasFeedback rules={rules.pwd}>
           <Input type="password" placeholder="请输入密码" />
         </CyFormItem>
       )}
       {type === 'add' && (
-        <CyFormItem label="确认密码" name="confirmPwd" required rules={rules.confirmPwd}>
+        <CyFormItem
+          label="确认密码"
+          name="confirmPwd"
+          required
+          hasFeedback
+          dependencies={['pwd']}
+          rules={[
+            {
+              required: true,
+              message: '请确认密码',
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('pwd') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject('两次密码输入不一致，请确认');
+              },
+            }),
+          ]}
+        >
           <Input type="password" placeholder="请再次输入密码" />
         </CyFormItem>
       )}

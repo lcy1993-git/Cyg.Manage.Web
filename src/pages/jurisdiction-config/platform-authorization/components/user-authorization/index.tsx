@@ -21,7 +21,6 @@ interface UserAuthorizationProps {
 const { Search } = Input;
 
 const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
-
   const tableRef = useRef<HTMLDivElement>(null);
 
   const { extractParams } = props;
@@ -32,8 +31,8 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
   const columns = [
     {
       title: '用户名',
-      dataIndex: 'roleName',
-      index: 'roleName',
+      dataIndex: 'userName',
+      index: 'userName',
     },
     {
       title: '手机号',

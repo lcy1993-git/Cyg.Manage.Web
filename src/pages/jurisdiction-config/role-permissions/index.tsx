@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Button, Input, Modal, Form, Popconfirm, message, Switch } from 'antd';
+import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin } from 'antd';
 import React, { useState } from 'react';
 import { EditOutlined, PlusOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
@@ -42,7 +42,7 @@ const RolePermissions: React.FC = () => {
   const [editForm] = Form.useForm();
   const [apportionForm] = Form.useForm();
 
-  const { data, run } = useRequest(getAuthorizationDetail, {
+  const { data, run, loading } = useRequest(getAuthorizationDetail, {
     manual: true,
   });
 
@@ -155,7 +155,7 @@ const RolePermissions: React.FC = () => {
   //授权
   const authorizationEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
+      message.error('请选择授权角色模板');
       return;
     }
     authorizationFormShow();
@@ -325,11 +325,13 @@ const RolePermissions: React.FC = () => {
         onCancel={() => cancelAuthorization()}
         cancelText="取消"
       >
-        <UserAuthorization
-          extractParams={{
-            templateId: currentId,
-          }}
-        />
+        <Spin spinning={loading}>
+          <UserAuthorization
+            extractParams={{
+              templateId: currentId,
+            }}
+          />
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

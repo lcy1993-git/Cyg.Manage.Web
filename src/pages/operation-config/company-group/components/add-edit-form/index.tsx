@@ -8,10 +8,11 @@ import rules from './rule';
 
 interface CompanyGroupFormProps {
   treeData: GetUserTreeByGroup[];
+  id?: string;
 }
 
 const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
-  const { treeData = [] } = props;
+  const { treeData = [], id } = props;
   // console.log(treeData);
 
   const mapTreeData = (data: any) => {
@@ -23,7 +24,13 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
   };
 
   const handleData = useMemo(() => {
-    return treeData?.map(mapTreeData);
+    console.log(treeData);
+
+    return treeData
+      ?.filter((item, index) => {
+        return item.id != id;
+      })
+      .map(mapTreeData);
   }, [JSON.stringify(treeData)]);
 
   return (

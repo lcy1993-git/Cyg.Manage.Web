@@ -22,7 +22,7 @@ interface CompanyGroupItemParams {
 
   companyId: string;
 
-  users: string;
+  users: string[];
 }
 
 interface ItemDetailData extends CompanyGroupItemParams {

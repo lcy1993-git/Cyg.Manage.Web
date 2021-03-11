@@ -1,29 +1,30 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
-import { uploadDrawing } from '@/services/resource-config/resource-lib';
+import { uploadLineStressSag } from '@/services/resource-config/drawing';
 import { useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
 import React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
-interface UploadDrawingProps {
+interface SaveImportLibProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: () => void;
   libId?: string;
   securityKey?: string;
+  requestSource: 'project' | 'resource' | 'upload';
 }
 
-const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
+const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { libId = '', securityKey = '', changeFinishEvent } = props;
+  const { libId = '', requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
 
-  const saveDrawingEvent = () => {
+  const saveImportLibEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;
-      await uploadDrawing(file, { libId, securityKey });
+      await uploadLineStressSag(file, { libId }, requestSource, '/ResourceLib/SaveImport');
       message.success('导入成功');
       setState(false);
       changeFinishEvent?.();
@@ -32,13 +33,13 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
 
   return (
     <Modal
-      title="导入图纸"
+      title="导入资源库"
       visible={state as boolean}
       footer={[
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveDrawingEvent()}>
+        <Button key="save" type="primary" onClick={() => saveImportLibEvent()}>
           保存
         </Button>,
       ]}
@@ -53,4 +54,4 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
   );
 };
 
-export default UploadDrawing;
+export default SaveImportLib;
