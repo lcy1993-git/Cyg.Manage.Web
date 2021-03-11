@@ -124,7 +124,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 </div>
                 <div className="flex1 flowHidden">
                     <CyFormItem label="供电所/班组" rules={Rule.required} fieldKey={[field.fieldKey, 'powerSupply']} name={isEmpty(field) ? "powerSupply" : [field.name, 'powerSupply']} labelWidth={120} align="right" required>
-                        <UrlSelect url="/ElectricityCompany/GetPowerSupplys" extraParams={{ areaId, company: companyName }} paramsMust={["areaId", "company"]} requestType="post" placeholder="请选择" titleKey="text" valueKey="value" />
+                        <UrlSelect url="/ElectricityCompany/GetPowerSupplys" extraParams={{ areaId, company }} paramsMust={["areaId", "company"]} requestType="post" placeholder="请选择" titleKey="text" valueKey="value" />
                     </CyFormItem>
                 </div>
             </div>

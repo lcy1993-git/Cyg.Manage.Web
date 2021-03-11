@@ -79,8 +79,8 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
                     <ReadonlyItem label="请求日期">
                         {
                             baseInfo.executeDate ?
-                            moment(baseInfo.executeDate).format("YYYY-MM-DD hh:mm:ss") :
-                            ""
+                                moment(baseInfo.executeDate).format("YYYY-MM-DD hh:mm:ss") :
+                                ""
                         }
                     </ReadonlyItem>
                 </div>
@@ -97,8 +97,8 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
                     <ReadonlyItem label="响应日期">
                         {
                             baseInfo.resDateTime ?
-                            moment(baseInfo.resDateTime).format("YYYY-MM-DD hh:mm:ss") :
-                            ""
+                                moment(baseInfo.resDateTime).format("YYYY-MM-DD hh:mm:ss") :
+                                ""
                         }
                     </ReadonlyItem>
                 </div>
@@ -135,9 +135,10 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
             </div>
             <div>
                 <ReadonlyItem label="Url参数">
-                    {
-                        baseInfo.reqQueryString
-                    }
+                    <pre>
+                        {baseInfo.reqQueryString}
+                    </pre>
+
                 </ReadonlyItem>
             </div>
         </div>
