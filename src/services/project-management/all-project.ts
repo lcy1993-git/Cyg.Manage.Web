@@ -6,7 +6,7 @@ import { TableRequestResult } from '../table';
 
 export enum Arrangement {
   '项目委托' = 1,
-  '公司成员',
+  '部组成员',
   '公司部组',
 }
 

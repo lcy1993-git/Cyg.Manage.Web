@@ -28,7 +28,7 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
       resolve(content);
     } else {
       if (code === 401) {
-        history.push('/401');
+        history.push('/login');
       } else {
         message.error(res.message);
       }

@@ -2,7 +2,7 @@ import { addProject, editEngineer, getEngineerInfo } from "@/services/project-ma
 import { useControllableValue } from "ahooks";
 import { Button } from "antd";
 import { Form, message, Modal } from "antd"
-import React, { Dispatch, SetStateAction, useState } from "react"
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useRequest } from "ahooks";
 import CreateEngineerForm from "../create-engineer-form";
 import moment from "moment";
@@ -24,9 +24,8 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
 
     const { engineerId, changeFinishEvent } = props;
 
-    const { data: engineerInfo } = useRequest(() => getEngineerInfo(engineerId), {
-        ready: !!(engineerId && state),
-        refreshDeps: [engineerId],
+    const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
+        manual: true,
         onSuccess: (res) => {
             form.setFieldsValue({
                 ...engineerInfo,
@@ -41,6 +40,12 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
             setLibId(engineerInfo?.libId ?? "")
         }
     })
+
+    useEffect(() => {
+        if(state) {
+            run();
+        }
+    }, [state])
 
     const edit = () => {
         form.validateFields().then(async (value) => {

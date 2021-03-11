@@ -135,7 +135,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                     }
                     {
                         treeData.length === 0 &&
-                        <EmptyTip description="暂无消息" />
+                        <EmptyTip description="暂无成果" />
                     }
                 </Spin>
             </div>
