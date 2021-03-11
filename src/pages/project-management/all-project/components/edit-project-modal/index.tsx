@@ -2,7 +2,7 @@ import { editProject, getProjectInfo } from "@/services/project-management/all-p
 import { useControllableValue } from "ahooks";
 import { Button } from "antd";
 import { Form, message, Modal } from "antd"
-import React, { Dispatch, SetStateAction, useState } from "react"
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { useRequest } from "ahooks";
 import moment from "moment";
 import CreateProjectForm from "../create-project-form";
@@ -24,9 +24,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
 
     const { projectId, changeFinishEvent, areaId, company,companyName } = props;
 
-    const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
-        ready: !!projectId,
-        refreshDeps: [projectId],
+    const { data: projectInfo, run} = useRequest(() => getProjectInfo(projectId), {
+        manual: true,
         onSuccess: (res) => {
             console.log(projectInfo)
             form.setFieldsValue({
@@ -39,6 +38,12 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
             })
         }
     })
+
+    useEffect(() => {
+        if(state) {
+            run();
+        }
+    }, [state])
 
     const edit = () => {
         form.validateFields().then(async (value) => {

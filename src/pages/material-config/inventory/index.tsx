@@ -67,6 +67,7 @@ const Inventroy: React.FC = () => {
             defaultData={handleInvData}
             titleKey="title"
             valueKey="value"
+            value={inventoryId}
             placeholder="请选择"
             onChange={(value: any) => searchByInv(value)}
           />
@@ -78,12 +79,15 @@ const Inventroy: React.FC = () => {
   //选择协议库存传InvId
   const searchByInv = (value: any) => {
     setInventoryId(value);
-    search();
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        inventoryOverviewId: value,
+        demandCompany: searchKeyWord,
+        keyWord: searchKeyWord,
+      });
+    }
   };
-
-  useEffect(() => {
-    searchByInv(inventoryId);
-  }, [inventoryId]);
 
   // 列表刷新
   const refresh = () => {
@@ -97,7 +101,7 @@ const Inventroy: React.FC = () => {
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.searchByParams();
     }
   };
 
@@ -344,21 +348,24 @@ const Inventroy: React.FC = () => {
           keyWord: searchKeyWord,
         }}
       />
-      <Modal
-        footer=""
-        title="查看映射关系"
-        width="95%"
-        visible={checkMappingVisible}
-        okText="确认"
-        onCancel={() => setCheckMappingVisible(false)}
-        cancelText="取消"
-      >
-        <Form form={checkForm}>
-          <Spin spinning={loading}>
-            <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
-          </Spin>
-        </Form>
-      </Modal>
+      {
+        checkMappingVisible &&
+        <Modal
+          footer=""
+          title="查看映射关系"
+          width="95%"
+          visible={checkMappingVisible}
+          okText="确认"
+          onCancel={() => setCheckMappingVisible(false)}
+          cancelText="取消"
+        >
+          <Form form={checkForm}>
+            <Spin spinning={loading}>
+              <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
+            </Spin>
+          </Form>
+        </Modal>
+      }
       {
         addMapVisible &&
         <CreateMap visible={addMapVisible} inventoryOverviewId={inventoryId} onChange={setAddMapVisible} />
@@ -372,7 +379,7 @@ const Inventroy: React.FC = () => {
           onChange={setImportFormVisible}
         />
       }
-    
+
     </PageCommonWrap>
   );
 };

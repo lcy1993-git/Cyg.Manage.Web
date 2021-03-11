@@ -24,6 +24,7 @@ export interface AddProjectValue {
     engineerId: string
     areaId: string
     company: string
+    companyName: string
 }
 
 interface ProjectTableItemProps {
@@ -64,7 +65,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         setCheckedList(list);
         setIndeterminate(!!list.length && list.length < valueList.length);
         setCheckAll(list.length === valueList.length);
-
+        
         onChange?.({
             projectInfo: {
                 id: projectInfo.id,
@@ -112,10 +113,12 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     }
 
     const addProjectEvent = () => {
+        console.log(projectInfo)
         addProject?.({
             engineerId: projectInfo.id,
             areaId: projectInfo.province,
-            company: projectInfo.company
+            company: projectInfo.companyId,
+            companyName: projectInfo.company
         })
     }
 
@@ -123,7 +126,8 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         editEngineer?.({
             engineerId: projectInfo.id,
             areaId: projectInfo.province,
-            company: projectInfo.company
+            company: projectInfo.companyId,
+            companyName: projectInfo.company
         })
     }
 

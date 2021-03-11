@@ -88,9 +88,12 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
 
   useEffect(() => {
     if(projectIds.length === 1) {
-      run(projectIds[0])
+      if(state) {
+        run(projectIds[0])
+      }
     }
-  }, [JSON.stringify(projectIds)])
+  }, [JSON.stringify(projectIds),state])
+  
 
   return (
     <Modal

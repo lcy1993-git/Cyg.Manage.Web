@@ -66,7 +66,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     const [projectNeedInfo, setProjectNeedInfo] = useState({
         engineerId: "",
         areaId: "",
-        company: ""
+        company: "",
+        companyName: ""
     })
 
     const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
@@ -330,6 +331,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }
 
     const editProjectEvent = (projectNeedInfo: any) => {
+        console.log(projectNeedInfo)
         setEditProjectVisible(true)
         setCurrentEditProjectInfo(projectNeedInfo)
     }
@@ -455,7 +457,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             <EditEnigneerModal engineerId={currentEditEngineerId} visible={editEngineerVisible} onChange={setEditEngineerVisible} changeFinishEvent={tableItemEventFinish} />
             <EditProjectModal companyName={currentEditProjectInfo.companyName} projectId={currentEditProjectInfo.projectId} company={currentEditProjectInfo.company} areaId={currentEditProjectInfo.areaId} visible={editProjectVisible} onChange={setEditProjectVisible} changeFinishEvent={tableItemEventFinish} />
             <CopyProjectModal companyName={currentCopyProjectInfo.companyName}  projectId={currentCopyProjectInfo.projectId} engineerId={currentCopyProjectInfo.engineerId} company={currentCopyProjectInfo.company} areaId={currentCopyProjectInfo.areaId} visible={copyProjectVisible} onChange={setCopyProjectVisible} changeFinishEvent={tableItemEventFinish} />
-            <AddProjectModal changeFinishEvent={tableItemEventFinish} visible={addProjectVisible} onChange={setAddProjectVisible} engineerId={projectNeedInfo.engineerId} areaId={projectNeedInfo.areaId} company={projectNeedInfo.company} />
+            <AddProjectModal companyName={projectNeedInfo.companyName} changeFinishEvent={tableItemEventFinish} visible={addProjectVisible} onChange={setAddProjectVisible} engineerId={projectNeedInfo.engineerId} areaId={projectNeedInfo.areaId} company={projectNeedInfo.company} />
         </div>
     )
 }

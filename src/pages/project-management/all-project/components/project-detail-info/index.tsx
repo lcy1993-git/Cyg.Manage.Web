@@ -1,4 +1,4 @@
-import React, { Dispatch, memo, SetStateAction } from "react"
+import React, { Dispatch, memo, SetStateAction, useEffect } from "react"
 
 import { getProjectInfo } from "@/services/project-management/all-project";
 import { useControllableValue, useRequest } from "ahooks";
@@ -21,10 +21,15 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
 
     const { projectId } = props;
 
-    const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
-        ready: !!projectId,
-        refreshDeps: [projectId]
+    const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
+        manual: true
     })
+
+    useEffect(() => {
+        if(state) {
+            run()
+        }
+    }, [state])
 
     return (
         <Modal title="项目详情" width={680} destroyOnClose bodyStyle={{ padding: "0px" }} visible={state as boolean} footer={null} onCancel={() => setState(false)}>

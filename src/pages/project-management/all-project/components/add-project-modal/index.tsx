@@ -12,6 +12,7 @@ interface AddProjectProps {
     areaId: string
     company: string
     changeFinishEvent: () => void
+    companyName?: string
 }
 
 const AddProjectModal: React.FC<AddProjectProps> = (props) => {
@@ -19,7 +20,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
     const [requestLoading, setRequestLoading] = useState(false);
     const [form] = Form.useForm();
 
-    const { engineerId, areaId, company,changeFinishEvent } = props;
+    const { engineerId, areaId, company,changeFinishEvent,companyName} = props;
 
     const addProjectEvent = () => {
         form.validateFields().then(async(value) => {
@@ -50,7 +51,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
             </Button>,
         ]} onOk={() => addProjectEvent()} onCancel={() => setState(false)}>
             <Form form={form}>
-                <CreateProjectForm areaId={areaId} company={company}  />
+                <CreateProjectForm companyName={companyName} areaId={areaId} company={company}  />
             </Form>
         </Modal>
     )

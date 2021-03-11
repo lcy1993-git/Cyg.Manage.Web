@@ -172,7 +172,7 @@ const ProjectManagement: React.FC = () => {
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
         await recallShare(projectIds);
-        message.success('申请结项成功');
+        message.success('撤回共享成功');
         refresh();
     };
 

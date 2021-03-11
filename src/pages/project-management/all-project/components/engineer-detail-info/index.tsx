@@ -3,7 +3,7 @@ import { getEngineerInfo } from "@/services/project-management/all-project";
 import { useControllableValue, useRequest } from "ahooks";
 import { Modal } from "antd"
 import moment from "moment";
-import React, { Dispatch, SetStateAction } from "react"
+import React, { Dispatch, SetStateAction, useEffect } from "react"
 
 interface EngineerDetailInfoProps {
     engineerId: string
@@ -16,10 +16,15 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
 
     const { engineerId } = props;
 
-    const { data: engineerInfo} = useRequest(() => getEngineerInfo(engineerId), {
-        ready: !!engineerId,
-        refreshDeps: [engineerId]
+    const { data: engineerInfo, run} = useRequest(() => getEngineerInfo(engineerId), {
+        manual: true
     })
+
+    useEffect(() => {
+        if(state) {
+            run()
+        }
+    }, [state])
 
     return (
         <Modal title="工程详情" width={680} destroyOnClose visible={state as boolean} footer={null} onCancel={() => setState(false)}>

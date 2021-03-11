@@ -11,6 +11,7 @@ import { useRequest } from 'ahooks';
 import Search from 'antd/lib/input/Search';
 import ReadonlyItem from '@/components/readonly-item';
 import { getTreeSelectData } from '@/services/operation-config/company-group';
+import uuid from 'node-uuid';
 
 interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void;
@@ -40,6 +41,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     return {
       title: data.text,
       value: data.id,
+      key: uuid.v1(),
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };
