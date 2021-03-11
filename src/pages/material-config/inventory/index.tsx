@@ -290,7 +290,7 @@ const Inventroy: React.FC = () => {
           <ImportOutlined />
           导入
         </Button>
-        <Button className={styles.importBtn} onClick={() => setAddMapVisible(true)}>
+        <Button className={styles.importBtn} onClick={() => createMappingEvent()}>
           创建映射
         </Button>
         <Button className={styles.importBtn} onClick={() => checkMappingEvent()}>
@@ -300,6 +300,15 @@ const Inventroy: React.FC = () => {
     );
   };
 
+  //创建映射
+  const createMappingEvent = () => {
+    if (!inventoryId) {
+      message.warning('请先选择协议库存');
+      return;
+    }
+    setAddMapVisible(true);
+  };
+
   //导入
   const importInventoryEvent = () => {
     setImportFormVisible(true);
@@ -307,15 +316,6 @@ const Inventroy: React.FC = () => {
 
   const uploadFinishEvent = () => {
     refresh();
-  };
-
-  //创建映射
-  const creatMappingEvent = () => {
-    if (!inventoryId) {
-      message.warning('请先选择协议库存');
-      return;
-    }
-    setCheckMappingVisible(true);
   };
 
   //查看映射
@@ -348,8 +348,7 @@ const Inventroy: React.FC = () => {
           keyWord: searchKeyWord,
         }}
       />
-      {
-        checkMappingVisible &&
+      {checkMappingVisible && (
         <Modal
           footer=""
           title="查看映射关系"
@@ -365,21 +364,22 @@ const Inventroy: React.FC = () => {
             </Spin>
           </Form>
         </Modal>
-      }
-      {
-        addMapVisible &&
-        <CreateMap visible={addMapVisible} inventoryOverviewId={inventoryId} onChange={setAddMapVisible} />
-      }
-      {
-        importFormVisible &&
+      )}
+      {addMapVisible && (
+        <CreateMap
+          visible={addMapVisible}
+          inventoryOverviewId={inventoryId}
+          onChange={setAddMapVisible}
+        />
+      )}
+      {importFormVisible && (
         <ImportInventory
           requestSource="resource"
           visible={importFormVisible}
           changeFinishEvent={() => uploadFinishEvent()}
           onChange={setImportFormVisible}
         />
-      }
-
+      )}
     </PageCommonWrap>
   );
 };
