@@ -24,3 +24,12 @@ export const getSourceCompareDetail = (id: string) => {
     request(`${baseUrl.resource}/SourceCompare/GetById`, { method: 'GET', params: { id } }),
   );
 };
+
+export const addSourceCompareCategory = (params: object) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/SourceCompare/CreateCompareCategory`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import GeneralTable from '@/components/general-table';
 
 interface DifferTableParams {
@@ -21,7 +21,7 @@ const DifferTable: React.FC<DifferTableParams> = (props) => {
       title: '资源类型',
       dataIndex: 'sourceTypeText',
       index: 'sourceTypeText',
-      width: 220,
+      width: 240,
     },
     {
       title: '差异类别',
@@ -57,6 +57,7 @@ const DifferTable: React.FC<DifferTableParams> = (props) => {
 
   return (
     <GeneralTable
+      noPaging
       ref={tableRef}
       needCommonButton={true}
       columns={columns}
@@ -64,6 +65,7 @@ const DifferTable: React.FC<DifferTableParams> = (props) => {
       url="/SourceCompare/GetCompareList"
       tableTitle="差异明细"
       type="radio"
+      postType="query"
       // getSelectData={(data) => setTableSelectRow(data)}
       extractParams={{
         categoryId: categoryId,

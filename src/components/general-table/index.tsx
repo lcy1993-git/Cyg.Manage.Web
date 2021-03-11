@@ -48,7 +48,9 @@ interface GeneralTableProps {
 
   needTitleLine?: boolean;
 
-  defaultPageSize?: number
+  defaultPageSize?: number;
+
+  postType?: 'body' | 'query';
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -74,6 +76,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     noPaging = false,
     needTitleLine = true,
     defaultPageSize = 10,
+    postType = 'body',
     ...rest
   } = props;
 
@@ -132,7 +135,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   // 改变视图
-  const changeView = () => { };
+  const changeView = () => {};
 
   const columnChangeEvent = (value: boolean, dataIndex: string) => {
     const copyColumns = [...finallyColumns];
@@ -167,6 +170,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       pageIndex: currentPage,
       pageSize,
       requestSource,
+      postType,
     });
     message.success('刷新成功');
   };
@@ -202,6 +206,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       pageIndex: currentPage,
       pageSize,
       requestSource,
+      postType,
     });
   }, [pageSize, currentPage]);
 
@@ -214,6 +219,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         pageIndex: currentPage,
         pageSize,
         requestSource,
+        postType,
       });
     },
     search: () => {
@@ -224,6 +230,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         pageIndex: 1,
         extraParams: extractParams,
         requestSource,
+        postType,
       });
     },
     searchByParams: (params: object) => {
@@ -234,6 +241,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         pageIndex: 1,
         extraParams: params,
         requestSource,
+        postType,
       });
     },
     reset: () => {
@@ -248,10 +256,10 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   }, [JSON.stringify(columns)]);
 
   useEffect(() => {
-    if(defaultPageSize) {
-      setPageSize(defaultPageSize)
+    if (defaultPageSize) {
+      setPageSize(defaultPageSize);
     }
-  }, [defaultPageSize])
+  }, [defaultPageSize]);
 
   return (
     <div className={styles.cyGeneralTable} ref={tableRef}>
@@ -260,8 +268,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         <div className={styles.cyGeneralTableButtonRightContent}>{buttonRightContentSlot?.()}</div>
       </div>
       <div className={styles.cyGeneralTableOtherSlot}>{otherSlot?.()}</div>
-      {
-        needTitleLine &&
+      {needTitleLine && (
         <div className={styles.cyGeneralTableTitleContnet}>
           <div className={styles.cyGeneralTableTitleShowContent}>
             {tableTitle && <CommonTitle>{tableTitle}</CommonTitle>}
@@ -277,7 +284,10 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
                   />
                 </Tooltip>
                 <Tooltip title="刷新">
-                  <RedoOutlined onClick={() => refreshTable()} className={styles.tableCommonButton} />
+                  <RedoOutlined
+                    onClick={() => refreshTable()}
+                    className={styles.tableCommonButton}
+                  />
                 </Tooltip>
                 <Dropdown overlay={columnsMenuElement} visible={lineConfigVisible}>
                   <Tooltip title="列设置">
@@ -291,7 +301,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
             )}
           </div>
         </div>
-      }
+      )}
       <div className={styles.cyGeneralTableConetnt}>
         <WrapperComponent
           bordered={true}

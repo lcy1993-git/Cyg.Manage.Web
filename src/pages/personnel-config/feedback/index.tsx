@@ -170,8 +170,11 @@ const UserFeedBack: React.FC = () => {
         visible={checkFormVisible}
         okText="确认"
         onOk={() => sureCheckFeedBack()}
-        onCancel={() => setCheckFormVisible(false)}
+        onCancel={() => {
+          setCheckFormVisible(false);
+        }}
         cancelText="取消"
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Spin spinning={loading}>
           <Form form={replyForm}>

@@ -168,6 +168,7 @@ const CompanyGroup: React.FC = () => {
     await getSelectTreeData();
     setEditFormVisible(true);
     const companyGroupData = await run(editDataId);
+    console.log(companyGroupData);
 
     editForm.setFieldsValue({
       ...companyGroupData,

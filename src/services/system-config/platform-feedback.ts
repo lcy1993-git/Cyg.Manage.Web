@@ -22,9 +22,8 @@ export enum Status {
 }
 
 export enum HandleStatus {
-  '处理中' = 1,
+  '处理中' = 2,
   '处理完成',
-  '待处理',
 }
 
 interface SearchLogItemParams {
