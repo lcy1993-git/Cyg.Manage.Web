@@ -46,9 +46,9 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
 
     const { projectInfo = {}, columns = [], onChange, getClickProjectId, addProject, editEngineer } = props;
 
-    const theadElement = columns.map((item) => {        
+    const theadElement = columns.map((item) => {
         return (
-            <div className={styles.engineerTableTh} key={uuid.v1()} style={item.width ? { width: `${item.width}` } : {flex: "1"}}>
+            <div className={styles.engineerTableTh} key={uuid.v1()} style={item.width ? { width: `${item.width}` } : { flex: "1" }}>
                 {item.title}
             </div>
         )
@@ -65,7 +65,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         setCheckedList(list);
         setIndeterminate(!!list.length && list.length < valueList.length);
         setCheckAll(list.length === valueList.length);
-        
+
         onChange?.({
             projectInfo: {
                 id: projectInfo.id,
@@ -92,13 +92,13 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     const tbodyElement = (projectInfo.projects ?? []).map((item: any) => {
         return (
             <div key={uuid.v1()} className={styles.engineerTableTr}>
-                <div className={styles.engineerTableTd} style={{width: "44px"}}>
+                <div className={styles.engineerTableTd} style={{ width: "44px" }}>
                     <Checkbox style={{ marginLeft: "4px" }} value={item.id} />
                 </div>
                 {
                     columns.map((ite) => {
                         return (
-                            <div className={styles.engineerTableTd} key={uuid.v1()} style={ite.width ? { width: `${ite.width}` } : {flex: "1"}}>
+                            <div className={styles.engineerTableTd} key={uuid.v1()} style={ite.width ? { width: `${ite.width}` } : { flex: "1" }}>
                                 {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
                             </div>
                         )
@@ -113,7 +113,6 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     }
 
     const addProjectEvent = () => {
-        console.log(projectInfo)
         addProject?.({
             engineerId: projectInfo.id,
             areaId: projectInfo.province,
@@ -174,12 +173,18 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                     </span>
                 </div>
                 <div className={styles.projectButtons}>
-                    <Button className="mr10" ghost type="primary" onClick={() => addProjectEvent()}>
-                        新增项目
-                    </Button>
-                    <Button onClick={() => editEngineerEvent()}>
-                        编辑
-                    </Button>
+                    {
+                        projectInfo?.operationAuthority?.canAddProject &&
+                        <Button className="mr10" ghost type="primary" onClick={() => addProjectEvent()}>
+                            新增项目
+                        </Button>
+                    }
+                    {
+                        projectInfo?.operationAuthority?.canEdit &&
+                        <Button onClick={() => editEngineerEvent()}>
+                            编辑
+                        </Button>
+                    }
                 </div>
             </div>
             {
@@ -188,7 +193,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                     <div className={styles.engineerTable}>
                         <div className={styles.engineerTableContent}>
                             <div className={styles.engineerTableHeader}>
-                                <div className={styles.engineerTableTh} style={{width: "44px"}}></div>
+                                <div className={styles.engineerTableTh} style={{ width: "44px" }}></div>
                                 {
                                     theadElement
                                 }

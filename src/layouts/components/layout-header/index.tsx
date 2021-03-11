@@ -238,12 +238,12 @@ const LayoutHeader: React.FC = () => {
   const myBaseInfoMenu = (
     <Menu>
       <div className={styles.myNameContent}>{userInfo.userName}</div>
-      <Menu.Item>
+      {/* <Menu.Item>
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="messager.png" />
         </span>
         <span>个人信息</span>
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Item onClick={() => setEditPasswordModalVisible(true)}>
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="lack.png" />

@@ -86,8 +86,8 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
         <Input placeholder="请输入真实姓名" />
       </CyFormItem>
 
-      <CyFormItem label="状态" name="userStatus" required>
-        <EnumRadio enumList={BelongManageEnum} defaultValue="1" />
+      <CyFormItem label="状态" name="userStatus" initialValue={"1"} required>
+        <EnumRadio enumList={BelongManageEnum} />
       </CyFormItem>
     </>
   );
