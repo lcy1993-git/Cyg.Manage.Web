@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { baseUrl, cyRequest } from './common';
+import qs from 'qs';
 
 interface TableCommonRequestParams {
   pageIndex: number;
@@ -7,6 +8,7 @@ interface TableCommonRequestParams {
   url: string;
   extraParams?: object;
   requestSource: 'project' | 'common' | 'resource';
+  postType: 'body' | 'query';
 }
 
 export interface TableRequestResult {
@@ -21,12 +23,21 @@ export const tableCommonRequest = (
   params: TableCommonRequestParams,
 ): Promise<TableRequestResult> => {
   let requestBaseUrl = baseUrl[params.requestSource];
-  return cyRequest<TableRequestResult>(() =>
-    request(`${requestBaseUrl}${params.url}`, {
-      method: 'Post',
-      data: { ...params.extraParams, PageIndex: params.pageIndex, PageSize: params.pageSize },
-    }),
-  );
+  if (params.postType == 'body') {
+    return cyRequest<TableRequestResult>(() =>
+      request(`${requestBaseUrl}${params.url}`, {
+        method: 'Post',
+        data: { ...params.extraParams, PageIndex: params.pageIndex, PageSize: params.pageSize },
+      }),
+    );
+  } else {
+    const queryUrl = `${requestBaseUrl}${params.url}?${qs.stringify(params.extraParams)}`;
+    return cyRequest<TableRequestResult>(() =>
+      request(queryUrl, {
+        method: 'Post',
+      }),
+    );
+  }
 };
 interface TreeTableParams {
   url: string;

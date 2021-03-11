@@ -6,23 +6,30 @@ import React, { useState } from 'react';
 // import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less';
 import UrlSelect from '@/components/url-select';
-import { SearchOutlined, FileTextOutlined } from '@ant-design/icons';
+import { SearchOutlined, FileTextOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { isArray } from 'lodash';
 import SourceCompareDetailTab from './components/detail-tab';
-import { getSourceCompareDetail } from '@/services/resource-config/source-compare';
+import {
+  getSourceCompareDetail,
+  addSourceCompareCategory,
+} from '@/services/resource-config/source-compare';
 import DifferTable from './components/differ-table';
 
 const SourceCompare: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [dataBase1, setDataBase1] = useState<string>('');
-  const [dataBase2, setDataBase2] = useState<string>('');
+  const [db1, setdb1] = useState<string | null>('');
+  const [db2, setdb2] = useState<string | null>('');
   const [detailTabVisible, setDetailTabVisible] = useState<boolean>(false);
   const [differTableVisible, setDifferTableVisible] = useState<boolean>(false);
 
   const { data, run, loading } = useRequest(getSourceCompareDetail, {
+    manual: true,
+  });
+
+  const { run: addCategory } = useRequest(addSourceCompareCategory, {
     manual: true,
   });
 
@@ -38,7 +45,7 @@ const SourceCompare: React.FC = () => {
             titleKey="libName"
             valueKey="id"
             placeholder="请选择"
-            onChange={(value: any) => setDataBase1(value)}
+            onChange={(value: any) => setdb1(value)}
           />
         </TableSearch>
         <TableSearch label="目标资源库" width="260px">
@@ -50,15 +57,33 @@ const SourceCompare: React.FC = () => {
             titleKey="libName"
             valueKey="id"
             placeholder="请选择"
-            onChange={(value: any) => setDataBase2(value)}
+            onChange={(value: any) => setdb2(value)}
           />
         </TableSearch>
         <Button style={{ marginLeft: '10px' }} onClick={() => search()}>
           <SearchOutlined />
           搜索
         </Button>
+        <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => addCategoryEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
       </div>
     );
+  };
+
+  const addCategoryEvent = async () => {
+    if (db1 == '' || db2 == '') {
+      message.error('源资源库和目标资源库不能为空');
+      return;
+    } else if (db1 == db2) {
+      message.error('源资源库不能和目标资源库一致');
+      return;
+    } else {
+      await addCategory({ db1, db2 });
+      refresh();
+      message.success('添加成功');
+    }
   };
 
   // 列表刷新
@@ -177,8 +202,8 @@ const SourceCompare: React.FC = () => {
         type="radio"
         getSelectData={(data) => setTableSelectRow(data)}
         extractParams={{
-          db1: dataBase1,
-          db2: dataBase2,
+          db1: db1,
+          db2: db2,
           keyWord: searchKeyWord,
         }}
       />
