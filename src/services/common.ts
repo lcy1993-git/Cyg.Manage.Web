@@ -3,6 +3,7 @@ import { request, history } from 'umi';
 import tokenRequest from '@/utils/request';
 import { requestBaseUrl } from '../../public/config/request';
 import { RequestDataType, RequestDataCommonType } from './common.d';
+import { isArray } from 'lodash';
 
 const { NODE_ENV } = process.env;
 
@@ -30,7 +31,14 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
       if (code === 401) {
         history.push('/login');
       } else {
-        message.error(res.message);
+        if(res.content && isArray(res.content) && res.content.length > 0) {
+          const errorMsgArray = res.content.map((item) => item.errorMessages).flat();
+          const showErrorMsg = errorMsgArray.join("\n");
+          message.error(showErrorMsg);
+        }else {
+          message.error(res.message);
+        }
+        
       }
       reject(res.message);
     }

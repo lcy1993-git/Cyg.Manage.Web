@@ -419,7 +419,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         <div className={styles.resultTable}>
           <div className={styles.currentMapTable}>
             <div className={styles.currentMapTableButtonContent}>
-              <div className="flex1">{hasMapTableSearch()}</div>
+              <div className="flex1"></div>
               <div>
                 <Button onClick={() => removeEvent()}>移除</Button>
               </div>
