@@ -47,7 +47,7 @@ const RolePermissions: React.FC = () => {
   });
 
   const { data: MoudleTreeData = [], run: getModuleTreeData } = useRequest(
-    getAuthorizationTreeList,
+    getAuthorizationTreeList,{manual: true}
   );
 
   const columns = [

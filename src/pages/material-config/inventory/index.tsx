@@ -2,14 +2,12 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState,useMemo } from 'react';
 import styles from './index.less';
 
 import { useRequest } from 'ahooks';
 import { getInventoryOverviewList } from '@/services/material-config/inventory';
-// import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
-// import CreatMappingForm from './components/create-mapping-form';
 import CheckMapping from './components/check-mapping-form';
 import CreateMap from './components/create-map';
 import { ImportOutlined } from '@ant-design/icons';
