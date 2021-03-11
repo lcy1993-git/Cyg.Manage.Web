@@ -19,7 +19,7 @@ interface CreateProjectFormProps {
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     const { field = {}, areaId, company,companyName } = props;
 
-    const { data: areaSelectData } = useGetSelectData({ url: "/Area/GetList", extraParams: { pId: areaId } }, {ready: !!areaId});
+    const { data: areaSelectData } = useGetSelectData({ url: "/Area/GetList", extraParams: { pId: areaId } }, {ready: !!areaId, refreshDeps: [areaId]});
 
     const {
         projectCategory,
