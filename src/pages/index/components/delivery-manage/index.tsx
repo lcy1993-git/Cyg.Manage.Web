@@ -169,12 +169,12 @@ const DeliveryManage: React.FC = () => {
         <div className={styles.deliveryChart}>
           <BarChart options={option} />
         </div>
-        <div className={styles.deliveryTime}>
+        {/* <div className={styles.deliveryTime}>
           <span className={styles.deliveryChooseTimeLabel}>选择日期</span>
           <div className={styles.delivertChooseTime}>
             <RangePicker allowClear={false} bordered={false} />
           </div>
-        </div>
+        </div> */}
       </div>
     </ChartBox>
   );

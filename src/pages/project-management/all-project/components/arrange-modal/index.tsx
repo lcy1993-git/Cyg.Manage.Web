@@ -76,6 +76,11 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
     });
   };
 
+  const closeModalEvent = () => {
+    setState(false)
+    form.resetFields();
+  }
+
   return (
     <Modal
       title="项目安排"
@@ -84,7 +89,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       okText="提交"
       destroyOnClose
       onOk={() => saveInfo()}
-      onCancel={() => setState(false)}
+      onCancel={() => closeModalEvent()}
     >
       <Form form={form}>
         <ArrangeForm defaultType={defaultSelectType} allotCompanyId={allotCompanyId} getCompanyInfo={getCompanyInfo} onChange={(value) => setSelectType(value)} />

@@ -38,7 +38,7 @@ const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
               {detailData.companyName}
             </ReadonlyItem>
           </div>
-          <div>
+          <div className="mr7">
             <span className="tipInfo">{detailData.phone ?? ''}</span>
           </div>
           <div>

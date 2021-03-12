@@ -210,7 +210,9 @@ const LogManage: React.FC = () => {
       index: 'timeCost',
       width: 100,
       render: (text: any, record: any) => {
-        return record.timeCost.toFixed(2);
+        return (
+          record.isTimeOut ? <span style={{color: "#FA4E25"}}>{record.timeCost.toFixed(2)}</span> : <span>{record.timeCost.toFixed(2)}</span>
+        )
       },
     },
   ];
