@@ -149,7 +149,6 @@ const CompanyGroup: React.FC = () => {
       await updateCompanyGroupItem(submitInfo);
       tableFresh();
       message.success('更新成功');
-      editForm.resetFields();
       setEditFormVisible(false);
     });
   };

@@ -65,7 +65,7 @@ interface DefaultOptionsParams {
 
 //获取文件类别Tree
 export const getCompanyFileTree = () => {
-  return cyRequest(() =>
+  return cyRequest<any[]>(() =>
     request(`${baseUrl.project}/CompanyFile/GetTreeByCategory`, { method: 'GET' }),
   );
 };

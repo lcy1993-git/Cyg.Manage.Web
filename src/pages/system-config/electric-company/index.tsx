@@ -36,10 +36,6 @@ const ElectricCompany: React.FC = () => {
     manual: true,
   });
 
-  // const { data: province = [] } = useRequest(getProvince, {
-  //   manual: true,
-  // });
-
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
@@ -82,6 +78,7 @@ const ElectricCompany: React.FC = () => {
 
     await deleteElectricityCompanyItem(editDataId);
     refresh();
+    setTableSelectRow([]);
     message.success('删除成功');
   };
 

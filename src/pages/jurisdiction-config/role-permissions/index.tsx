@@ -13,14 +13,14 @@ import {
   deleteAuthorizationItem,
   addAuthorizationItem,
   getAuthorizationTreeList,
+  updateAuthorizationModules,
 } from '@/services/jurisdiction-config/platform-authorization';
 import { isArray } from 'lodash';
 import RolePermissionsForm from './components/add-edit-form';
 import CheckboxTreeTable from '@/components/checkbox-tree-table';
 import styles from './index.less';
-import { BelongRoleEnum } from '@/services/jurisdiction-config/platform-authorization';
-import EnumSelect from '@/components/enum-select';
 import UserAuthorization from '../platform-authorization/components/user-authorization';
+import CyTag from '@/components/cy-tag';
 
 const { Search } = Input;
 
@@ -47,7 +47,8 @@ const RolePermissions: React.FC = () => {
   });
 
   const { data: MoudleTreeData = [], run: getModuleTreeData } = useRequest(
-    getAuthorizationTreeList,{manual: true}
+    getAuthorizationTreeList,
+    { manual: true },
   );
 
   const columns = [
@@ -74,7 +75,7 @@ const RolePermissions: React.FC = () => {
       render: (text: any, record: any) => {
         return record.users
           ? record.users.map((item: any) => {
-              return <span className={styles.users}>{item.text}</span>;
+              return <CyTag className="mr7">{item.text}</CyTag>;
             })
           : null;
       },
@@ -96,14 +97,11 @@ const RolePermissions: React.FC = () => {
         <TableSearch label="关键词" width="203px">
           <Search
             value={searchKeyWord}
-            onSearch={() => search({ keyWord: searchKeyWord })}
+            onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             placeholder="角色名称"
             enterButton
           />
-        </TableSearch>
-        <TableSearch label="全部状态" width="203px" marginLeft="20px">
-          <EnumSelect enumList={BelongRoleEnum} needAll defaultValue="" />
         </TableSearch>
       </div>
     );
@@ -116,10 +114,10 @@ const RolePermissions: React.FC = () => {
     }
   };
 
-  const search = (params: any) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search(params);
+      tableRef.current?.search();
     }
   };
 
@@ -134,11 +132,12 @@ const RolePermissions: React.FC = () => {
     await deleteAuthorizationItem(editDataId);
     tableFresh();
     message.success('删除成功');
+    setTableSelectRow([]);
   };
 
   const distributeEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
+      message.error('请选择角色模板');
       return;
     }
     const editData = tableSelectRows[0];
@@ -150,7 +149,17 @@ const RolePermissions: React.FC = () => {
     console.log(functionData);
   };
 
-  const sureDistribute = () => {};
+  const sureDistribute = () => {
+    apportionForm.validateFields().then(async (values) => {
+      const templateId = tableSelectRows[0].id;
+      const { moduleIds } = values;
+
+      await updateAuthorizationModules({ templateId, moduleIds });
+      setDistributeFormVisible(false);
+      tableFresh();
+      message.success('角色功能分配成功');
+    });
+  };
 
   //授权
   const authorizationEvent = async () => {
@@ -274,6 +283,9 @@ const RolePermissions: React.FC = () => {
         url="/AuthTemplate/GetPagedList"
         columns={columns}
         tableTitle="角色权限管理"
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
       />
       <Modal
         title="添加-角色"

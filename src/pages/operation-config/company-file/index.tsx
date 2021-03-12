@@ -73,6 +73,7 @@ const CompanyFile: React.FC = () => {
 
     await deleteCompanyFileItem(editDataId);
     refresh();
+    setTableSelectRow([]);
     message.success('删除成功');
   };
 
@@ -274,6 +275,7 @@ const CompanyFile: React.FC = () => {
         onOk={() => sureAddCompanyFile()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
         <Form form={addForm}>
           <Spin spinning={loading}>
@@ -289,6 +291,7 @@ const CompanyFile: React.FC = () => {
         onOk={() => sureEditCompanyFile()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
         <Form form={editForm}>
           <Spin spinning={loading}>

@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
 import {
@@ -27,6 +27,7 @@ const ManageUser: React.FC = () => {
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [status, setStatus] = useState<number>(0);
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -78,7 +79,7 @@ const ManageUser: React.FC = () => {
     editForm.validateFields().then(async (values) => {
       const editData = tableSelectRows[0];
       const editDataId = editData.id;
-      const newPassword = Object.assign({ id: editDataId, pwd: values.pwd });
+      const newPassword = Object.assign({ id: editDataId, pwd: values.newPwd });
 
       await resetItemPwd(newPassword);
       refresh();
@@ -129,8 +130,7 @@ const ManageUser: React.FC = () => {
 
     const ManageUserData = await run(editDataId);
 
-    editForm.setFieldsValue({...ManageUserData, userStatus: String(ManageUserData.userStatus)});
-   
+    editForm.setFieldsValue({ ...ManageUserData, userStatus: String(ManageUserData.userStatus) });
   };
 
   const sureEditManageUser = () => {
@@ -249,11 +249,10 @@ const ManageUser: React.FC = () => {
     },
   ];
 
-  // 列表搜索
-  const search = (params: object) => {
+  const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search(params);
+      tableRef.current.search();
     }
   };
 
@@ -263,18 +262,37 @@ const ManageUser: React.FC = () => {
         <TableSearch label="关键词" width="280px">
           <Search
             value={searchKeyWord}
-            onSearch={() => search({ keyWord: searchKeyWord })}
+            onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             placeholder="输入用户名/昵称/姓名搜索"
             enterButton
           />
         </TableSearch>
         <TableSearch label="状态" width="200px" marginLeft="20px">
-          <EnumSelect enumList={BelongManageEnum} needAll defaultValue="" />
+          <EnumSelect
+            enumList={BelongManageEnum}
+            placeholder="-全部-"
+            onChange={(value: any) => searchByStatus(value)}
+          />
         </TableSearch>
       </div>
     );
   };
+
+  const searchByStatus = (value: any) => {
+    setStatus(value);
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        userStatus: Number(status),
+      });
+    }
+  };
+
+  //需要修改成一次请求 =>修改EnumSelect组件
+  useEffect(() => {
+    searchByStatus(status);
+  }, [status]);
 
   return (
     <PageCommonWrap>
@@ -288,6 +306,7 @@ const ManageUser: React.FC = () => {
         columns={columns}
         extractParams={{
           keyWord: searchKeyWord,
+          userStatus: status,
         }}
       />
       <Modal

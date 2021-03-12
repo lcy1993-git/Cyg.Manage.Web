@@ -5,7 +5,7 @@ import { Input, Row, Col, TreeSelect } from 'antd';
 import { getCompanyFileTree } from '@/services/operation-config/company-file';
 
 const DefaultParams: React.FC = () => {
-  const { data: categoryData = [] } = useRequest(() => getCompanyFileTree());
+  const { data: categoryData } = useRequest(() => getCompanyFileTree());
   console.log(categoryData);
 
   const mapTreeData = (data: any) => {

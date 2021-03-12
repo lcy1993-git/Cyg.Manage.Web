@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useState,useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import styles from './index.less';
 
 import { useRequest } from 'ahooks';
@@ -51,7 +51,7 @@ const Inventroy: React.FC = () => {
         </TableSearch>
         <TableSearch marginLeft="20px" label="" width="230px">
           <Search
-            value={searchKeyWord}
+            // value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton

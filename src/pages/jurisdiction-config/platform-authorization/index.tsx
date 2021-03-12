@@ -139,12 +139,11 @@ const PlatformAuthorization: React.FC = () => {
     apportionForm.validateFields().then(async (values) => {
       const templateId = tableSelectRows[0].id;
       const { moduleIds } = values;
-      // console.log(moduleIds);
 
-      // const modulesInfo = { templateId, moduleIds };
       await updateAuthorizationModules({ templateId, moduleIds });
       setDistributeFormVisible(false);
       tableFresh();
+      message.success('功能分配成功');
     });
   };
 
@@ -319,8 +318,12 @@ const PlatformAuthorization: React.FC = () => {
         onCancel={() => cancelAuthorization()}
         bodyStyle={{ paddingTop: '10px' }}
       >
-        <SuperManageAuthorization extractParams={{templateId: (isArray(tableSelectRows) && tableSelectRows.length > 0 ? tableSelectRows[0].id : "") }} />
-
+        <SuperManageAuthorization
+          extractParams={{
+            templateId:
+              isArray(tableSelectRows) && tableSelectRows.length > 0 ? tableSelectRows[0].id : '',
+          }}
+        />
       </Modal>
     </PageCommonWrap>
   );

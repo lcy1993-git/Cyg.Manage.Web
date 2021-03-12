@@ -14,9 +14,9 @@ const devBaseUrl = {
   resource: '/resource/api',
 };
 
-interface UrlSelectParams {
-  requestSource: 'project' | 'resource';
-}
+// interface UrlSelectParams {
+//   requestSource: 'project' | 'resource';
+// }
 
 export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;
 
@@ -31,14 +31,13 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
       if (code === 401) {
         history.push('/login');
       } else {
-        if(res.content && isArray(res.content) && res.content.length > 0) {
+        if (res.content && isArray(res.content) && res.content.length > 0) {
           const errorMsgArray = res.content.map((item) => item.errorMessages).flat();
-          const showErrorMsg = errorMsgArray.join("\n");
+          const showErrorMsg = errorMsgArray.join('\n');
           message.error(showErrorMsg);
-        }else {
+        } else {
           message.error(res.message);
         }
-        
       }
       reject(res.message);
     }
@@ -113,7 +112,7 @@ interface GetCommonSelectDataParams {
   params?: any;
   requestSource?: 'common' | 'project' | 'resource';
   method?: 'get' | 'post';
-  postType?: 'body';
+  postType?: 'body' | 'query';
 }
 
 export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) => {
@@ -135,7 +134,7 @@ export const commonUpload = (
   files: any[],
   name: string = 'file',
   requestSource: 'project' | 'resource' | 'upload',
-  postType: 'body' | 'query',
+  // postType: 'body' | 'query',
 ) => {
   const requestUrl = baseUrl[requestSource];
   const formData = new FormData();
@@ -152,14 +151,19 @@ export const commonUpload = (
   );
 };
 
-
-
-
-
 export const commonExport = (url: string, params: any, selectIds: string[]) => {
   return tokenRequest(`${baseUrl.project}${url}`, {
     method: 'POST',
     data: { ...params, ids: selectIds },
+    responseType: 'blob',
+  });
+};
+
+//导出权限
+export const exportAuthority = (url: string, params: any) => {
+  return tokenRequest(`${baseUrl.project}${url}`, {
+    method: 'POST',
+    data: { ...params },
     responseType: 'blob',
   });
 };

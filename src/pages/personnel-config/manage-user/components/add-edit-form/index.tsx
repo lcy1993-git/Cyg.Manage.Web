@@ -1,11 +1,12 @@
-import React from 'react';
-import { Input } from 'antd';
+import React, { useMemo } from 'react';
+import { Input, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
-import EnumSelect from '@/components/enum-select';
 import EnumRadio from '@/components/enum-radio';
-import { BelongUserRoleEnum, BelongManageEnum } from '@/services/personnel-config/manage-user';
+import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import rules from '../rule';
 import UrlSelect from '@/components/url-select';
+import { getTreeSelectData } from '@/services/jurisdiction-config/company-manage';
+import { useRequest } from 'ahooks';
 
 interface ManageUserForm {
   type?: 'add' | 'edit';
@@ -13,6 +14,19 @@ interface ManageUserForm {
 
 const ManageUserForm: React.FC<ManageUserForm> = (props) => {
   const { type = 'edit' } = props;
+  const { data: companyData = [] } = useRequest(() => getTreeSelectData());
+
+  const mapTreeData = (data: any) => {
+    return {
+      title: data.text,
+      value: data.id,
+      children: data.children ? data.children.map(mapTreeData) : [],
+    };
+  };
+
+  const handleData = useMemo(() => {
+    return companyData?.map(mapTreeData);
+  }, [JSON.stringify(companyData)]);
 
   return (
     <>
@@ -54,12 +68,25 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       )}
       {type === 'add' && (
         <CyFormItem label="角色" name="roleId" required rules={rules.role}>
-          <EnumSelect enumList={BelongUserRoleEnum} placeholder="请选择角色" />
+          <UrlSelect
+            showSearch
+            url="/Role/GetList"
+            titleKey="text"
+            valueKey="value"
+            placeholder="请选择角色"
+            requestType="post"
+          />
         </CyFormItem>
       )}
       {type === 'add' && (
         <CyFormItem label="公司" name="companyId">
-          <Input placeholder="请选择公司" />
+          <TreeSelect
+            style={{ width: '100%' }}
+            treeData={handleData}
+            placeholder="请选择公司"
+            treeDefaultExpandAll
+            allowClear
+          />
         </CyFormItem>
       )}
       {type === 'add' && (
@@ -86,7 +113,7 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
         <Input placeholder="请输入真实姓名" />
       </CyFormItem>
 
-      <CyFormItem label="状态" name="userStatus" initialValue={"1"} required>
+      <CyFormItem label="状态" name="userStatus" initialValue={'1'} required>
         <EnumRadio enumList={BelongManageEnum} />
       </CyFormItem>
     </>

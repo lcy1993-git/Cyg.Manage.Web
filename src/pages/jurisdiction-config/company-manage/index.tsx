@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button, Modal, Form, message } from 'antd';
 import TreeTable from '@/components/tree-table/index';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import PageCommonWrap from '@/components/page-common-wrap';
 import {
@@ -75,15 +75,9 @@ const CompanyManage: React.FC = () => {
           <EditOutlined />
           编辑
         </Button>
-        <Button className="mr7" onClick={() => deleteEvent()}>
-          <DeleteOutlined />
-          删除
-        </Button>
       </>
     );
   };
-
-  const deleteEvent = () => {};
 
   const addEvent = async () => {
     await getSelectTreeData();

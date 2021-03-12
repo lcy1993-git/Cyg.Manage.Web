@@ -33,7 +33,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="备注" name="describe">
-        <Input placeholder="请输入备注信息" />
+        <Input.TextArea showCount maxLength={100} placeholder="请输入备注信息" />
       </CyFormItem>
     </>
   );

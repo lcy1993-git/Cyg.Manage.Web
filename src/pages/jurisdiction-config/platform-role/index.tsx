@@ -11,6 +11,7 @@ import {
   getRoleManageDetail,
 } from '@/services/jurisdiction-config/role-manage';
 import { useRequest } from 'ahooks';
+import TableStatus from '@/components/table-status';
 
 const PlatformRole: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -117,9 +118,16 @@ const PlatformRole: React.FC = () => {
     },
     {
       title: '角色类型',
-      dataIndex: 'roleType',
-      index: 'roleType',
-      width: 240,
+      dataIndex: 'roleTypeText',
+      index: 'roleTypeText',
+      width: 180,
+      render: (text: any, record: any) => {
+        return (
+          <TableStatus className="mr7" color="greenOne">
+            {record.roleTypeText}
+          </TableStatus>
+        );
+      },
     },
     {
       title: '备注',
