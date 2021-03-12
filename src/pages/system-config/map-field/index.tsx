@@ -22,7 +22,6 @@ const { Search } = Input;
 const MapField: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
-  const [ids, setIds] = useState<string[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -61,6 +60,7 @@ const MapField: React.FC = () => {
     await deleteMapFieldItem(editDataId);
     refresh();
     message.success('删除成功');
+    setTableSelectRow([]);
   };
 
   const tableSearchEvent = () => {
@@ -196,10 +196,6 @@ const MapField: React.FC = () => {
     });
   };
 
-  tableSelectRows.map((item: any) => {
-    ids.push(item.id);
-  });
-
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -223,7 +219,12 @@ const MapField: React.FC = () => {
           </Button>
         </Popconfirm>
         <TableImportButton className={styles.importBtn} importUrl="/MapField/Import" />
-        <TableExportButton selectIds={ids} exportUrl="/MapField/Export" />
+        <TableExportButton
+          selectIds={tableSelectRows.map((item) => {
+            return item.id;
+          })}
+          exportUrl="/MapField/Export"
+        />
       </div>
     );
   };

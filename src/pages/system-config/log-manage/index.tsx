@@ -88,7 +88,7 @@ const LogManage: React.FC = () => {
             value={searchContentKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchContentKeyWord(e.target.value)}
-            placeholder="请求/响应/异常/内容搜索"
+            placeholder="请求/异常/内容搜索"
             enterButton
           />
         </TableSearch>
@@ -114,19 +114,19 @@ const LogManage: React.FC = () => {
             />
             <DatePicker
               value={beginDate}
+              style={{ width: '220px' }}
               showTime={{ format: 'HH:mm' }}
               onChange={handleBeginDate}
               format="YYYY-MM-DD HH:mm"
-              // onOk={chooseBeginDate}
               placeholder="开始日期"
             />
             <DatePicker
               value={endDate}
+              style={{ width: '220px' }}
               showTime={{ format: 'HH:mm' }}
               onChange={handleEndDate}
               format="YYYY-MM-DD HH:mm"
               placeholder="结束日期"
-              // onOk={chooseEndDate}
             />
             <Button type="primary" className="mr7" onClick={() => searchEvent()}>
               查询

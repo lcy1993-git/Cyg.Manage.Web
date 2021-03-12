@@ -122,7 +122,7 @@ const Drawing: React.FC = () => {
       <div className={styles.buttonArea}>
         <Button className="mr7" onClick={() => importChartEvent()}>
           <ImportOutlined />
-          导入
+          导入图纸
         </Button>
       </div>
     );

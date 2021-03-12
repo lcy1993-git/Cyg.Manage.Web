@@ -1,19 +1,18 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-// import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
+import { Button, message } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 import CommonTitle from '@/components/common-title';
-import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 import OverHeadDesignTab from './components/overHeadDesign-tab';
-
-const { Search } = Input;
+import { ImportOutlined } from '@ant-design/icons';
+import ImportOverheadModal from './components/import-form';
 
 const OverheadDesign: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
+  const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false);
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
@@ -37,6 +36,18 @@ const OverheadDesign: React.FC = () => {
     }
   };
 
+  const uploadFinishEvent = () => {
+    refresh();
+  };
+
+  const importOverheadDesignEvent = () => {
+    if (!resourceLibId) {
+      message.error('请先选择资源库');
+      return;
+    }
+    setImportOverheadVisible(true);
+  };
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.overHeadDesign}>
@@ -50,6 +61,7 @@ const OverheadDesign: React.FC = () => {
                 <UrlSelect
                   allowClear
                   showSearch
+                  style={{ width: '180px' }}
                   requestSource="resource"
                   url="/ResourceLib/GetList"
                   titleKey="libName"
@@ -60,11 +72,10 @@ const OverheadDesign: React.FC = () => {
               </TableSearch>
             </div>
             <div>
-              <TableImportButton
-                buttonTitle="导入(杆型+模块)"
-                modalTitle="导入(杆型+模块)"
-                importUrl="/PoleType/SaveImport"
-              />
+              <Button className="mr7" onClick={() => importOverheadDesignEvent()}>
+                <ImportOutlined />
+                导入(杆型+模块)
+              </Button>
             </div>
           </div>
         </div>
@@ -72,6 +83,13 @@ const OverheadDesign: React.FC = () => {
           <OverHeadDesignTab libId={resourceLibId} />
         </div>
       </div>
+      <ImportOverheadModal
+        libId={resourceLibId}
+        requestSource="resource"
+        visible={importOverheadVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportOverheadVisible}
+      />
     </PageCommonWrap>
   );
 };

@@ -14,6 +14,10 @@ const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
   const { selectIds = [], exportUrl = '', extraParams, fileName = '表格' } = props;
 
   const exportChoosedRow = async () => {
+    if (selectIds == []) {
+      message.error('请选择需要导出的行');
+      return;
+    }
     const res = await commonExport(exportUrl, extraParams, selectIds);
     let blob = new Blob([res], {
       type: 'application/vnd.ms-excel;charset=utf-8',

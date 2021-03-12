@@ -43,7 +43,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
   const sureImport = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;
-      await commonUpload(importUrl, file, name, requestSource, postType);
+      await commonUpload(importUrl, file, name, requestSource);
       message.success('导入成功');
       setImportModalVisible(false);
       form.resetFields();

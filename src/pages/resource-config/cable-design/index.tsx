@@ -1,19 +1,19 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 // import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
+import { Button, message } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 import CommonTitle from '@/components/common-title';
-import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 import CableDesignTab from './components/cableDesign-tab';
-
-const { Search } = Input;
+import { ImportOutlined } from '@ant-design/icons';
+import ImportCableModal from './components/import-form';
 
 const CableDesign: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
+  const [importCableVisible, setImportCableVisible] = useState<boolean>(false);
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
@@ -38,6 +38,18 @@ const CableDesign: React.FC = () => {
     }
   };
 
+  const uploadFinishEvent = () => {
+    refresh();
+  };
+
+  const importCableDesignEvent = () => {
+    if (!resourceLibId) {
+      message.error('请先选择资源库');
+      return;
+    }
+    setImportCableVisible(true);
+  };
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.cableDesign}>
@@ -49,6 +61,7 @@ const CableDesign: React.FC = () => {
             <div className="flex1 flex">
               <TableSearch className={styles.libSearch} label="资源库" width="240px">
                 <UrlSelect
+                  style={{ width: '180px' }}
                   allowClear
                   showSearch
                   requestSource="resource"
@@ -61,12 +74,10 @@ const CableDesign: React.FC = () => {
               </TableSearch>
             </div>
             <div>
-              <TableImportButton
-                buttonTitle="导入(电缆井+电缆通道)"
-                modalTitle="导入(电缆井+电缆通道)"
-                className={styles.importBtn}
-                importUrl="/CableWell/SaveImport"
-              />
+              <Button className="mr7" onClick={() => importCableDesignEvent()}>
+                <ImportOutlined />
+                导入(电缆井+电缆通道)
+              </Button>
             </div>
           </div>
         </div>
@@ -74,6 +85,13 @@ const CableDesign: React.FC = () => {
           <CableDesignTab libId={resourceLibId} />
         </div>
       </div>
+      <ImportCableModal
+        libId={resourceLibId}
+        requestSource="resource"
+        visible={importCableVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportCableVisible}
+      />
     </PageCommonWrap>
   );
 };
