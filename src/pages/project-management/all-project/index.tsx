@@ -189,7 +189,7 @@ const ProjectManagement: React.FC = () => {
     const shareMenu = (
         <Menu>
             <Menu.Item onClick={() => shareEvent()}>共享</Menu.Item>
-            <Menu.Item onClick={() => recallShareEvent()}>撤回共享</Menu.Item>
+            {/* <Menu.Item onClick={() => recallShareEvent()}>撤回共享</Menu.Item> */}
         </Menu>
     );
 

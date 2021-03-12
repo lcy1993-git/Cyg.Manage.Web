@@ -9,222 +9,14 @@ import headPortraitSrc from '@/assets/image/head-portrait.jpg';
 import { signOut } from '@/services/login';
 import EditPassword from '../edit-password';
 import CutAccount from '../cut-account';
+import PersonInfoModal from "../person-info-modal";
 import { useGetUserInfo } from '@/utils/hooks';
-
-const testData = [
-  {
-    name: '工程项目管理',
-    icon: '',
-    menuData: [
-      {
-        name: '所有项目',
-        icon: '',
-        path: '/project-management/all-project',
-      },
-      {
-        name: '可视化成果',
-        icon: '',
-        path: '/visualization-results/result-page',
-      },
-      {
-        name: '地州项目一览表',
-        icon: '',
-        path: '/project-management/project-statistics',
-      },
-    ],
-  },
-  {
-    name: '系统管理',
-    icon: '',
-    menuData: [
-      {
-        name: '基础数据',
-        icon: '',
-        path: '/system-config/basic-data',
-      },
-      {
-        name: '字典管理',
-        icon: '',
-        path: '/system-config/dictionary-manage',
-      },
-      {
-        name: '功能管理',
-        icon: '',
-        path: '/system-config/function-module',
-      },
-      {
-        name: '日志管理',
-        icon: '',
-        path: '/system-config/log-manage',
-      },
-      {
-        name: '上报日志',
-        icon: '',
-        path: '/system-config/report-log',
-      },
-      {
-        name: '电力公司',
-        icon: '',
-        path: '/system-config/electric-company',
-      },
-      {
-        name: '平台反馈',
-        icon: '',
-        path: '/system-config/platform-feedback',
-      },
-      {
-        name: '数据映射',
-        icon: '',
-        path: '/system-config/map-field',
-      },
-      {
-        name: '终端设备',
-        icon: '',
-        path: '/system-config/terminal-unit',
-      },
-    ],
-  },
-  {
-    name: '人员管理',
-    icon: '',
-    menuData: [
-      {
-        name: '管理用户',
-        icon: '',
-        path: '/personnel-config/manage-user',
-      },
-      {
-        name: '公司用户',
-        icon: '',
-        path: '/personnel-config/company-user',
-      },
-      {
-        name: '用户反馈',
-        icon: '',
-        path: '/personnel-config/feedback',
-      },
-    ],
-  },
-  {
-    name: '权限管理',
-    icon: '',
-    menuData: [
-      {
-        name: '公司管理',
-        icon: '',
-        path: '/jurisdiction-config/company-manage',
-      },
-      {
-        name: '平台角色',
-        icon: '',
-        path: '/jurisdiction-config/platform-role',
-      },
-      {
-        name: '平台授权',
-        icon: '',
-        path: '/jurisdiction-config/platform-authorization',
-      },
-      {
-        name: '角色权限',
-        icon: '',
-        path: '/jurisdiction-config/role-permissions',
-      },
-      {
-        name: '下辖公司',
-        icon: '',
-        path: '/jurisdiction-config/subordinate-company',
-      },
-    ],
-  },
-  {
-    name: '运维管理',
-    icon: '',
-    menuData: [
-      {
-        name: '部组管理',
-        icon: '',
-        path: '/operation-config/company-group',
-      },
-      {
-        name: '公司文件',
-        icon: '',
-        path: '/operation-config/company-file',
-      },
-    ],
-  },
-  {
-    name: '资源库管理',
-    icon: '',
-    menuData: [
-      {
-        name: '资源库',
-        icon: '',
-        path: '/resource-config/resource-lib',
-      },
-      {
-        name: '图纸',
-        icon: '',
-        path: '/resource-config/drawing',
-      },
-      {
-        name: '物料',
-        icon: '',
-        path: '/resource-config/material',
-      },
-      {
-        name: '组件',
-        icon: '',
-        path: '/resource-config/component',
-      },
-      {
-        name: '电气设备',
-        icon: '',
-        path: '/resource-config/electrical-equipment',
-      },
-      {
-        name: '电缆设计',
-        icon: '',
-        path: '/resource-config/cable-design',
-      },
-      {
-        name: '架空设计',
-        icon: '',
-        path: '/resource-config/overhead-design',
-      },
-      {
-        name: '应力弧垂表',
-        icon: '',
-        path: '/resource-config/line-stress-sag',
-      },
-      {
-        name: '版本对比',
-        icon: '',
-        path: '/resource-config/source-compare',
-      },
-    ],
-  },
-  {
-    name: '物料管理',
-    icon: '',
-    menuData: [
-      {
-        name: '协议库存管理',
-        icon: '',
-        path: '/material-config/inventory',
-      },
-      {
-        name: '物料利库管理',
-        icon: '',
-        path: '/material-config/ware-house',
-      },
-    ],
-  },
-];
 
 const LayoutHeader: React.FC = () => {
 
   const [editPasswordModalVisible, setEditPasswordModalVisible] = useState<boolean>(false);
   const [cutAccoutModalVisible, setCutAccountModalVisible] = useState<boolean>(false);
+  const [personInfoModalVisible, setPersonInfoModalVisible] = useState<boolean>(false);
 
   const userInfo = useGetUserInfo();
 
@@ -236,16 +28,20 @@ const LayoutHeader: React.FC = () => {
 
   const menuData:any[] = JSON.parse(localStorage.getItem("functionModules") ?? "[]");
 
+  const personInfoEditEvent = () => {
+    setPersonInfoModalVisible(true)
+  }
+
   // TODO 点击个人信息对应的一些方法都还么写
   const myBaseInfoMenu = (
     <Menu>
       <div className={styles.myNameContent}>{userInfo.userName}</div>
-      {/* <Menu.Item>
+      <Menu.Item onClick={() => personInfoEditEvent()}>
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="messager.png" />
         </span>
         <span>个人信息</span>
-      </Menu.Item> */}
+      </Menu.Item>
       <Menu.Item onClick={() => setEditPasswordModalVisible(true)}>
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="lack.png" />
@@ -306,6 +102,7 @@ const LayoutHeader: React.FC = () => {
       </div>
       <EditPassword visible={editPasswordModalVisible} onChange={setEditPasswordModalVisible} />
       <CutAccount visible={cutAccoutModalVisible} onChange={setCutAccountModalVisible} />
+      <PersonInfoModal visible={personInfoModalVisible} onChange={setPersonInfoModalVisible} />
     </div>
   );
 };

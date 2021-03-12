@@ -38,3 +38,9 @@ export const getUserInfo = () => {
         request(`${baseUrl.project}/Manage/GetCurrentUserInfo`, { method: 'GET'})
     );
 }
+
+export const editUserInfo = (params: any) => {
+    return cyRequest(() =>
+        request(`${baseUrl.project}/Manage/ModifyCurrentUserInfo`, { method: 'POST', data: {...params}})
+    );
+}
