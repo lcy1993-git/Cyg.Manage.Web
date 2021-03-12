@@ -17,7 +17,12 @@ const OverheadDesign: React.FC = () => {
   //选择资源库传libId
   const searchByLib = (value: any) => {
     setResourceLibId(value);
-    search();
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        libId: value,
+      });
+    }
   };
 
   // 列表刷新

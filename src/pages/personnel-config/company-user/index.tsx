@@ -29,19 +29,20 @@ import CyTag from '@/components/cy-tag';
 const { Search } = Input;
 
 const mapColor = {
-  "无": "gray",
-  "管理端": "greenOne",
-  "勘察端": "greenTwo",
-  "评审端": "greenThree",
-  "技经端": "greenFour",
-  "设计端": "greenFive"
-}
+  无: 'gray',
+  管理端: 'greenOne',
+  勘察端: 'greenTwo',
+  评审端: 'greenThree',
+  技经端: 'greenFour',
+  设计端: 'greenFive',
+};
 
 const CompanyUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [status, setStatus] = useState<number>(0);
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [batchAddFormVisible, setBatchAddFormVisible] = useState<boolean>(false);
@@ -92,7 +93,7 @@ const CompanyUser: React.FC = () => {
 
   const resetEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择需要重置密码的用户！');
+      message.warning('请选择需要重置密码的用户');
       return;
     }
     setResetFormVisible(true);
@@ -145,12 +146,12 @@ const CompanyUser: React.FC = () => {
 
   const sureBatchAddCompanyUser = () => {
     batchAddForm.validateFields().then(async (values) => {
-      console.log(values)
-      await batchAddCompanyUserItem({...values});
-      message.success("批量增加成功")
+      console.log(values);
+      await batchAddCompanyUserItem({ ...values });
+      message.success('批量增加成功');
       refresh();
-      setBatchAddFormVisible(false)
-    })
+      setBatchAddFormVisible(false);
+    });
   };
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -169,7 +170,9 @@ const CompanyUser: React.FC = () => {
       ...ManageUserData,
       groupIds: (ManageUserData.comapnyGroups ?? []).map((item: any) => item.value),
       userStatus: String(ManageUserData.userStatus),
-      clientCategorys: (ManageUserData.authorizeClientList ?? []).map((item: any) => item.value).filter((item: any) => item > 1)
+      clientCategorys: (ManageUserData.authorizeClientList ?? [])
+        .map((item: any) => item.value)
+        .filter((item: any) => item > 1),
     });
   };
 
@@ -237,14 +240,14 @@ const CompanyUser: React.FC = () => {
       index: 'comapnyGroups',
       width: 210,
       render: (text: any, record: any) => {
-        const {comapnyGroups} = record;
+        const { comapnyGroups } = record;
         return (comapnyGroups ?? []).map((item: any) => {
           return (
             <CyTag key={uuid.v1()} className="mr7">
               {item.text}
             </CyTag>
-          )
-        })
+          );
+        });
       },
     },
     {
@@ -262,8 +265,8 @@ const CompanyUser: React.FC = () => {
           <>
             <Switch onChange={() => updateStatus(record.id)} />
             <span className="formSwitchCloseTip">禁用</span>
-          </>  
-          );
+          </>
+        );
       },
     },
     {
@@ -271,18 +274,16 @@ const CompanyUser: React.FC = () => {
       dataIndex: 'authorizeClient',
       index: 'authorizeClient',
       width: 240,
-      render: (text: any, record: any) => { 
-        const {authorizeClientTexts} = record;
+      render: (text: any, record: any) => {
+        const { authorizeClientTexts } = record;
         const element = (authorizeClientTexts ?? []).map((item: string) => {
           return (
-            <TableStatus className="mr7" color={mapColor[item] ?? "gray" } key={uuid.v1()}>{item}</TableStatus>
-          )
-        })
-        return (
-          <>
-            {element}
-          </>
-        )
+            <TableStatus className="mr7" color={mapColor[item] ?? 'gray'} key={uuid.v1()}>
+              {item}
+            </TableStatus>
+          );
+        });
+        return <>{element}</>;
       },
     },
     {
@@ -310,6 +311,16 @@ const CompanyUser: React.FC = () => {
     }
   };
 
+  const searchByStatus = (value: any) => {
+    setStatus(value);
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        userStatus: value,
+      });
+    }
+  };
+
   const leftSearch = () => {
     return (
       <div className={styles.search}>
@@ -323,7 +334,11 @@ const CompanyUser: React.FC = () => {
           />
         </TableSearch>
         <TableSearch label="状态" width="200px" marginLeft="20px">
-          <EnumSelect enumList={BelongManageEnum} needAll defaultValue="" />
+          <EnumSelect
+            enumList={BelongManageEnum}
+            onChange={(value: any) => searchByStatus(value)}
+            placeholder="-全部-"
+          />
         </TableSearch>
       </div>
     );
@@ -341,6 +356,7 @@ const CompanyUser: React.FC = () => {
         columns={columns}
         extractParams={{
           keyWord: searchKeyWord,
+          userStatus: status,
         }}
       />
       <Modal

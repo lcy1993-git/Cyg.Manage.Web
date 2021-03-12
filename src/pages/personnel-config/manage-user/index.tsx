@@ -284,15 +284,10 @@ const ManageUser: React.FC = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.searchByParams({
-        userStatus: Number(status),
+        userStatus: value,
       });
     }
   };
-
-  //需要修改成一次请求 =>修改EnumSelect组件
-  useEffect(() => {
-    searchByStatus(status);
-  }, [status]);
 
   return (
     <PageCommonWrap>

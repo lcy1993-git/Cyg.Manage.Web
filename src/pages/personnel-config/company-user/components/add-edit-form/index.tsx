@@ -3,7 +3,7 @@ import { Input, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumRadio from '@/components/enum-radio';
 import UrlSelect from '@/components/url-select';
-import { BelongManageEnum } from '@/services/personnel-config/manage-user';
+import { BelongStatusEnum } from '@/services/personnel-config/manage-user';
 import rules from '../rule';
 import { CompanyGroupTreeData } from '@/services/operation-config/company-group';
 
@@ -86,7 +86,7 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
       <CyFormItem label="真实姓名" name="name">
         <Input placeholder="请输入真实姓名" />
       </CyFormItem>
-      
+
       <CyFormItem label="授权端口" name="clientCategorys">
         <UrlSelect
           mode="multiple"
@@ -100,7 +100,7 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="状态" name="userStatus" initialValue={'1'}>
-        <EnumRadio enumList={BelongManageEnum} />
+        <EnumRadio enumList={BelongStatusEnum} />
       </CyFormItem>
     </>
   );

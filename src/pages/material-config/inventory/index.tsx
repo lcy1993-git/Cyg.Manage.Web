@@ -99,7 +99,7 @@ const Inventroy: React.FC = () => {
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.searchByParams();
+      tableRef.current.search();
     }
   };
 

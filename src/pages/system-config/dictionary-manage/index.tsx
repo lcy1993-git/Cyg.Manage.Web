@@ -26,31 +26,33 @@ interface RouteListItem {
 }
 
 const ROUTE_LIST_STATE = {
-  "routeList": [{
-    name: '根目录',
-    id: '',
-  }]
-}
+  routeList: [
+    {
+      name: '根目录',
+      id: '',
+    },
+  ],
+};
 
 interface State {
-  routeList: RouteListItem[]
+  routeList: RouteListItem[];
 }
 
 const reducer = (state: State, action: any) => {
   switch (action.code) {
-    case "add":
-      return { routeList: [...state.routeList, { id: action.id, name: action.name }], }
-    case "edit":
+    case 'add':
+      return { routeList: [...state.routeList, { id: action.id, name: action.name }] };
+    case 'edit':
       const routeList = [...state.routeList];
       const currentDataIndex = routeList.findIndex((item) => item.id === action.id);
       if (currentDataIndex !== routeList.length) {
         routeList.splice(currentDataIndex + 1, routeList.length);
       }
-      return {routeList: routeList}
+      return { routeList: routeList };
     default:
-      throw new Error("传入值不对")
+      throw new Error('传入值不对');
   }
-}
+};
 
 const DictionaryManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -130,14 +132,15 @@ const DictionaryManage: React.FC = () => {
       // @ts-ignore
       tableRef.current.searchByParams(params);
     }
-  }
+  };
 
   const keyCellClickEvent = (id: string, name: string) => {
-    dispatch({ code: "add", id, name })
+    dispatch({ code: 'add', id, name });
     //setRouteList([...routeList, { id, name }]);
     setSearchKeyWord('');
     searchByParams({
-      keyWord: "", parentId: id
+      keyWord: '',
+      parentId: id,
     });
   };
 
@@ -202,7 +205,7 @@ const DictionaryManage: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          parentId: state.routeList[state.routeList.length - 1].id ?? "",
+          parentId: state.routeList[state.routeList.length - 1].id ?? '',
           key: '',
           value: '',
           extensionColumn: '',
@@ -280,7 +283,7 @@ const DictionaryManage: React.FC = () => {
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
-        // disabled
+          // disabled
         >
           <Button className="mr7">
             <DeleteOutlined />
@@ -294,10 +297,11 @@ const DictionaryManage: React.FC = () => {
   };
 
   const routeItemClickEvent = (id: string, name: string) => {
-    dispatch({code: "edit", id})
+    dispatch({ code: 'edit', id });
     setSearchKeyWord('');
     searchByParams({
-      keyWord: "", parentId: id
+      keyWord: '',
+      parentId: id,
     });
   };
 
@@ -323,9 +327,9 @@ const DictionaryManage: React.FC = () => {
   };
 
   const tableSelectEvent = (data: any) => {
-    setTableSelectRow(data)
-    setSelectIds(data.map((item: any) => item.id))
-  }
+    setTableSelectRow(data);
+    setSelectIds(data.map((item: any) => item.id));
+  };
 
   return (
     <PageCommonWrap>
@@ -340,7 +344,10 @@ const DictionaryManage: React.FC = () => {
         tableTitle="系统字典"
         getSelectData={tableSelectEvent}
         type="checkbox"
-        extractParams={{ keyWord: searchKeyWord, parentId: state.routeList[state.routeList.length - 1].id ?? "" }}
+        extractParams={{
+          keyWord: searchKeyWord,
+          parentId: state.routeList[state.routeList.length - 1].id ?? '',
+        }}
       />
       <Modal
         title="添加-字典"
@@ -352,7 +359,7 @@ const DictionaryManage: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ""} />
+          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
         </Form>
       </Modal>
       <Modal
@@ -365,7 +372,7 @@ const DictionaryManage: React.FC = () => {
         cancelText="取消"
       >
         <Form form={editForm}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ""} />
+          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
         </Form>
       </Modal>
     </PageCommonWrap>

@@ -33,7 +33,6 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [ids, setIds] = useState<string[]>([]);
 
-  const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
@@ -339,15 +338,6 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       return;
     }
     setDetailVisible(true);
-  };
-
-  //展示组件属性
-  const openAttribute = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
-    setAttributeVisible(true);
   };
 
   return (

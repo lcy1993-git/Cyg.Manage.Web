@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Input, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumRadio from '@/components/enum-radio';
-import { BelongManageEnum } from '@/services/personnel-config/manage-user';
+import { BelongStatusEnum } from '@/services/personnel-config/manage-user';
 import rules from '../rule';
 import UrlSelect from '@/components/url-select';
 import { getTreeSelectData } from '@/services/jurisdiction-config/company-manage';
@@ -114,7 +114,7 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="状态" name="userStatus" initialValue={'1'} required>
-        <EnumRadio enumList={BelongManageEnum} />
+        <EnumRadio enumList={BelongStatusEnum} />
       </CyFormItem>
     </>
   );

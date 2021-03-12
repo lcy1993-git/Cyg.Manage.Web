@@ -12,16 +12,14 @@ const OverHeadDesignTab: React.FC<CableDesignParams> = (props) => {
   const { libId } = props;
 
   return (
-    <div>
-      <Tabs className="normalTabs noMargin">
-        <TabPane key="pole" tab="杆型">
-          <PoleType libId={libId} />
-        </TabPane>
-        <TabPane key="modules" tab="模块">
-          <ModulesProperty libId={libId} />
-        </TabPane>
-      </Tabs>
-    </div>
+    <Tabs className="normalTabs noMargin">
+      <TabPane key="pole" tab="杆型">
+        <PoleType libId={libId} />
+      </TabPane>
+      <TabPane key="modules" tab="模块">
+        <ModulesProperty libId={libId} />
+      </TabPane>
+    </Tabs>
   );
 };
 

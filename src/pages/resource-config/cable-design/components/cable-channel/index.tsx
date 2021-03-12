@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -57,16 +57,6 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     );
   };
 
-  //选择资源库传libId
-  const searchByLib = (value: any) => {
-    setResourceLibId(value);
-    search();
-  };
-
-  useEffect(() => {
-    searchByLib(libId);
-  }, [libId]);
-
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
@@ -82,6 +72,16 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       tableRef.current.search();
     }
   };
+
+  const searchByLib = (value: any) => {
+    // console.log(value);
+    setResourceLibId(value);
+    search();
+  };
+
+  useEffect(() => {
+    searchByLib(libId);
+  }, [libId]);
 
   const columns = [
     {

@@ -17,9 +17,13 @@ const CableDesign: React.FC = () => {
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    // console.log(value);
     setResourceLibId(value);
-    search();
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        libId: value,
+      });
+    }
   };
 
   // 列表刷新
@@ -27,14 +31,6 @@ const CableDesign: React.FC = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.refresh();
-    }
-  };
-
-  // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search();
     }
   };
 

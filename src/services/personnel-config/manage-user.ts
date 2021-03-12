@@ -2,8 +2,13 @@ import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
 export enum BelongManageEnum {
-  '-全部-',
+  '全部',
   '启用',
+  '禁用',
+}
+
+export enum BelongStatusEnum {
+  '启用' = 1,
   '禁用',
 }
 
