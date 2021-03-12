@@ -33,66 +33,66 @@ const testData = [
       },
     ],
   },
-  // {
-  //   name: '系统管理',
-  //   icon: '',
-  //   menuData: [
-  //     {
-  //       name: '基础数据',
-  //       icon: '',
-  //       path: '/system-config/basic-data',
-  //     },
-  //     {
-  //       name: '字典管理',
-  //       icon: '',
-  //       path: '/system-config/dictionary-manage',
-  //     },
-  //     {
-  //       name: '功能管理',
-  //       icon: '',
-  //       path: '/system-config/function-module',
-  //     },
-  //     {
-  //       name: '日志管理',
-  //       icon: '',
-  //       path: '/system-config/log-manage',
-  //     },
-  //     {
-  //       name: '上报日志',
-  //       icon: '',
-  //       path: '/system-config/report-log',
-  //     },
-  //     {
-  //       name: '电力公司',
-  //       icon: '',
-  //       path: '/system-config/electric-company',
-  //     },
-  //     {
-  //       name: '平台反馈',
-  //       icon: '',
-  //       path: '/system-config/platform-feedback',
-  //     },
-  //     {
-  //       name: '数据映射',
-  //       icon: '',
-  //       path: '/system-config/map-field',
-  //     },
-  //     {
-  //       name: '终端设备',
-  //       icon: '',
-  //       path: '/system-config/terminal-unit',
-  //     },
-  //   ],
-  // },
+  {
+    name: '系统管理',
+    icon: '',
+    menuData: [
+      {
+        name: '基础数据',
+        icon: '',
+        path: '/system-config/basic-data',
+      },
+      {
+        name: '字典管理',
+        icon: '',
+        path: '/system-config/dictionary-manage',
+      },
+      {
+        name: '功能管理',
+        icon: '',
+        path: '/system-config/function-module',
+      },
+      {
+        name: '日志管理',
+        icon: '',
+        path: '/system-config/log-manage',
+      },
+      {
+        name: '上报日志',
+        icon: '',
+        path: '/system-config/report-log',
+      },
+      {
+        name: '电力公司',
+        icon: '',
+        path: '/system-config/electric-company',
+      },
+      {
+        name: '平台反馈',
+        icon: '',
+        path: '/system-config/platform-feedback',
+      },
+      {
+        name: '数据映射',
+        icon: '',
+        path: '/system-config/map-field',
+      },
+      {
+        name: '终端设备',
+        icon: '',
+        path: '/system-config/terminal-unit',
+      },
+    ],
+  },
   {
     name: '人员管理',
     icon: '',
     menuData: [
-      // {
-      //   name: '管理用户',
-      //   icon: '',
-      //   path: '/personnel-config/manage-user',
-      // },
+      {
+        name: '管理用户',
+        icon: '',
+        path: '/personnel-config/manage-user',
+      },
       {
         name: '公司用户',
         icon: '',
@@ -109,21 +109,21 @@ const testData = [
     name: '权限管理',
     icon: '',
     menuData: [
-      // {
-      //   name: '公司管理',
-      //   icon: '',
-      //   path: '/jurisdiction-config/company-manage',
-      // },
-      // {
-      //   name: '平台角色',
-      //   icon: '',
-      //   path: '/jurisdiction-config/platform-role',
-      // },
-      // {
-      //   name: '平台授权',
-      //   icon: '',
-      //   path: '/jurisdiction-config/platform-authorization',
-      // },
+      {
+        name: '公司管理',
+        icon: '',
+        path: '/jurisdiction-config/company-manage',
+      },
+      {
+        name: '平台角色',
+        icon: '',
+        path: '/jurisdiction-config/platform-role',
+      },
+      {
+        name: '平台授权',
+        icon: '',
+        path: '/jurisdiction-config/platform-authorization',
+      },
       {
         name: '角色权限',
         icon: '',
@@ -196,11 +196,11 @@ const testData = [
         icon: '',
         path: '/resource-config/line-stress-sag',
       },
-      // {
-      //   name: '版本对比',
-      //   icon: '',
-      //   path: '/resource-config/source-compare',
-      // },
+      {
+        name: '版本对比',
+        icon: '',
+        path: '/resource-config/source-compare',
+      },
     ],
   },
   {
@@ -233,7 +233,9 @@ const LayoutHeader: React.FC = () => {
     await signOut();
     localStorage.setItem('Authorization', '');
   };
-  
+
+  const menuData:any[] = JSON.parse(localStorage.getItem("functionModules") ?? "[]");
+
   // TODO 点击个人信息对应的一些方法都还么写
   const myBaseInfoMenu = (
     <Menu>
@@ -269,14 +271,14 @@ const LayoutHeader: React.FC = () => {
     history.push(path);
   };
   // TODO 获取menu需要根据权限进行处理一下，没权限的不用展示出来
-  const menuContent = testData.map((item, index) => {
+  const menuContent = menuData?.filter((item) => item.category === 1).map((item, index) => {
     return (
       <LayoutHeaderMenu
         key={`headerMenu_${index}`}
         onSelect={menuSelectEvent}
         name={item.name}
         icon={item.icon}
-        menuData={item.menuData}
+        menuData={item.children}
       />
     );
   });

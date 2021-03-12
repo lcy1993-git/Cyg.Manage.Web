@@ -95,6 +95,11 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   }, [JSON.stringify(projectIds),state])
   
 
+  const modalCloseEvent = () => {
+    form.resetFields();
+    setState(false)
+  }
+
   return (
     <Modal
       title="修改安排信息"
@@ -102,7 +107,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       visible={state as boolean}
       destroyOnClose
       footer={[
-        <Button key="cancle" onClick={() => setState(false)}>
+        <Button key="cancle" onClick={() => modalCloseEvent()}>
           取消
         </Button>,
         <Button key="save" type="primary" loading={requestLoading} onClick={() => edit()}>

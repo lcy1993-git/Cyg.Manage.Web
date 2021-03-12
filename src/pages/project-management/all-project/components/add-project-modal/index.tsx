@@ -31,6 +31,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
                 })
                 message.success("项目新增成功")
                 setState(false)
+                form.resetFields();
                 changeFinishEvent?.()
             }catch (msg) {
                 console.error(msg)

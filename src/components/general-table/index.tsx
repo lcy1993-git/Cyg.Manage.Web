@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { useRequest } from 'ahooks';
 import { tableCommonRequest } from '@/services/table';
-import { Table, Pagination, message, Tooltip, Menu, Dropdown, Checkbox, Spin } from 'antd';
+import { Table, Pagination, message, Tooltip, Menu, Popover, Checkbox } from 'antd';
 import styles from './index.less';
 import CommonTitle from '../common-title';
 import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-design/icons';
@@ -289,14 +289,14 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
                     className={styles.tableCommonButton}
                   />
                 </Tooltip>
-                <Dropdown overlay={columnsMenuElement} visible={lineConfigVisible}>
+                <Popover content={columnsMenuElement} placement="bottomLeft" title={null} trigger="click">
                   <Tooltip title="列设置">
                     <UnorderedListOutlined
-                      onClick={() => setLineConfigVisible(!lineConfigVisible)}
+                  
                       className={styles.tableCommonButton}
                     />
                   </Tooltip>
-                </Dropdown>
+                </Popover>
               </div>
             )}
           </div>

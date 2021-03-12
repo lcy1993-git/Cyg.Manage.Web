@@ -4,6 +4,7 @@ import CyFormItem from '@/components/cy-form-item';
 import EnumSelect from '@/components/enum-select';
 import {
   Arrangement,
+  IsArrangement,
   getCompanyName,
   getGroupInfo,
 } from '@/services/project-management/all-project';
@@ -71,7 +72,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           <EnumSelect
             value={checkedValue}
             onChange={(value) => typeChange(value as string)}
-            enumList={Arrangement}
+            enumList={allotCompanyId ? IsArrangement : Arrangement}
           />
         </div>
       </CyFormItem>

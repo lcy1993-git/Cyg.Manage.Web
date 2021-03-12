@@ -7,7 +7,8 @@ interface MenuItemParams {
     name: string
     jurisdiction?: string
     icon?: string
-    path: string
+    url: string
+    category: number
 }
 
 interface MenuProps {
@@ -24,9 +25,9 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
         onSelect(name,path)
     }
 
-    const menuElementList = menuData.map((item,index) => {
+    const menuElementList = menuData.filter((item) => item.category === 2).map((item,index) => {
         return (
-            <Menu.Item key={`headerMenuListItem_${index}`} onClick={() => toPath(item.name,item.path)}>
+            <Menu.Item key={`headerMenuListItem_${index}`} onClick={() => toPath(item.name,item.url)}>
                 <div>
                     {icon ? <span>{item.icon}</span> : null}
                     <span>{item.name}</span>

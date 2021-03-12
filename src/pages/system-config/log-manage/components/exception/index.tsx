@@ -1,4 +1,3 @@
-import ReadonlyItem from '@/components/readonly-item';
 import React from 'react';
 
 interface ExceptionProps {
@@ -8,8 +7,11 @@ interface ExceptionProps {
 const Exception: React.FC<ExceptionProps> = (props) => {
   const { info } = props;
   return (
-    <div>
-      <ReadonlyItem label="异常">{info.exception}</ReadonlyItem>
+
+    <div style={{ width: "100%", overflow: "auto", height: "500px" }}>
+      <pre>
+        {info.exception}
+      </pre>
     </div>
   );
 };

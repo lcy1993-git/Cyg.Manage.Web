@@ -121,12 +121,12 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             </div>
             <div className="flex">
                 <div className="flex1 flowHidden">
-                    <CyFormItem label="利旧库存协议" name="warehouseId" labelWidth={120} align="right" required>
+                    <CyFormItem label="利旧库存协议" name="warehouseId" labelWidth={120} align="right" required rules={Rule.required}>
                         <DataSelect options={warehouseSelectData} placeholder="请先选择区域" />
                     </CyFormItem>
                 </div>
                 <div className="flex1 flowHidden">
-                    <CyFormItem shouldUpdate={valueChangeEvenet} label="编制人" name="compiler" labelWidth={120} align="right" required>
+                    <CyFormItem shouldUpdate={valueChangeEvenet} label="编制人" name="compiler" labelWidth={120} align="right" required rules={Rule.required}>
                         <Input placeholder="请输入" />
                     </CyFormItem>
                 </div>
