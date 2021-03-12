@@ -1,4 +1,3 @@
-import ReadonlyItem from '@/components/readonly-item';
 import React from 'react';
 
 interface ResContentProps {
@@ -8,9 +7,13 @@ interface ResContentProps {
 const ResContent: React.FC<ResContentProps> = (props) => {
   const { info } = props;
   return (
-    <div>
-      <ReadonlyItem label="响应内容">{info.resContent}</ReadonlyItem>
+
+    <div style={{ width: "100%", overflow: "auto", height: "500px"}}>
+      <pre>
+        {info.resContent}
+      </pre>
     </div>
+
   );
 };
 

@@ -1,4 +1,4 @@
-import ReadonlyItem from '@/components/readonly-item';
+
 import React from 'react';
 
 interface reqPostBodyProps {
@@ -8,8 +8,10 @@ interface reqPostBodyProps {
 const ReqPostBody: React.FC<reqPostBodyProps> = (props) => {
   const { info } = props;
   return (
-    <div>
-      <ReadonlyItem label="Post数据源">{info.reqPostBody}</ReadonlyItem>
+    <div style={{ width: "100%", overflow: "auto", height: "500px" }}>
+      <pre>
+        {info.reqPostBody}
+      </pre>
     </div>
   );
 };

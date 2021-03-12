@@ -27,7 +27,6 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     const { data: projectInfo, run} = useRequest(() => getProjectInfo(projectId), {
         manual: true,
         onSuccess: (res) => {
-            console.log(projectInfo)
             form.setFieldsValue({
                 ...projectInfo,
                 startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,

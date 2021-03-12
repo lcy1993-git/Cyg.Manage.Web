@@ -116,7 +116,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         addProject?.({
             engineerId: projectInfo.id,
             areaId: projectInfo.province,
-            company: projectInfo.companyId,
+            company: projectInfo.company,
             companyName: projectInfo.company
         })
     }
@@ -125,7 +125,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         editEngineer?.({
             engineerId: projectInfo.id,
             areaId: projectInfo.province,
-            company: projectInfo.companyId,
+            company: projectInfo.company,
             companyName: projectInfo.company
         })
     }

@@ -121,7 +121,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     <Menu.Item onClick={() => editProjectEvent({
                         projectId: tableItemData.id,
                         areaId: engineerInfo.province,
-                        company: engineerInfo.companyId,
+                        company: engineerInfo.company,
                         companyName: engineerInfo.company
                     })}>
                         编辑
@@ -132,7 +132,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     <Menu.Item onClick={() => copyProjectEvent({
                         projectId: tableItemData.id,
                         areaId: engineerInfo.province,
-                        company: engineerInfo.companyId,
+                        company: engineerInfo.company,
                         engineerId: engineerInfo.id,
                         companyName: engineerInfo.company
                     })}>
@@ -331,7 +331,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }
 
     const editProjectEvent = (projectNeedInfo: any) => {
-        console.log(projectNeedInfo)
+ 
         setEditProjectVisible(true)
         setCurrentEditProjectInfo(projectNeedInfo)
     }
