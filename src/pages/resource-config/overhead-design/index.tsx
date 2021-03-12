@@ -33,14 +33,6 @@ const OverheadDesign: React.FC = () => {
     }
   };
 
-  // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search();
-    }
-  };
-
   const uploadFinishEvent = () => {
     refresh();
   };

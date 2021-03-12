@@ -20,6 +20,7 @@ const Inventroy: React.FC = () => {
   const [inventoryId, setInventoryId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [companyWord, setCompanyWord] = useState<string>('');
   const [checkMappingVisible, setCheckMappingVisible] = useState<boolean>(false);
   const [addMapVisible, setAddMapVisible] = useState<boolean>(false);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
@@ -46,13 +47,13 @@ const Inventroy: React.FC = () => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="物料编号"
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="" width="230px">
           <Search
-            // value={searchKeyWord}
-            onChange={(e) => setSearchKeyWord(e.target.value)}
+            value={companyWord}
+            onChange={(e) => setCompanyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
             placeholder="需求公司"
@@ -342,7 +343,7 @@ const Inventroy: React.FC = () => {
         type="radio"
         extractParams={{
           inventoryOverviewId: inventoryId,
-          demandCompany: searchKeyWord,
+          demandCompany: companyWord,
           keyWord: searchKeyWord,
         }}
       />
