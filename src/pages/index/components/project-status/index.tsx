@@ -22,6 +22,7 @@ const ProjectStatus: React.FC = () => {
             series: [
                 {
                     type: 'pie',
+                    minAngle: 2,
                     radius: ['35%', '65%'],
                     avoidLabelOverlap: false,
                     label: {
