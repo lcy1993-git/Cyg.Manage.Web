@@ -401,8 +401,9 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         onOk={() => sureAddModuleProperty()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <ModulesPropertyForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>
@@ -414,8 +415,9 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         onOk={() => sureEditModuleProperty()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <ModulesPropertyForm resourceLibId={resourceLibId} />
           </Spin>
@@ -431,8 +433,9 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         okText="保存"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
-        <Form form={editAttributeForm}>
+        <Form form={editAttributeForm} preserve={false}>
           <Spin spinning={loading}>
             <ModuleAttributeForm resourceLibId={resourceLibId} />
           </Spin>
@@ -444,6 +447,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         width="980px"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <ModuleDetailTab detailData={data} />
@@ -456,6 +460,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         visible={moduleDetailVisible}
         onCancel={() => setModuleDetailVisible(false)}
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <ModuleDetailTable

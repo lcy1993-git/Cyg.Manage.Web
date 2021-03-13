@@ -197,8 +197,9 @@ const CompanyGroup: React.FC = () => {
         onOk={() => sureAddCompanyGroup()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <CompanyGroupForm treeData={selectTreeData} />
         </Form>
       </Modal>
@@ -212,7 +213,7 @@ const CompanyGroup: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={editDataLoading}>
             <CompanyGroupForm treeData={selectTreeData} id={tableSelectRows[0]?.id} />
           </Spin>

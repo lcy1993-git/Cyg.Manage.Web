@@ -359,8 +359,9 @@ const ElectricalEquipment: React.FC = () => {
         onOk={() => sureAddMaterial()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <ElectricalEquipmentForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>
@@ -372,8 +373,9 @@ const ElectricalEquipment: React.FC = () => {
         onOk={() => sureEditMaterial()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <ElectricalEquipmentForm resourceLibId={resourceLibId} />
           </Spin>
@@ -389,8 +391,9 @@ const ElectricalEquipment: React.FC = () => {
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
-        <Spin spinning={loading}>
+        <Spin spinning={loading} >
           <ElectricDetail
             libId={resourceLibId}
             componentId={tableSelectRows.map((item) => {

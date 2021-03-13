@@ -46,8 +46,9 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
         </Button>,
       ]}
       onCancel={() => setState(false)}
+
     >
-      <Form form={form}>
+      <Form form={form} preserve={false}>
         <CyFormItem labelWidth={80} label="导入" name="file" required>
           <FileUpload maxCount={1} />
         </CyFormItem>

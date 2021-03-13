@@ -295,8 +295,9 @@ const RolePermissions: React.FC = () => {
         onOk={() => sureAddRolePermissions()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <RolePermissionsForm />
         </Form>
       </Modal>
@@ -308,8 +309,9 @@ const RolePermissions: React.FC = () => {
         onOk={() => sureEditRolePermissions()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <RolePermissionsForm />
         </Form>
       </Modal>
@@ -321,8 +323,9 @@ const RolePermissions: React.FC = () => {
         onOk={() => sureDistribute()}
         onCancel={() => setDistributeFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={apportionForm}>
+        <Form form={apportionForm} preserve={false}>
           <Form.Item name="moduleIds">
             <CheckboxTreeTable treeData={MoudleTreeData} />
           </Form.Item>
@@ -336,6 +339,7 @@ const RolePermissions: React.FC = () => {
         okText="确认"
         onCancel={() => cancelAuthorization()}
         cancelText="取消"
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <UserAuthorization

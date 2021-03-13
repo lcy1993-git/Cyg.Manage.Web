@@ -70,7 +70,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
       ]}
       onCancel={() => setState(false)}
     >
-      <Form form={form}>
+      <Form form={form} preserve={false}>
         <Row gutter={24}>
           <Col>
             <CyFormItem labelWidth={80} label="区域" name="province">

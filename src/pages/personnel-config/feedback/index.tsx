@@ -159,8 +159,9 @@ const UserFeedBack: React.FC = () => {
         onOk={() => sureAddCompanyManageItem()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <UserFeedBackForm />
         </Form>
       </Modal>
@@ -174,10 +175,11 @@ const UserFeedBack: React.FC = () => {
           setCheckFormVisible(false);
         }}
         cancelText="取消"
+        destroyOnClose
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Spin spinning={loading}>
-          <Form form={replyForm}>
+          <Form form={replyForm} preserve={false}>
             <FeedbackDetail detailInfo={detailData} />
           </Form>
         </Spin>

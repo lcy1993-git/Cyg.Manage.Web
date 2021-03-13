@@ -47,7 +47,7 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
       ]}
       onCancel={() => setState(false)}
     >
-      <Form form={form}>
+      <Form form={form} preserve={false}>
         <CyFormItem labelWidth={80} label="导入" name="file" required>
           <FileUpload maxCount={1} />
         </CyFormItem>

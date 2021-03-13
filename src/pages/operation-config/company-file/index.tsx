@@ -277,7 +277,7 @@ const CompanyFile: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <Spin spinning={loading}>
             <CompanyFileForm type="add" />
           </Spin>
@@ -293,7 +293,7 @@ const CompanyFile: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <CompanyFileForm />
           </Spin>
@@ -308,8 +308,9 @@ const CompanyFile: React.FC = () => {
         onOk={() => saveDefaultOptionsEvent()}
         onCancel={() => setDefaultParamsVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={defaultForm}>
+        <Form form={defaultForm} preserve={false}>
           <Spin spinning={loading}>
             <DefaultParams />
           </Spin>

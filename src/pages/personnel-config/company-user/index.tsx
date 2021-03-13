@@ -344,6 +344,16 @@ const CompanyUser: React.FC = () => {
     );
   };
 
+  const addModalCloseEvent = () => {
+    setAddFormVisible(false)
+    addForm.resetFields();
+  }
+
+  const batchAddCloseEvent = () => {
+    setBatchAddFormVisible(false)
+    batchAddForm.resetFields();
+  }
+
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -365,11 +375,11 @@ const CompanyUser: React.FC = () => {
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddCompanyUserItem()}
-        onCancel={() => setAddFormVisible(false)}
+        onCancel={() => addModalCloseEvent()}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <CompanyUserForm treeData={selectTreeData} type="add" />
         </Form>
       </Modal>
@@ -379,11 +389,11 @@ const CompanyUser: React.FC = () => {
         visible={batchAddFormVisible}
         okText="确认"
         onOk={() => sureBatchAddCompanyUser()}
-        onCancel={() => setBatchAddFormVisible(false)}
+        onCancel={() => batchAddCloseEvent()}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={batchAddForm}>
+        <Form form={batchAddForm} preserve={false}>
           <BatchAddCompanyUser treeData={selectTreeData} />
         </Form>
       </Modal>
@@ -395,8 +405,9 @@ const CompanyUser: React.FC = () => {
         onOk={() => sureEditCompanyUser()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <CompanyUserForm treeData={selectTreeData} />
           </Spin>
@@ -412,7 +423,7 @@ const CompanyUser: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <ResetPasswordForm />
         </Form>
       </Modal>

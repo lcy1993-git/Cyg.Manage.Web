@@ -20,10 +20,10 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
     const [requestLoading, setRequestLoading] = useState(false);
     const [form] = Form.useForm();
 
-    const { engineerId, areaId, company,changeFinishEvent,companyName} = props;
+    const { engineerId, areaId, company, changeFinishEvent, companyName } = props;
 
     const addProjectEvent = () => {
-        form.validateFields().then(async(value) => {
+        form.validateFields().then(async (value) => {
             try {
                 await addProject({
                     engineerId,
@@ -33,26 +33,31 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
                 setState(false)
                 form.resetFields();
                 changeFinishEvent?.()
-            }catch (msg) {
+            } catch (msg) {
                 console.error(msg)
-            }finally {
+            } finally {
                 setRequestLoading(false)
             }
         })
     }
 
+    const modalCloseEvent = () => {
+        setState(false)
+        form.resetFields();
+    }
+
     return (
-        <Modal title="新增项目" width={750} visible={state as boolean} 
-        footer={[
-            <Button key="cancle" onClick={() => setState(false)}>
-                取消
+        <Modal title="新增项目" width={750} visible={state as boolean} destroyOnClose
+            footer={[
+                <Button key="cancle" onClick={() => modalCloseEvent()}>
+                    取消
             </Button>,
-            <Button key="save" type="primary" loading={requestLoading} onClick={() => addProjectEvent()}>
-                保存
+                <Button key="save" type="primary" loading={requestLoading} onClick={() => addProjectEvent()}>
+                    保存
             </Button>,
-        ]} onOk={() => addProjectEvent()} onCancel={() => setState(false)}>
-            <Form form={form}>
-                <CreateProjectForm companyName={companyName} areaId={areaId} company={company}  />
+            ]} onOk={() => addProjectEvent()} onCancel={() => modalCloseEvent()}>
+            <Form form={form} preserve={false}>
+                <CreateProjectForm companyName={companyName} areaId={areaId} company={company} />
             </Form>
         </Modal>
     )

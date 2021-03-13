@@ -23,6 +23,8 @@ const LoginForm: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [canSendCode, setCanSendCode] = useState<boolean>(false);
 
+  const [requestLoading, setRequestLoading] = useState<boolean>(false);
+
   const [form] = Form.useForm();
 
   const tabChangeEvent = (activeKey: string) => {
@@ -34,21 +36,28 @@ const LoginForm: React.FC = () => {
   const login = (type: LoginType) => {
     // TODO  校验通过之后进行保存
     form.validateFields().then(async (values) => {
-      let resData = null;
-      if (type === 'account') {
-        resData = await userLoginRequest(values);
-      } else {
-        resData = await phoneLoginRequest(values);
+      try {
+        setRequestLoading(true);
+        let resData = null;
+        if (type === 'account') {
+          resData = await userLoginRequest(values);
+        } else {
+          resData = await phoneLoginRequest(values);
+        }
+
+        const { accessToken, modules, user } = resData;
+
+        localStorage.setItem('Authorization', accessToken);
+        localStorage.setItem('functionModules', JSON.stringify(modules));
+        localStorage.setItem('userInfo', JSON.stringify(user));
+
+        message.success('登录成功');
+        history.push('/index');
+      } catch (msg) {
+        console.error(msg)
+      } finally {
+        setRequestLoading(false);
       }
-
-      const { accessToken, modules, user } = resData;
-
-      localStorage.setItem('Authorization', accessToken);
-      localStorage.setItem('functionModules', JSON.stringify(modules));
-      localStorage.setItem('userInfo', JSON.stringify(user));
-
-      message.success('登录成功');
-      history.push('/index');
     });
   };
 
@@ -97,6 +106,7 @@ const LoginForm: React.FC = () => {
               <Button
                 className={styles.loginButton}
                 onClick={() => login('account')}
+                loading={requestLoading}
                 type="primary"
               >
                 立即登录

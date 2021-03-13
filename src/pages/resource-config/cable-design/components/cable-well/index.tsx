@@ -367,8 +367,9 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         bodyStyle={{ height: '680px', overflowY: 'auto' }}
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <CableWellForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>
@@ -381,8 +382,9 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         bodyStyle={{ height: '680px', overflowY: 'auto' }}
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <CableWellForm resourceLibId={resourceLibId} />
           </Spin>
@@ -398,6 +400,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <CableWellDetail

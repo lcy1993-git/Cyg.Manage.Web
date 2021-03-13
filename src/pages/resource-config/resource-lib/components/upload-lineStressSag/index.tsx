@@ -49,8 +49,9 @@ const SaveImportLineStressSag: React.FC<SaveImportLibProps> = (props) => {
         </Button>,
       ]}
       onCancel={() => setState(false)}
+      destroyOnClose
     >
-      <Form form={form}>
+      <Form form={form} preserve={false}>
         <CyFormItem label="导入" name="file" required>
           <FileUpload maxCount={1} />
         </CyFormItem>

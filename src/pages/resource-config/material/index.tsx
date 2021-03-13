@@ -410,8 +410,9 @@ const Material: React.FC = () => {
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <MaterialForm resourceLibId={resourceLibId} />
         </Form>
       </Modal>
@@ -424,8 +425,9 @@ const Material: React.FC = () => {
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <MaterialForm resourceLibId={resourceLibId} />
           </Spin>
@@ -441,6 +443,7 @@ const Material: React.FC = () => {
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
         <LineProperty libId={resourceLibId} materialIds={[]} />
       </Modal>
@@ -454,6 +457,7 @@ const Material: React.FC = () => {
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
         <CableMapping libId={resourceLibId} materialIds={[]} />
       </Modal>

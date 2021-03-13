@@ -24,11 +24,11 @@ const ProjectStatus: React.FC = () => {
                     type: 'pie',
                     minAngle: 2,
                     radius: ['35%', '65%'],
-                    avoidLabelOverlap: false,
+                    avoidLabelOverlap: true,
                     label: {
                         show: true,
                         color: "#74AC91",
-
+                        position: "outer"
                     },
                     emphasis: {
 

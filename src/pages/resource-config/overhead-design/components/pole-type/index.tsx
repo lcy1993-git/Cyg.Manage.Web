@@ -299,8 +299,9 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
         onOk={() => sureAddPoleType()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <PoleTypeForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>
@@ -312,8 +313,9 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
         onOk={() => sureEditPoleType()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <PoleTypeForm resourceLibId={resourceLibId} />
           </Spin>

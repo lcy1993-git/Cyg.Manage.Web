@@ -292,8 +292,9 @@ const WareHouse: React.FC = () => {
         onOk={() => sureAddResourceLib()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <WareHouseForm />
         </Form>
       </Modal>
@@ -305,8 +306,9 @@ const WareHouse: React.FC = () => {
         onOk={() => sureEditResourceLib()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <WareHouseForm />
           </Spin>
