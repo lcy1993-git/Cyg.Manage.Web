@@ -258,8 +258,9 @@ const ElectricCompany: React.FC = () => {
         onOk={() => sureAddElectricCompany()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <ElectricCompanyForm />
         </Form>
       </Modal>
@@ -268,11 +269,12 @@ const ElectricCompany: React.FC = () => {
         width="680px"
         visible={editFormVisible}
         okText="确认"
+        destroyOnClose
         onOk={() => sureEditAuthorization()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <ElectricCompanyForm />
           </Spin>

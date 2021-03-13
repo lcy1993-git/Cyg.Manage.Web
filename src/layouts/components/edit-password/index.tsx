@@ -30,8 +30,8 @@ const EditPassword = (props: EditPasswordProps) => {
     }
 
     return (
-        <Modal title="修改密码" visible={state as boolean} okText="确定" cancelText="取消" onCancel={() => setState(false)} onOk={() => sureEditPassword()}>
-            <Form form={form}>
+        <Modal title="修改密码" visible={state as boolean} destroyOnClose okText="确定" cancelText="取消" onCancel={() => setState(false)} onOk={() => sureEditPassword()}>
+            <Form form={form} preserve={false}>
                 <CyFormItem name="pwd" label="原密码" required labelWidth={100} hasFeedback rules={[
                     {
                         required: true, message: "请输入原密码"

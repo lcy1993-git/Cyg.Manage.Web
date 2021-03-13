@@ -34,8 +34,8 @@ const CutAccount = (props: EditPasswordProps) => {
     }
 
     return (
-        <Modal title="快捷登录" visible={state as boolean} okText="确定" cancelText="取消" onCancel={() => setState(false)} onOk={() => sureCutAccount()}>
-            <Form form={form}>
+        <Modal title="快捷登录" visible={state as boolean} destroyOnClose okText="确定" cancelText="取消" onCancel={() => setState(false)} onOk={() => sureCutAccount()}>
+            <Form form={form} preserve={false}>
                 <CyFormItem name="userName" label="用户名" required labelWidth={100} rules={[
                     {
                         required: true, message: "请输入用户名"

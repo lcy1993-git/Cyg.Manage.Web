@@ -245,6 +245,7 @@ const LogManage: React.FC = () => {
         bodyStyle={{
           paddingTop: '10px',
         }}
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <LogDetailTab detailData={detailData} />

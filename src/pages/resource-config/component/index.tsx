@@ -393,8 +393,9 @@ const Component: React.FC = () => {
         onOk={() => sureEditMaterial()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <ComponentForm resourceLibId={resourceLibId} />
           </Spin>
@@ -410,6 +411,7 @@ const Component: React.FC = () => {
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <ComponentDetail
@@ -430,6 +432,7 @@ const Component: React.FC = () => {
         okText="确认"
         cancelText="取消"
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <ComponentProperty

@@ -651,8 +651,9 @@ const ProjectManagement: React.FC = () => {
                 width={820}
                 onCancel={() => modalCloseEvent()}
                 title="项目立项"
+                destroyOnClose
             >
-                <Form form={form}>
+                <Form form={form} preserve={false}>
                     <CreateEngineer form={form} />
                 </Form>
             </Modal>

@@ -73,7 +73,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
                     保存
             </Button>,
             ]} onOk={() => edit()} onCancel={() => setState(false)}>
-            <Form form={form}>
+            <Form form={form} preserve={false}>
                 <CreateProjectForm areaId={areaId} company={company} companyName={companyName} />
             </Form>
         </Modal>

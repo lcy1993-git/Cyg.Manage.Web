@@ -68,8 +68,9 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
         okText="确认"
         onOk={() => sureImport()}
         onCancel={() => cancelImport()}
+        destroyOnClose
       >
-        <Form form={form}>
+        <Form form={form} preserve={false}>
           <CyFormItem
             label={labelTitle}
             name="file"

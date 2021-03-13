@@ -356,8 +356,9 @@ const Inventroy: React.FC = () => {
           okText="确认"
           onCancel={() => setCheckMappingVisible(false)}
           cancelText="取消"
+          destroyOnClose
         >
-          <Form form={checkForm}>
+          <Form form={checkForm} preserve={false}>
             <Spin spinning={loading}>
               <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
             </Spin>

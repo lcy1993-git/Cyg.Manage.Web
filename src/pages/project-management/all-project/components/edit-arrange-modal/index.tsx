@@ -117,7 +117,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       onOk={() => edit()}
       onCancel={() => setState(false)}
     >
-      <Form form={form}>
+      <Form form={form} preserve={false}>
         <EditArrangeForm />
       </Form>
     </Modal>

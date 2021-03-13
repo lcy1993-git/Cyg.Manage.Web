@@ -276,8 +276,9 @@ const PlatformAuthorization: React.FC = () => {
         onOk={() => sureAddAuthorization()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <AuthorizationForm />
         </Form>
       </Modal>
@@ -289,8 +290,9 @@ const PlatformAuthorization: React.FC = () => {
         onOk={() => sureEditAuthorization()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <AuthorizationForm />
         </Form>
       </Modal>
@@ -302,8 +304,9 @@ const PlatformAuthorization: React.FC = () => {
         onOk={() => sureDistribute()}
         onCancel={() => setDistributeFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={apportionForm}>
+        <Form form={apportionForm} preserve={false}>
           <Form.Item name="moduleIds">
             <CheckboxTreeTable treeData={MoudleTreeData} />
           </Form.Item>

@@ -218,12 +218,13 @@ const FunctionModule: React.FC = () => {
         title="添加-模块"
         width="680px"
         visible={addFormVisible}
+        destroyOnClose
         okText="确认"
         onOk={() => sureAddFunctionModule()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <FunctionModuleForm treeData={selectTreeData} />
         </Form>
       </Modal>
@@ -235,8 +236,9 @@ const FunctionModule: React.FC = () => {
         onOk={() => sureEditFunctionModule()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={editDataLoading}>
             <FunctionModuleForm treeData={selectTreeData} />
           </Spin>

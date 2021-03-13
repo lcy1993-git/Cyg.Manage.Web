@@ -57,7 +57,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       ]}
       onCancel={() => setState(false)}
     >
-      <Form form={form}>
+      <Form form={form} preserve={false}>
         <Row gutter={24}>
           <Col>
             <CyFormItem labelWidth={50} label="区域" name="province">

@@ -275,8 +275,9 @@ const MapField: React.FC = () => {
         onOk={() => sureAddTerminalUnit()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <Spin spinning={loading}>
             <MapFieldForm />
           </Spin>
@@ -290,8 +291,9 @@ const MapField: React.FC = () => {
         onOk={() => sureEditTerminalUnit()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <MapFieldForm />
           </Spin>

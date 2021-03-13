@@ -276,8 +276,9 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
         onOk={() => sureAddModuleDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <AddModuleDetailTable addForm={addForm} resourceLibId={libId} />
         </Form>
       </Modal>
@@ -290,8 +291,9 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
         onOk={() => sureEditModuleDetail()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <EditModuleDetail resourceLibId={libId} />
         </Form>
       </Modal>

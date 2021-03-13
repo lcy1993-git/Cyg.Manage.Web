@@ -179,7 +179,7 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
         centered
         destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <AddComponentProperty addForm={addForm} />
         </Form>
       </Modal>
@@ -193,8 +193,9 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         centered
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <EditComponentProperty />
         </Form>
       </Modal>

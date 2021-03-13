@@ -70,7 +70,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
                     保存
             </Button>,
             ]} onOk={() => edit()} onCancel={() => setState(false)}>
-            <Form form={form}>
+            <Form form={form} preserve={false}>
                 <CreateProjectForm companyName={companyName} areaId={areaId} company={company} />
             </Form>
         </Modal>

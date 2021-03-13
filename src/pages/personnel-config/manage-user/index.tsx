@@ -312,8 +312,9 @@ const ManageUser: React.FC = () => {
         onOk={() => sureAddManageUserItem()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <ManageUserForm type="add" />
         </Form>
       </Modal>
@@ -325,8 +326,9 @@ const ManageUser: React.FC = () => {
         onOk={() => sureEditManageUser()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <ManageUserForm />
           </Spin>
@@ -340,8 +342,9 @@ const ManageUser: React.FC = () => {
         onOk={() => resetPwd()}
         onCancel={() => setResetFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <ResetPasswordForm />
         </Form>
       </Modal>

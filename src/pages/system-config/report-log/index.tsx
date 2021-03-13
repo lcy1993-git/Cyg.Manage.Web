@@ -226,6 +226,7 @@ const ManageUser: React.FC = () => {
         visible={logDetailVisible}
         onCancel={() => setLogDetailVisible(false)}
         footer={null}
+        destroyOnClose
       >
         <pre>{JSON.stringify(detail, null, 2)}</pre>
       </Modal>

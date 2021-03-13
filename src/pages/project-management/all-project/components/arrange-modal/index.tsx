@@ -91,7 +91,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       onOk={() => saveInfo()}
       onCancel={() => closeModalEvent()}
     >
-      <Form form={form}>
+      <Form form={form} preserve={false}>
         <ArrangeForm defaultType={defaultSelectType} allotCompanyId={allotCompanyId} getCompanyInfo={getCompanyInfo} onChange={(value) => setSelectType(value)} />
       </Form>
     </Modal>

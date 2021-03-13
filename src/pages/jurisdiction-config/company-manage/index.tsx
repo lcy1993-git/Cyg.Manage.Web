@@ -167,8 +167,9 @@ const CompanyManage: React.FC = () => {
         onOk={() => sureAddCompanyManageItem()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <CompanyManageForm type="add" treeData={selectTreeData} />
         </Form>
       </Modal>
@@ -180,8 +181,9 @@ const CompanyManage: React.FC = () => {
         onOk={() => sureEditCompanyManage()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <CompanyManageForm treeData={selectTreeData} />
         </Form>
       </Modal>

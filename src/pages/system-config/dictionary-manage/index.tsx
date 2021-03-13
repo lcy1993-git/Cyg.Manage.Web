@@ -357,8 +357,9 @@ const DictionaryManage: React.FC = () => {
         onOk={() => sureAddAuthorization()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
         </Form>
       </Modal>
@@ -370,8 +371,9 @@ const DictionaryManage: React.FC = () => {
         onOk={() => sureEditAuthorization()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
         </Form>
       </Modal>

@@ -253,7 +253,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
         centered
         destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <AddCableWellDetail addForm={addForm} resourceLibId={libId} />
         </Form>
       </Modal>
@@ -267,8 +267,9 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         centered
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <EditCableWellDetail resourceLibId={libId} />
         </Form>
       </Modal>

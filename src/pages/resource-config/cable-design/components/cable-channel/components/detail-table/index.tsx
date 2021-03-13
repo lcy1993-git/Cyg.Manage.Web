@@ -252,7 +252,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         centered
         destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <AddcableChannelDetail addForm={addForm} resourceLibId={libId} />
         </Form>
       </Modal>
@@ -266,8 +266,9 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         centered
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <EditcableChannelDetail resourceLibId={libId} />
         </Form>
       </Modal>

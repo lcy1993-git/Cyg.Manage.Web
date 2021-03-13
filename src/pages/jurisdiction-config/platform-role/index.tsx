@@ -154,8 +154,9 @@ const PlatformRole: React.FC = () => {
         onOk={() => sureAddRoleManageItem()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <RoleManageForm type="add" />
         </Form>
       </Modal>
@@ -167,8 +168,9 @@ const PlatformRole: React.FC = () => {
         onOk={() => sureEditRoleManage()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={editForm}>
+        <Form form={editForm} preserve={false}>
           <RoleManageForm />
         </Form>
       </Modal>

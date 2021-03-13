@@ -214,6 +214,7 @@ const SourceCompare: React.FC = () => {
         visible={detailTabVisible}
         onCancel={() => setDetailTabVisible(false)}
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <SourceCompareDetailTab detailData={data} />
@@ -226,6 +227,7 @@ const SourceCompare: React.FC = () => {
         visible={differTableVisible}
         onCancel={() => setDifferTableVisible(false)}
         bodyStyle={{ height: '720px', overflowY: 'auto' }}
+        destroyOnClose
       >
         <Spin spinning={loading}>
           <DifferTable categoryId={tableSelectRows[0]?.id} />

@@ -47,8 +47,8 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
     }, [state])
 
     return (
-        <Modal title="个人信息" bodyStyle={{ padding: "0px 20px" }} width={750} visible={state as boolean} okText="确定" cancelText="取消" onCancel={() => closeModalEvent()} onOk={() => openModalEvent()}>
-            <Form form={form}>
+        <Modal title="个人信息" bodyStyle={{ padding: "0px 20px" }} destroyOnClose width={750} visible={state as boolean} okText="确定" cancelText="取消" onCancel={() => closeModalEvent()} onOk={() => openModalEvent()}>
+            <Form form={form} preserve={false}>
                 <div className={styles.personInfoItem}>
                     <div className={styles.personInfoItemLabel}>用户名</div>
                     <div className={styles.personInfoItemContent}>
