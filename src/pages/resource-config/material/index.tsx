@@ -339,6 +339,7 @@ const Material: React.FC = () => {
         <TableImportButton
           buttonTitle="导入物料"
           modalTitle="导入物料"
+          requestSource="resource"
           className={styles.importBtn}
           importUrl="/Material/Import"
         />
