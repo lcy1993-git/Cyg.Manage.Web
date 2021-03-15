@@ -354,7 +354,7 @@ const Material: React.FC = () => {
 
   const importMaterialEvent = () => {
     if (!resourceLibId) {
-      message.error('请选择要操作的行');
+      message.warning('请选择资源库');
       return;
     }
     setImportMaterialVisible(true);
