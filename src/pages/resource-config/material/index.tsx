@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined, ImportOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
@@ -13,11 +13,11 @@ import {
   addMaterialItem,
 } from '@/services/resource-config/material';
 import { isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 import MaterialForm from './component/add-edit-form';
 import LineProperty from './component/line-property';
 import CableMapping from './component/cable-mapping';
+import SaveImportMaterial from './component/import-form';
 
 const { Search } = Input;
 
@@ -28,6 +28,8 @@ const Material: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+
+  const [importMaterialVisible, setImportMaterialVisible] = useState<boolean>(false);
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
   const [cableTerminalVisible, setCableTerminalVisible] = useState<boolean>(false);
@@ -336,13 +338,10 @@ const Material: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <TableImportButton
-          buttonTitle="导入物料"
-          modalTitle="导入物料"
-          requestSource="resource"
-          className={styles.importBtn}
-          importUrl="/Material/Import"
-        />
+        <Button className="mr7" onClick={() => importMaterialEvent()}>
+          <ImportOutlined />
+          导入物料
+        </Button>
         <Button className={styles.importBtn} onClick={() => openWireAttribute()}>
           导线属性
         </Button>
@@ -351,6 +350,14 @@ const Material: React.FC = () => {
         </Button>
       </div>
     );
+  };
+
+  const importMaterialEvent = () => {
+    if (!resourceLibId) {
+      message.warning('请选择资源库');
+      return;
+    }
+    setImportMaterialVisible(true);
   };
 
   const sureDeleteData = async () => {
@@ -382,6 +389,10 @@ const Material: React.FC = () => {
       return;
     }
     setCableTerminalVisible(true);
+  };
+
+  const uploadFinishEvent = () => {
+    refresh();
   };
 
   return (
@@ -462,6 +473,13 @@ const Material: React.FC = () => {
       >
         <CableMapping libId={resourceLibId} materialIds={[]} />
       </Modal>
+      <SaveImportMaterial
+        libId={resourceLibId}
+        requestSource="resource"
+        visible={importMaterialVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportMaterialVisible}
+      />
     </PageCommonWrap>
   );
 };
