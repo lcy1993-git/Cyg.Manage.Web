@@ -76,7 +76,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           />
         </div>
       </CyFormItem>
-      {checkedValue === '2' && (
+      {(checkedValue === '2' || checkedValue === '4') && (
         <>
           <CyFormItem label="勘察" name="surveyUser" required>
             <TreeSelect

@@ -70,6 +70,23 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         );
         await saveArrange(arrangeInfo);
       }
+
+      if (selectType === '4') {
+        const arrangeInfo = Object.assign(
+          {
+            allotType: selectType,
+            projectIds: projectIds,
+            surveyUser: '',
+            designUser: '',
+            designAssessUser1: '',
+            designAssessUser2: '',
+            designAssessUser3: '',
+            designAssessUser4: '',
+          },
+          values,
+        );
+        await saveArrange(arrangeInfo);
+      }
       message.success('操作成功！');
       form.resetFields();
       finishEvent?.();

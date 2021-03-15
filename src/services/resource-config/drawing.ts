@@ -44,6 +44,29 @@ export const uploadLineStressSag = (
 
   const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`;
 
+  return cyRequest<any[]>(() =>
+    request(uploadUrl, {
+      method: 'POST',
+      data: formData,
+      requestType: 'form',
+    }),
+  );
+};
+
+//上传应力弧垂表图纸
+export const newUploadLineStressSag = (
+  files: any[],
+  params: any,
+  requestSource: 'project' | 'resource' | 'upload',
+  url: string,
+) => {
+  const formData = new FormData();
+  files.forEach((item) => {
+    formData.append('file', item);
+  });
+
+  const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`;
+
   return request(uploadUrl, {
       method: 'POST',
       data: formData,

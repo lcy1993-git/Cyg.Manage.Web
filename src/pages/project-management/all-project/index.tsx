@@ -6,7 +6,7 @@ import { Button, Input, message, Modal, } from "antd";
 
 import styles from "./index.less";
 import EnumSelect from "@/components/enum-select";
-import { addEngineer, AllProjectStatisticsParams, applyKnot, auditKnot, BuildType, canEditArrange, checkCanArrange, deleteProject, getProjectTableStatistics, noAuditKnot, ProjectStatus, recallShare, revokeAllot, revokeKnot } from "@/services/project-management/all-project";
+import { addEngineer, AllProjectStatisticsParams, applyKnot, auditKnot, BuildType, canEditArrange, checkCanArrange, deleteProject, getProjectInfo, getProjectTableStatistics, noAuditKnot, ProjectStatus, recallShare, revokeAllot, revokeKnot } from "@/services/project-management/all-project";
 import AllStatistics from "./components/all-statistics";
 import SingleStatistics from "./components/single-statistics";
 import CommonTitle from "@/components/common-title";
@@ -27,6 +27,7 @@ import EditArrangeModal from "./components/edit-arrange-modal";
 import { useGetProjectEnum } from "@/utils/hooks";
 import UrlSelect from "@/components/url-select"
 import ResourceLibraryManageModal from "./components/resource-library-manage-modal";
+import ProjectRecallModal from "./components/project-recall-modal";
 
 
 const { Search } = Input;
@@ -65,6 +66,14 @@ const ProjectManagement: React.FC = () => {
     const [libVisible, setLibVisible] = useState(false);
 
     const [selectProjectIds, setSelectProjectIds] = useState<string[]>([]);
+
+    const [currentArrangeProjectType, setCurrentArrangeProjectType] = useState<string>("");
+    const [currentArrangeProjectIsArrange, setCurrentArrangeProjectIsArrange] = useState<string>("");
+
+    const [editCurrentAllotCompanyId, setEditCurrentAllotCompanyId] = useState<string>("");
+
+    const [currentRecallProjectId, setCurrentRecallProjectId] = useState<string>("");
+    const [recallModalVisible, setRecallModalVisible] = useState(false);
 
     const tableRef = useRef<HTMLDivElement>(null);
 
@@ -140,6 +149,22 @@ const ProjectManagement: React.FC = () => {
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
 
         await checkCanArrange(projectIds);
+
+        // 如果只有一个项目需要安排的时候，需要去检查他是不是被安排了部组
+        if (projectIds.length === 1) {
+            const thisProjectId = projectIds[0];
+            const projectInfo = await getProjectInfo(thisProjectId);
+            
+            const { allots = [] } = projectInfo ?? {};
+            if (allots.length > 0) {
+                const latestAllot = allots[allots?.length - 1];
+                const allotType = latestAllot.allotType;
+                const allotCompanyGroup = latestAllot.allotCompanyGroup;
+                setCurrentArrangeProjectType(String(allotType))
+                setCurrentArrangeProjectIsArrange(allotCompanyGroup)
+            }
+        }
+
         setSelectProjectIds(projectIds);
         setArrangeModalVisible(true);
     };
@@ -150,7 +175,11 @@ const ProjectManagement: React.FC = () => {
             return;
         }
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
-        await canEditArrange(projectIds)
+        const resData = await canEditArrange(projectIds);
+        
+        const {allotCompanyGroup = ""} = resData;
+
+        setEditCurrentAllotCompanyId(allotCompanyGroup);
         setSelectProjectIds(projectIds);
         setEditArrangeModalVisible(true);
     };
@@ -169,11 +198,19 @@ const ProjectManagement: React.FC = () => {
             return;
         }
 
+        if(tableSelectData.length > 1) {
+            message.error('只能对一个项目进行撤回共享操作');
+            return;
+        }
+
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-        await recallShare(projectIds);
-        message.success('撤回共享成功');
-        refresh();
+        setCurrentRecallProjectId(projectIds[0]);
+        setRecallModalVisible(true);
+
+        //await recallShare(projectIds);
+        //message.success('撤回共享成功');
+        //refresh();
     };
 
     const shareEvent = async () => {
@@ -189,7 +226,7 @@ const ProjectManagement: React.FC = () => {
     const shareMenu = (
         <Menu>
             <Menu.Item onClick={() => shareEvent()}>共享</Menu.Item>
-            {/* <Menu.Item onClick={() => recallShareEvent()}>撤回共享</Menu.Item> */}
+            <Menu.Item onClick={() => recallShareEvent()}>撤回共享</Menu.Item>
         </Menu>
     );
 
@@ -360,7 +397,7 @@ const ProjectManagement: React.FC = () => {
 
     const modalCloseEvent = () => {
         setAddEngineerModalFlag(false);
-       
+
     };
 
     const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
@@ -388,6 +425,10 @@ const ProjectManagement: React.FC = () => {
         setEditArrangeModalVisible(false);
         refresh();
     };
+
+    const refreshEvent = () => {
+        refresh();
+    }
 
     const openAddEngineerModal = () => {
         setAddEngineerModalFlag(true)
@@ -661,16 +702,20 @@ const ProjectManagement: React.FC = () => {
                 finishEvent={arrangeFinishEvent}
                 visible={arrangeModalVisible}
                 onChange={setArrangeModalVisible}
+                defaultSelectType={currentArrangeProjectType}
+                allotCompanyId={currentArrangeProjectIsArrange}
                 projectIds={selectProjectIds}
             />
             <EditArrangeModal
+                allotCompanyId={editCurrentAllotCompanyId}
                 changeFinishEvent={changeArrangeFinishEvent}
                 visible={editArrangeModalVisible}
                 onChange={setEditArrangeModalVisible}
                 projectIds={selectProjectIds}
             />
-            <ShareModal finishEvent={arrangeFinishEvent} visible={shareModalVisible} onChange={setShareModalVisible} projectIds={selectProjectIds} />
-            <ResourceLibraryManageModal visible={libVisible} onChange={setLibVisible} changeFinishEvent={arrangeFinishEvent} />
+            <ProjectRecallModal changeFinishEvent={refreshEvent} visible={recallModalVisible} projectId={currentRecallProjectId} onChange={setRecallModalVisible} />
+            <ShareModal finishEvent={refreshEvent} visible={shareModalVisible} onChange={setShareModalVisible} projectIds={selectProjectIds} />
+            <ResourceLibraryManageModal visible={libVisible} onChange={setLibVisible} changeFinishEvent={refreshEvent} />
         </PageCommonWrap>
     );
 };

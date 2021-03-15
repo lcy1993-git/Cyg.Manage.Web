@@ -4,13 +4,19 @@ import CyFormItem from '@/components/cy-form-item';
 import { getGroupInfo } from '@/services/project-management/all-project';
 import { useRequest } from 'ahooks';
 
-const EditArrangeForm: React.FC = (props) => {
+interface EditArrangeFormProps {
+  allotCompanyId?: string
+}
 
-  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4'));
+const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
 
-  const { data: designData = [] } = useRequest(() => getGroupInfo('8'));
+  const {allotCompanyId = ""} = props;
 
-  const { data: auditData = [] } = useRequest(() => getGroupInfo('16'));
+  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4',allotCompanyId),{refreshDeps:[allotCompanyId]});
+
+  const { data: designData = [] } = useRequest(() => getGroupInfo('8',allotCompanyId),{refreshDeps:[allotCompanyId]});
+
+  const { data: auditData = [] } = useRequest(() => getGroupInfo('16',allotCompanyId),{refreshDeps:[allotCompanyId]});
 
   const mapTreeData = (data: any) => {
     return {
