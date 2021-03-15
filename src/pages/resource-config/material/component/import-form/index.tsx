@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
-interface SaveImportLineStressSagProps {
+interface SaveImportMaterialProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: () => void;
@@ -17,7 +17,7 @@ interface SaveImportLineStressSagProps {
   requestSource: 'project' | 'resource' | 'upload';
 }
 
-const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) => {
+const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', requestSource, changeFinishEvent } = props;
   // const [requestLoading, setRequestLoading] = useState(false);
@@ -27,12 +27,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
   const saveLineStreesSagEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;
-      await uploadLineStressSag(
-        file,
-        { libId },
-        requestSource,
-        '/ResourceLib/SaveImportLineStressSag',
-      );
+      await uploadLineStressSag(file, { libId }, requestSource, '/Material/Import');
       message.success('导入成功');
       setState(false);
       changeFinishEvent?.();
@@ -41,7 +36,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
 
   return (
     <Modal
-      title="导入应力弧垂表"
+      title="导入物料"
       visible={state as boolean}
       footer={[
         <Button key="cancle" onClick={() => setState(false)}>
@@ -68,4 +63,4 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
   );
 };
 
-export default SaveImportLineStressSag;
+export default SaveImportMaterial;

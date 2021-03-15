@@ -13,10 +13,9 @@ import {
   restartResourceLib,
 } from '@/services/resource-config/resource-lib';
 import { isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
 import ResourceLibForm from './components/add-edit-form';
 import UploadDrawing from './components/upload-drawing';
-import { getUploadUrl, uploadLineStressSag } from '@/services/resource-config/drawing';
+import { getUploadUrl } from '@/services/resource-config/drawing';
 import SaveImportLib from './components/upload-lib';
 import SaveImportLineStressSag from './components/upload-lineStressSag';
 
