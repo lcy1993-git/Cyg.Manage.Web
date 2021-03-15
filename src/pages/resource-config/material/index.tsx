@@ -18,6 +18,7 @@ import MaterialForm from './component/add-edit-form';
 import LineProperty from './component/line-property';
 import CableMapping from './component/cable-mapping';
 import SaveImportMaterial from './component/import-form';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -28,6 +29,8 @@ const Material: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [importMaterialVisible, setImportMaterialVisible] = useState<boolean>(false);
 
@@ -319,35 +322,52 @@ const Material: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
+        {buttonJurisdictionArray?.includes('material-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
           </Button>
-        </Popconfirm>
-        <Button className="mr7" onClick={() => importMaterialEvent()}>
-          <ImportOutlined />
-          导入物料
-        </Button>
-        <Button className={styles.importBtn} onClick={() => openWireAttribute()}>
-          导线属性
-        </Button>
-        <Button className={styles.importBtn} onClick={() => openCableTerminal()}>
-          电缆终端头映射
-        </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('material-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('material-delete') && (
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
+        )}
+
+        {buttonJurisdictionArray?.includes('material-import') && (
+          <Button className="mr7" onClick={() => importMaterialEvent()}>
+            <ImportOutlined />
+            导入物料
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('material-property') && (
+          <Button className={styles.importBtn} onClick={() => openWireAttribute()}>
+            导线属性
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('material-cable-mapping') && (
+          <Button className={styles.importBtn} onClick={() => openCableTerminal()}>
+            电缆终端头映射
+          </Button>
+        )}
       </div>
     );
   };

@@ -1,6 +1,12 @@
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  FileTextOutlined,
+  FileOutlined,
+} from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
@@ -18,6 +24,7 @@ import ModulesPropertyForm from './components/add-edit-form';
 import ModuleAttributeForm from './components/attribute-form';
 import ModuleDetailTab from './components/detail-tabs';
 import ModuleDetailTable from './components/detail-table';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -38,6 +45,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
   const [moduleDetailVisible, setModuleDetailVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -242,35 +250,53 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-
-        <Button className="mr7" onClick={() => editAttributeEvent()}>
-          编辑属性
-        </Button>
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
+        {buttonJurisdictionArray?.includes('modules-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
           </Button>
-        </Popconfirm>
-        <Button className="mr7" onClick={() => checkDetailEvent()}>
-          详情
-        </Button>
-        <Button className="mr7" onClick={() => openModuleDetail()}>
-          模块明细
-        </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('modules-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('modules-property') && (
+          <Button className="mr7" onClick={() => editAttributeEvent()}>
+            编辑属性
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('modules-delete') && (
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
+        )}
+
+        {buttonJurisdictionArray?.includes('modules-check') && (
+          <Button className="mr7" onClick={() => checkDetailEvent()}>
+            <FileOutlined />
+            详情
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('modules-detail') && (
+          <Button className="mr7" onClick={() => openModuleDetail()}>
+            <FileTextOutlined />
+            模块明细
+          </Button>
+        )}
       </div>
     );
   };

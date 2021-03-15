@@ -14,6 +14,7 @@ import {
 import { isArray } from 'lodash';
 import CableChannelForm from './components/add-edit-form';
 import CableChannelDetail from './components/detail-table';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -32,6 +33,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [ids, setIds] = useState<string[]>([]);
 
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
@@ -301,28 +303,39 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
+        {buttonJurisdictionArray?.includes('cable-channel-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
           </Button>
-        </Popconfirm>
-        <Button className={styles.importBtn} onClick={() => openDetail()}>
-          电缆通道明细
-        </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('cable-channel-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('cable-channel-delete') && (
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
+        )}
+
+        {buttonJurisdictionArray?.includes('cable-channel-detail') && (
+          <Button className={styles.importBtn} onClick={() => openDetail()}>
+            电缆通道明细
+          </Button>
+        )}
       </div>
     );
   };

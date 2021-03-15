@@ -18,6 +18,7 @@ import ComponentForm from './components/add-edit-form';
 import ComponentDetail from './components/detail-table';
 import ComponentProperty from './components/property-table';
 import SaveImportComponent from './components/import-form';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -33,6 +34,8 @@ const Component: React.FC = () => {
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
+
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -280,35 +283,52 @@ const Component: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
+        {buttonJurisdictionArray?.includes('component-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
           </Button>
-        </Popconfirm>
-        <Button className="mr7" onClick={() => importComponentEvent()}>
-          <ImportOutlined />
-          导入组件
-        </Button>
-        <Button className={styles.importBtn} onClick={() => openDetail()}>
-          组件明细
-        </Button>
-        <Button className={styles.importBtn} onClick={() => openProperty()}>
-          组件属性
-        </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('component-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('component-delete') && (
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
+        )}
+
+        {buttonJurisdictionArray?.includes('component-import') && (
+          <Button className="mr7" onClick={() => importComponentEvent()}>
+            <ImportOutlined />
+            导入组件
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('component-detail') && (
+          <Button className={styles.importBtn} onClick={() => openDetail()}>
+            组件明细
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('component-property') && (
+          <Button className={styles.importBtn} onClick={() => openProperty()}>
+            组件属性
+          </Button>
+        )}
       </div>
     );
   };

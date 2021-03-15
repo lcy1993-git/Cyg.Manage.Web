@@ -18,6 +18,7 @@ import UploadDrawing from './components/upload-drawing';
 import { getUploadUrl } from '@/services/resource-config/drawing';
 import SaveImportLib from './components/upload-lib';
 import SaveImportLineStressSag from './components/upload-lineStressSag';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -31,6 +32,7 @@ const ResourceLib: React.FC = () => {
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false);
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false);
   const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const { data: keyData } = useRequest(() => getUploadUrl());
 
@@ -201,31 +203,47 @@ const ResourceLib: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          创建
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        <Button className="mr7" onClick={() => uploadDrawingEvent()}>
-          <ImportOutlined />
-          导入图纸
-        </Button>
-        <Button className="mr7" onClick={() => importLibEvent()}>
-          <ImportOutlined />
-          导入资源库
-        </Button>
-        <Button className="mr7" onClick={() => importLineStreeSagEvent()}>
-          <ImportOutlined />
-          导入应力弧垂表
-        </Button>
+        {buttonJurisdictionArray?.includes('lib-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            创建
+          </Button>
+        )}
 
-        <Button className="mr7" onClick={() => restartLib()}>
-          <PoweroffOutlined />
-          重启资源服务
-        </Button>
+        {buttonJurisdictionArray?.includes('lib-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('lib-import-drawing') && (
+          <Button className="mr7" onClick={() => uploadDrawingEvent()}>
+            <ImportOutlined />
+            导入图纸
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('lib-import-lib') && (
+          <Button className="mr7" onClick={() => importLibEvent()}>
+            <ImportOutlined />
+            导入资源库
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('lib-import-linestresssag') && (
+          <Button className="mr7" onClick={() => importLineStreeSagEvent()}>
+            <ImportOutlined />
+            导入应力弧垂表
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('lib-restart') && (
+          <Button className="mr7" onClick={() => restartLib()}>
+            <PoweroffOutlined />
+            重启资源服务
+          </Button>
+        )}
       </div>
     );
   };

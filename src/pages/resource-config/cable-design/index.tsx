@@ -10,10 +10,13 @@ import CableDesignTab from './components/cableDesign-tab';
 import { ImportOutlined } from '@ant-design/icons';
 import ImportCableModal from './components/import-form';
 
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+
 const CableDesign: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [importCableVisible, setImportCableVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
@@ -70,10 +73,12 @@ const CableDesign: React.FC = () => {
               </TableSearch>
             </div>
             <div>
-              <Button className="mr7" onClick={() => importCableDesignEvent()}>
-                <ImportOutlined />
-                导入(电缆井+电缆通道)
-              </Button>
+              {buttonJurisdictionArray?.includes('cable-design-import') && (
+                <Button className="mr7" onClick={() => importCableDesignEvent()}>
+                  <ImportOutlined />
+                  导入(电缆井+电缆通道)
+                </Button>
+              )}
             </div>
           </div>
         </div>

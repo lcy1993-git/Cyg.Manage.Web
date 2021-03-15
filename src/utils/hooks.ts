@@ -57,7 +57,9 @@ export const useGetUserInfo = () => {
 };
 
 export const useGetButtonJurisdictionArray = () => {
-  const buttonJurisdictionArray = JSON.parse(localStorage.getItem('buttonJurisdictionArray') ?? '[]');
+  const buttonJurisdictionArray = JSON.parse(
+    localStorage.getItem('buttonJurisdictionArray') ?? '[]',
+  );
   return buttonJurisdictionArray;
 };
 

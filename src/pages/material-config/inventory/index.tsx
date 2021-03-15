@@ -12,6 +12,7 @@ import CheckMapping from './components/check-mapping-form';
 import CreateMap from './components/create-map';
 import { ImportOutlined } from '@ant-design/icons';
 import ImportInventory from './components/import-form';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -24,6 +25,7 @@ const Inventroy: React.FC = () => {
   const [checkMappingVisible, setCheckMappingVisible] = useState<boolean>(false);
   const [addMapVisible, setAddMapVisible] = useState<boolean>(false);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [checkForm] = Form.useForm();
 
@@ -285,16 +287,24 @@ const Inventroy: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button className="mr7" onClick={() => importInventoryEvent()}>
-          <ImportOutlined />
-          导入
-        </Button>
-        <Button className={styles.importBtn} onClick={() => createMappingEvent()}>
-          创建映射
-        </Button>
-        <Button className={styles.importBtn} onClick={() => checkMappingEvent()}>
-          查看映射关系
-        </Button>
+        {buttonJurisdictionArray?.includes('inventory-import') && (
+          <Button className="mr7" onClick={() => importInventoryEvent()}>
+            <ImportOutlined />
+            导入
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('inventory-create-mapping') && (
+          <Button className={styles.importBtn} onClick={() => createMappingEvent()}>
+            创建映射
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('inventory-check-mapping') && (
+          <Button className={styles.importBtn} onClick={() => checkMappingEvent()}>
+            查看映射关系
+          </Button>
+        )}
       </div>
     );
   };

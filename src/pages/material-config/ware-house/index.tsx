@@ -24,6 +24,7 @@ import { isArray } from 'lodash';
 import WareHouseForm from './components/add-edit-form';
 import WareHouseDetail from './components/detail-table';
 import ImportWareHouse from './components/import-form';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -37,6 +38,8 @@ const WareHouse: React.FC = () => {
   // const [selectedData, setSelectedData] = useState<object>({});
   const [checkDetailVisible, setCheckDetailVisible] = useState<boolean>(false);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
+
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -232,37 +235,54 @@ const WareHouse: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          创建
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
+        {buttonJurisdictionArray?.includes('ware-house-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            创建
           </Button>
-        </Popconfirm>
-        <Button className="mr7" onClick={() => importWareHouseEvent()}>
-          <ImportOutlined />
-          导入
-        </Button>
-        <Button className="mr7" onClick={() => checkDetail()}>
-          <EyeOutlined />
-          查看物料
-        </Button>
-        <Button className="mr7" onClick={() => restartLib()}>
-          <PoweroffOutlined />
-          重启服务
-        </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('ware-house-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('ware-house-delete') && (
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
+        )}
+
+        {buttonJurisdictionArray?.includes('ware-house-import') && (
+          <Button className="mr7" onClick={() => importWareHouseEvent()}>
+            <ImportOutlined />
+            导入
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('ware-house-check') && (
+          <Button className="mr7" onClick={() => checkDetail()}>
+            <EyeOutlined />
+            查看物料
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('ware-house-restart') && (
+          <Button className="mr7" onClick={() => restartLib()}>
+            <PoweroffOutlined />
+            重启服务
+          </Button>
+        )}
       </div>
     );
   };

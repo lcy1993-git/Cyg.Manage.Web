@@ -10,6 +10,7 @@ import { getUploadUrl } from '@/services/resource-config/drawing';
 import { useRequest } from 'ahooks';
 import { ImportOutlined } from '@ant-design/icons';
 import ImportChartModal from './component/import-form';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -21,6 +22,7 @@ const Drawing: React.FC = () => {
   const { data: keyData } = useRequest(() => getUploadUrl());
 
   const chartSecurityKey = keyData?.uploadChartApiSecurity;
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const searchComponent = () => {
     return (
@@ -120,10 +122,12 @@ const Drawing: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button className="mr7" onClick={() => importChartEvent()}>
-          <ImportOutlined />
-          导入图纸
-        </Button>
+        {buttonJurisdictionArray?.includes('drawing-import') && (
+          <Button className="mr7" onClick={() => importChartEvent()}>
+            <ImportOutlined />
+            导入图纸
+          </Button>
+        )}
       </div>
     );
   };

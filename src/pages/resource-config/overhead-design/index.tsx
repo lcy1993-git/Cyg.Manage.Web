@@ -8,11 +8,13 @@ import UrlSelect from '@/components/url-select';
 import OverHeadDesignTab from './components/overHeadDesign-tab';
 import { ImportOutlined } from '@ant-design/icons';
 import ImportOverheadModal from './components/import-form';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const OverheadDesign: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
@@ -69,10 +71,12 @@ const OverheadDesign: React.FC = () => {
               </TableSearch>
             </div>
             <div>
-              <Button className="mr7" onClick={() => importOverheadDesignEvent()}>
-                <ImportOutlined />
-                导入(杆型+模块)
-              </Button>
+              {buttonJurisdictionArray?.includes('modules-import') && (
+                <Button className="mr7" onClick={() => importOverheadDesignEvent()}>
+                  <ImportOutlined />
+                  导入(杆型+模块)
+                </Button>
+              )}
             </div>
           </div>
         </div>

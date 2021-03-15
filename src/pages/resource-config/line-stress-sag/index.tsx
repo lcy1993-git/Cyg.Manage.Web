@@ -14,6 +14,8 @@ import ImportLineStressSag from './components/import-lineStressSag';
 import { message } from 'antd';
 // import FileUploadOnline from '@/components/file-upload-online';
 // import CygFormItem from '@/components/cy-form-item';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { ImportOutlined } from '@ant-design/icons';
 
 const { Search } = Input;
 
@@ -25,6 +27,7 @@ const LineStressSag: React.FC = () => {
   const [importLineStressSagVisible, setImportLineStreesSagVisible] = useState<boolean>(false);
 
   const { data: keyData } = useRequest(() => getUploadUrl());
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const LineStressChartApiSecurity = keyData?.uploadLineStressChartApiSecurity;
 
@@ -125,12 +128,18 @@ const LineStressSag: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button className="mr7" onClick={() => importLineStressEvent()}>
-          导入应力弧垂表
-        </Button>
-        <Button className="mr7" onClick={() => importLineStressDrawingEvent()}>
-          上传图纸
-        </Button>
+        {buttonJurisdictionArray?.includes('line-stress-sag-import') && (
+          <Button className="mr7" onClick={() => importLineStressEvent()}>
+            导入应力弧垂表
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('line-stress-sag-upload-drawing') && (
+          <Button className="mr7" onClick={() => importLineStressDrawingEvent()}>
+            <ImportOutlined />
+            上传图纸
+          </Button>
+        )}
       </div>
     );
   };

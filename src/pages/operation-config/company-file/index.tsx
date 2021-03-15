@@ -20,6 +20,7 @@ import {
 } from '@/services/operation-config/company-file';
 import DefaultParams from './components/default-params';
 import { getUploadUrl } from '@/services/resource-config/drawing';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -31,6 +32,7 @@ const CompanyFile: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
 
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const [defaultForm] = Form.useForm();
@@ -225,29 +227,39 @@ const CompanyFile: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
+        {buttonJurisdictionArray?.includes('company-file-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
           </Button>
-        </Popconfirm>
-        <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
-          <i className="iconfont iconcanshu" />
-          成果默认参数
-        </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('company-file-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+
+        {buttonJurisdictionArray?.includes('company-file-delete') && (
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
+        )}
+        {buttonJurisdictionArray?.includes('company-file-defaultOptions') && (
+          <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
+            <i className="iconfont iconcanshu" />
+            成果默认参数
+          </Button>
+        )}
       </div>
     );
   };
