@@ -314,10 +314,7 @@ const Component: React.FC = () => {
   };
 
   const importComponentEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请选择资源库');
-      return;
-    }
+  ccc
     setImportComponentVisible(true);
   };
 

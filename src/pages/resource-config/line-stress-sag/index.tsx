@@ -11,6 +11,7 @@ import { getUploadUrl } from '@/services/resource-config/drawing';
 import { useRequest } from 'ahooks';
 import UploadLineStressSag from './components/upload-lineStressSag';
 import ImportLineStressSag from './components/import-lineStressSag';
+import { message } from 'antd';
 // import FileUploadOnline from '@/components/file-upload-online';
 // import CygFormItem from '@/components/cy-form-item';
 
@@ -124,14 +125,30 @@ const LineStressSag: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button className="mr7" onClick={() => setImportLineStreesSagVisible(true)}>
+        <Button className="mr7" onClick={() => importLineStressEvent()}>
           导入应力弧垂表
         </Button>
-        <Button className="mr7" onClick={() => setUploadLineStreesSagVisible(true)}>
+        <Button className="mr7" onClick={() => importDrawingEvent()}>
           上传图纸
         </Button>
       </div>
     );
+  };
+
+  const importLineStressEvent = () => {
+    if (!resourceLibId) {
+      message.warning('请选择资源库');
+      return;
+    }
+    setImportLineStreesSagVisible(true);
+  };
+
+  const importDrawingEvent = () => {
+    if (!resourceLibId) {
+      message.warning('请选择资源库');
+      return;
+    }
+    setUploadLineStreesSagVisible(true);
   };
 
   return (

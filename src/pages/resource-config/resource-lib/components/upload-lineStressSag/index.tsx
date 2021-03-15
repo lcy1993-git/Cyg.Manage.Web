@@ -4,6 +4,7 @@ import { uploadLineStressSag } from '@/services/resource-config/drawing';
 import { useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
 import React from 'react';
+import { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
@@ -19,11 +20,14 @@ interface SaveImportLibProps {
 const SaveImportLineStressSag: React.FC<SaveImportLibProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', requestSource, changeFinishEvent } = props;
+  const [requestLoading, setRequestLoading] = useState(false);
+
   const [form] = Form.useForm();
 
   const saveLineStreesSagEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;
+      setRequestLoading(true);
       await uploadLineStressSag(
         file,
         { libId },
@@ -32,6 +36,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLibProps> = (props) => {
       );
       message.success('导入成功');
       setState(false);
+      setRequestLoading(false);
       changeFinishEvent?.();
     });
   };
@@ -44,7 +49,12 @@ const SaveImportLineStressSag: React.FC<SaveImportLibProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveLineStreesSagEvent()}>
+        <Button
+          key="save"
+          type="primary"
+          onClick={() => saveLineStreesSagEvent()}
+          loading={requestLoading}
+        >
           保存
         </Button>,
       ]}
