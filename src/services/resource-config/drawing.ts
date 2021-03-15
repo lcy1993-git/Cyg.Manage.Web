@@ -44,11 +44,9 @@ export const uploadLineStressSag = (
 
   const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`;
 
-  return cyRequest<any[]>(() =>
-    request(uploadUrl, {
+  return request(uploadUrl, {
       method: 'POST',
       data: formData,
       requestType: 'form',
-    }),
-  );
+    })
 };

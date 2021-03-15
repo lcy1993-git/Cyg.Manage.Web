@@ -53,7 +53,7 @@ const ElectricalEquipment: React.FC = () => {
             placeholder="关键词"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="200px">
+        <TableSearch marginLeft="20px" label="选择资源" width="240px">
           <UrlSelect
             allowClear
             showSearch
@@ -63,6 +63,7 @@ const ElectricalEquipment: React.FC = () => {
             valueKey="id"
             placeholder="请选择"
             onChange={(value: any) => searchByLib(value)}
+            style={{ width: '180px' }}
           />
         </TableSearch>
       </div>
@@ -199,6 +200,7 @@ const ElectricalEquipment: React.FC = () => {
       await addElectricalEquipmentItem(submitInfo);
       refresh();
       setAddFormVisible(false);
+      message.success('添加成功');
       addForm.resetFields();
     });
   };
@@ -299,10 +301,12 @@ const ElectricalEquipment: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows;
+    const editDataId = editData.map((item) => {
+      return item.id;
+    });
 
-    await deleteElectricalEquipmentItem(editDataId);
+    await deleteElectricalEquipmentItem(resourceLibId, editDataId);
     refresh();
     message.success('删除成功');
   };
@@ -342,7 +346,7 @@ const ElectricalEquipment: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/ElectricalEquipment"
-        tableTitle="组件列表"
+        tableTitle="电气设备列表"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
@@ -393,7 +397,7 @@ const ElectricalEquipment: React.FC = () => {
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <Spin spinning={loading} >
+        <Spin spinning={loading}>
           <ElectricDetail
             libId={resourceLibId}
             componentId={tableSelectRows.map((item) => {

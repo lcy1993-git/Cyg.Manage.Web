@@ -168,7 +168,7 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
         }}
       />
       <Modal
-        title="添加-组件明细"
+        title="添加-组件属性"
         width="70%"
         visible={addFormVisible}
         okText="确认"
@@ -185,7 +185,7 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
       </Modal>
 
       <Modal
-        title="编辑-组件明细"
+        title="编辑-组件属性"
         width="980px"
         visible={editFormVisible}
         okText="保存"

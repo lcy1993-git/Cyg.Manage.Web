@@ -45,7 +45,7 @@ export const updateComponentItem = (params: ItemDetailData) => {
   );
 };
 
-// 删除物料
+// 删除组件
 export const deleteComponentItem = (libId: string, ids: string[]) => {
   return cyRequest(() =>
     request(`${baseUrl.resource}/Component/Delete`, { method: 'POST', data: { libId, ids } }),

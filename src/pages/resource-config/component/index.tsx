@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined, ImportOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
@@ -13,11 +13,11 @@ import {
   deleteComponentItem,
 } from '@/services/resource-config/component';
 import { isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
 import UrlSelect from '@/components/url-select';
 import ComponentForm from './components/add-edit-form';
 import ComponentDetail from './components/detail-table';
 import ComponentProperty from './components/property-table';
+import SaveImportComponent from './components/import-form';
 
 const { Search } = Input;
 
@@ -28,7 +28,7 @@ const Component: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
+  const [importComponentVisible, setImportComponentVisible] = useState<boolean>(false);
   const [deviceCategory, setDeviceCategory] = useState<string>('');
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
@@ -53,7 +53,7 @@ const Component: React.FC = () => {
             placeholder="关键词"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="200px">
+        <TableSearch marginLeft="20px" label="选择资源" width="240px">
           <UrlSelect
             allowClear
             showSearch
@@ -63,6 +63,7 @@ const Component: React.FC = () => {
             valueKey="id"
             placeholder="请选择"
             onChange={(value: any) => searchByLib(value)}
+            style={{ width: '180px' }}
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="组件" width="220px">
@@ -196,7 +197,7 @@ const Component: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const sureAddMaterial = () => {
+  const sureAddComponent = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
@@ -219,6 +220,7 @@ const Component: React.FC = () => {
       await addComponentItem(submitInfo);
       refresh();
       setAddFormVisible(false);
+      message.success('添加成功');
       addForm.resetFields();
     });
   };
@@ -297,12 +299,10 @@ const Component: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <TableImportButton
-          buttonTitle="导入组件"
-          modalTitle="导入组件"
-          className={styles.importBtn}
-          importUrl="/Material/Import"
-        />
+        <Button className="mr7" onClick={() => importComponentEvent()}>
+          <ImportOutlined />
+          导入组件
+        </Button>
         <Button className={styles.importBtn} onClick={() => openDetail()}>
           组件明细
         </Button>
@@ -311,6 +311,14 @@ const Component: React.FC = () => {
         </Button>
       </div>
     );
+  };
+
+  const importComponentEvent = () => {
+    if (!resourceLibId) {
+      message.warning('请选择资源库');
+      return;
+    }
+    setImportComponentVisible(true);
   };
 
   const sureDeleteData = async () => {
@@ -352,6 +360,10 @@ const Component: React.FC = () => {
     setAttributeVisible(true);
   };
 
+  const uploadFinishEvent = () => {
+    refresh();
+  };
+
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -377,7 +389,7 @@ const Component: React.FC = () => {
         width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddMaterial()}
+        onOk={() => sureAddComponent()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
       >
@@ -443,6 +455,14 @@ const Component: React.FC = () => {
           />
         </Spin>
       </Modal>
+
+      <SaveImportComponent
+        libId={resourceLibId}
+        requestSource="resource"
+        visible={importComponentVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportComponentVisible}
+      />
     </PageCommonWrap>
   );
 };

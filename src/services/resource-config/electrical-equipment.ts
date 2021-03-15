@@ -49,8 +49,11 @@ export const updateElectricalEquipmentItem = (params: ItemDetailData) => {
 };
 
 // 删除物料
-export const deleteElectricalEquipmentItem = (id: string) => {
+export const deleteElectricalEquipmentItem = (libId: string, ids: string[]) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/ElectricalEquipment/Delete`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.resource}/ElectricalEquipment/Delete`, {
+      method: 'POST',
+      data: { libId, ids },
+    }),
   );
 };
