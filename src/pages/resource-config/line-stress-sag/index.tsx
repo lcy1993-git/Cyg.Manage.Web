@@ -128,7 +128,7 @@ const LineStressSag: React.FC = () => {
         <Button className="mr7" onClick={() => importLineStressEvent()}>
           导入应力弧垂表
         </Button>
-        <Button className="mr7" onClick={() => importDrawingEvent()}>
+        <Button className="mr7" onClick={() => importLineStressDrawingEvent()}>
           上传图纸
         </Button>
       </div>
@@ -143,7 +143,7 @@ const LineStressSag: React.FC = () => {
     setImportLineStreesSagVisible(true);
   };
 
-  const importDrawingEvent = () => {
+  const importLineStressDrawingEvent = () => {
     if (!resourceLibId) {
       message.warning('请选择资源库');
       return;
