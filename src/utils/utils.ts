@@ -90,3 +90,4 @@ const mapJurisdictionData = (data: any) => {
     children: children.filter((item: any) => item.category !== 3).map(mapJurisdictionData),
   };
 };
+

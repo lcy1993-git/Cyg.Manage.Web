@@ -24,7 +24,7 @@ import { Popconfirm } from "antd";
 import ArrangeModal from "./components/arrange-modal";
 import ShareModal from "./components/share-modal";
 import EditArrangeModal from "./components/edit-arrange-modal";
-import { useGetProjectEnum } from "@/utils/hooks";
+import { useGetButtonJurisdictionArray, useGetProjectEnum } from "@/utils/hooks";
 import UrlSelect from "@/components/url-select"
 import ResourceLibraryManageModal from "./components/resource-library-manage-modal";
 import ProjectRecallModal from "./components/project-recall-modal";
@@ -74,6 +74,8 @@ const ProjectManagement: React.FC = () => {
 
     const [currentRecallProjectId, setCurrentRecallProjectId] = useState<string>("");
     const [recallModalVisible, setRecallModalVisible] = useState(false);
+
+    const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
     const tableRef = useRef<HTMLDivElement>(null);
 
@@ -154,7 +156,7 @@ const ProjectManagement: React.FC = () => {
         if (projectIds.length === 1) {
             const thisProjectId = projectIds[0];
             const projectInfo = await getProjectInfo(thisProjectId);
-            
+
             const { allots = [] } = projectInfo ?? {};
             if (allots.length > 0) {
                 const latestAllot = allots[allots?.length - 1];
@@ -176,8 +178,8 @@ const ProjectManagement: React.FC = () => {
         }
         const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
         const resData = await canEditArrange(projectIds);
-        
-        const {allotCompanyGroup = ""} = resData;
+
+        const { allotCompanyGroup = "" } = resData;
 
         setEditCurrentAllotCompanyId(allotCompanyGroup);
         setSelectProjectIds(projectIds);
@@ -198,7 +200,7 @@ const ProjectManagement: React.FC = () => {
             return;
         }
 
-        if(tableSelectData.length > 1) {
+        if (tableSelectData.length > 1) {
             message.error('只能对一个项目进行撤回共享操作');
             return;
         }
@@ -597,14 +599,18 @@ const ProjectManagement: React.FC = () => {
                                 <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
                             </div>
                             <div className="flex">
-                                <Button
-                                    className="mr7"
-                                    type="primary"
-                                    onClick={() => openAddEngineerModal()}
-                                >
-                                    <FileAddOutlined />
-                                    立项
+                                {
+                                    buttonJurisdictionArray?.includes("project-approval") &&
+                                    <Button
+                                        className="mr7"
+                                        type="primary"
+                                        onClick={() => openAddEngineerModal()}
+                                    >
+                                        <FileAddOutlined />
+                                        立项
                                     </Button>
+                                }
+
                                 <Popconfirm
                                     title="确认对勾选的项目进行删除吗?"
                                     okText="确认"

@@ -83,6 +83,11 @@ export const useGetUserInfo = () => {
   return userInfo;
 };
 
+export const useGetButtonJurisdictionArray = () => {
+  const buttonJurisdictionArray = JSON.parse(localStorage.getItem('buttonJurisdictionArray') ?? '[]');
+  return buttonJurisdictionArray;
+};
+
 export const useGetProjectEnum = () => {
   const { data: resData } = useRequest(() => getEngineerEnum(), {});
   const {

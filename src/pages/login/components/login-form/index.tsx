@@ -11,6 +11,7 @@ import { phoneNumberRule } from '@/utils/common-rule';
 import { userLoginRequest, phoneLoginRequest } from '@/services/login';
 
 import { history } from 'umi';
+import { flatten } from '@/utils/utils';
 
 const { TabPane } = Tabs;
 
@@ -47,9 +48,14 @@ const LoginForm: React.FC = () => {
 
         const { accessToken, modules, user } = resData;
 
+        const buttonModules = flatten(modules);
+        const buttonArray = buttonModules.filter((item: any) => item.category === 3).map((item: any) => item.authCode);
+
         localStorage.setItem('Authorization', accessToken);
         localStorage.setItem('functionModules', JSON.stringify(modules));
         localStorage.setItem('userInfo', JSON.stringify(user));
+        localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
+
 
         message.success('登录成功');
         history.push('/index');
