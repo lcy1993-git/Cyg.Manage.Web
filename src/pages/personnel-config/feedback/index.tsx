@@ -13,6 +13,7 @@ import GeneralTable from '@/components/general-table';
 import moment from 'moment';
 import { Spin } from 'antd';
 import FeedbackDetail from './components/detail';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const UserFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -27,6 +28,8 @@ const UserFeedBack: React.FC = () => {
   const { data: detailData = {}, run: getDetailData, loading } = useRequest(getUserFeedBackDetail, {
     manual: true,
   });
+
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   //数据修改，局部刷新
   const tableFresh = () => {
@@ -76,14 +79,21 @@ const UserFeedBack: React.FC = () => {
   const userFeedBackButton = () => {
     return (
       <>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          反馈
-        </Button>
-        <Button className="mr7" onClick={() => checkEvent()}>
-          <EyeOutlined />
-          查看
-        </Button>
+        {
+          buttonJurisdictionArray?.includes("feedback-add") &&
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            反馈
+          </Button>
+        }
+        {
+          buttonJurisdictionArray?.includes("feedback-check-detail") &&
+          <Button className="mr7" onClick={() => checkEvent()}>
+            <EyeOutlined />
+            查看
+          </Button>
+        }
+
       </>
     );
   };

@@ -21,6 +21,8 @@ import CheckboxTreeTable from '@/components/checkbox-tree-table';
 import styles from './index.less';
 import UserAuthorization from '../platform-authorization/components/user-authorization';
 import CyTag from '@/components/cy-tag';
+import uuid from 'node-uuid';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -41,6 +43,8 @@ const RolePermissions: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const [apportionForm] = Form.useForm();
+
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const { data, run, loading } = useRequest(getAuthorizationDetail, {
     manual: true,
@@ -65,7 +69,25 @@ const RolePermissions: React.FC = () => {
       width: 120,
       render: (text: any, record: any) => {
         const isChecked = !record.isDisable;
-        return <Switch checked={isChecked} onChange={() => updateStatus(record)} />;
+        return (
+          <>
+            {
+              buttonJurisdictionArray?.includes("role-permissions-start-using") &&
+              <>
+                <Switch checked={isChecked} onChange={() => updateStatus(record)} />
+                {
+                  isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>
+                }
+              </>
+            }
+            {
+              !buttonJurisdictionArray?.includes("role-permissions-start-using") &&
+              (
+                isChecked ? <span>启用</span> : <span>禁用</span>
+              )
+            }
+          </>
+        )
       },
     },
     {
@@ -75,8 +97,8 @@ const RolePermissions: React.FC = () => {
       render: (text: any, record: any) => {
         return record.users
           ? record.users.map((item: any) => {
-              return <CyTag className="mr7">{item.text}</CyTag>;
-            })
+            return <CyTag className="mr7" key={uuid.v1()}>{item.text}</CyTag>;
+          })
           : null;
       },
     },
@@ -84,7 +106,6 @@ const RolePermissions: React.FC = () => {
 
   const updateStatus = async (record: any) => {
     const { id } = record;
-    console.log(record);
 
     await updateAuthorizationItemStatus(id);
     tableFresh();
@@ -241,34 +262,50 @@ const RolePermissions: React.FC = () => {
   const buttonElement = () => {
     return (
       <div>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
+        {
+          buttonJurisdictionArray?.includes("role-permissions-add") &&
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
           添加
         </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
+        }
+        {
+          buttonJurisdictionArray?.includes("role-permissions-edit") &&
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
           编辑
         </Button>
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
+        }
+        {
+          buttonJurisdictionArray?.includes("role-permissions-delete") &&
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
           // disabled
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
             删除
           </Button>
-        </Popconfirm>
-        <Button className="mr7" onClick={() => distributeEvent()}>
-          <ApartmentOutlined />
+          </Popconfirm>
+        }
+        {
+          buttonJurisdictionArray?.includes("role-permissions-allocation-function") &&
+          <Button className="mr7" onClick={() => distributeEvent()}>
+            <ApartmentOutlined />
           分配功能模块
         </Button>
-        <Button className="mr7" onClick={() => authorizationEvent()}>
-          <i className="iconfont iconshouquan" />
-          授权
-        </Button>
+        }
+        {
+          buttonJurisdictionArray?.includes("role-permissions-authorization") &&
+          <Button className="mr7" onClick={() => authorizationEvent()}>
+            <i className="iconfont iconshouquan" />
+            授权
+          </Button>
+        }
+
       </div>
     );
   };

@@ -21,6 +21,7 @@ import EditProjectModal from "../edit-project-modal"
 import CopyProjectModal from "../copy-project-modal"
 import ArrangeModal from "../arrange-modal"
 import CheckResultModal from "../check-result-modal"
+import { useGetButtonJurisdictionArray } from "@/utils/hooks"
 
 interface ExtractParams extends AllProjectStatisticsParams {
     statisticalCategory?: string
@@ -89,6 +90,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
     const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
+    const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
     const tableResultData = useMemo(() => {
         if (tableData) {
             const { items, pageIndex, pageSize, total } = tableData;
@@ -113,11 +116,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }, [JSON.stringify(tableData)]);
 
     const projectItemMenu = (jurisdictionInfo: JurisdictionInfo, tableItemData: any, engineerInfo: any) => {
-       
+
         return (
             <Menu>
                 {
-                    jurisdictionInfo.canEdit &&
+                    jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes("all-project-edit-project") &&
                     <Menu.Item onClick={() => editProjectEvent({
                         projectId: tableItemData.id,
                         areaId: engineerInfo.province,
@@ -128,7 +131,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     </Menu.Item>
                 }
                 {
-                    jurisdictionInfo.canCopy &&
+                    jurisdictionInfo.canCopy && buttonJurisdictionArray?.includes("all-project-copy-project") &&
                     <Menu.Item onClick={() => copyProjectEvent({
                         projectId: tableItemData.id,
                         areaId: engineerInfo.province,
@@ -139,13 +142,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                         复制项目
                     </Menu.Item>
                 }
-                <Menu.Item onClick={() => checkResult({
-                    projectId: tableItemData.id,
-                    projectName: tableItemData.name,
-                    projectStatus: tableItemData.stateInfo.statusText,
-                })}>
-                    查看成果
-                </Menu.Item>
+                {
+                    buttonJurisdictionArray?.includes("all-project-check-result") &&
+                    <Menu.Item onClick={() => checkResult({
+                        projectId: tableItemData.id,
+                        projectName: tableItemData.name,
+                        projectStatus: tableItemData.stateInfo.statusText,
+                    })}>
+                        查看成果
+                    </Menu.Item>
+                }
+
             </Menu>
         )
     }
@@ -252,11 +259,21 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     allotCompanyId = allot.allotCompanyGroup
                 }
                 return (
-                    <span>
+                    <>
                         {
-                            !(stateInfo.isArrange) && (identitys.findIndex((item: any) => item.value === 4)) > -1 ? <span className="canClick" onClick={() => arrange(record.id, arrangeType, allotCompanyId)}>{stateInfo?.statusText}</span> : <span>{stateInfo?.statusText}</span>
+                            buttonJurisdictionArray?.includes("all-project-copy-project") &&
+                            <span>
+                                {
+                                    !(stateInfo.isArrange) && (identitys.findIndex((item: any) => item.value === 4)) > -1 ? <span className="canClick" onClick={() => arrange(record.id, arrangeType, allotCompanyId)}>{stateInfo?.statusText}</span> : <span>{stateInfo?.statusText}</span>
+                                }
+                            </span>
                         }
-                    </span>
+                        {
+                            !buttonJurisdictionArray?.includes("all-project-copy-project") &&
+                            <span>{stateInfo?.statusText}</span>
+                        }
+                    </>
+
                 )
             }
         },
@@ -331,7 +348,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }
 
     const editProjectEvent = (projectNeedInfo: any) => {
- 
+
         setEditProjectVisible(true)
         setCurrentEditProjectInfo(projectNeedInfo)
     }
@@ -450,14 +467,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     />
                 </div>
             </div>
-        
-            <CheckResultModal visible={checkResultVisible} onChange={setCheckResultVisible}  changeFinishEvent={arrangeFinish} projectInfo={checkResultPorjectInfo} />
+
+            <CheckResultModal visible={checkResultVisible} onChange={setCheckResultVisible} changeFinishEvent={arrangeFinish} projectInfo={checkResultPorjectInfo} />
             <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible} />
             <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />
             <ArrangeModal allotCompanyId={arrangeAllotCompanyId} finishEvent={arrangeFinish} visible={arrangeModalVisible} onChange={setArrangeModalVisible} projectIds={[currentArrageProjectId]} defaultSelectType={currentProjectArrangeType} />
             <EditEnigneerModal engineerId={currentEditEngineerId} visible={editEngineerVisible} onChange={setEditEngineerVisible} changeFinishEvent={tableItemEventFinish} />
             <EditProjectModal companyName={currentEditProjectInfo.companyName} projectId={currentEditProjectInfo.projectId} company={currentEditProjectInfo.company} areaId={currentEditProjectInfo.areaId} visible={editProjectVisible} onChange={setEditProjectVisible} changeFinishEvent={tableItemEventFinish} />
-            <CopyProjectModal companyName={currentCopyProjectInfo.companyName}  projectId={currentCopyProjectInfo.projectId} engineerId={currentCopyProjectInfo.engineerId} company={currentCopyProjectInfo.company} areaId={currentCopyProjectInfo.areaId} visible={copyProjectVisible} onChange={setCopyProjectVisible} changeFinishEvent={tableItemEventFinish} />
+            <CopyProjectModal companyName={currentCopyProjectInfo.companyName} projectId={currentCopyProjectInfo.projectId} engineerId={currentCopyProjectInfo.engineerId} company={currentCopyProjectInfo.company} areaId={currentCopyProjectInfo.areaId} visible={copyProjectVisible} onChange={setCopyProjectVisible} changeFinishEvent={tableItemEventFinish} />
             <AddProjectModal companyName={projectNeedInfo.companyName} changeFinishEvent={tableItemEventFinish} visible={addProjectVisible} onChange={setAddProjectVisible} engineerId={projectNeedInfo.engineerId} areaId={projectNeedInfo.areaId} company={projectNeedInfo.company} />
         </div>
     )
