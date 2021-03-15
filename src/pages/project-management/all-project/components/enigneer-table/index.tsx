@@ -450,6 +450,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     />
                 </div>
             </div>
+        
             <CheckResultModal visible={checkResultVisible} onChange={setCheckResultVisible}  changeFinishEvent={arrangeFinish} projectInfo={checkResultPorjectInfo} />
             <EngineerDetailInfo engineerId={currentClickEngineerId} visible={engineerModalVisible} onChange={setEngineerModalVisible} />
             <ProjectDetailInfo projectId={currentClickProjectId} visible={projectModalVisible} onChange={setProjectModalVisible} />

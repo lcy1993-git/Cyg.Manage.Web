@@ -1,6 +1,5 @@
 import request from '@/utils/request';
 import { Moment } from 'moment';
-import { resolveConfig } from 'prettier';
 import { cyRequest, baseUrl } from '../common';
 import { TableRequestResult } from '../table';
 
@@ -12,8 +11,8 @@ export enum Arrangement {
 
 export enum IsArrangement {
   '项目委托' = 1,
-  '部组成员',
-  '公司部组',
+  '部组成员' = 4,
+  '公司部组' = 3,
 }
 
 export enum ProjectCategory {
@@ -373,7 +372,7 @@ interface ProjectInfoParams {
   dataSourceTypeText: string;
   createdOn: string;
   createdCompanyName: string;
-  stateInfo: string;
+  stateInfo: any;
   sources: string;
   identitys: string[];
   allots: any[];
@@ -453,11 +452,11 @@ export const noAuditKnot = (projectIds: string[]) => {
 };
 
 // 撤回共享
-export const recallShare = (projectIds: string[]) => {
+export const recallShare = (ids: string[]) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/RevokeShare`, {
       method: 'POST',
-      data: { shareIds: projectIds },
+      data: { shareIds: ids },
     }),
   );
 };
@@ -538,7 +537,7 @@ export const editArrange = (params: AllotParams) => {
 
 // 检查是否可以进行修改安排
 export const canEditArrange = (projectIds: string[]) => {
-  return cyRequest(() =>
+  return cyRequest<any>(() =>
   request(`${baseUrl.project}/Porject/CheckModifyAllotPrerequisites`, {
     method: 'POST',
     data: projectIds,
@@ -583,5 +582,15 @@ export const downloadFile = (params: any) => {
     params,
     responseType: 'blob',
   })
+}
+
+// 获取已经分享的公司
+export const getHasShareDetailData = (projectId: string) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/Porject/GetShares`, {
+      method: 'GET',
+      params: {projectId}
+    }),
+  );
 }
 

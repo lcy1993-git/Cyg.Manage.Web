@@ -1,6 +1,6 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
-import { uploadLineStressSag } from '@/services/resource-config/drawing';
+import { newUploadLineStressSag } from '@/services/resource-config/drawing';
 import { useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
 import React, { useState } from 'react';
@@ -29,7 +29,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
       const { file } = values;
       try {
         setRequestLoading(true);
-        const resData = await uploadLineStressSag(
+        const resData = await newUploadLineStressSag(
           file,
           { libId },
           requestSource,
