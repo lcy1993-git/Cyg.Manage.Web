@@ -3,6 +3,7 @@ import { MinusOutlined, PlusOutlined } from "@ant-design/icons"
 import { useControllableValue } from "ahooks"
 import { Input, message, Modal } from "antd"
 import React, { Dispatch, useState } from "react"
+import { useEffect } from "react"
 import { SetStateAction } from "react"
 import ShowCompanyInfoChunk from "../show-company-info-chunk"
 
@@ -62,8 +63,16 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
         setCompanyInfoArray(copyData)
     }
 
+    useEffect(() => {
+        if(state) {
+            setCompanyInfoArray([
+                { user: "", companyInfo: null }
+            ])
+        }
+    }, [state])
+
     return (
-        <Modal title="共享" width={680} visible={state as boolean} onCancel={() => setState(false)} onOk={() => saveShareInfo()} cancelText="取消" okText="确认">
+        <Modal title="共享" width={680} visible={state as boolean} destroyOnClose onCancel={() => setState(false)} onOk={() => saveShareInfo()} cancelText="取消" okText="确认">
             <table className={styles.shareTable}>
                 <thead>
                     <tr>

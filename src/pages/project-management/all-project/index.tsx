@@ -130,12 +130,13 @@ const ProjectManagement: React.FC = () => {
     };
 
     const revokeAllotEvent = async () => {
-        if (tableSelectData.length === 0) {
+
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        if (projectIds.length === 0) {
             message.error('请至少选择一个项目');
             return;
         }
-
-        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
         await revokeAllot(projectIds);
         message.success('撤回安排成功');
@@ -143,12 +144,11 @@ const ProjectManagement: React.FC = () => {
     };
 
     const arrangeEvent = async () => {
-        if (tableSelectData.length === 0) {
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
+        if (projectIds.length === 0) {
             message.error('请至少选择一个项目');
             return;
         }
-
-        const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
 
         await checkCanArrange(projectIds);
 
@@ -204,17 +204,16 @@ const ProjectManagement: React.FC = () => {
     );
 
     const recallShareEvent = async () => {
-        if (tableSelectData.length === 0) {
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+        if (projectIds.length === 0) {
             message.error('请至少选择一个项目');
             return;
         }
-
-        if (tableSelectData.length > 1) {
+      
+        if (projectIds.length > 1) {
             message.error('只能对一个项目进行撤回共享操作');
             return;
         }
-
-        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
         setCurrentRecallProjectId(projectIds[0]);
         setRecallModalVisible(true);
@@ -225,12 +224,13 @@ const ProjectManagement: React.FC = () => {
     };
 
     const shareEvent = async () => {
-        if (tableSelectData.length === 0) {
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+        if (projectIds.length === 0) {
             message.error('请至少选择一个项目');
             return;
         }
 
-        setSelectProjectIds(tableSelectData.map((item) => item.checkedArray).flat());
+        setSelectProjectIds(projectIds);
         setShareModalVisible(true);
     };
 
@@ -255,35 +255,35 @@ const ProjectManagement: React.FC = () => {
     );
 
     const applyKnotEvent = async () => {
-        if (tableSelectData.length === 0) {
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+        if (projectIds.length === 0) {
             message.error('请至少选择一个项目');
             return;
         }
 
-        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
         await applyKnot(projectIds);
         message.success('申请结项成功');
         refresh();
     };
 
     const revokeKnotEvent = async () => {
-        if (tableSelectData.length === 0) {
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+        if (projectIds.length === 0) {
             message.error('请至少选择一个项目');
             return;
         }
-        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-
+        
         await revokeKnot(projectIds);
         message.success('撤回结项成功');
         refresh();
     };
 
     const auditKnotEvent = async () => {
-        if (tableSelectData.length === 0) {
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+        if (projectIds.length === 0) {
             message.error('请至少选择一个项目');
             return;
         }
-        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
         await auditKnot(projectIds);
         message.success('结项通过成功');
@@ -291,12 +291,13 @@ const ProjectManagement: React.FC = () => {
     };
 
     const noAuditKnotEvent = async () => {
-        if (tableSelectData.length === 0) {
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+        if (projectIds.length === 0) {
             message.error('请至少选择一个项目');
             return;
         }
-        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-
+        
         await noAuditKnot(projectIds);
         message.success('结项退回成功');
         refresh();
@@ -435,12 +436,11 @@ const ProjectManagement: React.FC = () => {
     };
 
     const sureDeleteProject = async () => {
-        if (tableSelectData.length === 0) {
+        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+        if (projectIds.length === 0) {
             message.error('请至少勾选一条数据');
             return;
         }
-        const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-
         await deleteProject(projectIds);
         message.success('删除成功');
         refresh();
