@@ -101,7 +101,9 @@ const CompanyManage: React.FC = () => {
       await addCompanyManageItem(submitInfo);
       tableFresh();
       setAddFormVisible(false);
+      message.success('添加成功');
       addForm.resetFields();
+      tableFresh();
     });
   };
 
