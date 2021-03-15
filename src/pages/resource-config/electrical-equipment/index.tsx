@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined, ImportOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
@@ -18,6 +18,7 @@ import UrlSelect from '@/components/url-select';
 import ElectricalEquipmentForm from './components/add-edit-form';
 import ElectricProperty from './components/property-table';
 import ElectricDetail from './components/detail-table';
+import SaveImportElectrical from './components/import-form';
 
 const { Search } = Input;
 
@@ -30,6 +31,7 @@ const ElectricalEquipment: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
+  const [importElectricalVisible, setImportElectricalVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
 
   const [addForm] = Form.useForm();
@@ -280,12 +282,10 @@ const ElectricalEquipment: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        <TableImportButton
-          buttonTitle="导入电气设备"
-          modalTitle="导入电气设备"
-          className={styles.importBtn}
-          importUrl="/ElectricalEquipment/Import"
-        />
+        <Button className="mr7" onClick={() => importElectricalEvent()}>
+          <ImportOutlined />
+          导入电气设备
+        </Button>
         <Button className={styles.importBtn} onClick={() => openDetail()}>
           组件明细
         </Button>
@@ -294,6 +294,14 @@ const ElectricalEquipment: React.FC = () => {
         </Button>
       </div>
     );
+  };
+
+  const importElectricalEvent = () => {
+    if (!resourceLibId) {
+      message.warning('请选择资源库');
+      return;
+    }
+    setImportElectricalVisible(true);
   };
 
   const sureDeleteData = async () => {
@@ -334,6 +342,10 @@ const ElectricalEquipment: React.FC = () => {
       return;
     }
     setAttributeVisible(true);
+  };
+
+  const uploadFinishEvent = () => {
+    refresh();
   };
 
   return (
@@ -426,6 +438,13 @@ const ElectricalEquipment: React.FC = () => {
           />
         </Spin>
       </Modal>
+      <SaveImportElectrical
+        libId={resourceLibId}
+        requestSource="resource"
+        visible={importElectricalVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportElectricalVisible}
+      />
     </PageCommonWrap>
   );
 };
