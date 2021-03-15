@@ -13,33 +13,6 @@ interface UrlSelectDataParams {
   ready?: boolean;
 }
 
-export const useUrlSelectData = (url: string, params: UrlSelectDataParams = {}) => {
-  const {
-    method = 'get',
-    extraParams = {},
-    titleKey = 'text',
-    valueKey = 'value',
-    requestSource = 'project',
-    ready,
-  } = params;
-
-  const { data: resData = [] } = useRequest(() => getDataByUrl(url, extraParams, requestSource), {
-    ready,
-    refreshDeps: [url, JSON.stringify(extraParams)],
-  });
-
-  const afterHanldeData = useMemo(() => {
-    if (resData) {
-      return resData.map((item: any) => {
-        return { label: item[titleKey], value: item[valueKey] };
-      });
-    }
-    return [];
-  }, [JSON.stringify(resData)]);
-
-  return { data: afterHanldeData };
-};
-
 interface GetSelectDataParams {
   url: string;
   method?: 'post' | 'get';
