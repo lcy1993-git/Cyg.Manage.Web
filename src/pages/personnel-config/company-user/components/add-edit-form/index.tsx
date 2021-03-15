@@ -72,7 +72,7 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
       )}
 
       <CyFormItem label="手机号" name="phone">
-        <Input placeholder="请填写邮箱" />
+        <Input placeholder="请填写手机号" />
       </CyFormItem>
 
       <CyFormItem label="邮箱" name="email" rules={rules.email}>
