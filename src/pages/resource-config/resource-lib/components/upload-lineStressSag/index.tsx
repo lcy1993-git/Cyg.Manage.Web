@@ -20,14 +20,13 @@ interface SaveImportLibProps {
 const SaveImportLineStressSag: React.FC<SaveImportLibProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', requestSource, changeFinishEvent } = props;
-  const [requestLoading, setRequestLoading] = useState(false);
+  // const [requestLoading, setRequestLoading] = useState(false);
 
   const [form] = Form.useForm();
 
   const saveLineStreesSagEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;
-      setRequestLoading(true);
       await uploadLineStressSag(
         file,
         { libId },
@@ -36,7 +35,6 @@ const SaveImportLineStressSag: React.FC<SaveImportLibProps> = (props) => {
       );
       message.success('导入成功');
       setState(false);
-      setRequestLoading(false);
       changeFinishEvent?.();
     });
   };
@@ -53,7 +51,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLibProps> = (props) => {
           key="save"
           type="primary"
           onClick={() => saveLineStreesSagEvent()}
-          loading={requestLoading}
+          // loading={requestLoading}
         >
           保存
         </Button>,
