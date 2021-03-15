@@ -24,7 +24,7 @@ const SaveImportElectrical: React.FC<SaveImportElectricalProps> = (props) => {
   const saveImportElectricalEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;
-      await uploadLineStressSag(file, { libId }, requestSource, '/Component/SaveImport');
+      await uploadLineStressSag(file, { libId }, requestSource, '/ElectricalEquipment/SaveImport');
       message.success('导入成功');
       setState(false);
       changeFinishEvent?.();
