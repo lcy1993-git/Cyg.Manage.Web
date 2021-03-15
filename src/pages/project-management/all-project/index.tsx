@@ -188,9 +188,18 @@ const ProjectManagement: React.FC = () => {
 
     const arrangeMenu = (
         <Menu>
-            <Menu.Item onClick={() => arrangeEvent()}>安排</Menu.Item>
-            <Menu.Item onClick={() => editArrangeEvent()}>修改安排</Menu.Item>
-            <Menu.Item onClick={() => revokeAllotEvent()}>撤回安排</Menu.Item>
+            {
+                buttonJurisdictionArray?.includes("all-project-arrange-project") &&
+                <Menu.Item onClick={() => arrangeEvent()}>安排</Menu.Item>
+            }
+            {
+                buttonJurisdictionArray?.includes("all-projec-edit-arrange") &&
+                <Menu.Item onClick={() => editArrangeEvent()}>修改安排</Menu.Item>
+            }
+            {
+                buttonJurisdictionArray?.includes("all-projec-recall-project") &&
+                <Menu.Item onClick={() => revokeAllotEvent()}>撤回安排</Menu.Item>
+            }
         </Menu>
     );
 
@@ -227,8 +236,14 @@ const ProjectManagement: React.FC = () => {
 
     const shareMenu = (
         <Menu>
-            <Menu.Item onClick={() => shareEvent()}>共享</Menu.Item>
-            <Menu.Item onClick={() => recallShareEvent()}>撤回共享</Menu.Item>
+            {
+                buttonJurisdictionArray?.includes("all-project-share") &&
+                <Menu.Item onClick={() => shareEvent()}>共享</Menu.Item>
+            }
+            {
+                buttonJurisdictionArray?.includes("all-project-share-recall") &&
+                <Menu.Item onClick={() => recallShareEvent()}>撤回共享</Menu.Item>
+            }
         </Menu>
     );
 
@@ -289,10 +304,23 @@ const ProjectManagement: React.FC = () => {
 
     const postProjectMenu = (
         <Menu>
-            <Menu.Item onClick={() => applyKnotEvent()}>申请结项</Menu.Item>
-            <Menu.Item onClick={() => revokeKnotEvent()}>撤回结项</Menu.Item>
-            <Menu.Item onClick={() => auditKnotEvent()}>结项通过</Menu.Item>
-            <Menu.Item onClick={() => noAuditKnotEvent()}>结项退回</Menu.Item>
+            {
+                buttonJurisdictionArray?.includes("all-project-apply-knot") &&
+                <Menu.Item onClick={() => applyKnotEvent()}>申请结项</Menu.Item>
+            }
+            {
+                buttonJurisdictionArray?.includes("all-project-recall-apply-knot") &&
+                <Menu.Item onClick={() => revokeKnotEvent()}>撤回结项</Menu.Item>
+            }
+            {
+                buttonJurisdictionArray?.includes("all-project-kont-pass") &&
+                <Menu.Item onClick={() => auditKnotEvent()}>结项通过</Menu.Item>
+            }
+            {
+                buttonJurisdictionArray?.includes("all-project-kont-no-pass") &&
+                <Menu.Item onClick={() => noAuditKnotEvent()}>结项退回</Menu.Item>
+            }
+
         </Menu>
     );
 
@@ -600,7 +628,7 @@ const ProjectManagement: React.FC = () => {
                             </div>
                             <div className="flex">
                                 {
-                                    buttonJurisdictionArray?.includes("project-approval") &&
+                                    buttonJurisdictionArray?.includes("all-project-project-approval") &&
                                     <Button
                                         className="mr7"
                                         type="primary"
@@ -610,53 +638,83 @@ const ProjectManagement: React.FC = () => {
                                         立项
                                     </Button>
                                 }
+                                {
+                                    buttonJurisdictionArray?.includes("all-project-delete-project") &&
+                                    <Popconfirm
+                                        title="确认对勾选的项目进行删除吗?"
+                                        okText="确认"
+                                        cancelText="取消"
+                                        onConfirm={sureDeleteProject}
+                                    >
+                                        <Button className="mr7">
+                                            <DeleteOutlined />
+                                            删除
+                                        </Button>
+                                    </Popconfirm>
+                                }
+                                {
+                                    (
+                                        buttonJurisdictionArray?.includes("all-project-arrange-project") ||
+                                        buttonJurisdictionArray?.includes("all-projec-edit-arrange") ||
+                                        buttonJurisdictionArray?.includes("all-projec-recall-project")
+                                    ) &&
+                                    <Dropdown overlay={arrangeMenu}>
+                                        <Button className="mr7">
+                                            安排管理 <DownOutlined />
+                                        </Button>
+                                    </Dropdown>
+                                }
+                                {
+                                    (
+                                        buttonJurisdictionArray?.includes("all-project-share") ||
+                                        buttonJurisdictionArray?.includes("all-project-share-recall")
+                                    ) &&
+                                    <Dropdown overlay={shareMenu}>
+                                        <Button className="mr7">
+                                            安排共享 <DownOutlined />
+                                        </Button>
+                                    </Dropdown>
+                                }
+                                {
+                                    buttonJurisdictionArray?.includes("all-project-export") &&
+                                    <div className="mr7">
+                                        <TableExportButton
+                                            exportUrl="/Porject/Export"
+                                            selectIds={tableSelectData.map((item) => item.checkedArray).flat()}
+                                            extraParams={{
+                                                keyWord,
+                                                category: category ?? '-1',
+                                                pCategory: pCategory ?? '-1',
+                                                stage: stage ?? '-1',
+                                                constructType: constructType ?? '-1',
+                                                nature: nature ?? '-1',
+                                                kvLevel: kvLevel ?? '-1',
+                                                status: status ?? '-1',
+                                                statisticalCategory: statisticalCategory ?? '-1',
+                                            }}
+                                        />
+                                    </div>
+                                }
+                                {
+                                    (
+                                        buttonJurisdictionArray?.includes("all-project-apply-knot") ||
+                                        buttonJurisdictionArray?.includes("all-project-recall-apply-knot") ||
+                                        buttonJurisdictionArray?.includes("all-project-kont-pass") ||
+                                        buttonJurisdictionArray?.includes("all-project-kont-no-pass")
+                                    ) &&
+                                    <Dropdown overlay={postProjectMenu}>
+                                        <Button className="mr7">
+                                            结项 <DownOutlined />
+                                        </Button>
+                                    </Dropdown>
+                                }
+                                {
+                                    buttonJurisdictionArray?.includes("all-project-resource") &&
+                                    <Button onClick={() => setLibVisible(true)}>
+                                        资源库迭代
+                                    </Button>
+                                }
 
-                                <Popconfirm
-                                    title="确认对勾选的项目进行删除吗?"
-                                    okText="确认"
-                                    cancelText="取消"
-                                    onConfirm={sureDeleteProject}
-                                >
-                                    <Button className="mr7">
-                                        <DeleteOutlined />
-                                    删除
-                                </Button>
-                                </Popconfirm>
-                                <Dropdown overlay={arrangeMenu}>
-                                    <Button className="mr7">
-                                        安排管理 <DownOutlined />
-                                    </Button>
-                                </Dropdown>
-                                <Dropdown overlay={shareMenu}>
-                                    <Button className="mr7">
-                                        安排共享 <DownOutlined />
-                                    </Button>
-                                </Dropdown>
-                                <div className="mr7">
-                                    <TableExportButton
-                                        exportUrl="/Porject/Export"
-                                        selectIds={tableSelectData.map((item) => item.checkedArray).flat()}
-                                        extraParams={{
-                                            keyWord,
-                                            category: category ?? '-1',
-                                            pCategory: pCategory ?? '-1',
-                                            stage: stage ?? '-1',
-                                            constructType: constructType ?? '-1',
-                                            nature: nature ?? '-1',
-                                            kvLevel: kvLevel ?? '-1',
-                                            status: status ?? '-1',
-                                            statisticalCategory: statisticalCategory ?? '-1',
-                                        }}
-                                    />
-                                </div>
-                                <Dropdown overlay={postProjectMenu}>
-                                    <Button className="mr7">
-                                        结项 <DownOutlined />
-                                    </Button>
-                                </Dropdown>
-                                <Button onClick={() => setLibVisible(true)}>
-                                    资源库迭代
-                                </Button>
                             </div>
                         </div>
                     </div>

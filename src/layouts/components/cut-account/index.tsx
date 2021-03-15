@@ -1,5 +1,6 @@
 import CyFormItem from "@/components/cy-form-item";
 import { userLoginRequest } from "@/services/login";
+import { flatten } from "@/utils/utils";
 import { useControllableValue } from "ahooks";
 import { Form, Input, message, Modal } from "antd";
 import React, { Dispatch } from "react";
@@ -19,13 +20,17 @@ const CutAccount = (props: EditPasswordProps) => {
         form.validateFields().then(async (value) => {
             const { userName, pwd } = value;
             // TODO 快捷切换
-            const resData = await userLoginRequest({userName, pwd});
+            const resData = await userLoginRequest({ userName, pwd });
 
             const { accessToken, modules, user } = resData;
+
+            const buttonModules = flatten(modules);
+            const buttonArray = buttonModules.filter((item: any) => item.category === 3).map((item: any) => item.authCode);
 
             localStorage.setItem('Authorization', accessToken);
             localStorage.setItem('functionModules', JSON.stringify(modules));
             localStorage.setItem('userInfo', JSON.stringify(user));
+            localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
 
             setState(false)
             message.success("账户切换成功")

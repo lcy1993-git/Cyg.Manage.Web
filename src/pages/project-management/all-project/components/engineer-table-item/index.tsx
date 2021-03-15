@@ -9,6 +9,7 @@ import { Button, Checkbox } from "antd";
 import { useMemo } from "react";
 import { CheckboxValueType } from "antd/lib/checkbox/Group";
 import EmptyTip from "@/components/empty-tip";
+import { useGetButtonJurisdictionArray } from "@/utils/hooks";
 
 interface TableCheckedItemProjectInfo {
     id: string
@@ -45,6 +46,8 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     const [checkAll, setCheckAll] = React.useState(false);
 
     const { projectInfo = {}, columns = [], onChange, getClickProjectId, addProject, editEngineer } = props;
+
+    const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
     const theadElement = columns.map((item) => {
         return (
@@ -174,13 +177,13 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                 </div>
                 <div className={styles.projectButtons}>
                     {
-                        projectInfo?.operationAuthority?.canAddProject &&
+                        projectInfo?.operationAuthority?.canAddProject && buttonJurisdictionArray?.includes("all-project-add-project") &&
                         <Button className="mr10" ghost type="primary" onClick={() => addProjectEvent()}>
                             新增项目
                         </Button>
                     }
                     {
-                        projectInfo?.operationAuthority?.canEdit &&
+                        projectInfo?.operationAuthority?.canEdit && buttonJurisdictionArray?.includes("all-project-edit-engineer") &&
                         <Button onClick={() => editEngineerEvent()}>
                             编辑
                         </Button>

@@ -25,6 +25,7 @@ import BatchAddCompanyUser from './components/batch-add-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import CyTag from '@/components/cy-tag';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -60,25 +61,39 @@ const CompanyUser: React.FC = () => {
     manual: true,
   });
 
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" className="mr7" onClick={() => batchAddEvent()}>
-          <PlusOutlined />
+        {
+          buttonJurisdictionArray?.includes("company-user-batch-add") &&
+          <Button type="primary" className="mr7" onClick={() => batchAddEvent()}>
+            <PlusOutlined />
           批量添加
         </Button>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
+        }
+        {
+          buttonJurisdictionArray?.includes("company-user-add") &&
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
           添加
         </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
+        }
+        {
+          buttonJurisdictionArray?.includes("company-user-edit") &&
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
           编辑
         </Button>
-        <Button onClick={() => resetEvent()}>
-          <ReloadOutlined />
-          重置密码
-        </Button>
+        }
+        {
+          buttonJurisdictionArray?.includes("company-user-reset-password") &&
+          <Button onClick={() => resetEvent()}>
+            <ReloadOutlined />
+            重置密码
+          </Button>
+        }
       </div>
     );
   };
@@ -256,17 +271,32 @@ const CompanyUser: React.FC = () => {
       index: 'userStatus',
       width: 120,
       render: (text: any, record: any) => {
-        return record.userStatus === 1 ? (
+        return (
           <>
-            <Switch defaultChecked onChange={() => updateStatus(record.id)} />
-            <span className="formSwitchOpenTip">启用</span>
+            {
+              buttonJurisdictionArray?.includes("company-user-start-using") &&
+              (
+                record.userStatus === 1 ? (
+                  <>
+                    <Switch defaultChecked onChange={() => updateStatus(record.id)} />
+                    <span className="formSwitchOpenTip">启用</span>
+                  </>
+                ) : (
+                  <>
+                    <Switch onChange={() => updateStatus(record.id)} />
+                    <span className="formSwitchCloseTip">禁用</span>
+                  </>
+                )
+              )
+            }
+            {
+              !buttonJurisdictionArray?.includes("company-user-start-using") &&
+              (
+                record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>
+              )
+            }
           </>
-        ) : (
-          <>
-            <Switch onChange={() => updateStatus(record.id)} />
-            <span className="formSwitchCloseTip">禁用</span>
-          </>
-        );
+        )
       },
     },
     {
