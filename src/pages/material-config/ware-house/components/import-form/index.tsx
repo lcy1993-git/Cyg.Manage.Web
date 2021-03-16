@@ -58,7 +58,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
     <Modal
       destroyOnClose
       width="780px"
-      title="导入应力弧垂表"
+      title="导入利库"
       visible={state as boolean}
       footer={[
         <Button key="cancle" onClick={() => setState(false)}>
