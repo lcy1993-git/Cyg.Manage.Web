@@ -4,6 +4,14 @@
     redirect: "/login",
   },
   {
+    path: '/home/login',
+    redirect: "/login",
+  },
+  {
+    path: '/Home/Login',
+    redirect: "/login",
+  },
+  {
     path: '/login',
     component: "./login"
   },

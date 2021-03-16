@@ -30,7 +30,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
       //   console.log(companyInfo);
-      
+      console.log(selectType)
       if (selectType === '2') {
         const arrangeInfo = Object.assign(
           {

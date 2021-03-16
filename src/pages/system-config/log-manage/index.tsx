@@ -192,8 +192,8 @@ const LogManage: React.FC = () => {
     },
     {
       title: '内容',
-      dataIndex: 'resContent',
-      index: 'resContent',
+      dataIndex: 'message',
+      index: 'message',
     },
     {
       title: '执行日期',
@@ -201,7 +201,7 @@ const LogManage: React.FC = () => {
       index: 'executeDate',
       width: 180,
       render: (text: any, record: any) => {
-        return moment(record.executeDate).format('YYYY-MM-DD');
+        return moment(record.executeDate).format('YYYY-MM-DD HH:MM:SS');
       },
     },
     {
