@@ -67,7 +67,7 @@ const ProjectManagement: React.FC = () => {
 
     const [selectProjectIds, setSelectProjectIds] = useState<string[]>([]);
 
-    const [currentArrangeProjectType, setCurrentArrangeProjectType] = useState<string>("");
+    const [currentArrangeProjectType, setCurrentArrangeProjectType] = useState<string>("2");
     const [currentArrangeProjectIsArrange, setCurrentArrangeProjectIsArrange] = useState<string>("");
 
     const [editCurrentAllotCompanyId, setEditCurrentAllotCompanyId] = useState<string>("");
@@ -162,8 +162,19 @@ const ProjectManagement: React.FC = () => {
                 const latestAllot = allots[allots?.length - 1];
                 const allotType = latestAllot.allotType;
                 const allotCompanyGroup = latestAllot.allotCompanyGroup;
-                setCurrentArrangeProjectType(String(allotType))
-                setCurrentArrangeProjectIsArrange(allotCompanyGroup)
+                if(allotType) {
+                    setCurrentArrangeProjectType(String(allotType))
+                }else {
+                    setCurrentArrangeProjectType("2")
+                }
+                if(allotCompanyGroup) {
+                    setCurrentArrangeProjectIsArrange(allotCompanyGroup)
+                }else {
+                    setCurrentArrangeProjectIsArrange("")
+                }
+            }else {
+                setCurrentArrangeProjectType("2");
+                setCurrentArrangeProjectIsArrange("");
             }
         }
 
@@ -193,11 +204,11 @@ const ProjectManagement: React.FC = () => {
                 <Menu.Item onClick={() => arrangeEvent()}>安排</Menu.Item>
             }
             {
-                buttonJurisdictionArray?.includes("all-projec-edit-arrange") &&
+                buttonJurisdictionArray?.includes("all-project-edit-arrange") &&
                 <Menu.Item onClick={() => editArrangeEvent()}>修改安排</Menu.Item>
             }
             {
-                buttonJurisdictionArray?.includes("all-projec-recall-project") &&
+                buttonJurisdictionArray?.includes("all-project-recall-project") &&
                 <Menu.Item onClick={() => revokeAllotEvent()}>撤回安排</Menu.Item>
             }
         </Menu>

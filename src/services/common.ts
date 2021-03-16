@@ -30,6 +30,7 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
     } else {
       if (code === 401) {
         history.push('/login');
+        message.error("会话超时，已自动跳转到登录界面")
       } else {
         if (res.content && isArray(res.content) && res.content.length > 0) {
           const errorMsgArray = res.content.map((item) => item.errorMessages).flat();

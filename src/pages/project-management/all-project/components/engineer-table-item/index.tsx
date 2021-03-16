@@ -191,7 +191,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                 </div>
             </div>
             {
-                !isFold && projectInfo.projects.length > 0 &&
+                !isFold && projectInfo.projects && projectInfo.projects.length > 0 &&
                 <Checkbox.Group value={checkedList} onChange={checkboxChange}>
                     <div className={styles.engineerTable}>
                         <div className={styles.engineerTableContent}>
@@ -211,7 +211,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
                 </Checkbox.Group>
             }
             {
-                !isFold && projectInfo.projects.length === 0 &&
+                !isFold && (!projectInfo.projects || (projectInfo.projects && projectInfo.projects.length === 0)) &&
                 <div className={styles.noEngineerData}>
                     <EmptyTip className="pt20 pb20" description="该工程下没有项目" />
                 </div>
