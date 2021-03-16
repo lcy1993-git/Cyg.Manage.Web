@@ -162,17 +162,17 @@ const ProjectManagement: React.FC = () => {
                 const latestAllot = allots[allots?.length - 1];
                 const allotType = latestAllot.allotType;
                 const allotCompanyGroup = latestAllot.allotCompanyGroup;
-                if(allotType) {
+                if (allotType) {
                     setCurrentArrangeProjectType(String(allotType))
-                }else {
+                } else {
                     setCurrentArrangeProjectType("2")
                 }
-                if(allotCompanyGroup) {
+                if (allotCompanyGroup) {
                     setCurrentArrangeProjectIsArrange(allotCompanyGroup)
-                }else {
+                } else {
                     setCurrentArrangeProjectIsArrange("")
                 }
-            }else {
+            } else {
                 setCurrentArrangeProjectType("2");
                 setCurrentArrangeProjectIsArrange("");
             }
@@ -220,7 +220,7 @@ const ProjectManagement: React.FC = () => {
             message.error('请至少选择一个项目');
             return;
         }
-      
+
         if (projectIds.length > 1) {
             message.error('只能对一个项目进行撤回共享操作');
             return;
@@ -283,7 +283,7 @@ const ProjectManagement: React.FC = () => {
             message.error('请至少选择一个项目');
             return;
         }
-        
+
         await revokeKnot(projectIds);
         message.success('撤回结项成功');
         refresh();
@@ -308,7 +308,7 @@ const ProjectManagement: React.FC = () => {
             message.error('请至少选择一个项目');
             return;
         }
-        
+
         await noAuditKnot(projectIds);
         message.success('结项退回成功');
         refresh();
@@ -749,48 +749,67 @@ const ProjectManagement: React.FC = () => {
                 </div>
 
             </div>
-            <Modal
-                visible={addEngineerModalFlag}
-                footer={[
-                    <Button key="cancle" onClick={() => modalCloseEvent()}>
-                        取消
+            {
+                addEngineerModalFlag &&
+                <Modal
+                    visible={addEngineerModalFlag}
+                    footer={[
+                        <Button key="cancle" onClick={() => modalCloseEvent()}>
+                            取消
                             </Button>,
-                    <Button
-                        key="save"
-                        type="primary"
-                        loading={saveLoading}
-                        onClick={() => sureAddEngineerEvent()}
-                    >
-                        保存
+                        <Button
+                            key="save"
+                            type="primary"
+                            loading={saveLoading}
+                            onClick={() => sureAddEngineerEvent()}
+                        >
+                            保存
                             </Button>,
-                ]}
-                width={820}
-                onCancel={() => modalCloseEvent()}
-                title="项目立项"
-                destroyOnClose
-            >
-                <Form form={form} preserve={false}>
-                    <CreateEngineer form={form} />
-                </Form>
-            </Modal>
-            <ArrangeModal
-                finishEvent={arrangeFinishEvent}
-                visible={arrangeModalVisible}
-                onChange={setArrangeModalVisible}
-                defaultSelectType={currentArrangeProjectType}
-                allotCompanyId={currentArrangeProjectIsArrange}
-                projectIds={selectProjectIds}
-            />
-            <EditArrangeModal
-                allotCompanyId={editCurrentAllotCompanyId}
-                changeFinishEvent={changeArrangeFinishEvent}
-                visible={editArrangeModalVisible}
-                onChange={setEditArrangeModalVisible}
-                projectIds={selectProjectIds}
-            />
-            <ProjectRecallModal changeFinishEvent={refreshEvent} visible={recallModalVisible} projectId={currentRecallProjectId} onChange={setRecallModalVisible} />
-            <ShareModal finishEvent={refreshEvent} visible={shareModalVisible} onChange={setShareModalVisible} projectIds={selectProjectIds} />
-            <ResourceLibraryManageModal visible={libVisible} onChange={setLibVisible} changeFinishEvent={refreshEvent} />
+                    ]}
+                    width={820}
+                    onCancel={() => modalCloseEvent()}
+                    title="项目立项"
+                    destroyOnClose
+                >
+                    <Form form={form} preserve={false}>
+                        <CreateEngineer form={form} />
+                    </Form>
+                </Modal>
+            }
+            {
+                arrangeModalVisible &&
+                <ArrangeModal
+                    finishEvent={arrangeFinishEvent}
+                    visible={arrangeModalVisible}
+                    onChange={setArrangeModalVisible}
+                    defaultSelectType={currentArrangeProjectType}
+                    allotCompanyId={currentArrangeProjectIsArrange}
+                    projectIds={selectProjectIds}
+                />
+            }
+            {
+                editArrangeModalVisible &&
+                <EditArrangeModal
+                    allotCompanyId={editCurrentAllotCompanyId}
+                    changeFinishEvent={changeArrangeFinishEvent}
+                    visible={editArrangeModalVisible}
+                    onChange={setEditArrangeModalVisible}
+                    projectIds={selectProjectIds}
+                />
+            }
+            {
+                editArrangeModalVisible &&
+                <ProjectRecallModal changeFinishEvent={refreshEvent} visible={recallModalVisible} projectId={currentRecallProjectId} onChange={setRecallModalVisible} />
+            }
+            {
+                shareModalVisible &&
+                <ShareModal finishEvent={refreshEvent} visible={shareModalVisible} onChange={setShareModalVisible} projectIds={selectProjectIds} />
+            }
+            {
+                libVisible &&
+                <ResourceLibraryManageModal visible={libVisible} onChange={setLibVisible} changeFinishEvent={refreshEvent} />
+            }
+
         </PageCommonWrap>
     );
 };

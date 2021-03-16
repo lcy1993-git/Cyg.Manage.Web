@@ -335,7 +335,7 @@ interface ProjectInfoParams {
   kvLevel: string;
   kvLevelText: string;
   totalInvest: string;
-  natures: string;
+  natures: string[];
   startTime: string;
   endTime: string;
   assetsNature: string;
