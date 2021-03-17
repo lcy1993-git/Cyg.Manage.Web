@@ -66,34 +66,30 @@ const CompanyUser: React.FC = () => {
   const rightButton = () => {
     return (
       <div>
-        {
-          buttonJurisdictionArray?.includes("company-user-batch-add") &&
+        {buttonJurisdictionArray?.includes('company-user-batch-add') && (
           <Button type="primary" className="mr7" onClick={() => batchAddEvent()}>
             <PlusOutlined />
-          批量添加
-        </Button>
-        }
-        {
-          buttonJurisdictionArray?.includes("company-user-add") &&
+            批量添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('company-user-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
-          添加
-        </Button>
-        }
-        {
-          buttonJurisdictionArray?.includes("company-user-edit") &&
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('company-user-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
-          编辑
-        </Button>
-        }
-        {
-          buttonJurisdictionArray?.includes("company-user-reset-password") &&
+            编辑
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('company-user-reset-password') && (
           <Button onClick={() => resetEvent()}>
             <ReloadOutlined />
             重置密码
           </Button>
-        }
+        )}
       </div>
     );
   };
@@ -223,37 +219,36 @@ const CompanyUser: React.FC = () => {
       title: '用户名',
       dataIndex: 'userName',
       index: 'userName',
-      width: 150,
+      width: 120,
     },
     {
       title: '昵称',
       dataIndex: 'nickName',
       index: 'nickName',
-      width: 160,
+      width: 140,
     },
     {
       title: '真实姓名',
       dataIndex: 'name',
       index: 'name',
-      width: 150,
+      width: 140,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       index: 'phone',
-      width: 200,
+      width: 160,
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       index: 'email',
-      width: 200,
+      width: 150,
     },
     {
       title: '部组',
       dataIndex: 'comapnyGroups',
       index: 'comapnyGroups',
-      width: 210,
       render: (text: any, record: any) => {
         const { comapnyGroups } = record;
         return (comapnyGroups ?? []).map((item: any) => {
@@ -269,41 +264,33 @@ const CompanyUser: React.FC = () => {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      width: 120,
+      width: 150,
       render: (text: any, record: any) => {
         return (
           <>
-            {
-              buttonJurisdictionArray?.includes("company-user-start-using") &&
-              (
-                record.userStatus === 1 ? (
-                  <>
-                    <Switch defaultChecked onChange={() => updateStatus(record.id)} />
-                    <span className="formSwitchOpenTip">启用</span>
-                  </>
-                ) : (
-                  <>
-                    <Switch onChange={() => updateStatus(record.id)} />
-                    <span className="formSwitchCloseTip">禁用</span>
-                  </>
-                )
-              )
-            }
-            {
-              !buttonJurisdictionArray?.includes("company-user-start-using") &&
-              (
-                record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>
-              )
-            }
+            {buttonJurisdictionArray?.includes('company-user-start-using') &&
+              (record.userStatus === 1 ? (
+                <>
+                  <Switch defaultChecked onChange={() => updateStatus(record.id)} />
+                  <span className="formSwitchOpenTip">启用</span>
+                </>
+              ) : (
+                <>
+                  <Switch onChange={() => updateStatus(record.id)} />
+                  <span className="formSwitchCloseTip">禁用</span>
+                </>
+              ))}
+            {!buttonJurisdictionArray?.includes('company-user-start-using') &&
+              (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
           </>
-        )
+        );
       },
     },
     {
       title: '授权端口',
       dataIndex: 'authorizeClient',
       index: 'authorizeClient',
-      width: 240,
+      // width: 240,
       render: (text: any, record: any) => {
         const { authorizeClientTexts } = record;
         const element = (authorizeClientTexts ?? []).map((item: string) => {
@@ -320,13 +307,13 @@ const CompanyUser: React.FC = () => {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
       index: 'lastLoginIp',
-      width: 140,
+      width: 150,
     },
     {
       title: '最后登录日期',
       dataIndex: 'lastLoginDate',
       index: 'lastLoginDate',
-      width: 120,
+      width: 150,
       render: (text: any, record: any) => {
         return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
       },
@@ -375,14 +362,14 @@ const CompanyUser: React.FC = () => {
   };
 
   const addModalCloseEvent = () => {
-    setAddFormVisible(false)
+    setAddFormVisible(false);
     addForm.resetFields();
-  }
+  };
 
   const batchAddCloseEvent = () => {
-    setBatchAddFormVisible(false)
+    setBatchAddFormVisible(false);
     batchAddForm.resetFields();
-  }
+  };
 
   return (
     <PageCommonWrap>

@@ -61,7 +61,8 @@
     "react-loadable": "^5.5.0",
     "umi": "^3.3.3",
     "umi-request": "^1.0.8",
-    "use-merge-value": "^1.0.1"
+    "use-merge-value": "^1.0.1",
+    "wangeditor": "^4.6.9"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",

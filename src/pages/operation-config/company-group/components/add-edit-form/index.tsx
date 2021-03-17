@@ -35,7 +35,7 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
 
   return (
     <>
-      <CyFormItem label="所属部组" name="parentId">
+      <CyFormItem label="上级部组" name="parentId">
         <TreeSelect
           style={{ width: '100%' }}
           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}

@@ -150,17 +150,22 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
       message.error('请至少选中一条数据');
       return;
     }
-    const batchObjectIds = selectRows.map((item) => item.id);
+    if (selectRows.find((item) => item.isAuthorized === true)) {
+      const batchObjectIds = selectRows.map((item) => item.id);
 
-    const { templateId } = extractParams;
+      const { templateId } = extractParams;
 
-    await batchRemoveAuthorization({
-      templateId,
-      authorizeType: 2,
-      objectIds: batchObjectIds,
-    });
-    refresh();
-    message.success('授权移除成功');
+      await batchRemoveAuthorization({
+        templateId,
+        authorizeType: 2,
+        objectIds: batchObjectIds,
+      });
+      refresh();
+      message.success('授权移除成功');
+    } else {
+      message.error('选中的用户尚未授权');
+      return;
+    }
   };
 
   return (
