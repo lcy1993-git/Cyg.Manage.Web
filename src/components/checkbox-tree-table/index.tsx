@@ -120,7 +120,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
       });
 
       setTableShowData(toTreeData(newData));
-      getSelectIds(toTreeData(newData))
+      getSelectIds(toTreeData(newData));
     } else {
       const newData = flattenCopyData.map((item) => {
         if (childrenData.findIndex((ite: any) => item.id === ite.id) > -1) {
@@ -141,7 +141,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
       });
 
       setTableShowData(toTreeData(newData));
-      getSelectIds(toTreeData(newData))
+      getSelectIds(toTreeData(newData));
     }
   };
 
@@ -178,7 +178,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
           return item;
         });
         setTableShowData(toTreeData(newData));
-        getSelectIds(toTreeData(newData))
+        getSelectIds(toTreeData(newData));
         return;
       } else {
         const hasThisIdParentData: TreeDataItem[] = [];
@@ -206,7 +206,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
         });
 
         setTableShowData(toTreeData(newData));
-        getSelectIds(toTreeData(newData))
+        getSelectIds(toTreeData(newData));
       }
     } else {
       const newData = flattenCopyData.map((item) => {
@@ -227,7 +227,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
         return item;
       });
       setTableShowData(toTreeData(newData));
-      getSelectIds(toTreeData(newData))
+      getSelectIds(toTreeData(newData));
     }
   };
 
@@ -252,13 +252,13 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
         });
       });
     onChange?.(checkedDataArray);
-  }
+  };
 
   useEffect(() => {
     if (treeData) {
       const afterHandleData = handleJurisdictionData(treeData);
       setTableShowData(afterHandleData);
-      getSelectIds(afterHandleData)
+      getSelectIds(afterHandleData);
     }
   }, [JSON.stringify(treeData)]);
 
@@ -282,14 +282,14 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     const copyData: TreeDataItem[] = JSON.parse(JSON.stringify(tableShowData));
     const newData = copyData.map(mapAllDataTrue);
     setTableShowData(newData);
-    getSelectIds(toTreeData(newData))
+    getSelectIds(toTreeData(newData));
   };
 
   const allNoCheckEvent = () => {
     const copyData: TreeDataItem[] = JSON.parse(JSON.stringify(tableShowData));
     const newData = copyData.map(mapDataAllFalse);
     setTableShowData(newData);
-    getSelectIds(toTreeData(newData))
+    getSelectIds(toTreeData(newData));
   };
 
   const tableAllCheckedButton = () => {

@@ -4,6 +4,7 @@ import { getUploadUrl } from "@/services/resource-config/drawing";
 import { useControllableValue, useRequest } from "ahooks";
 import { Button, Modal, Spin, Tree, message } from "antd"
 import React, { Dispatch, SetStateAction, useState } from "react"
+import { useEffect } from "react";
 
 import styles from "./index.less"
 
@@ -91,54 +92,61 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         message.success("生成成功");
     }
 
+    useEffect(() => {
+        if (state) {
+            run();
+        }
+    }, [state])
 
 
     return (
         <Modal title="查看成果" width={750} visible={state as boolean} destroyOnClose footer={null} onCancel={() => closeEvent()}>
-            <div className={`${styles.resultButton} flex`}>
-                <div className="flex1">
-                    <span className={styles.titleIcon}></span>
-                    <span className={styles.helpTitle}>项目名称: </span>
-                    <span>
-                        {projectInfo.projectName}
-                    </span>
-                </div>
-                <div className="flex1">
-                    <span className={styles.titleIcon}></span>
-                    <span className={styles.helpTitle}>当前阶段: </span>
-                    <span>
-                        {projectInfo.projectStatus}
-                    </span>
-                </div>
-                <div className={styles.resultButtonContent}>
-                    <Button className="mr7" onClick={() => refresh()}>
-                        刷新
+            <Spin spinning={requestLoading} tip="正在生成...">
+                <div className={`${styles.resultButton} flex`}>
+                    <div className="flex2">
+                        <span className={styles.titleIcon}></span>
+                        <span className={styles.helpTitle}>项目名称: </span>
+                        <span>
+                            {projectInfo.projectName}
+                        </span>
+                    </div>
+                    <div className="flex1">
+                        <span className={styles.titleIcon}></span>
+                        <span className={styles.helpTitle}>当前阶段: </span>
+                        <span>
+                            {projectInfo.projectStatus}
+                        </span>
+                    </div>
+                    <div className={styles.resultButtonContent}>
+                        <Button className="mr7" onClick={() => refresh()}>
+                            刷新
                     </Button>
-                    <Button type="primary" onClick={() => createFile()}>
-                        生成
+                        <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
+                            生成
                     </Button>
+                    </div>
                 </div>
-            </div>
-            <div className={styles.treeTableContent}>
-                <Spin spinning={loading}>
-                    {
-                        treeData.length > 0 &&
-                        <div className={styles.treeTable}>
-                            <DirectoryTree
-                                checkable
-                                onCheck={onCheck}
-                                checkedKeys={checkedKeys}
-                                defaultExpandAll={true}
-                                treeData={treeData.map(mapTreeData)}
-                            />
-                        </div>
-                    }
-                    {
-                        treeData.length === 0 &&
-                        <EmptyTip description="暂无成果" />
-                    }
-                </Spin>
-            </div>
+                <div className={styles.treeTableContent}>
+                    <Spin spinning={loading}>
+                        {
+                            treeData.length > 0 &&
+                            <div className={styles.treeTable}>
+                                <DirectoryTree
+                                    checkable
+                                    onCheck={onCheck}
+                                    checkedKeys={checkedKeys}
+                                    defaultExpandAll={true}
+                                    treeData={treeData.map(mapTreeData)}
+                                />
+                            </div>
+                        }
+                        {
+                            treeData.length === 0 &&
+                            <EmptyTip description="暂无成果" />
+                        }
+                    </Spin>
+                </div>
+            </Spin>
         </Modal>
     )
 }

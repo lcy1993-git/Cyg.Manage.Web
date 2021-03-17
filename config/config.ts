@@ -26,7 +26,12 @@ export default defineConfig({
   theme: {
     'primary-color': defaultSettings.primaryColor,
   },
-  esbuild: {},
+  terserOptions: {
+    compress: {
+      drop_console: true,
+      drop_debugger: true,
+    },
+  },
   title: "管理端",
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],

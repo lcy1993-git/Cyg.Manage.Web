@@ -31,7 +31,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
                 ...projectInfo,
                 startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
                 endTime: projectInfo?.endTime ? moment(projectInfo?.endTime) : null,
-                deadline: projectInfo?.startTime ? moment(projectInfo?.deadline) : null,
+                deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
                 natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
                 isAcrossYear: projectInfo?.isAcrossYear ? "true" : "false"
             })

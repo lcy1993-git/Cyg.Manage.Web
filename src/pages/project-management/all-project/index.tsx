@@ -245,7 +245,6 @@ const ProjectManagement: React.FC = () => {
     }
 
     setCurrentRecallProjectId(projectIds[0]);
-
     setRecallModalVisible(true);
 
     //await recallShare(projectIds);
