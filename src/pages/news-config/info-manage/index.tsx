@@ -65,8 +65,6 @@ const InfoManage: React.FC = () => {
     return userTreeData?.map(mapTreeData);
   }, [JSON.stringify(userTreeData)]);
 
-  console.log(handleData);
-
   const searchComponent = () => {
     return (
       <div>

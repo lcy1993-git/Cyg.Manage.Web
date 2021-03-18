@@ -144,6 +144,7 @@ const CompanyGroup: React.FC = () => {
         {
           id: editData.id,
           name: editData.name,
+          adminUserId: editData.adminUserId,
           parentId: editData.parentId,
           userIds: editData.userIds,
         },

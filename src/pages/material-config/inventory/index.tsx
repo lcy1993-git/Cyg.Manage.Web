@@ -63,7 +63,6 @@ const Inventroy: React.FC = () => {
         </TableSearch>
         <TableSearch marginLeft="20px" label="选择协议库存" width="440px">
           <UrlSelect
-            allowClear
             showSearch
             defaultData={handleInvData}
             titleKey="title"

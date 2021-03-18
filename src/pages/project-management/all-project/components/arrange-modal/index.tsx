@@ -28,10 +28,10 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
     setCompanyInfo(companyInfo);
   };
 
+  console.log(companyInfo);
+
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
-      //   console.log(companyInfo);
-      console.log(selectType);
       if (selectType === '2') {
         const arrangeInfo = Object.assign(
           {
@@ -50,6 +50,10 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         afterSearch();
       }
       if (selectType === '1') {
+        if (companyInfo === undefined) {
+          message.error('请输入组织账户');
+          return;
+        }
         const arrangeInfo = Object.assign(
           {
             allotType: selectType,

@@ -397,7 +397,7 @@ export const copyProject = (params: any) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/Copy`, { method: 'POST', data: params }),
   );
-}
+};
 
 // 获取项目的枚举
 export const getEngineerEnum = () => {
@@ -478,20 +478,20 @@ export const checkCanArrange = (projectIds: string[]) => {
   );
 };
 
-export const getGroupInfo = (clientType: string,companyGroupId: string = "") => {
+export const getGroupInfo = (clientType: string, companyGroupId: string = '') => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`, {
       method: 'POST',
-      data: { clientType, companyGroupId},
+      data: { clientType, companyGroupId },
     }),
   );
 };
 
 export const getCompanyName = (userName: string): Promise<any> => {
-  if(!userName) {
+  if (!userName) {
     return new Promise((resolve) => {
-      resolve(undefined)
-    })
+      resolve(undefined);
+    });
   }
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/ManageUser/GetCompanyNameByUserName`, {
@@ -500,7 +500,7 @@ export const getCompanyName = (userName: string): Promise<any> => {
     }),
   );
 };
- 
+
 export const shareProject = (params: any) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/Porject/Share`, {
@@ -508,7 +508,7 @@ export const shareProject = (params: any) => {
       data: params,
     }),
   );
-}
+};
 
 interface AllotParams {
   allotType: number;
@@ -538,42 +538,42 @@ export const editArrange = (params: AllotParams) => {
 // 检查是否可以进行修改安排
 export const canEditArrange = (projectIds: string[]) => {
   return cyRequest<any>(() =>
-  request(`${baseUrl.project}/Porject/CheckModifyAllotPrerequisites`, {
-    method: 'POST',
-    data: projectIds,
-  }),
-);
-}
-
+    request(`${baseUrl.project}/Porject/CheckModifyAllotPrerequisites`, {
+      method: 'POST',
+      data: projectIds,
+    }),
+  );
+};
 
 // 迭代资源库
 export const modifyMultipleEngineerLib = (params: any) => {
   return cyRequest(() =>
-  request(`${baseUrl.project}/Engineer/ModifyMultipleEngineerLib`, {
-    method: 'POST',
-    data: params,
-  }),
-);
-}
+    request(`${baseUrl.project}/Engineer/ModifyMultipleEngineerLib`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
 
 // 获取成果树状结构
 export const getResultTreeData = (projectId: string) => {
   return cyRequest<any[]>(() =>
-  request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory`, {
-    method: 'GET',
-    params: {projectId},
-  }));
-}
+    request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory`, {
+      method: 'GET',
+      params: { projectId },
+    }),
+  );
+};
 
 // 生成成果
 export const createResult = (params: any) => {
   return cyRequest(() =>
-  request(`${baseUrl.upload}/Find/GetProjectOutcomeFileDownloadPath`, {
-    method: 'POST',
-    data: params,
-  }),
-);
-}
+    request(`${baseUrl.upload}/Find/GetProjectOutcomeFileDownloadPath`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
 
 // 根据编号下载文件
 export const downloadFile = (params: any) => {
@@ -581,16 +581,15 @@ export const downloadFile = (params: any) => {
     method: 'GET',
     params,
     responseType: 'blob',
-  })
-}
+  });
+};
 
 // 获取已经分享的公司
 export const getHasShareDetailData = (projectId: string) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.project}/Porject/GetShares`, {
       method: 'GET',
-      params: {projectId}
+      params: { projectId },
     }),
   );
-}
-
+};

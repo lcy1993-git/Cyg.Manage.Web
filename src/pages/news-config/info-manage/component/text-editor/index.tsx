@@ -12,7 +12,6 @@ interface EditorParams {
 }
 
 const TextEditorModal: React.FC<EditorParams> = (props: any) => {
-  // const [content, setContent] = useState<string>('');
   const { onChange, titleForm, htmlContent, type } = props;
 
   if (type === 'add') {

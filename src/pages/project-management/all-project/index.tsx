@@ -204,11 +204,13 @@ const ProjectManagement: React.FC = () => {
   };
 
   const editArrangeEvent = async () => {
-    if (tableSelectData && tableSelectData.length === 0) {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
+   
+    if (projectIds && projectIds.length === 0) {
       message.error('请选择修改安排的项目！');
       return;
     }
-    const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
+
     const resData = await canEditArrange(projectIds);
 
     const { allotCompanyGroup = '' } = resData;
@@ -668,8 +670,8 @@ const ProjectManagement: React.FC = () => {
                   </Popconfirm>
                 )}
                 {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
-                  buttonJurisdictionArray?.includes('all-projec-edit-arrange') ||
-                  buttonJurisdictionArray?.includes('all-projec-recall-project')) && (
+                  buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
+                  buttonJurisdictionArray?.includes('all-project-recall-project')) && (
                   <Dropdown overlay={arrangeMenu}>
                     <Button className="mr7">
                       安排管理 <DownOutlined />
@@ -688,7 +690,7 @@ const ProjectManagement: React.FC = () => {
                   <div className="mr7">
                     <TableExportButton
                       exportUrl="/Porject/Export"
-                      selectIds={tableSelectData.map((item) => item.checkedArray).flat()}
+                      selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
                       extraParams={{
                         keyWord,
                         category: category ?? '-1',
