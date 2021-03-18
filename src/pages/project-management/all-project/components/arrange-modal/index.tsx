@@ -10,14 +10,15 @@ interface ArrangeModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   finishEvent?: () => void;
-  defaultSelectType?: string
-  allotCompanyId?: string
+  defaultSelectType?: string;
+  allotCompanyId?: string;
+  afterSearch: () => void;
 }
 
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyInfo, setCompanyInfo] = useState<any>();
-  const { projectIds, finishEvent,defaultSelectType = "2", allotCompanyId} = props;
+  const { projectIds, finishEvent, defaultSelectType = '2', allotCompanyId, afterSearch } = props;
 
   const [selectType, setSelectType] = useState<string>('');
 
@@ -30,7 +31,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
       //   console.log(companyInfo);
-      console.log(selectType)
+      console.log(selectType);
       if (selectType === '2') {
         const arrangeInfo = Object.assign(
           {
@@ -46,6 +47,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           values,
         );
         await saveArrange(arrangeInfo);
+        afterSearch();
       }
       if (selectType === '1') {
         const arrangeInfo = Object.assign(
@@ -57,6 +59,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           values,
         );
         await saveArrange(arrangeInfo);
+        afterSearch();
       }
 
       if (selectType === '3') {
@@ -69,6 +72,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           values,
         );
         await saveArrange(arrangeInfo);
+        afterSearch();
       }
 
       if (selectType === '4') {
@@ -86,6 +90,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           values,
         );
         await saveArrange(arrangeInfo);
+        afterSearch();
       }
       message.success('操作成功！');
       form.resetFields();
@@ -94,9 +99,9 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   };
 
   const closeModalEvent = () => {
-    setState(false)
+    setState(false);
     form.resetFields();
-  }
+  };
 
   return (
     <Modal
@@ -109,7 +114,12 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       onCancel={() => closeModalEvent()}
     >
       <Form form={form} preserve={false}>
-        <ArrangeForm defaultType={defaultSelectType} allotCompanyId={allotCompanyId} getCompanyInfo={getCompanyInfo} onChange={(value) => setSelectType(value)} />
+        <ArrangeForm
+          defaultType={defaultSelectType}
+          allotCompanyId={allotCompanyId}
+          getCompanyInfo={getCompanyInfo}
+          onChange={(value) => setSelectType(value)}
+        />
       </Form>
     </Modal>
   );

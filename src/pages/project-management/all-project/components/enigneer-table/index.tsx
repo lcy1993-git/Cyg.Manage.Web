@@ -33,6 +33,7 @@ interface ExtractParams extends AllProjectStatisticsParams {
 interface EngineerTableProps {
   extractParams: ExtractParams;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
+  afterSearch: () => void;
 }
 
 interface JurisdictionInfo {
@@ -48,7 +49,7 @@ const colorMap = {
 };
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect } = props;
+  const { extractParams, onSelect, afterSearch } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
@@ -568,6 +569,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           engineerId={projectNeedInfo.engineerId}
           areaId={projectNeedInfo.areaId}
           company={projectNeedInfo.company}
+          afterSearch={afterSearch}
         />
       )}
     </div>
