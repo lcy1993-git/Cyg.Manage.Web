@@ -271,7 +271,7 @@ const CompanyUser: React.FC = () => {
             {buttonJurisdictionArray?.includes('company-user-start-using') &&
               (record.userStatus === 1 ? (
                 <>
-                  <Switch defaultChecked onChange={() => updateStatus(record.id)} />
+                  <Switch key={status} defaultChecked onChange={() => updateStatus(record.id)} />
                   <span className="formSwitchOpenTip">启用</span>
                 </>
               ) : (

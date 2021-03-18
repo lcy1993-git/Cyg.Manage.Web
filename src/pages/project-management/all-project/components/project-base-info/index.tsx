@@ -13,7 +13,7 @@ interface ProjectBaseInfoProps {
 const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
 
     const { projectInfo } = props;
-    const tagElement = (projectInfo?.identitys ?? []).map((item: any) => {
+    const tagElement = (projectInfo?.identitys ?? []).filter((item: any) => item.text).map((item: any) => {
         return (
             <CyTag className="mr7" key={uuid.v1()}>{item.text}</CyTag>
         )

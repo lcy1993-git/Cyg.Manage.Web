@@ -82,8 +82,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   // 全部展开
   const allOpenEvent = () => {
     const flattenData = flatten(finalyDataSource)
-      .filter((item) => item.children && item.children.length > 0)
-      .map((item) => item.id);
+      .filter((item: any) => item.children && item.children.length > 0)
+      .map((item: any) => item.id);
     setExpandedRowKeys(flattenData);
   };
   // 全部折叠

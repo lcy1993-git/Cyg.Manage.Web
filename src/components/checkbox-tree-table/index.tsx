@@ -266,6 +266,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     return {
       ...data,
       hasPermission: false,
+      functions: data.functions.map((item:any) => ({...item, hasPermission: false})),
       children: data.children.map(mapDataAllFalse),
     };
   };
@@ -274,6 +275,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     return {
       ...data,
       hasPermission: true,
+      functions: data.functions.map((item:any) => ({...item, hasPermission: true})),
       children: data.children.map(mapAllDataTrue),
     };
   };

@@ -1,6 +1,7 @@
 import { getCommonSelectData, getDataByUrl } from '@/services/common';
 import { getEngineerEnum } from '@/services/project-management/all-project';
 import { useRequest } from 'ahooks';
+import moment from 'moment';
 import { useMemo } from 'react';
 
 interface UrlSelectDataParams {
@@ -107,3 +108,30 @@ export const useGetProjectEnum = () => {
     projectStage,
   };
 };
+
+interface TimeArrayItem {
+  startTime: string
+  endTime: string
+}
+
+export const useGetMinAndMaxTime = (timeArray: TimeArrayItem[]) => {
+
+  const minAndMaxTimeArray = useMemo(() => {
+    let minStartTime = null;
+  let maxEndTime = null;
+  if(timeArray && timeArray.length > 0) {
+    const startTimeArray = timeArray.map((item) => moment(item.startTime));
+    const endTimeArray = timeArray.map((item) => moment(item.endTime));
+
+    minStartTime = moment.min(startTimeArray).format("YYYY-MM-DD")
+    maxEndTime = moment.max(endTimeArray).format("YYYY-MM-DD")
+ 
+  }
+
+  return {
+    minStartTime,
+    maxEndTime
+  }
+  },[JSON.stringify(timeArray)])
+  return minAndMaxTimeArray
+}

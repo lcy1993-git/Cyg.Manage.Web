@@ -19,7 +19,7 @@ interface CompanyUserItemParams {
   lastLoginIp: string;
   lastLoginDate: Date;
   authorizeClient: number;
-  authorizeClientList: any[]
+  authorizeClientList: any[];
   pwd: string;
 }
 
@@ -89,19 +89,19 @@ export const getUserTreeByGroup = (params: CompanyGroupTree) => {
 };
 
 interface CompanyResult {
-  userStock: number
-  remark: string
-  address: string
-  parentId: string
-  id: string
-  name: string
+  userStock: number;
+  remark: string;
+  address: string;
+  parentId: string;
+  id: string;
+  name: string;
 }
 
 // 获取用户库存数量
 export const getCompanyInfo = () => {
-  const {companyId = ""} = JSON.parse(localStorage.getItem("userInfo") ?? "{}");
+  const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
 
   return cyRequest<CompanyResult>(() =>
-    request(`${baseUrl.project}/Company/GetById`, { method: 'GET', params: {id: companyId} }),
+    request(`${baseUrl.project}/Company/GetById`, { method: 'GET', params: { id: companyId } }),
   );
-}
+};

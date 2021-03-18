@@ -9,6 +9,7 @@ import TableStatus from "@/components/table-status";
 import FileUploadOnline from "@/components/file-upload-online";
 import EditFormTable from "@/components/edit-form-table";
 import { Input } from "antd";
+import GanttComponentView from "@/components/gantt-component-view";
 
 const { TabPane } = Tabs;
 
@@ -137,6 +138,9 @@ const TestPage = () => {
             </Form.Item>
 
             <EditFormTable formName="project" columns={columns}></EditFormTable>
+
+            <GanttComponentView />
+
 
             <Button onClick={() => getFormValue()}>
                 测试
