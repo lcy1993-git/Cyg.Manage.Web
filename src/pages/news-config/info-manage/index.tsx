@@ -8,7 +8,7 @@ import {
   PushpinOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Spin, TreeSelect } from 'antd';
+import { Input, Button, Modal, Form, Popconfirm, message, TreeSelect } from 'antd';
 import React, { useMemo, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -40,11 +40,14 @@ const InfoManage: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
 
+  // 富文本框内容
+  const [content, setContent] = useState<string>('');
+
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run, loading } = useRequest(getNewsItemDetail, {
+  const { data, run } = useRequest(getNewsItemDetail, {
     manual: true,
   });
 
@@ -143,7 +146,7 @@ const InfoManage: React.FC = () => {
       const submitInfo = Object.assign(
         {
           title: '',
-          content: '',
+          content: content,
         },
         values,
       );
@@ -165,13 +168,14 @@ const InfoManage: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    setEditFormVisible(true);
-    const CompanyFileData = await run(editDataId);
+    const checkContentData = await run(editDataId);
 
-    editForm.setFieldsValue(CompanyFileData);
+    setEditFormVisible(true);
+    editForm.setFieldsValue(checkContentData);
+    setContent(checkContentData.content);
   };
 
-  const sureEditCompanyFile = () => {
+  const sureEditNewsItem = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
@@ -183,7 +187,7 @@ const InfoManage: React.FC = () => {
         {
           id: editData.id,
           title: editData.title,
-          content: editData.content,
+          content: content,
         },
         values,
       );
@@ -277,7 +281,7 @@ const InfoManage: React.FC = () => {
       />
       <Modal
         title="添加-资讯"
-        width="720px"
+        width="820px"
         visible={addFormVisible}
         okText="保存"
         onOk={() => sureAddNews()}
@@ -285,28 +289,26 @@ const InfoManage: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <TextEditor />
+        <TextEditor onChange={setContent} titleForm={addForm} type="add" />
       </Modal>
       <Modal
         title="编辑-资讯"
-        width="980px"
+        width="820px"
         visible={editFormVisible}
         okText="保存"
-        onOk={() => sureEditCompanyFile()}
+        onOk={() => sureEditNewsItem()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editForm} preserve={false}>
-          <Spin spinning={loading}>{/* <CompanyFileForm /> */}</Spin>
-        </Form>
+        <TextEditor onChange={setContent} titleForm={editForm} htmlContent={content} type="edit" />
       </Modal>
       <Modal
         title="推送-资讯"
         width="450px"
         visible={pushTreeVisible}
         okText="保存"
-        onOk={() => sureEditCompanyFile()}
+        // onOk={() => surePushNewsItem()}
         onCancel={() => setPushTreeVisible(false)}
         cancelText="取消"
         destroyOnClose
