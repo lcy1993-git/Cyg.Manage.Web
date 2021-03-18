@@ -32,6 +32,15 @@ const arrayHasNotBaseUrlArray = {
     resource: "/resource/api"
 }
 
+export const logoArray = {
+    "10.6.1.36": "ke-rui-logo.png",
+    "10.6.1.37": "logo.png",
+    "171.223.214.154": "logo.png",
+    "47.108.63.23": "logo.png",
+    "39.99.251.67": "logo.png",
+    "10.6.1.38": "logo.png",
+}
+
 export const requestBaseUrl = ipArray.includes(thisHostName) ? arrayHasIpBaseUrlArray : arrayHasNotBaseUrlArray;
 
 export const explainUrl = "http://service.pwcloud.cdsrth.com:8200/management";

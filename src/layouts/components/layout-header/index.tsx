@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, Dropdown } from 'antd';
 import styles from './index.less';
-import logoSrc from '@/assets/image/logo.png';
 import LayoutHeaderMenu from '../layout-header-menu';
 import { history } from 'umi';
 import ImageIcon from '@/components/image-icon';
@@ -11,6 +10,7 @@ import EditPassword from '../edit-password';
 import CutAccount from '../cut-account';
 import PersonInfoModal from "../person-info-modal";
 import { useGetUserInfo } from '@/utils/hooks';
+import LogoComponent from '@/components/logo-component';
 
 const LayoutHeader: React.FC = () => {
 
@@ -83,7 +83,7 @@ const LayoutHeader: React.FC = () => {
     <div className={styles.layoutHeader}>
       <div className={styles.layoutHeaderContainer}>
         <div className={styles.layoutHeaderLogo}>
-          <img src={logoSrc} />
+          <LogoComponent />
         </div>
         <div className={styles.layoutHeaderContent}>{menuContent}</div>
 
