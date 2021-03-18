@@ -722,6 +722,7 @@ const ProjectManagement: React.FC = () => {
           <div className={styles.projectManagementTableContent}>
             <EnigneerTable
               ref={tableRef}
+              afterSearch={search}
               onSelect={tableSelectEvent}
               extractParams={{
                 keyWord,
@@ -766,6 +767,7 @@ const ProjectManagement: React.FC = () => {
       )}
       {arrangeModalVisible && (
         <ArrangeModal
+          afterSearch={search}
           finishEvent={arrangeFinishEvent}
           visible={arrangeModalVisible}
           onChange={setArrangeModalVisible}
@@ -793,6 +795,7 @@ const ProjectManagement: React.FC = () => {
       )}
       {shareModalVisible && (
         <ShareModal
+          afterSearch={search}
           finishEvent={refreshEvent}
           visible={shareModalVisible}
           onChange={setShareModalVisible}
