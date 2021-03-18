@@ -670,20 +670,20 @@ const ProjectManagement: React.FC = () => {
                 {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
                   buttonJurisdictionArray?.includes('all-projec-edit-arrange') ||
                   buttonJurisdictionArray?.includes('all-projec-recall-project')) && (
-                  <Dropdown overlay={arrangeMenu}>
-                    <Button className="mr7">
-                      安排管理 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={arrangeMenu}>
+                      <Button className="mr7">
+                        安排管理 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {(buttonJurisdictionArray?.includes('all-project-share') ||
                   buttonJurisdictionArray?.includes('all-project-share-recall')) && (
-                  <Dropdown overlay={shareMenu}>
-                    <Button className="mr7">
-                      安排共享 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={shareMenu}>
+                      <Button className="mr7">
+                        安排共享 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {buttonJurisdictionArray?.includes('all-project-export') && (
                   <div className="mr7">
                     <TableExportButton
@@ -707,12 +707,12 @@ const ProjectManagement: React.FC = () => {
                   buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
                   buttonJurisdictionArray?.includes('all-project-kont-pass') ||
                   buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
-                  <Dropdown overlay={postProjectMenu}>
-                    <Button className="mr7">
-                      结项 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={postProjectMenu}>
+                      <Button className="mr7">
+                        结项 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {buttonJurisdictionArray?.includes('all-project-resource') && (
                   <Button onClick={() => setLibVisible(true)}>资源库迭代</Button>
                 )}
@@ -738,62 +738,81 @@ const ProjectManagement: React.FC = () => {
           </div>
         </div>
       </div>
-      <Modal
-        visible={addEngineerModalFlag}
-        footer={[
-          <Button key="cancle" onClick={() => modalCloseEvent()}>
-            取消
+      {
+        addEngineerModalFlag &&
+        <Modal
+          visible={addEngineerModalFlag}
+          footer={[
+            <Button key="cancle" onClick={() => modalCloseEvent()}>
+              取消
           </Button>,
-          <Button
-            key="save"
-            type="primary"
-            loading={saveLoading}
-            onClick={() => sureAddEngineerEvent()}
-          >
-            保存
+            <Button
+              key="save"
+              type="primary"
+              loading={saveLoading}
+              onClick={() => sureAddEngineerEvent()}
+            >
+              保存
           </Button>,
-        ]}
-        width={820}
-        onCancel={() => modalCloseEvent()}
-        title="项目立项"
-        destroyOnClose
-      >
-        <Form form={form} preserve={false}>
-          <CreateEngineer form={form} />
-        </Form>
-      </Modal>
-      <ArrangeModal
-        finishEvent={arrangeFinishEvent}
-        visible={arrangeModalVisible}
-        onChange={setArrangeModalVisible}
-        defaultSelectType={currentArrangeProjectType}
-        allotCompanyId={currentArrangeProjectIsArrange}
-        projectIds={selectProjectIds}
-      />
-      <EditArrangeModal
-        allotCompanyId={editCurrentAllotCompanyId}
-        changeFinishEvent={changeArrangeFinishEvent}
-        visible={editArrangeModalVisible}
-        onChange={setEditArrangeModalVisible}
-        projectIds={selectProjectIds}
-      />
-      <ProjectRecallModal
-        changeFinishEvent={refreshEvent}
-        visible={recallModalVisible}
-        projectId={currentRecallProjectId}
-        onChange={setRecallModalVisible}
-      />
-      <ShareModal
-        finishEvent={refreshEvent}
-        visible={shareModalVisible}
-        onChange={setShareModalVisible}
-        projectIds={selectProjectIds}
-      />
-      <ResourceLibraryManageModal
-        visible={libVisible}
-        onChange={setLibVisible}
-        changeFinishEvent={refreshEvent}
-      />
+          ]}
+          width={820}
+          onCancel={() => modalCloseEvent()}
+          title="项目立项"
+          destroyOnClose
+        >
+          <Form form={form} preserve={false}>
+            <CreateEngineer form={form} />
+          </Form>
+        </Modal>
+      }
+      {
+        arrangeModalVisible &&
+        <ArrangeModal
+          finishEvent={arrangeFinishEvent}
+          visible={arrangeModalVisible}
+          onChange={setArrangeModalVisible}
+          defaultSelectType={currentArrangeProjectType}
+          allotCompanyId={currentArrangeProjectIsArrange}
+          projectIds={selectProjectIds}
+        />
+      }
+      {
+        editArrangeModalVisible &&
+        <EditArrangeModal
+          allotCompanyId={editCurrentAllotCompanyId}
+          changeFinishEvent={changeArrangeFinishEvent}
+          visible={editArrangeModalVisible}
+          onChange={setEditArrangeModalVisible}
+          projectIds={selectProjectIds}
+        />
+      }
+      {
+        recallModalVisible &&
+        <ProjectRecallModal
+          changeFinishEvent={refreshEvent}
+          visible={recallModalVisible}
+          projectId={currentRecallProjectId}
+          onChange={setRecallModalVisible}
+        />
+      }
+      {
+        shareModalVisible &&
+        <ShareModal
+          finishEvent={refreshEvent}
+          visible={shareModalVisible}
+          onChange={setShareModalVisible}
+          projectIds={selectProjectIds}
+        />
+      }
+      {
+        libVisible &&
+        <ResourceLibraryManageModal
+          visible={libVisible}
+          onChange={setLibVisible}
+          changeFinishEvent={refreshEvent}
+        />
+      }
+
     </PageCommonWrap>
   );
 };

@@ -27,8 +27,7 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
 
     const saveShareInfo = async () => {
         const userIds = companyInfoArray.filter((item) => item.companyInfo).map((item) => item.companyInfo).map((item) => item.value);
-        console.log(companyInfoArray.filter((item) => item.companyInfo))
-        console.log(userIds)
+        
         if(userIds.length === 0) {
             message.error("至少需要一个存在的管理员用户信息");
             return
@@ -36,7 +35,7 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
         await shareProject({
             userIds,projectIds
         })
-        message.success("共享成果")
+        message.success("共享成功")
         setState(false)
         finishEvent?.()
     }

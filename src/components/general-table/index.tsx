@@ -83,7 +83,6 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const [pageSize, setPageSize] = useState<number>(10);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const [lineConfigVisible, setLineConfigVisible] = useState(false);
   const [finallyColumns, setFinalyColumns] = useState<any[]>([]);
 
   const tableRef = useRef<HTMLDivElement>(null);
@@ -133,9 +132,6 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       getSelectData?.(selectedRows);
     },
   };
-
-  // 改变视图
-  const changeView = () => {};
 
   const columnChangeEvent = (value: boolean, dataIndex: string) => {
     const copyColumns = [...finallyColumns];
@@ -247,7 +243,12 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     reset: () => {
       setCurrentPage(1);
       setSelectedRowKeys([]);
+      getSelectData?.([]);
     },
+    resetSelectedRows: () => {
+      setSelectedRowKeys([]);
+      getSelectData?.([]);
+    }
   }));
 
   useEffect(() => {

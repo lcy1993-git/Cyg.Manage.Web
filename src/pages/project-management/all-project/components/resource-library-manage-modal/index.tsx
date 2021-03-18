@@ -4,7 +4,7 @@ import { useGetSelectData } from "@/utils/hooks";
 import { useControllableValue } from "ahooks";
 import { Button, message } from "antd";
 import { Modal, Input } from "antd"
-import React, { Dispatch, SetStateAction, useState } from "react"
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react"
 import DataSelect from "@/components/data-select"
 import { useRef } from "react";
 import { modifyMultipleEngineerLib } from "@/services/project-management/all-project";
@@ -42,6 +42,13 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
             tableRef.current.refresh();
         }
     };
+
+    const resetSelectedRows = () => {
+        if (tableRef && tableRef.current) {
+            //@ts-ignore
+            tableRef.current.resetSelectedRows();
+        }
+    }
 
     const tableColumns = [
         {
@@ -89,6 +96,14 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
     }
 
     const sureReplace = async () => {
+        if(tableSelectRows.length === 0) {
+            message.error("请至少选择一条数据")
+            return
+        }
+        if(!libId) {
+            message.error("请选择迭代资源库")
+            return
+        }
         setRequestLoading(true)
         const engineerIds = tableSelectRows.map((item) => item.engineerId)
         try{
@@ -97,6 +112,7 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
                 libId: libId
             })
             message.success("批量变更资源库成功");
+            resetSelectedRows();
             refresh();
         }catch(msg) {
             console.error(msg)
@@ -109,6 +125,12 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
         setState(false)
         changeFinishEvent?.()
     }
+
+    useEffect(() => {
+        if(state) {
+            resetSelectedRows();
+        }
+    }, [state])
 
     return (
         <Modal title="资源库迭代" width={750} visible={state as boolean} destroyOnClose footer={null} onCancel={() => closeEvent()}>
