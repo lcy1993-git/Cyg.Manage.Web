@@ -12,7 +12,7 @@
 
 // 如果数组里面包含这个ip,那么就代表是IIS部署的，就直接用url + 端口去访问。  如果没包含，代表是nginx部署，那么就用代理
 
-const ipArray = ["10.6.1.36","10.6.1.37","171.223.214.154","47.108.63.23","39.99.251.67","10.6.1.38"];
+const ipArray = ["10.6.1.36","10.6.1.37","171.223.214.154","47.108.63.23","39.99.251.67","10.6.1.38","218.6.242.125"];
 
 const thisHostName = window.location.hostname;
 
@@ -33,6 +33,7 @@ const arrayHasNotBaseUrlArray = {
 }
 
 export const logoArray = {
+    "218.6.242.125": "ke-rui-logo.png",
     "10.6.1.36": "ke-rui-logo.png",
     "10.6.1.37": "logo.png",
     "171.223.214.154": "logo.png",
