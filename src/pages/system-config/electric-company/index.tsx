@@ -64,7 +64,6 @@ const ElectricCompany: React.FC = () => {
 
   //选择省份onChange事件
   const searchBySelectProvince = (value: any) => {
-    console.log(value);
     search();
   };
 
@@ -197,7 +196,6 @@ const ElectricCompany: React.FC = () => {
 
   tableSelectRows.map((item: any) => {
     ids.push(item.id);
-    console.log(ids);
   });
 
   const tableElement = () => {

@@ -184,8 +184,6 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
     ModuleDetailData.componentId = ModuleDetailData.isComponent == 1 ? ModuleDetailData.itemId : '';
     ModuleDetailData.materialId = ModuleDetailData.isComponent == 0 ? ModuleDetailData.itemId : '';
 
-    console.log(ModuleDetailData);
-
     editForm.setFieldsValue(ModuleDetailData);
   };
 

@@ -144,7 +144,6 @@ const CompanyGroup: React.FC = () => {
         {
           id: editData.id,
           name: editData.name,
-          adminUserId: editData.adminUserId,
           parentId: editData.parentId,
           userIds: editData.userIds,
         },
@@ -210,7 +209,7 @@ const CompanyGroup: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <CompanyGroupForm treeData={selectTreeData} />
+          <CompanyGroupForm treeData={selectTreeData} type="add" />
         </Form>
       </Modal>
       <Modal
@@ -225,7 +224,7 @@ const CompanyGroup: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={editDataLoading}>
-            <CompanyGroupForm treeData={selectTreeData} id={tableSelectRows[0]?.id} />
+            <CompanyGroupForm treeData={selectTreeData} id={tableSelectRows[0]?.id} type="edit" />
           </Spin>
         </Form>
       </Modal>

@@ -76,7 +76,6 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   };
 
   const searchByLib = (value: any) => {
-    // console.log(value);
     setResourceLibId(value);
     search();
   };

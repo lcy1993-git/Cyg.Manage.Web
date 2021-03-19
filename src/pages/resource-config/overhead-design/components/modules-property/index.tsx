@@ -77,7 +77,6 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    // console.log(value);
     setResourceLibId(value);
     search();
   };
@@ -368,7 +367,6 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   //保存修改的模块属性
   const sureEditAttribute = () => {
     const editData = AttributeData!;
-    console.log(editData);
 
     editAttributeForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(

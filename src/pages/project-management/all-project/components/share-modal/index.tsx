@@ -14,7 +14,6 @@ interface ShareModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   finishEvent: () => void;
-  afterSearch: () => void;
 }
 
 const ShareModal: React.FC<ShareModalProps> = (props) => {
@@ -24,7 +23,7 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
 
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
 
-  const { projectIds, finishEvent, afterSearch } = props;
+  const { projectIds, finishEvent } = props;
 
   const saveShareInfo = async () => {
     const userIds = companyInfoArray
@@ -40,7 +39,6 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
       userIds,
       projectIds,
     });
-    afterSearch();
     message.success('共享成功');
     setState(false);
     finishEvent?.();

@@ -144,7 +144,6 @@ const CompanyFile: React.FC = () => {
         },
         values,
       );
-      console.log(submitInfo);
 
       await addCompanyFileItem(submitInfo);
       refresh();

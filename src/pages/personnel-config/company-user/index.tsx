@@ -157,7 +157,6 @@ const CompanyUser: React.FC = () => {
 
   const sureBatchAddCompanyUser = () => {
     batchAddForm.validateFields().then(async (values) => {
-      console.log(values);
       await batchAddCompanyUserItem({ ...values });
       message.success('批量增加成功');
       refresh();

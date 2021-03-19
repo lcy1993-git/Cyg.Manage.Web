@@ -58,7 +58,6 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    // console.log(value);
     setResourceLibId(value);
     search();
   };

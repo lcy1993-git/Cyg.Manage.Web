@@ -33,7 +33,7 @@ interface ExtractParams extends AllProjectStatisticsParams {
 interface EngineerTableProps {
   extractParams: ExtractParams;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
-  afterSearch: () => void;
+  afterSearch?: () => void;
 }
 
 interface JurisdictionInfo {
@@ -172,7 +172,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const checkResult = (projectInfo: any) => {
-    console.log(projectInfo);
     setCheckResultProjectInfo(projectInfo);
     setCheckResultVisible(true);
   };
@@ -192,7 +191,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       pageSize,
     });
     setTableSelectData([]);
-    afterSearch?.()
+    afterSearch?.();
   };
 
   const projectTableColumns = [
@@ -453,6 +452,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       pageSize,
     });
     setTableSelectData([]);
+    afterSearch?.();
   };
 
   // 页码发生变化，重新进行请求
@@ -491,7 +491,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             size="small"
             total={tableResultData.total}
             current={pageIndex}
-            hideOnSinglePage={true}
+            // hideOnSinglePage={true}
             showSizeChanger
             showQuickJumper
             onShowSizeChange={pageSizeChange}
@@ -570,7 +570,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           engineerId={projectNeedInfo.engineerId}
           areaId={projectNeedInfo.areaId}
           company={projectNeedInfo.company}
-          afterSearch={afterSearch}
         />
       )}
     </div>

@@ -159,8 +159,6 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
     CableWellDetailData.materialId =
       CableWellDetailData.isComponent == 0 ? CableWellDetailData.itemId : '';
 
-    console.log(CableWellDetailData);
-
     editForm.setFieldsValue(CableWellDetailData);
   };
 

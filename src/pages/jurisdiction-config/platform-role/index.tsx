@@ -91,7 +91,6 @@ const PlatformRole: React.FC = () => {
       return;
     }
     const editData = data!;
-    console.log(data);
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(

@@ -10,7 +10,6 @@ interface ChartListFromLibParams {
 
 const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
   const { type = 'edit', resourceLibId } = props;
-  // console.log(resourceLibId);
 
   return (
     <>

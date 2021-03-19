@@ -61,7 +61,6 @@ const LineStressSag: React.FC = () => {
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    console.log(value);
     setResourceLibId(value);
     search();
   };

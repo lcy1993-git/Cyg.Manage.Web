@@ -222,7 +222,6 @@ const PlatFormFeedBack: React.FC = () => {
 
   const replyEvent = () => {
     form.validateFields().then(async (values) => {
-      // console.log(values);
       const dealData = tableSelectRows[0];
       const dealInfo = Object.assign(
         {
@@ -232,7 +231,6 @@ const PlatFormFeedBack: React.FC = () => {
         },
         values,
       );
-      console.log(dealInfo);
 
       await handleFeedback(dealInfo);
       message.success('信息提交成功');

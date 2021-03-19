@@ -158,8 +158,6 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     cableChannelDetailData.materialId =
       cableChannelDetailData.isComponent == 0 ? cableChannelDetailData.itemId : '';
 
-    console.log(cableChannelDetailData);
-
     editForm.setFieldsValue(cableChannelDetailData);
   };
 
