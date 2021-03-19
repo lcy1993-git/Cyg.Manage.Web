@@ -12,13 +12,12 @@ interface ArrangeModalProps {
   finishEvent?: () => void;
   defaultSelectType?: string;
   allotCompanyId?: string;
-  afterSearch: () => void;
 }
 
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyInfo, setCompanyInfo] = useState<any>();
-  const { projectIds, finishEvent, defaultSelectType = '2', allotCompanyId, afterSearch } = props;
+  const { projectIds, finishEvent, defaultSelectType = '2', allotCompanyId } = props;
 
   const [selectType, setSelectType] = useState<string>('');
 
@@ -27,8 +26,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const getCompanyInfo = (companyInfo: any) => {
     setCompanyInfo(companyInfo);
   };
-
-  console.log(companyInfo);
 
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
@@ -47,7 +44,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           values,
         );
         await saveArrange(arrangeInfo);
-        afterSearch();
       }
       if (selectType === '1') {
         if (companyInfo === undefined) {
@@ -63,7 +59,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           values,
         );
         await saveArrange(arrangeInfo);
-        afterSearch();
       }
 
       if (selectType === '3') {
@@ -76,7 +71,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           values,
         );
         await saveArrange(arrangeInfo);
-        afterSearch();
       }
 
       if (selectType === '4') {
@@ -94,11 +88,10 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           values,
         );
         await saveArrange(arrangeInfo);
-        afterSearch();
       }
       message.success('操作成功！');
-      form.resetFields();
       finishEvent?.();
+      form.resetFields();
     });
   };
 

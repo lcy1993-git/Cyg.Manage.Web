@@ -13,7 +13,6 @@ interface AddProjectProps {
   company: string;
   changeFinishEvent: () => void;
   companyName?: string;
-  afterSearch: () => void;
 }
 
 const AddProjectModal: React.FC<AddProjectProps> = (props) => {
@@ -21,7 +20,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { engineerId, areaId, company, changeFinishEvent, companyName, afterSearch } = props;
+  const { engineerId, areaId, company, changeFinishEvent, companyName } = props;
 
   const addProjectEvent = () => {
     form.validateFields().then(async (value) => {
@@ -30,7 +29,6 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           engineerId,
           ...value,
         });
-        afterSearch();
         message.success('项目新增成功');
         setState(false);
 

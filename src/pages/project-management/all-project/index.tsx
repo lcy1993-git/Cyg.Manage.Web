@@ -161,7 +161,8 @@ const ProjectManagement: React.FC = () => {
 
     await revokeAllot(projectIds);
     message.success('撤回安排成功');
-    refresh();
+    search();
+    // refresh();
   };
 
   const arrangeEvent = async () => {
@@ -205,7 +206,7 @@ const ProjectManagement: React.FC = () => {
 
   const editArrangeEvent = async () => {
     const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
-   
+
     if (projectIds && projectIds.length === 0) {
       message.error('请选择修改安排的项目！');
       return;
@@ -471,16 +472,16 @@ const ProjectManagement: React.FC = () => {
 
   const arrangeFinishEvent = () => {
     setArrangeModalVisible(false);
-    refresh();
+    search();
   };
 
   const changeArrangeFinishEvent = () => {
     setEditArrangeModalVisible(false);
-    refresh();
+    search();
   };
 
   const refreshEvent = () => {
-    refresh();
+    search();
   };
 
   const openAddEngineerModal = () => {
@@ -769,7 +770,6 @@ const ProjectManagement: React.FC = () => {
       )}
       {arrangeModalVisible && (
         <ArrangeModal
-          afterSearch={search}
           finishEvent={arrangeFinishEvent}
           visible={arrangeModalVisible}
           onChange={setArrangeModalVisible}
@@ -797,7 +797,6 @@ const ProjectManagement: React.FC = () => {
       )}
       {shareModalVisible && (
         <ShareModal
-          afterSearch={search}
           finishEvent={refreshEvent}
           visible={shareModalVisible}
           onChange={setShareModalVisible}
