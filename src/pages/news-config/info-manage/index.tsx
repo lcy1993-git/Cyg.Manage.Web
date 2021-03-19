@@ -27,7 +27,10 @@ import {
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
 import TextEditor from './component/text-editor';
-import { getCompanyGroupTreeList } from '@/services/operation-config/company-group';
+import {
+  getCompanyGroupTreeList,
+  getTreeSelectData,
+} from '@/services/operation-config/company-group';
 import { Tree } from 'antd';
 
 const { Search } = Input;
@@ -51,19 +54,23 @@ const InfoManage: React.FC = () => {
     manual: true,
   });
 
-  const { data: userTreeData } = useRequest(() => getCompanyGroupTreeList());
+  // const { data: userTreeData } = useRequest(() => getCompanyGroupTreeList());
+  const { data: treeData } = useRequest(() => getTreeSelectData());
+  console.log(treeData);
 
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
-      key: data.value,
+      key: data.id,
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };
 
   const handleData = useMemo(() => {
-    return userTreeData?.map(mapTreeData);
-  }, [JSON.stringify(userTreeData)]);
+    return treeData?.map(mapTreeData);
+  }, [JSON.stringify(treeData)]);
+
+  console.log(handleData);
 
   const searchComponent = () => {
     return (
