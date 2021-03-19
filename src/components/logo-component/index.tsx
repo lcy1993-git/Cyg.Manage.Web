@@ -10,7 +10,7 @@ const LogoComponent:React.FC<LogoComponentProps> = (props) => {
     const thisHostName = window.location.hostname;
     const imgName = logoArray[thisHostName];
     const {className,...rest} = props;
-    const imgSrc = imgName ? require("../../assets/icon-image/"+imgName+"") : logonSrc;
+    const imgSrc = imgName ? require("../../assets/image/"+imgName+"") : logonSrc;
     return (
         <img src={imgSrc} {...rest} className={className} alt="logo" />
     )
