@@ -12,7 +12,6 @@ interface SourceCompareTabProps {
 
 const SourceCompareDetailTab: React.FC<SourceCompareTabProps> = (props) => {
   const { detailData } = props;
-  console.log(detailData);
 
   return (
     <>

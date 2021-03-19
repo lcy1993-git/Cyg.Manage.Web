@@ -44,7 +44,7 @@ export const deleteNewsItem = (id: string) => {
 //推送资讯
 export const pushNewsItem = (id: string, userIds: string[]) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/News/Push`, { method: 'POST', params: { id, userIds } }),
+    request(`${baseUrl.project}/News/Push`, { method: 'POST', data: { id, userIds } }),
   );
 };
 

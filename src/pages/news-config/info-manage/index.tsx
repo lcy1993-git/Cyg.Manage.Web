@@ -8,7 +8,7 @@ import {
   PushpinOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, TreeSelect } from 'antd';
+import { Input, Button, Modal, Form, Popconfirm, message, Tree } from 'antd';
 import React, { useMemo, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -27,11 +27,7 @@ import {
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
 import TextEditor from './component/text-editor';
-import {
-  getCompanyGroupTreeList,
-  getTreeSelectData,
-} from '@/services/operation-config/company-group';
-import { Tree } from 'antd';
+import { getGroupInfo } from '@/services/project-management/all-project';
 
 const { Search } = Input;
 
@@ -42,9 +38,11 @@ const InfoManage: React.FC = () => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
+  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
   // 富文本框内容
   const [content, setContent] = useState<string>('');
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
@@ -54,10 +52,7 @@ const InfoManage: React.FC = () => {
     manual: true,
   });
 
-  // const { data: userTreeData } = useRequest(() => getCompanyGroupTreeList());
-  const { data: treeData } = useRequest(() => getTreeSelectData());
-  console.log(treeData);
-
+  const { data: TreeData = [] } = useRequest(() => getGroupInfo('4'));
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
@@ -67,10 +62,8 @@ const InfoManage: React.FC = () => {
   };
 
   const handleData = useMemo(() => {
-    return treeData?.map(mapTreeData);
-  }, [JSON.stringify(treeData)]);
-
-  console.log(handleData);
+    return TreeData?.map(mapTreeData);
+  }, [JSON.stringify(TreeData)]);
 
   const searchComponent = () => {
     return (
@@ -222,6 +215,14 @@ const InfoManage: React.FC = () => {
     setPushTreeVisible(true);
   };
 
+  const surePushNewsItem = async () => {
+    const newsId = tableSelectRows[0].id;
+    await pushNewsItem(newsId, selectedIds);
+    message.success('推送成功');
+    setPushTreeVisible(false);
+    refresh();
+  };
+
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -269,6 +270,13 @@ const InfoManage: React.FC = () => {
     );
   };
 
+  const pushSelectEvent = (checkedValue: string[]) => {
+    setSelectedIds(checkedValue);
+  };
+
+  const onExpand = (expandedKeysValue: React.Key[]) => {
+    setAutoExpandParent(false);
+  };
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -313,12 +321,19 @@ const InfoManage: React.FC = () => {
         width="450px"
         visible={pushTreeVisible}
         okText="保存"
-        // onOk={() => surePushNewsItem()}
+        onOk={() => surePushNewsItem()}
         onCancel={() => setPushTreeVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Tree checkable treeData={handleData} autoExpandParent />
+        <Tree
+          onExpand={onExpand}
+          checkable
+          treeData={handleData}
+          onCheck={(value: any) => pushSelectEvent(value)}
+          autoExpandParent={autoExpandParent}
+          selectedKeys={selectedIds}
+        />
       </Modal>
     </PageCommonWrap>
   );

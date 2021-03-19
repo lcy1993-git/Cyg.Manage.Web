@@ -42,8 +42,6 @@ const ElectricalEquipment: React.FC = () => {
     manual: true,
   });
 
-  console.log(data);
-
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
@@ -75,7 +73,6 @@ const ElectricalEquipment: React.FC = () => {
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    // console.log(value);
     setResourceLibId(value);
     search();
   };
@@ -222,7 +219,6 @@ const ElectricalEquipment: React.FC = () => {
 
     setEditFormVisible(true);
     const ElectricalEquipmentData = await run(resourceLibId, editDataId);
-    console.log(ElectricalEquipmentData);
 
     editForm.setFieldsValue(ElectricalEquipmentData);
   };

@@ -127,8 +127,15 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
     </>
   );
 
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset();
+    }
+  };
+
   const batchAddAuthorizationEvent = async () => {
-    if (selectRows.length === 0) {
+    if (selectRows && selectRows.length === 0) {
       message.error('请至少选中一条数据');
       return;
     }
@@ -141,8 +148,9 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
       authorizeType: 2,
       objectIds: batchObjectIds,
     });
-    refresh();
     message.success('授权成功');
+    reset();
+    refresh();
   };
 
   const batchRemoveAuthorizationEvent = async () => {
@@ -150,9 +158,9 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
       message.error('请至少选中一条数据');
       return;
     }
+
     if (selectRows.find((item) => item.isAuthorized === true)) {
       const batchObjectIds = selectRows.map((item) => item.id);
-
       const { templateId } = extractParams;
 
       await batchRemoveAuthorization({
@@ -160,8 +168,9 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
         authorizeType: 2,
         objectIds: batchObjectIds,
       });
-      refresh();
       message.success('授权移除成功');
+      reset();
+      refresh();
     } else {
       message.error('选中的用户尚未授权');
       return;

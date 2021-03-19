@@ -8,5 +8,11 @@ export default {
     },
   ],
   confirmPwd: [{ required: true, message: '请确认密码', max: 16 }],
-  email: [{ maxLength: 32, pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/ }],
+  email: [
+    {
+      maxLength: 32,
+      pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+      message: '请输入正确的邮箱格式',
+    },
+  ],
 };

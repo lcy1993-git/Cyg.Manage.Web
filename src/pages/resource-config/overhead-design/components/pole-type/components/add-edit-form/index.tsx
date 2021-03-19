@@ -11,7 +11,6 @@ interface PoleTypeParams {
 
 const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
   const { type = 'edit', resourceLibId } = props;
-  console.log(resourceLibId);
 
   return (
     <>

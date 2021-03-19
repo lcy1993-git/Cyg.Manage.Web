@@ -248,7 +248,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     resetSelectedRows: () => {
       setSelectedRowKeys([]);
       getSelectData?.([]);
-    }
+    },
   }));
 
   useEffect(() => {
@@ -290,12 +290,14 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
                     className={styles.tableCommonButton}
                   />
                 </Tooltip>
-                <Popover content={columnsMenuElement} placement="bottomLeft" title={null} trigger="click">
+                <Popover
+                  content={columnsMenuElement}
+                  placement="bottomLeft"
+                  title={null}
+                  trigger="click"
+                >
                   <Tooltip title="列设置">
-                    <UnorderedListOutlined
-                  
-                      className={styles.tableCommonButton}
-                    />
+                    <UnorderedListOutlined className={styles.tableCommonButton} />
                   </Tooltip>
                 </Popover>
               </div>
@@ -341,7 +343,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
               size="small"
               total={tableResultData.total}
               current={currentPage}
-              hideOnSinglePage={true}
+              // hideOnSinglePage={true}
               showSizeChanger
               showQuickJumper
               onShowSizeChange={pageSizeChange}

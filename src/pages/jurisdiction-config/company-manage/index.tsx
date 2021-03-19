@@ -96,7 +96,6 @@ const CompanyManage: React.FC = () => {
         },
         value,
       );
-      console.log(submitInfo);
 
       await addCompanyManageItem(submitInfo);
       tableFresh();

@@ -9,11 +9,11 @@ import rules from './rule';
 interface CompanyGroupFormProps {
   treeData: GetUserTreeByGroup[];
   id?: string;
+  type?: 'add' | 'edit';
 }
 
 const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
-  const { treeData = [], id } = props;
-  // console.log(treeData);
+  const { treeData = [], id, type = '' } = props;
 
   const mapTreeData = (data: any) => {
     return {
@@ -24,8 +24,6 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
   };
 
   const handleData = useMemo(() => {
-    console.log(treeData);
-
     return treeData
       ?.filter((item, index) => {
         return item.id != id;
@@ -49,15 +47,31 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
         <Input placeholder="请输入" />
       </CyFormItem>
 
-      <CyFormItem label="部组管理员" name="adminUserId" required rules={rules.adminUserId}>
-        <UrlSelect
-          showSearch
-          url="/CompanyUser/GetList"
-          titleKey="text"
-          valueKey="value"
-          placeholder="请选择部组管理员"
-        />
-      </CyFormItem>
+      {type === 'add' && (
+        <CyFormItem label="部组管理员" name="adminUserId" required rules={rules.adminUserId}>
+          <UrlSelect
+            showSearch
+            url="/CompanyUser/GetList"
+            titleKey="text"
+            valueKey="value"
+            placeholder="请选择部组管理员"
+          />
+        </CyFormItem>
+      )}
+
+      {type === 'edit' && (
+        <CyFormItem label="部组管理员" name="adminUserId">
+          <UrlSelect
+            showSearch
+            url="/CompanyUser/GetList"
+            titleKey="text"
+            valueKey="value"
+            placeholder="请选择部组管理员"
+            disabled
+          />
+        </CyFormItem>
+      )}
+
       <CyFormItem label="部组成员" name="userIds">
         <UrlSelect
           mode="multiple"

@@ -77,7 +77,6 @@ const ManageUser: React.FC = () => {
     const checkId = tableSelectRows[0].id;
     const LogDetail = await run(checkId);
     setDetail(LogDetail);
-    console.log(detail);
   };
 
   //重置后，条件添加onChange事件重新获取value

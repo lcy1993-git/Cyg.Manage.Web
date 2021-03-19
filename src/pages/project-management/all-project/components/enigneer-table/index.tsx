@@ -172,7 +172,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const checkResult = (projectInfo: any) => {
-    console.log(projectInfo);
     setCheckResultProjectInfo(projectInfo);
     setCheckResultVisible(true);
   };
@@ -492,7 +491,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             size="small"
             total={tableResultData.total}
             current={pageIndex}
-            hideOnSinglePage={true}
+            // hideOnSinglePage={true}
             showSizeChanger
             showQuickJumper
             onShowSizeChange={pageSizeChange}
