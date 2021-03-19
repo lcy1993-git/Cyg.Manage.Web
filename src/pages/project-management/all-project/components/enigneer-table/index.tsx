@@ -192,6 +192,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       pageSize,
     });
     setTableSelectData([]);
+    afterSearch?.()
   };
 
   const projectTableColumns = [
