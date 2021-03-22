@@ -317,7 +317,7 @@ const ProjectManagement: React.FC = () => {
 
     await auditKnot(projectIds);
     message.success('结项通过成功');
-    refresh();
+    search();
   };
 
   const noAuditKnotEvent = async () => {
