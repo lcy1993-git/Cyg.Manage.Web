@@ -65,6 +65,14 @@ const InfoManage: React.FC = () => {
     return TreeData?.map(mapTreeData);
   }, [JSON.stringify(TreeData)]);
 
+  const parentIds = handleData.map((item) => {
+    return item.key;
+  });
+  console.log(parentIds);
+
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(parentIds);
+  console.log(expandedKeys);
+
   const searchComponent = () => {
     return (
       <div>
@@ -275,6 +283,7 @@ const InfoManage: React.FC = () => {
   };
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
+    setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
   };
   return (
@@ -332,7 +341,8 @@ const InfoManage: React.FC = () => {
           treeData={handleData}
           onCheck={(value: any) => pushSelectEvent(value)}
           autoExpandParent={autoExpandParent}
-          selectedKeys={selectedIds}
+          // selectedKeys={selectedIds}
+          expandedKeys={expandedKeys}
         />
       </Modal>
     </PageCommonWrap>
