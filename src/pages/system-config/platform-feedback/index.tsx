@@ -265,6 +265,7 @@ const PlatFormFeedBack: React.FC = () => {
         onCancel={() => setFeedBackDetailVisible(false)}
         okText="提交"
         onOk={replyEvent}
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Spin spinning={loading}>
           <Form form={form}>

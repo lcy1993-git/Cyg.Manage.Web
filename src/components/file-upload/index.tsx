@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, UploadProps, message } from 'antd';
+import { Upload, UploadProps } from 'antd';
 import { CloudUploadOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import FileUploadShowItem from '../file-upload-show-item';
@@ -25,11 +25,11 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
   const [fileList, setFileList] = useState<any[]>([]);
 
   const beforeUploadEvent = (file: any) => {
-    const isBeyoundSize = file.size / 1024 / 1024 < maxSize;
-    if (!isBeyoundSize) {
-      message.error(`${file.name}大小超出限制${maxSize}MB，请修改后重新上传`);
-      return isBeyoundSize;
-    }
+    // const isBeyoundSize = file.size / 1024 / 1024 / 1024 < maxSize;
+    // if (!isBeyoundSize) {
+    //   message.error(`${file.name}大小超出限制${maxSize}MB，请修改后重新上传`);
+    //   return isBeyoundSize;
+    // }
 
     // 如果maxCount 是1的时候，那么就要随时把上传的替换成最新的哪一个
     if (maxCount && maxCount == 1) {
