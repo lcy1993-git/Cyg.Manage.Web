@@ -3,7 +3,7 @@ import FileUpload from '@/components/file-upload';
 import { uploadDrawing } from '@/services/resource-config/resource-lib';
 import { useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
@@ -18,15 +18,23 @@ interface UploadDrawingProps {
 const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', securityKey = '', changeFinishEvent } = props;
+
+  const [requestLoading, setRequestLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
 
   const saveDrawingEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;
-      await uploadDrawing(file, { libId, securityKey });
-      message.success('导入成功');
-      setState(false);
-      changeFinishEvent?.();
+      try {
+        await uploadDrawing(file, { libId, securityKey });
+        message.success('导入成功');
+        setState(false);
+        changeFinishEvent?.();
+      } catch (msg) {
+        console.error(msg);
+      } finally {
+        setRequestLoading(false);
+      }
     });
   };
 
@@ -38,7 +46,12 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveDrawingEvent()}>
+        <Button
+          key="save"
+          type="primary"
+          onClick={() => saveDrawingEvent()}
+          loading={requestLoading}
+        >
           保存
         </Button>,
       ]}
