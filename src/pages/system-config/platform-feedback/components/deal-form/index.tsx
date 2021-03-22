@@ -62,11 +62,20 @@ const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
       </div>
       {replys && <div className={styles.handleInfo}>{replyElement}</div>}
       <div className={styles.handleForm}>
-        <CyFormItem label="回复" labelWidth={50} name="processStatus">
+        <CyFormItem label="回复" labelWidth={50} name="processStatus" initialValue="1">
           <EnumSelect enumList={HandleStatus} />
         </CyFormItem>
         <div style={{ marginTop: '-14px' }}>
-          <CyFormItem labelWidth={50} name="content">
+          <CyFormItem
+            labelWidth={50}
+            name="content"
+            rules={[
+              {
+                required: true,
+                message: '回复内容不能为空',
+              },
+            ]}
+          >
             <Input.TextArea rows={4} />
           </CyFormItem>
         </div>
