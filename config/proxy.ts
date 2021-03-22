@@ -7,7 +7,7 @@
  */
 export default {
   dev: {
-    '/project/api': {
+    '/project/api': {   // http://10.6.1.36:8026/api/
       target: 'http://10.6.1.36:8026',
       changeOrigin: true,
       pathRewrite: { '^/project': '/' },
