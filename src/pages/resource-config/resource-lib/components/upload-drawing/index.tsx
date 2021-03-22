@@ -26,6 +26,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
     form.validateFields().then(async (values) => {
       const { file } = values;
       try {
+        setRequestLoading(true);
         await uploadDrawing(file, { libId, securityKey });
         message.success('导入成功');
         setState(false);
