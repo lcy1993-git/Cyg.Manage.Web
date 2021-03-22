@@ -1,6 +1,7 @@
 import React,{useEffect,useRef} from "react";
 
 import xinjiang from "../../json/xinjiang.json";
+import sichuan from "../../json/sichuan.json";
 
 import * as echarts from 'echarts';
 import "echarts/lib/chart/map";
@@ -18,6 +19,10 @@ const MapChart:React.FC = () => {
 
     const divRef = useRef<HTMLDivElement>(null);
     let myChart:any = null;
+
+    // 暂时对四川服做应对处理
+
+    const mapName =  window.location.hostname === "218.6.242.125" ? "sichuan" : "xinjiang";
 
     const option = {
         tooltip: {
@@ -39,12 +44,12 @@ const MapChart:React.FC = () => {
         },
         series: [{
             type: 'map',
-            map: 'xinjiang',
+            map: mapName,
             tooltip: {
                 show: true
             },
             layoutCenter: ["50%", "50%"], //地图位置
-            layoutSize: '100%',
+            layoutSize: '95%',
             roam: false,
             geoIndex: 1,
             itemStyle: {
@@ -97,6 +102,7 @@ const MapChart:React.FC = () => {
     const initChart = () => {
         if (divRef && divRef.current) {
             echarts.registerMap("xinjiang", xinjiang)
+            echarts.registerMap("sichuan", sichuan)
             myChart = echarts.init(divRef.current as HTMLDivElement);
             
             // @ts-ignore
