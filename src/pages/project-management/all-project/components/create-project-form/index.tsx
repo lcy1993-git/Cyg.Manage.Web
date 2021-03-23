@@ -18,10 +18,10 @@ interface CreateProjectFormProps {
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const { field = {}, areaId, company, companyName } = props;
 
-  const { data: areaSelectData } = useGetSelectData(
-    { url: '/Area/GetList', extraParams: { pId: areaId } },
-    { ready: !!areaId, refreshDeps: [areaId] },
-  );
+  // const { data: areaSelectData } = useGetSelectData(
+  //   { url: '/Area/GetList', extraParams: { pId: areaId } },
+  //   { ready: !!areaId, refreshDeps: [areaId] },
+  // );
 
   const {
     projectCategory,
@@ -311,13 +311,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         </div>
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="所属市"
+            label="所属市公司"
             fieldKey={[field.fieldKey, 'cityCompany']}
             name={isEmpty(field) ? 'cityCompany' : [field.name, 'cityCompany']}
             labelWidth={120}
             align="right"
           >
-            <DataSelect options={areaSelectData} placeholder="请选择" />
+            <Input placeholder="请输入" />
           </CyFormItem>
         </div>
       </div>

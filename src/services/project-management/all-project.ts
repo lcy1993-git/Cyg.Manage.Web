@@ -231,6 +231,8 @@ export const getProjectTableStatistics = (params: AllProjectStatisticsParams) =>
 interface EngineerParams {
   name: string;
   province: string;
+  city: string;
+  area: string;
   libId: string;
   inventoryOverviewId: string;
   warehouseId: string;

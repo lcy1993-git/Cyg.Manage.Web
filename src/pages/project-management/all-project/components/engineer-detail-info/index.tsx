@@ -16,12 +16,12 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
 
     const { engineerId } = props;
 
-    const { data: engineerInfo, run} = useRequest(() => getEngineerInfo(engineerId), {
+    const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
         manual: true
     })
 
     useEffect(() => {
-        if(state) {
+        if (state) {
             run()
         }
     }, [state])
@@ -66,7 +66,7 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
                         {
                             engineerInfo?.startTime ? moment(engineerInfo?.startTime).format("YYYY-MM-DD") : ""
                         }
-                         至 
+                         至
                         {
                             engineerInfo?.endTime ? moment(engineerInfo?.endTime).format("YYYY-MM-DD") : ""
                         }
@@ -127,6 +127,27 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
                         }
                     </ReadonlyItem>
                 </div>
+            </div>
+            <div>
+                <ReadonlyItem label="区域">
+                    <span>
+                        {
+                            engineerInfo?.provinceName
+                        }
+                    </span>
+                    {
+                        engineerInfo?.cityName &&
+                        <span>
+                            /{engineerInfo?.cityName}
+                        </span>
+                    }
+                    {
+                        engineerInfo?.areaName &&
+                        <span>
+                            /{engineerInfo?.areaName}
+                        </span>
+                    }
+                </ReadonlyItem>
             </div>
         </Modal>
     )

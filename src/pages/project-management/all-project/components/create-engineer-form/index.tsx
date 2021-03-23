@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import CyFormItem from "@/components/cy-form-item"
-import { DatePicker, Input } from "antd"
+import { DatePicker, Input, Cascader } from "antd"
 import EnumSelect from "@/components/enum-select"
 import { FormImportantLevel, ProjectLevel } from "@/services/project-management/all-project"
 
@@ -8,79 +8,80 @@ import Rule from "./engineer-form-rule"
 import { useGetSelectData } from "@/utils/hooks"
 import DataSelect from "@/components/data-select"
 
+import city from "@/assets/local-data/area"
+
 interface CreateEngineerForm {
     exportDataChange?: (exportData: any) => void,
     areaId?: string
     libId?: string
     form?: any
+    canChange?: boolean
 }
 
 const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
-    const { exportDataChange, areaId: province, libId: inputLibId, form } = props;
+    const { exportDataChange, areaId: province, libId: inputLibId, form, canChange = true } = props;
 
     const [areaId, setAreaId] = useState<string>("");
     const [libId, setLibId] = useState<string>("");
 
-    const { data: areaSelectData = []} = useGetSelectData({ url: "/Area/GetList", extraParams: { pId: "-1" } });
-    const { data: libSelectData = []} = useGetSelectData({ url: "/ResourceLibrary/GetList", extraParams: { pId: "-1" } });
-    const { data: inventoryOverviewSelectData = []} = useGetSelectData({ url: "/InventoryOverview/GetList", extraParams: { libId: libId } }, { ready: !!libId, refreshDeps: [libId] });
-    const { data: warehouseSelectData = []} = useGetSelectData({ url: "/WarehouseOverview/GetList", extraParams: { areaId: areaId } }, { ready: !!areaId, refreshDeps: [areaId] });
-    const { data: companySelectData = []} = useGetSelectData({ url: "/ElectricityCompany/GetListByAreaId", extraParams: { areaId: areaId },titleKey:"text",valueKey: "text" }, { ready: !!areaId, refreshDeps: [areaId] });
+    const { data: libSelectData = [] } = useGetSelectData({ url: "/ResourceLibrary/GetList", extraParams: { pId: "-1" } });
+    const { data: inventoryOverviewSelectData = [] } = useGetSelectData({ url: "/InventoryOverview/GetList", extraParams: { libId: libId } }, { ready: !!libId, refreshDeps: [libId] });
+    const { data: warehouseSelectData = [] } = useGetSelectData({ url: "/WarehouseOverview/GetList", extraParams: { areaId: areaId } }, { ready: !!areaId, refreshDeps: [areaId] });
+    const { data: companySelectData = [] } = useGetSelectData({ url: "/ElectricityCompany/GetListByAreaId", extraParams: { areaId: areaId }, titleKey: "text", valueKey: "text" }, { ready: !!areaId, refreshDeps: [areaId] });
+
+    const mapHandleCityData = (data: any) => {
+        return {
+            label: data.text,
+            value: data.id,
+            children: data.children ? [{ label: "无", value: `${data.id}_null`, children: undefined }, ...data.children.map(mapHandleCityData)] : undefined
+        }
+    }
+
+    const afterHandleData = useMemo(() => {
+        return city.map(mapHandleCityData)
+    }, [JSON.stringify(city)])
 
     const valueChangeEvenet = useCallback(
         (prevValues: any, curValues: any) => {
             if (prevValues.province !== curValues.province) {
-                setAreaId(curValues.province)
+                const [currentAreaId = ""] = curValues.province;
+                setAreaId(currentAreaId)
                 exportDataChange?.({
-                    areaId: curValues.province,
+                    areaId: currentAreaId,
                     company: curValues.company,
                     companyName: companySelectData?.find((item: any) => item.value == curValues.company)?.label ?? ""
                 })
                 // 因为发生了改变，所以之前选择的应该重置
-                // if (form) {
-                //     const warehouseId = curValues.warehouseId;
-                //     const company = curValues.company;
-                    
-                //     const hasWarehouseId = warehouseSelectData.findIndex((item: any) => item.value === warehouseId)
-                //     const hasCompany = companySelectData.findIndex((item: any) => item.value === company)
-    
-                //     if(hasWarehouseId === -1) {
-                //         form.setFieldsValue({
-                //             warehouseId: undefined
-                //         })
-                //     }
-    
-                //     if(hasCompany === -1) {
-                //         form.setFieldsValue({
-                //             company: undefined
-                //         })
-                //     }
-                // }
+                if (form && canChange) {
+                    form.setFieldsValue({
+                        warehouseId: undefined
+                    })
+                    form.setFieldsValue({
+                        company: undefined
+                    })
+
+                }
             }
             if (prevValues.libId !== curValues.libId) {
                 setLibId(curValues.libId)
-                // if (form) {
-                //     const inventoryOverviewId = curValues.inventoryOverviewId;
-    
-                //     const hasInventoryOverviewId = inventoryOverviewSelectData.findIndex((item: any) => item.value === inventoryOverviewId);
-    
-                //     if(hasInventoryOverviewId === -1) {
-                //         form.setFieldsValue({
-                //             inventoryOverviewId: undefined,
-                //         })
-                //     }
-                // }
+                if (form && canChange) {
+                    form.setFieldsValue({
+                        inventoryOverviewId: undefined,
+                    })
+
+                }
             }
             if (prevValues.company !== curValues.company) {
+                const [currentAreaId = ""] = curValues.province;
                 exportDataChange?.({
-                    areaId: curValues.province,
+                    areaId: currentAreaId,
                     company: curValues.company,
                     companyName: companySelectData?.find((item: any) => item.value == curValues.company)?.label ?? ""
                 })
             }
             return false
         },
-        [],
+        [canChange],
     )
 
     useEffect(() => {
@@ -103,7 +104,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
                 </div>
                 <div className="flex1 flowHidden">
                     <CyFormItem label="区域" name="province" labelWidth={120} align="right" required rules={Rule.required}>
-                        <DataSelect placeholder="请选择" options={areaSelectData} />
+                        <Cascader options={afterHandleData} />
+
                     </CyFormItem>
                 </div>
             </div>
@@ -171,8 +173,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             </div>
             <div className="flex">
                 <div className="flex1 flowHidden">
-                    <CyFormItem label="计划年度" name="plannedYear" labelWidth={120} align="right" required rules={Rule.required}>
-                        <Input placeholder="请输入" />
+                    <CyFormItem label="计划年度" name="plannedYear" labelWidth={120} align="right" initialValue={new Date().getFullYear()} required rules={Rule.required}>
+                        <Input type="number" placeholder="请输入" />
                     </CyFormItem>
                 </div>
                 <div className="flex1 flowHidden">
