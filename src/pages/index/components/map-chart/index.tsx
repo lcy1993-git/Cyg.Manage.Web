@@ -33,7 +33,7 @@ const MapChart:React.FC = () => {
                 if(nameIndex > -1) {
                     return `
                         ${name} <br />
-                        项目数量: ${mapData[nameIndex].engineerQuantity}
+                        项目数量: ${mapData[nameIndex].projectQuantity}
                     `
                 }
                 return `

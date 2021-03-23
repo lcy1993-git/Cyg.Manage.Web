@@ -422,11 +422,16 @@ const ProjectManagement: React.FC = () => {
           importance,
           grade,
         } = values;
+
+        const [provinceNumber, city, area] = province;
+        
         await addEngineer({
           projects,
           engineer: {
             name,
-            province,
+            province: !isNaN(provinceNumber) ? provinceNumber : "",
+            city: !isNaN(city) ? city : "",
+            area: !isNaN(area) ? area : "",
             libId,
             inventoryOverviewId,
             warehouseId,
@@ -441,6 +446,7 @@ const ProjectManagement: React.FC = () => {
             grade,
           },
         });
+
         message.success('立项成功');
         modalCloseEvent();
         search();

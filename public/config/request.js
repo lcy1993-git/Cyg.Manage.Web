@@ -27,7 +27,7 @@ const arrayHasIpBaseUrlArray = {
 
 const arrayHasNotBaseUrlArray = {
     project: "/manage/v2/api",
-    common: "/api",
+    common: "/common/api",
     upload: "/storage/api",
     resource: "/resourcemanage/v2/api"
 }

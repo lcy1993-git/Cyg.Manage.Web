@@ -284,14 +284,15 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     const copyData: TreeDataItem[] = JSON.parse(JSON.stringify(tableShowData));
     const newData = copyData.map(mapAllDataTrue);
     setTableShowData(newData);
-    getSelectIds(toTreeData(newData));
+    getSelectIds(newData);
+
   };
 
   const allNoCheckEvent = () => {
     const copyData: TreeDataItem[] = JSON.parse(JSON.stringify(tableShowData));
     const newData = copyData.map(mapDataAllFalse);
     setTableShowData(newData);
-    getSelectIds(toTreeData(newData));
+    getSelectIds(newData);
   };
 
   const tableAllCheckedButton = () => {

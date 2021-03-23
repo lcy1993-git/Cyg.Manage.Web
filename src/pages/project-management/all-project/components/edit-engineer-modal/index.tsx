@@ -19,6 +19,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
     const [requestLoading, setRequestLoading] = useState(false);
     const [areaId, setAreaId] = useState<string>("");
     const [libId, setLibId] = useState<string>("");
+    const [canChange, setCanChange] = useState<boolean>(false);
 
     const [form] = Form.useForm();
 
@@ -27,6 +28,12 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
     const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
         manual: true,
         onSuccess: (res) => {
+            const provinceValue = [
+                engineerInfo?.province,
+                engineerInfo?.city ? engineerInfo?.city : `${engineerInfo?.province}_null`,
+                engineerInfo?.area ? engineerInfo?.area : (engineerInfo?.city ? `${engineerInfo?.city}_null` : undefined)
+            ];
+          
             form.setFieldsValue({
                 ...engineerInfo,
                 compileTime: engineerInfo?.compileTime ? moment(engineerInfo?.compileTime) : null,
@@ -34,10 +41,15 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
                 endTime: engineerInfo?.endTime ? moment(engineerInfo?.endTime) : null,
                 importance: String(engineerInfo?.importance),
                 grade: String(engineerInfo?.grade),
+                inventoryOverviewId: engineerInfo?.inventoryOverviewId ? engineerInfo?.inventoryOverviewId : "none",
+                warehouseId: engineerInfo?.warehouseId ? engineerInfo?.warehouseId : "none",
+                province: provinceValue
             })
 
             setAreaId(engineerInfo?.province ?? "")
             setLibId(engineerInfo?.libId ?? "")
+
+            setCanChange(true)
         }
     })
 
@@ -50,9 +62,14 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
     const edit = () => {
         form.validateFields().then(async (value) => {
             try {
+                const {province} = value;
+                const [provinceNumber, city, area] = province;
                 await editEngineer({
                     id: engineerId,
-                    ...value
+                    ...value,
+                    province: !isNaN(provinceNumber) ? provinceNumber : "",
+                    city: !isNaN(city) ? city : "",
+                    area: !isNaN(area) ? area : "",
                 })
                 message.success("工程信息更新成功")
                 setState(false)
@@ -77,7 +94,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
             </Button>,
             ]} onOk={() => edit()} onCancel={() => setState(false)}>
             <Form form={form} preserve={false}>
-                <CreateEngineerForm form={form} areaId={areaId} libId={libId} />
+                <CreateEngineerForm form={form} canChange={canChange} areaId={areaId} libId={libId} />
             </Form>
         </Modal>
     )
