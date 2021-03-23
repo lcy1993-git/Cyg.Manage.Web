@@ -22,7 +22,8 @@ export enum Status {
 }
 
 export enum HandleStatus {
-  '处理中' = 2,
+  '待处理' = 1,
+  '处理中',
   '处理完成',
 }
 
