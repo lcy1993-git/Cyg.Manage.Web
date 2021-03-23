@@ -1,7 +1,6 @@
 import { getVersionUpdate } from '@/services/common';
 import { useControllableValue, useRequest } from 'ahooks';
 import { versionArray } from '../../../../public/config/request';
-import { Form } from 'antd';
 import { Modal } from 'antd';
 import React, { Dispatch, SetStateAction } from 'react';
 import styles from './index.less';
@@ -33,14 +32,10 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
     }
   }, [state]);
 
-  const versionFix = versionInfo?.data.description.trim();
-
-  console.log(versionInfo?.data.description);
-
   return (
     <Modal
       title="版本功能更新"
-      bodyStyle={{ height: '500px', overflowY: 'auto' }}
+      bodyStyle={{ height: '450px', overflowY: 'auto' }}
       width={820}
       visible={state as boolean}
       footer=""
@@ -52,7 +47,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       </div> */}
       <div className={styles.versionItem}>
         <div className={styles.versionItemTitle}>【修复问题】</div>
-        <div className={styles.versionItemContent}>{versionFix}</div>
+        <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>
       </div>
       {/* <div className={styles.versionItem}>
         <div className={styles.versionItemTitle}>【体验优化】</div>

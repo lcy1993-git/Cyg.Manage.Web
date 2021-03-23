@@ -93,7 +93,7 @@ const LayoutHeader: React.FC = () => {
 
         <div className={styles.layoutMyBaseInfo}>
           <div onClick={() => setVersionModalVisible(true)}>
-            <BellOutlined className={styles.myMessageTips} />
+            <BellOutlined style={{ height: '32px' }} className={styles.myMessageTips} />
           </div>
           <Dropdown overlay={myBaseInfoMenu}>
             <div>
