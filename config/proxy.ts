@@ -7,7 +7,8 @@
  */
 export default {
   dev: {
-    '/project/api': {   // http://10.6.1.36:8026/api/
+    '/project/api': {
+      // http://10.6.1.36:8026/api/
       target: 'http://10.6.1.36:8026',
       changeOrigin: true,
       pathRewrite: { '^/project': '/' },
@@ -35,6 +36,13 @@ export default {
       pathRewrite: { '^': '' },
     },
   },
+  // version: {
+  //   '/api/': {
+  //     target: 'http://service.sirenmap.com:8101/',
+  //     changeOrigin: true,
+  //     pathRewrite: { '^': '' },
+  //   },
+  // },
   pre: {
     '/api/': {
       target: 'your pre url',

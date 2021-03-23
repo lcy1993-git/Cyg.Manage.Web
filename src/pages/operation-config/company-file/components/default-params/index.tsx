@@ -6,7 +6,6 @@ import { getCompanyFileTree } from '@/services/operation-config/company-file';
 
 const DefaultParams: React.FC = () => {
   const { data: categoryData } = useRequest(() => getCompanyFileTree());
-  console.log(categoryData);
 
   const mapTreeData = (data: any) => {
     return {
@@ -19,6 +18,23 @@ const DefaultParams: React.FC = () => {
   const handleData = useMemo(() => {
     return categoryData?.map(mapTreeData);
   }, [JSON.stringify(categoryData)]);
+
+  console.log(handleData);
+
+  const selectData = handleData?.map((item) => {
+    return item.children;
+  });
+
+  const treeData = selectData?.map((item) => {
+    return item.map((item: any) => {
+      return {
+        title: item.title,
+        value: item.value,
+      };
+    });
+  });
+
+  console.log(treeData);
 
   return (
     <>
@@ -34,7 +50,16 @@ const DefaultParams: React.FC = () => {
             <TreeSelect
               key="frameTemplate"
               style={{ width: '200px' }}
-              treeData={handleData}
+              treeData={
+                selectData?.map((item) => {
+                  return item.map((item: any) => {
+                    return {
+                      title: item.title,
+                      value: item.value,
+                    };
+                  });
+                })[0]
+              }
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -48,7 +73,16 @@ const DefaultParams: React.FC = () => {
             <TreeSelect
               key="directoryTemplate"
               style={{ width: '200px' }}
-              treeData={handleData}
+              treeData={
+                selectData?.map((item) => {
+                  return item.map((item: any) => {
+                    return {
+                      title: item.title,
+                      value: item.value,
+                    };
+                  });
+                })[2]
+              }
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -66,7 +100,16 @@ const DefaultParams: React.FC = () => {
             <TreeSelect
               key="descriptionTemplate"
               style={{ width: '200px' }}
-              treeData={handleData}
+              treeData={
+                selectData?.map((item) => {
+                  return item.map((item: any) => {
+                    return {
+                      title: item.title,
+                      value: item.value,
+                    };
+                  });
+                })[3]
+              }
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -81,7 +124,16 @@ const DefaultParams: React.FC = () => {
             <TreeSelect
               key="approve"
               style={{ width: '200px' }}
-              treeData={handleData}
+              treeData={
+                selectData?.map((item) => {
+                  return item.map((item: any) => {
+                    return {
+                      title: item.title,
+                      value: item.value,
+                    };
+                  });
+                })[1]
+              }
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -94,7 +146,16 @@ const DefaultParams: React.FC = () => {
             <TreeSelect
               key="audit"
               style={{ width: '200px' }}
-              treeData={handleData}
+              treeData={
+                selectData?.map((item) => {
+                  return item.map((item: any) => {
+                    return {
+                      title: item.title,
+                      value: item.value,
+                    };
+                  });
+                })[1]
+              }
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -109,7 +170,16 @@ const DefaultParams: React.FC = () => {
             <TreeSelect
               key="calibration"
               style={{ width: '200px' }}
-              treeData={handleData}
+              treeData={
+                selectData?.map((item) => {
+                  return item.map((item: any) => {
+                    return {
+                      title: item.title,
+                      value: item.value,
+                    };
+                  });
+                })[1]
+              }
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -122,7 +192,16 @@ const DefaultParams: React.FC = () => {
             <TreeSelect
               key="designSurvey"
               style={{ width: '200px' }}
-              treeData={handleData}
+              treeData={
+                selectData?.map((item) => {
+                  return item.map((item: any) => {
+                    return {
+                      title: item.title,
+                      value: item.value,
+                    };
+                  });
+                })[1]
+              }
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear

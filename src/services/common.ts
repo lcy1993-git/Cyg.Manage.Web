@@ -30,7 +30,7 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
     } else {
       if (code === 401) {
         history.push('/login');
-        message.error("会话超时，已自动跳转到登录界面")
+        message.error('会话超时，已自动跳转到登录界面');
       } else {
         if (res.content && isArray(res.content) && res.content.length > 0) {
           const errorMsgArray = res.content.map((item) => item.errorMessages).flat();
@@ -167,4 +167,18 @@ export const exportAuthority = (url: string, params: any) => {
     data: { ...params },
     responseType: 'blob',
   });
+};
+
+//版本更新内容
+
+interface VersionParams {
+  productCode: string;
+  moduleCode: string;
+  versionNo: string;
+}
+
+const versionUrl = 'http://service.sirenmap.com:8101/api/Version/Get';
+
+export const getVersionUpdate = (params: VersionParams) => {
+  return request(versionUrl, { method: 'POST', data: params });
 };

@@ -49,3 +49,5 @@ export const explainUrl = "http://service.pwcloud.cdsrth.com:8200/management";
 export const visualUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8021/index.html` : `${baseUrl}/webgis/index.html`;
 
 export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8029/index.html` : `${baseUrl}/chart/index.html`;
+
+export const versionArray = ['v2.0','v2.1','v2.2']

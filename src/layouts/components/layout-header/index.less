@@ -2,8 +2,8 @@
   .layoutHeaderContainer {
     display: flex;
     height: 53px;
-    background-color: @white-color;
     padding: 7px 20px;
+    background-color: @white-color;
     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.16);
     .layoutHeaderLogo {
       box-sizing: border-box;
@@ -12,25 +12,33 @@
       }
     }
     .layoutHeaderContent {
-      flex: 1 1;
       display: flex;
+      flex: 1 1;
       box-sizing: border-box;
       padding-left: 68px;
     }
 
     .layoutMyBaseInfo {
+      display: flex;
+      box-sizing: border-box;
       height: 32px;
       padding-top: 8px;
-      box-sizing: border-box;
-      .myBaseInfo {
+      text-align: right;
+      .myMessageTips {
+        padding-right: 35px;
+        font-size: 20px;
+        line-height: 32px;
         cursor: pointer;
+      }
+      .myBaseInfo {
         display: flex;
         height: 32px;
         text-align: right;
+        cursor: pointer;
         .myBaseInfoWord {
-          line-height: 1.4;
-          color: #fff;
           padding-left: 12px;
+          color: #fff;
+          line-height: 1.4;
         }
 
         .myHeadPortait {
@@ -45,12 +53,11 @@
       }
     }
   }
-  
 }
 .myNameContent {
-  font-size: 23px;
-  color: @black-color;
   padding: 6px 12px;
+  color: @black-color;
+  font-size: 23px;
 }
 .headerMenuIcon {
   margin-right: 12px;
