@@ -681,7 +681,7 @@ const ProjectManagement: React.FC = () => {
                   buttonJurisdictionArray?.includes('all-project-recall-project')) && (
                   <Dropdown overlay={arrangeMenu}>
                     <Button className="mr7">
-                      安排管理 <DownOutlined />
+                      安排 <DownOutlined />
                     </Button>
                   </Dropdown>
                 )}
@@ -689,7 +689,7 @@ const ProjectManagement: React.FC = () => {
                   buttonJurisdictionArray?.includes('all-project-share-recall')) && (
                   <Dropdown overlay={shareMenu}>
                     <Button className="mr7">
-                      安排共享 <DownOutlined />
+                      共享 <DownOutlined />
                     </Button>
                   </Dropdown>
                 )}

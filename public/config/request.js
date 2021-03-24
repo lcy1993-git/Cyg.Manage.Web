@@ -50,4 +50,6 @@ export const visualUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8021/index
 
 export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8029/index.html` : `${baseUrl}/chart/index.html`;
 
-export const versionArray = ['v2.0','v2.1','v2.2']
+export const versionArray = ['v2.0','v2.1','v2.2'];
+
+export const version = "1.0.23";

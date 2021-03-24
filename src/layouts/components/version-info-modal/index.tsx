@@ -1,6 +1,6 @@
 import { getVersionUpdate } from '@/services/common';
 import { useControllableValue, useRequest } from 'ahooks';
-import { versionArray } from '../../../../public/config/request';
+import { versionArray,version } from '../../../../public/config/request';
 import { Modal } from 'antd';
 import React, { Dispatch, SetStateAction } from 'react';
 import styles from './index.less';
@@ -19,7 +19,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       getVersionUpdate({
         productCode: '1301726010322214912',
         moduleCode: 'ManageWebV2',
-        versionNo: '1.0.21',
+        versionNo: version,
       }),
     {
       manual: true,
@@ -35,7 +35,6 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   return (
     <Modal
       title="版本功能更新"
-      bodyStyle={{ height: '450px', overflowY: 'auto' }}
       width={820}
       visible={state as boolean}
       footer=""
@@ -46,7 +45,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
         <div className={styles.versionItemContent}>{versionInfo?.description}</div>
       </div> */}
       <div className={styles.versionItem}>
-        <div className={styles.versionItemTitle}>【修复问题】</div>
+        <div className={styles.versionItemTitle}>【更新说明】</div>
         <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>
       </div>
       {/* <div className={styles.versionItem}>

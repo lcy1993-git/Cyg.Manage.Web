@@ -322,7 +322,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: '8%',
       render: (record: any) => {
         const { identitys = [] } = record;
-        return identitys.map((item: any) => {
+        return identitys.filter((item: any) => item.text).map((item: any) => {
           return (
             <span className="mr7" key={uuid.v1()}>
               <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>{item.text}</CyTag>
