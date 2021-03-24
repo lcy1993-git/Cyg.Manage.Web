@@ -53,7 +53,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'name' : [field.name, 'name']}
             labelWidth={120}
             align="right"
-            rules={Rule.required}
+            rules={Rule.name}
             required
           >
             <Input placeholder="请输入" />
