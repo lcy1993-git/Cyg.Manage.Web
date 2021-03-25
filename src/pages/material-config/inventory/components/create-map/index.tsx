@@ -379,7 +379,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
 
   return (
     <Modal
-      title="创建映射"
+      title="编辑映射"
       visible={state as boolean}
       bodyStyle={{
         padding: '0px 10px 10px 10px',

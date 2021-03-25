@@ -293,7 +293,7 @@ const ProjectManagement: React.FC = () => {
 
     await applyKnot(projectIds);
     message.success('申请结项成功');
-    refresh();
+    search();
   };
 
   const revokeKnotEvent = async () => {
@@ -305,7 +305,7 @@ const ProjectManagement: React.FC = () => {
 
     await revokeKnot(projectIds);
     message.success('撤回结项成功');
-    refresh();
+    search();
   };
 
   const auditKnotEvent = async () => {
@@ -330,7 +330,7 @@ const ProjectManagement: React.FC = () => {
 
     await noAuditKnot(projectIds);
     message.success('结项退回成功');
-    refresh();
+    search();
   };
 
   const postProjectMenu = (
@@ -424,14 +424,14 @@ const ProjectManagement: React.FC = () => {
         } = values;
 
         const [provinceNumber, city, area] = province;
-        
+
         await addEngineer({
           projects,
           engineer: {
             name,
-            province: !isNaN(provinceNumber) ? provinceNumber : "",
-            city: !isNaN(city) ? city : "",
-            area: !isNaN(area) ? area : "",
+            province: !isNaN(provinceNumber) ? provinceNumber : '',
+            city: !isNaN(city) ? city : '',
+            area: !isNaN(area) ? area : '',
             libId,
             inventoryOverviewId,
             warehouseId,

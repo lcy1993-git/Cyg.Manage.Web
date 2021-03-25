@@ -172,7 +172,6 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => tableLeftSlot}
-        // buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/Inventory/GetMaterialInventoryMappingList"
         columns={columns}
