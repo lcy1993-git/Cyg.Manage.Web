@@ -42,7 +42,10 @@ const Inventroy: React.FC = () => {
     return inventoryData.map((item) => {
       return {
         value: item.id,
-        title: `${item.provinceName}_${item.resourceLibName}_${item.year}_${item.name}`,
+        title:
+          item.name === item.version
+            ? `${item.provinceName}_${item.resourceLibName}_${item.year}_${item.name}`
+            : `${item.name}_${item.version}`,
       };
     });
   }, [JSON.stringify(inventoryData)]);
@@ -358,7 +361,7 @@ const Inventroy: React.FC = () => {
   return (
     <PageCommonWrap>
       <GeneralTable
-        scroll={{ x: 3500 }}
+        scroll={{ x: 3500, y: 577 }}
         ref={tableRef}
         titleSlot={titleSlotElement}
         buttonLeftContentSlot={searchComponent}

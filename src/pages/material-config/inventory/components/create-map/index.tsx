@@ -14,6 +14,9 @@ import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import CommonTitle from '@/components/common-title';
 import EmptyTip from '@/components/empty-tip';
+import InventoryTable from '../create-mapping-form';
+// import { Resizable } from 'react-resizable';
+// import { components, handleResize } from '@/components/resizable-table';
 
 interface CreateMapProps {
   inventoryOverviewId: string;
@@ -27,14 +30,16 @@ const { Search } = Input;
 const CreateMap: React.FC<CreateMapProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [activeMaterialId, setActiveMaterialId] = useState<string>('');
-  const [activeInventoryAreaId, setActiveInventoryAreaId] = useState<string>('-1');
+  const [libTableSelectRows, setLibTableSelectRow] = useState<any[]>([]);
+
   const [activeHasMapAreaId, setActiveHasMapAreaId] = useState<string>('-1');
   const [hasMapTableShowData, setHasMapTableShowData] = useState<any[]>([]);
-  const [inventorySelectArray, setInventorySelectArray] = useState<any[]>([]);
   const [mapTableSelectArray, setMapTableSelectArray] = useState<any[]>([]);
+  // const [resizableColumns, setResizableColumns] = useState<object[]>([]);
+
+  const [addMapTableVisible, setAddMapTableVisible] = useState<boolean>(false);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [inventoryKeyWord, setInventoryKeyWord] = useState<string>('');
 
   const resourceTableRef = useRef<HTMLDivElement>(null);
   const inventoryTableRef = useRef<HTMLDivElement>(null);
@@ -49,6 +54,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
     ready: !!inventoryOverviewId,
     refreshDeps: [inventoryOverviewId],
   });
+
   const { data: hasMapData = [], run: getMapData } = useRequest(
     () =>
       getHasMapData({
@@ -65,10 +71,33 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
     },
   );
 
+  /**可伸缩配置 */
+  // const tableComponents = components;
+
+  // const handleResize1 = (index: any) => (e: any, { size }) => {
+  //   let columns = resourceLibColumns;
+  //   columns = handleResize({
+  //     width: size.width,
+  //     index,
+  //     columns,
+  //   });
+  //   setResizableColumns(columns);
+  // };
+
+  // const columns = resizableColumns.map((col, index) => ({
+  //   ...col,
+  //   onHeaderCell: (column: any) => ({
+  //     width: column.width,
+  //     onResize: handleResize1(index),
+  //   }),
+  // }));
+
   const areaOptions = useMemo(() => {
-    return areaList.map((item) => ({
+    const copyList = JSON.parse(JSON.stringify(areaList));
+    copyList.unshift('全部区域');
+    return copyList.map((item: any) => ({
       label: item === '' ? '无' : item,
-      value: item,
+      value: item === '全部区域' ? '-1' : item,
     }));
   }, [JSON.stringify(areaList)]);
 
@@ -77,89 +106,50 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
       dataIndex: 'materialId',
       index: 'materialId',
       title: '编号',
-      width: 180,
+      width: 100,
     },
     {
       dataIndex: 'category',
       index: 'category',
       title: '类型',
-      width: 180,
+      width: 100,
     },
     {
       dataIndex: 'materialName',
       index: 'materialName',
       title: '名称',
-      width: 320,
+      width: 200,
     },
     {
       dataIndex: 'spec',
       index: 'spec',
       title: '规格型号',
-      width: 320,
+      width: 240,
     },
     {
       dataIndex: 'unit',
       index: 'unit',
       title: '单位',
-      width: 140,
+      width: 80,
     },
     {
       dataIndex: 'pieceWeight',
       index: 'pieceWeight',
       title: '单重(kg)',
-      width: 180,
+      width: 100,
     },
     {
       dataIndex: 'unitPrice',
       index: 'unitPrice',
       title: '单价(元)',
-      width: 180,
+      width: 100,
     },
 
     {
       dataIndex: 'materialType',
       index: 'materialType',
       title: '类别',
-      width: 180,
-    },
-  ];
-
-  const inventoryTableColumns = [
-    {
-      dataIndex: 'materialCode',
-      index: 'materialCode',
-      title: '物料编号',
-      width: 180,
-    },
-    {
-      dataIndex: 'materialName',
-      index: 'materialName',
-      title: '物料描述',
-      width: 180,
-    },
-    {
-      dataIndex: 'orderPrice',
-      index: 'orderPrice',
-      title: '订单净价',
-      width: 80,
-    },
-    {
-      dataIndex: 'area',
-      index: 'area',
-      title: '区域',
-      width: 80,
-    },
-    {
-      dataIndex: 'demandCompany',
-      index: 'demandCompany',
-      title: '需求公司',
       width: 140,
-    },
-    {
-      dataIndex: 'measurementUnit',
-      index: 'measurementUnit',
-      title: '计量单位',
-      width: 80,
     },
   ];
 
@@ -201,8 +191,8 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
       width: 80,
     },
     {
-      dataIndex: 'func',
-      index: 'func',
+      dataIndex: 'howToCreateText',
+      index: 'howToCreateText',
       title: '创建方式',
       width: 80,
     },
@@ -213,13 +203,6 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
       //@ts-ignore
 
       resourceTableRef.current.search();
-    }
-  };
-
-  const inventorySearch = () => {
-    if (inventoryTableRef && inventoryTableRef.current) {
-      //@ts-ignore
-      inventoryTableRef.current.search();
     }
   };
 
@@ -237,40 +220,6 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
     );
   };
 
-  const inventoryTableSearch = () => {
-    return (
-      <div className="flex">
-        <TableSearch width="208px">
-          <Search
-            value={inventoryKeyWord}
-            placeholder="物料编号/需求公司"
-            enterButton
-            onSearch={() => inventorySearch()}
-            onChange={(e) => setInventoryKeyWord(e.target.value)}
-          />
-        </TableSearch>
-        <TableSearch width="128px">
-          <Select
-            allowClear
-            options={areaOptions}
-            placeholder="区域"
-            value={activeInventoryAreaId}
-            onChange={(value) => inventoryTableSelectChange(value as string)}
-            style={{ width: '100%' }}
-          />
-        </TableSearch>
-      </div>
-    );
-  };
-
-  const inventoryTableAddButton = () => {
-    return (
-      <Button type="primary" onClick={() => addEvent()}>
-        添加
-      </Button>
-    );
-  };
-
   //当前映射过滤 --unfinished--
   const hasMapSearch = (value: any) => {
     hasMapTableShowData.filter((item) => {
@@ -282,38 +231,8 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
     });
   };
 
-  const hasMapTableSearch = () => {
-    return (
-      <div className="flex">
-        <TableSearch width="208px">
-          <Search
-            placeholder="物料编号/需求公司"
-            enterButton
-            onSearch={(value: any) => hasMapSearch(value)}
-          />
-        </TableSearch>
-        <TableSearch width="128px">
-          <Select
-            options={areaOptions}
-            value={activeHasMapAreaId}
-            onChange={(value) => setActiveHasMapAreaId(value as string)}
-            placeholder="区域"
-            style={{ width: '100%' }}
-          />
-        </TableSearch>
-      </div>
-    );
-  };
-
-  const inventoryTableSelectChange = (value: string) => {
-    setActiveInventoryAreaId(value as string);
-    if (inventoryTableRef && inventoryTableRef.current) {
-      // @ts-ignore
-      inventoryTableRef.current.refresh();
-    }
-  };
-
   const resourceTableChangeEvent = (data: any) => {
+    setLibTableSelectRow(data);
     if (data && data.length > 0) {
       setActiveMaterialId(data[0].id);
       if (inventoryTableRef && inventoryTableRef.current) {
@@ -321,32 +240,34 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         inventoryTableRef.current.searchByParams({
           materialId: data[0].id,
           inventoryOverviewId,
-          area: activeInventoryAreaId,
+          area: '-1',
         });
       }
     }
   };
 
-  const addEvent = () => {
-    const copyData = [...inventorySelectArray];
-    const copyHasMapData = [...hasMapData];
-
-    copyData.forEach((item) => {
-      if (copyHasMapData.findIndex((ite) => ite.id === item.id) === -1) {
-        copyHasMapData.push({ ...item, type: 'add' });
-      }
-    });
-
-    setHasMapTableShowData(copyHasMapData);
-  };
-
   const removeEvent = () => {
+    if (mapTableSelectArray && mapTableSelectArray.length === 0) {
+      message.warning('请先选择要移除的映射');
+      return;
+    }
     const copyArrayIds = [...mapTableSelectArray];
     const copyHasData = [...hasMapTableShowData];
 
     const newArray = copyHasData.filter((item) => !copyArrayIds.includes(item.id));
 
     setHasMapTableShowData(newArray);
+    message.success('已移除');
+    setMapTableSelectArray([]);
+  };
+
+  //添加映射
+  const addMapEvent = () => {
+    if (libTableSelectRows && libTableSelectRows.length === 0) {
+      message.warning('请选择要添加映射的行');
+      return;
+    }
+    setAddMapTableVisible(true);
   };
 
   const hasMapSelection = {
@@ -378,57 +299,89 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
   };
 
   return (
-    <Modal
-      title="编辑映射"
-      visible={state as boolean}
-      bodyStyle={{
-        padding: '0px 10px 10px 10px',
-        height: '800px',
-        overflowY: 'auto',
-        backgroundColor: '#F7F7F7',
-      }}
-      width="98%"
-      destroyOnClose
-      centered
-      footer={[
-        <Button key="cancle" onClick={() => setState(false)}>
-          取消
-        </Button>,
-        <Button key="save" type="primary" onClick={() => saveEvent()}>
-          保存
-        </Button>,
-      ]}
-      onCancel={() => setState(false)}
-    >
-      <div className={styles.mapForm}>
-        <div className={styles.resourceTable}>
-          {resourceData?.resourceLibId && (
-            <GeneralTable
-              ref={resourceTableRef}
-              defaultPageSize={20}
-              getSelectData={resourceTableChangeEvent}
-              columns={resourceLibColumns}
-              extractParams={{ resourceLibId: resourceData?.resourceLibId, keyWord: searchKeyWord }}
-              buttonLeftContentSlot={resourceLibSearch}
-              url="/Material/GetPageList"
-              requestSource="resource"
-              tableTitle="资源库列表"
-            />
-          )}
-        </div>
-        <div className={styles.resultTable}>
+    <>
+      <Modal
+        title="编辑映射"
+        visible={state as boolean}
+        bodyStyle={{
+          padding: '0px 10px 10px 10px',
+          height: '800px',
+          overflowY: 'auto',
+          backgroundColor: '#F7F7F7',
+        }}
+        width="98%"
+        destroyOnClose
+        centered
+        footer={[
+          <Button key="cancle" onClick={() => setState(false)}>
+            取消
+          </Button>,
+          <Button key="save" type="primary" onClick={() => saveEvent()}>
+            保存
+          </Button>,
+        ]}
+        onCancel={() => setState(false)}
+      >
+        <div className={styles.mapForm}>
+          <div className={styles.resourceTable}>
+            {resourceData?.resourceLibId && (
+              <GeneralTable
+                scroll={{ y: 547 }}
+                ref={resourceTableRef}
+                defaultPageSize={20}
+                getSelectData={resourceTableChangeEvent}
+                columns={resourceLibColumns}
+                extractParams={{
+                  resourceLibId: resourceData?.resourceLibId,
+                  keyWord: searchKeyWord,
+                }}
+                buttonLeftContentSlot={resourceLibSearch}
+                url="/Material/GetPageList"
+                requestSource="resource"
+                tableTitle="资源库列表"
+                // components={tableComponents}
+              />
+            )}
+          </div>
+
           <div className={styles.currentMapTable}>
             <div className={styles.currentMapTableButtonContent}>
-              <div className="flex1"></div>
+              <div className="flex1">
+                <div className={styles.currentMapTableSearch}>
+                  <TableSearch width="208px">
+                    <Search
+                      placeholder="物料编号/需求公司"
+                      enterButton
+                      onSearch={(value: any) => hasMapSearch(value)}
+                    />
+                  </TableSearch>
+                  <TableSearch width="240px">
+                    <Select
+                      options={areaOptions}
+                      value={activeHasMapAreaId}
+                      onChange={(value) => setActiveHasMapAreaId(value as string)}
+                      placeholder="区域"
+                      style={{ width: '100%' }}
+                    />
+                  </TableSearch>
+                </div>
+              </div>
               <div>
-                <Button onClick={() => removeEvent()}>移除</Button>
+                <Button className="mr7" onClick={() => removeEvent()}>
+                  移除
+                </Button>
+                <Button type="primary" onClick={() => addMapEvent()}>
+                  添加
+                </Button>
               </div>
             </div>
             <div className={styles.currentMapTableTitle}>
               <CommonTitle>当前映射关系</CommonTitle>
             </div>
+
             <div className={styles.currentMapTableContent}>
               <Table
+                // scroll={{ y: 300 }}
                 locale={{
                   emptyText: <EmptyTip className="pt20 pb20" />,
                 }}
@@ -445,29 +398,23 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
                 columns={hasMapTableColumns}
               />
             </div>
-          </div>
-          <div className={styles.inventoryTable}>
-            <GeneralTable
-              ref={inventoryTableRef}
-              getSelectData={(data) => setInventorySelectArray(data)}
-              buttonRightContentSlot={inventoryTableAddButton}
-              type="checkbox"
-              columns={inventoryTableColumns}
-              buttonLeftContentSlot={inventoryTableSearch}
-              url="/Inventory/GetMappingInventoryList"
-              requestSource="resource"
-              extractParams={{
-                inventoryOverviewId: inventoryOverviewId,
-                area: activeInventoryAreaId,
-                materialId: activeMaterialId,
-                keyWord: inventoryKeyWord,
-              }}
-              tableTitle="协议库存表"
-            />
+            <div className={styles.hasMapAccount}>
+              共<span className={styles.accountNumber}>{hasMapTableShowData.length}</span>条记录
+            </div>
           </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      <InventoryTable
+        hasMapData={hasMapTableShowData}
+        changeEvent={setHasMapTableShowData}
+        areaOptions={areaOptions}
+        inventoryOverviewId={inventoryOverviewId}
+        materialId={activeMaterialId}
+        visible={addMapTableVisible}
+        onChange={setAddMapTableVisible}
+      />
+    </>
   );
 };
 
