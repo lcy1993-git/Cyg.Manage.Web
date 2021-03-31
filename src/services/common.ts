@@ -116,6 +116,7 @@ interface GetCommonSelectDataParams {
   postType?: 'body' | 'query';
 }
 
+
 export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) => {
   const { url, params, requestSource = 'project', method = 'get', postType } = data;
 

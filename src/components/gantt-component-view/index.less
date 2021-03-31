@@ -1,0 +1,42 @@
+.ganttComponentView {
+    width: 100%;
+    height: 100%;
+    .ganttComponentButton {
+
+    }
+    .ganttComponentViewContent {
+        width: 100%;
+        height: 100%;
+        overflow-x: auto;
+        .ganttComponentViewRight {
+            .ganttComponentCalendarContent {
+                display: flex;
+                border-top: 1px solid @table-line-color;
+                border-left: 1px solid @table-line-color;
+                .ganttComponentMonth {
+                    color: @gray-color;
+                    font-size: 13px;
+                    .ganttComponentMonthContent {
+                        border-right: 1px solid @table-line-color;
+                        border-bottom: 1px solid @table-line-color;
+                        padding-left: 7px;
+                    }
+                    .ganttComponentMonthDayContent {
+                        display: flex;
+                    }
+                    .ganttComponentMonthDayAndWeekContent {
+                        display: flex;
+                    }
+                    .ganttCalendarItem {
+                        border-right: 1px solid @table-line-color;
+                        border-bottom: 1px solid @table-line-color;
+                        width: 30px;
+                        height: 30px;
+                        text-align: center;
+                        line-height: 30px;
+                    }
+                }
+            }
+        }
+    }
+}

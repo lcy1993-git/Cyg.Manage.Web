@@ -80,6 +80,7 @@ less 命名使用小驼峰
 ### 目前依赖说明
 ```
 umi.js                              // 阿里出品的企业级react架构框架
+ahooks                              // 阿里出品hooks库
 ant-design                          // 阿里出品的开源UI框架
 classnames                          // classnames 就是帮助我们快速拼接 class 的名称
 lodash                              // 快速进行处理数据的函数库
