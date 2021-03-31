@@ -293,7 +293,7 @@ const ProjectManagement: React.FC = () => {
 
     await applyKnot(projectIds);
     message.success('申请结项成功');
-    refresh();
+    search();
   };
 
   const revokeKnotEvent = async () => {
@@ -305,7 +305,7 @@ const ProjectManagement: React.FC = () => {
 
     await revokeKnot(projectIds);
     message.success('撤回结项成功');
-    refresh();
+    search();
   };
 
   const auditKnotEvent = async () => {
@@ -330,7 +330,7 @@ const ProjectManagement: React.FC = () => {
 
     await noAuditKnot(projectIds);
     message.success('结项退回成功');
-    refresh();
+    search();
   };
 
   const postProjectMenu = (
@@ -424,14 +424,14 @@ const ProjectManagement: React.FC = () => {
         } = values;
 
         const [provinceNumber, city, area] = province;
-        
+
         await addEngineer({
           projects,
           engineer: {
             name,
-            province: !isNaN(provinceNumber) ? provinceNumber : "",
-            city: !isNaN(city) ? city : "",
-            area: !isNaN(area) ? area : "",
+            province: !isNaN(provinceNumber) ? provinceNumber : '',
+            city: !isNaN(city) ? city : '',
+            area: !isNaN(area) ? area : '',
             libId,
             inventoryOverviewId,
             warehouseId,
@@ -502,9 +502,9 @@ const ProjectManagement: React.FC = () => {
         <div className={styles.projectManagemnetSearch}>
           <div className="flex">
             <div className="flex1 flex">
-              <TableSearch className="mr22" label="项目名称" width="208px">
+              <TableSearch className="mr22" label="项目名称" width="300px">
                 <Search
-                  placeholder="请输入"
+                  placeholder="请输入项目名称"
                   enterButton
                   value={keyWord}
                   onChange={(e) => setKeyWord(e.target.value)}

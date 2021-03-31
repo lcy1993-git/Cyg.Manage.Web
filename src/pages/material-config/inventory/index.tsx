@@ -16,6 +16,11 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
+// interface SelectParams {
+//   value: string | number;
+//   label: string;
+// }
+
 const Inventroy: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [inventoryId, setInventoryId] = useState<string>('');
@@ -25,6 +30,8 @@ const Inventroy: React.FC = () => {
   const [checkMappingVisible, setCheckMappingVisible] = useState<boolean>(false);
   const [addMapVisible, setAddMapVisible] = useState<boolean>(false);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
+
+  const [nowSelectedInv, setNowSelectedInv] = useState<string>('');
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [checkForm] = Form.useForm();
@@ -35,7 +42,10 @@ const Inventroy: React.FC = () => {
     return inventoryData.map((item) => {
       return {
         value: item.id,
-        title: `${item.provinceName}_${item.resourceLibName}_${item.year}_${item.name}`,
+        title:
+          item.name === item.version
+            ? `${item.provinceName}_${item.resourceLibName}_${item.year}_${item.name}`
+            : `${item.name}_${item.version}`,
       };
     });
   }, [JSON.stringify(inventoryData)]);
@@ -78,6 +88,14 @@ const Inventroy: React.FC = () => {
 
   //选择协议库存传InvId
   const searchByInv = (value: any) => {
+    const currentVal = handleInvData.filter((item: any) => {
+      if (value === item.value) {
+        return item.title;
+      }
+    });
+
+    setNowSelectedInv(currentVal[0].title);
+
     setInventoryId(value);
     if (tableRef && tableRef.current) {
       // @ts-ignore
@@ -207,19 +225,19 @@ const Inventroy: React.FC = () => {
       dataIndex: 'documentDateText',
       index: 'documentDateText',
       title: '凭证日期',
-      width: 200,
+      width: 260,
     },
     {
       dataIndex: 'effectiveStartDateText',
       index: 'effectiveStartDateText',
       title: '有效起始日期',
-      width: 200,
+      width: 260,
     },
     {
       dataIndex: 'effectiveEndDateText',
       index: 'effectiveEndDateText',
       title: '有效截止日期',
-      width: 200,
+      width: 260,
     },
     {
       dataIndex: 'biddingBatchNum',
@@ -283,6 +301,10 @@ const Inventroy: React.FC = () => {
     },
   ];
 
+  const titleSlotElement = () => {
+    return <div className={styles.invTitle}>{`-${nowSelectedInv}`}</div>;
+  };
+
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -295,7 +317,7 @@ const Inventroy: React.FC = () => {
 
         {buttonJurisdictionArray?.includes('inventory-create-mapping') && (
           <Button className={styles.importBtn} onClick={() => createMappingEvent()}>
-            创建映射
+            编辑映射
           </Button>
         )}
 
@@ -339,8 +361,9 @@ const Inventroy: React.FC = () => {
   return (
     <PageCommonWrap>
       <GeneralTable
-        scroll={{ x: 3500 }}
+        scroll={{ x: 3500, y: 577 }}
         ref={tableRef}
+        titleSlot={titleSlotElement}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
@@ -363,8 +386,10 @@ const Inventroy: React.FC = () => {
           width="95%"
           visible={checkMappingVisible}
           okText="确认"
+          centered
           onCancel={() => setCheckMappingVisible(false)}
           cancelText="取消"
+          bodyStyle={{ height: '820px', overflowY: 'auto' }}
           destroyOnClose
         >
           <Form form={checkForm} preserve={false}>

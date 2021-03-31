@@ -43,6 +43,7 @@
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.9.16",
     "@types/echarts": "^4.9.3",
+    "@types/react-resizable": "^1.7.2",
     "@umijs/route-utils": "^1.0.33",
     "ahooks": "^2.9.3",
     "antd": "^4.10.2",

@@ -1,19 +1,17 @@
-import React from "react"
-import logonSrc from "@/assets/image/logo.png";
-import {logoArray} from "../../../public/config/request";
+import React from 'react';
+import logonSrc from '@/assets/image/logo.png';
+import { logoArray } from '../../../public/config/request';
 
 interface LogoComponentProps {
-    className?: string
+  className?: string;
 }
 
-const LogoComponent:React.FC<LogoComponentProps> = (props) => {
-    const thisHostName = window.location.hostname;
-    const imgName = logoArray[thisHostName];
-    const {className,...rest} = props;
-    const imgSrc = imgName ? require("../../assets/image/"+imgName+"") : logonSrc;
-    return (
-        <img src={imgSrc} {...rest} className={className} alt="logo" />
-    )
-}
+const LogoComponent: React.FC<LogoComponentProps> = (props) => {
+  const thisHostName = window.location.hostname;
+  const imgName = logoArray[thisHostName];
+  const { className, ...rest } = props;
+  const imgSrc = imgName ? require('../../assets/image/' + imgName + '') : logonSrc;
+  return <img src={imgSrc} {...rest} className={className} alt="logo" />;
+};
 
-export default LogoComponent
+export default LogoComponent;

@@ -23,7 +23,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
             titleKey="text"
             valueKey="value"
             url="/CompanyFile/GetCategorys"
-            placeholder="应用"
+            placeholder="请选择文件类别"
           />
         </CyFormItem>
       )}

@@ -176,6 +176,7 @@ interface VersionParams {
   productCode: string;
   moduleCode: string;
   versionNo: string;
+  serverCode: string;
 }
 
 const versionUrl = 'http://service.sirenmap.com:8101/api/Version/Get';
