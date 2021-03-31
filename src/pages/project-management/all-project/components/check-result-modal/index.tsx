@@ -9,6 +9,7 @@ import {
 import { useControllableValue, useRequest } from 'ahooks';
 import { Button, Modal, Spin, message, Tabs } from 'antd';
 import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import CompileResultTab from '../check-compile-result';
 import DesignResultTab from '../check-design-result';
 
 import styles from './index.less';
@@ -105,6 +106,40 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       } finally {
         setRequestLoading(false);
       }
+    } else {
+      try {
+        setRequestLoading(true);
+        const path = await createCompileResult({
+          projectId: projectInfo.projectId,
+          paths: checkedKeys,
+        });
+        const res = await downloadFileComplie({
+          path: path,
+        });
+
+        let blob = new Blob([res], {
+          type: 'application/zip',
+        });
+        let finalyFileName = `导出成果.zip`;
+        // for IE
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
+        } else {
+          // for Non-IE
+          let objectUrl = URL.createObjectURL(blob);
+          let link = document.createElement('a');
+          link.href = objectUrl;
+          link.setAttribute('download', finalyFileName);
+          document.body.appendChild(link);
+          link.click();
+          window.URL.revokeObjectURL(link.href);
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setRequestLoading(false);
+      }
     }
 
     message.success('生成成功');
@@ -157,30 +192,15 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
               />
             </TabPane>
             <TabPane key="compile" tab="项目需求编制成果">
-              222
+              <CompileResultTab
+                mapTreeData={mapTreeData}
+                projectInfo={projectInfo}
+                createEvent={setCheckedKeys}
+                setTabEvent={setCurrentTab}
+              />
             </TabPane>
           </Tabs>
         </div>
-        {/* <div className={styles.treeTableContent}>
-                      <Spin spinning={loading}>
-                          {
-                              treeData.length > 0 &&
-                              <div className={styles.treeTable}>
-                                  <DirectoryTree
-                                      checkable
-                                      onCheck={onCheck}
-                                      checkedKeys={checkedKeys}
-                                      defaultExpandAll={true}
-                                      treeData={treeData.map(mapTreeData)}
-                                  />
-                              </div>
-                          }
-                          {
-                              treeData.length === 0 &&
-                              <EmptyTip description="暂无成果" />
-                          }
-                      </Spin>
-                  </div> */}
       </Spin>
     </Modal>
   );
