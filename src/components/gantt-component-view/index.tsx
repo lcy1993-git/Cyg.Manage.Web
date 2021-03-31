@@ -12,22 +12,26 @@ const testData = [
     id: 'engineerOne',
     startTime: '2021-03-17',
     endTime: '2021-05-01',
+    type: "engineer",
     children: [
       {
         name: '项目一',
         id: 'projectOne',
+        type: "project",
         startTime: '2021-03-17',
         endTime: '2021-03-24',
       },
       {
         name: '项目二',
         id: 'projectTwo',
+        type: "project",
         startTime: '2021-03-17',
         endTime: '2022-06-25',
       },
       {
         name: '项目三',
         id: 'projectThree',
+        type: "project",
         startTime: '2021-03-17',
         endTime: '2022-05-30',
       },
@@ -36,9 +40,10 @@ const testData = [
 ];
 
 interface GanttComponentViewProps {
-  dayWidth?: number;
-  itemHeight?: number;
-  dataSource?: any[];
+  dayWidth?: number
+  itemHeight?: number
+  dataSource?: any[]
+  title?: string
 }
 
 interface DataSourceItem {
@@ -59,22 +64,20 @@ const weekObject = {
 }
 
 const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
+  const { title = "工程项目名称" } = props;
+
   const flattenData = useMemo(() => {
     return flatten<DataSourceItem>(testData);
   }, [JSON.stringify(testData)]);
 
   const timeData = useGetMinAndMaxTime(flattenData);
+
   // 获取到了所有时间中的最大时间和最小时间
   const timeArray = useMemo(() => {
-    const minTime = moment(timeData.minStartTime);
-    const maxTime = moment(timeData.maxEndTime);
-    const diffMonths = maxTime.diff(minTime, "months");
-    // 获取最小时间所处月份的第一天
-    const minMonthStartTime = moment(minTime).startOf("month");
-
+    const {diffMonths,monthStartTime} = timeData;
     const finalyTimeData = [...new Array(diffMonths).keys()].map((item) => {
-      return moment(minMonthStartTime).add(item, "month").format("YYYY-MM-DD")
-    }).map((item) =>  {
+      return moment(monthStartTime).add(item, "month").format("YYYY-MM-DD")
+    }).map((item) => {
       return {
         startTime: item,
         days: moment(item).daysInMonth(),
@@ -83,7 +86,6 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
         month: moment(item).format("YYYY-MM")
       }
     })
-
     return finalyTimeData
   }, [JSON.stringify(timeData)])
 
@@ -95,25 +97,46 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
         </div>
         <div className={styles.ganttComponentMonthDayContent}>
           {
-          [...new Array(item.days).keys()].map((ite) => {
-            return (
-              <div key={`${item.key}_day${ite}`} className={styles.ganttCalendarItem}>{ite + 1}</div>
-            )
-          })
-        }
+            [...new Array(item.days).keys()].map((ite) => {
+              return (
+                <div key={`${item.key}_day${ite}`} className={styles.ganttCalendarItem}>{ite + 1}</div>
+              )
+            })
+          }
         </div>
         <div className={styles.ganttComponentMonthDayAndWeekContent}>
           {
-          [...new Array(item.days).keys()].map((ite) => {
-            return (
-              <div key={`${item.key}_week${ite}`} className={styles.ganttCalendarItem}>{
-                weekObject[moment(item.startTime).add(ite, "days").day()]
-              }</div>
-            )
-          })
-        }
+            [...new Array(item.days).keys()].map((ite) => {
+              return (
+                <div key={`${item.key}_week${ite}`} className={styles.ganttCalendarItem}>{
+                  weekObject[moment(item.startTime).add(ite, "days").day()]
+                }</div>
+              )
+            })
+          }
         </div>
-        
+      </div>
+    )
+  })
+
+  const menuElement = flattenData.map((item) => {
+    return (
+      <div className={styles.ganttComponentMenuItem} key={item.id}>
+        {item.name}
+      </div>
+    )
+  })
+
+  const ganttGriddingBackground = flattenData.map((item) => {
+    return (
+      <div className={styles.ganttComponentGriddingLine} style={{width: `${timeData.days * 30}px`}}>
+          {
+            [...new Array(timeData.days).keys()].map((item) => {
+              return (
+                <div className={styles.ganttComponentGriddingLineItem}></div>
+              )
+            })
+          }
       </div>
     )
   })
@@ -122,19 +145,31 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
     <div className={styles.ganttComponentView}>
       <div className={styles.ganttComponentButton}>
         <div className={styles.ganttComponentButtonLeft}>
-        
+
         </div>
         <div className={styles.ganttComponentButtonRight}>
-        
+
         </div>
       </div>
       <div className={styles.ganttComponentViewContent}>
         <div className={styles.ganttComponentViewLeft}>
-        
+          <div className={styles.ganttComponentMenuTitle}>
+            <div className={styles.ganttComponentMenuTitleContent}>
+              {title}
+            </div>
+          </div>
+          <div className={styles.ganttComponentMenuContent}>
+            {
+              menuElement
+            }
+          </div>
         </div>
         <div className={styles.ganttComponentViewRight}>
           <div className={styles.ganttComponentCalendarContent}>
             {calendarElement}
+          </div>
+          <div className={styles.ganttComponentGriddingContent}>
+            {ganttGriddingBackground}
           </div>
         </div>
       </div>

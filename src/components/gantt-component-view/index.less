@@ -7,12 +7,40 @@
     .ganttComponentViewContent {
         width: 100%;
         height: 100%;
-        overflow-x: auto;
+        display: flex;
+        .ganttComponentViewLeft {
+            width: 300px;
+            height: 100%;
+            flex-shrink: 0;
+            border: 1px solid @table-line-color;
+            .ganttComponentMenuTitle {
+                height: 81px;
+                border-bottom: 1px solid @table-line-color;
+                padding-top: 50px;
+                .ganttComponentMenuTitleContent {
+                    height: 31px;
+                    border-top: 1px solid @table-line-color;
+                    line-height: 30px;
+                    padding-left: 8px;
+                    color: @gray-color;
+                }
+            }
+            .ganttComponentMenuContent {
+                .ganttComponentMenuItem {
+                    height: 44px;
+                    line-height: 44px;
+                    color: @gray-color;
+                    border-bottom: 1px solid @table-line-color;
+                    padding-left: 8px;
+                }
+            }
+        }
         .ganttComponentViewRight {
+            border-top: 1px solid @table-line-color;
+            overflow-x: auto;
+            flex: 1;
             .ganttComponentCalendarContent {
                 display: flex;
-                border-top: 1px solid @table-line-color;
-                border-left: 1px solid @table-line-color;
                 .ganttComponentMonth {
                     color: @gray-color;
                     font-size: 13px;
@@ -34,6 +62,19 @@
                         height: 30px;
                         text-align: center;
                         line-height: 30px;
+                    }
+                }
+            }
+            .ganttComponentGriddingContent {
+                width: 100%;
+                .ganttComponentGriddingLine {
+                    width: 100%;
+                    display: flex;
+                    .ganttComponentGriddingLineItem {
+                        width: 30px;
+                        height: 45px;
+                        border-right: 1px solid @table-line-color;
+                        border-bottom: 1px solid @table-line-color;
                     }
                 }
             }

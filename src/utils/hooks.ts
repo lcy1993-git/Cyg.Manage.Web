@@ -128,9 +128,16 @@ export const useGetMinAndMaxTime = (timeArray: TimeArrayItem[]) => {
  
   }
 
+  const monthStartTime = moment(minStartTime).startOf("month");
+  const monthEndTime = moment(maxEndTime).endOf("month");
+
   return {
     minStartTime,
-    maxEndTime
+    maxEndTime,
+    days: moment(monthEndTime).diff(monthStartTime, "days"),
+    diffMonths: moment(monthEndTime).diff(monthStartTime, "months"),
+    monthStartTime,
+    monthEndTime
   }
   },[JSON.stringify(timeArray)])
   return minAndMaxTimeArray

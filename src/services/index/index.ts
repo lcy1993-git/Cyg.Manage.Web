@@ -78,7 +78,7 @@ export const getToDoStatistics = () => {
 
   export const getMapStatisticsData = () => {
     return cyRequest<MapStatisticsData[]>(() =>
-      request(`${baseUrl.project}/HomeStatistic/GetMap`, { method: 'GET' }),
+      request(`${baseUrl.project}/HomeStatistic/GetMap`, { method: 'POST', data: {province: "650000", type: "1"}}),
     );
   }
 
