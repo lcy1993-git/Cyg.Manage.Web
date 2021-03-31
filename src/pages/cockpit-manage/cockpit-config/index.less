@@ -9,8 +9,8 @@
     overflow: hidden;
     background-color: @white-color;
     .cockpitConfigPageTitle {
-      width: 100%;
       display: flex;
+      width: 100%;
       padding-top: 10px;
       padding-bottom: 10px;
 
@@ -25,26 +25,33 @@
     }
 
     .cockpitConfigPageContent {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       height: calc(100% - 52px);
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: left top;
       min-height: 828px;
+      background-repeat: no-repeat;
+      background-position: left top;
+      background-size: cover;
+      .emptyTip {
+        color: white;
+        font-size: 16px;
+      }
     }
   }
 
   .cockpitConfigPageMenu {
-      width: 288px;
-      background-color: @white-color;
-      margin-right: 10px;
-      .cockpitConfigPageMenuTitle {
-        padding: 10px 16px;
-        font-size: 13px;
-        border-bottom: 1px solid @split-color;
-      }
-      .cockpitConfigPageMenuContent {
-        padding-top: 10px;
-      }
+    width: 288px;
+    margin-right: 10px;
+    background-color: @white-color;
+    .cockpitConfigPageMenuTitle {
+      padding: 10px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid @split-color;
+    }
+    .cockpitConfigPageMenuContent {
+      padding-top: 10px;
+    }
   }
 }
