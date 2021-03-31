@@ -85,6 +85,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     projectId: '',
     projectName: '',
     projectStatus: '',
+    projectStage: '',
   });
 
   const addProjectEvent = (projectNeedValue: AddProjectValue) => {
@@ -122,6 +123,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     jurisdictionInfo: JurisdictionInfo,
     tableItemData: any,
     engineerInfo: any,
+    status: any,
   ) => {
     return (
       <Menu>
@@ -154,19 +156,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             复制项目
           </Menu.Item>
         )}
-        {buttonJurisdictionArray?.includes('all-project-check-result') && (
-          <Menu.Item
-            onClick={() =>
-              checkResult({
-                projectId: tableItemData.id,
-                projectName: tableItemData.name,
-                projectStatus: tableItemData.stateInfo.statusText,
-              })
-            }
-          >
-            查看成果
-          </Menu.Item>
-        )}
+        {buttonJurisdictionArray?.includes('all-project-check-result') &&
+          status > 4 &&
+          status !== 14 && (
+            <Menu.Item
+              onClick={() =>
+                checkResult({
+                  projectId: tableItemData.id,
+                  projectName: tableItemData.name,
+                  projectStatus: tableItemData.stateInfo.statusText,
+                  projectStage: tableItemData.stageText,
+                })
+              }
+            >
+              查看成果
+            </Menu.Item>
+          )}
       </Menu>
     );
   };
@@ -322,13 +327,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: '8%',
       render: (record: any) => {
         const { identitys = [] } = record;
-        return identitys.filter((item: any) => item.text).map((item: any) => {
-          return (
-            <span className="mr7" key={uuid.v1()}>
-              <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>{item.text}</CyTag>
-            </span>
-          );
-        });
+        return identitys
+          .filter((item: any) => item.text)
+          .map((item: any) => {
+            return (
+              <span className="mr7" key={uuid.v1()}>
+                <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
+                  {item.text}
+                </CyTag>
+              </span>
+            );
+          });
       },
     },
     {
@@ -340,7 +349,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
         return (
           <Dropdown
-            overlay={() => projectItemMenu(operationAuthority, record, engineerInfo)}
+            overlay={() =>
+              projectItemMenu(operationAuthority, record, engineerInfo, record.stateInfo.status)
+            }
             placement="bottomLeft"
             arrow
           >

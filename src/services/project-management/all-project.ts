@@ -557,7 +557,7 @@ export const modifyMultipleEngineerLib = (params: any) => {
   );
 };
 
-// 获取成果树状结构
+// 获取设计成果树状结构
 export const getResultTreeData = (projectId: string) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory`, {
@@ -567,7 +567,17 @@ export const getResultTreeData = (projectId: string) => {
   );
 };
 
-// 生成成果
+//获取项目编制成果树状结构
+export const getCompileResultTreeData = (projectId: string) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.upload}/Find/ProjectCompilationResultsFileDirectory`, {
+      method: 'GET',
+      params: { projectId },
+    }),
+  );
+};
+
+// 生成设计成果
 export const createResult = (params: any) => {
   return cyRequest(() =>
     request(`${baseUrl.upload}/Find/GetProjectOutcomeFileDownloadPath`, {
@@ -577,9 +587,28 @@ export const createResult = (params: any) => {
   );
 };
 
+//生成项目编制成果
+export const createCompileResult = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.upload}/Find/GetProjectCompilationResultsFileDownloadPath`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
 // 根据编号下载文件
 export const downloadFile = (params: any) => {
   return request(`${baseUrl.upload}/Download/GetProjectOutcomeFile`, {
+    method: 'GET',
+    params,
+    responseType: 'blob',
+  });
+};
+
+//下载--项目编制成果
+export const downloadFileComplie = (params: any) => {
+  return request(`${baseUrl.upload}/Download/GetProjectCompilationResultFile`, {
     method: 'GET',
     params,
     responseType: 'blob',
