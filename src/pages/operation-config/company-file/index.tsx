@@ -38,7 +38,7 @@ const CompanyFile: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
   const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false);
-  const [fileGroupId, setGroupId] = useState<string>('');
+  const [fileGroupId, setFileGroupId] = useState<string>('');
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
@@ -290,7 +290,7 @@ const CompanyFile: React.FC = () => {
 
   //选择文件组别获取对应公司文件
   const searchByFileGroup = (value: any) => {
-    setGroupId(value);
+    setFileGroupId(value);
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.searchByParams({
@@ -319,13 +319,14 @@ const CompanyFile: React.FC = () => {
   };
 
   const deleteFileGroupEvent = async () => {
-    if (fileGroupId == '') {
+    if (fileGroupId === '') {
       message.warning('未选择要删除公司文件组别');
       return;
     }
     await deleteFileGroupItem(fileGroupId);
     message.success('已删除');
-    search();
+    getfileGroup();
+    refresh();
   };
 
   return (
