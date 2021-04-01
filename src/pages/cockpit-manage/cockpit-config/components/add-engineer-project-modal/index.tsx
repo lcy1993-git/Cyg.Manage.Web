@@ -62,7 +62,7 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
                 <Form.Item name="area">
                     <Checkbox.Group>
                         <Checkbox value="province">省</Checkbox>
-                        <Checkbox value="city">市</Checkbox>
+                        {/* <Checkbox value="city">市</Checkbox> */}
                     </Checkbox.Group>
                 </Form.Item>
                 <CommonTitle>生产负荷</CommonTitle>

@@ -47,9 +47,9 @@ const AddOtherStatisticModal: React.FC<AddOtherStatistic> = (props) => {
                 <CommonTitle>通知栏</CommonTitle>
                 <Form.Item name="type">
                     <Checkbox.Group>
-                        <Checkbox value="person">已结项</Checkbox>
-                        <Checkbox value="department">待安排</Checkbox>
-                        <Checkbox value="company">其他消息</Checkbox>
+                        <Checkbox value="wait">已结项</Checkbox>
+                        <Checkbox value="arrange">待安排</Checkbox>
+                        <Checkbox value="other">其他消息</Checkbox>
                     </Checkbox.Group>
                 </Form.Item>
             </Form>

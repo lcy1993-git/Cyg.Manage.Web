@@ -85,6 +85,7 @@ interface CockpitProps {
     h: number;
     x: number;
     y: number;
+    componentProps?: any
 }
 
 const componentType = {
@@ -97,6 +98,23 @@ const componentType = {
     projectType: <ProjectType />,
     projectSchedule: <ProjectSchedule />,
 };
+
+const getComponentByType = (type: string, componentProps: any) => {
+    switch (type) {
+        case "toDo":
+            return (
+                <ToDo componentProps={componentProps} />
+            )
+            break;
+        case "mapComponent":
+            return (
+                <MapComponent componentProps={componentProps} />
+            )
+            break;
+        default:
+            return undefined
+    }
+}
 
 const CockpitManage: React.FC = () => {
     const [configArray, setConfigArray] = useState<CockpitProps[]>([]);
@@ -159,7 +177,7 @@ const CockpitManage: React.FC = () => {
 
     // 删除事件
     const deleteEvent = (record: any) => {
-        const copyConfigArray = JSON.parse(JSON.stringify(configArray));
+        const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
         const dataIndex = copyConfigArray.findIndex((item) => item.key === record.key);
         copyConfigArray.splice(dataIndex, 1);
         setConfigArray(copyConfigArray)
@@ -171,10 +189,11 @@ const CockpitManage: React.FC = () => {
     }
 
     const configComponentElement = configArray.map((item) => {
+        console.log(configArray)
         return (
             <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h }}>
                 <ConfigWindow deleteEvent={deleteEvent} editEvent={editEvent} record={item}>
-                    {componentType[item.name]}
+                    {getComponentByType(item.name, item.componentProps)}
                 </ConfigWindow>
             </div>
         );

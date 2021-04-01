@@ -9,9 +9,11 @@ import 'echarts/lib/component/tooltip';
 import { useRequest, useSize } from "ahooks";
 import { getMapStatisticsData } from "@/services/index";
 
+import {mapInfo} from "../../../../../public/config/request"
+
 const MapChart:React.FC = () => {
 
-    const {data: mapData = []} = useRequest(() => getMapStatisticsData(), {
+    const {data: mapData = []} = useRequest(() => getMapStatisticsData(mapInfo.areaId), {
         onSuccess: () => {
             initChart();
         }
@@ -19,10 +21,6 @@ const MapChart:React.FC = () => {
 
     const divRef = useRef<HTMLDivElement>(null);
     let myChart:any = null;
-
-    // 暂时对四川服做应对处理
-
-    const mapName =  window.location.hostname === "218.6.242.125" ? "sichuan" : "xinjiang";
 
     const option = {
         tooltip: {
@@ -44,7 +42,7 @@ const MapChart:React.FC = () => {
         },
         series: [{
             type: 'map',
-            map: mapName,
+            map: mapInfo.mapName,
             tooltip: {
                 show: true
             },
