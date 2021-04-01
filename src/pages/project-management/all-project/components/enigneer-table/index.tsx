@@ -230,7 +230,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     {
       title: '项目性质',
       dataIndex: 'natureTexts',
-      width: '8%',
+      width: '10%',
       render: (record: any) => {
         const { natureTexts = [] } = record;
         return natureTexts.map((item: any) => {

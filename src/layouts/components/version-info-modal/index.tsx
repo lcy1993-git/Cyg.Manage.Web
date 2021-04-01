@@ -21,7 +21,6 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
 
   const thisHostName = window.location.hostname;
   const serverCode = serverCodeArray[thisHostName];
-  console.log(serverCode);
 
   const { data: versionInfo, run: getVersionInfoEvent } = useRequest(
     () =>
