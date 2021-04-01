@@ -6,6 +6,8 @@ import { Form, Input, message, Modal } from "antd";
 import React, { Dispatch } from "react";
 import { SetStateAction } from "react";
 
+import {history} from "umi";
+
 interface EditPasswordProps {
     visible: boolean
     onChange: Dispatch<SetStateAction<boolean>>
@@ -33,14 +35,21 @@ const CutAccount = (props: EditPasswordProps) => {
             localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
 
             setState(false)
-            message.success("账户切换成功")
+            message.success("账户切换成功");
+            history.push("/index");
             location.reload();
         })
     }
 
+    const onKeyDownLogin = (e: any) => {
+        if (e.keyCode == 13) {
+            sureCutAccount();
+        }
+      };
+
     return (
         <Modal title="快捷登录" visible={state as boolean} destroyOnClose okText="确定" cancelText="取消" onCancel={() => setState(false)} onOk={() => sureCutAccount()}>
-            <Form form={form} preserve={false}>
+            <Form form={form} preserve={false} onKeyDown={(e)=>onKeyDownLogin(e)}>
                 <CyFormItem name="userName" label="用户名" required labelWidth={100} rules={[
                     {
                         required: true, message: "请输入用户名"
