@@ -1,8 +1,8 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { useRequest } from "ahooks"
 import barChartsOptions from '../../utils/barChartsOption';
 import BarChart from "@/components/bar-chart";
-import { getProjectStage } from "@/services/index"
+import { getProjectBuliding } from "@/services/index"
 import uuid from "node-uuid"
 import AnnularFighure from "@/components/annular-fighure"
 import styles from "./index.less"
@@ -11,8 +11,8 @@ interface IProps {
   type: "bar" | "pie"
 }
 
-const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
-    const { data: projectStageInfo } = useRequest(() => getProjectStage(), {
+const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
+    const { data: projectBuilding } = useRequest(() => getProjectBuliding(), {
         pollingWhenHidden: false
     })
 
@@ -20,13 +20,13 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
         "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
     ]
 
-    const sum = projectStageInfo?.reduce((sum, item) => {
+    const sum = projectBuilding?.reduce((sum, item) => {
         return sum + item.value;
-    },0) ?? 1
+    },0) ?? 1;
 
     let chartElement = null;
     if (type === "pie") {
-      chartElement = projectStageInfo?.map((item, index) => {
+      chartElement = projectBuilding?.map((item, index) => {
         const proportion = ((item.value / sum) * 100).toFixed(2) + "%"
         const option = {
             title: {
@@ -35,7 +35,7 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
                 top: "41%",
                 textStyle: {
                     color: "#74AC91",
-                    fontSize: 10,
+                    fontSize: 12,
                     align: "center",
                     fontWight: 100
                 }
@@ -43,7 +43,7 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
             series: [
                 {
                     type: 'pie',
-                    radius: ['55%', '70%'],  //设置内外环半径,两者差值越大，环越粗
+                    radius: ['55%', '70%'],   //设置内外环半径,两者差值越大，环越粗
                     hoverAnimation: false,　 //移入图形是否放大
                     labelLine: {
                         normal: {  //label线不显示
@@ -81,10 +81,9 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
         )
       })
     } else if (type === "bar") {
-      const optionBar = barChartsOptions(projectStageInfo!);
+      const optionBar = barChartsOptions(projectBuilding!)
       chartElement = (<BarChart options={optionBar} />)
     }
-
 
     return (
         <>
@@ -93,4 +92,4 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
     )
 }
 
-export default ProjectStage
+export default ProjectClassify

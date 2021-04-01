@@ -1,12 +1,17 @@
 import React, { useMemo } from "react"
 import { useRequest } from "ahooks"
+import barChartsOptions from '../../utils/barChartsOption';
+import BarChart from "@/components/bar-chart";
 import { getProjectClassify } from "@/services/index"
 import uuid from "node-uuid"
 import AnnularFighure from "@/components/annular-fighure"
 import styles from "./index.less"
 
+interface IProps {
+  type: "bar" | "pie"
+}
 
-const ProjectClassify: React.FC = () => {
+const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
     const { data: projectClassify } = useRequest(() => getProjectClassify(), {
         pollingWhenHidden: false
     })
@@ -17,9 +22,11 @@ const ProjectClassify: React.FC = () => {
 
     const sum = projectClassify?.reduce((sum, item) => {
         return sum + item.value;
-    },0) ?? 1
+    },0) ?? 1;
 
-    const chartElement = projectClassify?.map((item, index) => {
+    let chartElement = null;
+    if (type === "pie") {
+      chartElement = projectClassify?.map((item, index) => {
         const proportion = ((item.value / sum) * 100).toFixed(2) + "%"
         const option = {
             title: {
@@ -72,7 +79,11 @@ const ProjectClassify: React.FC = () => {
                 </div>
             </div>
         )
-    })
+      })
+    } else if (type === "bar") {
+      const optionBar = barChartsOptions(projectClassify!)
+      chartElement = (<BarChart options={optionBar} />)
+    }
 
     return (
         <>

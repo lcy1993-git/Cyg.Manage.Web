@@ -17,19 +17,22 @@ const PersonnelLoad:React.FC = () => {
         {
             id: "person",
             name: "员工",
-            value: "1"
+            value: "1",
+            title: "员工负荷"
         },
         {
             id: "array",
             name: "部组",
-            value: "2"
+            value: "2",
+            title: "部组负荷"
         },
         {
             id: "company",
             name: "公司",
-            value: "3"
+            value: "3",
+            title: "公司负荷"
         }
-    ]
+    ];
 
     const type = useMemo(() => {
         const dataIndex = tabData.findIndex((item) => item.id === activeKey);
@@ -37,6 +40,14 @@ const PersonnelLoad:React.FC = () => {
             return tabData[dataIndex].value
         }
         return "1"
+    }, [activeKey])
+
+    const title = useMemo(() => {
+      const dataIndex = tabData.findIndex((item) => item.id === activeKey);
+      if(dataIndex > -1) {
+          return tabData[dataIndex].title
+      }
+      return tabData[0].title;
     }, [activeKey])
 
     const {data: burdensData} = useRequest(() => getBurdens(type),{
@@ -142,10 +153,32 @@ const PersonnelLoad:React.FC = () => {
                     }
                 }
             },
-        }]
+        }],
+        dataZoom: [
+          {
+            type: 'inside',
+            start: 0,
+            end: 20,
+            yAxisIndex: [0, 1],
+            maxValueSpan: 5
+          },
+          {
+            // show: false,
+            type: "slider",
+            borderColor: "#1a8755",
+            backgroundColor: "#1e3933",
+            width: 15,
+            start: 0,
+            end: 20,
+            yAxisIndex: [0, 1]
+          }
+        ]
     };
+
+    console.log();
+
     return (
-        <ChartBox title="人员负荷">
+        <ChartBox title={title}>
             <div className={styles.personnelLoad}>
                 <div className={styles.personnelLoadCondition}>
                     <div className="flex1"></div>

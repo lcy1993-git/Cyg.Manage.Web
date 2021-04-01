@@ -1,12 +1,17 @@
 import React from "react"
 import { useRequest } from "ahooks"
+import barChartsOptions from '../../utils/barChartsOption';
+import BarChart from "@/components/bar-chart";
 import { getProjectCategory } from "@/services/index"
 import uuid from "node-uuid"
 import AnnularFighure from "@/components/annular-fighure"
 import styles from "./index.less"
 
+interface IProps {
+  type: "bar" | "pie"
+}
 
-const ProjectCategory: React.FC = () => {
+const ProjectCategory: React.FC<IProps> = ({ type = "pie" }) => {
     const { data: projectCategoryInfo } = useRequest(() => getProjectCategory(), {
         pollingWhenHidden: false
     })
@@ -19,7 +24,9 @@ const ProjectCategory: React.FC = () => {
         return sum + item.value;
     },0) ?? 1
 
-    const chartElement = projectCategoryInfo?.map((item, index) => {
+    let chartElement = null;
+    if (type === "pie") {
+      chartElement = projectCategoryInfo?.map((item, index) => {
         const proportion = ((item.value / sum) * 100).toFixed(2) + "%"
         const option = {
             title: {
@@ -72,7 +79,12 @@ const ProjectCategory: React.FC = () => {
                 </div>
             </div>
         )
-    })
+      })
+    } else if(type === "bar") {
+      const optionBar = barChartsOptions(projectCategoryInfo!)
+      chartElement = (<BarChart options={optionBar} />)
+    }
+
 
     return (
         <>

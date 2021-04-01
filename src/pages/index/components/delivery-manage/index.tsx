@@ -128,6 +128,7 @@ const DeliveryManage: React.FC = () => {
     series: [
       {
         data: valueArray,
+        // type: 'pie',
         type: 'bar',
         itemStyle: {
           normal: {
@@ -147,6 +148,25 @@ const DeliveryManage: React.FC = () => {
         },
       },
     ],
+    dataZoom: [
+      {
+        type: 'inside',
+        start: 0,
+        end: 20,
+        yAxisIndex: [0, 1],
+        maxValueSpan: 5
+      },
+      {
+        // show: false,
+        type: "slider",
+        borderColor: "#1a8755",
+        backgroundColor: "#1e3933",
+        width: 15,
+        start: 0,
+        end: 20,
+        yAxisIndex: [0, 1]
+      }
+    ]
   };
 
   return (
@@ -156,6 +176,7 @@ const DeliveryManage: React.FC = () => {
           <div className={styles.deliverySelect}>
             <Select bordered={false} defaultValue="number" suffixIcon={<CaretDownOutlined />}>
               <Option value="number">项目数量</Option>
+              <Option value="designFee">设计费</Option>
             </Select>
           </div>
           <div className={styles.deliveryTab}>
