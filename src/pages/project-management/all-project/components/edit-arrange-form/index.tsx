@@ -3,6 +3,8 @@ import { TreeSelect, Divider } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import { getGroupInfo } from '@/services/project-management/all-project';
 import { useRequest } from 'ahooks';
+import uuid from 'node-uuid';
+
 
 interface EditArrangeFormProps {
   allotCompanyId?: string
@@ -22,6 +24,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     return {
       title: data.text,
       value: data.id,
+      key:uuid.v1(),
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };

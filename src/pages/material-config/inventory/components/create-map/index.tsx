@@ -5,7 +5,7 @@ import {
   saveMapData,
 } from '@/services/material-config/inventory';
 import { useControllableValue, useRequest } from 'ahooks';
-import { Modal, Input, Button, Select, Table, message } from 'antd';
+import { Modal, Input, Button, Select, Table, message, Spin } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
 import { SetStateAction } from 'react';
 import { Dispatch } from 'react';
@@ -55,7 +55,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
     refreshDeps: [inventoryOverviewId],
   });
 
-  const { data: hasMapData = [], run: getMapData } = useRequest(
+  const { data: hasMapData = [], run: getMapData, loading } = useRequest(
     () =>
       getHasMapData({
         inventoryOverviewId,
@@ -366,7 +366,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
                   </TableSearch>
                 </div>
               </div>
-              <div>
+              <div className={styles.buttonArea}>
                 <Button className="mr7" onClick={() => removeEvent()}>
                   移除
                 </Button>
@@ -380,23 +380,24 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
             </div>
 
             <div className={styles.currentMapTableContent}>
-              <Table
-                // scroll={{ y: 300 }}
-                locale={{
-                  emptyText: <EmptyTip className="pt20 pb20" />,
-                }}
-                dataSource={hasMapTableShowData}
-                bordered={true}
-                rowKey={'id'}
-                pagination={false}
-                rowSelection={{
-                  type: 'checkbox',
-                  columnWidth: '38px',
-                  selectedRowKeys: mapTableSelectArray,
-                  ...hasMapSelection,
-                }}
-                columns={hasMapTableColumns}
-              />
+              <Spin spinning={loading}>
+                <Table
+                  locale={{
+                    emptyText: <EmptyTip className="pt20 pb20" />,
+                  }}
+                  dataSource={hasMapTableShowData}
+                  bordered={true}
+                  rowKey={'id'}
+                  pagination={false}
+                  rowSelection={{
+                    type: 'checkbox',
+                    columnWidth: '38px',
+                    selectedRowKeys: mapTableSelectArray,
+                    ...hasMapSelection,
+                  }}
+                  columns={hasMapTableColumns}
+                />
+              </Spin>
             </div>
             <div className={styles.hasMapAccount}>
               共<span className={styles.accountNumber}>{hasMapTableShowData.length}</span>条记录
