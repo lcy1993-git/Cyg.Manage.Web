@@ -80,13 +80,14 @@ export const getBurdens = (type: string) => {
 interface MapStatisticsData {
   area: string;
   engineerQuantity: number;
+  projectQuantity: number;
 }
 
-export const getMapStatisticsData = () => {
+export const getMapStatisticsData = (areaId: string) => {
   return cyRequest<MapStatisticsData[]>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetMap`, {
       method: 'POST',
-      data: { province: '650000', type: '1' },
+      data: { province: areaId, type: '1' },
     }),
   );
 };
