@@ -10,6 +10,7 @@ interface CompanyFileItemParams {
   fileCategoryText: string;
   describe: string;
   createdOn: string;
+  groupId: string;
 }
 
 interface ItemDetailData extends CompanyFileItemParams {
@@ -93,11 +94,30 @@ export const uploadCompanyFile = (files: any[], params: any, url: string) => {
 
   const uploadUrl = `${baseUrl.upload}${url}?${qs.stringify(params)}`;
 
-  return cyRequest<any[]>(() =>
+  return cyRequest<string>(() =>
     request(uploadUrl, {
       method: 'POST',
       data: formData,
       requestType: 'form',
     }),
+  );
+};
+
+//公司文件组别接口
+
+interface FileGroupParams {
+  name: string;
+  remark: string;
+}
+
+export const addFileGroupItem = (params: FileGroupParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/CompanyFileGroup/Create`, { method: 'POST', data: params }),
+  );
+};
+
+export const deleteFileGroupItem = (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/CompanyFileGroup/DeleteById`, { method: 'GET', params: { id } }),
   );
 };

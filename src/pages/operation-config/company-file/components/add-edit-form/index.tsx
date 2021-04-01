@@ -27,10 +27,17 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
           />
         </CyFormItem>
       )}
+      {type === 'add' && (
+        <CyFormItem label="上传文件" name="file" required rules={rules.fileld}>
+          <FileUpload maxCount={1} />
+        </CyFormItem>
+      )}
 
-      <CyFormItem label="上传文件" name="file" required rules={rules.fileld}>
-        <FileUpload maxCount={1} />
-      </CyFormItem>
+      {type === 'edit' && (
+        <CyFormItem label="上传文件" name="file">
+          <FileUpload maxCount={1} />
+        </CyFormItem>
+      )}
 
       <CyFormItem label="备注" name="describe">
         <Input.TextArea showCount maxLength={100} placeholder="请输入备注信息" />
