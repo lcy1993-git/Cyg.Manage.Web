@@ -6,6 +6,8 @@ import { Form, Input, message, Modal } from 'antd';
 import React, { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
+import { history } from 'umi';
+
 interface EditPasswordProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
@@ -36,6 +38,7 @@ const CutAccount = (props: EditPasswordProps) => {
 
       setState(false);
       message.success('账户切换成功');
+      history.push('/index');
       location.reload();
     });
   };

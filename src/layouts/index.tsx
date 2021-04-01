@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { IRouteComponentProps } from 'umi';
 import { Tabs, ConfigProvider } from 'antd';
 import LayoutHeader from './components/layout-header';
-import { getTabsComponent, RouteListItem } from '@/utils/tabs-config.tsx';
+import { getTabsComponent, RouteListItem } from '@/utils/tabs-config';
 import zhCN from 'antd/lib/locale/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';

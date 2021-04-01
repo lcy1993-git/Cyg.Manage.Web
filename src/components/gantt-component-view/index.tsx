@@ -10,7 +10,7 @@ const testData = [
   {
     name: '工程一',
     id: 'engineerOne',
-    startTime: '2021-03-17',
+    startTime: '2021-03-04',
     endTime: '2021-05-01',
     type: "engineer",
     children: [
@@ -18,14 +18,14 @@ const testData = [
         name: '项目一',
         id: 'projectOne',
         type: "project",
-        startTime: '2021-03-17',
+        startTime: '2021-03-07',
         endTime: '2021-03-24',
       },
       {
         name: '项目二',
         id: 'projectTwo',
         type: "project",
-        startTime: '2021-03-17',
+        startTime: '2021-05-16',
         endTime: '2022-06-25',
       },
       {
@@ -129,14 +129,26 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
 
   const ganttGriddingBackground = flattenData.map((item) => {
     return (
-      <div className={styles.ganttComponentGriddingLine} style={{width: `${timeData.days * 30}px`}}>
+      <div className={styles.ganttComponentGriddingLine} key={`${item.id}_line`} style={{width: `${timeData.days * 30}px`}}>
           {
-            [...new Array(timeData.days).keys()].map((item) => {
+            [...new Array(timeData.days).keys()].map((ite, ind) => {
               return (
-                <div className={styles.ganttComponentGriddingLineItem}></div>
+                <div key={`${item.id}_line_${ind}`} className={styles.ganttComponentGriddingLineItem}></div>
               )
             })
           }
+      </div>
+    )
+  })
+
+  const ganttBar = flattenData.map((item, index) => {
+    const diffDays = moment(item.endTime).diff(item.startTime,"days") + 1;
+    const leftDiffDays = moment(item.startTime).diff(timeData.monthStartTime, "days");
+    return (
+      <div className={styles.ganttBarItem} key={`${item.id}_bar`} style={{width: `${diffDays * 30}px`,left: `${leftDiffDays * 30}px`,top: `${(index) * 44}px`}}>
+        <div className={styles.ganttBarItemPercent}>
+
+        </div>
       </div>
     )
   })
@@ -170,6 +182,9 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
           </div>
           <div className={styles.ganttComponentGriddingContent}>
             {ganttGriddingBackground}
+            {
+              ganttBar
+            }
           </div>
         </div>
       </div>

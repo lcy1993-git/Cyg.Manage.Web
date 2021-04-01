@@ -42,7 +42,17 @@ export const logoArray = {
     "10.6.1.38": "logo.png",
 }
 
-
+const mapConfig = {
+    "10.6.1.36": {areaId: "650000", mapName: "xinjiang"},
+    "10.6.1.37": {areaId: "650000", mapName: "xinjiang"},
+    "10.6.1.38": {areaId: "650000", mapName: "xinjiang"},
+    "171.223.214.154": {areaId: "650000", mapName: "xinjiang"},
+    "218.6.242.125": {areaId: "510000", mapName: "sichuan"},
+    "39.99.251.67": {areaId: "650000", mapName: "xinjiang"},
+    "47.108.63.23": {areaId: "650000", mapName: "xinjiang"},
+}
+// 默认是新疆
+export const mapInfo = mapConfig[thisHostName] ? mapConfig[thisHostName] : {areaId: "650000", mapName: "xinjiang"};
 
 export const requestBaseUrl = ipArray.includes(thisHostName) ? arrayHasIpBaseUrlArray : arrayHasNotBaseUrlArray;
 

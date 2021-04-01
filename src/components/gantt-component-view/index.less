@@ -67,14 +67,26 @@
             }
             .ganttComponentGriddingContent {
                 width: 100%;
+                position: relative;
                 .ganttComponentGriddingLine {
                     width: 100%;
                     display: flex;
                     .ganttComponentGriddingLineItem {
                         width: 30px;
-                        height: 45px;
+                        height: 44px;
                         border-right: 1px solid @table-line-color;
                         border-bottom: 1px solid @table-line-color;
+                        box-sizing: border-box;
+                    }
+                }
+                .ganttBarItem {
+                    position: absolute;
+                    height: 44px;
+                    background-color: @gantt-item-bg-color;
+                    .ganttBarItemPercent {
+                        height: 100%;
+                        width: 56%;
+                        background-color: #0E7B3B;;
                     }
                 }
             }

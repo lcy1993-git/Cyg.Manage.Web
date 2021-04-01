@@ -134,8 +134,8 @@ export const useGetMinAndMaxTime = (timeArray: TimeArrayItem[]) => {
   return {
     minStartTime,
     maxEndTime,
-    days: moment(monthEndTime).diff(monthStartTime, "days"),
-    diffMonths: moment(monthEndTime).diff(monthStartTime, "months"),
+    days: moment(monthEndTime).diff(monthStartTime, "days") + 1,
+    diffMonths: moment(monthEndTime).diff(monthStartTime, "months") + 1,
     monthStartTime,
     monthEndTime
   }
