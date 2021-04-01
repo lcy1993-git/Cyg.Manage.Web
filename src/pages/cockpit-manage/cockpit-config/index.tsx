@@ -22,6 +22,8 @@ import AddEngineerTypeModal from "./components/add-engineer-type-modal";
 import AddDeliveryStatisticModal from "./components/add-delivery -statistic-modal";
 import AddOtherStatisticModal from "./components/add-other-statistic-modal";
 
+import ConfigWindow from "./components/config-window"
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const MapComponent = Loadable({
@@ -139,51 +141,51 @@ const CockpitManage: React.FC = () => {
     const configComponentElement = configArray.map((item) => {
         return (
             <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h }}>
-                {componentType[item.name]}
+                <ConfigWindow>
+                    {componentType[item.name]}
+                </ConfigWindow>
             </div>
         )
     })
 
     const engineerProjectArray = [
-        {name: "地图可视化统计(省)",value: "province"},
-        {name: "地图可视化统计(市)",value: "city"},
-        {name: "人员负荷(员工)",value: "person"},
-        {name: "人员负荷(部组)",value: "department"},
-        {name: "人员负荷(公司)",value: "company"},
+        { name: "地图可视化统计(省)", value: "province" },
+        { name: "地图可视化统计(市)", value: "city" },
+        { name: "人员负荷(员工)", value: "person" },
+        { name: "人员负荷(部组)", value: "department" },
+        { name: "人员负荷(公司)", value: "company" },
     ]
 
     const engineerTypeStatistic = [
-        {name: "项目分类",value: "classify"},
-        {name: "项目类别",value: "category"},
-        {name: "项目阶段",value: "stage"},
-        {name: "建设类型",value: "buildType"},
-        {name: "电压等级",value: "level"},
-        {name: "项目状态",value: "status"},
-        {name: "项目性质",value: "nature"},
+        { name: "项目分类", value: "classify" },
+        { name: "项目类别", value: "category" },
+        { name: "项目阶段", value: "stage" },
+        { name: "建设类型", value: "buildType" },
+        { name: "电压等级", value: "level" },
+        { name: "项目状态", value: "status" },
+        { name: "项目性质", value: "nature" },
     ]
 
     const engineerProgressStatistic = [
-        {name: "甘特图",value: "gantt"},
+        { name: "甘特图", value: "gantt" },
     ]
 
     const deliveryStatistic = [
-        {name: "项目交付数量/设计费(员工)",value: "person"},
-        {name: "项目交付数量/设计费(部组)",value: "department"},
-        {name: "项目交付数量/设计费(公司)",value: "company"},
+        { name: "项目交付数量/设计费(员工)", value: "person" },
+        { name: "项目交付数量/设计费(部组)", value: "department" },
+        { name: "项目交付数量/设计费(公司)", value: "company" },
     ]
 
     const otherStatistic = [
-        {name: "通知栏/已结项",value: "wait"},
-        {name: "通知栏/待安排",value: "arrange"},
-        {name: "通知栏/其他消息",value: "other"},
+        { name: "通知栏/已结项", value: "wait" },
+        { name: "通知栏/待安排", value: "arrange" },
+        { name: "通知栏/其他消息", value: "other" },
     ]
 
     const addComponentEvent = (componentProps: any) => {
-        const copyConfigArray:CockpitProps[] = JSON.parse(JSON.stringify(configArray));
-        setConfigArray([...copyConfigArray,...componentProps])
+        const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
+        setConfigArray([...copyConfigArray, ...componentProps])
     }
-
-
 
     return (
         <PageCommonWrap noPadding={true}>
@@ -227,7 +229,7 @@ const CockpitManage: React.FC = () => {
                 </div>
             </div>
             <AddEngineerAndProjectModule visible={addMapModuleVisible} onChange={setAddMapModuleVisible} changeFinishEvent={addComponentEvent} />
-            <AddEngineerTypeModal visible={addEngineerTypeVisible} onChange={setAddEngineerTypeVisible} changeFinishEvent={addComponentEvent}  />
+            <AddEngineerTypeModal visible={addEngineerTypeVisible} onChange={setAddEngineerTypeVisible} changeFinishEvent={addComponentEvent} />
             <AddDeliveryStatisticModal visible={addDeliveryStatisticVisible} onChange={setAddDeliveryStatisticVisible} changeFinishEvent={addComponentEvent} />
             <AddOtherStatisticModal visible={addOtherStatisticVisible} onChange={setAddOtherStatisticVisible} changeFinishEvent={addComponentEvent} />
         </PageCommonWrap>
