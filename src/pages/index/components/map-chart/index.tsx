@@ -2,6 +2,7 @@ import React,{useEffect,useRef} from "react";
 
 import xinjiang from "../../json/xinjiang.json";
 import sichuan from "../../json/sichuan.json";
+import gansu from "../../json/gansu.json";
 
 import * as echarts from 'echarts';
 import "echarts/lib/chart/map";
@@ -9,9 +10,13 @@ import 'echarts/lib/component/tooltip';
 import { useRequest, useSize } from "ahooks";
 import { getMapStatisticsData } from "@/services/index";
 
-import {mapInfo} from "../../../../../public/config/request"
+import {mapInfo} from "../../../../../public/config/request";
 
-const MapChart:React.FC = () => {
+interface MapChartProps {
+    componentProps?: any
+}
+
+const MapChart:React.FC<MapChartProps> = (props) => {
 
     const {data: mapData = []} = useRequest(() => getMapStatisticsData(mapInfo.areaId), {
         onSuccess: () => {

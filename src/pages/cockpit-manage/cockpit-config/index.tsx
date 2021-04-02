@@ -111,6 +111,11 @@ const getComponentByType = (type: string, componentProps: any) => {
                 <MapComponent componentProps={componentProps} />
             )
             break;
+        case "deliveryManage":
+            return (
+                <DeliveryManage />
+            )
+            break;
         default:
             return undefined
     }
