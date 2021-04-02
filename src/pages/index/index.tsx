@@ -10,7 +10,7 @@ import PersonnelLoad from "./components/personnel-load";
 import ProjectStatus from "./components/project-status";
 import ProjectType from "./components/project-type";
 import MapChart from "./components/map-chart";
-import ProjectSchedule from "./components/project-schedule";
+import ScheduleStatus from "./components/project-schedule-status";
 
 
 const Index: React.FC = () => {
@@ -34,7 +34,7 @@ const Index: React.FC = () => {
                     <MapChart />
                 </div>
                 <div className={styles.indexPageCenterChart}>
-                    <ProjectSchedule />
+                    <ScheduleStatus />
                 </div>
             </div>
             <div className={styles.indexPageRight}>
