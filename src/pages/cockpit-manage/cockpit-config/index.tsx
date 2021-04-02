@@ -54,14 +54,8 @@ const DeliveryManage = Loadable({
     delay: 150,
 });
 
-const CostInformation = Loadable({
-    loader: () => import('@/pages/index/components/cost-information'),
-    loading: Loading,
-    delay: 150,
-});
-
-const ProjectStatus = Loadable({
-    loader: () => import('@/pages/index/components/project-status'),
+const ProjectSchedule = Loadable({
+    loader: () => import('@/pages/index/components/project-schedule-status'),
     loading: Loading,
     delay: 150,
 });
@@ -72,13 +66,7 @@ const ProjectType = Loadable({
     delay: 150,
 });
 
-const ProjectSchedule = Loadable({
-    loader: () => import('@/pages/index/components/project-schedule'),
-    loading: Loading,
-    delay: 150,
-});
-
-interface CockpitProps {
+export interface CockpitProps {
     name: string;
     w: number;
     key: string;
@@ -89,17 +77,6 @@ interface CockpitProps {
     // 是否需要固定宽度
     fixHeight?: boolean
 }
-
-const componentType = {
-    mapComponent: <MapComponent />,
-    personLoad: <PersonnelLoad />,
-    toDo: <ToDo />,
-    deliveryManage: <DeliveryManage />,
-    costInformation: <CostInformation />,
-    projectStatus: <ProjectStatus />,
-    projectType: <ProjectType />,
-    projectSchedule: <ProjectSchedule />,
-};
 
 const getComponentByType = (type: string, componentProps: any) => {
     switch (type) {
@@ -123,19 +100,14 @@ const getComponentByType = (type: string, componentProps: any) => {
                 <PersonnelLoad componentProps={componentProps} />
             )
             break;
-        case "projectStatus":
+        case "projectSchedule":
             return (
-                <ProjectStatus componentProps={componentProps} />
+                <ProjectSchedule componentProps={componentProps} />
             )
             break;
         case "projectType":
             return (
                 <ProjectType componentProps={componentProps} />
-            )
-            break;
-        case "projectSchedule":
-            return (
-                <ProjectSchedule componentProps={componentProps} />
             )
             break;
         default:
@@ -159,6 +131,8 @@ const CockpitManage: React.FC = () => {
 
     const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
     const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
+
+    const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
 
     const initCockpit = () => {
         const thisBoxHeight = (size.height ?? 828) - 70;
@@ -200,7 +174,9 @@ const CockpitManage: React.FC = () => {
         setConfigArray([]);
     };
 
-    const layoutChangeEvent = (currentLayout, allLayout) => { };
+    const layoutChangeEvent = (currentLayout: any) => {
+        setLayoutConfigData(currentLayout)
+    };
 
     // 删除事件
     const deleteEvent = (record: any) => {
@@ -299,9 +275,21 @@ const CockpitManage: React.FC = () => {
                 return
             }
             setSaveConfigLoading(true);
+
+            const saveConfigArray = configArray.map((item) => {
+                const dataIndex = layoutConfigData.findIndex((ite) => ite.i === item.key);
+                return {
+                    ...item,
+                    x: layoutConfigData[dataIndex].x,
+                    y: layoutConfigData[dataIndex].y,
+                    w: layoutConfigData[dataIndex].w,
+                    h: layoutConfigData[dataIndex].h,
+                }
+            })
+
             await saveChartConfig(JSON.stringify({
                 configWindowHeight: size.height,
-                config: configArray
+                config: saveConfigArray
             }));
             message.success("配置保存成功")
         } catch (msg) {
