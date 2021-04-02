@@ -9,14 +9,23 @@ interface ConfigWindowProps {
     record?: any
 }
 
+
 const ConfigWindow:React.FC<ConfigWindowProps> = (props) => {
     const { record,deleteEvent,editEvent,...rest} = props;
+
+    const clickDeleteEvent = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, record: any) => {
+        deleteEvent?.(record)
+
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+    }
+
     return (
         <div className={styles.configWindow} {...rest}>
             <span className={styles.configWindowEditButton} onClick={() => editEvent?.(record)}>
                 <EditOutlined />
             </span>
-            <span className={styles.configWindowDeleteButton} onClick={() => deleteEvent?.(record)}>
+            <span className={styles.configWindowDeleteButton} onClick={(e) => clickDeleteEvent?.(e,record)}>
                 <DeleteOutlined />
             </span>
             {
