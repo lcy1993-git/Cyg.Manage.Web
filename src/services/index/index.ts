@@ -93,4 +93,19 @@ export const getToDoStatistics = () => {
     );
   };
 
+  // 获取甘特图的数据
+  export const getProjectGanttData = ({pageIndex = 1,pageSize =10, sort={}, keyWord=""}) => {
+    return cyRequest<any>(() => 
+      request(`${baseUrl.project}/HomeStatistic/GetGanttChart`, {
+        method: 'POST',
+        data: {
+          pageIndex,
+          pageSize,
+          sort,
+          keyWord  
+        },
+      })
+    );
+  }
+
 

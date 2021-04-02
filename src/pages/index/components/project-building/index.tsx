@@ -18,12 +18,13 @@ const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
 
     const chartColor = [
         "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
-    ]
+    ];
 
+    if (!projectBuilding) return null;
+  
     const sum = projectBuilding?.reduce((sum, item) => {
         return sum + item.value;
     },0) ?? 1;
-
     let chartElement = null;
     if (type === "pie") {
       chartElement = projectBuilding?.map((item, index) => {
