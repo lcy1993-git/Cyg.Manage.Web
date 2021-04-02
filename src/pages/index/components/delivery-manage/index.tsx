@@ -148,25 +148,13 @@ const DeliveryManage: React.FC = () => {
         },
       },
     ],
-    dataZoom: [
-      {
-        type: 'inside',
-        start: 0,
-        end: 20,
-        yAxisIndex: [0, 1],
-        maxValueSpan: 5
-      },
-      {
-        // show: false,
-        type: "slider",
-        borderColor: "#1a8755",
-        backgroundColor: "#1e3933",
-        width: 15,
-        start: 0,
-        end: 20,
-        yAxisIndex: [0, 1]
-      }
-    ]
+    dataZoom: {
+      yAxisIndex: 0,//这里是从X轴的0刻度开始
+      show: false,//是否显示滑动条，不影响使用
+      type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+      startValue: 0, // 从头开始。
+      endValue: 4  // 一次性展示6个。
+    }
   };
 
   return (

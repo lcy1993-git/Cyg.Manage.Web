@@ -3,6 +3,7 @@ import React,{useEffect,useRef} from "react";
 import xinjiang from "../../json/xinjiang.json";
 import sichuan from "../../json/sichuan.json";
 import gansu from "../../json/gansu.json";
+import ningxia from "../../json/ningxia.json";
 
 import * as echarts from 'echarts';
 import "echarts/lib/chart/map";
@@ -106,8 +107,9 @@ const MapChart:React.FC<MapChartProps> = (props) => {
         if (divRef && divRef.current) {
             echarts.registerMap("xinjiang", xinjiang)
             echarts.registerMap("sichuan", sichuan)
+            echarts.registerMap("gansu", gansu)
+            echarts.registerMap("ningxia", ningxia)
             myChart = echarts.init(divRef.current as HTMLDivElement);
-            
             // @ts-ignore
             myChart.setOption(option);
         }
