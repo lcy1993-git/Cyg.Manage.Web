@@ -118,6 +118,26 @@ const getComponentByType = (type: string, componentProps: any) => {
                 <DeliveryManage componentProps={componentProps} />
             )
             break;
+        case "personLoad":
+            return (
+                <PersonnelLoad componentProps={componentProps} />
+            )
+            break;
+        case "projectStatus":
+            return (
+                <ProjectStatus componentProps={componentProps} />
+            )
+            break;
+        case "projectType":
+            return (
+                <ProjectType componentProps={componentProps} />
+            )
+            break;
+        case "projectSchedule":
+            return (
+                <ProjectSchedule componentProps={componentProps} />
+            )
+            break;
         default:
             return undefined
     }
@@ -144,7 +164,7 @@ const CockpitManage: React.FC = () => {
         const thisBoxHeight = (size.height ?? 828) - 70;
         const totalHeight = divide(thisBoxHeight, 18);
         setConfigArray([
-            { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
+            { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1(), fixHeight: true },
             {
                 name: 'mapComponent',
                 x: 3,
@@ -273,17 +293,20 @@ const CockpitManage: React.FC = () => {
     };
 
     const saveConfig = async () => {
-        try{
-            if(configArray && configArray.length === 0) {
+        try {
+            if (configArray && configArray.length === 0) {
                 message.error("配置不能为空");
                 return
             }
             setSaveConfigLoading(true);
-            await saveChartConfig(JSON.stringify(configArray));
+            await saveChartConfig(JSON.stringify({
+                configWindowHeight: size.height,
+                config: configArray
+            }));
             message.success("配置保存成功")
-        }catch(msg) {
+        } catch (msg) {
             console.error(msg)
-        }finally {
+        } finally {
             setSaveConfigLoading(false);
         }
     }

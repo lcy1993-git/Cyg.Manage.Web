@@ -18,21 +18,32 @@ const AddEngineerTypeModal: React.FC<AddEngineerTypeStatistic> = (props) => {
     const sureAddEvent = () => {
         form.validateFields().then((values) => {
             const { type,condition } = values;
-            const componentProps = [...type,...condition];
-
-            setState(false);
-            
-            changeFinishEvent?.([
-                {
+            const chooseComponent = [];
+            if(type && type.length > 0) {
+                chooseComponent.push({
                     name: "projectType",
                     key: uuid.v1(),
                     x:0,
                     y:0,
                     w:3,
                     h:11,
-                    componentProps: componentProps
-                }
-            ])
+                    componentProps: type
+                });
+            }
+            if(condition && condition.length > 0) {
+                chooseComponent.push({
+                    name: "projectSchedule",
+                    key: uuid.v1(),
+                    x:0,
+                    y:0,
+                    w:3,
+                    h:11,
+                    componentProps: condition
+                });
+            }
+            setState(false);
+            
+            changeFinishEvent?.(chooseComponent)
         })
     }
 
