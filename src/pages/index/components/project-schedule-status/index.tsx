@@ -41,7 +41,6 @@ const ProjectSchedule:React.FC = () => {
           <div className={styles.projectControl}>
             <div className={styles.flex1} />
             <div className={styles.tabs}>
-
               <ChartTab data={tabData} onChange={(v: string) => setActiveKey(v)} defaultValue="schedule" />
             </div>
           </div>

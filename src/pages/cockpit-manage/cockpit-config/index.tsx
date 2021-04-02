@@ -14,7 +14,7 @@ import uuid from 'node-uuid';
 import { useRef } from 'react';
 import { useSize } from 'ahooks';
 import { divide, subtract } from 'lodash';
-import { DeleteOutlined, ImportOutlined, PlusOutlined, ReloadOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ImportOutlined, PlusOutlined, ReloadOutlined, SaveOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import CockpitMenuItem from './components/menu-item';
 
 import AddEngineerAndProjectModule from './components/add-engineer-project-modal';
@@ -86,6 +86,8 @@ interface CockpitProps {
     x: number;
     y: number;
     componentProps?: any
+    // 是否需要固定宽度
+    fixHeight?: boolean
 }
 
 const componentType = {
@@ -136,13 +138,13 @@ const CockpitManage: React.FC = () => {
     const [addOtherStatisticVisible, setAddOtherStatisticVisible] = useState<boolean>(false);
 
     const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
+    const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
 
     const initCockpit = () => {
         const thisBoxHeight = (size.height ?? 828) - 70;
         const totalHeight = divide(thisBoxHeight, 18);
         setConfigArray([
             { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
-
             {
                 name: 'mapComponent',
                 x: 3,
@@ -194,7 +196,6 @@ const CockpitManage: React.FC = () => {
     }
 
     const configComponentElement = configArray.map((item) => {
-        console.log(configArray)
         return (
             <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h }}>
                 <ConfigWindow deleteEvent={deleteEvent} editEvent={editEvent} record={item}>
@@ -271,6 +272,22 @@ const CockpitManage: React.FC = () => {
         }
     };
 
+    const saveConfig = async () => {
+        try{
+            if(configArray && configArray.length === 0) {
+                message.error("配置不能为空");
+                return
+            }
+            setSaveConfigLoading(true);
+            await saveChartConfig(JSON.stringify(configArray));
+            message.success("配置保存成功")
+        }catch(msg) {
+            console.error(msg)
+        }finally {
+            setSaveConfigLoading(false);
+        }
+    }
+
     return (
         <PageCommonWrap noPadding={true}>
             <div className={styles.cockpitConfigPage}>
@@ -346,9 +363,13 @@ const CockpitManage: React.FC = () => {
                                 <ReloadOutlined />
                                 恢复默认配置
                             </Button>
-                            <Button onClick={clearConfigEvent}>
+                            <Button className="mr7" onClick={clearConfigEvent}>
                                 <DeleteOutlined />
                                 清空当前配置
+                            </Button>
+                            <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
+                                <SaveOutlined />
+                                保存配置
                             </Button>
                         </div>
                     </div>
