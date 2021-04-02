@@ -52,7 +52,7 @@ const PersonnelLoad:React.FC<Props> = (props) => {
         if(dataIndex > -1) {
             return tabData[dataIndex].value
         }
-        return "1"
+        return undefined
     }, [activeKey])
 
     const title = useMemo(() => {

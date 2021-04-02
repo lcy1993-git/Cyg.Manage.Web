@@ -25,7 +25,7 @@ export const saveChartConfig = (config: string) => {
 
 // 获取驾驶舱配置
 export const getChartConfig = () => {
-  return cyRequest(() => request(`${baseUrl.project}/HomeStatistic/SaveChartConfig`, {
+  return cyRequest<string>(() => request(`${baseUrl.project}/HomeStatistic/SaveChartConfig`, {
     method: 'GET',
   }))
 }

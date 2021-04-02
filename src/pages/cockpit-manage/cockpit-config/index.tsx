@@ -156,6 +156,7 @@ const CockpitManage: React.FC = () => {
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
   const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
+  const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
 
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
@@ -198,7 +199,9 @@ const CockpitManage: React.FC = () => {
     setConfigArray([]);
   };
 
-  const layoutChangeEvent = (currentLayout, allLayout) => {};
+  const layoutChangeEvent = (currentLayout: any) => {
+    setLayoutConfigData(currentLayout);
+  };
 
   // 删除事件
   const deleteEvent = (record: any) => {
@@ -316,7 +319,24 @@ const CockpitManage: React.FC = () => {
         return;
       }
       setSaveConfigLoading(true);
-      await saveChartConfig(JSON.stringify(configArray));
+
+      const saveConfigArray = configArray.map((item) => {
+        const dataIndex = layoutConfigData.findIndex((ite) => ite.i === item.key);
+        return {
+          ...item,
+          x: layoutConfigData[dataIndex].x,
+          y: layoutConfigData[dataIndex].y,
+          w: layoutConfigData[dataIndex].w,
+          h: layoutConfigData[dataIndex].h,
+        };
+      });
+
+      await saveChartConfig(
+        JSON.stringify({
+          configWindowHeight: size.height,
+          config: saveConfigArray,
+        }),
+      );
       message.success('配置保存成功');
     } catch (msg) {
       console.error(msg);
