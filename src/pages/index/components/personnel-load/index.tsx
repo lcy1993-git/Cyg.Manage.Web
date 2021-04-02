@@ -69,6 +69,7 @@ const PersonnelLoad:React.FC<Props> = (props) => {
     })
 
     const option = useMemo(() => {
+      if (!burdensData) return undefined;
       const dataArray = burdensData?.map((item) => item.key);
       const valueArray = burdensData?.map((item) => item.value);
       return {
@@ -203,7 +204,7 @@ const PersonnelLoad:React.FC<Props> = (props) => {
                 </div>
                 <div className={styles.personnelLoadChart}>
                   {
-                    type &&
+                    type && option &&
                     <BarChart options={option} />
                   }
 

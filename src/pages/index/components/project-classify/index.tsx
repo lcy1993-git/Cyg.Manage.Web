@@ -15,7 +15,7 @@ const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
     const { data: projectClassify } = useRequest(() => getProjectClassify(), {
         pollingWhenHidden: false
     })
-
+    if (!projectClassify) return null;
     const chartColor = [
         "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
     ]

@@ -40,10 +40,11 @@ const testData = [
 ];
 
 interface GanttComponentViewProps {
-  dayWidth?: number
-  itemHeight?: number
-  dataSource?: any[]
-  title?: string
+  dayWidth?: number;
+  itemHeight?: number;
+  dataSource?: any[];
+  title?: string;
+  ganttData: any;
 }
 
 interface DataSourceItem {
@@ -64,8 +65,8 @@ const weekObject = {
 }
 
 const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
-  const { title = "工程项目名称" } = props;
-
+  const { title = "工程项目名称", ganttData } = props;
+  console.log(ganttData);
   const flattenData = useMemo(() => {
     return flatten<DataSourceItem>(testData);
   }, [JSON.stringify(testData)]);

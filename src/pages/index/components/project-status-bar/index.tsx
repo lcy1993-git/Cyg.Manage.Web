@@ -10,7 +10,7 @@ const ProjectStatusBar: React.FC = () => {
     })
 
     const option = useMemo(() => {
-      
+      if (!projectStatus) return undefined;
       const dataArray = projectStatus?.map((item) => item.key);
       const valueArray = projectStatus?.map((item) => item.value);
 
@@ -112,7 +112,7 @@ const ProjectStatusBar: React.FC = () => {
       
     }, [JSON.stringify(projectStatus)])
     return (
-      <AnnularFighure options={option} />
+      option ? <AnnularFighure options={option} /> : null
     )
 }
 

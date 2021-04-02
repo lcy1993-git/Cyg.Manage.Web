@@ -15,7 +15,7 @@ const ProjectCategory: React.FC<IProps> = ({ type = "pie" }) => {
     const { data: projectCategoryInfo } = useRequest(() => getProjectCategory(), {
         pollingWhenHidden: false
     })
-
+    if (!projectCategoryInfo) return null;
     const chartColor = [
         "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
     ]
