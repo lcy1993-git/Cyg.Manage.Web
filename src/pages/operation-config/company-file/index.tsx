@@ -40,6 +40,8 @@ const CompanyFile: React.FC = () => {
   const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
   const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false);
   const [fileGroupId, setFileGroupId] = useState<string>();
+  const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
+
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [tableData, setTableData] = useState<TableRequestResult>();
@@ -68,6 +70,7 @@ const CompanyFile: React.FC = () => {
     {
       onSuccess: () => {
         setFileGroupId(fileGroupData[0]?.value);
+        setNowSelectGroup(fileGroupData[0]?.label);
       },
     },
   );
@@ -176,7 +179,6 @@ const CompanyFile: React.FC = () => {
       addForm.resetFields();
     });
   };
-  console.log(tableData);
 
   //编辑
   const editEvent = async () => {
@@ -300,7 +302,17 @@ const CompanyFile: React.FC = () => {
   };
 
   //选择文件组别获取对应公司文件
-  const searchByFileGroup = (value: any) => {
+  const searchByFileGroup = (value?: any) => {
+    console.log(fileGroupData);
+
+    const currentTitle = fileGroupData.filter((item: any) => {
+      if (value === item.value) {
+        return item.label;
+      }
+    });
+
+    setNowSelectGroup(currentTitle[0].label);
+
     setFileGroupId(value);
     if (tableRef && tableRef.current) {
       // @ts-ignore
@@ -326,6 +338,7 @@ const CompanyFile: React.FC = () => {
       setFileGroupModalVisible(false);
       addGroupForm.resetFields();
       refresh();
+      searchByFileGroup();
     });
   };
 
@@ -341,7 +354,11 @@ const CompanyFile: React.FC = () => {
     await deleteFileGroupItem(fileGroupId);
     message.success('已删除');
     getfileGroup();
-    refresh();
+    searchByFileGroup();
+  };
+
+  const titleSlotElement = () => {
+    return <div className={styles.invTitle}>{`-${nowSelectGroup}`}</div>;
   };
 
   return (
@@ -377,6 +394,7 @@ const CompanyFile: React.FC = () => {
         <div className={styles.fileTable}>
           {fileGroupId && (
             <GeneralTable
+              titleSlot={titleSlotElement}
               getTableRequestData={setTableData}
               ref={tableRef}
               buttonLeftContentSlot={searchComponent}
