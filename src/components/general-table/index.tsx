@@ -8,7 +8,7 @@ import React, {
   useEffect,
 } from 'react';
 import { useRequest } from 'ahooks';
-import { tableCommonRequest } from '@/services/table';
+import { tableCommonRequest,TableRequestResult } from '@/services/table';
 import { Table, Pagination, message, Tooltip, Menu, Popover, Checkbox } from 'antd';
 import styles from './index.less';
 import CommonTitle from '../common-title';
@@ -51,6 +51,8 @@ interface GeneralTableProps {
   defaultPageSize?: number;
 
   postType?: 'body' | 'query';
+
+  getTableRequestData?: (data: TableRequestResult) => void
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -77,6 +79,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     needTitleLine = true,
     defaultPageSize = 10,
     postType = 'body',
+    getTableRequestData,
     ...rest
   } = props;
 
@@ -89,6 +92,9 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   const { data, run, loading } = useRequest(tableCommonRequest, {
     manual: true,
+    onSuccess: () => {
+      getTableRequestData?.(data!)
+    }
   });
 
   const tableResultData = useMemo(() => {

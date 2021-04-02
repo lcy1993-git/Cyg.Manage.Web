@@ -27,6 +27,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import FileGroupForm from './components/add-file-group';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
+import { TableRequestResult } from '@/services/table';
 
 const { Search } = Input;
 
@@ -38,9 +39,11 @@ const CompanyFile: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
   const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false);
-  const [fileGroupId, setFileGroupId] = useState<string>('');
-
+  const [fileGroupId, setFileGroupId] = useState<string>();
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
+  const [tableData, setTableData] = useState<TableRequestResult>();
+
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const [defaultForm] = Form.useForm();
@@ -57,10 +60,17 @@ const CompanyFile: React.FC = () => {
   const { data: defaultOptions, run: getDefaultOptions } = useRequest(getCompanyDefaultOptions, {
     manual: true,
   });
-  const { data: fileGroupData = [], run: getfileGroup } = useGetSelectData({
-    url: '/CompanyFileGroup/GetList',
-    method: 'post',
-  });
+  const { data: fileGroupData = [], run: getfileGroup } = useGetSelectData(
+    {
+      url: '/CompanyFileGroup/GetList',
+      method: 'post',
+    },
+    {
+      onSuccess: () => {
+        setFileGroupId(fileGroupData[0]?.value);
+      },
+    },
+  );
 
   const searchComponent = () => {
     return (
@@ -166,6 +176,7 @@ const CompanyFile: React.FC = () => {
       addForm.resetFields();
     });
   };
+  console.log(tableData);
 
   //编辑
   const editEvent = async () => {
@@ -319,8 +330,12 @@ const CompanyFile: React.FC = () => {
   };
 
   const deleteFileGroupEvent = async () => {
-    if (fileGroupId === '') {
+    if (fileGroupId === undefined || fileGroupId === '') {
       message.warning('未选择要删除公司文件组别');
+      return;
+    }
+    if (tableData && tableData?.items.length > 0) {
+      message.error('该分组包含公司文件,无法删除');
       return;
     }
     await deleteFileGroupItem(fileGroupId);
@@ -336,8 +351,8 @@ const CompanyFile: React.FC = () => {
           <div className="flex">
             <TableSearch className={styles.fileGroupSelect} label="公司文件组" width="280px">
               <DataSelect
-                allowClear
                 showSearch
+                value={fileGroupId}
                 options={fileGroupData}
                 placeholder="请选择文件组别"
                 onChange={(value: any) => searchByFileGroup(value)}
@@ -360,20 +375,23 @@ const CompanyFile: React.FC = () => {
           </div>
         </div>
         <div className={styles.fileTable}>
-          <GeneralTable
-            ref={tableRef}
-            buttonLeftContentSlot={searchComponent}
-            buttonRightContentSlot={tableElement}
-            needCommonButton={true}
-            columns={columns}
-            url="/CompanyFile/GetPagedList"
-            tableTitle="公司文件"
-            getSelectData={(data) => setTableSelectRow(data)}
-            extractParams={{
-              keyWord: searchKeyWord,
-              groupId: fileGroupId,
-            }}
-          />
+          {fileGroupId && (
+            <GeneralTable
+              getTableRequestData={setTableData}
+              ref={tableRef}
+              buttonLeftContentSlot={searchComponent}
+              buttonRightContentSlot={tableElement}
+              needCommonButton={true}
+              columns={columns}
+              url="/CompanyFile/GetPagedList"
+              tableTitle="公司文件"
+              getSelectData={(data) => setTableSelectRow(data)}
+              extractParams={{
+                keyWord: searchKeyWord,
+                groupId: fileGroupId,
+              }}
+            />
+          )}
         </div>
       </div>
       <Modal
