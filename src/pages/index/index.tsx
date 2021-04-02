@@ -21,7 +21,6 @@ const Index: React.FC = () => {
     return (
         <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }}>
             
-            
         </div>
     )
 }
