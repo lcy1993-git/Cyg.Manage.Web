@@ -303,15 +303,13 @@ const CompanyFile: React.FC = () => {
 
   //选择文件组别获取对应公司文件
   const searchByFileGroup = (value?: any) => {
-    console.log(fileGroupData);
-
     const currentTitle = fileGroupData.filter((item: any) => {
       if (value === item.value) {
         return item.label;
       }
     });
 
-    setNowSelectGroup(currentTitle[0].label);
+    setNowSelectGroup(currentTitle[0]?.label);
 
     setFileGroupId(value);
     if (tableRef && tableRef.current) {
