@@ -8,9 +8,10 @@ const ProjectStatus: React.FC = () => {
 
     const { data: projectStatus } = useRequest(() => getProjectStatus(), {
         pollingWhenHidden: false
-    })
+    });
 
     const option = useMemo(() => {
+      if (!projectStatus) return undefined;
         const defaultOption = {
             tooltip: {
                 trigger: 'item'
@@ -59,7 +60,10 @@ const ProjectStatus: React.FC = () => {
 
     return (
         <ChartBox title="项目状态">
-            <AnnularFighure options={option} />
+            {
+              option &&
+              <AnnularFighure options={option}
+            />}
         </ChartBox>
     )
 }

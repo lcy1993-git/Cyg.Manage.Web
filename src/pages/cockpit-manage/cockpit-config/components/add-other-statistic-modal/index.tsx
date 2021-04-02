@@ -28,7 +28,8 @@ const AddOtherStatisticModal: React.FC<AddOtherStatistic> = (props) => {
                     y:0,
                     w:3,
                     h:11,
-                    componentProps: componentProps
+                    componentProps: componentProps,
+                    fixHeight: true
                 }
             ])
         })

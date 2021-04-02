@@ -19,6 +19,7 @@ import {
   ImportOutlined,
   PlusOutlined,
   ReloadOutlined,
+  SaveOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
 import CockpitMenuItem from './components/menu-item';
@@ -98,6 +99,8 @@ interface CockpitProps {
   x: number;
   y: number;
   componentProps?: any;
+  // 是否需要固定宽度
+  fixHeight?: boolean;
 }
 
 const componentType = {
@@ -152,6 +155,7 @@ const CockpitManage: React.FC = () => {
   const [editOtherStatisticVisible, setEditOtherStatisticVisible] = useState<boolean>(false);
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
+  const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
 
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
@@ -226,7 +230,6 @@ const CockpitManage: React.FC = () => {
   };
 
   const configComponentElement = configArray.map((item) => {
-    console.log(configArray);
     return (
       <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h }}>
         <ConfigWindow deleteEvent={deleteEvent} editEvent={editEvent} record={item}>
@@ -303,6 +306,22 @@ const CockpitManage: React.FC = () => {
       console.error(msg);
     } finally {
       setRequestExportLoading(false);
+    }
+  };
+
+  const saveConfig = async () => {
+    try {
+      if (configArray && configArray.length === 0) {
+        message.error('配置不能为空');
+        return;
+      }
+      setSaveConfigLoading(true);
+      await saveChartConfig(JSON.stringify(configArray));
+      message.success('配置保存成功');
+    } catch (msg) {
+      console.error(msg);
+    } finally {
+      setSaveConfigLoading(false);
     }
   };
 
@@ -385,9 +404,13 @@ const CockpitManage: React.FC = () => {
                 <ReloadOutlined />
                 恢复默认配置
               </Button>
-              <Button onClick={clearConfigEvent}>
+              <Button className="mr7" onClick={clearConfigEvent}>
                 <DeleteOutlined />
                 清空当前配置
+              </Button>
+              <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
+                <SaveOutlined />
+                保存配置
               </Button>
             </div>
           </div>
@@ -418,6 +441,52 @@ const CockpitManage: React.FC = () => {
           </div>
         </div>
       </div>
+      <AddEngineerAndProjectModule
+        visible={addMapModuleVisible}
+        onChange={setAddMapModuleVisible}
+        changeFinishEvent={addComponentEvent}
+      />
+      <CockpitMenuItem
+        childrenData={engineerTypeStatistic}
+        name="工程类型统计"
+        buttonSlot={
+          <Button type="text" onClick={() => setAddEngineerTypeVisible(true)}>
+            <PlusOutlined />
+            添加
+          </Button>
+        }
+      />
+      <CockpitMenuItem
+        childrenData={engineerProgressStatistic}
+        name="工程进度统计"
+        buttonSlot={
+          <Button type="text" onClick={() => setAddMapModuleVisible(true)}>
+            <PlusOutlined />
+            添加
+          </Button>
+        }
+      />
+      <CockpitMenuItem
+        childrenData={deliveryStatistic}
+        name="交付统计"
+        buttonSlot={
+          <Button type="text" onClick={() => setAddDeliveryStatisticVisible(true)}>
+            <PlusOutlined />
+            添加
+          </Button>
+        }
+      />
+      <CockpitMenuItem
+        childrenData={otherStatistic}
+        name="其他"
+        buttonSlot={
+          <Button type="text" onClick={() => setAddOtherStatisticVisible(true)}>
+            <PlusOutlined />
+            添加
+          </Button>
+        }
+      />
+
       <AddEngineerAndProjectModule
         visible={addMapModuleVisible}
         onChange={setAddMapModuleVisible}

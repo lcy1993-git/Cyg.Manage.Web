@@ -5,13 +5,19 @@ import ProjectNatures from "../project-natures";
 import StatusBar from "../project-status-bar";
 import styles from "./index.less";
 
+interface Props {
+  componentProps?: string[];
+}
 
 interface TabData {
   id: string;
   name: string;
 }
 
-const ProjectSchedule:React.FC = () => {
+const ProjectSchedule:React.FC<Props> = (props) => {
+
+  const { componentProps = ["schedule", "status"] } = props;
+  const [activeKey, setActiveKey] = useState<string>();
 
   const tabData: TabData[]= [
     {
@@ -24,16 +30,15 @@ const ProjectSchedule:React.FC = () => {
     }
   ];
 
-  const [activeKey, setActiveKey] = useState<string>("schedule");
+  const showTabData = useMemo(() => {
 
-  // const getTabs = useMemo(()=> {
-  //   return tabData.map((item) => {
-  //     return (
-  //       <div className={styles.tab} key={item.id}>{item.title}</div>
-  //     )
-  //   })
-  // }, [JSON.stringify(tabData)])
+    const filterData = tabData.filter((item) => componentProps.includes(item.id));
 
+    if (filterData && filterData.length > 0) {
+      setActiveKey(filterData[0].id)
+    }
+    return filterData;
+  }, [JSON.stringify(componentProps)]);
 
   return (
       <ChartBox title="项目情况" titleAlign="left">
@@ -41,8 +46,7 @@ const ProjectSchedule:React.FC = () => {
           <div className={styles.projectControl}>
             <div className={styles.flex1} />
             <div className={styles.tabs}>
-
-              <ChartTab data={tabData} onChange={(v: string) => setActiveKey(v)} defaultValue="schedule" />
+              <ChartTab data={showTabData} onChange={(v: string) => setActiveKey(v)} defaultValue={activeKey} />
             </div>
           </div>
 
@@ -61,4 +65,4 @@ const ProjectSchedule:React.FC = () => {
   )
 }
 
-export default ProjectSchedule
+export default ProjectSchedule;

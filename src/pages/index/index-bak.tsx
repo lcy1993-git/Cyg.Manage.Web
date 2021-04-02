@@ -1,8 +1,7 @@
 import React from "react";
 import styles from "./index.less";
 import bgSrc from "@/assets/image/index/bg.png";
-import { useRequest } from "ahooks";
-import { getChartConfig } from "@/services/operation-config/cockpit";
+
 import ToDo from "./components/to-do";
 import DeliveryManage from "./components/delivery-manage";
 import CostInformation from "./components/cost-information";
@@ -10,18 +9,12 @@ import PersonnelLoad from "./components/personnel-load";
 import ProjectStatus from "./components/project-status";
 import ProjectType from "./components/project-type";
 import MapChart from "./components/map-chart";
-// import ScheduleStatus from "./components/project-schedule-status";
-import ProjectProcess from "./components/project-process";
+import ScheduleStatus from "./components/project-schedule-status";
+
+
 const Index: React.FC = () => {
-    
-    const {data} = useRequest(() => getChartConfig())
-
-
-    console.log(JSON.parse(data ?? "{}"))
-
     return (
         <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }}>
-            
             <div className={styles.indexPageLeft}>
                 <div className={styles.toDoStatistic}>
                     <ToDo />
@@ -40,7 +33,7 @@ const Index: React.FC = () => {
                     <MapChart />
                 </div>
                 <div className={styles.indexPageCenterChart}>
-                    <ProjectProcess />
+                    <ScheduleStatus />
                 </div>
             </div>
             <div className={styles.indexPageRight}>

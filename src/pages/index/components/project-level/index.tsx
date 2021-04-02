@@ -16,6 +16,8 @@ const ProjectLevel: React.FC<IProps> = ({type = "pie"}) => {
         pollingWhenHidden: false
     })
 
+    if(!projectLevelInfo) return null;
+
     const chartColor = [
         "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
     ]

@@ -9,9 +9,14 @@ import { useMemo } from "react";
 import { useRequest } from "ahooks";
 import { getBurdens } from "@/services/index";
 
-const PersonnelLoad:React.FC = () => {
+interface Props {
+  componentProps?: string[]
+}
 
-    const [activeKey, setActiveKey] = useState("person");
+const PersonnelLoad:React.FC<Props> = (props) => {
+
+    const { componentProps = ["person", "array", "company"] } = props;
+    const [activeKey, setActiveKey] = useState<string>("person");
 
     const tabData = [
         {
@@ -34,6 +39,14 @@ const PersonnelLoad:React.FC = () => {
         }
     ];
 
+    const showTabData = useMemo(() => {
+      const filterData = tabData.filter((item) => componentProps.includes(item.id));
+      if (filterData && filterData.length > 0) {
+        setActiveKey(filterData[0].id)
+      }
+      return filterData
+    }, [JSON.stringify(componentProps)])
+
     const type = useMemo(() => {
         const dataIndex = tabData.findIndex((item) => item.id === activeKey);
         if(dataIndex > -1) {
@@ -51,14 +64,15 @@ const PersonnelLoad:React.FC = () => {
     }, [activeKey])
 
     const {data: burdensData} = useRequest(() => getBurdens(type),{
-        refreshDeps: [type]
+      ready: !!type,
+      refreshDeps: [type]
     })
 
-    const dataArray = burdensData?.map((item) => item.key);
-
-    const valueArray = burdensData?.map((item) => item.value);
-
-    const option = {
+    const option = useMemo(() => {
+      if (!burdensData) return undefined;
+      const dataArray = burdensData?.map((item) => item.key);
+      const valueArray = burdensData?.map((item) => item.value);
+      return {
         grid: {
             left: 60,
             bottom: 30,
@@ -174,6 +188,7 @@ const PersonnelLoad:React.FC = () => {
         //   }
         // ]
     };
+    }, [JSON.stringify(burdensData)])
 
     return (
         <ChartBox title={title}>
@@ -181,11 +196,18 @@ const PersonnelLoad:React.FC = () => {
                 <div className={styles.personnelLoadCondition}>
                     <div className="flex1"></div>
                     <div className={styles.personnelLoadTab}>
-                        <ChartTab onChange={(value) => setActiveKey(value)} data={tabData} defaultValue="person" />
+                        <ChartTab
+                          onChange={(value) => setActiveKey(value)}
+                          data={showTabData} defaultValue={activeKey}
+                        />
                     </div>
                 </div>
                 <div className={styles.personnelLoadChart}>
+                  {
+                    type && option &&
                     <BarChart options={option} />
+                  }
+
                 </div>
             </div>
         </ChartBox>

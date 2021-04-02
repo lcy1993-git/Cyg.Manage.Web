@@ -15,7 +15,7 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
     const { data: projectStageInfo } = useRequest(() => getProjectStage(), {
         pollingWhenHidden: false
     })
-
+    if (!projectStageInfo) return null;
     const chartColor = [
         "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
     ]
@@ -25,9 +25,10 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
     },0) ?? 1
 
     let chartElement = null;
+
     if (type === "pie") {
       chartElement = projectStageInfo?.map((item, index) => {
-        const proportion = ((item.value / sum) * 100).toFixed(2) + "%"
+        const proportion = ((item.value / sum) * 100).toFixed(2) + "%";
         const option = {
             title: {
                 text: proportion,  //图形标题，配置在中间对应效果图的80%
@@ -73,7 +74,7 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
         }
         return (
             <div className={styles.chartItem} key={uuid.v1()}>
-                <AnnularFighure options={option} />
+                {option && <AnnularFighure options={option} />}
                 <div className={styles.title}>
                     {item.key}
                 </div>
@@ -82,7 +83,7 @@ const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
       })
     } else if (type === "bar") {
       const optionBar = barChartsOptions(projectStageInfo!);
-      chartElement = (<BarChart options={optionBar} />)
+      chartElement = (optionBar && <BarChart options={optionBar} />)
     }
 
 
