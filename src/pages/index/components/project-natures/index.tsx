@@ -12,9 +12,9 @@ const ProjectNatures: React.FC = () => {
     const dataArray = projectNatures?.map((item) => item.key);
 
     const valueArray = projectNatures?.map((item) => item.value);
-
-
-    const option = {
+    let option = null;
+    if (projectNatures) {
+      option = {
         grid: {
             left: 60,
             bottom: 50,
@@ -108,10 +108,12 @@ const ProjectNatures: React.FC = () => {
                 }
             },
         }]
-    };
+    }
+    }
+
 
     return (
-        <BarChart options={option} />
+        option ? <BarChart options={option} /> : null
     )
 }
 
