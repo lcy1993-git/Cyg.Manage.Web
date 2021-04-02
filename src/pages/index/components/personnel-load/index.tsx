@@ -154,28 +154,26 @@ const PersonnelLoad:React.FC = () => {
                 }
             },
         }],
-        dataZoom: [
-          {
-            type: 'inside',
-            start: 0,
-            end: 20,
-            yAxisIndex: [0, 1],
-            maxValueSpan: 5
-          },
-          {
-            // show: false,
-            type: "slider",
-            borderColor: "#1a8755",
-            backgroundColor: "#1e3933",
-            width: 15,
-            start: 0,
-            end: 20,
-            yAxisIndex: [0, 1]
-          }
-        ]
+        // dataZoom: [
+        //   {
+        //     type: 'inside',
+        //     start: 0,
+        //     end: 20,
+        //     yAxisIndex: [0, 1],
+        //     maxValueSpan: 5
+        //   },
+        //   {
+        //     // show: false,
+        //     type: "slider",
+        //     borderColor: "#1a8755",
+        //     backgroundColor: "#1e3933",
+        //     width: 15,
+        //     start: 0,
+        //     end: 20,
+        //     yAxisIndex: [0, 1]
+        //   }
+        // ]
     };
-
-    console.log();
 
     return (
         <ChartBox title={title}>

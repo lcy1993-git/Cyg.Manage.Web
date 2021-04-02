@@ -113,7 +113,7 @@ const getComponentByType = (type: string, componentProps: any) => {
             break;
         case "deliveryManage":
             return (
-                <DeliveryManage />
+                <DeliveryManage componentProps={componentProps} />
             )
             break;
         default:

@@ -55,7 +55,8 @@ const BarChart:React.FC<BarChartProps> = (props) => {
 
     useEffect(() => {
         if(size.width || size.height) {
-            initChart();
+            const myEvent = new Event("resize");
+            window.dispatchEvent(myEvent)
         }
     }, [JSON.stringify(size)])
 
