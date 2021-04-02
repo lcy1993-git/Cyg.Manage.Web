@@ -63,8 +63,8 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   });
 
   const option = useMemo(() => {
-    const dataArray = consignsData?.map((item) => item.key);
 
+    const dataArray = consignsData?.map((item) => item.key);
     const valueArray = consignsData?.map((item) => item.value);
 
     return {
