@@ -374,17 +374,22 @@ const CompanyFile: React.FC = () => {
               />
             </TableSearch>
             <TableSearch width="300px">
-              <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
-                <PlusOutlined />
-                新建公司文件组
-              </Button>
+              {buttonJurisdictionArray?.includes('add-file-group') && (
+                <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
+                  <PlusOutlined />
+                  新建公司文件组
+                </Button>
+              )}
+
               <Popconfirm
                 title="确定要删除当前文件组吗?"
                 onConfirm={deleteFileGroupEvent}
                 okText="确认"
                 cancelText="取消"
               >
-                <Button className="mr7">删除当前组</Button>
+                {buttonJurisdictionArray?.includes('delete-file-group') && (
+                  <Button className="mr7">删除当前组</Button>
+                )}
               </Popconfirm>
             </TableSearch>
           </div>

@@ -24,7 +24,6 @@ const { Search } = Input;
 const Inventroy: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [inventoryId, setInventoryId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [companyWord, setCompanyWord] = useState<string>('');
   const [checkMappingVisible, setCheckMappingVisible] = useState<boolean>(false);
@@ -360,25 +359,27 @@ const Inventroy: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <GeneralTable
-        scroll={{ x: 3500, y: 577 }}
-        ref={tableRef}
-        titleSlot={titleSlotElement}
-        buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
-        needCommonButton={true}
-        columns={columns}
-        requestSource="resource"
-        url="/Inventory/GetPageList"
-        tableTitle="协议库存列表"
-        getSelectData={(data) => setTableSelectRow(data)}
-        type="radio"
-        extractParams={{
-          inventoryOverviewId: inventoryId,
-          demandCompany: companyWord,
-          keyWord: searchKeyWord,
-        }}
-      />
+      <div className={styles.InvTable}>
+        <GeneralTable
+          scroll={{ x: 3500, y: 577 }}
+          ref={tableRef}
+          titleSlot={titleSlotElement}
+          buttonLeftContentSlot={searchComponent}
+          buttonRightContentSlot={tableElement}
+          needCommonButton={true}
+          columns={columns}
+          requestSource="resource"
+          url="/Inventory/GetPageList"
+          tableTitle="协议库存列表"
+          type="radio"
+          extractParams={{
+            inventoryOverviewId: inventoryId,
+            demandCompany: companyWord,
+            keyWord: searchKeyWord,
+          }}
+        />
+      </div>
+
       {checkMappingVisible && (
         <Modal
           footer=""
