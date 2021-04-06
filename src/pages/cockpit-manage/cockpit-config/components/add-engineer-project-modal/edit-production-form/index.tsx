@@ -1,41 +1,43 @@
 import CommonTitle from '@/components/common-title';
 import { useControllableValue } from 'ahooks';
 import { Modal, Checkbox, Form } from 'antd';
-import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 
 interface EditEngineerAndProductionModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: (componentProps: any) => void;
+  currentRecord: any;
 }
 
 const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent } = props;
+  const { changeFinishEvent, currentRecord } = props;
   const [form] = Form.useForm();
 
-  const sureAddEvent = () => {
+  const sureEditEvent = () => {
     form.validateFields().then((values) => {
       const { production } = values;
-      const chooseComponent = [];
 
-      if (production && production.length > 0) {
-        chooseComponent.push({
-          name: 'personLoad',
-          key: uuid.v1(),
-          x: 0,
-          y: 0,
-          w: 3,
-          h: 11,
-          componentProps: production,
-        });
-      }
       setState(false);
 
-      changeFinishEvent?.(chooseComponent);
+      changeFinishEvent?.({
+        name: 'personLoad',
+        key: currentRecord.key,
+        x: 0,
+        y: 0,
+        w: 3,
+        h: 11,
+        componentProps: production,
+      });
     });
   };
+
+  useEffect(() => {
+    if (currentRecord.componentProps && currentRecord.componentProps.length > 0) {
+      form.setFieldsValue({ production: currentRecord.componentProps });
+    }
+  }, [JSON.stringify(currentRecord.componentProps)]);
 
   return (
     <Modal
@@ -44,7 +46,7 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
       visible={state as boolean}
       destroyOnClose
       onCancel={() => setState(false)}
-      onOk={() => sureAddEvent()}
+      onOk={() => sureEditEvent()}
     >
       <Form form={form}>
         <CommonTitle>生产负荷</CommonTitle>

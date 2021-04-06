@@ -1,41 +1,43 @@
 import CommonTitle from '@/components/common-title';
 import { useControllableValue } from 'ahooks';
 import { Modal, Checkbox, Form } from 'antd';
-import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 
 interface EditEngineerAndModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: (componentProps: any) => void;
+  currentRecord:any
 }
 
 const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent } = props;
+  const { changeFinishEvent,currentRecord } = props;
   const [form] = Form.useForm();
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
       const { area } = values;
-      const chooseComponent = [];
-      if (area && area.length > 0) {
-        chooseComponent.push({
-          name: 'mapComponent',
-          key: uuid.v1(),
-          x: 0,
-          y: 0,
-          w: 3,
-          h: 11,
-          componentProps: area,
-        });
-      }
 
       setState(false);
 
-      changeFinishEvent?.(chooseComponent);
+      changeFinishEvent?.({
+        name: 'mapComponent',
+        key: currentRecord.key,
+        x: 0,
+        y: 0,
+        w: 3,
+        h: 11,
+        componentProps: area,
+      });
     });
   };
+
+  useEffect(() => {
+    if (currentRecord.componentProps && currentRecord.componentProps.length > 0) {
+      form.setFieldsValue({ area: currentRecord.componentProps });
+    }
+  }, [JSON.stringify(currentRecord.componentProps)]);
 
   return (
     <Modal

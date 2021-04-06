@@ -102,6 +102,7 @@ const LogManage: React.FC = () => {
               placeholder="应用"
               value={applications}
               onChange={handleAppSelect}
+              style={{ width: 200 }}
             />
             <UrlSelect
               titleKey="text"
@@ -111,6 +112,7 @@ const LogManage: React.FC = () => {
               placeholder="级别"
               value={level}
               onChange={handleLevelSelect}
+              style={{ width: 180 }}
             />
             <DatePicker
               value={beginDate}
@@ -210,9 +212,11 @@ const LogManage: React.FC = () => {
       index: 'timeCost',
       width: 100,
       render: (text: any, record: any) => {
-        return (
-          record.isTimeOut ? <span style={{color: "#FA4E25"}}>{record.timeCost.toFixed(2)}</span> : <span>{record.timeCost.toFixed(2)}</span>
-        )
+        return record.isTimeOut ? (
+          <span style={{ color: '#FA4E25' }}>{record.timeCost.toFixed(2)}</span>
+        ) : (
+          <span>{record.timeCost.toFixed(2)}</span>
+        );
       },
     },
   ];

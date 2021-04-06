@@ -45,7 +45,7 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
             />
           </div>
         )}
-        {treeData.length === 0 && <EmptyTip description="暂无成果" />}
+        {treeData.length === 0 && <EmptyTip description="暂无设计成果" />}
       </Spin>
     </div>
   );

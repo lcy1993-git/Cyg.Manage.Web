@@ -181,8 +181,8 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
             </Button>
           </div>
         </div>
-        <div>
-          <Tabs className="normalTabs" onTabClick={(key: string) => setCurrentTab(key)}>
+        <div className={styles.resultTable}>
+          <Tabs className="normalTabs" onTabClick={(key: string) => setCurrentTab(key)} type='card'>
             <TabPane key="design" tab="设计成果">
               <DesignResultTab
                 mapTreeData={mapTreeData}

@@ -6,12 +6,10 @@ interface ExceptionProps {
 
 const Exception: React.FC<ExceptionProps> = (props) => {
   const { info } = props;
-  return (
 
-    <div style={{ width: "100%", overflow: "auto", height: "500px" }}>
-      <pre>
-        {info.exception}
-      </pre>
+  return (
+    <div style={{ width: '100%', overflow: 'auto', height: '500px' }}>
+      <pre>{info.exception}</pre>
     </div>
   );
 };

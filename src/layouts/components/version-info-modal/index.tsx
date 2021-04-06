@@ -1,7 +1,7 @@
 import { getVersionUpdate } from '@/services/common';
 import { useControllableValue, useRequest } from 'ahooks';
 import { version } from '../../../../public/config/request';
-import { Modal } from 'antd';
+import { Modal, Spin } from 'antd';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import styles from './index.less';
 import { useEffect } from 'react';
@@ -22,7 +22,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   const thisHostName = window.location.hostname;
   const serverCode = serverCodeArray[thisHostName];
 
-  const { data: versionInfo, run: getVersionInfoEvent } = useRequest(
+  const { data: versionInfo, run: getVersionInfoEvent, loading } = useRequest(
     () =>
       getVersionUpdate({
         productCode: '1301726010322214912',
@@ -64,12 +64,14 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
         onCancel={() => setHistoryVersionModalVisible(false)}
         width={650}
       >
-        <div className={styles.versionItem}>
-          <div className={styles.versionItemTitle}>【更新说明】</div>
-          <div className={styles.versionItemContent}>
-            {historyVersionData ? historyVersionData : '无'}
+        <Spin spinning={loading}>
+          <div className={styles.versionItem}>
+            <div className={styles.versionItemTitle}>【更新说明】</div>
+            <div className={styles.versionItemContent}>
+              {historyVersionData ? historyVersionData : '无'}
+            </div>
           </div>
-        </div>
+        </Spin>
       </Modal>
       <Modal
         title="版本功能更新"
@@ -78,33 +80,28 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
         footer=""
         onCancel={() => setState(false)}
       >
-        {/* <div className={styles.versionItem}>
-        <div className={styles.versionItemTitle}>【新增功能】</div>
-        <div className={styles.versionItemContent}>{versionInfo?.description}</div>
-      </div> */}
-        <div className={styles.versionItem}>
-          <div className={styles.versionItemTitle}>【更新说明】</div>
-          <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>
-        </div>
-        {/* <div className={styles.versionItem}>
-        <div className={styles.versionItemTitle}>【体验优化】</div>
-        <div className={styles.versionItemContent}>{versionInfo?.roleName}</div>
-      </div> */}
-        <div className={styles.versionItem}>
-          <div className={styles.versionItemTitle}>【历史版本】</div>
+        <Spin spinning={loading}>
+          <div className={styles.versionItem}>
+            <div className={styles.versionItemTitle}>【更新说明】</div>
+            <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>
+          </div>
 
-          {versionInfo?.data.branchAvailableVersions?.map((item: string) => {
-            return (
-              <div
-                key={uuid.v1()}
-                onClick={() => checkHistoryInfo(item)}
-                className={styles.historyVersion}
-              >
-                {item}
-              </div>
-            );
-          })}
-        </div>
+          <div className={styles.versionItem}>
+            <div className={styles.versionItemTitle}>【历史版本】</div>
+
+            {versionInfo?.data.branchAvailableVersions?.map((item: string) => {
+              return (
+                <div
+                  key={uuid.v1()}
+                  onClick={() => checkHistoryInfo(item)}
+                  className={styles.historyVersion}
+                >
+                  {item}
+                </div>
+              );
+            })}
+          </div>
+        </Spin>
       </Modal>
     </>
   );

@@ -41,6 +41,7 @@ import EditProjectCaseModal from './components/add-engineer-type-modal/edit-proj
 import EditDeliveryStatisticModal from './components/add-delivery-statistic-modal/edit-delivery-statistic';
 import EditOtherStatisticModal from './components/add-other-statistic-modal/edit-other-statistic';
 import AddEngineerProcessModal from './components/add-engineer-progress-modal';
+import EditEngineerProcessModal from './components/add-engineer-progress-modal/edit-process-form';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -100,45 +101,31 @@ interface CockpitProps {
 
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
-    case "toDo":
-      return (
-        <ToDo componentProps={componentProps} />
-      )
+    case 'toDo':
+      return <ToDo componentProps={componentProps} />;
       break;
-    case "mapComponent":
-      return (
-        <MapComponent componentProps={componentProps} />
-      )
+    case 'mapComponent':
+      return <MapComponent componentProps={componentProps} />;
       break;
-    case "deliveryManage":
-      return (
-        <DeliveryManage componentProps={componentProps} />
-      )
+    case 'deliveryManage':
+      return <DeliveryManage componentProps={componentProps} />;
       break;
-    case "personLoad":
-      return (
-        <PersonnelLoad componentProps={componentProps} />
-      )
+    case 'personLoad':
+      return <PersonnelLoad componentProps={componentProps} />;
       break;
-    case "projectSchedule":
-      return (
-        <ProjectSchedule componentProps={componentProps} />
-      )
+    case 'projectSchedule':
+      return <ProjectSchedule componentProps={componentProps} />;
       break;
-    case "projectType":
-      return (
-        <ProjectType componentProps={componentProps} />
-      )
+    case 'projectType':
+      return <ProjectType componentProps={componentProps} />;
       break;
-    case "projectProgress":
-      return (
-        <ProjectProgress />
-      )
+    case 'projectProgress':
+      return <ProjectProgress />;
       break;
     default:
-      return undefined
+      return undefined;
   }
-}
+};
 
 const CockpitManage: React.FC = () => {
   const [configArray, setConfigArray] = useState<CockpitProps[]>([]);
@@ -164,16 +151,19 @@ const CockpitManage: React.FC = () => {
   const [editProjectCaseVisible, setEditProjectCaseVisible] = useState<boolean>(false);
   const [editDeliveryStatisticVisible, setEditDeliveryStatisticVisible] = useState<boolean>(false);
   const [editOtherStatisticVisible, setEditOtherStatisticVisible] = useState<boolean>(false);
+  const [editEngineerProcessVisible, setEditEngineerProcessVisible] = useState<boolean>(false);
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
   const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
 
+  const [currentRecord, setCurrentRecord] = useState<any>({});
+
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
     const totalHeight = divide(thisBoxHeight, 18);
     setConfigArray([
-      { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1()},
+      { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
       {
         name: 'mapComponent',
         x: 3,
@@ -220,24 +210,47 @@ const CockpitManage: React.FC = () => {
     setConfigArray(copyConfigArray);
   };
 
-  // 编辑事件
+  //编辑弹出事件
   const editEvent = (record: any) => {
     switch (record.name) {
       case 'mapComponent':
+        setCurrentRecord(record);
         setEditEngineerAndMapVisible(true);
         break;
       case 'personLoad':
+        setCurrentRecord(record);
         setEditEngineerAndProductionVisible(true);
         break;
       case 'projectType':
+        setCurrentRecord(record);
         setEditProjectTypeVisible(true);
+        break;
+      case 'projectSchedule':
+        setCurrentRecord(record);
+        setEditProjectCaseVisible(true);
+        break;
+      case 'projectProgress':
+        setCurrentRecord(record);
+        setEditEngineerProcessVisible(true);
+        break;
       case 'deliveryManage':
+        setCurrentRecord(record);
         setEditDeliveryStatisticVisible(true);
         break;
       case 'toDo':
+        setCurrentRecord(record);
         setEditOtherStatisticVisible(true);
         break;
     }
+  };
+
+  //编辑事件
+  const editComponentEvent = (componentProps: any) => {
+    const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
+
+    const dataIndex = copyConfigArray.findIndex((item) => item.key === currentRecord.key);
+    copyConfigArray[dataIndex] = { ...componentProps };
+    setConfigArray([...copyConfigArray]);
   };
 
   const configComponentElement = configArray.map((item) => {
@@ -474,11 +487,6 @@ const CockpitManage: React.FC = () => {
         onChange={setAddMapModuleVisible}
         changeFinishEvent={addComponentEvent}
       />
-      <AddEngineerAndProjectModule
-        visible={addMapModuleVisible}
-        onChange={setAddMapModuleVisible}
-        changeFinishEvent={addComponentEvent}
-      />
       <AddEngineerTypeModal
         visible={addEngineerTypeVisible}
         onChange={setAddEngineerTypeVisible}
@@ -489,48 +497,79 @@ const CockpitManage: React.FC = () => {
         onChange={setAddDeliveryStatisticVisible}
         changeFinishEvent={addComponentEvent}
       />
+
+      {editDeliveryStatisticVisible && (
+        <EditDeliveryStatisticModal
+          visible={editDeliveryStatisticVisible}
+          onChange={setEditDeliveryStatisticVisible}
+          changeFinishEvent={editComponentEvent}
+          currentRecord={currentRecord}
+        />
+      )}
+
       <AddEngineerProcessModal
         visible={addEngineerProcessVisible}
         onChange={setAddEngineerProcessVisible}
         changeFinishEvent={addComponentEvent}
       />
-      <EditDeliveryStatisticModal
-        visible={editDeliveryStatisticVisible}
-        onChange={setEditDeliveryStatisticVisible}
-        changeFinishEvent={editEvent}
-        editData={configArray}
-      />
+      {editEngineerProcessVisible && (
+        <EditEngineerProcessModal
+          visible={editEngineerProcessVisible}
+          onChange={setEditEngineerProcessVisible}
+          changeFinishEvent={editComponentEvent}
+          currentRecord={currentRecord}
+        />
+      )}
+
       <AddOtherStatisticModal
         visible={addOtherStatisticVisible}
         onChange={setAddOtherStatisticVisible}
         changeFinishEvent={addComponentEvent}
       />
-      <EditOtherStatisticModal
-        visible={editOtherStatisticVisible}
-        onChange={setEditOtherStatisticVisible}
-        changeFinishEvent={editEvent}
-      />
-      <EditEngineerAndMapModal
-        visible={editEngineerAndMapVisible}
-        onChange={setEditEngineerAndMapVisible}
-        changeFinishEvent={editEvent}
-      />
-      <EditEngineerAndProductionModal
-        visible={editEngineerAndProductionVisible}
-        onChange={setEditEngineerAndProductionVisible}
-        changeFinishEvent={editEvent}
-      />
+      {editOtherStatisticVisible && (
+        <EditOtherStatisticModal
+          visible={editOtherStatisticVisible}
+          onChange={setEditOtherStatisticVisible}
+          changeFinishEvent={editComponentEvent}
+          currentRecord={currentRecord}
+        />
+      )}
 
-      <EditProjectTypeModal
-        visible={editProjectTypeVisible}
-        onChange={setEditProjectTypeVisible}
-        changeFinishEvent={editEvent}
-      />
-      <EditProjectCaseModal
-        visible={editProjectCaseVisible}
-        onChange={setEditProjectCaseVisible}
-        changeFinishEvent={editEvent}
-      />
+      {editEngineerAndMapVisible && (
+        <EditEngineerAndMapModal
+          visible={editEngineerAndMapVisible}
+          onChange={setEditEngineerAndMapVisible}
+          changeFinishEvent={editComponentEvent}
+          currentRecord={currentRecord}
+        />
+      )}
+
+      {editEngineerAndProductionVisible && (
+        <EditEngineerAndProductionModal
+          visible={editEngineerAndProductionVisible}
+          onChange={setEditEngineerAndProductionVisible}
+          changeFinishEvent={editComponentEvent}
+          currentRecord={currentRecord}
+        />
+      )}
+
+      {editProjectTypeVisible && (
+        <EditProjectTypeModal
+          visible={editProjectTypeVisible}
+          onChange={setEditProjectTypeVisible}
+          changeFinishEvent={editComponentEvent}
+          currentRecord={currentRecord}
+        />
+      )}
+
+      {editProjectCaseVisible && (
+        <EditProjectCaseModal
+          visible={editProjectCaseVisible}
+          onChange={setEditProjectCaseVisible}
+          changeFinishEvent={editComponentEvent}
+          currentRecord={currentRecord}
+        />
+      )}
     </PageCommonWrap>
   );
 };
