@@ -83,7 +83,7 @@ const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
       })
     } else if (type === "bar") {
       const optionBar = barChartsOptions(projectBuilding!)
-      chartElement = (<BarChart options={optionBar} />)
+      chartElement = optionBar ? <BarChart options={optionBar} /> : null;
     }
 
     return (
