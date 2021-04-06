@@ -21,7 +21,9 @@ const BarChart:React.FC<BarChartProps> = (props) => {
     const initChart = () => {
         if(divRef && divRef.current) {
             myChart = echarts.init(divRef.current as unknown as HTMLDivElement);
-            myChart.setOption(options)
+            if(options) {
+                myChart.setOption(options)
+            }
         }
     }
 

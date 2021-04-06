@@ -1,19 +1,18 @@
-import AnnularFighure from "@/components/annular-fighure";
 import * as echarts from "echarts/lib/echarts";
 import { getProjectStatus } from "@/services/index";
 import { useRequest } from "ahooks";
 import React, { useMemo } from "react";
+import BarChart from "@/components/bar-chart";
 const ProjectStatusBar: React.FC = () => {
 
-    const { data: projectStatus } = useRequest(() => getProjectStatus(), {
-        pollingWhenHidden: false
-    })
+    const { data: projectStatus } = useRequest(() => getProjectStatus())
 
     const option = useMemo(() => {
       if (!projectStatus) return undefined;
+      
       const dataArray = projectStatus?.map((item) => item.key);
       const valueArray = projectStatus?.map((item) => item.value);
-
+        
       return {
         grid: {
             left: 60,
@@ -111,8 +110,14 @@ const ProjectStatusBar: React.FC = () => {
       };
       
     }, [JSON.stringify(projectStatus)])
+
     return (
-      option ? <AnnularFighure options={option} /> : null
+      <>
+        {
+            option &&
+            <BarChart options={option} />
+        }
+      </>
     )
 }
 

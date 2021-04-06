@@ -108,4 +108,9 @@ export const getToDoStatistics = () => {
     );
   }
 
+  // 获取地图组件的area组件
+  export const getMapRegisterData = (areaId: string) => {
+    return request("/json/china.json",{method: "GET", data: {code: "100000"}})
+  }
+
 

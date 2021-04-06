@@ -14,47 +14,14 @@ import 'react-resizable/css/styles.css';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-const MapComponent = Loadable({
-    loader: () => import('@/pages/index/components/map-chart'),
-    loading: Loading,
-    delay: 150,
-});
 
-const PersonnelLoad = Loadable({
-    loader: () => import('@/pages/index/components/personnel-load'),
-    loading: Loading,
-    delay: 150,
-});
-
-const ToDo = Loadable({
-    loader: () => import('@/pages/index/components/to-do'),
-    loading: Loading,
-    delay: 150,
-});
-
-const DeliveryManage = Loadable({
-    loader: () => import('@/pages/index/components/delivery-manage'),
-    loading: Loading,
-    delay: 150,
-});
-
-const ProjectSchedule = Loadable({
-    loader: () => import('@/pages/index/components/project-schedule-status'),
-    loading: Loading,
-    delay: 150,
-});
-
-const ProjectType = Loadable({
-    loader: () => import('@/pages/index/components/project-type'),
-    loading: Loading,
-    delay: 150,
-});
-
-const ProjectProgress = Loadable({
-    loader: () => import('@/pages/index/components/project-progress'),
-    loading: Loading,
-    delay: 150,
-});
+import MapComponent from "@/pages/index/components/map-chart";
+import PersonnelLoad from "@/pages/index/components/personnel-load";
+import ToDo from "@/pages/index/components/to-do";
+import DeliveryManage from "@/pages/index/components/delivery-manage";
+import ProjectSchedule from "@/pages/index/components/project-schedule-status";
+import ProjectType from "@/pages/index/components/project-type";
+import ProjectProgress from "@/pages/index/components/project-progress";
 
 const getComponentByType = (type: string, componentProps: any) => {
     switch (type) {
@@ -115,6 +82,8 @@ const Index: React.FC = () => {
         }
     }, [data])
 
+    console.log(handleData)
+
     const windowPercent = useMemo(() => {
         const windowHeight = window.innerHeight;
         if (windowHeight && handleData.configWindowHeight) {
@@ -132,8 +101,6 @@ const Index: React.FC = () => {
             </div>
         );
     });
-
-
 
     return (
         <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }} ref={divRef}>

@@ -47,14 +47,10 @@ const AnnularFighure:React.FC<BarChartProps> = (props) => {
     });
 
     useEffect(() => {
-        if(size.width || size.height) {
+        if(options) {
             initChart();
         }
-    }, [JSON.stringify(size)])
-
-    useEffect(() => {
-        initChart();
-    }, [JSON.stringify(options)])
+    }, [JSON.stringify(options),JSON.stringify(size)])
 
     return (
         <div ref={divRef} style={{width: "100%", height: "100%"}} />

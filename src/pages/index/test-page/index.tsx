@@ -1,14 +1,15 @@
 
 
 import React from 'react';
-import ProjectProgress from '../components/project-progress';
+import MapChartComponent from '../components/map-chart-component';
+
 
 
 const TestPage = () => {
 
   return (
     <div style={{width: "600px", height: "360px"}}>
-      <ProjectProgress />
+      <MapChartComponent />
     </div>
   );
 };
