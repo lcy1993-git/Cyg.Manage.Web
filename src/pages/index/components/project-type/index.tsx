@@ -17,13 +17,13 @@ interface Props {
 }
 
 const ProjectType: React.FC<Props> = (props) => {
-  const { componentProps = ["building", "classify", "type", "stage", "level"] } = props;
+  const { componentProps = ["buildType", "classify", "category", "stage", "level"] } = props;
   const [activeKey, setActiveKey] = useState<string>();
   const [typeChart, setTypeChart] = useState<"pie" | "bar">("pie");
 
   const tabData = [
       {
-          id: "building",
+          id: "buildType",
           name: "建设类型"
       },
       {
@@ -31,7 +31,7 @@ const ProjectType: React.FC<Props> = (props) => {
           name: "项目分类"
       },
       {
-          id: "type",
+          id: "category",
           name: "项目类别"
       },
       {
@@ -74,7 +74,7 @@ const ProjectType: React.FC<Props> = (props) => {
 
                 <div className={styles.projectTypeChart}>
                     {
-                        activeKey === "building" &&
+                        activeKey === "buildType" &&
                         <ProjectBuilding type={typeChart} />
                     }
                     {
@@ -82,7 +82,7 @@ const ProjectType: React.FC<Props> = (props) => {
                         <ProjectClassify type={typeChart} />
                     }
                     {
-                        activeKey === "type" &&
+                        activeKey === "category" &&
                         <ProjectCategory type={typeChart} />
                     }
                     {

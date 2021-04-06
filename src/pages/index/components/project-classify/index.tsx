@@ -8,86 +8,111 @@ import AnnularFighure from "@/components/annular-fighure"
 import styles from "./index.less"
 
 interface IProps {
-  type: "bar" | "pie"
+    type: "bar" | "pie"
 }
 
-const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
+const chartColor = [
+    "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
+];
+
+const ProjectClassify: React.FC<IProps> = ({ type = "pie" }) => {
     const { data: projectClassify } = useRequest(() => getProjectClassify(), {
         pollingWhenHidden: false
     })
-    if (!projectClassify) return null;
-    const chartColor = [
-        "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
-    ]
+    const dataSum = useMemo(() => {
+        if (projectClassify) {
+            return projectClassify?.reduce((sum, item) => {
+                return sum + item.value;
+            }, 0) ?? 1
+        }
+        return 1
+    }, [JSON.stringify(projectClassify)])
 
-    const sum = projectClassify?.reduce((sum, item) => {
-        return sum + item.value;
-    },0) ?? 1;
+    const getOption = (type: string, data?: any, index?: number) => {
+        if (type === "pie") {
+            const proportion = ((data.value / dataSum) * 100).toFixed(2) + "%";
 
-    let chartElement = null;
-    if (type === "pie") {
-      chartElement = projectClassify?.map((item, index) => {
-        const proportion = ((item.value / sum) * 100).toFixed(2) + "%"
-        const option = {
-            title: {
-                text: proportion,  //图形标题，配置在中间对应效果图的80%
-                left: "center",
-                top: "41%",
-                textStyle: {
-                    color: "#74AC91",
-                    fontSize: 12,
-                    align: "center",
-                    fontWight: 100
-                }
-            },
-            series: [
-                {
-                    type: 'pie',
-                    radius: ['55%', '70%'],   //设置内外环半径,两者差值越大，环越粗
-                    hoverAnimation: false,　 //移入图形是否放大
-                    labelLine: {
-                        normal: {  //label线不显示
-                            show: false
-                        }
-                    },
-                    data: [
-                        {
-                            value: item.value,
-                            itemStyle: {
-                                normal: {
-                                    color: chartColor[index],
-                                }
+            return {
+                title: {
+                    text: proportion,  //图形标题，配置在中间对应效果图的80%
+                    left: "center",
+                    top: "41%",
+                    textStyle: {
+                        color: "#74AC91",
+                        fontSize: 12,
+                        align: "center",
+                        fontWeight: 100
+                    }
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        radius: ['55%', '70%'],   //设置内外环半径,两者差值越大，环越粗
+                        hoverAnimation: false,　 //移入图形是否放大
+                        labelLine: {
+                            normal: {  //label线不显示
+                                show: false
                             }
                         },
-                        {
-                            value: (sum - item.value),
-                            itemStyle: {
-                                normal: {
-                                    color: '#004260'
+                        data: [
+                            {
+                                value: data.value,
+                                itemStyle: {
+                                    normal: {
+                                        color: chartColor[index!],
+                                    }
+                                }
+                            },
+                            {
+                                value: (dataSum - data.value),
+                                itemStyle: {
+                                    normal: {
+                                        color: '#004260'
+                                    }
                                 }
                             }
-                        }
-                    ]
-                }
-            ]
+                        ]
+                    }
+                ]
+            }
         }
-        return (
-            <div className={styles.chartItem} key={uuid.v1()}>
-                <AnnularFighure options={option} />
-                <div className={styles.title}>
-                    {item.key}
-                </div>
-            </div>
-        )
-      })
-    } else if (type === "bar") {
-      const optionBar = barChartsOptions(projectClassify!)
-      chartElement = (<BarChart options={optionBar} />)
+        if (type === "bar") {
+            if (!projectClassify) {
+                return undefined
+            }
+            return barChartsOptions(projectClassify)
+        }
+        return undefined
     }
 
     return (
         <>
-            {chartElement}
+            {
+                type === "pie" &&
+                <>
+                    {
+                        projectClassify?.map((item, index) => {
+                            const option = getOption("pie", item, index);
+                            return (
+                                <div className={styles.chartItem} key={uuid.v1()}>
+                                    {
+                                        option && <AnnularFighure options={option} />
+                                    }
+                                    <div className={styles.title}>
+                                        {item.key}
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </>
+            }
+            {
+                type === "bar" && getOption("bar") &&
+                <>
+                    <BarChart options={getOption("bar")!} />
+                </>
+            }
         </>
     )
 }

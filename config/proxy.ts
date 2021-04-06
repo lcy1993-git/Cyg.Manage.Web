@@ -29,6 +29,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/resource': '/' },
     },
+    '/map/api': {
+      target: 'https://geo.datav.aliyun.com/areas/bound/geojson',
+      changeOrigin: true,
+      pathRewrite: { '^/map/api': '/' },
+    }
   },
   test: {
     '/api/': {

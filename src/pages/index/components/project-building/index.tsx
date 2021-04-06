@@ -11,84 +11,108 @@ interface IProps {
   type: "bar" | "pie"
 }
 
+const chartColor = [
+    "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
+];
+
 const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
     const { data: projectBuilding } = useRequest(() => getProjectBuliding(), {
         pollingWhenHidden: false
     })
 
-    const chartColor = [
-        "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
-    ];
+    const dataSum = useMemo(() => {
+        if (projectBuilding) {
+            return projectBuilding?.reduce((sum, item) => {
+                return sum + item.value;
+            }, 0) ?? 1
+        }
+        return 1
+    }, [JSON.stringify(projectBuilding)])
 
-    if (!projectBuilding) return null;
-  
-    const sum = projectBuilding?.reduce((sum, item) => {
-        return sum + item.value;
-    },0) ?? 1;
-    let chartElement = null;
-    if (type === "pie") {
-      chartElement = projectBuilding?.map((item, index) => {
-        const proportion = ((item.value / sum) * 100).toFixed(2) + "%"
-        const option = {
-            title: {
-                text: proportion,  //图形标题，配置在中间对应效果图的80%
-                left: "center",
-                top: "41%",
-                textStyle: {
-                    color: "#74AC91",
-                    fontSize: 12,
-                    align: "center",
-                    fontWight: 100
-                }
-            },
-            series: [
-                {
-                    type: 'pie',
-                    radius: ['55%', '70%'],   //设置内外环半径,两者差值越大，环越粗
-                    hoverAnimation: false,　 //移入图形是否放大
-                    labelLine: {
-                        normal: {  //label线不显示
-                            show: false
-                        }
-                    },
-                    data: [
-                        {
-                            value: item.value,
-                            itemStyle: {
-                                normal: {
-                                    color: chartColor[index],
-                                }
+    const getOption = (type: string, data?: any, index?: number) => {
+        if (type === "pie") {
+            const proportion = ((data.value / dataSum) * 100).toFixed(2) + "%";
+            return {
+                title: {
+                    text: proportion,  //图形标题，配置在中间对应效果图的80%
+                    left: "center",
+                    top: "41%",
+                    textStyle: {
+                        color: "#74AC91",
+                        fontSize: 12,
+                        align: "center",
+                        fontWight: 100
+                    }
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        radius: ['55%', '70%'],   //设置内外环半径,两者差值越大，环越粗
+                        hoverAnimation: false,　 //移入图形是否放大
+                        labelLine: {
+                            normal: {  //label线不显示
+                                show: false
                             }
                         },
-                        {
-                            value: (sum - item.value),
-                            itemStyle: {
-                                normal: {
-                                    color: '#004260'
+                        data: [
+                            {
+                                value: data.value,
+                                itemStyle: {
+                                    normal: {
+                                        color: chartColor[index!],
+                                    }
+                                }
+                            },
+                            {
+                                value: (dataSum - data.value),
+                                itemStyle: {
+                                    normal: {
+                                        color: '#004260'
+                                    }
                                 }
                             }
-                        }
-                    ]
-                }
-            ]
+                        ]
+                    }
+                ]
+            }
         }
-        return (
-            <div className={styles.chartItem} key={uuid.v1()}>
-                <AnnularFighure options={option} />
-                <div className={styles.title}>
-                    {item.key}
-                </div>
-            </div>
-        )
-      })
-    } else if (type === "bar") {
-      const optionBar = barChartsOptions(projectBuilding!)
-      chartElement = optionBar ? <BarChart options={optionBar} /> : null;
+        if (type === "bar") {
+            if(!projectBuilding) {
+                return undefined
+            }
+            return barChartsOptions(projectBuilding)
+        }
+        return undefined
     }
 
     return (
         <>
-            {chartElement}
+            {
+                type === "pie" && 
+                <>
+                    {
+                        projectBuilding?.map((item, index) => {
+                            const option = getOption("pie",item,index);
+                            return (
+                                <div className={styles.chartItem} key={uuid.v1()}>
+                                    {
+                                        option && <AnnularFighure options={option} />
+                                    }
+                                    <div className={styles.title}>
+                                        {item.key}
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </>
+            }
+            {
+                type === "bar" && getOption("bar") &&
+                <>
+                    <BarChart options={getOption("bar")!} />
+                </>
+            }
         </>
     )
 }
