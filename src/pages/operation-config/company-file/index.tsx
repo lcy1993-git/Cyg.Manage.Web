@@ -356,7 +356,7 @@ const CompanyFile: React.FC = () => {
   };
 
   const titleSlotElement = () => {
-    return <div className={styles.invTitle}>{`-${nowSelectGroup}`}</div>;
+    return <div>{`-${nowSelectGroup}`}</div>;
   };
 
   return (

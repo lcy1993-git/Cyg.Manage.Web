@@ -301,7 +301,7 @@ const Inventroy: React.FC = () => {
   ];
 
   const titleSlotElement = () => {
-    return <div className={styles.invTitle}>{`-${nowSelectedInv}`}</div>;
+    return <div>{`-${nowSelectedInv}`}</div>;
   };
 
   const tableElement = () => {
