@@ -15,7 +15,7 @@ interface Props {
 
 const PersonnelLoad:React.FC<Props> = (props) => {
 
-    const { componentProps = ["person", "array", "company"] } = props;
+    const { componentProps = ["person", "department", "company"] } = props;
     const [activeKey, setActiveKey] = useState<string>("person");
 
     const tabData = [
@@ -26,7 +26,7 @@ const PersonnelLoad:React.FC<Props> = (props) => {
             title: "员工负荷"
         },
         {
-            id: "array",
+            id: "department",
             name: "部组",
             value: "2",
             title: "部组负荷"

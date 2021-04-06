@@ -16,12 +16,12 @@ interface TabData {
 
 const ProjectSchedule:React.FC<Props> = (props) => {
 
-  const { componentProps = ["schedule", "status"] } = props;
+  const { componentProps = ["nature", "status"] } = props;
   const [activeKey, setActiveKey] = useState<string>();
 
   const tabData: TabData[]= [
     {
-      id: "schedule",
+      id: "nature",
       name: "项目性质"
     },
     {
@@ -52,7 +52,7 @@ const ProjectSchedule:React.FC<Props> = (props) => {
 
           <div className={styles.content}>
             {
-              activeKey === "schedule" ? 
+              activeKey === "nature" ? 
               <ProjectNatures /> : null
             }
             {
