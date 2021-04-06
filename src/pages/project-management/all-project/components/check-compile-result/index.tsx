@@ -38,7 +38,7 @@ const CompileResultTab: React.FC<DesignResultProps> = (props) => {
           <div className={styles.treeTable}>
             <DirectoryTree
               checkable
-              onCheck={() => onCheck}
+              onCheck={onCheck}
               checkedKeys={checkedKeys}
               defaultExpandAll={true}
               treeData={treeData.map(mapTreeData)}

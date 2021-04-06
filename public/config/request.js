@@ -43,10 +43,10 @@ export const logoArray = {
 }
 
 const mapConfig = {
-    "10.6.1.36": {areaId: "650000", mapName: "xinjiang"},
+    "10.6.1.36": {areaId: "620000", mapName: "gansu"},
     "10.6.1.37": {areaId: "650000", mapName: "xinjiang"},
-    "10.6.1.38": {areaId: "650000", mapName: "xinjiang"},
-    "171.223.214.154": {areaId: "650000", mapName: "xinjiang"},
+    "10.6.1.38": {areaId: "640000", mapName: "ningxia"},
+    "171.223.214.154": {areaId: "640000", mapName: "ningxia"},
     "218.6.242.125": {areaId: "510000", mapName: "sichuan"},
     "39.99.251.67": {areaId: "650000", mapName: "xinjiang"},
     "47.108.63.23": {areaId: "650000", mapName: "xinjiang"},
@@ -73,4 +73,4 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.23";
+export const version = "1.0.25";

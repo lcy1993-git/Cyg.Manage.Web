@@ -50,6 +50,12 @@ const ProjectType = Loadable({
     delay: 150,
 });
 
+const ProjectProgress = Loadable({
+    loader: () => import('@/pages/index/components/project-progress'),
+    loading: Loading,
+    delay: 150,
+});
+
 const getComponentByType = (type: string, componentProps: any) => {
     switch (type) {
         case "toDo":
@@ -82,6 +88,11 @@ const getComponentByType = (type: string, componentProps: any) => {
                 <ProjectType componentProps={componentProps} />
             )
             break;
+        case "projectProgress":
+            return (
+                <ProjectProgress />
+            )
+            break;
         default:
             return undefined
     }
@@ -99,18 +110,30 @@ const Index: React.FC = () => {
             return JSON.parse(data)
         }
         return {
-            configWindowHeight: 1000,
+            configWindowHeight: 828,
             config: []
         }
     }, [data])
 
+    const windowPercent = useMemo(() => {
+        const windowHeight = window.innerHeight;
+        if (windowHeight && handleData.configWindowHeight) {
+            return (windowHeight - 85) / handleData.configWindowHeight
+        }
+        return undefined
+    }, [JSON.stringify(size), JSON.stringify(handleData)])
+
     const configComponentElement = handleData.config?.map((item) => {
+        const actualHeight = windowPercent ? parseFloat((item.h * windowPercent).toFixed(2)) : item.h;
+        const actualY = windowPercent ? parseFloat((item.y * windowPercent).toFixed(2)) : item.y;
         return (
-            <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h, static: true }}>
+            <div key={item.key} data-grid={{ x: item.x, y: actualY, w: item.w, h: actualHeight, static: true }}>
                 {getComponentByType(item.name, item.componentProps)}
             </div>
         );
     });
+
+
 
     return (
         <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }} ref={divRef}>

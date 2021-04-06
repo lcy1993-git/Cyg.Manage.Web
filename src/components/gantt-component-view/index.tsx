@@ -6,39 +6,6 @@ import moment from "moment";
 
 import styles from './index.less';
 
-const testData = [
-  {
-    name: '工程一',
-    id: 'engineerOne',
-    startTime: '2021-03-04',
-    endTime: '2021-05-01',
-    type: "engineer",
-    children: [
-      {
-        name: '项目一',
-        id: 'projectOne',
-        type: "project",
-        startTime: '2021-03-07',
-        endTime: '2021-03-24',
-      },
-      {
-        name: '项目二',
-        id: 'projectTwo',
-        type: "project",
-        startTime: '2021-05-16',
-        endTime: '2022-06-25',
-      },
-      {
-        name: '项目三',
-        id: 'projectThree',
-        type: "project",
-        startTime: '2021-03-17',
-        endTime: '2022-05-30',
-      },
-    ],
-  },
-];
-
 interface GanttComponentViewProps {
   dayWidth?: number;
   itemHeight?: number;
@@ -64,18 +31,34 @@ const weekObject = {
   6: "六"
 }
 
+const ganttBgColorObject = {
+  "1": "#A1ACA5",
+  "2": "#A8D02C",
+  "3": "#2AFE97",
+  "4": "#FDFA88",
+  "12": "#21CEBE",
+  "13": "#0584C7",
+  "7": "#26DDFD",
+  "16": "#0E7B3B"
+}
+
 const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
-  const { title = "工程项目名称", ganttData } = props;
-  console.log(ganttData);
+  const { title = "工程项目名称", ganttData = [] } = props;
+
   const flattenData = useMemo(() => {
-    return flatten<DataSourceItem>(testData);
-  }, [JSON.stringify(testData)]);
+    return flatten<DataSourceItem>(ganttData);
+  }, [JSON.stringify(ganttData)]);
 
   const timeData = useGetMinAndMaxTime(flattenData);
 
   // 获取到了所有时间中的最大时间和最小时间
   const timeArray = useMemo(() => {
+ 
     const {diffMonths,monthStartTime} = timeData;
+    if(isNaN(diffMonths) || !monthStartTime) {
+      return []
+    }
+
     const finalyTimeData = [...new Array(diffMonths).keys()].map((item) => {
       return moment(monthStartTime).add(item, "month").format("YYYY-MM-DD")
     }).map((item) => {
@@ -88,6 +71,7 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
       }
     })
     return finalyTimeData
+ 
   }, [JSON.stringify(timeData)])
 
   const calendarElement = timeArray?.map((item) => {
@@ -147,8 +131,8 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
     const leftDiffDays = moment(item.startTime).diff(timeData.monthStartTime, "days");
     return (
       <div className={styles.ganttBarItem} key={`${item.id}_bar`} style={{width: `${diffDays * 30}px`,left: `${leftDiffDays * 30}px`,top: `${(index) * 44}px`}}>
-        <div className={styles.ganttBarItemPercent}>
-
+        <div className={styles.ganttBarItemPercent} style={{width: `${item.progressValue}%`, backgroundColor: `${ganttBgColorObject[item.status]}`}}>
+          <span>{item.progressValue}%</span>
         </div>
       </div>
     )

@@ -26,7 +26,7 @@ import CockpitMenuItem from './components/menu-item';
 
 import AddEngineerAndProjectModule from './components/add-engineer-project-modal';
 import AddEngineerTypeModal from './components/add-engineer-type-modal';
-import AddDeliveryStatisticModal from './components/add-delivery -statistic-modal';
+import AddDeliveryStatisticModal from './components/add-delivery-statistic-modal';
 import AddOtherStatisticModal from './components/add-other-statistic-modal';
 import { exportHomeStatisticData, saveChartConfig } from '@/services/operation-config/cockpit';
 import EmptyTip from '@/components/empty-tip';
@@ -38,8 +38,9 @@ import EditEngineerAndMapModal from './components/add-engineer-project-modal/edi
 import EditEngineerAndProductionModal from './components/add-engineer-project-modal/edit-production-form';
 import EditProjectTypeModal from './components/add-engineer-type-modal/edit-project-type';
 import EditProjectCaseModal from './components/add-engineer-type-modal/edit-project-case';
-import EditDeliveryStatisticModal from './components/add-delivery -statistic-modal/edit-delivery-statistic';
+import EditDeliveryStatisticModal from './components/add-delivery-statistic-modal/edit-delivery-statistic';
 import EditOtherStatisticModal from './components/add-other-statistic-modal/edit-other-statistic';
+import AddEngineerProcessModal from './components/add-engineer-progress-modal';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -67,18 +68,6 @@ const DeliveryManage = Loadable({
   delay: 150,
 });
 
-const CostInformation = Loadable({
-  loader: () => import('@/pages/index/components/cost-information'),
-  loading: Loading,
-  delay: 150,
-});
-
-const ProjectStatus = Loadable({
-  loader: () => import('@/pages/index/components/project-status'),
-  loading: Loading,
-  delay: 150,
-});
-
 const ProjectType = Loadable({
   loader: () => import('@/pages/index/components/project-type'),
   loading: Loading,
@@ -86,7 +75,13 @@ const ProjectType = Loadable({
 });
 
 const ProjectSchedule = Loadable({
-  loader: () => import('@/pages/index/components/project-schedule'),
+  loader: () => import('@/pages/index/components/project-schedule-status'),
+  loading: Loading,
+  delay: 150,
+});
+
+const ProjectProgress = Loadable({
+  loader: () => import('@/pages/index/components/project-progress'),
   loading: Loading,
   delay: 150,
 });
@@ -103,32 +98,47 @@ interface CockpitProps {
   fixHeight?: boolean;
 }
 
-const componentType = {
-  mapComponent: <MapComponent />,
-  personLoad: <PersonnelLoad />,
-  toDo: <ToDo />,
-  deliveryManage: <DeliveryManage />,
-  costInformation: <CostInformation />,
-  projectStatus: <ProjectStatus />,
-  projectType: <ProjectType />,
-  projectSchedule: <ProjectSchedule />,
-};
-
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
-    case 'toDo':
-      return <ToDo componentProps={componentProps} />;
+    case "toDo":
+      return (
+        <ToDo componentProps={componentProps} />
+      )
       break;
-    case 'mapComponent':
-      return <MapComponent componentProps={componentProps} />;
+    case "mapComponent":
+      return (
+        <MapComponent componentProps={componentProps} />
+      )
       break;
-    case 'deliveryManage':
-      return <DeliveryManage componentProps={componentProps} />;
+    case "deliveryManage":
+      return (
+        <DeliveryManage componentProps={componentProps} />
+      )
+      break;
+    case "personLoad":
+      return (
+        <PersonnelLoad componentProps={componentProps} />
+      )
+      break;
+    case "projectSchedule":
+      return (
+        <ProjectSchedule componentProps={componentProps} />
+      )
+      break;
+    case "projectType":
+      return (
+        <ProjectType componentProps={componentProps} />
+      )
+      break;
+    case "projectProgress":
+      return (
+        <ProjectProgress />
+      )
       break;
     default:
-      return undefined;
+      return undefined
   }
-};
+}
 
 const CockpitManage: React.FC = () => {
   const [configArray, setConfigArray] = useState<CockpitProps[]>([]);
@@ -143,6 +153,7 @@ const CockpitManage: React.FC = () => {
   const [addEngineerTypeVisible, setAddEngineerTypeVisible] = useState<boolean>(false);
   const [addDeliveryStatisticVisible, setAddDeliveryStatisticVisible] = useState<boolean>(false);
   const [addOtherStatisticVisible, setAddOtherStatisticVisible] = useState<boolean>(false);
+  const [addEngineerProcessVisible, setAddEngineerProcessVisible] = useState<boolean>(false);
 
   const [editEngineerAndMapVisible, setEditEngineerAndMapVisible] = useState<boolean>(false);
   const [editEngineerAndProductionVisible, setEditEngineerAndProductionVisible] = useState<boolean>(
@@ -162,8 +173,7 @@ const CockpitManage: React.FC = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
     const totalHeight = divide(thisBoxHeight, 18);
     setConfigArray([
-      { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
-
+      { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1()},
       {
         name: 'mapComponent',
         x: 3,
@@ -176,22 +186,21 @@ const CockpitManage: React.FC = () => {
       { name: 'deliveryManage', x: 0, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
       { name: 'personLoad', x: 9, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
       {
-        name: 'costInformation',
-        x: 0,
-        y: 55,
-        w: 3,
-        h: divide(totalHeight - 11, 2),
-        key: uuid.v1(),
-      },
-      {
         name: 'projectSchedule',
-        x: 3,
-        y: 40,
+        x: 0,
+        y: divide(totalHeight - 11, 2) + 10,
         w: 6,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
       },
-      { name: 'projectStatus', x: 9, y: 55, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
+      {
+        name: 'projectProgress',
+        x: 6,
+        y: divide(totalHeight - 11, 2) + 10,
+        w: 6,
+        h: divide(totalHeight - 11, 2),
+        key: uuid.v1(),
+      },
     ]);
   };
 
@@ -211,9 +220,8 @@ const CockpitManage: React.FC = () => {
     setConfigArray(copyConfigArray);
   };
 
-  // 编辑时间
+  // 编辑事件
   const editEvent = (record: any) => {
-    console.log(record);
     switch (record.name) {
       case 'mapComponent':
         setEditEngineerAndMapVisible(true);
@@ -378,7 +386,7 @@ const CockpitManage: React.FC = () => {
               childrenData={engineerProgressStatistic}
               name="工程进度统计"
               buttonSlot={
-                <Button type="text" onClick={() => setAddMapModuleVisible(true)}>
+                <Button type="text" onClick={() => setAddEngineerProcessVisible(true)}>
                   <PlusOutlined />
                   添加
                 </Button>
@@ -466,47 +474,6 @@ const CockpitManage: React.FC = () => {
         onChange={setAddMapModuleVisible}
         changeFinishEvent={addComponentEvent}
       />
-      <CockpitMenuItem
-        childrenData={engineerTypeStatistic}
-        name="工程类型统计"
-        buttonSlot={
-          <Button type="text" onClick={() => setAddEngineerTypeVisible(true)}>
-            <PlusOutlined />
-            添加
-          </Button>
-        }
-      />
-      <CockpitMenuItem
-        childrenData={engineerProgressStatistic}
-        name="工程进度统计"
-        buttonSlot={
-          <Button type="text" onClick={() => setAddMapModuleVisible(true)}>
-            <PlusOutlined />
-            添加
-          </Button>
-        }
-      />
-      <CockpitMenuItem
-        childrenData={deliveryStatistic}
-        name="交付统计"
-        buttonSlot={
-          <Button type="text" onClick={() => setAddDeliveryStatisticVisible(true)}>
-            <PlusOutlined />
-            添加
-          </Button>
-        }
-      />
-      <CockpitMenuItem
-        childrenData={otherStatistic}
-        name="其他"
-        buttonSlot={
-          <Button type="text" onClick={() => setAddOtherStatisticVisible(true)}>
-            <PlusOutlined />
-            添加
-          </Button>
-        }
-      />
-
       <AddEngineerAndProjectModule
         visible={addMapModuleVisible}
         onChange={setAddMapModuleVisible}
@@ -520,6 +487,11 @@ const CockpitManage: React.FC = () => {
       <AddDeliveryStatisticModal
         visible={addDeliveryStatisticVisible}
         onChange={setAddDeliveryStatisticVisible}
+        changeFinishEvent={addComponentEvent}
+      />
+      <AddEngineerProcessModal
+        visible={addEngineerProcessVisible}
+        onChange={setAddEngineerProcessVisible}
         changeFinishEvent={addComponentEvent}
       />
       <EditDeliveryStatisticModal

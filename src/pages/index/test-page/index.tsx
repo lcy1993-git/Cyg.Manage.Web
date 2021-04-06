@@ -1,16 +1,15 @@
 
 
 import React from 'react';
+import ProjectProgress from '../components/project-progress';
 
-import GanttComponentView from '@/components/gantt-component-view';
 
 const TestPage = () => {
 
   return (
-  
-      
-      <GanttComponentView />
-
+    <div style={{width: "600px", height: "360px"}}>
+      <ProjectProgress />
+    </div>
   );
 };
 

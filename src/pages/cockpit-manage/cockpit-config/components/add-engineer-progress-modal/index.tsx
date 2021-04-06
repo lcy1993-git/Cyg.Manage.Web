@@ -25,7 +25,7 @@ const AddEngineerProcessModal: React.FC<AddEngineerProcessStatistic> = (props) =
 
         changeFinishEvent?.([
           {
-            name: "projectProcess",
+            name: "projectProgress",
             key: uuid.v1(),
             x: 0,
             y: 0,

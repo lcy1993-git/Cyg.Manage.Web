@@ -115,9 +115,8 @@ interface TimeArrayItem {
 }
 
 export const useGetMinAndMaxTime = (timeArray: TimeArrayItem[]) => {
-
   const minAndMaxTimeArray = useMemo(() => {
-    let minStartTime = null;
+  let minStartTime = null;
   let maxEndTime = null;
   if(timeArray && timeArray.length > 0) {
     const startTimeArray = timeArray.map((item) => moment(item.startTime));
@@ -125,7 +124,6 @@ export const useGetMinAndMaxTime = (timeArray: TimeArrayItem[]) => {
 
     minStartTime = moment.min(startTimeArray).format("YYYY-MM-DD")
     maxEndTime = moment.max(endTimeArray).format("YYYY-MM-DD")
- 
   }
 
   const monthStartTime = moment(minStartTime).startOf("month");

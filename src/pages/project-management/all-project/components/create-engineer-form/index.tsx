@@ -9,6 +9,7 @@ import { useGetSelectData } from "@/utils/hooks"
 import DataSelect from "@/components/data-select"
 
 import city from "@/assets/local-data/area"
+import moment from "moment"
 
 interface CreateEngineerForm {
     exportDataChange?: (exportData: any) => void,
@@ -135,7 +136,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             </div>
             <div className="flex ">
                 <div className="flex1 flowHidden">
-                    <CyFormItem label="编辑时间" name="compileTime" labelWidth={120} align="right" required rules={Rule.required}>
+                    <CyFormItem label="编辑时间" name="compileTime" initialValue={moment()} labelWidth={120} align="right" required rules={Rule.required}>
                         <DatePicker />
                     </CyFormItem>
                 </div>
