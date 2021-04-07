@@ -10,14 +10,16 @@ import { useMemo } from "react";
 
 interface IProps {
     type: "bar" | "pie"
+    areaId?: string
+    areaLevel?: string
 }
 
 const chartColor = [
     "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
 ]
 
-const ProjectCategory: React.FC<IProps> = ({ type = "pie" }) => {
-    const { data: projectCategoryInfo } = useRequest(() => getProjectCategory(), {
+const ProjectCategory: React.FC<IProps> = ({ type = "pie",areaId, areaLevel}) => {
+    const { data: projectCategoryInfo } = useRequest(() => getProjectCategory({areaCode: areaId,areaType: areaLevel}), {
         pollingWhenHidden: false
     })
 

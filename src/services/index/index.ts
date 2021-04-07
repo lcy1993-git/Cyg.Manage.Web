@@ -6,9 +6,14 @@ interface ToDoRequestResult {
   awaitAllot: number;
 }
 
-export const getToDoStatistics = () => {
+interface HomeStatisticCommonParams {
+  areaCode?: string
+  areaType?: string
+}
+
+export const getToDoStatistics = (params: HomeStatisticCommonParams) => {
   return cyRequest<ToDoRequestResult>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectPending`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectPending`, { method: 'POST', data: {...params}}),
   );
 };
 
@@ -18,59 +23,63 @@ interface RequestResult {
 }
 
 // 建设类型
-export const getProjectBuliding = () => {
+export const getProjectBuliding = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectConstructTypes`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectConstructTypes`, { method: 'POST', data: {...params}}),
   );
 };
 
-export const getProjectStatus = () => {
+export const getProjectStatus = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectStatus`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectStatus`, { method: 'POST', data: {...params}}),
   );
 };
 
-export const getProjectClassify = () => {
+export const getProjectClassify = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectCategorys`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectCategorys`, { method: 'POST', data: {...params}}),
   );
 };
 
-export const getProjectCategory = () => {
+export const getProjectCategory = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectClassifications`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectClassifications`, { method: 'POST', data: {...params}}),
   );
 };
 
-export const getProjectStage = () => {
+export const getProjectStage = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectStages`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectStages`, { method: 'POST', data: {...params}}),
   );
 };
 
-export const getProjectLevel = () => {
+export const getProjectLevel = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectKvLevels`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectKvLevels`, { method: 'POST', data: {...params}}),
   );
 };
 
-export const getProjectNatures = () => {
+export const getProjectNatures = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectNatures`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectNatures`, { method: 'POST', data: {...params}}),
   );
 };
 
-export const getBuildType = () => {
+export const getBuildType = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectConstructTypes`, { method: 'GET' }),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectConstructTypes`, { method: 'POST', data: {...params}}),
   );
 };
 
-export const getConsigns = (type: string) => {
+interface GetConsignsParams extends HomeStatisticCommonParams {
+  type: string
+}
+
+export const getConsigns = (params: GetConsignsParams) => {
   return cyRequest<RequestResult[]>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetConsigns`, {
       method: 'POST',
-      data: { type, limit: 5 },
+      data: { ...params, limit: 5 },
     }),
   );
 };
@@ -116,5 +125,5 @@ export const getProjectGanttData = ({ pageIndex = 1, pageSize = 15, sort = {}, k
 
 // 获取地图组件的area组件
 export const getMapRegisterData = (areaId: string) => {
-  return request('/json/china.json', { method: 'GET', data: { code: '100000' } });
+  return request(`/json/${areaId}.json`, { method: 'GET' });
 };

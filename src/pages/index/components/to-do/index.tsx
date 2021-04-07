@@ -4,15 +4,17 @@ import React from "react"
 import ChartBox from "../chart-box"
 import ToDoItem from "../to-do-item"
 
-interface ToDoProps {
+interface ToDoProps { 
     componentProps?: string[]
+    areaId?: string
+    areaLevel?: string
 }
 
 const ToDo: React.FC<ToDoProps> = (props) => {
 
-    const { componentProps = ["wait", "arrange", "other"] } = props;
+    const { componentProps = ["wait", "arrange", "other"],areaId,areaLevel} = props;
 
-    const { data: toDoStatisticsInfo } = useRequest(() => getToDoStatistics(), {
+    const { data: toDoStatisticsInfo } = useRequest(() => getToDoStatistics({areaCode: areaId,areaType: areaLevel}), {
         pollingWhenHidden: false
     })
 

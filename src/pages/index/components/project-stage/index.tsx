@@ -9,15 +9,17 @@ import styles from "./index.less"
 import { useMemo } from "react";
 
 interface IProps {
-  type: "bar" | "pie"
+    type: "bar" | "pie"
+    areaId?: string
+    areaLevel?: string
 }
 
 const chartColor = [
     "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
 ];
 
-const ProjectStage: React.FC<IProps> = ({type = "pie"}) => {
-    const { data: projectStageInfo } = useRequest(() => getProjectStage(), {
+const ProjectStage: React.FC<IProps> = ({ type = "pie",areaId, areaLevel }) => {
+    const { data: projectStageInfo } = useRequest(() => getProjectStage({areaCode: areaId,areaType: areaLevel}), {
         pollingWhenHidden: false
     })
     const dataSum = useMemo(() => {

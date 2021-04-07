@@ -16,10 +16,12 @@ const { RangePicker } = DatePicker;
 
 interface DeliveyManageProps {
   componentProps?: string[]
+  areaId?: string
+  areaLevel?: string
 }
 
 const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
-  const { componentProps = ["person", "department", "company"] } = props;
+  const { componentProps = ["person", "department", "company"],areaId, areaLevel } = props;
 
   const [activeKey, setActiveKey] = useState<string>();
 
@@ -57,7 +59,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
     return undefined;
   }, [activeKey]);
 
-  const { data: consignsData } = useRequest(() => getConsigns(type!), {
+  const { data: consignsData } = useRequest(() => getConsigns({type: type!,areaCode: areaId,areaType: areaLevel}), {
     ready: !!type,
     refreshDeps: [type],
   });
