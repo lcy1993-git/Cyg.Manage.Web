@@ -10,14 +10,16 @@ import { useMemo } from "react";
 
 interface IProps {
   type: "bar" | "pie"
+  areaId?: string
+  areaLevel?: string
 }
 
 const chartColor = [
     "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
 ];
 
-const ProjectLevel: React.FC<IProps> = ({type = "pie"}) => {
-    const { data: projectLevelInfo } = useRequest(() => getProjectLevel(), {
+const ProjectLevel: React.FC<IProps> = ({type = "pie",areaId, areaLevel }) => {
+    const { data: projectLevelInfo } = useRequest(() => getProjectLevel({areaCode: areaId,areaType: areaLevel}), {
         pollingWhenHidden: false
     })
 

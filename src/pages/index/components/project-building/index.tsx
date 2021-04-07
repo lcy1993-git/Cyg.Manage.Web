@@ -8,15 +8,17 @@ import AnnularFighure from "@/components/annular-fighure"
 import styles from "./index.less"
 
 interface IProps {
-  type: "bar" | "pie"
+    type: "bar" | "pie"
+    areaId?: string
+    areaLevel?: string
 }
 
 const chartColor = [
     "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
 ];
 
-const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
-    const { data: projectBuilding } = useRequest(() => getProjectBuliding(), {
+const ProjectClassify: React.FC<IProps> = ({ type = "pie",areaId, areaLevel}) => {
+    const { data: projectBuilding } = useRequest(() => getProjectBuliding({areaCode: areaId,areaType: areaLevel}), {
         pollingWhenHidden: false
     })
 
@@ -77,7 +79,7 @@ const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
             }
         }
         if (type === "bar") {
-            if(!projectBuilding) {
+            if (!projectBuilding) {
                 return undefined
             }
             return barChartsOptions(projectBuilding)
@@ -88,11 +90,11 @@ const ProjectClassify: React.FC<IProps> = ({type = "pie"}) => {
     return (
         <>
             {
-                type === "pie" && 
+                type === "pie" &&
                 <>
                     {
                         projectBuilding?.map((item, index) => {
-                            const option = getOption("pie",item,index);
+                            const option = getOption("pie", item, index);
                             return (
                                 <div className={styles.chartItem} key={uuid.v1()}>
                                     {

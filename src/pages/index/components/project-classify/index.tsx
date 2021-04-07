@@ -9,14 +9,16 @@ import styles from "./index.less"
 
 interface IProps {
     type: "bar" | "pie"
+    areaId?: string
+    areaLevel?: string
 }
 
 const chartColor = [
     "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
 ];
 
-const ProjectClassify: React.FC<IProps> = ({ type = "pie" }) => {
-    const { data: projectClassify } = useRequest(() => getProjectClassify(), {
+const ProjectClassify: React.FC<IProps> = ({ type = "pie",areaId, areaLevel}) => {
+    const { data: projectClassify } = useRequest(() => getProjectClassify({areaCode: areaId,areaType: areaLevel}), {
         pollingWhenHidden: false
     })
     const dataSum = useMemo(() => {

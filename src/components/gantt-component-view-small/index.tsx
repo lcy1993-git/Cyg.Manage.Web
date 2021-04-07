@@ -8,7 +8,6 @@ import ScrollView from 'react-custom-scrollbars'
 
 import styles from './index.less';
 import { useRef } from 'react';
-import { useState } from 'react';
 
 interface GanttComponentViewProps {
   dayWidth?: number;
