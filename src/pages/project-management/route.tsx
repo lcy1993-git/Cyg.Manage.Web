@@ -14,6 +14,12 @@ const ProjectStatistics = Loadable({
   delay: 150,
 });
 
+const ProjectGantt = Loadable({
+  loader: () => import('@/pages/project-management/project-gantt'),
+  loading: Loading,
+  delay: 150,
+});
+
 export default [
   {
     title: '所有项目',
@@ -24,5 +30,10 @@ export default [
     title: '地州项目一览表',
     path: '/project-management/project-statistics',
     component: <ProjectStatistics />,
+  },
+  {
+    title: '甘特图',
+    path: '/project-management/project-gantt',
+    component: <ProjectGantt />,
   },
 ]                                                                                                                                                                                                                                      
