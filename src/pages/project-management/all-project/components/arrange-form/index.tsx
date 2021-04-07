@@ -39,6 +39,15 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const { data: groupData = [] } = useRequest(() => getTreeSelectData());
 
   const mapTreeData = (data: any) => {
+    if (data.children && data.children.length > 0) {
+      return {
+        title: data.text,
+        value: data.id,
+        key: uuid.v1(),
+        disabled: true,
+        children: data.children ? data.children.map(mapTreeData) : [],
+      };
+    }
     return {
       title: data.text,
       value: data.id,

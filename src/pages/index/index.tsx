@@ -82,7 +82,6 @@ const Index: React.FC = () => {
         }
     }, [data])
 
-    console.log(handleData)
 
     const windowPercent = useMemo(() => {
         const windowHeight = window.innerHeight;
@@ -92,7 +91,7 @@ const Index: React.FC = () => {
         return undefined
     }, [JSON.stringify(size), JSON.stringify(handleData)])
 
-    const configComponentElement = handleData.config?.map((item) => {
+    const configComponentElement = handleData.config?.map((item:any) => {
         const actualHeight = windowPercent ? parseFloat((item.h * windowPercent).toFixed(2)) : item.h;
         const actualY = windowPercent ? parseFloat((item.y * windowPercent).toFixed(2)) : item.y;
         return (

@@ -5,26 +5,39 @@ import { getGroupInfo } from '@/services/project-management/all-project';
 import { useRequest } from 'ahooks';
 import uuid from 'node-uuid';
 
-
 interface EditArrangeFormProps {
-  allotCompanyId?: string
+  allotCompanyId?: string;
 }
 
 const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
+  const { allotCompanyId = '' } = props;
 
-  const {allotCompanyId = ""} = props;
+  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId), {
+    refreshDeps: [allotCompanyId],
+  });
 
-  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4',allotCompanyId),{refreshDeps:[allotCompanyId]});
+  const { data: designData = [] } = useRequest(() => getGroupInfo('8', allotCompanyId), {
+    refreshDeps: [allotCompanyId],
+  });
 
-  const { data: designData = [] } = useRequest(() => getGroupInfo('8',allotCompanyId),{refreshDeps:[allotCompanyId]});
-
-  const { data: auditData = [] } = useRequest(() => getGroupInfo('16',allotCompanyId),{refreshDeps:[allotCompanyId]});
+  const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId), {
+    refreshDeps: [allotCompanyId],
+  });
 
   const mapTreeData = (data: any) => {
+    if (data.children && data.children.length > 0) {
+      return {
+        title: data.text,
+        value: data.id,
+        key: uuid.v1(),
+        disabled: true,
+        children: data.children ? data.children.map(mapTreeData) : [],
+      };
+    }
     return {
       title: data.text,
       value: data.id,
-      key:uuid.v1(),
+      key: uuid.v1(),
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };

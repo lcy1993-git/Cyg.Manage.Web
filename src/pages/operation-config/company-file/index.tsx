@@ -427,7 +427,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={addForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm type="add" />
+            <CompanyFileForm type="add" groupData={tableData} />
           </Spin>
         </Form>
       </Modal>
@@ -443,7 +443,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm />
+            <CompanyFileForm groupData={tableData} />
           </Spin>
         </Form>
       </Modal>
