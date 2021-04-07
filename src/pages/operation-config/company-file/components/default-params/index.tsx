@@ -19,8 +19,6 @@ const DefaultParams: React.FC = () => {
     return categoryData?.map(mapTreeData);
   }, [JSON.stringify(categoryData)]);
 
-  console.log(handleData);
-
   const selectData = handleData?.map((item) => {
     return item.children;
   });

@@ -1,5 +1,5 @@
 import PageCommonWrap from '@/components/page-common-wrap';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import Loadable from 'react-loadable';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
@@ -12,7 +12,7 @@ import 'react-resizable/css/styles.css';
 import styles from './index.less';
 import uuid from 'node-uuid';
 import { useRef } from 'react';
-import { useSize } from 'ahooks';
+import { useRequest, useSize } from 'ahooks';
 import { divide, subtract } from 'lodash';
 import {
   DeleteOutlined,
@@ -28,7 +28,11 @@ import AddEngineerAndProjectModule from './components/add-engineer-project-modal
 import AddEngineerTypeModal from './components/add-engineer-type-modal';
 import AddDeliveryStatisticModal from './components/add-delivery-statistic-modal';
 import AddOtherStatisticModal from './components/add-other-statistic-modal';
-import { exportHomeStatisticData, saveChartConfig } from '@/services/operation-config/cockpit';
+import {
+  exportHomeStatisticData,
+  getChartConfig,
+  saveChartConfig,
+} from '@/services/operation-config/cockpit';
 import EmptyTip from '@/components/empty-tip';
 
 import { mapInfo } from '../../../../public/config/request';
@@ -45,13 +49,13 @@ import EditEngineerProcessModal from './components/add-engineer-progress-modal/e
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-import MapComponent from "@/pages/index/components/map-chart";
-import PersonnelLoad from "@/pages/index/components/personnel-load";
-import ToDo from "@/pages/index/components/to-do";
-import DeliveryManage from "@/pages/index/components/delivery-manage";
-import ProjectSchedule from "@/pages/index/components/project-schedule-status";
-import ProjectType from "@/pages/index/components/project-type";
-import ProjectProgress from "@/pages/index/components/project-progress";
+import MapComponent from '@/pages/index/components/map-chart';
+import PersonnelLoad from '@/pages/index/components/personnel-load';
+import ToDo from '@/pages/index/components/to-do';
+import DeliveryManage from '@/pages/index/components/delivery-manage';
+import ProjectSchedule from '@/pages/index/components/project-schedule-status';
+import ProjectType from '@/pages/index/components/project-type';
+import ProjectProgress from '@/pages/index/components/project-progress';
 
 interface CockpitProps {
   name: string;
@@ -124,6 +128,22 @@ const CockpitManage: React.FC = () => {
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
 
   const [currentRecord, setCurrentRecord] = useState<any>({});
+
+  const { data } = useRequest(() => getChartConfig(), {
+    onSuccess: () => {
+      setConfigArray(handleData.config);
+    },
+  });
+
+  const handleData = useMemo(() => {
+    if (data) {
+      return JSON.parse(data);
+    }
+    return {
+      configWindowHeight: 828,
+      config: [],
+    };
+  }, [data]);
 
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;

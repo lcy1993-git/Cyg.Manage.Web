@@ -1,0 +1,29 @@
+.container {
+  height: 66px;
+  position: relative;
+  color: @gray-color;
+  .nav {
+    // margin-left: 300px;
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+
+    .buttonsArea {
+      font-size: 12px;
+    }
+    .processInfo {
+      cursor: pointer;
+      font-size: 12px;
+
+      &:hover {
+        color: #0e7b3b;
+      }
+    }
+  }
+  .processInfoTable {
+    position: absolute;
+    background-color: #fffeff;
+    top: 60px;
+  }
+}

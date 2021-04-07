@@ -7,14 +7,36 @@ import rules from './rule';
 interface CompanyFileForm {
   type?: 'add' | 'edit';
   securityKey?: string;
+  groupData?: any;
 }
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
-  const { type = 'edit' } = props;
+  const { type = 'edit', groupData } = props;
+  console.log(groupData.items);
+
+  const groupName = groupData.items?.map((item: any) => {
+    return item.name;
+  });
 
   return (
     <>
-      <CyFormItem label="名称" name="name" required rules={rules.name}>
+      <CyFormItem
+        label="名称"
+        name="name"
+        required
+        hasFeedback
+        rules={[
+          { required: true, message: '文件名不能为空' },
+          () => ({
+            validator(_, value) {
+              if (groupName.includes(value)) {
+                return Promise.reject('文件名已存在');
+              }
+              return Promise.resolve();
+            },
+          }),
+        ]}
+      >
         <Input placeholder="请输入名称" />
       </CyFormItem>
       {type === 'add' && (

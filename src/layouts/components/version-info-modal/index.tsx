@@ -89,17 +89,19 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
           <div className={styles.versionItem}>
             <div className={styles.versionItemTitle}>【历史版本】</div>
 
-            {versionInfo?.data.branchAvailableVersions?.map((item: string) => {
-              return (
-                <div
-                  key={uuid.v1()}
-                  onClick={() => checkHistoryInfo(item)}
-                  className={styles.historyVersion}
-                >
-                  {item}
-                </div>
-              );
-            })}
+            {versionInfo?.data.branchAvailableVersions
+              ?.map((item: string) => {
+                return (
+                  <div
+                    key={uuid.v1()}
+                    onClick={() => checkHistoryInfo(item)}
+                    className={styles.historyVersion}
+                  >
+                    {`V${item}`}
+                  </div>
+                );
+              })
+              .slice(0, 5)}
           </div>
         </Spin>
       </Modal>

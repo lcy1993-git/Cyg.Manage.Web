@@ -6,6 +6,11 @@ interface EditPasswordParams {
     newPwd: string
 }
 
+interface ChangeUserPhone {
+  phone: string;
+  code: string;
+}
+
 export const editPassword = (params: EditPasswordParams) => {
     return cyRequest(() =>
         request(`${baseUrl.project}/Manage/ModifyCurrentUserPwd`, { method: 'POST', data: params}),
@@ -43,4 +48,18 @@ export const editUserInfo = (params: any) => {
     return cyRequest(() =>
         request(`${baseUrl.project}/Manage/ModifyCurrentUserInfo`, { method: 'POST', data: {...params}})
     );
+}
+
+// 用户手机换绑
+export const changeUserPhone = (params: ChangeUserPhone) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Manage/ModifyCurrentUserPhone`, { method: 'POST', data: {...params}})
+  );
+}
+
+// 用户手机绑定
+export const bindUserPhone = (params: ChangeUserPhone) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Manage/Users/BindPhone`, { method: 'POST', data: {...params}})
+  );
 }
