@@ -1,10 +1,11 @@
 import { useGetMinAndMaxTime } from '@/utils/hooks';
 import { flatten } from '@/utils/utils';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import uuid from 'node-uuid';
 import moment from "moment";
 
 import styles from './index.less';
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 
 interface GanttComponentViewProps {
   dayWidth?: number;
@@ -43,6 +44,10 @@ const ganttBgColorObject = {
 }
 
 const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
+
+  const [projectId, setProjectId] = useState("")
+  const [projectVisible, setProjectVisible] = useState<boolean>(false);
+
   const { title = "工程项目名称", ganttData = [] } = props;
 
   const flattenData = useMemo(() => {
@@ -106,7 +111,10 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
 
   const menuElement = flattenData.map((item) => {
     return (
-      <div className={styles.ganttComponentMenuItem} key={item.id}>
+      <div className={styles.ganttComponentMenuItem} key={item.id} onClick={()=>{
+        setProjectId(item.id);
+        setProjectVisible(true);
+      }}>
         {item.name}
       </div>
     )
@@ -130,7 +138,10 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
     const diffDays = moment(item.endTime).diff(item.startTime,"days") + 1;
     const leftDiffDays = moment(item.startTime).diff(timeData.monthStartTime, "days");
     return (
-      <div className={styles.ganttBarItem} key={`${item.id}_bar`} style={{width: `${diffDays * 30}px`,left: `${leftDiffDays * 30}px`,top: `${(index) * 44}px`}}>
+      <div className={styles.ganttBarItem} key={`${item.id}_bar`} style={{width: `${diffDays * 30}px`,left: `${leftDiffDays * 30}px`,top: `${(index) * 44}px`}} onClick={()=>{
+        setProjectId(item.id);
+        setProjectVisible(true);
+      }}>
         <div className={styles.ganttBarItemPercent} style={{width: `${item.progressValue}%`, backgroundColor: `${ganttBgColorObject[item.status]}`}}>
           <span>{item.progressValue}%</span>
         </div>
@@ -140,6 +151,14 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
 
   return (
     <div className={styles.ganttComponentView}>
+      {
+        projectVisible &&
+        <ProjectDetailInfo
+          projectId={projectId}
+          visible={projectVisible}
+          onChange={setProjectVisible}
+        />
+      }
       <div className={styles.ganttComponentButton}>
         <div className={styles.ganttComponentButtonLeft}>
 
@@ -149,27 +168,29 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
         </div>
       </div>
       <div className={styles.ganttComponentViewContent}>
-        <div className={styles.ganttComponentViewLeft}>
-          <div className={styles.ganttComponentMenuTitle}>
-            <div className={styles.ganttComponentMenuTitleContent}>
-              {title}
+        <div className={styles.ganttComponentViewScroY}>
+          <div className={styles.ganttComponentViewLeft}>
+            <div className={styles.ganttComponentMenuTitle}>
+              <div className={styles.ganttComponentMenuTitleContent}>
+                {title}
+              </div>
+            </div>
+            <div className={styles.ganttComponentMenuContent}>
+              {
+                menuElement
+              }
             </div>
           </div>
-          <div className={styles.ganttComponentMenuContent}>
-            {
-              menuElement
-            }
-          </div>
-        </div>
-        <div className={styles.ganttComponentViewRight}>
-          <div className={styles.ganttComponentCalendarContent}>
-            {calendarElement}
-          </div>
-          <div className={styles.ganttComponentGriddingContent}>
-            {ganttGriddingBackground}
-            {
-              ganttBar
-            }
+          <div className={styles.ganttComponentViewRight}>
+            <div className={styles.ganttComponentCalendarContent}>
+              {calendarElement}
+            </div>
+            <div className={styles.ganttComponentGriddingContent}>
+              {ganttGriddingBackground}
+              {
+                ganttBar
+              }
+            </div>
           </div>
         </div>
       </div>
