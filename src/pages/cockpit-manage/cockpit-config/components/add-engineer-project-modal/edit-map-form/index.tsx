@@ -7,12 +7,12 @@ interface EditEngineerAndModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: (componentProps: any) => void;
-  currentRecord:any
+  currentRecord: any;
 }
 
 const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent,currentRecord } = props;
+  const { changeFinishEvent, currentRecord } = props;
   const [form] = Form.useForm();
 
   const sureAddEvent = () => {
@@ -41,7 +41,7 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
 
   return (
     <Modal
-    maskClosable={false}
+      maskClosable={false}
       title="配置-地图信息"
       width={750}
       visible={state as boolean}
@@ -53,7 +53,7 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
         <CommonTitle>地图</CommonTitle>
         <Form.Item name="area">
           <Checkbox.Group>
-            <Checkbox value="province">省</Checkbox>
+            <Checkbox value="province">项目数量（地图）</Checkbox>
             {/* <Checkbox value="city">市</Checkbox> */}
           </Checkbox.Group>
         </Form.Item>

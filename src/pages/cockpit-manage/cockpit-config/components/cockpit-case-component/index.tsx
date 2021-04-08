@@ -7,11 +7,11 @@ interface CockpitConfigCaseComponentProps {
 }
 
 const CockpitCaseComponent: React.FC<CockpitConfigCaseComponentProps> = (props) => {
-  const { currentAreaId, currentAreaLevel } = useContext(CockpitConfigContext);
+  const { currentAreaInfo } = useContext(CockpitConfigContext);
 
   return (
     <>
-      <CaseComponent areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+      <CaseComponent areaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

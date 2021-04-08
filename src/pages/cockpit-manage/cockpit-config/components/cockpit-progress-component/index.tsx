@@ -7,11 +7,11 @@ interface CockpitProgressComponentProps {
 }
 
 const CockpitProgressComponent: React.FC<CockpitProgressComponentProps> = (props) => {
-  const { currentAreaId, currentAreaLevel } = useContext(CockpitConfigContext);
+  const { currentAreaInfo } = useContext(CockpitConfigContext);
 
   return (
     <>
-      <ProgressComponent areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+      <ProgressComponent areaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

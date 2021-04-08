@@ -7,11 +7,11 @@ interface CockpitPersonnelLoadComponentProps {
 }
 
 const CockpitPersonnelLoadComponent: React.FC<CockpitPersonnelLoadComponentProps> = (props) => {
-  const { currentAreaId, currentAreaLevel } = useContext(CockpitConfigContext);
+  const { currentAreaInfo } = useContext(CockpitConfigContext);
 
   return (
     <>
-      <PersonnelLoadComponent areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+      <PersonnelLoadComponent areaInfo={currentAreaInfo} {...props} />
     </>
   );
 };
