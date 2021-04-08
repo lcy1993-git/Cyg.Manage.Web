@@ -5,9 +5,11 @@ import uuid from 'node-uuid';
 import React, { Dispatch, SetStateAction } from 'react';
 
 interface AddEngineerAndProjectModalProps {
-    visible: boolean;
-    onChange: Dispatch<SetStateAction<boolean>>;
-    changeFinishEvent: (componentProps: any) => void;
+    visible?: boolean;
+    onChange?: Dispatch<SetStateAction<boolean>>;
+    changeFinishEvent?: (componentProps: any) => void;
+    areaId?:string;
+    areaLevel?:string;
 
 }
 

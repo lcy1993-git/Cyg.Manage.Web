@@ -49,15 +49,15 @@ import EditEngineerProcessModal from './components/add-engineer-progress-modal/e
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-import MapComponent from '@/pages/index/components/map-chart';
-import PersonnelLoad from '@/pages/index/components/personnel-load';
-import ToDo from '@/pages/index/components/to-do';
-import DeliveryManage from '@/pages/index/components/delivery-manage';
-import ProjectSchedule from '@/pages/index/components/project-schedule-status';
-import ProjectType from '@/pages/index/components/project-type';
-import ProjectProgress from '@/pages/index/components/project-progress';
+import MapComponent from '../cockpit-config/components/cockpit-map-component';
+import PersonnelLoad from '../cockpit-config/components/cockpit-personnel-load-component';
+import ToDo from '../cockpit-config/components/cockpit-todo-component';
+import DeliveryManage from '../cockpit-config/components/cockpit-delivery-component';
+import ProjectSchedule from '../cockpit-config/components/cockpit-case-component';
+import ProjectType from '../cockpit-config/components/cockpit-project-type-component';
+import ProjectProgress from '../cockpit-config/components/cockpit-progress-component';
 
-import { CockpitConfigContext } from "./context"
+import { CockpitConfigContext } from './context';
 
 interface CockpitProps {
   name: string;
@@ -130,7 +130,7 @@ const CockpitManage: React.FC = () => {
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
 
   const [currentAreaId, setCurrentAreaId] = useState<string>();
-  const [currentAreaLevel, setCurrentAreaLevel] = useState<"1" | "2" | "3">("1");
+  const [currentAreaLevel, setCurrentAreaLevel] = useState<'1' | '2' | '3'>('1');
 
   const [currentRecord, setCurrentRecord] = useState<any>({});
 
@@ -358,12 +358,14 @@ const CockpitManage: React.FC = () => {
   };
 
   return (
-    <CockpitConfigContext.Provider value={{
-      currentAreaId,
-      setCurrentAreaId,
-      currentAreaLevel,
-      setCurrentAreaLevel
-    }}>
+    <CockpitConfigContext.Provider
+      value={{
+        currentAreaId,
+        setCurrentAreaId,
+        currentAreaLevel,
+        setCurrentAreaLevel,
+      }}
+    >
       <PageCommonWrap noPadding={true}>
         <div className={styles.cockpitConfigPage}>
           <div className={styles.cockpitConfigPageMenu}>
@@ -378,8 +380,8 @@ const CockpitManage: React.FC = () => {
                 buttonSlot={
                   <Button type="text" onClick={() => setAddMapModuleVisible(true)}>
                     <PlusOutlined />
-                  添加
-                </Button>
+                    添加
+                  </Button>
                 }
               />
               <CockpitMenuItem
@@ -388,8 +390,8 @@ const CockpitManage: React.FC = () => {
                 buttonSlot={
                   <Button type="text" onClick={() => setAddEngineerTypeVisible(true)}>
                     <PlusOutlined />
-                  添加
-                </Button>
+                    添加
+                  </Button>
                 }
               />
               <CockpitMenuItem
@@ -398,8 +400,8 @@ const CockpitManage: React.FC = () => {
                 buttonSlot={
                   <Button type="text" onClick={() => setAddEngineerProcessVisible(true)}>
                     <PlusOutlined />
-                  添加
-                </Button>
+                    添加
+                  </Button>
                 }
               />
               <CockpitMenuItem
@@ -408,8 +410,8 @@ const CockpitManage: React.FC = () => {
                 buttonSlot={
                   <Button type="text" onClick={() => setAddDeliveryStatisticVisible(true)}>
                     <PlusOutlined />
-                  添加
-                </Button>
+                    添加
+                  </Button>
                 }
               />
               <CockpitMenuItem
@@ -418,8 +420,8 @@ const CockpitManage: React.FC = () => {
                 buttonSlot={
                   <Button type="text" onClick={() => setAddOtherStatisticVisible(true)}>
                     <PlusOutlined />
-                  添加
-                </Button>
+                    添加
+                  </Button>
                 }
               />
             </div>
@@ -436,20 +438,20 @@ const CockpitManage: React.FC = () => {
                   onClick={() => exportHomeStatisticEvent()}
                 >
                   <ImportOutlined />
-                导出数据
-              </Button>
+                  导出数据
+                </Button>
                 <Button className="mr7" onClick={initCockpit}>
                   <ReloadOutlined />
-                恢复默认配置
-              </Button>
+                  恢复默认配置
+                </Button>
                 <Button className="mr7" onClick={clearConfigEvent}>
                   <DeleteOutlined />
-                清空当前配置
-              </Button>
+                  清空当前配置
+                </Button>
                 <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
                   <SaveOutlined />
-                保存配置
-              </Button>
+                  保存配置
+                </Button>
               </div>
             </div>
 

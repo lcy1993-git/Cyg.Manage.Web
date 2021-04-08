@@ -156,22 +156,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             复制项目
           </Menu.Item>
         )}
-        {buttonJurisdictionArray?.includes('all-project-check-result') && (
-          // status > 4 &&
-          // status !== 14 &&
-          <Menu.Item
-            onClick={() =>
-              checkResult({
-                projectId: tableItemData.id,
-                projectName: tableItemData.name,
-                projectStatus: tableItemData.stateInfo.statusText,
-                projectStage: tableItemData.stageText,
-              })
-            }
-          >
-            查看成果
-          </Menu.Item>
-        )}
+        {buttonJurisdictionArray?.includes('all-project-check-result') &&
+          status > 4 &&
+          status !== 14 && (
+            <Menu.Item
+              onClick={() =>
+                checkResult({
+                  projectId: tableItemData.id,
+                  projectName: tableItemData.name,
+                  projectStatus: tableItemData.stateInfo.statusText,
+                  projectStage: tableItemData.stageText,
+                })
+              }
+            >
+              查看成果
+            </Menu.Item>
+          )}
       </Menu>
     );
   };

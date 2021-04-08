@@ -6,7 +6,7 @@ interface IndexToDoComponentProps {
     componentProps?: string[]
 }
 
-const IndexToDoComponent:React.FC<IndexToDoComponentProps> = (props) => {
+const IndexDeliveryComponent:React.FC<IndexToDoComponentProps> = (props) => {
     const {currentAreaId,currentAreaLevel} = useContext(IndexContext);
 
     return (
@@ -16,4 +16,4 @@ const IndexToDoComponent:React.FC<IndexToDoComponentProps> = (props) => {
     )
 }
 
-export default IndexToDoComponent;
+export default IndexDeliveryComponent;

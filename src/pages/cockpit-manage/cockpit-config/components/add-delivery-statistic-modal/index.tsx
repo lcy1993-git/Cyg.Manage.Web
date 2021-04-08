@@ -5,9 +5,9 @@ import uuid from 'node-uuid';
 import React, { Dispatch, SetStateAction } from 'react';
 
 interface AddDeliveryStatistic {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: (componentProps: any) => void;
+  visible?: boolean;
+  onChange?: Dispatch<SetStateAction<boolean>>;
+  changeFinishEvent?: (componentProps: any) => void;
 }
 
 const AddDeliveryStatisticModal: React.FC<AddDeliveryStatistic> = (props) => {
