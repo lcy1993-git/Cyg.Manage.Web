@@ -13,6 +13,10 @@ interface Props {
   type: Type
 }
 
+const chartColor = [
+  "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
+];
+
 const ProjectClassify: React.FC<Props> = ({ type = "pie", currentAreaInfo}) => {
     const { data: projectClassify } = useRequest(() => getProjectClassify({areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
         refreshDeps: [currentAreaInfo],
