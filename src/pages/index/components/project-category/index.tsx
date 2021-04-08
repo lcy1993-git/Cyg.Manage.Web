@@ -20,6 +20,7 @@ const chartColor = [
 
 const ProjectCategory: React.FC<IProps> = ({ type = "pie",areaId, areaLevel}) => {
     const { data: projectCategoryInfo } = useRequest(() => getProjectCategory({areaCode: areaId,areaType: areaLevel}), {
+        refreshDeps: [areaId],
         pollingWhenHidden: false
     })
 
