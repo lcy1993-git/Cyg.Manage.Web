@@ -70,6 +70,11 @@ const Index: React.FC = () => {
     const [currentAreaId, setCurrentAreaId] = useState<string>();
     const [currentAreaLevel, setCurrentAreaLevel] = useState<"1" | "2" | "3">("1");
 
+    const [currentAreaInfo, setCurrentAreaInfo] = useState({
+        areaId: "",
+        areaLevel: "1"
+    })
+
     const { data } = useRequest(() => getChartConfig())
 
     const divRef = useRef<HTMLDivElement>(null);
@@ -105,10 +110,8 @@ const Index: React.FC = () => {
 
     return (
         <IndexContext.Provider value={{
-            currentAreaId,
-            setCurrentAreaId,
-            currentAreaLevel,
-            setCurrentAreaLevel
+            currentAreaInfo,
+            setCurrentAreaInfo
         }}>
             <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }} ref={divRef}>
                 {

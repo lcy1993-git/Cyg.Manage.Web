@@ -6,16 +6,15 @@ import ToDoItem from "../to-do-item"
 
 interface ToDoProps { 
     componentProps?: string[]
-    areaId?: string
-    areaLevel?: string
+    currentAreaInfo: any
 }
 
 const ToDo: React.FC<ToDoProps> = (props) => {
 
-    const { componentProps = ["wait", "arrange", "other"],areaId,areaLevel} = props;
+    const { componentProps = ["wait", "arrange", "other"],currentAreaInfo} = props;
 
-    const { data: toDoStatisticsInfo } = useRequest(() => getToDoStatistics({areaCode: areaId,areaType: areaLevel}), {
-        refreshDeps: [areaId],
+    const { data: toDoStatisticsInfo } = useRequest(() => getToDoStatistics({areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
+        refreshDeps: [currentAreaInfo],
         pollingWhenHidden: false
     })
 

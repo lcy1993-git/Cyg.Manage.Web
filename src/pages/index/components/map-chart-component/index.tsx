@@ -14,15 +14,18 @@ import ChartBox from "../chart-box";
 import ProjectNumberIcon from "@/assets/image/index/project-number.png";
 import { isArray } from "lodash";
 import { useMemo } from "react";
+import { message } from "antd";
 
 interface MapChartComponentProps {
-    setCurrentAreaId: (areaId: string) => void
-    setCurrentAreaLevel: (areaLevel: string) => void
+    setCurrentAreaInfo: (areaInfo: any) => void
 }
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     const [activeAreaLevel, setActiveAreaLevel] = useState<string>("1");
-    const {setCurrentAreaId, setCurrentAreaLevel } = props;
+    const {setCurrentAreaInfo } = props;
+
+    const [activeCityCode, setActiveCityCode] = useState<string>();
+    const [activeAreaCode, setActiveAreaCide] = useState<string>();
 
     const divRef = useRef<HTMLDivElement>(null);
     let myChart: any = null;
@@ -144,10 +147,16 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                 if(cityCodeObject[name]) {
                     const statisticData = await getStatisticData({ areaCode: cityCodeObject[name], areaType: String(parseFloat(currentAreaLevel) + 1) });
                     initChart(cityCodeObject[name],statisticData,String(parseFloat(currentAreaLevel) + 1))
-
-                    setCurrentAreaId(cityCodeObject[name])
-                    setCurrentAreaLevel(String(parseFloat(currentAreaLevel!) + 1))
-                    setActiveAreaLevel(String(parseFloat(currentAreaLevel!) + 1))
+                    if(parseFloat(currentAreaLevel!) + 1 === 2) {
+                        setActiveCityCode(cityCodeObject[name])
+                    }
+                    if(parseFloat(currentAreaLevel!) + 1 === 3) {
+                        setActiveAreaCide(cityCodeObject[name])
+                    }
+                    setCurrentAreaInfo({
+                        areaId: cityCodeObject[name],
+                        areaLevel: String(parseFloat(currentAreaLevel!) + 1)
+                    })
                 }
             })
         }
@@ -165,9 +174,41 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         const statisticData = await getStatisticData({ areaCode: "", areaType: "1" })
         initChart("100000",statisticData,"1");
 
-        setCurrentAreaId("");
         setActiveAreaLevel("1");
-        setCurrentAreaLevel("1");
+
+        setCurrentAreaInfo({
+            areaId: "",
+            areaLevel: "1"
+        })
+    }
+
+    const cityClickEvent = async () => {
+        if(!activeCityCode) {
+            message.error("您没有选择过市级统计");
+            return
+        }
+        const statisticData = await getStatisticData({ areaCode: activeCityCode, areaType: "2" })
+        initChart(activeCityCode,statisticData,"2");
+        setActiveAreaLevel("2");
+        setCurrentAreaInfo({
+            areaId: activeCityCode,
+            areaLevel: "2"
+        })
+    }
+
+    const areaClickEvent = async () => {
+        if(!activeAreaCode) {
+            message.error("您没有选择过县级统计");
+            return
+        }
+        const statisticData = await getStatisticData({ areaCode: activeAreaCode, areaType: "2" })
+        initChart(activeAreaCode,statisticData,"2");
+
+        setActiveAreaLevel("3");
+        setCurrentAreaInfo({
+            areaId: activeAreaCode,
+            areaLevel: "3"
+        })
     }
 
     useEffect(() => {
@@ -215,13 +256,13 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     <span className={styles.splineIcon}>
                         &gt;
                     </span>
-                    <span className={`${styles.areaSpan} ${activeAreaLevel === "2" ? styles.active : ""}`}>
+                    <span className={`${styles.areaSpan} ${activeAreaLevel === "2" ? styles.active : ""}`} onClick={cityClickEvent}>
                         市
                     </span>
                     <span className={styles.splineIcon}>
                         &gt;
                     </span>
-                    <span className={`${styles.areaSpan} ${activeAreaLevel === "3" ? styles.active : ""}`}>
+                    <span className={`${styles.areaSpan} ${activeAreaLevel === "3" ? styles.active : ""}`} onClick={areaClickEvent}>
                         县
                     </span>
                 </div>
