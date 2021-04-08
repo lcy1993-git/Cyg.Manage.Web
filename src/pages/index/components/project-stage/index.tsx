@@ -20,6 +20,7 @@ const chartColor = [
 
 const ProjectStage: React.FC<IProps> = ({ type = "pie",areaId, areaLevel }) => {
     const { data: projectStageInfo } = useRequest(() => getProjectStage({areaCode: areaId,areaType: areaLevel}), {
+        refreshDeps: [areaId],
         pollingWhenHidden: false
     })
     const dataSum = useMemo(() => {

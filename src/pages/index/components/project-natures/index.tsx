@@ -12,6 +12,7 @@ interface Props {
 const ProjectNatures: React.FC<Props> = (props) => {
     const { areaId, areaLevel } = props;
     const { data: projectNatures } = useRequest(() => getProjectNatures({areaCode: areaId,areaType: areaLevel}), {
+        refreshDeps: [areaId],
         pollingWhenHidden: false
     })
 

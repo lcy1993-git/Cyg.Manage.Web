@@ -14,7 +14,7 @@ interface Props {
 
 const ProjectProgress:React.FC<Props> = (props) => {
   const {areaId, areaLevel} = props;
-  const { data: requestData } = useRequest(() => getProjectGanttData({ areaCode: areaId, areaType: areaLevel }));
+  const { data: requestData } = useRequest(() => getProjectGanttData({ areaCode: areaId, areaType: areaLevel }), {refreshDeps: [areaId]});
   
   const handleRequestData = useMemo(() => {
     if(requestData) {

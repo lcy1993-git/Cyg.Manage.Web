@@ -67,7 +67,7 @@ const PersonnelLoad:React.FC<Props> = (props) => {
 
     const {data: burdensData} = useRequest(() => getBurdens({type: type!,areaCode: areaId,areaType: areaLevel}),{
       ready: !!type,
-      refreshDeps: [type]
+      refreshDeps: [type, areaId]
     })
 
     const option = useMemo(() => {

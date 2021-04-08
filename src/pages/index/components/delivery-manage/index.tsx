@@ -61,7 +61,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
 
   const { data: consignsData } = useRequest(() => getConsigns({type: type!,areaCode: areaId,areaType: areaLevel}), {
     ready: !!type,
-    refreshDeps: [type],
+    refreshDeps: [type, areaId],
   });
 
   const option = useMemo(() => {
