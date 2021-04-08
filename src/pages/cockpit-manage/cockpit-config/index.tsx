@@ -57,6 +57,8 @@ import ProjectSchedule from '@/pages/index/components/project-schedule-status';
 import ProjectType from '@/pages/index/components/project-type';
 import ProjectProgress from '@/pages/index/components/project-progress';
 
+import { CockpitConfigContext } from "./context"
+
 interface CockpitProps {
   name: string;
   w: number;
@@ -126,6 +128,9 @@ const CockpitManage: React.FC = () => {
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
   const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
+
+  const [currentAreaId, setCurrentAreaId] = useState<string>();
+  const [currentAreaLevel, setCurrentAreaLevel] = useState<"1" | "2" | "3">("1");
 
   const [currentRecord, setCurrentRecord] = useState<any>({});
 
@@ -353,210 +358,217 @@ const CockpitManage: React.FC = () => {
   };
 
   return (
-    <PageCommonWrap noPadding={true}>
-      <div className={styles.cockpitConfigPage}>
-        <div className={styles.cockpitConfigPageMenu}>
-          <div className={styles.cockpitConfigPageMenuTitle}>
-            <UnorderedListOutlined />
-            <span className="ml10">所有统计图表</span>
-          </div>
-          <div className={styles.cockpitConfigPageMenuContent}>
-            <CockpitMenuItem
-              childrenData={engineerProjectArray}
-              name="工程项目"
-              buttonSlot={
-                <Button type="text" onClick={() => setAddMapModuleVisible(true)}>
-                  <PlusOutlined />
-                  添加
-                </Button>
-              }
-            />
-            <CockpitMenuItem
-              childrenData={engineerTypeStatistic}
-              name="工程类型统计"
-              buttonSlot={
-                <Button type="text" onClick={() => setAddEngineerTypeVisible(true)}>
-                  <PlusOutlined />
-                  添加
-                </Button>
-              }
-            />
-            <CockpitMenuItem
-              childrenData={engineerProgressStatistic}
-              name="工程进度统计"
-              buttonSlot={
-                <Button type="text" onClick={() => setAddEngineerProcessVisible(true)}>
-                  <PlusOutlined />
-                  添加
-                </Button>
-              }
-            />
-            <CockpitMenuItem
-              childrenData={deliveryStatistic}
-              name="交付统计"
-              buttonSlot={
-                <Button type="text" onClick={() => setAddDeliveryStatisticVisible(true)}>
-                  <PlusOutlined />
-                  添加
-                </Button>
-              }
-            />
-            <CockpitMenuItem
-              childrenData={otherStatistic}
-              name="其他"
-              buttonSlot={
-                <Button type="text" onClick={() => setAddOtherStatisticVisible(true)}>
-                  <PlusOutlined />
-                  添加
-                </Button>
-              }
-            />
-          </div>
-        </div>
-        <div className={styles.cockpitConfigPageContent}>
-          <div className={styles.cockpitConfigPageTitle}>
-            <div className={styles.cockpitConfigPageTitleLeft}>
-              <CommonTitle noPadding={true}>统计图表自定义窗口</CommonTitle>
+    <CockpitConfigContext.Provider value={{
+      currentAreaId,
+      setCurrentAreaId,
+      currentAreaLevel,
+      setCurrentAreaLevel
+    }}>
+      <PageCommonWrap noPadding={true}>
+        <div className={styles.cockpitConfigPage}>
+          <div className={styles.cockpitConfigPageMenu}>
+            <div className={styles.cockpitConfigPageMenuTitle}>
+              <UnorderedListOutlined />
+              <span className="ml10">所有统计图表</span>
             </div>
-            <div className={styles.cockpitConfigPageTitleRight}>
-              <Button
-                className="mr7"
-                loading={requestExportLoading}
-                onClick={() => exportHomeStatisticEvent()}
-              >
-                <ImportOutlined />
+            <div className={styles.cockpitConfigPageMenuContent}>
+              <CockpitMenuItem
+                childrenData={engineerProjectArray}
+                name="工程项目"
+                buttonSlot={
+                  <Button type="text" onClick={() => setAddMapModuleVisible(true)}>
+                    <PlusOutlined />
+                  添加
+                </Button>
+                }
+              />
+              <CockpitMenuItem
+                childrenData={engineerTypeStatistic}
+                name="工程类型统计"
+                buttonSlot={
+                  <Button type="text" onClick={() => setAddEngineerTypeVisible(true)}>
+                    <PlusOutlined />
+                  添加
+                </Button>
+                }
+              />
+              <CockpitMenuItem
+                childrenData={engineerProgressStatistic}
+                name="工程进度统计"
+                buttonSlot={
+                  <Button type="text" onClick={() => setAddEngineerProcessVisible(true)}>
+                    <PlusOutlined />
+                  添加
+                </Button>
+                }
+              />
+              <CockpitMenuItem
+                childrenData={deliveryStatistic}
+                name="交付统计"
+                buttonSlot={
+                  <Button type="text" onClick={() => setAddDeliveryStatisticVisible(true)}>
+                    <PlusOutlined />
+                  添加
+                </Button>
+                }
+              />
+              <CockpitMenuItem
+                childrenData={otherStatistic}
+                name="其他"
+                buttonSlot={
+                  <Button type="text" onClick={() => setAddOtherStatisticVisible(true)}>
+                    <PlusOutlined />
+                  添加
+                </Button>
+                }
+              />
+            </div>
+          </div>
+          <div className={styles.cockpitConfigPageContent}>
+            <div className={styles.cockpitConfigPageTitle}>
+              <div className={styles.cockpitConfigPageTitleLeft}>
+                <CommonTitle noPadding={true}>统计图表自定义窗口</CommonTitle>
+              </div>
+              <div className={styles.cockpitConfigPageTitleRight}>
+                <Button
+                  className="mr7"
+                  loading={requestExportLoading}
+                  onClick={() => exportHomeStatisticEvent()}
+                >
+                  <ImportOutlined />
                 导出数据
               </Button>
-              <Button className="mr7" onClick={initCockpit}>
-                <ReloadOutlined />
+                <Button className="mr7" onClick={initCockpit}>
+                  <ReloadOutlined />
                 恢复默认配置
               </Button>
-              <Button className="mr7" onClick={clearConfigEvent}>
-                <DeleteOutlined />
+                <Button className="mr7" onClick={clearConfigEvent}>
+                  <DeleteOutlined />
                 清空当前配置
               </Button>
-              <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
-                <SaveOutlined />
+                <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
+                  <SaveOutlined />
                 保存配置
               </Button>
+              </div>
+            </div>
+
+            <div
+              className={styles.cockpitConfigPageContent}
+              style={{ backgroundImage: `url(${bgSrc})` }}
+              ref={configDivRef}
+            >
+              {configArray.length > 0 && (
+                <ResponsiveReactGridLayout
+                  breakpoints={{ lg: 120 }}
+                  cols={{ lg: 12 }}
+                  rowHeight={9}
+                  onLayoutChange={layoutChangeEvent}
+                >
+                  {configComponentElement}
+                </ResponsiveReactGridLayout>
+              )}
+              {configArray.length === 0 && (
+                <div className={styles.noConfigTip}>
+                  <EmptyTip
+                    description="当前暂无配置，请点击左侧添加按钮进行配置"
+                    className={styles.emptyTip}
+                  />
+                </div>
+              )}
             </div>
           </div>
-
-          <div
-            className={styles.cockpitConfigPageContent}
-            style={{ backgroundImage: `url(${bgSrc})` }}
-            ref={configDivRef}
-          >
-            {configArray.length > 0 && (
-              <ResponsiveReactGridLayout
-                breakpoints={{ lg: 120 }}
-                cols={{ lg: 12 }}
-                rowHeight={9}
-                onLayoutChange={layoutChangeEvent}
-              >
-                {configComponentElement}
-              </ResponsiveReactGridLayout>
-            )}
-            {configArray.length === 0 && (
-              <div className={styles.noConfigTip}>
-                <EmptyTip
-                  description="当前暂无配置，请点击左侧添加按钮进行配置"
-                  className={styles.emptyTip}
-                />
-              </div>
-            )}
-          </div>
         </div>
-      </div>
-      <AddEngineerAndProjectModule
-        visible={addMapModuleVisible}
-        onChange={setAddMapModuleVisible}
-        changeFinishEvent={addComponentEvent}
-      />
-      <AddEngineerTypeModal
-        visible={addEngineerTypeVisible}
-        onChange={setAddEngineerTypeVisible}
-        changeFinishEvent={addComponentEvent}
-      />
-      <AddDeliveryStatisticModal
-        visible={addDeliveryStatisticVisible}
-        onChange={setAddDeliveryStatisticVisible}
-        changeFinishEvent={addComponentEvent}
-      />
-
-      {editDeliveryStatisticVisible && (
-        <EditDeliveryStatisticModal
-          visible={editDeliveryStatisticVisible}
-          onChange={setEditDeliveryStatisticVisible}
-          changeFinishEvent={editComponentEvent}
-          currentRecord={currentRecord}
+        <AddEngineerAndProjectModule
+          visible={addMapModuleVisible}
+          onChange={setAddMapModuleVisible}
+          changeFinishEvent={addComponentEvent}
         />
-      )}
-
-      <AddEngineerProcessModal
-        visible={addEngineerProcessVisible}
-        onChange={setAddEngineerProcessVisible}
-        changeFinishEvent={addComponentEvent}
-      />
-      {editEngineerProcessVisible && (
-        <EditEngineerProcessModal
-          visible={editEngineerProcessVisible}
-          onChange={setEditEngineerProcessVisible}
-          changeFinishEvent={editComponentEvent}
-          currentRecord={currentRecord}
+        <AddEngineerTypeModal
+          visible={addEngineerTypeVisible}
+          onChange={setAddEngineerTypeVisible}
+          changeFinishEvent={addComponentEvent}
         />
-      )}
-
-      <AddOtherStatisticModal
-        visible={addOtherStatisticVisible}
-        onChange={setAddOtherStatisticVisible}
-        changeFinishEvent={addComponentEvent}
-      />
-      {editOtherStatisticVisible && (
-        <EditOtherStatisticModal
-          visible={editOtherStatisticVisible}
-          onChange={setEditOtherStatisticVisible}
-          changeFinishEvent={editComponentEvent}
-          currentRecord={currentRecord}
+        <AddDeliveryStatisticModal
+          visible={addDeliveryStatisticVisible}
+          onChange={setAddDeliveryStatisticVisible}
+          changeFinishEvent={addComponentEvent}
         />
-      )}
 
-      {editEngineerAndMapVisible && (
-        <EditEngineerAndMapModal
-          visible={editEngineerAndMapVisible}
-          onChange={setEditEngineerAndMapVisible}
-          changeFinishEvent={editComponentEvent}
-          currentRecord={currentRecord}
-        />
-      )}
+        {editDeliveryStatisticVisible && (
+          <EditDeliveryStatisticModal
+            visible={editDeliveryStatisticVisible}
+            onChange={setEditDeliveryStatisticVisible}
+            changeFinishEvent={editComponentEvent}
+            currentRecord={currentRecord}
+          />
+        )}
 
-      {editEngineerAndProductionVisible && (
-        <EditEngineerAndProductionModal
-          visible={editEngineerAndProductionVisible}
-          onChange={setEditEngineerAndProductionVisible}
-          changeFinishEvent={editComponentEvent}
-          currentRecord={currentRecord}
+        <AddEngineerProcessModal
+          visible={addEngineerProcessVisible}
+          onChange={setAddEngineerProcessVisible}
+          changeFinishEvent={addComponentEvent}
         />
-      )}
+        {editEngineerProcessVisible && (
+          <EditEngineerProcessModal
+            visible={editEngineerProcessVisible}
+            onChange={setEditEngineerProcessVisible}
+            changeFinishEvent={editComponentEvent}
+            currentRecord={currentRecord}
+          />
+        )}
 
-      {editProjectTypeVisible && (
-        <EditProjectTypeModal
-          visible={editProjectTypeVisible}
-          onChange={setEditProjectTypeVisible}
-          changeFinishEvent={editComponentEvent}
-          currentRecord={currentRecord}
+        <AddOtherStatisticModal
+          visible={addOtherStatisticVisible}
+          onChange={setAddOtherStatisticVisible}
+          changeFinishEvent={addComponentEvent}
         />
-      )}
+        {editOtherStatisticVisible && (
+          <EditOtherStatisticModal
+            visible={editOtherStatisticVisible}
+            onChange={setEditOtherStatisticVisible}
+            changeFinishEvent={editComponentEvent}
+            currentRecord={currentRecord}
+          />
+        )}
 
-      {editProjectCaseVisible && (
-        <EditProjectCaseModal
-          visible={editProjectCaseVisible}
-          onChange={setEditProjectCaseVisible}
-          changeFinishEvent={editComponentEvent}
-          currentRecord={currentRecord}
-        />
-      )}
-    </PageCommonWrap>
+        {editEngineerAndMapVisible && (
+          <EditEngineerAndMapModal
+            visible={editEngineerAndMapVisible}
+            onChange={setEditEngineerAndMapVisible}
+            changeFinishEvent={editComponentEvent}
+            currentRecord={currentRecord}
+          />
+        )}
+
+        {editEngineerAndProductionVisible && (
+          <EditEngineerAndProductionModal
+            visible={editEngineerAndProductionVisible}
+            onChange={setEditEngineerAndProductionVisible}
+            changeFinishEvent={editComponentEvent}
+            currentRecord={currentRecord}
+          />
+        )}
+
+        {editProjectTypeVisible && (
+          <EditProjectTypeModal
+            visible={editProjectTypeVisible}
+            onChange={setEditProjectTypeVisible}
+            changeFinishEvent={editComponentEvent}
+            currentRecord={currentRecord}
+          />
+        )}
+
+        {editProjectCaseVisible && (
+          <EditProjectCaseModal
+            visible={editProjectCaseVisible}
+            onChange={setEditProjectCaseVisible}
+            changeFinishEvent={editComponentEvent}
+            currentRecord={currentRecord}
+          />
+        )}
+      </PageCommonWrap>
+    </CockpitConfigContext.Provider>
   );
 };
 
