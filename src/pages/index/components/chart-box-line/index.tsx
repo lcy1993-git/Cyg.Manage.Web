@@ -3,10 +3,11 @@ import React, { memo, useEffect } from "react";
 interface ChartBoxLineProps {
     align: "left" | 'center'
     width: number
+    tltleWidthLevel?: "normal" | "big"
 }
 
 const ChartBoxLine: React.FC<ChartBoxLineProps> = (props) => {
-    const { align,width = 500} = props;
+    const { align, width = 500, tltleWidthLevel = "normal" } = props;
     const divRef = React.useRef<HTMLCanvasElement>(null);
 
     const initLine = () => {
@@ -34,16 +35,29 @@ const ChartBoxLine: React.FC<ChartBoxLineProps> = (props) => {
                     context.strokeStyle = "#18A360";
                     context.stroke();
                 } else {
-                    firstLineX = canvas.width * 0.010;
-                    secondLineX = canvas.width * 0.190;
-                    threeLineX = canvas.width * 0.200;
-                    fourLineX = canvas.width;
+                    if (tltleWidthLevel === "normal") {
+                        firstLineX = canvas.width * 0.010;
+                        secondLineX = canvas.width * 0.190;
+                        threeLineX = canvas.width * 0.200;
+                        fourLineX = canvas.width;
 
-                    context.moveTo(0, 5.5);//线条开始位置
-                    context.lineTo(firstLineX, 0);//线条经过点
-                    context.lineTo(secondLineX, 0);
-                    context.lineTo(threeLineX, 5.5);
-                    context.lineTo(fourLineX, 5.5);
+                        context.moveTo(0, 5.5);//线条开始位置
+                        context.lineTo(firstLineX, 0);//线条经过点
+                        context.lineTo(secondLineX, 0);
+                        context.lineTo(threeLineX, 5.5);
+                        context.lineTo(fourLineX, 5.5);
+                    }else {
+                        firstLineX = canvas.width * 0.010;
+                        secondLineX = canvas.width * 0.390;
+                        threeLineX = canvas.width * 0.400;
+                        fourLineX = canvas.width;
+
+                        context.moveTo(0, 5.5);//线条开始位置
+                        context.lineTo(firstLineX, 0);//线条经过点
+                        context.lineTo(secondLineX, 0);
+                        context.lineTo(threeLineX, 5.5);
+                        context.lineTo(fourLineX, 5.5);
+                    }
                 }
                 context.strokeStyle = "#18A360";
                 context.stroke();
@@ -52,10 +66,10 @@ const ChartBoxLine: React.FC<ChartBoxLineProps> = (props) => {
     }
 
     useEffect(() => {
-        if(width) {
+        if (width) {
             initLine();
         }
-    },[width])
+    }, [width])
 
     return (
         <canvas ref={divRef} width={width} height={7}></canvas>

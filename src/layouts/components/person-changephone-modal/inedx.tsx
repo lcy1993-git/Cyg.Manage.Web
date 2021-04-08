@@ -69,13 +69,13 @@ const ChangePhoneModal = (props: Props) => {
 
   return (
     <Modal
-    maskClosable={false}
+      maskClosable={false}
       className={styles.modal}
-      style={{width: 200}}
+      width={300}
       visible={visble}
       title={typeTitle}
       bodyStyle={{ padding: "0px 20px" }}
-      destroyOnClose width={750}
+      // destroyOnClose width={750}
       okText="确定"
       cancelText="取消"
       onCancel={closeChangePhoneModal}

@@ -124,46 +124,6 @@ const Index: React.FC = () => {
                         </ResponsiveReactGridLayout>
                     </div>
                 }
-                {
-                    handleData.config && handleData.config.length === 0
-                    &&
-                    <>
-                        <div className={styles.indexPageLeft}>
-                            <div className={styles.toDoStatistic}>
-                                <ToDo />
-                            </div>
-                            <div className={styles.leftStatisticOtherChart}>
-                                <div className={styles.deliveryManage}>
-                                    {/* <DeliveryManage /> */}
-                                </div>
-                                <div className={styles.costInformation}>
-                                    {/* <CostInformation /> */}
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.indexPageCenter}>
-                            <div className={styles.indexPageCenterChartGl}>
-                                <MapComponent />
-                            </div>
-                            {/* <div className={styles.indexPageCenterChart}>
-                                <ProjectSchedule />
-                            </div> */}
-                        </div>
-                        <div className={styles.indexPageRight}>
-                            <div className={styles.projectType}>
-                                <ProjectType />
-                            </div>
-                            {/* <div className={styles.rightStatisticOtherChart}>
-                                <div className={styles.PersonnelLoad}>
-                                    <PersonnelLoad />
-                                </div>
-                                <div className={styles.ProjectStatus}>
-                                    <ProjectStatus />
-                                </div>
-                            </div> */}
-                        </div>
-                    </>
-                }
             </div>
         </IndexContext.Provider>
     )

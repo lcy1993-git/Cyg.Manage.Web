@@ -15,6 +15,7 @@ const ToDo: React.FC<ToDoProps> = (props) => {
     const { componentProps = ["wait", "arrange", "other"],areaId,areaLevel} = props;
 
     const { data: toDoStatisticsInfo } = useRequest(() => getToDoStatistics({areaCode: areaId,areaType: areaLevel}), {
+        refreshDeps: [areaId],
         pollingWhenHidden: false
     })
 

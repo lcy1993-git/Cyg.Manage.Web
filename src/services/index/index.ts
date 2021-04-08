@@ -97,27 +97,29 @@ export const getBurdens = (params: GetBurdens) => {
   );
 };
 
-interface MapStatisticsData {
+export interface MapStatisticsData {
+  areaCode: string
   area: string;
   engineerQuantity: number;
   projectQuantity: number;
 }
 
-export const getMapStatisticsData = (areaId: string) => {
+export const getMapStatisticsData = (params: HomeStatisticCommonParams) => {
   return cyRequest<MapStatisticsData[]>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetMap`, {
       method: 'POST',
-      data: { province: areaId, type: '1' },
+      data: { ...params },
     }),
   );
 };
 
 // 获取甘特图的数据
-export const getProjectGanttData = ({ pageIndex = 1, pageSize = 15, sort = {}, keyWord = '', ...params}) => {
+export const getProjectGanttData = ({ pageIndex = 1, pageSize = 15, areaType = "1",sort = {}, keyWord = '', ...params}) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetGanttChart`, {
       method: 'POST',
       data: {
+        areaType,
         pageIndex,
         pageSize,
         sort,

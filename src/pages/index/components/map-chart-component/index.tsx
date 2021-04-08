@@ -1,39 +1,59 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { getMapRegisterData } from "@/services/index"
+import { getMapRegisterData, getMapStatisticsData, MapStatisticsData } from "@/services/index"
 import { useMount, useRequest } from "ahooks";
+
+import styles from "./index.less"
 
 import * as echarts from 'echarts';
 import "echarts/lib/chart/map";
 import 'echarts/lib/component/tooltip';
 
-import {cityCodeObject} from "./map-info";
+import { cityCodeObject } from "./map-info";
+import ChartBox from "../chart-box";
+
+import ProjectNumberIcon from "@/assets/image/index/project-number.png";
+import { isArray } from "lodash";
+import { useMemo } from "react";
+
 interface MapChartComponentProps {
-    setCurrentAreaId: () => void
-    setCurrentAreaLevel: () => void
+    setCurrentAreaId: (areaId: string) => void
+    setCurrentAreaLevel: (areaLevel: string) => void
 }
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
-    const [areaId, setAreaId] = useState<string>();
+    const [activeAreaLevel, setActiveAreaLevel] = useState<string>("1");
+    const {setCurrentAreaId, setCurrentAreaLevel } = props;
+
     const divRef = useRef<HTMLDivElement>(null);
     let myChart: any = null;
 
-    const { run: getMapData, data: mapData } = useRequest(getMapRegisterData, {
+    const { run: getMapData} = useRequest(getMapRegisterData, {
         manual: true
     });
 
-    const getMapOption = (mapName: string) => {
+    const { run: getStatisticData, data: mapStatisticData = []} = useRequest(getMapStatisticsData, {
+        manual: true
+    })
+
+    const projectTotalNumber = useMemo(() => {
+        return mapStatisticData?.reduce((sum, item) => {
+            return sum + item.projectQuantity;
+        }, 0)
+    }, [JSON.stringify(mapStatisticData)])
+
+    const getMapOption = (mapName: string, getMapStatisticData: MapStatisticsData[]) => {
         return {
             tooltip: {
                 trigger: "item",
                 formatter: function (params: any) {
                     const { name } = params;
-                    // const nameIndex = mapData?.findIndex((item) => item.area === name);
-                    // if(nameIndex > -1) {
-                    //     return `
-                    //         ${name} <br />
-                    //         项目数量: ${mapData[nameIndex].projectQuantity}
-                    //     `
-                    // }
+                    const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name);
+                    if(nameIndex > -1) {
+                        return `
+                            ${name} <br />
+                            项目数量: ${getMapStatisticData[nameIndex!].projectQuantity}
+                        `
+                    }
                     return `
                         ${name} <br />
                         项目数量: 0
@@ -47,7 +67,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     show: true
                 },
                 layoutCenter: ["50%", "50%"], //地图位置
-                layoutSize: '95%',
+                layoutSize: '97%',
                 roam: false,
                 geoIndex: 1,
                 itemStyle: {
@@ -96,19 +116,40 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         }
     }
 
-    const initChart = async (areaId: string) => {
+    const firstMapInitChartEvent = async () => {
+        const statisticData = await getStatisticData({ areaCode: "", areaType: "1" })
+        if(statisticData && isArray(statisticData) && statisticData.length === 1) {
+            const provinceStatisticData = await getStatisticData({ areaCode: statisticData[0].areaCode, areaType: "2" })
+            initChart(statisticData[0].areaCode, provinceStatisticData,"2")
+            setActiveAreaLevel("2")
+        }else {
+            initChart("100000", statisticData, "1")
+            setActiveAreaLevel("1")
+        }
+    }
 
-        setAreaId(areaId);
-
-        const option = getMapOption(areaId);
-        const resData = await getMapData(areaId);
+    const initChart = async (currentAreaId: string, getMapStatisticData: MapStatisticsData[], currentAreaLevel: string) => {
+        //setAreaId(areaId);
+        const option = getMapOption(currentAreaId, getMapStatisticData);
+        const resData = await getMapData(currentAreaId);
 
         if (divRef && divRef.current) {
-            echarts.registerMap(areaId, resData)
+            echarts.registerMap(currentAreaId, resData)
             myChart = echarts.init(divRef.current as HTMLDivElement);
             // @ts-ignore
             myChart.setOption(option);
-            myChart.on("click", chartClickEvent)
+            myChart.off("click");
+            myChart.on("click", async (params: any) => {
+                const { name } = params;
+                if(cityCodeObject[name]) {
+                    const statisticData = await getStatisticData({ areaCode: cityCodeObject[name], areaType: String(parseFloat(currentAreaLevel) + 1) });
+                    initChart(cityCodeObject[name],statisticData,String(parseFloat(currentAreaLevel) + 1))
+
+                    setCurrentAreaId(cityCodeObject[name])
+                    setCurrentAreaLevel(String(parseFloat(currentAreaLevel!) + 1))
+                    setActiveAreaLevel(String(parseFloat(currentAreaLevel!) + 1))
+                }
+            })
         }
     };
 
@@ -118,6 +159,15 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                 myChart.resize()
             }, 100)
         }
+    }
+
+    const provinceClickEvent = async () => {
+        const statisticData = await getStatisticData({ areaCode: "", areaType: "1" })
+        initChart("100000",statisticData,"1");
+
+        setCurrentAreaId("");
+        setActiveAreaLevel("1");
+        setCurrentAreaLevel("1");
     }
 
     useEffect(() => {
@@ -135,21 +185,49 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         }
     });
 
-    const chartClickEvent = useCallback(
-        (params: any) => {
-            const { name } = params;
-            
-            initChart(cityCodeObject[name])
-        },
-        [JSON.stringify(mapData)],
-    )
-
     useMount(() => {
-        initChart("100000")
+        firstMapInitChartEvent()
     })
 
     return (
-        <div style={{ width: "100%", height: "100%" }} ref={divRef} />
+        <div className={styles.mapChartComponent}>
+            <div className={styles.mapChartComponentTipInfo}>
+                <div className={styles.mapChartComponentProjectNumber}>
+                    <ChartBox tltleWidthLevel="big" title="当前项目数量" titleAlign="left">
+                        <div className={styles.projectTotalNumber}>
+                            <div className={styles.projectTotalNumberIcon}>
+                                <img src={ProjectNumberIcon} />
+                            </div>
+                            <div className={styles.projectTotalNumberShow}>
+                                {projectTotalNumber}
+                            </div>
+                            <div className={styles.projectTotalNumberUnit}>
+                                个
+                            </div>
+                        </div>
+                    </ChartBox>
+                </div>
+                <div className="flex1"></div>
+                <div className={styles.mapChartComponentProjectAreaTab}>
+                    <span className={`${styles.areaSpan} ${activeAreaLevel === "1" ? styles.active : ""}`} onClick={provinceClickEvent}>
+                        省
+                    </span>
+                    <span className={styles.splineIcon}>
+                        &gt;
+                    </span>
+                    <span className={`${styles.areaSpan} ${activeAreaLevel === "2" ? styles.active : ""}`}>
+                        市
+                    </span>
+                    <span className={styles.splineIcon}>
+                        &gt;
+                    </span>
+                    <span className={`${styles.areaSpan} ${activeAreaLevel === "3" ? styles.active : ""}`}>
+                        县
+                    </span>
+                </div>
+            </div>
+            <div className={styles.mapConent} ref={divRef} />
+        </div>
     )
 }
 

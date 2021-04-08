@@ -11,7 +11,9 @@ interface Props {
 
 const ProjectStatusBar: React.FC<Props> = (props) => {
     const { areaId, areaLevel } = props;
-    const { data: projectStatus } = useRequest(() => getProjectStatus({areaCode: areaId,areaType: areaLevel}))
+    const { data: projectStatus } = useRequest(() => getProjectStatus({areaCode: areaId,areaType: areaLevel}), {
+      refreshDeps: [areaId]
+    })
 
     const option = useMemo(() => {
       if (!projectStatus) return undefined;

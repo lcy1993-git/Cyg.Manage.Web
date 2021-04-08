@@ -19,6 +19,7 @@ const chartColor = [
 
 const ProjectClassify: React.FC<IProps> = ({ type = "pie",areaId, areaLevel}) => {
     const { data: projectBuilding } = useRequest(() => getProjectBuliding({areaCode: areaId,areaType: areaLevel}), {
+        refreshDeps: [areaId],
         pollingWhenHidden: false
     })
 

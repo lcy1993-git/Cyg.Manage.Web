@@ -7,23 +7,23 @@ import { useMount, useSize } from "ahooks";
 interface ChartBoxProps {
     titleAlign?: "left" | "center"
     title?: string
+    tltleWidthLevel?: "normal" | "big"
 }
 
 const ChartBox: React.FC<ChartBoxProps> = (props) => {
     const divRef = useRef<HTMLDivElement>(null);
 
-
- 
-    const { titleAlign = "center", title } = props;
+    const { titleAlign = "center", title,tltleWidthLevel = "normal"} = props;
     
     const boxAlignClassName = titleAlign === "center" ? styles.center : styles.left;
 
     const size = useSize(divRef)
 
+
     return (
-        <div className={`${styles.chartBox} ${boxAlignClassName}`} ref={divRef}>
+        <div className={`${styles.chartBox} ${boxAlignClassName} ${styles[tltleWidthLevel]}`} ref={divRef}>
             <div className={styles.chartBoxLine}>
-                <ChartBoxLine align={titleAlign} width={size.width ?? 0} />
+                <ChartBoxLine align={titleAlign} tltleWidthLevel={tltleWidthLevel} width={size.width ?? 0} />
             </div>
             <div className={styles.chartBoxHalo}>
                 <ChartBoxHalo />
