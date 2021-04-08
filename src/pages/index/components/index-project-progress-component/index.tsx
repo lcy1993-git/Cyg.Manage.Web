@@ -7,11 +7,11 @@ interface IndexToDoComponentProps {
 }
 
 const IndexProjectProgressComponent:React.FC<IndexToDoComponentProps> = (props) => {
-    const {currentAreaId,currentAreaLevel} = useContext(IndexContext);
+    const {currentAreaInfo} = useContext(IndexContext);
 
     return (
         <>
-            <ProjectProgress areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+            <ProjectProgress currentAreaInfo={currentAreaInfo} {...props} />
         </>
     )
 }

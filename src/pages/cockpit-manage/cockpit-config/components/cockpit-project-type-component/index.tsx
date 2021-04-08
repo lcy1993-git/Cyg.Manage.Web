@@ -7,11 +7,11 @@ interface CockpitProjectTypeComponentProps {
 }
 
 const CockpitProjectTypeComponent: React.FC<CockpitProjectTypeComponentProps> = (props) => {
-  const { currentAreaId, currentAreaLevel } = useContext(CockpitConfigContext);
+  const { currentAreaInfo } = useContext(CockpitConfigContext);
 
   return (
     <>
-      <ProjectTypeComponent areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+      <ProjectTypeComponent currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

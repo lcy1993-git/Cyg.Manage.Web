@@ -7,11 +7,11 @@ interface CockpitConfigDeliveryComponentProps {
 }
 
 const CockpitDeliveryComponent: React.FC<CockpitConfigDeliveryComponentProps> = (props) => {
-  const { currentAreaId, currentAreaLevel } = useContext(CockpitConfigContext);
+  const { currentAreaInfo } = useContext(CockpitConfigContext);
 
   return (
     <>
-      <DeliveryManage areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+      <DeliveryManage currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

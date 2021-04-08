@@ -3,16 +3,16 @@ import { getProjectNatures } from "@/services/index"
 import * as echarts from "echarts/lib/echarts"
 import { useRequest } from "ahooks"
 import React from "react"
+import { AreaInfo } from '@/services/index';
 
 interface Props {
-  areaId?: string
-  areaLevel?: string
+  currentAreaInfo: AreaInfo;
 }
 
 const ProjectNatures: React.FC<Props> = (props) => {
-    const { areaId, areaLevel } = props;
-    const { data: projectNatures } = useRequest(() => getProjectNatures({areaCode: areaId,areaType: areaLevel}), {
-        refreshDeps: [areaId],
+    const { currentAreaInfo } = props;
+    const { data: projectNatures } = useRequest(() => getProjectNatures({areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
+        refreshDeps: [currentAreaInfo],
         pollingWhenHidden: false
     })
 

@@ -1,6 +1,6 @@
 import { useGetMinAndMaxTime } from '@/utils/hooks';
 import { flatten } from '@/utils/utils';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Tooltip } from 'antd';
 import uuid from 'node-uuid';
 import moment from "moment";

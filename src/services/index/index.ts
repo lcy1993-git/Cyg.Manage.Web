@@ -11,6 +11,13 @@ interface HomeStatisticCommonParams {
   areaType?: string
 }
 
+export interface AreaInfo {
+  areaId?: string | undefined;
+  areaLevel?: string | undefined;
+}
+
+export type Type = 'pie' | 'bar';
+
 export const getToDoStatistics = (params: HomeStatisticCommonParams) => {
   return cyRequest<ToDoRequestResult>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetProjectPending`, { method: 'POST', data: {...params}}),

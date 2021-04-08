@@ -1,8 +1,8 @@
-import React,{useRef, useState, useEffect} from "react";
+import React,{ useRef } from "react";
 import styles from "./index.less";
 import ChartBoxLine from "@/pages/index/components/chart-box-line"
 import ChartBoxHalo from "../chart-box-halo";
-import { useMount, useSize } from "ahooks";
+import { useSize } from "ahooks";
 
 interface ChartBoxProps {
     titleAlign?: "left" | "center"

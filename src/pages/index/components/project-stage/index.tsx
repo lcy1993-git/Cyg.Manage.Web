@@ -2,25 +2,25 @@ import React from "react"
 import { useRequest } from "ahooks"
 import barChartsOptions from '../../utils/barChartsOption';
 import BarChart from "@/components/bar-chart";
-import { getProjectStage } from "@/services/index"
+import { getProjectStage, Type, AreaInfo } from "@/services/index"
 import uuid from "node-uuid"
 import AnnularFighure from "@/components/annular-fighure"
 import styles from "./index.less"
 import { useMemo } from "react";
 
-interface IProps {
-    type: "bar" | "pie"
-    areaId?: string
-    areaLevel?: string
+interface Props {
+  componentProps?: string[];
+  currentAreaInfo: AreaInfo;
+  type: Type;
 }
 
 const chartColor = [
     "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
 ];
 
-const ProjectStage: React.FC<IProps> = ({ type = "pie",areaId, areaLevel }) => {
-    const { data: projectStageInfo } = useRequest(() => getProjectStage({areaCode: areaId,areaType: areaLevel}), {
-        refreshDeps: [areaId],
+const ProjectStage: React.FC<Props> = ({ type = "pie",currentAreaInfo }) => {
+    const { data: projectStageInfo } = useRequest(() => getProjectStage({areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
+        refreshDeps: [currentAreaInfo],
         pollingWhenHidden: false
     })
     const dataSum = useMemo(() => {

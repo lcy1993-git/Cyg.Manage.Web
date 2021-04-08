@@ -7,10 +7,10 @@ interface Props {
 }
 
 const IndexPersonnelLoadComponents: React.FC<Props> = (props) => {
-  const {currentAreaId,currentAreaLevel} = useContext(IndexContext);
+  const { currentAreaInfo } = useContext(IndexContext);
   return (
     <>
-      <PersonelLoad areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+      <PersonelLoad currentAreaInfo={currentAreaInfo} {...props} />
     </>
   )
 }

@@ -7,11 +7,11 @@ interface CockpitConfigTodoComponentProps {
 }
 
 const CockpitTodoComponent: React.FC<CockpitConfigTodoComponentProps> = (props) => {
-  const { currentAreaId, currentAreaLevel } = useContext(CockpitConfigContext);
+  const { currentAreaInfo } = useContext(CockpitConfigContext);
 
   return (
     <>
-      <TodoComponent areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+      <TodoComponent currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

@@ -4,11 +4,11 @@ import ChartTab from "../chart-tab";
 import ProjectNatures from "../project-natures";
 import StatusBar from "../project-status-bar";
 import styles from "./index.less";
+import { AreaInfo } from '@/services/index';
 
 interface Props {
   componentProps?: string[];
-  areaId?: string
-  areaLevel?: string
+  currentAreaInfo: AreaInfo;
 }
 
 interface TabData {

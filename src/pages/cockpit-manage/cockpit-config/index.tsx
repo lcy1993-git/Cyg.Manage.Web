@@ -129,8 +129,10 @@ const CockpitManage: React.FC = () => {
   const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
 
-  const [currentAreaId, setCurrentAreaId] = useState<string>();
-  const [currentAreaLevel, setCurrentAreaLevel] = useState<'1' | '2' | '3'>('1');
+  const [currentAreaInfo, setCurrentAreaInfo] = useState({
+    areaId: '',
+    areaLevel: '1',
+  });
 
   const [currentRecord, setCurrentRecord] = useState<any>({});
 
@@ -368,10 +370,8 @@ const CockpitManage: React.FC = () => {
   return (
     <CockpitConfigContext.Provider
       value={{
-        currentAreaId,
-        setCurrentAreaId,
-        currentAreaLevel,
-        setCurrentAreaLevel,
+        currentAreaInfo,
+        setCurrentAreaInfo,
       }}
     >
       <PageCommonWrap noPadding={true}>

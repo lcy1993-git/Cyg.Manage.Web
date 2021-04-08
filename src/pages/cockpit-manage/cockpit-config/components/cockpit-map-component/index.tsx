@@ -7,15 +7,11 @@ interface CockpitConfigMapComponentProps {
 }
 
 const CockpitMapComponent: React.FC<CockpitConfigMapComponentProps> = (props) => {
-  const { setCurrentAreaId, setCurrentAreaLevel } = useContext(CockpitConfigContext);
+  const { setCurrentAreaInfo } = useContext(CockpitConfigContext);
 
   return (
     <>
-      <MapChartComponent
-        setCurrentAreaId={setCurrentAreaId}
-        setCurrentAreaLevel={setCurrentAreaLevel}
-        {...props}
-      />
+      <MapChartComponent setCurrentAreaInfo={setCurrentAreaInfo} {...props} />
     </>
   );
 };
