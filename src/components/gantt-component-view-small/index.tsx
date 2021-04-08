@@ -1,11 +1,9 @@
 import { useGetMinAndMaxTime } from '@/utils/hooks';
 import { flatten } from '@/utils/utils';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import uuid from 'node-uuid';
 import moment from "moment";
-
 import ScrollView from 'react-custom-scrollbars'
-
 import styles from './index.less';
 import { useRef } from 'react';
 
@@ -43,6 +41,26 @@ const ganttBgColorObject = {
   "13": "#0584C7",
   "7": "#26DDFD",
   "16": "#0E7B3B"
+}
+
+interface MenuTextContainerProps {
+  item: DataSourceItem;
+}
+
+const MenuTextContainer: React.FC<MenuTextContainerProps> = (props) => {
+  const [allTextVisibel, setAllTextVisibel] = useState(false);
+  const {item} = props;true
+  return (
+    <div className={styles.ganttComponentMenuItemContainer} onMouseOver={()=>setAllTextVisibel(true)} onMouseLeave={()=>setAllTextVisibel(false)}>
+      <div className={styles.ganttComponentMenuItem} key={item.id}>
+        {item.name}
+      </div>
+      {allTextVisibel &&
+        <div className={styles.ganttComponentMenuItemAllText}>
+          <div className={styles.text}>{item.name}</div>
+        </div>}
+    </div>
+  );
 }
 
 const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
@@ -112,10 +130,8 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
 
   const menuElement = flattenData.map((item) => {
     return (
-      <div className={styles.ganttComponentMenuItem} key={item.id}>
-        {item.name}
-      </div>
-    )
+      <MenuTextContainer item={item}/>
+    );
   })
 
   const ganttGriddingBackground = flattenData.map((item) => {
@@ -152,6 +168,7 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
 
   const ganttContentScrollEvent = (e) => {
     if(menuRef && menuRef.current) {
+      console.log(menuRef.current)
       menuRef.current.scrollTop(e.scrollTop);
     }
   }
@@ -174,7 +191,8 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
             </div>
           </div>
           <div className={styles.ganttComponentMenuContent}>
-            <ScrollView autoHide onUpdate={menuScrollEvent} ref={menuRef}>
+            <ScrollView
+              autoHide onUpdate={menuScrollEvent} ref={menuRef}>
               {
                 menuElement
               }

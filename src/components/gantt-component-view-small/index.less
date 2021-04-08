@@ -28,13 +28,42 @@
             .ganttComponentMenuContent {
                 height: calc(100% - 81px);
                 overflow-y: auto;
-                .ganttComponentMenuItem {
+                .ganttComponentMenuItemContainer {
+                  // position: relative;
+                  cursor: pointer;
+                  .ganttComponentMenuItem {
                     height: 25px;
                     line-height: 25px;
                     color: @index-gantt-font-color;
                     border-bottom: 1px solid @index-gantt-line-color;
                     padding-left: 8px;
+                    overflow: hidden;
+                    text-overflow:ellipsis;
+                    white-space: nowrap;
+                    &:hover {
+                      color: #28e189;
+                    }
+                  }
+                  .ganttComponentMenuItemAllText {
+                    width: 140px;
+                    position: fixed;
+                    left: 140px;
+                    top: 0;
+                    bottom: 0;
+                    margin: auto 0;
+                    z-index: 10;
+                    white-space: wrap;
+                    display: flex;
+                    align-items: center;
+                    .text {
+                      color: #666666;
+                      background-color: #fff;
+                      padding: 10px 6px;
+                      border-radius: 4px;
+                    }
+                  }
                 }
+
             }
         }
         .ganttComponentViewRight {

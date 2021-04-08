@@ -113,11 +113,12 @@ export const getMapStatisticsData = (areaId: string) => {
 };
 
 // 获取甘特图的数据
-export const getProjectGanttData = ({ pageIndex = 1, pageSize = 15, sort = {}, keyWord = '', ...params}) => {
+export const getProjectGanttData = ({ pageIndex = 1, pageSize = 15, areaType = "1",sort = {}, keyWord = '', ...params}) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetGanttChart`, {
       method: 'POST',
       data: {
+        areaType,
         pageIndex,
         pageSize,
         sort,
