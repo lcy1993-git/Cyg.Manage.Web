@@ -111,8 +111,8 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
 
   const menuElement = flattenData.map((item) => {
     return (
-      <Tooltip placement="right" title={item.name}>
-        <span className={styles.ganttComponentMenuItem} key={item.id}>
+      <Tooltip placement="right" title={item.name} key={item.id}>
+        <span className={styles.ganttComponentMenuItem}>
           {item.name}
         </span>
       </Tooltip>
@@ -133,7 +133,7 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
     )
   })
 
-  const ganttBar = flattenData.map((item, index) => {
+  const ganttBar = flattenData.map((item: any, index) => {
     const diffDays = moment(item.endTime).diff(item.startTime, "days") + 1;
     const leftDiffDays = moment(item.startTime).diff(timeData.monthStartTime, "days");
     return (
@@ -145,15 +145,16 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
     )
   })
 
-  const menuScrollEvent = (e) => {
+  const menuScrollEvent = (e: any) => {
     if(contentRef && contentRef.current) {
+      //@ts-ignore
       contentRef.current.scrollTop(e.scrollTop);
     }
   }
 
-  const ganttContentScrollEvent = (e) => {
+  const ganttContentScrollEvent = (e: any) => {
     if(menuRef && menuRef.current) {
-      console.log(menuRef.current)
+      //@ts-ignore
       menuRef.current.scrollTop(e.scrollTop);
     }
   }
@@ -177,7 +178,7 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
           </div>
           <div className={styles.ganttComponentMenuContent}>
             <ScrollView
-              autoHide onUpdate={menuScrollEvent} ref={menuRef}>
+              onUpdate={menuScrollEvent} ref={menuRef}>
               {
                 menuElement
               }

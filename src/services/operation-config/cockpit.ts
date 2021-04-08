@@ -4,7 +4,8 @@ import request from '@/utils/request';
 //导出配置模块数据
 
 interface exportHomeSetData {
-  mapProvince: string;
+  areaCode: string;
+  areaType: number;
   ganttChartLimit: number;
 }
 export const exportHomeStatisticData = (params: exportHomeSetData) => {
@@ -17,15 +18,19 @@ export const exportHomeStatisticData = (params: exportHomeSetData) => {
 
 //保存驾驶舱配置
 export const saveChartConfig = (config: string) => {
-  return cyRequest(() => request(`${baseUrl.project}/HomeStatistic/SaveChartConfig`, {
-    method: 'POST',
-    data: {config},
-  }))
+  return cyRequest(() =>
+    request(`${baseUrl.project}/HomeStatistic/SaveChartConfig`, {
+      method: 'POST',
+      data: { config },
+    }),
+  );
 };
 
 // 获取驾驶舱配置
 export const getChartConfig = () => {
-  return cyRequest<string>(() => request(`${baseUrl.project}/HomeStatistic/SaveChartConfig`, {
-    method: 'GET',
-  }))
-}
+  return cyRequest<string>(() =>
+    request(`${baseUrl.project}/HomeStatistic/SaveChartConfig`, {
+      method: 'GET',
+    }),
+  );
+};

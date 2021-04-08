@@ -13,7 +13,7 @@ import styles from './index.less';
 import uuid from 'node-uuid';
 import { useRef } from 'react';
 import { useRequest, useSize } from 'ahooks';
-import { divide, subtract } from 'lodash';
+import { divide, multiply, subtract } from 'lodash';
 import {
   DeleteOutlined,
   ImportOutlined,
@@ -138,19 +138,27 @@ const CockpitManage: React.FC = () => {
 
   const { data } = useRequest(() => getChartConfig(), {
     onSuccess: () => {
-      setConfigArray(handleData.config);
+      if (data) {
+        const hasSaveConfig = JSON.parse(data);
+        if (hasSaveConfig.config && hasSaveConfig.configWindowHeight) {
+          const windowPercent = (size.height ?? 828) / hasSaveConfig.configWindowHeight;
+          const afterHanldeData = hasSaveConfig.config.map((item: any) => {
+            const actualHeight = windowPercent ? multiply(item.h, windowPercent) : item.h;
+            const actualY = windowPercent ? multiply(item.y, windowPercent) : item.y;
+            return {
+              ...item,
+              y: actualY,
+              h: actualHeight,
+            };
+          });
+
+          setConfigArray(afterHanldeData);
+        } else {
+          initCockpit();
+        }
+      }
     },
   });
-
-  const handleData = useMemo(() => {
-    if (data) {
-      return JSON.parse(data);
-    }
-    return {
-      configWindowHeight: 828,
-      config: [],
-    };
-  }, [data]);
 
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
@@ -298,7 +306,8 @@ const CockpitManage: React.FC = () => {
     try {
       setRequestExportLoading(true);
       const res = await exportHomeStatisticData({
-        mapProvince: mapInfo.areaId,
+        areaCode: '',
+        areaType: 1,
         ganttChartLimit: 0,
       });
       let blob = new Blob([res], {
