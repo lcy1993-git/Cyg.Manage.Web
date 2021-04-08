@@ -35,7 +35,7 @@ const ProjectLevel: React.FC<Props> = ({type = "pie", currentAreaInfo }) => {
 
     const getOption = (type: string, data?: any, index?: number) => {
         if (type === "pie") {
-            const proportion = ((data.value / dataSum) * 100).toFixed(2) + "%";
+            const proportion = !isNaN(data.value / dataSum) ? ((data.value / dataSum) * 100).toFixed(2)  + "%" : "0%";
             return {
                 title: {
                     text: proportion,  //图形标题，配置在中间对应效果图的80%
