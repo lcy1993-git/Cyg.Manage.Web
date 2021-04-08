@@ -97,17 +97,18 @@ export const getBurdens = (params: GetBurdens) => {
   );
 };
 
-interface MapStatisticsData {
+export interface MapStatisticsData {
+  areaCode: string
   area: string;
   engineerQuantity: number;
   projectQuantity: number;
 }
 
-export const getMapStatisticsData = (areaId: string) => {
+export const getMapStatisticsData = (params: HomeStatisticCommonParams) => {
   return cyRequest<MapStatisticsData[]>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetMap`, {
       method: 'POST',
-      data: { province: areaId, type: '1' },
+      data: { ...params },
     }),
   );
 };
