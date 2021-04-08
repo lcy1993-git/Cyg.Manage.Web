@@ -23,6 +23,9 @@ import ProjectProgress from "@/pages/index/components/index-project-progress-com
 // import ProjectStatus from "./components/project-status";
 
 import { IndexContext } from "./context";
+import { Spin } from "antd";
+import { divide, subtract } from "lodash";
+import uuid from "node-uuid";
 
 const getComponentByType = (type: string, componentProps: any) => {
     switch (type) {
@@ -67,38 +70,75 @@ const getComponentByType = (type: string, componentProps: any) => {
 }
 
 const Index: React.FC = () => {
-    const [currentAreaId, setCurrentAreaId] = useState<string>();
-    const [currentAreaLevel, setCurrentAreaLevel] = useState<"1" | "2" | "3">("1");
 
     const [currentAreaInfo, setCurrentAreaInfo] = useState({
         areaId: "",
         areaLevel: "1"
     })
 
-    const { data } = useRequest(() => getChartConfig())
+    const [configWindowHeight, setConfigWindowHeight] = useState<number>(828);
+    const [configArray, setConfigArray] = useState<any[]>([])
+
+    const { data, loading } = useRequest(() => getChartConfig(), {
+        onSuccess: () => {
+            if (data) {
+                const hasSaveConfig = JSON.parse(data);
+                if (hasSaveConfig.config && hasSaveConfig.config.length > 0) {
+                    setConfigArray(hasSaveConfig.config)
+                }
+                if (hasSaveConfig.configWindowHeight) {
+                    setConfigWindowHeight(hasSaveConfig.configWindowHeight)
+                }
+            } else {
+                const thisBoxHeight = configWindowHeight - 155;
+                const totalHeight = divide(thisBoxHeight, 18);
+                setConfigArray([
+                    { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
+                    {
+                        name: 'mapComponent',
+                        x: 3,
+                        y: 0,
+                        w: 6,
+                        h: subtract(totalHeight, divide(totalHeight - 11, 2)),
+                        key: uuid.v1(),
+                    },
+                    { name: 'projectType', x: 9, y: 0, w: 3, h: 11, key: uuid.v1() },
+                    { name: 'deliveryManage', x: 0, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
+                    { name: 'personLoad', x: 9, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
+                    {
+                        name: 'projectSchedule',
+                        x: 0,
+                        y: divide(totalHeight - 11, 2) + 10,
+                        w: 6,
+                        h: divide(totalHeight - 11, 2),
+                        key: uuid.v1(),
+                    },
+                    {
+                        name: 'projectProgress',
+                        x: 6,
+                        y: divide(totalHeight - 11, 2) + 10,
+                        w: 6,
+                        h: divide(totalHeight - 11, 2),
+                        key: uuid.v1(),
+                    },
+                ]);
+            }
+        }
+    })
 
     const divRef = useRef<HTMLDivElement>(null);
     const size = useSize(divRef);
 
-    const handleData = useMemo(() => {
-        if (data) {
-            return JSON.parse(data)
-        }
-        return {
-            configWindowHeight: 828,
-            config: []
-        }
-    }, [data])
 
     const windowPercent = useMemo(() => {
         const windowHeight = window.innerHeight;
-        if (windowHeight && handleData.configWindowHeight) {
-            return (windowHeight - 85) / handleData.configWindowHeight
+        if (windowHeight && configWindowHeight) {
+            return (windowHeight - 85) / configWindowHeight
         }
         return undefined
-    }, [JSON.stringify(size), JSON.stringify(handleData)])
+    }, [JSON.stringify(size), configWindowHeight])
 
-    const configComponentElement = handleData.config?.map((item: any) => {
+    const configComponentElement = configArray?.map((item: any) => {
         const actualHeight = windowPercent ? parseFloat((item.h * windowPercent).toFixed(2)) : item.h;
         const actualY = windowPercent ? parseFloat((item.y * windowPercent).toFixed(2)) : item.y;
         return (
@@ -115,8 +155,7 @@ const Index: React.FC = () => {
         }}>
             <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }} ref={divRef}>
                 {
-                    handleData.config && handleData.config.length > 0
-                    &&
+                    !loading &&
                     <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
                         <ResponsiveReactGridLayout
                             breakpoints={{ lg: 120 }}
@@ -128,6 +167,12 @@ const Index: React.FC = () => {
                     </div>
                 }
             </div>
+            {
+                loading &&
+                <div style={{ width: "100%", height: "100%", overflow: "hidden" }}>
+                    <Spin spinning={loading} tip="正在载入中..."></Spin>
+                </div>
+            }
         </IndexContext.Provider>
     )
 }

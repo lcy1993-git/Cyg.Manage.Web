@@ -136,19 +136,27 @@ const CockpitManage: React.FC = () => {
 
   const { data } = useRequest(() => getChartConfig(), {
     onSuccess: () => {
-      setConfigArray(handleData.config);
+      if (data) {
+        const hasSaveConfig = JSON.parse(data);
+        if (hasSaveConfig.config && hasSaveConfig.configWindowHeight) {
+          const windowPercent = (size.height ?? 828) / hasSaveConfig.configWindowHeight;
+          const afterHanldeData = hasSaveConfig.config.map((item: any) => {
+            const actualHeight = windowPercent ? parseFloat((item.h * windowPercent).toFixed(2)) : item.h;
+            const actualY = windowPercent ? parseFloat((item.y * windowPercent).toFixed(2)) : item.y;
+            return {
+              ...item,
+              y: actualY,
+              h: actualHeight
+            }
+          })
+    
+          setConfigArray(afterHanldeData)
+        } else {
+          initCockpit();
+        }
+      }
     },
   });
-
-  const handleData = useMemo(() => {
-    if (data) {
-      return JSON.parse(data);
-    }
-    return {
-      configWindowHeight: 828,
-      config: [],
-    };
-  }, [data]);
 
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
