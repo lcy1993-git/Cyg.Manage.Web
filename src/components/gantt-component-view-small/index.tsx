@@ -1,6 +1,7 @@
 import { useGetMinAndMaxTime } from '@/utils/hooks';
 import { flatten } from '@/utils/utils';
 import React, { useMemo, useState } from 'react';
+import { Tooltip } from 'antd';
 import uuid from 'node-uuid';
 import moment from "moment";
 import ScrollView from 'react-custom-scrollbars'
@@ -41,26 +42,6 @@ const ganttBgColorObject = {
   "13": "#0584C7",
   "7": "#26DDFD",
   "16": "#0E7B3B"
-}
-
-interface MenuTextContainerProps {
-  item: DataSourceItem;
-}
-
-const MenuTextContainer: React.FC<MenuTextContainerProps> = (props) => {
-  const [allTextVisibel, setAllTextVisibel] = useState(false);
-  const {item} = props;true
-  return (
-    <div className={styles.ganttComponentMenuItemContainer} onMouseOver={()=>setAllTextVisibel(true)} onMouseLeave={()=>setAllTextVisibel(false)}>
-      <div className={styles.ganttComponentMenuItem} key={item.id}>
-        {item.name}
-      </div>
-      {allTextVisibel &&
-        <div className={styles.ganttComponentMenuItemAllText}>
-          <div className={styles.text}>{item.name}</div>
-        </div>}
-    </div>
-  );
 }
 
 const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
@@ -130,7 +111,11 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
 
   const menuElement = flattenData.map((item) => {
     return (
-      <MenuTextContainer item={item}/>
+      <Tooltip placement="right" title={item.name}>
+        <span className={styles.ganttComponentMenuItem} key={item.id}>
+          {item.name}
+        </span>
+      </Tooltip>
     );
   })
 
