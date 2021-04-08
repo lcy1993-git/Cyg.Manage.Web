@@ -157,6 +157,8 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                         areaId: cityCodeObject[name],
                         areaLevel: String(parseFloat(currentAreaLevel!) + 1)
                     })
+
+                    setActiveAreaLevel(String(parseFloat(currentAreaLevel!) + 1))
                 }
             })
         }
