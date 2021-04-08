@@ -32,7 +32,7 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
     }, [state])
 
     return (
-        <Modal title="项目详情" width={680} destroyOnClose bodyStyle={{ padding: "0px" }} visible={state as boolean} footer={null} onCancel={() => setState(false)}>
+        <Modal  maskClosable={false} title="项目详情" width={680} destroyOnClose bodyStyle={{ padding: "0px" }} visible={state as boolean} footer={null} onCancel={() => setState(false)}>
             <div className={styles.projectDetailInfo}>
                 <Tabs className="normalTabs">
                     <TabPane key="base" tab="基本信息">

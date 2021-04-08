@@ -33,6 +33,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       destroyOnClose
       width="680px"
       title="导入(杆型+模块)"

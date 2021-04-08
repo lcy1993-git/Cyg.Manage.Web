@@ -750,7 +750,10 @@ const ProjectManagement: React.FC = () => {
       </div>
       {addEngineerModalFlag && (
         <Modal
+          maskClosable={false}
+          centered
           visible={addEngineerModalFlag}
+          bodyStyle={{ height: 800, overflowY: 'auto' }}
           footer={[
             <Button key="cancle" onClick={() => modalCloseEvent()}>
               取消

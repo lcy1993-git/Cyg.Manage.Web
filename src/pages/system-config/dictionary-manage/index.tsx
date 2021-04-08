@@ -350,6 +350,7 @@ const DictionaryManage: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-字典"
         width="680px"
         visible={addFormVisible}
@@ -364,6 +365,7 @@ const DictionaryManage: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-字典"
         width="680px"
         visible={editFormVisible}

@@ -208,6 +208,7 @@ const SourceCompare: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         footer=""
         title="比对类目-详情"
         width="720px"
@@ -221,6 +222,7 @@ const SourceCompare: React.FC = () => {
         </Spin>
       </Modal>
       <Modal
+        maskClosable={false}
         footer=""
         title="差异明细"
         width="96%"

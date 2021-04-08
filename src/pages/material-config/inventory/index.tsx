@@ -382,6 +382,7 @@ const Inventroy: React.FC = () => {
 
       {checkMappingVisible && (
         <Modal
+        maskClosable={false}
           footer=""
           title="查看映射关系"
           width="95%"

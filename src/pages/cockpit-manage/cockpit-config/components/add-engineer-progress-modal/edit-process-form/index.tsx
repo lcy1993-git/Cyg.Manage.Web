@@ -41,6 +41,7 @@ const EditEngineerProcessModal: React.FC<EditEngineerProcessStatistic> = (props)
 
   return (
     <Modal
+    maskClosable={false}
       title="工程进度统计配置"
       width={750}
       visible={state as boolean}

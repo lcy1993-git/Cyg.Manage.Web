@@ -305,6 +305,7 @@ const WareHouse: React.FC = () => {
         }}
       />
       <Modal
+      maskClosable={false}
         title="创建-利库"
         width="680px"
         visible={addFormVisible}
@@ -319,6 +320,7 @@ const WareHouse: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="编辑-利库"
         width="680px"
         visible={editFormVisible}
@@ -335,6 +337,7 @@ const WareHouse: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         footer=""
         destroyOnClose
         title="查看利库物料详情"

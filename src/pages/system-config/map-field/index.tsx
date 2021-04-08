@@ -251,6 +251,7 @@ const MapField: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-映射"
         width="720px"
         visible={addFormVisible}
@@ -267,6 +268,7 @@ const MapField: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-映射"
         width="680px"
         visible={editFormVisible}

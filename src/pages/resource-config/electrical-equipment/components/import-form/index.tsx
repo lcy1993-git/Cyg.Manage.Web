@@ -33,6 +33,7 @@ const SaveImportElectrical: React.FC<SaveImportElectricalProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="导入电气设备"
       visible={state as boolean}
       footer={[

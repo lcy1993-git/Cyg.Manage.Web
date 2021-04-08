@@ -386,6 +386,7 @@ const CompanyUser: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-公司用户"
         width="680px"
         visible={addFormVisible}
@@ -400,6 +401,7 @@ const CompanyUser: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="批量添加-公司用户"
         width="680px"
         visible={batchAddFormVisible}
@@ -414,6 +416,7 @@ const CompanyUser: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-公司用户"
         width="680px"
         visible={editFormVisible}
@@ -430,6 +433,7 @@ const CompanyUser: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="重置密码"
         width="680px"
         visible={resetFormVisible}

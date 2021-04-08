@@ -103,6 +103,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="项目安排"
       width={680}
       visible={state as boolean}

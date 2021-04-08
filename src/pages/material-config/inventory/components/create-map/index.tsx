@@ -301,6 +301,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
   return (
     <>
       <Modal
+      maskClosable={false}
         title="编辑映射"
         visible={state as boolean}
         bodyStyle={{

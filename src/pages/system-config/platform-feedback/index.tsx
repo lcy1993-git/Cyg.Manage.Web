@@ -259,6 +259,7 @@ const PlatFormFeedBack: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="反馈处理"
         width="650px"
         visible={feedbackDetailVisible}

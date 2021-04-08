@@ -215,6 +215,7 @@ const FunctionModule: React.FC = () => {
         url="/Module/GetTreeList"
       />
       <Modal
+        maskClosable={false}
         title="添加-模块"
         width="680px"
         visible={addFormVisible}
@@ -229,6 +230,7 @@ const FunctionModule: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-模块"
         width="680px"
         visible={editFormVisible}

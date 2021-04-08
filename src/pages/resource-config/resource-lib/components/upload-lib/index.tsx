@@ -55,6 +55,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="导入资源库"
       visible={state as boolean}
       footer={[
@@ -79,6 +80,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
         </CyFormItem>
       </Form>
       <Modal
+        maskClosable={false}
         footer=""
         width="650px"
         title="提示信息"

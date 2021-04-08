@@ -56,6 +56,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
 
   return (
     <Modal
+    maskClosable={false}
       destroyOnClose
       width="780px"
       title="导入利库"

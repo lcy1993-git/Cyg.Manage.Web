@@ -153,6 +153,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="查看成果"
       width={750}
       visible={state as boolean}

@@ -41,6 +41,7 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
 
   return (
     <Modal
+    maskClosable={false}
       title="配置-地图信息"
       width={750}
       visible={state as boolean}

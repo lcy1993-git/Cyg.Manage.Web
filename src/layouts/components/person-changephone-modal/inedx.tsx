@@ -69,6 +69,7 @@ const ChangePhoneModal = (props: Props) => {
 
   return (
     <Modal
+    maskClosable={false}
       className={styles.modal}
       style={{width: 200}}
       visible={visble}

@@ -433,6 +433,7 @@ const Material: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-物料"
         width="680px"
         visible={addFormVisible}
@@ -448,6 +449,7 @@ const Material: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-物料"
         width="680px"
         visible={editFormVisible}
@@ -466,6 +468,7 @@ const Material: React.FC = () => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         footer=""
         title="导线属性"
         width="880px"
@@ -480,6 +483,7 @@ const Material: React.FC = () => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         footer=""
         title="电缆终端头映射"
         width="92%"

@@ -302,6 +302,7 @@ const InfoManage: React.FC = () => {
         }}
       />
       <Modal
+      maskClosable={false}
         title="添加-资讯"
         width="820px"
         visible={addFormVisible}
@@ -314,6 +315,7 @@ const InfoManage: React.FC = () => {
         <TextEditor onChange={setContent} titleForm={addForm} type="add" />
       </Modal>
       <Modal
+      maskClosable={false}
         title="编辑-资讯"
         width="820px"
         visible={editFormVisible}
@@ -326,6 +328,7 @@ const InfoManage: React.FC = () => {
         <TextEditor onChange={setContent} titleForm={editForm} htmlContent={content} type="edit" />
       </Modal>
       <Modal
+      maskClosable={false}
         title="推送-资讯"
         width="450px"
         visible={pushTreeVisible}

@@ -41,6 +41,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="导入图纸"
       visible={state as boolean}
       footer={[

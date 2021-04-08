@@ -16,6 +16,7 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
     const { changeFinishEvent } = props;
     const [form] = Form.useForm();
 
+
     const sureAddEvent = () => {
         form.validateFields().then((values) => {
             const { area,production } = values;
@@ -43,13 +44,14 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
                 });
             }
             setState(false);
-            
+            form.resetFields();
             changeFinishEvent?.(chooseComponent)
         })
     }
 
     return (
         <Modal
+        maskClosable={false}
             title="工程项目统计配置"
             width={750}
             visible={state as boolean}

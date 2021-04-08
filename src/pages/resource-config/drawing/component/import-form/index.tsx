@@ -33,6 +33,7 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       destroyOnClose
       width="780px"
       title="导入图纸"

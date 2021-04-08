@@ -162,6 +162,7 @@ const UserFeedBack: React.FC = () => {
         url="/Feedback/GetList"
       />
       <Modal
+      maskClosable={false}
         title="添加-反馈"
         width="680px"
         visible={addFormVisible}
@@ -176,6 +177,7 @@ const UserFeedBack: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="回复-反馈"
         width="680px"
         visible={checkFormVisible}

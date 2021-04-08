@@ -56,6 +56,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
 
   return (
     <Modal
+    maskClosable={false}
       destroyOnClose
       width="780px"
       title="导入"

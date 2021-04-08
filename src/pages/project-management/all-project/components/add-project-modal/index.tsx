@@ -49,6 +49,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="新增项目"
       width={750}
       visible={state as boolean}

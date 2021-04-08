@@ -33,6 +33,7 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       destroyOnClose
       width="680px"
       title="导入(电缆井+电缆通道)"

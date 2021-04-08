@@ -42,6 +42,7 @@ const EditOtherStatisticModal: React.FC<EditOtherStatistic> = (props) => {
 
   return (
     <Modal
+    maskClosable={false}
       title="配置-其他统计"
       width={750}
       visible={state as boolean}

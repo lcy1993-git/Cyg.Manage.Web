@@ -268,6 +268,7 @@ const MapField: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-终端设备"
         width="720px"
         visible={addFormVisible}
@@ -284,6 +285,7 @@ const MapField: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-终端设备"
         width="680px"
         visible={editFormVisible}

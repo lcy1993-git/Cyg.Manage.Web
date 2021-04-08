@@ -382,6 +382,7 @@ const ElectricalEquipment: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-电气设备"
         width="680px"
         visible={addFormVisible}
@@ -396,6 +397,7 @@ const ElectricalEquipment: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-电气设备"
         width="680px"
         visible={editFormVisible}
@@ -413,6 +415,7 @@ const ElectricalEquipment: React.FC = () => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         footer=""
         title="组件明细"
         width="92%"
@@ -434,6 +437,7 @@ const ElectricalEquipment: React.FC = () => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         footer=""
         title="组件属性"
         width="60%"

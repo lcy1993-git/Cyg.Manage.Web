@@ -76,6 +76,7 @@ const ProjectRecallModal: React.FC<ProjectRecallModalProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="撤回共享"
       width={750}
       visible={state as boolean}

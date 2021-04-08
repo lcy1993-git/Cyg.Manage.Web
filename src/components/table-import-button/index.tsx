@@ -62,6 +62,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
         <span>{buttonTitle}</span>
       </Button>
       <Modal
+      maskClosable={false}
         title={modalTitle}
         visible={importModalVisible}
         cancelText="取消"

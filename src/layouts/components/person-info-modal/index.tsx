@@ -83,7 +83,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
     }
 
     return (
-        <Modal title="个人信息" bodyStyle={{ padding: "0px 20px" }} destroyOnClose width={750} visible={state as boolean} okText="确定" cancelText="取消" onCancel={() => closeModalEvent()} onOk={() => openModalEvent()}>
+        <Modal maskClosable={false} title="个人信息" bodyStyle={{ padding: "0px 20px" }} destroyOnClose width={750} visible={state as boolean} okText="确定" cancelText="取消" onCancel={() => closeModalEvent()} onOk={() => openModalEvent()}>
             { changePhoneVisibel &&
               <ChangePhoneModal
                 visble={changePhoneVisibel}

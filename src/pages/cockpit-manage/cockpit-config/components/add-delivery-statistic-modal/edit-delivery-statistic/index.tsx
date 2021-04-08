@@ -39,6 +39,7 @@ const EditDeliveryStatisticModal: React.FC<EditDeliveryStatistic> = (props) => {
 
   return (
     <Modal
+    maskClosable={false}
       title="配置-交付统计"
       width={750}
       visible={state as boolean}

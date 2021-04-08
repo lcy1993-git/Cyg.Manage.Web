@@ -61,7 +61,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     }
 
     return (
-        <Modal title="复制项目" width={750} visible={state as boolean} destroyOnClose
+        <Modal maskClosable={false} title="复制项目" width={750} visible={state as boolean} destroyOnClose
             footer={[
                 <Button key="cancle" onClick={() => setState(false)}>
                     取消

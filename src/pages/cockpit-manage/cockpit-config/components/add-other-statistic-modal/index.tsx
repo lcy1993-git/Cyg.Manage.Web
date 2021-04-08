@@ -32,11 +32,14 @@ const AddOtherStatisticModal: React.FC<AddOtherStatistic> = (props) => {
                     fixHeight: true
                 }
             ])
+            form.resetFields();
+
         })
     }
 
     return (
         <Modal
+        maskClosable={false}
             title="其他统计配置"
             width={750}
             visible={state as boolean}

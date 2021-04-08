@@ -416,6 +416,7 @@ const CompanyFile: React.FC = () => {
         </div>
       </div>
       <Modal
+      maskClosable={false}
         title="添加-文件"
         width="720px"
         visible={addFormVisible}
@@ -432,6 +433,7 @@ const CompanyFile: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="编辑-文件"
         width="680px"
         visible={editFormVisible}
@@ -448,6 +450,7 @@ const CompanyFile: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="成果默认参数"
         width="780px"
         visible={defaultParamsVisible}
@@ -465,6 +468,7 @@ const CompanyFile: React.FC = () => {
       </Modal>
 
       <Modal
+      maskClosable={false}
         title="新建模板文件组"
         width="820px"
         visible={fileGroupModalVisible}

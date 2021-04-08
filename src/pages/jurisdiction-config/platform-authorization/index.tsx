@@ -269,6 +269,7 @@ const PlatformAuthorization: React.FC = () => {
         tableTitle="授权管理"
       />
       <Modal
+      maskClosable={false}
         title="添加-模板"
         width="680px"
         visible={addFormVisible}
@@ -283,6 +284,7 @@ const PlatformAuthorization: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="编辑-模板"
         width="680px"
         visible={editFormVisible}
@@ -297,6 +299,7 @@ const PlatformAuthorization: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="分配功能模块"
         width="80%"
         visible={distributeFormVisible}
@@ -313,6 +316,7 @@ const PlatformAuthorization: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="授权"
         width="90%"
         visible={authorizationFormVisible}

@@ -168,6 +168,7 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-组件属性"
         width="70%"
         visible={addFormVisible}
@@ -185,6 +186,7 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         title="编辑-组件属性"
         width="980px"
         visible={editFormVisible}

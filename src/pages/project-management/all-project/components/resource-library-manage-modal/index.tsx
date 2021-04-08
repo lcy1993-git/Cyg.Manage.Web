@@ -133,7 +133,7 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
     }, [state])
 
     return (
-        <Modal title="资源库迭代" width={750} visible={state as boolean} destroyOnClose footer={null} onCancel={() => closeEvent()}>
+        <Modal maskClosable={false} title="资源库迭代" width={750} visible={state as boolean} destroyOnClose footer={null} onCancel={() => closeEvent()}>
             <GeneralTable ref={tableRef} type="checkbox" getSelectData={(data) => setTableSelectRows(data)} buttonRightContentSlot={tableButtonRightContent} buttonLeftContentSlot={tableButton} columns={tableColumns} extractParams={{ keyWord }} needTitleLine={false} rowKey="engineerId" url="/Engineer/GetEngineerByLibList" />
         </Modal>
     )

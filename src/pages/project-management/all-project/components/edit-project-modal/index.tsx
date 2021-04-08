@@ -64,7 +64,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     }
 
     return (
-        <Modal title="编辑项目信息" width={750} visible={state as boolean} destroyOnClose
+        <Modal maskClosable={false} title="编辑项目信息" width={750} visible={state as boolean} destroyOnClose
             footer={[
                 <Button key="cancle" onClick={() => setState(false)}>
                     取消

@@ -58,6 +58,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   return (
     <>
       <Modal
+      maskClosable={false}
         footer=""
         title={`v${nowClickVersion}`}
         visible={historyVersionModalVisible}
@@ -74,6 +75,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
         </Spin>
       </Modal>
       <Modal
+      maskClosable={false}
         title="版本功能更新"
         width={820}
         visible={state as boolean}

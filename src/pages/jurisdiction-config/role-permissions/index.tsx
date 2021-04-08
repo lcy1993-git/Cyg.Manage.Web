@@ -325,6 +325,7 @@ const RolePermissions: React.FC = () => {
         }}
       />
       <Modal
+      maskClosable={false}
         title="添加-角色"
         width="680px"
         visible={addFormVisible}
@@ -339,6 +340,7 @@ const RolePermissions: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="编辑-角色"
         width="680px"
         visible={editFormVisible}
@@ -353,6 +355,7 @@ const RolePermissions: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="分配功能模块"
         width="80%"
         visible={distributeFormVisible}
@@ -369,6 +372,7 @@ const RolePermissions: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         footer=""
         title="授权"
         width="90%"

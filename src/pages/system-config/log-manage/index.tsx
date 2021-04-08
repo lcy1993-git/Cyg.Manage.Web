@@ -241,6 +241,7 @@ const LogManage: React.FC = () => {
         columns={columns}
       />
       <Modal
+        maskClosable={false}
         title="日志-详情"
         width="900px"
         visible={logDetailVisible}

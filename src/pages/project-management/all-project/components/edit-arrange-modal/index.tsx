@@ -102,6 +102,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="修改安排信息"
       width={750}
       visible={state as boolean}

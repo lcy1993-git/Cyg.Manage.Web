@@ -249,6 +249,7 @@ const ElectricCompany: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-公司"
         width="680px"
         visible={addFormVisible}
@@ -263,6 +264,7 @@ const ElectricCompany: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-公司"
         width="680px"
         visible={editFormVisible}

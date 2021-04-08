@@ -44,6 +44,7 @@ const EditProjectCaseModal: React.FC<EditProjectCaseStatistic> = (props) => {
 
   return (
     <Modal
+    maskClosable={false}
       title="配置-项目情况"
       width={750}
       visible={state as boolean}

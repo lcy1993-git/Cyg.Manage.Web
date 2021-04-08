@@ -418,6 +418,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-模块"
         width="680px"
         visible={addFormVisible}
@@ -432,6 +433,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-模块"
         width="680px"
         visible={editFormVisible}
@@ -449,6 +451,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         title="编辑-模块属性"
         width="680px"
         visible={editAttributeVisible}
@@ -466,6 +469,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         footer=""
         title="详情"
         width="980px"
@@ -478,6 +482,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         </Spin>
       </Modal>
       <Modal
+        maskClosable={false}
         footer=""
         title="模块明细"
         width="90%"

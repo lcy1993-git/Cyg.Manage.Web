@@ -405,6 +405,7 @@ const Component: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-组件"
         width="680px"
         visible={addFormVisible}
@@ -418,6 +419,7 @@ const Component: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-组件"
         width="680px"
         visible={editFormVisible}
@@ -435,6 +437,7 @@ const Component: React.FC = () => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         footer=""
         title="组件明细"
         width="92%"
@@ -456,6 +459,7 @@ const Component: React.FC = () => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         footer=""
         title="组件属性"
         width="60%"

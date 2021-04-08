@@ -41,6 +41,7 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
 
   return (
     <Modal
+    maskClosable={false}
       title="配置-生产负荷信息"
       width={750}
       visible={state as boolean}

@@ -199,6 +199,7 @@ const CompanyGroup: React.FC = () => {
         url="/CompanyGroup/GetTreeList"
       />
       <Modal
+        maskClosable={false}
         title="添加-部组"
         width="680px"
         visible={addFormVisible}
@@ -213,6 +214,7 @@ const CompanyGroup: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="编辑-部组"
         width="680px"
         visible={editFormVisible}

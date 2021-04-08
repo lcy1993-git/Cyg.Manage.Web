@@ -51,6 +51,7 @@ const CutAccount = (props: EditPasswordProps) => {
 
   return (
     <Modal
+    maskClosable={false}
       title="快捷登录"
       visible={state as boolean}
       destroyOnClose

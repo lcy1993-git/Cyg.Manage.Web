@@ -371,6 +371,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       />
 
       <Modal
+        maskClosable={false}
         title="添加-电缆井"
         width="680px"
         visible={addFormVisible}
@@ -386,6 +387,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-电缆井"
         width="680px"
         visible={editFormVisible}
@@ -404,6 +406,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         footer=""
         title="电缆井明细"
         width="92%"

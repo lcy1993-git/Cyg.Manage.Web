@@ -300,6 +300,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-杆型"
         width="680px"
         visible={addFormVisible}
@@ -314,6 +315,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-杆型"
         width="680px"
         visible={editFormVisible}

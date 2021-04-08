@@ -220,6 +220,7 @@ const ManageUser: React.FC = () => {
         type="radio"
       />
       <Modal
+        maskClosable={false}
         title="日志-详情"
         width="980px"
         visible={logDetailVisible}

@@ -305,6 +305,7 @@ const ManageUser: React.FC = () => {
         }}
       />
       <Modal
+      maskClosable={false}
         title="添加-管理用户"
         width="680px"
         visible={addFormVisible}
@@ -319,6 +320,7 @@ const ManageUser: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-管理用户"
         width="680px"
         visible={editFormVisible}
@@ -335,6 +337,7 @@ const ManageUser: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="重置密码"
         width="680px"
         visible={resetFormVisible}

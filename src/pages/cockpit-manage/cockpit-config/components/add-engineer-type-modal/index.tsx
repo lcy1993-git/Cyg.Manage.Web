@@ -42,13 +42,15 @@ const AddEngineerTypeModal: React.FC<AddEngineerTypeStatistic> = (props) => {
                 });
             }
             setState(false);
-            
+            form.resetFields();
+
             changeFinishEvent?.(chooseComponent)
         })
     }
 
     return (
         <Modal
+        maskClosable={false}
             title="工程类型统计配置"
             width={750}
             visible={state as boolean}

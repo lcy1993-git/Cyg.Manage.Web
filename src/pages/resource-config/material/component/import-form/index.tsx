@@ -36,6 +36,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="导入物料"
       visible={state as boolean}
       footer={[

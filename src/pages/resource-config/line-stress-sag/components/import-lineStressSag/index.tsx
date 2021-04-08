@@ -33,6 +33,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="导入应力弧垂表"
       visible={state as boolean}
       footer={[

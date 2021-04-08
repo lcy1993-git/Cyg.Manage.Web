@@ -146,6 +146,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
   return (
     <>
       <Modal
+      maskClosable={false}
         title="添加-映射"
         footer=""
         onCancel={() => setState(false)}

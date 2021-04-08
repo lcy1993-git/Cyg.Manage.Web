@@ -33,6 +33,7 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="导入组件"
       visible={state as boolean}
       footer={[

@@ -41,6 +41,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
 
   return (
     <Modal
+      maskClosable={false}
       title="导入应力弧垂表"
       visible={state as boolean}
       footer={[

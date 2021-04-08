@@ -267,6 +267,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="添加-模块明细"
         width="980px"
         visible={addFormVisible}
@@ -282,6 +283,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
       </Modal>
 
       <Modal
+        maskClosable={false}
         title="编辑-模块明细"
         width="980px"
         visible={editFormVisible}

@@ -31,6 +31,7 @@ const EditPassword = (props: EditPasswordProps) => {
 
   return (
     <Modal
+    maskClosable={false}
       title="修改密码"
       visible={state as boolean}
       destroyOnClose

@@ -74,6 +74,7 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
 
   return (
     <Modal
+      maskClosable={false}
       title="共享"
       width={680}
       visible={state as boolean}

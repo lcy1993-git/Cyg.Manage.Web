@@ -146,6 +146,7 @@ const PlatformRole: React.FC = () => {
         columns={columns}
       />
       <Modal
+      maskClosable={false}
         title="添加角色"
         width="680px"
         visible={addFormVisible}
@@ -160,6 +161,7 @@ const PlatformRole: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+      maskClosable={false}
         title="编辑-角色"
         width="680px"
         visible={editFormVisible}

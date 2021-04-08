@@ -277,6 +277,7 @@ const ResourceLib: React.FC = () => {
         }}
       />
       <Modal
+        maskClosable={false}
         title="创建资源库"
         width="680px"
         visible={addFormVisible}
@@ -291,6 +292,7 @@ const ResourceLib: React.FC = () => {
         </Form>
       </Modal>
       <Modal
+        maskClosable={false}
         title="编辑-资源库"
         width="680px"
         visible={editFormVisible}
