@@ -13,7 +13,7 @@ import styles from './index.less';
 import uuid from 'node-uuid';
 import { useRef } from 'react';
 import { useRequest, useSize } from 'ahooks';
-import { divide, subtract } from 'lodash';
+import { divide, multiply, subtract } from 'lodash';
 import {
   DeleteOutlined,
   ImportOutlined,
@@ -143,15 +143,15 @@ const CockpitManage: React.FC = () => {
         if (hasSaveConfig.config && hasSaveConfig.configWindowHeight) {
           const windowPercent = (size.height ?? 828) / hasSaveConfig.configWindowHeight;
           const afterHanldeData = hasSaveConfig.config.map((item: any) => {
-            const actualHeight = windowPercent ? parseFloat((item.h * windowPercent).toFixed(2)) : item.h;
-            const actualY = windowPercent ? parseFloat((item.y * windowPercent).toFixed(2)) : item.y;
+            const actualHeight = windowPercent ? multiply(item.h, windowPercent) : item.h;
+            const actualY = windowPercent ? multiply(item.y, windowPercent) : item.y;
             return {
               ...item,
               y: actualY,
               h: actualHeight
             }
           })
-    
+
           setConfigArray(afterHanldeData)
         } else {
           initCockpit();

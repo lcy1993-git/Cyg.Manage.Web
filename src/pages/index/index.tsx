@@ -24,7 +24,7 @@ import ProjectProgress from "@/pages/index/components/index-project-progress-com
 
 import { IndexContext } from "./context";
 import { Spin } from "antd";
-import { divide, subtract } from "lodash";
+import { divide, multiply, subtract } from "lodash";
 import uuid from "node-uuid";
 
 const getComponentByType = (type: string, componentProps: any) => {
@@ -139,8 +139,8 @@ const Index: React.FC = () => {
     }, [JSON.stringify(size), configWindowHeight])
 
     const configComponentElement = configArray?.map((item: any) => {
-        const actualHeight = windowPercent ? parseFloat((item.h * windowPercent).toFixed(2)) : item.h;
-        const actualY = windowPercent ? parseFloat((item.y * windowPercent).toFixed(2)) : item.y;
+        const actualHeight = windowPercent ? multiply(item.h,windowPercent) : item.h;
+        const actualY = windowPercent ? multiply(item.y,windowPercent) : item.y;
         return (
             <div key={item.key} data-grid={{ x: item.x, y: actualY, w: item.w, h: actualHeight, static: true }}>
                 {getComponentByType(item.name, item.componentProps)}
