@@ -7,11 +7,11 @@ interface IndexPorjectTypeProps {
 }
 
 const IndexProjectProps:React.FC<IndexPorjectTypeProps> = (props) => {
-    const {currentAreaId,currentAreaLevel} = useContext(IndexContext);
+    const {currentAreaInfo} = useContext(IndexContext);
 
     return (
         <>
-            <ProjectType areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+            <ProjectType currentAreaInfo={currentAreaInfo} {...props} />
         </>
     )
 }

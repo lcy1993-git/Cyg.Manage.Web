@@ -7,11 +7,11 @@ interface IndexToDoComponentProps {
 }
 
 const IndexDeliveryComponent:React.FC<IndexToDoComponentProps> = (props) => {
-    const {currentAreaId,currentAreaLevel} = useContext(IndexContext);
+    const {currentAreaInfo} = useContext(IndexContext);
 
     return (
         <>
-            <DeliveyManage areaId={currentAreaId} areaLevel={currentAreaLevel} {...props} />
+            <DeliveyManage currentAreaInfo={currentAreaInfo} {...props} />
         </>
     )
 }

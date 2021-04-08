@@ -13,7 +13,7 @@ interface Props {
 
 const ProjectProgress:React.FC<Props> = (props) => {
   const { currentAreaInfo } = props;
-  const { data: requestData } = useRequest(() => getProjectGanttData({ areaCode: currentAreaInfo.areaId, areaType: currentAreaInfo.areaLevel }), {refreshDeps: [areaId]});
+  const { data: requestData } = useRequest(() => getProjectGanttData({ areaCode: currentAreaInfo.areaId, areaType: currentAreaInfo.areaLevel }), {refreshDeps: [currentAreaInfo]});
   
   const handleRequestData = useMemo(() => {
     if(requestData) {
