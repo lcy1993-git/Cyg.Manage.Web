@@ -7,6 +7,8 @@ import styles from "./index.less";
 
 interface Props {
   componentProps?: string[];
+  areaId?: string
+  areaLevel?: string
 }
 
 interface TabData {
@@ -16,7 +18,7 @@ interface TabData {
 
 const ProjectSchedule:React.FC<Props> = (props) => {
 
-  const { componentProps = ["nature", "status"] } = props;
+  const { componentProps = ["nature", "status"], ...rest } = props;
   const [activeKey, setActiveKey] = useState<string>();
 
   const tabData: TabData[]= [
@@ -53,11 +55,11 @@ const ProjectSchedule:React.FC<Props> = (props) => {
           <div className={styles.content}>
             {
               activeKey === "nature" ? 
-              <ProjectNatures /> : null
+              <ProjectNatures {...rest} /> : null
             }
             {
               activeKey === "status" ? 
-              <StatusBar /> : null
+              <StatusBar {...rest} /> : null
             }
           </div>
         </div>

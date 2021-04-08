@@ -13,14 +13,14 @@ import 'react-resizable/css/styles.css';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 import MapComponent from "@/pages/index/components/index-map-component";
-import PersonnelLoad from "@/pages/index/components/personnel-load";
+import PersonnelLoad from "@/pages/index/components/index-personnel-load-component";
 import ToDo from "@/pages/index/components/index-to-do-component";
-import DeliveryManage from "@/pages/index/components/delivery-manage";
-import ProjectSchedule from "@/pages/index/components/project-schedule-status";
+import DeliveryManage from "@/pages/index/components/index-delivery-manage-component";
+import ProjectSituation from "@/pages/index/components/index-project-situation-component";
 import ProjectType from "@/pages/index/components/index-project-type-component";
-import ProjectProgress from "@/pages/index/components/project-progress";
-import CostInformation from "./components/cost-information";
-import ProjectStatus from "./components/project-status";
+import ProjectProgress from "@/pages/index/components/index-project-progress-component";
+// import CostInformation from "./components/cost-information";
+// import ProjectStatus from "./components/project-status";
 
 import { IndexContext } from "./context";
 
@@ -48,7 +48,7 @@ const getComponentByType = (type: string, componentProps: any) => {
             break;
         case "projectSchedule":
             return (
-                <ProjectSchedule componentProps={componentProps} />
+                <ProjectSituation componentProps={componentProps} />
             )
             break;
         case "projectType":

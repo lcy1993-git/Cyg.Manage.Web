@@ -3,9 +3,15 @@ import { getProjectStatus } from "@/services/index";
 import { useRequest } from "ahooks";
 import React, { useMemo } from "react";
 import BarChart from "@/components/bar-chart";
-const ProjectStatusBar: React.FC = () => {
 
-    const { data: projectStatus } = useRequest(() => getProjectStatus())
+interface Props {
+  areaId?: string
+  areaLevel?: string
+}
+
+const ProjectStatusBar: React.FC<Props> = (props) => {
+    const { areaId, areaLevel } = props;
+    const { data: projectStatus } = useRequest(() => getProjectStatus({areaCode: areaId,areaType: areaLevel}))
 
     const option = useMemo(() => {
       if (!projectStatus) return undefined;

@@ -84,11 +84,15 @@ export const getConsigns = (params: GetConsignsParams) => {
   );
 };
 
-export const getBurdens = (type: string | undefined) => {
+interface GetBurdens extends HomeStatisticCommonParams {
+  type: string
+}
+
+export const getBurdens = (params: GetBurdens) => {
   return cyRequest<RequestResult[]>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetBurdens`, {
       method: 'POST',
-      data: { type, limit: 5 },
+      data: { ...params, limit: 5 },
     }),
   );
 };
@@ -109,7 +113,7 @@ export const getMapStatisticsData = (areaId: string) => {
 };
 
 // 获取甘特图的数据
-export const getProjectGanttData = ({ pageIndex = 1, pageSize = 15, sort = {}, keyWord = '' }) => {
+export const getProjectGanttData = ({ pageIndex = 1, pageSize = 15, sort = {}, keyWord = '', ...params}) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetGanttChart`, {
       method: 'POST',
@@ -118,6 +122,7 @@ export const getProjectGanttData = ({ pageIndex = 1, pageSize = 15, sort = {}, k
         pageSize,
         sort,
         keyWord,
+        ...params
       },
     }),
   );

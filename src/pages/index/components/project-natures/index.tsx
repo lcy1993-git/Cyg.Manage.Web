@@ -4,8 +4,14 @@ import * as echarts from "echarts/lib/echarts"
 import { useRequest } from "ahooks"
 import React from "react"
 
-const ProjectNatures: React.FC = () => {
-    const { data: projectNatures } = useRequest(() => getProjectNatures(), {
+interface Props {
+  areaId?: string
+  areaLevel?: string
+}
+
+const ProjectNatures: React.FC<Props> = (props) => {
+    const { areaId, areaLevel } = props;
+    const { data: projectNatures } = useRequest(() => getProjectNatures({areaCode: areaId,areaType: areaLevel}), {
         pollingWhenHidden: false
     })
 

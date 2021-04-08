@@ -6,13 +6,15 @@ import { getProjectGanttData } from "@/services/index";
 import styles from "./index.less";
 import { useMemo } from "react";
 
-// interface Props {
-//   componentProps?: string[];
-// }
+interface Props {
+  componentProps?: string[];
+  areaId?: string
+  areaLevel?: string
+}
 
-const ProjectProgress:React.FC = () => {
-
-  const { data: requestData } = useRequest(() => getProjectGanttData({}));
+const ProjectProgress:React.FC<Props> = (props) => {
+  const {areaId, areaLevel} = props;
+  const { data: requestData } = useRequest(() => getProjectGanttData({ areaCode: areaId, areaType: areaLevel }));
   
   const handleRequestData = useMemo(() => {
     if(requestData) {

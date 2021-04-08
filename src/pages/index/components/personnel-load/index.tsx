@@ -11,11 +11,13 @@ import { getBurdens } from "@/services/index";
 
 interface Props {
   componentProps?: string[]
+  areaId?: string
+  areaLevel?: string
 }
 
 const PersonnelLoad:React.FC<Props> = (props) => {
 
-    const { componentProps = ["person", "department", "company"] } = props;
+    const { componentProps = ["person", "department", "company"], areaId, areaLevel  } = props;
     const [activeKey, setActiveKey] = useState<string>("person");
 
     const tabData = [
@@ -63,7 +65,7 @@ const PersonnelLoad:React.FC<Props> = (props) => {
       return tabData[0].title;
     }, [activeKey])
 
-    const {data: burdensData} = useRequest(() => getBurdens(type),{
+    const {data: burdensData} = useRequest(() => getBurdens({type: type!,areaCode: areaId,areaType: areaLevel}),{
       ready: !!type,
       refreshDeps: [type]
     })

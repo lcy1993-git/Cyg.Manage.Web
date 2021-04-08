@@ -16,4 +16,4 @@ const IndexToDoComponent:React.FC<IndexToDoComponentProps> = (props) => {
     )
 }
 
-export default IndexToDoComponent
+export default IndexToDoComponent;
