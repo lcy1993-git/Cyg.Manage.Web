@@ -2,24 +2,24 @@ import React, { useMemo } from "react"
 import { useRequest } from "ahooks"
 import barChartsOptions from '../../utils/barChartsOption';
 import BarChart from "@/components/bar-chart";
-import { getProjectBuliding } from "@/services/index"
+import { getProjectBuliding, AreaInfo, Type } from "@/services/index"
 import uuid from "node-uuid"
 import AnnularFighure from "@/components/annular-fighure"
 import styles from "./index.less"
 
-interface IProps {
-    type: "bar" | "pie"
-    areaId?: string
-    areaLevel?: string
+interface Props {
+  componentProps?: string[];
+  currentAreaInfo: AreaInfo;
+  type: Type
 }
 
 const chartColor = [
     "#2AFE97", "#FDFA88", "#21CEBE", "#4DA944"
 ];
 
-const ProjectClassify: React.FC<IProps> = ({ type = "pie",areaId, areaLevel}) => {
-    const { data: projectBuilding } = useRequest(() => getProjectBuliding({areaCode: areaId,areaType: areaLevel}), {
-        refreshDeps: [areaId],
+const ProjectClassify: React.FC<Props> = ({ type = "pie", currentAreaInfo}) => {
+    const { data: projectBuilding } = useRequest(() => getProjectBuliding({areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
+        refreshDeps: [currentAreaInfo],
         pollingWhenHidden: false
     })
 

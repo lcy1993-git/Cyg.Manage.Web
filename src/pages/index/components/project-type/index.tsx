@@ -8,20 +8,20 @@ import ProjectCategory from "../project-category";
 import ProjectClassify from "../project-classify";
 import ProjectLevel from "../project-level";
 import ProjectStage from "../project-stage";
+import { AreaInfo, Type } from '@/services/index';
 const { Option } = Select;
 
 import styles from "./index.less";
 
 interface Props {
-    areaId?: string
-    areaLevel?: string
-    componentProps?: string[]
+  componentProps?: string[];
+  currentAreaInfo: AreaInfo;
 }
 
 const ProjectType: React.FC<Props> = (props) => {
-    const { componentProps = ["buildType", "classify", "category", "stage", "level"],areaId,areaLevel } = props;
+    const { componentProps = ["buildType", "classify", "category", "stage", "level"], currentAreaInfo} = props;
     const [activeKey, setActiveKey] = useState<string>();
-    const [typeChart, setTypeChart] = useState<"pie" | "bar">("pie");
+    const [typeChart, setTypeChart] = useState<Type>("pie");
 
     const tabData = [
         {
@@ -77,23 +77,23 @@ const ProjectType: React.FC<Props> = (props) => {
                 <div className={styles.projectTypeChart}>
                     {
                         activeKey === "buildType" &&
-                        <ProjectBuilding areaId={areaId} areaLevel={areaLevel} type={typeChart} />
+                        <ProjectBuilding currentAreaInfo={currentAreaInfo} type={typeChart} />
                     }
                     {
                         activeKey === "classify" &&
-                        <ProjectClassify areaId={areaId} areaLevel={areaLevel} type={typeChart} />
+                        <ProjectClassify currentAreaInfo={currentAreaInfo} type={typeChart} />
                     }
                     {
                         activeKey === "category" &&
-                        <ProjectCategory areaId={areaId} areaLevel={areaLevel} type={typeChart} />
+                        <ProjectCategory currentAreaInfo={currentAreaInfo} type={typeChart} />
                     }
                     {
                         activeKey === "stage" &&
-                        <ProjectStage areaId={areaId} areaLevel={areaLevel} type={typeChart} />
+                        <ProjectStage currentAreaInfo={currentAreaInfo} type={typeChart} />
                     }
                     {
                         activeKey === "level" &&
-                        <ProjectLevel areaId={areaId} areaLevel={areaLevel} type={typeChart} />
+                        <ProjectLevel currentAreaInfo={currentAreaInfo} type={typeChart} />
                     }
                 </div>
             </div>

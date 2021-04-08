@@ -1,12 +1,12 @@
-import { getToDoStatistics } from "@/services/index"
+import { getToDoStatistics, AreaInfo } from "@/services/index"
 import { useRequest } from "ahooks"
 import React from "react"
 import ChartBox from "../chart-box"
 import ToDoItem from "../to-do-item"
 
 interface ToDoProps { 
-    componentProps?: string[]
-    currentAreaInfo: any
+    componentProps?: string[];
+    currentAreaInfo: AreaInfo;
 }
 
 const ToDo: React.FC<ToDoProps> = (props) => {

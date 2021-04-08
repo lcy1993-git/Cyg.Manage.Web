@@ -9,19 +9,18 @@ const { Option } = Select;
 
 import styles from './index.less';
 import { useRequest } from 'ahooks';
-import { getConsigns } from '@/services/index';
+import { getConsigns, AreaInfo } from '@/services/index';
 import { useMemo } from 'react';
 
 const { RangePicker } = DatePicker;
 
 interface DeliveyManageProps {
   componentProps?: string[]
-  areaId?: string
-  areaLevel?: string
+  currentAreaInfo: AreaInfo;
 }
 
 const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
-  const { componentProps = ["person", "department", "company"],areaId, areaLevel } = props;
+  const { componentProps = ["person", "department", "company"], currentAreaInfo } = props;
 
   const [activeKey, setActiveKey] = useState<string>();
 
@@ -59,9 +58,9 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
     return undefined;
   }, [activeKey]);
 
-  const { data: consignsData } = useRequest(() => getConsigns({type: type!,areaCode: areaId,areaType: areaLevel}), {
+  const { data: consignsData } = useRequest(() => getConsigns({type: type!,areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
     ready: !!type,
-    refreshDeps: [type, areaId],
+    refreshDeps: [type, currentAreaInfo],
   });
 
   const option = useMemo(() => {

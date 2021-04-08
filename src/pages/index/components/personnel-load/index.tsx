@@ -7,17 +7,16 @@ import styles from "./index.less"
 import { useState } from "react";
 import { useMemo } from "react";
 import { useRequest } from "ahooks";
-import { getBurdens } from "@/services/index";
+import { getBurdens, AreaInfo } from "@/services/index";
 
 interface Props {
   componentProps?: string[]
-  areaId?: string
-  areaLevel?: string
+  currentAreaInfo: AreaInfo;
 }
 
 const PersonnelLoad:React.FC<Props> = (props) => {
 
-    const { componentProps = ["person", "department", "company"], areaId, areaLevel  } = props;
+    const { componentProps = ["person", "department", "company"], currentAreaInfo } = props;
     const [activeKey, setActiveKey] = useState<string>("person");
 
     const tabData = [
@@ -65,9 +64,9 @@ const PersonnelLoad:React.FC<Props> = (props) => {
       return tabData[0].title;
     }, [activeKey])
 
-    const {data: burdensData} = useRequest(() => getBurdens({type: type!,areaCode: areaId,areaType: areaLevel}),{
+    const {data: burdensData} = useRequest(() => getBurdens({type: type!,areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}),{
       ready: !!type,
-      refreshDeps: [type, areaId]
+      refreshDeps: [currentAreaInfo]
     })
 
     const option = useMemo(() => {
