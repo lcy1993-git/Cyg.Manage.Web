@@ -11,7 +11,7 @@ const CockpitProgressComponent: React.FC<CockpitProgressComponentProps> = (props
 
   return (
     <>
-      <ProgressComponent areaInfo={currentAreaInfo} {...props} />
+      <ProgressComponent currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

@@ -11,7 +11,7 @@ const CockpitTodoComponent: React.FC<CockpitConfigTodoComponentProps> = (props) 
 
   return (
     <>
-      <TodoComponent areaInfo={currentAreaInfo} {...props} />
+      <TodoComponent currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

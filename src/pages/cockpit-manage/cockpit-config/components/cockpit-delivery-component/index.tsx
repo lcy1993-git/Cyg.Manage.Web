@@ -11,7 +11,7 @@ const CockpitDeliveryComponent: React.FC<CockpitConfigDeliveryComponentProps> = 
 
   return (
     <>
-      <DeliveryManage areaInfo={currentAreaInfo} {...props} />
+      <DeliveryManage currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

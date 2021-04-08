@@ -11,7 +11,7 @@ const CockpitPersonnelLoadComponent: React.FC<CockpitPersonnelLoadComponentProps
 
   return (
     <>
-      <PersonnelLoadComponent areaInfo={currentAreaInfo} {...props} />
+      <PersonnelLoadComponent currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

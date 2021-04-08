@@ -11,7 +11,7 @@ const CockpitProjectTypeComponent: React.FC<CockpitProjectTypeComponentProps> = 
 
   return (
     <>
-      <ProjectTypeComponent areaInfo={currentAreaInfo} {...props} />
+      <ProjectTypeComponent currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };

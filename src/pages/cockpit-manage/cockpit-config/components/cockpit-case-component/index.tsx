@@ -11,7 +11,7 @@ const CockpitCaseComponent: React.FC<CockpitConfigCaseComponentProps> = (props) 
 
   return (
     <>
-      <CaseComponent areaInfo={currentAreaInfo} {...props} />
+      <CaseComponent currentAreaInfo={currentAreaInfo} {...props} />
     </>
   );
 };
