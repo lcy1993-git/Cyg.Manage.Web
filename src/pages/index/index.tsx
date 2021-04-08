@@ -67,8 +67,8 @@ const getComponentByType = (type: string, componentProps: any) => {
 }
 
 const Index: React.FC = () => {
-    const [currentAreaId, setCurrentAreaId] = useState<string>();
-    const [currentAreaLevel, setCurrentAreaLevel] = useState<"1" | "2" | "3">("1");
+    // const [currentAreaId, setCurrentAreaId] = useState<string>();
+    // const [currentAreaLevel, setCurrentAreaLevel] = useState<"1" | "2" | "3">("1");
 
     const [currentAreaInfo, setCurrentAreaInfo] = useState({
         areaId: "",
