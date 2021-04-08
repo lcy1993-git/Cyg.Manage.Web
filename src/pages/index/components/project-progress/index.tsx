@@ -17,7 +17,7 @@ const ProjectProgress:React.FC<Props> = (props) => {
   
   const handleRequestData = useMemo(() => {
     if(requestData) {
-      return requestData.items.map((item: any) => item.projects).flat()
+      return requestData.items?.map((item: any) => item.projects).flat()
     }
     return []
   }, [JSON.stringify(requestData)])
