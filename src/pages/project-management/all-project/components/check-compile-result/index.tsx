@@ -31,6 +31,8 @@ const CompileResultTab: React.FC<DesignResultProps> = (props) => {
     setTabEvent('compile');
   };
 
+  
+
   return (
     <div className={styles.treeTableContent}>
       <Spin spinning={loading}>

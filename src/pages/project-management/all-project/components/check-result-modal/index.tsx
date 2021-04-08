@@ -6,6 +6,7 @@ import {
   downloadFileComplie,
   getCompileResultTreeData,
 } from '@/services/project-management/all-project';
+import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useControllableValue, useRequest } from 'ahooks';
 import { Button, Modal, Spin, message, Tabs } from 'antd';
 import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
@@ -53,6 +54,8 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       title: data.name,
       value: data.path,
       key: data.path,
+      // category: data.category,
+      icon: data.category === 2 ? <FileOutlined /> : <FolderOpenOutlined />,
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };
@@ -183,7 +186,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           </div>
         </div>
         <div className={styles.resultTable}>
-          <Tabs className="normalTabs" onTabClick={(key: string) => setCurrentTab(key)} type='card'>
+          <Tabs className="normalTabs" onTabClick={(key: string) => setCurrentTab(key)} type="card">
             <TabPane key="design" tab="设计成果">
               <DesignResultTab
                 mapTreeData={mapTreeData}
