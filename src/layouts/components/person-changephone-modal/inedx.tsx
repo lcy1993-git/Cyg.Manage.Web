@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import { Form, Modal, Input } from 'antd';
+import { Form, Modal, Input, message } from 'antd';
 import ImageIcon from '@/components/image-icon';
 import { loginRules } from '@/pages/login/components/login-form/rule';
 import { phoneNumberRule } from '@/utils/common-rule';
 import VerificationCode from '@/components/verification-code';
-import { changeUserPhone, bindUserPhone } from '@/services/user/user-info';
+import { changeUserPhone } from '@/services/user/user-info';
 import styles from './index.less';
 
 interface ChangedValues {
@@ -59,9 +59,11 @@ const ChangePhoneModal = (props: Props) => {
       if(type === 1){
         changeUserPhone(params)
       }else if(type === 0) {
-        bindUserPhone(params)
+        // bind
+        changeUserPhone(params)
       }
     }).then(() => {
+      message.success("操作成功");
       closeChangePhoneModal();
       reload();
     })

@@ -7,7 +7,6 @@ import React, { Dispatch, SetStateAction, useMemo, useState } from "react"
 import styles from "./index.less"
 import { useEffect } from "react";
 import ChangePhoneModal from "../person-changephone-modal/inedx";
-import uuid from 'node-uuid';
 
 interface PersonInfoModalProps {
     visible: boolean
@@ -28,7 +27,6 @@ interface typeObject {
 const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
     const [state, setState] = useControllableValue(props, { valuePropName: "visible" });
     const [changePhoneVisibel, setChangePhoneVisibel] = useState<boolean>(false);
-    const [reloadKey, setReloadKey] = useState(uuid.v1());
 
     const { data: userInfo, run: getUserInfoEvent } = useRequest(() => getUserInfo(), {
         manual: true,
@@ -88,7 +86,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
               <ChangePhoneModal
                 visble={changePhoneVisibel}
                 closeChangePhoneModal={closeChangePhoneModal}
-                reload={()=>setReloadKey(uuid.v1())}
+                reload={getUserInfoEvent}
                 type={typeObject.type}
                 typeTitle={typeObject.title}
               /> }
@@ -113,7 +111,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
                 </div>
                 <div className={styles.personInfoItem}>
                     <div className={styles.personInfoItemLabel}>手机</div>
-                    <div key={reloadKey} className={styles.personInfoItemContent}>
+                    <div className={styles.personInfoItemContent}>
                         {userInfo?.phone}
                     </div>
                     <div
