@@ -111,11 +111,11 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
 
   const menuElement = flattenData.map((item) => {
     return (
-      <Tooltip placement="right" title={item.name} key={item.id}>
-        <div className={styles.ganttComponentMenuItem}>
-          {item.name}
-        </div>
-      </Tooltip>
+      <div className={styles.ganttComponentMenuItem} key={item.id}>
+        <Tooltip placement="topLeft" title={item.name}>
+          <span>{item.name}</span>
+        </Tooltip>
+      </div>
     );
   })
 
@@ -146,17 +146,32 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
   })
 
   const menuScrollEvent = (e: any) => {
-    if(contentRef && contentRef.current) {
+    if (contentRef && contentRef.current) {
       //@ts-ignore
       contentRef.current.scrollTop(e.scrollTop);
     }
   }
 
   const ganttContentScrollEvent = (e: any) => {
-    if(menuRef && menuRef.current) {
+    if (menuRef && menuRef.current) {
       //@ts-ignore
       menuRef.current.scrollTop(e.scrollTop);
     }
+  }
+
+  const scrollBarRenderView = (params: any) => {
+    const {style,...rest} = params;
+    const viewStyle = {
+      backgroundColor: `#4DA944`,
+      borderRadius: "6px",
+      cursor: "pointer"
+    };
+    return (
+      <div
+        className="box"
+        style={{ ...params.style, ...viewStyle }}
+        {...rest} />
+    );
   }
 
   return (
@@ -178,7 +193,7 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
           </div>
           <div className={styles.ganttComponentMenuContent}>
             <ScrollView
-              onUpdate={menuScrollEvent} ref={menuRef}>
+              onUpdate={menuScrollEvent} renderThumbVertical={scrollBarRenderView} renderThumbHorizontal={scrollBarRenderView} ref={menuRef}>
               {
                 menuElement
               }
@@ -186,13 +201,13 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
           </div>
         </div>
         <div className={styles.ganttComponentViewRight}>
-          <ScrollView autoHide>
+          <ScrollView renderThumbHorizontal={scrollBarRenderView} renderThumbVertical={scrollBarRenderView}>
             <div className={styles.ganttComponentCalendarContent} style={{ width: `${timeData.days * 30}px` }}>
               {calendarElement}
             </div>
 
             <div className={styles.ganttComponentGriddingContent} style={{ width: `${timeData.days * 30}px` }}>
-              <ScrollView onUpdate={ganttContentScrollEvent} ref={contentRef}>
+              <ScrollView onUpdate={ganttContentScrollEvent} renderThumbVertical={scrollBarRenderView} renderThumbHorizontal={scrollBarRenderView} ref={contentRef}>
                 {ganttGriddingBackground}
                 {
                   ganttBar
