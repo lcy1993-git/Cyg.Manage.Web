@@ -5,7 +5,7 @@ import Loadable from 'react-loadable';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
 import bgSrc from '@/assets/image/index/bg.png';
 import CommonTitle from '@/components/common-title';
-import { Button, message } from 'antd';
+import { Button, message, Spin } from 'antd';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -125,7 +125,6 @@ const CockpitManage: React.FC = () => {
   const [editOtherStatisticVisible, setEditOtherStatisticVisible] = useState<boolean>(false);
   const [editEngineerProcessVisible, setEditEngineerProcessVisible] = useState<boolean>(false);
 
-  const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
   const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
 
@@ -136,7 +135,7 @@ const CockpitManage: React.FC = () => {
 
   const [currentRecord, setCurrentRecord] = useState<any>({});
 
-  const { data } = useRequest(() => getChartConfig(), {
+  const { data, loading } = useRequest(() => getChartConfig(), {
     onSuccess: () => {
       if (data) {
         const hasSaveConfig = JSON.parse(data);
@@ -301,40 +300,6 @@ const CockpitManage: React.FC = () => {
     setConfigArray([...copyConfigArray, ...componentProps]);
   };
 
-  // 导出配置数据
-  const exportHomeStatisticEvent = async () => {
-    try {
-      setRequestExportLoading(true);
-      const res = await exportHomeStatisticData({
-        areaCode: '',
-        areaType: 1,
-        ganttChartLimit: 0,
-      });
-      let blob = new Blob([res], {
-        type: 'application/vnd.ms-excel;charset=utf-8',
-      });
-      let finalyFileName = `驾驶舱配置表.xlsx`;
-      // for IE
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
-      } else {
-        // for Non-IE
-        let objectUrl = URL.createObjectURL(blob);
-        let link = document.createElement('a');
-        link.href = objectUrl;
-        link.setAttribute('download', finalyFileName);
-        document.body.appendChild(link);
-        link.click();
-        window.URL.revokeObjectURL(link.href);
-      }
-      message.success('导出成功');
-    } catch (msg) {
-      console.error(msg);
-    } finally {
-      setRequestExportLoading(false);
-    }
-  };
-
   const saveConfig = async () => {
     try {
       if (configArray && configArray.length === 0) {
@@ -469,7 +434,7 @@ const CockpitManage: React.FC = () => {
               style={{ backgroundImage: `url(${bgSrc})` }}
               ref={configDivRef}
             >
-              {configArray.length > 0 && (
+              {!loading && configArray.length > 0 && (
                 <ResponsiveReactGridLayout
                   breakpoints={{ lg: 120 }}
                   cols={{ lg: 12 }}
@@ -479,7 +444,7 @@ const CockpitManage: React.FC = () => {
                   {configComponentElement}
                 </ResponsiveReactGridLayout>
               )}
-              {configArray.length === 0 && (
+              {!loading && configArray.length === 0 && (
                 <div className={styles.noConfigTip}>
                   <EmptyTip
                     description="当前暂无配置，请点击左侧添加按钮进行配置"
@@ -487,6 +452,12 @@ const CockpitManage: React.FC = () => {
                   />
                 </div>
               )}
+              {
+                loading &&
+                <div style={{width:"100%", height: "100%"}}>
+                  <Spin spinning={loading}></Spin>
+                </div>
+              }
             </div>
           </div>
         </div>
