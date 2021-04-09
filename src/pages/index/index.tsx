@@ -76,21 +76,28 @@ const Index: React.FC = () => {
         areaLevel: "1"
     })
 
-    const [configWindowHeight, setConfigWindowHeight] = useState<number>(828);
     const [configArray, setConfigArray] = useState<any[]>([])
 
     const { data, loading } = useRequest(() => getChartConfig(), {
         onSuccess: () => {
+            const windowHeight = window.innerHeight - 90;
             if (data) {
                 const hasSaveConfig = JSON.parse(data);
                 if (hasSaveConfig.config && hasSaveConfig.config.length > 0) {
-                    setConfigArray(hasSaveConfig.config)
-                }
-                if (hasSaveConfig.configWindowHeight) {
-                    setConfigWindowHeight(hasSaveConfig.configWindowHeight)
+                    const windowPercent = divide(windowHeight,hasSaveConfig.configWindowHeight)
+                    const thisConfigArray = hasSaveConfig.config.map((item: any) => {
+                        const actualHeight = windowPercent ? multiply(item.h,windowPercent) : item.h;
+                        const actualY = windowPercent ? multiply(item.y,windowPercent) : item.y;
+                        return {
+                            ...item,
+                            y: actualY,
+                            h: actualHeight
+                        }
+                    })
+                    setConfigArray(thisConfigArray)
                 }
             } else {
-                const thisBoxHeight = configWindowHeight - 155;
+                const thisBoxHeight = windowHeight - 75;
                 const totalHeight = divide(thisBoxHeight, 18);
                 setConfigArray([
                     { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
@@ -103,12 +110,12 @@ const Index: React.FC = () => {
                         key: uuid.v1(),
                     },
                     { name: 'projectType', x: 9, y: 0, w: 3, h: 11, key: uuid.v1() },
-                    { name: 'deliveryManage', x: 0, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
-                    { name: 'personLoad', x: 9, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
+                    { name: 'deliveryManage', x: 0, y: 11, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
+                    { name: 'personLoad', x: 9, y: 11, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
                     {
                         name: 'projectSchedule',
                         x: 0,
-                        y: divide(totalHeight - 11, 2) + 10,
+                        y: divide(totalHeight - 11, 2) + 11,
                         w: 6,
                         h: divide(totalHeight - 11, 2),
                         key: uuid.v1(),
@@ -116,7 +123,7 @@ const Index: React.FC = () => {
                     {
                         name: 'projectProgress',
                         x: 6,
-                        y: divide(totalHeight - 11, 2) + 10,
+                        y: divide(totalHeight - 11, 2) + 11,
                         w: 6,
                         h: divide(totalHeight - 11, 2),
                         key: uuid.v1(),
@@ -130,19 +137,10 @@ const Index: React.FC = () => {
     const size = useSize(divRef);
 
 
-    const windowPercent = useMemo(() => {
-        const windowHeight = window.innerHeight;
-        if (windowHeight && configWindowHeight) {
-            return (windowHeight - 85) / configWindowHeight
-        }
-        return undefined
-    }, [JSON.stringify(size), configWindowHeight])
-
     const configComponentElement = configArray?.map((item: any) => {
-        const actualHeight = windowPercent ? multiply(item.h,windowPercent) : item.h;
-        const actualY = windowPercent ? multiply(item.y,windowPercent) : item.y;
+
         return (
-            <div key={item.key} data-grid={{ x: item.x, y: actualY, w: item.w, h: actualHeight, static: true }}>
+            <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h, static: true }}>
                 {getComponentByType(item.name, item.componentProps)}
             </div>
         );
