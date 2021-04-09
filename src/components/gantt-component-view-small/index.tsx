@@ -112,9 +112,9 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
   const menuElement = flattenData.map((item) => {
     return (
       <Tooltip placement="right" title={item.name} key={item.id}>
-        <span className={styles.ganttComponentMenuItem}>
+        <div className={styles.ganttComponentMenuItem}>
           {item.name}
-        </span>
+        </div>
       </Tooltip>
     );
   })
