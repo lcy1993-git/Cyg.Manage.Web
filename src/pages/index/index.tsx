@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import styles from "./index.less";
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import bgSrc from "@/assets/image/index/bg.png";
-import { useRequest, useSize } from "ahooks";
+import { useRequest } from "ahooks";
 import { getChartConfig } from "@/services/operation-config/cockpit";
-import { useMemo } from "react";
 import { useRef } from "react";
 
 import 'react-grid-layout/css/styles.css';
@@ -19,8 +18,6 @@ import DeliveryManage from "@/pages/index/components/index-delivery-manage-compo
 import ProjectSituation from "@/pages/index/components/index-project-situation-component";
 import ProjectType from "@/pages/index/components/index-project-type-component";
 import ProjectProgress from "@/pages/index/components/index-project-progress-component";
-// import CostInformation from "./components/cost-information";
-// import ProjectStatus from "./components/project-status";
 
 import { IndexContext } from "./context";
 import { Spin } from "antd";
@@ -134,8 +131,6 @@ const Index: React.FC = () => {
     })
 
     const divRef = useRef<HTMLDivElement>(null);
-    const size = useSize(divRef);
-
 
     const configComponentElement = configArray?.map((item: any) => {
 
