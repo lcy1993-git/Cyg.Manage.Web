@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { AreaInfo, getMapRegisterData, getMapStatisticsData, MapStatisticsData } from "@/services/index"
-import { useMount, useRequest } from "ahooks";
+import { useMount, useRequest, useSize } from "ahooks";
 
 import styles from "./index.less"
 
@@ -31,6 +31,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
 
     const divRef = useRef<HTMLDivElement>(null);
+
+    const size = useSize(divRef);
+
     let myChart: any = null;
 
     const { run: getMapData } = useRequest(getMapRegisterData, {
@@ -259,6 +262,13 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             window.removeEventListener('resize', resize);
         }
     });
+
+    useEffect(() => {
+        if(size.width || size.height) {
+            const myEvent = new Event("resize");
+            window.dispatchEvent(myEvent)
+        }
+    }, [JSON.stringify(size)])
 
     useMount(() => {
         firstMapInitChartEvent()

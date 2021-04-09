@@ -8,6 +8,8 @@ import ScrollView from 'react-custom-scrollbars'
 import styles from './index.less';
 import { useRef } from 'react';
 
+import lineBg from "@/assets/image/index/line.png"
+
 interface GanttComponentViewProps {
   dayWidth?: number;
   itemHeight?: number;
@@ -119,20 +121,6 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
     );
   })
 
-  const ganttGriddingBackground = flattenData.map((item) => {
-    return (
-      <div className={styles.ganttComponentGriddingLine} key={`${item.id}_line`} style={{ width: `${timeData.days * 30}px` }}>
-        {
-          [...new Array(timeData.days).keys()].map((ite, ind) => {
-            return (
-              <div key={`${item.id}_line_${ind}`} className={styles.ganttComponentGriddingLineItem}></div>
-            )
-          })
-        }
-      </div>
-    )
-  })
-
   const ganttBar = flattenData.map((item: any, index) => {
     const diffDays = moment(item.endTime).diff(item.startTime, "days") + 1;
     const leftDiffDays = moment(item.startTime).diff(timeData.monthStartTime, "days");
@@ -206,9 +194,8 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
               {calendarElement}
             </div>
 
-            <div className={styles.ganttComponentGriddingContent} style={{ width: `${timeData.days * 30}px` }}>
-              <ScrollView onUpdate={ganttContentScrollEvent} renderThumbVertical={scrollBarRenderView} renderThumbHorizontal={scrollBarRenderView} ref={contentRef}>
-                {ganttGriddingBackground}
+            <div className={styles.ganttComponentGriddingContent} style={{ width: `${timeData.days * 30}px`, backgroundImage: `url(${lineBg})`}}>
+              <ScrollView onUpdate={ganttContentScrollEvent} renderThumbVertical={scrollBarRenderView} renderThumbHorizontal={scrollBarRenderView} ref={contentRef}>    
                 {
                   ganttBar
                 }
