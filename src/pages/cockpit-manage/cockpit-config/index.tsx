@@ -441,14 +441,14 @@ const CockpitManage: React.FC = () => {
                 <CommonTitle noPadding={true}>统计图表自定义窗口</CommonTitle>
               </div>
               <div className={styles.cockpitConfigPageTitleRight}>
-                <Button
+                {/* <Button
                   className="mr7"
                   loading={requestExportLoading}
                   onClick={() => exportHomeStatisticEvent()}
                 >
                   <ImportOutlined />
                   导出数据
-                </Button>
+                </Button> */}
                 <Button className="mr7" onClick={initCockpit}>
                   <ReloadOutlined />
                   恢复默认配置

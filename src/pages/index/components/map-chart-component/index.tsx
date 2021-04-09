@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { getMapRegisterData, getMapStatisticsData, MapStatisticsData } from "@/services/index"
+import { AreaInfo, getMapRegisterData, getMapStatisticsData, MapStatisticsData } from "@/services/index"
 import { useMount, useRequest } from "ahooks";
 
 import styles from "./index.less"
@@ -14,26 +14,30 @@ import ChartBox from "../chart-box";
 import ProjectNumberIcon from "@/assets/image/index/project-number.png";
 import { isArray } from "lodash";
 import { useMemo } from "react";
-import { message } from "antd";
+import { Button, message } from "antd";
+import { exportHomeStatisticData } from "@/services/operation-config/cockpit";
 
 interface MapChartComponentProps {
+    currentAreaInfo: AreaInfo
     setCurrentAreaInfo: (areaInfo: any) => void
 }
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
-    const {setCurrentAreaInfo } = props;
+    const { setCurrentAreaInfo,currentAreaInfo } = props;
 
     const [activeCityCode, setActiveCityCode] = useState<string>();
     const [activeAreaCode, setActiveAreaCide] = useState<string>();
 
+    const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
+
     const divRef = useRef<HTMLDivElement>(null);
     let myChart: any = null;
 
-    const { run: getMapData} = useRequest(getMapRegisterData, {
+    const { run: getMapData } = useRequest(getMapRegisterData, {
         manual: true
     });
 
-    const { run: getStatisticData, data: mapStatisticData = []} = useRequest(getMapStatisticsData, {
+    const { run: getStatisticData, data: mapStatisticData = [] } = useRequest(getMapStatisticsData, {
         manual: true
     })
 
@@ -50,7 +54,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                 formatter: function (params: any) {
                     const { name } = params;
                     const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name);
-                    if(nameIndex > -1) {
+                    if (nameIndex > -1) {
                         return `
                             ${name} <br />
                             项目数量: ${getMapStatisticData[nameIndex!].projectQuantity}
@@ -120,11 +124,11 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
 
     const firstMapInitChartEvent = async () => {
         const statisticData = await getStatisticData({ areaCode: "", areaType: "1" })
-        if(statisticData && isArray(statisticData) && statisticData.length === 1) {
+        if (statisticData && isArray(statisticData) && statisticData.length === 1) {
             const provinceStatisticData = await getStatisticData({ areaCode: statisticData[0].areaCode, areaType: "2" })
-            initChart(statisticData[0].areaCode, provinceStatisticData,"2")
+            initChart(statisticData[0].areaCode, provinceStatisticData, "2")
             setActiveCityCode(statisticData[0].areaCode)
-        }else {
+        } else {
             initChart("100000", statisticData, "1")
         }
     }
@@ -142,13 +146,13 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             myChart.off("click");
             myChart.on("click", async (params: any) => {
                 const { name } = params;
-                if(cityCodeObject[name]) {
+                if (cityCodeObject[name]) {
                     const statisticData = await getStatisticData({ areaCode: cityCodeObject[name], areaType: String(parseFloat(currentAreaLevel) + 1) });
-                    initChart(cityCodeObject[name],statisticData,String(parseFloat(currentAreaLevel) + 1))
-                    if(parseFloat(currentAreaLevel!) + 1 === 2) {
+                    initChart(cityCodeObject[name], statisticData, String(parseFloat(currentAreaLevel) + 1))
+                    if (parseFloat(currentAreaLevel!) + 1 === 2) {
                         setActiveCityCode(cityCodeObject[name])
                     }
-                    if(parseFloat(currentAreaLevel!) + 1 === 3) {
+                    if (parseFloat(currentAreaLevel!) + 1 === 3) {
                         setActiveAreaCide(cityCodeObject[name])
                     }
                     setCurrentAreaInfo({
@@ -170,7 +174,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
 
     const provinceClickEvent = async () => {
         const statisticData = await getStatisticData({ areaCode: "", areaType: "1" })
-        initChart("100000",statisticData,"1");
+        initChart("100000", statisticData, "1");
 
         setActiveCityCode("");
         setActiveAreaCide("");
@@ -182,11 +186,11 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     }
 
     const cityClickEvent = async () => {
-        if(!activeCityCode) {
+        if (!activeCityCode) {
             return
         }
         const statisticData = await getStatisticData({ areaCode: activeCityCode, areaType: "2" })
-        initChart(activeCityCode,statisticData,"2");
+        initChart(activeCityCode, statisticData, "2");
         setActiveAreaCide("");
         setCurrentAreaInfo({
             areaId: activeCityCode,
@@ -195,17 +199,51 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     }
 
     const areaClickEvent = async () => {
-        if(!activeAreaCode) {
+        if (!activeAreaCode) {
             return
         }
         const statisticData = await getStatisticData({ areaCode: activeAreaCode, areaType: "2" })
-        initChart(activeAreaCode,statisticData,"2");
+        initChart(activeAreaCode, statisticData, "2");
 
         setCurrentAreaInfo({
             areaId: activeAreaCode,
             areaLevel: "3"
         })
     }
+
+    // 导出配置数据
+    const exportHomeStatisticEvent = async () => {
+        try {
+            setRequestExportLoading(true);
+            const res = await exportHomeStatisticData({
+                areaCode: currentAreaInfo.areaId!,
+                areaType: currentAreaInfo.areaLevel!,
+                ganttChartLimit: 1000,
+            });
+            let blob = new Blob([res], {
+                type: 'application/vnd.ms-excel;charset=utf-8',
+            });
+            let finalyFileName = `首页统计图表.xlsx`;
+            // for IE
+            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
+            } else {
+                // for Non-IE
+                let objectUrl = URL.createObjectURL(blob);
+                let link = document.createElement('a');
+                link.href = objectUrl;
+                link.setAttribute('download', finalyFileName);
+                document.body.appendChild(link);
+                link.click();
+                window.URL.revokeObjectURL(link.href);
+            }
+            message.success('导出成功');
+        } catch (msg) {
+            console.error(msg);
+        } finally {
+            setRequestExportLoading(false);
+        }
+    };
 
     useEffect(() => {
         window.addEventListener('resize', () => {
@@ -232,14 +270,21 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                 <div className={styles.mapChartComponentProjectNumber}>
                     <ChartBox tltleWidthLevel="big" title="当前项目数量" titleAlign="left">
                         <div className={styles.projectTotalNumber}>
-                            <div className={styles.projectTotalNumberIcon}>
-                                <img src={ProjectNumberIcon} />
+                            <div className="flex1 flex">
+                                <div className={styles.projectTotalNumberIcon}>
+                                    <img src={ProjectNumberIcon} />
+                                </div>
+                                <div className={styles.projectTotalNumberShow}>
+                                    {projectTotalNumber}
+                                </div>
+                                <div className={styles.projectTotalNumberUnit}>
+                                    个
+                                </div>
                             </div>
-                            <div className={styles.projectTotalNumberShow}>
-                                {projectTotalNumber}
-                            </div>
-                            <div className={styles.projectTotalNumberUnit}>
-                                个
+                            <div className={styles.exportButton}>
+                                <Button loading={requestExportLoading} type="primary" onClick={exportHomeStatisticEvent}>
+                                    导出
+                                </Button>
                             </div>
                         </div>
                     </ChartBox>

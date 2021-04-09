@@ -7,11 +7,11 @@ interface IndexMapComponentProps {
 }
 
 const IndexMapComponent:React.FC<IndexMapComponentProps> = (props) => {
-    const {setCurrentAreaInfo} = useContext(IndexContext);
+    const {currentAreaInfo,setCurrentAreaInfo} = useContext(IndexContext);
 
     return (
         <>
-            <MapChartComponent setCurrentAreaInfo={setCurrentAreaInfo} {...props} />
+            <MapChartComponent currentAreaInfo={currentAreaInfo} setCurrentAreaInfo={setCurrentAreaInfo} {...props} />
         </>
     )
 }

@@ -5,7 +5,7 @@ import request from '@/utils/request';
 
 interface exportHomeSetData {
   areaCode: string;
-  areaType: number;
+  areaType: string;
   ganttChartLimit: number;
 }
 export const exportHomeStatisticData = (params: exportHomeSetData) => {
