@@ -109,7 +109,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
       dataIndex: 'materialCode',
       index: 'materialCode',
       title: '物料编号',
-      width: 180,
+      width: 150,
     },
     {
       dataIndex: 'materialName',
@@ -127,7 +127,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
       dataIndex: 'area',
       index: 'area',
       title: '区域',
-      width: 80,
+      width: 100,
     },
     {
       dataIndex: 'demandCompany',
@@ -146,15 +146,18 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
   return (
     <>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
+        centered
         title="添加-映射"
         footer=""
         onCancel={() => setState(false)}
         visible={state as boolean}
         width="72%"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        bodyStyle={{ height: '738px', overflowY: 'auto' }}
       >
         <GeneralTable
+          size="middle"
+          scroll={{ y: 480 }}
           ref={inventoryTableRef}
           getSelectData={(data) => setInventorySelectArray(data)}
           buttonRightContentSlot={inventoryTableAddButton}
