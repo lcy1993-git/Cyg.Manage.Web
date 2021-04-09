@@ -6,10 +6,12 @@ interface DataSource {
 }
 /**
  * @param data 请求的数据
+ * @param length Y轴一行显示文字的长度
  */
-export default (data: DataSource[]) => {
+export default (data: DataSource[], length = 4) => {
   const dataArray = data?.map((item: DataSource) => item.key);
   const valueArray = data?.map((item: DataSource) => item.value);
+
   return {
     grid: {
         left: 60,
@@ -63,7 +65,7 @@ export default (data: DataSource[]) => {
                 if(params.length > 12) {
                     params = params.substring(0,9) + "..."
                 }
-                let provideNumber = 4;  //一行显示几个字
+                let provideNumber = length;  //一行显示几个字
                 let rowNumber = Math.ceil(paramsNameNumber / provideNumber);
                 if (paramsNameNumber > provideNumber) {
                     for (let p = 0; p < rowNumber; p++) {
