@@ -301,7 +301,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
   return (
     <>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="编辑映射"
         visible={state as boolean}
         bodyStyle={{
@@ -328,6 +328,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
             {resourceData?.resourceLibId && (
               <GeneralTable
                 scroll={{ y: 547 }}
+                size="middle"
                 ref={resourceTableRef}
                 defaultPageSize={20}
                 getSelectData={resourceTableChangeEvent}
@@ -340,7 +341,6 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
                 url="/Material/GetPageList"
                 requestSource="resource"
                 tableTitle="资源库列表"
-                // components={tableComponents}
               />
             )}
           </div>
@@ -383,6 +383,8 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
             <div className={styles.currentMapTableContent}>
               <Spin spinning={loading}>
                 <Table
+                  scroll={{ y: 547 }}
+                  size="middle"
                   locale={{
                     emptyText: <EmptyTip className="pt20 pb20" />,
                   }}

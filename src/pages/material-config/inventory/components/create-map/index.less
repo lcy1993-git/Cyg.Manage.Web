@@ -43,6 +43,16 @@
     .currentMapTableContent {
       height: calc(100% - 154px);
       overflow-y: auto;
+      width:980px;
+      :global {
+        .ant-empty {
+          height:522px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+      }
     }
   }
 
@@ -80,15 +90,7 @@
               padding: 7px 4px 10px 7px;
               color: @gray-color;
               font-size: 13px;
-              :global {
-                .ant-empty {
-                  height:538px;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                }
-              }
+              
             }
           }
 

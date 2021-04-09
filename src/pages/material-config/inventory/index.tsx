@@ -200,13 +200,13 @@ const Inventroy: React.FC = () => {
       dataIndex: 'demandCompany',
       index: 'demandCompany',
       title: '需求公司',
-      width: 560,
+      width: 480,
     },
     {
       dataIndex: 'targetNumber',
       index: 'targetNumber',
       title: '目标数量',
-      width: 160,
+      width: 120,
     },
     {
       dataIndex: 'measurementUnit',
@@ -218,7 +218,7 @@ const Inventroy: React.FC = () => {
       dataIndex: 'taxCode',
       index: 'taxCode',
       title: '税码',
-      width: 160,
+      width: 120,
     },
     {
       dataIndex: 'documentDateText',
@@ -362,6 +362,7 @@ const Inventroy: React.FC = () => {
       <div className={styles.InvTable}>
         <GeneralTable
           scroll={{ x: 3500, y: 577 }}
+          size="middle"
           ref={tableRef}
           titleSlot={titleSlotElement}
           buttonLeftContentSlot={searchComponent}
@@ -382,7 +383,7 @@ const Inventroy: React.FC = () => {
 
       {checkMappingVisible && (
         <Modal
-        maskClosable={false}
+          maskClosable={false}
           footer=""
           title="查看映射关系"
           width="95%"
