@@ -127,7 +127,12 @@ const GanttComponentView: React.FC<GanttComponentViewProps> = (props) => {
     return (
       <div className={styles.ganttBarItem} key={`${item.id}_bar`} style={{ width: `${diffDays * 30}px`, left: `${leftDiffDays * 30}px`, top: `${(index) * 25}px` }}>
         <div className={styles.ganttBarItemPercent} style={{ width: `${item.progressValue}%`, backgroundColor: `${ganttBgColorObject[item.status]}` }}>
-          <span>{item.progressValue}%</span>
+          {
+            item.progressValue === 0 ?
+            <span className={styles.greenColor}>{item.progressValue}%</span> :
+            <span>{item.progressValue}%</span>
+          }
+          
         </div>
       </div>
     )
