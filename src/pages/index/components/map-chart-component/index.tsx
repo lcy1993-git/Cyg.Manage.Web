@@ -46,6 +46,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             return sum + item.projectQuantity;
         }, 0)
     }, [JSON.stringify(mapStatisticData)])
+    
 
     const getMapOption = (mapName: string, getMapStatisticData: MapStatisticsData[]) => {
         return {
@@ -65,7 +66,8 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                         项目数量: 0
                     `
                 }
-            },
+            },            
+
             series: [{
                 type: 'map',
                 map: mapName,

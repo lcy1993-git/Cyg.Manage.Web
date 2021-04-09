@@ -8,11 +8,11 @@ interface CompanyFileForm {
   type?: 'add' | 'edit';
   securityKey?: string;
   groupData?: any;
+  editingName?: string;
 }
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
-  const { type = 'edit', groupData } = props;
-  console.log(groupData.items);
+  const { type = 'edit', groupData, editingName } = props;
 
   const groupName = groupData.items?.map((item: any) => {
     return item.name;
@@ -29,7 +29,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
           { required: true, message: '文件名不能为空' },
           () => ({
             validator(_, value) {
-              if (groupName.includes(value)) {
+              if (groupName.includes(value) && editingName != value) {
                 return Promise.reject('文件名已存在');
               }
               return Promise.resolve();

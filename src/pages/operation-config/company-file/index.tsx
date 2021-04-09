@@ -41,6 +41,7 @@ const CompanyFile: React.FC = () => {
   const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false);
   const [fileGroupId, setFileGroupId] = useState<string>();
   const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
+  const [editingFileName, setEditingFileName] = useState<string>('');
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -98,7 +99,6 @@ const CompanyFile: React.FC = () => {
     }
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
-
     await deleteCompanyFileItem(editDataId);
     refresh();
     setTableSelectRow([]);
@@ -188,6 +188,7 @@ const CompanyFile: React.FC = () => {
     }
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
+    setEditingFileName(editData.name);
 
     setEditFormVisible(true);
     const CompanyFileData = await run(editDataId);
@@ -416,7 +417,7 @@ const CompanyFile: React.FC = () => {
         </div>
       </div>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="添加-文件"
         width="720px"
         visible={addFormVisible}
@@ -433,7 +434,7 @@ const CompanyFile: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="编辑-文件"
         width="680px"
         visible={editFormVisible}
@@ -445,12 +446,12 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm groupData={tableData} />
+            <CompanyFileForm groupData={tableData} editingName={editingFileName} />
           </Spin>
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="成果默认参数"
         width="780px"
         visible={defaultParamsVisible}
@@ -468,7 +469,7 @@ const CompanyFile: React.FC = () => {
       </Modal>
 
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="新建模板文件组"
         width="820px"
         visible={fileGroupModalVisible}
