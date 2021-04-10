@@ -1,8 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
-import Loadable from 'react-loadable';
-import Loading from '@ant-design/pro-layout/es/PageLoading';
 import bgSrc from '@/assets/image/index/bg.png';
 import CommonTitle from '@/components/common-title';
 import { Button, message, Spin } from 'antd';
@@ -16,7 +14,6 @@ import { useRequest, useSize } from 'ahooks';
 import { divide, multiply, subtract } from 'lodash';
 import {
   DeleteOutlined,
-  ImportOutlined,
   PlusOutlined,
   ReloadOutlined,
   SaveOutlined,
@@ -29,13 +26,10 @@ import AddEngineerTypeModal from './components/add-engineer-type-modal';
 import AddDeliveryStatisticModal from './components/add-delivery-statistic-modal';
 import AddOtherStatisticModal from './components/add-other-statistic-modal';
 import {
-  exportHomeStatisticData,
   getChartConfig,
   saveChartConfig,
 } from '@/services/operation-config/cockpit';
 import EmptyTip from '@/components/empty-tip';
-
-import { mapInfo } from '../../../../public/config/request';
 
 import ConfigWindow from './components/config-window';
 import EditEngineerAndMapModal from './components/add-engineer-project-modal/edit-map-form';
@@ -406,14 +400,6 @@ const CockpitManage: React.FC = () => {
                 <CommonTitle noPadding={true}>统计图表自定义窗口</CommonTitle>
               </div>
               <div className={styles.cockpitConfigPageTitleRight}>
-                {/* <Button
-                  className="mr7"
-                  loading={requestExportLoading}
-                  onClick={() => exportHomeStatisticEvent()}
-                >
-                  <ImportOutlined />
-                  导出数据
-                </Button> */}
                 <Button className="mr7" onClick={initCockpit}>
                   <ReloadOutlined />
                   恢复默认配置

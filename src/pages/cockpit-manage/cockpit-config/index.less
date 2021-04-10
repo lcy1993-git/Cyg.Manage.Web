@@ -6,7 +6,8 @@
 
   .cockpitConfigPageContent {
     flex: 1;
-    overflow: hidden;
+    min-height: 100%;
+    //overflow: hidden;
     background-color: @white-color;
     .cockpitConfigPageTitle {
       display: flex;
@@ -26,8 +27,8 @@
 
     .cockpitConfigPageContent {
       width: 100%;
-      height: calc(100% - 52px);
-      min-height: 828px;
+      min-height: calc(100% - 52px);
+      overflow: auto;
       background-repeat: no-repeat;
       background-position: left top;
       background-size: cover;
