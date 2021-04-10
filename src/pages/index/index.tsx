@@ -77,7 +77,7 @@ const Index: React.FC = () => {
 
     const { data, loading } = useRequest(() => getChartConfig(), {
         onSuccess: () => {
-            const windowHeight = window.innerHeight - 90;
+            const windowHeight = (window.innerHeight - 90) > 828 ? window.innerHeight - 90 : 828;
             if (data) {
                 const hasSaveConfig = JSON.parse(data);
                 if (hasSaveConfig.config && hasSaveConfig.config.length > 0) {

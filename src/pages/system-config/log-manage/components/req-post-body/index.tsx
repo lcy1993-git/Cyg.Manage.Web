@@ -9,7 +9,7 @@ const ReqPostBody: React.FC<reqPostBodyProps> = (props) => {
   const { info } = props;
 
   return (
-    <div style={{ width: '100%', overflow: 'auto', height: '500px' }}>
+    <div style={{ width: '100%', height: '500px',overflowY: "auto" }}>
       {info.reqPostBody ? <ReactJson src={JSON.parse(info.reqPostBody)} /> : null}
     </div>
   );

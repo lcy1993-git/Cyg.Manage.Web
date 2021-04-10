@@ -9,7 +9,7 @@ const ReqHeader: React.FC<ReqHeaderProps> = (props) => {
   const { info } = props;
 
   return (
-    <div style={{ width: '100%', overflowX: 'auto' }}>
+    <div style={{ width: '100%',wordBreak: "break-all",overflowY: "auto"}}>
       {info.reqHeader ? <ReactJson src={JSON.parse(info.reqHeader)} /> : null}
     </div>
   );
