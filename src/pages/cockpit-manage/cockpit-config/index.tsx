@@ -431,7 +431,7 @@ const CockpitManage: React.FC = () => {
                 </ResponsiveReactGridLayout>
               )}
               {!loading && configArray.length === 0 && (
-                <div className={styles.noConfigTip}>
+                <div className={styles.noConfigTip} style={{height: `${size.height}px`}}>
                   <EmptyTip
                     description="当前暂无配置，请点击左侧添加按钮进行配置"
                     className={styles.emptyTip}
