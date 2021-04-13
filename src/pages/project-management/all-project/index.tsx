@@ -129,17 +129,7 @@ const ProjectManagement: React.FC = () => {
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.searchByParams({
-        keyWord,
-        category: category ?? '-1',
-        pCategory: pCategory ?? '-1',
-        stage: stage ?? '-1',
-        constructType: constructType ?? '-1',
-        nature: nature ?? '-1',
-        kvLevel: kvLevel ?? '-1',
-        status: status ?? '-1',
-        statisticalCategory: statisticalCategory ?? "-1",
-      });
+      tableRef.current.search();
       getStatisticsData({
         keyWord,
         category: category ?? '-1',
@@ -392,7 +382,7 @@ const ProjectManagement: React.FC = () => {
       nature: '-1',
       kvLevel: '-1',
       status: '-1',
-      statisticalCategory: '-1',
+      statisticalCategory: statisticalCategory,
     });
   };
 
@@ -689,25 +679,36 @@ const ProjectManagement: React.FC = () => {
                 {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
                   buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
                   buttonJurisdictionArray?.includes('all-project-recall-project')) && (
-                    <Dropdown overlay={arrangeMenu}>
-                      <Button className="mr7">
-                        安排 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
+                  <Dropdown overlay={arrangeMenu}>
+                    <Button className="mr7">
+                      安排 <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                )}
                 {(buttonJurisdictionArray?.includes('all-project-share') ||
                   buttonJurisdictionArray?.includes('all-project-share-recall')) && (
-                    <Dropdown overlay={shareMenu}>
-                      <Button className="mr7">
-                        共享 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
+                  <Dropdown overlay={shareMenu}>
+                    <Button className="mr7">
+                      共享 <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                )}
                 {buttonJurisdictionArray?.includes('all-project-export') && (
                   <div className="mr7">
                     <TableExportButton
                       exportUrl="/Porject/Export"
                       selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
+                      extraParams={{
+                        keyWord,
+                        category: category ?? '-1',
+                        pCategory: pCategory ?? '-1',
+                        stage: stage ?? '-1',
+                        constructType: constructType ?? '-1',
+                        nature: nature ?? '-1',
+                        kvLevel: kvLevel ?? '-1',
+                        status: status ?? '-1',
+                        statisticalCategory: statisticalCategory ?? '-1',
+                      }}
                     />
                   </div>
                 )}
@@ -715,12 +716,12 @@ const ProjectManagement: React.FC = () => {
                   buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
                   buttonJurisdictionArray?.includes('all-project-kont-pass') ||
                   buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
-                    <Dropdown overlay={postProjectMenu}>
-                      <Button className="mr7">
-                        结项 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
+                  <Dropdown overlay={postProjectMenu}>
+                    <Button className="mr7">
+                      结项 <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                )}
                 {buttonJurisdictionArray?.includes('all-project-resource') && (
                   <Button onClick={() => setLibVisible(true)}>资源库迭代</Button>
                 )}
