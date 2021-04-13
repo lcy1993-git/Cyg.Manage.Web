@@ -83,8 +83,8 @@ const Index: React.FC = () => {
                 if (hasSaveConfig.config && hasSaveConfig.config.length > 0) {
                     const windowPercent = divide(windowHeight,hasSaveConfig.configWindowHeight)
                     const thisConfigArray = hasSaveConfig.config.map((item: any) => {
-                        const actualHeight = windowPercent ? multiply(item.h,windowPercent) : item.h;
-                        const actualY = windowPercent ? multiply(item.y,windowPercent) : item.y;
+                        const actualHeight = windowPercent ? Math.floor(multiply(item.h,windowPercent) * 100) / 100 : item.h;
+                        const actualY = windowPercent ? Math.floor(multiply(item.y,windowPercent) * 100) / 100 : item.y;
                         return {
                             ...item,
                             y: actualY,

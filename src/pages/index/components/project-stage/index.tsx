@@ -39,7 +39,7 @@ const ProjectStage: React.FC<Props> = ({ type = "pie",currentAreaInfo }) => {
                 title: {
                     text: proportion,  //图形标题，配置在中间对应效果图的80%
                     left: "center",
-                    top: "41%",
+                    top: "45%",
                     textStyle: {
                         color: "#74AC91",
                         fontSize: 12,

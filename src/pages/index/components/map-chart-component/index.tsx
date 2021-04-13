@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AreaInfo, getMapRegisterData, getMapStatisticsData, MapStatisticsData } from "@/services/index"
 import { useMount, useRequest, useSize } from "ahooks";
 
@@ -16,6 +16,7 @@ import { isArray } from "lodash";
 import { useMemo } from "react";
 import { Button, message } from "antd";
 import { exportHomeStatisticData } from "@/services/operation-config/cockpit";
+import e from "express";
 
 interface MapChartComponentProps {
     currentAreaInfo: AreaInfo
@@ -23,7 +24,7 @@ interface MapChartComponentProps {
 }
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
-    const { setCurrentAreaInfo,currentAreaInfo } = props;
+    const { setCurrentAreaInfo, currentAreaInfo } = props;
 
     const [activeCityCode, setActiveCityCode] = useState<string>();
     const [activeAreaCode, setActiveAreaCide] = useState<string>();
@@ -49,9 +50,16 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             return sum + item.projectQuantity;
         }, 0)
     }, [JSON.stringify(mapStatisticData)])
-    
+
 
     const getMapOption = (mapName: string, getMapStatisticData: MapStatisticsData[]) => {
+        const mapShowData = getMapStatisticData?.map((item) => {
+            return {
+                name: item.area,
+                value: item.projectQuantity,
+                selected: false
+            }
+        })
         return {
             tooltip: {
                 trigger: "item",
@@ -69,7 +77,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                         项目数量: 0
                     `
                 }
-            },            
+            },
 
             series: [{
                 type: 'map',
@@ -77,53 +85,50 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                 tooltip: {
                     show: true
                 },
-                layoutCenter: ["50%", "50%"], //地图位置
-                layoutSize: '97%',
-                roam: false,
+                roam:false,
+                //layoutCenter: ["50%", "50%"], //地图位置
+                layoutSize: "100%",
                 geoIndex: 1,
+                selectedMode: false,
                 itemStyle: {
                     normal: {
-                        borderColor: 'rgba(255, 255, 255, 0.6)',
-                        borderWidth: 0.8,
-                        borderType: "dotted",
-                        areaColor: {
-                            type: 'linear',
-                            x: 0,
-                            y: 1500,
-                            x2: 1000,
-                            y2: 0,
-                            colorStops: [{
-                                offset: 0.4,
-                                color: '#005A4F' // 0% 处的颜色
-                            }, {
-                                offset: 1,
-                                color: '#00DECD' // 100% 处的颜色
-                            }],
-                            global: true // 缺省为 false
-                        },
-                    },
-                    emphasis: {
-                        areaColor: {
-                            type: 'linear',
-                            x: 0,
-                            y: 2,
-                            x2: 1,
-                            y2: 0,
-                            colorStops: [{
-                                offset: 0.1,
-                                color: '#18A59B' // 0% 处的颜色
-                            }, {
-                                offset: 1,
-                                color: '#2AF8DE' // 100% 处的颜色
-                            }],
-                        },
+                        borderWidth: .8, //区域边框宽度
+                        borderColor: '#74AC91', //区域边框颜色
+                        areaColor: "#00483C", //区域颜色
                         label: {
                             show: false
                         }
+                    },
+                    emphasis: {
+                        borderWidth: .8,
+                        borderColor: '#74AC91',
+                        areaColor: "", //区域颜色
+                        label: {
+                            show: false
+                        },
+                    },
+                    select : {
+                        borderWidth: .8,
+                        borderColor: '#74AC91',
+                        areaColor: "", //区域颜色
+                        label: {
+                            show: false
+                        },
                     }
                 },
+                data: mapShowData,
                 zlevel: 100
             }],
+            dataRange: {
+                x: "-10000px",
+                y: "-10000px",
+                splitList: [
+                    { start: 1000, color: "#FEB12A" },
+                    { start: 100, end: 1000, color: "#D4FD50" },
+                    { start: 10, end: 100, color: "#2AFE97" },
+                    { start: 1, end: 10, color: "#2CFFFE" },
+                ]
+            },
         }
     }
 
@@ -149,9 +154,18 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             // @ts-ignore
             myChart.setOption(option);
             myChart.off("click");
+            myChart.off("mouseover");
             myChart.on("click", async (params: any) => {
                 const { name } = params;
                 if (cityCodeObject[name]) {
+                    // 新增需求，有项目数量的时候才可以下钻
+                    const chooseAreaDataIndex = getMapStatisticData.findIndex((item) => item.area === name);
+                    if(chooseAreaDataIndex === -1) {
+                        return
+                    }
+                    if(!getMapStatisticData[chooseAreaDataIndex].projectQuantity) {
+                        return
+                    }
                     const statisticData = await getStatisticData({ areaCode: cityCodeObject[name], areaType: String(parseFloat(currentAreaLevel) + 1) });
                     initChart(cityCodeObject[name], statisticData, String(parseFloat(currentAreaLevel) + 1))
                     if (parseFloat(currentAreaLevel!) + 1 === 2) {
@@ -166,6 +180,14 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     })
                 }
             })
+
+            myChart.on("mouseover", function (params) {
+                if (params.data && params.data.value != undefined) {
+                    myChart.dispatchAction({
+                        type: 'downplay'
+                    });
+                }
+            });
         }
     };
 
@@ -266,7 +288,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     });
 
     useEffect(() => {
-        if(size.width || size.height) {
+        if (size.width || size.height) {
             const myEvent = new Event("resize");
             window.dispatchEvent(myEvent)
         }
@@ -320,7 +342,40 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     </span>
                 </div>
             </div>
-            <div className={styles.mapConent} ref={divRef} />
+            <div className={styles.mapStatisticContent}>
+                <div className={styles.mapStatisticContentDataSplit}>
+                    <div className={styles.dataSplitContent}>
+                        <div className={styles.dataSplitContentHalo}></div>
+                        <div className={styles.dataSplitMenu}>
+                            <div className={styles.dataSplitMenuItem}>
+                                <span className={`${styles.dataSplitMenuItemIcon} ${styles.orange}`}></span>
+                                <span className={styles.dataSplitMenuItemContent}>
+                                    1000 - 1000+
+                                </span>
+                            </div>
+                            <div className={styles.dataSplitMenuItem}>
+                                <span className={`${styles.dataSplitMenuItemIcon} ${styles.lightGreen}`}></span>
+                                <span className={styles.dataSplitMenuItemContent}>
+                                    100 - 1000
+                                </span>
+                            </div>
+                            <div className={styles.dataSplitMenuItem}>
+                                <span className={`${styles.dataSplitMenuItemIcon} ${styles.green}`}></span>
+                                <span className={styles.dataSplitMenuItemContent}>
+                                    10 - 100
+                                </span>
+                            </div>
+                            <div className={styles.dataSplitMenuItem}>
+                                <span className={`${styles.dataSplitMenuItemIcon} ${styles.blue}`}></span>
+                                <span className={styles.dataSplitMenuItemContent}>
+                                    0 - 10
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.mapConent} ref={divRef} />
+            </div>
         </div>
     )
 }
