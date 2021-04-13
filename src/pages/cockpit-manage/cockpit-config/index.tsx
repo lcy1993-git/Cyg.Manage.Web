@@ -53,7 +53,7 @@ import ProjectProgress from '../cockpit-config/components/cockpit-progress-compo
 
 import { CockpitConfigContext } from './context';
 
-interface CockpitProps {
+export interface CockpitProps {
   name: string;
   w: number;
   key: string;
@@ -157,7 +157,7 @@ const CockpitManage: React.FC = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
     const totalHeight = divide(thisBoxHeight, 18);
     setConfigArray([
-      { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
+      { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1()},
       {
         name: 'mapComponent',
         x: 3,
@@ -165,6 +165,7 @@ const CockpitManage: React.FC = () => {
         w: 6,
         h: subtract(totalHeight, divide(totalHeight - 11, 2)),
         key: uuid.v1(),
+        componentProps: ["province"]
       },
       { name: 'projectType', x: 9, y: 0, w: 3, h: 11, key: uuid.v1() },
       { name: 'deliveryManage', x: 0, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
@@ -431,7 +432,7 @@ const CockpitManage: React.FC = () => {
                 </ResponsiveReactGridLayout>
               )}
               {!loading && configArray.length === 0 && (
-                <div className={styles.noConfigTip} style={{height: `${size.height}px`}}>
+                <div className={styles.noConfigTip} style={{ height: `${size.height}px` }}>
                   <EmptyTip
                     description="当前暂无配置，请点击左侧添加按钮进行配置"
                     className={styles.emptyTip}
@@ -440,7 +441,7 @@ const CockpitManage: React.FC = () => {
               )}
               {
                 loading &&
-                <div style={{width:"100%", height: "100%"}}>
+                <div style={{ width: "100%", height: "100%" }}>
                   <Spin spinning={loading}></Spin>
                 </div>
               }
@@ -449,20 +450,35 @@ const CockpitManage: React.FC = () => {
         </div>
         <AddEngineerAndProjectModule
           visible={addMapModuleVisible}
+          configArray={configArray}
           onChange={setAddMapModuleVisible}
           changeFinishEvent={addComponentEvent}
         />
         <AddEngineerTypeModal
           visible={addEngineerTypeVisible}
+          configArray={configArray}
           onChange={setAddEngineerTypeVisible}
           changeFinishEvent={addComponentEvent}
         />
         <AddDeliveryStatisticModal
           visible={addDeliveryStatisticVisible}
+          configArray={configArray}
           onChange={setAddDeliveryStatisticVisible}
           changeFinishEvent={addComponentEvent}
         />
+        <AddEngineerProcessModal
+          visible={addEngineerProcessVisible}
+          configArray={configArray}
+          onChange={setAddEngineerProcessVisible}
+          changeFinishEvent={addComponentEvent}
+        />
 
+        <AddOtherStatisticModal
+          visible={addOtherStatisticVisible}
+          configArray={configArray}
+          onChange={setAddOtherStatisticVisible}
+          changeFinishEvent={addComponentEvent}
+        />
         {editDeliveryStatisticVisible && (
           <EditDeliveryStatisticModal
             visible={editDeliveryStatisticVisible}
@@ -471,12 +487,6 @@ const CockpitManage: React.FC = () => {
             currentRecord={currentRecord}
           />
         )}
-
-        <AddEngineerProcessModal
-          visible={addEngineerProcessVisible}
-          onChange={setAddEngineerProcessVisible}
-          changeFinishEvent={addComponentEvent}
-        />
         {editEngineerProcessVisible && (
           <EditEngineerProcessModal
             visible={editEngineerProcessVisible}
@@ -485,12 +495,6 @@ const CockpitManage: React.FC = () => {
             currentRecord={currentRecord}
           />
         )}
-
-        <AddOtherStatisticModal
-          visible={addOtherStatisticVisible}
-          onChange={setAddOtherStatisticVisible}
-          changeFinishEvent={addComponentEvent}
-        />
         {editOtherStatisticVisible && (
           <EditOtherStatisticModal
             visible={editOtherStatisticVisible}

@@ -2,7 +2,9 @@ import CommonTitle from '@/components/common-title';
 import { useControllableValue } from 'ahooks';
 import { Modal, Checkbox, Form } from 'antd';
 import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useMemo } from 'react';
+import { getHasChooseComponentsProps } from '../../utils';
+import HasCheckItem from '../has-check-item';
 
 interface AddEngineerAndProjectModalProps {
   visible?: boolean;
@@ -10,11 +12,22 @@ interface AddEngineerAndProjectModalProps {
   changeFinishEvent?: (componentProps: any) => void;
   areaId?: string;
   areaLevel?: string;
+  configArray: any[]
 }
+
+const mapComponentPropsArray = [
+  { code: "province", name: "项目数量（地图）" }
+]
+
+const productionComponentPropsArray = [
+  { code: "person", name: "生产负荷(员工)" },
+  { code: "department", name: "生产负荷(部组)" },
+  { code: "company", name: "生产负荷(公司)" }
+]
 
 const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent } = props;
+  const { changeFinishEvent, configArray } = props;
   const [form] = Form.useForm();
 
   const sureAddEvent = () => {
@@ -49,6 +62,54 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
     });
   };
 
+  const mapCompoentProps = useMemo(() => {
+    const hasChooseMapComponentCodeArray = getHasChooseComponentsProps(configArray, "mapComponent");
+    const unChooseMapComponentProps = mapComponentPropsArray.filter((item) => !hasChooseMapComponentCodeArray.includes(item.code));
+    const hasChooseMapComponentProps = mapComponentPropsArray.filter((item) => hasChooseMapComponentCodeArray.includes(item.code));
+    return {
+      hasChooseMapComponentProps,
+      unChooseMapComponentProps
+    }
+  }, [JSON.stringify(configArray)])
+
+  const productionComponentProps = useMemo(() => {
+    const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, "personLoad");
+    const unChooseProductionProps = productionComponentPropsArray.filter((item) => !hasChooseProductionCodeArray.includes(item.code));
+    const hasChooseProductionProps = productionComponentPropsArray.filter((item) => hasChooseProductionCodeArray.includes(item.code));
+    return {
+      hasChooseProductionProps,
+      unChooseProductionProps
+    }
+  }, [JSON.stringify(configArray)])
+
+  const mapStatisticCheckbox = mapCompoentProps.unChooseMapComponentProps.map((item) => {
+    return (
+      <Checkbox key={item.code} value={item.code}>{item.name}</Checkbox>
+    )
+  })
+
+  const productionStatisticCheckbox = productionComponentProps.unChooseProductionProps.map((item) => {
+    return (
+      <Checkbox key={item.code} value={item.code}>{item.name}</Checkbox>
+    )
+  })
+
+  const mapStatisticHasCheck = mapCompoentProps.hasChooseMapComponentProps.map((item) => {
+    return (
+      <HasCheckItem key={item.code}>
+        {item.name}
+      </HasCheckItem>
+    )
+  })
+
+  const productionStatisticHasCheck = productionComponentProps.hasChooseProductionProps.map((item) => {
+    return (
+      <HasCheckItem key={item.code}>
+        {item.name}
+      </HasCheckItem>
+    )
+  })
+
   return (
     <Modal
       maskClosable={false}
@@ -63,16 +124,21 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
         <CommonTitle>地图</CommonTitle>
         <Form.Item name="area">
           <Checkbox.Group>
-            <Checkbox value="province">项目数量（地图）</Checkbox>
-            {/* <Checkbox value="city">市</Checkbox> */}
+            {mapStatisticCheckbox}
+            
+            {mapStatisticHasCheck}
+            
           </Checkbox.Group>
         </Form.Item>
         <CommonTitle>生产负荷</CommonTitle>
         <Form.Item name="production">
           <Checkbox.Group>
-            <Checkbox value="person">生产负荷(员工)</Checkbox>
-            <Checkbox value="department">生产负荷(部组)</Checkbox>
-            <Checkbox value="company">生产负荷(公司)</Checkbox>
+            {
+              productionStatisticCheckbox
+            }
+            
+            {productionStatisticHasCheck}
+           
           </Checkbox.Group>
         </Form.Item>
       </Form>
