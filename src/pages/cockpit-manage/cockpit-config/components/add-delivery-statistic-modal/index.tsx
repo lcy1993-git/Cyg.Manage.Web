@@ -2,17 +2,26 @@ import CommonTitle from '@/components/common-title';
 import { useControllableValue } from 'ahooks';
 import { Modal, Checkbox, Form } from 'antd';
 import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useMemo } from 'react';
+import { getHasChooseComponentsProps } from '../../utils';
+import HasCheckItem from '../has-check-item';
 
 interface AddDeliveryStatistic {
   visible?: boolean;
   onChange?: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent?: (componentProps: any) => void;
+  configArray: any[];
 }
+
+const deliveryComponentPropsArray = [
+  { code: 'person', name: '项目交付数量/设计费(员工)' },
+  { code: 'department', name: '项目交付数量/设计费(部组)' },
+  { code: 'company', name: '项目交付数量/设计费(公司)' },
+];
 
 const AddDeliveryStatisticModal: React.FC<AddDeliveryStatistic> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent } = props;
+  const { changeFinishEvent, configArray } = props;
   const [form] = Form.useForm();
 
   const sureAddEvent = () => {
@@ -35,9 +44,42 @@ const AddDeliveryStatisticModal: React.FC<AddDeliveryStatistic> = (props) => {
     });
   };
 
+  const deliveryCompoentProps = useMemo(() => {
+    const hasChooseDeliveryComponentCodeArray = getHasChooseComponentsProps(
+      configArray,
+      'deliveryManage',
+    );
+    const unChooseDeliveryComponentProps = deliveryComponentPropsArray.filter(
+      (item) => !hasChooseDeliveryComponentCodeArray.includes(item.code),
+    );
+    const hasChooseDeliveryComponentProps = deliveryComponentPropsArray.filter((item) =>
+      hasChooseDeliveryComponentCodeArray.includes(item.code),
+    );
+    return {
+      unChooseDeliveryComponentProps,
+      hasChooseDeliveryComponentProps,
+    };
+  }, [JSON.stringify(configArray)]);
+
+  const deliveryStatisticCheckbox = deliveryCompoentProps.unChooseDeliveryComponentProps.map(
+    (item) => {
+      return (
+        <Checkbox key={item.code} value={item.code}>
+          {item.name}
+        </Checkbox>
+      );
+    },
+  );
+
+  const deliveryStatisticHasCheck = deliveryCompoentProps.hasChooseDeliveryComponentProps.map(
+    (item) => {
+      return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
+    },
+  );
+
   return (
     <Modal
-    maskClosable={false}
+      maskClosable={false}
       title="交付统计配置"
       width={750}
       visible={state as boolean}
@@ -49,9 +91,8 @@ const AddDeliveryStatisticModal: React.FC<AddDeliveryStatistic> = (props) => {
         <CommonTitle>交付统计</CommonTitle>
         <Form.Item name="type">
           <Checkbox.Group>
-            <Checkbox value="person">项目交付数量/设计费(员工)</Checkbox>
-            <Checkbox value="department">项目交付数量/设计费(部组)</Checkbox>
-            <Checkbox value="company">项目交付数量/设计费(公司)</Checkbox>
+            {deliveryStatisticCheckbox}
+            {deliveryStatisticHasCheck}
           </Checkbox.Group>
         </Form.Item>
       </Form>

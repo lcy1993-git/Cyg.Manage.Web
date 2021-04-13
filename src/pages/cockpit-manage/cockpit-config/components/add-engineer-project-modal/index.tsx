@@ -10,8 +10,6 @@ interface AddEngineerAndProjectModalProps {
   visible?: boolean;
   onChange?: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent?: (componentProps: any) => void;
-  areaId?: string;
-  areaLevel?: string;
   configArray: any[]
 }
 

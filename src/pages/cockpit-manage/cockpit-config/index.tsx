@@ -485,6 +485,7 @@ const CockpitManage: React.FC = () => {
             onChange={setEditDeliveryStatisticVisible}
             changeFinishEvent={editComponentEvent}
             currentRecord={currentRecord}
+            configArray={configArray}
           />
         )}
         {editEngineerProcessVisible && (
@@ -501,6 +502,7 @@ const CockpitManage: React.FC = () => {
             onChange={setEditOtherStatisticVisible}
             changeFinishEvent={editComponentEvent}
             currentRecord={currentRecord}
+            configArray={configArray}
           />
         )}
 
@@ -519,6 +521,7 @@ const CockpitManage: React.FC = () => {
             onChange={setEditEngineerAndProductionVisible}
             changeFinishEvent={editComponentEvent}
             currentRecord={currentRecord}
+            configArray={configArray}
           />
         )}
 
@@ -528,6 +531,7 @@ const CockpitManage: React.FC = () => {
             onChange={setEditProjectTypeVisible}
             changeFinishEvent={editComponentEvent}
             currentRecord={currentRecord}
+            configArray={configArray}
           />
         )}
 
@@ -537,6 +541,7 @@ const CockpitManage: React.FC = () => {
             onChange={setEditProjectCaseVisible}
             changeFinishEvent={editComponentEvent}
             currentRecord={currentRecord}
+            configArray={configArray}
           />
         )}
       </PageCommonWrap>

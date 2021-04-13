@@ -29,7 +29,7 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
     createEvent(checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
     setTabEvent('design');
-  };
+  };  
 
   return (
     <div className={styles.treeTableContent}>

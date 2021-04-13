@@ -1,18 +1,27 @@
 import CommonTitle from '@/components/common-title';
 import { useControllableValue } from 'ahooks';
 import { Modal, Checkbox, Form } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react';
+import { getHasChooseComponentsProps } from '../../../utils';
+import HasCheckItem from '../../has-check-item';
 
 interface EditOtherStatistic {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: (componentProps: any) => void;
   currentRecord: any;
+  configArray: any[];
 }
+
+const toDoComponentPropsArray = [
+  { code: 'wait', name: '已结项' },
+  { code: 'arrange', name: '待安排' },
+  { code: 'other', name: '其他消息' },
+];
 
 const EditOtherStatisticModal: React.FC<EditOtherStatistic> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, currentRecord } = props;
+  const { changeFinishEvent, currentRecord, configArray } = props;
   const [form] = Form.useForm();
   console.log(currentRecord);
 
@@ -40,9 +49,44 @@ const EditOtherStatisticModal: React.FC<EditOtherStatistic> = (props) => {
     }
   }, [JSON.stringify(currentRecord.componentProps)]);
 
+  const toDoComponentProps = useMemo(() => {
+    const hasChooseTodoCodeArray = getHasChooseComponentsProps(configArray, 'toDo');
+    const currentTodoProps = toDoComponentPropsArray.filter((item) =>
+      currentRecord.componentProps.includes(item.code),
+    );
+    const unChooseTodoProps = toDoComponentPropsArray.filter(
+      (item) => !currentRecord.componentProps.includes(item.code),
+    );
+    return {
+      hasChooseTodoCodeArray,
+      unChooseTodoProps,
+      currentTodoProps,
+    };
+  }, [JSON.stringify(configArray)]);
+
+  const toDoStatisticCheckbox = toDoComponentProps.currentTodoProps.map((item) => {
+    return (
+      <Checkbox key={item.code} value={item.code}>
+        {item.name}
+      </Checkbox>
+    );
+  });
+
+  const toDoStatisticHasCheck = toDoComponentProps.unChooseTodoProps.map((item) => {
+    if (toDoComponentProps.hasChooseTodoCodeArray.includes(item.code)) {
+      return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
+    } else {
+      return (
+        <Checkbox value={item.code} key={item.code}>
+          {item.name}
+        </Checkbox>
+      );
+    }
+  });
+
   return (
     <Modal
-    maskClosable={false}
+      maskClosable={false}
       title="配置-其他统计"
       width={750}
       visible={state as boolean}
@@ -54,9 +98,8 @@ const EditOtherStatisticModal: React.FC<EditOtherStatistic> = (props) => {
         <CommonTitle>通知栏</CommonTitle>
         <Form.Item name="others">
           <Checkbox.Group>
-            <Checkbox value="wait">已结项</Checkbox>
-            <Checkbox value="arrange">待安排</Checkbox>
-            <Checkbox value="other">其他消息</Checkbox>
+            {toDoStatisticCheckbox}
+            {toDoStatisticHasCheck}
           </Checkbox.Group>
         </Form.Item>
       </Form>

@@ -69,7 +69,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                         项目数量: 0
                     `
                 }
-            },            
+            },
+
+
 
             series: [{
                 type: 'map',

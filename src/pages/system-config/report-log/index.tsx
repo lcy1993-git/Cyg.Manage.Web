@@ -2,16 +2,15 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Modal, message, Input, DatePicker, Popconfirm, Form } from 'antd';
-import React, { useRef, useState } from 'react';
-// import ManageUserForm from './components/form';
+import React, {  useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
 import { useRequest } from 'ahooks';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
-import LogDetailTab from '../log-manage/components/tabs';
 import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
+import ReactJson from 'react-json-view';
 
 const { Search } = Input;
 
@@ -19,7 +18,7 @@ const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
-  const [detail, setDetail] = useState<object>({});
+  const [detail, setDetail] = useState<any>();
   const [beginDate, setBeginDate] = useState<Moment | null>();
   const [endDate, setEndDate] = useState<Moment | null>();
   const [applications, setApplications] = useState<string | undefined>();
@@ -228,7 +227,9 @@ const ManageUser: React.FC = () => {
         footer={null}
         destroyOnClose
       >
-        <pre>{JSON.stringify(detail, null, 2)}</pre>
+        <div style={{ width: '100%',  overflowY: 'auto' }}>
+          <ReactJson src={detail} />
+        </div>
       </Modal>
     </PageCommonWrap>
   );
