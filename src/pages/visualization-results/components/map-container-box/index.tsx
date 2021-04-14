@@ -4,13 +4,15 @@ import BaseMap from '../base-map';
 import { initLayers, initOtherLayers, initView } from './utils';
 
 import styles from './index.less';
+import Layer from 'ol/layer/Layer';
+import LayerGroup from 'ol/layer/Group';
 
-const MapContainerBox: React.FC<any> = (props) => {
+const MapContainerBox = (props: any) => {
   const { mapData } = props;
 
   // 图层
-  const [layers, setLayers] = useState(initLayers(mapData));
-  const [otherlayers, setOtherLayers] = useState<any>(initOtherLayers());
+  const [layers, setLayers] = useState<Layer[]>(initLayers(mapData));
+  const [otherlayers, setOtherLayers] = useState<LayerGroup[]>(initOtherLayers());
   
   // 视图
   const [view, setView] = useState(initView);
