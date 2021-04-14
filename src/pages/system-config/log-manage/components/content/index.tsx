@@ -8,7 +8,7 @@ const Content: React.FC<ContentProps> = (props) => {
   const { info } = props;
   return (
 
-    <div style={{ width: "100%", overflow: "auto", height: "500px" }}>
+    <div style={{ width: "100%", overflow: "auto", height: "500px",wordBreak : 'break-all', }}>
       <pre>
         {info.message}
       </pre>

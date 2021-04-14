@@ -8,7 +8,7 @@ const Exception: React.FC<ExceptionProps> = (props) => {
   const { info } = props;
 
   return (
-    <div style={{ width: '100%', overflow: 'auto', height: '500px' }}>
+    <div style={{ width: '100%', overflow: 'auto', wordBreak: 'break-all', height: '500px' }}>
       <pre>{info.exception}</pre>
     </div>
   );
