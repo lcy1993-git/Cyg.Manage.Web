@@ -200,8 +200,6 @@ const ManageUser: React.FC = () => {
 
   // console.log(data?.content ? JSON.parse(data?.content) : null);
 
-  // console.log(data?.content);
-
   return (
     <PageCommonWrap>
       <GeneralTable
