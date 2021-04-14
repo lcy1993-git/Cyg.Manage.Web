@@ -30,6 +30,7 @@ const LogManage: React.FC = () => {
   const { loading, run: getDetailData, data: detailData = {} } = useRequest(getLogManageDetail, {
     manual: true,
   });
+  
 
   const rightButton = () => {
     return (
