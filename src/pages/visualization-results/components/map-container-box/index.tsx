@@ -22,6 +22,7 @@ const MapContainerBox: React.FC<any> = (props) => {
       />
       <BaseMap
         layers={layers ?? []}
+        otherlayers={otherlayers}
         controls={[]}
         view={view}
       />
