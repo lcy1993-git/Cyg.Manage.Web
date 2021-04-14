@@ -1,10 +1,20 @@
-import React from "react"
-import {visualUrl} from "../../../../public/config/request"
+import React from 'react';
+import styles from './index.less';
+import Filterbar from '../components/filter-bar';
+import Footer from '../components/footer';
+import SideMenu from '../components/side-menu';
+const VisualizationResults: React.FC = () => {
+  return (
+    <div className={styles.layout}>
+      <Filterbar />
 
-const VisualizationResults:React.FC = () => {
-    return (
-        <iframe width="100%" height="100%" src={`${visualUrl}?token=${localStorage.getItem("Authorization")}`}></iframe>
-    )
-}
+      <div className="content">
+        <SideMenu />
+      </div>
 
-export default VisualizationResults
+      <Footer />
+    </div>
+  );
+};
+
+export default VisualizationResults;

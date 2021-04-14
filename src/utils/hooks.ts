@@ -86,7 +86,8 @@ export const useGetProjectEnum = () => {
     projectRegionAttribute,
     projectStage,
   } = resData ?? {};
-
+ 
+  
   return {
     meteorologicLevel,
     projectAssetsNature,
