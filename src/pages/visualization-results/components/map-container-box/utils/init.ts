@@ -1,0 +1,85 @@
+
+import TileLayer from 'ol/layer/Tile';
+import Group from 'ol/layer/Group';
+import XYZ from 'ol/source/XYZ';
+import View from 'ol/View';
+import * as proj from 'ol/proj';
+
+export const initLayers = (resData: any) => {
+  // 初始化data
+
+  if(resData && resData.code !== 200) return ;
+
+  let vecUrl = "";
+  let imgUrl = "";
+
+  resData.data.forEach((item: any) => {
+    if(item.layerType === 1) {
+      vecUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
+    }else if(item.layerType === 2) {
+      imgUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
+    }
+  });
+
+  // 卫星图
+  vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  const vecLayer = new TileLayer({
+    source: new XYZ({
+        url: decodeURI(vecUrl),
+    }),
+    preload: 18
+  });
+
+  // 街道图
+  imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  const imgLayer = new TileLayer({
+    source: new XYZ({
+        url: decodeURI(imgUrl) ,
+    }),
+    preload: 18
+  });
+
+  // ann图
+  const annUrl = "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  const annLayer = new TileLayer({
+    source: new XYZ({
+        url: decodeURI(annUrl),
+    }),
+    preload: 18
+  });
+
+  return [vecLayer, imgLayer, annLayer];
+}
+
+export const initOtherLayers = () => {
+  // 勘察图
+  const surveyLayer = new Group();
+  surveyLayer.setOpacity(0.5);
+  surveyLayer.setVisible(false);
+
+  // 方案图
+  const planLayer = new Group();
+  planLayer.setVisible(false);
+
+  // 设计图
+  const designLayer = new Group();
+
+  // 拆除图
+  const dismantleLayer = new Group()
+  dismantleLayer.setVisible(false);
+
+  // 跟踪图
+  const surveyTrackLayer = new Group();
+
+  return [surveyLayer, planLayer, designLayer, dismantleLayer, surveyTrackLayer]
+}
+
+// view
+export const initView = new View({
+  center: proj.transform([104.08537388, 30.58850819], 'EPSG:4326', 'EPSG:3857'),
+  zoom: 5,
+  maxZoom: 25,
+  minZoom: 1,
+  projection: 'EPSG:3857'
+})
+
