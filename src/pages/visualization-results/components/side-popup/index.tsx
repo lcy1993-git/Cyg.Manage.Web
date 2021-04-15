@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
 import { Drawer, Button, Table } from 'antd';
-
 const columns = [
   {
     title: '属性名',
@@ -42,7 +41,7 @@ const SidePopup: FC = () => {
         onClose={onClose}
         visible={visible}
       >
-        <Table pagination={false}  columns={columns} dataSource={data} />
+        <Table pagination={false} columns={columns} dataSource={data} />
       </Drawer>
     </>
   );

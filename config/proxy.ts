@@ -30,7 +30,7 @@ export default {
       pathRewrite: { '^/resource': '/' },
     },
     '/webGis/api': {
-      target: 'http://171.223.214.154:8020/',
+      target: 'http://171.223.214.154:8025/',
       changeOrigin: true,
       pathRewrite: { '^/webGis': '/' },
     },
