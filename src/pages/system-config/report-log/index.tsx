@@ -11,6 +11,7 @@ import styles from './index.less';
 import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
 import ReactJson from 'react-json-view';
+import { useMemo } from 'react';
 
 const { Search } = Input;
 
@@ -26,6 +27,18 @@ const ManageUser: React.FC = () => {
   const { data, run, loading } = useRequest(getFileLogDetail, {
     manual: true,
   });
+
+  const handleData = useMemo(() => {
+    if(data) {
+      const {content} = data;
+      const handleContent = content.replace(/"\"/g,"")
+      return {
+        ...data,
+        content: JSON.parse(handleContent)
+      }
+    }
+    return {}
+  }, [JSON.stringify(data)])
 
   const rightButton = () => {
     return (
@@ -237,7 +250,7 @@ const ManageUser: React.FC = () => {
               whiteSpace: 'pre-wrap',
             }}
           >
-            <ReactJson src={data} />
+            <ReactJson src={handleData} />
           </div>
         </Spin>
       </Modal>
