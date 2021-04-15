@@ -29,16 +29,20 @@ const ManageUser: React.FC = () => {
   });
 
   const handleData = useMemo(() => {
-    if(data) {
+    let afterHandleData = {};
+    try{
       const {content} = data;
-      const handleContent = content.replace(/"\"/g,"")
-      return {
+      const handleContent = content.replace(/"\"/g,"");
+      afterHandleData = {
         ...data,
-        content: JSON.parse(handleContent)
+        content: JSON.parse(JSON.parse(handleContent))
       }
+    }catch(msg) {
+      afterHandleData = data;
     }
-    return {}
+    return afterHandleData
   }, [JSON.stringify(data)])
+
 
   const rightButton = () => {
     return (
