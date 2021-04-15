@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRequest } from 'ahooks';
 import { getMapList } from '@/services/visualization-results/visualization-results';
 
-import { initLayers, initOtherLayers, initView, initOtherLayersState } from './utils';
+import { initLayers, initOtherLayers, initView, initOtherLayersState } from '../../utils';
 import ViewCtrol from '../view-ctrol';
 import BaseMap from '../base-map';
 import styles from './index.less';
@@ -14,25 +14,30 @@ const MapContainerBox = (props: any) => {
 
   // 图层
   const [layers, setLayers] = useState<Layer[]>(initLayers(mapData));
-  const [otherlayers, setOtherLayers] = useState<LayerGroup[]>(initOtherLayers());
+  const [otherLayers, setOtherLayers] = useState<LayerGroup[]>(initOtherLayers());
+
   const [layersState, setLayersState] = useState(0);
   const [otherlayersState, setOtherLayerState]  = useState(initOtherLayersState);
+
   // 视图
   const [view, setView] = useState(initView);
 
-
-
-  const onOtherlayersStateChange = function () {}
+  const onTest = function () {
+    console.log(layers)
+  }
 
   return (
     <div className={styles.mapContainerBox}>
+            <button onClick={onTest}>
+        图层测试DEMO
+      </button>
       <ViewCtrol
 
         {...props}
       />
       <BaseMap
         layers={layers ?? []}
-        otherlayers={otherlayers}
+        otherLayers={otherLayers}
         controls={[]}
         view={view}
       />
