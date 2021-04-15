@@ -3,7 +3,7 @@ import styles from './index.less';
 
 const Footer: FC = () => {
   return (
-    <div className={`${styles.footerContainer} 'flex'`}>
+    <div className={`${styles.footerContainer} flex`}>
       <div className={styles.icon}>1</div>
       <div className={styles.mapInfo}>
         <span>定位 | </span>

@@ -12,11 +12,14 @@ const devBaseUrl = {
   common: '/common/api',
   upload: '/upload/api',
   resource: '/resource/api',
+  webGis: '/webGis/api'
 };
 
 // interface UrlSelectParams {
 //   requestSource: 'project' | 'resource';
 // }
+
+
 
 export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;
 
