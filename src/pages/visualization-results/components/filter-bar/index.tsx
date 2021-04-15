@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
-import { Form, Input, Select, Button } from 'antd';
+import PageCommonWrap from '@/components/page-common-wrap';
+import TableSearch from '@/components/table-search';
+import UrlSelect from '@/components/url-select';
+import { Button, Input, message, Modal } from 'antd';
 import classNames from 'classnames';
 import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
-
+import EnumSelect from '@/components/enum-select';
 const { Search } = Input;
-const { Option } = Select;
 const FilterBar: FC = () => {
   const {
     projectCategory,
@@ -17,125 +19,110 @@ const FilterBar: FC = () => {
   } = useGetProjectEnum();
 
   return (
-    <div>
-      <Form name="basic" className={styles.form} initialValues={{ remember: true }}>
-        <Form.Item
-          label="项目名称"
-          className={styles.formItem}
-          name="username"
-          rules={[{ message: 'Please input your username!' }]}
-        >
-          <Search style={{ width: 120 }} placeholder="请输入" enterButton />
-        </Form.Item>
-
-        <Form.Item
-          label="立项时间"
-          className={styles.formItem}
-          name="password"
-          rules={[{ message: 'Please input your password!' }]}
-        >
-          <Select placeholder="年" style={{ width: 106 }}>
-            {projectCategory?.map(({ text }: { text: string }) => (
-              <Option key={text} value={text}>
-                {text}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="更新时间"
-          className={styles.formItem}
-          name="password"
-          rules={[{ message: 'Please input your password!' }]}
-        >
-          <Select placeholder="年" style={{ width: 120 }}>
-            <Option value="2020">2020</Option>
-            <Option value="2021">2021</Option>
-
-            <Option value="2022">2022</Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="项目状态"
-          className={classNames(styles.formItem, styles.projectState)}
-          name="password"
-          rules={[{ message: 'Please input your password!' }]}
-        >
-          <Input.Group compact className={styles.projectStateSelectGroup}>
-            <Select placeholder="项目分类" style={{ width: 120 }}>
-              {projectCategory?.map(({ text }: { text: string }) => (
-                <Option key={text} value={text}>
-                  {text}
-                </Option>
-              ))}
-            </Select>
-            <Select
+    <div className={styles.form}>
+      <div className="flex">
+        <div className=" flex1 flex">
+          <TableSearch className="mr10" label="项目名称" width="178px">
+            <Search placeholder="请输入项目名称" enterButton />
+          </TableSearch>
+          <TableSearch className="mr10" label="全部状态" width="178px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectCategory}
+              className="widthAll"
+              placeholder="项目分类"
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+          <TableSearch className="mr10" label="立项时间" width="178px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectCategory}
+              className="widthAll"
+              placeholder="年"
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+          <TableSearch className="mr2" label="更新时间" width="178px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectCategory}
+              className="widthAll"
+              placeholder="年"
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+          <TableSearch className="mr2" width="111px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectPType}
+              dropdownMatchSelectWidth={168}
+              className="widthAll"
               placeholder="项目类别"
-              className={styles.projectStateSelectItem}
-              style={{ width: 120 }}
-            >
-              {projectPType?.map(({ text }: { text: string }) => (
-                <Option key={text} value={text}>
-                  {text}
-                </Option>
-              ))}
-            </Select>
-            <Select
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+          <TableSearch className="mr2" width="111px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectStage}
+              className="widthAll"
               placeholder="项目阶段"
-              className={styles.projectStateSelectItem}
-              style={{ width: 120 }}
-            >
-              {projectStage?.map(({ text }: { text: string }) => (
-                <Option key={text} value={text}>
-                  {text}
-                </Option>
-              ))}
-            </Select>
-            <Select
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+          <TableSearch className="mr2" width="111px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectConstructType}
+              className="widthAll"
               placeholder="建设性质"
-              className={styles.projectStateSelectItem}
-              style={{ width: 120 }}
-            >
-              {projectNature?.map(({ text }: { text: string }) => (
-                <Option key={text} value={text}>
-                  {text}
-                </Option>
-              ))}
-            </Select>
-            <Select
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+          <TableSearch className="mr2" width="111px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectKvLevel}
+              className="widthAll"
               placeholder="电压等级"
-              className={styles.projectStateSelectItem}
-              style={{ width: 120 }}
-            >
-              {projectKvLevel?.map(({ text }: { text: string }) => (
-                <Option key={text} value={text}>
-                  {text}
-                </Option>
-              ))}
-            </Select>
-            <Select
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+          <TableSearch className="mr22" width="111px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectNature}
+              dropdownMatchSelectWidth={168}
+              className="widthAll"
               placeholder="项目性质"
-              className={styles.projectStateSelectItem}
-              style={{ width: 120 }}
-            >
-              {projectConstructType?.map(({ text }: { text: string }) => (
-                <Option key={text} value={text}>
-                  {text}
-                </Option>
-              ))}
-            </Select>
-          </Input.Group>
-        </Form.Item>
-
-        <Form.Item className={classNames(styles.formItem, styles.buttonGroup)}>
-          <Button type="primary" className={styles.buttonGroupItem} htmlType="submit">
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+        </div>
+        <div>
+          <Button className="mr7" type="primary">
             查询
           </Button>
-          <Button htmlType="button">重置</Button>
-        </Form.Item>
-      </Form>
+          <Button className="mr7">重置</Button>
+        </div>
+      </div>
     </div>
   );
 };
