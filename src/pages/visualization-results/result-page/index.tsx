@@ -22,7 +22,7 @@ const VisualizationResults: React.FC = () => {
         {/* 侧边树形结构 */}
         <SideMenu />
 
-        <div>
+        <div className={styles.flex1}>
           <SidePopUp />
           <Button type="primary" onClick={() => setProjectVisible(!projectVisible)}>
             modal
