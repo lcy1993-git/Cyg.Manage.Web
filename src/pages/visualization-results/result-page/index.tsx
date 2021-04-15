@@ -21,15 +21,8 @@ const VisualizationResults: React.FC = () => {
       <main className={classNames(styles.content, 'flex')}>
         {/* 侧边树形结构 */}
         <SideMenu />
-
-        <div className={styles.flex1}>
-          <SidePopUp />
-          <Button type="primary" onClick={() => setProjectVisible(!projectVisible)}>
-            modal
-          </Button>
           {/* map放在这 */}
           <MapContainerBox />
-        </div>
       </main>
       <Footer />
 

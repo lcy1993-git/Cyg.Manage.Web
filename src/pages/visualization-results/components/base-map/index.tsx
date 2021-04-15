@@ -35,8 +35,15 @@ const BaseMap = (props: any) => {
     setMap(initialMap);
   });
 
+  const mapTest = (s: any) => {
+    console.log(s)
+  }
+
   return (
+    <>
+    <button onClick={() => mapTest("这是一个参数")}>Map实列DEMO</button>
     <div ref={mapElement} className={styles.mapBox}></div>
+    </>
   );
 }
 

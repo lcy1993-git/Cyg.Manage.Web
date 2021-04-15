@@ -15,17 +15,22 @@ const MapContainerBox = (props: any) => {
   // 图层
   const [layers, setLayers] = useState<Layer[]>(initLayers(mapData));
   const [otherlayers, setOtherLayers] = useState<LayerGroup[]>(initOtherLayers());
+
   const [layersState, setLayersState] = useState(0);
   const [otherlayersState, setOtherLayerState]  = useState(initOtherLayersState);
+
   // 视图
   const [view, setView] = useState(initView);
 
-
-
-  const onOtherlayersStateChange = function () {}
+  const onTest = function () {
+    console.log(layers)
+  }
 
   return (
     <div className={styles.mapContainerBox}>
+            <button onClick={onTest}>
+        图层测试DEMO
+      </button>
       <ViewCtrol
 
         {...props}
