@@ -5,28 +5,27 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
-//test
 export default {
   dev: {
     '/project/api': {
       // http://10.6.1.36:8026/api/
       // 171.223.214.154
-      target: 'http://10.6.1.36:8026',
+      target: 'http://171.223.214.154:8026',
       changeOrigin: true,
       pathRewrite: { '^/project': '/' },
     },
     '/common/api': {
-      target: 'http://10.6.1.36:8022/',
+      target: 'http://171.223.214.154:8022/',
       changeOrigin: true,
       pathRewrite: { '^/common': '/' },
     },
     '/upload/api': {
-      target: 'http://10.6.1.36:8023/',
+      target: 'http://171.223.214.154:8023/',
       changeOrigin: true,
       pathRewrite: { '^/upload': '/' },
     },
     '/resource/api': {
-      target: 'http://10.6.1.36:8020/',
+      target: 'http://171.223.214.154:8020/',
       changeOrigin: true,
       pathRewrite: { '^/resource': '/' },
     },

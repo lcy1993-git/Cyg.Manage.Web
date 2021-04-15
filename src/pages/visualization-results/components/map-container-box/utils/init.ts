@@ -4,8 +4,10 @@ import Group from 'ol/layer/Group';
 import XYZ from 'ol/source/XYZ';
 import View from 'ol/View';
 import * as proj from 'ol/proj';
+import LayerGroup from 'ol/layer/Group';
+import Layer from 'ol/layer/Layer';
 
-export const initLayers = (resData: any) => {
+export const initLayers = (resData: any): Layer[] => {
   // 初始化data
 
   if(resData && resData.code !== 200) return ;
@@ -51,7 +53,7 @@ export const initLayers = (resData: any) => {
   return [vecLayer, imgLayer, annLayer];
 }
 
-export const initOtherLayers = () => {
+export const initOtherLayers = (): LayerGroup[] => {
   // 勘察图
   const surveyLayer = new Group();
   surveyLayer.setOpacity(0.5);
