@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import styles from './index.less';
 import { Tree } from 'antd';
 import { Spin } from 'antd';
-import Scrollbars from 'react-custom-scrollbars';
 import { useRequest, useMount } from 'ahooks';
 import { GetEngineerProjectList } from '@/services/visualization-results/side-menu';
 
@@ -44,7 +43,7 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
 };
 
 const SideMenu: FC<SideMenuProps> = (props) => {
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['allSelect']);
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -103,20 +102,18 @@ const SideMenu: FC<SideMenuProps> = (props) => {
       {error ? null : null}
 
       {data ? (
-        <Scrollbars>
-          <Tree
-            checkable
-            className={classNames(styles.sideMenu)}
-            onExpand={onExpand}
-            expandedKeys={expandedKeys}
-            autoExpandParent={autoExpandParent}
-            onCheck={onCheck}
-            checkedKeys={checkedKeys}
-            onSelect={onSelect}
-            selectedKeys={selectedKeys}
-            treeData={treeData}
-          />
-        </Scrollbars>
+        <Tree
+          checkable
+          className={classNames(styles.sideMenu)}
+          onExpand={onExpand}
+          expandedKeys={expandedKeys}
+          autoExpandParent={autoExpandParent}
+          onCheck={onCheck}
+          checkedKeys={checkedKeys}
+          onSelect={onSelect}
+          selectedKeys={selectedKeys}
+          treeData={treeData}
+        />
       ) : null}
     </div>
   );
