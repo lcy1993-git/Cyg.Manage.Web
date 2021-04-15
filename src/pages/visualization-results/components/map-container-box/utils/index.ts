@@ -1,7 +1,8 @@
-import { initLayers, initOtherLayers, initView } from './init';
+import { initLayers, initOtherLayers, initView, initOtherLayersState } from './init';
 
 export {
   initLayers,
   initOtherLayers,
-  initView
+  initView,
+  initOtherLayersState
 }
