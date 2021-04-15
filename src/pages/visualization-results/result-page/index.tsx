@@ -8,7 +8,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import SideMenu from '../components/side-menu';
 import SidePopUp from '../components/side-popup';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
-import MapContainerBox from '../components/map-container-box';
+import MapContainerShell from '../components/map-container-shell';
 
 const VisualizationResults: React.FC = () => {
   const [projectVisible, setProjectVisible] = useState<boolean>(false);
@@ -22,7 +22,7 @@ const VisualizationResults: React.FC = () => {
         {/* 侧边树形结构 */}
         <SideMenu />
           {/* map放在这 */}
-          <MapContainerBox />
+          <MapContainerShell />
       </main>
       <Footer />
 
