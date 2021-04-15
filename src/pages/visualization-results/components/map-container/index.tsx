@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import BaseMap from '../base-map';
+import MapBase from '../map-base';
+import Layer from 'ol/layer/Layer';
+import LayerGroup from 'ol/layer/Group';
 import { initLayers, initOtherLayers, initView, initOtherLayersState } from '../../utils';
 import styles from './index.less';
 
@@ -16,6 +18,8 @@ const MapContainer = (props: any) => {
   // 视图
   const [view, setView] = useState(initView);
 
+
+  // 事件
   const onTest = function () {
     console.log(layers)
   }
@@ -25,8 +29,8 @@ const MapContainer = (props: any) => {
       <button onClick={onTest}>
         图层测试DEMO
       </button>
-      <BaseMap
-        layers={layers ?? []}
+      <MapBase
+        layers={layers}
         otherLayers={otherLayers}
         controls={[]}
         view={view}
