@@ -2,9 +2,33 @@ import React, { FC, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import { Tree } from 'antd';
+import { useRequest } from 'ahooks';
+export interface TreeNodeType {
+  title: string;
+  key: string;
+  children: TreeNodeType[];
+}
 export interface SideMenuProps {
   className?: string;
 }
+
+export interface ProjectType {
+  id: string;
+  name: string;
+  createdOn: Date;
+  projects: projectItemType[];
+}
+
+export interface projectItemType {
+  id: string;
+  name: string;
+  haveData: boolean;
+  haveSurveyData: boolean;
+  haveDesignData: boolean;
+  projectEndTime: Date;
+  isExecutor: boolean;
+}
+
 const treeData = [
   {
     title: '0-0',
@@ -36,6 +60,10 @@ const SideMenu: FC<SideMenuProps> = (props) => {
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const { className } = props;
+
+
+  // const projectList = useRequest(() =>)
+
   const onExpand = (expandedKeysValue: React.Key[]) => {
     console.log('onExpand', expandedKeysValue);
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.

@@ -12,6 +12,7 @@ const devBaseUrl = {
   common: '/common/api',
   upload: '/upload/api',
   resource: '/resource/api',
+  webGis: '/webGis/api'
 };
 
 // interface UrlSelectParams {

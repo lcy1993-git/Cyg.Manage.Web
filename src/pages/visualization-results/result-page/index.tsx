@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Drawer, Button, Table } from 'antd';
+import { Button } from 'antd';
 import styles from './index.less';
 import Filterbar from '../components/filter-bar';
 import classNames from 'classnames';

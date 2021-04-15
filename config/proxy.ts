@@ -29,6 +29,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/resource': '/' },
     },
+    '/webGis/api': {
+      target: 'http://171.223.214.154:8020/',
+      changeOrigin: true,
+      pathRewrite: { '^/webGis': '/' },
+    },
   },
   test: {
     '/api/': {
