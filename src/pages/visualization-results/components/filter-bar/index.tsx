@@ -6,7 +6,9 @@ import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
 import EnumSelect from '@/components/enum-select';
 import { ProjectStatus } from '@/services/project-management/all-project';
-import { DownOutlined } from '_@ant-design_icons@4.6.2@@ant-design/icons';
+import {
+  DownOutlined
+} from '@ant-design/icons';
 const { Search } = Input;
 const { Option } = Select;
 interface ProjectStatusOption {
