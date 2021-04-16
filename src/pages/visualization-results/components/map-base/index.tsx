@@ -1,11 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { useMount } from 'ahooks';
-
+import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
 import { mapClick } from '../../utils';
+import { useMount } from 'ahooks';
 import styles from './index.less';
-import LayerGroup from 'ol/layer/Group';
-
 
 const BaseMap = (props: any) => {
 
