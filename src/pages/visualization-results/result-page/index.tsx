@@ -1,40 +1,50 @@
-import React, { useState } from 'react';
-import { Button } from 'antd';
+import React from 'react';
 import styles from './index.less';
 import Filterbar from '../components/filter-bar';
 import classNames from 'classnames';
 import Footer from '../components/footer';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideMenu from '../components/side-menu';
-import SidePopUp from '../components/side-popup';
-import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import MapContainerShell from '../components/map-container-shell';
+import SidePopup from '../components/side-popup';
+import { Provider, useContainer, VisualizationResultsStateType } from './store';
+
+interface StoreProps {
+  initialState: VisualizationResultsStateType;
+}
 
 const VisualizationResults: React.FC = () => {
-  const [projectVisible, setProjectVisible] = useState<boolean>(false);
+  const { vState, togglePropertySidePopup } = useContainer();
+  const { propertySidePopupShow } = vState;
   return (
     <PageCommonWrap noPadding={true}>
-      {/* 顶层filter */}
+      {/* 顶层filter 筛选项目 */}
+
       <Filterbar />
 
-      {/* 中间content */}
       <main className={classNames(styles.content, 'flex')}>
         {/* 侧边树形结构 */}
         <SideMenu />
-          {/* map放在这 */}
-          <MapContainerShell />
+
+        {/* map放在这 */}
+        <MapContainerShell />
       </main>
       <Footer />
 
-      {projectVisible && (
-        <ProjectDetailInfo
-          projectId={'1374245188349775872'}
-          visible={projectVisible}
-          onChange={setProjectVisible}
-        />
-      )}
+      <SidePopup visible={propertySidePopupShow} onClose={() => togglePropertySidePopup()} />
     </PageCommonWrap>
   );
 };
 
-export default VisualizationResults;
+const StoreProvider: React.FC<StoreProps> = () => {
+  const initialState: VisualizationResultsStateType = {
+    filterCondition: { kvLevel: -1 },
+  };
+  return (
+    <Provider initialState={initialState}>
+      <VisualizationResults />
+    </Provider>
+  );
+};
+
+export default StoreProvider;
