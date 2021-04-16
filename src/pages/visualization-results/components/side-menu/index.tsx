@@ -1,11 +1,10 @@
 import React, { FC, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
-import { Tree } from 'antd';
-import { Spin } from 'antd';
-import { useRequest, useMount } from 'ahooks';
+import { Tree, Tabs, Spin } from 'antd';
+import { useRequest } from 'ahooks';
 import { GetEngineerProjectList } from '@/services/visualization-results/side-menu';
-
+const { TabPane } = Tabs;
 export interface TreeNodeType {
   title: string;
   key: string;
@@ -102,18 +101,24 @@ const SideMenu: FC<SideMenuProps> = (props) => {
       {error ? null : null}
 
       {data ? (
-        <Tree
-          checkable
-          className={classNames(styles.sideMenu)}
-          onExpand={onExpand}
-          expandedKeys={expandedKeys}
-          autoExpandParent={autoExpandParent}
-          onCheck={onCheck}
-          checkedKeys={checkedKeys}
-          onSelect={onSelect}
-          selectedKeys={selectedKeys}
-          treeData={treeData}
-        />
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="全部项目" key="1">
+            <Tree
+              checkable
+              className={classNames(styles.sideMenu)}
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              autoExpandParent={autoExpandParent}
+              onCheck={onCheck}
+              checkedKeys={checkedKeys}
+              onSelect={onSelect}
+              selectedKeys={selectedKeys}
+              treeData={treeData}
+            />
+          </TabPane>
+          /** 这里tabpane有点问题所以 需要设置一个特殊的margin */
+          <TabPane tab="地州项目" style={{ margin: 0 }} key="2"></TabPane>
+        </Tabs>
       ) : null}
     </div>
   );

@@ -1,14 +1,24 @@
-import React, { FC } from 'react';
-import PageCommonWrap from '@/components/page-common-wrap';
+import React, { FC, useState } from 'react';
 import TableSearch from '@/components/table-search';
 import UrlSelect from '@/components/url-select';
-import { Button, Input, message, Modal } from 'antd';
-import classNames from 'classnames';
+import { Button, Input, DatePicker,   } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
 import EnumSelect from '@/components/enum-select';
+import { ProjectStatus } from '@/services/project-management/all-project';
+import { DownOutlined } from '_@ant-design_icons@4.6.2@@ant-design/icons';
 const { Search } = Input;
 const FilterBar: FC = () => {
+  const [keyWord, setKeyWord] = useState<string>(''); //搜索关键词
+  const [category, setCategory] = useState<string>(); //项目分类
+  const [pCategory, setPCategory] = useState<string>(); //项目类别
+  const [stage, setStage] = useState<string>(); //项目阶段
+  const [constructType, setConstructType] = useState<string>(); //建设性质
+  const [nature, setNature] = useState<string>();
+  const [kvLevel, setKvLevel] = useState<string>(); //
+  const [status, setStatus] = useState<string>();
+  const [establishYear, setEstablishYear] = useState<number>();
+  const [updateYear, setUpdateYear] = useState<number>();
   const {
     projectCategory,
     projectPType,
@@ -25,38 +35,22 @@ const FilterBar: FC = () => {
           <TableSearch className="mr10" label="项目名称" width="178px">
             <Search placeholder="请输入项目名称" enterButton />
           </TableSearch>
-          <TableSearch className="mr10" label="全部状态" width="178px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              defaultData={projectCategory}
+          <TableSearch className="mr10" label="项目状态" width="178px">
+            <EnumSelect
+              enumList={ProjectStatus}
+              value={status}
+              onChange={(value) => setStatus(String(value))}
               className="widthAll"
-              placeholder="项目分类"
+              placeholder="项目状态"
               needAll={true}
               allValue="-1"
             />
           </TableSearch>
           <TableSearch className="mr10" label="立项时间" width="178px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              defaultData={projectCategory}
-              className="widthAll"
-              placeholder="年"
-              needAll={true}
-              allValue="-1"
-            />
+            <DatePicker suffixIcon={<DownOutlined />} picker="year" />
           </TableSearch>
           <TableSearch className="mr2" label="更新时间" width="178px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              defaultData={projectCategory}
-              className="widthAll"
-              placeholder="年"
-              needAll={true}
-              allValue="-1"
-            />
+            <DatePicker suffixIcon={<DownOutlined />} picker="year" />
           </TableSearch>
           <TableSearch className="mr2" width="111px">
             <UrlSelect

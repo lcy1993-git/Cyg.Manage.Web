@@ -14,14 +14,14 @@ const VisualizationResults: React.FC = () => {
   const [projectVisible, setProjectVisible] = useState<boolean>(false);
   return (
     <PageCommonWrap noPadding={true}>
-      {/* 顶层filter */}
+      {/* 顶层filter 筛选项目 */}
       <Filterbar />
 
       {/* 中间content */}
       <main className={classNames(styles.content, 'flex')}>
         {/* 侧边树形结构 */}
         <SideMenu />
-          {/* map放在这 */}
+          {/* map */}
           <MapContainerBox />
       </main>
       <Footer />
