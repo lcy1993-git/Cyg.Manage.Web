@@ -10,7 +10,7 @@ import Layer from 'ol/layer/Layer';
 export const initLayers = (resData: any): Layer[] => {
   // 初始化data
 
-  if(resData && resData.code !== 200) return ;
+  if(resData && resData.code !== 200) return [];
 
   let vecUrl = "";
   let imgUrl = "";
@@ -73,7 +73,10 @@ export const initOtherLayers = (): LayerGroup[] => {
   // 跟踪图
   const surveyTrackLayer = new Group();
 
-  return [surveyLayer, planLayer, designLayer, dismantleLayer, surveyTrackLayer]
+  // 高亮图层
+  // const dismantleLayers = new
+
+  return [surveyLayer, planLayer, designLayer, dismantleLayer, surveyTrackLayer];
 }
 
 // 状态

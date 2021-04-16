@@ -24,9 +24,11 @@ const BaseMap = (props: any) => {
     otherLayers.forEach((item: LayerGroup) => {
       initialMap.addLayer(item);
     });
-    
+    const ops = {
+      highlightLayer: null
+    }
     // 地图点击事件
-    initialMap.on('click', mapClick)
+    initialMap.on('click', (e: Event) => mapClick(e, initialMap, ops))
 
     setMap(initialMap);
   });
@@ -42,5 +44,6 @@ const BaseMap = (props: any) => {
     </>
   );
 }
+
 
 export default BaseMap;

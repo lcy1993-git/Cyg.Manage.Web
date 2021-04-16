@@ -8,7 +8,7 @@ export const getEngineerProjectList = (params: any = {}) => {
 }
 
 // 获取项目列表
-export const getEngineerProjectList = (params: any = {}) => {
-  request(`http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/GetEngineerProjectList`, { method: 'POST', data: {...params}})
-}
+// export const getEngineerProjectList = (params: any = {}) => {
+//   request(`http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/GetEngineerProjectList`, { method: 'POST', data: {...params}})
+// }
 
