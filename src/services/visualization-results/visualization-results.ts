@@ -1,6 +1,17 @@
 import request from '@/utils/request';
 
-const webConfig: any = null;
+const webConfig = {
+  publicServiceServerIP: "171.223.214.154",
+  designSideInteractiveServiceServerIP: "171.223.214.154",
+  resourceServiceServerIP: "171.223.214.154",
+  manageSideInteractiveServiceServerIP_V2: "171.223.214.154",
+  manageSideInteractiveServiceServerIP: "171.223.214.154",
+  resourceServiceServerPort: "8016",
+  designSideInteractiveServiceServerPort: "8016",
+  manageSideInteractiveServiceServerPort: "8016",
+  manageSideInteractiveServiceServerPort_V2: "8016",
+  publicServiceServerPort: "8016",
+};
 
 // 获取地图资源
 export const getMapList = (params: any) => {
@@ -48,8 +59,8 @@ export const getlibId = (params: any) => {
 }
 
 // 加载图层模板
-export const loadLayer = () => {
-  // 写不来
+export const loadLayer: any = (url: any, postData: any, layerName: any) => {
+  return request(url, { method: "POST", data: postData.format({'0': layerName})})
 }
 
 // FindLineDetailInfo线条
@@ -59,7 +70,7 @@ export const findLineDetailInfo = (params: any) => {
 
 // 定位当前用户位置；调用的是百度定位api
 export const initIpLocation = () => {
-  request('https://map.baidu.com/?qt=ipLocation&t=' + new Date().getTime())
+  request('https://map.baidu.com/?qt=ipLocation&t=' + new Date().getTime());
 }
 
 // 加载项目中所需的枚举
