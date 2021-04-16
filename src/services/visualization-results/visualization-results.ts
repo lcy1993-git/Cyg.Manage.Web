@@ -59,8 +59,25 @@ export const getlibId = (params: any) => {
 }
 
 // 加载图层模板
+function format (that: any, ...args: any) {
+      let result = that;
+      if (args.length < 1) {
+          return result;
+      }
+      var data = arguments;
+      if (args.length == 1 && typeof (args[0]) == "object") {
+          data = args[0];
+      }
+      for (var key in data) {
+          var value = data[key];
+          if (undefined != value) {
+              result = result.replace("{" + key + "}", value);
+          }
+      }
+      return result;
+}
 export const loadLayer: any = (url: any, postData: any, layerName: any) => {
-  return request(url, { method: "POST", data: postData.format({'0': layerName})})
+  return request(url, { method: "POST", data: format(postData, {'0': layerName})})
 }
 
 // FindLineDetailInfo线条
