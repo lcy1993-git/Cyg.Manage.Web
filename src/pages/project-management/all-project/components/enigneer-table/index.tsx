@@ -107,6 +107,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         total,
         dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
         dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
+<<<<<<< HEAD
         projectLen: items
           ?.map((item: any) => {
             return item.projects;
@@ -114,6 +115,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           .reduce((pre, val) => {
             return (pre += val.length);
           }, 0),
+=======
+        projectLen: items?.map((item: any) => {
+          return item.projects;
+        }).reduce((pre, val) => {
+          return (pre += val.length);
+        }, 0),
+>>>>>>> master
       };
     }
     return {
@@ -123,6 +131,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       total: 0,
       dataStartIndex: 0,
       dataEndIndex: 0,
+      projectLen: 0,
     };
   }, [JSON.stringify(tableData)]);
 
@@ -292,7 +301,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
               <span>
                 {!stateInfo.isArrange &&
-                identitys.findIndex((item: any) => item.value === 4) > -1 ? (
+                  identitys.findIndex((item: any) => item.value === 4) > -1 ? (
                   <span
                     className="canClick"
                     onClick={() => arrange(record.id, arrangeType, allotCompanyId)}
