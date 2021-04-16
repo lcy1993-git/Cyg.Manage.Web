@@ -107,6 +107,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         total,
         dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
         dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
+        projectLen: items?.map((item: any) => {
+          return item.projects;
+        }).reduce((pre, val) => {
+          return (pre += val.length);
+        }, 0),
       };
     }
     return {
@@ -116,6 +121,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       total: 0,
       dataStartIndex: 0,
       dataEndIndex: 0,
+      projectLen: 0,
     };
   }, [JSON.stringify(tableData)]);
 
@@ -285,7 +291,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
               <span>
                 {!stateInfo.isArrange &&
-                identitys.findIndex((item: any) => item.value === 4) > -1 ? (
+                  identitys.findIndex((item: any) => item.value === 4) > -1 ? (
                   <span
                     className="canClick"
                     onClick={() => arrange(record.id, arrangeType, allotCompanyId)}
@@ -491,9 +497,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
           <span>到第</span>
           <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
-          <span>条记录,总共</span>
-          <span className={styles.importantTip}>{tableResultData.total}</span>
-          <span>条记录</span>
+          <span>条记录，总共</span>
+          <span className={styles.importantTip}>{tableResultData.items.length}</span>
+          <span>个工程，</span>
+          <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
         </div>
         <div className={styles.projectTablePagingRight}>
           <Pagination

@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Button, Modal, message, Input, DatePicker, Popconfirm, Form } from 'antd';
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
 import { useRequest } from 'ahooks';
@@ -11,6 +11,7 @@ import styles from './index.less';
 import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
 import ReactJson from 'react-json-view';
+import { useMemo } from 'react';
 
 const { Search } = Input;
 
@@ -18,7 +19,7 @@ const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
-  const [detail, setDetail] = useState<any>();
+
   const [beginDate, setBeginDate] = useState<Moment | null>();
   const [endDate, setEndDate] = useState<Moment | null>();
   const [applications, setApplications] = useState<string | undefined>();
@@ -27,6 +28,21 @@ const ManageUser: React.FC = () => {
   const { data, run } = useRequest(getFileLogDetail, {
     manual: true,
   });
+
+  const handleData = useMemo(() => {
+    let afterHandleData = {};
+    try {
+      const { content } = data!;
+      const handleContent = content.replace(/"\"/g, "");
+      afterHandleData = {
+        ...data,
+        content: JSON.parse(JSON.parse(handleContent))
+      }
+    } catch (msg) {
+      afterHandleData = data!;
+    }
+    return afterHandleData
+  }, [JSON.stringify(data)])
 
   const rightButton = () => {
     return (
@@ -74,8 +90,7 @@ const ManageUser: React.FC = () => {
     }
     setLogDetailVisible(true);
     const checkId = tableSelectRows[0].id;
-    const LogDetail = await run(checkId);
-    setDetail(LogDetail);
+    await run(checkId);
   };
 
   //重置后，条件添加onChange事件重新获取value
@@ -227,8 +242,8 @@ const ManageUser: React.FC = () => {
         footer={null}
         destroyOnClose
       >
-        <div style={{ width: '100%',  overflowY: 'auto' }}>
-          <ReactJson src={detail} />
+        <div style={{ width: '100%', overflowY: 'auto' }}>
+          <ReactJson src={handleData} />
         </div>
       </Modal>
     </PageCommonWrap>

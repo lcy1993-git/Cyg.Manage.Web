@@ -23,6 +23,7 @@ interface SearchLogItemParams {
 interface ItemDetailData extends SearchLogItemParams {
   id: string;
   clientIp: string;
+  content: any
 }
 
 // 获取一条数据

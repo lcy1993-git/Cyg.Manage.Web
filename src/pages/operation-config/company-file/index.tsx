@@ -123,6 +123,15 @@ const CompanyFile: React.FC = () => {
 
   const columns = [
     {
+      dataIndex: 'fileCategory',
+      index: 'fileCategory',
+      title: '类别',
+      width: 150,
+      render: (text: any, record: any) => {
+        return record.fileCategoryText;
+      },
+    },
+    {
       dataIndex: 'name',
       index: 'name',
       title: '名称',
@@ -133,15 +142,6 @@ const CompanyFile: React.FC = () => {
       index: 'id',
       title: '文件编号',
       width: 200,
-    },
-    {
-      dataIndex: 'fileCategory',
-      index: 'fileCategory',
-      title: '类别',
-      width: 150,
-      render: (text: any, record: any) => {
-        return record.fileCategoryText;
-      },
     },
     {
       dataIndex: 'describe',
