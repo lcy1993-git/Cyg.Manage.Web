@@ -11,6 +11,7 @@ export interface VisualizationResultsStateType {
   materialModalShow?: boolean;
   projectDetailModalShow?: boolean;
   propertySidePopupShow?: boolean;
+  visibleLeftSidebar: boolean;
 }
 
 function useVisualizationState(
@@ -19,7 +20,8 @@ function useVisualizationState(
     propertySidePopupShow: false,
     projectDetailModalShow: false,
     materialModalShow: false,
-    checkedProjectIdList: [{id: '1382687501508292609'}]
+    checkedProjectIdList: [{id: '1382687501508292609'}],
+    visibleLeftSidebar: true
   },
 ) {
   let [vState, setVState] = useState(initialState);
@@ -30,12 +32,15 @@ function useVisualizationState(
   };
   //属性侧边弹窗触发
   const togglePropertySidePopup = () => {
-    
-    
     setVState({ ...vState, propertySidePopupShow: !vState.propertySidePopupShow });
   };
 
-  return { vState, setFilterCondition, togglePropertySidePopup };
+  // 左侧菜单栏伸缩事件
+  const setVisibleLeftSidebar = () => {
+    setVState({ ...vState, visibleLeftSidebar: !vState.visibleLeftSidebar });
+  };
+
+  return { vState, setFilterCondition, togglePropertySidePopup, setVisibleLeftSidebar };
 }
 
 let store = createContainer(useVisualizationState);
