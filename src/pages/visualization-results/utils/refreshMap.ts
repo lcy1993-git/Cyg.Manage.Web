@@ -11,7 +11,7 @@ import { transform } from "ol/proj";
 import Feature from "ol/Feature";
 
 const refreshMap = (ops: any, projects: ProjectList[], location: boolean = true, time?: string) => {
-  const { setLayerGroups, layerGroups: groupLayers, view, setView, map } = ops;
+  const { setLayerGroups, layerGroups: groupLayers, view, setView, map, kvLevel } = ops;
   clearGroups(groupLayers);
   if (projects.length === 0)
     return;
@@ -31,24 +31,24 @@ const refreshMap = (ops: any, projects: ProjectList[], location: boolean = true,
   });
   postData = xmlData + postData + "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
 
-  loadSurveyLayers(projects, wfsBaseURL, postData, groupLayers);
-  loadPlanLayers(projects, wfsBaseURL, postData, groupLayers);
-  loadDismantleLayers(projects, wfsBaseURL, postData, groupLayers);
-  loadDesignLayers(projects, wfsBaseURL, postData, groupLayers, view, setView, map);
+  loadSurveyLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
+  loadPlanLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
+  loadDismantleLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
+  loadDesignLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers, view, setView, map);
 
   setLayerGroups(groupLayers);
 }
 
-const loadSurveyLayers = (projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
-  loadLayers(projects, url, postData, getLayerGroupByName('surveyLayer', groupLayers), 'survey', 1, groupLayers);
+const loadSurveyLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
+  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('surveyLayer', groupLayers), 'survey', 1, groupLayers);
 }
 
-const loadPlanLayers = (projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
-  loadLayers(projects, url, postData, getLayerGroupByName('planLayer', groupLayers), 'plan', 2, groupLayers);
+const loadPlanLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
+  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('planLayer', groupLayers), 'plan', 2, groupLayers);
 }
 
-const loadDesignLayers = (projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[], view: any, setView: any, map: any) => {
-  loadLayers(projects, url, postData, getLayerGroupByName('designLayer', groupLayers), 'design', 3, groupLayers);
+const loadDesignLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[], view: any, setView: any, map: any) => {
+  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('designLayer', groupLayers), 'design', 3, groupLayers);
   loadWFS(projects, url, postData, 'pdd:design_pull_line', (data: any) => {
     if (groupLayers['design_pull_line']) {
       groupLayers['design_pull_line'].getSource().clear();
@@ -75,13 +75,12 @@ const loadDesignLayers = (projects: ProjectList[], url: string, postData: string
   })
 }
 
-const loadDismantleLayers = (projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
-  loadLayers(projects, url, postData, getLayerGroupByName('dismantleLayer', groupLayers), 'dismantle', 4, groupLayers);
+const loadDismantleLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
+  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('dismantleLayer', groupLayers), 'dismantle', 4, groupLayers);
 }
 
-const loadLayers = async (projects: ProjectList[], url: string, postData: string, group: LayerGroup, layerType: string, layerTypeId: number, groupLayers: LayerGroup[]) => {
+const loadLayers = async (kvLevel: any, projects: ProjectList[], url: string, postData: string, group: LayerGroup, layerType: string, layerTypeId: number, groupLayers: LayerGroup[]) => {
   let queryFlag = false;
-  let kv_level = -1;
   await loadWFS(projects, url, postData, 'pdd:' + layerType + '_line', async (data: any) => {
     if (groupLayers[layerType + '_line']) {
       groupLayers[layerType + '_line'].getSource().clear();
@@ -102,9 +101,9 @@ const loadLayers = async (projects: ProjectList[], url: string, postData: string
     if (data.features && data.features.length > 0) {
       let lineIds: any = [];
       data.features.forEach((feature: any) => {
-        if (kv_level == -1 || feature.properties.kv_level == kv_level) {
+        if (kvLevel == -1 || feature.properties.kv_level == kvLevel) {
           data_.features.push(feature);
-          if (feature.properties.kv_level == kv_level) {
+          if (feature.properties.kv_level == kvLevel) {
             lineIds.push(feature.id.split('.')[1])
             queryFlag = true
           }
