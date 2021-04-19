@@ -17,7 +17,7 @@ const BaseMap = (props: any) => {
 
   // footer相关数据
   const [currentPosition, setCurrentPosition] = useState<[number, number]>([0,0]);
-  const [scaleSize, setScaleSize] = useState<number>(0)
+  const [scaleSize, setScaleSize] = useState<string>("")
   const [isSatelliteMap, setIsSatelliteMap] = useState<boolean>(true);
 
   // 从Vstate获取外部传入的数据
