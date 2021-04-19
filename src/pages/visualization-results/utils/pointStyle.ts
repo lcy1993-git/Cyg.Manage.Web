@@ -658,7 +658,6 @@ const line_style = function (feature: any, select: any, layerType: any) {
             text = Styles.line.selected.text1;
         else
             text = Styles.line.selected.text2;
-        console.log(text);
         styles.push(
             new ClassStyle({
                 text: new Text({
