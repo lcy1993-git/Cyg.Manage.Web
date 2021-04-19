@@ -22,7 +22,9 @@ const BaseMap = (props: any) => {
 
   // 从Vstate获取外部传入的数据
   const { vState } = useContainer();
-  const {checkedProjectIdList: projects} = vState;
+  const {checkedProjectIdList: projects, filterCondition} = vState;
+  const {kvLevel} = filterCondition;
+  
 
   // 挂载
   useMount(() => {
@@ -43,7 +45,7 @@ const BaseMap = (props: any) => {
     // 地图点击事件
     initialMap.on('click', (e: Event) => mapClick(e, initialMap, ops1))
 
-    const ops = {layers, layerGroups, view, setView, setLayerGroups, map:initialMap};
+    const ops = {layers, layerGroups, view, setView, setLayerGroups, map:initialMap, kvLevel};
     refreshMap(ops, projects!)
     setMap(initialMap);
   });
