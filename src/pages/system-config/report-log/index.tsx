@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Popconfirm, Form } from 'antd';
+import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
@@ -19,13 +19,12 @@ const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
-
   const [beginDate, setBeginDate] = useState<Moment | null>();
   const [endDate, setEndDate] = useState<Moment | null>();
   const [applications, setApplications] = useState<string | undefined>();
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
 
-  const { data, run } = useRequest(getFileLogDetail, {
+  const { data, run, loading } = useRequest(getFileLogDetail, {
     manual: true,
   });
 
@@ -215,6 +214,8 @@ const ManageUser: React.FC = () => {
     },
   ];
 
+  // console.log(data?.content ? JSON.parse(data?.content) : null);
+
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -241,10 +242,20 @@ const ManageUser: React.FC = () => {
         onCancel={() => setLogDetailVisible(false)}
         footer={null}
         destroyOnClose
+        centered
       >
-        <div style={{ width: '100%', overflowY: 'auto' }}>
-          <ReactJson src={handleData} />
-        </div>
+        <Spin spinning={loading}>
+          <div
+            style={{
+              height: '720px',
+              wordBreak: 'break-all',
+              overflowY: 'auto',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            <ReactJson src={handleData} />
+          </div>
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

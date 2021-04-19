@@ -89,7 +89,7 @@ export const getUserTreeByGroup = (params: CompanyGroupTree) => {
 };
 
 interface CompanyResult {
-  userStock: number;
+  skus: object[];
   remark: string;
   address: string;
   parentId: string;
@@ -103,5 +103,12 @@ export const getCompanyInfo = () => {
 
   return cyRequest<CompanyResult>(() =>
     request(`${baseUrl.project}/Company/GetById`, { method: 'GET', params: { id: companyId } }),
+  );
+};
+
+//获取当前公司信息
+export const getCurrentCompanyInfo = () => {
+  return cyRequest<CompanyResult>(() =>
+    request(`${baseUrl.project}/Company/GetCurrent`, { method: 'GET' }),
   );
 };

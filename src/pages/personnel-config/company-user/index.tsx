@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import CompanyUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
 import {
@@ -12,6 +12,7 @@ import {
   updateItemStatus,
   resetItemPwd,
   batchAddCompanyUserItem,
+  getCurrentCompanyInfo,
 } from '@/services/personnel-config/company-user';
 import { getTreeSelectData } from '@/services/operation-config/company-group';
 import { useRequest } from 'ahooks';
@@ -26,6 +27,8 @@ import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import CyTag from '@/components/cy-tag';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import CommonTitle from '@/components/common-title';
+import AccreditStatistic from './components/accredit-statistic';
 
 const { Search } = Input;
 
@@ -60,6 +63,20 @@ const CompanyUser: React.FC = () => {
   const { data: selectTreeData = [], run: getSelectTreeData } = useRequest(getTreeSelectData, {
     manual: true,
   });
+
+  const { data: accreditData, run: getAccreditData } = useRequest(() => getCurrentCompanyInfo());
+  console.log(accreditData);
+
+  const handleData = useMemo(() => {
+    if (accreditData) {
+      return accreditData.skus.map((item: any) => {
+        return item.value;
+      });
+    }
+    return;
+  }, [accreditData]);
+
+  console.log(handleData);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -99,6 +116,7 @@ const CompanyUser: React.FC = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.refresh();
+      getAccreditData();
     }
   };
 
@@ -292,6 +310,7 @@ const CompanyUser: React.FC = () => {
       // width: 240,
       render: (text: any, record: any) => {
         const { authorizeClientTexts } = record;
+
         const element = (authorizeClientTexts ?? []).map((item: string) => {
           return (
             <TableStatus className="mr7" color={mapColor[item] ?? 'gray'} key={uuid.v1()}>
@@ -371,20 +390,49 @@ const CompanyUser: React.FC = () => {
   };
 
   return (
-    <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonRightContentSlot={rightButton}
-        buttonLeftContentSlot={leftSearch}
-        getSelectData={(data) => setTableSelectRow(data)}
-        tableTitle="公司用户"
-        url="/CompanyUser/GetPagedList"
-        columns={columns}
-        extractParams={{
-          keyWord: searchKeyWord,
-          userStatus: status,
-        }}
-      />
+    <PageCommonWrap noPadding={true}>
+      <div className={styles.companyUser}>
+        <div className={styles.accreditNumber}>
+          <div className="flex1">
+            <div className={styles.accreditTitle}>
+              <CommonTitle noPadding={true}>授权数</CommonTitle>
+            </div>
+            <div className="flex">
+              <div className={styles.accreditStatisticItem}>
+                <AccreditStatistic label="勘察端" icon="prospect" accreditData={handleData?.[1]} />
+              </div>
+              <div className={styles.accreditStatisticItem}>
+                <AccreditStatistic label="设计端" icon="design" accreditData={handleData?.[2]} />
+              </div>
+              <div className={styles.accreditStatisticItem}>
+                <AccreditStatistic label="技经端" icon="skillBy" accreditData={handleData?.[4]} />
+              </div>
+              <div className={styles.accreditStatisticItem}>
+                <AccreditStatistic label="评审端" icon="review" accreditData={handleData?.[3]} />
+              </div>
+              <div className={styles.accreditStatisticItem}>
+                <AccreditStatistic label="管理端" icon="manage" accreditData={handleData?.[0]} />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.userTable}>
+          <GeneralTable
+            ref={tableRef}
+            buttonRightContentSlot={rightButton}
+            buttonLeftContentSlot={leftSearch}
+            getSelectData={(data) => setTableSelectRow(data)}
+            tableTitle="公司用户"
+            url="/CompanyUser/GetPagedList"
+            columns={columns}
+            extractParams={{
+              keyWord: searchKeyWord,
+              userStatus: status,
+            }}
+          />
+        </div>
+      </div>
+
       <Modal
         maskClosable={false}
         title="添加-公司用户"

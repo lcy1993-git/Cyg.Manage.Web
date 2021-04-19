@@ -252,7 +252,6 @@ const ProjectManagement: React.FC = () => {
 
     //await recallShare(projectIds);
     //message.success('撤回共享成功');
-    //refresh();
   };
 
   const shareEvent = async () => {

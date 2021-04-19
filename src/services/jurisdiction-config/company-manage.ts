@@ -11,12 +11,12 @@ interface CompanyManageItemParams {
   // 备注
   remark: string;
   // 公司用户库存
-  userStock: number;
+  userSkuQtys: object[];
 }
 
 interface ItemDetailData extends CompanyManageItemParams {
   id: string;
-  //   addUserStock: number;
+  skus: object[];
 }
 
 export interface TreeDataItem extends CompanyManageItemParams {
@@ -53,5 +53,3 @@ export const updateCompanyManageItem = (params: TreeDataItem) => {
     request(`${baseUrl.project}/Company/Modify`, { method: 'POST', data: params }),
   );
 };
-
-
