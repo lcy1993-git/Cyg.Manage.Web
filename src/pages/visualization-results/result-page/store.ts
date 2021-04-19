@@ -11,6 +11,8 @@ export interface VisualizationResultsStateType {
   materialModalShow?: boolean;
   projectDetailModalShow?: boolean;
   propertySidePopupShow?: boolean;
+  visibleLeftSidebar: boolean;  // 左侧边栏伸缩状态
+  sideRightActiveId: string; // 右侧边栏的回调ID
 }
 
 function useVisualizationState(
@@ -19,7 +21,9 @@ function useVisualizationState(
     propertySidePopupShow: false,
     projectDetailModalShow: false,
     materialModalShow: false,
-    checkedProjectIdList: [{id: '1382687501508292609'}]
+    checkedProjectIdList: [{id: '1382687501508292609'}],
+    visibleLeftSidebar: true,
+    sideRightActiveId: ""
   },
 ) {
   let [vState, setVState] = useState(initialState);
@@ -30,12 +34,20 @@ function useVisualizationState(
   };
   //属性侧边弹窗触发
   const togglePropertySidePopup = () => {
-    
-    
     setVState({ ...vState, propertySidePopupShow: !vState.propertySidePopupShow });
   };
 
-  return { vState, setFilterCondition, togglePropertySidePopup };
+  // 左侧菜单栏伸缩事件
+  const setVisibleLeftSidebar = () => {
+    setVState({ ...vState, visibleLeftSidebar: !vState.visibleLeftSidebar });
+  };
+
+  // 设置右侧边栏ID
+  const setSideRightActiveId = (id: string) => {
+    setVState({ ...vState, sideRightActiveId: id });
+  };
+
+  return { vState, setFilterCondition, togglePropertySidePopup, setVisibleLeftSidebar, setSideRightActiveId };
 }
 
 let store = createContainer(useVisualizationState);
