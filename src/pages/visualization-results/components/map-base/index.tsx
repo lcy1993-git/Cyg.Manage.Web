@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Footer from '../footer';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
@@ -7,7 +7,8 @@ import GeoJSON from 'ol/format/GeoJSON';
 import VectorSource from 'ol/source/Vector';
 import { mapClick } from '../../utils';
 import { useMount } from 'ahooks';
-import { initLayers, initOtherLayers, initView, initOtherLayersState } from '../../utils';
+import Layer from 'ol/layer/Layer';
+import { layerParams } from '../../utils';
 import { loadLayer } from '@/services/visualization-results/visualization-results';
 import { pointStyle, line_style, cable_channel_styles, mark_style, fzx_styles } from '../../utils/pointStyle';
 import styles from './index.less';
@@ -16,9 +17,10 @@ import MapContainer from '../map-container/index'
 const BaseMap = (props: any) => {
 
   const [map, setMap] = useState<Map | null>(null);
-
   const mapElement = useRef(null)
-  const { layers, layerGroups=[], view} = props;
+  const { layers, layerGroups=[], view, setView, setLayerGroups} = props;
+
+  const projects = [{id: '1382687501508292609'}];
 
   useMount(() => {
     const initialMap = new Map({
@@ -41,11 +43,6 @@ const BaseMap = (props: any) => {
     setMap(initialMap);
   });
 
-  const mapTest = (s: any) => {
-    console.log(MapContainer);
-  }
-
-
   const groupLayers: Layer[] = [];
   interface Project {
     id: string
@@ -53,94 +50,9 @@ const BaseMap = (props: any) => {
     status?: string
   }
 
-  const layerParams = [
-    {
-      layerName: 'user_line', // 下户线
-      zIndex: 1,
-      declutter: false,
-      type: 'line'
-    },
-    {
-      layerName: 'cable_channel', // 电缆通道
-      zIndex: 1,
-      declutter: false,
-      type: 'cable_channel'
-    },
-    {
-      layerName: 'mark', // 地物
-      zIndex: 1,
-      declutter: false,
-      type: 'mark'
-    },
-    {
-      layerName: 'line',
-      zIndex: 2,
-      declutter: false,
-      type: 'line'
-
-    },
-    {
-      layerName: 'subline', // 辅助线
-      zIndex: 2,
-      declutter: false,
-      type: 'line'
-    },
-    {
-      layerName: 'electric_meter', // 户表
-      zIndex: 2,
-      declutter: false,
-      type: 'point'
-    },
-    {
-      layerName: 'cable',
-      zIndex: 3,
-      declutter: false,
-      type: 'point'
-    },
-    {
-      layerName: 'tower',
-      zIndex: 4,
-      declutter: false,
-      type: 'point'
-    },
-    {
-      layerName: 'transformer', // 变压器
-      zIndex: 5,
-      declutter: false,
-      type: 'point'
-    },
-    {
-      layerName: 'cable_equipment', // 电气设备
-      zIndex: 6,
-      declutter: false,
-      type: 'point'
-    },
-    {
-      layerName: 'cable_head', // 电缆头
-      zIndex: 7,
-      declutter: false,
-      type: 'point'
-    },
-    {
-      layerName: 'cross_arm', // 横担
-      zIndex: 8,
-      declutter: false,
-      type: 'point'
-    },
-    {
-      layerName: 'over_head_device', // 杆上设备
-      zIndex: 9,
-      declutter: false,
-      type: 'point'
-    }
-  ]
-
-  // 事件
-  const onTest = function () {
-    refreshMap([{
-      id: '1382687501508292609'
-    }]);
-  }
+  useEffect(()=> {
+    refreshMap(projects)
+  }, [JSON.stringify(projects)])
 
   // 根据名称获取图层
   const getLayerByName = (name: string): any => {
@@ -324,7 +236,7 @@ const BaseMap = (props: any) => {
 
     if (features.length > 0) {
       source.addFeatures(features);
-      view.fit(source.getExtent(), map.getSize());
+      view.fit(source.getExtent(), map!.getSize());
       setView(view);
     }
 
@@ -332,7 +244,6 @@ const BaseMap = (props: any) => {
 
   return (
     <>
-    <button onClick={() => mapTest("这是一个参数")}>Map实列DEMO</button>
     <div ref={mapElement} className={styles.mapBox}></div>
     <Footer />
     </>
