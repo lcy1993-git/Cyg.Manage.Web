@@ -4,6 +4,7 @@ import Map from 'ol/Map';
 import { mapClick } from '../../utils';
 import { useMount } from 'ahooks';
 import styles from './index.less';
+import MapContainer from '../map-container/index'
 
 const BaseMap = (props: any) => {
 
@@ -34,7 +35,7 @@ const BaseMap = (props: any) => {
   });
 
   const mapTest = (s: any) => {
-    console.log(s)
+    console.log(MapContainer);
   }
 
   return (
