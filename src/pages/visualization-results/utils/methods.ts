@@ -10,3 +10,4 @@ export const clearHighlightLayer = () => {
   // 关闭右侧属性框 
 
 }
+

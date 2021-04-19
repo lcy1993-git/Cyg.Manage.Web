@@ -41,7 +41,7 @@ const StoreProvider: React.FC<StoreProps> = () => {
     filterCondition: { kvLevel: -1 },
   };
   return (
-    <Provider initialState={initialState}>
+    <Provider>
       <VisualizationResults />
     </Provider>
   );

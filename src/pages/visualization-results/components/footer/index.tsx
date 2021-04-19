@@ -1,7 +1,15 @@
-import React, { FC } from 'react';
+import React from 'react';
 import styles from './index.less';
 
-const Footer: FC = () => {
+interface Props {
+  onlocationClick: ()=> void;
+  currentPosition: [number, number];
+  scaleSize: number;
+  onSatelliteMapClick: ()=> void;
+  onStreetMapClick: ()=> void;
+}
+
+const Footer= (props: Props) => {
   return (
     <div className={`${styles.footerContainer} flex`}>
       <div className={styles.icon}>1</div>
