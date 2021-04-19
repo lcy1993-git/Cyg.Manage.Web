@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import Footer from '../footer';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
 import { mapClick } from '../../utils';
@@ -42,6 +43,7 @@ const BaseMap = (props: any) => {
     <>
     <button onClick={() => mapTest("这是一个参数")}>Map实列DEMO</button>
     <div ref={mapElement} className={styles.mapBox}></div>
+    <Footer />
     </>
   );
 }

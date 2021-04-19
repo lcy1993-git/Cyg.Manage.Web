@@ -15,7 +15,7 @@ const MapContainer = (props: any) => {
 
   // 图层
   const [layers, setLayers] = useState<Layer[]>(initLayers(mapData));
-  const [layerGroups, setOtherLayers] = useState<LayerGroup[]>(initOtherLayers());
+  const [layerGroups, setLayerGroups] = useState<LayerGroup[]>(initOtherLayers());
 
   const [layersState, setLayersState] = useState(0);
   const [otherlayersState, setOtherLayerState] = useState(initOtherLayersState);
@@ -181,7 +181,7 @@ const MapContainer = (props: any) => {
     loadPlanLayers(wfsBaseURL, postData);
     loadDesignLayers(wfsBaseURL, postData);
     loadDismantleLayers(wfsBaseURL, postData);
-    setOtherLayers(layerGroups);
+    setLayerGroups(layerGroups);
   }
 
   const loadSurveyLayers = (url: string, postData: string) => {
@@ -303,21 +303,20 @@ const MapContainer = (props: any) => {
       source.addFeatures(features);
       view.fit(source.getExtent(), map.getSize());
       setView(view);
-  }
+    }
 
   }
 
   return (
     <div className={styles.mapContainerBox}>
-      <button onClick={onTest}>
-        图层测试DEMO
-      </button>
-
       <MapBase
         layers={layers}
-        otherLayers={layerGroups}
+        setLayers={setLayers}
+        setLayerGroups={setLayerGroups}
+        layerGroups={layerGroups}
         controls={[]}
         view={view}
+        setView={setView}
       />
     </div>
   )
