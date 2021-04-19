@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MapContainer from '../map-container';
 import { useRequest } from 'ahooks';
 import { getMapList } from '@/services/visualization-results/visualization-results';
