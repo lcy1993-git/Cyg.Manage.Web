@@ -79,12 +79,12 @@ export const initOtherLayers = (): LayerGroup[] => {
   dismantleLayer.set('name', 'dismantleLayer');
 
   // 跟踪图
-  const surveyTrackLayer = new Group();
+  // const surveyTrackLayer = new Group();
 
   // 高亮图层
   // const dismantleLayers = new
 
-  return [surveyLayer, planLayer, designLayer, dismantleLayer, surveyTrackLayer];
+  return [surveyLayer, planLayer, designLayer, dismantleLayer];
 }
 
 // 状态

@@ -1,4 +1,4 @@
-export const layerParams = [
+export const layerParams: any = [
   {
     layerName: 'user_line', // 下户线
     zIndex: 1,
@@ -17,13 +17,13 @@ export const layerParams = [
     declutter: false,
     type: 'mark'
   },
-  {
-    layerName: 'line',
-    zIndex: 2,
-    declutter: false,
-    type: 'line'
+  // {
+  //   layerName: 'line',
+  //   zIndex: 2,
+  //   declutter: false,
+  //   type: 'line'
 
-  },
+  // },
   {
     layerName: 'subline', // 辅助线
     zIndex: 2,
@@ -36,18 +36,18 @@ export const layerParams = [
     declutter: false,
     type: 'point'
   },
-  {
-    layerName: 'cable',
-    zIndex: 3,
-    declutter: false,
-    type: 'point'
-  },
-  {
-    layerName: 'tower',
-    zIndex: 4,
-    declutter: false,
-    type: 'point'
-  },
+  // {
+  //   layerName: 'cable',
+  //   zIndex: 3,
+  //   declutter: false,
+  //   type: 'point'
+  // },
+  // {
+  //   layerName: 'tower',
+  //   zIndex: 4,
+  //   declutter: false,
+  //   type: 'point'
+  // },
   {
     layerName: 'transformer', // 变压器
     zIndex: 5,
