@@ -14,6 +14,11 @@ export interface TableDataType {
   propertyName: string;
   data: string;
 }
+
+export interface SidePopupProps {
+  visible?: boolean;
+  onClose: () => void;
+}
 const data: TableDataType[] = [];
 for (let i = 0; i < 10; i++) {
   data.push({
@@ -21,19 +26,10 @@ for (let i = 0; i < 10; i++) {
     data: `Edward King ${i}`,
   });
 }
-const SidePopup: FC = () => {
-  const [visible, setVisible] = useState(false);
-  const showDrawer = () => {
-    setVisible(true);
-  };
-  const onClose = () => {
-    setVisible(false);
-  };
+const SidePopup: FC<SidePopupProps> = (props) => {
+  const { visible, onClose } = props;
   return (
     <>
-      <Button type="primary" onClick={showDrawer}>
-        侧边弹出
-      </Button>
       <Drawer
         title="Basic Drawer"
         placement="right"
