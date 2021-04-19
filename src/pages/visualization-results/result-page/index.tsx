@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './index.less';
 import Filterbar from '../components/filter-bar';
 import classNames from 'classnames';
-import Footer from '../components/footer';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideMenu from '../components/side-menu';
 import MapContainerShell from '../components/map-container-shell';
@@ -29,7 +28,6 @@ const VisualizationResults: React.FC = () => {
         {/* map放在这 */}
         <MapContainerShell />
       </main>
-      <Footer />
 
       <SidePopup visible={propertySidePopupShow} onClose={() => togglePropertySidePopup()} />
     </PageCommonWrap>
@@ -37,9 +35,6 @@ const VisualizationResults: React.FC = () => {
 };
 
 const StoreProvider: React.FC<StoreProps> = () => {
-  const initialState: VisualizationResultsStateType = {
-    filterCondition: { kvLevel: -1 },
-  };
   return (
     <Provider>
       <VisualizationResults />
