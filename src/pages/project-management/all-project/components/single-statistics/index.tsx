@@ -8,7 +8,7 @@ interface SingleStatisticsProps {
 }
 
 const SingleStatistics:React.FC<SingleStatisticsProps> = (props) => {
-    const {label = "",icon = "awaitProcess"} = props;
+    const {label = "",icon = "awaitProcess"} = props;    
 
     const imgSrc = require("../../../../../assets/image/project-management/"+icon+".png");
 
