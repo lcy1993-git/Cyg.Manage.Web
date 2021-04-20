@@ -1,6 +1,4 @@
 // 属性栏字段转中文
-
-
 function getMappingTagsDictionary() {
   let mappingTagsDictionary: any = {};
   const enumsData = localStorage.getItem('loadEnumsData')

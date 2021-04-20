@@ -1,5 +1,5 @@
-import Layer from "ol/layer/Layer";
-import Source from "ol/source/Source";
+// import Layer from "ol/layer/Layer";
+// import Source from "ol/source/Source";
 
 export const clearHighlightLayer = () => {
 
@@ -10,3 +10,4 @@ export const clearHighlightLayer = () => {
   // 关闭右侧属性框 
 
 }
+

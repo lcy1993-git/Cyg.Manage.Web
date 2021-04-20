@@ -1,17 +1,34 @@
 import request from '@/utils/request';
 
+var ip = '171.223.214.154';
 const webConfig = {
-  publicServiceServerIP: "171.223.214.154",
-  designSideInteractiveServiceServerIP: "171.223.214.154",
-  resourceServiceServerIP: "171.223.214.154",
-  manageSideInteractiveServiceServerIP_V2: "171.223.214.154",
-  manageSideInteractiveServiceServerIP: "171.223.214.154",
-  resourceServiceServerPort: "8016",
-  designSideInteractiveServiceServerPort: "8016",
-  manageSideInteractiveServiceServerPort: "8016",
-  manageSideInteractiveServiceServerPort_V2: "8016",
-  publicServiceServerPort: "8016",
+  satelliteServerIP: ip,
+        satelliteServerPort: ':8020',
+        geoServerIP: ip,
+        geoServerPort: ':8099',
+        manageSideInteractiveServiceServerIP: ip,
+        manageSideInteractiveServiceServerPort: ':8025',
+        manageSideInteractiveServiceServerIP_V2: ip,
+        manageSideInteractiveServiceServerPort_V2: ':8026',
+        designSideInteractiveServiceServerIP: ip,
+        designSideInteractiveServiceServerPort: ':8014',
+        publicServiceServerIP: ip,
+        publicServiceServerPort: ':8022',
+        engineeringBusinessServiceServerIP: ip,
+        engineeringBusinessServiceServerPort: ':8013',
+        fileStorageServiceServerIP: ip,
+        fileStorageServiceServerPort: ':8023',
+        resourceServiceServerIP: ip,
+        resourceServiceServerPort: ':8015',
+        webSocketIP: ip,
+        webSocketPort: ':8032'
 };
+
+export interface ProjectList {
+  id: string;
+  time?: string;   // '2021-04-19'
+  status?: string
+}
 
 // 获取地图资源
 export const getMapList = (params: any) => {
@@ -82,12 +99,12 @@ export const loadLayer: any = (url: any, postData: any, layerName: any) => {
 
 // FindLineDetailInfo线条
 export const findLineDetailInfo = (params: any) => {
-  return request(`http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/FindLineDetailInfo`, { method: 'GET', data: {...params}})
+  return request(`http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/FindLineDetailInfo`, { method: 'POST', data: {...params}})
 }
 
 // 定位当前用户位置；调用的是百度定位api
 export const initIpLocation = () => {
-  request('https://map.baidu.com/?qt=ipLocation&t=' + new Date().getTime());
+  request('/baidu/api?qt=ipLocation&t=' + new Date().getTime());
 }
 
 // 加载项目中所需的枚举

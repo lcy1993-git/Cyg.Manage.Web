@@ -1,0 +1,323 @@
+import LayerGroup from "ol/layer/Group";
+import { ProjectList, loadLayer, findLineDetailInfo } from "@/services/visualization-results/visualization-results";
+import { layerParams } from './mapdata';
+import VectorSource from 'ol/source/Vector';
+import Vector from 'ol/layer/Vector';
+import GeoJSON from 'ol/format/GeoJSON';
+import { pointStyle, line_style, cable_channel_styles, mark_style, fzx_styles } from '../utils/pointStyle';
+import Layer from "ol/layer/Layer";
+import Point from "ol/geom/Point";
+import { transform } from "ol/proj";
+import Feature from "ol/Feature";
+
+const refreshMap = (ops: any, projects: ProjectList[], location: boolean = true, time?: string) => {
+  const { setLayerGroups, layerGroups: groupLayers, view, setView, map, kvLevel } = ops;
+  clearGroups(groupLayers);
+  if (projects.length === 0)
+    return;
+  let wfsBaseURL = 'http://171.223.214.154:8099/geoserver/pdd/ows';
+  let xmlData = "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
+  let postData = "";
+  xmlData += "<ogc:Filter><Or>";
+  projects.forEach((project: ProjectList) => {
+    let projectId = project.id;
+    let projectTime = project.time;
+    if (time && projectTime) {
+      if (new Date(time).getTime() >= new Date(projectTime).getTime())
+        postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+    } else {
+      postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+    }
+  });
+  postData = xmlData + postData + "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
+
+  loadSurveyLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
+  loadPlanLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
+  loadDismantleLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
+  loadDesignLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers, view, setView, map);
+
+  setLayerGroups(groupLayers);
+}
+
+const loadSurveyLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
+  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('surveyLayer', groupLayers), 'survey', 1, groupLayers);
+}
+
+const loadPlanLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
+  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('planLayer', groupLayers), 'plan', 2, groupLayers);
+}
+
+const loadDesignLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[], view: any, setView: any, map: any) => {
+  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('designLayer', groupLayers), 'design', 3, groupLayers);
+  loadWFS(projects, url, postData, 'pdd:design_pull_line', (data: any) => {
+    if (groupLayers['design_pull_line']) {
+      groupLayers['design_pull_line'].getSource().clear();
+    } else {
+      var source = new VectorSource();
+      groupLayers['design_pull_line'] = new Vector({
+        source,
+        zIndex: 1,
+        // declutter: true
+      });
+      groupLayers['design_pull_line'].set('name', 'design_pull_line');
+      getLayerGroupByName('designLayer', groupLayers).getLayers().push(groupLayers['design_pull_line']);
+    }
+    if (data.features != undefined && data.features.length > 0) {
+      let pJSON = (new GeoJSON()).readFeatures(data);
+      for (var i = 0; i < pJSON.length; i++) {
+        pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
+        let s = pointStyle('design_pull_line', pJSON[i], false);
+        pJSON[i].setStyle(s);
+      }
+      groupLayers['design_pull_line'].getSource().addFeatures(pJSON);
+    }
+    relocateMap('', groupLayers, view, setView, map);
+  })
+}
+
+const loadDismantleLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
+  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('dismantleLayer', groupLayers), 'dismantle', 4, groupLayers);
+}
+
+const loadLayers = async (kvLevel: any, projects: ProjectList[], url: string, postData: string, group: LayerGroup, layerType: string, layerTypeId: number, groupLayers: LayerGroup[]) => {
+  let queryFlag = false;
+  await loadWFS(projects, url, postData, 'pdd:' + layerType + '_line', async (data: any) => {
+    if (groupLayers[layerType + '_line']) {
+      groupLayers[layerType + '_line'].getSource().clear();
+    } else {
+      let source = new VectorSource();
+      groupLayers[layerType + '_line'] = new Vector({
+        source,
+        zIndex: 2,
+        declutter: true
+      });
+      groupLayers[layerType + '_line'].set('name', layerType + '_line');
+      group.getLayers().push(groupLayers[layerType + '_line']);
+    }
+    let data_: any = {
+      type: "FeatureCollection",
+      features: []
+    }
+    if (data.features && data.features.length > 0) {
+      let lineIds: any = [];
+      data.features.forEach((feature: any) => {
+        if (kvLevel == -1 || feature.properties.kv_level == kvLevel) {
+          data_.features.push(feature);
+          if (feature.properties.kv_level == kvLevel) {
+            lineIds.push(feature.id.split('.')[1])
+            queryFlag = true
+          }
+        }
+      })
+      let pJSON = (new GeoJSON()).readFeatures(data_);
+      for (var i = 0; i < pJSON.length; i++) {
+        pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
+        let style = line_style(pJSON[i], false, layerType);
+        pJSON[i].setStyle(style);
+      }
+      groupLayers[layerType + '_line'].getSource().addFeatures(pJSON);
+
+      if (lineIds.length == 0)
+        return;
+
+      let params: any = {
+        lineId: lineIds,
+        layerType: layerTypeId
+      }
+      let promise = findLineDetailInfo(params);
+      promise.then((data: any) => {
+        if (data.isSuccess && data.content.length > 0) {
+          data.content.forEach((d: any) => {
+            let feature1, feature2;
+            if (d.detail.object1) {
+              let lon1 = d.detail.object1.lon;
+              let lat1 = d.detail.object1.lat;
+              let point1 = new Point(transform([lon1, lat1], 'EPSG:4326', 'EPSG:3857'));
+              feature1 = new Feature({
+                ...d.detail.object1,
+                geometry: point1
+              });
+              feature1.setId(layerType + '.' + d.detail.object1.id);
+            }
+
+            if (d.detail.object2) {
+              let lon2 = d.detail.object2.lon;
+              let lat2 = d.detail.object2.lat;
+              let point2 = new Point(transform([lon2, lat2], 'EPSG:4326', 'EPSG:3857'));
+              feature2 = new Feature({
+                ...d.detail.object2,
+                geometry: point2
+              });
+              feature2.setId(layerType + '.' + d.detail.object2.id);
+            }
+
+            if (d.detail.nodeType1 == 1 || d.detail.nodeType2 == 1) {
+              if (d.detail.nodeType1 == 1) {
+                if (feature1) {
+                  feature1.setStyle(pointStyle(layerType + '_tower', feature1, false));
+                  groupLayers[layerType + '_tower'].getSource().addFeature(feature1);
+                }
+              } else {
+                if (feature2) {
+                  feature2.setStyle(pointStyle(layerType + '_tower', feature2, false));
+                  groupLayers[layerType + '_tower'].getSource().addFeature(feature2);
+                }
+              }
+            } else if (d.detail.nodeType1 == 2 || d.detail.nodeType2 == 2) {
+              if (d.detail.nodeType1 == 2) {
+                if (feature1) {
+                  feature1.setStyle(pointStyle(layerType + '_cable', feature1, false));
+                  groupLayers[layerType + '_cable'].getSource().addFeature(feature1);
+                }
+              } else {
+                if (feature2) {
+                  feature2.setStyle(pointStyle(layerType + '_cable', feature2, false));
+                  groupLayers[layerType + '_cable'].getSource().addFeature(feature2);
+                }
+              }
+            }
+          })
+        }
+      })
+    }
+  })
+
+  console.log(queryFlag);
+  if (!queryFlag) {
+    layerParams.push({
+      layerName: 'tower',
+      zIndex: 4,
+      type: 'point'
+    })
+    layerParams.push({
+      layerName: 'cable',
+      zIndex: 3,
+      type: 'point'
+    })
+  }
+
+  layerParams.forEach((item: any) => {
+    let layerName = item.layerName;
+    loadWFS(projects, url, postData, 'pdd:' + layerType + '_' + layerName, (data: any) => {
+      if (groupLayers[layerType + '_' + layerName]) {
+        groupLayers[layerType + '_' + layerName].getSource().clear();
+      } else {
+        let source = new VectorSource();
+        groupLayers[layerType + '_' + layerName] = new Vector({
+          source,
+          zIndex: item.zIndex,
+          declutter: item.declutter
+        });
+        groupLayers[layerType + '_' + layerName].set('name', layerType + '_' + layerName);
+        group.getLayers().push(groupLayers[layerType + '_' + layerName]);
+      }
+
+      if (data.features && data.features.length > 0) {
+        let pJSON = (new GeoJSON()).readFeatures(data);
+        for (var i = 0; i < pJSON.length; i++) {
+          pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
+          let style;
+          if (item.type == 'line') {
+            style = line_style(pJSON[i], false, layerType);
+          } else if (item.type == 'point') {
+            style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
+          } else if (item.type == 'cable_channel') {
+            style = cable_channel_styles(pJSON[i]);
+          } else if (item.type == 'mark') {
+            style = mark_style(pJSON[i]);
+          } else if (item.type == 'subline') {
+            style = fzx_styles();
+          }
+          pJSON[i].setStyle(style);
+        }
+        groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
+      }
+    })
+  })
+}
+
+// 清楚所有图层组中的数据
+const clearGroups = (layerGroups: LayerGroup[]) => {
+  layerGroups.forEach((item: LayerGroup) => {
+    item.getLayers().forEach((layer: any) => {
+      layer.getSource().clear();
+    });
+  });
+}
+
+/**
+ * 通过wfs方式获取数据
+ * @param url 
+ * @param postData 
+ * @param layerName 
+ * @param callBack 
+ */
+const loadWFS = async (projects: ProjectList[], url: string, postData: string, layerName: string, callBack: (o: any) => void) => {
+  const promise = loadLayer(url, postData, layerName);
+  await promise.then((data: any) => {
+    if (data.features && data.features.length > 0) {
+      let flag;
+      projects.forEach((project) => {
+        if (project.id === data.features[0].properties.project_id)
+          flag = true;
+      })
+      flag && callBack(data);
+    }
+  })
+}
+
+// 根据名称获取图层
+const getLayerByName = (name: string, layers: Layer[]): any => {
+  let layer = null;
+  layers.forEach((item: Layer) => {
+    if (item.get('name') === name) {
+      layer = item;
+    }
+  });
+  return layer;
+}
+
+// 根据名称获取图层组
+const getLayerGroupByName = (name: string, layerGroups: LayerGroup[]): any => {
+  let layerGroup = null;
+  layerGroups.forEach((item: LayerGroup) => {
+    if (item.get('name') === name) {
+      layerGroup = item;
+    }
+  });
+  return layerGroup;
+}
+
+// 根据项目进行定位
+const relocateMap = (projectId: string = "", layerGroups: LayerGroup[], view: any, setView: any, map: any) => {
+  let features: any = [];
+  let source = new VectorSource();
+  layerGroups.forEach((layerGroup: LayerGroup) => {
+    layerGroup.getLayers().getArray().forEach((layer: any) => {
+      let fs = layer.getSource().getFeatures();
+      if (fs.length > 0) {
+        if (!projectId) {
+          features = features.concat(fs);
+        } else {
+          fs.forEach((feature: any) => {
+            if (projectId === feature.getProperties().project_id)
+              features.push(feature);
+          })
+        }
+      }
+    })
+  })
+
+  if (features.length > 0) {
+    source.addFeatures(features);
+    view.fit(source.getExtent(), map!.getSize());
+    setView(view);
+  }
+
+}
+
+export {
+  refreshMap
+};
+
+

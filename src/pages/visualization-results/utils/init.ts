@@ -24,33 +24,37 @@ export const initLayers = (resData: any): Layer[] => {
   });
 
   // 卫星图
-  vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
-  const vecLayer = new TileLayer({
+  imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  const imgLayer = new TileLayer({
     source: new XYZ({
         url: decodeURI(vecUrl),
     }),
     preload: 18
   });
+  imgLayer.set('name', 'imgLayer');
 
   // 街道图
-  imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
-  const imgLayer = new TileLayer({
+  vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  const vecLayer = new TileLayer({
     source: new XYZ({
         url: decodeURI(imgUrl) ,
     }),
     preload: 18
   });
+  vecLayer.setVisible(false);
+  vecLayer.set('name', 'vecLayer');
 
   // ann图
-  const annUrl = "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  const annUrl = "https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
   const annLayer = new TileLayer({
     source: new XYZ({
         url: decodeURI(annUrl),
     }),
     preload: 18
   });
+  annLayer.set('name', 'annLayer');
 
-  return [vecLayer, imgLayer, annLayer];
+  return [imgLayer, vecLayer, annLayer];
 }
 
 export const initOtherLayers = (): LayerGroup[] => {
@@ -58,25 +62,29 @@ export const initOtherLayers = (): LayerGroup[] => {
   const surveyLayer = new Group();
   surveyLayer.setOpacity(0.5);
   surveyLayer.setVisible(false);
+  surveyLayer.set('name', 'surveyLayer');
 
   // 方案图
   const planLayer = new Group();
   planLayer.setVisible(false);
+  planLayer.set('name', 'planLayer');
 
   // 设计图
   const designLayer = new Group();
+  designLayer.set('name', 'designLayer');
 
   // 拆除图
   const dismantleLayer = new Group()
   dismantleLayer.setVisible(false);
+  dismantleLayer.set('name', 'dismantleLayer');
 
   // 跟踪图
-  const surveyTrackLayer = new Group();
+  // const surveyTrackLayer = new Group();
 
   // 高亮图层
   // const dismantleLayers = new
 
-  return [surveyLayer, planLayer, designLayer, dismantleLayer, surveyTrackLayer];
+  return [surveyLayer, planLayer, designLayer, dismantleLayer];
 }
 
 // 状态
