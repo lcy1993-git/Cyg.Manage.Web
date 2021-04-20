@@ -1,0 +1,33 @@
+.addMinus {
+  display: flex;
+  align-items: baseline;
+  .clickArea {
+    display: flex;
+    width: 132px;
+    height: 33px;
+    border: 1px solid #e5e5e5;
+    .minusBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+    }
+    .numberArea {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      :global {
+        .ant-input {
+          height: 33px;
+        }
+      }
+    }
+    .addBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+    }
+  }
+}
