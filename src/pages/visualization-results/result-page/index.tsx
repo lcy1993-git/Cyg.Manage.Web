@@ -14,24 +14,33 @@ interface StoreProps {
 
 const VisualizationResults: React.FC = () => {
   const { vState, togglePropertySidePopup } = useContainer();
-  const { propertySidePopupShow } = vState;
+  const { propertySidePopupShow, visibleLeftSidebar } = vState;
+
+  console.log(visibleLeftSidebar);
+
   return (
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
 
       <Filterbar />
 
-      <main className={classNames(styles.content, 'flex')}>
+      <main
+        className={classNames(
+          styles.content,
+          'flex',
+          visibleLeftSidebar ? styles.sideNavShow : styles.sideNavHide,
+        )}
+      >
         {/* 侧边树形结构 */}
-        <SideMenu />
 
-        {/* map放在这 */}
-        <div className={'flex1'}>
-          <MapContainerShell />
+        <div className={styles.sideNav}>
+          <SideMenu />
         </div>
 
-
-
+        {/* map放在这 */}
+        <div className={classNames(styles.mapContainer, 'flex1')}>
+          <MapContainerShell />
+        </div>
       </main>
 
       <SidePopup visible={propertySidePopupShow} onClose={() => togglePropertySidePopup()} />

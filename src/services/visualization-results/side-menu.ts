@@ -21,20 +21,21 @@ export interface EngineerProjetListFilterParams {
  * @returns
  *
  * */
-export const GetEngineerProjectList = (id?: number) => {
-  return cyRequest<any>(() =>
-    request(
-      `${baseUrl.webGis}/WebGis/GetEngineerProjectList
-  `,
-      { method: 'POST', data: { kvLevel: -1 } },
-    ),
-  );
-};
 
 export const GetEngineerProjectListByParams = (params: EngineerProjetListFilterParams) => {
   return cyRequest<any>(() =>
     request(
       `${baseUrl.webGis}/WebGis/GetEngineerProjectList
+    `,
+      { method: 'POST', data: params },
+    ),
+  );
+};
+
+export const GetEngineerCompanyProjectListByParams = (params: EngineerProjetListFilterParams) => {
+  return cyRequest<any>(() =>
+    request(
+      `${baseUrl.webGis}/WebGis/GetCompanyEngineerProjectList
     `,
       { method: 'POST', data: params },
     ),
