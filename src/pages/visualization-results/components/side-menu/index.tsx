@@ -4,7 +4,10 @@ import styles from './index.less';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest } from 'ahooks';
 import moment from 'moment';
-import { GetEngineerProjectListByParams } from '@/services/visualization-results/side-menu';
+import {
+  GetEngineerProjectListByParams,
+  GetEngineerCompanyProjectListByParams,
+} from '@/services/visualization-results/side-menu';
 import { useContainer } from '../../result-page/store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 
@@ -42,6 +45,20 @@ export interface ProjectItemType {
   status: number;
 }
 
+export interface CompanyProjectType {
+  companyId: string;
+  companyName: string;
+  createdOn: number;
+  engineers: Engineer[];
+}
+
+export interface Engineer {
+  name: string;
+  id: string;
+  createdOn: number;
+  projects: ProjectItemType[];
+}
+
 /**
  * 把传进来的projectList数据传唤成需要的数组类型
  * @param projectItemsType
@@ -62,6 +79,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>();
   const [projectIdList, setProjectIds] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
+  const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [parenKeys, setParentKeys] = useState<string[]>([]);
   const { vState, setProjectIdList } = useContainer();
@@ -94,6 +112,44 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
             },
           ]);
           setExpandedKeys(['-1']);
+        } else {
+          message.warning('没有检索到数据');
+        }
+      },
+      onError: () => {
+        message.warning('获取数据失败');
+      },
+    },
+  );
+
+  /**
+   * 获取地州项目
+   */
+  const { data: companyData, run: fetchCompanyDate, loading: companyLoading } = useRequest(
+    GetEngineerCompanyProjectListByParams,
+
+    {
+      refreshDeps: [filterCondition],
+      manual: true,
+      onSuccess: () => {
+        if (companyData.length) {
+          console.log(123);
+
+          let reShapeData = companyData.map((v: CompanyProjectType) => {
+            return {
+              title: v.companyName,
+              key: v.companyId,
+              children: v.engineers.map((v: Engineer) => {
+                return {
+                  title: v.name,
+                  key: v.id,
+                  children: mapProjects2TreeNodeData(v.projects),
+                };
+              }),
+            };
+          });
+
+          setTreeData(reShapeData);
         } else {
           message.warning('没有检索到数据');
         }
@@ -153,13 +209,22 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
     setCheckedKeys(checked);
   };
 
+  const onTabChange = (activeKey: string) => {
+    setProjectIdList([]);
+
+    if (activeKey === '1') {
+      fetchAll();
+    } else {
+      fetchCompanyDate(filterCondition);
+    }
+  };
   useEffect(() => {
     setProjectIdList(projectIdList);
   }, [checkedKeys]);
 
   return (
     <div className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
-      <Tabs type="line" defaultActiveKey="1" style={{ height: '100%' }}>
+      <Tabs onChange={onTabChange} type="line" defaultActiveKey="1" style={{ height: '100%' }}>
         <TabPane tab="全部项目" key="1">
           {allLoading ? (
             <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
@@ -177,15 +242,20 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
           ) : null}
         </TabPane>
         <TabPane tab="地州项目" key="2">
-          <Tree
-            checkable
-            onExpand={onExpand}
-            expandedKeys={expandedKeys}
-            checkedKeys={checkedKeys}
-            onCheck={onCheck}
-            className={classNames(styles.sideMenu)}
-            treeData={treeData}
-          />
+          {companyLoading ? (
+            <Spin spinning={companyLoading} className={styles.loading} tip="正在载入中..."></Spin>
+          ) : null}
+          {companyData ? (
+            <Tree
+              checkable
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              checkedKeys={checkedKeys}
+              onCheck={onCheck}
+              className={classNames(styles.sideMenu)}
+              treeData={treeData}
+            />
+          ) : null}
         </TabPane>
       </Tabs>
     </div>
