@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Footer from '../footer';
+import CtrolLayers from '../control-layers';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
 import { transform } from "ol/proj";
@@ -109,16 +110,15 @@ const BaseMap = (props: any) => {
   }
   return (
     <>
-      <div ref={mapElement} className={styles.mapBox}>
-        <div ></div>
-      </div>
-      <Footer
-        onlocationClick={onlocationClick}
-        currentPosition={currentPosition}
-        scaleSize={scaleSize}
-        onSatelliteMapClick={onSatelliteMapClick}
-        onStreetMapClick={onStreetMapClick}
-      />
+    <div ref={mapElement} className={styles.mapBox}></div>
+    <CtrolLayers />
+    <Footer
+      onlocationClick={onlocationClick}
+      currentPosition={currentPosition}
+      scaleSize={scaleSize}
+      onSatelliteMapClick={onSatelliteMapClick}
+      onStreetMapClick={onStreetMapClick}
+    />
     </>
   );
 }
