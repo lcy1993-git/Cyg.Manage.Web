@@ -317,7 +317,8 @@ const relocateMap = (projectId: string = "", layerGroups: LayerGroup[], view: an
 }
 
 export {
-  refreshMap
+  refreshMap,
+  getLayerByName
 };
 
 

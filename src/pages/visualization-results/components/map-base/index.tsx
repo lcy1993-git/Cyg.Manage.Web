@@ -3,28 +3,29 @@ import Footer from '../footer';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
 
-import { mapClick } from '../../utils';
+import { mapClick, mapPointermove } from '../../utils';
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
 import styles from './index.less';
-import { refreshMap } from '../../utils/refreshMap';
+import { refreshMap, getLayerByName } from '../../utils/refreshMap';
+import { initIpLocation } from '@/services/visualization-results/visualization-results';
 
 const BaseMap = (props: any) => {
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null)
-  const { layers, layerGroups, view, setView, setLayerGroups} = props;
+  const { layers, layerGroups, view, setView, setLayerGroups } = props;
 
   // footer相关数据
-  const [currentPosition, setCurrentPosition] = useState<[number, number]>([0,0]);
+  const [currentPosition, setCurrentPosition] = useState<[number, number]>([0, 0]);
   const [scaleSize, setScaleSize] = useState<number>(0)
   const [isSatelliteMap, setIsSatelliteMap] = useState<boolean>(true);
 
   // 从Vstate获取外部传入的数据
   const { vState } = useContainer();
-  const {checkedProjectIdList: projects, filterCondition} = vState;
-  const {kvLevel} = filterCondition;
-  
+  const { checkedProjectIdList: projects, filterCondition } = vState;
+  const { kvLevel } = filterCondition;
+
 
   // 挂载
   useMount(() => {
@@ -43,16 +44,17 @@ const BaseMap = (props: any) => {
       highlightLayer: null
     }
     // 地图点击事件
-    initialMap.on('click', (e: Event) => mapClick(e, initialMap, ops1))
+    initialMap.on('click', (e: Event) => mapClick(e, initialMap, ops1));
+    initialMap.on('pointermove', (e: Event) => mapPointermove(e,initialMap, setCurrentPosition));
 
-    const ops = {layers, layerGroups, view, setView, setLayerGroups, map:initialMap, kvLevel};
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel };
     refreshMap(ops, projects!)
     setMap(initialMap);
   });
 
   // 动态刷新refreshMap
-  useEffect(()=> {
-    const ops = {layers, layerGroups, view, setView, setLayerGroups, map};
+  useEffect(() => {
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map };
     map && refreshMap(ops, projects!)
   }, [JSON.stringify(projects)])
 
@@ -71,25 +73,31 @@ const BaseMap = (props: any) => {
 
   const onlocationClick = () => {
     // 当点击定位按钮时
+    let promise = initIpLocation();
+    console.log(promise)
   }
 
   const onSatelliteMapClick = () => {
     // 卫星图点击时
+    getLayerByName('imgLayer', layers).setVisible(true);
+    getLayerByName('vecLayer', layers).setVisible(false);
   }
 
   const onStreetMapClick = () => {
-    // 卫星图点击时
+    // 街道图点击时
+    getLayerByName('imgLayer', layers).setVisible(false);
+    getLayerByName('vecLayer', layers).setVisible(true);
   }
   return (
     <>
-    <div ref={mapElement} className={styles.mapBox}></div>
-    <Footer
-      onlocationClick={onlocationClick}
-      currentPosition={currentPosition}
-      scaleSize={scaleSize}
-      onSatelliteMapClick={onSatelliteMapClick}
-      onStreetMapClick={onStreetMapClick}
-    />
+      <div ref={mapElement} className={styles.mapBox}></div>
+      <Footer
+        onlocationClick={onlocationClick}
+        currentPosition={currentPosition}
+        scaleSize={scaleSize}
+        onSatelliteMapClick={onSatelliteMapClick}
+        onStreetMapClick={onStreetMapClick}
+      />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { initLayers, initOtherLayers, initView, initOtherLayersState } from './init';
-import mapClick from './mapClick';
+import {mapClick, mapPointermove} from './mapClick';
 import { layerParams } from "./mapdata";
 
 
@@ -9,5 +9,6 @@ export {
   initView,
   initOtherLayersState,
   mapClick,
+  mapPointermove,
   layerParams
 }
