@@ -62,6 +62,16 @@ const FilterBar: FC = () => {
    */
 
   const clear = () => {
+    setKeyWord('');
+    setCategory(undefined);
+    setPCategory(undefined);
+    setStage(undefined);
+    setConstructType(undefined);
+    setNature(undefined);
+    setKvLevel(undefined);
+    setStatuss(undefined);
+    setCreatedOn(undefined);
+    setsModiyDate(undefined);
     const condition = {
       keyWord: '',
       category: -1,
@@ -113,6 +123,7 @@ const FilterBar: FC = () => {
         <TableSearch className="mr10" label="立项时间" width="151px">
           <DatePicker
             placeholder="年"
+            value={createdOn}
             onChange={(date: Moment | null) => setCreatedOn(date)}
             suffixIcon={<DownOutlined />}
             picker="year"
@@ -122,6 +133,7 @@ const FilterBar: FC = () => {
           <DatePicker
             onChange={(date: Moment | null) => setsModiyDate(date)}
             placeholder="年"
+            value={modifyDate}
             suffixIcon={<DownOutlined />}
             picker="year"
           />
@@ -132,6 +144,7 @@ const FilterBar: FC = () => {
             maxTagTextLength={2}
             mode="multiple"
             allowClear
+            value={statuss}
             onChange={(values: number[]) => setStatuss(values)}
             style={{ width: '100%' }}
             placeholder="项目状态"
@@ -143,9 +156,10 @@ const FilterBar: FC = () => {
           <UrlSelect
             valueKey="value"
             titleKey="text"
-            defaultData={projectPType}
+            defaultData={projectCategory}
             dropdownMatchSelectWidth={168}
             className="widthAll"
+            value={category}
             onChange={(value) => setCategory(value as number)}
             placeholder="项目分类"
             needAll={true}
@@ -158,6 +172,7 @@ const FilterBar: FC = () => {
             titleKey="text"
             defaultData={projectPType}
             dropdownMatchSelectWidth={168}
+            value={pCategory}
             className="widthAll"
             onChange={(value) => setPCategory(value as number)}
             placeholder="项目类别"
@@ -171,6 +186,7 @@ const FilterBar: FC = () => {
             titleKey="text"
             defaultData={projectStage}
             className="widthAll"
+            value={stage}
             onChange={(value) => setStage(value as number)}
             placeholder="项目阶段"
             needAll={true}
@@ -181,6 +197,7 @@ const FilterBar: FC = () => {
           <UrlSelect
             valueKey="value"
             titleKey="text"
+            value={constructType}
             defaultData={projectConstructType}
             onChange={(value) => setConstructType(value as number)}
             className="widthAll"
@@ -195,6 +212,7 @@ const FilterBar: FC = () => {
             titleKey="text"
             defaultData={projectKvLevel}
             className="widthAll"
+            value={kvLevel}
             onChange={(value) => setKvLevel(value as number)}
             placeholder="电压等级"
             needAll={true}
@@ -207,6 +225,7 @@ const FilterBar: FC = () => {
             titleKey="text"
             defaultData={projectNature}
             dropdownMatchSelectWidth={168}
+            value={nature}
             onChange={(value) => setNature(value as number)}
             className="widthAll"
             placeholder="项目性质"

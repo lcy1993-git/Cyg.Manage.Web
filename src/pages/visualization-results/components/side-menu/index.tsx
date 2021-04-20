@@ -55,6 +55,7 @@ export interface CompanyProjectType {
 export interface Engineer {
   name: string;
   id: string;
+  type: string;
   createdOn: number;
   projects: ProjectItemType[];
 }
@@ -69,7 +70,7 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
     return {
       title: v.name,
       key: v.id,
-      time: moment(v.projectEndTime).format('YYYY-MM-DD'),
+      time: v.projectEndTime ? moment(v.projectEndTime).format('YYYY-MM-DD') : '',
       status: v.status,
     };
   });
@@ -139,10 +140,12 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
             return {
               title: v.companyName,
               key: v.companyId,
+              type: 'companyParent',
               children: v.engineers.map((v: Engineer) => {
                 return {
                   title: v.name,
                   key: v.id,
+                  type: 'company',
                   children: mapProjects2TreeNodeData(v.projects),
                 };
               }),
@@ -164,7 +167,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
     setExpandedKeys(expandedKeysValue);
   };
 
-  const onCheck = (checked: React.Key[], info: any) => {
+  const onAllCheck = (checked: React.Key[], info: any) => {
     /**
      * 只要子节点的id不要父节点的id
      */
@@ -206,6 +209,75 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
         }),
       );
     }
+
+    setCheckedKeys(checked);
+  };
+
+  const onCompanyCheck = (checked: React.Key[], info: any) => {
+    /**
+     * 只要子节点的id不要父节点的id
+     */
+
+    //选中子节点时
+    //当选中的时候
+    if (!info.node.children && info.checked) {
+      projectIdList?.push({
+        id: info.node.key,
+        time: info.node.time,
+        status: info.node.status,
+      });
+    }
+    //当没有选中的时候
+    if (!info.node.children && !info.checked) {
+      setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
+    }
+    //选中父节点时
+    //选中的时候
+    if (info.node.children && info.checked && info.node.type === 'company') {
+      info.node.children.forEach((v: { key: string; time: string; status: number }) => {
+        projectIdList?.push({
+          id: v.key,
+          status: v.status.toString(),
+          time: v.time,
+        });
+      });
+    }
+
+    if (info.node.children && info.checked && info.node.type === 'companyParent') {
+      info.node.children.forEach((v: { children: any[] }) => {
+        v.children.forEach((v: { key: string; time: string; status: number }) => {
+          projectIdList?.push({
+            id: v.key,
+            status: v.status.toString(),
+            time: v.time,
+          });
+        });
+      });
+    }
+    //没有选中的时候
+    if (info.node.children && !info.checked && info.node.type === 'company') {
+      let unCheckedKeys = info.node.children.map(
+        (v: { key: string; time: string; status: number }) => v.key,
+      );
+      setProjectIds(
+        projectIdList?.filter((v: ProjectList) => {
+          return unCheckedKeys.indexOf(v.id) !== -1;
+        }),
+      );
+    }
+    if (info.node.children && !info.checked && info.node.type === 'companyParent') {
+      let unCheckedKeys: string[] = [];
+      info.node.children.forEach((v: { children: any[] }) => {
+        v.children.forEach((v: { key: string; time: string; status: number }) => {
+          unCheckedKeys?.push(v.key);
+        });
+      });
+      setProjectIds(
+        projectIdList?.filter((v: ProjectList) => {
+          return unCheckedKeys.indexOf(v.id) !== -1;
+        }),
+      );
+    }
     setCheckedKeys(checked);
   };
 
@@ -217,8 +289,11 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
     } else {
       fetchCompanyDate(filterCondition);
     }
+    setCheckedKeys([]);
   };
   useEffect(() => {
+    // console.log(projectIdList);
+
     setProjectIdList(projectIdList);
   }, [checkedKeys]);
 
@@ -234,7 +309,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
               checkable
               onExpand={onExpand}
               expandedKeys={expandedKeys}
-              onCheck={onCheck}
+              onCheck={onAllCheck}
               checkedKeys={checkedKeys}
               treeData={treeData}
               className={classNames(styles.sideMenu)}
@@ -251,7 +326,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
               onExpand={onExpand}
               expandedKeys={expandedKeys}
               checkedKeys={checkedKeys}
-              onCheck={onCheck}
+              onCheck={onCompanyCheck}
               className={classNames(styles.sideMenu)}
               treeData={treeData}
             />
