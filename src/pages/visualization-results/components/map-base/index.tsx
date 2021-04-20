@@ -2,13 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import Footer from '../footer';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
+import { transform } from "ol/proj";
 
-import { mapClick, mapPointermove } from '../../utils';
+import { mapClick, mapPointermove, mapMoveend } from '../../utils';
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
 import styles from './index.less';
 import { refreshMap, getLayerByName } from '../../utils/refreshMap';
 import { initIpLocation } from '@/services/visualization-results/visualization-results';
+import { bd09Towgs84 } from '../../utils/locationUtils'
 
 const BaseMap = (props: any) => {
 
@@ -17,7 +19,7 @@ const BaseMap = (props: any) => {
   const { layers, layerGroups, view, setView, setLayerGroups } = props;
 
   // footer相关数据
-  const [currentPosition, setCurrentPosition] = useState<[number, number]>([0,0]);
+  const [currentPosition, setCurrentPosition] = useState<[number, number]>([0, 0]);
   const [scaleSize, setScaleSize] = useState<string>("")
   const [isSatelliteMap, setIsSatelliteMap] = useState<boolean>(true);
 
@@ -25,7 +27,6 @@ const BaseMap = (props: any) => {
   const { vState } = useContainer();
   const { checkedProjectIdList: projects, filterCondition } = vState;
   const { kvLevel } = filterCondition;
-
 
   // 挂载
   useMount(() => {
@@ -45,8 +46,9 @@ const BaseMap = (props: any) => {
     }
     // 地图点击事件
     initialMap.on('click', (e: Event) => mapClick(e, initialMap, ops1));
-    initialMap.on('pointermove', (e: Event) => mapPointermove(e,initialMap, setCurrentPosition));
-
+    initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap, setCurrentPosition));
+    initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap, setScaleSize));
+    
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel };
     refreshMap(ops, projects!)
     setMap(initialMap);
@@ -74,12 +76,28 @@ const BaseMap = (props: any) => {
   const onlocationClick = () => {
     // 当点击定位按钮时
     let promise = initIpLocation();
-    console.log(promise)
+    promise.then((data: any) => {
+      if (data.ipLoc.status == 'success' && data.rgc) {
+        let lon = data.rgc.result.location.lng;
+        let lat = data.rgc.result.location.lat;
+        let lont = bd09Towgs84(lon, lat);
+        let center = transform(lont, 'EPSG:4326', 'EPSG:3857');
+        let duration = 5000;
+
+        view.animate({
+          center: center,
+          zoom: 18,
+          duration: duration
+        }, () => { });
+
+        setView(view);
+
+      }
+    })
   }
 
   const onSatelliteMapClick = () => {
     // 卫星图点击时
-<<<<<<< HEAD
     getLayerByName('imgLayer', layers).setVisible(true);
     getLayerByName('vecLayer', layers).setVisible(false);
   }
@@ -88,19 +106,12 @@ const BaseMap = (props: any) => {
     // 街道图点击时
     getLayerByName('imgLayer', layers).setVisible(false);
     getLayerByName('vecLayer', layers).setVisible(true);
-=======
-    setIsSatelliteMap(false);
-    
-  }
-
-  const onStreetMapClick = () => {
-    // 卫星图点击时
-    setIsSatelliteMap(true);
->>>>>>> f83e99b03f5fc4fa6bd0806693e7e5e398bade47
   }
   return (
     <>
-      <div ref={mapElement} className={styles.mapBox}></div>
+      <div ref={mapElement} className={styles.mapBox}>
+        <div ></div>
+      </div>
       <Footer
         onlocationClick={onlocationClick}
         currentPosition={currentPosition}

@@ -2,6 +2,7 @@ import getMappingTagsDictionary from './mappingTagsDictionary';
 import { clearHighlightLayer } from './methods';
 import { pointStyle, line_style } from './pointStyle';
 import { transform } from "ol/proj";
+import { getScale } from "./refreshMap";
 
 const mappingTagsDictionary: any = getMappingTagsDictionary()
 
@@ -473,5 +474,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 export const mapPointermove = (evt: any, map: any, setCurrentPosition: any) => {
     let coordinate = evt.coordinate;
     let lont = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-    setCurrentPosition([lont[0].toFixed(4), lont[1].toFixed(4)])
+   
+    setCurrentPosition([lont[0].toFixed(4), lont[1].toFixed(4)]);
+}
+
+export const mapMoveend = (evt: any, map: any, setScaleSize: any) =>{
+    setScaleSize(getScale(map));
 }
