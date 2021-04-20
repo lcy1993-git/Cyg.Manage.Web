@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Input, InputNumber, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import { TreeDataItem } from '@/services/jurisdiction-config/company-manage';
+import ClickInputNumber from '@/components/clickInput-number';
 
 import rules from '../../rule';
 
@@ -57,7 +58,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         initialValue={5}
         required
       >
-        <InputNumber style={{ width: '100%' }} placeholder="请输入授权端口数量" min={0} max={50} />
+        <ClickInputNumber minNumber={0} maxNumber={50} />
       </CyFormItem>
 
       <CyFormItem
@@ -68,7 +69,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         name="design"
         required
       >
-        <InputNumber style={{ width: '100%' }} placeholder="请输入授权端口数量" min={0} max={50} />
+        <ClickInputNumber minNumber={0} maxNumber={50} />
       </CyFormItem>
 
       <CyFormItem
@@ -79,7 +80,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         name="skillBy"
         required
       >
-        <InputNumber style={{ width: '100%' }} placeholder="请输入授权端口数量" min={0} max={50} />
+        <ClickInputNumber minNumber={0} maxNumber={50} />
       </CyFormItem>
 
       <CyFormItem
@@ -90,7 +91,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         name="review"
         required
       >
-        <InputNumber style={{ width: '100%' }} placeholder="请输入授权端口数量" min={0} max={50} />
+        <ClickInputNumber minNumber={0} maxNumber={50} limit={5} />
       </CyFormItem>
 
       <CyFormItem
@@ -101,7 +102,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         name="manage"
         required
       >
-        <InputNumber style={{ width: '100%' }} placeholder="请输入授权端口数量" min={0} max={50} />
+        <ClickInputNumber minNumber={0} maxNumber={50} limit={5} />
       </CyFormItem>
 
       <CyFormItem

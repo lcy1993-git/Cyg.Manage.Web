@@ -1,32 +1,25 @@
-
-
 import CyFormItem from '@/components/cy-form-item';
-import InputNumber from '@/components/input-number';
+import ClickInputNumber from '@/components/clickInput-number';
 import { Button, Form } from 'antd';
 import React from 'react';
-
-
-
 
 const TestPage = () => {
   const [form] = Form.useForm();
 
   const test = () => {
     form.validateFields().then((value) => {
-      console.log(value)
-    })
-  }
+      console.log(value);
+    });
+  };
 
   return (
-    <div style={{width: "1200px", height: "960px"}}>
+    <div style={{ width: '1200px', height: '960px' }}>
       <Form form={form}>
         <CyFormItem name="number" initialValue={5}>
-          <InputNumber minNumber={0} />
+          <ClickInputNumber minNumber={0} />
         </CyFormItem>
       </Form>
-      <Button onClick={() => test()}>
-        测试
-      </Button>
+      <Button onClick={() => test()}>测试</Button>
     </div>
   );
 };

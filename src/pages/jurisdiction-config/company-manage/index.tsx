@@ -171,6 +171,7 @@ const CompanyManage: React.FC = () => {
         remark: editData.remark,
         userSkuQtys,
       };
+      console.log(submitInfo);
 
       await updateCompanyManageItem(submitInfo);
       tableFresh();
