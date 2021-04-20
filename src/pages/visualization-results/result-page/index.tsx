@@ -26,7 +26,12 @@ const VisualizationResults: React.FC = () => {
         <SideMenu />
 
         {/* map放在这 */}
-        <MapContainerShell />
+        <div className={'flex1'}>
+          <MapContainerShell />
+        </div>
+
+
+
       </main>
 
       <SidePopup visible={propertySidePopupShow} onClose={() => togglePropertySidePopup()} />

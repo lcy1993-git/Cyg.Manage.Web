@@ -1,7 +1,7 @@
 import Fill from 'ol/style/Fill';
 import Stroke from 'ol/style/Stroke';
 import ClassStyle from 'ol/style/Style';
-import Text from 'OL/style/Text';
+import Text from 'ol/style/Text';
 import RegularShape from 'ol/style/RegularShape';
 import Circle from 'ol/style/Circle';
 import { Color } from 'ol/color';
