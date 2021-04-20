@@ -6,6 +6,8 @@ import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
 import EnumSelect from '@/components/enum-select';
 import classnames from 'classnames';
+import moment, { Moment } from 'moment';
+import { useContainer } from '../../result-page/store';
 import { ProjectStatus } from '@/services/project-management/all-project';
 import { DownOutlined } from '@ant-design/icons';
 const { Search } = Input;
@@ -19,15 +21,16 @@ interface ProjectStatusOption {
 
 const FilterBar: FC = () => {
   const [keyWord, setKeyWord] = useState<string>(''); //搜索关键词
-  const [category, setCategory] = useState<string>(); //项目分类
-  const [pCategory, setPCategory] = useState<string>(); //项目类别
-  const [stage, setStage] = useState<string>(); //项目阶段
-  const [constructType, setConstructType] = useState<string>(); //建设性质
-  const [nature, setNature] = useState<string>();
-  const [kvLevel, setKvLevel] = useState<string>(); //
-  const [status, setStatus] = useState<string>();
-  const [establishYear, setEstablishYear] = useState<number>();
-  const [updateYear, setUpdateYear] = useState<number>();
+  const [category, setCategory] = useState<number>(); //项目分类
+  const [pCategory, setPCategory] = useState<number>(); //项目类别
+  const [stage, setStage] = useState<number>(); //项目阶段
+  const [constructType, setConstructType] = useState<number>(); //建设性质
+  const [nature, setNature] = useState<number>();
+  const [kvLevel, setKvLevel] = useState<number>(); //
+  const [statuss, setStatuss] = useState<number[]>();
+  const [createdOn, setCreatedOn] = useState<Moment | null>();
+  const [modifyDate, setsModiyDate] = useState<Moment | null>();
+  const { setFilterCondition } = useContainer();
   const {
     projectCategory,
     projectPType,
@@ -54,24 +57,81 @@ const FilterBar: FC = () => {
     });
   };
 
+  /**
+   * 重置筛选codition
+   */
+
+  const clear = () => {
+    const condition = {
+      keyWord: '',
+      category: -1,
+      pCategory: -1,
+      stage: -1,
+      constructType: -1,
+      nature: -1,
+      kvLevel: -1,
+      statuss: [],
+      createdOn: '',
+      modifyDate: '',
+    };
+
+    setFilterCondition(condition);
+  };
+
+  /**
+   * 根据条件搜索
+   */
+
+  const search = () => {
+    const condition = {
+      keyWord,
+      category: category ?? -1,
+      pCategory: pCategory ?? -1,
+      stage: stage ?? -1,
+      constructType: constructType ?? -1,
+      nature: nature ?? -1,
+      kvLevel: kvLevel ?? -1,
+      statuss: statuss ?? [],
+      createdOn: createdOn?.year().toString() ?? '',
+      modifyDate: modifyDate?.year().toString() ?? '',
+    };
+    setFilterCondition(condition);
+  };
+
   return (
     <div className={styles.form}>
       <div className="flex">
         <TableSearch className="mr10" label="项目名称" width="178px">
-          <Search placeholder="请输入项目名称" enterButton />
+          <Search
+            placeholder="请输入项目名称"
+            value={keyWord}
+            onChange={(e) => setKeyWord(e.target.value)}
+            enterButton
+          />
         </TableSearch>
         <TableSearch className="mr10" label="立项时间" width="151px">
-          <DatePicker placeholder="年" suffixIcon={<DownOutlined />} picker="year" />
+          <DatePicker
+            placeholder="年"
+            onChange={(date: Moment | null) => setCreatedOn(date)}
+            suffixIcon={<DownOutlined />}
+            picker="year"
+          />
         </TableSearch>
         <TableSearch className="mr10" label="更新时间" width="151px">
-          <DatePicker placeholder="年" suffixIcon={<DownOutlined />} picker="year" />
+          <DatePicker
+            onChange={(date: Moment | null) => setsModiyDate(date)}
+            placeholder="年"
+            suffixIcon={<DownOutlined />}
+            picker="year"
+          />
         </TableSearch>
         <TableSearch className="mr2" label="全部状态" width="151px">
           <Select
-            maxTagCount={1}
-            maxTagTextLength={3}
+            maxTagCount={0}
+            maxTagTextLength={2}
             mode="multiple"
             allowClear
+            onChange={(values: number[]) => setStatuss(values)}
             style={{ width: '100%' }}
             placeholder="项目状态"
           >
@@ -85,6 +145,20 @@ const FilterBar: FC = () => {
             defaultData={projectPType}
             dropdownMatchSelectWidth={168}
             className="widthAll"
+            onChange={(value) => setCategory(value as number)}
+            placeholder="项目分类"
+            needAll={true}
+            allValue="-1"
+          />
+        </TableSearch>
+        <TableSearch className="mr2" width="111px">
+          <UrlSelect
+            valueKey="value"
+            titleKey="text"
+            defaultData={projectPType}
+            dropdownMatchSelectWidth={168}
+            className="widthAll"
+            onChange={(value) => setPCategory(value as number)}
             placeholder="项目类别"
             needAll={true}
             allValue="-1"
@@ -96,6 +170,7 @@ const FilterBar: FC = () => {
             titleKey="text"
             defaultData={projectStage}
             className="widthAll"
+            onChange={(value) => setStage(value as number)}
             placeholder="项目阶段"
             needAll={true}
             allValue="-1"
@@ -106,6 +181,7 @@ const FilterBar: FC = () => {
             valueKey="value"
             titleKey="text"
             defaultData={projectConstructType}
+            onChange={(value) => setConstructType(value as number)}
             className="widthAll"
             placeholder="建设性质"
             needAll={true}
@@ -118,6 +194,7 @@ const FilterBar: FC = () => {
             titleKey="text"
             defaultData={projectKvLevel}
             className="widthAll"
+            onChange={(value) => setKvLevel(value as number)}
             placeholder="电压等级"
             needAll={true}
             allValue="-1"
@@ -129,6 +206,7 @@ const FilterBar: FC = () => {
             titleKey="text"
             defaultData={projectNature}
             dropdownMatchSelectWidth={168}
+            onChange={(value) => setNature(value as number)}
             className="widthAll"
             placeholder="项目性质"
             needAll={true}
@@ -138,10 +216,12 @@ const FilterBar: FC = () => {
       </div>
 
       <div className="flex">
-        <Button className="mr2" type="primary">
+        <Button className="mr2" onClick={() => search()} type="primary">
           查询
         </Button>
-        <Button className="mr2">重置</Button>
+        <Button className="mr2" onClick={() => clear()}>
+          重置
+        </Button>
       </div>
     </div>
   );
