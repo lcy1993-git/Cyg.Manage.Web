@@ -21,7 +21,7 @@ function useVisualizationState(
     propertySidePopupShow: false,
     projectDetailModalShow: false,
     materialModalShow: false,
-    checkedProjectIdList: [{ id: '1382687501508292609' }],
+    checkedProjectIdList: [],
     visibleLeftSidebar: true,
     sideRightActiveId: '',
   },
