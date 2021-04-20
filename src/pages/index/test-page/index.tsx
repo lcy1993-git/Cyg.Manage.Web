@@ -6,8 +6,6 @@ import { Button, Form } from 'antd';
 import React from 'react';
 
 
-
-
 const TestPage = () => {
   const [form] = Form.useForm();
 
@@ -20,7 +18,7 @@ const TestPage = () => {
   return (
     <div style={{width: "1200px", height: "960px"}}>
       <Form form={form}>
-        <CyFormItem name="number" initialValue={5}>
+        <CyFormItem label="勘察端" name="number" initialValue={5}>
           <InputNumber minNumber={0} />
         </CyFormItem>
       </Form>
