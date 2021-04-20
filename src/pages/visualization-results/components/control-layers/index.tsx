@@ -14,42 +14,20 @@ const ListItem = (props: any) => {
   );
 }
 
-const ControlLayers = () => {
+const ControlLayers = (props: any) => {
   const [visiabel, setVisiabel] = useState<boolean>(false);
-  const ControlLayearsData = [
-    {
-      name: "勘察图层",
-      state: false,
-      index: 0
-    },
-    {
-      name: "方案图层",
-      state: false,
-      index: 1
-    },
-    {
-      name: "设计图层",
-      state: false,
-      index: 2
-    },
-    {
-      name: "拆除图层",
-      state: false,
-      index: 3
-    },
-  ];
-
+  const { controlLayearsData } = props;
   const ListItemNode = useMemo(() => {
-    return ControlLayearsData.map((item, index) => {
-      if (index === 0) return <div className={styles.listItem}><ListItem {...item} /></div>;
+    return controlLayearsData.map((item: any, index: any) => {
+      if (index === 0) return <div className={styles.listItem} key={item.index}><ListItem {...item} /></div>;
       return (
-        <div className={styles.listItem}>
+        <div className={styles.listItem} key={item.index}>
           <Divider style={{margin: 2}}/>
           <ListItem key {...item} />
         </div>
       )
     })
-  }, [JSON.stringify(ControlLayearsData)])
+  }, [JSON.stringify(controlLayearsData)])
 
   return (
     <div className={styles.container} >
@@ -57,13 +35,6 @@ const ControlLayers = () => {
         图层图标
         {visiabel &&
         <div className={styles.list}>
-          {/* <ListItem />
-          <Divider style={{margin: 2}}/>
-          <ListItem />
-          <Divider style={{margin: 2}}/>
-          <ListItem />
-          <Divider style={{margin: 2}}/>
-          <ListItem /> */}
           {ListItemNode}
       </div>}
       </div>

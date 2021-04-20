@@ -120,4 +120,25 @@ export const initView = new View({
   projection: 'EPSG:3857'
 })
 
-
+export const initControlLayearsData = [
+  {
+    name: "勘察图层",
+    state: false,
+    index: 0
+  },
+  {
+    name: "方案图层",
+    state: false,
+    index: 1
+  },
+  {
+    name: "设计图层",
+    state: false,
+    index: 2
+  },
+  {
+    name: "拆除图层",
+    state: false,
+    index: 3
+  },
+];

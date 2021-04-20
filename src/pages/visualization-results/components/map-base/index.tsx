@@ -4,8 +4,7 @@ import CtrolLayers from '../control-layers';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
 import { transform } from "ol/proj";
-
-import { mapClick, mapPointermove, mapMoveend } from '../../utils';
+import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '../../utils';
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
 import styles from './index.less';
@@ -23,6 +22,9 @@ const BaseMap = (props: any) => {
   const [currentPosition, setCurrentPosition] = useState<[number, number]>([0, 0]);
   const [scaleSize, setScaleSize] = useState<string>("")
   const [isSatelliteMap, setIsSatelliteMap] = useState<boolean>(true);
+
+  // 图层控制层数据
+  const [controlLayearsData, setControlLayearsData] = useState(initControlLayearsData);
 
   // 从Vstate获取外部传入的数据
   const { vState } = useContainer();
@@ -111,7 +113,7 @@ const BaseMap = (props: any) => {
   return (
     <>
     <div ref={mapElement} className={styles.mapBox}></div>
-    <CtrolLayers />
+    <CtrolLayers controlLayearsData = {controlLayearsData} />
     <Footer
       onlocationClick={onlocationClick}
       currentPosition={currentPosition}
