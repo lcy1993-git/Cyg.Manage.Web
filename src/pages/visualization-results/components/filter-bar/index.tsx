@@ -105,6 +105,7 @@ const FilterBar: FC = () => {
           <Search
             placeholder="请输入项目名称"
             value={keyWord}
+            onSearch={() => search()}
             onChange={(e) => setKeyWord(e.target.value)}
             enterButton
           />
