@@ -123,7 +123,7 @@ const FilterBar: FC = () => {
             allValue="-1"
           />
         </TableSearch>
-        <TableSearch className="mr10" width="111px">
+        <TableSearch className="mr2" width="111px">
           <UrlSelect
             valueKey="value"
             titleKey="text"
@@ -141,7 +141,7 @@ const FilterBar: FC = () => {
         <Button className="mr2" type="primary">
           查询
         </Button>
-        <Button className="mr10">重置</Button>
+        <Button className="mr2">重置</Button>
       </div>
     </div>
   );
