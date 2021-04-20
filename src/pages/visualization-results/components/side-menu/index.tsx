@@ -14,7 +14,7 @@ const { TabPane } = Tabs;
 export interface TreeNodeType {
   title: string;
   key: string;
-  children: TreeNodeType[];
+  children?: TreeNodeType[];
 }
 export interface SideMenuProps {
   className?: string;
@@ -49,23 +49,28 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
     return {
       title: v.name,
       key: v.id,
-      children: [],
     };
   });
 };
 
 const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['allSelect']);
-  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
-  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
-  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [checkedKeys, setCheckedKeys] = useState<
+    | {
+        checked: React.Key[];
+        halfChecked: React.Key[];
+      }
+    | React.Key[]
+  >();
+
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+
   const { vState } = useContainer();
   const { filterCondition } = vState;
   const { className } = props;
 
   /**
-   * 获取数据
+   * 获取全部数据
    */
   const { data: allData, run: fetchAll, loading: allLoading } = useRequest(
     () => GetEngineerProjectListByParams(filterCondition),
@@ -73,7 +78,6 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
     {
       refreshDeps: [filterCondition],
       onSuccess: () => {
-
         if (allData.length) {
           let reShapeData = allData.map((v: ProjectType) => {
             return {
@@ -82,20 +86,18 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
               children: mapProjects2TreeNodeData(v.projects),
             };
           });
-  
+
           setTreeData([
             {
               title: '全选',
-              key: 'allSelect',
+              key: '-1',
               children: reShapeData,
             },
           ]);
-  
-          setCheckedKeys([reShapeData[0].key]);
+          setExpandedKeys(['-1'])
         } else {
-          message.warning("没有检索到数据")
+          message.warning('没有检索到数据');
         }
-       
       },
     },
   );
@@ -105,38 +107,43 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
     setExpandedKeys(expandedKeysValue);
-    setAutoExpandParent(false);
   };
 
-  const onCheck = (checkedKeysValue: React.Key[]) => {
-    setCheckedKeys(checkedKeysValue);
-  };
-
-  const onSelect = (selectedKeysValue: React.Key[], info: any) => {
-    setSelectedKeys(selectedKeysValue);
+  const onCheck = (
+    checked:
+      | {
+          checked: React.Key[];
+          halfChecked: React.Key[];
+        }
+      | React.Key[],
+    info: any,
+  ) => {
+    setCheckedKeys(checked);
   };
   return (
     <div className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
       <Tabs type="line" defaultActiveKey="1">
         <TabPane tab="全部项目" key="1">
-          {allLoading ? <Spin spinning={allLoading} tip="正在载入中..."></Spin> : null}
-
-          {treeData ? (
-            <Tree
-              checkable
-              className={classNames(styles.sideMenu)}
-              onExpand={onExpand}
-              expandedKeys={expandedKeys}
-              autoExpandParent={autoExpandParent}
-              checkedKeys={checkedKeys}
-              onSelect={onSelect}
-              selectedKeys={selectedKeys}
-              treeData={treeData}
-            />
-          ) : null}
+          <Tree
+            checkable
+            onExpand={onExpand}
+            expandedKeys={expandedKeys}
+            onCheck={onCheck}
+            checkedKeys={checkedKeys}
+            treeData={treeData}
+            className={classNames(styles.sideMenu)}
+          />
         </TabPane>
         <TabPane tab="地州项目" key="2">
-          123
+          <Tree
+            checkable
+            onExpand={onExpand}
+            expandedKeys={expandedKeys}
+            checkedKeys={checkedKeys}
+            onCheck={onCheck}
+            className={classNames(styles.sideMenu)}
+            treeData={treeData}
+          />
         </TabPane>
       </Tabs>
     </div>
