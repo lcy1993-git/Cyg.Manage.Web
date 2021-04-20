@@ -11,7 +11,7 @@ export interface VisualizationResultsStateType {
   materialModalShow?: boolean;
   projectDetailModalShow?: boolean;
   propertySidePopupShow?: boolean;
-  visibleLeftSidebar: boolean;  // 左侧边栏伸缩状态
+  visibleLeftSidebar: boolean; // 左侧边栏伸缩状态
   sideRightActiveId: string; // 右侧边栏的回调ID
 }
 
@@ -21,9 +21,9 @@ function useVisualizationState(
     propertySidePopupShow: false,
     projectDetailModalShow: false,
     materialModalShow: false,
-    checkedProjectIdList: [{id: '1382687501508292609'}],
+    checkedProjectIdList: [{ id: '1382687501508292609' }],
     visibleLeftSidebar: true,
-    sideRightActiveId: ""
+    sideRightActiveId: '',
   },
 ) {
   let [vState, setVState] = useState(initialState);
@@ -47,7 +47,20 @@ function useVisualizationState(
     setVState({ ...vState, sideRightActiveId: id });
   };
 
-  return { vState, setFilterCondition, togglePropertySidePopup, setVisibleLeftSidebar, setSideRightActiveId };
+  const setProjectIdList = (checkedProjectIdList: ProjectList[]) => {
+    console.log(checkedProjectIdList);
+    setVState({ ...vState, checkedProjectIdList });
+    
+  };
+
+  return {
+    vState,
+    setFilterCondition,
+    togglePropertySidePopup,
+    setVisibleLeftSidebar,
+    setSideRightActiveId,
+    setProjectIdList,
+  };
 }
 
 let store = createContainer(useVisualizationState);

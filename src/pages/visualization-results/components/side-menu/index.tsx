@@ -1,11 +1,13 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import { Tree, Tabs, Spin, message } from 'antd';
-import { useRequest, useMount } from 'ahooks';
-import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-menu';
+import { useRequest } from 'ahooks';
+import moment from 'moment';
 import { GetEngineerProjectListByParams } from '@/services/visualization-results/side-menu';
 import { useContainer } from '../../result-page/store';
+import { ProjectList } from '@/services/visualization-results/visualization-results';
+
 const { TabPane } = Tabs;
 
 /**
@@ -37,6 +39,7 @@ export interface ProjectItemType {
   haveDesignData: boolean;
   projectEndTime: Date;
   isExecutor: boolean;
+  status: number;
 }
 
 /**
@@ -49,23 +52,19 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
     return {
       title: v.name,
       key: v.id,
+      time: moment(v.projectEndTime).format('YYYY-MM-DD'),
+      status: v.status,
     };
   });
 };
 
 const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
-  const [checkedKeys, setCheckedKeys] = useState<
-    | {
-        checked: React.Key[];
-        halfChecked: React.Key[];
-      }
-    | React.Key[]
-  >();
-
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>();
+  const [projectIdList, setProjectIds] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
-
-  const { vState } = useContainer();
+  const [parenKeys, setParentKeys] = useState<string[]>([]);
+  const { vState, setProjectIdList } = useContainer();
   const { filterCondition } = vState;
   const { className } = props;
 
@@ -94,45 +93,88 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
               children: reShapeData,
             },
           ]);
-          setExpandedKeys(['-1'])
+          setExpandedKeys(['-1']);
         } else {
           message.warning('没有检索到数据');
         }
+      },
+      onError: () => {
+        message.warning('获取数据失败');
       },
     },
   );
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
-    console.log('onExpand', expandedKeysValue);
-    // if not set autoExpandParent to false, if children expanded, parent can not collapse.
-    // or, you can remove all expanded children keys.
     setExpandedKeys(expandedKeysValue);
   };
 
-  const onCheck = (
-    checked:
-      | {
-          checked: React.Key[];
-          halfChecked: React.Key[];
-        }
-      | React.Key[],
-    info: any,
-  ) => {
+  const onCheck = (checked: React.Key[], info: any) => {
+    /**
+     * 只要子节点的id不要父节点的id
+     */
+
+    //选中子节点时
+    //当选中的时候
+    if (!info.node.children && info.checked) {
+      projectIdList?.push({
+        id: info.node.key,
+        time: info.node.time,
+        status: info.node.status,
+      });
+    }
+    //当没有选中的时候
+    if (!info.node.children && !info.checked) {
+      setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
+    }
+    //选中父节点时
+    //选中的时候
+    if (info.node.children && info.checked) {
+      console.log(23);
+
+      info.node.children.forEach((v: { key: string; time: string; status: number }) => {
+        projectIdList?.push({
+          id: v.key,
+          status: v.status.toString(),
+          time: v.time,
+        });
+      });
+    }
+    //没有选中的时候
+    if (info.node.children && !info.checked) {
+      let unCheckedKeys = info.node.children.map(
+        (v: { key: string; time: string; status: number }) => v.key,
+      );
+      setProjectIds(
+        projectIdList?.filter((v: ProjectList) => {
+          return unCheckedKeys.indexOf(v.id) !== -1;
+        }),
+      );
+    }
     setCheckedKeys(checked);
   };
+
+  useEffect(() => {
+    setProjectIdList(projectIdList);
+  }, [checkedKeys]);
+
   return (
     <div className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
-      <Tabs type="line" defaultActiveKey="1">
+      <Tabs type="line" defaultActiveKey="1" style={{ height: '100%' }}>
         <TabPane tab="全部项目" key="1">
-          <Tree
-            checkable
-            onExpand={onExpand}
-            expandedKeys={expandedKeys}
-            onCheck={onCheck}
-            checkedKeys={checkedKeys}
-            treeData={treeData}
-            className={classNames(styles.sideMenu)}
-          />
+          {allLoading ? (
+            <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
+          ) : null}
+          {allData ? (
+            <Tree
+              checkable
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              onCheck={onCheck}
+              checkedKeys={checkedKeys}
+              treeData={treeData}
+              className={classNames(styles.sideMenu)}
+            />
+          ) : null}
         </TabPane>
         <TabPane tab="地州项目" key="2">
           <Tree
