@@ -3,8 +3,7 @@ import { Input, InputNumber, Form } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import styles from './index.less';
 import rules from '../../rule';
-// import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-
+import AddMinusComponent from '../add-minus-component';
 interface EditCompanyProps {
   accreditNumber: any[];
 }
@@ -31,12 +30,11 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
         align="right"
         label="勘察端"
         required
+        name="prospect"
       >
         <div className={styles.totalNumber}>总量（{accreditNumber[1]?.value.totalQty}）</div>
         <div className={styles.canUseNumber}>可用（{accreditNumber[1]?.value.availableQty}）</div>
-        <div className={styles.addOrMinus}>可用增加</div>
         <Form.Item
-          name="prospect"
           initialValue={0}
           rules={[
             () => ({
@@ -57,7 +55,7 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
             }),
           ]}
         >
-          <InputNumber style={{ width: '100%' }} placeholder="增减可用数量" />
+          <AddMinusComponent />
         </Form.Item>
       </CyFormItem>
 
