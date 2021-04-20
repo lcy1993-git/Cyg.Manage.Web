@@ -5,7 +5,7 @@ import { EngineerProjetListFilterParams } from '@/services/visualization-results
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 
 export interface VisualizationResultsStateType {
-  filterCondition?: EngineerProjetListFilterParams; //filter条件
+  filterCondition: EngineerProjetListFilterParams; //filter条件
   checkedProjectIdList?: ProjectList[]; //选中的project id数组
   checkedProjectDateList?: string[]; //选中的project 日期数组
   materialModalShow?: boolean;

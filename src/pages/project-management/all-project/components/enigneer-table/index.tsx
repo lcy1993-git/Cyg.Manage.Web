@@ -162,9 +162,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             复制项目
           </Menu.Item>
         )}
-        {buttonJurisdictionArray?.includes('all-project-check-result') &&
-          status > 4 &&
-          status !== 14 && (
+        {buttonJurisdictionArray?.includes('all-project-check-result') && (
             <Menu.Item
               onClick={() =>
                 checkResult({

@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import JsonP from 'jsonp';
 
 var ip = '171.223.214.154';
 const webConfig = {
@@ -82,7 +83,7 @@ function format (that: any, ...args: any) {
           return result;
       }
       var data = arguments;
-      if (args.length == 1 && typeof (args[0]) == "object") {
+      if (args.length == 1 && typeof (args[0]) === "object") {
           data = args[0];
       }
       for (var key in data) {
@@ -104,7 +105,16 @@ export const findLineDetailInfo = (params: any) => {
 
 // 定位当前用户位置；调用的是百度定位api
 export const initIpLocation = () => {
-  request('https://map.baidu.com/?qt=ipLocation&t=' + new Date().getTime());
+  //request('/baidu/api?qt=ipLocation&t=' + new Date().getTime());
+  return new Promise((resolve, reject) => {
+    JsonP(`https://map.baidu.com?qt=ipLocation&t=${new Date().getTime()}`,{},function(err: any,res: any){
+      if(res) {
+        resolve(res)
+      }else {
+        reject(err)
+      }
+    })
+  })
 }
 
 // 加载项目中所需的枚举

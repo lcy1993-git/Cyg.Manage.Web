@@ -17,8 +17,8 @@ const BaseMap = (props: any) => {
   const { layers, layerGroups, view, setView, setLayerGroups } = props;
 
   // footer相关数据
-  const [currentPosition, setCurrentPosition] = useState<[number, number]>([0, 0]);
-  const [scaleSize, setScaleSize] = useState<number>(0)
+  const [currentPosition, setCurrentPosition] = useState<[number, number]>([0,0]);
+  const [scaleSize, setScaleSize] = useState<string>("")
   const [isSatelliteMap, setIsSatelliteMap] = useState<boolean>(true);
 
   // 从Vstate获取外部传入的数据
@@ -79,6 +79,7 @@ const BaseMap = (props: any) => {
 
   const onSatelliteMapClick = () => {
     // 卫星图点击时
+<<<<<<< HEAD
     getLayerByName('imgLayer', layers).setVisible(true);
     getLayerByName('vecLayer', layers).setVisible(false);
   }
@@ -87,6 +88,15 @@ const BaseMap = (props: any) => {
     // 街道图点击时
     getLayerByName('imgLayer', layers).setVisible(false);
     getLayerByName('vecLayer', layers).setVisible(true);
+=======
+    setIsSatelliteMap(false);
+    
+  }
+
+  const onStreetMapClick = () => {
+    // 卫星图点击时
+    setIsSatelliteMap(true);
+>>>>>>> f83e99b03f5fc4fa6bd0806693e7e5e398bade47
   }
   return (
     <>
