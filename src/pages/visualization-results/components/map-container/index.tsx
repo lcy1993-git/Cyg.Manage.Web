@@ -1,14 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import MapBase from '../map-base';
 import Layer from 'ol/layer/Layer';
-import Vector from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
 import LayerGroup from 'ol/layer/Group';
-import GeoJSON from 'ol/format/GeoJSON';
-import { initLayers, initOtherLayers, initView, initOtherLayersState } from '../../utils';
+import { initLayers, initOtherLayers, initView } from '../../utils';
 import styles from './index.less';
-import { loadLayer } from '@/services/visualization-results/visualization-results';
-import { pointStyle, line_style, cable_channel_styles, mark_style, fzx_styles } from '../../utils/pointStyle';
 
 const MapContainer = (props: any) => {
   const { mapData } = props;
@@ -19,8 +14,6 @@ const MapContainer = (props: any) => {
 
   // 视图
   const [view, setView] = useState(initView);
-
-
 
   return (
     <div className={styles.mapContainerBox}>

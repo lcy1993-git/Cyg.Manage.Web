@@ -104,7 +104,7 @@ export const findLineDetailInfo = (params: any) => {
 
 // 定位当前用户位置；调用的是百度定位api
 export const initIpLocation = () => {
-  request('https://map.baidu.com/?qt=ipLocation&t=' + new Date().getTime());
+  request('/baidu/api?qt=ipLocation&t=' + new Date().getTime());
 }
 
 // 加载项目中所需的枚举
