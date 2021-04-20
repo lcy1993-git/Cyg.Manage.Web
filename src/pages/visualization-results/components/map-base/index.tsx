@@ -75,10 +75,13 @@ const BaseMap = (props: any) => {
 
   const onSatelliteMapClick = () => {
     // 卫星图点击时
+    setIsSatelliteMap(false);
+    
   }
 
   const onStreetMapClick = () => {
     // 卫星图点击时
+    setIsSatelliteMap(true);
   }
   return (
     <>

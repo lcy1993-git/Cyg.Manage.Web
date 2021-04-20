@@ -34,6 +34,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/webGis': '/' },
     },
+    '/baidu/api': {
+      target: 'https://map.baidu.com/',
+      changeOrigin: true,
+      pathRewrite: { '^/baidu/api': '/' },
+    },
   },
   test: {
     '/api/': {
