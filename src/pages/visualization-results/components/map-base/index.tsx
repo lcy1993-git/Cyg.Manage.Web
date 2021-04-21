@@ -4,7 +4,8 @@ import CtrolLayers from '../control-layers';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
 import { transform } from "ol/proj";
-import { mapClick, initControlLayearsData, mapPointermove, mapMoveend, BaseMapProps, ControlLayearsData } from '../../utils';
+import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '../../utils';
+import {BaseMapProps, ControlLayearsData} from '../../utils/init'
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
 import styles from './index.less';

@@ -18,6 +18,7 @@ import markImageSrc5 from "@/assets/image/webgis/img_地物_房屋.png";
 import markImageSrc6 from "@/assets/image/webgis/img_地物_电力线.png";
 import markImageSrc7 from "@/assets/image/webgis/img_地物_通讯线.png";
 import markImageSrc8 from "@/assets/image/webgis/img_地物_其他.png";
+import { Feature } from 'ol';
 
 export interface Options {
     color?: Color | ColorLike;
@@ -30,13 +31,13 @@ export interface Options {
 }
 
 // 点样式
-const pointStyle = function (type: any, feature: any, selected: any) {
+const pointStyle = function (type: string, feature: Feature, selected: any) {
     let iconFont = 'webgisIconFont';
     let iconFontText;
 
     let size, fillSize, strokeSize, color, fillColor, strokeColor;
     let imageStyle, style, regular;
-    let backgroundColor: any = undefined;
+    let backgroundColor: string | undefined = undefined;
 
     if (type == 'design_pull_line') {
         size = 26;
@@ -599,7 +600,7 @@ const pointStyle = function (type: any, feature: any, selected: any) {
         return style;
 }
 // 线样式
-const line_style = function (feature: any, select: any, layerType: any) {
+const line_style = function (feature: Feature, select: any, layerType: any) {
     let style = Styles.line[feature.getProperties().symbol_id];
     if (!style)
         style = Styles.line["1013"];
@@ -675,7 +676,7 @@ const line_style = function (feature: any, select: any, layerType: any) {
 }
 
 // 电缆通道样式
-const cable_channel_styles = function (feature: any) {
+const cable_channel_styles = function (feature: Feature) {
     let obj = Styles.line.cableChannel;
 
     let dis = 0.00;
@@ -732,7 +733,7 @@ const fzx_styles = function () {
 }
 
 // 地物样式
-const mark_style = function (feature: any) {
+const mark_style = function (feature: Feature) {
     let iconUrl;
     switch (feature.getProperties().type.toString()) {
         case '1':

@@ -1,4 +1,11 @@
-export const layerParams: any = [
+interface LayerParams {
+  layerName: string; // 下户线
+  zIndex: number;
+  declutter?: boolean;
+  type: 'line' | 'cable_channel' | 'mark' | 'point';
+}
+
+export const layerParams: LayerParams[] = [
   {
     layerName: 'user_line', // 下户线
     zIndex: 1,
