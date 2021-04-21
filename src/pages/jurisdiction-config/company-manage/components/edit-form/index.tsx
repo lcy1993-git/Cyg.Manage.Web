@@ -32,12 +32,10 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
         required
         name="prospect"
         rules={[
-          { pattern: /^(^-?\d+$)$/, message: '请输入正确的数量' },
+          { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
           () => ({
             validator(_, value) {
-              console.log(value);
-
-              if (value + accreditNumber[1]?.value.availableQty >= 0) {
+              if (Number(value) + accreditNumber[1]?.value.availableQty >= 0) {
                 return Promise.resolve();
               }
               return Promise.reject('减少数不能低于剩余可用数量');
@@ -45,7 +43,7 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           }),
           () => ({
             validator(_, value) {
-              if (value + accreditNumber[1]?.value.totalQty <= 50) {
+              if (Number(value) + accreditNumber[1]?.value.totalQty <= 50) {
                 return Promise.resolve();
               }
               return Promise.reject('增加后总量不能超过50');
@@ -70,9 +68,10 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
         // initialValue={0}
         name="design"
         rules={[
+          { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
           () => ({
             validator(_, value) {
-              if (value + accreditNumber[2]?.value.availableQty >= 0) {
+              if (Number(value) + accreditNumber[2]?.value.availableQty >= 0) {
                 return Promise.resolve();
               }
               return Promise.reject('减少数不能低于剩余可用数量');
@@ -80,7 +79,7 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           }),
           () => ({
             validator(_, value) {
-              if (value + accreditNumber[2]?.value.totalQty <= 50) {
+              if (Number(value) + accreditNumber[2]?.value.totalQty <= 50) {
                 return Promise.resolve();
               }
               return Promise.reject('增加后总量不能超过50');
@@ -105,10 +104,10 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
         // initialValue={0}
         name="skillBy"
         rules={[
-          { pattern: /^(^-?\d+$)$/, message: '请输入正确的数量' },
+          { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
           () => ({
             validator(_, value) {
-              if (value + accreditNumber[4]?.value.availableQty >= 0) {
+              if (Number(value) + accreditNumber[4]?.value.availableQty >= 0) {
                 return Promise.resolve();
               }
               return Promise.reject('减少数不能低于剩余可用数量');
@@ -116,7 +115,7 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           }),
           () => ({
             validator(_, value) {
-              if (value + accreditNumber[4]?.value.totalQty <= 50) {
+              if (Number(value) + accreditNumber[4]?.value.totalQty <= 50) {
                 return Promise.resolve();
               }
               return Promise.reject('增加后总量不能超过50');
@@ -141,9 +140,10 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
         name="review"
         // initialValue={0}
         rules={[
+          { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
           () => ({
             validator(_, value) {
-              if (value + accreditNumber[3]?.value.availableQty >= 0) {
+              if (Number(value) + accreditNumber[3]?.value.availableQty >= 0) {
                 return Promise.resolve();
               }
               return Promise.reject('减少数不能低于剩余可用数量');
@@ -151,7 +151,7 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           }),
           () => ({
             validator(_, value) {
-              if (value + accreditNumber[3]?.value.totalQty <= 50) {
+              if (Number(value) + accreditNumber[3]?.value.totalQty <= 50) {
                 return Promise.resolve();
               }
               return Promise.reject('增加后总量不能超过50');
@@ -175,18 +175,23 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
         required
         name="manage"
         rules={[
-          {
-            validator: (_, value) =>
-              value + accreditNumber[0]?.value.availableQty >= 0
-                ? Promise.resolve()
-                : Promise.reject('减少数不能低于剩余可用数量'),
-          },
-          {
-            validator: (_, value) =>
-              value + accreditNumber[0]?.value.totalQty <= 50
-                ? Promise.resolve()
-                : Promise.reject('增加后总量不能超过50'),
-          },
+          { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
+          () => ({
+            validator(_, value) {
+              if (Number(value) + accreditNumber[0]?.value.availableQty >= 0) {
+                return Promise.resolve();
+              }
+              return Promise.reject('减少数不能低于剩余可用数量');
+            },
+          }),
+          () => ({
+            validator(_, value) {
+              if (Number(value) + accreditNumber[0]?.value.totalQty <= 50) {
+                return Promise.resolve();
+              }
+              return Promise.reject('增加后总量不能超过50');
+            },
+          }),
         ]}
       >
         <AddMinusComponent
