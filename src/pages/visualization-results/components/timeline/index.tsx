@@ -110,7 +110,12 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
             {'<'}
           </div>
         ) : null}
-
+        {/* 是否显示滚动到最开始 */}
+        {activeList.length > 5 ? (
+          <div onClick={onClickScrollRight} className={styles.rightArrow}>
+            {'>'}
+          </div>
+        ) : null}
         {activeList?.map(({ date, active, idx, click }) => {
           return (
             <TimelineItem
@@ -124,12 +129,6 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
             />
           );
         })}
-        {/* 是否显示滚动到最开始 */}
-        {activeList.length > 5 ? (
-          <div onClick={onClickScrollRight} className={styles.rightArrow}>
-            {'>'}
-          </div>
-        ) : null}
       </div>
     </Scrollbars>
   );
