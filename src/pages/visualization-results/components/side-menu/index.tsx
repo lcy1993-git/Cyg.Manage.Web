@@ -1,8 +1,8 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import { Tree, Tabs, Spin, message } from 'antd';
-import { useRequest } from 'ahooks';
+import { useRequest, useSize } from 'ahooks';
 import moment from 'moment';
 import {
   GetEngineerProjectListByParams,
@@ -19,6 +19,8 @@ const { TabPane } = Tabs;
 export interface TreeNodeType {
   title: string;
   key: string;
+  time?: string;
+  status?: number;
   children?: TreeNodeType[];
 }
 export interface SideMenuProps {
@@ -80,12 +82,14 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>();
   const [projectIdList, setProjectIds] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
-  const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
-  const [parenKeys, setParentKeys] = useState<string[]>([]);
+
   const { vState, setProjectIdList } = useContainer();
   const { filterCondition } = vState;
   const { className } = props;
+
+  const ref = useRef();
+  const size = useSize(ref);
 
   /**
    * 获取全部数据
@@ -168,46 +172,66 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   };
 
   const onAllCheck = (checked: React.Key[], info: any) => {
-    /**
-     * 只要子节点的id不要父节点的id
-     */
+    //全选的时候
+    if (info.node.key === '-1') {
+      if (info.checked) {
+        //全选
+        let children = info.node.children;
 
-    //选中子节点时
-    //当选中的时候
-    if (!info.node.children && info.checked) {
-      projectIdList?.push({
-        id: info.node.key,
-        time: info.node.time,
-        status: info.node.status,
-      });
-    }
-    //当没有选中的时候
-    if (!info.node.children && !info.checked) {
-      setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
-    }
-    //选中父节点时
-    //选中的时候
-    if (info.node.children && info.checked) {
-      console.log(23);
-
-      info.node.children.forEach((v: { key: string; time: string; status: number }) => {
-        projectIdList?.push({
-          id: v.key,
-          status: v.status.toString(),
-          time: v.time,
+        children.forEach((v: { children: TreeNodeType[] }) => {
+          v.children.forEach((v: TreeNodeType) => {
+            projectIdList.push({
+              id: v.key,
+              time: v.time,
+              status: v.status?.toString(),
+            });
+          });
         });
-      });
-    }
-    //没有选中的时候
-    if (info.node.children && !info.checked) {
-      let unCheckedKeys = info.node.children.map(
-        (v: { key: string; time: string; status: number }) => v.key,
-      );
-      setProjectIds(
-        projectIdList?.filter((v: ProjectList) => {
-          return unCheckedKeys.indexOf(v.id) !== -1;
-        }),
-      );
+      } else {
+        //取消全选
+        setProjectIds([]);
+      }
+    } else {
+      /**
+       * 只要子节点的id不要父节点的id
+       */
+
+      //选中子节点时
+      //当选中的时候
+      if (!info.node.children && info.checked) {
+        projectIdList?.push({
+          id: info.node.key,
+          time: info.node.time,
+          status: info.node.status.toString(),
+        });
+      }
+      //当没有选中的时候
+      if (!info.node.children && !info.checked) {
+        setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
+      }
+      //选中父节点时
+      //选中的时候
+      if (info.node.children && info.checked) {
+        info.node.children.forEach((v: { key: string; time: string; status: number }) => {
+          projectIdList?.push({
+            id: v.key,
+            status: v.status.toString(),
+            time: v.time,
+          });
+        });
+      }
+      //没有选中的时候
+      if (info.node.children && !info.checked) {
+        let unCheckedKeys = info.node.children.map(
+          (v: { key: string; time: string; status: number }) => v.key,
+        );
+
+        setProjectIds(
+          projectIdList?.filter((v: ProjectList) => {
+            return unCheckedKeys.indexOf(v.id) === -1;
+          }),
+        );
+      }
     }
 
     setCheckedKeys(checked);
@@ -291,14 +315,13 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
     }
     setCheckedKeys([]);
   };
-  useEffect(() => {
-    // console.log(projectIdList);
 
+  useEffect(() => {
     setProjectIdList(projectIdList);
   }, [checkedKeys]);
 
   return (
-    <div className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
+    <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
       <Tabs onChange={onTabChange} type="line" defaultActiveKey="1" style={{ height: '100%' }}>
         <TabPane tab="全部项目" key="1">
           {allLoading ? (
@@ -306,6 +329,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
           ) : null}
           {allData ? (
             <Tree
+              height={size.height}
               checkable
               onExpand={onExpand}
               expandedKeys={expandedKeys}
@@ -323,6 +347,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
           {companyData ? (
             <Tree
               checkable
+              height={size.height}
               onExpand={onExpand}
               expandedKeys={expandedKeys}
               checkedKeys={checkedKeys}

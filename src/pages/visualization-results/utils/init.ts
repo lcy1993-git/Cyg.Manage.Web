@@ -6,6 +6,17 @@ import View from 'ol/View';
 import * as proj from 'ol/proj';
 import LayerGroup from 'ol/layer/Group';
 import Layer from 'ol/layer/Layer';
+import Control from 'ol/control/Control';
+
+export interface BaseMapProps {
+  layers: Layer[];
+  layerGroups: LayerGroup[];
+  controls?: Control[];
+  view: View;
+  setLayers: (arg0: Layer[]) => void;
+  setLayerGroups: (arg0: LayerGroup[]) => void;
+  setView: (arg0: View) => void;
+}
 
 export const initLayers = (resData: any): Layer[] => {
   // 初始化data
@@ -120,7 +131,13 @@ export const initView = new View({
   projection: 'EPSG:3857'
 })
 
-export const initControlLayearsData = [
+export interface ControlLayearsData {
+  name: string;
+  state: boolean;
+  index: number;
+}
+
+export const initControlLayearsData: ControlLayearsData[] = [
   {
     name: "勘察图层",
     state: false,
@@ -133,7 +150,7 @@ export const initControlLayearsData = [
   },
   {
     name: "设计图层",
-    state: false,
+    state: true,
     index: 2
   },
   {

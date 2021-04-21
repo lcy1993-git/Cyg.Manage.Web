@@ -4,9 +4,7 @@ import UrlSelect from '@/components/url-select';
 import { Button, Input, DatePicker, Select, Menu } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
-import EnumSelect from '@/components/enum-select';
-import classnames from 'classnames';
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
 import { useContainer } from '../../result-page/store';
 import { ProjectStatus } from '@/services/project-management/all-project';
 import { DownOutlined } from '@ant-design/icons';
@@ -17,7 +15,6 @@ interface ProjectStatusOption {
   name: string;
 }
 
-//把project status转换成数组方面使用
 
 const FilterBar: FC = () => {
   const [keyWord, setKeyWord] = useState<string>(''); //搜索关键词
@@ -105,6 +102,9 @@ const FilterBar: FC = () => {
       createdOn: createdOn?.year().toString() ?? '',
       modifyDate: modifyDate?.year().toString() ?? '',
     };
+
+    console.log(condition);
+    
     setFilterCondition(condition);
   };
 

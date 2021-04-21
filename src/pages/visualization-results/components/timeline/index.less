@@ -1,0 +1,40 @@
+.timeline {
+  display: flex;
+  flex-direction: row;
+  background-color: rgba(233, 233, 235, 0.6);
+  transform: translate(0, 0);
+
+  .leftArrow {
+    position: sticky;
+    left: 0;
+    margin: auto;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .rightArrow {
+    position: sticky;
+    left: 20PX;
+    margin: auto;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .timelineItem {
+    display: flex;
+    flex-direction: column;
+
+    margin: 16px 0px;
+    cursor: pointer;
+    .time {
+      display: flex;
+      flex-direction: row;
+      font-size: 10px;
+    }
+  }
+}
+
+.timelineContainer {
+  display: flex;
+  flex-direction: row;
+}

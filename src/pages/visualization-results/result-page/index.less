@@ -24,4 +24,14 @@
   .mapContainer {
     transition: all 0.5s ease-in;
   }
+
+  .mapContainer {
+    position: relative;
+    .tilelineContainer {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 100000;
+    }
+  }
 }

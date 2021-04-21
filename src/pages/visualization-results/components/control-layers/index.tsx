@@ -1,29 +1,37 @@
 import React, { useMemo, useState } from 'react';
 import { Checkbox, Divider } from 'antd';
-
+import {ControlLayearsData} from '../../utils'
 import styles from './index.less';
-import jsonp from 'jsonp';
 
-const ListItem = (props: any) => {
-  const { name, state } = props
+type ListProps = {
+  onLayersStateChange: (arg0: number) => void;
+} & ControlLayearsData;
+
+interface Props {
+  controlLayearsData: ControlLayearsData[];
+  onLayersStateChange: (arg0: number) => void;
+}
+
+const ListItem = (props: ListProps) => {
+  const { name, state, index, onLayersStateChange } = props
   return (
     <div className={styles.listItem}>
-          <Checkbox defaultChecked={state} style={{}} onChange={()=>console.log(1)}>{ name }</Checkbox>
+          <Checkbox defaultChecked={state} style={{}} onChange={()=>onLayersStateChange(index)}>{ name }</Checkbox>
     </div>
 
   );
 }
 
-const ControlLayers = (props: any) => {
+const ControlLayers = (props: Props) => {
   const [visiabel, setVisiabel] = useState<boolean>(false);
-  const { controlLayearsData } = props;
+  const { controlLayearsData, onLayersStateChange } = props;
   const ListItemNode = useMemo(() => {
-    return controlLayearsData.map((item: any, index: any) => {
-      if (index === 0) return <div className={styles.listItem} key={item.index}><ListItem {...item} /></div>;
+    return controlLayearsData.map((item: ControlLayearsData, index: number) => {
+      if (index === 0) return <div className={styles.listItem} key={item.index}><ListItem onLayersStateChange={onLayersStateChange} {...item} /></div>;
       return (
         <div className={styles.listItem} key={item.index}>
           <Divider style={{margin: 2}}/>
-          <ListItem key {...item} />
+          <ListItem onLayersStateChange={onLayersStateChange} {...item} />
         </div>
       )
     })
