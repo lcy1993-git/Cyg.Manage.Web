@@ -1,10 +1,12 @@
 import getMappingTagsDictionary from './mappingTagsDictionary';
 import { clearHighlightLayer } from './methods';
 import { pointStyle, line_style } from './pointStyle';
+import { transform } from "ol/proj";
+import { getScale } from "./refreshMap";
 
 const mappingTagsDictionary: any = getMappingTagsDictionary()
 
-export default (evt: any, map: any, ops: any) => {
+export const mapClick = (evt: any, map: any, ops: any) => {
     let highlightLayer: any = undefined;
     // const { highlightLayer } = ops;
     clearHighlightLayer();
@@ -150,7 +152,7 @@ export default (evt: any, map: any, ops: any) => {
         })
 
         var pJSON = {};
-        if(feature.get('length'))
+        if (feature.get('length'))
             feature.set('length', Number.parseFloat(feature.get('length')).toFixed(2));
         // 遍历属性，进行一一匹配
         for (var p in feature.getProperties()) {
@@ -467,4 +469,15 @@ export default (evt: any, map: any, ops: any) => {
         highlightLayer.setVisible(true);
     });
 
+}
+
+export const mapPointermove = (evt: any, map: any, setCurrentPosition: any) => {
+    let coordinate = evt.coordinate;
+    let lont = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
+   
+    setCurrentPosition([lont[0].toFixed(4), lont[1].toFixed(4)]);
+}
+
+export const mapMoveend = (evt: any, map: any, setScaleSize: any) =>{
+    setScaleSize(getScale(map));
 }

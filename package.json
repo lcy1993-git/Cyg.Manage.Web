@@ -43,6 +43,7 @@
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.9.16",
     "@types/echarts": "^4.9.3",
+    "@types/jsonp": "^0.2.0",
     "@types/ol": "^6.4.2",
     "@types/react-custom-scrollbars": "^4.0.7",
     "@types/react-resizable": "^1.7.2",
