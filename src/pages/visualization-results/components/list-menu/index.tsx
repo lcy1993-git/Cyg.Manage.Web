@@ -1,8 +1,27 @@
-import React, { FC, useState } from 'react';
-import { Menu } from 'antd';
+import React, { FC, useEffect, useState } from 'react';
+import { Menu, message, Modal, Table } from 'antd';
 import Icon, { CopyOutlined, HeatMapOutlined, NodeIndexOutlined } from '@ant-design/icons';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/store';
+import { useRequest } from 'ahooks';
+import { GetMaterialListByProjectIdList } from '@/services/visualization-results/list-menu';
+import { ProjectList } from '@/services/visualization-results/visualization-results';
+
+interface MaterialDataType {
+  description: string;
+  itemNumber: number;
+  materialId: string;
+  name: string;
+  pieceWeight: number;
+  spec: string;
+  state: string;
+  type: string;
+  unit: string;
+  unitPrice: number;
+  remark: string;
+  code: string;
+  supplySide: string;
+}
 
 const Track1 = () => (
   <svg
@@ -57,12 +76,161 @@ const Track2 = () => (
   </svg>
 );
 
+const columns = [
+  {
+    title: '物料类型',
+    width: 120,
+    dataIndex: 'type',
+    key: 'type',
+    fixed: 'left',
+  },
+  {
+    title: '物料名称',
+    width: 100,
+    dataIndex: 'name',
+    key: 'name',
+    fixed: 'left',
+  },
+  {
+    title: '物料型号',
+    width: 100,
+    dataIndex: 'spec',
+    key: 'spec',
+  },
+
+  {
+    title: '物料编号',
+    width: 100,
+    dataIndex: 'materialId',
+    key: 'materialId',
+  },
+
+  {
+    title: '物料单位',
+    width: 100,
+    dataIndex: 'unit',
+    key: 'unit',
+  },
+  {
+    title: '数量',
+    width: 100,
+    dataIndex: 'itemNumber',
+    key: 'itemNumber',
+  },
+  {
+    title: '物料编号',
+    width: 100,
+    dataIndex: 'code',
+    key: 'code',
+  },
+  {
+    title: '单价(元)',
+    width: 100,
+    dataIndex: 'unitPrice',
+    key: 'unitPrice',
+  },
+  {
+    title: '单量',
+    width: 100,
+    dataIndex: 'pieceWeight',
+    key: 'pieceWeight',
+  },
+  {
+    title: '状态',
+    width: 100,
+    dataIndex: 'state',
+    key: 'state',
+  },
+  {
+    title: '描述',
+    width: 100,
+    dataIndex: 'description',
+    key: 'description',
+  },
+  {
+    title: '供给方',
+    width: 100,
+    dataIndex: 'supplySide',
+    key: 'supplySide',
+  },
+  {
+    title: '备注',
+    width: 100,
+    dataIndex: 'remark',
+    key: 'remark',
+  },
+];
+
 const dontNeedSelectKey = ['1', '2', '3'];
 const ListMenu: FC = () => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
+  const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
+  const [materialList, setMaterialList] = useState<
+    {
+      key: string;
+      type: string;
+      children: MaterialDataType[];
+    }[]
+  >();
   const { vState } = useContainer();
   const { checkedProjectIdList } = vState;
+
+  const { data: materialData, run: fetchMaterialList, loading } = useRequest(
+    GetMaterialListByProjectIdList,
+    {
+      manual: true,
+      onSuccess: () => {
+        if (materialData.length) {
+          /**
+           * 获取type
+           */
+          const typeSet: Set<String> = new Set();
+          materialData.forEach((v: MaterialDataType) => {
+            typeSet.add(v.type);
+          });
+          const typeArr = [...typeSet];
+          const parentArr: {
+            key: string;
+            type: string;
+            children: MaterialDataType[];
+          }[] = typeArr.map((value: String, index: number, array: String[]) => {
+            return {
+              key: value + Date.now().toString(),
+              type: value,
+              children: [],
+            };
+          });
+          parentArr.forEach(
+            (
+              value: { key: string; type: String; children: MaterialDataType[] },
+              index: number,
+              array: { key: string; type: String }[],
+            ) => {
+              let data: MaterialDataType[] = [];
+              materialData.forEach((v: MaterialDataType) => {
+                if (v.type === value.type) {
+                  data.push(v);
+                }
+              });
+              value.children = data;
+            },
+          );
+
+          console.log(parentArr);
+
+          setMaterialList(parentArr);
+          setMaterialModalVisible(true);
+        } else {
+          setMaterialModalVisible(false);
+          message.warning('没有检索到数据');
+        }
+      },
+      onError: () => {
+        message.warning('获取数据失败');
+      },
+    },
+  );
 
   const onSelected = (menuInfo: {
     key: React.Key;
@@ -85,11 +253,10 @@ const ListMenu: FC = () => {
       setSelectedKeys([]);
     }
   };
+
   return (
     <>
-
       <ProjectDetailInfo
-        
         projectId={checkedProjectIdList?.length === 1 ? checkedProjectIdList[0].id : ''}
         visible={checkedProjectIdList?.length === 1 ? projectModalVisible : false}
         onChange={setProjectModalVisible}
@@ -108,7 +275,13 @@ const ListMenu: FC = () => {
         <Menu.Item key="2" icon={<HeatMapOutlined />}>
           地图定位
         </Menu.Item>
-        <Menu.Item key="3" icon={<NodeIndexOutlined />}>
+        <Menu.Item
+          key="3"
+          onClick={() =>
+            fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? [])
+          }
+          icon={<NodeIndexOutlined />}
+        >
           材料表
         </Menu.Item>
         <Menu.Item key="4" icon={<Icon component={Track1} />}>
@@ -118,6 +291,22 @@ const ListMenu: FC = () => {
           交底轨迹
         </Menu.Item>
       </Menu>
+
+      <Modal
+        title="材料表"
+        centered
+        visible={materialModalVisible}
+        onOk={() => setMaterialModalVisible(false)}
+        onCancel={() => setMaterialModalVisible(false)}
+        width={1200}
+      >
+        <Table
+          columns={columns}
+          pagination={false}
+          dataSource={materialList}
+          scroll={{ x: 1300 }}
+        />
+      </Modal>
     </>
   );
 };
