@@ -300,12 +300,14 @@ const ListMenu: FC = () => {
         onCancel={() => setMaterialModalVisible(false)}
         width={1200}
       >
-        <Table
-          columns={columns}
-          pagination={false}
-          dataSource={materialList}
-          scroll={{ x: 1300 }}
-        />
+        <div style={{ height: '400px' }}>
+          <Table
+            columns={columns}
+            pagination={false}
+            dataSource={materialList}
+            scroll={{ x: 1400, y: 350 }}
+          />
+        </div>
       </Modal>
     </>
   );
