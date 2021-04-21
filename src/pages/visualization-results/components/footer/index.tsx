@@ -5,7 +5,6 @@ import styles from './index.less';
 
 interface Props {
   onlocationClick: ()=> void;
-  currentPosition: [number, number];
   scaleSize: string;
   onSatelliteMapClick: ()=> void;
   onStreetMapClick: ()=> void;
@@ -20,7 +19,7 @@ const Divider = () => {
 const Footer= (props: Props) => {
   const { vState, setVisibleLeftSidebar } = useContainer();
   const { visibleLeftSidebar } = vState;
-  const {scaleSize, currentPosition = [0,0], onSatelliteMapClick, onStreetMapClick, onlocationClick} = props;
+  const {scaleSize, onSatelliteMapClick, onStreetMapClick, onlocationClick } = props;
 
   return (
     <div className={`${styles.footerContainer} flex`}>
@@ -32,9 +31,13 @@ const Footer= (props: Props) => {
         <span className={styles.link} onClick={onlocationClick}>定位</span><Divider />
         <span className={styles.link} onClick={onStreetMapClick}>街道图</span><Divider />
         <span className={styles.link} onClick={onSatelliteMapClick}>卫星图</span><Divider />
-        <span>经度:{currentPosition[0]} 纬度:{currentPosition[1]}</span><Divider />
+        <span>经度:
+          <span id={"currentPositionX"}></span>
+           纬度:
+           <span id={"currentPositionY"}></span>
+        </span><Divider />
         <span>比例尺:</span><Divider />
-        <span>{scaleSize}</span>
+        <span id="currentScaleSize">{scaleSize}</span>
       </div>
     </div>
   );

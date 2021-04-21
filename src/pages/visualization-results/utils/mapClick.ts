@@ -471,13 +471,18 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
 }
 
-export const mapPointermove = (evt: any, map: any, setCurrentPosition: any) => {
+export const mapPointermove = (evt: any, map: any) => {
     let coordinate = evt.coordinate;
     let lont = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
-   
-    setCurrentPosition([lont[0].toFixed(4), lont[1].toFixed(4)]);
+    const x = document.getElementById("currentPositionX");
+    const y = document.getElementById("currentPositionY");
+    x && (x.innerHTML = lont[0].toFixed(4));
+    y && (y.innerHTML = lont[1].toFixed(4));
+    // setCurrentPosition([lont[0].toFixed(4), lont[1].toFixed(4)]);
 }
 
-export const mapMoveend = (evt: any, map: any, setScaleSize: any) =>{
-    setScaleSize(getScale(map));
+export const mapMoveend = (evt: any, map: any) =>{
+    const scaleSize: HTMLSpanElement = document.getElementById("currentScaleSize") as HTMLSpanElement;
+    scaleSize.innerHTML = getScale(map) || "";
+    // setScaleSize(getScale(map));
 }

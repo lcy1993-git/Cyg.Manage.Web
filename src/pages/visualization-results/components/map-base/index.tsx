@@ -15,13 +15,8 @@ import { bd09Towgs84 } from '../../utils/locationUtils'
 const BaseMap = (props: any) => {
 
   const [map, setMap] = useState<Map | null>(null);
-  const mapElement = useRef(null)
+  const mapElement = useRef(null);
   const { layers, layerGroups, view, setView, setLayerGroups } = props;
-
-  // footer相关数据
-  const [currentPosition, setCurrentPosition] = useState<[number, number]>([0, 0]);
-  const [scaleSize, setScaleSize] = useState<string>("")
-  const [isSatelliteMap, setIsSatelliteMap] = useState<boolean>(true);
 
   // 图层控制层数据
   const [controlLayearsData, setControlLayearsData] = useState(initControlLayearsData);
@@ -30,7 +25,7 @@ const BaseMap = (props: any) => {
   const { vState } = useContainer();
   const { checkedProjectIdList: projects, filterCondition } = vState;
   const { kvLevel } = filterCondition;
-
+  console.log("haha");
   // 挂载
   useMount(() => {
     const initialMap = new Map({
@@ -49,8 +44,8 @@ const BaseMap = (props: any) => {
     }
     // 地图点击事件
     initialMap.on('click', (e: Event) => mapClick(e, initialMap, ops1));
-    initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap, setCurrentPosition));
-    initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap, setScaleSize));
+    initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
+    initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
     
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel };
     refreshMap(ops, projects!)
@@ -129,8 +124,6 @@ const BaseMap = (props: any) => {
     <CtrolLayers controlLayearsData = {controlLayearsData} onLayersStateChange={onLayersStateChange} />
     <Footer
       onlocationClick={onlocationClick}
-      currentPosition={currentPosition}
-      scaleSize={scaleSize}
       onSatelliteMapClick={onSatelliteMapClick}
       onStreetMapClick={onStreetMapClick}
     />
