@@ -35,6 +35,7 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
           () => ({
             validator(_, value) {
+
               if (Number(value) + accreditNumber[1]?.value.availableQty >= 0) {
                 return Promise.resolve();
               }
