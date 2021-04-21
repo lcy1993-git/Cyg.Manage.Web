@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from './index.less';
 import Filterbar from '../components/filter-bar';
 import classNames from 'classnames';
@@ -8,8 +8,10 @@ import MapContainerShell from '../components/map-container-shell';
 import SidePopup from '../components/side-popup';
 import { Provider, useContainer, VisualizationResultsStateType } from './store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
-
+import ProjectDetailModal from '../components/project-detail-modal';
 import Timeline from '../components/timeline';
+import ListMenu from '../components/list-menu';
+
 interface StoreProps {
   initialState: VisualizationResultsStateType;
 }
@@ -48,11 +50,16 @@ const VisualizationResults: React.FC = () => {
               />
             ) : null}
           </div>
-          {/* <MapContainerShell /> */}
+          <div className={styles.listMenuContainer}>
+            <ListMenu />
+          </div>
+          <MapContainerShell />
         </div>
       </main>
 
       <SidePopup visible={propertySidePopupShow} onClose={() => togglePropertySidePopup()} />
+      
+    
     </PageCommonWrap>
   );
 };
