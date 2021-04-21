@@ -5,7 +5,6 @@ import styles from './index.less';
 
 interface Props {
   onlocationClick: ()=> void;
-  scaleSize: string;
   onSatelliteMapClick: ()=> void;
   onStreetMapClick: ()=> void;
 }

@@ -1,9 +1,18 @@
 import React, { useMemo, useState } from 'react';
 import { Checkbox, Divider } from 'antd';
-
+import {ControlLayearsData} from '../../utils'
 import styles from './index.less';
 
-const ListItem = (props: any) => {
+type ListProps = {
+  onLayersStateChange: (arg0: number) => void;
+} & ControlLayearsData;
+
+interface Props {
+  controlLayearsData: ControlLayearsData[];
+  onLayersStateChange: (arg0: number) => void;
+}
+
+const ListItem = (props: ListProps) => {
   const { name, state, index, onLayersStateChange } = props
   return (
     <div className={styles.listItem}>
@@ -13,11 +22,11 @@ const ListItem = (props: any) => {
   );
 }
 
-const ControlLayers = (props: any) => {
+const ControlLayers = (props: Props) => {
   const [visiabel, setVisiabel] = useState<boolean>(false);
   const { controlLayearsData, onLayersStateChange } = props;
   const ListItemNode = useMemo(() => {
-    return controlLayearsData.map((item: any, index: any) => {
+    return controlLayearsData.map((item: ControlLayearsData, index: number) => {
       if (index === 0) return <div className={styles.listItem} key={item.index}><ListItem onLayersStateChange={onLayersStateChange} {...item} /></div>;
       return (
         <div className={styles.listItem} key={item.index}>

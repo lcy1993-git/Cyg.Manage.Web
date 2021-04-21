@@ -4,7 +4,7 @@ import CtrolLayers from '../control-layers';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
 import { transform } from "ol/proj";
-import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '../../utils';
+import { mapClick, initControlLayearsData, mapPointermove, mapMoveend, BaseMapProps, ControlLayearsData } from '../../utils';
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
 import styles from './index.less';
@@ -12,14 +12,14 @@ import { refreshMap, getLayerByName } from '../../utils/refreshMap';
 import { initIpLocation } from '@/services/visualization-results/visualization-results';
 import { bd09Towgs84 } from '../../utils/locationUtils'
 
-const BaseMap = (props: any) => {
+const BaseMap = (props: BaseMapProps) => {
 
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
   const { layers, layerGroups, view, setView, setLayerGroups } = props;
 
   // 图层控制层数据
-  const [controlLayearsData, setControlLayearsData] = useState(initControlLayearsData);
+  const [controlLayearsData, setControlLayearsData] = useState<ControlLayearsData[]>(initControlLayearsData);
 
   // 从Vstate获取外部传入的数据
   const { vState } = useContainer();
