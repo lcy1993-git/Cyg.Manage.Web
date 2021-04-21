@@ -190,6 +190,7 @@ const PersonnelLoad:React.FC<Props> = (props) => {
         // ]
     };
     }, [JSON.stringify(burdensData)])
+    
 
     return (
         <ChartBox title={title}>

@@ -10,15 +10,24 @@ interface AddMinusComponentProps {
   canInput?: boolean;
   maxNumber?: number;
   minNumber?: number;
+  totalNum?: string;
+  availableNum?: string;
 }
 
 const AddMinusComponent: React.FC<AddMinusComponentProps> = (props) => {
-  const { limit = 1, onChange, canInput = true, maxNumber, minNumber } = props;
+  const {
+    limit = 1,
+    onChange,
+    canInput = true,
+    maxNumber,
+    minNumber,
+    totalNum,
+    availableNum,
+  } = props;
   const [inputValue, setInputValue] = useState<number>(0);
 
   const inputEvent = (e: any) => {
-    setInputValue(e.target.value);
-    console.log(inputValue);
+    setInputValue(isNaN(Number(e.target.value)) ? ~e.target.value : Number(e.target.value));
   };
 
   const minusEvent = () => {
@@ -47,6 +56,8 @@ const AddMinusComponent: React.FC<AddMinusComponentProps> = (props) => {
 
   return (
     <div className={styles.addMinus}>
+      <div className={styles.totalNumber}>总量（{totalNum}）</div>
+      <div className={styles.canUseNumber}>可用（{availableNum}）</div>
       <div>可用增加：</div>
       <div className={styles.clickArea}>
         <div className={styles.minusBtn} onClick={() => minusEvent()}>
