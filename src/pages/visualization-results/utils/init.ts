@@ -1,4 +1,3 @@
-
 import TileLayer from 'ol/layer/Tile';
 import Group from 'ol/layer/Group';
 import XYZ from 'ol/source/XYZ';
@@ -21,10 +20,10 @@ export interface BaseMapProps {
 export const initLayers = (resData: any): Layer[] => {
   // 初始化data
 
-  if(resData && resData.code !== 200) return [];
+  if (resData && resData.code !== 200) return [];
 
-  let vecUrl = "";
-  let imgUrl = "";
+  let vecUrl = '';
+  let imgUrl = '';
 
   resData.data.forEach((item: any) => {
     console.log(item)
@@ -40,9 +39,9 @@ export const initLayers = (resData: any): Layer[] => {
   // imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
   const imgLayer = new TileLayer({
     source: new XYZ({
-        url: decodeURI(vecUrl),
+      url: decodeURI(vecUrl),
     }),
-    preload: 18
+    preload: 18,
   });
   imgLayer.set('name', 'imgLayer');
 
@@ -50,25 +49,26 @@ export const initLayers = (resData: any): Layer[] => {
   // vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
   const vecLayer = new TileLayer({
     source: new XYZ({
-        url: decodeURI(imgUrl) ,
+      url: decodeURI(imgUrl),
     }),
-    preload: 18
+    preload: 18,
   });
   vecLayer.setVisible(false);
   vecLayer.set('name', 'vecLayer');
 
   // ann图
-  const annUrl = "https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  const annUrl =
+    'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5';
   const annLayer = new TileLayer({
     source: new XYZ({
-        url: decodeURI(annUrl),
+      url: decodeURI(annUrl),
     }),
-    preload: 18
+    preload: 18,
   });
   annLayer.set('name', 'annLayer');
 
   return [imgLayer, vecLayer, annLayer];
-}
+};
 
 export const initOtherLayers = (): LayerGroup[] => {
   // 勘察图
@@ -87,7 +87,7 @@ export const initOtherLayers = (): LayerGroup[] => {
   designLayer.set('name', 'designLayer');
 
   // 拆除图
-  const dismantleLayer = new Group()
+  const dismantleLayer = new Group();
   dismantleLayer.setVisible(false);
   dismantleLayer.set('name', 'dismantleLayer');
 
@@ -98,29 +98,29 @@ export const initOtherLayers = (): LayerGroup[] => {
   // const dismantleLayers = new
 
   return [surveyLayer, planLayer, designLayer, dismantleLayer];
-}
+};
 
 // 状态
 export const initOtherLayersState = [
   {
-    name: "勘察图层",
+    name: '勘察图层',
     state: false,
-    index: 0
+    index: 0,
   },
   {
-    name: "方案图层",
+    name: '方案图层',
     state: false,
-    index: 1
+    index: 1,
   },
   {
-    name: "设计图层",
+    name: '设计图层',
     state: false,
-    index: 2
+    index: 2,
   },
   {
-    name: "拆除图层",
+    name: '拆除图层',
     state: false,
-    index: 3
+    index: 3,
   },
 ];
 
@@ -130,8 +130,8 @@ export const initView = new View({
   zoom: 5,
   maxZoom: 25,
   minZoom: 1,
-  projection: 'EPSG:3857'
-})
+  projection: 'EPSG:3857',
+});
 
 export interface ControlLayearsData {
   name: string;
@@ -141,23 +141,23 @@ export interface ControlLayearsData {
 
 export const initControlLayearsData: ControlLayearsData[] = [
   {
-    name: "勘察图层",
+    name: '勘察图层',
     state: false,
-    index: 0
+    index: 0,
   },
   {
-    name: "方案图层",
+    name: '方案图层',
     state: false,
-    index: 1
+    index: 1,
   },
   {
-    name: "设计图层",
+    name: '设计图层',
     state: true,
-    index: 2
+    index: 2,
   },
   {
-    name: "拆除图层",
+    name: '拆除图层',
     state: false,
-    index: 3
+    index: 3,
   },
 ];
