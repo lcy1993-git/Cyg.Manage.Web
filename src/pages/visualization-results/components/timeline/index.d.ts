@@ -10,7 +10,6 @@ export interface TimelineItemProps {
   active: boolean; //是否处于点击日期之前
   length: number; //数组长度
   click: boolean; //是否被点击
-
   onClick: (clickIndex: number) => void; //点击事件
 }
 

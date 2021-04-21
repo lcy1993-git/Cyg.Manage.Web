@@ -7,7 +7,7 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 export interface VisualizationResultsStateType {
   filterCondition: EngineerProjetListFilterParams; //filter条件
   checkedProjectIdList?: ProjectList[]; //选中的project id数组
-  checkedProjectDateList?: string[]; //选中的project 日期数组
+  checkedProjectDateList?: Set<string>; //选中的project 日期数组
   materialModalShow?: boolean;
   projectDetailModalShow?: boolean;
   propertySidePopupShow?: boolean;
@@ -48,9 +48,9 @@ function useVisualizationState(
   };
 
   const setProjectIdList = (checkedProjectIdList: ProjectList[]) => {
-    console.log(checkedProjectIdList);
-    setVState({ ...vState, checkedProjectIdList });
+   
     
+    setVState({ ...vState, checkedProjectIdList });
   };
 
   return {

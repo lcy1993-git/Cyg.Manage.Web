@@ -6,31 +6,41 @@ import { TimelineProps } from './index.d';
 import TimelineItem from './components/TimelineItem';
 import Scrollbars from 'react-custom-scrollbars';
 
+interface dataItem {
+  idx: number;
+  date: string;
+  active: boolean;
+  click: boolean;
+}
 //容器组件初始化传进来的日期数组，对数组进行排序
 const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
   const { dates, height, width } = props;
-  console.log(dates);
 
-  const [activeList, setActiveList] = useState(
-    dates
-      .map((v: string) => moment(v).valueOf())
-      .sort((a: number, b: number) => a - b)
-      .map((v: number, idx: number) => {
-        return {
-          idx: idx,
-          date: moment(v).format('YYYY/MM/DD'),
-          active: true,
-          click: false,
-        };
-      }),
-  );
+  const [activeList, setActiveList] = useState<dataItem[]>([]);
 
   //默认scroll到最右边
   const scrollbars = createRef<Scrollbars>();
   useEffect(() => {
-    // Update the document title using the browser API
+    if (dates) {
+      let d = dates
+        .filter((v: string) => v !== '')
+        .map((v: string) => moment(v).valueOf())
+
+        .sort((a: number, b: number) => a - b)
+        .map((v: number, idx: number) => {
+          return {
+            idx: idx,
+            date: moment(v).format('YYYY/MM/DD'),
+            active: true,
+            click: false,
+          };
+        });
+
+      setActiveList(d);
+    }
+
     scrollbars.current?.scrollToRight();
-  }, []);
+  }, [dates]);
 
   //点击scroll到右边
   const onClickScrollLeft = () => {
@@ -56,7 +66,7 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
    * 最后深复制数组更新状态
    */
   const onClick = (clickIndex: number) => {
-    const newList = activeList.map(({ idx, active, date }) => {
+    const newList = activeList?.map(({ idx, active, date }) => {
       if (clickIndex === idx) {
         return {
           idx: idx,
@@ -82,45 +92,44 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
     });
 
     setActiveList(_.cloneDeep(newList));
-    alert(newList[clickIndex].date);
   };
   return (
     <Scrollbars autoHide ref={scrollbars} style={{ width: width, height: height }}>
       <div
         className={styles.timeline}
         style={{
-          width: dates.length <= 5 ? 400 : dates.length * 100,
+          width: activeList.length < 5 ? 400 : activeList.length * 100 + 30,
           height: `${height}px`,
           paddingLeft: '8px',
           paddingRight: '8px',
         }}
       >
-        {/* 是否显示滚动到最后
-        {dates.length > 5? (
+        {/* 是否显示滚动到最后 */}
+        {activeList.length > 5 ? (
           <div onClick={onClickScrollLeft} className={styles.leftArrow}>
-            {"<"}
+            {'<'}
           </div>
-        ) : null} */}
+        ) : null}
 
-        {activeList.map(({ date, active, idx, click }) => {
+        {activeList?.map(({ date, active, idx, click }) => {
           return (
             <TimelineItem
               key={date}
               index={idx}
               click={click}
               date={date}
-              length={dates.length}
+              length={activeList.length}
               onClick={onClick}
               active={active}
             />
           );
         })}
         {/* 是否显示滚动到最开始 */}
-        {/* {dates.length > 5 ? (
-          <div onClick={onClickScrollRight} className="right-arrow">
-            {">"}
+        {activeList.length > 5 ? (
+          <div onClick={onClickScrollRight} className={styles.rightArrow}>
+            {'>'}
           </div>
-        ) : null} */}
+        ) : null}
       </div>
     </Scrollbars>
   );

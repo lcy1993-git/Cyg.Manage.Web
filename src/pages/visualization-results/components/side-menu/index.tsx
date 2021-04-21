@@ -180,7 +180,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
       projectIdList?.push({
         id: info.node.key,
         time: info.node.time,
-        status: info.node.status,
+        status: info.node.status.toString(),
       });
     }
     //当没有选中的时候
@@ -190,8 +190,6 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
     //选中父节点时
     //选中的时候
     if (info.node.children && info.checked) {
-      console.log(23);
-
       info.node.children.forEach((v: { key: string; time: string; status: number }) => {
         projectIdList?.push({
           id: v.key,
@@ -205,9 +203,10 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
       let unCheckedKeys = info.node.children.map(
         (v: { key: string; time: string; status: number }) => v.key,
       );
+
       setProjectIds(
         projectIdList?.filter((v: ProjectList) => {
-          return unCheckedKeys.indexOf(v.id) !== -1;
+          return unCheckedKeys.indexOf(v.id) === -1;
         }),
       );
     }
@@ -295,8 +294,6 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    // console.log(projectIdList);
-
     setProjectIdList(projectIdList);
   }, [checkedKeys]);
 
@@ -327,6 +324,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
           {companyData ? (
             <Tree
               checkable
+              height={size.height}
               onExpand={onExpand}
               expandedKeys={expandedKeys}
               checkedKeys={checkedKeys}

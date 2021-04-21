@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styles from './index.less';
 import Filterbar from '../components/filter-bar';
 import classNames from 'classnames';
@@ -17,7 +17,8 @@ interface StoreProps {
 const VisualizationResults: React.FC = () => {
   const { vState, togglePropertySidePopup } = useContainer();
   const { propertySidePopupShow, visibleLeftSidebar, checkedProjectIdList } = vState;
-  console.log(checkedProjectIdList?.map((v: ProjectList) => v.time));
+  
+ 
   
   return (
     <PageCommonWrap noPadding={true}>
@@ -41,15 +42,13 @@ const VisualizationResults: React.FC = () => {
         {/* map放在这 */}
         <div className={classNames(styles.mapContainer, 'flex1')}>
           <div className={styles.tilelineContainer}>
-            {checkedProjectIdList.length !== 0 ? (
-              <Timeline
-                height={60}
-                width={400}
-                dates={checkedProjectIdList?.map((v: ProjectList) => v.time)}
-              />
-            ) : null}
+            <Timeline
+              height={60}
+              width={400}
+              dates={[...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time))]}
+            />
           </div>
-          <MapContainerShell />
+          {/* <MapContainerShell /> */}
         </div>
       </main>
 
