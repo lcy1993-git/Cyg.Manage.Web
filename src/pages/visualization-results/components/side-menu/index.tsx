@@ -1,8 +1,8 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import { Tree, Tabs, Spin, message } from 'antd';
-import { useRequest } from 'ahooks';
+import { useRequest, useSize } from 'ahooks';
 import moment from 'moment';
 import {
   GetEngineerProjectListByParams,
@@ -80,12 +80,14 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>();
   const [projectIdList, setProjectIds] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
-  const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
-  const [parenKeys, setParentKeys] = useState<string[]>([]);
+
   const { vState, setProjectIdList } = useContainer();
   const { filterCondition } = vState;
   const { className } = props;
+
+  const ref = useRef();
+  const size = useSize(ref);
 
   /**
    * 获取全部数据
@@ -291,6 +293,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
     }
     setCheckedKeys([]);
   };
+
   useEffect(() => {
     // console.log(projectIdList);
 
@@ -298,7 +301,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   }, [checkedKeys]);
 
   return (
-    <div className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
+    <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
       <Tabs onChange={onTabChange} type="line" defaultActiveKey="1" style={{ height: '100%' }}>
         <TabPane tab="全部项目" key="1">
           {allLoading ? (
@@ -306,6 +309,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
           ) : null}
           {allData ? (
             <Tree
+              height={size.height}
               checkable
               onExpand={onExpand}
               expandedKeys={expandedKeys}
