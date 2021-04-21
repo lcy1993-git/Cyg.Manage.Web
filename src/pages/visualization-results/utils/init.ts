@@ -133,7 +133,7 @@ export const initControlLayearsData = [
   },
   {
     name: "设计图层",
-    state: false,
+    state: true,
     index: 2
   },
   {

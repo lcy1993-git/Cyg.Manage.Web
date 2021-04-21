@@ -63,6 +63,10 @@ const BaseMap = (props: any) => {
     map && refreshMap(ops, projects!)
   }, [JSON.stringify(projects)])
 
+  useEffect(() => {
+    // 当图层切换时
+    console.log(controlLayearsData);
+  }, [JSON.stringify(controlLayearsData)])
 
   /**
    * @demo 这是一个demo
@@ -109,11 +113,20 @@ const BaseMap = (props: any) => {
     // 街道图点击时
     getLayerByName('imgLayer', layers).setVisible(false);
     getLayerByName('vecLayer', layers).setVisible(true);
-  }
+  };
+
+  // 改变图层状态
+
+  const onLayersStateChange = (index: number) => {
+    const resControlLayearsData = controlLayearsData;
+    resControlLayearsData[index].state = !resControlLayearsData[index].state;
+    setControlLayearsData([...controlLayearsData]);
+  };
+
   return (
     <>
     <div ref={mapElement} className={styles.mapBox}></div>
-    <CtrolLayers controlLayearsData = {controlLayearsData} />
+    <CtrolLayers controlLayearsData = {controlLayearsData} onLayersStateChange={onLayersStateChange} />
     <Footer
       onlocationClick={onlocationClick}
       currentPosition={currentPosition}

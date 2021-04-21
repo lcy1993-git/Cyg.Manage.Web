@@ -48,7 +48,7 @@ const VisualizationResults: React.FC = () => {
               />
             ) : null}
           </div>
-          {/* <MapContainerShell /> */}
+          <MapContainerShell />
         </div>
       </main>
 
