@@ -19,6 +19,8 @@ const { TabPane } = Tabs;
 export interface TreeNodeType {
   title: string;
   key: string;
+  time?: string;
+  status?: number;
   children?: TreeNodeType[];
 }
 export interface SideMenuProps {
@@ -170,45 +172,66 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   };
 
   const onAllCheck = (checked: React.Key[], info: any) => {
-    /**
-     * 只要子节点的id不要父节点的id
-     */
+    //全选的时候
+    if (info.node.key === '-1') {
+      if (info.checked) {
+        //全选
+        let children = info.node.children;
 
-    //选中子节点时
-    //当选中的时候
-    if (!info.node.children && info.checked) {
-      projectIdList?.push({
-        id: info.node.key,
-        time: info.node.time,
-        status: info.node.status.toString(),
-      });
-    }
-    //当没有选中的时候
-    if (!info.node.children && !info.checked) {
-      setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
-    }
-    //选中父节点时
-    //选中的时候
-    if (info.node.children && info.checked) {
-      info.node.children.forEach((v: { key: string; time: string; status: number }) => {
-        projectIdList?.push({
-          id: v.key,
-          status: v.status.toString(),
-          time: v.time,
+        children.forEach((v: { children: TreeNodeType[] }) => {
+          v.children.forEach((v: TreeNodeType) => {
+            projectIdList.push({
+              id: v.key,
+              time: v.time,
+              status: v.status?.toString(),
+            });
+          });
         });
-      });
-    }
-    //没有选中的时候
-    if (info.node.children && !info.checked) {
-      let unCheckedKeys = info.node.children.map(
-        (v: { key: string; time: string; status: number }) => v.key,
-      );
+      } else {
+        //取消全选
+        setProjectIds([]);
+      }
+    } else {
+      /**
+       * 只要子节点的id不要父节点的id
+       */
 
-      setProjectIds(
-        projectIdList?.filter((v: ProjectList) => {
-          return unCheckedKeys.indexOf(v.id) === -1;
-        }),
-      );
+      //选中子节点时
+      //当选中的时候
+      if (!info.node.children && info.checked) {
+        projectIdList?.push({
+          id: info.node.key,
+          time: info.node.time,
+          status: info.node.status.toString(),
+        });
+      }
+      //当没有选中的时候
+      if (!info.node.children && !info.checked) {
+        setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
+      }
+      //选中父节点时
+      //选中的时候
+      if (info.node.children && info.checked) {
+        info.node.children.forEach((v: { key: string; time: string; status: number }) => {
+          projectIdList?.push({
+            id: v.key,
+            status: v.status.toString(),
+            time: v.time,
+          });
+        });
+      }
+      //没有选中的时候
+      if (info.node.children && !info.checked) {
+        let unCheckedKeys = info.node.children.map(
+          (v: { key: string; time: string; status: number }) => v.key,
+        );
+
+        setProjectIds(
+          projectIdList?.filter((v: ProjectList) => {
+            return unCheckedKeys.indexOf(v.id) === -1;
+          }),
+        );
+      }
     }
 
     setCheckedKeys(checked);

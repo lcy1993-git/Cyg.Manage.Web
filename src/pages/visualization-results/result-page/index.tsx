@@ -17,9 +17,7 @@ interface StoreProps {
 const VisualizationResults: React.FC = () => {
   const { vState, togglePropertySidePopup } = useContainer();
   const { propertySidePopupShow, visibleLeftSidebar, checkedProjectIdList } = vState;
-  
- 
-  
+
   return (
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
@@ -42,11 +40,13 @@ const VisualizationResults: React.FC = () => {
         {/* map放在这 */}
         <div className={classNames(styles.mapContainer, 'flex1')}>
           <div className={styles.tilelineContainer}>
-            <Timeline
-              height={60}
-              width={400}
-              dates={[...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time))]}
-            />
+            {checkedProjectIdList && checkedProjectIdList.length > 0 ? (
+              <Timeline
+                height={60}
+                width={400}
+                dates={[...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time))]}
+              />
+            ) : null}
           </div>
           {/* <MapContainerShell /> */}
         </div>
