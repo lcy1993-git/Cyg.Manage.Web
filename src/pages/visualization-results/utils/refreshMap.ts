@@ -15,7 +15,6 @@ const refreshMap = (ops: any, projects: ProjectList[], location: boolean = true,
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map, kvLevel } = ops;
   clearGroups(groupLayers);
   clearHighlightLayer(map);
-  console.log(projects);
   if (projects.length === 0)
     return;
   let wfsBaseURL = 'http://171.223.214.154:8099/geoserver/pdd/ows';
@@ -381,6 +380,7 @@ const getScale = (map: any) => {
 export {
   refreshMap,
   getLayerByName,
+  getLayerGroupByName,
   clearHighlightLayer,
   getScale
 };

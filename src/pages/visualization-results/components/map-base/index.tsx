@@ -5,11 +5,11 @@ import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
 import { transform } from "ol/proj";
 import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '../../utils';
-import {BaseMapProps, ControlLayearsData} from '../../utils/init'
+import { BaseMapProps, ControlLayearsData } from '../../utils/init'
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
 import styles from './index.less';
-import { refreshMap, getLayerByName } from '../../utils/refreshMap';
+import { refreshMap, getLayerByName, getLayerGroupByName } from '../../utils/refreshMap';
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import { bd09Towgs84 } from '../../utils/locationUtils'
 
@@ -26,11 +26,9 @@ const BaseMap = (props: BaseMapProps) => {
   const { vState } = useContainer();
   const { checkedProjectIdList: projects, filterCondition } = vState;
   const { kvLevel } = filterCondition;
-  console.log("haha");
   // 挂载
   useMount(() => {
     loadEnums().then(data => {
-      console.log(JSON.stringify(data.content), '11')
       localStorage.setItem('loadEnumsData', JSON.stringify(data.content));
     });
     const initialMap = new Map({
@@ -49,7 +47,7 @@ const BaseMap = (props: BaseMapProps) => {
     initialMap.on('click', (e: Event) => mapClick(e, initialMap));
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
-    
+
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel };
     refreshMap(ops, projects!)
     setMap(initialMap);
@@ -63,7 +61,65 @@ const BaseMap = (props: BaseMapProps) => {
 
   useEffect(() => {
     // 当图层切换时
-    console.log(controlLayearsData);
+    // controlLayearsData.find(data => currItem.type === item.type)
+    layerGroups.forEach((layerGroup: any) => {
+      layerGroup.setVisible(false);
+    });
+
+    let highlightLayer: any = map?.getLayers().getArray().find((layer: any) => {
+      return layer.get('name') === 'highlightLayer';
+    })
+    console.log(highlightLayer);
+    highlightLayer && highlightLayer.setVisible(false);
+    let layerType: any;
+    if (highlightLayer && highlightLayer.getSource().getFeatures().length > 0) {
+      for (let f of highlightLayer.getSource().getFeatures()) {
+        if (f.getProperties().layerType) {
+          layerType = highlightLayer.getSource().getFeatures()[0].getProperties().layerType;
+          break;
+        }
+      }
+    }
+
+    let checkedState: ControlLayearsData[] = [];
+    controlLayearsData.map((data: ControlLayearsData) => {
+      if (data.state)
+        checkedState.push(data);
+    })
+    console.log(checkedState)
+    // 做勘察图层透明度逻辑判断
+    if (checkedState.length > 1) {
+      getLayerGroupByName('surveyLayer', layerGroups).setOpacity(0.5);
+    } else if (checkedState.length === 1) {
+      if (checkedState[0]?.index === 0)
+        getLayerGroupByName('surveyLayer', layerGroups).setOpacity(1);
+    } else {
+      return;
+    }
+
+    checkedState.map((data: ControlLayearsData) => {
+      if (data.index + 1 === layerType)
+        highlightLayer.setVisible(true);
+      switch (data.index + 1) {
+        case 1: // 勘察图层
+          getLayerGroupByName('surveyLayer', layerGroups).setVisible(true);
+          break;
+        case 2: // 方案图层
+          getLayerGroupByName('planLayer', layerGroups).setVisible(true);
+          break;
+        case 3: // 设计图层
+          getLayerGroupByName('designLayer', layerGroups).setVisible(true);
+          break;
+        case 4: // 拆除图层
+          getLayerGroupByName('dismantleLayer', layerGroups).setVisible(true);
+          break;
+        default:
+          break;
+      }
+    })
+
+    setControlLayearsData(controlLayearsData);
+
   }, [JSON.stringify(controlLayearsData)])
 
   /**
@@ -123,13 +179,13 @@ const BaseMap = (props: BaseMapProps) => {
 
   return (
     <>
-    <div ref={mapElement} className={styles.mapBox}></div>
-    <CtrolLayers controlLayearsData = {controlLayearsData} onLayersStateChange={onLayersStateChange} />
-    <Footer
-      onlocationClick={onlocationClick}
-      onSatelliteMapClick={onSatelliteMapClick}
-      onStreetMapClick={onStreetMapClick}
-    />
+      <div ref={mapElement} className={styles.mapBox}></div>
+      <CtrolLayers controlLayearsData={controlLayearsData} onLayersStateChange={onLayersStateChange} />
+      <Footer
+        onlocationClick={onlocationClick}
+        onSatelliteMapClick={onSatelliteMapClick}
+        onStreetMapClick={onStreetMapClick}
+      />
     </>
   );
 }
