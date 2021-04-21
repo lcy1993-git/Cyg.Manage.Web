@@ -18,7 +18,7 @@ const Divider = () => {
 const Footer= (props: Props) => {
   const { vState, setVisibleLeftSidebar } = useContainer();
   const { visibleLeftSidebar } = vState;
-  const {scaleSize, onSatelliteMapClick, onStreetMapClick, onlocationClick } = props;
+  const {onSatelliteMapClick, onStreetMapClick, onlocationClick } = props;
 
   return (
     <div className={`${styles.footerContainer} flex`}>
@@ -36,7 +36,7 @@ const Footer= (props: Props) => {
            <span id={"currentPositionY"}></span>
         </span><Divider />
         <span>比例尺:</span><Divider />
-        <span id="currentScaleSize">{scaleSize}</span>
+        <span id="currentScaleSize"></span>
       </div>
     </div>
   );
