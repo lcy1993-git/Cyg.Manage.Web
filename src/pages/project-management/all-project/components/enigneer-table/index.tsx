@@ -100,6 +100,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const tableResultData = useMemo(() => {
     if (tableData) {
       const { items, pageIndex, pageSize, total } = tableData;
+
       return {
         items: items ?? [],
         pageIndex,
@@ -107,6 +108,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         total,
         dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
         dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
+<<<<<<< HEAD
         projectLen: items
           ?.map((item: any) => {
             return item.projects;
@@ -114,6 +116,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           .reduce((pre, val) => {
             return (pre += val.length);
           }, 0),
+=======
+        projectLen: items?.filter((item: any) => item.projects && item.projects.length > 0).map((item: any) => item.projects).flat().length,
+>>>>>>> master
       };
     }
     return {
