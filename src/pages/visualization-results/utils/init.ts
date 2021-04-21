@@ -27,15 +27,17 @@ export const initLayers = (resData: any): Layer[] => {
   let imgUrl = "";
 
   resData.data.forEach((item: any) => {
+    console.log(item)
     if(item.layerType === 1) {
-      vecUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
+      // vecUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
+      vecUrl = item.url.replace('{s}', '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}');
     }else if(item.layerType === 2) {
-      imgUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
+      imgUrl = item.url.replace('{s}', '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}');
     }
   });
 
   // 卫星图
-  imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  // imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
   const imgLayer = new TileLayer({
     source: new XYZ({
         url: decodeURI(vecUrl),
@@ -45,7 +47,7 @@ export const initLayers = (resData: any): Layer[] => {
   imgLayer.set('name', 'imgLayer');
 
   // 街道图
-  vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  // vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
   const vecLayer = new TileLayer({
     source: new XYZ({
         url: decodeURI(imgUrl) ,
