@@ -18,6 +18,7 @@ export interface VisualizationResultsStateType {
   positionMap: boolean; //地图定位
   observeTrack: boolean; //勘察轨迹
   ConfessionTrack: boolean; //交底轨迹
+  onPositionClickState: boolean; // 当点击地图定位时候
 }
 
 function useVisualizationState(
@@ -31,6 +32,7 @@ function useVisualizationState(
     positionMap: false,
     observeTrack: false,
     ConfessionTrack: false,
+    onPositionClickState: false
   },
 ) {
   let [vState, setVState] = useState(initialState);
@@ -50,8 +52,8 @@ function useVisualizationState(
   };
 
   // 设置右侧边栏ID
-  const setSideRightActiveId = (id: string) => {
-    setVState({ ...vState, sideRightActiveId: id });
+  const setOnPositionClickState = (id: string) => {
+    setVState({ ...vState, onPositionClickState: !vState.onPositionClickState });
   };
 
   const setProjectIdList = (checkedProjectIdList: ProjectList[]) => {
@@ -89,7 +91,7 @@ function useVisualizationState(
     setFilterCondition,
     togglePropertySidePopup,
     setVisibleLeftSidebar,
-    setSideRightActiveId,
+    setOnPositionClickState,
     setProjectIdList,
     setClickDate,
     togglePositionMap,

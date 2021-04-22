@@ -25,7 +25,7 @@ const BaseMap = (props: BaseMapProps) => {
 
   // 从Vstate获取外部传入的数据
   const { vState } = useContainer();
-  const { checkedProjectIdList: projects, filterCondition } = vState;
+  const { checkedProjectIdList: projects, filterCondition, onPositionClickState } = vState;
   const { kvLevel } = filterCondition;
 
   // 右侧边栏状态
@@ -129,8 +129,9 @@ const BaseMap = (props: BaseMapProps) => {
 
 
   useEffect(() => {
-
-  }, [JSON.stringify(rightSidebarData), rightSidebarVisiviabel])
+    // 当点击定位时
+    // console.log(onPositionClickState)
+  }, [onPositionClickState])
   /**
    * @demo 这是一个demo
    * @useEffect  见下  ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
