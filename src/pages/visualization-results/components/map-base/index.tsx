@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Footer from '../footer';
+import SidePopup from '../side-popup';
 import CtrolLayers from '../control-layers';
 import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
@@ -26,6 +27,10 @@ const BaseMap = (props: BaseMapProps) => {
   const { vState } = useContainer();
   const { checkedProjectIdList: projects, filterCondition } = vState;
   const { kvLevel } = filterCondition;
+
+  // 右侧边栏状态
+  const [rightSidebarVisiviabel, setRightSidebarVisiviabel] = useState(false);
+  const [rightSidebarData, setRightSidebarData] = useState<any[]>([]);
   // 挂载
   useMount(() => {
     loadEnums().then(data => {
@@ -44,7 +49,7 @@ const BaseMap = (props: BaseMapProps) => {
     });
 
     // 地图点击事件
-    initialMap.on('click', (e: Event) => mapClick(e, initialMap));
+    initialMap.on('click', (e: Event) => mapClick(e, initialMap, {setRightSidebarVisiviabel, setRightSidebarData}));
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
 
@@ -122,6 +127,10 @@ const BaseMap = (props: BaseMapProps) => {
 
   }, [JSON.stringify(controlLayearsData)])
 
+
+  useEffect(() => {
+
+  }, [JSON.stringify(rightSidebarData), rightSidebarVisiviabel])
   /**
    * @demo 这是一个demo
    * @useEffect  见下  ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
@@ -186,6 +195,7 @@ const BaseMap = (props: BaseMapProps) => {
         onSatelliteMapClick={onSatelliteMapClick}
         onStreetMapClick={onStreetMapClick}
       />
+      <SidePopup visible={rightSidebarVisiviabel} data={rightSidebarData} setRightSidebarVisiviabel={setRightSidebarVisiviabel} />
     </>
   );
 }

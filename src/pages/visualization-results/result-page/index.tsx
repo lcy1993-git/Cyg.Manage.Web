@@ -57,7 +57,7 @@ const VisualizationResults: React.FC = () => {
         </div>
       </main>
 
-      <SidePopup visible={false} onClose={() => togglePropertySidePopup()} />
+      {/* <SidePopup visible={false} onClose={() => togglePropertySidePopup()} /> */}
     </PageCommonWrap>
   );
 };

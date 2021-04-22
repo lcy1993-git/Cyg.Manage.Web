@@ -25,7 +25,7 @@ const format = (fmt: string, date: Date) => { //author: meizz
     return fmt;
 }
 
-export const mapClick = (evt: any, map: any) => {
+export const mapClick = (evt: any, map: any, ops) => {
     clearHighlightLayer(map);
     let mappingTags, mappingTagValues;
     let selected = false;
@@ -190,9 +190,13 @@ export const mapClick = (evt: any, map: any) => {
                 }
             }
         }
+        let resData = [];
         for (var p in pJSON){
-            console.log(p + ' : ' + pJSON[p])
+            resData.push({propertyName: p, data: pJSON[p] || ""})
         }
+        console.log(resData)
+        ops.setRightSidebarVisiviabel(true);
+        ops.setRightSidebarData(resData);
         /**
          * not-resolve 这里应该是需要操作视图
          */

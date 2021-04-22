@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
 import { Drawer, Button, Table } from 'antd';
+import styles from './index.less';
 const columns = [
   {
     title: '属性名',
@@ -15,31 +16,33 @@ export interface TableDataType {
   data: string;
 }
 
-export interface SidePopupProps {
-  visible?: boolean;
-  onClose: () => void;
-}
-const data: TableDataType[] = [];
-for (let i = 0; i < 10; i++) {
-  data.push({
-    propertyName: 'test',
-    data: `Edward King ${i}`,
-  });
-}
-const SidePopup: FC<SidePopupProps> = (props) => {
-  const { visible, onClose } = props;
+// export interface SidePopupProps {
+//   visible?: boolean;
+//   onClose: () => void;
+// }
+// const data: TableDataType[] = [];
+
+const SidePopup = (props: any) => {
+  // const { visible, onClose } = props;
+  // const [visible, setVisbel] = useState(true)
+  const { data, visible, setRightSidebarVisiviabel } = props;
   return (
-    <>
+    <div         className={styles.wrap}>
       <Drawer
         title="Basic Drawer"
+
         placement="right"
-        closable={false}
-        onClose={onClose}
+        closable={true}
         visible={visible}
+        onClose={() => setRightSidebarVisiviabel(false)}
+        destroyOnClose={true}
+        mask={false}
+        getContainer={false}
+        style={{position: 'absolute', width: 300}}
       >
-        <Table pagination={false} columns={columns} dataSource={data} />
+        <Table style={{height: 30}} pagination={false} columns={columns} dataSource={data} rowClassName={styles.row}/>
       </Drawer>
-    </>
+    </div>
   );
 };
 
