@@ -1,17 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Footer from '../footer';
+import SidePopup, { TableDataType } from '../side-popup';
 import CtrolLayers from '../control-layers';
-import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
+import LayerGroup from 'ol/layer/Group';
 import { transform } from "ol/proj";
 import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '../../utils';
 import { BaseMapProps, ControlLayearsData } from '../../utils/init'
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
-import styles from './index.less';
 import { refreshMap, getLayerByName, getLayerGroupByName } from '../../utils/refreshMap';
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import { bd09Towgs84 } from '../../utils/locationUtils'
+import styles from './index.less';
 
 const BaseMap = (props: BaseMapProps) => {
 
@@ -24,8 +25,12 @@ const BaseMap = (props: BaseMapProps) => {
 
   // 从Vstate获取外部传入的数据
   const { vState } = useContainer();
-  const { checkedProjectIdList: projects, filterCondition } = vState;
+  const { checkedProjectIdList: projects, filterCondition, onPositionClickState } = vState;
   const { kvLevel } = filterCondition;
+
+  // 右侧边栏状态
+  const [rightSidebarVisiviabel, setRightSidebarVisiviabel] = useState(false);
+  const [rightSidebarData, setRightSidebarData] = useState<TableDataType[]>([]);
   // 挂载
   useMount(() => {
     loadEnums().then(data => {
@@ -44,7 +49,7 @@ const BaseMap = (props: BaseMapProps) => {
     });
 
     // 地图点击事件
-    initialMap.on('click', (e: Event) => mapClick(e, initialMap));
+    initialMap.on('click', (e: Event) => mapClick(e, initialMap, {setRightSidebarVisiviabel, setRightSidebarData}));
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
 
@@ -120,6 +125,11 @@ const BaseMap = (props: BaseMapProps) => {
 
   }, [JSON.stringify(controlLayearsData)])
 
+
+  useEffect(() => {
+    // 当点击定位时
+    // console.log(onPositionClickState)
+  }, [onPositionClickState])
   /**
    * @demo 这是一个demo
    * @useEffect  见下  ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
@@ -148,9 +158,7 @@ const BaseMap = (props: BaseMapProps) => {
           zoom: 18,
           duration: duration
         }, () => { });
-
         setView(view);
-
       }
     })
   }
@@ -178,12 +186,13 @@ const BaseMap = (props: BaseMapProps) => {
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
-      <CtrolLayers controlLayearsData={controlLayearsData} onLayersStateChange={onLayersStateChange} />
+      {rightSidebarVisiviabel || <CtrolLayers controlLayearsData={controlLayearsData} onLayersStateChange={onLayersStateChange} />}
       <Footer
         onlocationClick={onlocationClick}
         onSatelliteMapClick={onSatelliteMapClick}
         onStreetMapClick={onStreetMapClick}
       />
+      <SidePopup visible={rightSidebarVisiviabel} data={rightSidebarData} setRightSidebarVisiviabel={setRightSidebarVisiviabel} />
     </>
   );
 }

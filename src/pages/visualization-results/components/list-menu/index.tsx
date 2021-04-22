@@ -173,7 +173,7 @@ const ListMenu: FC = () => {
       children: MaterialDataType[];
     }[]
   >();
-  const { vState } = useContainer();
+  const { vState, toggleConfessionTrack, toggleObserveTrack, togglePositionMap, setOnPositionClickState } = useContainer();
   const { checkedProjectIdList } = vState;
 
   const { data: materialData, run: fetchMaterialList, loading } = useRequest(
@@ -272,7 +272,12 @@ const ListMenu: FC = () => {
         <Menu.Item key="1" onClick={() => setProjectModalVisible(true)} icon={<CopyOutlined />}>
           项目详情
         </Menu.Item>
-        <Menu.Item key="2" icon={<HeatMapOutlined />}>
+        <Menu.Item key="2" onClick={() => {
+          togglePositionMap()
+          setOnPositionClickState()
+        }
+
+          } icon={<HeatMapOutlined />}>
           地图定位
         </Menu.Item>
         <Menu.Item
@@ -284,10 +289,14 @@ const ListMenu: FC = () => {
         >
           材料表
         </Menu.Item>
-        <Menu.Item key="4" icon={<Icon component={Track1} />}>
+        <Menu.Item key="4" onClick={() => toggleObserveTrack()} icon={<Icon component={Track1} />}>
           勘察轨迹
         </Menu.Item>
-        <Menu.Item key="5" icon={<Icon component={Track2} />}>
+        <Menu.Item
+          key="5"
+          onClick={() => toggleConfessionTrack()}
+          icon={<Icon component={Track2} />}
+        >
           交底轨迹
         </Menu.Item>
       </Menu>

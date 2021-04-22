@@ -46,7 +46,7 @@ const VisualizationResults: React.FC = () => {
               <Timeline
                 height={60}
                 width={400}
-                dates={[...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time))]}
+                // dates={}
               />
             ) : null}
           </div>
@@ -57,9 +57,7 @@ const VisualizationResults: React.FC = () => {
         </div>
       </main>
 
-      <SidePopup visible={propertySidePopupShow} onClose={() => togglePropertySidePopup()} />
-      
-    
+      {/* <SidePopup visible={false} onClose={() => togglePropertySidePopup()} /> */}
     </PageCommonWrap>
   );
 };
