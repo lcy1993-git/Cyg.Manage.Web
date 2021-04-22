@@ -10,7 +10,7 @@ import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
 import styles from './index.less';
 import { refreshMap, getLayerByName } from '../../utils/refreshMap';
-import { initIpLocation } from '@/services/visualization-results/visualization-results';
+import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import { bd09Towgs84 } from '../../utils/locationUtils'
 
 const BaseMap = (props: BaseMapProps) => {
@@ -29,6 +29,10 @@ const BaseMap = (props: BaseMapProps) => {
   console.log("haha");
   // 挂载
   useMount(() => {
+    loadEnums().then(data => {
+      console.log(JSON.stringify(data.content), '11')
+      localStorage.setItem('loadEnumsData', JSON.stringify(data.content));
+    });
     const initialMap = new Map({
       target: mapElement.current!,
       layers: [...layers],
@@ -40,11 +44,9 @@ const BaseMap = (props: BaseMapProps) => {
     layerGroups.forEach((item: LayerGroup) => {
       initialMap.addLayer(item);
     });
-    const ops1 = {
-      highlightLayer: null
-    }
+
     // 地图点击事件
-    initialMap.on('click', (e: Event) => mapClick(e, initialMap, ops1));
+    initialMap.on('click', (e: Event) => mapClick(e, initialMap));
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
     
@@ -55,7 +57,7 @@ const BaseMap = (props: BaseMapProps) => {
 
   // 动态刷新refreshMap
   useEffect(() => {
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map };
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
     map && refreshMap(ops, projects!)
   }, [JSON.stringify(projects)])
 

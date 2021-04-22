@@ -7,13 +7,15 @@ import GeoJSON from 'ol/format/GeoJSON';
 import { pointStyle, line_style, cable_channel_styles, mark_style, fzx_styles } from '../utils/pointStyle';
 import Layer from "ol/layer/Layer";
 import Point from "ol/geom/Point";
-import { transform,getPointResolution } from "ol/proj";
+import { transform, getPointResolution } from "ol/proj";
 import ProjUnits from "ol/proj/Units";
 import Feature from "ol/Feature";
 
 const refreshMap = (ops: any, projects: ProjectList[], location: boolean = true, time?: string) => {
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map, kvLevel } = ops;
   clearGroups(groupLayers);
+  clearHighlightLayer(map);
+  console.log(projects);
   if (projects.length === 0)
     return;
   let wfsBaseURL = 'http://171.223.214.154:8099/geoserver/pdd/ows';
@@ -183,7 +185,6 @@ const loadLayers = async (kvLevel: any, projects: ProjectList[], url: string, po
     }
   })
 
-  console.log(queryFlag);
   if (!queryFlag) {
     layerParams.push({
       layerName: 'tower',
@@ -244,6 +245,16 @@ const clearGroups = (layerGroups: LayerGroup[]) => {
       layer.getSource().clear();
     });
   });
+}
+
+/**
+ * 清除高亮图层
+ */
+const clearHighlightLayer = (map: any) => {
+  map.getLayers().getArray().forEach((layer: any) => {
+    if (layer.get('name') === 'highlightLayer')
+      layer.getSource().clear();
+  })
 }
 
 /**
@@ -317,58 +328,60 @@ const relocateMap = (projectId: string = "", layerGroups: LayerGroup[], view: an
 
 }
 
-const getScale = (map:any) => {
-	let view = map.getView();
-	let center = view.getCenter();
-	let projection  = view.getProjection();
-	let resolution = view.getResolution();
-	let pointResolution = getPointResolution(
-      projection,
-      resolution,
-      center,
-      ProjUnits.METERS
-    );
-	
-	let minWidth = 64;
-	let nominalCount = minWidth * pointResolution;
-	let suffix = '';
-	if (nominalCount < 0.001) {
-        suffix = 'μm';
-        pointResolution *= 1000000;
-    } else if (nominalCount < 1) {
-        suffix = 'mm';
-        pointResolution *= 1000;
-    } else if (nominalCount < 1000) {
-        suffix = 'm';
-    } else {
-        suffix = 'km';
-        pointResolution /= 1000;
+// 获取比例尺
+const getScale = (map: any) => {
+  let view = map.getView();
+  let center = view.getCenter();
+  let projection = view.getProjection();
+  let resolution = view.getResolution();
+  let pointResolution = getPointResolution(
+    projection,
+    resolution,
+    center,
+    ProjUnits.METERS
+  );
+
+  let minWidth = 64;
+  let nominalCount = minWidth * pointResolution;
+  let suffix = '';
+  if (nominalCount < 0.001) {
+    suffix = 'μm';
+    pointResolution *= 1000000;
+  } else if (nominalCount < 1) {
+    suffix = 'mm';
+    pointResolution *= 1000;
+  } else if (nominalCount < 1000) {
+    suffix = 'm';
+  } else {
+    suffix = 'km';
+    pointResolution /= 1000;
+  }
+  let i = 3 * Math.floor(Math.log(minWidth * pointResolution) / Math.log(10));
+  let count, width, decimalCount;
+  let LEADING_DIGITS = [1, 2, 5];
+  while (true) {
+    decimalCount = Math.floor(i / 3);
+    const decimal = Math.pow(10, decimalCount);
+    count = LEADING_DIGITS[((i % 3) + 3) % 3] * decimal;
+    width = Math.round(count / pointResolution);
+    if (isNaN(width)) {
+      // this.element.style.display = 'none';
+      // this.renderedVisible_ = false;
+      return;
+    } else if (width >= minWidth) {
+      break;
     }
-	let i = 3 * Math.floor(Math.log(minWidth * pointResolution) / Math.log(10));
-	let count, width, decimalCount;
-	let LEADING_DIGITS = [1, 2, 5];
-	while (true) {
-      decimalCount = Math.floor(i / 3);
-      const decimal = Math.pow(10, decimalCount);
-      count = LEADING_DIGITS[((i % 3) + 3) % 3] * decimal;
-      width = Math.round(count / pointResolution);
-      if (isNaN(width)) {
-        // this.element.style.display = 'none';
-        // this.renderedVisible_ = false;
-        return;
-      } else if (width >= minWidth) {
-        break;
-      }
-      ++i;
-    }
-	let text = count.toFixed(decimalCount < 0 ? -decimalCount : 0) + ' ' + suffix;
-	return "1 : " + text;
+    ++i;
+  }
+  let text = count.toFixed(decimalCount < 0 ? -decimalCount : 0) + ' ' + suffix;
+  return "1 : " + text;
 }
 
 
 export {
   refreshMap,
   getLayerByName,
+  clearHighlightLayer,
   getScale
 };
 

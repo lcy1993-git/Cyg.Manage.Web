@@ -119,5 +119,5 @@ export const initIpLocation = () => {
 
 // 加载项目中所需的枚举
 export const loadEnums = (params: any ={}) => {
-  request(`http://${webConfig.publicServiceServerIP}${webConfig.publicServiceServerPort}/api/System/GetEnums`, { method: 'POST' , data: {...params}})
+  return request(`http://${webConfig.publicServiceServerIP}${webConfig.publicServiceServerPort}/api/System/GetEnums`, { method: 'POST' , data: {...params}})
 }
