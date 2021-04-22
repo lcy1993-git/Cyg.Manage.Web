@@ -21,7 +21,6 @@ function useVisualizationState(
     propertySidePopupShow: false,
     projectDetailModalShow: false,
     materialModalShow: false,
-    checkedProjectIdList: [],
     visibleLeftSidebar: true,
     sideRightActiveId: '',
   },
@@ -48,8 +47,6 @@ function useVisualizationState(
   };
 
   const setProjectIdList = (checkedProjectIdList: ProjectList[]) => {
-   
-    
     setVState({ ...vState, checkedProjectIdList });
   };
 
