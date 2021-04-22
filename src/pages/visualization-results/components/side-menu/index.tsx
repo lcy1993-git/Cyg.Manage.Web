@@ -21,6 +21,10 @@ export interface TreeNodeType {
   key: string;
   time?: string;
   status?: number;
+  haveData?: boolean;
+  haveSurveyData?: boolean;
+  haveDesignData?: boolean;
+  isExecutor?: boolean;
   children?: TreeNodeType[];
 }
 export interface SideMenuProps {
@@ -74,6 +78,10 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
       key: v.id,
       time: v.projectEndTime ? moment(v.projectEndTime).format('YYYY-MM-DD') : '',
       status: v.status,
+      haveData: v.haveData,
+      haveSurveyData: v.haveSurveyData,
+      haveDesignData: v.haveDesignData,
+      isExecutor: v.isExecutor,
     };
   });
 };
@@ -84,7 +92,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
 
-  const { vState, setProjectIdList,} = useContainer(); //设置公共状态的id数据
+  const { vState, setProjectIdList } = useContainer(); //设置公共状态的id数据
   const { filterCondition } = vState;
   const { className } = props;
 
@@ -123,6 +131,10 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
               id: reShapeData[0].children[0].key,
               status: reShapeData[0].children[0].status,
               time: reShapeData[0].children[0].time,
+              haveData: reShapeData[0].children[0].haveData,
+              haveSurveyData: reShapeData[0].children[0].haveSurveyData,
+              haveDesignData: reShapeData[0].children[0].haveDesignData,
+              isExecutor: reShapeData[0].children[0].isExecutor,
             },
           ]);
           setCheckedKeys([reShapeData[0].children[0].key]);
@@ -194,6 +206,10 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
               id: v.key,
               time: v.time,
               status: v.status?.toString(),
+              haveData: v.haveData,
+              haveSurveyData: v.haveSurveyData,
+              haveDesignData: v.haveDesignData,
+              isExecutor: v.isExecutor,
             });
           });
         });
@@ -213,6 +229,10 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
           id: info.node.key,
           time: info.node.time,
           status: info.node.status.toString(),
+          haveData: info.node.haveData,
+          haveSurveyData: info.node.haveSurveyData,
+          haveDesignData: info.node.haveDesignData,
+          isExecutor: info.node.isExecutor,
         });
       }
       //当没有选中的时候
@@ -227,6 +247,10 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
             id: v.key,
             status: v.status.toString(),
             time: v.time,
+            haveData: info.node.haveData,
+            haveSurveyData: info.node.haveSurveyData,
+            haveDesignData: info.node.haveDesignData,
+            isExecutor: info.node.isExecutor,
           });
         });
       }

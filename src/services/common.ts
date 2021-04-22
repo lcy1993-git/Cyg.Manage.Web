@@ -12,14 +12,13 @@ const devBaseUrl = {
   common: '/common/api',
   upload: '/upload/api',
   resource: '/resource/api',
-  webGis: '/webGis/api'
+  webGis: '/webGis/api',
+  webGis2: '/webGis2/api',
 };
 
 // interface UrlSelectParams {
 //   requestSource: 'project' | 'resource';
 // }
-
-
 
 export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;
 
@@ -118,7 +117,6 @@ interface GetCommonSelectDataParams {
   method?: 'get' | 'post';
   postType?: 'body' | 'query';
 }
-
 
 export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) => {
   const { url, params, requestSource = 'project', method = 'get', postType } = data;

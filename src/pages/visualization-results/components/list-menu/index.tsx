@@ -4,7 +4,10 @@ import Icon, { CopyOutlined, HeatMapOutlined, NodeIndexOutlined } from '@ant-des
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/store';
 import { useRequest } from 'ahooks';
-import { GetMaterialListByProjectIdList } from '@/services/visualization-results/list-menu';
+import {
+  GetMaterialListByProjectIdList,
+  GetTrackTimeLine,
+} from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 
 interface MaterialDataType {
@@ -173,10 +176,21 @@ const ListMenu: FC = () => {
       children: MaterialDataType[];
     }[]
   >();
-  const { vState, toggleConfessionTrack, toggleObserveTrack, togglePositionMap, setOnPositionClickState } = useContainer();
-  const { checkedProjectIdList } = vState;
+const {
+  vState,
+  toggleConfessionTrack,
+  toggleObserveTrack,
+  togglePositionMap,
+  setObeserveTrackTimeline,
+  setOnPositionClickState
+} = useContainer();
+  const { checkedProjectIdList, observeTrack } = vState;
 
-  const { data: materialData, run: fetchMaterialList, loading } = useRequest(
+ 
+  
+
+
+  const { data: materialData, run: fetchMaterialList } = useRequest(
     GetMaterialListByProjectIdList,
     {
       manual: true,
@@ -232,71 +246,105 @@ const ListMenu: FC = () => {
     },
   );
 
+  const { data: timelineData, run: fetchTimeline } = useRequest(GetTrackTimeLine, {
+    manual: true,
+    onSuccess: () => {
+      setObeserveTrackTimeline(timelineData.surveyTimeLine);
+    },
+    onError: () => {
+      message.warning('获取数据失败');
+    },
+  });
+
   const onSelected = (menuInfo: {
     key: React.Key;
     keyPath: React.Key[];
     item: React.ReactInstance;
+    selectedKeys: React.Key[];
     domEvent: React.MouseEvent<HTMLElement>;
   }) => {
     if (dontNeedSelectKey.indexOf(menuInfo.key.toString()) === -1) {
-      setSelectedKeys([menuInfo.key.toString()]);
+      setSelectedKeys(menuInfo.selectedKeys.map((v: React.Key) => v.toString()));
+    }
+
+    if (menuInfo.key.toString() === '1') {
+      onClickProjectDetailInfo();
+    } else if (menuInfo.key.toString() === '2') {
+      togglePositionMap()
+      setOnPositionClickState();
+    } else if (menuInfo.key.toString() === '3') {
+      fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
+    } else if (menuInfo.key.toString() === '4') {
+      onClickObserveTrack();
+    } else {
+      toggleConfessionTrack(true);
     }
   };
 
-  const onClick = (menuInfo: {
+  const onDeSelected = (menuInfo: {
     key: React.Key;
     keyPath: React.Key[];
     item: React.ReactInstance;
+    selectedKeys: React.Key[];
     domEvent: React.MouseEvent<HTMLElement>;
   }) => {
-    if (selectedKeys.indexOf(menuInfo.key.toString()) !== -1) {
-      setSelectedKeys([]);
+    setSelectedKeys(menuInfo.selectedKeys.map((v: React.Key) => v.toString()));
+    if (menuInfo.key.toString() === '5') {
+      toggleConfessionTrack(false);
+    }
+    if (menuInfo.key.toString() === '4') {
+      toggleObserveTrack(false);
+    }
+  };
+
+  const onClickObserveTrack = () => {
+    if (checkedProjectIdList.length === 1) {
+      fetchTimeline(checkedProjectIdList[0].id);
+      toggleObserveTrack(true);
+    } else {
+      setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
+      message.warning('请选择一个数据');
+    }
+  };
+
+  const onClickProjectDetailInfo = () => {
+    setProjectModalVisible(true);
+    if (checkedProjectIdList?.length !== 1) {
+      message.warning('请选择一个项目');
     }
   };
 
   return (
     <>
-      <ProjectDetailInfo
-        projectId={checkedProjectIdList?.length === 1 ? checkedProjectIdList[0].id : ''}
-        visible={checkedProjectIdList?.length === 1 ? projectModalVisible : false}
-        onChange={setProjectModalVisible}
-      />
+      {checkedProjectIdList?.length === 1 ? (
+        <ProjectDetailInfo
+          projectId={checkedProjectIdList[0].id}
+          visible={projectModalVisible}
+          onChange={setProjectModalVisible}
+        />
+      ) : null}
 
       <Menu
         style={{ width: 150, backgroundColor: 'rgba(233, 233, 235, 0.6)' }}
         selectedKeys={selectedKeys}
-        onClick={onClick}
         onSelect={onSelected}
+        multiple={true}
+        onDeselect={onDeSelected}
         mode="inline"
       >
-        <Menu.Item key="1" onClick={() => setProjectModalVisible(true)} icon={<CopyOutlined />}>
+        <Menu.Item key="1" icon={<CopyOutlined />}>
           项目详情
         </Menu.Item>
-        <Menu.Item key="2" onClick={() => {
-          togglePositionMap()
-          setOnPositionClickState()
-        }
-
-          } icon={<HeatMapOutlined />}>
+        <Menu.Item key="2" icon={<HeatMapOutlined />}>
           地图定位
         </Menu.Item>
-        <Menu.Item
-          key="3"
-          onClick={() =>
-            fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? [])
-          }
-          icon={<NodeIndexOutlined />}
-        >
+        <Menu.Item key="3" icon={<NodeIndexOutlined />}>
           材料表
         </Menu.Item>
-        <Menu.Item key="4" onClick={() => toggleObserveTrack()} icon={<Icon component={Track1} />}>
+        <Menu.Item key="4" icon={<Icon component={Track1} />}>
           勘察轨迹
         </Menu.Item>
-        <Menu.Item
-          key="5"
-          onClick={() => toggleConfessionTrack()}
-          icon={<Icon component={Track2} />}
-        >
+        <Menu.Item key="5" icon={<Icon component={Track2} />}>
           交底轨迹
         </Menu.Item>
       </Menu>

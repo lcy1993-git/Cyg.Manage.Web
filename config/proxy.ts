@@ -34,6 +34,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/webGis': '/' },
     },
+    '/webGis2/api': {
+      target: 'http://171.223.214.154:8014/',
+      changeOrigin: true,
+      pathRewrite: { '^/webGis2': '/' },
+    },
     '/baidu/api': {
       target: 'https://map.baidu.com/',
       changeOrigin: true,

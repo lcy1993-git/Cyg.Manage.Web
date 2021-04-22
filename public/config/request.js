@@ -30,7 +30,8 @@ const arrayHasNotBaseUrlArray = {
     common: "/common/api",
     upload: "/storage/api",
     resource: "/resourcemanage/v2/api",
-    webGis: '/webGis/api'
+    webGis: '/webGis/api',
+    webGis2: '/webGis2/api',
 }
 
 export const logoArray = {
