@@ -80,11 +80,11 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
 
 const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>();
-  const [projectIdList, setProjectIds] = useState<ProjectList[]>([]);
+  const [projectIdList, setProjectIds] = useState<ProjectList[]>([]); //筛选的id数据
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
 
-  const { vState, setProjectIdList } = useContainer();
+  const { vState, setProjectIdList,} = useContainer(); //设置公共状态的id数据
   const { filterCondition } = vState;
   const { className } = props;
 
@@ -109,6 +109,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
             };
           });
 
+          //设置树形数据
           setTreeData([
             {
               title: '全选',
@@ -116,7 +117,15 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
               children: reShapeData,
             },
           ]);
-          setExpandedKeys(['-1']);
+          setExpandedKeys(['-1', reShapeData[0].key]);
+          setProjectIds([
+            {
+              id: reShapeData[0].children[0].key,
+              status: reShapeData[0].children[0].status,
+              time: reShapeData[0].children[0].time,
+            },
+          ]);
+          setCheckedKeys([reShapeData[0].children[0].key]);
         } else {
           message.warning('没有检索到数据');
         }
@@ -130,6 +139,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   /**
    * 获取地州项目
    */
+
   const { data: companyData, run: fetchCompanyDate, loading: companyLoading } = useRequest(
     GetEngineerCompanyProjectListByParams,
 

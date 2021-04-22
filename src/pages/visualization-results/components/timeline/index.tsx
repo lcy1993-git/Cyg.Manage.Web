@@ -1,10 +1,11 @@
-import React, { useState, FC, useEffect, createRef } from 'react';
+import React, { useState, FC, useEffect, createRef, useMemo } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 import styles from './index.less';
 import { TimelineProps } from './index.d';
 import TimelineItem from './components/TimelineItem';
 import Scrollbars from 'react-custom-scrollbars';
+import { useContainer } from '../../result-page/store';
 
 interface dataItem {
   idx: number;
@@ -15,32 +16,29 @@ interface dataItem {
 //容器组件初始化传进来的日期数组，对数组进行排序
 const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
   const { dates, height, width } = props;
-
+  const { setClickDate, vState } = useContainer();
   const [activeList, setActiveList] = useState<dataItem[]>([]);
+  const { checkedProjectDateList } = vState;
+  console.log('refresh');
 
   //默认scroll到最右边
   const scrollbars = createRef<Scrollbars>();
   useEffect(() => {
-    if (dates) {
-      let d = dates
-        .filter((v: string) => v !== '')
-        .map((v: string) => moment(v).valueOf())
-
-        .sort((a: number, b: number) => a - b)
-        .map((v: number, idx: number) => {
+    if (checkedProjectDateList) {
+      setActiveList(
+        checkedProjectDateList.map((v: string, idx: number) => {
           return {
             idx: idx,
             date: moment(v).format('YYYY/MM/DD'),
             active: true,
             click: false,
           };
-        });
-
-      setActiveList(d);
+        }),
+      );
     }
 
     scrollbars.current?.scrollToRight();
-  }, [dates]);
+  }, [checkedProjectDateList]);
 
   //点击scroll到右边
   const onClickScrollLeft = () => {
@@ -92,7 +90,9 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
     });
 
     setActiveList(_.cloneDeep(newList));
+    setClickDate(newList[clickIndex].date);
   };
+
   return (
     <Scrollbars autoHide ref={scrollbars} style={{ width: width, height: height }}>
       <div
