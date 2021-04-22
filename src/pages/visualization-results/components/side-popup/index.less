@@ -1,22 +1,16 @@
 .wrap{
-  :global {
-    .ant-table {
-        min-height: 352px !important;
-      }
-      .ant-table-row {
-          height: 15px;
-          overflow: hidden;
-      }
-      .ant-table-cell {
-          height: 15px;
-      }
-  }
-  background-color: black;
-  .row {
-    //   max-height: 15px !important;
-    //   margin: 0;
-    //   padding: 0;
-    //   overflow: hidden;
-    //   background-color: brown;
-  }
+    .drawerClose {
+        position: absolute;
+        top: 45%;
+        bottom: 55%;
+        left: 0;
+        z-index: 1004;
+        font-size: 14px;
+        padding: 0 6px;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.8);
+        &:hover {
+          color: #0e7b3b;
+        }
+    }
 }

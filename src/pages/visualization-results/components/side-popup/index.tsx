@@ -1,5 +1,6 @@
-import React, { FC, useState } from 'react';
-import { Drawer, Button, Table } from 'antd';
+import React from 'react';
+import { Drawer, Table } from 'antd';
+import { MenuUnfoldOutlined } from '@ant-design/icons';
 import styles from './index.less';
 const columns = [
   {
@@ -16,30 +17,28 @@ export interface TableDataType {
   data: string;
 }
 
-// export interface SidePopupProps {
-//   visible?: boolean;
-//   onClose: () => void;
-// }
-// const data: TableDataType[] = [];
+export interface Props {
+  data: TableDataType[];
+  visible: boolean;
+  setRightSidebarVisiviabel: (arg0: boolean) => void;
+}
 
-const SidePopup = (props: any) => {
-  // const { visible, onClose } = props;
-  // const [visible, setVisbel] = useState(true)
+const SidePopup: React.FC<Props> = (props) => {
   const { data, visible, setRightSidebarVisiviabel } = props;
   return (
-    <div         className={styles.wrap}>
+    <div className={styles.wrap}>
       <Drawer
-        title="Basic Drawer"
-
         placement="right"
-        closable={true}
+        closable={false}
         visible={visible}
-        onClose={() => setRightSidebarVisiviabel(false)}
         destroyOnClose={true}
         mask={false}
         getContainer={false}
-        style={{position: 'absolute', width: 300}}
+        style={{position: 'absolute', width: 340}}
       >
+        <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
+          <MenuUnfoldOutlined />
+        </div>
         <Table style={{height: 30}} pagination={false} columns={columns} dataSource={data} rowClassName={styles.row}/>
       </Drawer>
     </div>

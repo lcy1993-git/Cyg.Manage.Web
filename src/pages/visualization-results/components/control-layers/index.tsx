@@ -69,7 +69,7 @@ const ControlLayers = (props: Props) => {
         onMouseEnter={() => setVisiabel(true)}
         onMouseLeave={() => setVisiabel(false)}
       >
-        <Icon component={LayereIcon} />
+        <Icon style={{backgroundColor: "rgba(255,255,255, 0.6)", padding: "3px"}} component={LayereIcon} />
         {visiabel && <div className={styles.list}>{ListItemNode}</div>}
       </div>
     </div>

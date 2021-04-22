@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Footer from '../footer';
-import SidePopup from '../side-popup';
+import SidePopup, { TableDataType } from '../side-popup';
 import CtrolLayers from '../control-layers';
-import LayerGroup from 'ol/layer/Group';
 import Map from 'ol/Map';
+import LayerGroup from 'ol/layer/Group';
 import { transform } from "ol/proj";
 import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '../../utils';
 import { BaseMapProps, ControlLayearsData } from '../../utils/init'
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/store';
-import styles from './index.less';
 import { refreshMap, getLayerByName, getLayerGroupByName } from '../../utils/refreshMap';
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import { bd09Towgs84 } from '../../utils/locationUtils'
+import styles from './index.less';
 
 const BaseMap = (props: BaseMapProps) => {
 
@@ -30,7 +30,7 @@ const BaseMap = (props: BaseMapProps) => {
 
   // 右侧边栏状态
   const [rightSidebarVisiviabel, setRightSidebarVisiviabel] = useState(false);
-  const [rightSidebarData, setRightSidebarData] = useState<any[]>([]);
+  const [rightSidebarData, setRightSidebarData] = useState<TableDataType[]>([]);
   // 挂载
   useMount(() => {
     loadEnums().then(data => {
@@ -159,9 +159,7 @@ const BaseMap = (props: BaseMapProps) => {
           zoom: 18,
           duration: duration
         }, () => { });
-
         setView(view);
-
       }
     })
   }
@@ -189,7 +187,7 @@ const BaseMap = (props: BaseMapProps) => {
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
-      <CtrolLayers controlLayearsData={controlLayearsData} onLayersStateChange={onLayersStateChange} />
+      {rightSidebarVisiviabel || <CtrolLayers controlLayearsData={controlLayearsData} onLayersStateChange={onLayersStateChange} />}
       <Footer
         onlocationClick={onlocationClick}
         onSatelliteMapClick={onSatelliteMapClick}
