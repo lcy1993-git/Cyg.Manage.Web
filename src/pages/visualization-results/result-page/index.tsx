@@ -4,7 +4,7 @@ import Filterbar from '../components/filter-bar';
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideMenu from '../components/side-menu';
-import SidePopup from '../components/side-popup';
+import MapContainerShell from '../components/map-container-shell';
 import { Provider, useContainer, VisualizationResultsStateType } from './store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import Timeline from '../components/timeline';
@@ -64,11 +64,9 @@ const VisualizationResults: React.FC = () => {
           <div className={styles.listMenuContainer}>
             <ListMenu />
           </div>
-          {/* <MapContainerShell /> */}
+          <MapContainerShell />
         </div>
       </main>
-
-      {/* <SidePopup visible={false} onClose={() => togglePropertySidePopup()} /> */}
     </PageCommonWrap>
   );
 };

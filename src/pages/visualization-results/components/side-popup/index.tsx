@@ -10,6 +10,21 @@ const columns = [
   {
     title: '属性值',
     dataIndex: 'data',
+    render(value: any, record: any, index: any){
+      if(typeof value === "string") return <span key={index}>{value}</span>;
+      if(record.propertyName === "多媒体"){
+        console.log(record);
+        if(!value) return <span className={styles.none}>暂无数据</span>
+        return <span className={styles.link} key={index}>查看</span>
+      }else if(record.propertyName === "材料表"){
+        console.log(record);
+        return <span className={styles.link} key={index}>查看</span>
+      }else if(record.propertyName === "批注"){
+        console.log(record);
+        return <span className={styles.link} key={index}>添加批注</span>
+      }
+      return ""
+    }
   },
 ];
 export interface TableDataType {

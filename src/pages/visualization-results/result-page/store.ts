@@ -54,7 +54,7 @@ function useVisualizationState(
   };
 
   // 设置右侧边栏ID
-  const setOnPositionClickState = (id: string) => {
+  const setOnPositionClickState = () => {
     setVState({ ...vState, onPositionClickState: !vState.onPositionClickState });
   };
 
