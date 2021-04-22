@@ -5,10 +5,9 @@ import {
   EditOutlined,
   PlusOutlined,
   DeleteOutlined,
-  PushpinOutlined,
-  UndoOutlined,
+
 } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Tree } from 'antd';
+import { Input, Button, Modal, Form, Popconfirm, message, Tree, Switch } from 'antd';
 import React, { useMemo, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -19,7 +18,6 @@ import {
   getNewsItemDetail,
   updateNewsItem,
   deleteNewsItem,
-  undoNewsItem,
   addNewsItem,
   pushNewsItem,
 } from '@/services/news-config/info-manage';
@@ -28,6 +26,8 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
 import TextEditor from './component/text-editor';
 import { getGroupInfo } from '@/services/project-management/all-project';
+import EnumSelect from '@/components/enum-select';
+import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 
 const { Search } = Input;
 
@@ -75,7 +75,7 @@ const InfoManage: React.FC = () => {
 
   const searchComponent = () => {
     return (
-      <div>
+      <div className={styles.search}>
         <TableSearch label="标题" width="230px">
           <Search
             value={searchKeyWord}
@@ -83,6 +83,13 @@ const InfoManage: React.FC = () => {
             onSearch={() => search()}
             enterButton
             placeholder="请输入搜索内容"
+          />
+        </TableSearch>
+        <TableSearch label="状态" width="200px" marginLeft="20px">
+          <EnumSelect
+            enumList={BelongManageEnum}
+            placeholder="-全部-"
+            // onChange={(value: any) => searchByStatus(value)}
           />
         </TableSearch>
       </div>
@@ -119,6 +126,14 @@ const InfoManage: React.FC = () => {
     }
   };
 
+  const updateStatus = async (record: any) => {
+    const { id } = record;
+
+    // await updateAuthorizationItemStatus(id);
+    // tableFresh();
+    message.success('状态修改成功');
+  };
+
   const columns = [
     {
       dataIndex: 'title',
@@ -126,9 +141,37 @@ const InfoManage: React.FC = () => {
       title: '标题',
     },
     {
+      title: '状态',
+      dataIndex: 'isDisable',
+      index: 'isDisable',
+      width: 120,
+      render: (text: any, record: any) => {
+        const isChecked = !record.isDisable;
+        return (
+          <>
+            {
+              buttonJurisdictionArray?.includes("info-manage") &&
+              <>
+                <Switch checked={isChecked} onChange={() => updateStatus(record)} />
+                {
+                  isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>
+                }
+              </>
+            }
+            {
+              !buttonJurisdictionArray?.includes("info-manage") &&
+              (
+                isChecked ? <span>启用</span> : <span>禁用</span>
+              )
+            }
+          </>
+        )
+      },
+    },
+    {
       dataIndex: 'createByUser',
       index: 'createByUser',
-      title: '创建用户',
+      title: '创建人',
       width: 220,
     },
     {
@@ -204,24 +247,6 @@ const InfoManage: React.FC = () => {
     });
   };
 
-  //撤回
-  const withdrawEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行撤回');
-      return;
-    }
-    await undoNewsItem(tableSelectRows[0].id);
-    message.success('操作成功');
-    refresh();
-  };
-
-  const pushEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条资讯推送');
-      return;
-    }
-    setPushTreeVisible(true);
-  };
 
   const surePushNewsItem = async () => {
     const newsId = tableSelectRows[0].id;
@@ -248,12 +273,7 @@ const InfoManage: React.FC = () => {
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('company-file-edit') && (
-          <Button className="mr7" onClick={() => pushEvent()}>
-            <PushpinOutlined />
-            推送
-          </Button>
-        )}
+     
 
         {buttonJurisdictionArray?.includes('company-file-delete') && (
           <Popconfirm
@@ -268,12 +288,7 @@ const InfoManage: React.FC = () => {
             </Button>
           </Popconfirm>
         )}
-        {buttonJurisdictionArray?.includes('company-file-defaultOptions') && (
-          <Button className={styles.iconParams} onClick={() => withdrawEvent()}>
-            <UndoOutlined />
-            撤回
-          </Button>
-        )}
+      
       </div>
     );
   };

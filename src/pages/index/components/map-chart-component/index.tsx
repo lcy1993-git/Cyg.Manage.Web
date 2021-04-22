@@ -180,7 +180,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                 }
             })
 
-            myChart.on("mouseover", function (params) {
+            myChart.on("mouseover", function (params:any) {
                 if (params.data && params.data.value != undefined) {
                     myChart.dispatchAction({
                         type: 'downplay'
