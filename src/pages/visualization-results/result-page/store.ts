@@ -7,7 +7,7 @@ import moment from 'moment';
 
 export interface VisualizationResultsStateType {
   filterCondition: EngineerProjetListFilterParams; //filter条件
-  checkedProjectIdList?: ProjectList[]; //选中的project id数组
+  checkedProjectIdList: ProjectList[]; //选中的project id数组
   checkedProjectDateList?: string[]; //选中的project 日期数组
   materialModalShow?: boolean;
   projectDetailModalShow?: boolean;
@@ -18,6 +18,7 @@ export interface VisualizationResultsStateType {
   positionMap: boolean; //地图定位
   observeTrack: boolean; //勘察轨迹
   ConfessionTrack: boolean; //交底轨迹
+  observeTrackTimeline?: string[];
 }
 
 function useVisualizationState(
@@ -31,6 +32,7 @@ function useVisualizationState(
     positionMap: false,
     observeTrack: false,
     ConfessionTrack: false,
+    checkedProjectIdList: [],
   },
 ) {
   let [vState, setVState] = useState(initialState);
@@ -78,12 +80,25 @@ function useVisualizationState(
     setVState({ ...vState, positionMap: !vState.positionMap });
   };
 
-  const toggleObserveTrack = () => {
-    setVState({ ...vState, observeTrack: !vState.observeTrack });
+  const toggleObserveTrack = (flag?: boolean) => {
+    if (flag === undefined) {
+      setVState({ ...vState, observeTrack: !vState.observeTrack });
+    } else {
+      setVState({ ...vState, observeTrack: flag });
+    }
   };
-  const toggleConfessionTrack = () => {
-    setVState({ ...vState, ConfessionTrack: !vState.ConfessionTrack });
+  const toggleConfessionTrack = (flag?: boolean) => {
+    if (flag === undefined) {
+      setVState({ ...vState, ConfessionTrack: !vState.ConfessionTrack });
+    } else {
+      setVState({ ...vState, ConfessionTrack: flag });
+    }
   };
+
+  const setObeserveTrackTimeline = (observeTrackTimeline: string[]) => {
+    setVState({ ...vState, observeTrackTimeline });
+  };
+
   return {
     vState,
     setFilterCondition,
@@ -95,6 +110,7 @@ function useVisualizationState(
     togglePositionMap,
     toggleObserveTrack,
     toggleConfessionTrack,
+    setObeserveTrackTimeline,
   };
 }
 

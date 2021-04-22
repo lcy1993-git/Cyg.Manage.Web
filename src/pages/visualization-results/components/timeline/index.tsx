@@ -23,23 +23,26 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
 
   //默认scroll到最右边
   const scrollbars = createRef<Scrollbars>();
-  useEffect(() => {
-    if (checkedProjectDateList) {
-      setActiveList(
-        checkedProjectDateList.map((v: string, idx: number) => {
+  useMemo(() => {
+    if (dates) {
+      let d = dates
+        .filter((v: string) => v !== '')
+        .map((v: string) => moment(v).valueOf())
+        .sort((a: number, b: number) => a - b)
+        .map((v: number, idx: number) => {
           return {
             idx: idx,
             date: moment(v).format('YYYY/MM/DD'),
             active: true,
             click: false,
           };
-        }),
-      );
+        });
+
+      setActiveList(d);
     }
 
     scrollbars.current?.scrollToRight();
   }, [checkedProjectDateList]);
-
   //点击scroll到右边
   const onClickScrollLeft = () => {
     scrollbars.current?.scrollToLeft();
