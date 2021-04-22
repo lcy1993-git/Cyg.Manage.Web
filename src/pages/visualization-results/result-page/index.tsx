@@ -53,7 +53,7 @@ const VisualizationResults: React.FC = () => {
           <div className={styles.listMenuContainer}>
             <ListMenu />
           </div>
-          {/* <MapContainerShell /> */}
+          <MapContainerShell />
         </div>
       </main>
 
