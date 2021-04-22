@@ -84,7 +84,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
 
-  const { vState, setProjectIdList } = useContainer(); //设置公共状态的id数据
+  const { vState, setProjectIdList,} = useContainer(); //设置公共状态的id数据
   const { filterCondition } = vState;
   const { className } = props;
 

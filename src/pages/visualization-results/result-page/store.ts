@@ -15,6 +15,9 @@ export interface VisualizationResultsStateType {
   visibleLeftSidebar: boolean; // 左侧边栏伸缩状态
   sideRightActiveId: string; // 右侧边栏的回调ID
   clickDate?: string; //timeline点击的日期
+  positionMap: boolean; //地图定位
+  observeTrack: boolean; //勘察轨迹
+  ConfessionTrack: boolean; //交底轨迹
 }
 
 function useVisualizationState(
@@ -25,6 +28,9 @@ function useVisualizationState(
     materialModalShow: false,
     visibleLeftSidebar: true,
     sideRightActiveId: '',
+    positionMap: false,
+    observeTrack: false,
+    ConfessionTrack: false,
   },
 ) {
   let [vState, setVState] = useState(initialState);
@@ -61,12 +67,23 @@ function useVisualizationState(
     setVState({ ...vState, checkedProjectIdList, checkedProjectDateList });
   };
 
+  //设置timeline点击的日期
   const setClickDate = (clickDate: string) => {
     console.log(clickDate);
 
     setVState({ ...vState, clickDate });
   };
 
+  const togglePositionMap = () => {
+    setVState({ ...vState, positionMap: !vState.positionMap });
+  };
+
+  const toggleObserveTrack = () => {
+    setVState({ ...vState, observeTrack: !vState.observeTrack });
+  };
+  const toggleConfessionTrack = () => {
+    setVState({ ...vState, ConfessionTrack: !vState.ConfessionTrack });
+  };
   return {
     vState,
     setFilterCondition,
@@ -75,6 +92,9 @@ function useVisualizationState(
     setSideRightActiveId,
     setProjectIdList,
     setClickDate,
+    togglePositionMap,
+    toggleObserveTrack,
+    toggleConfessionTrack,
   };
 }
 
