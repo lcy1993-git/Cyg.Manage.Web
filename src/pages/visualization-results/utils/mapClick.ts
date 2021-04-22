@@ -28,7 +28,7 @@ const format = (fmt: string, date: Date) => { //author: meizz
 const mediaLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
 const materiaLayers = ['tower', 'cable', 'transformer', 'cable_equipment', 'pull_line'];
 const commentLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
-export const mapClick = (evt: any, map: any) => {
+export const mapClick = (evt: any, map: any, ops: any) => {
     clearHighlightLayer(map);
     let mappingTags, mappingTagValues;
     let selected = false;
@@ -251,7 +251,13 @@ export const mapClick = (evt: any, map: any) => {
             pJSON['批注'] = feature.getProperties().project_id;
         }
 
-        console.log(pJSON)
+        // 相应数据到右侧边栏
+        const resData = [];
+        for(let p in pJSON) {
+            resData.push({ propertyName: p, data: pJSON[p] || ""})
+        }
+        ops.setRightSidebarVisiviabel(true);
+        ops.setRightSidebarData(resData);
 
         // 地物图层不需要高亮
         if (layer.getProperties().name.indexOf('mark') > -1)
