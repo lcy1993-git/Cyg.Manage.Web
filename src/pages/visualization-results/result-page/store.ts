@@ -3,16 +3,18 @@ import { createContainer } from 'unstated-next';
 import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-menu';
 
 import { ProjectList } from '@/services/visualization-results/visualization-results';
+import moment from 'moment';
 
 export interface VisualizationResultsStateType {
   filterCondition: EngineerProjetListFilterParams; //filter条件
   checkedProjectIdList?: ProjectList[]; //选中的project id数组
-  checkedProjectDateList?: Set<string>; //选中的project 日期数组
+  checkedProjectDateList?: string[]; //选中的project 日期数组
   materialModalShow?: boolean;
   projectDetailModalShow?: boolean;
   propertySidePopupShow?: boolean;
   visibleLeftSidebar: boolean; // 左侧边栏伸缩状态
   sideRightActiveId: string; // 右侧边栏的回调ID
+  clickDate?: string; //timeline点击的日期
 }
 
 function useVisualizationState(
@@ -47,7 +49,22 @@ function useVisualizationState(
   };
 
   const setProjectIdList = (checkedProjectIdList: ProjectList[]) => {
-    setVState({ ...vState, checkedProjectIdList });
+    const checkedProjectDateList = [
+      ...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time)),
+    ]
+      .filter((v: string) => v !== '')
+      .map((v: string) => moment(v).valueOf())
+      .sort((a: number, b: number) => a - b)
+      .map((v: number, idx: number) => {
+        return moment(v).format('YYYY/MM/DD');
+      });
+    setVState({ ...vState, checkedProjectIdList, checkedProjectDateList });
+  };
+
+  const setClickDate = (clickDate: string) => {
+    console.log(clickDate);
+
+    setVState({ ...vState, clickDate });
   };
 
   return {
@@ -57,6 +74,7 @@ function useVisualizationState(
     setVisibleLeftSidebar,
     setSideRightActiveId,
     setProjectIdList,
+    setClickDate,
   };
 }
 
