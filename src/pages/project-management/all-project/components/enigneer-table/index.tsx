@@ -108,12 +108,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
         dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
         projectLen: items
-          ?.map((item: any) => {
-            return item.projects;
-          })
-          .reduce((pre, val) => {
-            return (pre += val.length);
-          }, 0),
+          ?.filter((item: any) => item.projects && item.projects.length > 0)
+          .map((item: any) => item.projects)
+          .flat().length,
       };
     }
     return {
@@ -123,6 +120,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       total: 0,
       dataStartIndex: 0,
       dataEndIndex: 0,
+      projectLen: 0,
     };
   }, [JSON.stringify(tableData)]);
 
@@ -163,22 +161,20 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             复制项目
           </Menu.Item>
         )}
-        {buttonJurisdictionArray?.includes('all-project-check-result') &&
-          status > 4 &&
-          status !== 14 && (
-            <Menu.Item
-              onClick={() =>
-                checkResult({
-                  projectId: tableItemData.id,
-                  projectName: tableItemData.name,
-                  projectStatus: tableItemData.stateInfo.statusText,
-                  projectStage: tableItemData.stageText,
-                })
-              }
-            >
-              查看成果
-            </Menu.Item>
-          )}
+        {buttonJurisdictionArray?.includes('all-project-check-result') && (
+          <Menu.Item
+            onClick={() =>
+              checkResult({
+                projectId: tableItemData.id,
+                projectName: tableItemData.name,
+                projectStatus: tableItemData.stateInfo.statusText,
+                projectStage: tableItemData.stageText,
+              })
+            }
+          >
+            查看成果
+          </Menu.Item>
+        )}
       </Menu>
     );
   };

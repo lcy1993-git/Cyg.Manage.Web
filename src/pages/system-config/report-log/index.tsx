@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin } from 'antd';
+import { Button, Modal, message, Input, DatePicker, Popconfirm } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
@@ -11,6 +11,7 @@ import styles from './index.less';
 import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
 import ReactJson from 'react-json-view';
+import { useMemo } from 'react';
 
 const { Search } = Input;
 
@@ -23,9 +24,24 @@ const ManageUser: React.FC = () => {
   const [applications, setApplications] = useState<string | undefined>();
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
 
-  const { data, run, loading } = useRequest(getFileLogDetail, {
+  const { data, run } = useRequest(getFileLogDetail, {
     manual: true,
   });
+
+  const handleData = useMemo(() => {
+    let afterHandleData = {};
+    try {
+      const { content } = data!;
+      const handleContent = content.replace(/"\"/g, "");
+      afterHandleData = {
+        ...data,
+        content: JSON.parse(JSON.parse(handleContent))
+      }
+    } catch (msg) {
+      afterHandleData = data!;
+    }
+    return afterHandleData
+  }, [JSON.stringify(data)])
 
   const rightButton = () => {
     return (
@@ -228,18 +244,9 @@ const ManageUser: React.FC = () => {
         destroyOnClose
         centered
       >
-        <Spin spinning={loading}>
-          <div
-            style={{
-              height: '720px',
-              wordBreak: 'break-all',
-              overflowY: 'auto',
-              whiteSpace: 'pre-wrap',
-            }}
-          >
-            <ReactJson src={data} />
-          </div>
-        </Spin>
+        <div style={{ width: '100%', overflowY: 'auto' }}>
+          <ReactJson src={handleData} />
+        </div>
       </Modal>
     </PageCommonWrap>
   );
