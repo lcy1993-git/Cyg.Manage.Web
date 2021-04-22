@@ -350,7 +350,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
             />
           ) : null}
         </TabPane>
-        <TabPane tab="地州项目" key="2">
+        {/* <TabPane tab="地州项目" key="2">
           {companyLoading ? (
             <Spin spinning={companyLoading} className={styles.loading} tip="正在载入中..."></Spin>
           ) : null}
@@ -366,7 +366,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
               treeData={treeData}
             />
           ) : null}
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   );
