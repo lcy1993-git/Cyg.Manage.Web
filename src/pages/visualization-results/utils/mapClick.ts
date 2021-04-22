@@ -25,14 +25,10 @@ const format = (fmt: string, date: Date) => { //author: meizz
     return fmt;
 }
 
-<<<<<<< HEAD
 const mediaLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
 const materiaLayers = ['tower', 'cable', 'transformer', 'cable_equipment', 'pull_line'];
 const commentLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
 export const mapClick = (evt: any, map: any) => {
-=======
-export const mapClick = (evt: any, map: any, ops) => {
->>>>>>> 1d2659e77b5b101a4c045e4bf76ad6603946de93
     clearHighlightLayer(map);
     let mappingTags, mappingTagValues;
     let selected = false;
