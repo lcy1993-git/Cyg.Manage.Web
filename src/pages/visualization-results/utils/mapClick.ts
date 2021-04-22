@@ -4,7 +4,7 @@ import VectorSource from 'ol/source/Vector';
 import Vector from 'ol/layer/Vector';
 import { transform } from "ol/proj";
 import { getScale, clearHighlightLayer, getLayerByName } from "./refreshMap";
-import { getGisDetail } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, getlibId } from '@/services/visualization-results/visualization-results';
 
 const mappingTagsDictionary: any = getMappingTagsDictionary();
 
@@ -25,6 +25,9 @@ const format = (fmt: string, date: Date) => { //author: meizz
     return fmt;
 }
 
+const mediaLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
+const materiaLayers = ['tower', 'cable', 'transformer', 'cable_equipment', 'pull_line'];
+const commentLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
 export const mapClick = (evt: any, map: any) => {
     clearHighlightLayer(map);
     let mappingTags, mappingTagValues;
@@ -129,6 +132,9 @@ export const mapClick = (evt: any, map: any) => {
                 return;
         }
 
+        let featureId = feature.getProperties().id;
+        if (!featureId)
+            featureId = feature.getId().split('.')[1];
         // 有些想要展示的字段需要通过接口进行查询
         let parmas = {
             'companyId': feature.getProperties().company === undefined ? null : feature.getProperties().company,
@@ -136,7 +142,7 @@ export const mapClick = (evt: any, map: any) => {
             'recordId': feature.getProperties().recorder === undefined ? null : feature.getProperties().recorder,
             'surveyId': feature.getProperties().surveyor === undefined ? null : feature.getProperties().surveyor,
             'mainId': feature.getProperties().main_id === undefined ? null : feature.getProperties().main_id,
-            'pullLineId': feature.getId().split('.')[1]
+            'pullLineId': featureId
         }
         await getGisDetail(parmas).then((data: any) => {
             if (data.content) {
@@ -190,13 +196,62 @@ export const mapClick = (evt: any, map: any) => {
                 }
             }
         }
-        for (var p in pJSON){
-            console.log(p + ' : ' + pJSON[p])
+
+        // 查看多媒体功能
+        if (mediaLayers.indexOf(layerName) >= 0) {
+            let params = {
+                projectId: feature.getProperties().project_id,
+                devices: [{
+                    category: 1, // 1为勘察，2为预设
+                    deviceId: featureId
+                }
+                ]
+            }
+            if (layerType) {
+                switch (layerType) {
+                    case 'survey':
+                        params.devices[0].category = 1;
+                        break;
+                    case 'plan':
+                        params.devices[0].category = 4;
+                        break;
+                    case 'design':
+                        params.devices[0].category = 2;
+                        break;
+                    case 'dismantle':
+                        params.devices[0].category = 3;
+                        break;
+                }
+            }
+            pJSON['多媒体'] = params;
         }
-        /**
-         * not-resolve 这里应该是需要操作视图
-         */
-        // showPropertyPanel();
+
+        // 仅有设计图层和拆除图层可以查看相关的材料表
+        if (layerType === 'design' || layerType === 'dismantle') {
+            // 查看材料表
+            if (materiaLayers.indexOf(layerName) >= 0) {
+                await getlibId({ id: featureId }).then((data: any) => {
+                    const resourceLibID = data.libId
+                    const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id;
+                    const materialParams: any = {
+                        objectID,
+                        resourceLibID,
+                        forProject: 0,
+                        forDesign: 0,
+                        materialModifyList: []
+                    }
+                    materialParams.layerName = layerName;
+                    pJSON['材料表'] = materialParams;
+                })
+            }
+        }
+
+        // 批注功能
+        if(commentLayers.indexOf(layerName) >= 0){
+            pJSON['批注'] = feature.getProperties().project_id;
+        }
+
+        console.log(pJSON)
 
         // 地物图层不需要高亮
         if (layer.getProperties().name.indexOf('mark') > -1)
@@ -219,6 +274,7 @@ export const mapClick = (evt: any, map: any) => {
         }
         let highlightFeatures = [];
         if (layerName == 'line' || layerName == 'user_line') {
+            let layerTypeValue = feature.getProperties().layerType;
             if (feature.getProperties().polyline_id) {
                 map.getLayers().getArray().forEach(function (value: any) {
                     if (typeof (value.getLayers) === 'function') {
@@ -229,6 +285,7 @@ export const mapClick = (evt: any, map: any) => {
                             if ((layerType_ == layerType) && (layerName_ == layerName || layerName_ == 'subline')) {
                                 v.getSource().getFeatures().forEach(function (f: any) {
                                     if (f.getProperties().polyline_id == feature.getProperties().polyline_id) {
+                                        f.set('layerType', layerTypeValue);
                                         highlightFeatures.push(f);
                                     }
                                 })
@@ -272,7 +329,7 @@ export const mapPointermove = (evt: any, map: any) => {
     // setCurrentPosition([lont[0].toFixed(4), lont[1].toFixed(4)]);
 }
 
-export const mapMoveend = (evt: any, map: any) =>{
+export const mapMoveend = (evt: any, map: any) => {
     const scaleSize: HTMLSpanElement = document.getElementById("currentScaleSize") as HTMLSpanElement;
     scaleSize.innerHTML = getScale(map) || "";
     // setScaleSize(getScale(map));

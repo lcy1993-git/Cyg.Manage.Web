@@ -59,8 +59,8 @@ const BaseMap = (props: BaseMapProps) => {
     map && refreshMap(ops, projects!)
   }, [JSON.stringify(projects)])
 
+  // 当图层切换时
   useEffect(() => {
-    // 当图层切换时
     // controlLayearsData.find(data => currItem.type === item.type)
     layerGroups.forEach((layerGroup: any) => {
       layerGroup.setVisible(false);
@@ -69,7 +69,6 @@ const BaseMap = (props: BaseMapProps) => {
     let highlightLayer: any = map?.getLayers().getArray().find((layer: any) => {
       return layer.get('name') === 'highlightLayer';
     })
-    console.log(highlightLayer);
     highlightLayer && highlightLayer.setVisible(false);
     let layerType: any;
     if (highlightLayer && highlightLayer.getSource().getFeatures().length > 0) {
@@ -86,7 +85,6 @@ const BaseMap = (props: BaseMapProps) => {
       if (data.state)
         checkedState.push(data);
     })
-    console.log(checkedState)
     // 做勘察图层透明度逻辑判断
     if (checkedState.length > 1) {
       getLayerGroupByName('surveyLayer', layerGroups).setOpacity(0.5);

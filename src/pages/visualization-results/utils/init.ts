@@ -26,7 +26,6 @@ export const initLayers = (resData: any): Layer[] => {
   let imgUrl = '';
 
   resData.data.forEach((item: any) => {
-    console.log(item)
     if(item.layerType === 1) {
       // vecUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
       vecUrl = item.url.replace('{s}', '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}');
