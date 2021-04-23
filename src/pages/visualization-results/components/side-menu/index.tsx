@@ -356,9 +356,9 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }, [checkedKeys]);
 
   return (
-    <div>
-      <Filterbar />
+    <>
       <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
+        <Filterbar />
         <Tabs onChange={onTabChange} type="line" defaultActiveKey="1" style={{ height: '100%' }}>
           <TabPane tab="全部项目" key="1">
             {allLoading ? (
@@ -379,7 +379,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           </TabPane>
         </Tabs>
       </div>
-    </div>
+    </>
   );
 });
 

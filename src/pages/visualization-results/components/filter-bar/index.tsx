@@ -105,8 +105,6 @@ const FilterBar: FC = observer(() => {
       modifyDate: modifyDate?.year().toString() ?? '',
     };
 
-    console.log(condition);
-
     store.setFilterCondition(condition);
   };
 
@@ -114,122 +112,138 @@ const FilterBar: FC = observer(() => {
     return (
       <>
         <div className={styles.filterConditionContainer}>
-          <TableSearch className={styles.filterConditionItem} label="立项时间" width="220px">
+          {/* <TableSearch className={styles.filterConditionItem} label="立项时间" width="250px">
             <DatePicker
               placeholder="年"
               value={createdOn}
+              style={{width: "100%"}}
               onChange={(date: Moment | null) => setCreatedOn(date)}
               suffixIcon={<DownOutlined />}
               picker="year"
             />
           </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="更新时间" width="220px">
+          <TableSearch className={styles.filterConditionItem} label="更新时间" width="250px">
             <DatePicker
               onChange={(date: Moment | null) => setsModiyDate(date)}
               placeholder="年"
+              style={{width: "100%"}}
               value={modifyDate}
               suffixIcon={<DownOutlined />}
               picker="year"
             />
-          </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="全部状态" width="220px">
-            <Select
-              maxTagCount={0}
-              maxTagTextLength={2}
-              mode="multiple"
-              allowClear
-              value={statuss}
-              onChange={(values: number[]) => setStatuss(values)}
-              style={{ width: '100%' }}
-              placeholder="项目状态"
-            >
-              {getProjectStatusOption()}
-            </Select>
-          </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="项目分类" width="220px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              defaultData={projectCategory}
-              dropdownMatchSelectWidth={168}
-              className="widthAll"
-              value={category}
-              onChange={(value) => setCategory(value as number)}
-              placeholder="项目分类"
-              needAll={true}
-              allValue="-1"
-            />
-          </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="项目类别" width="220px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              defaultData={projectPType}
-              dropdownMatchSelectWidth={168}
-              value={pCategory}
-              className="widthAll"
-              onChange={(value) => setPCategory(value as number)}
-              placeholder="项目类别"
-              needAll={true}
-              allValue="-1"
-            />
-          </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="项目阶段" width="220px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              defaultData={projectStage}
-              className="widthAll"
-              value={stage}
-              onChange={(value) => setStage(value as number)}
-              placeholder="项目阶段"
-              needAll={true}
-              allValue="-1"
-            />
-          </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="建设性质" width="220px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              value={constructType}
-              defaultData={projectConstructType}
-              onChange={(value) => setConstructType(value as number)}
-              className="widthAll"
-              placeholder="建设性质"
-              needAll={true}
-              allValue="-1"
-            />
-          </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="电压等级" width="220px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              defaultData={projectKvLevel}
-              className="widthAll"
-              value={kvLevel}
-              onChange={(value) => setKvLevel(value as number)}
-              placeholder="电压等级"
-              needAll={true}
-              allValue="-1"
-            />
-          </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="项目性质" width="220px">
-            <UrlSelect
-              valueKey="value"
-              titleKey="text"
-              defaultData={projectNature}
-              dropdownMatchSelectWidth={168}
-              value={nature}
-              onChange={(value) => setNature(value as number)}
-              className="widthAll"
-              placeholder="项目性质"
-              needAll={true}
-              allValue="-1"
-            />
-          </TableSearch>
+          </TableSearch> */}
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch label="项目状态" width="220px">
+              <Select
+                maxTagCount={1}
+                maxTagTextLength={2}
+                mode="multiple"
+                suffixIcon={<DownOutlined />}
+                allowClear
+                value={statuss}
+                onChange={(values: number[]) => setStatuss(values)}
+                style={{ width: '100%' }}
+                placeholder="项目状态"
+              >
+                {getProjectStatusOption()}
+              </Select>
+            </TableSearch>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="项目分类" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                defaultData={projectCategory}
+                dropdownMatchSelectWidth={168}
+                className="widthAll"
+                value={category}
+                onChange={(value) => setCategory(value as number)}
+                placeholder="项目分类"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="项目类别" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                defaultData={projectPType}
+                dropdownMatchSelectWidth={168}
+                value={pCategory}
+                className="widthAll"
+                onChange={(value) => setPCategory(value as number)}
+                placeholder="项目类别"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="项目阶段" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                defaultData={projectStage}
+                className="widthAll"
+                value={stage}
+                onChange={(value) => setStage(value as number)}
+                placeholder="项目阶段"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="建设性质" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                value={constructType}
+                defaultData={projectConstructType}
+                onChange={(value) => setConstructType(value as number)}
+                className="widthAll"
+                placeholder="建设性质"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="电压等级" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                defaultData={projectKvLevel}
+                className="widthAll"
+                value={kvLevel}
+                onChange={(value) => setKvLevel(value as number)}
+                placeholder="电压等级"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="项目性质" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                defaultData={projectNature}
+                dropdownMatchSelectWidth={168}
+                value={nature}
+                onChange={(value) => setNature(value as number)}
+                className="widthAll"
+                placeholder="项目性质"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
+          </div>
         </div>
-
-        <div className="flex">
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button className="mr2" onClick={() => search()} type="primary">
             查询
           </Button>
