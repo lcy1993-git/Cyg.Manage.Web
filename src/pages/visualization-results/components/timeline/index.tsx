@@ -97,24 +97,28 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
   };
 
   return (
-    <Scrollbars autoHide ref={scrollbars} style={{ width: width, height: height }}>
+    <Scrollbars
+      autoHide
+      ref={scrollbars}
+      style={{ width: dates.length > 7 ? 600 : dates.length * 100, height: height }}
+    >
       <div
         className={styles.timeline}
         style={{
-          width: activeList.length < 5 ? 400 : activeList.length * 100 + 30,
+          width: dates.length * 100 + 30,
           height: `${height}px`,
           paddingLeft: '8px',
           paddingRight: '8px',
         }}
       >
         {/* 是否显示滚动到最后 */}
-        {activeList.length > 5 ? (
+        {dates.length > 10 ? (
           <div onClick={onClickScrollLeft} className={styles.leftArrow}>
             {'<'}
           </div>
         ) : null}
         {/* 是否显示滚动到最开始 */}
-        {activeList.length > 5 ? (
+        {dates.length > 10 ? (
           <div onClick={onClickScrollRight} className={styles.rightArrow}>
             {'>'}
           </div>

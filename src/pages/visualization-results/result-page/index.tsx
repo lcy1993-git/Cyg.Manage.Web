@@ -4,6 +4,8 @@ import Filterbar from '../components/filter-bar';
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideMenu from '../components/side-menu';
+import MapContainerShell from '../components/map-container-shell';
+
 import SidePopup from '../components/side-popup';
 import { Provider, useContainer, VisualizationResultsStateType } from './store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
