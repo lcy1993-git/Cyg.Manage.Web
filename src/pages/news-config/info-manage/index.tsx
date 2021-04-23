@@ -1,12 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import {
-  EditOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-
-} from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Tree, Switch } from 'antd';
 import React, { useMemo, useState } from 'react';
 import styles from './index.less';
@@ -68,10 +63,8 @@ const InfoManage: React.FC = () => {
   const parentIds = handleData?.map((item) => {
     return item.key;
   });
-  console.log(parentIds);
 
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(parentIds);
-  console.log(expandedKeys);
 
   const searchComponent = () => {
     return (
@@ -149,23 +142,16 @@ const InfoManage: React.FC = () => {
         const isChecked = !record.isDisable;
         return (
           <>
-            {
-              buttonJurisdictionArray?.includes("info-manage") &&
+            {buttonJurisdictionArray?.includes('start-forbid') && (
               <>
                 <Switch checked={isChecked} onChange={() => updateStatus(record)} />
-                {
-                  isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>
-                }
+                {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
               </>
-            }
-            {
-              !buttonJurisdictionArray?.includes("info-manage") &&
-              (
-                isChecked ? <span>启用</span> : <span>禁用</span>
-              )
-            }
+            )}
+            {!buttonJurisdictionArray?.includes('start-forbid') &&
+              (isChecked ? <span>启用</span> : <span>禁用</span>)}
           </>
-        )
+        );
       },
     },
     {
@@ -177,10 +163,19 @@ const InfoManage: React.FC = () => {
     {
       dataIndex: 'createdOn',
       index: 'createdOn',
-      title: '创建日期',
+      title: '创建时间',
       width: 220,
       render: (text: any, record: any) => {
-        return moment(record.createdOn).format('YYYY-MM-DD HH:mm:ss');
+        return moment(record.createdOn).format('YYYY-MM-DD HH:mm');
+      },
+    },
+    {
+      dataIndex: 'updateOn',
+      index: 'updateOn',
+      title: '更新时间',
+      width: 220,
+      render: (text: any, record: any) => {
+        return moment(record.createdOn).format('YYYY-MM-DD HH:mm');
       },
     },
   ];
@@ -247,7 +242,6 @@ const InfoManage: React.FC = () => {
     });
   };
 
-
   const surePushNewsItem = async () => {
     const newsId = tableSelectRows[0].id;
     await pushNewsItem(newsId, selectedIds);
@@ -273,8 +267,6 @@ const InfoManage: React.FC = () => {
           </Button>
         )}
 
-     
-
         {buttonJurisdictionArray?.includes('company-file-delete') && (
           <Popconfirm
             title="您确定要删除该条数据?"
@@ -288,7 +280,6 @@ const InfoManage: React.FC = () => {
             </Button>
           </Popconfirm>
         )}
-      
       </div>
     );
   };
