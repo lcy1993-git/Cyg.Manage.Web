@@ -55,6 +55,7 @@
     "echarts-for-react": "^3.0.1",
     "echarts-gl": "^2.0.1",
     "lodash": "^4.17.11",
+    "mobx": "^6.2.0",
     "moment": "^2.25.3",
     "node-uuid": "^1.4.8",
     "ol": "^6.5.0",
