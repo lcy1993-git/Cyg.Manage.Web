@@ -2,14 +2,14 @@ import React, { FC, useEffect, useState } from 'react';
 import { Menu, message, Modal, Table } from 'antd';
 import Icon, { CopyOutlined, HeatMapOutlined, NodeIndexOutlined } from '@ant-design/icons';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
-import { useContainer } from '../../result-page/store';
+import { useContainer } from '../../result-page/mobx-store';
 import { useRequest } from 'ahooks';
 import {
   GetMaterialListByProjectIdList,
   GetTrackTimeLine,
 } from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
-
+import { observer } from 'mobx-react-lite';
 interface MaterialDataType {
   description: string;
   itemNumber: number;
@@ -165,7 +165,7 @@ const columns = [
 ];
 
 const dontNeedSelectKey = ['1', '2', '3'];
-const ListMenu: FC = () => {
+const ListMenu: FC = observer(() => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
@@ -176,20 +176,18 @@ const ListMenu: FC = () => {
       children: MaterialDataType[];
     }[]
   >();
-const {
-  vState,
-  toggleConfessionTrack,
-  toggleObserveTrack,
-  togglePositionMap,
-  setObeserveTrackTimeline,
-  setOnPositionClickState
-} = useContainer();
-  const { checkedProjectIdList, observeTrack } = vState;
 
- 
-  
+  const store = useContainer();
+  const { vState } = store;
 
-  
+  const { checkedProjectIdList } = vState;
+
+  useEffect(() => {
+    if (checkedProjectIdList.length === 0) {
+      setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
+    }
+  }, [checkedProjectIdList]);
+
   const { data: materialData, run: fetchMaterialList } = useRequest(
     GetMaterialListByProjectIdList,
     {
@@ -249,9 +247,10 @@ const {
   const { data: timelineData, run: fetchTimeline } = useRequest(GetTrackTimeLine, {
     manual: true,
     onSuccess: () => {
-      setObeserveTrackTimeline(timelineData.surveyTimeLine);
+      store.setObeserveTrackTimeline(timelineData.surveyTimeLine);
     },
     onError: () => {
+      setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
       message.warning('获取数据失败');
     },
   });
@@ -270,14 +269,14 @@ const {
     if (menuInfo.key.toString() === '1') {
       onClickProjectDetailInfo();
     } else if (menuInfo.key.toString() === '2') {
-      togglePositionMap()
-      setOnPositionClickState();
+      store.togglePositionMap();
+      store.setOnPositionClickState();
     } else if (menuInfo.key.toString() === '3') {
       fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
     } else if (menuInfo.key.toString() === '4') {
       onClickObserveTrack();
     } else {
-      toggleConfessionTrack(true);
+      store.toggleConfessionTrack(true);
     }
   };
 
@@ -290,17 +289,19 @@ const {
   }) => {
     setSelectedKeys(menuInfo.selectedKeys.map((v: React.Key) => v.toString()));
     if (menuInfo.key.toString() === '5') {
-      toggleConfessionTrack(false);
+      store.toggleConfessionTrack(false);
     }
     if (menuInfo.key.toString() === '4') {
-      toggleObserveTrack(false);
+      store.toggleObserveTrack(false);
     }
   };
 
   const onClickObserveTrack = () => {
+    console.log(checkedProjectIdList);
+
     if (checkedProjectIdList.length === 1) {
       fetchTimeline(checkedProjectIdList[0].id);
-      toggleObserveTrack(true);
+      store.toggleObserveTrack(true);
     } else {
       setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
       message.warning('请选择一个数据');
@@ -368,6 +369,6 @@ const {
       </Modal>
     </>
   );
-};
+});
 
 export default ListMenu;

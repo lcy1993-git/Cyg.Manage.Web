@@ -2,6 +2,8 @@ import React from 'react';
 import { Drawer, Table } from 'antd';
 import { MenuUnfoldOutlined } from '@ant-design/icons';
 import styles from './index.less';
+
+
 const columns = [
   {
     title: '属性名',

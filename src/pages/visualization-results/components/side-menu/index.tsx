@@ -8,9 +8,10 @@ import {
   GetEngineerProjectListByParams,
   GetEngineerCompanyProjectListByParams,
 } from '@/services/visualization-results/side-menu';
-import { useContainer } from '../../result-page/store';
+import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
-
+import { observer } from 'mobx-react-lite';
+import Filterbar from '../filter-bar';
 const { TabPane } = Tabs;
 
 /**
@@ -86,13 +87,13 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
   });
 };
 
-const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
+const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>();
   const [projectIdList, setProjectIds] = useState<ProjectList[]>([]); //筛选的id数据
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
-
-  const { vState, setProjectIdList } = useContainer(); //设置公共状态的id数据
+  const store = useContainer();
+  const { vState } = store; //设置公共状态的id数据
   const { filterCondition } = vState;
   const { className } = props;
 
@@ -340,7 +341,7 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   };
 
   const onTabChange = (activeKey: string) => {
-    setProjectIdList([]);
+    // setProjectIdList([]);
 
     if (activeKey === '1') {
       fetchAll();
@@ -351,49 +352,35 @@ const SideMenu: FC<SideMenuProps> = (props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    setProjectIdList(projectIdList);
+    store.setProjectIdList(projectIdList);
   }, [checkedKeys]);
 
   return (
-    <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
-      <Tabs onChange={onTabChange} type="line" defaultActiveKey="1" style={{ height: '100%' }}>
-        <TabPane tab="全部项目" key="1">
-          {allLoading ? (
-            <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
-          ) : null}
-          {allData ? (
-            <Tree
-              height={size.height}
-              checkable
-              onExpand={onExpand}
-              expandedKeys={expandedKeys}
-              onCheck={onAllCheck}
-              checkedKeys={checkedKeys}
-              treeData={treeData}
-              className={classNames(styles.sideMenu)}
-            />
-          ) : null}
-        </TabPane>
-        {/* <TabPane tab="地州项目" key="2">
-          {companyLoading ? (
-            <Spin spinning={companyLoading} className={styles.loading} tip="正在载入中..."></Spin>
-          ) : null}
-          {companyData ? (
-            <Tree
-              checkable
-              height={size.height}
-              onExpand={onExpand}
-              expandedKeys={expandedKeys}
-              checkedKeys={checkedKeys}
-              onCheck={onCompanyCheck}
-              className={classNames(styles.sideMenu)}
-              treeData={treeData}
-            />
-          ) : null}
-        </TabPane> */}
-      </Tabs>
+    <div>
+      <Filterbar />
+      <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
+        <Tabs onChange={onTabChange} type="line" defaultActiveKey="1" style={{ height: '100%' }}>
+          <TabPane tab="全部项目" key="1">
+            {allLoading ? (
+              <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
+            ) : null}
+            {allData ? (
+              <Tree
+                height={size.height}
+                checkable
+                onExpand={onExpand}
+                expandedKeys={expandedKeys}
+                onCheck={onAllCheck}
+                checkedKeys={checkedKeys}
+                treeData={treeData}
+                className={classNames(styles.sideMenu)}
+              />
+            ) : null}
+          </TabPane>
+        </Tabs>
+      </div>
     </div>
   );
-};
+});
 
 export default SideMenu;

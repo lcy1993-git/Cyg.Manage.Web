@@ -5,7 +5,8 @@ import styles from './index.less';
 import { TimelineProps } from './index.d';
 import TimelineItem from './components/TimelineItem';
 import Scrollbars from 'react-custom-scrollbars';
-import { useContainer } from '../../result-page/store';
+import { useContainer } from '../../result-page/mobx-store';
+import { observer } from 'mobx-react-lite';
 
 interface dataItem {
   idx: number;
@@ -14,16 +15,19 @@ interface dataItem {
   click: boolean;
 }
 //容器组件初始化传进来的日期数组，对数组进行排序
-const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
+const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
   const { dates, height, width } = props;
-  const { setClickDate, vState } = useContainer();
+  const store = useContainer();
   const [activeList, setActiveList] = useState<dataItem[]>([]);
+  const { vState } = store;
   const { checkedProjectDateList } = vState;
-  console.log('refresh');
+  console.log('date, refresh', dates);
 
   //默认scroll到最右边
   const scrollbars = createRef<Scrollbars>();
   useMemo(() => {
+    console.log(123);
+    
     if (dates) {
       let d = dates
         .filter((v: string) => v !== '')
@@ -42,7 +46,7 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
     }
 
     scrollbars.current?.scrollToRight();
-  }, [checkedProjectDateList]);
+  }, [dates]);
   //点击scroll到右边
   const onClickScrollLeft = () => {
     scrollbars.current?.scrollToLeft();
@@ -93,7 +97,7 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
     });
 
     setActiveList(_.cloneDeep(newList));
-    setClickDate(newList[clickIndex].date);
+    store.setClickDate(newList[clickIndex].date);
   };
 
   return (
@@ -139,6 +143,6 @@ const Timeline: FC<TimelineProps> = (props: TimelineProps) => {
       </div>
     </Scrollbars>
   );
-};
+});
 
 export default Timeline;
