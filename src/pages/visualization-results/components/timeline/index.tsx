@@ -26,8 +26,6 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
   //默认scroll到最右边
   const scrollbars = createRef<Scrollbars>();
   useMemo(() => {
-    console.log(123);
-    
     if (dates) {
       let d = dates
         .filter((v: string) => v !== '')

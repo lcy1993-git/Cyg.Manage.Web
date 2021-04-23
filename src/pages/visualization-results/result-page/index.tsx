@@ -1,29 +1,31 @@
-import React, { Profiler } from 'react';
+import React from 'react';
 import styles from './index.less';
 import Filterbar from '../components/filter-bar';
+import MapContainerShell from "../components/map-container-shell";
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideMenu from '../components/side-menu';
-import MapContainerShell from '../components/map-container-shell';
-import { Provider, useContainer } from './mobx-store';
+import SidePopup from '../components/side-popup';
+import { Provider, useContainer, VisualizationResultsStateType } from './store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
 import { observer } from 'mobx-react-lite';
 
-const VisualizationResults: React.FC = observer(() => {
-  const { vState } = useContainer();
-  const { visibleLeftSidebar, checkedProjectIdList, observeTrackTimeline, observeTrack } = vState;
-  console.log(visibleLeftSidebar);
-  
-  const callback = (
-    id: string,
-    phase: 'mount' | 'update',
-    actualDuration: number,
-    baseDuration: number,
-    startTime: number,
-    commitTime: number,
-  ) => {};
+interface StoreProps {
+  initialState: VisualizationResultsStateType;
+}
+
+const VisualizationResults: React.FC = () => {
+  const { vState, togglePropertySidePopup } = useContainer();
+  const {
+    propertySidePopupShow,
+    visibleLeftSidebar,
+    checkedProjectIdList,
+    observeTrackTimeline,
+    observeTrack,
+  } = vState;
+
   return (
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
@@ -64,12 +66,12 @@ const VisualizationResults: React.FC = observer(() => {
           <div className={styles.listMenuContainer}>
             <ListMenu />
           </div>
-          {/* <MapContainerShell /> */}
+          <MapContainerShell />
         </div>
       </main>
     </PageCommonWrap>
   );
-});
+};
 
 const StoreProvider: React.FC = () => {
   return (
