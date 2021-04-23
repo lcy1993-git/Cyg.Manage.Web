@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import JsonP from 'jsonp';
 
-var ip = '171.223.214.154';
+var ip = '10.6.1.36:8026';
 const webConfig = {
   satelliteServerIP: ip,
   satelliteServerPort: ':8020',
@@ -60,7 +60,7 @@ export const getGisDetail = (params: any) => {
 };
 
 // 消息推送
-export const getMessage = (params: any) => {
+export const publishMessage = (params: any) => {
   return request(
     `http://${webConfig.designSideInteractiveServiceServerIP}${webConfig.designSideInteractiveServiceServerPort}/api/WebGis/PublishMessage`,
     { method: 'POST', data: { ...params } },
