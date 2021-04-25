@@ -20,7 +20,7 @@ interface SearchLogItemParams {
   endTime: Date;
 }
 
-interface ItemDetailData extends SearchLogItemParams {
+export interface ItemDetailData extends SearchLogItemParams {
   id: string;
   clientIp: string;
   content: any

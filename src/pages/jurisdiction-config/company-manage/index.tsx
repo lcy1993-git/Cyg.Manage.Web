@@ -11,12 +11,24 @@ import {
   getTreeSelectData,
 } from '@/services/jurisdiction-config/company-manage';
 import { isArray } from 'lodash';
-import CompanyManageForm from './components/form';
+import CompanyManageForm from './components/add-form';
+import EditCompanyManageForm from './components/edit-form';
+import TableStatus from '@/components/table-status';
+import uuid from 'node-uuid';
+
+const mapColor = {
+  无: 'gray',
+  管理端: 'greenOne',
+  勘察端: 'greenTwo',
+  评审端: 'greenThree',
+  技经端: 'greenFour',
+  设计端: 'greenFive',
+};
 
 const CompanyManage: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
-
+  const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
@@ -30,6 +42,7 @@ const CompanyManage: React.FC = () => {
   const { data, run } = useRequest(getCompanyManageDetail, {
     manual: true,
   });
+
 
   //数据修改，局部刷新
   const tableFresh = () => {
@@ -47,10 +60,20 @@ const CompanyManage: React.FC = () => {
       width: 320,
     },
     {
-      title: '公司用户库存',
-      dataIndex: 'userStock',
-      index: 'userStock',
-      width: 180,
+      title: '授权账户数',
+      dataIndex: 'skus',
+      index: 'skus',
+      render: (text: any, record: any) => {
+        const { skus } = record;
+        const element = (skus ?? []).map((item: any) => {
+          return (
+            <TableStatus className="mr7" color={mapColor[item.key.text] ?? 'gray'} key={uuid.v1()}>
+              {item.key.text}（{item.value.totalQty}）
+            </TableStatus>
+          );
+        });
+        return <>{element}</>;
+      },
     },
     {
       title: '详细地址',
@@ -86,16 +109,20 @@ const CompanyManage: React.FC = () => {
 
   const sureAddCompanyManageItem = () => {
     addForm.validateFields().then(async (value) => {
-      const submitInfo = Object.assign(
-        {
-          name: '',
-          parentId: '',
-          address: '',
-          userStock: 0,
-          remark: '',
-        },
-        value,
-      );
+      const userSkuQtys = [
+        { key: 4, value: value.prospect },
+        { key: 8, value: value.design },
+        { key: 32, value: value.skillBy },
+        { key: 16, value: value.review },
+        { key: 2, value: value.manage },
+      ];
+      const submitInfo = {
+        name: value.name,
+        parentId: value.parentId,
+        address: value.address,
+        userSkuQtys,
+        remark: value.remark,
+      };
 
       await addCompanyManageItem(submitInfo);
       tableFresh();
@@ -114,12 +141,11 @@ const CompanyManage: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    setEditFormVisible(true);
     const CompanyManageData = await run(editDataId);
-    await getSelectTreeData();
+    setCurrentCompanyData(CompanyManageData?.skus);
+    setEditFormVisible(true);
     editForm.setFieldsValue({
       ...CompanyManageData,
-      userStock: null,
     });
   };
 
@@ -130,18 +156,22 @@ const CompanyManage: React.FC = () => {
     }
     const editData = data!;
 
-    editForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-          name: editData.name,
-          parentId: editData.parentId,
-          address: editData.address,
-          remark: editData.remark,
-          addUserStock: editData.userStock,
-        },
-        values,
-      );
+    editForm.validateFields().then(async (value) => {
+      const userSkuQtys = [
+        { key: 4, value: value.prospect },
+        { key: 8, value: value.design },
+        { key: 32, value: value.skillBy },
+        { key: 16, value: value.review },
+        { key: 2, value: value.manage },
+      ];
+      const submitInfo = {
+        id: editData.id,
+        name: editData.name,
+        address: editData.address,
+        remark: editData.remark,
+        userSkuQtys,
+      };
+
       await updateCompanyManageItem(submitInfo);
       tableFresh();
       message.success('更新成功');
@@ -161,7 +191,7 @@ const CompanyManage: React.FC = () => {
         url="/Company/GetTreeList"
       />
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="添加-公司"
         width="680px"
         visible={addFormVisible}
@@ -172,11 +202,11 @@ const CompanyManage: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <CompanyManageForm type="add" treeData={selectTreeData} />
+          <CompanyManageForm treeData={selectTreeData} />
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="编辑-公司"
         width="680px"
         visible={editFormVisible}
@@ -187,7 +217,7 @@ const CompanyManage: React.FC = () => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <CompanyManageForm treeData={selectTreeData} />
+          <EditCompanyManageForm accreditNumber={currentCompanyData} />
         </Form>
       </Modal>
     </PageCommonWrap>

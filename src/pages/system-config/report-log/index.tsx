@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Popconfirm, Form } from 'antd';
+import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
@@ -244,9 +244,18 @@ const ManageUser: React.FC = () => {
         destroyOnClose
         centered
       >
-        <div style={{ width: '100%', overflowY: 'auto' }}>
-          <ReactJson src={handleData} />
-        </div>
+        <Spin spinning={loading}>
+          <div
+            style={{
+              height: '720px',
+              wordBreak: 'break-all',
+              overflowY: 'auto',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            <ReactJson src={handleData} />
+          </div>
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );
