@@ -22,19 +22,26 @@ const webConfig = {
   resourceServiceServerIP: ip,
   resourceServiceServerPort: ':8015',
   webSocketIP: ip,
-  webSocketPort: ':8032'
+  webSocketPort: ':8032',
 };
 
 export interface ProjectList {
   id: string;
-  time?: string;   // '2021-04-19'
-  status?: string
+  time?: string; // '2021-04-19'
+  status?: string;
+  haveData?: boolean;
+  haveSurveyData?: boolean;
+  haveDesignData?: boolean;
+  isExecutor?: boolean;
 }
 
 // 获取地图资源
 export const getMapList = (params: any) => {
-  return request("http://service.pwcloud.cdsrth.com:8101/api/Map/GetList", { method: 'POST', data: { ...params } });
-}
+  return request('http://service.pwcloud.cdsrth.com:8101/api/Map/GetList', {
+    method: 'POST',
+    data: { ...params },
+  });
+};
 
 // 有些想要展示的字段需要通过接口进行查询
 // let parmas = {
@@ -46,15 +53,21 @@ export const getMapList = (params: any) => {
 //   'pullLineId': feature.getId().split('.')[1]
 // }
 export const getGisDetail = (params: any) => {
-  return request(`http://${webConfig.publicServiceServerIP}${webConfig.publicServiceServerPort}/api/System/GetGisDetail`, { method: 'POST', data: { ...params } })
-}
+  return request(
+    `http://${webConfig.publicServiceServerIP}${webConfig.publicServiceServerPort}/api/System/GetGisDetail`,
+    { method: 'POST', data: { ...params } },
+  );
+};
 
 // 消息推送
-export const getMessage = (params: any) => {
-  return request(`http://${webConfig.designSideInteractiveServiceServerIP}${webConfig.designSideInteractiveServiceServerPort}/api/WebGis/PublishMessage`, { method: 'POST', data: { ...params } })
-}
+export const publishMessage = (params: any) => {
+  return request(
+    `http://${webConfig.designSideInteractiveServiceServerIP}${webConfig.designSideInteractiveServiceServerPort}/api/WebGis/PublishMessage`,
+    { method: 'POST', data: { ...params } },
+  );
+};
 
-// 获取材料表数据 
+// 获取材料表数据
 export const getMaterialItemData = (params: any) => {
   /**
    * @type  判断图层名称
@@ -65,18 +78,28 @@ export const getMaterialItemData = (params: any) => {
   if (params.layerName !== 'tower')
     type = 1;
   const url = ['LibraryDesign/GetModuleDetailView', 'LibraryComponent/GetComponentDetailView'];
-  return request(`http://${webConfig.resourceServiceServerIP}${webConfig.resourceServiceServerPort}/api/` + url[type], { method: 'POST', data: { ...rest } })
-}
+  return request(
+    `http://${webConfig.resourceServiceServerIP}${webConfig.resourceServiceServerPort}/api/` +
+    url[type],
+    { method: 'POST', data: { ...rest } },
+  );
+};
 
 // 获取多媒体数据
 export const getMedium = (params: any) => {
-  return request(`http://${webConfig.designSideInteractiveServiceServerIP}${webConfig.designSideInteractiveServiceServerPort}/api/WebGis/GetMedias`, { method: 'POST', data: { ...params } })
-}
+  return request(
+    `http://${webConfig.designSideInteractiveServiceServerIP}${webConfig.designSideInteractiveServiceServerPort}/api/WebGis/GetMedias`,
+    { method: 'POST', data: { ...params } },
+  );
+};
 
 // 获取资源库id
 export const getlibId = (params: any) => {
-  return request(`http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/GetProjectById`, { method: 'GET', params })
-}
+  return request(
+    `http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/GetProjectById`,
+    { method: 'GET', params },
+  );
+};
 
 // 加载图层模板
 function format(that: any, ...args: any) {
@@ -85,41 +108,51 @@ function format(that: any, ...args: any) {
     return result;
   }
   var data = arguments;
-  if (args.length == 1 && typeof (args[0]) === "object") {
+  if (args.length == 1 && typeof args[0] === 'object') {
     data = args[0];
   }
   for (var key in data) {
     var value = data[key];
     if (undefined != value) {
-      result = result.replace("{" + key + "}", value);
+      result = result.replace('{' + key + '}', value);
     }
   }
   return result;
 }
 export const loadLayer: any = (url: any, postData: any, layerName: any) => {
-  return request(url, { method: "POST", data: format(postData, { '0': layerName }) })
-}
+  return request(url, { method: 'POST', data: format(postData, { '0': layerName }) });
+};
 
 // FindLineDetailInfo线条
 export const findLineDetailInfo = (params: any) => {
-  return request(`http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/FindLineDetailInfo`, { method: 'POST', data: { ...params } })
-}
+  return request(
+    `http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/FindLineDetailInfo`,
+    { method: 'POST', data: { ...params } },
+  );
+};
 
 // 定位当前用户位置；调用的是百度定位api
 export const initIpLocation = () => {
   //request('/baidu/api?qt=ipLocation&t=' + new Date().getTime());
   return new Promise((resolve, reject) => {
-    JsonP(`https://map.baidu.com?qt=ipLocation&t=${new Date().getTime()}`, {}, function (err: any, res: any) {
-      if (res) {
-        resolve(res)
-      } else {
-        reject(err)
-      }
-    })
-  })
-}
+    JsonP(
+      `https://map.baidu.com?qt=ipLocation&t=${new Date().getTime()}`,
+      {},
+      function (err: any, res: any) {
+        if (res) {
+          resolve(res);
+        } else {
+          reject(err);
+        }
+      },
+    );
+  });
+};
 
 // 加载项目中所需的枚举
 export const loadEnums = (params: any = {}) => {
-  return request(`http://${webConfig.publicServiceServerIP}${webConfig.publicServiceServerPort}/api/System/GetEnums`, { method: 'POST', data: { ...params } })
-}
+  return request(
+    `http://${webConfig.publicServiceServerIP}${webConfig.publicServiceServerPort}/api/System/GetEnums`,
+    { method: 'POST', data: { ...params } },
+  );
+};

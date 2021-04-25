@@ -14,7 +14,7 @@ interface CompanyUserFormProps {
 const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
   const { treeData = [] } = props;
 
-  const {data: companyInfo} = useRequest(() => getCompanyInfo())
+  const { data: companyInfo } = useRequest(() => getCompanyInfo());
 
   const mapTreeData = (data: any) => {
     return {
@@ -31,16 +31,15 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
     <>
       <CyFormItem
         className={styles.qtyNumber}
-        noStyle
         label="生成数量"
         name="qty"
         rules={rules.qtyNumber}
         initialValue={1}
         required
       >
-        <InputNumber min={1} max={companyInfo?.userStock} />
+        <InputNumber min={1} />
       </CyFormItem>
-      <div className={styles.remainQty}>用户库存: {companyInfo?.userStock}</div>
+
       <CyFormItem label="所属部组" name="groupIds">
         <TreeSelect
           style={{ width: '100%' }}

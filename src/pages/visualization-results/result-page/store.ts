@@ -7,7 +7,7 @@ import moment from 'moment';
 
 export interface VisualizationResultsStateType {
   filterCondition: EngineerProjetListFilterParams; //filter条件
-  checkedProjectIdList?: ProjectList[]; //选中的project id数组
+  checkedProjectIdList: ProjectList[]; //选中的project id数组
   checkedProjectDateList?: string[]; //选中的project 日期数组
   materialModalShow?: boolean;
   projectDetailModalShow?: boolean;
@@ -19,6 +19,7 @@ export interface VisualizationResultsStateType {
   observeTrack: boolean; //勘察轨迹
   ConfessionTrack: boolean; //交底轨迹
   onPositionClickState: boolean; // 当点击地图定位时候
+  observeTrackTimeline?: string[];
 }
 
 function useVisualizationState(
@@ -32,7 +33,8 @@ function useVisualizationState(
     positionMap: false,
     observeTrack: false,
     ConfessionTrack: false,
-    onPositionClickState: false
+    onPositionClickState: false,
+    checkedProjectIdList: [],
   },
 ) {
   let [vState, setVState] = useState(initialState);
@@ -52,7 +54,7 @@ function useVisualizationState(
   };
 
   // 设置右侧边栏ID
-  const setOnPositionClickState = (id: string) => {
+  const setOnPositionClickState = () => {
     setVState({ ...vState, onPositionClickState: !vState.onPositionClickState });
   };
 
@@ -80,12 +82,25 @@ function useVisualizationState(
     setVState({ ...vState, positionMap: !vState.positionMap });
   };
 
-  const toggleObserveTrack = () => {
-    setVState({ ...vState, observeTrack: !vState.observeTrack });
+  const toggleObserveTrack = (flag?: boolean) => {
+    if (flag === undefined) {
+      setVState({ ...vState, observeTrack: !vState.observeTrack });
+    } else {
+      setVState({ ...vState, observeTrack: flag });
+    }
   };
-  const toggleConfessionTrack = () => {
-    setVState({ ...vState, ConfessionTrack: !vState.ConfessionTrack });
+  const toggleConfessionTrack = (flag?: boolean) => {
+    if (flag === undefined) {
+      setVState({ ...vState, ConfessionTrack: !vState.ConfessionTrack });
+    } else {
+      setVState({ ...vState, ConfessionTrack: flag });
+    }
   };
+
+  const setObeserveTrackTimeline = (observeTrackTimeline: string[]) => {
+    setVState({ ...vState, observeTrackTimeline });
+  };
+
   return {
     vState,
     setFilterCondition,
@@ -97,6 +112,7 @@ function useVisualizationState(
     togglePositionMap,
     toggleObserveTrack,
     toggleConfessionTrack,
+    setObeserveTrackTimeline,
   };
 }
 

@@ -4,27 +4,29 @@ import SidePopup, { TableDataType } from '../side-popup';
 import CtrolLayers from '../control-layers';
 import Map from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
-import { transform } from "ol/proj";
+import { transform } from 'ol/proj';
 import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '../../utils';
-import { BaseMapProps, ControlLayearsData } from '../../utils/init'
+import { BaseMapProps, ControlLayearsData } from '../../utils/init';
 import { useMount } from 'ahooks';
-import { useContainer } from '../../result-page/store';
+import { useContainer } from '../../result-page/mobx-store';
 import { refreshMap, getLayerByName, getLayerGroupByName } from '../../utils/refreshMap';
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
-import { bd09Towgs84 } from '../../utils/locationUtils'
+import { bd09Towgs84 } from '../../utils/locationUtils';
 import styles from './index.less';
-
-const BaseMap = (props: BaseMapProps) => {
-
+import { observer } from 'mobx-react-lite';
+const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
   const { layers, layerGroups, view, setView, setLayerGroups } = props;
-
+  console.log("map, refresh");
   // 图层控制层数据
-  const [controlLayearsData, setControlLayearsData] = useState<ControlLayearsData[]>(initControlLayearsData);
+  const [controlLayearsData, setControlLayearsData] = useState<ControlLayearsData[]>(
+    initControlLayearsData,
+  );
 
   // 从Vstate获取外部传入的数据
-  const { vState } = useContainer();
+  const store = useContainer();
+  const { vState } = store;
   const { checkedProjectIdList: projects, filterCondition, onPositionClickState } = vState;
   const { kvLevel } = filterCondition;
 
@@ -33,15 +35,15 @@ const BaseMap = (props: BaseMapProps) => {
   const [rightSidebarData, setRightSidebarData] = useState<TableDataType[]>([]);
   // 挂载
   useMount(() => {
-    loadEnums().then(data => {
+    loadEnums().then((data) => {
       localStorage.setItem('loadEnumsData', JSON.stringify(data.content));
     });
     const initialMap = new Map({
       target: mapElement.current!,
       layers: [...layers],
       view,
-      controls: []
-    })
+      controls: [],
+    });
 
     // 初始化勘察图层、方案图层、设计图层、删除图层、勘察轨迹图层、交底轨迹图层
     layerGroups.forEach((item: LayerGroup) => {
@@ -49,20 +51,22 @@ const BaseMap = (props: BaseMapProps) => {
     });
 
     // 地图点击事件
-    initialMap.on('click', (e: Event) => mapClick(e, initialMap, {setRightSidebarVisiviabel, setRightSidebarData}));
+    initialMap.on('click', (e: Event) =>
+      mapClick(e, initialMap, { setRightSidebarVisiviabel, setRightSidebarData }),
+    );
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
 
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel };
-    refreshMap(ops, projects!)
+    refreshMap(ops, projects!);
     setMap(initialMap);
   });
 
   // 动态刷新refreshMap
   useEffect(() => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
-    map && refreshMap(ops, projects!)
-  }, [JSON.stringify(projects)])
+    map && refreshMap(ops, projects!);
+  }, [JSON.stringify(projects)]);
 
   // 当图层切换时
   useEffect(() => {
@@ -71,9 +75,12 @@ const BaseMap = (props: BaseMapProps) => {
       layerGroup.setVisible(false);
     });
 
-    let highlightLayer: any = map?.getLayers().getArray().find((layer: any) => {
-      return layer.get('name') === 'highlightLayer';
-    })
+    let highlightLayer: any = map
+      ?.getLayers()
+      .getArray()
+      .find((layer: any) => {
+        return layer.get('name') === 'highlightLayer';
+      });
     highlightLayer && highlightLayer.setVisible(false);
     let layerType: any;
     if (highlightLayer && highlightLayer.getSource().getFeatures().length > 0) {
@@ -87,9 +94,8 @@ const BaseMap = (props: BaseMapProps) => {
 
     let checkedState: ControlLayearsData[] = [];
     controlLayearsData.map((data: ControlLayearsData) => {
-      if (data.state)
-        checkedState.push(data);
-    })
+      if (data.state) checkedState.push(data);
+    });
     // 做勘察图层透明度逻辑判断
     if (checkedState.length > 1) {
       getLayerGroupByName('surveyLayer', layerGroups).setOpacity(0.5);
@@ -101,8 +107,7 @@ const BaseMap = (props: BaseMapProps) => {
     }
 
     checkedState.map((data: ControlLayearsData) => {
-      if (data.index + 1 === layerType)
-        highlightLayer.setVisible(true);
+      if (data.index + 1 === layerType) highlightLayer.setVisible(true);
       switch (data.index + 1) {
         case 1: // 勘察图层
           getLayerGroupByName('surveyLayer', layerGroups).setVisible(true);
@@ -119,17 +124,15 @@ const BaseMap = (props: BaseMapProps) => {
         default:
           break;
       }
-    })
+    });
 
     setControlLayearsData(controlLayearsData);
-
-  }, [JSON.stringify(controlLayearsData)])
-
+  }, [JSON.stringify(controlLayearsData)]);
 
   useEffect(() => {
     // 当点击定位时
     // console.log(onPositionClickState)
-  }, [onPositionClickState])
+  }, [onPositionClickState]);
   /**
    * @demo 这是一个demo
    * @useEffect  见下  ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
@@ -153,21 +156,24 @@ const BaseMap = (props: BaseMapProps) => {
         let center = transform(lont, 'EPSG:4326', 'EPSG:3857');
         let duration = 5000;
 
-        view.animate({
-          center: center,
-          zoom: 18,
-          duration: duration
-        }, () => { });
+        view.animate(
+          {
+            center: center,
+            zoom: 18,
+            duration: duration,
+          },
+          () => {},
+        );
         setView(view);
       }
-    })
-  }
+    });
+  };
 
   const onSatelliteMapClick = () => {
     // 卫星图点击时
     getLayerByName('imgLayer', layers).setVisible(true);
     getLayerByName('vecLayer', layers).setVisible(false);
-  }
+  };
 
   const onStreetMapClick = () => {
     // 街道图点击时
@@ -186,16 +192,24 @@ const BaseMap = (props: BaseMapProps) => {
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
-      {rightSidebarVisiviabel || <CtrolLayers controlLayearsData={controlLayearsData} onLayersStateChange={onLayersStateChange} />}
+      {rightSidebarVisiviabel || (
+        <CtrolLayers
+          controlLayearsData={controlLayearsData}
+          onLayersStateChange={onLayersStateChange}
+        />
+      )}
       <Footer
         onlocationClick={onlocationClick}
         onSatelliteMapClick={onSatelliteMapClick}
         onStreetMapClick={onStreetMapClick}
       />
-      <SidePopup visible={rightSidebarVisiviabel} data={rightSidebarData} setRightSidebarVisiviabel={setRightSidebarVisiviabel} />
+      <SidePopup
+        rightSidebarVisible={rightSidebarVisiviabel}
+        data={rightSidebarData}
+        setRightSidebarVisiviabel={setRightSidebarVisiviabel}
+      />
     </>
   );
-}
-
+});
 
 export default BaseMap;

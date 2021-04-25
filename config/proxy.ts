@@ -9,7 +9,7 @@ export default {
   dev: {
     '/project/api': {
       // http://10.6.1.36:8026/api/
-      // 10.6.1.36
+      // 171.223.214.154
       target: 'http://10.6.1.36:8026',
       changeOrigin: true,
       pathRewrite: { '^/project': '/' },
@@ -33,6 +33,11 @@ export default {
       target: 'http://10.6.1.36:8025/',
       changeOrigin: true,
       pathRewrite: { '^/webGis': '/' },
+    },
+    '/webGis2/api': {
+      target: 'http://10.6.1.36:8014/',
+      changeOrigin: true,
+      pathRewrite: { '^/webGis2': '/' },
     },
     '/baidu/api': {
       target: 'https://map.baidu.com/',

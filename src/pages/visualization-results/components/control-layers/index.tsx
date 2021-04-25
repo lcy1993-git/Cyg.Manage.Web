@@ -4,10 +4,11 @@ import Icon from '@ant-design/icons';
 
 import { ControlLayearsData } from '../../utils';
 import styles from './index.less';
+
 const LayereIcon = () => (
   <svg
     t="1619065560359"
-    class="icon"
+    className="icon"
     viewBox="0 0 1024 1024"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"

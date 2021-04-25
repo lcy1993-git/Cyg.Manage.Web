@@ -24,3 +24,15 @@ export const GetMaterialListByProjectIdList = (projectIds: string[]) => {
     ),
   );
 };
+
+export const GetTrackTimeLine = (projectId: string) => {
+  return cyRequest<any>(() =>
+    request(
+      `${baseUrl.webGis2}/WebGis/GetTrackTimeLine?projectId=${projectId}
+    `,
+      {
+        method: 'POST',
+      },
+    ),
+  );
+};

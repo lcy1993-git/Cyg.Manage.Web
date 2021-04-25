@@ -291,6 +291,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         for (let p in pJSON) {
             resData.push({ propertyName: p, data: pJSON[p] || "" })
         }
+        console.log(resData)
         ops.setRightSidebarVisiviabel(true);
         ops.setRightSidebarData(resData);
 

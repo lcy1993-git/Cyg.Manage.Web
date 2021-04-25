@@ -1,11 +1,29 @@
 .form {
-  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
+  box-sizing: border-box;
   padding: 8px;
+
   background-color: @white-color;
 
- 
+  .filterConditionContainer {
+    .filterConditionItem {
+      margin-bottom: 16px;
+    }
+  };
+
+  .actionContainer {
+    display: flex;
+    flex-direction: row;
+    margin-top: 16px;
+  };
+
+  
+
+
+}
+
+.collapse :global(.ant-collapse-content-box) {
+  padding: 0 0;
 }
