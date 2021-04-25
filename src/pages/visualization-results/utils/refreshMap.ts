@@ -14,7 +14,6 @@ import Feature from "ol/Feature";
 var projects: any;
 const refreshMap = async (ops: any, projects_: ProjectList[], location: boolean = true, time?: string) => {
   projects = projects_;
-  console.log(projects.length, '333');
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map, kvLevel } = ops;
   clearGroups(groupLayers);
   clearHighlightLayer(map);
@@ -268,9 +267,7 @@ const clearHighlightLayer = (map: any) => {
  */
 const loadWFS = async (url: string, postData: string, layerName: string, callBack: (o: any) => void) => {
   const promise = loadLayer(url, postData, layerName);
-  console.log(projects.length, '111');
   await promise.then((data: any) => {
-    console.log(projects.length, '222');
     if (data.features && data.features.length > 0) {
       let flag;
       projects.forEach((project: any) => {

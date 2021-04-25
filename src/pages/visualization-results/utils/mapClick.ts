@@ -4,7 +4,7 @@ import VectorSource from 'ol/source/Vector';
 import Vector from 'ol/layer/Vector';
 import { transform } from "ol/proj";
 import { getScale, clearHighlightLayer, getLayerByName } from "./refreshMap";
-import { getGisDetail, getlibId } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, getlibId, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 
 const mappingTagsDictionary: any = getMappingTagsDictionary();
 
@@ -223,15 +223,17 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                         break;
                 }
             }
-            pJSON['多媒体'] = params;
+            await getMedium(params).then((data: any) => {
+                pJSON['多媒体'] = data.content || []
+            })
         }
 
         // 仅有设计图层和拆除图层可以查看相关的材料表
         if (layerType === 'design' || layerType === 'dismantle') {
             // 查看材料表
             if (materiaLayers.indexOf(layerName) >= 0) {
-                await getlibId({ id: featureId }).then((data: any) => {
-                    const resourceLibID = data.libId
+                await getlibId({ id: feature.getProperties().project_id }).then((data: any) => {
+                    const resourceLibID = data.content.libId
                     const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id;
                     const materialParams: any = {
                         objectID,
@@ -241,20 +243,53 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                         materialModifyList: []
                     }
                     materialParams.layerName = layerName;
-                    pJSON['材料表'] = materialParams;
+
+                    getMaterialItemData(materialParams).then((res: any) => {
+                        pJSON['材料表'] = [];
+                        if (res.isSuccess) {
+                            const enumsData = localStorage.getItem('loadEnumsData')
+                            if (enumsData) {
+                                const enums = JSON.parse(enumsData)
+                                const surveyState = enums.filter((item: any) => item.key === 'SurveyState')[0]
+                                const filterData = res.content.filter((item: any) => item.parentID !== -1)
+                                const data = filterData.map((item: any) => {
+                                    return {
+                                        ...item,
+                                        state: feature.getProperties().state,
+                                        children: []
+                                    }
+                                })
+                                const handlerData = data.reduce((curr: any, item: any) => {
+                                    const exist = curr.find((currItem: any) => currItem.type === item.type)
+                                    if (exist) {
+                                        curr.forEach((currExist: any, index: any) => {
+                                            if (currExist.type === exist.type) {
+                                                curr[index].children.push(item)
+                                            }
+                                        })
+                                    } else {
+                                        curr.push(item)
+                                    }
+                                    return curr
+                                }, [])
+                                pJSON['材料表'] = handlerData;
+                            }
+                        }
+                    })
                 })
             }
         }
 
         // 批注功能
-        if(commentLayers.indexOf(layerName) >= 0){
+        if (commentLayers.indexOf(layerName) >= 0) {
             pJSON['批注'] = feature.getProperties().project_id;
         }
 
+        console.log(pJSON);
         // 相应数据到右侧边栏
         const resData = [];
-        for(let p in pJSON) {
-            resData.push({ propertyName: p, data: pJSON[p] || ""})
+        for (let p in pJSON) {
+            resData.push({ propertyName: p, data: pJSON[p] || "" })
         }
         ops.setRightSidebarVisiviabel(true);
         ops.setRightSidebarData(resData);
