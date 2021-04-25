@@ -41,6 +41,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
       const editor = new Editors('#div1');
       editor.config.uploadImgShowBase64 = true;
       editor.config.showLinkImg = false;
+
       editor.config.onchange = (newHtml: string) => {
         onChange(newHtml);
       };
@@ -91,7 +92,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
         <TreeSelect
           placeholder="请选择对象"
           treeCheckable
-          // treeData={}
+          treeData={groupData?.map(mapTreeData)}
           showCheckedStrategy="SHOW_PARENT"
           treeDefaultExpandAll
         />
