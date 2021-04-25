@@ -21,11 +21,12 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
   const [activeList, setActiveList] = useState<dataItem[]>([]);
   const { vState } = store;
   const { checkedProjectDateList } = vState;
-  console.log('date, refresh', dates);
-
+  
+   
   //默认scroll到最右边
   const scrollbars = createRef<Scrollbars>();
   useMemo(() => {
+   
     if (dates) {
       let d = dates
         .filter((v: string) => v !== '')
