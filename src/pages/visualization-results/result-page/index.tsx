@@ -1,37 +1,35 @@
-import React from 'react';
+import React, { Profiler } from 'react';
 import styles from './index.less';
 import Filterbar from '../components/filter-bar';
-import MapContainerShell from "../components/map-container-shell";
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideMenu from '../components/side-menu';
-import SidePopup from '../components/side-popup';
-import { Provider, useContainer, VisualizationResultsStateType } from './store';
+import MapContainerShell from '../components/map-container-shell';
+import { Provider, useContainer } from './mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
 import { observer } from 'mobx-react-lite';
-
-interface StoreProps {
-  initialState: VisualizationResultsStateType;
-}
-
-const VisualizationResults: React.FC = () => {
-  const { vState, togglePropertySidePopup } = useContainer();
-  const {
-    propertySidePopupShow,
-    visibleLeftSidebar,
-    checkedProjectIdList,
-    observeTrackTimeline,
-    observeTrack,
-  } = vState;
-
+ 
+const VisualizationResults: React.FC = observer(() => {
+  const { vState } = useContainer();
+  const { visibleLeftSidebar, checkedProjectIdList, observeTrackTimeline, observeTrack } = vState;
+  console.log(visibleLeftSidebar);
+   
+  const callback = (
+    id: string,
+    phase: 'mount' | 'update',
+    actualDuration: number,
+    baseDuration: number,
+    startTime: number,
+    commitTime: number,
+  ) => {};
   return (
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
-
+ 
       {/* <Filterbar /> */}
-
+ 
       <main
         className={classNames(
           styles.content,
@@ -40,11 +38,11 @@ const VisualizationResults: React.FC = () => {
         )}
       >
         {/* 侧边树形结构 */}
-
+ 
         <div className={styles.sideNav}>
           <SideMenu />
         </div>
-
+ 
         {/* map放在这 */}
         <div className={classNames(styles.mapContainer, 'flex1')}>
           <div className={styles.tilelineContainer}>
@@ -71,8 +69,8 @@ const VisualizationResults: React.FC = () => {
       </main>
     </PageCommonWrap>
   );
-};
-
+});
+ 
 const StoreProvider: React.FC = () => {
   return (
     <Provider>
@@ -80,5 +78,5 @@ const StoreProvider: React.FC = () => {
     </Provider>
   );
 };
-
+ 
 export default StoreProvider;
