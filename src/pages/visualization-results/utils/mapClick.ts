@@ -227,12 +227,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                 pJSON['多媒体'] = data.content || []
             })
         }
-
         // 仅有设计图层和拆除图层可以查看相关的材料表
         if (layerType === 'design' || layerType === 'dismantle') {
             // 查看材料表
             if (materiaLayers.indexOf(layerName) >= 0) {
-                await getlibId({ id: feature.getProperties().project_id }).then((data: any) => {
+                await getlibId({ id: feature.getProperties().project_id }).then(async (data: any) => {
                     const resourceLibID = data.content.libId
                     const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id;
                     const materialParams: any = {
@@ -243,37 +242,31 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                         materialModifyList: []
                     }
                     materialParams.layerName = layerName;
-
-                    getMaterialItemData(materialParams).then((res: any) => {
+                    await getMaterialItemData(materialParams).then((res: any) => {
                         pJSON['材料表'] = [];
                         if (res.isSuccess) {
-                            const enumsData = localStorage.getItem('loadEnumsData')
-                            if (enumsData) {
-                                const enums = JSON.parse(enumsData)
-                                const surveyState = enums.filter((item: any) => item.key === 'SurveyState')[0]
-                                const filterData = res.content.filter((item: any) => item.parentID !== -1)
-                                const data = filterData.map((item: any) => {
-                                    return {
-                                        ...item,
-                                        state: feature.getProperties().state,
-                                        children: []
-                                    }
-                                })
-                                const handlerData = data.reduce((curr: any, item: any) => {
-                                    const exist = curr.find((currItem: any) => currItem.type === item.type)
-                                    if (exist) {
-                                        curr.forEach((currExist: any, index: any) => {
-                                            if (currExist.type === exist.type) {
-                                                curr[index].children.push(item)
-                                            }
-                                        })
-                                    } else {
-                                        curr.push(item)
-                                    }
-                                    return curr
-                                }, [])
-                                pJSON['材料表'] = handlerData;
-                            }
+                            const filterData = res.content.filter((item: any) => item.parentID !== -1)
+                            const data = filterData.map((item: any) => {
+                                return {
+                                    ...item,
+                                    state: feature.getProperties().state,
+                                    children: []
+                                }
+                            })
+                            const handlerData = data.reduce((curr: any, item: any) => {
+                                const exist = curr.find((currItem: any) => currItem.type === item.type)
+                                if (exist) {
+                                    curr.forEach((currExist: any, index: any) => {
+                                        if (currExist.type === exist.type) {
+                                            curr[index].children.push(item)
+                                        }
+                                    })
+                                } else {
+                                    curr.push(item)
+                                }
+                                return curr
+                            }, [])
+                            pJSON['材料表'] = handlerData;
                         }
                     })
                 })
