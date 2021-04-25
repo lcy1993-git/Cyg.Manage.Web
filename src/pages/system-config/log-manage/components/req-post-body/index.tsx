@@ -10,13 +10,9 @@ const ReqPostBody: React.FC<reqPostBodyProps> = (props) => {
 
   return (
     <div style={{ width: '100%', wordBreak : 'break-all', height: '500px', overflowY: 'auto' }}>
-<<<<<<< HEAD
-      {info.reqPostBody ? <ReactJson src={JSON.parse(info.reqPostBody)} /> : null}
-=======
       {info.reqPostBody ? (
         <ReactJson src={JSON.parse(info.reqPostBody)} displayDataTypes={false} />
       ) : null}
->>>>>>> root权限测试版本
     </div>
   );
 };

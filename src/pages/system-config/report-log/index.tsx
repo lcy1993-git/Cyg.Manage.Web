@@ -1,11 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-<<<<<<< HEAD
-import { Button, Modal, message, Input, DatePicker, Popconfirm, Form } from 'antd';
-=======
 import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin } from 'antd';
->>>>>>> root权限测试版本
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
@@ -248,11 +244,6 @@ const ManageUser: React.FC = () => {
         destroyOnClose
         centered
       >
-<<<<<<< HEAD
-        <div style={{ width: '100%', overflowY: 'auto' }}>
-          <ReactJson src={handleData} />
-        </div>
-=======
         <Spin spinning={loading}>
           <div
             style={{
@@ -265,7 +256,6 @@ const ManageUser: React.FC = () => {
             <ReactJson src={handleData} />
           </div>
         </Spin>
->>>>>>> root权限测试版本
       </Modal>
     </PageCommonWrap>
   );
