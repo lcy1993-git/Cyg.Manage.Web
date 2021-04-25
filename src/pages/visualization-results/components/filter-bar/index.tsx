@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import TableSearch from '@/components/table-search';
 import UrlSelect from '@/components/url-select';
-import { Button, Input, DatePicker, Select, Popover } from 'antd';
+import { Button, Input, Collapse, Select, Popover } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
 import { Moment } from 'moment';
@@ -11,6 +11,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 const { Search } = Input;
 const { Option } = Select;
+const { Panel } = Collapse;
 interface ProjectStatusOption {
   key: string;
   name: string;
@@ -181,6 +182,7 @@ const FilterBar: FC = observer(() => {
               />
             </TableSearch>
           </div>
+
           <div style={{ marginBottom: '16px' }}>
             <TableSearch className={styles.filterConditionItem} label="项目阶段" width="220px">
               <UrlSelect
