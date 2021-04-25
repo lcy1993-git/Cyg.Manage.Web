@@ -204,7 +204,7 @@ const BaseMap = observer((props: BaseMapProps) => {
         onStreetMapClick={onStreetMapClick}
       />
       <SidePopup
-        visible={rightSidebarVisiviabel}
+        rightSidebarVisible={rightSidebarVisiviabel}
         data={rightSidebarData}
         setRightSidebarVisiviabel={setRightSidebarVisiviabel}
       />

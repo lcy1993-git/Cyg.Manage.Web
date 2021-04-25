@@ -254,8 +254,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         // 相应数据到右侧边栏
         const resData = [];
         for(let p in pJSON) {
-            resData.push({ propertyName: p, data: pJSON[p] || ""})
+            if(p === "批注") {
+                resData.push({propertyName: p, id: pJSON[p]})
+            } else {
+                resData.push({ propertyName: p, data: pJSON[p] || ""})
+            }
         }
+        console.log(resData)
         ops.setRightSidebarVisiviabel(true);
         ops.setRightSidebarData(resData);
 
