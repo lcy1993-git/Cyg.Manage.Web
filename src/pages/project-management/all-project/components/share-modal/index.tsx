@@ -88,7 +88,7 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
         <thead>
           <tr>
             <th style={{ width: '50px' }}>序号</th>
-            <th>用户</th>
+            <th>用户/手机号</th>
             <th>公司名称</th>
             <th style={{ width: '60px' }}>操作</th>
           </tr>
@@ -101,6 +101,7 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
                 <td>
                   <Input
                     value={item.user}
+                    placeholder="请输入管理员用户名或者手机号"
                     onChange={(e) => userChangeEvent(e.target.value, index)}
                   />
                 </td>
