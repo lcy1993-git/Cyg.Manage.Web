@@ -1,14 +1,16 @@
 import React from 'react';
 import styles from './index.less';
 import Filterbar from '../components/filter-bar';
+import MapContainerShell from "../components/map-container-shell";
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideMenu from '../components/side-menu';
-import MapContainerShell from '../components/map-container-shell';
+import SidePopup from '../components/side-popup';
 import { Provider, useContainer, VisualizationResultsStateType } from './store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
+import { observer } from 'mobx-react-lite';
 
 interface StoreProps {
   initialState: VisualizationResultsStateType;
@@ -28,7 +30,7 @@ const VisualizationResults: React.FC = () => {
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
 
-      <Filterbar />
+      {/* <Filterbar /> */}
 
       <main
         className={classNames(
@@ -71,7 +73,7 @@ const VisualizationResults: React.FC = () => {
   );
 };
 
-const StoreProvider: React.FC<StoreProps> = () => {
+const StoreProvider: React.FC = () => {
   return (
     <Provider>
       <VisualizationResults />

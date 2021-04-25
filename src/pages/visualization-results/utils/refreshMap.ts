@@ -11,14 +11,16 @@ import { transform, getPointResolution } from "ol/proj";
 import ProjUnits from "ol/proj/Units";
 import Feature from "ol/Feature";
 
-const refreshMap = (ops: any, projects: ProjectList[], location: boolean = true, time?: string) => {
-  console.log(projects.length,'333');
+var projects: any;
+const refreshMap = async (ops: any, projects_: ProjectList[], location: boolean = true, time?: string) => {
+  projects = projects_;
+  console.log(projects.length, '333');
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map, kvLevel } = ops;
   clearGroups(groupLayers);
   clearHighlightLayer(map);
   if (projects.length === 0)
     return;
-  let wfsBaseURL = 'http://171.223.214.154:8099/geoserver/pdd/ows';
+  let wfsBaseURL = 'http://10.6.1.36:8099/geoserver/pdd/ows';
   let xmlData = "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
   let postData = "";
   xmlData += "<ogc:Filter><Or>";
@@ -34,25 +36,25 @@ const refreshMap = (ops: any, projects: ProjectList[], location: boolean = true,
   });
   postData = xmlData + postData + "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
 
-  loadSurveyLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
-  loadPlanLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
-  loadDismantleLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers);
-  loadDesignLayers(kvLevel, projects, wfsBaseURL, postData, groupLayers, view, setView, map);
+  await loadSurveyLayers(kvLevel, wfsBaseURL, postData, groupLayers);
+  await loadPlanLayers(kvLevel, wfsBaseURL, postData, groupLayers);
+  await loadDismantleLayers(kvLevel, wfsBaseURL, postData, groupLayers);
+  await loadDesignLayers(kvLevel, wfsBaseURL, postData, groupLayers, view, setView, map);
 
   setLayerGroups(groupLayers);
 }
 
-const loadSurveyLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
-  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('surveyLayer', groupLayers), 'survey', 1, groupLayers);
+const loadSurveyLayers = async (kvLevel: any, url: string, postData: string, groupLayers: LayerGroup[]) => {
+  await loadLayers(kvLevel, url, postData, getLayerGroupByName('surveyLayer', groupLayers), 'survey', 1, groupLayers);
 }
 
-const loadPlanLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
-  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('planLayer', groupLayers), 'plan', 2, groupLayers);
+const loadPlanLayers = async (kvLevel: any, url: string, postData: string, groupLayers: LayerGroup[]) => {
+  await loadLayers(kvLevel, url, postData, getLayerGroupByName('planLayer', groupLayers), 'plan', 2, groupLayers);
 }
 
-const loadDesignLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[], view: any, setView: any, map: any) => {
-  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('designLayer', groupLayers), 'design', 3, groupLayers);
-  loadWFS(projects, url, postData, 'pdd:design_pull_line', (data: any) => {
+const loadDesignLayers = async (kvLevel: any, url: string, postData: string, groupLayers: LayerGroup[], view: any, setView: any, map: any) => {
+  await loadLayers(kvLevel, url, postData, getLayerGroupByName('designLayer', groupLayers), 'design', 3, groupLayers);
+  await loadWFS(url, postData, 'pdd:design_pull_line', (data: any) => {
     if (groupLayers['design_pull_line']) {
       groupLayers['design_pull_line'].getSource().clear();
     } else {
@@ -74,17 +76,17 @@ const loadDesignLayers = (kvLevel: any, projects: ProjectList[], url: string, po
       }
       groupLayers['design_pull_line'].getSource().addFeatures(pJSON);
     }
-    relocateMap('', groupLayers, view, setView, map);
   })
+  relocateMap('', groupLayers, view, setView, map);
 }
 
-const loadDismantleLayers = (kvLevel: any, projects: ProjectList[], url: string, postData: string, groupLayers: LayerGroup[]) => {
-  loadLayers(kvLevel, projects, url, postData, getLayerGroupByName('dismantleLayer', groupLayers), 'dismantle', 4, groupLayers);
+const loadDismantleLayers = async (kvLevel: any, url: string, postData: string, groupLayers: LayerGroup[]) => {
+  await loadLayers(kvLevel, url, postData, getLayerGroupByName('dismantleLayer', groupLayers), 'dismantle', 4, groupLayers);
 }
 
-const loadLayers = async (kvLevel: any, projects: ProjectList[], url: string, postData: string, group: LayerGroup, layerType: string, layerTypeId: number, groupLayers: LayerGroup[]) => {
+const loadLayers = async (kvLevel: any, url: string, postData: string, group: LayerGroup, layerType: string, layerTypeId: number, groupLayers: LayerGroup[]) => {
   let queryFlag = false;
-  await loadWFS(projects, url, postData, 'pdd:' + layerType + '_line', async (data: any) => {
+  await loadWFS(url, postData, 'pdd:' + layerType + '_line', async (data: any) => {
     if (groupLayers[layerType + '_line']) {
       groupLayers[layerType + '_line'].getSource().clear();
     } else {
@@ -200,7 +202,7 @@ const loadLayers = async (kvLevel: any, projects: ProjectList[], url: string, po
 
   layerParams.forEach((item: any) => {
     let layerName = item.layerName;
-    loadWFS(projects, url, postData, 'pdd:' + layerType + '_' + layerName, (data: any) => {
+    loadWFS(url, postData, 'pdd:' + layerType + '_' + layerName, (data: any) => {
       if (groupLayers[layerType + '_' + layerName]) {
         groupLayers[layerType + '_' + layerName].getSource().clear();
       } else {
@@ -264,14 +266,14 @@ const clearHighlightLayer = (map: any) => {
  * @param layerName 
  * @param callBack 
  */
-const loadWFS = async (projects: ProjectList[], url: string, postData: string, layerName: string, callBack: (o: any) => void) => {
+const loadWFS = async (url: string, postData: string, layerName: string, callBack: (o: any) => void) => {
   const promise = loadLayer(url, postData, layerName);
-  console.log(projects.length,'111');
+  console.log(projects.length, '111');
   await promise.then((data: any) => {
-    console.log(projects.length,'222');
+    console.log(projects.length, '222');
     if (data.features && data.features.length > 0) {
       let flag;
-      projects.forEach((project) => {
+      projects.forEach((project: any) => {
         if (project.id === data.features[0].properties.project_id)
           flag = true;
       })
