@@ -9,7 +9,11 @@ export default {
   dev: {
     '/project/api': {
       // http://10.6.1.36:8026/api/
+<<<<<<< HEAD
       // 10.6.1.36
+=======
+      // 171.223.214.154
+>>>>>>> root权限测试版本
       target: 'http://10.6.1.36:8026',
       changeOrigin: true,
       pathRewrite: { '^/project': '/' },

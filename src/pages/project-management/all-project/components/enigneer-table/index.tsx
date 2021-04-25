@@ -108,7 +108,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         total,
         dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
         dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
+<<<<<<< HEAD
         projectLen: items?.filter((item: any) => item.projects && item.projects.length > 0).map((item: any) => item.projects).flat().length,
+=======
+        projectLen: (items?.filter((item: any) => item.projects && item.projects.length > 0).map((item: any) => item.projects).flat().length) ?? 0, 
+>>>>>>> root权限测试版本
       };
     }
     return {
