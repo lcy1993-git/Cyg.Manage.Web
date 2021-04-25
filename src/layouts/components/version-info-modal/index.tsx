@@ -18,6 +18,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   const [nowClickVersion, setNowClickVersion] = useState<string>('');
   const [historyVersionModalVisible, setHistoryVersionModalVisible] = useState<boolean>(false);
   const [historyVersionData, setHistoryVersionData] = useState<any[]>([]);
+  const [versionLoading, setVersionLoading] = useState<boolean>(false);
 
   const thisHostName = window.location.hostname;
   const serverCode = serverCodeArray[thisHostName];
@@ -44,15 +45,21 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   //查看历史版本
   const checkHistoryInfo = async (item: any) => {
     setNowClickVersion(item);
-    await getVersionUpdate({
-      productCode: '1301726010322214912',
-      moduleCode: 'ManageWebV2',
-      versionNo: item,
-      serverCode: serverCode,
-    }).then((data) => {
-      setHistoryVersionData(data.data.description);
-    });
     setHistoryVersionModalVisible(true);
+    setVersionLoading(true)
+    try{
+      const data = await getVersionUpdate({
+        productCode: '1301726010322214912',
+        moduleCode: 'ManageWebV2',
+        versionNo: item,
+        serverCode: serverCode,
+      })
+      setHistoryVersionData(data.data.description);
+    }catch(msg) {
+      console.error(msg);
+    }finally {
+      setVersionLoading(false)
+    }
   };
 
   return (
@@ -65,7 +72,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
         onCancel={() => setHistoryVersionModalVisible(false)}
         width={650}
       >
-        <Spin spinning={loading}>
+        <Spin spinning={versionLoading}>
           <div className={styles.versionItem}>
             <div className={styles.versionItemTitle}>【更新说明】</div>
             <div className={styles.versionItemContent}>
