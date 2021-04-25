@@ -5,8 +5,6 @@ import { publishMessage } from "@/services/visualization-results/visualization-r
 import uuid from 'node-uuid';
 import styles from './index.less';
 
-
-
 export interface TableDataType {
   propertyName: string;
   data: string;
