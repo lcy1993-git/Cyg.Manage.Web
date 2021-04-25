@@ -43,6 +43,7 @@ const CompanyManage: React.FC = () => {
     manual: true,
   });
 
+
   //数据修改，局部刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
@@ -140,10 +141,9 @@ const CompanyManage: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    setEditFormVisible(true);
     const CompanyManageData = await run(editDataId);
-    setCurrentCompanyData(CompanyManageData.skus);
-
+    setCurrentCompanyData(CompanyManageData?.skus);
+    setEditFormVisible(true);
     editForm.setFieldsValue({
       ...CompanyManageData,
     });
@@ -171,7 +171,6 @@ const CompanyManage: React.FC = () => {
         remark: editData.remark,
         userSkuQtys,
       };
-      console.log(submitInfo);
 
       await updateCompanyManageItem(submitInfo);
       tableFresh();

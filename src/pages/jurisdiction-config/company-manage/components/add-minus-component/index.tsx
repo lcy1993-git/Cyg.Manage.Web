@@ -27,7 +27,7 @@ const AddMinusComponent: React.FC<AddMinusComponentProps> = (props) => {
   const [inputValue, setInputValue] = useState<number>(0);
 
   const inputEvent = (e: any) => {
-    setInputValue(isNaN(Number(e.target.value)) ? ~e.target.value : Number(e.target.value));
+    setInputValue(e.target.value);
   };
 
   const minusEvent = () => {
