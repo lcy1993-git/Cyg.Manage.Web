@@ -7,8 +7,10 @@ import styles from './index.less';
 import { Moment } from 'moment';
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectStatus } from '@/services/project-management/all-project';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
+import useCollapse from 'react-collapsed';
+
 const { Search } = Input;
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -28,6 +30,9 @@ const FilterBar: FC = observer(() => {
   const [statuss, setStatuss] = useState<number[]>();
   const [createdOn, setCreatedOn] = useState<Moment | null>();
   const [modifyDate, setsModiyDate] = useState<Moment | null>();
+  const { getCollapseProps, getToggleProps, isExpanded } = useCollapse({
+    defaultExpanded: false,
+  });
   const store = useContainer();
   console.log('filter fresh');
 
@@ -183,7 +188,7 @@ const FilterBar: FC = observer(() => {
             </TableSearch>
           </div>
 
-          <div style={{ marginBottom: '16px' }}>
+          <div>
             <TableSearch className={styles.filterConditionItem} label="项目阶段" width="220px">
               <UrlSelect
                 valueKey="value"
@@ -198,60 +203,84 @@ const FilterBar: FC = observer(() => {
               />
             </TableSearch>
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <TableSearch className={styles.filterConditionItem} label="建设性质" width="220px">
-              <UrlSelect
-                valueKey="value"
-                titleKey="text"
-                value={constructType}
-                defaultData={projectConstructType}
-                onChange={(value) => setConstructType(value as number)}
-                className="widthAll"
-                placeholder="建设性质"
-                needAll={true}
-                allValue="-1"
-              />
-            </TableSearch>
+          <div
+            {...getToggleProps()}
+            style={{
+              marginTop: '8px',
+              textAlign: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            {!isExpanded ? <DownOutlined /> : null}
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <TableSearch className={styles.filterConditionItem} label="电压等级" width="220px">
-              <UrlSelect
-                valueKey="value"
-                titleKey="text"
-                defaultData={projectKvLevel}
-                className="widthAll"
-                value={kvLevel}
-                onChange={(value) => setKvLevel(value as number)}
-                placeholder="电压等级"
-                needAll={true}
-                allValue="-1"
-              />
-            </TableSearch>
+          <div
+            {...getCollapseProps()}
+          >
+            <div style={{ marginBottom: '16px', marginTop: "8px" }}>
+              <TableSearch className={styles.filterConditionItem} label="建设性质" width="220px">
+                <UrlSelect
+                  valueKey="value"
+                  titleKey="text"
+                  value={constructType}
+                  defaultData={projectConstructType}
+                  onChange={(value) => setConstructType(value as number)}
+                  className="widthAll"
+                  placeholder="建设性质"
+                  needAll={true}
+                  allValue="-1"
+                />
+              </TableSearch>
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <TableSearch className={styles.filterConditionItem} label="电压等级" width="220px">
+                <UrlSelect
+                  valueKey="value"
+                  titleKey="text"
+                  defaultData={projectKvLevel}
+                  className="widthAll"
+                  value={kvLevel}
+                  onChange={(value) => setKvLevel(value as number)}
+                  placeholder="电压等级"
+                  needAll={true}
+                  allValue="-1"
+                />
+              </TableSearch>
+            </div>
+            <div >
+              <TableSearch className={styles.filterConditionItem} label="项目性质" width="220px">
+                <UrlSelect
+                  valueKey="value"
+                  titleKey="text"
+                  defaultData={projectNature}
+                  dropdownMatchSelectWidth={168}
+                  value={nature}
+                  onChange={(value) => setNature(value as number)}
+                  className="widthAll"
+                  placeholder="项目性质"
+                  needAll={true}
+                  allValue="-1"
+                />
+              </TableSearch>
+            </div>
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <TableSearch className={styles.filterConditionItem} label="项目性质" width="220px">
-              <UrlSelect
-                valueKey="value"
-                titleKey="text"
-                defaultData={projectNature}
-                dropdownMatchSelectWidth={168}
-                value={nature}
-                onChange={(value) => setNature(value as number)}
-                className="widthAll"
-                placeholder="项目性质"
-                needAll={true}
-                allValue="-1"
-              />
-            </TableSearch>
+          <div
+            {...getToggleProps()}
+            style={{
+              marginTop: '8px',
+              textAlign: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            {isExpanded ? <UpOutlined /> : null}
           </div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Button className="mr2" onClick={() => search()} type="primary">
-            查询
-          </Button>
-          <Button className="mr2" onClick={() => clear()}>
-            重置
-          </Button>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button className="mr2" onClick={() => search()} type="primary">
+              查询
+            </Button>
+            <Button className="mr2" onClick={() => clear()}>
+              重置
+            </Button>
+          </div>
         </div>
       </>
     );
