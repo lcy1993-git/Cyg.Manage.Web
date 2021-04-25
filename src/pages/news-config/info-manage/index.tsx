@@ -155,10 +155,15 @@ const InfoManage: React.FC = () => {
       },
     },
     {
+      dataIndex: 'users',
+      index: 'users',
+      title: '对象',
+    },
+    {
       dataIndex: 'createByUser',
       index: 'createByUser',
       title: '创建人',
-      width: 220,
+      width: 140,
     },
     {
       dataIndex: 'createdOn',
