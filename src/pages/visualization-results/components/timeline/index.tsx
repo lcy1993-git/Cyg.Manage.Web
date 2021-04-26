@@ -94,12 +94,12 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
     <Scrollbars
       autoHide
       ref={scrollbars}
-      style={{ width: dates.length > 7 ? 600 : dates.length * 100, height: height }}
+      style={{ width: dates.length > 7 ? 600 : dates.length * 70 + 16, height: height }}
     >
       <div
         className={styles.timeline}
         style={{
-          width: `${dates.length === 1 ? 100 : dates.length * 100}px`,
+          width: `${dates.length > 7 ? dates.length * 70 + 36 : dates.length * 70 + 16}px`,
           height: `${height}px`,
           paddingLeft: '8px',
           paddingRight: '8px',
