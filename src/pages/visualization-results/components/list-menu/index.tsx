@@ -179,7 +179,6 @@ const ListMenu: FC = observer(() => {
 
   const store = useContainer();
   const { vState } = store;
-
   const { checkedProjectIdList } = vState;
 
   useEffect(() => {
@@ -297,8 +296,6 @@ const ListMenu: FC = observer(() => {
   };
 
   const onClickObserveTrack = () => {
-    console.log(checkedProjectIdList);
-
     if (checkedProjectIdList.length === 1) {
       fetchTimeline(checkedProjectIdList[0].id);
       store.toggleObserveTrack(true);
