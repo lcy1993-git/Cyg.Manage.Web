@@ -353,6 +353,9 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   useEffect(() => {
     store.setProjectIdList(projectIdList);
+    if (projectIdList.length === 0) {
+      store.toggleObserveTrack(false);
+    }
   }, [checkedKeys]);
 
   return (

@@ -13,7 +13,7 @@ import { observer } from 'mobx-react-lite';
 
 const VisualizationResults: React.FC = observer(() => {
   const { vState } = useContainer();
-  const { visibleLeftSidebar, checkedProjectIdList, observeTrackTimeline, observeTrack, checkedProjectDateList } = vState;
+  const { visibleLeftSidebar, observeTrackTimeline, observeTrack, checkedProjectDateList } = vState;
 
   const callback = (
     id: string,
@@ -23,6 +23,9 @@ const VisualizationResults: React.FC = observer(() => {
     startTime: number,
     commitTime: number,
   ) => {};
+
+  console.log(observeTrack, 'ob');
+
   return (
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
@@ -44,18 +47,16 @@ const VisualizationResults: React.FC = observer(() => {
 
         {/* map放在这 */}
         <div className={classNames(styles.mapContainer, 'flex1')}>
-          <div className={styles.tilelineContainer}>
+          <div className={styles.timelineContainer}>
             <div>
-              {checkedProjectIdList && checkedProjectIdList.length > 0 ? (
-                <Timeline
-                  height={60}
-                  width={400}
-                  dates={checkedProjectDateList}
-                />
+              {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
+                <Timeline height={60} width={400} dates={checkedProjectDateList} />
               ) : null}
             </div>
+          </div>
+          <div className={styles.observeTimelineContainer}>
             <div style={{ marginTop: '16px' }}>
-              {observeTrackTimeline && observeTrack ? (
+              {observeTrackTimeline && observeTrackTimeline.length > 0 && observeTrack ? (
                 <Timeline height={60} width={400} dates={observeTrackTimeline} />
               ) : null}
             </div>
