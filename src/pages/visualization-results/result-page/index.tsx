@@ -10,12 +10,11 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
 import { observer } from 'mobx-react-lite';
- 
+
 const VisualizationResults: React.FC = observer(() => {
   const { vState } = useContainer();
-  const { visibleLeftSidebar, checkedProjectIdList, observeTrackTimeline, observeTrack } = vState;
-  console.log(visibleLeftSidebar);
-   
+  const { visibleLeftSidebar, checkedProjectIdList, observeTrackTimeline, observeTrack, checkedProjectDateList } = vState;
+
   const callback = (
     id: string,
     phase: 'mount' | 'update',
@@ -27,9 +26,9 @@ const VisualizationResults: React.FC = observer(() => {
   return (
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
- 
+
       {/* <Filterbar /> */}
- 
+
       <main
         className={classNames(
           styles.content,
@@ -38,11 +37,11 @@ const VisualizationResults: React.FC = observer(() => {
         )}
       >
         {/* 侧边树形结构 */}
- 
+
         <div className={styles.sideNav}>
           <SideMenu />
         </div>
- 
+
         {/* map放在这 */}
         <div className={classNames(styles.mapContainer, 'flex1')}>
           <div className={styles.tilelineContainer}>
@@ -51,7 +50,7 @@ const VisualizationResults: React.FC = observer(() => {
                 <Timeline
                   height={60}
                   width={400}
-                  dates={[...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time))]}
+                  dates={checkedProjectDateList}
                 />
               ) : null}
             </div>
@@ -64,13 +63,13 @@ const VisualizationResults: React.FC = observer(() => {
           <div className={styles.listMenuContainer}>
             <ListMenu />
           </div>
-          <MapContainerShell />
+          {/* <MapContainerShell /> */}
         </div>
       </main>
     </PageCommonWrap>
   );
 });
- 
+
 const StoreProvider: React.FC = () => {
   return (
     <Provider>
@@ -78,5 +77,5 @@ const StoreProvider: React.FC = () => {
     </Provider>
   );
 };
- 
+
 export default StoreProvider;

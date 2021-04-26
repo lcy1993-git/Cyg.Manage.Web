@@ -1,6 +1,7 @@
 import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { makeAutoObservable } from 'mobx';
+import moment from 'moment';
 import { createContext, useContext } from 'react';
 export interface VisualizationResultsStateType {
   filterCondition: EngineerProjetListFilterParams; //filter条件
@@ -49,6 +50,13 @@ function Store(vState: VisualizationResultsStateType) {
       this.vState.onPositionClickState = this.vState.onPositionClickState;
     },
     setProjectIdList(checkedProjectIdList: ProjectList[]) {
+      this.vState.checkedProjectDateList = [
+        ...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time)),
+      ]
+        .filter((v: string) => v !== '')
+        .map((v: string) => moment(v).valueOf())
+        .sort((a: number, b: number) => a - b)
+        .map((v: number) => moment(v).format('YYYY/MM/DD'));
       this.vState.checkedProjectIdList = checkedProjectIdList;
     },
     //设置timeline点击的日期

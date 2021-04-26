@@ -18,33 +18,24 @@ interface dataItem {
 const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
   const { dates, height, width } = props;
   const store = useContainer();
-  const [activeList, setActiveList] = useState<dataItem[]>([]);
-  const { vState } = store;
-  const { checkedProjectDateList } = vState;
-  
-   
+  const [activeList, setActiveList] = useState<dataItem[]>();
+
   //默认scroll到最右边
   const scrollbars = createRef<Scrollbars>();
-  useMemo(() => {
-   
-    if (dates) {
-      let d = dates
-        .filter((v: string) => v !== '')
-        .map((v: string) => moment(v).valueOf())
-        .sort((a: number, b: number) => a - b)
-        .map((v: number, idx: number) => {
-          return {
-            idx: idx,
-            date: moment(v).format('YYYY/MM/DD'),
-            active: true,
-            click: false,
-          };
-        });
-
-      setActiveList(d);
+  useEffect(() => {
+    setActiveList(
+      dates.map((v: string, idx: number) => {
+        return {
+          idx: idx,
+          date: v,
+          active: true,
+          click: false,
+        };
+      }),
+    );
+    if (dates.length > 1) {
+      scrollbars.current?.scrollToRight();
     }
-
-    scrollbars.current?.scrollToRight();
   }, [dates]);
   //点击scroll到右边
   const onClickScrollLeft = () => {
@@ -108,7 +99,7 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
       <div
         className={styles.timeline}
         style={{
-          width: `${dates.length * 100}px` ,
+          width: `${dates.length * 100}px`,
           height: `${height}px`,
           paddingLeft: '8px',
           paddingRight: '8px',
