@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item';
 import ClickInputNumber from '@/components/clickInput-number';
 import { Button, Form } from 'antd';
-import React from 'react';
+import React, { useRef } from 'react';
 import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
 
@@ -13,6 +13,14 @@ const TestPage = () => {
       console.log(value);
     });
   };
+
+  const selectRef = useRef(null)
+
+  const test2 = () => {
+    if(selectRef && selectRef.current) {
+        selectRef.current.reset();
+    }
+  }
 
   return (
     <div style={{ width: '1200px', height: '960px' }}>
@@ -29,7 +37,8 @@ const TestPage = () => {
       ]}>
         <div>1</div>
       </OverFlowHiddenComponent> */}
-      <AreaSelect />
+      <Button onClick={test2}>测试</Button>
+      <AreaSelect  ref={selectRef} />
     </div>
   );
 };
