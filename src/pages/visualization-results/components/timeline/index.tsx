@@ -16,7 +16,7 @@ interface dataItem {
 }
 //容器组件初始化传进来的日期数组，对数组进行排序
 const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
-  const { dates, height, width } = props;
+  const { dates, height, type } = props;
   const store = useContainer();
   const [activeList, setActiveList] = useState<dataItem[]>();
 
@@ -87,7 +87,7 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
     });
 
     setActiveList(_.cloneDeep(newList));
-    store.setClickDate(newList[clickIndex].date);
+    store.setClickDate(newList[clickIndex].date, type);
   };
 
   return (
