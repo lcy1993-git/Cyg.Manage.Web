@@ -1,6 +1,6 @@
 import { Form, Input, Switch, TreeSelect, Upload } from 'antd';
 import React, { useState, useEffect, useMemo } from 'react';
-import Editors from 'wangeditor';
+import E from 'wangeditor';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 import UrlSelect from '@/components/url-select';
@@ -20,13 +20,14 @@ interface EditorParams {
   type: 'edit' | 'add';
 }
 
-const { BtnMenu, PanelMenu } = Editors;
-class AlertMenu extends PanelMenu {
+const { BtnMenu } = E;
+class AlertMenu extends BtnMenu {
   constructor(editor: any) {
     // data-title属性表示当鼠标悬停在该按钮上时提示该按钮的功能简述
-    let $elem = Editors.$(
+    let $elem = E.$(
       `<div class="w-e-menu" data-title="附件">
-              <i class="w-e-icon-upload2"></i>
+              <label for="wangUploadFile"><i class="w-e-icon-upload2"></i></label>
+              <input id="wangUploadFile" type="file" style="display:none" />
           </div>`,
     );
 
@@ -35,6 +36,8 @@ class AlertMenu extends PanelMenu {
   }
   // 菜单点击事件
   clickHandler() {
+    document.execCommand('Open');
+    this.editor.txt.append('<p>追加的内容</p>');
     // 做任何你想做的事情
     // 可参考【常用 API】文档，来操作编辑器
   }
@@ -46,10 +49,10 @@ class AlertMenu extends PanelMenu {
     // 激活菜单
     // 1. 菜单 DOM 节点会增加一个 .w-e-active 的 css class
     // 2. this.this.isActive === true
-    // this.active();
+    this.active();
     // // 取消激活菜单
     // // 1. 菜单 DOM 节点会删掉 .w-e-active
-    // // 2. this.this.isActive === false
+    // 2. this.this.isActive === false
     // this.unActive()
   }
 }
@@ -71,7 +74,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
   };
 
   const handleData = useMemo(() => {
-    const copyOptions = JSON.parse(JSON.stringify(groupData)).map(mapTreeData);
+    const copyOptions = JSON.parse(JSON.stringify(groupData))?.map(mapTreeData);
     copyOptions.unshift({ title: '所有人', value: '0', children: null });
     return copyOptions.map((item: any) => {
       return {
@@ -86,9 +89,9 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
     useEffect(() => {
       const menuKey = 'alertMenuKey';
 
-      Editors.registerMenu(menuKey, AlertMenu);
+      E.registerMenu(menuKey, AlertMenu);
 
-      const editor = new Editors('#div1');
+      const editor = new E('#div1');
       editor.config.uploadImgShowBase64 = true;
       editor.config.showLinkImg = false;
       // editor.config.uploadImgServer = '/upload';
@@ -132,7 +135,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
 
   if (type === 'edit') {
     useEffect(() => {
-      const editor = new Editors('#div1');
+      const editor = new E('#div1');
       editor.config.uploadImgShowBase64 = true;
       editor.config.showLinkImg = false;
       editor.config.onchange = (newHtml: string) => {
@@ -189,7 +192,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
       </CyFormItem>
       <CyFormItem name="content" label="内容" required labelWidth={60}>
         {/* <button style={{ marginBottom: '5px' }}> */}
-          <FileUpload>添加附件</FileUpload>
+        <FileUpload>添加附件</FileUpload>
         {/* </button> */}
         <div id="div1"></div>
       </CyFormItem>
