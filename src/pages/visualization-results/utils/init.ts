@@ -10,10 +10,12 @@ import Control from 'ol/control/Control';
 export interface BaseMapProps {
   layers: Layer[];
   layerGroups: LayerGroup[];
+  trackLayers: LayerGroup[];
   controls?: Control[];
   view: View;
   setLayers: (arg0: Layer[]) => void;
   setLayerGroups: (arg0: LayerGroup[]) => void;
+  setTrackLayerGroups: (arg0: LayerGroup[]) => void;
   setView: (arg0: View) => void;
 }
 
@@ -26,10 +28,10 @@ export const initLayers = (resData: any): Layer[] => {
   let imgUrl = '';
 
   resData.data.forEach((item: any) => {
-    if(item.layerType === 1) {
+    if (item.layerType === 1) {
       // vecUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
       vecUrl = item.url.replace('{s}', '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}');
-    }else if(item.layerType === 2) {
+    } else if (item.layerType === 2) {
       imgUrl = item.url.replace('{s}', '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}');
     }
   });
@@ -98,6 +100,19 @@ export const initOtherLayers = (): LayerGroup[] => {
 
   return [surveyLayer, planLayer, designLayer, dismantleLayer];
 };
+
+// 轨迹图层
+export const initTrackLayers = (): LayerGroup[] => {
+  // 勘察轨迹图层
+  const surveyTrackLayers = new Group();
+  surveyTrackLayers.set('name', 'surveyTrackLayers');
+
+  // 交底轨迹图层
+  const disclosureTrackLayers = new Group();
+  disclosureTrackLayers.set('name', 'disclosureTrackLayers');
+
+  return [surveyTrackLayers, disclosureTrackLayers]
+}
 
 // 状态
 export const initOtherLayersState = [
