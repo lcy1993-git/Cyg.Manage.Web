@@ -99,7 +99,7 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
       <div
         className={styles.timeline}
         style={{
-          width: `${dates.length * 100}px`,
+          width: `${dates.length === 1 ? 100 : dates.length * 100}px`,
           height: `${height}px`,
           paddingLeft: '8px',
           paddingRight: '8px',
