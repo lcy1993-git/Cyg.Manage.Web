@@ -275,16 +275,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
         // 批注功能
         if (commentLayers.indexOf(layerName) >= 0) {
-            pJSON['批注'] = feature.getProperties().project_id;
+            pJSON['批注'] = {id: feature.getProperties().project_id};
         }
 
-        console.log(pJSON);
         // 相应数据到右侧边栏
         const resData = [];
         for (let p in pJSON) {
             resData.push({ propertyName: p, data: pJSON[p] || "" })
         }
-        console.log(resData)
         ops.setRightSidebarVisiviabel(true);
         ops.setRightSidebarData(resData);
 

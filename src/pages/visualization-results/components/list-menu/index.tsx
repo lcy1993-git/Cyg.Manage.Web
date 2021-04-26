@@ -79,7 +79,7 @@ const Track2 = () => (
   </svg>
 );
 
-const columns = [
+export const columns = [
   {
     title: '物料类型',
     width: 120,
