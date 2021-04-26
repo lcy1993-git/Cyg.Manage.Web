@@ -101,6 +101,25 @@ function getMappingTagsDictionary() {
         "kv_level": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value)
       }
     };
+    mappingTagsDictionary.user_line = {
+      mappingTags: {
+          "name": "下户线名称",
+          "state": "状态",
+          "kv_level": "电压等级",
+          "type": "导线类型",
+          "mode": "导线型号",
+          "length": "长度",
+          "remark": "备注",
+          "loop_name": "回路名称",
+          "project_id": "所属项目",
+          "surveyor": "勘测人员",
+          "survey_time": "勘测日期"
+      },
+      mappingTagValues: {
+          "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+          // "kv_level": convertEnums(enums[enums.findIndex((e) => e.key == "KVLevel")].value)
+      }
+  };
     mappingTagsDictionary.cable_channel = {
       mappingTags: {
         "code": "电缆通道编号",
@@ -126,7 +145,7 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "survey_time": "勘测时间",
         "mode": "变压器型号",
-        "symbol_id": "勘测人员"
+        "surveyor": "勘测人员"
       },
       mappingTagValues: {
         "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
@@ -182,7 +201,8 @@ function getMappingTagsDictionary() {
         "mode": "型号",
         "total_count": "表位",
         "count": "表数",
-        "project_id": "所属项目"
+        "project_id": "所属项目",
+        "remark": "备注"
       },
       mappingTagValues: {
         "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "ElectricMeterType")].value),
@@ -238,7 +258,8 @@ function getMappingTagsDictionary() {
         "name": "杆上设备名称",
         "type": "杆上设备类型",
         "state": "状态",
-        "project_id": "所属项目"
+        "project_id": "所属项目",
+        "remark":"备注"
       },
       mappingTagValues: {
         "voltage": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value),
