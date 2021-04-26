@@ -7,10 +7,11 @@ import UrlSelect from '@/components/url-select';
 import CyFormItem from '@/components/cy-form-item';
 import { useRequest } from 'ahooks';
 import { getCompanyGroupTreeList } from '@/services/operation-config/company-group';
+import FileUpload from '@/components/file-upload';
 // import uuid from 'node-uuid';
-import createPanelConf, {
-  ImgPanelConf,
-} from '../../../../../../node_modules/wangeditor/src/menus/img/create-panel-conf';
+// import createPanelConf, {
+//   ImgPanelConf,
+// } from '../../../../../../node_modules/wangeditor/src/menus/img/create-panel-conf';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -19,9 +20,8 @@ interface EditorParams {
   type: 'edit' | 'add';
 }
 
-const { BtnMenu, Panel, PanelMenu } = Editors;
+const { BtnMenu, PanelMenu } = Editors;
 class AlertMenu extends PanelMenu {
-  private imgPanelConfig: ImgPanelConf;
   constructor(editor: any) {
     // data-title属性表示当鼠标悬停在该按钮上时提示该按钮的功能简述
     let $elem = Editors.$(
@@ -29,41 +29,18 @@ class AlertMenu extends PanelMenu {
               <i class="w-e-icon-upload2"></i>
           </div>`,
     );
-    let imgPanelConfig = createPanelConf(editor);
-    if (imgPanelConfig.onlyUploadConf) {
-      $elem = imgPanelConfig.onlyUploadConf.$elem;
-      imgPanelConfig.onlyUploadConf.events.map((event) => {
-        const type = event.type;
-        const fn = event.fn;
-        $elem.on(type, (e: Event) => {
-          e.stopPropagation();
-          fn(e);
-        });
-      });
-    }
+
     super($elem, editor);
-    this.imgPanelConfig = imgPanelConfig;
     // const filePanelConfig = createPanelConf(editor)
   }
   // 菜单点击事件
   clickHandler() {
-    if (!this.imgPanelConfig.onlyUploadConf) {
-      this.createPanel();
-    }
     // 做任何你想做的事情
     // 可参考【常用 API】文档，来操作编辑器
-    // alert('hello world');
   }
   // 菜单是否被激活（如果不需要，这个函数可以空着）
   // 1. 激活是什么？光标放在一段加粗、下划线的文本时，菜单栏里的 B 和 U 被激活，如下图
   // 2. 什么时候执行这个函数？每次编辑器区域的选区变化（如鼠标操作、键盘操作等），都会触发各个菜单的 tryChangeActive 函数，重新计算菜单的激活状态
-
-  private createPanel(): void {
-    const conf = this.imgPanelConfig;
-    const panel = new Panel(this, conf);
-    this.setPanel(panel);
-    panel.create();
-  }
 
   tryChangeActive() {
     // 激活菜单
@@ -115,28 +92,33 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
       editor.config.uploadImgShowBase64 = true;
       editor.config.showLinkImg = false;
       // editor.config.uploadImgServer = '/upload';
-      // 上传图片到服务器
-      // editor.config.uploadFileName = 'myFile'; //设置文件上传的参数名称
+      //上传图片到服务器
+      editor.config.uploadFileName = 'myFile'; //设置文件上传的参数名称
       // editor.config.uploadImgServer = '/upload'; //设置上传文件的服务器路径
       // editor.config.uploadImgMaxSize = 3 * 1024 * 1024; // 将图片大小限制为 3M
-      // //自定义上传图片事件
-      // editor.config.uploadImgHooks = {
-      // 	before: function(xhr, editor, files) {
+      //自定义上传图片事件
+      editor.config.uploadImgHooks = {
+        before: function (xhr, editor, files) {},
+        success: function (xhr, editor, result) {
+          console.log('上传成功');
+        },
+        fail: function (xhr, editor, result) {
+          console.log('上传失败,原因是' + result);
+        },
+        error: function (xhr, editor) {
+          console.log('上传出错');
+        },
+        timeout: function (xhr, editor) {
+          console.log('上传超时');
+        },
+        customInsert: function (insertImgFn, result) {
+          // result 即服务端返回的接口
+          console.log('customInsert', result);
 
-      // 	},
-      // 	success: function(xhr, editor, result) {
-      // 		console.log("上传成功");
-      // 	},
-      // 	fail: function(xhr, editor, result) {
-      // 		console.log("上传失败,原因是" + result);
-      // 	},
-      // 	error: function(xhr, editor) {
-      // 		console.log("上传出错");
-      // 	},
-      // 	timeout: function(xhr, editor) {
-      // 		console.log("上传超时");
-      // 	}
-      // }
+          // insertImgFn 可把图片插入到编辑器，传入图片 src ，执行函数即可
+          // insertImgFn(result.data[0])
+        },
+      };
 
       editor.config.onchange = (newHtml: string) => {
         onChange(newHtml);
@@ -206,6 +188,9 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
         />
       </CyFormItem>
       <CyFormItem name="content" label="内容" required labelWidth={60}>
+        {/* <button style={{ marginBottom: '5px' }}> */}
+          <FileUpload>添加附件</FileUpload>
+        {/* </button> */}
         <div id="div1"></div>
       </CyFormItem>
     </>
