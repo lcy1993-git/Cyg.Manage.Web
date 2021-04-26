@@ -4,14 +4,23 @@ import { layerParams } from './mapdata';
 import VectorSource from 'ol/source/Vector';
 import Vector from 'ol/layer/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
+import MultiLineString from 'ol/geom/MultiLineString';
 import { pointStyle, line_style, cable_channel_styles, mark_style, fzx_styles } from '../utils/pointStyle';
 import Layer from "ol/layer/Layer";
 import Point from "ol/geom/Point";
 import { transform, getPointResolution } from "ol/proj";
 import ProjUnits from "ol/proj/Units";
 import Feature from "ol/Feature";
+import ClassStyle from 'ol/style/Style';
+import Stroke from 'ol/style/Stroke';
+import Icon from 'ol/style/Icon';
+import markerIconSrc from "@/assets/image/webgis/marker-icon.png";
+import arrowSrc from "@/assets/image/webgis/arrow.png";
+import { ConsoleSqlOutlined } from "_@ant-design_icons@4.6.2@@ant-design/icons";
+
 
 var projects: any;
+const wfsBaseURL = 'http://10.6.1.36:8099/geoserver/pdd/ows';
 const refreshMap = async (ops: any, projects_: ProjectList[], location: boolean = true, time?: string) => {
   projects = projects_;
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map, kvLevel } = ops;
@@ -19,7 +28,6 @@ const refreshMap = async (ops: any, projects_: ProjectList[], location: boolean 
   clearHighlightLayer(map);
   if (projects.length === 0)
     return;
-  let wfsBaseURL = 'http://10.6.1.36:8099/geoserver/pdd/ows';
   let xmlData = "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
   let postData = "";
   xmlData += "<ogc:Filter><Or>";
@@ -35,25 +43,25 @@ const refreshMap = async (ops: any, projects_: ProjectList[], location: boolean 
   });
   postData = xmlData + postData + "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
 
-  await loadSurveyLayers(kvLevel, wfsBaseURL, postData, groupLayers);
-  await loadPlanLayers(kvLevel, wfsBaseURL, postData, groupLayers);
-  await loadDismantleLayers(kvLevel, wfsBaseURL, postData, groupLayers);
-  await loadDesignLayers(kvLevel, wfsBaseURL, postData, groupLayers, view, setView, map);
+  await loadSurveyLayers(kvLevel, postData, groupLayers);
+  await loadPlanLayers(kvLevel, postData, groupLayers);
+  await loadDismantleLayers(kvLevel, postData, groupLayers);
+  await loadDesignLayers(kvLevel, postData, groupLayers, view, setView, map);
 
   setLayerGroups(groupLayers);
 }
 
-const loadSurveyLayers = async (kvLevel: any, url: string, postData: string, groupLayers: LayerGroup[]) => {
-  await loadLayers(kvLevel, url, postData, getLayerGroupByName('surveyLayer', groupLayers), 'survey', 1, groupLayers);
+const loadSurveyLayers = async (kvLevel: any, postData: string, groupLayers: LayerGroup[]) => {
+  await loadLayers(kvLevel, postData, getLayerGroupByName('surveyLayer', groupLayers), 'survey', 1, groupLayers);
 }
 
-const loadPlanLayers = async (kvLevel: any, url: string, postData: string, groupLayers: LayerGroup[]) => {
-  await loadLayers(kvLevel, url, postData, getLayerGroupByName('planLayer', groupLayers), 'plan', 2, groupLayers);
+const loadPlanLayers = async (kvLevel: any, postData: string, groupLayers: LayerGroup[]) => {
+  await loadLayers(kvLevel, postData, getLayerGroupByName('planLayer', groupLayers), 'plan', 2, groupLayers);
 }
 
-const loadDesignLayers = async (kvLevel: any, url: string, postData: string, groupLayers: LayerGroup[], view: any, setView: any, map: any) => {
-  await loadLayers(kvLevel, url, postData, getLayerGroupByName('designLayer', groupLayers), 'design', 3, groupLayers);
-  await loadWFS(url, postData, 'pdd:design_pull_line', (data: any) => {
+const loadDesignLayers = async (kvLevel: any, postData: string, groupLayers: LayerGroup[], view: any, setView: any, map: any) => {
+  await loadLayers(kvLevel, postData, getLayerGroupByName('designLayer', groupLayers), 'design', 3, groupLayers);
+  await loadWFS(postData, 'pdd:design_pull_line', (data: any) => {
     if (groupLayers['design_pull_line']) {
       groupLayers['design_pull_line'].getSource().clear();
     } else {
@@ -79,13 +87,13 @@ const loadDesignLayers = async (kvLevel: any, url: string, postData: string, gro
   relocateMap('', groupLayers, view, setView, map);
 }
 
-const loadDismantleLayers = async (kvLevel: any, url: string, postData: string, groupLayers: LayerGroup[]) => {
-  await loadLayers(kvLevel, url, postData, getLayerGroupByName('dismantleLayer', groupLayers), 'dismantle', 4, groupLayers);
+const loadDismantleLayers = async (kvLevel: any, postData: string, groupLayers: LayerGroup[]) => {
+  await loadLayers(kvLevel, postData, getLayerGroupByName('dismantleLayer', groupLayers), 'dismantle', 4, groupLayers);
 }
 
-const loadLayers = async (kvLevel: any, url: string, postData: string, group: LayerGroup, layerType: string, layerTypeId: number, groupLayers: LayerGroup[]) => {
+const loadLayers = async (kvLevel: any, postData: string, group: LayerGroup, layerType: string, layerTypeId: number, groupLayers: LayerGroup[]) => {
   let queryFlag = false;
-  await loadWFS(url, postData, 'pdd:' + layerType + '_line', async (data: any) => {
+  await loadWFS(postData, 'pdd:' + layerType + '_line', async (data: any) => {
     if (groupLayers[layerType + '_line']) {
       groupLayers[layerType + '_line'].getSource().clear();
     } else {
@@ -201,7 +209,7 @@ const loadLayers = async (kvLevel: any, url: string, postData: string, group: La
 
   layerParams.forEach((item: any) => {
     let layerName = item.layerName;
-    loadWFS(url, postData, 'pdd:' + layerType + '_' + layerName, (data: any) => {
+    loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) => {
       if (groupLayers[layerType + '_' + layerName]) {
         groupLayers[layerType + '_' + layerName].getSource().clear();
       } else {
@@ -265,8 +273,8 @@ const clearHighlightLayer = (map: any) => {
  * @param layerName 
  * @param callBack 
  */
-const loadWFS = async (url: string, postData: string, layerName: string, callBack: (o: any) => void) => {
-  const promise = loadLayer(url, postData, layerName);
+const loadWFS = async (postData: string, layerName: string, callBack: (o: any) => void) => {
+  const promise = loadLayer(wfsBaseURL, postData, layerName);
   await promise.then((data: any) => {
     if (data.features && data.features.length > 0) {
       let flag;
@@ -277,6 +285,154 @@ const loadWFS = async (url: string, postData: string, layerName: string, callBac
       flag && callBack(data);
     }
   })
+}
+
+// 加载勘察轨迹图层
+const loadTrackLayers = (id: string, map: any, trackLayers: any, type: number = 0, time?: string) => {
+  const trackType = ['survey_track', 'disclosure_track'];
+  const track = ['survey_Track', 'disclosure_Track'];
+  const trackLine = ['survey_TrackLine', 'disclosure_TrackLine'];
+  const groupLayer = clearTrackLayers(trackLayers, type);
+
+  var postData = "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
+  postData = postData + "<ogc:Filter><Or>";
+  postData = postData + "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>";
+  postData = postData + "</Or></ogc:Filter>";
+  postData = postData + "</wfs:Query></wfs:GetFeature>";
+
+  if (time) {
+    var startDate = new Date(time);
+    var endDate = new Date(time);
+    endDate.setDate(endDate.getDate() + 1);
+    var postDataStart = postData.substr(0, 418);
+    var postDataEnd = postData.substr(postData.length - 29, 29);
+    postData = postDataStart + "<ogc:Filter><And>" + "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>" + "<PropertyIsLessThanOrEqualTo><PropertyName>record_date</PropertyName><Literal>" + endDate.toISOString() + "</Literal></PropertyIsLessThanOrEqualTo><PropertyIsGreaterThanOrEqualTo><PropertyName>record_date</PropertyName><Literal>" + startDate.toISOString() + "</Literal></PropertyIsGreaterThanOrEqualTo></And></ogc:Filter>" + postDataEnd;
+  }
+  const promise = loadLayer(wfsBaseURL, postData, 'pdd:' + trackType[type]);
+  promise.then((data: any) => {
+    let surveyTrackLayer = getLayerByName(track[type], groupLayer.getLayers().getArray());
+    let surveyTrackLineLayer = getLayerByName(trackLine[type], groupLayer.getLayers().getArray());
+    if (!surveyTrackLayer) {
+      let source = new VectorSource();
+      surveyTrackLayer = new Vector({
+        source,
+        zIndex: 5
+      });
+      surveyTrackLayer.set('name', track[type]);
+      groupLayer.getLayers().push(surveyTrackLayer);
+    }
+    if (!surveyTrackLineLayer) {
+      let source = new VectorSource();
+      surveyTrackLineLayer = new Vector({
+        source,
+        zIndex: 5
+      });
+      surveyTrackLayer.set('name', trackLine[type]);
+      groupLayer.getLayers().push(surveyTrackLineLayer);
+    }
+
+    data.features.forEach((feature: any) => {
+      feature.geometry.coordinates = transform(feature.geometry.coordinates, 'EPSG:4326', 'EPSG:3857')
+      // feature.setGeometry(feature.getGeometry().transform('EPSG:4326', 'EPSG:3857'));
+    })
+    let pJSON = (new GeoJSON()).readFeatures(data);
+    pJSON.forEach((feature: any) => {
+      let s = trackStyle();
+      feature.setStyle(s);
+    })
+    surveyTrackLayer.getSource().addFeatures(pJSON);
+
+    let lineLatlngs: any = [];
+    let lineLatlngsSegement: any = [];
+    let segementFirstDate: Date;
+    let sortedFeatures = data.features.sort(sortFeaturesFunc);
+    sortedFeatures.forEach((feature: any) => {
+      if (lineLatlngsSegement.length == 0)
+        segementFirstDate = new Date(feature.properties.record_date);
+
+      lineLatlngsSegement.push(feature.geometry.coordinates);
+
+      var tempDate = new Date(feature.properties.record_date)
+      if (tempDate.getTime() - segementFirstDate.getTime() > 1800000 || tempDate.getDay() != segementFirstDate.getDay()) {
+        lineLatlngs.push(lineLatlngsSegement);
+        lineLatlngsSegement = [];
+      }
+    })
+
+    if (lineLatlngsSegement!.length > 1) {
+      lineLatlngs.push(lineLatlngsSegement);
+      lineLatlngsSegement = [];
+    }
+
+    var lineGeom = new MultiLineString(lineLatlngs);
+    var lineFeature = new Feature({
+      geometry: lineGeom
+    });
+    lineFeature.setStyle(trackLineStyle(lineFeature, 'rgba(255,204,51,1)'));
+    surveyTrackLineLayer.getSource().addFeature(lineFeature);
+    if (surveyTrackLayer.getSource().getFeatures().length > 0)
+      map.getView().fit(surveyTrackLayer.getSource().getExtent(), map.getSize());
+  })
+
+}
+
+// 清楚轨迹图层
+const clearTrackLayers = (trackLayers: any, type:number = 0) => {
+  const layers = ['surveyTrackLayers', 'disclosureTrackLayers'];
+  const groupLayer = getLayerGroupByName(layers[type], trackLayers)
+  groupLayer.getLayers().getArray().forEach((layer: any) => {
+    layer.getSource().clear();
+  })
+  return groupLayer;
+}
+// 轨迹点样式
+const trackStyle = () => {
+  return new ClassStyle({
+    image: new Icon({
+      src: markerIconSrc,
+      anchor: [0.5, 1]
+    })
+  });
+}
+// 轨迹线样式
+const trackLineStyle = (feature: any, color: string) => {
+  var geometry = feature.getGeometry();
+  var styles = [new ClassStyle({
+    stroke: new Stroke({
+      color,
+      width: 3
+    })
+  })];
+  geometry.getLineStrings().forEach((lineString: any) => {
+    lineString.forEachSegment(function (start: any, end: any) {
+      var dx = end[0] - start[0];
+      var dy = end[1] - start[1];
+      if (dx === 0 && dy === 0) {
+        return;
+      }
+      var rotation = Math.atan2(dy, dx);
+      // arrows
+      styles.push(
+        new ClassStyle({
+          geometry: new Point(end),
+          image: new Icon({
+            src: arrowSrc,
+            anchor: [0.75, 0.5],
+            rotateWithView: true,
+            rotation: -rotation,
+          }),
+        })
+      );
+    });
+  })
+  return styles;
+}
+
+// 按时间排序
+function sortFeaturesFunc(a: any, b: any) {
+  var aDate = new Date(a.properties.record_date);
+  var bDate = new Date(b.properties.record_date);
+  return aDate.getTime() - bDate.getTime();
 }
 
 // 根据名称获取图层
@@ -384,6 +540,9 @@ export {
   getLayerByName,
   getLayerGroupByName,
   clearHighlightLayer,
+  loadTrackLayers,
+  clearTrackLayers,
+  relocateMap,
   getScale
 };
 

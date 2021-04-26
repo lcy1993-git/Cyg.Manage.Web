@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MapBase from '../map-base';
 import Layer from 'ol/layer/Layer';
 import LayerGroup from 'ol/layer/Group';
-import { initLayers, initOtherLayers, initView } from '../../utils';
+import { initLayers, initOtherLayers, initTrackLayers, initView } from '../../utils';
 import styles from './index.less';
 
 const MapContainer = (props: any) => {
@@ -11,6 +11,8 @@ const MapContainer = (props: any) => {
   // 图层
   const [layers, setLayers] = useState<Layer[]>(initLayers(mapData));
   const [layerGroups, setLayerGroups] = useState<LayerGroup[]>(initOtherLayers());
+  const [trackLayers, setTrackLayerGroups] = useState<LayerGroup[]>(initTrackLayers());
+  
 
   // 视图
   const [view, setView] = useState(initView);
@@ -22,6 +24,8 @@ const MapContainer = (props: any) => {
         setLayers={setLayers}
         setLayerGroups={setLayerGroups}
         layerGroups={layerGroups}
+        trackLayers={trackLayers}
+        setTrackLayerGroups={setTrackLayerGroups}
         controls={[]}
         view={view}
         setView={setView}

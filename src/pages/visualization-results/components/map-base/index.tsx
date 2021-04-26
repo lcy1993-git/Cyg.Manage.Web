@@ -9,7 +9,7 @@ import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '..
 import { BaseMapProps, ControlLayearsData } from '../../utils/init';
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/mobx-store';
-import { refreshMap, getLayerByName, getLayerGroupByName } from '../../utils/refreshMap';
+import { refreshMap, getLayerByName, getLayerGroupByName, relocateMap, loadTrackLayers, clearTrackLayers } from '../../utils/refreshMap';
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import { bd09Towgs84 } from '../../utils/locationUtils';
 import styles from './index.less';
@@ -17,7 +17,7 @@ import { observer } from 'mobx-react-lite';
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
-  const { layers, layerGroups, view, setView, setLayerGroups } = props;
+  const { layers, layerGroups, trackLayers, view, setView, setLayerGroups} = props;
   console.log("map, refresh");
   // 图层控制层数据
   const [controlLayearsData, setControlLayearsData] = useState<ControlLayearsData[]>(
@@ -27,7 +27,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 从Vstate获取外部传入的数据
   const store = useContainer();
   const { vState } = store;
-  const { checkedProjectIdList: projects, filterCondition, onPositionClickState } = vState;
+  const { checkedProjectIdList: projects, filterCondition, onPositionClickState, clickDate, positionMap, observeTrack, confessionTrack } = vState;
   const { kvLevel } = filterCondition;
 
   // 右侧边栏状态
@@ -45,8 +45,13 @@ const BaseMap = observer((props: BaseMapProps) => {
       controls: [],
     });
 
-    // 初始化勘察图层、方案图层、设计图层、删除图层、勘察轨迹图层、交底轨迹图层
+    // 初始化勘察图层、方案图层、设计图层、删除图层、
     layerGroups.forEach((item: LayerGroup) => {
+      initialMap.addLayer(item);
+    });
+
+    // 初始化勘察轨迹图层、交底轨迹图层
+    trackLayers.forEach((item: LayerGroup) => {
       initialMap.addLayer(item);
     });
 
@@ -67,6 +72,35 @@ const BaseMap = observer((props: BaseMapProps) => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
     map && refreshMap(ops, projects!);
   }, [JSON.stringify(projects)]);
+
+  // 动态刷新轨迹
+  useEffect(() => {
+    // 加载勘察轨迹
+    map && loadTrackLayers(projects[0].id, map, trackLayers, 0, clickDate);
+  }, [JSON.stringify(clickDate)]);
+
+  // 动态刷新轨迹
+  useEffect(() => {
+    // 加载勘察轨迹
+    if (observeTrack)
+      map && loadTrackLayers(projects[0].id, map, trackLayers, 0);
+    else
+      clearTrackLayers(trackLayers, 0)
+  }, [JSON.stringify(observeTrack)]);
+
+  // 动态刷新轨迹
+  useEffect(() => {
+    // 加载交底轨迹
+    if (confessionTrack)
+      map && loadTrackLayers(projects[0].id, map, trackLayers, 1);
+    else
+      clearTrackLayers(trackLayers, 1)
+  }, [JSON.stringify(confessionTrack)]);
+
+  // 地图定位
+  useEffect(() => {
+    map && relocateMap('', layerGroups, view, setView, map);
+  }, [JSON.stringify(positionMap)]);
 
   // 当图层切换时
   useEffect(() => {
@@ -162,7 +196,7 @@ const BaseMap = observer((props: BaseMapProps) => {
             zoom: 18,
             duration: duration,
           },
-          () => {},
+          () => { },
         );
         setView(view);
       }
