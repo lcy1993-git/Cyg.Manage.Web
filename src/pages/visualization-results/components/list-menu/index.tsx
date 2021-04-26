@@ -179,7 +179,6 @@ const ListMenu: FC = observer(() => {
 
   const store = useContainer();
   const { vState } = store;
-
   const { checkedProjectIdList } = vState;
 
   useEffect(() => {
@@ -247,6 +246,9 @@ const ListMenu: FC = observer(() => {
   const { data: timelineData, run: fetchTimeline } = useRequest(GetTrackTimeLine, {
     manual: true,
     onSuccess: () => {
+      if (timelineData.surveyTimeLine.length === 0) {
+        message.warning('没有数据');
+      }
       store.setObeserveTrackTimeline(timelineData.surveyTimeLine);
     },
     onError: () => {
@@ -297,8 +299,6 @@ const ListMenu: FC = observer(() => {
   };
 
   const onClickObserveTrack = () => {
-    console.log(checkedProjectIdList);
-
     if (checkedProjectIdList.length === 1) {
       fetchTimeline(checkedProjectIdList[0].id);
       store.toggleObserveTrack(true);

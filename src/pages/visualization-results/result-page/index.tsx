@@ -10,12 +10,11 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
 import { observer } from 'mobx-react-lite';
- 
+
 const VisualizationResults: React.FC = observer(() => {
   const { vState } = useContainer();
-  const { visibleLeftSidebar, checkedProjectIdList, observeTrackTimeline, observeTrack } = vState;
-  console.log(visibleLeftSidebar);
-   
+  const { visibleLeftSidebar, observeTrackTimeline, observeTrack, checkedProjectDateList } = vState;
+
   const callback = (
     id: string,
     phase: 'mount' | 'update',
@@ -24,12 +23,13 @@ const VisualizationResults: React.FC = observer(() => {
     startTime: number,
     commitTime: number,
   ) => {};
+
   return (
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
- 
+
       {/* <Filterbar /> */}
- 
+
       <main
         className={classNames(
           styles.content,
@@ -38,39 +38,37 @@ const VisualizationResults: React.FC = observer(() => {
         )}
       >
         {/* 侧边树形结构 */}
- 
+
         <div className={styles.sideNav}>
           <SideMenu />
         </div>
- 
+
         {/* map放在这 */}
         <div className={classNames(styles.mapContainer, 'flex1')}>
-          <div className={styles.tilelineContainer}>
+          <div className={styles.timelineContainer}>
             <div>
-              {checkedProjectIdList && checkedProjectIdList.length > 0 ? (
-                <Timeline
-                  height={60}
-                  width={400}
-                  dates={[...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time))]}
-                />
+              {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
+                <Timeline type="normal" height={60} width={400} dates={checkedProjectDateList} />
               ) : null}
             </div>
+          </div>
+          <div className={styles.observeTimelineContainer}>
             <div style={{ marginTop: '16px' }}>
-              {observeTrackTimeline && observeTrack ? (
-                <Timeline height={60} width={400} dates={observeTrackTimeline} />
+              {observeTrackTimeline && observeTrackTimeline.length > 0 && observeTrack ? (
+                <Timeline type="observe" height={60} width={400} dates={observeTrackTimeline} />
               ) : null}
             </div>
           </div>
           <div className={styles.listMenuContainer}>
             <ListMenu />
           </div>
-          <MapContainerShell />
+          {/* <MapContainerShell /> */}
         </div>
       </main>
     </PageCommonWrap>
   );
 });
- 
+
 const StoreProvider: React.FC = () => {
   return (
     <Provider>
@@ -78,5 +76,5 @@ const StoreProvider: React.FC = () => {
     </Provider>
   );
 };
- 
+
 export default StoreProvider;

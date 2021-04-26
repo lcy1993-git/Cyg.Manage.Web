@@ -18,6 +18,8 @@ import {
   getProjectInfo,
   getProjectTableStatistics,
   noAuditKnot,
+  ProjectIdentityType,
+  ProjectSourceType,
   ProjectStatus,
   recallShare,
   revokeAllot,
@@ -44,6 +46,7 @@ import { useGetButtonJurisdictionArray, useGetProjectEnum } from '@/utils/hooks'
 import UrlSelect from '@/components/url-select';
 import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 import ProjectRecallModal from './components/project-recall-modal';
+import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 
 const { Search } = Input;
 
@@ -64,6 +67,9 @@ const ProjectManagement: React.FC = () => {
   const [nature, setNature] = useState<string>();
   const [kvLevel, setKvLevel] = useState<string>();
   const [status, setStatus] = useState<string>();
+  const [sourceType, setSourceType] = useState<string>();
+  const [identityType, setIdentityType] = useState<string>();
+
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -139,6 +145,8 @@ const ProjectManagement: React.FC = () => {
         nature: nature ?? '-1',
         kvLevel: kvLevel ?? '-1',
         status: status ?? '-1',
+        sourceType: sourceType ?? "-1",
+        identityType: identityType ?? "-1",
       });
     }
   };
@@ -359,6 +367,8 @@ const ProjectManagement: React.FC = () => {
       nature: '-1',
       kvLevel: '-1',
       status: '-1',
+      sourceType: sourceType ?? "-1",
+      identityType: identityType ?? "-1",
     });
   });
 
@@ -371,6 +381,8 @@ const ProjectManagement: React.FC = () => {
     setNature(undefined);
     setKvLevel(undefined);
     setStatus(undefined);
+    setIdentityType(undefined);
+    setSourceType(undefined)
     // TODO 重置完是否进行查询
     searchByParams({
       keyWord: "",
@@ -382,6 +394,8 @@ const ProjectManagement: React.FC = () => {
       kvLevel: '-1',
       status: '-1',
       statisticalCategory: statisticalCategory,
+      sourceType: sourceType ?? "-1",
+      identityType: identityType ?? "-1",
     });
   };
 
@@ -397,6 +411,8 @@ const ProjectManagement: React.FC = () => {
       kvLevel: kvLevel ?? '-1',
       status: status ?? '-1',
       statisticalCategory: statisticsType,
+      sourceType: sourceType ?? "-1",
+      identityType: identityType ?? "-1",
     });
   };
 
@@ -495,112 +511,161 @@ const ProjectManagement: React.FC = () => {
     form.setFieldsValue({ projects: [{ name: '' }] });
   };
 
+  const searchChildrenList = [
+    {
+      width: 300, element: <TableSearch className="mr22" label="项目名称" width="300px">
+        <Search
+          placeholder="请输入项目名称"
+          enterButton
+          value={keyWord}
+          onChange={(e) => setKeyWord(e.target.value)}
+          onSearch={() => search()}
+        />
+      </TableSearch>
+    },
+    {
+      width: 188, element: <TableSearch className="ml10" label="全部状态" width="178px">
+        <UrlSelect
+          valueKey="value"
+          titleKey="text"
+          defaultData={projectCategory}
+          className="widthAll"
+          value={category}
+          onChange={(value) => setCategory(value as string)}
+          placeholder="项目分类"
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+    {
+      width: 111, element: <TableSearch className="mr2" width="111px">
+        <UrlSelect
+          valueKey="value"
+          titleKey="text"
+          defaultData={projectPType}
+          value={pCategory}
+          dropdownMatchSelectWidth={168}
+          onChange={(value) => setPCategory(value as string)}
+          className="widthAll"
+          placeholder="项目类别"
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+    {
+      width: 111, element: <TableSearch className="mr2" width="111px">
+        <UrlSelect
+          valueKey="value"
+          titleKey="text"
+          defaultData={projectStage}
+          value={stage}
+          className="widthAll"
+          onChange={(value) => setStage(value as string)}
+          placeholder="项目阶段"
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+    {
+      width: 111, element: <TableSearch className="mr2" width="111px">
+        <UrlSelect
+          valueKey="value"
+          titleKey="text"
+          defaultData={projectConstructType}
+          value={constructType}
+          className="widthAll"
+          placeholder="建设类型"
+          onChange={(value) => setConstructType(value as string)}
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+    {
+      width: 111, element: <TableSearch className="mr2" width="111px">
+        <UrlSelect
+          valueKey="value"
+          titleKey="text"
+          defaultData={projectKvLevel}
+          value={kvLevel}
+          onChange={(value) => setKvLevel(value as string)}
+          className="widthAll"
+          placeholder="电压等级"
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+    {
+      width: 111, element: <TableSearch className="mr2" width="111px">
+        <UrlSelect
+          valueKey="value"
+          titleKey="text"
+          defaultData={projectNature}
+          value={nature}
+          dropdownMatchSelectWidth={168}
+          onChange={(value) => setNature(value as string)}
+          className="widthAll"
+          placeholder="项目性质"
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+    {
+      width: 111, element: <TableSearch width="111px">
+        <EnumSelect
+          enumList={ProjectStatus}
+          value={status}
+          onChange={(value) => setStatus(String(value))}
+          className="widthAll"
+          placeholder="项目状态"
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+
+    {
+      width: 111, element: <TableSearch width="111px">
+        <EnumSelect
+          enumList={ProjectSourceType}
+          value={sourceType}
+          onChange={(value) => setSourceType(String(value))}
+          className="widthAll"
+          placeholder="项目来源"
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+    {
+      width: 111, element: <TableSearch width="111px">
+        <EnumSelect
+          enumList={ProjectIdentityType}
+          value={identityType}
+          onChange={(value) => setIdentityType(String(value))}
+          className="widthAll"
+          placeholder="项目身份"
+          needAll={true}
+          allValue="-1"
+        />
+      </TableSearch>
+    },
+  ]
+
+
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectManagement}>
         <div className={styles.projectManagemnetSearch}>
           <div className="flex">
             <div className="flex1 flex">
-              <TableSearch className="mr22" label="项目名称" width="300px">
-                <Search
-                  placeholder="请输入项目名称"
-                  enterButton
-                  value={keyWord}
-                  onChange={(e) => setKeyWord(e.target.value)}
-                  onSearch={() => search()}
-                />
-              </TableSearch>
-              <TableSearch className="mr2" label="全部状态" width="178px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectCategory}
-                  className="widthAll"
-                  value={category}
-                  onChange={(value) => setCategory(value as string)}
-                  placeholder="项目分类"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectPType}
-                  value={pCategory}
-                  dropdownMatchSelectWidth={168}
-                  onChange={(value) => setPCategory(value as string)}
-                  className="widthAll"
-                  placeholder="项目类别"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectStage}
-                  value={stage}
-                  className="widthAll"
-                  onChange={(value) => setStage(value as string)}
-                  placeholder="项目阶段"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectConstructType}
-                  value={constructType}
-                  className="widthAll"
-                  placeholder="建设类型"
-                  onChange={(value) => setConstructType(value as string)}
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectKvLevel}
-                  value={kvLevel}
-                  onChange={(value) => setKvLevel(value as string)}
-                  className="widthAll"
-                  placeholder="电压等级"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectNature}
-                  value={nature}
-                  dropdownMatchSelectWidth={168}
-                  onChange={(value) => setNature(value as string)}
-                  className="widthAll"
-                  placeholder="项目性质"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch width="111px">
-                <EnumSelect
-                  enumList={ProjectStatus}
-                  value={status}
-                  onChange={(value) => setStatus(String(value))}
-                  className="widthAll"
-                  placeholder="项目状态"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
+              <OverFlowHiddenComponent childrenList={searchChildrenList} />
             </div>
             <div>
               <Button className="mr7" type="primary" onClick={() => search()}>
@@ -678,20 +743,20 @@ const ProjectManagement: React.FC = () => {
                 {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
                   buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
                   buttonJurisdictionArray?.includes('all-project-recall-project')) && (
-                  <Dropdown overlay={arrangeMenu}>
-                    <Button className="mr7">
-                      安排 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={arrangeMenu}>
+                      <Button className="mr7">
+                        安排 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {(buttonJurisdictionArray?.includes('all-project-share') ||
                   buttonJurisdictionArray?.includes('all-project-share-recall')) && (
-                  <Dropdown overlay={shareMenu}>
-                    <Button className="mr7">
-                      共享 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={shareMenu}>
+                      <Button className="mr7">
+                        共享 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {buttonJurisdictionArray?.includes('all-project-export') && (
                   <div className="mr7">
                     <TableExportButton
@@ -707,6 +772,8 @@ const ProjectManagement: React.FC = () => {
                         kvLevel: kvLevel ?? '-1',
                         status: status ?? '-1',
                         statisticalCategory: statisticalCategory ?? '-1',
+                        sourceType: sourceType ?? "-1",
+                        identityType: identityType ?? "-1",
                       }}
                     />
                   </div>
@@ -715,12 +782,12 @@ const ProjectManagement: React.FC = () => {
                   buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
                   buttonJurisdictionArray?.includes('all-project-kont-pass') ||
                   buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
-                  <Dropdown overlay={postProjectMenu}>
-                    <Button className="mr7">
-                      结项 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={postProjectMenu}>
+                      <Button className="mr7">
+                        结项 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {buttonJurisdictionArray?.includes('all-project-resource') && (
                   <Button onClick={() => setLibVisible(true)}>资源库迭代</Button>
                 )}
@@ -742,6 +809,8 @@ const ProjectManagement: React.FC = () => {
                 kvLevel: kvLevel ?? '-1',
                 status: status ?? '-1',
                 statisticalCategory: statisticalCategory ?? '-1',
+                sourceType: sourceType ?? "-1",
+                identityType: identityType ?? "-1",
               }}
             />
           </div>
