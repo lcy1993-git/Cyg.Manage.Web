@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import TableSearch from '@/components/table-search';
 import UrlSelect from '@/components/url-select';
-import { Button, Input, Collapse, Select, Popover } from 'antd';
+import { Button, Input, Collapse, Select, Popover, DatePicker } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
 import { Moment } from 'moment';
@@ -118,26 +118,6 @@ const FilterBar: FC = observer(() => {
     return (
       <>
         <div className={styles.filterConditionContainer}>
-          {/* <TableSearch className={styles.filterConditionItem} label="立项时间" width="250px">
-            <DatePicker
-              placeholder="年"
-              value={createdOn}
-              style={{width: "100%"}}
-              onChange={(date: Moment | null) => setCreatedOn(date)}
-              suffixIcon={<DownOutlined />}
-              picker="year"
-            />
-          </TableSearch>
-          <TableSearch className={styles.filterConditionItem} label="更新时间" width="250px">
-            <DatePicker
-              onChange={(date: Moment | null) => setsModiyDate(date)}
-              placeholder="年"
-              style={{width: "100%"}}
-              value={modifyDate}
-              suffixIcon={<DownOutlined />}
-              picker="year"
-            />
-          </TableSearch> */}
           <div style={{ marginBottom: '16px' }}>
             <TableSearch label="项目状态" width="220px">
               <Select
@@ -156,6 +136,31 @@ const FilterBar: FC = observer(() => {
             </TableSearch>
           </div>
           <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="立项时间" width="220px">
+              <DatePicker
+                placeholder="年"
+                value={createdOn}
+                style={{ width: '100%' }}
+                onChange={(date: Moment | null) => setCreatedOn(date)}
+                suffixIcon={<DownOutlined />}
+                picker="year"
+              />
+            </TableSearch>
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="更新时间" width="220px">
+              <DatePicker
+                onChange={(date: Moment | null) => setsModiyDate(date)}
+                placeholder="年"
+                style={{ width: '100%' }}
+                value={modifyDate}
+                suffixIcon={<DownOutlined />}
+                picker="year"
+              />
+            </TableSearch>
+          </div>
+
+          <div>
             <TableSearch className={styles.filterConditionItem} label="项目分类" width="220px">
               <UrlSelect
                 valueKey="value"
@@ -171,38 +176,7 @@ const FilterBar: FC = observer(() => {
               />
             </TableSearch>
           </div>
-          <div style={{ marginBottom: '16px' }}>
-            <TableSearch className={styles.filterConditionItem} label="项目类别" width="220px">
-              <UrlSelect
-                valueKey="value"
-                titleKey="text"
-                defaultData={projectPType}
-                dropdownMatchSelectWidth={168}
-                value={pCategory}
-                className="widthAll"
-                onChange={(value) => setPCategory(value as number)}
-                placeholder="项目类别"
-                needAll={true}
-                allValue="-1"
-              />
-            </TableSearch>
-          </div>
 
-          <div>
-            <TableSearch className={styles.filterConditionItem} label="项目阶段" width="220px">
-              <UrlSelect
-                valueKey="value"
-                titleKey="text"
-                defaultData={projectStage}
-                className="widthAll"
-                value={stage}
-                onChange={(value) => setStage(value as number)}
-                placeholder="项目阶段"
-                needAll={true}
-                allValue="-1"
-              />
-            </TableSearch>
-          </div>
           <div
             {...getToggleProps()}
             style={{
@@ -213,10 +187,39 @@ const FilterBar: FC = observer(() => {
           >
             {!isExpanded ? <DownOutlined /> : null}
           </div>
-          <div
-            {...getCollapseProps()}
-          >
-            <div style={{ marginBottom: '16px', marginTop: "8px" }}>
+          <div {...getCollapseProps()}>
+            <div style={{ marginBottom: '16px', marginTop: '8px' }}>
+              <TableSearch className={styles.filterConditionItem} label="项目类别" width="220px">
+                <UrlSelect
+                  valueKey="value"
+                  titleKey="text"
+                  defaultData={projectPType}
+                  dropdownMatchSelectWidth={168}
+                  value={pCategory}
+                  className="widthAll"
+                  onChange={(value) => setPCategory(value as number)}
+                  placeholder="项目类别"
+                  needAll={true}
+                  allValue="-1"
+                />
+              </TableSearch>
+            </div>
+            <div style={{ marginBottom: '16px', marginTop: '8px' }}>
+              <TableSearch className={styles.filterConditionItem} label="项目阶段" width="220px">
+                <UrlSelect
+                  valueKey="value"
+                  titleKey="text"
+                  defaultData={projectStage}
+                  className="widthAll"
+                  value={stage}
+                  onChange={(value) => setStage(value as number)}
+                  placeholder="项目阶段"
+                  needAll={true}
+                  allValue="-1"
+                />
+              </TableSearch>
+            </div>
+            <div style={{ marginBottom: '16px', marginTop: '8px' }}>
               <TableSearch className={styles.filterConditionItem} label="建设性质" width="220px">
                 <UrlSelect
                   valueKey="value"
@@ -246,7 +249,7 @@ const FilterBar: FC = observer(() => {
                 />
               </TableSearch>
             </div>
-            <div >
+            <div>
               <TableSearch className={styles.filterConditionItem} label="项目性质" width="220px">
                 <UrlSelect
                   valueKey="value"
