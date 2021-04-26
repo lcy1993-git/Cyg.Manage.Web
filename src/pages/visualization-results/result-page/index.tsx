@@ -24,8 +24,6 @@ const VisualizationResults: React.FC = observer(() => {
     commitTime: number,
   ) => {};
 
-  console.log(observeTrack, 'ob');
-
   return (
     <PageCommonWrap noPadding={true}>
       {/* 顶层filter 筛选项目 */}
@@ -50,14 +48,14 @@ const VisualizationResults: React.FC = observer(() => {
           <div className={styles.timelineContainer}>
             <div>
               {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
-                <Timeline height={60} width={400} dates={checkedProjectDateList} />
+                <Timeline type="normal" height={60} width={400} dates={checkedProjectDateList} />
               ) : null}
             </div>
           </div>
           <div className={styles.observeTimelineContainer}>
             <div style={{ marginTop: '16px' }}>
               {observeTrackTimeline && observeTrackTimeline.length > 0 && observeTrack ? (
-                <Timeline height={60} width={400} dates={observeTrackTimeline} />
+                <Timeline type="observe" height={60} width={400} dates={observeTrackTimeline} />
               ) : null}
             </div>
           </div>

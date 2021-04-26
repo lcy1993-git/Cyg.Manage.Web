@@ -12,7 +12,8 @@ export interface VisualizationResultsStateType {
   propertySidePopupShow?: boolean;
   visibleLeftSidebar: boolean; // 左侧边栏伸缩状态
   sideRightActiveId: string; // 右侧边栏的回调ID
-  clickDate?: string; //timeline点击的日期
+  normalClickDate?: string; //普通timeline的点击日期
+  observeClickDate?: string; // 勘察轨迹timeline点击的日期
   positionMap: boolean; //地图定位
   observeTrack: boolean; //勘察轨迹
   confessionTrack: boolean; //交底轨迹
@@ -60,8 +61,20 @@ function Store(vState: VisualizationResultsStateType) {
       this.vState.checkedProjectIdList = checkedProjectIdList;
     },
     //设置timeline点击的日期
-    setClickDate(clickDate: string) {
-      this.vState.clickDate = clickDate;
+    setClickDate(clickDate: string, type: string) {
+      switch (type) {
+        case 'normal':
+          this.vState.normalClickDate = clickDate;
+          break;
+        case 'observe':
+          this.vState.observeClickDate = clickDate;
+          break;
+        default:
+          break;
+      }
+
+      console.log(this.vState.observeClickDate, 'observe');
+      console.log(this.vState.normalClickDate, 'normal');
     },
 
     togglePositionMap() {

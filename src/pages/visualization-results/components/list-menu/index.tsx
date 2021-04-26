@@ -246,6 +246,9 @@ const ListMenu: FC = observer(() => {
   const { data: timelineData, run: fetchTimeline } = useRequest(GetTrackTimeLine, {
     manual: true,
     onSuccess: () => {
+      if (timelineData.surveyTimeLine.length === 0) {
+        message.warning('没有数据');
+      }
       store.setObeserveTrackTimeline(timelineData.surveyTimeLine);
     },
     onError: () => {
