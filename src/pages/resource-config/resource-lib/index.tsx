@@ -85,7 +85,7 @@ const ResourceLib: React.FC = () => {
     {
       dataIndex: 'libName',
       index: 'libName',
-      title: '区域',
+      title: '名称',
       width: 180,
     },
     {

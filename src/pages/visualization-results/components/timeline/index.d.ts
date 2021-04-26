@@ -2,6 +2,7 @@ export interface TimelineProps {
   dates?: (string | undefined)[] | undefined; //传入的日期数组
   height?: number;
   width?: number;
+  type: 'observe' | 'normal';
 }
 
 export interface TimelineItemProps {
@@ -17,6 +18,7 @@ export interface CircleProps {
   stroke: string; //border颜色
   fill: string; //填充颜色
   strokeWidth: number;
+  onClick?: () => void;
 }
 
 export interface LineProps {}

@@ -43,7 +43,6 @@ const CompanyManage: React.FC = () => {
     manual: true,
   });
 
-
   //数据修改，局部刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {

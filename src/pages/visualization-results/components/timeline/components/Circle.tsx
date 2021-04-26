@@ -14,12 +14,13 @@ import { CircleProps } from "../index.d";
  *  
  */
  const Circle: FC<CircleProps> = (props: CircleProps) => {
-    const { stroke, fill, strokeWidth } = props;
+    const { stroke, fill, strokeWidth, onClick} = props;
     return (
       <circle
         cx="5.5"
         cy="10"
         r="5"
+        onClick={onClick}
         stroke={stroke}
         strokeWidth={strokeWidth}
         fill={fill}

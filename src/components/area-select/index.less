@@ -1,0 +1,65 @@
+.areaSelect {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  font-variant: tabular-nums;
+  line-height: 1.5715;
+  list-style: none;
+  font-feature-settings: 'tnum', "tnum";
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  display: flex;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  height: 32px;
+  line-height: 32px;
+  padding-left: 6px;
+  position: relative;
+  .areaSelectContent {
+      width: 100%;
+      display: flex;
+  }
+  .selectPlaceholder {
+    color: @gray-color;
+    flex: 1;
+    margin-right: 16px;
+  }
+
+  .selectFold {
+    padding-right: 8px;
+    color: @gray-color;
+  }
+
+  .popContent {
+    width: 100%;
+    position: absolute;
+    top: 32px;
+    left: 0px;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 2px;
+    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+    padding: 12px 16px;
+    .popContentItem {
+        margin-bottom: 10px;
+        display: flex;
+        .popContentItemLabel {
+            margin-right: 8px;
+        }
+        .popContentItemSelect {
+            flex: 1;
+        }
+    }
+    &.show {
+        display: block;
+    }
+    &.hide {
+        display: none;
+    }
+  }
+}
