@@ -8,10 +8,21 @@ const InfoManage = Loadable({
   delay: 150,
 });
 
+const ReviewManage = Loadable({
+  loader: () => import('@/pages/news-config/review-manage'),
+  loading: Loading,
+  delay: 150,
+});
+
 export default [
   {
     title: '资讯管理',
     path: '/news-config/info-manage',
     component: <InfoManage />,
+  },
+  {
+    title: '审阅管理 ',
+    path: '/news-config/review-manage',
+    component: <ReviewManage />,
   },
 ];
