@@ -58,24 +58,27 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
 
     // 省级就是第一层级
     const provinceData = useMemo(() => {
-        return areaData.map((item) => {
+        const newProvinceData = areaData.map((item) => {
             return {
                 label: item.text,
                 value: item.id,
                 children: item.children
             }
         })
+        return [{label: "-全部-", value: "", children: []},...newProvinceData]
     }, [JSON.stringify(areaData)])
     // 省级变化事件
     const provinceChangeEvent = (value: string, option: any) => {
         setProvinceInfo(option)
-        setCitySelectData(option.children?.map((item: any) => {
+  
+        const newCityData = option.children?.map((item: any) => {
             return {
                 label: item.text,
                 value: item.id,
                 children: item.children
             }
-        }))
+        })
+        setCitySelectData([{label: "-全部-", value: "", children: []},...newCityData])
         setCityInfo(undefined)
         setAreaInfo(undefined)
         onChange?.({ provinceId: option.value, cityId: "", areaId: "" })
@@ -83,13 +86,14 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
     // 市级变化事件
     const cityChangeEvent = (value: string, option: any) => {
         setCityInfo(option)
-        setAreaSelectData(option.children?.map((item: any) => {
+        const newAreaData = option.children?.map((item: any) => {
             return {
                 label: item.text,
                 value: item.id,
                 children: item.children
             }
-        }))
+        })
+        setAreaSelectData([{label: "-全部-", value: "", children: []},...newAreaData])
         setAreaInfo(undefined)
         onChange?.({ provinceId: provinceInfo?.value, cityId: option.value, areaId: "" })
     }
