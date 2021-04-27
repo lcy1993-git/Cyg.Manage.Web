@@ -30,6 +30,7 @@ const materiaLayers = ['tower', 'cable', 'transformer', 'cable_equipment', 'pull
 const commentLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
 export const mapClick = (evt: any, map: any, ops: any) => {
     clearHighlightLayer(map);
+    ops.setRightSidebarVisiviabel(false);
     let mappingTags, mappingTagValues;
     let selected = false;
 

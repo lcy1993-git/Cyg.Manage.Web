@@ -35,8 +35,11 @@ const refreshMap = async (ops: any, projects_: ProjectList[], location: boolean 
     let projectId = project.id;
     let projectTime = project.time;
     if (time && projectTime) {
-      if (new Date(time).getTime() >= new Date(projectTime).getTime())
+      time = time.replaceAll('/','-');
+      projectTime = projectTime.replaceAll('/','-');
+      if (new Date(time).getTime() >= new Date(projectTime).getTime()) {
         postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+      }
     } else {
       postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
     }
@@ -93,6 +96,7 @@ const loadDismantleLayers = async (kvLevel: any, postData: string, groupLayers: 
 
 const loadLayers = async (kvLevel: any, postData: string, group: LayerGroup, layerType: string, layerTypeId: number, groupLayers: LayerGroup[]) => {
   let queryFlag = false;
+  let layerParamsAdd: any = [];
   await loadWFS(postData, 'pdd:' + layerType + '_line', async (data: any) => {
     if (groupLayers[layerType + '_line']) {
       groupLayers[layerType + '_line'].getSource().clear();
@@ -195,19 +199,20 @@ const loadLayers = async (kvLevel: any, postData: string, group: LayerGroup, lay
   })
 
   if (!queryFlag) {
-    layerParams.push({
+    layerParamsAdd.push({
       layerName: 'tower',
       zIndex: 4,
       type: 'point'
     })
-    layerParams.push({
+    layerParamsAdd.push({
       layerName: 'cable',
       zIndex: 3,
       type: 'point'
     })
   }
 
-  layerParams.forEach((item: any) => {
+  let lps = layerParams.concat(layerParamsAdd)
+  lps.forEach((item: any) => {
     let layerName = item.layerName;
     loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) => {
       if (groupLayers[layerType + '_' + layerName]) {
@@ -275,6 +280,7 @@ const clearHighlightLayer = (map: any) => {
  */
 const loadWFS = async (postData: string, layerName: string, callBack: (o: any) => void) => {
   const promise = loadLayer(wfsBaseURL, postData, layerName);
+  console.log(layerName)
   await promise.then((data: any) => {
     if (data.features && data.features.length > 0) {
       let flag;
@@ -301,6 +307,7 @@ const loadTrackLayers = (id: string, map: any, trackLayers: any, type: number = 
   postData = postData + "</wfs:Query></wfs:GetFeature>";
 
   if (time) {
+    time = time.replaceAll('/','-');
     var startDate = new Date(time);
     var endDate = new Date(time);
     endDate.setDate(endDate.getDate() + 1);
@@ -377,7 +384,7 @@ const loadTrackLayers = (id: string, map: any, trackLayers: any, type: number = 
 }
 
 // 清楚轨迹图层
-const clearTrackLayers = (trackLayers: any, type:number = 0) => {
+const clearTrackLayers = (trackLayers: any, type: number = 0) => {
   const layers = ['surveyTrackLayers', 'disclosureTrackLayers'];
   const groupLayer = getLayerGroupByName(layers[type], trackLayers)
   groupLayer.getLayers().getArray().forEach((layer: any) => {

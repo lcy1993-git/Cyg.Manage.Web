@@ -37,6 +37,7 @@ function getMappingTagsDictionary() {
         "height": "高度(m)",
         "state": "状态",
         "pole_type_code": "型号",
+        "sort": "排序",
         "remark": "备注",
         "loop_name": "所属回路",
         "loop_level": "回路层级",

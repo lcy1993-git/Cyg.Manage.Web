@@ -38,7 +38,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 从Vstate获取外部传入的数据
   const store = useContainer();
   const { vState } = store;
-  const { checkedProjectIdList: projects, filterCondition, onPositionClickState, clickDate, positionMap, observeTrack, confessionTrack } = vState;
+  const { checkedProjectIdList: projects, filterCondition, onPositionClickState, normalClickDate, observeClickDate, positionMap, observeTrack, confessionTrack } = vState;
   const { kvLevel } = filterCondition;
 
   // 右侧边栏状态
@@ -88,11 +88,17 @@ const BaseMap = observer((props: BaseMapProps) => {
     map && refreshMap(ops, projects!);
   }, [JSON.stringify(projects)]);
 
+  // 动态刷新图层
+  useEffect(() => {
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
+    map && refreshMap(ops, projects!, true, normalClickDate);
+  }, [JSON.stringify(normalClickDate)]);
+
   // 动态刷新轨迹
   useEffect(() => {
     // 加载勘察轨迹
-    map && loadTrackLayers(projects[0].id, map, trackLayers, 0, clickDate);
-  }, [JSON.stringify(clickDate)]);
+    map && loadTrackLayers(projects[0].id, map, trackLayers, 0, observeClickDate);
+  }, [JSON.stringify(observeClickDate)]);
 
   // 动态刷新轨迹
   useEffect(() => {
