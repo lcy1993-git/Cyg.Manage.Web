@@ -33,7 +33,7 @@ const FilterBar: FC = () => {
   const [modifyDate, setsModiyDate] = useState<Moment | null>();
   const [sourceType, setSourceType] = useState<string>();
   const [identityType, setIdentityType] = useState<string>();
-  const { setFilterCondition } = useContainer();
+  const { sotre } = useContainer();
   const {
     projectCategory,
     projectPType,
@@ -92,7 +92,7 @@ const FilterBar: FC = () => {
       identityType: '-1',
     };
 
-    setFilterCondition(condition);
+    sotre.setFilterCondition(condition);
   };
 
   /**
@@ -115,7 +115,7 @@ const FilterBar: FC = () => {
       identityType: identityType ?? '-1',
     };
 
-    setFilterCondition(condition);
+    sotre.setFilterCondition(condition);
   };
 
   return (
