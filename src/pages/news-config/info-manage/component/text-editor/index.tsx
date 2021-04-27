@@ -7,11 +7,9 @@ import UrlSelect from '@/components/url-select';
 import CyFormItem from '@/components/cy-form-item';
 import { useRequest } from 'ahooks';
 import { getCompanyGroupTreeList } from '@/services/operation-config/company-group';
-import FileUpload from '@/components/file-upload';
+// @ts-ignore
+import mammoth from 'mammoth';
 // import uuid from 'node-uuid';
-// import createPanelConf, {
-//   ImgPanelConf,
-// } from '../../../../../../node_modules/wangeditor/src/menus/img/create-panel-conf';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -26,21 +24,40 @@ class AlertMenu extends BtnMenu {
     // data-title属性表示当鼠标悬停在该按钮上时提示该按钮的功能简述
     let $elem = E.$(
       `<div class="w-e-menu" data-title="附件">
-              <label for="wangUploadFile"><i class="w-e-icon-upload2"></i></label>
+              <label for="wangUploadFile" style="
+                width: 40px;
+                height: 40px;
+                padding-top: 10px;
+                cursor: pointer;
+              "><i class="w-e-icon-upload2"></i></label>
               <input id="wangUploadFile" type="file" style="display:none" />
           </div>`,
     );
 
     super($elem, editor);
-    // const filePanelConfig = createPanelConf(editor)
   }
+
   // 菜单点击事件
   clickHandler() {
-    document.execCommand('Open');
-    this.editor.txt.append('<p>追加的内容</p>');
-    // 做任何你想做的事情
-    // 可参考【常用 API】文档，来操作编辑器
+    this.$elem.elems[0].children[1].addEventListener(
+      'change',
+      function getPath(this: any) {
+        console.log(this.value);
+      },
+      false,
+    );
+// mammoth.convertToHtml()
+
+    // this.editor.txt.append('123')
+    // resultFiles 是 input 中选中的文件列表
+    // insertImgFn 是获取图片 url 后，插入到编辑器的方法
+    // 上传图片，返回结果，将图片插入到编辑器中
+    // insertImgFn(imgUrl);
   }
+
+  // 做任何你想做的事情
+  // 可参考【常用 API】文档，来操作编辑器
+
   // 菜单是否被激活（如果不需要，这个函数可以空着）
   // 1. 激活是什么？光标放在一段加粗、下划线的文本时，菜单栏里的 B 和 U 被激活，如下图
   // 2. 什么时候执行这个函数？每次编辑器区域的选区变化（如鼠标操作、键盘操作等），都会触发各个菜单的 tryChangeActive 函数，重新计算菜单的激活状态
@@ -49,7 +66,7 @@ class AlertMenu extends BtnMenu {
     // 激活菜单
     // 1. 菜单 DOM 节点会增加一个 .w-e-active 的 css class
     // 2. this.this.isActive === true
-    this.active();
+    // this.active();
     // // 取消激活菜单
     // // 1. 菜单 DOM 节点会删掉 .w-e-active
     // 2. this.this.isActive === false
@@ -68,7 +85,6 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
       title: data.name,
       value: data.id,
       // key: uuid.v1(),
-
       children: data.children?.map(mapTreeData),
     };
   };
@@ -99,29 +115,6 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
       editor.config.uploadFileName = 'myFile'; //设置文件上传的参数名称
       // editor.config.uploadImgServer = '/upload'; //设置上传文件的服务器路径
       // editor.config.uploadImgMaxSize = 3 * 1024 * 1024; // 将图片大小限制为 3M
-      //自定义上传图片事件
-      editor.config.uploadImgHooks = {
-        before: function (xhr, editor, files) {},
-        success: function (xhr, editor, result) {
-          console.log('上传成功');
-        },
-        fail: function (xhr, editor, result) {
-          console.log('上传失败,原因是' + result);
-        },
-        error: function (xhr, editor) {
-          console.log('上传出错');
-        },
-        timeout: function (xhr, editor) {
-          console.log('上传超时');
-        },
-        customInsert: function (insertImgFn, result) {
-          // result 即服务端返回的接口
-          console.log('customInsert', result);
-
-          // insertImgFn 可把图片插入到编辑器，传入图片 src ，执行函数即可
-          // insertImgFn(result.data[0])
-        },
-      };
 
       editor.config.onchange = (newHtml: string) => {
         onChange(newHtml);
@@ -191,9 +184,6 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
         />
       </CyFormItem>
       <CyFormItem name="content" label="内容" required labelWidth={60}>
-        {/* <button style={{ marginBottom: '5px' }}> */}
-        <FileUpload>添加附件</FileUpload>
-        {/* </button> */}
         <div id="div1"></div>
       </CyFormItem>
     </>
