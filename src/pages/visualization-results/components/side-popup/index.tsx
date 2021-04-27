@@ -328,6 +328,7 @@ const SidePopup: React.FC<Props> = (props) => {
         visible={rightSidebarVisible}
         destroyOnClose={true}
         mask={false}
+        className={rightSidebarVisible ? "" : styles.poiontEventNone}
         getContainer={false}
         style={{ position: 'absolute', width: 340 }}
       >

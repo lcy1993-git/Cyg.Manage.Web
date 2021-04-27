@@ -1,20 +1,22 @@
 .wrap{
-    .drawerClose {
-        position: absolute;
-        top: 45%;
-        bottom: 55%;
-        left: 0;
-        z-index: 1004;
-        font-size: 14px;
-        padding: 0 6px;
-        cursor: pointer;
-        background-color: rgba(255, 255, 255, 0.8);
-        &:hover {
-          color: #0e7b3b;
-        }
-    }
+  .drawerClose {
+      position: absolute;
+      top: 45%;
+      bottom: 55%;
+      left: 0;
+      z-index: 1004;
+      font-size: 14px;
+      padding: 0 6px;
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.8);
+      &:hover {
+        color: #0e7b3b;
+      }
+  }
 
-
+  .poiontEventNone {
+    pointer-events: none;
+  }
 }
 .mediaItem {
   height: 600px;
@@ -46,7 +48,7 @@
 }
 
 .mediaIconWrapLeft,
-.mediaIconWrapRight{
+.mediaIconWrapRight {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -76,4 +78,5 @@
   right: 4px;
   top: 45%;
 }
+
 

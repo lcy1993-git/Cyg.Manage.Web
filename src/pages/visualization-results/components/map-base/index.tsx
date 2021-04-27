@@ -14,6 +14,17 @@ import { initIpLocation, loadEnums } from '@/services/visualization-results/visu
 import { bd09Towgs84 } from '../../utils/locationUtils';
 import styles from './index.less';
 import { observer } from 'mobx-react-lite';
+
+/**
+ * 清除高亮图层
+ */
+ const clearHighlightLayer = (map: any) => {
+  map.getLayers().getArray().forEach((layer: any) => {
+    if (layer.get('name') === 'highlightLayer')
+      layer.getSource().clear();
+  })
+}
+
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
@@ -31,7 +42,11 @@ const BaseMap = observer((props: BaseMapProps) => {
   const { kvLevel } = filterCondition;
 
   // 右侧边栏状态
-  const [rightSidebarVisiviabel, setRightSidebarVisiviabel] = useState(false);
+  const [rightSidebarVisiviabel, setRightSidebarVisiviabelMap] = useState(false);
+  const setRightSidebarVisiviabel = (s: boolean) => {
+    map && clearHighlightLayer(map);
+    setRightSidebarVisiviabelMap(s)
+  }
   const [rightSidebarData, setRightSidebarData] = useState<TableDataType[]>([]);
   // 挂载
   useMount(() => {
