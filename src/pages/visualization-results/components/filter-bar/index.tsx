@@ -6,11 +6,15 @@ import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
 import { Moment } from 'moment';
 import { useContainer } from '../../result-page/mobx-store';
-import { ProjectStatus } from '@/services/project-management/all-project';
+import EnumSelect from '@/components/enum-select';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite';
 import useCollapse from 'react-collapsed';
-
+import {
+  ProjectIdentityType,
+  ProjectSourceType,
+  ProjectStatus,
+} from '@/services/project-management/all-project';
 const { Search } = Input;
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -30,6 +34,8 @@ const FilterBar: FC = observer(() => {
   const [statuss, setStatuss] = useState<number[]>();
   const [createdOn, setCreatedOn] = useState<Moment | null>();
   const [modifyDate, setsModiyDate] = useState<Moment | null>();
+  const [sourceType, setSourceType] = useState<string>();
+  const [identityType, setIdentityType] = useState<string>();
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse({
     defaultExpanded: false,
   });
@@ -77,6 +83,8 @@ const FilterBar: FC = observer(() => {
     setStatuss(undefined);
     setCreatedOn(undefined);
     setsModiyDate(undefined);
+    setSourceType(undefined);
+    setIdentityType(undefined);
     const condition = {
       keyWord: '',
       category: -1,
@@ -88,6 +96,8 @@ const FilterBar: FC = observer(() => {
       statuss: [],
       createdOn: '',
       modifyDate: '',
+      sourceType: '-1',
+      identityType: '-1',
     };
 
     store.setFilterCondition(condition);
@@ -109,6 +119,8 @@ const FilterBar: FC = observer(() => {
       statuss: statuss ?? [],
       createdOn: createdOn?.year().toString() ?? '',
       modifyDate: modifyDate?.year().toString() ?? '',
+      sourceType: sourceType ?? '-1',
+      identityType: identityType ?? '-1',
     };
 
     store.setFilterCondition(condition);
@@ -249,7 +261,7 @@ const FilterBar: FC = observer(() => {
                 />
               </TableSearch>
             </div>
-            <div>
+            <div style={{ marginBottom: '16px' }}>
               <TableSearch className={styles.filterConditionItem} label="项目性质" width="220px">
                 <UrlSelect
                   valueKey="value"
@@ -260,6 +272,32 @@ const FilterBar: FC = observer(() => {
                   onChange={(value) => setNature(value as number)}
                   className="widthAll"
                   placeholder="项目性质"
+                  needAll={true}
+                  allValue="-1"
+                />
+              </TableSearch>
+            </div>
+            <div style={{ marginBottom: '16px' }}>
+              <TableSearch label="项目来源" width="220px">
+                <EnumSelect
+                  enumList={ProjectSourceType}
+                  value={sourceType}
+                  onChange={(value) => setSourceType(String(value))}
+                  className="widthAll"
+                  placeholder="项目来源"
+                  needAll={true}
+                  allValue="-1"
+                />
+              </TableSearch>
+            </div>
+            <div>
+              <TableSearch label="项目身份" width="222px">
+                <EnumSelect
+                  enumList={ProjectIdentityType}
+                  value={identityType}
+                  onChange={(value) => setIdentityType(String(value))}
+                  className="widthAll"
+                  placeholder="项目身份"
                   needAll={true}
                   allValue="-1"
                 />

@@ -1,5 +1,4 @@
 import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-menu';
-import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { makeAutoObservable } from 'mobx';
 import moment from 'moment';
 import { createContext, useContext } from 'react';
