@@ -228,8 +228,6 @@ const ListMenu: FC = observer(() => {
             },
           );
 
-          console.log(parentArr);
-
           setMaterialList(parentArr);
           setMaterialModalVisible(true);
         } else {
@@ -309,15 +307,16 @@ const ListMenu: FC = observer(() => {
   };
 
   const onClickProjectDetailInfo = () => {
-    setProjectModalVisible(true);
     if (checkedProjectIdList?.length !== 1) {
       message.warning('请选择一个项目');
+    } else {
+      setProjectModalVisible(true);
     }
   };
 
   return (
     <>
-      {checkedProjectIdList?.length === 1 ? (
+      {checkedProjectIdList?.length === 1 && projectModalVisible ? (
         <ProjectDetailInfo
           projectId={checkedProjectIdList[0].id}
           visible={projectModalVisible}
