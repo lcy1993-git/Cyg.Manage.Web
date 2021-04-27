@@ -441,6 +441,32 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
         }
     }
 
+    if (value == 'fault_indicator') { // 故障指示器样式
+        console.log(11111111, value)
+        switch (feature.getProperties().state) {
+            // case '0':
+            //     iconFontText = '\xe87d';
+            //     break;
+            case 1:
+                iconFontText = '\ue88e';
+                break;
+            case 2:
+                iconFontText = '\ue88d';
+                break;
+            case 3:
+                iconFontText = '\ue88f';
+                break;
+            default:
+                iconFontText = '\ue87d';
+                size = Styles[value].empty.size;
+                fillSize = Styles[value].empty.fillSize;
+                strokeSize = Styles[value].empty.strokeSize;
+                color = Styles[value].empty.color;
+                fillColor = Styles[value].empty.fillColor;
+                strokeColor = Styles[value].empty.strokeColor;
+        }
+    }
+
     if (selected) { // 选中样式
         size = Styles[value].selected.size;
         backgroundColor = Styles[value].selected.backgroundColor;
@@ -718,7 +744,7 @@ const cable_channel_styles = function (feature: Feature) {
 // 辅助线样式
 const fzx_styles = function () {
     let obj = Styles.line.fzx;
-    let strokeOpts: Options= {
+    let strokeOpts: Options = {
         color: obj.color,
         lineCap: 'butt',
         width: obj.width,
