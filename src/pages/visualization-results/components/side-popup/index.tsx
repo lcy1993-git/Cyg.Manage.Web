@@ -187,7 +187,7 @@ const SidePopup: React.FC<Props> = (props) => {
       dataIndex: 'data',
       render(value: any, record: any, index: any) {
 
-        if (typeof value === "string") return <span key={index}>{value}</span>;
+        if (typeof value === "string" || typeof value === "number") return <span key={index}>{value}</span>;
         if (record.propertyName === "多媒体") {
           if (value?.length === 0) {
             return <span key={index} className={styles.none}>暂无数据</span>

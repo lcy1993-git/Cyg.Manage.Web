@@ -126,10 +126,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                             break;
                         case 'survey_time':
                             if (layer.getProperties().name.split('_')[0] !== 'design')
-                                pJSON[mappingTag] = feature.getProperties()[p] != null ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p])) : null;
+                                pJSON[mappingTag] = feature.getProperties()[p] ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p])) : null;
                             break;
                         case 'record_date':
-                            pJSON[mappingTag] = feature.getProperties()[p] != null ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p])) : null;
+                            pJSON[mappingTag] = feature.getProperties()[p] ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p])) : null;
+                            break;
+                        case 'azimuth':
+                            pJSON[mappingTag] = feature.getProperties()[p] ? feature.getProperties()[p].toFixed(2) : 0;
                             break;
                         default:
                             pJSON[mappingTag] = feature.getProperties()[p];
@@ -217,7 +220,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
         // 批注功能
         if (commentLayers.indexOf(layerName) >= 0) {
-            pJSON['批注'] = {id: feature.getProperties().project_id};
+            pJSON['批注'] = { id: feature.getProperties().project_id };
         }
 
         // 相应数据到右侧边栏

@@ -268,6 +268,18 @@ function getMappingTagsDictionary() {
         "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
       }
     };
+    mappingTagsDictionary.fault_indicator = {
+      mappingTags: {
+        "mode": "故障指示器型号",
+        "state": "状态",
+        "azimuth": "方位角",
+        "project_id": "所属项目",
+        "remark":"备注"
+      },
+      mappingTagValues: {
+        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+      }
+    };
 
     return mappingTagsDictionary;
   } else {
