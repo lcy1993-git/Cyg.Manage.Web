@@ -84,5 +84,11 @@ export const layerParams: LayerParams[] = [
     zIndex: 9,
     declutter: false,
     type: 'point'
-  }
+  },
+  {
+    layerName: 'fault_indicator', // 故障指示器
+    zIndex: 10,
+    declutter: false,
+    type: 'point'
+  },
 ];
