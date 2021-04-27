@@ -25,11 +25,12 @@ const format = (fmt: string, date: Date) => { //author: meizz
     return fmt;
 }
 
-const mediaLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
+const mediaLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark', 'electric_meter'];
 const materiaLayers = ['tower', 'cable', 'transformer', 'cable_equipment', 'pull_line'];
 const commentLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
 export const mapClick = (evt: any, map: any, ops: any) => {
     clearHighlightLayer(map);
+    ops.setRightSidebarVisiviabel(false);
     let mappingTags, mappingTagValues;
     let selected = false;
 
@@ -70,67 +71,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         let layerName = layer.getProperties().name;
         layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
         // 映射图层相对应的字段
-        switch (layerName) {
-            case 'cable_channel':
-                mappingTags = mappingTagsDictionary.cable_channel.mappingTags;
-                mappingTagValues = mappingTagsDictionary.cable_channel.mappingTagValues;
-                break;
-
-            case 'cable':
-                mappingTags = mappingTagsDictionary.cable.mappingTags;
-                mappingTagValues = mappingTagsDictionary.cable.mappingTagValues;
-                break;
-
-            case 'tower':
-                mappingTags = mappingTagsDictionary.tower.mappingTags;
-                mappingTagValues = mappingTagsDictionary.tower.mappingTagValues;
-                break;
-
-            case 'transformer':
-                mappingTags = mappingTagsDictionary.transformer.mappingTags;
-                mappingTagValues = mappingTagsDictionary.transformer.mappingTagValues;
-                break;
-
-            case 'cable_equipment':
-                mappingTags = mappingTagsDictionary.cable_equipment.mappingTags;
-                mappingTagValues = mappingTagsDictionary.cable_equipment.mappingTagValues;
-                break;
-
-            case 'line':
-            case 'user_line':
-                mappingTags = mappingTagsDictionary.line.mappingTags;
-                mappingTagValues = mappingTagsDictionary.line.mappingTagValues;
-                break;
-
-            case 'pull_line':
-                mappingTags = mappingTagsDictionary.pull_line.mappingTags;
-                mappingTagValues = mappingTagsDictionary.pull_line.mappingTagValues;
-                break;
-
-            case 'Track':
-                mappingTags = mappingTagsDictionary.track.mappingTags;
-                mappingTagValues = mappingTagsDictionary.track.mappingTagValues;
-                break;
-
-            case 'mark':
-                mappingTags = mappingTagsDictionary.mark.mappingTags;
-                mappingTagValues = mappingTagsDictionary.mark.mappingTagValues;
-                break;
-            case 'electric_meter':
-                mappingTags = mappingTagsDictionary.electric_meter.mappingTags;
-                mappingTagValues = mappingTagsDictionary.electric_meter.mappingTagValues;
-                break;
-            case 'cross_arm':
-                mappingTags = mappingTagsDictionary.cross_arm.mappingTags;
-                mappingTagValues = mappingTagsDictionary.cross_arm.mappingTagValues;
-                break;
-            case 'over_head_device':
-                mappingTags = mappingTagsDictionary.over_head_device.mappingTags;
-                mappingTagValues = mappingTagsDictionary.over_head_device.mappingTagValues;
-                break;
-            default:
-                return;
-        }
+        mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()].mappingTags;
+        mappingTagValues = mappingTagsDictionary[layerName.toLocaleLowerCase()].mappingTagValues;
 
         let featureId = feature.getProperties().id;
         if (!featureId)
