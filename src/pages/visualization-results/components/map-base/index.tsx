@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Footer from '../footer';
 import SidePopup, { TableDataType } from '../side-popup';
 import CtrolLayers from '../control-layers';
 import Map from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
 import { transform } from 'ol/proj';
-import { mapClick, initControlLayearsData, mapPointermove, mapMoveend } from '../../utils';
+import { mapClick, mapPointermove, mapMoveend } from '../../utils';
 import { BaseMapProps, ControlLayearsData } from '../../utils/init';
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/mobx-store';
@@ -18,12 +18,12 @@ const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
   const { layers, layerGroups, trackLayers, view, setView, setLayerGroups} = props;
-  console.log("map, refresh");
-  // 图层控制层数据
-  const [controlLayearsData, setControlLayearsData] = useState<ControlLayearsData[]>(
-    initControlLayearsData,
-  );
 
+  // 图层控制层数据
+  const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(false);
+  const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(true);
+  const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false);
+  const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false);
   // 从Vstate获取外部传入的数据
   const store = useContainer();
   const { vState } = store;
@@ -102,82 +102,38 @@ const BaseMap = observer((props: BaseMapProps) => {
     map && relocateMap('', layerGroups, view, setView, map);
   }, [JSON.stringify(positionMap)]);
 
-  // 当图层切换时
-  useEffect(() => {
-    // controlLayearsData.find(data => currItem.type === item.type)
-    layerGroups.forEach((layerGroup: any) => {
-      layerGroup.setVisible(false);
-    });
-
-    let highlightLayer: any = map
-      ?.getLayers()
-      .getArray()
-      .find((layer: any) => {
-        return layer.get('name') === 'highlightLayer';
-      });
-    highlightLayer && highlightLayer.setVisible(false);
-    let layerType: any;
-    if (highlightLayer && highlightLayer.getSource().getFeatures().length > 0) {
-      for (let f of highlightLayer.getSource().getFeatures()) {
-        if (f.getProperties().layerType) {
-          layerType = highlightLayer.getSource().getFeatures()[0].getProperties().layerType;
-          break;
-        }
-      }
-    }
-
-    let checkedState: ControlLayearsData[] = [];
-    controlLayearsData.map((data: ControlLayearsData) => {
-      if (data.state) checkedState.push(data);
-    });
-    // 做勘察图层透明度逻辑判断
-    if (checkedState.length > 1) {
+  // 处理高亮图层
+  const highlight = useCallback((t: number, state)=> {
+    const highlightLayer: any = map?.getLayers().getArray().find((layer: any) => {return layer.get('name') === 'highlightLayer'});
+    const highlightLayers =  highlightLayer?.getSource().getFeatures();
+    const hightType = highlightLayers && highlightLayers[0]?.getProperties().layerType;
+    hightType === t && highlightLayer?.setVisible(false);
+    if(planLayerVisible || designLayerVisible || dismantleLayerVisible) {
       getLayerGroupByName('surveyLayer', layerGroups).setOpacity(0.5);
-    } else if (checkedState.length === 1) {
-      if (checkedState[0]?.index === 0)
-        getLayerGroupByName('surveyLayer', layerGroups).setOpacity(1);
-    } else {
-      return;
+    }else{
+      getLayerGroupByName('surveyLayer', layerGroups).setOpacity(1);
     }
-
-    checkedState.map((data: ControlLayearsData) => {
-      if (data.index + 1 === layerType) highlightLayer.setVisible(true);
-      switch (data.index + 1) {
-        case 1: // 勘察图层
-          getLayerGroupByName('surveyLayer', layerGroups).setVisible(true);
-          break;
-        case 2: // 方案图层
-          getLayerGroupByName('planLayer', layerGroups).setVisible(true);
-          break;
-        case 3: // 设计图层
-          getLayerGroupByName('designLayer', layerGroups).setVisible(true);
-          break;
-        case 4: // 拆除图层
-          getLayerGroupByName('dismantleLayer', layerGroups).setVisible(true);
-          break;
-        default:
-          break;
-      }
-    });
-
-    setControlLayearsData(controlLayearsData);
-  }, [JSON.stringify(controlLayearsData)]);
-
+  }, [map])
+  // 当勘察图层切换时
   useEffect(() => {
-    // 当点击定位时
-    // console.log(onPositionClickState)
-  }, [onPositionClickState]);
-  /**
-   * @demo 这是一个demo
-   * @useEffect  见下  ⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇⬇
-   */
-  // useEffect(() => {
-
-  //   当依赖项目发生变化时候，React会自动执行这里面的代码
-
-  // }, [这里是依赖项目1, 依赖项目2, 依赖项目3])
-
-  // demoEnd ⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆⬆
+    highlight(1, surveyLayerVisible)
+    getLayerGroupByName('surveyLayer', layerGroups).setVisible(surveyLayerVisible)
+  }, [surveyLayerVisible])
+  // 当方案图层点击时
+  useEffect(() => {
+    highlight(2, planLayerVisible)
+    getLayerGroupByName('planLayer', layerGroups).setVisible(planLayerVisible)
+  }, [planLayerVisible])
+  // 当设计图层点击时
+  useEffect(() => {
+    highlight(3, designLayerVisible)
+    getLayerGroupByName('designLayer', layerGroups).setVisible(designLayerVisible)
+  }, [designLayerVisible])
+  // 当拆除图层点击时
+  useEffect(() => {
+    highlight(4, dismantleLayerVisible)
+    getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
+  }, [dismantleLayerVisible])
 
   const onlocationClick = () => {
     // 当点击定位按钮时
@@ -215,21 +171,19 @@ const BaseMap = observer((props: BaseMapProps) => {
     getLayerByName('vecLayer', layers).setVisible(true);
   };
 
-  // 改变图层状态
-
-  const onLayersStateChange = (index: number) => {
-    const resControlLayearsData = controlLayearsData;
-    resControlLayearsData[index].state = !resControlLayearsData[index].state;
-    setControlLayearsData([...controlLayearsData]);
-  };
-
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
       {rightSidebarVisiviabel || (
         <CtrolLayers
-          controlLayearsData={controlLayearsData}
-          onLayersStateChange={onLayersStateChange}
+          surveyLayerVisible={surveyLayerVisible}
+          planLayerVisible={planLayerVisible}
+          designLayerVisible={designLayerVisible}
+          dismantleLayerVisible={dismantleLayerVisible}
+          setSurveyLayerVisible={setSurveyLayerVisible}
+          setPlanLayerVisible={setPlanLayerVisible}
+          setDesignLayerVisible={setDesignLayerVisible}
+          setDismantleLayerVisible={setDismantleLayerVisible}
         />
       )}
       <Footer
