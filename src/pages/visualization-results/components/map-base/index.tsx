@@ -1,29 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import { useMount } from 'ahooks';
+import { useContainer } from '../../result-page/mobx-store';
+import { observer } from 'mobx-react-lite';
+
 import Footer from '../footer';
 import SidePopup, { TableDataType } from '../side-popup';
 import CtrolLayers from '../control-layers';
+
 import Map from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
 import { transform } from 'ol/proj';
-import { mapClick, mapPointermove, mapMoveend } from '../../utils';
-import { BaseMapProps, ControlLayearsData } from '../../utils/init';
-import { useMount } from 'ahooks';
-import { useContainer } from '../../result-page/mobx-store';
-import { refreshMap, getLayerByName, getLayerGroupByName, relocateMap, loadTrackLayers, clearTrackLayers } from '../../utils/refreshMap';
-import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
-import { bd09Towgs84 } from '../../utils/locationUtils';
-import styles from './index.less';
-import { observer } from 'mobx-react-lite';
 
-/**
- * 清除高亮图层
- */
- const clearHighlightLayer = (map: any) => {
-  map.getLayers().getArray().forEach((layer: any) => {
-    if (layer.get('name') === 'highlightLayer')
-      layer.getSource().clear();
-  })
-}
+import { refreshMap, getLayerByName, getLayerGroupByName, relocateMap, loadTrackLayers, clearTrackLayers, clearHighlightLayer } from '../../utils/methods';
+import { bd09Towgs84 } from '../../utils';
+import { mapClick, mapPointermove, mapMoveend } from '../../utils/mapClick';
+import { BaseMapProps } from '../../utils/init';
+
+import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
+import styles from './index.less';
 
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
@@ -43,9 +38,9 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 右侧边栏状态
   const [rightSidebarVisiviabel, setRightSidebarVisiviabelMap] = useState(false);
-  const setRightSidebarVisiviabel = (s: boolean) => {
-    map && clearHighlightLayer(map);
-    setRightSidebarVisiviabelMap(s)
+  const setRightSidebarVisiviabel = (state: boolean) => {
+    map && state || clearHighlightLayer(map);
+    setRightSidebarVisiviabelMap(state)
   }
   const [rightSidebarData, setRightSidebarData] = useState<TableDataType[]>([]);
   // 挂载

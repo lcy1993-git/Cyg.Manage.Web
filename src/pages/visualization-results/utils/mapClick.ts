@@ -1,9 +1,9 @@
-import getMappingTagsDictionary from './mappingTagsDictionary';
-import { pointStyle, line_style } from './pointStyle';
+import getMappingTagsDictionary from './localData/mappingTagsDictionary';
+import { pointStyle, line_style } from './localData/pointStyle';
 import VectorSource from 'ol/source/Vector';
 import Vector from 'ol/layer/Vector';
 import { transform } from "ol/proj";
-import { getScale, clearHighlightLayer, getLayerByName } from "./refreshMap";
+import { getScale, clearHighlightLayer, getLayerByName } from "./methods";
 import { getGisDetail, getlibId, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 
 const mappingTagsDictionary: any = getMappingTagsDictionary();
