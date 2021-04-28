@@ -1,4 +1,4 @@
-import { Form, Input, Switch, TreeSelect, Upload } from 'antd';
+import { Form, Input, Switch, TreeSelect } from 'antd';
 import React, { useState, useEffect, useMemo } from 'react';
 import E from 'wangeditor';
 import { Dispatch } from 'react';
@@ -6,10 +6,11 @@ import { SetStateAction } from 'react';
 import UrlSelect from '@/components/url-select';
 import CyFormItem from '@/components/cy-form-item';
 import { useRequest } from 'ahooks';
-import { getCompanyGroupTreeList } from '@/services/operation-config/company-group';
+// import { getCompanyGroupTreeList } from '@/services/operation-config/company-group';
 // @ts-ignore
 import mammoth from 'mammoth';
-// import uuid from 'node-uuid';
+import { getGroupInfo } from '@/services/project-management/all-project';
+import uuid from 'node-uuid';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -30,33 +31,69 @@ class AlertMenu extends BtnMenu {
                 padding-top: 10px;
                 cursor: pointer;
               "><i class="w-e-icon-upload2"></i></label>
-              <input id="wangUploadFile" type="file" style="display:none" />
+              <input id="wangUploadFile" type="file" style="display:none" accept=".docx,.pdf" />
           </div>`,
     );
 
     super($elem, editor);
+
+    this.$elem.elems[0].children[1].addEventListener('change', (e) => {
+      this.readFile(this, e);
+    });
+  }
+
+  readFile(newThat: any, event: any) {
+    const that = newThat.editor;
+    if (event.target.files[0] !== undefined) {
+      const selectedFile = event.target.files[0];
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(selectedFile);
+      reader.onload = function (e) {
+        //@ts-ignore
+        const docEle = e.target.result;
+
+        mammoth
+          .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
+          .then((result: any) => {
+            that.txt.append(result.value);
+          })
+          .catch((a: any) => {
+            console.log('error', a);
+          })
+          .done();
+        event.target.value = '';
+      };
+    }
   }
 
   // 菜单点击事件
   clickHandler() {
-    this.$elem.elems[0].children[1].addEventListener(
-      'change',
-      function getPath(this: any) {
-        console.log(this.value);
-      },
-      false,
-    );
-// mammoth.convertToHtml()
-
-    // this.editor.txt.append('123')
-    // resultFiles 是 input 中选中的文件列表
-    // insertImgFn 是获取图片 url 后，插入到编辑器的方法
-    // 上传图片，返回结果，将图片插入到编辑器中
-    // insertImgFn(imgUrl);
+    //console.log(1);
+    // const that = this.editor;
+    // function readFile(this: any) {
+    //   console.log(this.files[0]);
+    //   if (this.files[0] !== undefined) {
+    //     const selectedFile = this.files[0];
+    //     const reader = new FileReader();
+    //     reader.readAsArrayBuffer(selectedFile);
+    //     reader.onload = function (e) {
+    //       //@ts-ignore
+    //       const docEle = e.target.result;
+    //       mammoth
+    //         .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
+    //         .then((result: any) => {
+    //           console.log(result.value);
+    //           that.txt.append(result.value);
+    //         })
+    //         .catch((a: any) => {
+    //           console.log('error', a);
+    //         })
+    //         .done();
+    //     };
+    //   }
+    // }
+    // this.$elem.elems[0].children[1].addEventListener('change', readFile);
   }
-
-  // 做任何你想做的事情
-  // 可参考【常用 API】文档，来操作编辑器
 
   // 菜单是否被激活（如果不需要，这个函数可以空着）
   // 1. 激活是什么？光标放在一段加粗、下划线的文本时，菜单栏里的 B 和 U 被激活，如下图
@@ -78,14 +115,24 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
   const { onChange, titleForm, htmlContent, type } = props;
   const [isChecked, setIsChecked] = useState<boolean>(true);
 
-  const { data: groupData = [] } = useRequest(() => getCompanyGroupTreeList());
+  // const { data: groupData = [] } = useRequest(() => getCompanyGroupTreeList());
 
+  // const mapTreeData = (data: any) => {
+  //   return {
+  //     title: data.name,
+  //     value: data.id,
+  //     // key: uuid.v1(),
+  //     children: data.children?.map(mapTreeData),
+  //   };
+  // };
+
+  const { data: groupData = [] } = useRequest(() => getGroupInfo('4'));
   const mapTreeData = (data: any) => {
     return {
-      title: data.name,
+      title: data.text,
       value: data.id,
-      // key: uuid.v1(),
-      children: data.children?.map(mapTreeData),
+      key: uuid.v1(),
+      children: data.children ? data.children.map(mapTreeData) : [],
     };
   };
 
@@ -101,6 +148,12 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
     });
   }, [JSON.stringify(groupData)]);
 
+  // const parentIds = handleData?.map((item: any) => {
+  //   return item.key;
+  // });
+
+  // const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(parentIds);
+
   if (type === 'add') {
     useEffect(() => {
       const menuKey = 'alertMenuKey';
@@ -110,6 +163,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
       const editor = new E('#div1');
       editor.config.uploadImgShowBase64 = true;
       editor.config.showLinkImg = false;
+      // editor.config.menus = ['bold', 'head', 'link', 'italic', 'underline'];
       // editor.config.uploadImgServer = '/upload';
       //上传图片到服务器
       editor.config.uploadFileName = 'myFile'; //设置文件上传的参数名称
@@ -143,6 +197,11 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
       };
     }, []);
   }
+
+  //   const onExpand = (expandedKeysValue: React.Key[]) => {
+  //   setExpandedKeys(expandedKeysValue);
+  //   setAutoExpandParent(false);
+  // };
 
   return (
     <>
@@ -184,7 +243,9 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
         />
       </CyFormItem>
       <CyFormItem name="content" label="内容" required labelWidth={60}>
-        <div id="div1"></div>
+        <div id="div1">
+          <canvas className="pdf-content"></canvas>
+        </div>
       </CyFormItem>
     </>
   );

@@ -2,8 +2,8 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Tree, Switch } from 'antd';
-import React, { useMemo, useState } from 'react';
+import { Input, Button, Modal, Form, Popconfirm, message, Switch } from 'antd';
+import React, {  useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import { isArray } from 'lodash';
@@ -14,13 +14,13 @@ import {
   updateNewsItem,
   deleteNewsItem,
   addNewsItem,
-  pushNewsItem,
+  // pushNewsItem,
 } from '@/services/news-config/info-manage';
 // import DefaultParams from './components/default-params';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
 import TextEditor from './component/text-editor';
-import { getGroupInfo } from '@/services/project-management/all-project';
+// import { getGroupInfo } from '@/services/project-management/all-project';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 
@@ -32,12 +32,12 @@ const InfoManage: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
-  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  // const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
+  // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
   // 富文本框内容
   const [content, setContent] = useState<string>('');
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  // const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
@@ -47,24 +47,19 @@ const InfoManage: React.FC = () => {
     manual: true,
   });
 
-  const { data: TreeData = [] } = useRequest(() => getGroupInfo('4'));
-  const mapTreeData = (data: any) => {
-    return {
-      title: data.text,
-      key: data.id,
-      children: data.children ? data.children.map(mapTreeData) : [],
-    };
-  };
+  // const { data: TreeData = [] } = useRequest(() => getGroupInfo('4'));
+  // const mapTreeData = (data: any) => {
+  //   return {
+  //     title: data.text,
+  //     key: data.id,
+  //     children: data.children ? data.children.map(mapTreeData) : [],
+  //   };
+  // };
 
-  const handleData = useMemo(() => {
-    return TreeData?.map(mapTreeData);
-  }, [JSON.stringify(TreeData)]);
+  // const handleData = useMemo(() => {
+  //   return TreeData?.map(mapTreeData);
+  // }, [JSON.stringify(TreeData)]);
 
-  const parentIds = handleData?.map((item) => {
-    return item.key;
-  });
-
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(parentIds);
 
   const searchComponent = () => {
     return (
@@ -112,7 +107,7 @@ const InfoManage: React.FC = () => {
   };
 
   // 列表搜索
-  const search = () => { 
+  const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.search();
@@ -247,32 +242,38 @@ const InfoManage: React.FC = () => {
     });
   };
 
-  const surePushNewsItem = async () => {
-    const newsId = tableSelectRows[0].id;
-    await pushNewsItem(newsId, selectedIds);
-    message.success('推送成功');
-    setPushTreeVisible(false);
-    refresh();
-  };
+  // const surePushNewsItem = async () => {
+  //   const newsId = tableSelectRows[0].id;
+  //   await pushNewsItem(newsId, selectedIds);
+  //   message.success('推送成功');
+  //   setPushTreeVisible(false);
+  //   refresh();
+  // };
 
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('company-file-add') && (
+        {buttonJurisdictionArray?.includes('add-info') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('company-file-edit') && (
+        {buttonJurisdictionArray?.includes('edit-info') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         )}
+        {buttonJurisdictionArray?.includes('check-info') && (
+          <Button className="mr7" onClick={() => checkEvent()}>
+            <EditOutlined />
+            查看
+          </Button>
+        )}
 
-        {buttonJurisdictionArray?.includes('company-file-delete') && (
+        {buttonJurisdictionArray?.includes('delete-info') && (
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -289,14 +290,18 @@ const InfoManage: React.FC = () => {
     );
   };
 
-  const pushSelectEvent = (checkedValue: string[]) => {
-    setSelectedIds(checkedValue);
+  const checkEvent = () => {
+    console.log();
   };
 
-  const onExpand = (expandedKeysValue: React.Key[]) => {
-    setExpandedKeys(expandedKeysValue);
-    setAutoExpandParent(false);
-  };
+  // const pushSelectEvent = (checkedValue: string[]) => {
+  //   setSelectedIds(checkedValue);
+  // };
+
+  // const onExpand = (expandedKeysValue: React.Key[]) => {
+  //   setExpandedKeys(expandedKeysValue);
+  //   setAutoExpandParent(false);
+  // };
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -338,7 +343,7 @@ const InfoManage: React.FC = () => {
       >
         <TextEditor onChange={setContent} titleForm={editForm} htmlContent={content} type="edit" />
       </Modal>
-      <Modal
+      {/* <Modal
         maskClosable={false}
         title="推送-资讯"
         width="450px"
@@ -358,7 +363,7 @@ const InfoManage: React.FC = () => {
           // selectedKeys={selectedIds}
           expandedKeys={expandedKeys}
         />
-      </Modal>
+      </Modal> */}
     </PageCommonWrap>
   );
 };
