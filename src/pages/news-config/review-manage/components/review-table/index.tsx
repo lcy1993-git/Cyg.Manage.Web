@@ -1,34 +1,132 @@
 import React, { FC, useState } from 'react';
-import PageCommonWrap from '@/components/page-common-wrap';
 import styles from './index.less';
-import Filterbar from './components/filter-bar';
-import SideMenu from './components/side-menu';
 import TableSearch from '@/components/table-search';
-import UrlSelect from '@/components/url-select';
-import { Button, Input, DatePicker, Select } from 'antd';
-import EnumSelect from '@/components/enum-select';
+import { Button, Input, DatePicker, Select, message, Table } from 'antd';
 import { useContainer } from '../../store';
 import classnames from 'classnames';
+import { observer } from 'mobx-react-lite';
+import { useRequest } from 'ahooks';
+import { ReviewListParams, fetchReviewList } from '@/services/news-config/review-manage';
+import { Tag } from 'antd';
+
 const { Option } = Select;
+const columns = [
+  {
+    title: '序号',
+    width: 100,
+    dataIndex: 'index',
+    key: 'index',
+    fixed: 'left',
+  },
+  {
+    title: '类型',
+    width: 100,
+    dataIndex: 'type',
+    key: 'type',
+    fixed: 'left',
+  },
+  {
+    title: '所属图层',
+    dataIndex: 'layer',
+    key: 'layer',
+    width: 150,
+  },
+  {
+    title: '创建时间',
+    dataIndex: 'createdOn',
+    key: 'createdOn',
+    width: 150,
+  },
+  {
+    title: '更新时间',
+    dataIndex: 'modifiedDate',
+    key: 'modifiedDate',
+    width: 150,
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    key: 'status',
+    width: 150,
+  },
+  {
+    title: 'Action',
+    key: 'operation',
+    fixed: 'right',
+    width: 100,
+    render: () => (
+      <>
+        <Tag color="#87d068">正常</Tag>
+        <Tag color="#f50">删除</Tag>
+      </>
+    ),
+  },
+  {
+    title: 'Action',
+    key: 'operation',
+    fixed: 'right',
+    width: 100,
+    render: () =>  <Button type="primary"> 查看</Button>,
+  },
+];
 
 const layers = ['勘察图层', '方案图层', '设计图层', '拆除图层'];
 interface ReviewProps {}
 const { Search } = Input;
-const ReviewTable: FC<ReviewProps> = (props) => {
+const ReviewTable: FC<ReviewProps> = observer((props) => {
   const [keyWord, setKeyWord] = useState<string>('');
   const [layer, setLayer] = useState<string>('');
-  const sotre = useContainer();
+  const [type, setType] = useState<string>('');
+  const store = useContainer();
+  const { vState } = store;
+  const { projectId } = vState;
+
+  const data = [];
+  for (let i = 0; i < 100; i++) {
+    data.push({
+      key: i,
+      name: `Edrward ${i}`,
+      age: 32,
+      address: `London Park no. ${i}`,
+    });
+  }
+
+  /**
+   * 获取全部数据
+   */
+  // const { data, run, loading } = useRequest(
+  //   () =>
+  //     fetchReviewList({
+  //       id: projectId ?? '',
+  //       type,
+  //       layer,
+  //     }),
+
+  //   {
+  //     manual: true,
+  //     onSuccess: () => {},
+  //     onError: () => {
+  //       message.error('获取数据失败');
+  //     },
+  //   },
+  // );
+
   const search = () => {
     const condition = {
       keyWord,
       layer,
+      type,
     };
-
-    sotre.setFilterCondition(condition);
   };
 
-  function onSelect(value: string | number) {
+  function onSelectLayer(value: string | number) {
     setLayer(value as string);
+    search();
+  }
+
+  function onSelectType(value: string | number) {
+    setType(value as string);
+    search();
   }
   return (
     <div className={styles.tableContainer}>
@@ -43,16 +141,23 @@ const ReviewTable: FC<ReviewProps> = (props) => {
           />
         </TableSearch>
         <TableSearch className="mr10" label="项目名称" width="178px">
-          <Select placeholder="选择图层" style={{ width: '100%' }} onSelect={onSelect}>
-            {layers.map((v: string,idx:number) => (
+          <Select placeholder="选择图层" style={{ width: '100%' }} onSelect={onSelectLayer}>
+            {layers.map((v: string, idx: number) => (
+              <Option key={v}>{v}</Option>
+            ))}
+          </Select>
+        </TableSearch>
+        <TableSearch className="mr10" label="项目名称" width="178px">
+          <Select placeholder="类型" style={{ width: '100%' }} onSelect={onSelectType}>
+            {layers.map((v: string, idx: number) => (
               <Option key={v}>{v}</Option>
             ))}
           </Select>
         </TableSearch>
       </div>
-      <main style={styles.main}></main>
+      <Table size="middle"  columns={columns} dataSource={data} scroll={{ x: 1500 }} sticky />
     </div>
   );
-};
+});
 
 export default ReviewTable;

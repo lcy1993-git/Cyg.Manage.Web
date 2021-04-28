@@ -125,6 +125,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               }
             }),
           );
+          store.setProjectId(reShapeData[0].children[0].key);
         } else {
           message.warning('没有检索到数据');
         }
@@ -141,12 +142,11 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   return (
     <div ref={ref} className={classNames(className, styles.sideMenuContainer)}>
-      <div className={styles.title}>工程项目</div>
       {allLoading ? (
         <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
       ) : null}
       {allData ? (
-        <div   className={styles.sideMenu}>
+        <div className={styles.sideMenu}>
           <Tree
             showLine
             onExpand={onExpand}
@@ -154,7 +154,6 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             autoExpandParent
             height={size.height}
             treeData={treeData}
-           
           />
         </div>
       ) : null}

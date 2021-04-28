@@ -4,6 +4,7 @@ import moment from 'moment';
 import { createContext, useContext } from 'react';
 export interface StateType {
   filterCondition: EngineerProjetListFilterParams;
+  projectId?: string;
 }
 
 const initState: StateType = {
@@ -16,9 +17,9 @@ function Store(vState: StateType) {
     setFilterCondition(filterCondition: EngineerProjetListFilterParams) {
       this.vState.filterCondition = filterCondition;
     },
-    setTableFilterCondition( ) {
-      
-    }
+    setProjectId(projectId: string) {
+      this.vState.projectId = projectId;
+    },
   });
 }
 

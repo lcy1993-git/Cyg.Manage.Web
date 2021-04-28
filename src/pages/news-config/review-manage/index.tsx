@@ -13,7 +13,7 @@ interface ReviewProps {}
 
 const ReviewManage: FC<ReviewProps> = observer(() => {
   return (
-    <PageCommonWrap noPadding>
+    <PageCommonWrap noPadding className={styles.container}>
       <div className={styles.main}>
         <Filterbar />
 
