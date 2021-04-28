@@ -16,6 +16,9 @@ function Store(vState: StateType) {
     setFilterCondition(filterCondition: EngineerProjetListFilterParams) {
       this.vState.filterCondition = filterCondition;
     },
+    setTableFilterCondition( ) {
+      
+    }
   });
 }
 
