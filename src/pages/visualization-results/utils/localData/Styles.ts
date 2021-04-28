@@ -174,7 +174,7 @@ const Styles = {
     line: {
         cableChannel: {
             color: 'rgba(58, 46, 70, 1)',
-            backgroundColor: 'rgba(255, 255, 255, 0.75)',
+            backgroundColor: 'rgba(255, 255, 255, 0.4)',
             width: 8
         },
         fzx: {
@@ -185,92 +185,153 @@ const Styles = {
         selected: {
             text1: '\ue887\ue887',
             text2: '\ue887\ue887\ue887\ue887',
-            color: 'rgba(250, 104, 135, 0.9)',
-            backgroundColor: 'rgba(255, 255, 255, 0.75)',
+            color: 'rgba(249, 149, 52, 1)',
+            backgroundColor: 'rgba(0, 0, 64, 0.6)',
             width: 9
         },
         default: {
-            backgroundColor: 'rgba(13, 35, 26, 0.5)',
-            width: 4
+            backgroundColor: 'rgba(23, 34, 29, 0.6)',
+            width: 6
         },
         "1011": { // 原有220V
             color: 'rgba(145, 145, 255, 1)',
             img: '../images_new/220V电压',
-            lineDash: false
+            // lineDash: false
         },
         "1012": { // 原有380V
-            color: 'rgba(158, 227, 24, 1)',
+            color: 'rgba(96, 215, 26, 1)',
             img: '../images_new/380V电压',
-            lineDash: false
+            // lineDash: false
         },
         "1013": { // 原有10kV
             color: 'rgba(0, 255, 216, 1)',
-            lineDash: false
+            // lineDash: false
         },
         "1014": { // 原有20kV
             color: 'rgba(255, 175, 110, 1)',
-            lineDash: false
+            // lineDash: false
         },
 
         "1021": { // 新建220V
             color: 'rgba(145, 145, 255, 1)',
             img: '../images_new/220V电压',
-            lineDash: true
+            lineDash: [12]
         },
         "1022": { // 新建380V
-            color: 'rgba(158, 227, 24, 1)',
+            color: 'rgba(96, 215, 26, 1)',
             img: '../images_new/380V电压',
-            lineDash: true
+            lineDash: [12]
         },
         "1023": { // 新建10kV
             color: 'rgba(0, 255, 216, 1)',
-            lineDash: true
+            lineDash: [12]
         },
         "1024": { // 新建20kV
             color: 'rgba(255, 175, 110, 1)',
-            lineDash: true
+            lineDash: [12]
+        },
+
+        "1031": { // 利旧220V
+            color: 'rgba(145, 145, 255, 1)',
+            img: '../images_new/220V电压',
+            lineDash: [4]
+        },
+        "1032": { // 利旧380V
+            color: 'rgba(96, 215, 26, 1)',
+            img: '../images_new/380V电压',
+            lineDash: [4]
+        },
+        "1033": { // 利旧10kV
+            color: 'rgba(0, 255, 216, 1)',
+            lineDash: [4]
+        },
+        "1034": { // 利旧20kV
+            color: 'rgba(255, 175, 110, 1)',
+            lineDash: [4]
+        },
+
+        "1041": { // 拆除220V
+            color: 'rgba(145, 145, 255, 1)',
+            img: '../images_new/220V电压',
+            isDismantle: true
+        },
+        "1042": { // 拆除380V
+            color: 'rgba(96, 215, 26, 1)',
+            img: '../images_new/380V电压',
+            isDismantle: true
+        },
+        "1043": { // 拆除10kV
+            color: 'rgba(0, 255, 216, 1)',
+            isDismantle: true
+        },
+        "1044": { // 拆除20kV
+            color: 'rgba(255, 175, 110, 1)',
+            isDismantle: true
         },
 
         "1111": { // 原有220V电缆
             color: 'rgba(145, 145, 255, 1)',
-            lineDash: false,
-            cableColor: 'rgba(145, 145, 255, 1)'
         },
         "1112": { // 原有380V电缆
-            color: 'rgba(158, 227, 24, 1)',
-            lineDash: false,
-            cableColor: 'rgba(158, 227, 24, 1)'
+            color: 'rgba(103, 220, 34, 1)',
         },
         "1113": { // 原有10kV电缆
-            color: 'rgba(16, 255, 157, 1)',
-            lineDash: false,
-            cableColor: 'rgba(0, 255, 216, 1)'
+            color: 'rgba(0, 255, 216, 1)',
         },
         "1114": { // 原有20kV电缆
             color: 'rgba(255, 175, 110, 1)',
-            lineDash: false,
-            cableColor: 'rgba(255, 175, 110, 1)'
         },
 
         "1121": { // 新建220V电缆
             color: 'rgba(145, 145, 255, 1)',
-            lineDash: true,
-            cableColor: 'rgba(145, 145, 255, 1)',
+            lineDash: [12]
         },
         "1122": { // 新建380V电缆
-            color: 'rgba(158, 227, 24, 1)',
-            lineDash: true,
-            cableColor: 'rgba(158, 227, 24, 1)'
+            color: 'rgba(103, 220, 34, 1)',
+            lineDash: [12]
         },
         "1123": { // 新建10V电缆
-            color: 'rgba(16, 255, 157, 1)',
-            lineDash: true,
-            cableColor: 'rgba(0, 255, 216, 1)'
+            color: 'rgba(0, 255, 216, 1)',
+            lineDash: [12]
         },
         "1124": { // 新建20V电缆
             color: 'rgba(255, 175, 110, 1)',
-            lineDash: true,
-            cableColor: 'rgba(255, 175, 110, 1)'
+            lineDash: [12]
+        },
+
+
+        "1131": { // 利旧220V电缆
+            color: 'rgba(145, 145, 255, 1)',
+            lineDash: [4]
+        },
+        "1132": { // 利旧380V电缆
+            color: 'rgba(103, 220, 34, 1)',
+            lineDash: [4]
+        },
+        "1133": { // 利旧10V电缆
+            color: 'rgba(0, 255, 216, 1)',
+            lineDash: [4]
+        },
+        "1134": { // 利旧20V电缆
+            color: 'rgba(255, 175, 110, 1)',
+            lineDash: [4]
+        },
+
+        "1141": { // 拆除220V电缆
+            color: 'rgba(145, 145, 255, 1)',
+            isDismantle: true
+        },
+        "1142": { // 拆除380V电缆
+            color: 'rgba(103, 220, 34, 1)',
+            isDismantle: true
+        },
+        "1143": { // 拆除10V电缆
+            color: 'rgba(0, 255, 216, 1)',
+            isDismantle: true
+        },
+        "1144": { // 拆除20V电缆
+            color: 'rgba(255, 175, 110, 1)',
+            isDismantle: true
         },
     },
     fault_indicator: {
@@ -298,5 +359,6 @@ const Styles = {
         }
     }
 }
+
 
 export default Styles;
