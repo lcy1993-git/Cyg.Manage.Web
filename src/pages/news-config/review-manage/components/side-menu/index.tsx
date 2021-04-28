@@ -146,7 +146,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
       ) : null}
       {allData ? (
-        <div  className={styles.sideMenu}>
+        <div   className={styles.sideMenu}>
           <Tree
             showLine
             onExpand={onExpand}
