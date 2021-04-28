@@ -116,6 +116,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                             pJSON[mappingTag] = feature.getProperties()['recorderName'];
                             break;
                         case 'surveyor':
+                            if (layerType == 'design' || layerType == 'dismantle')
+                                mappingTag = '设计人员';
                             pJSON[mappingTag] = feature.getProperties()['surveyorName'];
                             break;
                         case 'main_id':
@@ -305,6 +307,11 @@ export const mapPointermove = (evt: any, map: any) => {
     x && (x.innerHTML = lont[0].toFixed(4));
     y && (y.innerHTML = lont[1].toFixed(4));
     // setCurrentPosition([lont[0].toFixed(4), lont[1].toFixed(4)]);
+
+    map.getTargetElement().style.cursor = "default";
+    map.forEachFeatureAtPixel(evt.pixel, function (feature:any, layer:any) {
+        map.getTargetElement().style.cursor = "pointer";
+    })
 }
 
 export const mapMoveend = (evt: any, map: any) => {

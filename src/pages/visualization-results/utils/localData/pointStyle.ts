@@ -38,6 +38,8 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
     let size, fillSize, strokeSize, color, fillColor, strokeColor;
     let imageStyle, style, regular;
     let backgroundColor: string | undefined = undefined;
+    let azimuth = feature.getProperties().azimuth || 0;
+    let isDismantle;
 
     if (type == 'design_pull_line') {
         size = 26;
@@ -166,18 +168,23 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
 
             case '141':
                 iconFontText = '\ue86d';
+                isDismantle = true;
                 break;
             case '142':
                 iconFontText = '\ue871';
+                isDismantle = true;
                 break;
             case '143':
                 iconFontText = '\ue869';
+                isDismantle = true;
                 break;
             case '144':
                 iconFontText = '\ue870';
+                isDismantle = true;
                 break;
             case '145':
                 iconFontText = '\ue863';
+                isDismantle = true;
                 break;
             default:
                 iconFontText = '\ue823';
@@ -201,9 +208,10 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
             case '13':
                 iconFontText = '\ue834';
                 break;
-            // case '14':
-            //     iconUrl = '../images/变压器-拆除.png';
-            //     break;
+            case '14':
+                iconFontText = '\ue843';
+                isDismantle = true;
+                break;
             default:
                 iconFontText = '\ue83c';
                 size = Styles[value].empty.size;
@@ -258,15 +266,19 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
 
             case '141':
                 iconFontText = '\ue876';
+                isDismantle = true;
                 break;
             case '142':
                 iconFontText = '\ue875';
+                isDismantle = true;
                 break;
             case '143':
                 iconFontText = '\ue85e';
+                isDismantle = true;
                 break;
             case '144':
                 iconFontText = '\ue86f';
+                isDismantle = true;
                 break;
             default:
                 iconFontText = '\ue826';
@@ -292,6 +304,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case '114':
                 iconFontText = '\ue866';
+                isDismantle = true;
                 break;
 
             case '121':
@@ -305,6 +318,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case '124':
                 iconFontText = '\ue86e';
+                isDismantle = true;
                 break;
 
             case '131':
@@ -318,6 +332,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case '134':
                 iconFontText = '\ue873';
+                isDismantle = true;
                 break;
 
             case '141':
@@ -331,6 +346,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case '144':
                 iconFontText = '\ue867';
+                isDismantle = true;
                 break;
 
             case '151':
@@ -344,6 +360,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case '154':
                 iconFontText = '\ue860';
+                isDismantle = true;
                 break;
 
             case '161':
@@ -357,6 +374,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case '164':
                 iconFontText = '\ue865';
+                isDismantle = true;
                 break;
 
             case '171':
@@ -370,6 +388,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case '174':
                 iconFontText = '\ue86b';
+                isDismantle = true;
                 break;
 
             case '181':
@@ -383,6 +402,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case '184':
                 iconFontText = '\ue868';
+                isDismantle = true;
                 break;
 
             default:
@@ -398,12 +418,16 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
 
     if (value == 'electric_meter') { // 户表
         if (feature.getProperties().type == 1) { // 单相表箱
-            if (feature.getProperties().state == 1) // 新建
-                iconFontText = '\ue850';
-            else if (feature.getProperties().state == 2) // 利旧
-                iconFontText = '\ue82b';
-            else if (feature.getProperties().state == 3) // 原有
+            if (feature.getProperties().state == 1) // 原有
                 iconFontText = '\ue878';
+            else if (feature.getProperties().state == 2) // 新建
+                iconFontText = '\ue850';
+            else if (feature.getProperties().state == 3) // 利旧
+                iconFontText = '\ue82b';
+            else if (feature.getProperties().state == 4) { // 拆除
+                iconFontText = '\ue850';
+                isDismantle = true;
+            }
             else {
                 iconFontText = '\ue888';
                 size = Styles[value].empty.size;
@@ -415,12 +439,14 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
             }
 
         } else if (feature.getProperties().type == 2) { // 三相表箱
-            if (feature.getProperties().state == 1) // 新建
-                iconFontText = '\ue854';
-            else if (feature.getProperties().state == 2) // 利旧
-                iconFontText = '\ue841';
-            else if (feature.getProperties().state == 3) // 原有
+            if (feature.getProperties().state == 1) // 原有
                 iconFontText = '\ue86c';
+            else if (feature.getProperties().state == 2) // 新建
+                iconFontText = '\ue854';
+            else if (feature.getProperties().state == 3) // 利旧
+                iconFontText = '\ue841';
+            else if (feature.getProperties().state == 4) // 拆除
+                iconFontText = '\ue854';
             else {
                 iconFontText = '\ue888';
                 size = Styles[value].empty.size;
@@ -442,7 +468,6 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
     }
 
     if (value == 'fault_indicator') { // 故障指示器样式
-        console.log(11111111, value)
         switch (feature.getProperties().state) {
             // case '0':
             //     iconFontText = '\xe87d';
@@ -455,6 +480,10 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 break;
             case 3:
                 iconFontText = '\ue88f';
+                break;
+            case 4:
+                iconFontText = '\ue88d';
+                isDismantle = true;
                 break;
             default:
                 iconFontText = '\ue87d';
@@ -477,9 +506,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
         strokeColor = Styles[value].selected.strokeColor;
     }
 
-    let azimuth = 0;
     if (value == 'cross_arm') { // 横担
-        azimuth = feature.getProperties().azimuth;
         if (feature.getProperties().type == null)
             iconFontText = '\ue824';
         else if (feature.getProperties().type == '两线墙装门型支架' || feature.getProperties().type == '四线墙装门型支架') { // 门型支架
@@ -489,8 +516,10 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 iconFontText = '\ue84e';
             else if (feature.getProperties().state == 3) // 利旧
                 iconFontText = '\ue830';
-            else if (feature.getProperties().state == 4) // 拆除
+            else if (feature.getProperties().state == 4) { // 拆除
                 iconFontText = '\ue84e';
+                isDismantle = true;
+            }
             else {
                 iconFontText = '\ue824';
             }
@@ -502,8 +531,10 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 iconFontText = '\ue856';
             else if (feature.getProperties().state == 3) // 利旧
                 iconFontText = '\ue83b';
-            else if (feature.getProperties().state == 4) // 拆除
+            else if (feature.getProperties().state == 4) { // 拆除
                 iconFontText = '\ue856';
+                isDismantle = true;
+            }
             else {
                 iconFontText = '\ue824';
             }
@@ -512,36 +543,11 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
 
     if (value == 'over_head_device') { // 杆上设备
         regular = true;
-        azimuth = feature.getProperties().azimuth + 90;
+        if (feature.getProperties().type < 6)
+            azimuth += 90;
         if (feature.getProperties().state == null)
             iconFontText = '\ue828'; // 未选型柱上物
-        else if (feature.getProperties().state == 1) { // 新建
-            if (feature.getProperties().type == 2) //  柱上熔断器
-                iconFontText = '\ue85c';
-            else if (feature.getProperties().type == 3) // 柱上断路器
-                iconFontText = '\ue859';
-            else if (feature.getProperties().type == 4) // 柱上隔离开关
-                iconFontText = '\ue85d';
-            else if (feature.getProperties().type == 5) // 柱上避雷器
-                iconFontText = '\ue862';
-            else {
-                iconFontText = '\ue828';
-            }
-
-        } else if (feature.getProperties().state == 2) { // 利旧
-            if (feature.getProperties().type == 2) //  柱上熔断器
-                iconFontText = '\ue83d';
-            else if (feature.getProperties().type == 3) // 柱上断路器
-                iconFontText = '\ue846';
-            else if (feature.getProperties().type == 4) // 柱上隔离开关
-                iconFontText = '\ue84b';
-            else if (feature.getProperties().type == 5) // 柱上避雷器
-                iconFontText = '\ue83a';
-            else {
-                iconFontText = '\ue828';
-            }
-
-        } else if (feature.getProperties().state == 3) { // 原有
+        else if (feature.getProperties().state == 1) { // 原有
             if (feature.getProperties().type == 2) //  柱上熔断器
                 iconFontText = '\ue874';
             else if (feature.getProperties().type == 3) // 柱上断路器
@@ -550,11 +556,20 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 iconFontText = '\ue87c';
             else if (feature.getProperties().type == 5) // 柱上避雷器
                 iconFontText = '\ue877';
+            else if (feature.getProperties().type == 7) // 电力引下
+                iconFontText = '\ue885';
+            else if (feature.getProperties().type == 8) // 无功补偿
+                iconFontText = '\ue894';
+            else if (feature.getProperties().type == 9) // 高压计量
+                iconFontText = '\ue87e';
+            else if (feature.getProperties().type == 10) // PT
+                iconFontText = '\ue883';
             else {
                 iconFontText = '\ue828';
             }
 
-        } else { // 拆除
+        }
+        else if (feature.getProperties().state == 2) { // 新建
             if (feature.getProperties().type == 2) //  柱上熔断器
                 iconFontText = '\ue85c';
             else if (feature.getProperties().type == 3) // 柱上断路器
@@ -563,6 +578,57 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 iconFontText = '\ue85d';
             else if (feature.getProperties().type == 5) // 柱上避雷器
                 iconFontText = '\ue862';
+            else if (feature.getProperties().type == 7) // 电力引下
+                iconFontText = '\ue886';
+            else if (feature.getProperties().type == 8) // 无功补偿
+                iconFontText = '\ue892';
+            else if (feature.getProperties().type == 9) // 高压计量
+                iconFontText = '\ue882';
+            else if (feature.getProperties().type == 10) // PT
+                iconFontText = '\ue890';
+            else {
+                iconFontText = '\ue828';
+            }
+
+        } else if (feature.getProperties().state == 3) { // 利旧
+            if (feature.getProperties().type == 2) //  柱上熔断器
+                iconFontText = '\ue83d';
+            else if (feature.getProperties().type == 3) // 柱上断路器
+                iconFontText = '\ue846';
+            else if (feature.getProperties().type == 4) // 柱上隔离开关
+                iconFontText = '\ue84b';
+            else if (feature.getProperties().type == 5) // 柱上避雷器
+                iconFontText = '\ue83a';
+            else if (feature.getProperties().type == 7) // 电力引下
+                iconFontText = '\ue893';
+            else if (feature.getProperties().type == 8) // 无功补偿
+                iconFontText = '\ue881';
+            else if (feature.getProperties().type == 9) // 高压计量
+                iconFontText = '\ue880';
+            else if (feature.getProperties().type == 10) // PT
+                iconFontText = '\ue891';
+            else {
+                iconFontText = '\ue828';
+            }
+
+        } else if (feature.getProperties().state == 4) { // 拆除
+            isDismantle = true;
+            if (feature.getProperties().type == 2) //  柱上熔断器
+                iconFontText = '\ue85c';
+            else if (feature.getProperties().type == 3) // 柱上断路器
+                iconFontText = '\ue859';
+            else if (feature.getProperties().type == 4) // 柱上隔离开关
+                iconFontText = '\ue85d';
+            else if (feature.getProperties().type == 5) // 柱上避雷器
+                iconFontText = '\ue862';
+            else if (feature.getProperties().type == 7) // 电力引下
+                iconFontText = '\ue886';
+            else if (feature.getProperties().type == 8) // 无功补偿
+                iconFontText = '\ue892';
+            else if (feature.getProperties().type == 9) // 高压计量
+                iconFontText = '\ue882';
+            else if (feature.getProperties().type == 10) // PT
+                iconFontText = '\ue890';
             else {
                 iconFontText = '\ue828';
             }
@@ -606,7 +672,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
             rotation: azimuth * (Math.PI / 180) * -1,
         })
     });
-    if (type.split('_')[0] == 'dismantle') {
+    if (type.split('_')[0] == 'dismantle' || isDismantle) {
         let dismantleColor = 'rgba(255, 0, 0, 1)';
         let dismantleStyle = new ClassStyle({
             text: new Text({
@@ -639,7 +705,7 @@ const line_style = function (feature: Feature, select: any, layerType: any) {
         /**
          * @psj 这里原生写法报错
          */
-        strokeOpts.lineDash = [12];
+        strokeOpts.lineDash = style.lineDash;
     }
     let backgroundColor = Styles.line.default.backgroundColor;
     let styleParams, selectColor;
@@ -679,6 +745,22 @@ const line_style = function (feature: Feature, select: any, layerType: any) {
         stroke: new Stroke(strokeOpts)
     })
     let styles = [backgroundStyle, style_];
+    if(style.isDismantle){
+        let dismantleStyle = new ClassStyle({
+            text: new Text({
+                font: 'Normal 22px webgisIconFont',
+                text: '\ue82c',
+                fill: new Fill({
+                    color: 'red',
+                }),
+                stroke: new Stroke({
+                    color: 'red',
+                    width: 1
+                })
+            })
+        });
+        styles.push(dismantleStyle);
+    }
     if (style.img) {
         let text;
         if (style.img.indexOf("220") > -1)
@@ -704,15 +786,11 @@ const line_style = function (feature: Feature, select: any, layerType: any) {
 // 电缆通道样式
 const cable_channel_styles = function (feature: Feature) {
     let obj = Styles.line.cableChannel;
-
-    let dis = 0.00;
-    if (feature.getProperties().length)
-        dis = feature.getProperties().length;
     let backgroundStyle = new ClassStyle({
         stroke: new Stroke({
             color: obj.backgroundColor,
             lineCap: 'butt',
-            width: obj.width + 1
+            width: obj.width + 2
         })
     });
     let style = new ClassStyle({
@@ -722,7 +800,7 @@ const cable_channel_styles = function (feature: Feature) {
             width: obj.width
         }),
         text: new Text({
-            text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
+            text: feature.getProperties().lable,
             textAlign: 'center',
             font: 'bold 12px Source Han Sans SC', //字体与大小
             placement: 'line',
@@ -750,7 +828,7 @@ const fzx_styles = function () {
         width: obj.width,
     };
     if (obj.lineDash)
-        strokeOpts.lineDash = [12];
+        strokeOpts.lineDash = [6];
     let style = new ClassStyle({
         stroke: new Stroke(strokeOpts)
     });

@@ -104,23 +104,23 @@ function getMappingTagsDictionary() {
     };
     mappingTagsDictionary.user_line = {
       mappingTags: {
-          "name": "下户线名称",
-          "state": "状态",
-          "kv_level": "电压等级",
-          "type": "导线类型",
-          "mode": "导线型号",
-          "length": "长度",
-          "remark": "备注",
-          "loop_name": "回路名称",
-          "project_id": "所属项目",
-          "surveyor": "勘测人员",
-          "survey_time": "勘测日期"
+        "name": "下户线名称",
+        "state": "状态",
+        "kv_level": "电压等级",
+        "type": "导线类型",
+        "mode": "导线型号",
+        "length": "长度",
+        "remark": "备注",
+        "loop_name": "回路名称",
+        "project_id": "所属项目",
+        "surveyor": "勘测人员",
+        "survey_time": "勘测日期"
       },
       mappingTagValues: {
-          "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
-          // "kv_level": convertEnums(enums[enums.findIndex((e) => e.key == "KVLevel")].value)
+        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        // "kv_level": convertEnums(enums[enums.findIndex((e) => e.key == "KVLevel")].value)
       }
-  };
+    };
     mappingTagsDictionary.cable_channel = {
       mappingTags: {
         "code": "电缆通道编号",
@@ -230,28 +230,44 @@ function getMappingTagsDictionary() {
       },
       {
         value: 1,
-        text: '变压器'
+        text: '柱上变压器'
       },
       {
         value: 2,
-        text: '熔断器'
+        text: '柱上熔断器'
       },
       {
         value: 3,
-        text: '断路器'
+        text: '柱上断路器'
       },
       {
         value: 4,
-        text: '隔离开关'
+        text: '柱上隔离开关'
       },
       {
         value: 5,
-        text: '避雷器'
+        text: '柱上避雷器'
       },
       {
         value: 6,
         text: '拉线'
       },
+      {
+        value: 7,
+        text: '电力引下'
+      },
+      {
+        value: 8,
+        text: '无功补偿'
+      },
+      {
+        value: 9,
+        text: '高压计量'
+      },
+      {
+        value: 10,
+        text: 'PT'
+      }
       ]
     });
     mappingTagsDictionary.over_head_device = {
@@ -259,8 +275,9 @@ function getMappingTagsDictionary() {
         "name": "杆上设备名称",
         "type": "杆上设备类型",
         "state": "状态",
+        "mode": "型号",
         "project_id": "所属项目",
-        "remark":"备注"
+        "remark": "备注"
       },
       mappingTagValues: {
         "voltage": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value),
@@ -274,7 +291,7 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "azimuth": "方位角",
         "project_id": "所属项目",
-        "remark":"备注"
+        "remark": "备注"
       },
       mappingTagValues: {
         "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
