@@ -517,6 +517,7 @@ const getScale = (map: any) => {
   let minWidth = 64;
   let nominalCount = minWidth * pointResolution;
   let suffix = '';
+
   if (nominalCount < 0.001) {
     suffix = 'μm';
     pointResolution *= 1000000;
