@@ -3,12 +3,12 @@ import { makeAutoObservable } from 'mobx';
 import moment from 'moment';
 import { createContext, useContext } from 'react';
 export interface StateType {
-  filterCondition: EngineerProjetListFilterParams;
+  filterCondition?: EngineerProjetListFilterParams;
   projectId?: string;
 }
 
 const initState: StateType = {
-  filterCondition: { kvLevel: -1 },
+  filterCondition: {},
 };
 
 function Store(vState: StateType) {

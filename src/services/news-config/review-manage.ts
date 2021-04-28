@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
+import { EngineerProjetListFilterParams } from '../visualization-results/side-menu';
 
 export interface ReviewListParams {
   id: string;
@@ -17,11 +18,21 @@ export interface ReviewListItemType {
   status: string;
 }
 
+export const GetEngineerProjectCommentListByParams = (params: EngineerProjetListFilterParams) => {
+  return cyRequest<any>(() =>
+    request(
+      `${baseUrl.webGis}/WebGis/GetEngineerProjectCommentList
+    `,
+      { method: 'POST', data: params },
+    ),
+  );
+};
+
 //获取选中数据
-export const fetchReviewList = (params: ReviewListParams) => {
+export const GetProjectCommentListByParams = (params: ReviewListParams) => {
   return cyRequest<ReviewListItemType>(() =>
     request(
-      `${baseUrl.webGis}/WebGis/GetEngineerProjectList
+      `${baseUrl.webGis}/WebGis/GetProjectCommentList
   `,
       { method: 'POST', data: params },
     ),
