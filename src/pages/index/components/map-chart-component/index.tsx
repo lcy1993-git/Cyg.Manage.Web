@@ -181,11 +181,14 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             })
 
             myChart.on("mouseover", function (params) {
-                if (params.data && params.data.value != undefined) {
-                    myChart.dispatchAction({
-                        type: 'downplay'
-                    });
-                }
+                myChart.dispatchAction({
+                    type: 'downplay'
+                });
+                // if (params.data && params.data.value != undefined) {
+                //     myChart.dispatchAction({
+                //         type: 'downplay'
+                //     });
+                // }
             });
         }
     };

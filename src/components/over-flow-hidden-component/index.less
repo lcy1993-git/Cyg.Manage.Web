@@ -4,9 +4,11 @@
     .noOverFlowContent {
         display: flex;
         flex-shrink: 0;
+        width: calc(100% - 36px);
+        overflow: hidden;
     }
     .overFlowContent {
-        flex: 1;
+        width: 36px;
         padding-left: 16px;
         line-height: 28px;
     }
