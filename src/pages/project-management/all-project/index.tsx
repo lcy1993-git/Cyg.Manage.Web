@@ -601,7 +601,7 @@ const ProjectManagement: React.FC = () => {
       <div className={styles.projectManagement}>
         <div className={styles.projectManagemnetSearch}>
           <div className="flex">
-            <div className="flex1 flex">
+            <div className="flex1 flex" style={{overflow: "hidden"}}>
               <OverFlowHiddenComponent childrenList={searchChildrenList}>
                 <TableSearch className="mr22" label="项目名称" width="300px">
                   <Search
@@ -730,7 +730,7 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
               </OverFlowHiddenComponent>
             </div>
-            <div>
+            <div className={styles.projectManagemnetSearchButtonContent}>
               <Button className="mr7" type="primary" onClick={() => search()}>
                 查询
               </Button>

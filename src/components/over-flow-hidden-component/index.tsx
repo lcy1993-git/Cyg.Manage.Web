@@ -45,8 +45,6 @@ const OverFlowHiddenComponent: React.FC<OverFlowHiddenComponentProps> = (props) 
         return copyChildren.splice(afterHandleArrayLength,copyChildren.length)
     }
 
-
-
     return (
         <div ref={contentRef} className={styles.overFlowHiddenComponent}>
             <div className={styles.noOverFlowContent}>
