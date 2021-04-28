@@ -11,11 +11,13 @@ import { history } from 'umi';
 interface EditPasswordProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
+  againLogin?: boolean
+  finishEvent?: () => void
 }
 
 const CutAccount = (props: EditPasswordProps) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-
+  const { againLogin = false,finishEvent } = props;
   const [form] = Form.useForm();
 
   const sureCutAccount = () => {
@@ -36,10 +38,17 @@ const CutAccount = (props: EditPasswordProps) => {
       localStorage.setItem('userInfo', JSON.stringify(user));
       localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
 
-      setState(false);
-      message.success('账户切换成功');
-      history.push('/index');
-      location.reload();
+      if (!againLogin) {
+        setState(false);
+        message.success('账户快捷登录成功');
+        history.push('/index');
+        location.reload();
+      }else {
+
+        history.go(-1);
+        finishEvent?.();
+        setState(false);
+      }
     });
   };
 
@@ -49,15 +58,23 @@ const CutAccount = (props: EditPasswordProps) => {
     }
   };
 
+  const cancelEvent = () => {
+    if(!againLogin) {
+      setState(false);
+    }else {
+      history.push("/login")
+    }
+  }
+
   return (
     <Modal
-    maskClosable={false}
+      maskClosable={false}
       title="快捷登录"
       visible={state as boolean}
       destroyOnClose
       okText="确定"
       cancelText="取消"
-      onCancel={() => setState(false)}
+      onCancel={() => cancelEvent()}
       onOk={() => sureCutAccount()}
     >
       <Form form={form} preserve={false} onKeyDown={(e) => onKeyDownLogin(e)}>
