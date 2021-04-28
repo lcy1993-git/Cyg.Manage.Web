@@ -16,6 +16,7 @@ import Stroke from 'ol/style/Stroke';
 import Icon from 'ol/style/Icon';
 import markerIconSrc from "@/assets/image/webgis/marker-icon.png";
 import arrowSrc from "@/assets/image/webgis/arrow.png";
+import { getXmlData, sortByTime } from "./utils"
 
 var projects: any;
 const wfsBaseURL = 'http://10.6.1.36:8099/geoserver/pdd/ows';
@@ -24,26 +25,25 @@ const refreshMap = async (ops: any, projects_: ProjectList[], location: boolean 
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map, kvLevel } = ops;
   clearGroups(groupLayers);
   clearHighlightLayer(map);
-  if (projects.length === 0)
-    return;
-  let xmlData = "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
-  let postData = "";
-  xmlData += "<ogc:Filter><Or>";
-  projects.forEach((project: ProjectList) => {
-    let projectId = project.id;
-    let projectTime = project.time;
-    if (time && projectTime) {
-      time = time.replaceAll('/','-');
-      projectTime = projectTime.replaceAll('/','-');
-      if (new Date(time).getTime() >= new Date(projectTime).getTime()) {
-        postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
-      }
-    } else {
-      postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
-    }
-  });
-  postData = xmlData + postData + "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
-
+  if (projects.length === 0) return;
+  // let xmlData = "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
+  // let postData = "";
+  // xmlData += "<ogc:Filter><Or>";
+  // projects.forEach((project: ProjectList) => {
+  //   let projectId = project.id;
+  //   let projectTime = project.time;
+  //   if (time && projectTime) {
+  //     time = time.replaceAll('/','-');
+  //     projectTime = projectTime.replaceAll('/','-');
+  //     if (new Date(time).getTime() >= new Date(projectTime).getTime()) {
+  //       postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+  //     }
+  //   } else {
+  //     postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+  //   }
+  // });
+  // postData = xmlData + postData + "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
+  const postData = getXmlData(projects, time);
   await loadSurveyLayers(kvLevel, postData, groupLayers);
   await loadPlanLayers(kvLevel, postData, groupLayers);
   await loadDismantleLayers(kvLevel, postData, groupLayers);
@@ -165,8 +165,8 @@ const loadLayers = async (kvLevel: any, postData: string, group: LayerGroup, lay
               feature2.setId(layerType + '.' + d.detail.object2.id);
             }
 
-            if (d.detail.nodeType1 == 1 || d.detail.nodeType2 == 1) {
-              if (d.detail.nodeType1 == 1) {
+            if (d.detail.nodeType1 === 1 || d.detail.nodeType2 === 1) {
+              if (d.detail.nodeType1 === 1) {
                 if (feature1) {
                   feature1.setStyle(pointStyle(layerType + '_tower', feature1, false));
                   groupLayers[layerType + '_tower'].getSource().addFeature(feature1);
@@ -177,8 +177,8 @@ const loadLayers = async (kvLevel: any, postData: string, group: LayerGroup, lay
                   groupLayers[layerType + '_tower'].getSource().addFeature(feature2);
                 }
               }
-            } else if (d.detail.nodeType1 == 2 || d.detail.nodeType2 == 2) {
-              if (d.detail.nodeType1 == 2) {
+            } else if (d.detail.nodeType1 === 2 || d.detail.nodeType2 === 2) {
+              if (d.detail.nodeType1 === 2) {
                 if (feature1) {
                   feature1.setStyle(pointStyle(layerType + '_cable', feature1, false));
                   groupLayers[layerType + '_cable'].getSource().addFeature(feature1);
@@ -278,13 +278,15 @@ const clearHighlightLayer = (map: any) => {
  */
 const loadWFS = async (postData: string, layerName: string, callBack: (o: any) => void) => {
   const promise = loadLayer(wfsBaseURL, postData, layerName);
-  console.log(layerName)
   await promise.then((data: any) => {
     if (data.features && data.features.length > 0) {
-      let flag;
-      projects.forEach((project: any) => {
-        if (project.id === data.features[0].properties.project_id)
-          flag = true;
+      // let flag;
+      // projects.forEach((project: any) => {
+      //   if (project.id === data.features[0].properties.project_id)
+      //     flag = true;
+      // })
+      const flag = projects.some((project: any) => {
+        return project.id === data.features[0].properties.project_id;
       })
       flag && callBack(data);
     }
@@ -340,7 +342,7 @@ const loadTrackLayers = (id: string, map: any, trackLayers: any, type: number = 
       feature.geometry.coordinates = transform(feature.geometry.coordinates, 'EPSG:4326', 'EPSG:3857')
       // feature.setGeometry(feature.getGeometry().transform('EPSG:4326', 'EPSG:3857'));
     })
-    let pJSON = (new GeoJSON()).readFeatures(data);
+    const pJSON = (new GeoJSON()).readFeatures(data);
     pJSON.forEach((feature: any) => {
       let s = trackStyle();
       feature.setStyle(s);
@@ -350,10 +352,11 @@ const loadTrackLayers = (id: string, map: any, trackLayers: any, type: number = 
     let lineLatlngs: any = [];
     let lineLatlngsSegement: any = [];
     let segementFirstDate: Date;
-    let sortedFeatures = data.features.sort(sortFeaturesFunc);
+    let sortedFeatures = sortByTime(data.features);
+    // let sortedFeatures = data.features.sort(sortFeaturesFunc);
+    
     sortedFeatures.forEach((feature: any) => {
-      if (lineLatlngsSegement.length == 0)
-        segementFirstDate = new Date(feature.properties.record_date);
+      if (lineLatlngsSegement.length == 0)  segementFirstDate = new Date(feature.properties.record_date);
 
       lineLatlngsSegement.push(feature.geometry.coordinates);
 
@@ -434,32 +437,34 @@ const trackLineStyle = (feature: any, color: string) => {
 }
 
 // 按时间排序
-function sortFeaturesFunc(a: any, b: any) {
-  var aDate = new Date(a.properties.record_date);
-  var bDate = new Date(b.properties.record_date);
-  return aDate.getTime() - bDate.getTime();
-}
+// function sortFeaturesFunc(a: any, b: any) {
+//   var aDate = new Date(a.properties.record_date);
+//   var bDate = new Date(b.properties.record_date);
+//   return aDate.getTime() - bDate.getTime();
+// }
 
 // 根据名称获取图层
 const getLayerByName = (name: string, layers: Layer[]): any => {
-  let layer = null;
-  layers.forEach((item: Layer) => {
-    if (item.get('name') === name) {
-      layer = item;
-    }
-  });
-  return layer;
+  // let layer = null;
+  // layers.forEach((item: Layer) => {
+  //   if (item.get('name') === name) {
+  //     layer = item;
+  //   }
+  // });
+  // return layer;
+  return layers.find((item: Layer) => item.get('name') === name);
 }
 
 // 根据名称获取图层组
 const getLayerGroupByName = (name: string, layerGroups: LayerGroup[]): any => {
-  let layerGroup = null;
-  layerGroups.forEach((item: LayerGroup) => {
-    if (item.get('name') === name) {
-      layerGroup = item;
-    }
-  });
-  return layerGroup;
+  // let layerGroup = null;
+  // layerGroups.forEach((item: LayerGroup) => {
+  //   if (item.get('name') === name) {
+  //     layerGroup = item;
+  //   }
+  // });
+  // return layerGroup;
+  return layerGroups.find((item: LayerGroup) => item.get('name') === name)
 }
 
 // 根据项目进行定位
@@ -492,20 +497,27 @@ const relocateMap = (projectId: string = "", layerGroups: LayerGroup[], view: an
 
 // 获取比例尺
 const getScale = (map: any) => {
-  let view = map.getView();
-  let center = view.getCenter();
-  let projection = view.getProjection();
-  let resolution = view.getResolution();
+  const view = map.getView();
+  // let center = view.getCenter();
+  // let projection = view.getProjection();
+  // let resolution = view.getResolution();
+  // let pointResolution = getPointResolution(
+  //   projection,
+  //   resolution,
+  //   center,
+  //   ProjUnits.METERS
+  // );
   let pointResolution = getPointResolution(
-    projection,
-    resolution,
-    center,
+    view.getProjection(),
+    view.getResolution(),
+    view.getCenter(),
     ProjUnits.METERS
   );
 
   let minWidth = 64;
   let nominalCount = minWidth * pointResolution;
   let suffix = '';
+
   if (nominalCount < 0.001) {
     suffix = 'μm';
     pointResolution *= 1000000;
@@ -518,9 +530,11 @@ const getScale = (map: any) => {
     suffix = 'km';
     pointResolution /= 1000;
   }
+
   let i = 3 * Math.floor(Math.log(minWidth * pointResolution) / Math.log(10));
   let count, width, decimalCount;
-  let LEADING_DIGITS = [1, 2, 5];
+  const LEADING_DIGITS = [1, 2, 5];
+
   while (true) {
     decimalCount = Math.floor(i / 3);
     const decimal = Math.pow(10, decimalCount);
