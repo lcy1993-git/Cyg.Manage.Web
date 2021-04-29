@@ -16,6 +16,7 @@ export interface MaterialDataType {
   remark: string;
   code: string;
   supplySide: string;
+  key?: string;
 }
 
 /**
