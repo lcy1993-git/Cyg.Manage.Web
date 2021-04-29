@@ -1,21 +1,21 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
-
 export interface MaterialDataType {
-  description: string;
-  itemNumber: number;
-  materialId: string;
-  name: string;
-  pieceWeight: number;
-  spec: string;
-  state: string;
+  description?: string;
+  itemNumber?: number;
+  materialId?: string;
+  name?: string;
+  pieceWeight?: number;
+  spec?: string;
+  state?: string;
   type: string;
-  unit: string;
-  unitPrice: number;
-  remark: string;
-  code: string;
-  supplySide: string;
+  unit?: string;
+  unitPrice?: number;
+  remark?: string;
+  code?: string;
+  supplySide?: string;
+  children?: MaterialDataType[];
   key?: string;
 }
 
@@ -28,7 +28,7 @@ export interface MaterialDataType {
  * */
 
 export const GetMaterialListByProjectIdList = (projectIds: string[]) => {
-  return cyRequest<any>(() =>
+  return cyRequest<MaterialDataType[]>(() =>
     request(
       `${baseUrl.webGis}/WebGis/GetBatchProjectMaterials
     `,

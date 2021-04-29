@@ -1,5 +1,4 @@
-import React, { useState, FC, useEffect, createRef, useMemo } from 'react';
-import moment from 'moment';
+import React, { useState, FC, useEffect, createRef } from 'react';
 import _ from 'lodash';
 import styles from './index.less';
 import { TimelineProps } from './index.d';
@@ -87,7 +86,9 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
     });
 
     setActiveList(_.cloneDeep(newList));
-    store.setClickDate(newList[clickIndex].date, type);
+    if (newList) {
+      store.setClickDate(newList[clickIndex].date, type);
+    }
   };
 
   return (

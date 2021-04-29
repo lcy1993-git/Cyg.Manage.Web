@@ -1,5 +1,5 @@
 export interface TimelineProps {
-  dates?: (string | undefined)[] | undefined; //传入的日期数组
+  dates: string[]; //传入的日期数组
   height?: number;
   width?: number;
   type: 'observe' | 'normal';

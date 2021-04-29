@@ -54,10 +54,10 @@ function Store(vState: VisualizationResultsStateType) {
       this.vState.checkedProjectDateList = [
         ...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time)),
       ]
-        .filter((v: string) => v !== '')
-        .map((v: string) => moment(v).valueOf())
-        .sort((a: number, b: number) => a - b)
-        .map((v: number) => moment(v).format('YYYY/MM/DD'));
+        .filter((v) => v !== '')
+        .map((v) => moment(v).valueOf())
+        .sort((a, b) => a - b)
+        .map((v) => moment(v).format('YYYY/MM/DD'));
       this.vState.checkedProjectIdList = checkedProjectIdList;
     },
     //设置timeline点击的日期
