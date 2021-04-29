@@ -22,14 +22,16 @@ const arrayHasIpBaseUrlArray = {
     project: `${baseUrl}:8026/api`,
     common: `${baseUrl}:8022/api`,
     upload: `${baseUrl}:8023/api`,
-    resource: `${baseUrl}:8020/api`
+    resource: `${baseUrl}:8020/api`,
 }
 
 const arrayHasNotBaseUrlArray = {
     project: "/manage/v2/api",
     common: "/common/api",
     upload: "/storage/api",
-    resource: "/resourcemanage/v2/api"
+    resource: "/resourcemanage/v2/api",
+    webGis: '/webGis/api',
+    webGis2: '/webGis2/api',
 }
 
 export const logoArray = {
@@ -73,4 +75,4 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.39";
+export const version = "1.0.36";

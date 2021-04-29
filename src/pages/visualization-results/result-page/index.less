@@ -1,0 +1,53 @@
+@sideNavWidth: 260px;
+.content {
+  position: relative;
+  height: calc(100%);
+
+  &.sideNavShow {
+    .sideNav {
+      left: 0px;
+      width: @sideNavWidth;
+      height: 100%;
+    }
+  }
+
+  &.sideNavHide {
+    .sideNav {
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      left: (0px - @sideNavWidth);
+      width: @sideNavWidth;
+    }
+  }
+
+  .sideNav,
+  .mapContainer {
+    transition: all 0.5s ease-in;
+  }
+
+  .mapContainer {
+    position: relative;
+    width: 100%;
+    .timelineContainer {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .observeTimelineContainer {
+      position: absolute;
+      top: 80px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .listMenuContainer {
+      position: absolute;
+      top: 180px;
+      left: 20px;
+      z-index: 10;
+    }
+  }
+}
