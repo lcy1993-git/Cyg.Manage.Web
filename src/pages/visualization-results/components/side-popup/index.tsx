@@ -17,7 +17,8 @@ export interface Props {
   setRightSidebarVisiviabel: (arg0: boolean) => void;
 }
 
-const surveyData = JSON.parse(window.localStorage.getItem('loadEnumsData')!) ?? [];
+const loadEnumsData = window.localStorage.getItem('loadEnumsData');
+const surveyData = loadEnumsData ? JSON.parse(loadEnumsData) : [];
 const surveyEnum = surveyData.find((i: any) => i.key === 'SurveyState')?.value;
 
 const materiaColumns = [

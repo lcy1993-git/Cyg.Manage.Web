@@ -298,7 +298,7 @@ function getMappingTagsDictionary() {
       }
     };
 
-    return mappingTagsDictionary;
+    return JSON.stringify(mappingTagsDictionary);
   } else {
     console.log("mappingTagsDictionary异常！！！请重新加载。。。'")
     // $('.error').text('网络异常！！！请重新加载。。。').animate({
