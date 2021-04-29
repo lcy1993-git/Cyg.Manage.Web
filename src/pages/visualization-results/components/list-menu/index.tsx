@@ -7,24 +7,10 @@ import { useRequest } from 'ahooks';
 import {
   GetMaterialListByProjectIdList,
   GetTrackTimeLine,
+  MaterialDataType,
 } from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-interface MaterialDataType {
-  description: string;
-  itemNumber: number;
-  materialId: string;
-  name: string;
-  pieceWeight: number;
-  spec: string;
-  state: string;
-  type: string;
-  unit: string;
-  unitPrice: number;
-  remark: string;
-  code: string;
-  supplySide: string;
-}
 
 const Track1 = () => (
   <svg
@@ -219,16 +205,15 @@ const ListMenu: FC = observer(() => {
               array: { key: string; type: String }[],
             ) => {
               let data: MaterialDataType[] = [];
-              materialData.forEach((v: MaterialDataType) => {
-                if (v.type === value.type) {
-                  data.push(v);
+              materialData.forEach((materialItem: MaterialDataType) => {
+                if (materialItem.type === value.type) {
+                  materialItem.key = Math.random().toLocaleString();
+                  data.push(materialItem);
                 }
               });
               value.children = data;
             },
           );
-
-          console.log(parentArr);
 
           setMaterialList(parentArr);
           setMaterialModalVisible(true);
@@ -309,15 +294,16 @@ const ListMenu: FC = observer(() => {
   };
 
   const onClickProjectDetailInfo = () => {
-    setProjectModalVisible(true);
     if (checkedProjectIdList?.length !== 1) {
       message.warning('请选择一个项目');
+    } else {
+      setProjectModalVisible(true);
     }
   };
 
   return (
     <>
-      {checkedProjectIdList?.length === 1 ? (
+      {checkedProjectIdList?.length === 1 && projectModalVisible ? (
         <ProjectDetailInfo
           projectId={checkedProjectIdList[0].id}
           visible={projectModalVisible}
@@ -361,6 +347,7 @@ const ListMenu: FC = observer(() => {
         <div style={{ height: '400px' }}>
           <Table
             columns={columns}
+            rowKey={(record) => record.key}
             pagination={false}
             dataSource={materialList}
             scroll={{ x: 1400, y: 350 }}

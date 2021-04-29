@@ -5,25 +5,26 @@ import Vector from 'ol/layer/Vector';
 import { transform } from "ol/proj";
 import { getScale, clearHighlightLayer, getLayerByName } from "./methods";
 import { getGisDetail, getlibId, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
+import { format } from './utils'
 
 const mappingTagsDictionary: any = getMappingTagsDictionary();
 
 // 格式化输出时间
-const format = (fmt: string, date: Date) => { //author: meizz 
-    var o = {
-        "M+": date.getMonth() + 1, //月份 
-        "d+": date.getDate(), //日 
-        "h+": date.getHours(), //小时 
-        "m+": date.getMinutes(), //分 
-        "s+": date.getSeconds(), //秒 
-        "q+": Math.floor((date.getMonth() + 3) / 3), //季度 
-        "S": date.getMilliseconds() //毫秒 
-    };
-    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o)
-        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-    return fmt;
-}
+// const format = (fmt: string, date: Date) => { //author: meizz 
+//     var o = {
+//         "M+": date.getMonth() + 1, //月份 
+//         "d+": date.getDate(), //日 
+//         "h+": date.getHours(), //小时 
+//         "m+": date.getMinutes(), //分 
+//         "s+": date.getSeconds(), //秒 
+//         "q+": Math.floor((date.getMonth() + 3) / 3), //季度 
+//         "S": date.getMilliseconds() //毫秒 
+//     };
+//     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+//     for (var k in o)
+//         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+//     return fmt;
+// }
 
 const mediaLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark', 'electric_meter'];
 const materiaLayers = ['tower', 'cable', 'transformer', 'cable_equipment', 'pull_line'];
@@ -134,7 +135,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                             pJSON[mappingTag] = feature.getProperties()[p] ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p])) : null;
                             break;
                         case 'azimuth':
-                            pJSON[mappingTag] = feature.getProperties()[p] ? feature.getProperties()[p].toFixed(2) : 0;
+                            pJSON[mappingTag] = feature.getProperties()[p] ? feature.getProperties()[p]?.toFixed(2) : 0;
                             break;
                         default:
                             pJSON[mappingTag] = feature.getProperties()[p];
@@ -228,7 +229,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         // 相应数据到右侧边栏
         const resData = [];
         for (let p in pJSON) {
-            resData.push({ propertyName: p, data: pJSON[p] || "" })
+          resData.push({ propertyName: p, data: pJSON[p] || "" })
         }
         ops.setRightSidebarVisiviabel(true);
         ops.setRightSidebarData(resData);
@@ -299,23 +300,18 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
 }
 
+// 当前经纬度映射到HTML节点
 export const mapPointermove = (evt: any, map: any) => {
     let coordinate = evt.coordinate;
     let lont = transform(coordinate, 'EPSG:3857', 'EPSG:4326');
     const x = document.getElementById("currentPositionX");
     const y = document.getElementById("currentPositionY");
-    x && (x.innerHTML = lont[0].toFixed(4));
-    y && (y.innerHTML = lont[1].toFixed(4));
-    // setCurrentPosition([lont[0].toFixed(4), lont[1].toFixed(4)]);
-
-    map.getTargetElement().style.cursor = "default";
-    map.forEachFeatureAtPixel(evt.pixel, function (feature:any, layer:any) {
-        map.getTargetElement().style.cursor = "pointer";
-    })
+    if( x !== null) x.innerHTML = lont[0].toFixed(4);
+    if( y !== null) y.innerHTML = lont[0].toFixed(4);
 }
 
+// 当前比例尺映射到HTML节点
 export const mapMoveend = (evt: any, map: any) => {
     const scaleSize: HTMLSpanElement = document.getElementById("currentScaleSize") as HTMLSpanElement;
-    scaleSize.innerHTML = getScale(map) || "";
-    // setScaleSize(getScale(map));
+    if(scaleSize !== null) scaleSize.innerHTML = getScale(map) || "";
 }
