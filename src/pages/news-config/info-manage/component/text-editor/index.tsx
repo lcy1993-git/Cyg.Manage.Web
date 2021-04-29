@@ -11,6 +11,9 @@ import { useRequest } from 'ahooks';
 import mammoth from 'mammoth';
 import { getGroupInfo } from '@/services/project-management/all-project';
 import uuid from 'node-uuid';
+//@ts-ignore
+import pdfjsLib from 'pdfjs-dist/webpack';
+// PDFJS.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/build/pdf.worker.js';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -44,25 +47,43 @@ class AlertMenu extends BtnMenu {
 
   readFile(newThat: any, event: any) {
     const that = newThat.editor;
+    const fileNode = this.$elem.elems[0].children[1];
     if (event.target.files[0] !== undefined) {
       const selectedFile = event.target.files[0];
-      const reader = new FileReader();
-      reader.readAsArrayBuffer(selectedFile);
-      reader.onload = function (e) {
-        //@ts-ignore
-        const docEle = e.target.result;
+      console.log(fileNode.value);
 
-        mammoth
-          .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
-          .then((result: any) => {
-            that.txt.append(result.value);
-          })
-          .catch((a: any) => {
-            console.log('error', a);
-          })
-          .done();
-        event.target.value = '';
-      };
+      const reader = new FileReader();
+      if (selectedFile.name.includes('.docx')) {
+        reader.readAsArrayBuffer(selectedFile);
+        reader.onload = function (e) {
+          //@ts-ignore
+          const docEle = e.target.result;
+
+          mammoth
+            .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
+            .then((result: any) => {
+              that.txt.append(result.value);
+            })
+            .catch((a: any) => {
+              console.log('error', a);
+            })
+            .done();
+          event.target.value = '';
+        };
+      } else {
+        const pdfPath = fileNode.value;
+        reader.readAsDataURL(selectedFile);
+        reader.onload = function (e) {
+          console.log(this);
+
+          // pdfjsLib.getDocument(this.result).then(function (pdf: any) {
+          //   if (pdf) {
+          //     const canvas = document.createElement('canvas');
+          //     document.getElementById('div1')?.append(canvas);
+          //   }
+          // });
+        };
+      }
     }
   }
 
@@ -82,7 +103,6 @@ class AlertMenu extends BtnMenu {
     //       mammoth
     //         .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
     //         .then((result: any) => {
-    //           console.log(result.value);
     //           that.txt.append(result.value);
     //         })
     //         .catch((a: any) => {
@@ -243,9 +263,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
         />
       </CyFormItem>
       <CyFormItem name="content" label="内容" required labelWidth={60}>
-        <div id="div1">
-          <canvas className="pdf-content"></canvas>
-        </div>
+        <div id="div1"></div>
       </CyFormItem>
     </>
   );
