@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import TableSearch from '@/components/table-search';
 import UrlSelect from '@/components/url-select';
-import { Button, Input, Collapse, Select, Popover, DatePicker } from 'antd';
+import { Button, Input, Select, Popover, DatePicker } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
 import { Moment } from 'moment';
@@ -17,7 +17,6 @@ import {
 } from '@/services/project-management/all-project';
 const { Search } = Input;
 const { Option } = Select;
-const { Panel } = Collapse;
 interface ProjectStatusOption {
   key: string;
   name: string;
@@ -40,7 +39,6 @@ const FilterBar: FC = observer(() => {
     defaultExpanded: false,
   });
   const store = useContainer();
-  console.log('filter fresh');
 
   const {
     projectCategory,
@@ -64,7 +62,7 @@ const FilterBar: FC = observer(() => {
     }
 
     return arrayProjectStatus.map((v: ProjectStatusOption) => {
-      return <Option key={v.key}>{v.name}</Option>;
+      return <Option key={v.key} children={v.name} value={v.key}/>;
     });
   };
 
@@ -328,7 +326,7 @@ const FilterBar: FC = observer(() => {
   };
 
   return (
-    <div className={styles.form}>
+    <div className={styles.filterBar}>
       <div className="flex">
         <TableSearch className="mr10" width="178px">
           <Search

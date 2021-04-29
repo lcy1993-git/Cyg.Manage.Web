@@ -7,24 +7,12 @@ import { useRequest } from 'ahooks';
 import {
   GetMaterialListByProjectIdList,
   GetTrackTimeLine,
+  MaterialDataType
 } from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-interface MaterialDataType {
-  description: string;
-  itemNumber: number;
-  materialId: string;
-  name: string;
-  pieceWeight: number;
-  spec: string;
-  state: string;
-  type: string;
-  unit: string;
-  unitPrice: number;
-  remark: string;
-  code: string;
-  supplySide: string;
-}
+
+
 
 const Track1 = () => (
   <svg
