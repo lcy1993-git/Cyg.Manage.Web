@@ -89,7 +89,7 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
 
 const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>();
-  const [projectIdList, setProjectIds] = useState<ProjectList[]>([]); //筛选的id数据
+  const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]); //筛选的id数据
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const store = useContainer();
@@ -127,7 +127,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             },
           ]);
           setExpandedKeys(['-1', reShapeData[0].key]);
-          setProjectIds([
+          setProjectIdList([
             {
               id: reShapeData[0].children[0].key,
               status: reShapeData[0].children[0].status,
@@ -194,7 +194,18 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(expandedKeysValue);
   };
 
-  const onAllCheck = (checked: React.Key[], info: any) => {
+
+  /**
+   * https://ant.design/components/tree-cn/#header 组件文档
+   * @param checked 
+   * @param info 
+   * 
+   * - 工程名字
+   *  - 项目名字
+   * 
+   * 只需要获取项目的id和一些地图需要的数据
+   */
+  const onCheck = (checked: React.Key[], info: any) => {
     //全选的时候
     if (info.node.key === '-1') {
       if (info.checked) {
@@ -216,7 +227,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         });
       } else {
         //取消全选
-        setProjectIds([]);
+        setProjectIdList([]);
       }
     } else {
       /**
@@ -238,7 +249,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       }
       //当没有选中的时候
       if (!info.node.children && !info.checked) {
-        setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
+        setProjectIdList(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
       }
       //选中父节点时
       //选中的时候
@@ -261,7 +272,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           (v: { key: string; time: string; status: number }) => v.key,
         );
 
-        setProjectIds(
+        setProjectIdList(
           projectIdList?.filter((v: ProjectList) => {
             return unCheckedKeys.indexOf(v.id) === -1;
           }),
@@ -269,74 +280,6 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       }
     }
 
-    setCheckedKeys(checked);
-  };
-
-  const onCompanyCheck = (checked: React.Key[], info: any) => {
-    /**
-     * 只要子节点的id不要父节点的id
-     */
-
-    //选中子节点时
-    //当选中的时候
-    if (!info.node.children && info.checked) {
-      projectIdList?.push({
-        id: info.node.key,
-        time: info.node.time,
-        status: info.node.status,
-      });
-    }
-    //当没有选中的时候
-    if (!info.node.children && !info.checked) {
-      setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
-    }
-    //选中父节点时
-    //选中的时候
-    if (info.node.children && info.checked && info.node.type === 'company') {
-      info.node.children.forEach((v: { key: string; time: string; status: number }) => {
-        projectIdList?.push({
-          id: v.key,
-          status: v.status.toString(),
-          time: v.time,
-        });
-      });
-    }
-
-    if (info.node.children && info.checked && info.node.type === 'companyParent') {
-      info.node.children.forEach((v: { children: any[] }) => {
-        v.children.forEach((v: { key: string; time: string; status: number }) => {
-          projectIdList?.push({
-            id: v.key,
-            status: v.status.toString(),
-            time: v.time,
-          });
-        });
-      });
-    }
-    //没有选中的时候
-    if (info.node.children && !info.checked && info.node.type === 'company') {
-      let unCheckedKeys = info.node.children.map(
-        (v: { key: string; time: string; status: number }) => v.key,
-      );
-      setProjectIds(
-        projectIdList?.filter((v: ProjectList) => {
-          return unCheckedKeys.indexOf(v.id) !== -1;
-        }),
-      );
-    }
-    if (info.node.children && !info.checked && info.node.type === 'companyParent') {
-      let unCheckedKeys: string[] = [];
-      info.node.children.forEach((v: { children: any[] }) => {
-        v.children.forEach((v: { key: string; time: string; status: number }) => {
-          unCheckedKeys?.push(v.key);
-        });
-      });
-      setProjectIds(
-        projectIdList?.filter((v: ProjectList) => {
-          return unCheckedKeys.indexOf(v.id) !== -1;
-        }),
-      );
-    }
     setCheckedKeys(checked);
   };
 
@@ -373,7 +316,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}
-                onCheck={onAllCheck}
+                onCheck={onCheck}
                 checkedKeys={checkedKeys}
                 treeData={treeData}
                 className={classNames(styles.sideMenu)}

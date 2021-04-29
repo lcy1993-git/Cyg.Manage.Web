@@ -2,11 +2,15 @@ import React, { createRef, useEffect, useMemo, useRef, useState } from 'react';
 import { Drawer, Table, Modal, Carousel, Input, message, Tooltip, Comment, List } from 'antd';
 import { useContainer } from '../../result-page/mobx-store';
 import { MenuUnfoldOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
-import { publishMessage } from '@/services/visualization-results/visualization-results';
+import { ReviewRequestType, addReview } from '@/services/visualization-results/side-popup';
+// import { publishMessage } from '@/services/news-config/review-manage';
+
 import uuid from 'node-uuid';
 import styles from './index.less';
 import moment from 'moment';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { useRequest } from 'ahooks';
+
 const Commentdata = [
   {
     actions: [<span key="comment-list-reply-to-0">Reply to</span>],
@@ -179,9 +183,11 @@ const Commentdata = [
     ),
   },
 ];
+
 export interface TableDataType {
-  propertyName: string;
-  data: string;
+  // propertyName: string;
+  // data: string;
+  [propName: string]: any;
 }
 
 export interface Props {
@@ -318,52 +324,37 @@ const mediaItem = (data: any) => {
 const modalTitle = {
   media: '查看多媒体文件',
   material: '查看材料表',
-  annotation: '创建批注',
+  annotation: '创建审阅',
+};
+
+const DEVICE_TYPE: { [propertyName: string]: string } = {
+  tower: '杆塔',
+  cable: '电缆井',
+  transformer: '变压器',
+  cable_equipment: '电力设备',
+  cross_arm: '横担',
+  over_head_device: '杆上物',
+  fault_indicator: '故障指示器',
+  mark: '地物',
+  electric_meter: '户表',
+};
+
+const LAYER_TYPE: { [propertyName: string]: string } = {
+  survey: '勘察',
+  plan: '方案',
+  design: '设计',
+  dismantle: '拆除',
 };
 
 const SidePopup: React.FC<Props> = (props) => {
   const { data, rightSidebarVisible, setRightSidebarVisiviabel } = props;
-
-  const { checkedProjectIdList } = useContainer().vState;
-  const scrollbars = createRef<Scrollbars>();
-  useEffect(() => {
-    setRightSidebarVisiviabel(false);
-  }, [JSON.stringify(checkedProjectIdList)]);
-
-  const modalData = useMemo(() => {
-    const media = removeEmptChildren(
-      data.find((item: any) => item.propertyName === '多媒体')?.data,
-    );
-    const material = removeEmptChildren(
-      data.find((item: any) => item.propertyName === '材料表')?.data,
-    );
-    function removeEmptChildren(v: any): any[] {
-      if (Array.isArray(v)) {
-        return v.map((item) => {
-          if (item.children) {
-            if (item.children.length === 0) {
-              delete item.children;
-            } else {
-              item.children = removeEmptChildren(item.children);
-            }
-          }
-          return item;
-        });
-      }
-      return [];
-    }
-
-    return {
-      type: 'undefined',
-      media,
-      material,
-    };
-  }, [JSON.stringify(data)]);
-  // const [ modalData ] = useState<ModalData>({ type: "media", media: [] });
+  const [reviewRquestBody, setReviewRquestBody] = useState<ReviewRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
-  const [annotation, setAnnotation] = useState('');
+  const [review, setReview] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
+  const { checkedProjectIdList } = useContainer().vState;
+  const scrollbars = createRef<Scrollbars>();
 
   const columns = [
     {
@@ -409,7 +400,7 @@ const SidePopup: React.FC<Props> = (props) => {
                 onClick={() => setActiveType('annotation&' + value.id)}
                 key={index}
               >
-                添加批注
+                添加审阅
               </span>
             );
           } else {
@@ -470,14 +461,123 @@ const SidePopup: React.FC<Props> = (props) => {
     },
   ];
 
+  const { run: addReviewRequest } = useRequest(addReview, {
+    manual: true,
+    onSuccess: () => {
+      message.success('添加成功');
+    },
+    onError: () => {
+      message.success('添加失败');
+    },
+  });
+  useEffect(() => {
+    setRightSidebarVisiviabel(false);
+  }, [JSON.stringify(checkedProjectIdList)]);
+
+  const modalData = useMemo(() => {
+    const media = removeEmptChildren(
+      data.find((item: any) => item.propertyName === '多媒体')?.data,
+    );
+    const material = removeEmptChildren(
+      data.find((item: any) => item.propertyName === '材料表')?.data,
+    );
+    /**
+     * 获取添加批注的一些关键信息
+     * http://10.6.1.36:8025/help/index.html 接口文档
+     *
+     */
+
+    const feature = data.find((item: any) => item.propertyName === '批注')?.data.feature;
+    if (feature) {
+      const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
+      console.log(loadEnumsData);
+
+      const findEnumKey = (v: string, type: string): number => {
+        let res: number = -100;
+        loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
+          if (l.key === type) {
+            l.value.forEach((e) => {
+              if (e.text === v) {
+                console.log(e.text);
+
+                res = e.value as number;
+              }
+            });
+          }
+        });
+
+        return res;
+      };
+      const { id_ } = feature;
+      const { project_id: projectId } = feature.values_;
+      /**
+       * "survey_tower.1386220338212147281" 切割该字符串获取图层type，设备类型，设备id
+       */
+      let split = id_.split('.');
+      const [enLayerType, enDeviceType] = split[0].split('_');
+      const deviceId = split[1];
+
+      /**
+       * 初始化请求body
+       */
+      setReviewRquestBody({
+        layerType: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
+        deviceType: findEnumKey(DEVICE_TYPE[enDeviceType], 'ProjectCommentDevice'),
+        deviceId,
+        projectId,
+        content: '',
+      });
+    }
+
+    // const {  values } = feature;
+    // const { project_id } = values;
+    function removeEmptChildren(v: any): any[] {
+      if (Array.isArray(v)) {
+        return v.map((item) => {
+          if (item.children) {
+            if (item.children.length === 0) {
+              delete item.children;
+            } else {
+              item.children = removeEmptChildren(item.children);
+            }
+          }
+          return item;
+        });
+      }
+      return [];
+    }
+
+    return {
+      type: 'undefined',
+      media,
+      material,
+    };
+  }, [JSON.stringify(data)]);
+  // const [ modalData ] = useState<ModalData>({ type: "media", media: [] });
+
+  /**
+   * 当modal click确定的时候
+   * @param id 
+   */
   const onOkClick = (id: string | undefined) => {
+    /**
+     * 如果要在添加审阅相应事件只能在这个if下面
+     */
     if (activeType?.split('&')[0] === 'annotation') {
-      publishMessage({ content: annotation, projectId: activeType.split('&')[1] }).then((res) => {
-        if (res.code === 200 && res.isSuccess === true) {
-          message.success('批注推送成功');
-        } else {
-          message.error('批注推送失败');
-        }
+      // publishMessage({ content: annotation, projectId: activeType.split('&')[1] }).then((res) => {
+      //   if (res.code === 200 && res.isSuccess === true) {
+      //     message.success('批注推送成功');
+      //   } else {
+      //     message.error('批注推送失败');
+      //   }
+      // });
+      addReviewRequest({
+        projectId: reviewRquestBody?.projectId ?? '',
+        layerType: reviewRquestBody?.layerType ?? -100,
+        deviceType: reviewRquestBody?.deviceType ?? -100,
+        deviceId: reviewRquestBody?.deviceId ?? -100,
+        title: "just a title",
+        content: review,
       });
     }
     setActiveType(undefined);
@@ -539,10 +639,10 @@ const SidePopup: React.FC<Props> = (props) => {
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
-            <Scrollbars autoHide ref={scrollbars} style={{ marginBottom:32,height: 300 }}>
+            <Scrollbars autoHide ref={scrollbars} style={{ marginBottom: 32, height: 300 }}>
               <List
                 className="comment-list"
-                header={`${data.length} 批注`}
+                header={`${data.length}条 审阅内容`}
                 itemLayout="horizontal"
                 dataSource={Commentdata}
                 renderItem={(item) => (
@@ -553,11 +653,11 @@ const SidePopup: React.FC<Props> = (props) => {
               />
             </Scrollbars>
             <Input.TextArea
-              placeholder="请输入输入框推送内容..."
+              placeholder="添加审阅"
               autoSize={{ minRows: 8, maxRows: 8 }}
-              defaultValue={annotation}
-              value={annotation}
-              onChange={(e) => setAnnotation(e.target.value)}
+              defaultValue={review}
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
             />
           </>
         )}

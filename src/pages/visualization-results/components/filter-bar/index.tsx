@@ -17,7 +17,6 @@ import {
 } from '@/services/project-management/all-project';
 const { Search } = Input;
 const { Option } = Select;
-const { Panel } = Collapse;
 interface ProjectStatusOption {
   key: string;
   name: string;
@@ -40,7 +39,6 @@ const FilterBar: FC = observer(() => {
     defaultExpanded: false,
   });
   const store = useContainer();
-  console.log('filter fresh');
 
   const {
     projectCategory,
