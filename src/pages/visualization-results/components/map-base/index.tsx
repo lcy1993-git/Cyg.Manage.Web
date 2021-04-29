@@ -33,7 +33,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 从Vstate获取外部传入的数据
   const store = useContainer();
   const { vState } = store;
-  const { checkedProjectIdList: projects, filterCondition, onPositionClickState, normalClickDate, observeClickDate, positionMap, observeTrack, confessionTrack } = vState;
+  const { checkedProjectIdList: projects, filterCondition, visibleLeftSidebar, normalClickDate, observeClickDate, positionMap, observeTrack, confessionTrack } = vState;
   const { kvLevel } = filterCondition;
 
   // 右侧边栏状态
@@ -118,6 +118,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     map && relocateMap('', layerGroups, view, setView, map);
   }, [JSON.stringify(positionMap)]);
 
+  // 左侧菜单伸缩时刷新地图尺寸
+  useEffect(() => {
+    map?.updateSize();
+  }, [visibleLeftSidebar])
   // 处理高亮图层
   const highlight = useCallback((t: number, state)=> {
     const highlightLayer: any = map?.getLayers().getArray().find((layer: any) => {return layer.get('name') === 'highlightLayer'});
