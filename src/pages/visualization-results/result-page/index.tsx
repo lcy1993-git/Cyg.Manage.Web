@@ -45,13 +45,7 @@ const VisualizationResults: React.FC = observer(() => {
               ) : null}
             </div>
           </div>
-          <div className={styles.observeTimelineContainer}>
-            <div style={{ marginTop: '16px' }}>
-              {observeTrackTimeline && observeTrackTimeline.length > 0 && observeTrack ? (
-                <Timeline type="observe" height={60} width={400} dates={observeTrackTimeline} />
-              ) : null}
-            </div>
-          </div>
+
           <div className={styles.listMenuContainer}>
             <ListMenu />
           </div>
