@@ -11,9 +11,7 @@ import { useRequest } from 'ahooks';
 import mammoth from 'mammoth';
 import { getGroupInfo } from '@/services/project-management/all-project';
 import uuid from 'node-uuid';
-//@ts-ignore
-import pdfjsLib from 'pdfjs-dist/webpack';
-// PDFJS.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/build/pdf.worker.js';
+import pdfjs from 'pdfjs-dist'
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -47,11 +45,8 @@ class AlertMenu extends BtnMenu {
 
   readFile(newThat: any, event: any) {
     const that = newThat.editor;
-    const fileNode = this.$elem.elems[0].children[1];
     if (event.target.files[0] !== undefined) {
       const selectedFile = event.target.files[0];
-      console.log(fileNode.value);
-
       const reader = new FileReader();
       if (selectedFile.name.includes('.docx')) {
         reader.readAsArrayBuffer(selectedFile);
@@ -71,17 +66,30 @@ class AlertMenu extends BtnMenu {
           event.target.value = '';
         };
       } else {
-        const pdfPath = fileNode.value;
         reader.readAsDataURL(selectedFile);
         reader.onload = function (e) {
-          console.log(this);
-
-          // pdfjsLib.getDocument(this.result).then(function (pdf: any) {
-          //   if (pdf) {
-          //     const canvas = document.createElement('canvas');
-          //     document.getElementById('div1')?.append(canvas);
-          //   }
-          // });
+          const res = e.target?.result;
+          pdfjs.getDocument(res as string)?.then(async function (pdf: any) {
+            const numPages = pdf.numPages;            
+            for(let i = 1; i <= numPages; i ++) {
+              await pdf.getPage(i).then(async function getPageHelloWorld(page: any) {
+                var scale = 1;
+                var viewport = page.getViewport(scale);
+                const canvas = document.createElement('canvas');
+                var context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                var renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                await page.render(renderContext);
+                that.txt.append(`<image style="width:100%;height:auto" src="${canvas.toDataURL("image/png")}"></image>`);
+              });
+            }
+          }).catch((err: any) => {
+            console.log("文件读取失败");
+          });
         };
       }
     }
