@@ -5,13 +5,10 @@ import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import moment from 'moment';
 import {
-  GetEngineerProjectListByParams,
-  GetEngineerCompanyProjectListByParams,
+  fetchEngineerProjectListByParams,
 } from '@/services/visualization-results/side-menu';
 import { useContainer } from '../../store';
-import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-import Filterbar from '../filter-bar';
 const { TabPane } = Tabs;
 
 /**
@@ -102,7 +99,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    * 获取全部数据
    */
   const { data: allData, run: fetchAll, loading: allLoading } = useRequest(
-    () => GetEngineerProjectListByParams(filterCondition),
+    () => fetchEngineerProjectListByParams(filterCondition),
 
     {
       refreshDeps: [filterCondition],

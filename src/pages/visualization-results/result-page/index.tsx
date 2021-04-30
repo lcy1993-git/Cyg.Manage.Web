@@ -2,7 +2,7 @@ import React, { Profiler } from 'react';
 import styles from './index.less';
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
-import SideMenu from '../components/side-menu';
+import SideTree from '../components/side-tree';
 import MapContainerShell from '../components/map-container-shell';
 import { Provider, useContainer } from './mobx-store';
 import Timeline from '../components/timeline';
@@ -32,7 +32,7 @@ const VisualizationResults: React.FC = observer(() => {
         )}
       >
         <div className={styles.sideNav}>
-          <SideMenu />
+          <SideTree />
         </div>
 
         <div className={classNames(styles.mapContainer, 'flex1')}>

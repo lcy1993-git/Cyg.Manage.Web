@@ -4,7 +4,10 @@ import styles from './index.less';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import moment from 'moment';
-import { GetEngineerProjectListByParams } from '@/services/visualization-results/side-menu';
+import {
+  fetchEngineerProjectListByParams,
+  ProjectItemType,
+} from '@/services/visualization-results/side-menu';
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
@@ -28,41 +31,6 @@ export interface TreeNodeType {
 export interface SideMenuProps {
   className?: string;
 }
-/**
- * 获得的projectList的类型
- */
-export interface ProjectType {
-  id: string;
-  name: string;
-  createdOn: Date;
-  projects: ProjectItemType[];
-}
-
-export interface ProjectItemType {
-  id: string;
-  name: string;
-  haveData: boolean;
-  haveSurveyData: boolean;
-  haveDesignData: boolean;
-  projectEndTime: Date;
-  isExecutor: boolean;
-  status: number;
-}
-
-export interface CompanyProjectType {
-  companyId: string;
-  companyName: string;
-  createdOn: number;
-  engineers: Engineer[];
-}
-
-export interface Engineer {
-  name: string;
-  id: string;
-  type: string;
-  createdOn: number;
-  projects: ProjectItemType[];
-}
 
 /**
  * 把传进来的projectList数据传唤成需要的数组类型
@@ -84,7 +52,7 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
   });
 };
 
-const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
+const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<
     | React.Key[]
     | {
@@ -107,13 +75,13 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    * 获取全部数据
    */
   const { data: allData, loading: allLoading } = useRequest(
-    () => GetEngineerProjectListByParams(filterCondition),
+    () => fetchEngineerProjectListByParams(filterCondition),
 
     {
       refreshDeps: [filterCondition],
       onSuccess: () => {
-        if (allData.length) {
-          let reShapeData = allData.map((v: ProjectType) => {
+        if (allData?.length) {
+          let reShapeData = allData.map((v) => {
             return {
               title: v.name,
               key: v.id,
@@ -133,7 +101,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           setProjectIds([
             {
               id: reShapeData[0].children[0].key,
-              status: reShapeData[0].children[0].status,
+              status: reShapeData[0].children[0].status?.toLocaleString(),
               time: reShapeData[0].children[0].time,
               haveData: reShapeData[0].children[0].haveData,
               haveSurveyData: reShapeData[0].children[0].haveSurveyData,
@@ -275,4 +243,4 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   );
 });
 
-export default SideMenu;
+export default SideTree;

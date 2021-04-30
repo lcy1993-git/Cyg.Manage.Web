@@ -15,6 +15,35 @@ export interface EngineerProjetListFilterParams {
 }
 
 /**
+ * 获得的projectList的类型
+ */
+ export interface ProjectType {
+  id: string;
+  name: string;
+  createdOn: Date;
+  projects: ProjectItemType[];
+}
+
+export interface ProjectItemType {
+  id: string;
+  name: string;
+  haveData: boolean;
+  haveSurveyData: boolean;
+  haveDesignData: boolean;
+  projectEndTime: Date;
+  isExecutor: boolean;
+  status: number;
+}
+
+export interface Engineer {
+  name: string;
+  id: string;
+  type: string;
+  createdOn: number;
+  projects: ProjectItemType[];
+}
+
+/**
  *
  * 接口文档 http://10.6.1.36:8025/help/index.html
  * 获取数据初始化侧边栏树形结构
@@ -22,20 +51,10 @@ export interface EngineerProjetListFilterParams {
  *
  * */
 
-export const GetEngineerProjectListByParams = (params: EngineerProjetListFilterParams) => {
-  return cyRequest<any>(() =>
+export const fetchEngineerProjectListByParams = (params: EngineerProjetListFilterParams) => {
+  return cyRequest<Engineer[]>(() =>
     request(
       `${baseUrl.webGis}/WebGis/GetEngineerProjectList
-    `,
-      { method: 'POST', data: params },
-    ),
-  );
-};
-
-export const GetEngineerCompanyProjectListByParams = (params: EngineerProjetListFilterParams) => {
-  return cyRequest<any>(() =>
-    request(
-      `${baseUrl.webGis}/WebGis/GetCompanyEngineerProjectList
     `,
       { method: 'POST', data: params },
     ),

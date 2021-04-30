@@ -19,6 +19,11 @@ export interface MaterialDataType {
   key?: string;
 }
 
+export interface TrackTimelineType {
+  surveyTimeLine: string[];
+  disclosureTimeLine: string[];
+}
+
 /**
  *
  * 接口文档 http://10.6.1.36:8025/help/index.html
@@ -27,7 +32,7 @@ export interface MaterialDataType {
  *
  * */
 
-export const GetMaterialListByProjectIdList = (projectIds: string[]) => {
+export const GetMaterialListByProjectIdList = (projectIdList: string[]) => {
   return cyRequest<MaterialDataType[]>(() =>
     request(
       `${baseUrl.webGis}/WebGis/GetBatchProjectMaterials
@@ -36,7 +41,7 @@ export const GetMaterialListByProjectIdList = (projectIds: string[]) => {
         method: 'POST',
         data: {
           designType: 0,
-          projectIds,
+          projectIds: projectIdList,
         },
       },
     ),
@@ -44,7 +49,7 @@ export const GetMaterialListByProjectIdList = (projectIds: string[]) => {
 };
 
 export const GetTrackTimeLine = (projectId: string) => {
-  return cyRequest<any>(() =>
+  return cyRequest<TrackTimelineType>(() =>
     request(
       `${baseUrl.webGis2}/WebGis/GetTrackTimeLine?projectId=${projectId}
     `,

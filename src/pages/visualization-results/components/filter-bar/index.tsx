@@ -161,7 +161,7 @@ const FilterBar: FC = observer(() => {
           </TableSearch>
         </div>
         <div>
-          <TableSearch className={styles.filterConditionItem} label="项目分类" width="220px">
+          <TableSearch label="项目分类" width="220px">
             <UrlSelect
               valueKey="value"
               titleKey="text"
@@ -301,7 +301,7 @@ const FilterBar: FC = observer(() => {
         >
           {isExpanded ? <UpOutlined /> : null}
         </div>
-        <div className={styles.action} style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Button className="mr2" onClick={() => search()} type="primary">
             查询
           </Button>
