@@ -208,7 +208,6 @@ const ListMenu: FC = observer(() => {
         onClickObserveTrack();
         break;
       default:
-        store.toggleConfessionTrack(true);
         break;
     }
   };
@@ -283,12 +282,7 @@ const ListMenu: FC = observer(() => {
         <Menu.Item key="3" icon={<NodeIndexOutlined />}>
           材料表
         </Menu.Item>
-        <Menu.Item key="4" icon={<Icon component={Track1} />}>
-          勘察轨迹
-        </Menu.Item>
-        <Menu.Item key="5" icon={<Icon component={Track2} />}>
-          交底轨迹
-        </Menu.Item>
+        <Menu.Item key="4">勘察轨迹</Menu.Item>
       </Menu>
 
       <Modal

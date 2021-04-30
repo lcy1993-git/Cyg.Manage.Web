@@ -1,9 +1,10 @@
-import React, { Profiler } from 'react';
+import React from 'react';
 import styles from './index.less';
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideTree from '../components/side-tree';
 import MapContainerShell from '../components/map-container-shell';
+import Filterbar from '../components/filter-bar';
 import { Provider, useContainer } from './mobx-store';
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
@@ -24,6 +25,7 @@ const VisualizationResults: React.FC = observer(() => {
 
   return (
     <PageCommonWrap noPadding={true}>
+      <Filterbar />
       <main
         className={classNames(
           styles.content,

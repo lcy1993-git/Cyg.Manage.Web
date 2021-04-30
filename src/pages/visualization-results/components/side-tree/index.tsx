@@ -226,7 +226,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   return (
     <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
-      <Filterbar />
       <Tabs type="line" defaultActiveKey="1" style={{ height: '100%' }}>
         <TabPane tab="全部项目" key="1">
           {allLoading ? (
