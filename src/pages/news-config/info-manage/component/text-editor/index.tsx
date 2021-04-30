@@ -46,11 +46,8 @@ class AlertMenu extends BtnMenu {
 
   readFile(newThat: any, event: any) {
     const that = newThat.editor;
-    const fileNode = this.$elem.elems[0].children[1];
     if (event.target.files[0] !== undefined) {
       const selectedFile = event.target.files[0];
-      console.log(fileNode.value);
-
       const reader = new FileReader();
       if (selectedFile.name.includes('.docx')) {
         reader.readAsArrayBuffer(selectedFile);
