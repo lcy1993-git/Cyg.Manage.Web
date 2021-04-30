@@ -1,6 +1,12 @@
 import React, { FC, useMemo, useState } from 'react';
-import { Menu, message, Modal, Table } from 'antd';
-import Icon, { CopyOutlined, HeatMapOutlined, NodeIndexOutlined } from '@ant-design/icons';
+import { Menu, message, Modal, Switch, Table, Tooltip } from 'antd';
+import styles from './index.less';
+import {
+  CopyOutlined,
+  HeatMapOutlined,
+  IssuesCloseOutlined,
+  NodeIndexOutlined,
+} from '@ant-design/icons';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/mobx-store';
 import { ColumnsType } from 'antd/es/table';
@@ -12,7 +18,6 @@ import {
 } from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-import { Track2, Track1 } from '@/assets/list-menu-icon';
 
 export const columns: ColumnsType<MaterialDataType> = [
   {
@@ -131,7 +136,6 @@ const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDat
   return parentArr;
 };
 
-const dontNeedSelectKey = ['1', '2', '3'];
 const ListMenu: FC = observer(() => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
@@ -186,13 +190,6 @@ const ListMenu: FC = observer(() => {
   });
 
   const onSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
-    /**
-     * 筛选出要高亮的menu，dontSelectkey就是不需要高亮的menu
-     */
-    if (dontNeedSelectKey.indexOf(key.toString()) === -1) {
-      setSelectedKeys(selectedKeys?.map((v: React.Key) => v.toString()) ?? []);
-    }
-
     switch (key.toString()) {
       case '1':
         onClickProjectDetailInfo();
@@ -227,7 +224,6 @@ const ListMenu: FC = observer(() => {
 
   const onClickObserveTrack = () => {
     if (checkedProjectIdList.length === 1) {
-      fetchTimeline(checkedProjectIdList[0].id);
       store.toggleObserveTrack(true);
     } else {
       setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
@@ -243,6 +239,14 @@ const ListMenu: FC = observer(() => {
     }
   };
 
+  const onSwitchChange = (checked: boolean) => {
+    if (checked) {
+      store.toggleObserveTrack(true);
+    } else {
+      store.toggleObserveTrack(false);
+    }
+  };
+
   return (
     <>
       {checkedProjectIdList?.length === 1 && projectModalVisible ? (
@@ -254,7 +258,7 @@ const ListMenu: FC = observer(() => {
       ) : null}
 
       <Menu
-        style={{ width: 150, backgroundColor: 'rgba(233, 233, 235, 0.6)' }}
+        style={{ width: 152, backgroundColor: 'rgba(233, 233, 235, 0.6)' }}
         selectedKeys={selectedKeys}
         onSelect={(info: {
           key: React.Key;
@@ -275,6 +279,11 @@ const ListMenu: FC = observer(() => {
       >
         <Menu.Item key="1" icon={<CopyOutlined />}>
           项目详情
+          {checkedProjectIdList?.length > 1 ? (
+            <Tooltip title="同时只能查看一个项目详情">
+              <IssuesCloseOutlined style={{ color: 'red', marginLeft: 8 }} />
+            </Tooltip>
+          ) : null}
         </Menu.Item>
         <Menu.Item key="2" icon={<HeatMapOutlined />}>
           地图定位
@@ -282,7 +291,17 @@ const ListMenu: FC = observer(() => {
         <Menu.Item key="3" icon={<NodeIndexOutlined />}>
           材料表
         </Menu.Item>
-        <Menu.Item key="4">勘察轨迹</Menu.Item>
+
+        <div className={styles.observeTrack}>
+          勘察轨迹
+          <Switch
+            style={{ marginLeft: 8 }}
+            onChange={(checked) => onSwitchChange(checked)}
+            size="small"
+            checkedChildren="开启"
+            unCheckedChildren="关闭"
+          />
+        </div>
       </Menu>
 
       <Modal
