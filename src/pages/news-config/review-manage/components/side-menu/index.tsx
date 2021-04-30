@@ -1,12 +1,10 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import moment from 'moment';
-import {
-  fetchEngineerProjectListByParams,
-} from '@/services/visualization-results/side-menu';
+import { fetchEngineerProjectListByParams } from '@/services/visualization-results/side-tree';
 import { useContainer } from '../../store';
 import { observer } from 'mobx-react-lite';
 const { TabPane } = Tabs;
@@ -143,7 +141,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
       ) : null}
       {allData ? (
-        <div  className={styles.sideMenu}>
+        <div className={styles.sideMenu}>
           <Tree
             showLine
             onExpand={onExpand}
@@ -151,7 +149,6 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             autoExpandParent
             height={size.height}
             treeData={treeData}
-           
           />
         </div>
       ) : null}

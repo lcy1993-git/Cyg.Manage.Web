@@ -7,7 +7,7 @@ import moment from 'moment';
 import {
   fetchEngineerProjectListByParams,
   ProjectItemType,
-} from '@/services/visualization-results/side-menu';
+} from '@/services/visualization-results/side-tree';
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
