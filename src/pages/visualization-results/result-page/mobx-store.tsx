@@ -18,7 +18,7 @@ export interface VisualizationResultsStateType {
   observeTrack: boolean; //勘察轨迹
   confessionTrack: boolean; //交底轨迹
   onPositionClickState: boolean; // 当点击地图定位时候
-  observeTrackTimeline?: string[];
+  observeTrackTimeline?: string[]; //勘察轨迹tiemline
 }
 
 const initState = {
@@ -72,9 +72,6 @@ function Store(vState: VisualizationResultsStateType) {
         default:
           break;
       }
-
-      console.log(this.vState.observeClickDate, 'observe');
-      console.log(this.vState.normalClickDate, 'normal');
     },
 
     togglePositionMap() {

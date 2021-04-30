@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { Menu, message, Modal, Table } from 'antd';
 import Icon, { CopyOutlined, HeatMapOutlined, NodeIndexOutlined } from '@ant-design/icons';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
@@ -105,12 +105,11 @@ const ListMenu: FC = observer(() => {
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
   const [materialList, setMaterialList] = useState<MaterialDataType[]>();
-
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList } = vState;
 
-  useEffect(() => {
+  useMemo(() => {
     if (checkedProjectIdList.length === 0) {
       setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
     }
@@ -147,11 +146,9 @@ const ListMenu: FC = observer(() => {
             };
           });
           parentArr.forEach((value: MaterialDataType) => {
-            value.children = materialData.filter((materialItem: MaterialDataType) => {
-              if (materialItem.type === value.type) {
-                materialItem.key = Math.random().toLocaleString();
-                return materialItem;
-              }
+            value.children = materialData.filter((materialItem) => {
+              materialItem.key = Math.random().toLocaleString();
+              return materialItem.type === value.type;
             });
           });
 
@@ -183,14 +180,10 @@ const ListMenu: FC = observer(() => {
   });
 
   const onSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
-    console.log(key, selectedKeys);
-
     /**
      * 筛选出要高亮的menu，dontSelectkey就是不需要高亮的menu
      */
     if (dontNeedSelectKey.indexOf(key.toString()) === -1) {
-      console.log(123);
-
       setSelectedKeys(selectedKeys?.map((v: React.Key) => v.toString()) ?? []);
     }
 
@@ -291,15 +284,13 @@ const ListMenu: FC = observer(() => {
         onCancel={() => setMaterialModalVisible(false)}
         width={1500}
       >
-        <div>
-          <Table
-            columns={columns}
-            rowKey="key"
-            pagination={false}
-            dataSource={materialList}
-            scroll={{ x: 1400, y: 400 }}
-          />
-        </div>
+        <Table
+          columns={columns}
+          rowKey="key"
+          pagination={false}
+          dataSource={materialList}
+          scroll={{ x: 1400, y: 400 }}
+        />
       </Modal>
     </>
   );

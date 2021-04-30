@@ -94,7 +94,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   >();
   const [projectIdList, setProjectIds] = useState<ProjectList[]>([]); //筛选的id数据
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>();
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
   const { filterCondition } = vState;
@@ -106,7 +106,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   /**
    * 获取全部数据
    */
-  const { data: allData, run: fetchAll, loading: allLoading } = useRequest(
+  const { data: allData, loading: allLoading } = useRequest(
     () => GetEngineerProjectListByParams(filterCondition),
 
     {
@@ -250,30 +250,28 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }, [checkedKeys]);
 
   return (
-    <>
-      <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
-        <Filterbar />
-        <Tabs type="line" defaultActiveKey="1" style={{ height: '100%' }}>
-          <TabPane tab="全部项目" key="1">
-            {allLoading ? (
-              <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
-            ) : null}
-            {allData ? (
-              <Tree
-                height={size.height}
-                checkable
-                onExpand={onExpand}
-                expandedKeys={expandedKeys}
-                onCheck={(checked, info) => onCheck(checked, info)}
-                checkedKeys={checkedKeys}
-                treeData={treeData}
-                className={classNames(styles.sideMenu)}
-              />
-            ) : null}
-          </TabPane>
-        </Tabs>
-      </div>
-    </>
+    <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
+      <Filterbar />
+      <Tabs type="line" defaultActiveKey="1" style={{ height: '100%' }}>
+        <TabPane tab="全部项目" key="1">
+          {allLoading ? (
+            <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
+          ) : null}
+          {allData ? (
+            <Tree
+              height={size.height}
+              checkable
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              onCheck={(checked, info) => onCheck(checked, info)}
+              checkedKeys={checkedKeys}
+              treeData={treeData}
+              className={classNames(styles.sideMenu)}
+            />
+          ) : null}
+        </TabPane>
+      </Tabs>
+    </div>
   );
 });
 
