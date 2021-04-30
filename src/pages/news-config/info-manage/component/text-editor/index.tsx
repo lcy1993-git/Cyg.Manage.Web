@@ -11,9 +11,8 @@ import { useRequest } from 'ahooks';
 import mammoth from 'mammoth';
 import { getGroupInfo } from '@/services/project-management/all-project';
 import uuid from 'node-uuid';
-//@ts-ignore
-import pdfjsLib from 'pdfjs-dist/webpack';
-// PDFJS.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/build/pdf.worker.js';
+
+import pdfjs from 'pdfjs-dist';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -71,53 +70,41 @@ class AlertMenu extends BtnMenu {
           event.target.value = '';
         };
       } else {
-        const pdfPath = fileNode.value;
         reader.readAsDataURL(selectedFile);
         reader.onload = function (e) {
-          console.log(this);
-
-          // pdfjsLib.getDocument(this.result).then(function (pdf: any) {
-          //   if (pdf) {
-          //     const canvas = document.createElement('canvas');
-          //     document.getElementById('div1')?.append(canvas);
-          //   }
-          // });
+          const res = e.target?.result;
+          pdfjs
+            .getDocument(res as string)
+            .promise.then(async function (pdf: any) {
+              const numPages = pdf.numPages;
+              for (let i = 1; i <= numPages; i++) {
+                await pdf.getPage(i).then(async function getPageHelloWorld(page: any) {
+                  var scale = 1;
+                  var viewport = page.getViewport(scale);
+                  const canvas = document.createElement('canvas');
+                  var context = canvas.getContext('2d');
+                  canvas.height = viewport.height;
+                  canvas.width = viewport.width;
+                  var renderContext = {
+                    canvasContext: context,
+                    viewport: viewport,
+                  };
+                  await page.render(renderContext);
+                  that.txt.append(
+                    `<image style="width:100%;height:auto" src="${canvas.toDataURL(
+                      'image/png',
+                    )}"></image>`,
+                  );
+                });
+              }
+            })
+            .catch((err: any) => {
+              console.log('文件读取失败');
+            });
         };
       }
     }
   }
-
-  // 菜单点击事件
-  clickHandler() {
-    //console.log(1);
-    // const that = this.editor;
-    // function readFile(this: any) {
-    //   console.log(this.files[0]);
-    //   if (this.files[0] !== undefined) {
-    //     const selectedFile = this.files[0];
-    //     const reader = new FileReader();
-    //     reader.readAsArrayBuffer(selectedFile);
-    //     reader.onload = function (e) {
-    //       //@ts-ignore
-    //       const docEle = e.target.result;
-    //       mammoth
-    //         .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
-    //         .then((result: any) => {
-    //           that.txt.append(result.value);
-    //         })
-    //         .catch((a: any) => {
-    //           console.log('error', a);
-    //         })
-    //         .done();
-    //     };
-    //   }
-    // }
-    // this.$elem.elems[0].children[1].addEventListener('change', readFile);
-  }
-
-  // 菜单是否被激活（如果不需要，这个函数可以空着）
-  // 1. 激活是什么？光标放在一段加粗、下划线的文本时，菜单栏里的 B 和 U 被激活，如下图
-  // 2. 什么时候执行这个函数？每次编辑器区域的选区变化（如鼠标操作、键盘操作等），都会触发各个菜单的 tryChangeActive 函数，重新计算菜单的激活状态
 
   tryChangeActive() {
     // 激活菜单
@@ -130,6 +117,8 @@ class AlertMenu extends BtnMenu {
     // this.unActive()
   }
 }
+
+// }
 
 const TextEditorModal: React.FC<EditorParams> = (props: any) => {
   const { onChange, titleForm, htmlContent, type } = props;
