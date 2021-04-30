@@ -90,7 +90,7 @@ export enum ProjectSourceType {
 export enum ProjectIdentityType {
   "立项" = 1,
   "委托" = 2,
-  "执行" = 3,
+  "执行" = 4,
   "共享" = 999,
 }
 
