@@ -7,6 +7,7 @@ import moment from 'moment';
 import {
   fetchEngineerProjectListByParams,
   ProjectItemType,
+  Engineer,
 } from '@/services/visualization-results/side-tree';
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
@@ -52,6 +53,30 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
   });
 };
 
+const generateProjectTree = (engineerList: Engineer[]) => {
+  let projectTree = engineerList.map((v) => {
+    return {
+      title: v.name,
+      key: v.id,
+      children: mapProjects2TreeNodeData(v.projects),
+    };
+  });
+
+  return projectTree;
+};
+
+const generatorIdItem = (item: TreeNodeType) => {
+  return {
+    id: item.key,
+    time: item.time,
+    status: item.status?.toString(),
+    haveData: item.haveData,
+    haveSurveyData: item.haveSurveyData,
+    haveDesignData: item.haveDesignData,
+    isExecutor: item.isExecutor,
+  };
+};
+
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<
     | React.Key[]
@@ -60,7 +85,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         halfChecked: React.Key[];
       }
   >();
-  const [projectIdList, setProjectIds] = useState<ProjectList[]>([]); //筛选的id数据
+  const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]); //筛选的id数据
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>();
   const store = useContainer();
@@ -81,35 +106,28 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       refreshDeps: [filterCondition],
       onSuccess: () => {
         if (allData?.length) {
-          let reShapeData = allData.map((v) => {
-            return {
-              title: v.name,
-              key: v.id,
-              children: mapProjects2TreeNodeData(v.projects),
-            };
-          });
-
+          let listTree = generateProjectTree(allData);
           //设置树形数据
           setTreeData([
             {
               title: '全选',
               key: '-1',
-              children: reShapeData,
+              children: listTree,
             },
           ]);
-          setExpandedKeys(['-1', reShapeData[0].key]);
-          setProjectIds([
-            {
-              id: reShapeData[0].children[0].key,
-              status: reShapeData[0].children[0].status?.toLocaleString(),
-              time: reShapeData[0].children[0].time,
-              haveData: reShapeData[0].children[0].haveData,
-              haveSurveyData: reShapeData[0].children[0].haveSurveyData,
-              haveDesignData: reShapeData[0].children[0].haveDesignData,
-              isExecutor: reShapeData[0].children[0].isExecutor,
-            },
-          ]);
-          setCheckedKeys([reShapeData[0].children[0].key]);
+          setExpandedKeys(['-1', listTree[0].key]);
+
+          let firstChild = {
+            id: listTree[0].children[0].key,
+            status: listTree[0].children[0].status?.toLocaleString(),
+            time: listTree[0].children[0].time,
+            haveData: listTree[0].children[0].haveData,
+            haveSurveyData: listTree[0].children[0].haveSurveyData,
+            haveDesignData: listTree[0].children[0].haveDesignData,
+            isExecutor: listTree[0].children[0].isExecutor,
+          };
+          setProjectIdList([firstChild]);
+          setCheckedKeys([firstChild.id]);
         } else {
           message.warning('没有检索到数据');
         }
@@ -124,6 +142,62 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(expandedKeysValue);
   };
 
+  /**
+   * 当点击第一层结构的时候
+   */
+  const onCheckParent = (info: any) => {
+    if (info.checked) {
+      //全选
+      let children = info.node.children;
+
+      children.forEach((v: { children: TreeNodeType[] }) => {
+        v.children.forEach((v: TreeNodeType) => {
+          projectIdList.push(generatorIdItem(v));
+        });
+      });
+    } else {
+      //取消全选
+      setProjectIdList([]);
+    }
+  };
+
+  /**
+   * 单独点击子节点的时候
+   * @param info
+   */
+  const onCheckChild = (info: any) => {
+    /**
+     * 只要子节点的id不要父节点的id
+     */
+
+    //选中子节点时
+    //当选中的时候
+    if (!info.node.children && info.checked) {
+      projectIdList?.push(generatorIdItem(info.node));
+    }
+    //当没有选中的时候
+    if (!info.node.children && !info.checked) {
+      setProjectIdList(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
+    }
+    //选中父节点时
+    //选中的时候
+    if (info.node.children && info.checked) {
+      info.node.children.forEach((v: TreeNodeType) => {
+        projectIdList?.push(generatorIdItem(v));
+      });
+    }
+    //没有选中的时候
+    if (info.node.children && !info.checked) {
+      let unCheckedKeys = info.node.children.map((v: { key: string }) => v.key);
+
+      setProjectIdList(
+        projectIdList?.filter((v: ProjectList) => {
+          return unCheckedKeys.indexOf(v.id) === -1;
+        }),
+      );
+    }
+  };
+
   const onCheck = (
     checked:
       | React.Key[]
@@ -135,76 +209,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   ) => {
     //全选的时候
     if (info.node.key === '-1') {
-      if (info.checked) {
-        //全选
-        let children = info.node.children;
-
-        children.forEach((v: { children: TreeNodeType[] }) => {
-          v.children.forEach((v: TreeNodeType) => {
-            projectIdList.push({
-              id: v.key,
-              time: v.time,
-              status: v.status?.toString(),
-              haveData: v.haveData,
-              haveSurveyData: v.haveSurveyData,
-              haveDesignData: v.haveDesignData,
-              isExecutor: v.isExecutor,
-            });
-          });
-        });
-      } else {
-        //取消全选
-        setProjectIds([]);
-      }
+      onCheckParent(info);
     } else {
-      /**
-       * 只要子节点的id不要父节点的id
-       */
-
-      //选中子节点时
-      //当选中的时候
-      if (!info.node.children && info.checked) {
-        projectIdList?.push({
-          id: info.node.key,
-          time: info.node.time,
-          status: info.node.status.toString(),
-          haveData: info.node.haveData,
-          haveSurveyData: info.node.haveSurveyData,
-          haveDesignData: info.node.haveDesignData,
-          isExecutor: info.node.isExecutor,
-        });
-      }
-      //当没有选中的时候
-      if (!info.node.children && !info.checked) {
-        setProjectIds(projectIdList?.filter((v: ProjectList) => v.id !== info.node.key));
-      }
-      //选中父节点时
-      //选中的时候
-      if (info.node.children && info.checked) {
-        info.node.children.forEach((v: { key: string; time: string; status: number }) => {
-          projectIdList?.push({
-            id: v.key,
-            status: v.status.toString(),
-            time: v.time,
-            haveData: info.node.haveData,
-            haveSurveyData: info.node.haveSurveyData,
-            haveDesignData: info.node.haveDesignData,
-            isExecutor: info.node.isExecutor,
-          });
-        });
-      }
-      //没有选中的时候
-      if (info.node.children && !info.checked) {
-        let unCheckedKeys = info.node.children.map(
-          (v: { key: string; time: string; status: number }) => v.key,
-        );
-
-        setProjectIds(
-          projectIdList?.filter((v: ProjectList) => {
-            return unCheckedKeys.indexOf(v.id) === -1;
-          }),
-        );
-      }
+      onCheckChild(info);
     }
 
     setCheckedKeys(checked);
