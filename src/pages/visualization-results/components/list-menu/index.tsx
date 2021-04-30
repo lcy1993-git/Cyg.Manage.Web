@@ -6,8 +6,8 @@ import { useContainer } from '../../result-page/mobx-store';
 import { ColumnsType } from 'antd/es/table';
 import { useRequest } from 'ahooks';
 import {
-  GetMaterialListByProjectIdList,
-  GetTrackTimeLine,
+  fetchMaterialListByProjectIdList,
+  fetchTrackTimeLine,
   MaterialDataType,
 } from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
@@ -99,6 +99,38 @@ export const columns: ColumnsType<MaterialDataType> = [
   },
 ];
 
+const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDataType[] => {
+  /**
+   * 获取type
+   */
+  const typeSet: Set<string> = new Set(
+    materialData.map((v) => {
+      return v.type;
+    }),
+  );
+  /**
+   * 先获取到所有的type
+   */
+
+  const typeArr = [...typeSet];
+  //创建第一层结构
+  const parentArr: MaterialDataType[] = typeArr.map((type) => {
+    return {
+      key: `type${Math.random()}`,
+      type: type,
+      children: undefined,
+    };
+  });
+  parentArr.forEach((value) => {
+    value.children = materialData.filter((materialItem) => {
+      materialItem.key = Math.random().toLocaleString();
+      return materialItem.type === value.type;
+    });
+  });
+
+  return parentArr;
+};
+
 const dontNeedSelectKey = ['1', '2', '3'];
 const ListMenu: FC = observer(() => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -116,7 +148,7 @@ const ListMenu: FC = observer(() => {
   }, [checkedProjectIdList]);
 
   const { data: materialData, run: fetchMaterialList } = useRequest(
-    GetMaterialListByProjectIdList,
+    fetchMaterialListByProjectIdList,
     {
       manual: true,
       onSuccess: () => {
@@ -126,33 +158,7 @@ const ListMenu: FC = observer(() => {
          *    - 类型 ------------
          */
         if (materialData?.length) {
-          /**
-           * 获取type
-           */
-          const typeSet: Set<string> = new Set();
-          /**
-           * 先获取到所有的type
-           */
-          materialData.forEach((v: MaterialDataType) => {
-            typeSet.add(v.type);
-          });
-          const typeArr = [...typeSet];
-          //创建第一层结构
-          const parentArr: MaterialDataType[] = typeArr.map((type: string) => {
-            return {
-              key: `type${Math.random()}`,
-              type: type,
-              children: undefined,
-            };
-          });
-          parentArr.forEach((value: MaterialDataType) => {
-            value.children = materialData.filter((materialItem) => {
-              materialItem.key = Math.random().toLocaleString();
-              return materialItem.type === value.type;
-            });
-          });
-
-          setMaterialList(parentArr);
+          setMaterialList(generateMaterialTreeList(materialData));
           setMaterialModalVisible(true);
         } else {
           setMaterialModalVisible(false);
@@ -165,7 +171,7 @@ const ListMenu: FC = observer(() => {
     },
   );
 
-  const { data: timelineData, run: fetchTimeline } = useRequest(GetTrackTimeLine, {
+  const { data: timelineData, run: fetchTimeline } = useRequest(fetchTrackTimeLine, {
     manual: true,
     onSuccess: () => {
       if (timelineData?.surveyTimeLine.length === 0) {
@@ -187,27 +193,36 @@ const ListMenu: FC = observer(() => {
       setSelectedKeys(selectedKeys?.map((v: React.Key) => v.toString()) ?? []);
     }
 
-    if (key.toString() === '1') {
-      onClickProjectDetailInfo();
-    } else if (key.toString() === '2') {
-      store.togglePositionMap();
-      store.setOnPositionClickState();
-    } else if (key.toString() === '3') {
-      fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
-    } else if (key.toString() === '4') {
-      onClickObserveTrack();
-    } else {
-      store.toggleConfessionTrack(true);
+    switch (key.toString()) {
+      case '1':
+        onClickProjectDetailInfo();
+        break;
+      case '2':
+        store.togglePositionMap();
+        store.setOnPositionClickState();
+        break;
+      case '3':
+        fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
+        break;
+      case '4':
+        onClickObserveTrack();
+        break;
+      default:
+        store.toggleConfessionTrack(true);
+        break;
     }
   };
 
   const onDeSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
     setSelectedKeys(selectedKeys?.map((v: React.Key) => v.toString()) ?? []);
-    if (key.toString() === '5') {
-      store.toggleConfessionTrack(false);
-    }
-    if (key.toString() === '4') {
-      store.toggleObserveTrack(false);
+
+    switch (key.toString()) {
+      case '4':
+        store.toggleObserveTrack(false);
+        break;
+      case '5':
+        store.toggleConfessionTrack(false);
+        break;
     }
   };
 

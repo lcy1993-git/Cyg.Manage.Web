@@ -32,7 +32,7 @@ export interface TrackTimelineType {
  *
  * */
 
-export const GetMaterialListByProjectIdList = (projectIdList: string[]) => {
+export const fetchMaterialListByProjectIdList = (projectIdList: string[]) => {
   return cyRequest<MaterialDataType[]>(() =>
     request(
       `${baseUrl.webGis}/WebGis/GetBatchProjectMaterials
@@ -48,7 +48,7 @@ export const GetMaterialListByProjectIdList = (projectIdList: string[]) => {
   );
 };
 
-export const GetTrackTimeLine = (projectId: string) => {
+export const fetchTrackTimeLine = (projectId: string) => {
   return cyRequest<TrackTimelineType>(() =>
     request(
       `${baseUrl.webGis2}/WebGis/GetTrackTimeLine?projectId=${projectId}
