@@ -243,7 +243,7 @@ const ListMenu: FC = observer(() => {
       ) : null}
 
       <Menu
-        style={{ width: 152, backgroundColor: 'rgba(233, 233, 235, 0.6)' }}
+        style={{ width: 152, backgroundColor: 'rgba(233, 233, 235, 0.8)' }}
         selectedKeys={selectedKeys}
         onSelect={(info: {
           key: React.Key;

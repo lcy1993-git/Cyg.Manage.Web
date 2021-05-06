@@ -5,8 +5,6 @@ import styles from './index.less';
 import { observer } from 'mobx-react-lite';
 interface Props {
   onlocationClick: () => void;
-  onSatelliteMapClick: () => void;
-  onStreetMapClick: () => void;
 }
 
 const Divider = () => {
@@ -17,7 +15,7 @@ const Footer = observer((props: Props) => {
   const store = useContainer();
   const { vState } = store;
   const { visibleLeftSidebar } = vState;
-  const { onSatelliteMapClick, onStreetMapClick, onlocationClick } = props;
+  const { onlocationClick } = props;
 
   return (
     <div className={`${styles.footerContainer} flex`}>
@@ -30,13 +28,7 @@ const Footer = observer((props: Props) => {
           定位
         </span>
         <Divider />
-        <span className={styles.link} onClick={onStreetMapClick}>
-          街道图
-        </span>
-        <Divider />
-        <span className={styles.link} onClick={onSatelliteMapClick}>
-          卫星图
-        </span>
+
         <Divider />
         <span>
           经度:

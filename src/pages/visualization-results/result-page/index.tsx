@@ -14,15 +14,6 @@ const VisualizationResults: React.FC = observer(() => {
   const { vState } = useContainer();
   const { visibleLeftSidebar, observeTrackTimeline, observeTrack, checkedProjectDateList } = vState;
 
-  const callback = (
-    id: string,
-    phase: 'mount' | 'update',
-    actualDuration: number,
-    baseDuration: number,
-    startTime: number,
-    commitTime: number,
-  ) => {};
-
   return (
     <PageCommonWrap noPadding={true}>
       <Filterbar />

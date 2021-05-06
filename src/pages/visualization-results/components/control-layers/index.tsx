@@ -48,37 +48,29 @@ const ControlLayers = (props: Props) => {
     <div className={styles.container}>
       <div className={styles.icon}>
         <div className={styles.list}>
-          <div className={styles.listItem} key="surveyLayerVisible">
-            <ListItem
-              name="勘察图层"
-              state={surveyLayerVisible}
-              onChange={() => setSurveyLayerVisible(!surveyLayerVisible)}
-            />
-          </div>
-          <div className={styles.listItem} key="planLayerVisible">
-            <Divider style={{ margin: 2 }} />
-            <ListItem
-              name="方案图层"
-              state={planLayerVisible}
-              onChange={() => setPlanLayerVisible(!planLayerVisible)}
-            />
-          </div>
-          <div className={styles.listItem} key="designLayerVisible">
-            <Divider style={{ margin: 2 }} />
-            <ListItem
-              name="设计图层"
-              state={designLayerVisible}
-              onChange={() => setDesignLayerVisible(!designLayerVisible)}
-            />
-          </div>
-          <div className={styles.listItem} key="dismantleLayerVisible">
-            <Divider style={{ margin: 2 }} />
-            <ListItem
-              name="拆除图层"
-              state={dismantleLayerVisible}
-              onChange={() => setDismantleLayerVisible(!dismantleLayerVisible)}
-            />
-          </div>
+          <ListItem
+            name="勘察图层"
+            state={surveyLayerVisible}
+            onChange={() => setSurveyLayerVisible(!surveyLayerVisible)}
+          />
+
+          <ListItem
+            name="方案图层"
+            state={planLayerVisible}
+            onChange={() => setPlanLayerVisible(!planLayerVisible)}
+          />
+
+          <ListItem
+            name="设计图层"
+            state={designLayerVisible}
+            onChange={() => setDesignLayerVisible(!designLayerVisible)}
+          />
+
+          <ListItem
+            name="拆除图层"
+            state={dismantleLayerVisible}
+            onChange={() => setDismantleLayerVisible(!dismantleLayerVisible)}
+          />
         </div>
       </div>
     </div>
