@@ -9,7 +9,7 @@ import { Provider, useContainer } from './mobx-store';
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
 import { observer } from 'mobx-react-lite';
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { MenuFoldOutlined } from '@ant-design/icons';
 
 const VisualizationResults: React.FC = observer(() => {
   const store = useContainer();

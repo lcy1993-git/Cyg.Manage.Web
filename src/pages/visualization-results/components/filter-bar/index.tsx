@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useState } from 'react';
 import TableSearch from '@/components/table-search';
 import UrlSelect from '@/components/url-select';
 import { Button, Input, Select } from 'antd';
@@ -8,7 +8,6 @@ import { Moment } from 'moment';
 import { useContainer } from '../../result-page/mobx-store';
 import EnumSelect from '@/components/enum-select';
 import { observer } from 'mobx-react-lite';
-import AreaSelect from '@/components/area-select';
 import {
   ProjectIdentityType,
   ProjectSourceType,
@@ -26,10 +25,7 @@ const searchChildrenList = [
     width: 300,
   },
   {
-    width: 188,
-  },
-  {
-    width: 111,
+    width: 180,
   },
   {
     width: 111,
@@ -71,7 +67,6 @@ const FilterBar: FC = observer(() => {
   const [identityType, setIdentityType] = useState<string>(); //项目身份
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
 
-  const areaRef = useRef<HTMLDivElement>(null);
   const store = useContainer();
 
   const {
@@ -152,40 +147,9 @@ const FilterBar: FC = observer(() => {
     store.setFilterCondition(condition);
   };
 
-  const areaChangeEvent = (params: any) => {
-    const { provinceId, cityId, areaId } = params;
-    if (areaId) {
-      setAreaInfo({
-        areaType: '3',
-        areaId: areaId,
-      });
-      return;
-    }
-    if (cityId) {
-      setAreaInfo({
-        areaType: '2',
-        areaId: cityId,
-      });
-      return;
-    }
-    if (provinceId) {
-      setAreaInfo({
-        areaType: '1',
-        areaId: provinceId,
-      });
-      return;
-    }
-    if (!provinceId && !cityId && !areaId) {
-      setAreaInfo({
-        areaType: '-1',
-        areaId: '',
-      });
-    }
-  };
-
   return (
     <div className={styles.filterbar}>
-      <div className="flex" style={{ width: '100%' }}>
+      <div className="flex" style={{ width: '100%', overflow: 'hidden' }}>
         <OverFlowHiddenComponent childrenList={searchChildrenList}>
           <TableSearch className="mr22" label="项目名称" width="300px">
             <Search
@@ -210,7 +174,7 @@ const FilterBar: FC = observer(() => {
               {getProjectStatusOption()}
             </Select>
           </TableSearch>
-          <TableSearch className="mb10" width="178px">
+          <TableSearch className="mb10" width="111px">
             <UrlSelect
               valueKey="value"
               titleKey="text"
@@ -291,9 +255,6 @@ const FilterBar: FC = observer(() => {
             />
           </TableSearch>
 
-          <TableSearch className="mb10" width="111px">
-            <AreaSelect ref={areaRef} onChange={areaChangeEvent} />
-          </TableSearch>
           <TableSearch width="111px" className="mb10">
             <EnumSelect
               enumList={ProjectSourceType}
@@ -305,7 +266,7 @@ const FilterBar: FC = observer(() => {
               allValue="-1"
             />
           </TableSearch>
-          <TableSearch width="111px" className="mb10">
+          <TableSearch width="111px">
             <EnumSelect
               enumList={ProjectIdentityType}
               value={identityType}
