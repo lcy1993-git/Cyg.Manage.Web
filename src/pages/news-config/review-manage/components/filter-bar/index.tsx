@@ -33,7 +33,7 @@ const FilterBar: FC = () => {
   const [modifyDate, setsModiyDate] = useState<Moment | null>();
   const [sourceType, setSourceType] = useState<string>();
   const [identityType, setIdentityType] = useState<string>();
-  const { sotre } = useContainer();
+  const sotre = useContainer();
   const {
     projectCategory,
     projectPType,
