@@ -1,12 +1,10 @@
 import React from 'react';
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { MenuUnfoldOutlined } from '@ant-design/icons';
 import { useContainer } from '../../result-page/mobx-store';
 import styles from './index.less';
 import { observer } from 'mobx-react-lite';
 interface Props {
   onlocationClick: () => void;
-  onSatelliteMapClick: () => void;
-  onStreetMapClick: () => void;
 }
 
 const Divider = () => {
@@ -14,28 +12,19 @@ const Divider = () => {
 };
 
 const Footer = observer((props: Props) => {
+  const { onlocationClick } = props;
   const store = useContainer();
   const { vState } = store;
   const { visibleLeftSidebar } = vState;
-  const { onSatelliteMapClick, onStreetMapClick, onlocationClick } = props;
-
   return (
     <div className={`${styles.footerContainer} flex`}>
       <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
-        {visibleLeftSidebar ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
+        {visibleLeftSidebar ? null : <MenuUnfoldOutlined />}
       </div>
       <div className={'flex1'}></div>
       <div className={styles.mapInfo}>
         <span className={styles.link} onClick={onlocationClick}>
           定位
-        </span>
-        <Divider />
-        <span className={styles.link} onClick={onStreetMapClick}>
-          街道图
-        </span>
-        <Divider />
-        <span className={styles.link} onClick={onSatelliteMapClick}>
-          卫星图
         </span>
         <Divider />
         <span>

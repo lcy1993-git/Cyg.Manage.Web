@@ -1,99 +1,103 @@
 import React, { FC, useMemo, useState } from 'react';
-import { Menu, message, Modal, Table } from 'antd';
-import Icon, { CopyOutlined, HeatMapOutlined, NodeIndexOutlined } from '@ant-design/icons';
+import { Menu, message, Modal, Switch, Table, Tooltip } from 'antd';
+import styles from './index.less';
+import {
+  CopyOutlined,
+  HeatMapOutlined,
+  NodeIndexOutlined,
+  QuestionCircleOutlined,
+} from '@ant-design/icons';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/mobx-store';
 import { ColumnsType } from 'antd/es/table';
 import { useRequest } from 'ahooks';
 import {
   fetchMaterialListByProjectIdList,
-  fetchTrackTimeLine,
   MaterialDataType,
 } from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-import { Track2, Track1 } from '@/assets/list-menu-icon';
 
 export const columns: ColumnsType<MaterialDataType> = [
   {
     title: '物料类型',
-    width: 120,
+    width: 200,
     dataIndex: 'type',
     key: 'type',
     fixed: 'left',
   },
   {
     title: '物料名称',
-    width: 100,
+    width: 200,
     dataIndex: 'name',
     key: 'name',
     fixed: 'left',
   },
   {
     title: '物料型号',
-    width: 100,
+    width: 500,
     dataIndex: 'spec',
     key: 'spec',
   },
-
   {
     title: '物料编号',
-    width: 100,
+    width: 150,
+    dataIndex: 'code',
+    key: 'code',
+  },
+  {
+    title: '物料编号',
+    width: 150,
     dataIndex: 'materialId',
     key: 'materialId',
   },
 
   {
     title: '物料单位',
-    width: 100,
+    width: 80,
     dataIndex: 'unit',
     key: 'unit',
   },
   {
     title: '数量',
-    width: 100,
+    width: 80,
     dataIndex: 'itemNumber',
     key: 'itemNumber',
   },
-  {
-    title: '物料编号',
-    width: 100,
-    dataIndex: 'code',
-    key: 'code',
-  },
+
   {
     title: '单价(元)',
-    width: 100,
+    width: 80,
     dataIndex: 'unitPrice',
     key: 'unitPrice',
   },
   {
-    title: '单量',
-    width: 100,
+    title: '单重(kg)',
+    width: 80,
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',
   },
   {
     title: '状态',
-    width: 100,
+    width: 80,
     dataIndex: 'state',
     key: 'state',
   },
   {
-    title: '描述',
-    width: 100,
+    title: '物料 描述',
+    width: 200,
     dataIndex: 'description',
     key: 'description',
   },
   {
     title: '供给方',
-    width: 100,
+    width: 200,
     dataIndex: 'supplySide',
     key: 'supplySide',
   },
   {
     title: '备注',
-    width: 100,
+    width: 200,
     dataIndex: 'remark',
     key: 'remark',
   },
@@ -131,7 +135,6 @@ const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDat
   return parentArr;
 };
 
-const dontNeedSelectKey = ['1', '2', '3'];
 const ListMenu: FC = observer(() => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
@@ -171,28 +174,7 @@ const ListMenu: FC = observer(() => {
     },
   );
 
-  const { data: timelineData, run: fetchTimeline } = useRequest(fetchTrackTimeLine, {
-    manual: true,
-    onSuccess: () => {
-      if (timelineData?.surveyTimeLine.length === 0) {
-        message.warning('没有数据');
-      }
-      store.setObeserveTrackTimeline(timelineData?.surveyTimeLine ?? []);
-    },
-    onError: () => {
-      setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
-      message.warning('获取数据失败');
-    },
-  });
-
   const onSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
-    /**
-     * 筛选出要高亮的menu，dontSelectkey就是不需要高亮的menu
-     */
-    if (dontNeedSelectKey.indexOf(key.toString()) === -1) {
-      setSelectedKeys(selectedKeys?.map((v: React.Key) => v.toString()) ?? []);
-    }
-
     switch (key.toString()) {
       case '1':
         onClickProjectDetailInfo();
@@ -208,7 +190,6 @@ const ListMenu: FC = observer(() => {
         onClickObserveTrack();
         break;
       default:
-        store.toggleConfessionTrack(true);
         break;
     }
   };
@@ -228,7 +209,6 @@ const ListMenu: FC = observer(() => {
 
   const onClickObserveTrack = () => {
     if (checkedProjectIdList.length === 1) {
-      fetchTimeline(checkedProjectIdList[0].id);
       store.toggleObserveTrack(true);
     } else {
       setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
@@ -244,6 +224,14 @@ const ListMenu: FC = observer(() => {
     }
   };
 
+  const onSwitchChange = (checked: boolean) => {
+    if (checked) {
+      store.toggleObserveTrack(true);
+    } else {
+      store.toggleObserveTrack(false);
+    }
+  };
+
   return (
     <>
       {checkedProjectIdList?.length === 1 && projectModalVisible ? (
@@ -255,7 +243,7 @@ const ListMenu: FC = observer(() => {
       ) : null}
 
       <Menu
-        style={{ width: 150, backgroundColor: 'rgba(233, 233, 235, 0.6)' }}
+        style={{ width: 152, backgroundColor: 'rgba(233, 233, 235, 0.8)' }}
         selectedKeys={selectedKeys}
         onSelect={(info: {
           key: React.Key;
@@ -274,21 +262,39 @@ const ListMenu: FC = observer(() => {
         }) => onDeSelected(info.key, info.selectedKeys)}
         mode="inline"
       >
-        <Menu.Item key="1" icon={<CopyOutlined />}>
-          项目详情
-        </Menu.Item>
+        {checkedProjectIdList?.length > 1 ? (
+          <Menu.Item key="1" disabled>
+            <Tooltip title="同时只能查看一个项目详情">
+              <CopyOutlined style={{ color: 'red' }} />
+              <span style={{ color: 'red' }}>项目详情</span>
+
+              <QuestionCircleOutlined style={{ color: 'red', marginLeft: 8 }} />
+            </Tooltip>
+          </Menu.Item>
+        ) : (
+          <Menu.Item key="1" className={styles.menuItem}>
+            <CopyOutlined />
+            项目详情
+          </Menu.Item>
+        )}
+
         <Menu.Item key="2" icon={<HeatMapOutlined />}>
           地图定位
         </Menu.Item>
         <Menu.Item key="3" icon={<NodeIndexOutlined />}>
           材料表
         </Menu.Item>
-        <Menu.Item key="4" icon={<Icon component={Track1} />}>
+
+        <div className={styles.observeTrack}>
           勘察轨迹
-        </Menu.Item>
-        <Menu.Item key="5" icon={<Icon component={Track2} />}>
-          交底轨迹
-        </Menu.Item>
+          <Switch
+            style={{ marginLeft: 8 }}
+            onChange={(checked) => onSwitchChange(checked)}
+            size="small"
+            checkedChildren="开启"
+            unCheckedChildren="关闭"
+          />
+        </div>
       </Menu>
 
       <Modal
@@ -301,6 +307,7 @@ const ListMenu: FC = observer(() => {
       >
         <Table
           columns={columns}
+          bordered
           rowKey="key"
           pagination={false}
           dataSource={materialList}
