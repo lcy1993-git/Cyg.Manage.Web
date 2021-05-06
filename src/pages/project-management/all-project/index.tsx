@@ -44,6 +44,7 @@ import { useGetButtonJurisdictionArray, useGetProjectEnum } from '@/utils/hooks'
 import UrlSelect from '@/components/url-select';
 import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 import ProjectRecallModal from './components/project-recall-modal';
+import Item from 'antd/lib/list/Item';
 
 const { Search } = Input;
 
@@ -152,17 +153,32 @@ const ProjectManagement: React.FC = () => {
   };
 
   const revokeAllotEvent = async () => {
-    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+    const projectIds = tableSelectData
+      .map((item: any) => {
+        if (
+          item.projectInfo?.status[0]?.status == 1 ||
+          (item.projectInfo?.status[0]?.status == 14 && item.projectInfo?.status[0].allotId != '')
+        ) {
+          return item.checkedArray;
+        }
+      })
+      .flat();
+
+    console.log(projectIds);
+    if (projectIds.includes(undefined)) {
+      message.error('所选项目中有非[未勘察]和[待安排]状态的项目，无法撤回');
+      return;
+    }
 
     if (projectIds.length === 0) {
       message.error('请至少选择一个项目');
       return;
     }
+    console.log(tableSelectData);
 
     await revokeAllot(projectIds);
     message.success('撤回安排成功');
     search();
-    // refresh();
   };
 
   const arrangeEvent = async () => {
@@ -373,7 +389,7 @@ const ProjectManagement: React.FC = () => {
     setStatus(undefined);
     // TODO 重置完是否进行查询
     searchByParams({
-      keyWord: "",
+      keyWord: '',
       category: '-1',
       pCategory: '-1',
       stage: '-1',

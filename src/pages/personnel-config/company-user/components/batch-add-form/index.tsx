@@ -34,7 +34,7 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
         initialValue={1}
         required
       >
-        <InputNumber min={1} />
+        <InputNumber min={1} max={50} />
       </CyFormItem>
 
       <CyFormItem label="所属部组" name="groupIds">

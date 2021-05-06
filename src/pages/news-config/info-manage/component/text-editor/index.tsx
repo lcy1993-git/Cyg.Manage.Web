@@ -59,11 +59,13 @@ class AlertMenu extends BtnMenu {
             .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
             .then((result: any) => {
               that.txt.append(result.value);
+              // console.log(that.txt.html());
             })
             .catch((a: any) => {
               console.log('error', a);
             })
             .done();
+
           event.target.value = '';
         };
       } else {
@@ -92,6 +94,7 @@ class AlertMenu extends BtnMenu {
                       'image/png',
                     )}"></image>`,
                   );
+                  // console.log(that.txt.html());
                 });
               }
             })
