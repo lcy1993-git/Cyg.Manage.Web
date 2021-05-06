@@ -1,4 +1,4 @@
-import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-menu';
+import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-tree';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { makeAutoObservable } from 'mobx';
 import moment from 'moment';
