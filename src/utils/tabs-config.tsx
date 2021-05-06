@@ -11,7 +11,8 @@ import ProjectManagement from '@/pages/project-management/route';
 import MaterialConfig from '@/pages/material-config/route';
 import VisualizationResults from '@/pages/visualization-results/route';
 import NewsConfig from '@/pages/news-config/route';
-import CockpitManage from "@/pages/cockpit-manage/route"
+import CockpitManage from "@/pages/cockpit-manage/route";
+import TechnologyEconomics from "@/pages/technology-economics/route";
 
 export interface RouteListItem {
   title: string;
@@ -35,7 +36,8 @@ const routeList: TabRouteListItem[] = [
   ...MaterialConfig,
   ...VisualizationResults,
   ...NewsConfig,
-  ...CockpitManage
+  ...CockpitManage,
+  ...TechnologyEconomics
 ];
 
 export const getTabsComponent = (key: string): TabRouteListItem => {
