@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'webgisIconFont';  /* project id 2301692 */
+  src: url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.eot');
+  src: url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.woff') format('woff'),
+  url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.svg#iconfont') format('svg');
+}
