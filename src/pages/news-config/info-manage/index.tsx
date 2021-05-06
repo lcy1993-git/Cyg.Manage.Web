@@ -320,7 +320,7 @@ const InfoManage: React.FC = () => {
       <Modal
         maskClosable={false}
         title="添加-资讯"
-        width="820px"
+        width="880px"
         visible={addFormVisible}
         okText="保存"
         onOk={() => sureAddNews()}
@@ -333,7 +333,7 @@ const InfoManage: React.FC = () => {
       <Modal
         maskClosable={false}
         title="编辑-资讯"
-        width="820px"
+        width="880px"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditNewsItem()}

@@ -76,7 +76,7 @@ class AlertMenu extends BtnMenu {
               const numPages = pdf.numPages;
               for (let i = 1; i <= numPages; i++) {
                 await pdf.getPage(i).then(async function getPageHelloWorld(page: any) {
-                  var scale = 1;
+                  var scale = 2;
                   var viewport = page.getViewport(scale);
                   const canvas = document.createElement('canvas');
                   var context = canvas.getContext('2d');
@@ -99,6 +99,7 @@ class AlertMenu extends BtnMenu {
               console.log('文件读取失败');
             });
         };
+        event.target.value = '';
       }
     }
   }
@@ -122,7 +123,6 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
   const [isChecked, setIsChecked] = useState<boolean>(true);
 
   // const { data: groupData = [] } = useRequest(() => getCompanyGroupTreeList());
-
   // const mapTreeData = (data: any) => {
   //   return {
   //     title: data.name,
