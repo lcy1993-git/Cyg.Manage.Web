@@ -9,11 +9,12 @@ import { Provider, useContainer } from './mobx-store';
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
 import { observer } from 'mobx-react-lite';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 
 const VisualizationResults: React.FC = observer(() => {
-  const { vState } = useContainer();
-  const { visibleLeftSidebar, observeTrackTimeline, observeTrack, checkedProjectDateList } = vState;
-
+  const store = useContainer();
+  const { vState } = store;
+  const { visibleLeftSidebar, checkedProjectDateList } = vState;
   return (
     <PageCommonWrap noPadding={true}>
       <Filterbar />
@@ -21,11 +22,19 @@ const VisualizationResults: React.FC = observer(() => {
         className={classNames(
           styles.content,
           'flex',
-          visibleLeftSidebar ? styles.sideNavShow : styles.sideNavHide,
+          styles.sideNavShow,
+          visibleLeftSidebar ? '' : styles.sideNavHide,
         )}
       >
-        <div className={styles.sideNav}>
-          <SideTree />
+        <div className={styles.sideTreeContainer}>
+          <div className={styles.sideNav}>
+            <SideTree />
+          </div>
+          <div className={styles.sideTreefooter}>
+            <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
+              {visibleLeftSidebar ? <MenuFoldOutlined /> : null}
+            </div>
+          </div>
         </div>
 
         <div className={classNames(styles.mapContainer, 'flex1')}>

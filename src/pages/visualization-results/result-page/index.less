@@ -1,7 +1,6 @@
 @sideNavWidth: 260px;
 .content {
   position: relative;
-
   &.sideNavShow {
     .sideNav {
       left: 0px;
@@ -9,20 +8,36 @@
       height: 100%;
     }
   }
-
-  &.sideNavHide {
-    .sideNav {
-      position: absolute;
-      top: 0px;
-      bottom: 0px;
-      left: (0px - @sideNavWidth);
-      width: @sideNavWidth;
-    }
-  }
-
   .sideNav,
+  .sideTreeContainer,
   .mapContainer {
     transition: all 0.5s ease-in;
+  }
+  &.sideNavHide {
+    .sideNav {
+      position: relative;
+      width: 0;
+      left: (0px - @sideNavWidth);
+    }
+  }
+  .sideTreeContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    .sideTreefooter {
+      position: absolute;
+      bottom: 0px;
+      height: 30px;
+      .icon {
+        position: relative;
+        top: 4px;
+        left: 16px;
+        display: block;
+        width: 36px;
+        cursor: pointer;
+      }
+    }
   }
 
   .mapContainer {
