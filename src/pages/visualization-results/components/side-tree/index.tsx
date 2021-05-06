@@ -12,7 +12,6 @@ import {
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-import Filterbar from '../filter-bar';
 const { TabPane } = Tabs;
 
 /**
