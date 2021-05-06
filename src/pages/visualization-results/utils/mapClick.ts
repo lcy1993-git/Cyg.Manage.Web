@@ -6,8 +6,8 @@ import { transform } from "ol/proj";
 import { getScale, clearHighlightLayer, getLayerByName } from "./methods";
 import { getGisDetail, getlibId, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { format } from './utils'
-
-const mappingTagsDictionary: any = getMappingTagsDictionary();
+const mappingTagsData = getMappingTagsDictionary();
+const mappingTagsDictionary: any = mappingTagsData ? JSON.parse(mappingTagsData) : {};
 
 // 格式化输出时间
 // const format = (fmt: string, date: Date) => { //author: meizz 
@@ -72,8 +72,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         let layerName = layer.getProperties().name;
         layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
         // 映射图层相对应的字段
-        mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()].mappingTags;
-        mappingTagValues = mappingTagsDictionary[layerName.toLocaleLowerCase()].mappingTagValues;
+        mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags;
+        mappingTagValues = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTagValues;
 
         let featureId = feature.getProperties().id;
         if (!featureId)
@@ -135,7 +135,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                             pJSON[mappingTag] = feature.getProperties()[p] ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p])) : null;
                             break;
                         case 'azimuth':
-                            pJSON[mappingTag] = feature.getProperties()[p] ? feature.getProperties()[p]?.toFixed(2) : 0;
+                            pJSON[mappingTag] = Number(feature.getProperties()[p]) ? Number(feature.getProperties()[p])?.toFixed(2) : 0;
                             break;
                         default:
                             pJSON[mappingTag] = feature.getProperties()[p];

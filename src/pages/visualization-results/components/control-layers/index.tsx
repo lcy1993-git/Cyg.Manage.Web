@@ -54,7 +54,6 @@ const ControlLayers = (props: Props) => {
   const [visiabel, setVisiabel] = useState<boolean>(false);
   const { surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible, setSurveyLayerVisible, setPlanLayerVisible, setDesignLayerVisible, setDismantleLayerVisible} = props;
 
-  console.log(surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible)
   return (
     <div className={styles.container}>
       <div

@@ -1,4 +1,4 @@
-import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-menu';
+import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-tree';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { makeAutoObservable } from 'mobx';
 import moment from 'moment';
@@ -18,7 +18,7 @@ export interface VisualizationResultsStateType {
   observeTrack: boolean; //勘察轨迹
   confessionTrack: boolean; //交底轨迹
   onPositionClickState: boolean; // 当点击地图定位时候
-  observeTrackTimeline?: string[];
+  observeTrackTimeline?: string[]; //勘察轨迹tiemline
 }
 
 const initState = {
@@ -54,10 +54,10 @@ function Store(vState: VisualizationResultsStateType) {
       this.vState.checkedProjectDateList = [
         ...new Set(checkedProjectIdList?.map((v: ProjectList) => v.time)),
       ]
-        .filter((v: string) => v !== '')
-        .map((v: string) => moment(v).valueOf())
-        .sort((a: number, b: number) => a - b)
-        .map((v: number) => moment(v).format('YYYY/MM/DD'));
+        .filter((v) => v !== '')
+        .map((v) => moment(v).valueOf())
+        .sort((a, b) => a - b)
+        .map((v) => moment(v).format('YYYY/MM/DD'));
       this.vState.checkedProjectIdList = checkedProjectIdList;
     },
     //设置timeline点击的日期
@@ -72,9 +72,6 @@ function Store(vState: VisualizationResultsStateType) {
         default:
           break;
       }
-
-      console.log(this.vState.observeClickDate, 'observe');
-      console.log(this.vState.normalClickDate, 'normal');
     },
 
     togglePositionMap() {

@@ -1,22 +1,27 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
-
 export interface MaterialDataType {
-  description: string;
-  itemNumber: number;
-  materialId: string;
-  name: string;
-  pieceWeight: number;
-  spec: string;
-  state: string;
+  description?: string;
+  itemNumber?: number;
+  materialId?: string;
+  name?: string;
+  pieceWeight?: number;
+  spec?: string;
+  state?: string;
   type: string;
-  unit: string;
-  unitPrice: number;
-  remark: string;
-  code: string;
-  supplySide: string;
+  unit?: string;
+  unitPrice?: number;
+  remark?: string;
+  code?: string;
+  supplySide?: string;
+  children?: MaterialDataType[];
   key?: string;
+}
+
+export interface TrackTimelineType {
+  surveyTimeLine: string[];
+  disclosureTimeLine: string[];
 }
 
 /**
@@ -27,8 +32,8 @@ export interface MaterialDataType {
  *
  * */
 
-export const GetMaterialListByProjectIdList = (projectIds: string[]) => {
-  return cyRequest<any>(() =>
+export const fetchMaterialListByProjectIdList = (projectIdList: string[]) => {
+  return cyRequest<MaterialDataType[]>(() =>
     request(
       `${baseUrl.webGis}/WebGis/GetBatchProjectMaterials
     `,
@@ -36,15 +41,15 @@ export const GetMaterialListByProjectIdList = (projectIds: string[]) => {
         method: 'POST',
         data: {
           designType: 0,
-          projectIds,
+          projectIds: projectIdList,
         },
       },
     ),
   );
 };
 
-export const GetTrackTimeLine = (projectId: string) => {
-  return cyRequest<any>(() =>
+export const fetchTrackTimeLine = (projectId: string) => {
+  return cyRequest<TrackTimelineType>(() =>
     request(
       `${baseUrl.webGis2}/WebGis/GetTrackTimeLine?projectId=${projectId}
     `,

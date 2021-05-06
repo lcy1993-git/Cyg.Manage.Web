@@ -1,9 +1,13 @@
+
+let enums: any = null; 
+let mappingTagsDictionary: any =null;
 // 属性栏字段转中文
 function getMappingTagsDictionary() {
-  let mappingTagsDictionary: any = {};
+  if(mappingTagsDictionary) return mappingTagsDictionary;
+  mappingTagsDictionary = Object.create(null);
   const enumsData = localStorage.getItem('loadEnumsData')
   if (enumsData) {
-    const enums = JSON.parse(enumsData)
+    enums = enums || JSON.parse(enumsData);
     mappingTagsDictionary.cable = {
       mappingTags: {
         "code": "电缆井编号",
@@ -18,9 +22,12 @@ function getMappingTagsDictionary() {
         "survey_time": "勘测时间"
       },
       mappingTagValues: {
-        "type": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "CableType")].value),
-        "state": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "SurveyState")].value),
-        "lay_mode": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "CableLayMode")].value),
+        "type": findenumsValue("CableType"),
+        "state": findenumsValue("SurveyState"),
+        "lay_mode": findenumsValue("CableLayMode"),
+        // "type": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "CableType")].value) || "",
+        // "state": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || "",
+        // "lay_mode": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "CableLayMode")].value) || "",
         "electrified_work": {
           false: "不带电",
           true: "带电"
@@ -47,11 +54,16 @@ function getMappingTagsDictionary() {
         "survey_time": "勘测日期"
       },
       mappingTagValues: {
-        "sort": convertEnums(enums[enums.findIndex((e: any) => e.key == "Arrangement")].value),
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value),
-        "segement": convertEnums(enums[enums.findIndex((e: any) => e.key == "SegmentMode")].value),
-        "kv_level": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value),
-        "pre_node_type": convertEnums(enums[enums.findIndex((e: any) => e.key == "NodeType")].value),
+        "sort": findenumsValue("Arrangement"),
+        "state": findenumsValue("SurveyState"),
+        "segement": findenumsValue("SegmentMode"),
+        "kv_level": findenumsValue("KVLevel"),
+        "pre_node_type": findenumsValue("NodeType"),
+        // "sort": convertEnums(enums[enums.findIndex((e: any) => e.key == "Arrangement")].value) || "",
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || "",
+        // "segement": convertEnums(enums[enums.findIndex((e: any) => e.key == "SegmentMode")].value) || "",
+        // "kv_level": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value) || "",
+        // "pre_node_type": convertEnums(enums[enums.findIndex((e: any) => e.key == "NodeType")].value) || "",
         "electrified_work": {
           false: "不带电",
           true: "带电"
@@ -68,7 +80,8 @@ function getMappingTagsDictionary() {
         "project_id": "所属项目"
       },
       mappingTagValues: {
-        "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "ProjectTraceRecordType")].value)
+        "type": findenumsValue("ProjectTraceRecordType"),
+        // "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "ProjectTraceRecordType")].value) || ""
       }
     };
     mappingTagsDictionary.pull_line = {
@@ -98,8 +111,10 @@ function getMappingTagsDictionary() {
         "survey_time": "勘测日期"
       },
       mappingTagValues: {
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value),
-        "kv_level": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value)
+        "state": findenumsValue("SurveyState"),
+        "kv_level": findenumsValue("KVLevel"),
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || "",
+        // "kv_level": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value) || ""
       }
     };
     mappingTagsDictionary.user_line = {
@@ -117,8 +132,9 @@ function getMappingTagsDictionary() {
         "survey_time": "勘测日期"
       },
       mappingTagValues: {
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
-        // "kv_level": convertEnums(enums[enums.findIndex((e) => e.key == "KVLevel")].value)
+        "state": findenumsValue("SurveyState"),
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
+        // "kv_level": convertEnums(enums[enums.findIndex((e) => e.key == "KVLevel")].value) || ""
       }
     };
     mappingTagsDictionary.cable_channel = {
@@ -136,8 +152,10 @@ function getMappingTagsDictionary() {
         "survey_time": "勘测时间"
       },
       mappingTagValues: {
-        "lay_mode": convertEnums(enums[enums.findIndex((e: any) => e.key == "CableLayMode")].value),
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        "lay_mode": findenumsValue("CableLayMode"),
+        "state": findenumsValue("SurveyState"),
+        // "lay_mode": convertEnums(enums[enums.findIndex((e: any) => e.key == "CableLayMode")].value) || "",
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
       }
     };
     mappingTagsDictionary.transformer = {
@@ -149,7 +167,8 @@ function getMappingTagsDictionary() {
         "surveyor": "勘测人员"
       },
       mappingTagValues: {
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        "state": findenumsValue("SurveyState"),
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
       }
     };
     mappingTagsDictionary.cable_equipment = {
@@ -168,8 +187,10 @@ function getMappingTagsDictionary() {
         "survey_time": "勘测时间"
       },
       mappingTagValues: {
-        "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "CableEquipmentType")].value),
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        "type": findenumsValue("CableEquipmentType"),
+        "state": findenumsValue("SurveyState"),
+        // "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "CableEquipmentType")].value) || "",
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
       }
     };
     mappingTagsDictionary.mark = {
@@ -187,8 +208,10 @@ function getMappingTagsDictionary() {
         "survey_time": "勘测时间"
       },
       mappingTagValues: {
-        "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "MarkType")].value),
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        "type": findenumsValue("MarkType"),
+        "state": findenumsValue("SurveyState"),
+        // "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "MarkType")].value) || "",
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
       }
     };
 
@@ -206,9 +229,12 @@ function getMappingTagsDictionary() {
         "remark": "备注"
       },
       mappingTagValues: {
-        "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "ElectricMeterType")].value),
-        "kv_level": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value),
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        "type": findenumsValue("ElectricMeterType"),
+        "kv_level": findenumsValue("KVLevel"),
+        "state": findenumsValue("SurveyState"),
+        // "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "ElectricMeterType")].value) || "",
+        // "kv_level": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value) || "",
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
       }
     };
     mappingTagsDictionary.cross_arm = {
@@ -218,8 +244,10 @@ function getMappingTagsDictionary() {
         "state": "状态"
       },
       mappingTagValues: {
-        "voltage": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value),
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        "voltage": findenumsValue("KVLevel"),
+        "state": findenumsValue("SurveyState"),
+        // "voltage": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value) || "",
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
       }
     };
     enums.push({
@@ -280,9 +308,12 @@ function getMappingTagsDictionary() {
         "remark": "备注"
       },
       mappingTagValues: {
-        "voltage": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value),
-        "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "OverHeadDeviceType")].value),
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        "voltage": findenumsValue("KVLevel"),
+        "type": findenumsValue("OverHeadDeviceType"),
+        "state": findenumsValue("SurveyState"),
+        // "voltage": convertEnums(enums[enums.findIndex((e: any) => e.key == "KVLevel")].value) || "",
+        // "type": convertEnums(enums[enums.findIndex((e: any) => e.key == "OverHeadDeviceType")].value) || "",
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
       }
     };
     mappingTagsDictionary.fault_indicator = {
@@ -294,37 +325,41 @@ function getMappingTagsDictionary() {
         "remark": "备注"
       },
       mappingTagValues: {
-        "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value)
+        "state": findenumsValue("SurveyState") || ""
+        // "state": convertEnums(enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || ""
       }
     };
 
-    return mappingTagsDictionary;
+    return JSON.stringify(mappingTagsDictionary);
   } else {
     console.log("mappingTagsDictionary异常！！！请重新加载。。。'")
-    // $('.error').text('网络异常！！！请重新加载。。。').animate({
-    //     top: '30px',
-    //     opacity: 1
-    // }, 2000, function () {
-    //     setTimeout(() => {
-    //         $(this).animate({
-    //             top: '-200px',
-    //             opacity: 0
-    //         }, 0)
-    //     }, 1000)
-    // });
     return;
   }
 
 
 }
-
-function convertEnums(enumsParam: any) {
-  var result = {};
-  for (var e in enumsParam) {
-    var eValue = enumsParam[e];
-    result[eValue.value] = eValue.text;
-  }
-  return result;
+/**
+ * 根据键名获取相应枚举值
+ * @param key 键名
+ * @returns ArrayLick
+ */
+ function findenumsValue(key: any) {
+  return enums.find((e: any) => e.key === key)?.value.map((i: {value: number; text: string;}) => i.text) ?? [];
 }
+// function findenumsValue(key: any) {
+//   return Object(
+//     enums.find((e: any) => e.key === key)?.value
+//     .map((i: {value: number; text: string;}) => i.text)
+//   );
+// }
+// function convertEnums(enumsParam: any) {
+  
+//   var result = {};
+//   for (var e in enumsParam) {
+//     var eValue = enumsParam[e];
+//     result[eValue.value] = eValue.text;
+//   }
+//   return enumsParam.map((i: {value: number; text: string;}) => i.text);
+// }
 
 export default getMappingTagsDictionary;

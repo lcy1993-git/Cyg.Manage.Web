@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useMount } from 'ahooks';
 import { useContainer } from '../../result-page/mobx-store';
@@ -79,6 +79,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 动态刷新refreshMap
   useEffect(() => {
+    
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
     map && refreshMap(ops, projects!);
   }, [JSON.stringify(projects)]);
@@ -128,30 +129,34 @@ const BaseMap = observer((props: BaseMapProps) => {
     const highlightLayers =  highlightLayer?.getSource().getFeatures();
     const hightType = highlightLayers && highlightLayers[0]?.getProperties().layerType;
     hightType === t && highlightLayer?.setVisible(false);
-    if(planLayerVisible || designLayerVisible || dismantleLayerVisible) {
-      getLayerGroupByName('surveyLayer', layerGroups).setOpacity(0.5);
+    if(state[1] || state[2] || state[3]) {
+      getLayerGroupByName('surveyLayer', layerGroups).setOpacity(.5);
     }else{
       getLayerGroupByName('surveyLayer', layerGroups).setOpacity(1);
     }
   }, [map])
+
+  const layersState = useMemo(() => {
+    return [surveyLayerVisible, planLayerVisible, designLayerVisible,dismantleLayerVisible ]
+  }, [surveyLayerVisible, planLayerVisible, designLayerVisible,dismantleLayerVisible])
   // 当勘察图层切换时
   useEffect(() => {
-    highlight(1, surveyLayerVisible)
+    highlight(1, layersState)
     getLayerGroupByName('surveyLayer', layerGroups).setVisible(surveyLayerVisible)
   }, [surveyLayerVisible])
   // 当方案图层点击时
   useEffect(() => {
-    highlight(2, planLayerVisible)
+    highlight(2, layersState)
     getLayerGroupByName('planLayer', layerGroups).setVisible(planLayerVisible)
   }, [planLayerVisible])
   // 当设计图层点击时
   useEffect(() => {
-    highlight(3, designLayerVisible)
+    highlight(3, layersState)
     getLayerGroupByName('designLayer', layerGroups).setVisible(designLayerVisible)
   }, [designLayerVisible])
   // 当拆除图层点击时
   useEffect(() => {
-    highlight(4, dismantleLayerVisible)
+    highlight(4, layersState)
     getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
   }, [dismantleLayerVisible])
 

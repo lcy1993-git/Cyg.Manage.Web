@@ -28,13 +28,13 @@ const FilterBar: FC = observer(() => {
   const [pCategory, setPCategory] = useState<number>(); //项目类别
   const [stage, setStage] = useState<number>(); //项目阶段
   const [constructType, setConstructType] = useState<number>(); //建设性质
-  const [nature, setNature] = useState<number>();
-  const [kvLevel, setKvLevel] = useState<number>(); //
-  const [statuss, setStatuss] = useState<number[]>();
-  const [createdOn, setCreatedOn] = useState<Moment | null>();
-  const [modifyDate, setsModiyDate] = useState<Moment | null>();
-  const [sourceType, setSourceType] = useState<string>();
-  const [identityType, setIdentityType] = useState<string>();
+  const [nature, setNature] = useState<number>(); //项目性质
+  const [kvLevel, setKvLevel] = useState<number>(); //电压等级
+  const [statuss, setStatuss] = useState<number[]>(); //状态
+  const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
+  const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
+  const [sourceType, setSourceType] = useState<string>(); //项目来源
+  const [identityType, setIdentityType] = useState<string>(); //项目身份
   const { getCollapseProps, getToggleProps, isExpanded } = useCollapse({
     defaultExpanded: false,
   });
@@ -61,16 +61,12 @@ const FilterBar: FC = observer(() => {
       arrayProjectStatus.push({ key: propertyValue.toString(), name: propertyKey });
     }
 
-    return arrayProjectStatus.map((v: ProjectStatusOption) => {
-      return <Option key={v.key} children={v.name} value={v.key}/>;
+    return arrayProjectStatus.map((v) => {
+      return <Option key={v.key} children={v.name} value={v.key} />;
     });
   };
 
-  /**
-   * 重置筛选codition
-   */
-
-  const clear = () => {
+  const reset = () => {
     setKeyWord('');
     setCategory(undefined);
     setPCategory(undefined);
@@ -101,10 +97,6 @@ const FilterBar: FC = observer(() => {
     store.setFilterCondition(condition);
   };
 
-  /**
-   * 根据条件搜索
-   */
-
   const search = () => {
     const condition = {
       keyWord,
@@ -127,199 +119,195 @@ const FilterBar: FC = observer(() => {
   const ConditionBar = () => {
     return (
       <>
-        <div className={styles.filterConditionContainer}>
-          <div style={{ marginBottom: '16px' }}>
-            <TableSearch label="项目状态" width="220px">
-              <Select
-                maxTagCount={1}
-                maxTagTextLength={2}
-                mode="multiple"
-                suffixIcon={<DownOutlined />}
-                allowClear
-                value={statuss}
-                onChange={(values: number[]) => setStatuss(values)}
-                style={{ width: '100%' }}
-                placeholder="项目状态"
-              >
-                {getProjectStatusOption()}
-              </Select>
-            </TableSearch>
-          </div>
-          <div style={{ marginBottom: '16px' }}>
-            <TableSearch className={styles.filterConditionItem} label="立项时间" width="220px">
-              <DatePicker
-                placeholder="年"
-                value={createdOn}
-                style={{ width: '100%' }}
-                onChange={(date: Moment | null) => setCreatedOn(date)}
-                suffixIcon={<DownOutlined />}
-                picker="year"
-              />
-            </TableSearch>
-          </div>
-          <div style={{ marginBottom: '16px' }}>
-            <TableSearch className={styles.filterConditionItem} label="更新时间" width="220px">
-              <DatePicker
-                onChange={(date: Moment | null) => setsModiyDate(date)}
-                placeholder="年"
-                style={{ width: '100%' }}
-                value={modifyDate}
-                suffixIcon={<DownOutlined />}
-                picker="year"
-              />
-            </TableSearch>
-          </div>
-
-          <div>
-            <TableSearch className={styles.filterConditionItem} label="项目分类" width="220px">
+        <div style={{ marginBottom: '16px' }}>
+          <TableSearch label="项目状态" width="220px">
+            <Select
+              maxTagCount={1}
+              maxTagTextLength={2}
+              mode="multiple"
+              suffixIcon={<DownOutlined />}
+              allowClear
+              value={statuss}
+              onChange={(values: number[]) => setStatuss(values)}
+              style={{ width: '100%' }}
+              placeholder="项目状态"
+            >
+              {getProjectStatusOption()}
+            </Select>
+          </TableSearch>
+        </div>
+        <div style={{ marginBottom: '16px' }}>
+          <TableSearch className={styles.filterConditionItem} label="立项时间" width="220px">
+            <DatePicker
+              placeholder="年"
+              value={createdOn}
+              style={{ width: '100%' }}
+              onChange={(date: Moment | null) => setCreatedOn(date)}
+              suffixIcon={<DownOutlined />}
+              picker="year"
+            />
+          </TableSearch>
+        </div>
+        <div style={{ marginBottom: '16px' }}>
+          <TableSearch className={styles.filterConditionItem} label="更新时间" width="220px">
+            <DatePicker
+              onChange={(date: Moment | null) => setsModiyDate(date)}
+              placeholder="年"
+              style={{ width: '100%' }}
+              value={modifyDate}
+              suffixIcon={<DownOutlined />}
+              picker="year"
+            />
+          </TableSearch>
+        </div>
+        <div>
+          <TableSearch label="项目分类" width="220px">
+            <UrlSelect
+              valueKey="value"
+              titleKey="text"
+              defaultData={projectCategory}
+              dropdownMatchSelectWidth={168}
+              className="widthAll"
+              value={category}
+              onChange={(value) => setCategory(value as number)}
+              placeholder="项目分类"
+              needAll={true}
+              allValue="-1"
+            />
+          </TableSearch>
+        </div>
+        <div
+          {...getToggleProps()}
+          style={{
+            marginTop: '8px',
+            textAlign: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          {!isExpanded ? <DownOutlined /> : null}
+        </div>
+        <div {...getCollapseProps()}>
+          <div style={{ marginBottom: '16px', marginTop: '8px' }}>
+            <TableSearch className={styles.filterConditionItem} label="项目类别" width="220px">
               <UrlSelect
                 valueKey="value"
                 titleKey="text"
-                defaultData={projectCategory}
+                defaultData={projectPType}
                 dropdownMatchSelectWidth={168}
+                value={pCategory}
                 className="widthAll"
-                value={category}
-                onChange={(value) => setCategory(value as number)}
-                placeholder="项目分类"
+                onChange={(value) => setPCategory(value as number)}
+                placeholder="项目类别"
                 needAll={true}
                 allValue="-1"
               />
             </TableSearch>
           </div>
-
-          <div
-            {...getToggleProps()}
-            style={{
-              marginTop: '8px',
-              textAlign: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            {!isExpanded ? <DownOutlined /> : null}
+          <div style={{ marginBottom: '16px', marginTop: '8px' }}>
+            <TableSearch className={styles.filterConditionItem} label="项目阶段" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                defaultData={projectStage}
+                className="widthAll"
+                value={stage}
+                onChange={(value) => setStage(value as number)}
+                placeholder="项目阶段"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
           </div>
-          <div {...getCollapseProps()}>
-            <div style={{ marginBottom: '16px', marginTop: '8px' }}>
-              <TableSearch className={styles.filterConditionItem} label="项目类别" width="220px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectPType}
-                  dropdownMatchSelectWidth={168}
-                  value={pCategory}
-                  className="widthAll"
-                  onChange={(value) => setPCategory(value as number)}
-                  placeholder="项目类别"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-            </div>
-            <div style={{ marginBottom: '16px', marginTop: '8px' }}>
-              <TableSearch className={styles.filterConditionItem} label="项目阶段" width="220px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectStage}
-                  className="widthAll"
-                  value={stage}
-                  onChange={(value) => setStage(value as number)}
-                  placeholder="项目阶段"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-            </div>
-            <div style={{ marginBottom: '16px', marginTop: '8px' }}>
-              <TableSearch className={styles.filterConditionItem} label="建设性质" width="220px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  value={constructType}
-                  defaultData={projectConstructType}
-                  onChange={(value) => setConstructType(value as number)}
-                  className="widthAll"
-                  placeholder="建设性质"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-            </div>
-            <div style={{ marginBottom: '16px' }}>
-              <TableSearch className={styles.filterConditionItem} label="电压等级" width="220px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectKvLevel}
-                  className="widthAll"
-                  value={kvLevel}
-                  onChange={(value) => setKvLevel(value as number)}
-                  placeholder="电压等级"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-            </div>
-            <div style={{ marginBottom: '16px' }}>
-              <TableSearch className={styles.filterConditionItem} label="项目性质" width="220px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectNature}
-                  dropdownMatchSelectWidth={168}
-                  value={nature}
-                  onChange={(value) => setNature(value as number)}
-                  className="widthAll"
-                  placeholder="项目性质"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-            </div>
-            <div style={{ marginBottom: '16px' }}>
-              <TableSearch label="项目来源" width="220px">
-                <EnumSelect
-                  enumList={ProjectSourceType}
-                  value={sourceType}
-                  onChange={(value) => setSourceType(String(value))}
-                  className="widthAll"
-                  placeholder="项目来源"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-            </div>
-            <div>
-              <TableSearch label="项目身份" width="222px">
-                <EnumSelect
-                  enumList={ProjectIdentityType}
-                  value={identityType}
-                  onChange={(value) => setIdentityType(String(value))}
-                  className="widthAll"
-                  placeholder="项目身份"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-            </div>
+          <div style={{ marginBottom: '16px', marginTop: '8px' }}>
+            <TableSearch className={styles.filterConditionItem} label="建设性质" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                value={constructType}
+                defaultData={projectConstructType}
+                onChange={(value) => setConstructType(value as number)}
+                className="widthAll"
+                placeholder="建设性质"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
           </div>
-          <div
-            {...getToggleProps()}
-            style={{
-              marginTop: '8px',
-              textAlign: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            {isExpanded ? <UpOutlined /> : null}
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="电压等级" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                defaultData={projectKvLevel}
+                className="widthAll"
+                value={kvLevel}
+                onChange={(value) => setKvLevel(value as number)}
+                placeholder="电压等级"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button className="mr2" onClick={() => search()} type="primary">
-              查询
-            </Button>
-            <Button className="mr2" onClick={() => clear()}>
-              重置
-            </Button>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch className={styles.filterConditionItem} label="项目性质" width="220px">
+              <UrlSelect
+                valueKey="value"
+                titleKey="text"
+                defaultData={projectNature}
+                dropdownMatchSelectWidth={168}
+                value={nature}
+                onChange={(value) => setNature(value as number)}
+                className="widthAll"
+                placeholder="项目性质"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
           </div>
+          <div style={{ marginBottom: '16px' }}>
+            <TableSearch label="项目来源" width="220px">
+              <EnumSelect
+                enumList={ProjectSourceType}
+                value={sourceType}
+                onChange={(value) => setSourceType(String(value))}
+                className="widthAll"
+                placeholder="项目来源"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
+          </div>
+          <div>
+            <TableSearch label="项目身份" width="222px">
+              <EnumSelect
+                enumList={ProjectIdentityType}
+                value={identityType}
+                onChange={(value) => setIdentityType(String(value))}
+                className="widthAll"
+                placeholder="项目身份"
+                needAll={true}
+                allValue="-1"
+              />
+            </TableSearch>
+          </div>
+        </div>
+        <div
+          {...getToggleProps()}
+          style={{
+            marginTop: '8px',
+            textAlign: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          {isExpanded ? <UpOutlined /> : null}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button className="mr2" onClick={() => search()} type="primary">
+            查询
+          </Button>
+          <Button className="mr2" onClick={() => reset()}>
+            重置
+          </Button>
         </div>
       </>
     );
