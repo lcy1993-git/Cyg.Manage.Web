@@ -121,3 +121,12 @@ export const deleteFileGroupItem = (id: string) => {
     request(`${baseUrl.project}/CompanyFileGroup/DeleteById`, { method: 'GET', params: { id } }),
   );
 };
+
+//下载公司文件接口
+export const downLoadFileItem = (params: any) => {
+  return request(`${baseUrl.upload}/Download/GetFileById`, {
+    method: 'GET',
+    params,
+    responseType: 'blob',
+  });
+};

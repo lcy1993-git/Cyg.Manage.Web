@@ -44,7 +44,6 @@ import { useGetButtonJurisdictionArray, useGetProjectEnum } from '@/utils/hooks'
 import UrlSelect from '@/components/url-select';
 import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 import ProjectRecallModal from './components/project-recall-modal';
-import Item from 'antd/lib/list/Item';
 
 const { Search } = Input;
 
@@ -153,32 +152,33 @@ const ProjectManagement: React.FC = () => {
   };
 
   const revokeAllotEvent = async () => {
-    const projectIds = tableSelectData
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+    const checkedArray = tableSelectData
       .map((item: any) => {
-        if (
-          item.projectInfo?.status[0]?.status == 1 ||
-          (item.projectInfo?.status[0]?.status == 14 && item.projectInfo?.status[0].allotId != '')
-        ) {
-          return item.checkedArray;
-        }
+        return item.projectInfo?.status?.map((item: any) => {
+          return { status: item.status, isAllot: item.isAllot };
+        });
       })
       .flat();
-
-    console.log(projectIds);
-    if (projectIds.includes(undefined)) {
-      message.error('所选项目中有非[未勘察]和[待安排]状态的项目，无法撤回');
-      return;
-    }
 
     if (projectIds.length === 0) {
       message.error('请至少选择一个项目');
       return;
     }
-    console.log(tableSelectData);
+    console.log(checkedArray);
 
-    await revokeAllot(projectIds);
-    message.success('撤回安排成功');
-    search();
+    if (
+      JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 14, isAllot: true })) != -1 ||
+      JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 1, isAllot: true })) != -1
+    ) {
+      await revokeAllot(projectIds);
+      message.success('撤回安排成功');
+      search();
+    } else {
+      message.error('该项目的状态非“待安排”或“未勘察”，无法进行此操作');
+      return;
+    }
   };
 
   const arrangeEvent = async () => {
