@@ -265,6 +265,7 @@ const SidePopup: React.FC<Props> = (props) => {
   const DrawerWrap = useMemo(() => {
     return (
       <Drawer
+        title={"title"}
         placement="right"
         closable={false}
         visible={rightSidebarVisible}
