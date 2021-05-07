@@ -10,6 +10,7 @@ import styles from './index.less';
 import moment from 'moment';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useRequest } from 'ahooks';
+import { observer } from 'mobx-react-lite';
 
 const Commentdata = [
   {
@@ -347,7 +348,7 @@ const LAYER_TYPE: { [propertyName: string]: string } = {
   dismantle: '拆除',
 };
 
-const SidePopup: React.FC<Props> = (props) => {
+const SidePopup: React.FC<Props> = observer((props) => {
   const { data, rightSidebarVisible, setRightSidebarVisiviabel } = props;
   const [reviewRquestBody, setReviewRquestBody] = useState<ReviewRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
@@ -394,7 +395,7 @@ const SidePopup: React.FC<Props> = (props) => {
               查看
             </span>
           );
-        } else if (record.propertyName === '批注') {
+        } else if (record.propertyName === '审阅') {
           if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
             return (
               <span
@@ -484,12 +485,12 @@ const SidePopup: React.FC<Props> = (props) => {
       data.find((item: any) => item.propertyName === '材料表')?.data,
     );
     /**
-     * 获取添加批注的一些关键信息
+     * 获取添加审阅的一些关键信息
      * http://10.6.1.36:8025/help/index.html 接口文档
      *
      */
 
-    const feature = data.find((item: any) => item.propertyName === '批注')?.data.feature;
+    const feature = data.find((item: any) => item.propertyName === '审阅')?.data.feature;
     if (feature) {
       const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
       console.log(loadEnumsData);
@@ -567,9 +568,9 @@ const SidePopup: React.FC<Props> = (props) => {
     if (activeType?.split('&')[0] === 'annotation') {
       // publishMessage({ content: annotation, projectId: activeType.split('&')[1] }).then((res) => {
       //   if (res.code === 200 && res.isSuccess === true) {
-      //     message.success('批注推送成功');
+      //     message.success('审阅推送成功');
       //   } else {
-      //     message.error('批注推送失败');
+      //     message.error('审阅推送失败');
       //   }
       // });
       addReviewRequest({
@@ -577,7 +578,6 @@ const SidePopup: React.FC<Props> = (props) => {
         layerType: reviewRquestBody?.layerType ?? -100,
         deviceType: reviewRquestBody?.deviceType ?? -100,
         deviceId: reviewRquestBody?.deviceId ?? -100,
-        title: 'just a title',
         content: review,
       });
     }
@@ -587,7 +587,7 @@ const SidePopup: React.FC<Props> = (props) => {
   return (
     <div className={styles.wrap}>
       <Modal
-        title={activeType ? modalTitle[activeType!] ?? '创建批注' : ''}
+        title={activeType ? modalTitle[activeType!] ?? '添加审阅' : ''}
         centered
         visible={!!activeType}
         onOk={onOkClick}
@@ -688,6 +688,6 @@ const SidePopup: React.FC<Props> = (props) => {
       </Drawer>
     </div>
   );
-};
+});
 
 export default SidePopup;
