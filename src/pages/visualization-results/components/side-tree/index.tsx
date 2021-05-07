@@ -12,7 +12,6 @@ import {
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-import Filterbar from '../filter-bar';
 const { TabPane } = Tabs;
 
 /**
@@ -225,28 +224,30 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }, [checkedKeys]);
 
   return (
-    <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
-      <Filterbar />
-      <Tabs type="line" defaultActiveKey="1" style={{ height: '100%' }}>
-        <TabPane tab="全部项目" key="1">
-          {allLoading ? (
-            <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
-          ) : null}
-          {allData ? (
-            <Tree
-              height={size.height}
-              checkable
-              onExpand={onExpand}
-              expandedKeys={expandedKeys}
-              onCheck={(checked, info) => onCheck(checked, info)}
-              checkedKeys={checkedKeys}
-              treeData={treeData}
-              className={classNames(styles.sideMenu)}
-            />
-          ) : null}
-        </TabPane>
-      </Tabs>
-    </div>
+    <>
+      <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
+        <Tabs type="line" defaultActiveKey="1" style={{ height: '100%' }}>
+          <TabPane tab="全部项目" key="1">
+            {allLoading ? (
+              <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
+            ) : null}
+            {allData ? (
+              <Tree
+                height={size.height}
+                checkable
+                onExpand={onExpand}
+                expandedKeys={expandedKeys}
+                onCheck={(checked, info) => onCheck(checked, info)}
+                checkedKeys={checkedKeys}
+                treeData={treeData}
+                className={classNames(styles.sideMenu)}
+              />
+            ) : null}
+          </TabPane>
+        </Tabs>
+      </div>
+      
+    </>
   );
 });
 

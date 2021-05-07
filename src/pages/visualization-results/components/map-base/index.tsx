@@ -12,18 +12,27 @@ import Map from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
 import { transform } from 'ol/proj';
 
-import { refreshMap, getLayerByName, getLayerGroupByName, relocateMap, loadTrackLayers, clearTrackLayers, clearHighlightLayer } from '../../utils/methods';
+import {
+  refreshMap,
+  getLayerByName,
+  getLayerGroupByName,
+  relocateMap,
+  loadTrackLayers,
+  clearTrackLayers,
+  clearHighlightLayer,
+} from '../../utils/methods';
 import { bd09Towgs84 } from '../../utils';
 import { mapClick, mapPointermove, mapMoveend } from '../../utils/mapClick';
 import { BaseMapProps } from '../../utils/init';
 
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import styles from './index.less';
+import MapDisplay from '../map-display';
 
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
   const mapElement = useRef(null);
-  const { layers, layerGroups, trackLayers, view, setView, setLayerGroups} = props;
+  const { layers, layerGroups, trackLayers, view, setView, setLayerGroups } = props;
 
   // 图层控制层数据
   const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(false);
@@ -33,15 +42,24 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 从Vstate获取外部传入的数据
   const store = useContainer();
   const { vState } = store;
-  const { checkedProjectIdList: projects, filterCondition, visibleLeftSidebar, normalClickDate, observeClickDate, positionMap, observeTrack, confessionTrack } = vState;
+  const {
+    checkedProjectIdList: projects,
+    filterCondition,
+    visibleLeftSidebar,
+    normalClickDate,
+    observeClickDate,
+    positionMap,
+    observeTrack,
+    confessionTrack,
+  } = vState;
   const { kvLevel } = filterCondition;
 
   // 右侧边栏状态
   const [rightSidebarVisiviabel, setRightSidebarVisiviabelMap] = useState(false);
   const setRightSidebarVisiviabel = (state: boolean) => {
-    map && state || clearHighlightLayer(map);
-    setRightSidebarVisiviabelMap(state)
-  }
+    (map && state) || clearHighlightLayer(map);
+    setRightSidebarVisiviabelMap(state);
+  };
   const [rightSidebarData, setRightSidebarData] = useState<TableDataType[]>([]);
   // 挂载
   useMount(() => {
@@ -79,7 +97,6 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 动态刷新refreshMap
   useEffect(() => {
-    
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
     map && refreshMap(ops, projects!);
   }, [JSON.stringify(projects)]);
@@ -99,19 +116,15 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 动态刷新轨迹
   useEffect(() => {
     // 加载勘察轨迹
-    if (observeTrack)
-      map && loadTrackLayers(projects[0].id, map, trackLayers, 0);
-    else
-      clearTrackLayers(trackLayers, 0)
+    if (observeTrack) map && loadTrackLayers(projects[0].id, map, trackLayers, 0);
+    else clearTrackLayers(trackLayers, 0);
   }, [JSON.stringify(observeTrack)]);
 
   // 动态刷新轨迹
   useEffect(() => {
     // 加载交底轨迹
-    if (confessionTrack)
-      map && loadTrackLayers(projects[0].id, map, trackLayers, 1);
-    else
-      clearTrackLayers(trackLayers, 1)
+    if (confessionTrack) map && loadTrackLayers(projects[0].id, map, trackLayers, 1);
+    else clearTrackLayers(trackLayers, 1);
   }, [JSON.stringify(confessionTrack)]);
 
   // 地图定位
@@ -122,43 +135,51 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 左侧菜单伸缩时刷新地图尺寸
   useEffect(() => {
     map?.updateSize();
-  }, [visibleLeftSidebar])
+  }, [visibleLeftSidebar]);
   // 处理高亮图层
-  const highlight = useCallback((t: number, state)=> {
-    const highlightLayer: any = map?.getLayers().getArray().find((layer: any) => {return layer.get('name') === 'highlightLayer'});
-    const highlightLayers =  highlightLayer?.getSource().getFeatures();
-    const hightType = highlightLayers && highlightLayers[0]?.getProperties().layerType;
-    hightType === t && highlightLayer?.setVisible(false);
-    if(state[1] || state[2] || state[3]) {
-      getLayerGroupByName('surveyLayer', layerGroups).setOpacity(.5);
-    }else{
-      getLayerGroupByName('surveyLayer', layerGroups).setOpacity(1);
-    }
-  }, [map])
+  const highlight = useCallback(
+    (t: number, state) => {
+      const highlightLayer: any = map
+        ?.getLayers()
+        .getArray()
+        .find((layer: any) => {
+          return layer.get('name') === 'highlightLayer';
+        });
+      const highlightLayers = highlightLayer?.getSource().getFeatures();
+      const hightType = highlightLayers && highlightLayers[0]?.getProperties().layerType;
+      hightType === t && highlightLayer?.setVisible(false);
+      if (state[1] || state[2] || state[3]) {
+        getLayerGroupByName('surveyLayer', layerGroups).setOpacity(0.5);
+      } else {
+        getLayerGroupByName('surveyLayer', layerGroups).setOpacity(1);
+      }
+    },
+    [map],
+  );
 
   const layersState = useMemo(() => {
-    return [surveyLayerVisible, planLayerVisible, designLayerVisible,dismantleLayerVisible ]
-  }, [surveyLayerVisible, planLayerVisible, designLayerVisible,dismantleLayerVisible])
+    return [surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible];
+  }, [surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible]);
   // 当勘察图层切换时
   useEffect(() => {
-    highlight(1, layersState)
-    getLayerGroupByName('surveyLayer', layerGroups).setVisible(surveyLayerVisible)
-  }, [surveyLayerVisible])
+    highlight(1, layersState);
+    getLayerGroupByName('surveyLayer', layerGroups).setVisible(surveyLayerVisible);
+  }, [surveyLayerVisible]);
   // 当方案图层点击时
   useEffect(() => {
-    highlight(2, layersState)
-    getLayerGroupByName('planLayer', layerGroups).setVisible(planLayerVisible)
-  }, [planLayerVisible])
+    highlight(2, layersState);
+    getLayerGroupByName('planLayer', layerGroups).setVisible(planLayerVisible);
+  }, [planLayerVisible]);
   // 当设计图层点击时
   useEffect(() => {
-    highlight(3, layersState)
-    getLayerGroupByName('designLayer', layerGroups).setVisible(designLayerVisible)
-  }, [designLayerVisible])
+    highlight(3, layersState);
+    getLayerGroupByName('designLayer', layerGroups).setVisible(designLayerVisible);
+  }, [designLayerVisible]);
   // 当拆除图层点击时
   useEffect(() => {
-    highlight(4, layersState)
-    getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
-  }, [dismantleLayerVisible])
+    highlight(4, layersState);
+    getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible);
+  }, [dismantleLayerVisible]);
 
   const onlocationClick = () => {
     // 当点击定位按钮时
@@ -177,7 +198,7 @@ const BaseMap = observer((props: BaseMapProps) => {
             zoom: 18,
             duration: duration,
           },
-          () => { },
+          () => {},
         );
         setView(view);
       }
@@ -199,23 +220,21 @@ const BaseMap = observer((props: BaseMapProps) => {
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
-      {rightSidebarVisiviabel || (
-        <CtrolLayers
-          surveyLayerVisible={surveyLayerVisible}
-          planLayerVisible={planLayerVisible}
-          designLayerVisible={designLayerVisible}
-          dismantleLayerVisible={dismantleLayerVisible}
-          setSurveyLayerVisible={setSurveyLayerVisible}
-          setPlanLayerVisible={setPlanLayerVisible}
-          setDesignLayerVisible={setDesignLayerVisible}
-          setDismantleLayerVisible={setDismantleLayerVisible}
-        />
-      )}
-      <Footer
-        onlocationClick={onlocationClick}
-        onSatelliteMapClick={onSatelliteMapClick}
-        onStreetMapClick={onStreetMapClick}
+
+      <CtrolLayers
+        surveyLayerVisible={surveyLayerVisible}
+        planLayerVisible={planLayerVisible}
+        designLayerVisible={designLayerVisible}
+        dismantleLayerVisible={dismantleLayerVisible}
+        setSurveyLayerVisible={setSurveyLayerVisible}
+        setPlanLayerVisible={setPlanLayerVisible}
+        setDesignLayerVisible={setDesignLayerVisible}
+        setDismantleLayerVisible={setDismantleLayerVisible}
       />
+
+      <MapDisplay onSatelliteMapClick={onSatelliteMapClick} onStreetMapClick={onStreetMapClick} />
+
+      <Footer onlocationClick={onlocationClick} />
       <SidePopup
         rightSidebarVisible={rightSidebarVisiviabel}
         data={rightSidebarData}

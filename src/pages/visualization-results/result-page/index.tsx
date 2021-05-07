@@ -1,38 +1,40 @@
-import React, { Profiler } from 'react';
+import React from 'react';
 import styles from './index.less';
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
 import SideTree from '../components/side-tree';
 import MapContainerShell from '../components/map-container-shell';
+import Filterbar from '../components/filter-bar';
 import { Provider, useContainer } from './mobx-store';
 import Timeline from '../components/timeline';
 import ListMenu from '../components/list-menu';
 import { observer } from 'mobx-react-lite';
+import { MenuFoldOutlined } from '@ant-design/icons';
 
 const VisualizationResults: React.FC = observer(() => {
-  const { vState } = useContainer();
-  const { visibleLeftSidebar, observeTrackTimeline, observeTrack, checkedProjectDateList } = vState;
-
-  const callback = (
-    id: string,
-    phase: 'mount' | 'update',
-    actualDuration: number,
-    baseDuration: number,
-    startTime: number,
-    commitTime: number,
-  ) => {};
-
+  const store = useContainer();
+  const { vState } = store;
+  const { visibleLeftSidebar, checkedProjectDateList } = vState;
   return (
     <PageCommonWrap noPadding={true}>
+      <Filterbar />
       <main
         className={classNames(
           styles.content,
           'flex',
-          visibleLeftSidebar ? styles.sideNavShow : styles.sideNavHide,
+          styles.sideNavShow,
+          visibleLeftSidebar ? '' : styles.sideNavHide,
         )}
       >
-        <div className={styles.sideNav}>
-          <SideTree />
+        <div className={styles.sideTreeContainer}>
+          <div className={styles.sideNav}>
+            <SideTree />
+          </div>
+          <div className={styles.sideTreefooter}>
+            <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
+              {visibleLeftSidebar ? <MenuFoldOutlined /> : null}
+            </div>
+          </div>
         </div>
 
         <div className={classNames(styles.mapContainer, 'flex1')}>
@@ -43,13 +45,7 @@ const VisualizationResults: React.FC = observer(() => {
               ) : null}
             </div>
           </div>
-          <div className={styles.observeTimelineContainer}>
-            <div style={{ marginTop: '16px' }}>
-              {observeTrackTimeline && observeTrackTimeline.length > 0 && observeTrack ? (
-                <Timeline type="observe" height={60} width={400} dates={observeTrackTimeline} />
-              ) : null}
-            </div>
-          </div>
+
           <div className={styles.listMenuContainer}>
             <ListMenu />
           </div>
