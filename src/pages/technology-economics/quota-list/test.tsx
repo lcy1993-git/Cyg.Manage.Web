@@ -1,12 +1,7 @@
-
-import PageCommonWrap from '@/components/page-common-wrap';
-import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin } from 'antd';
-import React, { useMemo, useRef, useState } from 'react';
-import { isArray } from 'lodash';
-import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
-import TreeTable from './components/file-tree-table';
-
+import {Table} from 'antd';
+import { FolderOutlined, FolderOpenOutlined } from '@ant-design/icons';
+import { useRef, useState } from 'react';
+import TreeTable from '@/components/checkbox-tree-table';
 import { TreeData, formatDataTree } from '@/utils/utils';
 const data = [
   {
@@ -145,6 +140,10 @@ const data = [
     "sort": 0
   }
 ];
+
+const dataSource = formatDataTree(data);
+console.log(dataSource);
+
 const columns = [
   {
     title: "目录名称",
@@ -163,82 +162,92 @@ const columns = [
   },
 ];
 
-const QuotaList: React.FC = () => {
-  const dataSource = formatDataTree(data);
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
-
-  const expKeysAll = useMemo(() => data.flat(Infinity).map((i: TreeData) => i.id), [JSON.stringify(data)])
-
-  const rightButton = () => {
-    return (
-      <div>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-          // disabled
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
-          </Button>
-        </Popconfirm>
-      </div>
-    );
-  };
-
-  const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
-    }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
-
-    await deleteReportLog(editDataId);
-    tableFresh();
-    message.success('删除成功');
-  };
-
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current?.search();
-    }
-  };
-  //数据修改刷新
-  const tableFresh = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current?.refresh();
-    }
-  };
-
-
+const Test = () => {
+  const [expKeys, setExpKeys] = useState<string[]>([]);
   return (
-    <PageCommonWrap>
+    <div>
+      <button onClick={()=>{
+        const newKeys = data.map((i) => i.id);
+        setExpKeys(newKeys);
+      }}>全部展开</button>
+      <button onClick={()=>setExpKeys([])}>全部收起</button>
+
+      <button onClick={()=>setExpKeys([])}>DDDD</button>
+      <button onClick={()=>setExpKeys(['1','11','112'])}>DDDD</button>
       <TreeTable
-        tableTitle="定额库目录"
         dataSource={dataSource}
         columns={columns}
-        refreshTable={() => 1}
-        buttonRightContentSlot = {rightButton}
-        pageIndex={1}
-        expKeysAll={expKeysAll}
+        rowKey={e => e.id}
+        expandedRowKeys={expKeys}
+        onExpand={(b, r) => {
+          const newExp: any = b ? [...expKeys, r.id] : expKeys.filter(i => i !== r.id);
+          setExpKeys(newExp);
+        }}
+        expandable={{
+          rowExpandable: r => true,
+          expandRowByClick: true,
+          defaultExpandAllRows: true,
+          expandIcon: (r)=> {
+            if(r.expanded) {
+              return (
+                <span className={styles.folder}>
+                  <FolderOpenOutlined/>&nbsp;
+                </span>
+
+              );
+            } else {
+              return (
+                <span className={styles.folder}>
+                  <FolderOutlined />&nbsp;
+                </span>
+              );
+            }
+
+          }
+        }}
       />
-    </PageCommonWrap>
+    </div>
+  );
+}
+
+export default Test;
+
+
+
+const rightButton = () => {
+  return (
+    <div>
+      <Button type="primary" className="mr7" onClick={() => addEvent()}>
+        <PlusOutlined />
+        添加
+      </Button>
+      <Button className="mr7" onClick={() => editEvent()}>
+        <EditOutlined />
+        编辑
+      </Button>
+
+      <Popconfirm
+        title="您确定要删除该条数据?"
+        onConfirm={sureDeleteData}
+        okText="确认"
+        cancelText="取消"
+        // disabled
+      >
+        <Button className="mr7">
+          <DeleteOutlined />
+          删除
+        </Button>
+      </Popconfirm>
+      <Button className="mr7" onClick={() => openAll()}>
+        <DownOutlined />
+        全部展开
+      </Button>
+      <Button className="mr7" onClick={() => foldAll()}>
+        <UpOutlined />
+        全部折叠
+      </Button>
+      {/* <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
+      <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" /> */}
+    </div>
   );
 };
-
-export default QuotaList;
