@@ -17,7 +17,7 @@ export interface EngineerProjetListFilterParams {
 /**
  * 获得的projectList的类型
  */
- export interface ProjectType {
+export interface ProjectType {
   id: string;
   name: string;
   createdOn: Date;
@@ -55,6 +55,16 @@ export const fetchEngineerProjectListByParams = (params: EngineerProjetListFilte
   return cyRequest<Engineer[]>(() =>
     request(
       `${baseUrl.webGis}/WebGis/GetEngineerProjectList
+    `,
+      { method: 'POST', data: params },
+    ),
+  );
+};
+
+export const fetchEngineerProjectListByParamsAndArea = (params: EngineerProjetListFilterParams) => {
+  return cyRequest<Engineer[]>(() =>
+    request(
+      `${baseUrl.projectVisualization}/ProjectVisualization/GetProjectListByArea
     `,
       { method: 'POST', data: params },
     ),

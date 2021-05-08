@@ -2,7 +2,12 @@ import React, { createRef, useEffect, useMemo, useRef, useState } from 'react';
 import { Drawer, Table, Modal, Carousel, Input, message, Tooltip, Comment, List } from 'antd';
 import { useContainer } from '../../result-page/mobx-store';
 import { MenuUnfoldOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
-import { ReviewRequestType, addReview, fetchReview } from '@/services/visualization-results/side-popup';
+import {
+  ReviewRequestType,
+  addReview,
+  fetchReviewList,
+  ReviewType,
+} from '@/services/visualization-results/side-popup';
 // import { publishMessage } from '@/services/news-config/review-manage';
 
 import uuid from 'node-uuid';
@@ -11,179 +16,6 @@ import moment from 'moment';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useRequest } from 'ahooks';
 import { observer } from 'mobx-react-lite';
-
-const Commentdata = [
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-];
 
 export interface TableDataType {
   // propertyName: string;
@@ -348,10 +180,32 @@ const LAYER_TYPE: { [propertyName: string]: string } = {
   dismantle: '拆除',
 };
 
+function generatprReviewListDate(reviewList?: ReviewType[]) {
+  if (reviewList) {
+    return reviewList.map((v) => ({
+      author: v.creator,
+      content: <p>{v.content}</p>,
+      datetime: (
+        <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
+          <span>{moment().fromNow()}</span>
+        </Tooltip>
+      ),
+    }));
+  } else {
+    return [];
+  }
+}
+
+export interface ReviewListItemDataType {
+  author: string;
+  content: React.ReactNode;
+  datetime: React.ReactNode;
+}
 const SidePopup: React.FC<Props> = observer((props) => {
   const { data, rightSidebarVisible, setRightSidebarVisiviabel } = props;
   const [reviewRquestBody, setReviewRquestBody] = useState<ReviewRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
+  const [reviewListData, setReviewListDate] = useState<ReviewListItemDataType[]>();
   const [review, setReview] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
@@ -398,11 +252,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         } else if (record.propertyName === '审阅') {
           if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
             return (
-              <span
-                className={styles.link}
-                onClick={() => setActiveType('annotation&' + value.id)}
-                key={index}
-              >
+              <span className={styles.link} onClick={() => onAddReview(value)} key={index}>
                 添加审阅
               </span>
             );
@@ -464,8 +314,13 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   ];
 
-  const { run: fetchhReview } = useRequest(addReview, {
-    onSuccess: () => {},
+  const { data: reviewList, run: fetchReviewListRequest } = useRequest(fetchReviewList, {
+    manual: true,
+    onSuccess: () => {
+      let reviewListData = generatprReviewListDate(reviewList);
+
+      setReviewListDate(reviewListData);
+    },
     onError: () => {
       message.success('获取审阅失败');
     },
@@ -476,40 +331,31 @@ const SidePopup: React.FC<Props> = observer((props) => {
     onSuccess: () => {
       message.success('添加成功');
       setReview('');
+      fetchReviewListRequest({
+        projectId: reviewRquestBody?.projectId ?? '-100',
+        deviceId: reviewRquestBody?.deviceId ?? '-100',
+        layer: reviewRquestBody?.layerType ?? -100,
+      });
     },
     onError: () => {
-      message.success('添加失败');
+      message.error('添加失败');
     },
   });
-  useEffect(() => {
-    setRightSidebarVisiviabel(false);
-  }, [JSON.stringify(checkedProjectIdList)]);
 
-  const modalData = useMemo(() => {
-    const media = removeEmptChildren(
-      data.find((item: any) => item.propertyName === '多媒体')?.data,
-    );
-    const material = removeEmptChildren(
-      data.find((item: any) => item.propertyName === '材料表')?.data,
-    );
-    /**
-     * 获取添加审阅的一些关键信息
-     * http://10.6.1.36:8025/help/index.html 接口文档
-     *
-     */
+  const onAddReview = (value: any) => {
+    setActiveType('annotation&' + value.id);
 
     const feature = data.find((item: any) => item.propertyName === '审阅')?.data.feature;
     if (feature) {
       const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
       console.log(loadEnumsData);
-
+      
       const findEnumKey = (v: string, type: string): number => {
         let res: number = -100;
         loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
           if (l.key === type) {
             l.value.forEach((e) => {
               if (e.text === v) {
-                console.log(e.text);
                 res = e.value as number;
               }
             });
@@ -526,7 +372,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
       let split = id_.split('.');
       const [enLayerType, enDeviceType] = split[0].split('_');
       const deviceId = split[1];
-
+      
       /**
        * 初始化请求body
        */
@@ -537,7 +383,24 @@ const SidePopup: React.FC<Props> = observer((props) => {
         projectId,
         content: '',
       });
+      fetchReviewListRequest({
+        projectId: projectId,
+        deviceId,
+        layer: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
+      });
     }
+  };
+  useEffect(() => {
+    setRightSidebarVisiviabel(false);
+  }, [JSON.stringify(checkedProjectIdList)]);
+
+  const modalData = useMemo(() => {
+    const media = removeEmptChildren(
+      data.find((item: any) => item.propertyName === '多媒体')?.data,
+    );
+    const material = removeEmptChildren(
+      data.find((item: any) => item.propertyName === '材料表')?.data,
+    );
 
     // const {  values } = feature;
     // const { project_id } = values;
@@ -574,18 +437,11 @@ const SidePopup: React.FC<Props> = observer((props) => {
      * 如果要在添加审阅相应事件只能在这个if下面
      */
     if (activeType?.split('&')[0] === 'annotation') {
-      // publishMessage({ content: annotation, projectId: activeType.split('&')[1] }).then((res) => {
-      //   if (res.code === 200 && res.isSuccess === true) {
-      //     message.success('审阅推送成功');
-      //   } else {
-      //     message.error('审阅推送失败');
-      //   }
-      // });
       addReviewRequest({
         projectId: reviewRquestBody?.projectId ?? '',
         layerType: reviewRquestBody?.layerType ?? -100,
         deviceType: reviewRquestBody?.deviceType ?? -100,
-        deviceId: reviewRquestBody?.deviceId ?? -100,
+        deviceId: reviewRquestBody?.deviceId ?? '-100',
         content: review,
       });
     }
@@ -679,9 +535,9 @@ const SidePopup: React.FC<Props> = observer((props) => {
             <Scrollbars autoHide ref={scrollbars} style={{ marginBottom: 32, height: 300 }}>
               <List
                 className="comment-list"
-                header={`${data.length}条 审阅内容`}
+                header={`${reviewListData?.length}条 审阅内容`}
                 itemLayout="horizontal"
-                dataSource={Commentdata}
+                dataSource={reviewListData}
                 renderItem={(item) => (
                   <li>
                     <Comment author={item.author} content={item.content} datetime={item.datetime} />

@@ -44,6 +44,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/Comment': '/' },
     },
+    '/ProjectVisualization/api': {
+      target: 'http://10.6.1.36:8026/',
+      changeOrigin: true,
+      pathRewrite: { '^/ProjectVisualization': '/' },
+    },
     '/baidu/api': {
       target: 'https://map.baidu.com/',
       changeOrigin: true,

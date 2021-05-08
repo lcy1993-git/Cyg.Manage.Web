@@ -12,7 +12,6 @@ import {
 import { useContainer } from '../../store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-const { TabPane } = Tabs;
 
 /**
  * 树形结构
@@ -37,7 +36,10 @@ export interface SideMenuProps {
  * @param projectItemsType
  * @returns
  */
-const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNodeType[] => {
+const mapProjects2TreeNodeData = (
+  projectItemsType: ProjectItemType[],
+  engineerId: string,
+): TreeNodeType[] => {
   return projectItemsType.map((v: ProjectItemType) => {
     return {
       title: v.name,
@@ -45,6 +47,7 @@ const mapProjects2TreeNodeData = (projectItemsType: ProjectItemType[]): TreeNode
       time: v.projectEndTime ? moment(v.projectEndTime).format('YYYY-MM-DD') : '',
       status: v.status,
       haveData: v.haveData,
+      engineerId,
       haveSurveyData: v.haveSurveyData,
       haveDesignData: v.haveDesignData,
       isExecutor: v.isExecutor,
@@ -57,7 +60,7 @@ const generateProjectTree = (engineerList: Engineer[]) => {
     return {
       title: v.name,
       key: v.id,
-      children: mapProjects2TreeNodeData(v.projects),
+      children: mapProjects2TreeNodeData(v.projects, v.id),
     };
   });
 
@@ -67,6 +70,7 @@ const generateProjectTree = (engineerList: Engineer[]) => {
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>();
+  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>();
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
   const { filterCondition } = vState;
@@ -88,7 +92,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           console.log(allData);
 
           let listTree = generateProjectTree(allData);
-          console.log(listTree);
 
           //设置树形数据
           setTreeData(listTree);
@@ -102,7 +105,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               }
             }),
           );
-          store.setProjectId(setTreeData[0]?.children[0]?.key);
+
+          store.setProjectInfo({
+            projectId: listTree[0]?.children[0]?.key,
+            engineerId: listTree[0]?.key,
+          });
+
+          setSelectedKeys([listTree[0]?.children[0]?.key]);
         } else {
           message.warning('没有检索到数据');
         }
@@ -115,6 +124,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
+  };
+
+  const onSelect = (selectedKeys: React.Key[], e: any) => {
+    setSelectedKeys(selectedKeys);
+    store.setProjectInfo({
+      projectId: e.node.key,
+      engineerId: e.node.engineerId,
+    });
   };
 
   return (
@@ -131,6 +148,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               onExpand={onExpand}
               expandedKeys={expandedKeys}
               autoExpandParent
+              selectedKeys={selectedKeys}
+              onSelect={(selectedKeys, e) => onSelect(selectedKeys, e)}
               height={size.height ? size.height - 30 : 700}
               treeData={treeData}
             />

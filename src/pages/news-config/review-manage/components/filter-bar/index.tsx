@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 import TableSearch from '@/components/table-search';
 import UrlSelect from '@/components/url-select';
 import { Button, Input, Select } from 'antd';
@@ -7,6 +7,7 @@ import styles from './index.less';
 import { Moment } from 'moment';
 import { useContainer } from '../../store';
 import EnumSelect from '@/components/enum-select';
+import AreaSelect from '@/components/area-select';
 import { observer } from 'mobx-react-lite';
 import {
   ProjectIdentityType,
@@ -66,7 +67,7 @@ const FilterBar: FC = observer(() => {
   const [sourceType, setSourceType] = useState<string>(); //项目来源
   const [identityType, setIdentityType] = useState<string>(); //项目身份
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
-
+  const areaRef = useRef<HTMLDivElement>(null);
   const store = useContainer();
 
   const {
@@ -90,6 +91,36 @@ const FilterBar: FC = observer(() => {
     return arrayProjectStatus.map((v) => {
       return <Option key={v.key} children={v.name} value={v.key} />;
     });
+  };
+  const areaChangeEvent = (params: any) => {
+    const { provinceId, cityId, areaId } = params;
+    if (areaId) {
+      setAreaInfo({
+        areaType: '3',
+        areaId: areaId,
+      });
+      return;
+    }
+    if (cityId) {
+      setAreaInfo({
+        areaType: '2',
+        areaId: cityId,
+      });
+      return;
+    }
+    if (provinceId) {
+      setAreaInfo({
+        areaType: '1',
+        areaId: provinceId,
+      });
+      return;
+    }
+    if (!provinceId && !cityId && !areaId) {
+      setAreaInfo({
+        areaType: '-1',
+        areaId: '',
+      });
+    }
   };
 
   const reset = () => {
@@ -254,7 +285,9 @@ const FilterBar: FC = observer(() => {
               allValue="-1"
             />
           </TableSearch>
-
+          <TableSearch className="mb10" width="111px">
+            <AreaSelect ref={areaRef} onChange={areaChangeEvent} />
+          </TableSearch>
           <TableSearch width="111px" className="mb10">
             <EnumSelect
               enumList={ProjectSourceType}

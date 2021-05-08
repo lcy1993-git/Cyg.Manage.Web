@@ -3,25 +3,32 @@ import { cyRequest, baseUrl } from '../common';
 import { EngineerProjetListFilterParams } from '../visualization-results/side-menu';
 
 export interface ReviewListParams {
-  id: string;
-  type?: string;
-  layer?: string;
+  projectIds?: string[];
+  engineerId?: string;
+  layerTypes?: number[];
 }
 
 export interface ReviewListItemType {
   id: string;
-  name: string;
-  type: string;
-  layer: string;
   createdOn: string;
-  modifyDate: string;
-  status: string;
+  status: number;
+  engineerId: string;
+  projectId: string;
+  companyName: string;
+  projectName: string;
+  deviceType: number;
+  layerType: number;
+  deviceId: string;
+  deviceName: string;
+  title: string;
+  lastUpdateDate: string;
+  createdBy: string;
 }
 
-export const GetEngineerProjectCommentListByParams = (params: EngineerProjetListFilterParams) => {
-  return cyRequest<any>(() =>
+export const fetchReviewList = (params: ReviewListParams) => {
+  return cyRequest<ReviewListItemType[]>(() =>
     request(
-      `${baseUrl.comment}/Comment/GetEngineerProjectCommentList
+      `${baseUrl.comment}/Comment/GetProjectCommentList
     `,
       { method: 'POST', data: params },
     ),
@@ -29,12 +36,3 @@ export const GetEngineerProjectCommentListByParams = (params: EngineerProjetList
 };
 
 //获取选中数据
-export const GetProjectCommentListByParams = (params: ReviewListParams) => {
-  return cyRequest<ReviewListItemType>(() =>
-    request(
-      `${baseUrl.comment}/WebGis/GetProjectCommentList
-  `,
-      { method: 'POST', data: params },
-    ),
-  );
-};

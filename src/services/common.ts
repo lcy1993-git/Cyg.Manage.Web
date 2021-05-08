@@ -14,7 +14,8 @@ const devBaseUrl = {
   resource: '/resource/api',
   webGis: '/webGis/api',
   webGis2: '/webGis2/api',
-  comment: '/Comment/api'
+  comment: '/Comment/api',
+  projectVisualization: '/GetProjectListByArea/api',
 };
 
 // interface UrlSelectParams {

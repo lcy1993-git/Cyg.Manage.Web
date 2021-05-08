@@ -3,7 +3,7 @@ import { cyRequest, baseUrl } from '../common';
 
 export interface ReviewRequestType {
   projectId: string;
-  deviceId: number;
+  deviceId: string;
   deviceType: number;
   layerType: number;
   content: string;
@@ -14,6 +14,12 @@ export interface fetchReviewListType {
   projectId: string;
   layer: number;
   deviceId: string;
+}
+
+export interface ReviewType {
+  content: string;
+  creator: string;
+  createdOn: string;
 }
 
 /**
@@ -32,12 +38,12 @@ export const addReview = (requestData: ReviewRequestType) => {
   );
 };
 
-export const fetchReviewList = (requestData: ReviewRequestType) => {
-  return cyRequest<any>(() =>
+export const fetchReviewList = (params: fetchReviewListType) => {
+  return cyRequest<ReviewType[]>(() =>
     request(
       `${baseUrl.comment}/Comment/GetProjectCommentItemList
     `,
-      { method: 'POST', data: requestData },
+      { method: 'POST', data: params },
     ),
   );
 };

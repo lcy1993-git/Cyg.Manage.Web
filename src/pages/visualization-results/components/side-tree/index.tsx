@@ -6,6 +6,7 @@ import { useRequest, useSize } from 'ahooks';
 import moment from 'moment';
 import {
   fetchEngineerProjectListByParams,
+  fetchEngineerProjectListByParamsAndArea,
   ProjectItemType,
   Engineer,
 } from '@/services/visualization-results/side-tree';
@@ -137,6 +138,20 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     },
   );
 
+  const { data: allDataArea } = useRequest(
+    () => fetchEngineerProjectListByParamsAndArea(filterCondition),
+
+    {
+      refreshDeps: [filterCondition],
+      onSuccess: () => {
+        console.log(allDataArea);
+      },
+      onError: () => {
+        message.warning('获取数据失败');
+      },
+    },
+  );
+
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
   };
@@ -246,7 +261,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           </TabPane>
         </Tabs>
       </div>
-      
     </>
   );
 });
