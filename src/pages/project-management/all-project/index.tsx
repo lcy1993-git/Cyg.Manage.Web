@@ -26,7 +26,7 @@ import {
 import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
 import CommonTitle from '@/components/common-title';
-import { DeleteOutlined, DownOutlined, FileAddOutlined } from '@ant-design/icons';
+import { CopyOutlined, DeleteOutlined, DownOutlined, FileAddOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { Dropdown } from 'antd';
 import TableExportButton from '@/components/table-export-button';
@@ -89,6 +89,8 @@ const ProjectManagement: React.FC = () => {
 
   const [currentRecallProjectId, setCurrentRecallProjectId] = useState<string>('');
   const [recallModalVisible, setRecallModalVisible] = useState(false);
+
+  const [upLoadAddProjectModalVisible, setUploadAddProjectModalVisible] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -374,7 +376,7 @@ const ProjectManagement: React.FC = () => {
     setStatus(undefined);
     // TODO 重置完是否进行查询
     searchByParams({
-      keyWord: "",
+      keyWord: '',
       category: '-1',
       pCategory: '-1',
       stage: '-1',
@@ -492,6 +494,12 @@ const ProjectManagement: React.FC = () => {
 
   const openAddEngineerModal = () => {
     setAddEngineerModalFlag(true);
+    form.resetFields();
+    form.setFieldsValue({ projects: [{ name: '' }] });
+  };
+
+  const openBatchAddEngineerModal = () => {
+    setUploadAddProjectModalVisible(true);
     form.resetFields();
     form.setFieldsValue({ projects: [{ name: '' }] });
   };
@@ -661,6 +669,12 @@ const ProjectManagement: React.FC = () => {
                   <Button className="mr7" type="primary" onClick={() => openAddEngineerModal()}>
                     <FileAddOutlined />
                     立项
+                  </Button>
+                )}
+                {buttonJurisdictionArray?.includes('all-project-batch-project') && (
+                  <Button className="mr7" onClick={() => openBatchAddEngineerModal()}>
+                    <CopyOutlined />
+                    批量立项
                   </Button>
                 )}
                 {buttonJurisdictionArray?.includes('all-project-delete-project') && (
