@@ -2,7 +2,7 @@ import React, { createRef, useEffect, useMemo, useRef, useState } from 'react';
 import { Drawer, Table, Modal, Carousel, Input, message, Tooltip, Comment, List } from 'antd';
 import { useContainer } from '../../result-page/mobx-store';
 import { MenuUnfoldOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
-import { ReviewRequestType, addReview } from '@/services/visualization-results/side-popup';
+import { ReviewRequestType, addReview, fetchReview } from '@/services/visualization-results/side-popup';
 // import { publishMessage } from '@/services/news-config/review-manage';
 
 import uuid from 'node-uuid';
@@ -298,15 +298,26 @@ const mediaItem = (data: any) => {
   const authorization = window.localStorage.getItem('Authorization');
   return data.map((item: any, index: any) => {
     if (item.type === 1) {
-      return (<div className={styles.mediaItem} key={uuid.v1()}>
-        <img className={styles.img} crossOrigin={""} src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`} />
-      </div>)
+      return (
+        <div className={styles.mediaItem} key={uuid.v1()}>
+          <img
+            className={styles.img}
+            crossOrigin={''}
+            src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
+          />
+        </div>
+      );
     } else if (item.type !== 1) {
-      return (<div className={styles.mediaItem} key={uuid.v1()}>
-        {/* <audio controls={true} /> */}
-        <audio className={styles.audio} src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`} controls={true} />
-      </div>);
-
+      return (
+        <div className={styles.mediaItem} key={uuid.v1()}>
+          {/* <audio controls={true} /> */}
+          <audio
+            className={styles.audio}
+            src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
+            controls={true}
+          />
+        </div>
+      );
     }
     return <div className={styles.mediaItem} key={uuid.v1()} />;
   });
@@ -453,10 +464,18 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   ];
 
+  const { run: fetchhReview } = useRequest(addReview, {
+    onSuccess: () => {},
+    onError: () => {
+      message.success('获取审阅失败');
+    },
+  });
+
   const { run: addReviewRequest } = useRequest(addReview, {
     manual: true,
     onSuccess: () => {
       message.success('添加成功');
+      setReview('');
     },
     onError: () => {
       message.success('添加失败');
@@ -570,19 +589,18 @@ const SidePopup: React.FC<Props> = observer((props) => {
         content: review,
       });
     }
-    setActiveType(undefined);
   };
 
   const DrawerWrap = useMemo(() => {
     return (
       <Drawer
-        title={"title"}
+        title={'title'}
         placement="right"
         closable={false}
         visible={rightSidebarVisible}
         destroyOnClose={true}
         mask={false}
-        className={rightSidebarVisible ? "" : styles.poiontEventNone}
+        className={rightSidebarVisible ? '' : styles.poiontEventNone}
         getContainer={false}
         key={uuid.v1()}
         style={{ position: 'absolute', width: 340 }}
@@ -590,10 +608,17 @@ const SidePopup: React.FC<Props> = observer((props) => {
         <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
           <MenuUnfoldOutlined />
         </div>
-        <Table style={{ height: 30 }} pagination={false} columns={columns} dataSource={data} rowClassName={styles.row} rowKey={r => r.propertyName} />
+        <Table
+          style={{ height: 30 }}
+          pagination={false}
+          columns={columns}
+          dataSource={data}
+          rowClassName={styles.row}
+          rowKey={(r) => r.propertyName}
+        />
       </Drawer>
-    )
-  }, [rightSidebarVisible, JSON.stringify(data)])
+    );
+  }, [rightSidebarVisible, JSON.stringify(data)]);
 
   return (
     <div className={styles.wrap}>

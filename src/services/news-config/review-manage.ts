@@ -32,7 +32,7 @@ export const GetEngineerProjectCommentListByParams = (params: EngineerProjetList
 export const GetProjectCommentListByParams = (params: ReviewListParams) => {
   return cyRequest<ReviewListItemType>(() =>
     request(
-      `${baseUrl.comment}/Comment/GetProjectCommentList
+      `${baseUrl.comment}/WebGis/GetProjectCommentList
   `,
       { method: 'POST', data: params },
     ),

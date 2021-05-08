@@ -1,9 +1,8 @@
 import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-tree';
 import { makeAutoObservable } from 'mobx';
-import moment from 'moment';
 import { createContext, useContext } from 'react';
 export interface StateType {
-  filterCondition?: EngineerProjetListFilterParams;
+  filterCondition: EngineerProjetListFilterParams;
   projectId?: string;
 }
 

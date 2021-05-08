@@ -7,10 +7,11 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react-lite';
 import { useRequest } from 'ahooks';
 import { ReviewListParams, fetchReviewList } from '@/services/news-config/review-manage';
-import { Tag } from 'antd';
+
+import { ColumnsType } from 'antd/es/table';
 
 const { Option } = Select;
-const columns = [
+const columns: ColumnsType<any> = [
   {
     title: '序号',
     width: 100,
@@ -50,23 +51,11 @@ const columns = [
     width: 150,
   },
   {
-    title: 'Action',
+    title: '',
     key: 'operation',
     fixed: 'right',
     width: 100,
-    render: () => (
-      <>
-        <Tag color="#87d068">正常</Tag>
-        <Tag color="#f50">删除</Tag>
-      </>
-    ),
-  },
-  {
-    title: 'Action',
-    key: 'operation',
-    fixed: 'right',
-    width: 100,
-    render: () =>  <Button type="primary"> 查看</Button>,
+    render: () => <Button type="primary"> 查看</Button>,
   },
 ];
 
@@ -80,16 +69,6 @@ const ReviewTable: FC<ReviewProps> = observer((props) => {
   const store = useContainer();
   const { vState } = store;
   const { projectId } = vState;
-
-  const data = [];
-  for (let i = 0; i < 100; i++) {
-    data.push({
-      key: i,
-      name: `Edrward ${i}`,
-      age: 32,
-      address: `London Park no. ${i}`,
-    });
-  }
 
   /**
    * 获取全部数据
@@ -131,7 +110,7 @@ const ReviewTable: FC<ReviewProps> = observer((props) => {
   return (
     <div className={styles.tableContainer}>
       <div className={classnames(styles.tableFilterbar, 'flex')}>
-        <TableSearch className="mr10" label="项目名称" width="178px">
+        <TableSearch className="mr10" label="项目名称" width="268px">
           <Search
             placeholder="请输入项目名称"
             value={keyWord}
@@ -140,22 +119,22 @@ const ReviewTable: FC<ReviewProps> = observer((props) => {
             enterButton
           />
         </TableSearch>
-        <TableSearch className="mr10" label="项目名称" width="178px">
+        <TableSearch className="mr10" label="所属图层" width="178px">
           <Select placeholder="选择图层" style={{ width: '100%' }} onSelect={onSelectLayer}>
             {layers.map((v: string, idx: number) => (
-              <Option key={v}>{v}</Option>
+              <Option key={v} value={v} children={v} />
             ))}
           </Select>
         </TableSearch>
-        <TableSearch className="mr10" label="项目名称" width="178px">
+        <TableSearch className="mr10" width="138px">
           <Select placeholder="类型" style={{ width: '100%' }} onSelect={onSelectType}>
             {layers.map((v: string, idx: number) => (
-              <Option key={v}>{v}</Option>
+              <Option key={v} value={v} children={v} />
             ))}
           </Select>
         </TableSearch>
       </div>
-      <Table size="middle"  columns={columns} dataSource={data} scroll={{ x: 1500 }} sticky />
+      <Table size="middle" columns={columns} scroll={{ x: 1500 }} sticky />
     </div>
   );
 });

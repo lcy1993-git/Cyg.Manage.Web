@@ -10,6 +10,12 @@ export interface ReviewRequestType {
   title?: string;
 }
 
+export interface fetchReviewListType {
+  projectId: string;
+  layer: number;
+  deviceId: string;
+}
+
 /**
  * 添加审阅
  * 接口文档 http://10.6.1.36:8025/help/index.html
@@ -20,6 +26,16 @@ export const addReview = (requestData: ReviewRequestType) => {
   return cyRequest<any>(() =>
     request(
       `${baseUrl.comment}/Comment/CreateProjectComment
+    `,
+      { method: 'POST', data: requestData },
+    ),
+  );
+};
+
+export const fetchReviewList = (requestData: ReviewRequestType) => {
+  return cyRequest<any>(() =>
+    request(
+      `${baseUrl.comment}/Comment/GetProjectCommentItemList
     `,
       { method: 'POST', data: requestData },
     ),
