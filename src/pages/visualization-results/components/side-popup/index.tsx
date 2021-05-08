@@ -9,7 +9,7 @@ import {
   ReviewType,
 } from '@/services/visualization-results/side-popup';
 // import { publishMessage } from '@/services/news-config/review-manage';
-
+import CommentList from './components/comment-list'
 import uuid from 'node-uuid';
 import styles from './index.less';
 import moment from 'moment';
@@ -532,19 +532,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
-            <Scrollbars autoHide ref={scrollbars} style={{ marginBottom: 32, height: 300 }}>
-              <List
-                className="comment-list"
-                header={`${reviewListData?.length}条 审阅内容`}
-                itemLayout="horizontal"
-                dataSource={reviewListData}
-                renderItem={(item) => (
-                  <li>
-                    <Comment author={item.author} content={item.content} datetime={item.datetime} />
-                  </li>
-                )}
-              />
-            </Scrollbars>
+           <CommentList commentListData={reviewListData}/>
             <Input.TextArea
               placeholder="添加审阅"
               autoSize={{ minRows: 8, maxRows: 8 }}
