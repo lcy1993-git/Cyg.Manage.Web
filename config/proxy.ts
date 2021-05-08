@@ -39,6 +39,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/webGis2': '/' },
     },
+    '/Comment/api': {
+      target: 'http://10.6.1.36:8013/',
+      changeOrigin: true,
+      pathRewrite: { '^/Comment': '/' },
+    },
     '/baidu/api': {
       target: 'https://map.baidu.com/',
       changeOrigin: true,

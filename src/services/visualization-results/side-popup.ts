@@ -19,7 +19,7 @@ export interface ReviewRequestType {
 export const addReview = (requestData: ReviewRequestType) => {
   return cyRequest<any>(() =>
     request(
-      `${baseUrl.webGis}/WebGis/CreateProjectComment
+      `${baseUrl.comment}/Comment/CreateProjectComment
     `,
       { method: 'POST', data: requestData },
     ),

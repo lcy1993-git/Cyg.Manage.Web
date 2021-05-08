@@ -21,7 +21,7 @@ export interface ReviewListItemType {
 export const GetEngineerProjectCommentListByParams = (params: EngineerProjetListFilterParams) => {
   return cyRequest<any>(() =>
     request(
-      `${baseUrl.webGis}/WebGis/GetEngineerProjectCommentList
+      `${baseUrl.comment}/Comment/GetEngineerProjectCommentList
     `,
       { method: 'POST', data: params },
     ),
@@ -32,7 +32,7 @@ export const GetEngineerProjectCommentListByParams = (params: EngineerProjetList
 export const GetProjectCommentListByParams = (params: ReviewListParams) => {
   return cyRequest<ReviewListItemType>(() =>
     request(
-      `${baseUrl.webGis}/WebGis/GetProjectCommentList
+      `${baseUrl.comment}/Comment/GetProjectCommentList
   `,
       { method: 'POST', data: params },
     ),

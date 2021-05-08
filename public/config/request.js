@@ -23,6 +23,7 @@ const arrayHasIpBaseUrlArray = {
     common: `${baseUrl}:8022/api`,
     upload: `${baseUrl}:8023/api`,
     resource: `${baseUrl}:8020/api`,
+    comment: `${baseUrl}:8013/api`
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -32,6 +33,7 @@ const arrayHasNotBaseUrlArray = {
     resource: "/resourcemanage/v2/api",
     webGis: '/webGis/api',
     webGis2: '/webGis2/api',
+    comment: '/Comment/api'
 }
 
 export const logoArray = {
