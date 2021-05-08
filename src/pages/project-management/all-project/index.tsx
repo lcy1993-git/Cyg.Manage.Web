@@ -109,7 +109,7 @@ const ProjectManagement: React.FC = () => {
 
   const {
     projectCategory,
-    projectPType,
+    projectClassification,
     projectNature,
     projectConstructType,
     projectStage,
@@ -629,7 +629,7 @@ const ProjectManagement: React.FC = () => {
                   <UrlSelect
                     valueKey="value"
                     titleKey="text"
-                    defaultData={projectPType}
+                    defaultData={projectClassification}
                     value={pCategory}
                     dropdownMatchSelectWidth={168}
                     onChange={(value) => setPCategory(value as string)}

@@ -91,3 +91,31 @@ const mapJurisdictionData = (data: any) => {
   };
 };
 
+export interface TreeData {
+  readonly id: string;
+  parentId: string | null;
+  children?: TreeData[];
+  [key: string]: unknown;
+} 
+/**
+ * 树形结构化
+ * @param data 平铺的扁平数组
+ * @returns 树形结构数组
+ */
+export const formatDataTree = (data: TreeData[]) => {
+  let parents = data.filter(p => p.parentId === null);
+  let children = data.filter(p => p.parentId !== null);
+  dataToTree(parents, children);
+  function dataToTree(parents: TreeData[], children: TreeData[]) {
+    parents.forEach(p => {
+      children.forEach((c) => {
+        if(p.id === c.parentId) {
+          if(!p.children) p.children = [];
+          p.children.push(c);
+          dataToTree([c], children)
+        }
+      })
+    });
+  }
+  return parents;
+}

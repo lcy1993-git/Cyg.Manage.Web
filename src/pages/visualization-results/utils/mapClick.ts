@@ -1,6 +1,7 @@
 import getMappingTagsDictionary from './localData/mappingTagsDictionary';
 import { pointStyle, line_style } from './localData/pointStyle';
 import VectorSource from 'ol/source/Vector';
+import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName } from './methods';
@@ -51,12 +52,15 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   map.forEachFeatureAtPixel(evt.pixel, async function (feature: any, layer: any) {
     if (selected) return;
     selected = true;
-
     if (layer.getProperties().name == 'highlightLayer') {
       clearHighlightLayer(map);
       return;
     }
 
+    if (layer.getSource() instanceof Cluster) {
+      if (feature.get('features').length !== 1) return;
+      feature = feature.get('features')[0];
+    }
     // 判断选中的图层类型
     let layerType = layer.getProperties().name.split('_')[0];
     if (layerType) {
@@ -247,7 +251,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     // 批注功能
     if (commentLayers.indexOf(layerName) >= 0) {
-      pJSON['审阅'] = { id: feature.getProperties().project_id, feature };
+      pJSON['审阅'] = { id: feature.getProperties().project_id };
     }
 
     // 相应数据到右侧边栏

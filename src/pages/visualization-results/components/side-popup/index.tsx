@@ -298,26 +298,15 @@ const mediaItem = (data: any) => {
   const authorization = window.localStorage.getItem('Authorization');
   return data.map((item: any, index: any) => {
     if (item.type === 1) {
-      return (
-        <div className={styles.mediaItem} key={uuid.v1()}>
-          <img
-            className={styles.img}
-            crossOrigin={''}
-            src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
-          />
-        </div>
-      );
+      return (<div className={styles.mediaItem} key={uuid.v1()}>
+        <img className={styles.img} crossOrigin={""} src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`} />
+      </div>)
     } else if (item.type !== 1) {
-      return (
-        <div className={styles.mediaItem} key={uuid.v1()}>
-          {/* <audio controls={true} /> */}
-          <audio
-            className={styles.audio}
-            src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
-            controls={true}
-          />
-        </div>
-      );
+      return (<div className={styles.mediaItem} key={uuid.v1()}>
+        {/* <audio controls={true} /> */}
+        <audio className={styles.audio} src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`} controls={true} />
+      </div>);
+
     }
     return <div className={styles.mediaItem} key={uuid.v1()} />;
   });
@@ -584,6 +573,28 @@ const SidePopup: React.FC<Props> = observer((props) => {
     setActiveType(undefined);
   };
 
+  const DrawerWrap = useMemo(() => {
+    return (
+      <Drawer
+        title={"title"}
+        placement="right"
+        closable={false}
+        visible={rightSidebarVisible}
+        destroyOnClose={true}
+        mask={false}
+        className={rightSidebarVisible ? "" : styles.poiontEventNone}
+        getContainer={false}
+        key={uuid.v1()}
+        style={{ position: 'absolute', width: 340 }}
+      >
+        <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
+          <MenuUnfoldOutlined />
+        </div>
+        <Table style={{ height: 30 }} pagination={false} columns={columns} dataSource={data} rowClassName={styles.row} rowKey={r => r.propertyName} />
+      </Drawer>
+    )
+  }, [rightSidebarVisible, JSON.stringify(data)])
+
   return (
     <div className={styles.wrap}>
       <Modal
@@ -663,29 +674,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           </>
         )}
       </Modal>
-      <Drawer
-        placement="right"
-        closable={false}
-        visible={rightSidebarVisible}
-        destroyOnClose={true}
-        mask={false}
-        className={rightSidebarVisible ? '' : styles.poiontEventNone}
-        getContainer={false}
-        key={uuid.v1()}
-        style={{ position: 'absolute', width: 340 }}
-      >
-        <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
-          <MenuUnfoldOutlined />
-        </div>
-        <Table
-          style={{ height: 30 }}
-          pagination={false}
-          columns={columns}
-          dataSource={data}
-          rowClassName={styles.row}
-          rowKey={(r) => r.propertyName}
-        />
-      </Drawer>
+      {DrawerWrap}
     </div>
   );
 });
