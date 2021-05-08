@@ -124,18 +124,10 @@ class AlertMenu extends BtnMenu {
 const TextEditorModal: React.FC<EditorParams> = (props: any) => {
   const { onChange, titleForm, htmlContent, type } = props;
   const [isChecked, setIsChecked] = useState<boolean>(true);
+  const [allIds, setAllIds] = useState<string[]>([]);
+  const [userIds, setUserIds] = useState<string[]>([]);
 
-  // const { data: groupData = [] } = useRequest(() => getCompanyGroupTreeList());
-  // const mapTreeData = (data: any) => {
-  //   return {
-  //     title: data.name,
-  //     value: data.id,
-  //     // key: uuid.v1(),
-  //     children: data.children?.map(mapTreeData),
-  //   };
-  // };
-
-  const { data: groupData = [] } = useRequest(() => getGroupInfo('4'));
+  const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
@@ -145,16 +137,36 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
     };
   };
 
+  //获取当前列表全部用户id
+  const getUserIds = (groupArray: any) => {
+    (function deep(groupArray) {
+      groupArray.forEach((item: any) => {
+        if (item.children) {
+          if (item.children?.length > 0) {
+            deep(item.children);
+          } else {
+            allIds.push(item.id);
+          }
+        }
+      });
+    })(groupArray);
+    return allIds;
+  };
+
+  const allUserIds = getUserIds(groupData);
+
   const handleData = useMemo(() => {
     const copyOptions = JSON.parse(JSON.stringify(groupData))?.map(mapTreeData);
-    copyOptions.unshift({ title: '所有人', value: '0', children: null });
-    return copyOptions.map((item: any) => {
-      return {
-        title: item.title,
-        value: item.value,
-        children: item.children,
-      };
-    });
+    copyOptions.unshift({ title: '所有人', value: allUserIds, children: groupData });
+    return copyOptions
+      .map((item: any) => {
+        return {
+          title: item.title,
+          value: item.value,
+          children: item.children ? item.children.map(mapTreeData) : [],
+        };
+      })
+      .slice(0, 1);
   }, [JSON.stringify(groupData)]);
 
   // const parentIds = handleData?.map((item: any) => {
@@ -212,45 +224,53 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
   //   setAutoExpandParent(false);
   // };
 
+  const hasCheckEvent = (checkedValue: string[]) => {
+    setUserIds(checkedValue);
+  };
+
+  console.log(userIds);
+
   return (
     <>
       <Form form={titleForm}>
         <CyFormItem label="标题" name="title" required labelWidth={60}>
           <Input placeholder="标题" />
         </CyFormItem>
+
+        <CyFormItem label="状态" name="isEnable" required labelWidth={60}>
+          <Switch onChange={() => setIsChecked(!isChecked)} defaultChecked />
+          {isChecked ? (
+            <span className="ml10" style={{ color: '#2e815c' }}>
+              启用
+            </span>
+          ) : (
+            <span className="ml10" style={{ color: '#8c8c8c' }}>
+              禁用
+            </span>
+          )}
+        </CyFormItem>
+        <CyFormItem label="对象" name="userIds" required labelWidth={60}>
+          <TreeSelect
+            placeholder="请选择对象"
+            treeCheckable
+            treeData={handleData}
+            // showCheckedStrategy="SHOW_PARENT"
+            treeDefaultExpandAll
+            onChange={hasCheckEvent}
+          />
+        </CyFormItem>
+        <CyFormItem label="端口" labelWidth={60} name="clientCategorys" required>
+          <UrlSelect
+            mode="multiple"
+            requestSource="project"
+            showSearch
+            url="/CompanyUser/GetClientCategorys"
+            titleKey="text"
+            valueKey="value"
+            placeholder="请选择授权端口"
+          />
+        </CyFormItem>
       </Form>
-      <CyFormItem label="状态" name="status" required labelWidth={60}>
-        <Switch onChange={() => setIsChecked(!isChecked)} defaultChecked />
-        {isChecked ? (
-          <span className="ml10" style={{ color: '#2e815c' }}>
-            启用
-          </span>
-        ) : (
-          <span className="ml10" style={{ color: '#8c8c8c' }}>
-            禁用
-          </span>
-        )}
-      </CyFormItem>
-      <CyFormItem label="对象" name="user" required labelWidth={60}>
-        <TreeSelect
-          placeholder="请选择对象"
-          treeCheckable
-          treeData={handleData}
-          showCheckedStrategy="SHOW_PARENT"
-          treeDefaultExpandAll
-        />
-      </CyFormItem>
-      <CyFormItem label="端口" labelWidth={60} name="duankou" required>
-        <UrlSelect
-          mode="multiple"
-          requestSource="project"
-          showSearch
-          url="/CompanyUser/GetClientCategorys"
-          titleKey="text"
-          valueKey="value"
-          placeholder="请选择授权端口"
-        />
-      </CyFormItem>
       <CyFormItem name="content" label="内容" required labelWidth={60}>
         <div id="div1"></div>
       </CyFormItem>
