@@ -38,6 +38,7 @@ const TestPage = () => {
         <div>1</div>
       </OverFlowHiddenComponent> */}
       <Button onClick={test2}>测试</Button>
+      <a href={"/template/project.xlsx"} download="模板文件.xlsx">点击下载</a>
       <AreaSelect  ref={selectRef} />
     </div>
   );
