@@ -6,6 +6,7 @@ import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { uploadBulkProject } from '@/services/project-management/all-project';
 import BulkImportProject from '../bulk-import-project';
+import BatchEditEngineerInfoTable from '../bulk-import-project/index';
 
 interface UploadAddProjectProps {
   visible: boolean;
@@ -51,7 +52,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
   //批量上传
   const saveBatchAddProjectEvent = () => {
     batchAddForm.validateFields().then(async (values) => {
-    //   console.log(values);
+      //   console.log(values);
 
       try {
         setRequestLoading(true);
@@ -124,7 +125,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
         onOk={() => saveBatchAddProjectEvent()}
         onCancel={() => setBulkImportModalVisible(false)}
       >
-        <BulkImportProject batchAddForm={batchAddForm} excelModalData={excelModalData} />
+        <BatchEditEngineerInfoTable batchAddForm={batchAddForm} excelModalData={excelModalData?.content} />
       </Modal>
     </>
   );
