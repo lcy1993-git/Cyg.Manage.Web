@@ -27,6 +27,7 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
   const sureEditEvent = () => {
     form.validateFields().then((values) => {
       const { production } = values;
+      console.log(production);
 
       setState(false);
 
@@ -78,7 +79,11 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
       if (productionComponentProps.hasChooseProductionCodeArray.includes(item.code)) {
         return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
       } else {
-        return <Checkbox value={item.code} key={item.code}>{item.name}</Checkbox>;
+        return (
+          <Checkbox value={item.code} key={item.code}>
+            {item.name}
+          </Checkbox>
+        );
       }
     },
   );

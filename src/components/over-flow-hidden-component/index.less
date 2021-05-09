@@ -1,0 +1,15 @@
+.overFlowHiddenComponent {
+    width: 100%;
+    display: flex;
+    .noOverFlowContent {
+        display: flex;
+        flex-shrink: 0;
+        width: calc(100% - 36px);
+        overflow: hidden;
+    }
+    .overFlowContent {
+        width: 36px;
+        padding-left: 16px;
+        line-height: 28px;
+    }
+}

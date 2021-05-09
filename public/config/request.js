@@ -73,4 +73,4 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.34";
+export const version = "1.0.40";

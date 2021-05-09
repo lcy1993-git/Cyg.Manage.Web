@@ -164,7 +164,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         <>
           <CyFormItem label="单位">
             <div>
-              <Search placeholder="请输入单位" onSearch={(value) => searchEvent(value)} />
+              <Search placeholder="请输入管理员用户名或手机号码" onSearch={(value) => searchEvent(value)} />
             </div>
           </CyFormItem>
           <ReadonlyItem label="单位名称" align="left">

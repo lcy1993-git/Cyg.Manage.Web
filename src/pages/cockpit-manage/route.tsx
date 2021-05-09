@@ -10,7 +10,7 @@ const CockpitConfig = Loadable({
 
 export default [
   {
-    title: '驾驶舱配置',
+    title: '统计图表配置',
     path: '/cockpit-manage/cockpit-config',
     component: <CockpitConfig />,
   },

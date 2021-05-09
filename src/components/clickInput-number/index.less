@@ -1,0 +1,57 @@
+.inputNumber {
+  width: 100%;
+  display: flex;
+
+  .inputContent {
+    flex: 1;
+    flex-shrink: 0;
+  }
+
+  .controlValueContent {
+    width: 108px;
+    height: 27px;
+    border: 1px solid @border-gray-color;
+    display: flex;
+    line-height: 27px;
+    font-size: 14px;
+    margin-left: 7px;
+    -webkit-touch-callout: none;
+
+    -webkit-user-select: none;
+
+    -khtml-user-select: none;
+
+    -moz-user-select: none;
+
+    -ms-user-select: none;
+
+    user-select: none;
+
+    .cutButton {
+      width: 27px;
+      height: 27px;
+      border-right: 1px solid @border-gray-color;
+      cursor: pointer;
+      text-align: center;
+      color: @gray-color;
+      line-height: 25px;
+    }
+
+    .limitNumber {
+      flex: 1;
+      text-align: center;
+      line-height: 25px;
+    }
+
+    .addButton {
+      width: 27px;
+      height: 27px;
+      border-left: 1px solid @border-gray-color;
+      cursor: pointer;
+      text-align: center;
+      color: @gray-color;
+      line-height: 25px;
+    }
+  }
+
+}

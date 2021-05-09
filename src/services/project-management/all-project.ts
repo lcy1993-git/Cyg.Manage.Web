@@ -81,6 +81,19 @@ export enum ProjectStatus {
   '已结项',
 }
 
+export enum ProjectSourceType {
+  "无" = 1,
+  "被共享" = 2,
+  "被委托" = 3
+}
+
+export enum ProjectIdentityType {
+  "立项" = 1,
+  "委托" = 2,
+  "执行" = 4,
+  "共享" = 999,
+}
+
 export enum StatisticalCategory {
   '待处理' = 1,
   '进行中',
@@ -198,6 +211,8 @@ export interface AllProjectStatisticsParams {
   nature?: string;
   kvLevel?: string;
   status?: string;
+  sourceType?: string
+  identityType?: string
 }
 
 export interface AllProjectSearchParams extends AllProjectStatisticsParams {

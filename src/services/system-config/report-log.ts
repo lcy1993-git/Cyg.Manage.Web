@@ -20,7 +20,7 @@ interface SearchLogItemParams {
   endTime: Date;
 }
 
-interface ItemDetailData extends SearchLogItemParams {
+export interface ItemDetailData extends SearchLogItemParams {
   id: string;
   clientIp: string;
   content: any
@@ -28,7 +28,7 @@ interface ItemDetailData extends SearchLogItemParams {
 
 // 获取一条数据
 export const getFileLogDetail = (id: string) => {
-  return cyRequest<ItemDetailData>(() =>
+  return cyRequest<any>(() =>
     request(`${baseUrl.project}/FileLog/GetById`, { method: 'GET', params: { id } }),
   );
 };

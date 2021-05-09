@@ -11,15 +11,15 @@ import {
   AllProjectStatisticsParams,
   applyKnot,
   auditKnot,
-  BuildType,
   canEditArrange,
   checkCanArrange,
   deleteProject,
   getProjectInfo,
   getProjectTableStatistics,
   noAuditKnot,
+  ProjectIdentityType,
+  ProjectSourceType,
   ProjectStatus,
-  recallShare,
   revokeAllot,
   revokeKnot,
 } from '@/services/project-management/all-project';
@@ -45,6 +45,8 @@ import UrlSelect from '@/components/url-select';
 import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 import ProjectRecallModal from './components/project-recall-modal';
 import UploadAddProjectModal from './components/upload-batch-modal';
+import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
+import AreaSelect from '@/components/area-select';
 
 const { Search } = Input;
 
@@ -65,6 +67,10 @@ const ProjectManagement: React.FC = () => {
   const [nature, setNature] = useState<string>();
   const [kvLevel, setKvLevel] = useState<string>();
   const [status, setStatus] = useState<string>();
+  const [sourceType, setSourceType] = useState<string>();
+  const [identityType, setIdentityType] = useState<string>();
+  const [areaInfo, setAreaInfo] = useState({ areaType: "-1", areaId: ""});
+
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -99,6 +105,7 @@ const ProjectManagement: React.FC = () => {
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const tableRef = useRef<HTMLDivElement>(null);
+  const areaRef = useRef<HTMLDivElement>(null);
 
   const [form] = Form.useForm();
 
@@ -108,7 +115,7 @@ const ProjectManagement: React.FC = () => {
 
   const {
     projectCategory,
-    projectPType,
+    projectClassification,
     projectNature,
     projectConstructType,
     projectStage,
@@ -145,6 +152,9 @@ const ProjectManagement: React.FC = () => {
         nature: nature ?? '-1',
         kvLevel: kvLevel ?? '-1',
         status: status ?? '-1',
+        sourceType: sourceType ?? "-1",
+        identityType: identityType ?? "-1",
+        ...areaInfo
       });
     }
   };
@@ -258,7 +268,6 @@ const ProjectManagement: React.FC = () => {
 
     //await recallShare(projectIds);
     //message.success('撤回共享成功');
-    //refresh();
   };
 
   const shareEvent = async () => {
@@ -366,6 +375,9 @@ const ProjectManagement: React.FC = () => {
       nature: '-1',
       kvLevel: '-1',
       status: '-1',
+      sourceType: sourceType ?? "-1",
+      identityType: identityType ?? "-1",
+      ...areaInfo
     });
   });
 
@@ -378,6 +390,13 @@ const ProjectManagement: React.FC = () => {
     setNature(undefined);
     setKvLevel(undefined);
     setStatus(undefined);
+    setIdentityType(undefined);
+    setSourceType(undefined)
+    setAreaInfo({
+      areaType: "-1",
+      areaId: ""
+    })
+    areaSelectReset();
     // TODO 重置完是否进行查询
     searchByParams({
       keyWord: '',
@@ -389,6 +408,10 @@ const ProjectManagement: React.FC = () => {
       kvLevel: '-1',
       status: '-1',
       statisticalCategory: statisticalCategory,
+      sourceType: "-1",
+      identityType:  "-1",
+      areaType: "-1",
+      areaId: ""
     });
   };
 
@@ -404,6 +427,9 @@ const ProjectManagement: React.FC = () => {
       kvLevel: kvLevel ?? '-1',
       status: status ?? '-1',
       statisticalCategory: statisticsType,
+      sourceType: sourceType ?? "-1",
+      identityType: identityType ?? "-1",
+      ...areaInfo
     });
   };
 
@@ -508,115 +534,215 @@ const ProjectManagement: React.FC = () => {
   };
 
   //上传模板后跳转
+  const searchChildrenList = [
+    {
+      width: 300
+    },
+    {
+      width: 188
+    },
+    {
+      width: 111
+    },
+    {
+      width: 111
+    },
+    {
+      width: 111
+    },
+    {
+      width: 111
+    },
+    {
+      width: 111
+    },
+    {
+      width: 111
+    },
+    {
+      width: 111
+    },
+    {
+      width: 111
+    },
+    {
+      width: 111
+    },
+  ]
+
+  const areaChangeEvent = (params: any) => {
+    const {provinceId,cityId,areaId} = params;
+    if(areaId) {
+      setAreaInfo({
+        areaType: "3",
+        areaId: areaId
+      })
+      return
+    }
+    if(cityId) {
+      setAreaInfo({
+        areaType: "2",
+        areaId: cityId
+      })
+      return
+    }
+    if(provinceId) {
+      setAreaInfo({
+        areaType: "1",
+        areaId: provinceId
+      })
+      return
+    }
+    if(!provinceId && !cityId && !areaId) {
+      setAreaInfo({
+        areaType: "-1",
+        areaId: ""
+      })
+    }
+  }
+
+  const areaSelectReset = () => {
+    if(areaRef && areaRef.current) {
+      //@ts-ignore
+      areaRef.current.reset();
+    }
+  }
 
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectManagement}>
         <div className={styles.projectManagemnetSearch}>
           <div className="flex">
-            <div className="flex1 flex">
-              <TableSearch className="mr22" label="项目名称" width="300px">
-                <Search
-                  placeholder="请输入项目名称"
-                  enterButton
-                  value={keyWord}
-                  onChange={(e) => setKeyWord(e.target.value)}
-                  onSearch={() => search()}
-                />
-              </TableSearch>
-              <TableSearch className="mr2" label="全部状态" width="178px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectCategory}
-                  className="widthAll"
-                  value={category}
-                  onChange={(value) => setCategory(value as string)}
-                  placeholder="项目分类"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectPType}
-                  value={pCategory}
-                  dropdownMatchSelectWidth={168}
-                  onChange={(value) => setPCategory(value as string)}
-                  className="widthAll"
-                  placeholder="项目类别"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectStage}
-                  value={stage}
-                  className="widthAll"
-                  onChange={(value) => setStage(value as string)}
-                  placeholder="项目阶段"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectConstructType}
-                  value={constructType}
-                  className="widthAll"
-                  placeholder="建设类型"
-                  onChange={(value) => setConstructType(value as string)}
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectKvLevel}
-                  value={kvLevel}
-                  onChange={(value) => setKvLevel(value as string)}
-                  className="widthAll"
-                  placeholder="电压等级"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch className="mr2" width="111px">
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  defaultData={projectNature}
-                  value={nature}
-                  dropdownMatchSelectWidth={168}
-                  onChange={(value) => setNature(value as string)}
-                  className="widthAll"
-                  placeholder="项目性质"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
-              <TableSearch width="111px">
-                <EnumSelect
-                  enumList={ProjectStatus}
-                  value={status}
-                  onChange={(value) => setStatus(String(value))}
-                  className="widthAll"
-                  placeholder="项目状态"
-                  needAll={true}
-                  allValue="-1"
-                />
-              </TableSearch>
+            <div className="flex1 flex" style={{overflow: "hidden"}}>
+              <OverFlowHiddenComponent childrenList={searchChildrenList}>
+                <TableSearch className="mr22" label="项目名称" width="300px">
+                  <Search
+                    placeholder="请输入项目名称"
+                    enterButton
+                    value={keyWord}
+                    onChange={(e) => setKeyWord(e.target.value)}
+                    onSearch={() => search()}
+                  />
+                </TableSearch>
+                <TableSearch className="ml10 mb10" label="全部状态" width="178px">
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    defaultData={projectCategory}
+                    className="widthAll"
+                    value={category}
+                    onChange={(value) => setCategory(value as string)}
+                    placeholder="项目分类"
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+                <TableSearch className="mr2" width="111px">
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    defaultData={projectClassification}
+                    value={pCategory}
+                    dropdownMatchSelectWidth={168}
+                    onChange={(value) => setPCategory(value as string)}
+                    className="widthAll"
+                    placeholder="项目类别"
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+                <TableSearch className="mr2" width="111px">
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    defaultData={projectStage}
+                    value={stage}
+                    className="widthAll"
+                    onChange={(value) => setStage(value as string)}
+                    placeholder="项目阶段"
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+                <TableSearch className="mr2" width="111px">
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    defaultData={projectConstructType}
+                    value={constructType}
+                    className="widthAll"
+                    placeholder="建设类型"
+                    onChange={(value) => setConstructType(value as string)}
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+                <TableSearch className="mr2" width="111px">
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    defaultData={projectKvLevel}
+                    value={kvLevel}
+                    onChange={(value) => setKvLevel(value as string)}
+                    className="widthAll"
+                    placeholder="电压等级"
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+                <TableSearch className="mr2" width="111px">
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    defaultData={projectNature}
+                    value={nature}
+                    dropdownMatchSelectWidth={168}
+                    onChange={(value) => setNature(value as string)}
+                    className="widthAll"
+                    placeholder="项目性质"
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+                <TableSearch className="mb10" width="111px">
+                  <EnumSelect
+                    enumList={ProjectStatus}
+                    value={status}
+                    onChange={(value) => setStatus(String(value))}
+                    className="widthAll"
+                    placeholder="项目状态"
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+                <TableSearch className="mb10" width="111px">
+                  <AreaSelect ref={areaRef} onChange={areaChangeEvent} />
+                </TableSearch>
+                <TableSearch width="111px" className="mb10">
+                  <EnumSelect
+                    enumList={ProjectSourceType}
+                    value={sourceType}
+                    onChange={(value) => setSourceType(String(value))}
+                    className="widthAll"
+                    placeholder="项目来源"
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+                <TableSearch width="111px" className="mb10">
+                  <EnumSelect
+                    enumList={ProjectIdentityType}
+                    value={identityType}
+                    onChange={(value) => setIdentityType(String(value))}
+                    className="widthAll"
+                    placeholder="项目身份"
+                    needAll={true}
+                    allValue="-1"
+                  />
+                </TableSearch>
+              </OverFlowHiddenComponent>
             </div>
-            <div>
+            <div className={styles.projectManagemnetSearchButtonContent}>
               <Button className="mr7" type="primary" onClick={() => search()}>
                 查询
               </Button>
@@ -698,20 +824,20 @@ const ProjectManagement: React.FC = () => {
                 {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
                   buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
                   buttonJurisdictionArray?.includes('all-project-recall-project')) && (
-                  <Dropdown overlay={arrangeMenu}>
-                    <Button className="mr7">
-                      安排 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={arrangeMenu}>
+                      <Button className="mr7">
+                        安排 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {(buttonJurisdictionArray?.includes('all-project-share') ||
                   buttonJurisdictionArray?.includes('all-project-share-recall')) && (
-                  <Dropdown overlay={shareMenu}>
-                    <Button className="mr7">
-                      共享 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={shareMenu}>
+                      <Button className="mr7">
+                        共享 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {buttonJurisdictionArray?.includes('all-project-export') && (
                   <div className="mr7">
                     <TableExportButton
@@ -727,6 +853,9 @@ const ProjectManagement: React.FC = () => {
                         kvLevel: kvLevel ?? '-1',
                         status: status ?? '-1',
                         statisticalCategory: statisticalCategory ?? '-1',
+                        sourceType: sourceType ?? "-1",
+                        identityType: identityType ?? "-1",
+                        ...areaInfo
                       }}
                     />
                   </div>
@@ -735,12 +864,12 @@ const ProjectManagement: React.FC = () => {
                   buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
                   buttonJurisdictionArray?.includes('all-project-kont-pass') ||
                   buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
-                  <Dropdown overlay={postProjectMenu}>
-                    <Button className="mr7">
-                      结项 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-                )}
+                    <Dropdown overlay={postProjectMenu}>
+                      <Button className="mr7">
+                        结项 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
                 {buttonJurisdictionArray?.includes('all-project-resource') && (
                   <Button onClick={() => setLibVisible(true)}>资源库迭代</Button>
                 )}
@@ -762,6 +891,9 @@ const ProjectManagement: React.FC = () => {
                 kvLevel: kvLevel ?? '-1',
                 status: status ?? '-1',
                 statisticalCategory: statisticalCategory ?? '-1',
+                sourceType: sourceType ?? "-1",
+                identityType: identityType ?? "-1",
+                ...areaInfo
               }}
             />
           </div>

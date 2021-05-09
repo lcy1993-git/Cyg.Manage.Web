@@ -7,4 +7,4 @@ const VisualizationResults:React.FC = () => {
     )
 }
 
-export default VisualizationResults
+export default VisualizationResults;
