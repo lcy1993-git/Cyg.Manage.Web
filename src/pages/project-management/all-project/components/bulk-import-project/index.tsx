@@ -1,4 +1,4 @@
-import { Cascader, Table } from 'antd';
+import { Button, Cascader, Table } from 'antd';
 import { Form, Modal } from 'antd';
 import React, { useMemo, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
@@ -11,6 +11,10 @@ import EmptyTip from '@/components/empty-tip';
 import { useCallback } from 'react';
 import EditBulkEngineer from './edit-bulk-engineer';
 import moment from 'moment';
+import { useRequest } from 'ahooks';
+import { getCommonSelectData } from '@/services/common';
+import { cloneDeep } from 'lodash';
+import uuid from 'node-uuid';
 
 interface BulkImportProjectProps {
   excelModalData: any;
@@ -21,7 +25,7 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
   const { excelModalData, batchAddForm } = props;
 
   const { content } = excelModalData;
-  console.log(content);
+  console.log(JSON.stringify(content));
 
   const engineerData = content.map((item: any) => {
     return item.engineer;
@@ -39,7 +43,7 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
   const [company, setCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
 
-  const [nowEditEngineer, setNowEditEngineer] = useState<object>({});
+  const [engineerInfo, setEngineerInfo] = useState<any[]>([]);
 
   const [editEngineerForm] = Form.useForm();
   const [editProjectForm] = Form.useForm();
@@ -57,6 +61,11 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
     };
   };
 
+  const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true });
+
+  const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true });
+  const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true });
+
   const afterHandleData = useMemo(() => {
     return city.map(mapHandleCityData);
   }, [JSON.stringify(city)]);
@@ -65,24 +74,6 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
     url: '/ResourceLibrary/GetList',
     extraParams: { pId: '-1' },
   });
-  const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
-    { url: '/InventoryOverview/GetList', extraParams: { libId: libId } },
-    { ready: !!libId, refreshDeps: [libId] },
-  );
-
-  const { data: warehouseSelectData = [] } = useGetSelectData(
-    { url: '/WarehouseOverview/GetList', extraParams: { areaId: areaId } },
-    { ready: !!areaId, refreshDeps: [areaId] },
-  );
-  const { data: companySelectData = [] } = useGetSelectData(
-    {
-      url: '/ElectricityCompany/GetListByAreaId',
-      extraParams: { areaId: areaId },
-      titleKey: 'text',
-      valueKey: 'text',
-    },
-    { ready: !!areaId, refreshDeps: [areaId] },
-  );
 
   //编辑行工程信息
   const editEngineer = (record: any) => {
@@ -95,15 +86,6 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
       grade: String(record?.grade),
     });
     setEditEngineerModalVisble(true);
-
-    setNowEditEngineer(record);
-  };
-
-  const exportDataChange = (data: any) => {
-    setAreaId(data.areaId);
-    setCompany(data.company);
-    setCompanyName(data.companyName);
-    resetCompanyDep();
   };
 
   const resetCompanyDep = () => {
@@ -117,48 +99,274 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
     batchAddForm.setFieldsValue({ projects: newData });
   };
 
-  const valueChangeEvent = useCallback(
-    (prevValues: any, curValues: any) => {
-      if (prevValues.province !== curValues.province) {
-        const [currentAreaId = ''] = curValues.province;
-        setAreaId(currentAreaId);
-        exportDataChange?.({
-          areaId: currentAreaId,
-          company: curValues.company,
-          companyName:
-            companySelectData?.find((item: any) => item.value == curValues.company)?.label ?? '',
-        });
-        // 因为发生了改变，所以之前选择的应该重置
-        if (batchAddForm && canChange) {
-          batchAddForm.setFieldsValue({
-            warehouseId: undefined,
-          });
-          batchAddForm.setFieldsValue({
-            company: undefined,
-          });
+  const areaChangeEvent = async (value: any, numberIndex: number) => {
+    const [province, city, area] = value;
+    const copyEngineerInfo = cloneDeep(engineerInfo);
+
+    const warehouseSelectData = await getWarehouseSelectData({
+      url: '/WarehouseOverview/GetList',
+      method: 'get',
+      params: { areaId: province },
+      requestSource: 'project',
+    });
+
+    const companySelectData = await getCompanySelectData({
+      url: '/ElectricityCompany/GetListByAreaId',
+      method: 'get',
+      params: { areaId: province },
+      requestSource: 'project',
+    });
+
+    const handleWarehouseSelectData = warehouseSelectData.map((item: any) => {
+      return {
+        label: item.text,
+        value: item.value,
+      };
+    });
+
+    const handleCompanySelectData = companySelectData.map((item: any) => {
+      return {
+        label: item.text,
+        value: item.value,
+      };
+    });
+
+    const handleData = copyEngineerInfo.map((item, index) => {
+      if (index === numberIndex) {
+        return {
+          ...item,
+          engineer: {
+            ...item.engineer,
+            province,
+            city,
+            area,
+            warehouseId: '',
+            company: '',
+          },
+          selectData: {
+            ...item.selectData,
+            warehouseSelectData: handleWarehouseSelectData,
+            companySelectData: handleCompanySelectData,
+          },
+        };
+      }
+      return item;
+    });
+
+    setEngineerInfo(handleData);
+  };
+
+  const libChangeEvent = async (value: any, numberIndex: number) => {
+    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const inventoryOverviewSelectData = await getInventoryOverviewSelectData({
+      url: '/InventoryOverview/GetList',
+      method: 'get',
+      params: { libId: value },
+      requestSource: 'project',
+    });
+
+    const handleInventoryOverviewSelectData = inventoryOverviewSelectData.map((item: any) => {
+      return {
+        label: item.text,
+        value: item.value,
+      };
+    });
+
+    const handleData = copyEngineerInfo.map((item, index) => {
+      if (index === numberIndex) {
+        return {
+          ...item,
+          engineer: {
+            ...item.engineer,
+            libId: value,
+            inventoryOverviewId: '',
+          },
+          selectData: {
+            ...item.selectData,
+            inventoryOverviewSelectData: handleInventoryOverviewSelectData,
+          },
+        };
+      }
+      return item;
+    });
+
+    setEngineerInfo(handleData);
+  };
+
+  const wareHouseChangeEvent = (value: any, numberIndex: number) => {
+    const copyEngineerInfo = cloneDeep(engineerInfo);
+
+    const handleData = copyEngineerInfo.map((item, index) => {
+      if (index === numberIndex) {
+        return {
+          ...item,
+          engineer: {
+            ...item.engineer,
+            warehouseId: value,
+          },
+        };
+      }
+      return item;
+    });
+
+    setEngineerInfo(handleData);
+  };
+
+  const companyChangeEvent = (value: any, numberIndex: number) => {
+    const copyEngineerInfo = cloneDeep(engineerInfo);
+
+    const handleData = copyEngineerInfo.map((item, index) => {
+      if (index === numberIndex) {
+        return {
+          ...item,
+          engineer: {
+            ...item.engineer,
+            company: value,
+          },
+        };
+      }
+      return item;
+    });
+
+    setEngineerInfo(handleData);
+  };
+
+  
+  const inventoryOverviewChange = (value: any, numberIndex: number) => {
+    const copyEngineerInfo = cloneDeep(engineerInfo);
+
+    const handleData = copyEngineerInfo.map((item,index) => {
+        if(index === numberIndex) {
+            return {
+                ...item,
+                engineer: {
+                    ...item.engineer,
+                    inventoryOverviewId: value
+                }
+            }
         }
-      }
-      if (prevValues.libId !== curValues.libId) {
-        setLibId(curValues.libId);
-        if (batchAddForm && canChange) {
-          batchAddForm.setFieldsValue({
-            inventoryOverviewId: undefined,
-          });
-        }
-      }
-      if (prevValues.company !== curValues.company) {
-        const [currentAreaId = ''] = curValues.province;
-        exportDataChange?.({
-          areaId: currentAreaId,
-          company: curValues.company,
-          companyName:
-            companySelectData?.find((item: any) => item.value == curValues.company)?.label ?? '',
-        });
-      }
-      return false;
-    },
-    [canChange],
-  );
+        return item
+    })
+
+    setEngineerInfo(handleData)
+}
+
+  const engineerTrElement = engineerInfo.map((item, index) => {
+    let provinceValue = [
+      item?.engineer.province,
+      item?.engineer.city
+        ? item?.engineer.city
+        : item?.engineer.province
+        ? `${item?.engineer.province}_null`
+        : undefined,
+      item?.engineer.area
+        ? item?.engineer.area
+        : item?.engineer.city
+        ? `${item?.engineer.city}_null`
+        : undefined,
+    ];
+    if (!item?.engineer.province) {
+      provinceValue = [];
+    }
+
+    if (index === 0) {
+      return (
+        <tr key={uuid.v1()}>
+          <td>{item.engineer.name}</td>
+          <td>
+            <Cascader
+              value={provinceValue}
+              onChange={(value) => areaChangeEvent(value, index)}
+              options={afterHandleData}
+            />
+          </td>
+          <td>
+            <DataSelect
+              value={item.engineer.libId}
+              onChange={(value) => libChangeEvent(value, index)}
+              options={libSelectData}
+              placeholder="-资源库-"
+            />
+          </td>
+          <td>
+            <DataSelect
+              value={item.engineer.inventoryOverviewId}
+              onChange={(value) => inventoryOverviewChange(value, index)}
+              options={item.selectData.inventoryOverviewSelectData}
+              placeholder="请先选择资源库"
+            />
+          </td>
+          <td>
+            <DataSelect
+              value={item.engineer.warehouseId}
+              onChange={(value) => wareHouseChangeEvent(value, index)}
+              options={item.selectData.warehouseSelectData}
+              placeholder="请先选择区域"
+            />
+          </td>
+          <td>
+            <DataSelect
+              value={item.engineer.company}
+              onChange={(value) => companyChangeEvent(value, index)}
+              options={item.selectData.companySelectData}
+              placeholder="请先选择区域"
+            />
+          </td>
+          <td>
+            <Button type="text">编辑</Button>
+          </td>
+        </tr>
+      );
+    }
+    return (
+      <tr key={uuid.v1()}>
+        <td>{item.engineer.name}</td>
+        <td>
+          <Cascader
+            value={provinceValue}
+            onChange={(value) => areaChangeEvent(value, index)}
+            options={afterHandleData}
+            placeholder="同上"
+          />
+        </td>
+        <td>
+          <DataSelect
+            value={item.engineer.libId}
+            onChange={(value) => libChangeEvent(value, index)}
+            options={libSelectData}
+            placeholder="同上"
+          />
+        </td>
+        <td>
+          <DataSelect
+            value={item.engineer.inventoryOverviewId}
+            onChange={(value) => inventoryOverviewChange(value, index)}
+            options={item.selectData.inventoryOverviewSelectData}
+            placeholder="同上"
+          />
+        </td>
+        <td>
+          <DataSelect
+            value={item.engineer.warehouseId}
+            onChange={(value) => wareHouseChangeEvent(value, index)}
+            options={item.selectData.warehouseSelectData}
+            placeholder="同上"
+          />
+        </td>
+        <td>
+          <DataSelect
+            value={item.engineer.company}
+            onChange={(value) => companyChangeEvent(value, index)}
+            options={item.selectData.companySelectData}
+            placeholder="同上"
+          />
+        </td>
+        <td>
+          <Button type="text">编辑</Button>
+        </td>
+      </tr>
+    );
+  });
 
   const columns = [
     {
@@ -191,7 +399,7 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
       index: 'inventoryOverviewId',
       width: 200,
       render: () => {
-        return <DataSelect options={inventoryOverviewSelectData} placeholder="请先选择资源库" />;
+        return <DataSelect onChange={(value) => inventoryOverviewChange(value, index)} options={inventoryOverviewSelectData} placeholder="请先选择资源库" />;
       },
     },
     {
@@ -252,6 +460,7 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
     },
   ];
 
+
   const editProject = (record: any) => {};
 
   const saveCurrentEngineerEvent = async () => {
@@ -269,7 +478,6 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
         },
         value,
       );
-      setNowEditEngineer(engineerInfo);
       console.log(engineerInfo);
     });
   };
@@ -278,7 +486,6 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
     <>
       <Form form={batchAddForm}>
         <CyFormItem
-          shouldUpdate={valueChangeEvent}
           required
           labelWidth={720}
           label="立项批量导入模板中的工程/项目信息已经录入，但是还需要您对其他一些选项进行补充选择，请完善一下所有工程以及项目的信息，确认无误后点击【保存】按钮，随后会为您创建好所有项目"
