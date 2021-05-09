@@ -1,4 +1,4 @@
-import { Button, Cascader } from "antd"
+import { Button, Cascader, Checkbox } from "antd"
 import uuid from "node-uuid"
 import React, { useEffect, useState } from "react"
 import { useMemo } from "react"
@@ -15,8 +15,7 @@ const excelModalData = [{ "engineer": { "name": "导入工程1", "province": nul
 
 const BatchEditEngineerInfoTable: React.FC = () => {
     const [engineerInfo, setEngineerInfo] = useState<any[]>([])
-
-    console.log(engineerInfo)
+    const [currentChooseEngineerInfo, setCurrentChooseEngineerInfo] = useState<any>()
 
     const mapHandleCityData = (data: any) => {
         return {
@@ -35,11 +34,11 @@ const BatchEditEngineerInfoTable: React.FC = () => {
         return city.map(mapHandleCityData);
     }, [JSON.stringify(city)]);
 
-    const {run: getInventoryOverviewSelectData} = useRequest(getCommonSelectData, {manual: true})
+    const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true })
 
-    const {run: getWarehouseSelectData} = useRequest(getCommonSelectData, {manual: true})
-    const {run: getCompanySelectData} = useRequest(getCommonSelectData, {manual: true})
-    const {run: getDepartmentSelectData} = useRequest(() => getCommonSelectData({ url: "/InventoryOverview/GetList", method: "get", params: {libId: ""}, requestSource: "project" }), {manual: true})
+    const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true })
+    const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true })
+    const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
 
     const { data: libSelectData = [] } = useGetSelectData({
         url: '/ResourceLibrary/GetList',
@@ -47,9 +46,11 @@ const BatchEditEngineerInfoTable: React.FC = () => {
     });
 
     useEffect(() => {
-        const newData = excelModalData.map((item) => {
+        const newData = excelModalData.map((item, index) => {
             return {
                 ...item,
+                id: uuid.v1(),
+                checked: index === 0 ? true : false,
                 selectData: {
                     inventoryOverviewSelectData: [],
                     warehouseSelectData: [],
@@ -59,18 +60,19 @@ const BatchEditEngineerInfoTable: React.FC = () => {
             }
         })
         setEngineerInfo(newData)
+        setCurrentChooseEngineerInfo(newData[0])
     }, [JSON.stringify(excelModalData)])
 
     const areaChangeEvent = async (value: any, numberIndex: number) => {
-        const [province,city, area] = value;
+        const [province, city, area] = value;
         const copyEngineerInfo = cloneDeep(engineerInfo);
 
         const warehouseSelectData = await getWarehouseSelectData(
-            { url: "/WarehouseOverview/GetList", method: "get", params: {areaId: province}, requestSource: "project" }
+            { url: "/WarehouseOverview/GetList", method: "get", params: { areaId: province }, requestSource: "project" }
         )
 
         const companySelectData = await getCompanySelectData(
-            { url: "/ElectricityCompany/GetListByAreaId", method: "get", params: {areaId: province}, requestSource: "project" }
+            { url: "/ElectricityCompany/GetListByAreaId", method: "get", params: { areaId: province }, requestSource: "project" }
         )
 
         const handleWarehouseSelectData = warehouseSelectData.map((item: any) => {
@@ -83,12 +85,37 @@ const BatchEditEngineerInfoTable: React.FC = () => {
         const handleCompanySelectData = companySelectData.map((item: any) => {
             return {
                 label: item.text,
-                value: item.value
+                value: item.text
             }
         })
 
-        const handleData = copyEngineerInfo.map((item,index) => {
-            if(index === numberIndex) {
+        const handleData = copyEngineerInfo.map((item, index) => {
+            if (index === numberIndex) {
+                const handleProjects = item.projects.map((ite: any) => {
+                    return {
+                        ...ite,
+                        powerSupply: ""
+                    }
+                })
+                if (item.checked) {
+                    setCurrentChooseEngineerInfo({
+                        ...item,
+                        engineer: {
+                            ...item.engineer,
+                            province,
+                            city,
+                            area,
+                            warehouseId: "",
+                            company: ""
+                        },
+                        selectData: {
+                            ...item.selectData,
+                            warehouseSelectData: handleWarehouseSelectData,
+                            companySelectData: handleCompanySelectData
+                        },
+                        projects: handleProjects
+                    })
+                }
                 return {
                     ...item,
                     engineer: {
@@ -103,7 +130,8 @@ const BatchEditEngineerInfoTable: React.FC = () => {
                         ...item.selectData,
                         warehouseSelectData: handleWarehouseSelectData,
                         companySelectData: handleCompanySelectData
-                    }
+                    },
+                    projects: handleProjects
                 }
             }
             return item
@@ -115,7 +143,7 @@ const BatchEditEngineerInfoTable: React.FC = () => {
     const libChangeEvent = async (value: any, numberIndex: number) => {
         const copyEngineerInfo = cloneDeep(engineerInfo);
         const inventoryOverviewSelectData = await getInventoryOverviewSelectData(
-            { url: "/InventoryOverview/GetList", method: "get", params: {libId: value}, requestSource: "project" }
+            { url: "/InventoryOverview/GetList", method: "get", params: { libId: value }, requestSource: "project" }
         )
 
         const handleInventoryOverviewSelectData = inventoryOverviewSelectData.map((item: any) => {
@@ -125,8 +153,8 @@ const BatchEditEngineerInfoTable: React.FC = () => {
             }
         })
 
-        const handleData = copyEngineerInfo.map((item,index) => {
-            if(index === numberIndex) {
+        const handleData = copyEngineerInfo.map((item, index) => {
+            if (index === numberIndex) {
                 return {
                     ...item,
                     engineer: {
@@ -148,9 +176,9 @@ const BatchEditEngineerInfoTable: React.FC = () => {
 
     const wareHouseChangeEvent = (value: any, numberIndex: number) => {
         const copyEngineerInfo = cloneDeep(engineerInfo);
- 
-        const handleData = copyEngineerInfo.map((item,index) => {
-            if(index === numberIndex) {
+
+        const handleData = copyEngineerInfo.map((item, index) => {
+            if (index === numberIndex) {
                 return {
                     ...item,
                     engineer: {
@@ -165,17 +193,51 @@ const BatchEditEngineerInfoTable: React.FC = () => {
         setEngineerInfo(handleData)
     }
 
-    const companyChangeEvent = (value: any, numberIndex: number) => {
+    const companyChangeEvent = async (value: any, numberIndex: number) => {
         const copyEngineerInfo = cloneDeep(engineerInfo);
- 
-        const handleData = copyEngineerInfo.map((item,index) => {
-            if(index === numberIndex) {
+
+        const departmentSelectData = await getDepartmentSelectData({ url: "/ElectricityCompany/GetPowerSupplys", method: "post", params: { areaId: copyEngineerInfo[numberIndex].engineer.areaId, company: value }, requestSource: "project" })
+
+        const handleDepartmentSelectData = departmentSelectData.map((item: any) => {
+            return {
+                label: item.text,
+                value: item.value
+            }
+        })
+
+        const handleData = copyEngineerInfo.map((item, index) => {
+            if (index === numberIndex) {
+                const handleProjects = item.projects.map((ite: any) => {
+                    return {
+                        ...ite,
+                        powerSupply: ""
+                    }
+                })
+                if (item.checked) {
+                    setCurrentChooseEngineerInfo({
+                        ...item,
+                        engineer: {
+                            ...item.engineer,
+                            company: value
+                        },
+                        selectData: {
+                            ...item.selectData,
+                            departmentSelectData: handleDepartmentSelectData
+                        },
+                        projects: handleProjects
+                    })
+                }
                 return {
                     ...item,
                     engineer: {
                         ...item.engineer,
                         company: value
-                    }
+                    },
+                    selectData: {
+                        ...item.selectData,
+                        departmentSelectData: handleDepartmentSelectData
+                    },
+                    projects: handleProjects
                 }
             }
             return item
@@ -186,9 +248,9 @@ const BatchEditEngineerInfoTable: React.FC = () => {
 
     const inventoryOverviewChange = (value: any, numberIndex: number) => {
         const copyEngineerInfo = cloneDeep(engineerInfo);
- 
-        const handleData = copyEngineerInfo.map((item,index) => {
-            if(index === numberIndex) {
+
+        const handleData = copyEngineerInfo.map((item, index) => {
+            if (index === numberIndex) {
                 return {
                     ...item,
                     engineer: {
@@ -203,36 +265,60 @@ const BatchEditEngineerInfoTable: React.FC = () => {
         setEngineerInfo(handleData)
     }
 
+    const checkboxChangeEvent = (value: any, numberIndex: number) => {
+        const copyEngineerInfo = cloneDeep(engineerInfo);
+
+        const handleData = copyEngineerInfo.map((item, index) => {
+            if (index === numberIndex) {
+                setCurrentChooseEngineerInfo(item)
+                return {
+                    ...item,
+                    checked: true
+                }
+            }
+
+            return {
+                ...item,
+                checked: false
+            }
+        })
+
+        setEngineerInfo(handleData)
+    }
+
     const engineerTrElement = engineerInfo.map((item, index) => {
         let provinceValue = [
             item?.engineer.province,
             item?.engineer.city ? item?.engineer.city : (item?.engineer.province ? `${item?.engineer.province}_null` : undefined),
             item?.engineer.area ? item?.engineer.area : (item?.engineer.city ? `${item?.engineer.city}_null` : undefined)
         ];
-        if(!item?.engineer.province) {
+        if (!item?.engineer.province) {
             provinceValue = []
         }
-     
+
         if (index === 0) {
             return (
-                <tr key={uuid.v1()}>
+                <tr key={item.id}>
+                    <td>
+                        <Checkbox onChange={(checked) => checkboxChangeEvent(checked, index)} checked={item.checked} />
+                    </td>
                     <td>
                         {item.engineer.name}
                     </td>
                     <td>
-                        <Cascader value={provinceValue} onChange={(value) => areaChangeEvent(value,index)} options={afterHandleData} />
+                        <Cascader style={{width: "100%"}} value={provinceValue} onChange={(value) => areaChangeEvent(value, index)} options={afterHandleData} />
                     </td>
                     <td>
-                        <DataSelect value={item.engineer.libId} onChange={(value) => libChangeEvent(value,index)} options={libSelectData} placeholder="-资源库-" />
+                        <DataSelect style={{width: "100%"}} value={item.engineer.libId} onChange={(value) => libChangeEvent(value, index)} options={libSelectData} placeholder="-资源库-" />
                     </td>
                     <td>
-                        <DataSelect value={item.engineer.inventoryOverviewId} onChange={(value) => inventoryOverviewChange(value,index)} options={item.selectData.inventoryOverviewSelectData} placeholder="请先选择资源库" />
+                        <DataSelect style={{width: "100%"}} value={item.engineer.inventoryOverviewId} onChange={(value) => inventoryOverviewChange(value, index)} options={item.selectData.inventoryOverviewSelectData} placeholder="请先选择资源库" />
                     </td>
                     <td>
-                        <DataSelect value={item.engineer.warehouseId} onChange={(value) => wareHouseChangeEvent(value,index)} options={item.selectData.warehouseSelectData} placeholder="请先选择区域" />
+                        <DataSelect style={{width: "100%"}} value={item.engineer.warehouseId} onChange={(value) => wareHouseChangeEvent(value, index)} options={item.selectData.warehouseSelectData} placeholder="请先选择区域" />
                     </td>
                     <td>
-                        <DataSelect value={item.engineer.company} onChange={(value) => companyChangeEvent(value,index)} options={item.selectData.companySelectData} placeholder="请先选择区域" />
+                        <DataSelect style={{width: "100%"}} value={item.engineer.company} onChange={(value) => companyChangeEvent(value, index)} options={item.selectData.companySelectData} placeholder="请先选择区域" />
                     </td>
                     <td>
                         <Button type="text">编辑</Button>
@@ -241,24 +327,90 @@ const BatchEditEngineerInfoTable: React.FC = () => {
             )
         }
         return (
-            <tr key={uuid.v1()}>
+            <tr key={item.id}>
+                <td>
+                    <Checkbox onChange={(checked) => checkboxChangeEvent(checked, index)} checked={item.checked} />
+                </td>
                 <td>
                     {item.engineer.name}
                 </td>
                 <td>
-                    <Cascader value={provinceValue} onChange={(value) => areaChangeEvent(value,index)} options={afterHandleData} placeholder="同上" />
+                    <Cascader style={{width: "100%"}} value={provinceValue} onChange={(value) => areaChangeEvent(value, index)} options={afterHandleData} placeholder="同上" />
                 </td>
                 <td>
-                    <DataSelect value={item.engineer.libId} onChange={(value) => libChangeEvent(value,index)} options={libSelectData} placeholder="同上" />
+                    <DataSelect style={{width: "100%"}} value={item.engineer.libId} onChange={(value) => libChangeEvent(value, index)} options={libSelectData} placeholder="同上" />
                 </td>
                 <td>
-                    <DataSelect value={item.engineer.inventoryOverviewId} onChange={(value) => inventoryOverviewChange(value,index)} options={item.selectData.inventoryOverviewSelectData} placeholder="同上" />
+                    <DataSelect style={{width: "100%"}} value={item.engineer.inventoryOverviewId} onChange={(value) => inventoryOverviewChange(value, index)} options={item.selectData.inventoryOverviewSelectData} placeholder="同上" />
                 </td>
                 <td>
-                    <DataSelect value={item.engineer.warehouseId} onChange={(value) => wareHouseChangeEvent(value,index)} options={item.selectData.warehouseSelectData} placeholder="同上" />
+                    <DataSelect style={{width: "100%"}} value={item.engineer.warehouseId} onChange={(value) => wareHouseChangeEvent(value, index)} options={item.selectData.warehouseSelectData} placeholder="同上" />
                 </td>
                 <td>
-                    <DataSelect value={item.engineer.company} onChange={(value) => companyChangeEvent(value,index)} options={item.selectData.companySelectData} placeholder="同上" />
+                    <DataSelect style={{width: "100%"}} value={item.engineer.company} onChange={(value) => companyChangeEvent(value, index)} options={item.selectData.companySelectData} placeholder="同上" />
+                </td>
+                <td>
+                    <Button type="text">编辑</Button>
+                </td>
+            </tr>
+        )
+    })
+
+    const departmentChangeEvent = (value: any, numberIndex: number) => {
+        const copyProjectInfo = cloneDeep(currentChooseEngineerInfo.projects);
+
+        const handleData = copyProjectInfo.map((item: any, index: number) => {
+            if (index === numberIndex) {
+                return {
+                    ...item,
+                    powerSupply: value
+                }
+            }
+
+            return item
+        })
+
+        const copyEngineerInfo = cloneDeep(engineerInfo);
+        const handleEngineerData = copyEngineerInfo.map((item: any, index: number) => {
+            if (item.checked) {
+                return {
+                    ...item,
+                    projects: handleData
+                }
+            }
+            return item
+        })
+
+        setCurrentChooseEngineerInfo({
+            ...currentChooseEngineerInfo,
+            projects: handleData
+        })
+        setEngineerInfo(handleEngineerData)
+    }
+
+    const projectTrElement = currentChooseEngineerInfo?.projects.map((item: any, index: number) => {
+        if (index === 0) {
+            return (
+                <tr key={`${currentChooseEngineerInfo.id}_${index}`}>
+                    <td>
+                        {item.name}
+                    </td>
+                    <td>
+                        <DataSelect style={{width: "100%"}} value={item.powerSupply} onChange={(value) => departmentChangeEvent(value, index)} options={currentChooseEngineerInfo.selectData.departmentSelectData} placeholder="部组" />
+                    </td>
+                    <td>
+                        <Button type="text">编辑</Button>
+                    </td>
+                </tr>
+            )
+        }
+        return (
+            <tr key={`${currentChooseEngineerInfo.id}_${index}`}>
+                <td>
+                    {item.name}
+                </td>
+                <td>
+                    <DataSelect style={{width: "100%"}} value={item.powerSupply} onChange={(value) => departmentChangeEvent(value, index)} options={currentChooseEngineerInfo.selectData.departmentSelectData} placeholder="同上" />
                 </td>
                 <td>
                     <Button type="text">编辑</Button>
@@ -269,36 +421,57 @@ const BatchEditEngineerInfoTable: React.FC = () => {
 
     return (
         <div className={styles.batchEditEngineerInfoTable}>
-            <table className={styles.batchEditEngineerInfoTable}>
-                <thead>
-                    <tr>
-                        <th>工程名称</th>
-                        <th>
-                            区域
-                        </th>
-                        <th>
-                            资源库
-                        </th>
-                        <th>
-                            协议库
-                        </th>
-                        <th>
-                            利旧协议库
-                        </th>
-                        <th>
-                            所属公司
-                        </th>
-                        <th>
-                            已录入信息
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        engineerTrElement
-                    }
-                </tbody>
-            </table>
+            <div className={styles.batchEditEngineerTableContent}>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>工程名称</th>
+                            <th>
+                                区域
+                            </th>
+                            <th>
+                                资源库
+                            </th>
+                            <th>
+                                协议库
+                            </th>
+                            <th>
+                                利旧协议库
+                            </th>
+                            <th>
+                                所属公司
+                            </th>
+                            <th>
+                                已录入信息
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            engineerTrElement
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div className={styles.batchEditProjectTable}>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>项目名称</th>
+                            <th>
+                                供电公司/班组
+                            </th>
+                            <th>
+                                已录入信息
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {projectTrElement}
+                    </tbody>
+                </table>
+            </div>
         </div>
     )
 }
