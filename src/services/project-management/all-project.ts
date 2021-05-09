@@ -82,16 +82,16 @@ export enum ProjectStatus {
 }
 
 export enum ProjectSourceType {
-  "无" = 1,
-  "被共享" = 2,
-  "被委托" = 3
+  '无' = 1,
+  '被共享' = 2,
+  '被委托' = 3,
 }
 
 export enum ProjectIdentityType {
-  "立项" = 1,
-  "委托" = 2,
-  "执行" = 4,
-  "共享" = 999,
+  '立项' = 1,
+  '委托' = 2,
+  '执行' = 4,
+  '共享' = 999,
 }
 
 export enum StatisticalCategory {
@@ -211,8 +211,8 @@ export interface AllProjectStatisticsParams {
   nature?: string;
   kvLevel?: string;
   status?: string;
-  sourceType?: string
-  identityType?: string
+  sourceType?: string;
+  identityType?: string;
 }
 
 export interface AllProjectSearchParams extends AllProjectStatisticsParams {
@@ -638,4 +638,19 @@ export const getHasShareDetailData = (projectId: string) => {
       params: { projectId },
     }),
   );
+};
+
+export const uploadBulkProject = (files: any[], requestSource: 'project', url: string) => {
+  const formData = new FormData();
+  files?.forEach((item) => {
+    formData.append('file', item);
+  });
+
+  const uploadUrl = `${baseUrl[requestSource]}${url}`;
+
+  return request(uploadUrl, {
+    method: 'POST',
+    data: formData,
+    requestType: 'form',
+  });
 };

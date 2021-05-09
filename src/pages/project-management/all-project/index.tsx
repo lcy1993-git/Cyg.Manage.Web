@@ -900,12 +900,12 @@ const ProjectManagement: React.FC = () => {
         </div>
       </div>
 
-      {upLoadAddProjectModalVisible && (
+      
         <UploadAddProjectModal
           visible={upLoadAddProjectModalVisible}
           onChange={setUploadAddProjectModalVisible}
         />
-      )}
+     
 
       {addEngineerModalFlag && (
         <Modal
