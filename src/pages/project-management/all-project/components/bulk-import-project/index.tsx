@@ -18,7 +18,7 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
   const { excelModalData } = props;
 
   const { content } = excelModalData;
-  console.log(content);
+  console.log(JSON.stringify(content));
 
   const engineerData = content.map((item: any) => {
     return item.engineer;
@@ -238,7 +238,7 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
 
   return (
     <>
-      <Form form={batchAddForm}>
+      {/* <Form form={batchAddForm}>
         <CyFormItem
           shouldUpdate={valueChangeEvent}
           required
@@ -299,7 +299,8 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
         onCancel={() => setEditEngineerModalVisble(false)}
       >
         111
-      </Modal>
+      </Modal> */}
+
     </>
   );
 };
