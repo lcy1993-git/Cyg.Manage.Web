@@ -1,21 +1,24 @@
-import { Button, Cascader, Table } from 'antd';
-import { Form, message, Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { Cascader, Table } from 'antd';
+import { Form, Modal } from 'antd';
+import React, { useMemo, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import city from '@/assets/local-data/area';
 import styles from './index.less';
 import EmptyTip from '@/components/empty-tip';
-import { editEngineer } from '@/services/project-management/all-project';
+// import { editEngineer } from '@/services/project-management/all-project';
 import { useCallback } from 'react';
+import EditBulkEngineer from './edit-bulk-engineer';
+import moment from 'moment';
 
 interface BulkImportProjectProps {
   excelModalData: any;
+  batchAddForm: any;
 }
 
 const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
-  const { excelModalData } = props;
+  const { excelModalData, batchAddForm } = props;
 
   const { content } = excelModalData;
   console.log(content);
@@ -23,7 +26,6 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
   const engineerData = content.map((item: any) => {
     return item.engineer;
   });
-  console.log(engineerData);
 
   const [requestLoading, setRequestLoading] = useState(false);
 
@@ -31,12 +33,16 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
   const [areaId, setAreaId] = useState<string>('');
   const [selectedProjectData, setSelectedProjectData] = useState<any>([]);
   const [currentEngineerTitle, setCurrentEngineerTitle] = useState<string>('');
+
   const [editEngineerModalVisible, setEditEngineerModalVisble] = useState<boolean>(false);
   const [canChange, setCanChange] = useState<boolean>(true);
   const [company, setCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
 
-  const [batchAddForm] = Form.useForm();
+  const [nowEditEngineer, setNowEditEngineer] = useState<object>({});
+
+  const [editEngineerForm] = Form.useForm();
+  const [editProjectForm] = Form.useForm();
 
   const mapHandleCityData = (data: any) => {
     return {
@@ -77,10 +83,20 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
     },
     { ready: !!areaId, refreshDeps: [areaId] },
   );
-  const saveBatchAddProjectEvent = () => {};
 
-  const editEngineer = () => {
+  //编辑行工程信息
+  const editEngineer = (record: any) => {
+    editEngineerForm.setFieldsValue({
+      ...record,
+      compileTime: record?.compileTime ? moment(record?.compileTime) : null,
+      startTime: record?.startTime ? moment(record?.startTime) : null,
+      endTime: record?.endTime ? moment(record?.endTime) : null,
+      importance: String(record?.importance),
+      grade: String(record?.grade),
+    });
     setEditEngineerModalVisble(true);
+
+    setNowEditEngineer(record);
   };
 
   const exportDataChange = (data: any) => {
@@ -201,7 +217,7 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
       width: 180,
       render: (record: any) => {
         return (
-          <span style={{ cursor: 'pointer' }} onClick={() => editEngineer()}>
+          <span style={{ cursor: 'pointer' }} onClick={() => editEngineer(record)}>
             编辑
           </span>
         );
@@ -226,15 +242,37 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
       title: '已录入信息',
       dataIndex: '',
       index: '',
-      render: () => {
+      render: (record: any) => {
         return (
-          <span style={{ cursor: 'pointer' }} onClick={() => editEngineer()}>
+          <span style={{ cursor: 'pointer' }} onClick={() => editProject(record)}>
             编辑
           </span>
         );
       },
     },
   ];
+
+  const editProject = (record: any) => {};
+
+  const saveCurrentEngineerEvent = async () => {
+    await editEngineerForm.validateFields().then((value) => {
+      const engineerInfo = Object.assign(
+        {
+          compiler: '',
+          endTime: '',
+          grade: '',
+          importance: '',
+          name: '',
+          organization: '',
+          plannedYear: '',
+          startTime: '',
+        },
+        value,
+      );
+      setNowEditEngineer(engineerInfo);
+      console.log(engineerInfo);
+    });
+  };
 
   return (
     <>
@@ -261,7 +299,6 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
                 type: 'radio',
                 columnWidth: '38px',
                 onSelect: (record) => {
-                  console.log(record);
                   const projectData = content
                     .map((item: any) => {
                       if (item.engineer.grade === record.grade) {
@@ -294,11 +331,16 @@ const BulkImportProject: React.FC<BulkImportProjectProps> = (props) => {
         </div>
       </Form>
       <Modal
+        maskClosable={false}
+        width={800}
         visible={editEngineerModalVisible}
         title="编辑-工程"
         onCancel={() => setEditEngineerModalVisble(false)}
+        onOk={() => saveCurrentEngineerEvent()}
       >
-        111
+        <Form form={editEngineerForm}>
+          <EditBulkEngineer />
+        </Form>
       </Modal>
     </>
   );

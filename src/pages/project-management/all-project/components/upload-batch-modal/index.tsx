@@ -5,7 +5,6 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { uploadBulkProject } from '@/services/project-management/all-project';
-import { useEffect } from 'react';
 import BulkImportProject from '../bulk-import-project';
 
 interface UploadAddProjectProps {
@@ -22,6 +21,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
 
   const [form] = Form.useForm();
+  const [batchAddForm] = Form.useForm();
 
   const closeModalEvent = () => {
     setState(false);
@@ -45,6 +45,21 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
       setState(false);
       setBulkImportModalVisible(true);
       setRequestLoading(false);
+    });
+  };
+
+  //批量上传
+  const saveBatchAddProjectEvent = () => {
+    batchAddForm.validateFields().then(async (values) => {
+    //   console.log(values);
+
+      try {
+        setRequestLoading(true);
+      } catch (msg) {
+        console.log(msg);
+      } finally {
+        setRequestLoading(false);
+      }
     });
   };
 
@@ -94,10 +109,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
             valuePropName="fileList"
             required
           >
-            <FileUpload
-              // action="/Porject/ResolveImportData"
-              maxCount={1}
-            />
+            <FileUpload maxCount={1} />
           </CyFormItem>
         </Form>
       </Modal>
@@ -109,9 +121,10 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
         title="立项批量导入"
         visible={bulkImportModalVisible}
         okText="保存"
+        onOk={() => saveBatchAddProjectEvent()}
         onCancel={() => setBulkImportModalVisible(false)}
       >
-        <BulkImportProject excelModalData={excelModalData} />
+        <BulkImportProject batchAddForm={batchAddForm} excelModalData={excelModalData} />
       </Modal>
     </>
   );
