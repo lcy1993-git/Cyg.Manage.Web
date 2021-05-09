@@ -44,6 +44,7 @@ import { useGetButtonJurisdictionArray, useGetProjectEnum } from '@/utils/hooks'
 import UrlSelect from '@/components/url-select';
 import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 import ProjectRecallModal from './components/project-recall-modal';
+import UploadAddProjectModal from './components/upload-batch-modal';
 
 const { Search } = Input;
 
@@ -91,6 +92,9 @@ const ProjectManagement: React.FC = () => {
   const [recallModalVisible, setRecallModalVisible] = useState(false);
 
   const [upLoadAddProjectModalVisible, setUploadAddProjectModalVisible] = useState<boolean>(false);
+
+  //获取上传立项模板后的List数据
+  const [excelListData, setExcelListData] = useState<any>();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -498,11 +502,12 @@ const ProjectManagement: React.FC = () => {
     form.setFieldsValue({ projects: [{ name: '' }] });
   };
 
+  //打开上传批量模板
   const openBatchAddEngineerModal = () => {
     setUploadAddProjectModalVisible(true);
-    form.resetFields();
-    form.setFieldsValue({ projects: [{ name: '' }] });
   };
+
+  //上传模板后跳转
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -762,6 +767,14 @@ const ProjectManagement: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {upLoadAddProjectModalVisible && (
+        <UploadAddProjectModal
+          visible={upLoadAddProjectModalVisible}
+          onChange={setUploadAddProjectModalVisible}
+        />
+      )}
+
       {addEngineerModalFlag && (
         <Modal
           maskClosable={false}
