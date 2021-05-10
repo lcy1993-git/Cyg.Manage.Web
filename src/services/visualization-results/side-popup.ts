@@ -11,9 +11,9 @@ export interface CommentRequestType {
 }
 
 export interface fetchCommentListType {
-  projectId: string;
-  layer: number;
-  deviceId: string;
+  projectId?: string;
+  layer?: number;
+  deviceId?: string;
 }
 
 export interface CommentType {

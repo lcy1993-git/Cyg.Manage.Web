@@ -24,6 +24,7 @@ export interface TreeNodeType {
   key: string;
   id: string;
   levelCategory?: number;
+  engineerId?: string;
   parentId?: string;
   propertys?: Properties;
   children?: TreeNodeType[];
@@ -46,6 +47,7 @@ function generateProjectTree(projectList?: ProjectListByAreaType[]): TreeNodeTyp
         title: v.name,
         id: v.id,
         key: Math.random().toString(),
+        engineerId: v.parentId,
         parentId: v.parentId,
         levelCategory: v.levelCategory,
         propertys: v.propertys,
@@ -59,6 +61,7 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
   return {
     id: item.id,
     time: moment(item.propertys?.deadline).format('YYYY-MM-DD'),
+    engineerId: item.engineerId,
     status: item.propertys?.status,
     isExecutor: item.propertys?.isExecutor,
   };
@@ -144,7 +147,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const onTabChnage = (activeKey: string) => {
     setTreeData([]);
-
     switch (activeKey) {
       case '1':
         setTabActiveKey('1');
@@ -174,7 +176,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
             {dataByCattegory ? (
               <Tree
-                height={680}
+                height={660}
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}
@@ -191,7 +193,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
             {dataByCattegory ? (
               <Tree
-                height={680}
+                height={660}
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}

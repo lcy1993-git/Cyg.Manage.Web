@@ -29,6 +29,7 @@ export interface ProjectList {
   id: string;
   time?: string; // '2021-04-19'
   status?: number;
+  engineerId: string;
   isExecutor?: boolean;
 }
 

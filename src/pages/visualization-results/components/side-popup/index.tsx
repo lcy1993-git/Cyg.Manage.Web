@@ -1,18 +1,12 @@
 import React, { createRef, useEffect, useMemo, useRef, useState } from 'react';
-import { Drawer, Table, Modal, Carousel, Input, message, Tooltip, Comment, List } from 'antd';
+import { Drawer, Table, Modal, Carousel, Input, message } from 'antd';
 import { useContainer } from '../../result-page/mobx-store';
 import { MenuUnfoldOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
-import {
-  CommentRequestType,
-  addComment,
-  fetchCommentList,
-  CommentType,
-} from '@/services/visualization-results/side-popup';
+import { CommentRequestType, addComment } from '@/services/visualization-results/side-popup';
 // import { publishMessage } from '@/services/news-config/Comment-manage';
 import CommentList from './components/comment-list';
 import uuid from 'node-uuid';
 import styles from './index.less';
-import moment from 'moment';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useRequest } from 'ahooks';
 import { observer } from 'mobx-react-lite';
@@ -180,22 +174,6 @@ const LAYER_TYPE: { [propertyName: string]: string } = {
   dismantle: '拆除',
 };
 
-function generatprCommentListDate(CommentList?: CommentType[]) {
-  if (CommentList) {
-    return CommentList.map((v) => ({
-      author: v.creator,
-      content: <p>{v.content}</p>,
-      datetime: (
-        <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-          <span>{moment().fromNow()}</span>
-        </Tooltip>
-      ),
-    }));
-  } else {
-    return [];
-  }
-}
-
 export interface CommentListItemDataType {
   author: string;
   content: React.ReactNode;
@@ -203,9 +181,9 @@ export interface CommentListItemDataType {
 }
 const SidePopup: React.FC<Props> = observer((props) => {
   const { data, rightSidebarVisible, setRightSidebarVisiviabel } = props;
-  const [CommentRquestBody, setCommentRquestBody] = useState<CommentRequestType>();
+  const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
-  const [CommentListData, setCommentListDate] = useState<CommentListItemDataType[]>();
+
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
@@ -314,28 +292,11 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   ];
 
-  const { data: responseCommentList, run: fetchCommentListRequest } = useRequest(fetchCommentList, {
-    manual: true,
-    onSuccess: () => {
-     
-
-      setCommentListDate(generatprCommentListDate(responseCommentList));
-    },
-    onError: () => {
-      message.success('获取审阅失败');
-    },
-  });
-
   const { run: addCommentRequest } = useRequest(addComment, {
     manual: true,
     onSuccess: () => {
       message.success('添加成功');
       setComment('');
-      fetchCommentListRequest({
-        projectId: CommentRquestBody?.projectId ?? '-100',
-        deviceId: CommentRquestBody?.deviceId ?? '-100',
-        layer: CommentRquestBody?.layerType ?? -100,
-      });
     },
     onError: () => {
       message.error('添加失败');
@@ -376,17 +337,12 @@ const SidePopup: React.FC<Props> = observer((props) => {
       /**
        * 初始化请求body
        */
-      setCommentRquestBody({
+      setcommentRquestBody({
         layerType: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
         deviceType: findEnumKey(DEVICE_TYPE[enDeviceType], 'ProjectCommentDevice'),
         deviceId,
         projectId,
         content: '',
-      });
-      fetchCommentListRequest({
-        projectId: projectId,
-        deviceId,
-        layer: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
       });
     }
   };
@@ -438,10 +394,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
      */
     if (activeType?.split('&')[0] === 'annotation') {
       addCommentRequest({
-        projectId: CommentRquestBody?.projectId ?? '',
-        layerType: CommentRquestBody?.layerType ?? -100,
-        deviceType: CommentRquestBody?.deviceType ?? -100,
-        deviceId: CommentRquestBody?.deviceId ?? '-100',
+        projectId: commentRquestBody?.projectId ?? '',
+        layerType: commentRquestBody?.layerType ?? -100,
+        deviceType: commentRquestBody?.deviceType ?? -100,
+        deviceId: commentRquestBody?.deviceId ?? '-100',
         content: Comment,
       });
     }
@@ -450,7 +406,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const DrawerWrap = useMemo(() => {
     return (
       <Drawer
-        title={'title'}
+        title={'属性栏'}
         placement="right"
         closable={false}
         visible={rightSidebarVisible}
@@ -532,7 +488,11 @@ const SidePopup: React.FC<Props> = observer((props) => {
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
-            <CommentList commentListData={CommentListData} />
+            <CommentList
+              projectId={commentRquestBody?.projectId}
+              deviceId={commentRquestBody?.deviceId}
+              layer={commentRquestBody?.layerType}
+            />
             <Input.TextArea
               placeholder="添加审阅"
               autoSize={{ minRows: 8, maxRows: 8 }}

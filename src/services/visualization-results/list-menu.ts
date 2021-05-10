@@ -19,6 +19,28 @@ export interface MaterialDataType {
   key?: string;
 }
 
+export interface CommentListItemType {
+  id: string;
+  createdOn: string;
+  status: number;
+  engineerId: string;
+  projectId: string;
+  companyName: string;
+  projectName: string;
+  deviceType: number;
+  layerType: number;
+  deviceId: string;
+  deviceName: string;
+  title: string;
+  lastUpdateDate: string;
+  createdBy: string;
+}
+
+export interface CommentListParams {
+  projectIds?: string[];
+  engineerId?: string;
+  layerTypes?: number[];
+}
 export interface TrackTimelineType {
   surveyTimeLine: string[];
   disclosureTimeLine: string[];
@@ -56,6 +78,16 @@ export const fetchTrackTimeLine = (projectId: string) => {
       {
         method: 'POST',
       },
+    ),
+  );
+};
+
+export const fetchReviewListByParams = (projectIds: string[], engineerId: string) => {
+  return cyRequest<CommentListItemType[]>(() =>
+    request(
+      `${baseUrl.comment}/Comment/GetProjectCommentList
+    `,
+      { method: 'POST', data: { projectIds, engineerId } },
     ),
   );
 };
