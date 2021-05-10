@@ -42,40 +42,7 @@ const treeData = [
 ];
 
 
-const tableData = [
-  {
-    calculation: 0,
-    catalogueId: "1369223437942743044",
-    content: null,
-    id: "1369223437951131650",
-    laborCost: 0,
-    libId: "1357588635508068352",
-    machineryFee: 0,
-    materialFee: 0,
-    name: "人工施工土方 挖土方 坚土 深2m以内",
-    price: 13.56,
-    quotaId: "PT1-4",
-    unit: "m³",
-    valence: 13.56,
-  },
-  {
-    calculation: 0,
-    catalogueId: "1369223437942743044",
-    content: null,
-    id: "1369223437951131651",
-    laborCost: 0,
-    libId: "1357588635508068352",
-    machineryFee: 0,
-    materialFee: 0,
-    name: "222",
-    price: 13.56,
-    quotaId: "PT1-4",
-    unit: "m³",
-    valence: 13.56,
-  },
-];
 
-const tableColumns = [];
 
 const QuotaProject = () => {
 
@@ -84,10 +51,8 @@ const QuotaProject = () => {
 
 
   const onCheck = (kes: React.Key[], {node}: any) => {
-    console.log(node.key);
     setActiveListId(activeListId)
   }
-  console.dir(document)
   return (
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
       <div className={styles.wrap}>
@@ -112,7 +77,7 @@ const QuotaProject = () => {
             <Tabs className="normalTabs noMargin" >
               <TabPane tab="&nbsp;&nbsp;资源列表" key="1">
                 <div className={styles.tabPaneBox}>
-                  <ListTable />
+                  <ListTable/>
                 </div>
               </TabPane>
               <TabPane tab="章节说明" key="2"></TabPane>
