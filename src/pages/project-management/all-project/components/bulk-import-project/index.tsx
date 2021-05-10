@@ -14,6 +14,7 @@ import EditBulkEngineer from './edit-bulk-engineer';
 import moment from 'moment';
 import { useControllableValue } from 'ahooks';
 import { importBulkEngineerProject } from '@/services/project-management/all-project';
+import EditBulkProject from './edit-bulk-project';
 
 interface BatchEditEngineerInfoProps {
   excelModalData: any;
@@ -165,8 +166,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
   const [engineerInfo, setEngineerInfo] = useState<any[]>([]);
   const [currentChooseEngineerInfo, setCurrentChooseEngineerInfo] = useState<any>();
-  const [currentEngineerModalVisible, setCurrentEngineerModalVisible] = useState<boolean>(false);
-  const [currentProjectModalVisible, setCurrentProjectModalVisible] = useState<boolean>(false);
+
+  const [currentClickEngineerInfo, setCurrentClickEngineerInfo] = useState<any>();
+  const [currentClickProjectInfo, setCurrentClickProjectInfo] = useState<any>();
+
+  const [editEngineerModalVisible, setEditEngineerModalVisible] = useState<boolean>(false);
+  const [editProjectModalVisible, setEditProjectModalVisible] = useState<boolean>(false);
 
   const [editEngineerForm] = Form.useForm();
 
@@ -526,7 +531,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             />
           </td>
           <td>
-            <Button type="text" onClick={() => editEngineer(item.engineer)}>
+            <Button type="text" onClick={() => editEngineerInfo({ ...item, index })}>
               编辑
             </Button>
           </td>
@@ -588,7 +593,9 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           />
         </td>
         <td>
-          <Button type="text">编辑</Button>
+          <Button type="text" onClick={() => editEngineerInfo({ ...item, index })}>
+            编辑
+          </Button>
         </td>
       </tr>
     );
@@ -641,7 +648,9 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             />
           </td>
           <td>
-            <Button type="text">编辑</Button>
+            <Button type="text" onClick={() => editProjectInfo({ ...item, index })}>
+              编辑
+            </Button>
           </td>
         </tr>
       );
@@ -659,25 +668,27 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           />
         </td>
         <td>
-          <Button type="text">编辑</Button>
+          <Button type="text" onClick={() => editProjectInfo({ ...item, index })}>
+            编辑
+          </Button>
         </td>
       </tr>
     );
   });
 
   //编辑行工程信息
-  const editEngineer = (record: any) => {
-    editEngineerForm.setFieldsValue({
-      ...record,
-      compileTime: record?.compileTime ? moment(record?.compileTime) : null,
-      startTime: record?.startTime ? moment(record?.startTime) : null,
-      endTime: record?.endTime ? moment(record?.endTime) : null,
-      importance: String(record?.importance),
-      grade: String(record?.grade),
-      area: record?.area ? record.area : null,
-    });
-    setCurrentEngineerModalVisible(true);
-  };
+  // const editEngineer = (record: any) => {
+  //   editEngineerForm.setFieldsValue({
+  //     ...record,
+  //     compileTime: record?.compileTime ? moment(record?.compileTime) : null,
+  //     startTime: record?.startTime ? moment(record?.startTime) : null,
+  //     endTime: record?.endTime ? moment(record?.endTime) : null,
+  //     importance: String(record?.importance),
+  //     grade: String(record?.grade),
+  //     area: record?.area ? record.area : null,
+  //   });
+  //   setCurrentEngineerModalVisible(true);
+  // };
 
   const handleFinallyData = () => {
     const saveData = cloneDeep(engineerInfo).map((item) => {
@@ -709,7 +720,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
           const thisPowerSupply = hasValueData[hasValueData.length - 1].projects[0].powerSupply;
 
-          item.projects.forEach((it:any) => {
+          item.projects.forEach((it: any) => {
             it.powerSupply = thisPowerSupply;
           });
         }
@@ -755,10 +766,33 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
   //批量上传
   const saveBatchAddProjectEvent = async () => {
     const submitInfo = handleFinallyData();
-    console.log(submitInfo);
-    
-    await importBulkEngineerProject({ datas: submitInfo });
 
+    await importBulkEngineerProject({ datas: submitInfo });
+  };
+
+  const engineerFinishEditInfo = (values: any) => {
+    const copyEngineerInfo = cloneDeep(engineerInfo);
+    copyEngineerInfo.splice(values.index, 1, values);
+    setEngineerInfo(copyEngineerInfo);
+  };
+
+  const projectFinishEditInfo = (values: any) => {
+    console.log(values);
+    
+    
+    // const copyEngineerInfo = cloneDeep();
+    // copyEngineerInfo.splice(values.index, 1, values);
+    // setEngineerInfo(copyEngineerInfo);
+  };
+
+  const editEngineerInfo = (engineerInfo: any) => {
+    setEditEngineerModalVisible(true);
+    setCurrentClickEngineerInfo(engineerInfo);
+  };
+
+  const editProjectInfo = (projectInfo: any) => {
+    setEditProjectModalVisible(true);
+    setCurrentClickProjectInfo(projectInfo);
   };
 
   return (
@@ -813,18 +847,24 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           </div>
         </Form>
       </Modal>
-      <Form form={editEngineerForm}>
+      {editEngineerModalVisible && (
         <EditBulkEngineer
-          visible={currentEngineerModalVisible}
-          onChange={setCurrentEngineerModalVisible}
-          libSelectData={libSelectData}
-          cityData={afterHandleData}
-          libChangeEvent={libChangeEvent}
-          currentInfo={currentChooseEngineerInfo}
-          areaChangeEvent={areaChangeEvent}
-          //   wareHouseChangeEvent={wareHouseChangeEvent}
+          engineerInfo={currentClickEngineerInfo}
+          finishEvent={engineerFinishEditInfo}
+          visible={editEngineerModalVisible}
+          onChange={setEditEngineerModalVisible}
         />
-      </Form>
+      )}
+
+      {editProjectModalVisible && (
+        <EditBulkProject
+          projectInfo={currentClickProjectInfo}
+          finishEvent={projectFinishEditInfo}
+          visible={editProjectModalVisible}
+          onChange={setEditProjectModalVisible}
+          currentChooseEngineerInfo={currentChooseEngineerInfo}
+        />
+      )}
     </>
   );
 };

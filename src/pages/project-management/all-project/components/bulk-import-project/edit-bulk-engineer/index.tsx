@@ -16,8 +16,8 @@ import { getCommonSelectData } from '@/services/common';
 interface EditBulkEngineerProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent: (engineerInfo: any) => void
-  engineerInfo: any
+  finishEvent: (engineerInfo: any) => void;
+  engineerInfo: any;
 }
 
 const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
@@ -28,25 +28,48 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   const [companySelectData, setCompanySelectData] = useState<any[]>([]);
 
   const [provinceValue, setProvinceValue] = useState<any[]>([]);
-  const [libId, setLibId] = useState<string>("");
-  const [inventoryOverviewId, setInventoryOverviewId] = useState<string>("");
-  const [warehouseId, setWarehouseId] = useState<string>("");
-  const [company, setCompany] = useState<string>("");
+  const [libId, setLibId] = useState<string>('');
+  const [inventoryOverviewId, setInventoryOverviewId] = useState<string>('');
+  const [warehouseId, setWarehouseId] = useState<string>('');
+  const [company, setCompany] = useState<string>('');
 
   const [form] = Form.useForm();
   const { engineerInfo, finishEvent } = props;
 
-  const saveCurrentEngineer = () => { };
+  const saveCurrentEngineer = () => {
+    form.validateFields().then((values) => {
+      
+      const engineerSaveInfo = {
+        ...engineerInfo,
+        engineer: {
+          ...engineerInfo.engineer,
+          ...values,
+          libId,
+          inventoryOverviewId,
+          warehouseId,
+          company,
+        },
+        selectData: {
+          ...engineerInfo.selectData,
+          inventoryOverviewSelectData,
+          warehouseSelectData,
+          companySelectData,
+        },
+      };
+      finishEvent(engineerSaveInfo);
+    });
+    setState(false);
+  };
 
   const { data: libSelectData = [] } = useGetSelectData({
     url: '/ResourceLibrary/GetList',
     extraParams: { pId: '-1' },
   });
 
-  const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true })
+  const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true });
 
-  const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true })
-  const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true })
+  const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true });
+  const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true });
 
   const closeModalEvent = () => {
     setState(false);
@@ -58,9 +81,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       value: data.id,
       children: data.children
         ? [
-          { label: '无', value: `${data.id}_null`, children: undefined },
-          ...data.children.map(mapHandleCityData),
-        ]
+            { label: '无', value: `${data.id}_null`, children: undefined },
+            ...data.children.map(mapHandleCityData),
+          ]
         : undefined,
     };
   };
@@ -75,7 +98,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     let provinceValue = [
       engineer?.province,
       engineer?.city ? engineer?.city : `${engineer?.province}_null`,
-      engineer?.area ? engineer?.area : (engineer?.city ? `${engineer?.city}_null` : undefined)
+      engineer?.area ? engineer?.area : engineer?.city ? `${engineer?.city}_null` : undefined,
     ];
 
     if (!engineer.province) {
@@ -89,9 +112,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       endTime: engineer?.endTime ? moment(engineer?.endTime) : null,
       importance: String(engineer?.importance),
       grade: String(engineer?.grade),
-      inventoryOverviewId: engineer?.inventoryOverviewId ? engineer?.inventoryOverviewId : "none",
-      warehouseId: engineer?.warehouseId ? engineer?.warehouseId : "none",
-    })
+      inventoryOverviewId: engineer?.inventoryOverviewId ? engineer?.inventoryOverviewId : 'none',
+      warehouseId: engineer?.warehouseId ? engineer?.warehouseId : 'none',
+    });
 
     setInventoryOverviewSelectData(selectData.inventoryOverviewSelectData);
     setWarehouseSelectData(selectData.warehouseSelectData);
@@ -101,66 +124,74 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     setInventoryOverviewId(engineer.inventoryOverviewId);
     setWarehouseId(engineer.warehouseId);
     setCompany(engineer.company);
-
-  }, [JSON.stringify(engineerInfo)])
+  }, [JSON.stringify(engineerInfo)]);
 
   const areaChangeEvent = async (value: any) => {
-    setProvinceValue(value)
+    setProvinceValue(value);
     const [province] = value;
 
-    const warehouseSelectResData = await getWarehouseSelectData(
-      { url: "/WarehouseOverview/GetList", method: "get", params: { areaId: province }, requestSource: "project" }
-    )
+    const warehouseSelectResData = await getWarehouseSelectData({
+      url: '/WarehouseOverview/GetList',
+      method: 'get',
+      params: { areaId: province },
+      requestSource: 'project',
+    });
 
-    const companySelectResData = await getCompanySelectData(
-      { url: "/ElectricityCompany/GetListByAreaId", method: "get", params: { areaId: province }, requestSource: "project" }
-    )
+    const companySelectResData = await getCompanySelectData({
+      url: '/ElectricityCompany/GetListByAreaId',
+      method: 'get',
+      params: { areaId: province },
+      requestSource: 'project',
+    });
 
     const handleWarehouseSelectData = warehouseSelectResData.map((item: any) => {
       return {
         label: item.text,
-        value: item.value
-      }
-    })
+        value: item.value,
+      };
+    });
 
     const handleCompanySelectData = companySelectResData.map((item: any) => {
       return {
         label: item.text,
-        value: item.text
-      }
-    })
+        value: item.text,
+      };
+    });
 
-    setWarehouseSelectData(handleWarehouseSelectData)
-    setCompanySelectData(handleCompanySelectData)
-  }
+    setWarehouseSelectData(handleWarehouseSelectData);
+    setCompanySelectData(handleCompanySelectData);
+  };
 
   const libChangeEvent = async (value: any) => {
-    setLibId(value)
-    const inventoryOverviewSelectResData = await getInventoryOverviewSelectData(
-      { url: "/InventoryOverview/GetList", method: "get", params: { libId: value }, requestSource: "project" }
-    )
+    setLibId(value);
+    const inventoryOverviewSelectResData = await getInventoryOverviewSelectData({
+      url: '/InventoryOverview/GetList',
+      method: 'get',
+      params: { libId: value },
+      requestSource: 'project',
+    });
 
     const handleInventoryOverviewSelectData = inventoryOverviewSelectResData.map((item: any) => {
       return {
         label: item.text,
-        value: item.value
-      }
-    })
+        value: item.value,
+      };
+    });
 
     setInventoryOverviewSelectData(handleInventoryOverviewSelectData);
-  }
+  };
 
   const inventoryOverviewChange = (value: any) => {
-    setInventoryOverviewId(value)
-  }
+    setInventoryOverviewId(value);
+  };
 
   const warehouseIdChange = (value: any) => {
-    setWarehouseId(value)
-  }
+    setWarehouseId(value);
+  };
 
   const companyChange = (value: any) => {
-    setCompany(value)
-  }
+    setCompany(value);
+  };
 
   return (
     <>
@@ -175,41 +206,34 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         <Form form={form}>
           <div className="flex">
             <div className="flex1 flowHidden">
-              <CyFormItem
-                label="工程名称"
-                name="name"
-                labelWidth={120}
-                align="right"
-                required
-              >
+              <CyFormItem label="工程名称" name="name" labelWidth={120} align="right" required>
                 <Input placeholder="请输入" />
               </CyFormItem>
             </div>
             <div className="flex1 flowHidden">
-              <CyFormItem
-                label="区域"
-                name="province"
-                labelWidth={120}
-                align="right"
-                required
-              >
+              <CyFormItem label="区域" name="province" labelWidth={120} align="right" required>
                 <div>
-                  <Cascader style={{ width: "100%" }} value={provinceValue} onChange={(value) => areaChangeEvent(value)} options={afterHandleData} />
+                  <Cascader
+                    style={{ width: '100%' }}
+                    value={provinceValue}
+                    onChange={(value) => areaChangeEvent(value)}
+                    options={afterHandleData}
+                  />
                 </div>
               </CyFormItem>
             </div>
           </div>
           <div className="flex">
             <div className="flex1 flowHidden">
-              <CyFormItem
-                label="资源库"
-                name="libId"
-                labelWidth={120}
-                align="right"
-                required
-              >
+              <CyFormItem label="资源库" name="libId" labelWidth={120} align="right" required>
                 <div>
-                  <DataSelect style={{ width: "100%" }} value={libId} onChange={(value) => libChangeEvent(value)} options={libSelectData} placeholder="-资源库-" />
+                  <DataSelect
+                    style={{ width: '100%' }}
+                    value={libId}
+                    onChange={(value) => libChangeEvent(value)}
+                    options={libSelectData}
+                    placeholder="-资源库-"
+                  />
                 </div>
               </CyFormItem>
             </div>
@@ -222,7 +246,13 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 required
               >
                 <div>
-                  <DataSelect style={{ width: "100%" }} value={inventoryOverviewId} onChange={(value) => inventoryOverviewChange(value)} options={inventoryOverviewSelectData} placeholder="请先选择资源库" />
+                  <DataSelect
+                    style={{ width: '100%' }}
+                    value={inventoryOverviewId}
+                    onChange={(value) => inventoryOverviewChange(value)}
+                    options={inventoryOverviewSelectData}
+                    placeholder="请先选择资源库"
+                  />
                 </div>
               </CyFormItem>
             </div>
@@ -235,10 +265,16 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-              // rules={Rule.required}
+                // rules={Rule.required}
               >
                 <div>
-                  <DataSelect style={{ width: "100%" }} value={warehouseId} onChange={(value) => warehouseIdChange(value)} options={warehouseSelectData} placeholder="请先选择区域" />
+                  <DataSelect
+                    style={{ width: '100%' }}
+                    value={warehouseId}
+                    onChange={(value) => warehouseIdChange(value)}
+                    options={warehouseSelectData}
+                    placeholder="请先选择区域"
+                  />
                 </div>
               </CyFormItem>
             </div>
@@ -316,10 +352,16 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-              // rules={Rule.required}
+                // rules={Rule.required}
               >
                 <div>
-                  <DataSelect style={{ width: "100%" }} value={company} onChange={(value) => companyChange(value)} options={companySelectData} placeholder="请先选择区域" />
+                  <DataSelect
+                    style={{ width: '100%' }}
+                    value={company}
+                    onChange={(value) => companyChange(value)}
+                    options={companySelectData}
+                    placeholder="请先选择区域"
+                  />
                 </div>
               </CyFormItem>
             </div>
