@@ -904,6 +904,7 @@ const ProjectManagement: React.FC = () => {
         <UploadAddProjectModal
           visible={upLoadAddProjectModalVisible}
           onChange={setUploadAddProjectModalVisible}
+          refreshEvent={search}
         />
      
 

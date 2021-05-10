@@ -5,7 +5,6 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { uploadBulkProject } from '@/services/project-management/all-project';
-import BulkImportProject from '../bulk-import-project';
 import BatchEditEngineerInfoTable from '../bulk-import-project/index';
 
 interface UploadAddProjectProps {
@@ -13,16 +12,17 @@ interface UploadAddProjectProps {
   onChange: Dispatch<SetStateAction<boolean>>;
   finishEvent?: () => void;
   defaultSelectType?: string;
+  refreshEvent?: () => void;
 }
 
 const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
+  const { refreshEvent } = props;
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [bulkImportModalVisible, setBulkImportModalVisible] = useState<boolean>(false);
   const [excelModalData, setExcelModalData] = useState<any>();
   const [requestLoading, setRequestLoading] = useState(false);
 
   const [form] = Form.useForm();
-  const [batchAddForm] = Form.useForm();
 
   const closeModalEvent = () => {
     setState(false);
@@ -41,6 +41,11 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
       }
       setRequestLoading(true);
       const res = await uploadBulkProject(file, 'project', '/Porject/ResolveImportData');
+      if (res.code === 5000) {
+        message.error('导入项目数据不能为空或工程名已存在');
+        setRequestLoading(false);
+        return;
+      }
       setExcelModalData(res);
       message.success('导入成功');
       setState(false);
@@ -48,7 +53,6 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
       setRequestLoading(false);
     });
   };
-  console.log(excelModalData);
 
   return (
     <>
@@ -102,6 +106,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
         onChange={setBulkImportModalVisible}
         visible={bulkImportModalVisible}
         excelModalData={excelModalData?.content}
+        refreshEvent={refreshEvent}
       />
     </>
   );

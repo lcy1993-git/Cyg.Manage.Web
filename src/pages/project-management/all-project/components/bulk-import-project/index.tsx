@@ -1,4 +1,4 @@
-import { Button, Cascader, Checkbox, Form, Modal } from 'antd';
+import { Button, Cascader, Checkbox, Form, message, Modal } from 'antd';
 import uuid from 'node-uuid';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useMemo } from 'react';
@@ -11,7 +11,6 @@ import useRequest from '@ahooksjs/use-request';
 import { getCommonSelectData } from '@/services/common';
 import CyFormItem from '@/components/cy-form-item';
 import EditBulkEngineer from './edit-bulk-engineer';
-import moment from 'moment';
 import { useControllableValue } from 'ahooks';
 import { importBulkEngineerProject } from '@/services/project-management/all-project';
 import EditBulkProject from './edit-bulk-project';
@@ -20,149 +19,12 @@ interface BatchEditEngineerInfoProps {
   excelModalData: any;
   onChange: Dispatch<SetStateAction<boolean>>;
   visible: boolean;
+  refreshEvent?: () => void;
 }
 
-const excelModalData = [
-  {
-    engineer: {
-      name: '导入工程1',
-      province: null,
-      city: null,
-      area: null,
-      libId: null,
-      inventoryOverviewId: null,
-      warehouseId: null,
-      compiler: '编制人1',
-      compileTime: 1620403200000,
-      organization: '编制单位1',
-      startTime: 1620489600000,
-      endTime: 1623081600000,
-      company: null,
-      importance: 1,
-      plannedYear: 2024,
-      grade: 1,
-    },
-    projects: [
-      {
-        name: '导入工程1-项目1',
-        category: 1,
-        pType: 1,
-        kvLevel: 1,
-        totalInvest: 25.5,
-        natures: ['128'],
-        startTime: 1620403200000,
-        endTime: 1620489600000,
-        assetsNature: 5,
-        majorCategory: 1,
-        isAcrossYear: false,
-        reformCause: 2,
-        reformAim: 3,
-        powerSupply: null,
-        assetsOrganization: '资产所属单位1',
-        cityCompany: '所属市公司1',
-        regionAttribute: 1,
-        countyCompany: '所属县公司1',
-        constructType: 1,
-        pCategory: 2,
-        stage: 4,
-        batch: 3,
-        pAttribute: 1,
-        meteorologic: 0,
-        disclosureRange: 50,
-        pileRange: 50,
-        deadline: 1620489600000,
-        dataSourceType: 0,
-      },
-      {
-        name: '导入工程1-项目2',
-        category: 1,
-        pType: 1,
-        kvLevel: 1,
-        totalInvest: 25.5,
-        natures: ['128'],
-        startTime: 1620403200000,
-        endTime: 1620489600000,
-        assetsNature: 5,
-        majorCategory: 1,
-        isAcrossYear: false,
-        reformCause: 2,
-        reformAim: 3,
-        powerSupply: null,
-        assetsOrganization: '资产所属单位1',
-        cityCompany: '所属市公司1',
-        regionAttribute: 1,
-        countyCompany: '所属县公司1',
-        constructType: 1,
-        pCategory: 2,
-        stage: 4,
-        batch: 3,
-        pAttribute: 1,
-        meteorologic: 0,
-        disclosureRange: 50,
-        pileRange: 50,
-        deadline: 1620489600000,
-        dataSourceType: 0,
-      },
-    ],
-  },
-  {
-    engineer: {
-      name: '导入工程2',
-      province: null,
-      city: null,
-      area: null,
-      libId: null,
-      inventoryOverviewId: null,
-      warehouseId: null,
-      compiler: '编制人2',
-      compileTime: 1623081600000,
-      organization: '编制单位2',
-      startTime: 1623168000000,
-      endTime: 1625673600000,
-      company: null,
-      importance: 1,
-      plannedYear: 2025,
-      grade: 2,
-    },
-    projects: [
-      {
-        name: '导入工程2-项目1',
-        category: 1,
-        pType: 1,
-        kvLevel: 1,
-        totalInvest: 25.5,
-        natures: ['128'],
-        startTime: 1620403200000,
-        endTime: 1620489600000,
-        assetsNature: 5,
-        majorCategory: 1,
-        isAcrossYear: false,
-        reformCause: 2,
-        reformAim: 3,
-        powerSupply: null,
-        assetsOrganization: '资产所属单位1',
-        cityCompany: '所属市公司1',
-        regionAttribute: 1,
-        countyCompany: '所属县公司1',
-        constructType: 1,
-        pCategory: 2,
-        stage: 4,
-        batch: 3,
-        pAttribute: 1,
-        meteorologic: 0,
-        disclosureRange: 50,
-        pileRange: 50,
-        deadline: 1620489600000,
-        dataSourceType: 0,
-      },
-    ],
-  },
-];
-
 const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props) => {
-  const { excelModalData = [] } = props;
+  const { excelModalData = [], refreshEvent } = props;
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState(false);
 
   const [engineerInfo, setEngineerInfo] = useState<any[]>([]);
   const [currentChooseEngineerInfo, setCurrentChooseEngineerInfo] = useState<any>();
@@ -172,8 +34,6 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
   const [editEngineerModalVisible, setEditEngineerModalVisible] = useState<boolean>(false);
   const [editProjectModalVisible, setEditProjectModalVisible] = useState<boolean>(false);
-
-  const [editEngineerForm] = Form.useForm();
 
   const mapHandleCityData = (data: any) => {
     return {
@@ -209,6 +69,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         ...item,
         id: uuid.v1(),
         checked: index === 0 ? true : false,
+        index: index,
         selectData: {
           inventoryOverviewSelectData: [],
           warehouseSelectData: [],
@@ -222,7 +83,13 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
   }, [JSON.stringify(excelModalData)]);
 
   const areaChangeEvent = async (value: any, numberIndex: number) => {
-    const [province, city, area] = value;
+    let [province, city, area] = value;
+    if (city?.indexOf('null') != -1) {
+      city = '';
+    }
+    if (area?.indexOf('null') != -1) {
+      area = '';
+    }
     const copyEngineerInfo = cloneDeep(engineerInfo);
 
     const warehouseSelectData = await getWarehouseSelectData({
@@ -264,6 +131,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         if (item.checked) {
           setCurrentChooseEngineerInfo({
             ...item,
+            index: numberIndex,
             engineer: {
               ...item.engineer,
               province,
@@ -388,6 +256,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         if (item.checked) {
           setCurrentChooseEngineerInfo({
             ...item,
+            index: numberIndex,
             engineer: {
               ...item.engineer,
               company: value,
@@ -401,6 +270,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         }
         return {
           ...item,
+          index: numberIndex,
           engineer: {
             ...item.engineer,
             company: value,
@@ -442,7 +312,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
-        setCurrentChooseEngineerInfo(item);
+        setCurrentChooseEngineerInfo({ ...item, index: numberIndex });
         return {
           ...item,
           checked: true,
@@ -628,6 +498,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
     setCurrentChooseEngineerInfo({
       ...currentChooseEngineerInfo,
+      index: numberIndex,
       projects: handleData,
     });
     setEngineerInfo(handleEngineerData);
@@ -766,8 +637,10 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
   //批量上传
   const saveBatchAddProjectEvent = async () => {
     const submitInfo = handleFinallyData();
-
     await importBulkEngineerProject({ datas: submitInfo });
+    setState(false);
+    message.success('批量立项成功');
+    refreshEvent?.();
   };
 
   const engineerFinishEditInfo = (values: any) => {
@@ -777,12 +650,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
   };
 
   const projectFinishEditInfo = (values: any) => {
-    console.log(values);
-    
-    
-    // const copyEngineerInfo = cloneDeep();
-    // copyEngineerInfo.splice(values.index, 1, values);
-    // setEngineerInfo(copyEngineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo);
+
+    copyEngineerInfo.splice(values.index, 1, values);
+
+    setEngineerInfo(copyEngineerInfo);
+    setCurrentChooseEngineerInfo(values);
   };
 
   const editEngineerInfo = (engineerInfo: any) => {
@@ -863,6 +736,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           visible={editProjectModalVisible}
           onChange={setEditProjectModalVisible}
           currentChooseEngineerInfo={currentChooseEngineerInfo}
+          // setCurrent={setCurrentChooseEngineerInfo}
         />
       )}
     </>

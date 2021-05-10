@@ -9,6 +9,7 @@ import Rule from './project-form-rule';
 import { useControllableValue } from 'ahooks';
 import { useGetProjectEnum } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
+import { cloneDeep } from 'lodash';
 
 interface EditBulkProjectProps {
   visible: boolean;
@@ -20,23 +21,22 @@ interface EditBulkProjectProps {
 
 const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-
+  const [nature, setNature] = useState<string>();
   const [powerSupplySelectData, setPowerSupplySelectData] = useState<any[]>([]);
   const [powerSupply, setPowerSupply] = useState<string>('');
 
   const { projectInfo, finishEvent, currentChooseEngineerInfo } = props;
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm();  
 
   useEffect(() => {
     const { selectData } = currentChooseEngineerInfo;
-
     form.setFieldsValue({
       ...projectInfo,
       startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
       endTime: projectInfo?.endTime ? moment(projectInfo?.endTime) : null,
       deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
-      natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
+      natures: (projectInfo?.natures ?? []).map((item: any) => Number(item)),
       isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
       powerSupply: projectInfo?.powerSupply ? projectInfo?.powerSupply : 'none',
     });
@@ -70,14 +70,24 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
 
   const saveCurrentProject = () => {
     form.validateFields().then((values) => {
-      console.log(currentChooseEngineerInfo.projects);
+      const { projects } = currentChooseEngineerInfo;
 
+      const newProjectInfo = {
+        ...projectInfo,
+        ...values,
+        powerSupply,
+      };
+
+      const copyProjects = cloneDeep(projects);
+      const handleProjects = copyProjects.map((item: any, index: any) => {
+        if (index === newProjectInfo.index) {
+          return newProjectInfo;
+        }
+        return item;
+      });
       const projectSaveInfo = {
-        ...currentChooseEngineerInfo.projects,
-        // projects: {
-        //   ...projectInfo.projects,
-        //   values,
-        // },
+        ...currentChooseEngineerInfo,
+        projects: handleProjects,
       };
       finishEvent(projectSaveInfo);
     });
@@ -91,7 +101,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
     <>
       <Modal
         maskClosable={false}
-        title="批量立项"
+        title="编辑项目"
         width="45%"
         centered
         visible={state as boolean}
@@ -190,6 +200,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   valueKey="value"
                   titleKey="text"
                   placeholder="请选择"
+                  value={nature}
+                  onChange={(value) => setNature(value as string)}
                 />
               </CyFormItem>
             </div>
