@@ -36,8 +36,8 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 图层控制层数据
   const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(false);
-  const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(true);
-  const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false);
+  const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false);
+  const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(true);
   const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false);
   // 从Vstate获取外部传入的数据
   const store = useContainer();
