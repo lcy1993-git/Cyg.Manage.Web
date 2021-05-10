@@ -4,13 +4,13 @@ import styles from './index.less';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import moment from 'moment';
-import {
-  fetchEngineerProjectListByParams,
-  ProjectItemType,
-  Engineer,
-} from '@/services/visualization-results/side-tree';
+// import {
+//   fetchEngineerProjectListByParams,
+//   ProjectItemType,
+//   Engineer,
+// } from '@/services/visualization-results/side-tree';
 import { useContainer } from '../../store';
-import { ProjectList } from '@/services/visualization-results/visualization-results';
+// import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
 
 /**

@@ -22,7 +22,7 @@ export interface VisualizationResultsStateType {
 }
 
 const initState = {
-  filterCondition: { kvLevel: -1 },
+  filterCondition: {},
   propertySidePopupShow: false,
   projectDetailModalShow: false,
   materialModalShow: false,

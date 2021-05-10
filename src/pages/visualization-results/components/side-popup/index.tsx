@@ -3,13 +3,13 @@ import { Drawer, Table, Modal, Carousel, Input, message, Tooltip, Comment, List 
 import { useContainer } from '../../result-page/mobx-store';
 import { MenuUnfoldOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import {
-  ReviewRequestType,
-  addReview,
-  fetchReviewList,
-  ReviewType,
+  CommentRequestType,
+  addComment,
+  fetchCommentList,
+  CommentType,
 } from '@/services/visualization-results/side-popup';
-// import { publishMessage } from '@/services/news-config/review-manage';
-import CommentList from './components/comment-list'
+// import { publishMessage } from '@/services/news-config/Comment-manage';
+import CommentList from './components/comment-list';
 import uuid from 'node-uuid';
 import styles from './index.less';
 import moment from 'moment';
@@ -180,9 +180,9 @@ const LAYER_TYPE: { [propertyName: string]: string } = {
   dismantle: '拆除',
 };
 
-function generatprReviewListDate(reviewList?: ReviewType[]) {
-  if (reviewList) {
-    return reviewList.map((v) => ({
+function generatprCommentListDate(CommentList?: CommentType[]) {
+  if (CommentList) {
+    return CommentList.map((v) => ({
       author: v.creator,
       content: <p>{v.content}</p>,
       datetime: (
@@ -196,17 +196,17 @@ function generatprReviewListDate(reviewList?: ReviewType[]) {
   }
 }
 
-export interface ReviewListItemDataType {
+export interface CommentListItemDataType {
   author: string;
   content: React.ReactNode;
   datetime: React.ReactNode;
 }
 const SidePopup: React.FC<Props> = observer((props) => {
   const { data, rightSidebarVisible, setRightSidebarVisiviabel } = props;
-  const [reviewRquestBody, setReviewRquestBody] = useState<ReviewRequestType>();
+  const [CommentRquestBody, setCommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
-  const [reviewListData, setReviewListDate] = useState<ReviewListItemDataType[]>();
-  const [review, setReview] = useState('');
+  const [CommentListData, setCommentListDate] = useState<CommentListItemDataType[]>();
+  const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
   const { checkedProjectIdList } = useContainer().vState;
@@ -252,7 +252,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         } else if (record.propertyName === '审阅') {
           if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
             return (
-              <span className={styles.link} onClick={() => onAddReview(value)} key={index}>
+              <span className={styles.link} onClick={() => onAddComment(value)} key={index}>
                 添加审阅
               </span>
             );
@@ -314,27 +314,27 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   ];
 
-  const { data: reviewList, run: fetchReviewListRequest } = useRequest(fetchReviewList, {
+  const { data: responseCommentList, run: fetchCommentListRequest } = useRequest(fetchCommentList, {
     manual: true,
     onSuccess: () => {
-      let reviewListData = generatprReviewListDate(reviewList);
+     
 
-      setReviewListDate(reviewListData);
+      setCommentListDate(generatprCommentListDate(responseCommentList));
     },
     onError: () => {
       message.success('获取审阅失败');
     },
   });
 
-  const { run: addReviewRequest } = useRequest(addReview, {
+  const { run: addCommentRequest } = useRequest(addComment, {
     manual: true,
     onSuccess: () => {
       message.success('添加成功');
-      setReview('');
-      fetchReviewListRequest({
-        projectId: reviewRquestBody?.projectId ?? '-100',
-        deviceId: reviewRquestBody?.deviceId ?? '-100',
-        layer: reviewRquestBody?.layerType ?? -100,
+      setComment('');
+      fetchCommentListRequest({
+        projectId: CommentRquestBody?.projectId ?? '-100',
+        deviceId: CommentRquestBody?.deviceId ?? '-100',
+        layer: CommentRquestBody?.layerType ?? -100,
       });
     },
     onError: () => {
@@ -342,14 +342,14 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   });
 
-  const onAddReview = (value: any) => {
+  const onAddComment = (value: any) => {
     setActiveType('annotation&' + value.id);
 
     const feature = data.find((item: any) => item.propertyName === '审阅')?.data.feature;
     if (feature) {
       const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
       console.log(loadEnumsData);
-      
+
       const findEnumKey = (v: string, type: string): number => {
         let res: number = -100;
         loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
@@ -372,18 +372,18 @@ const SidePopup: React.FC<Props> = observer((props) => {
       let split = id_.split('.');
       const [enLayerType, enDeviceType] = split[0].split('_');
       const deviceId = split[1];
-      
+
       /**
        * 初始化请求body
        */
-      setReviewRquestBody({
+      setCommentRquestBody({
         layerType: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
         deviceType: findEnumKey(DEVICE_TYPE[enDeviceType], 'ProjectCommentDevice'),
         deviceId,
         projectId,
         content: '',
       });
-      fetchReviewListRequest({
+      fetchCommentListRequest({
         projectId: projectId,
         deviceId,
         layer: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
@@ -437,12 +437,12 @@ const SidePopup: React.FC<Props> = observer((props) => {
      * 如果要在添加审阅相应事件只能在这个if下面
      */
     if (activeType?.split('&')[0] === 'annotation') {
-      addReviewRequest({
-        projectId: reviewRquestBody?.projectId ?? '',
-        layerType: reviewRquestBody?.layerType ?? -100,
-        deviceType: reviewRquestBody?.deviceType ?? -100,
-        deviceId: reviewRquestBody?.deviceId ?? '-100',
-        content: review,
+      addCommentRequest({
+        projectId: CommentRquestBody?.projectId ?? '',
+        layerType: CommentRquestBody?.layerType ?? -100,
+        deviceType: CommentRquestBody?.deviceType ?? -100,
+        deviceId: CommentRquestBody?.deviceId ?? '-100',
+        content: Comment,
       });
     }
   };
@@ -532,13 +532,13 @@ const SidePopup: React.FC<Props> = observer((props) => {
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
-           <CommentList commentListData={reviewListData}/>
+            <CommentList commentListData={CommentListData} />
             <Input.TextArea
               placeholder="添加审阅"
               autoSize={{ minRows: 8, maxRows: 8 }}
-              defaultValue={review}
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
+              defaultValue={Comment}
+              value={Comment}
+              onChange={(e) => setComment(e.target.value)}
             />
           </>
         )}

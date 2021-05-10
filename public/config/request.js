@@ -24,7 +24,7 @@ const arrayHasIpBaseUrlArray = {
     upload: `${baseUrl}:8023/api`,
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
-    projectVisualization: `${baseUrl}:8026/api`,
+    projectVisualization: `${baseUrl}:8034/api`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -35,7 +35,7 @@ const arrayHasNotBaseUrlArray = {
     webGis: '/webGis/api',
     webGis2: '/webGis2/api',
     comment: '/Comment/api',
-    projectVisualization: '/GetProjectListByArea/api',
+    projectVisualization: '/ProjectVisualization/api',
 }
 
 export const logoArray = {

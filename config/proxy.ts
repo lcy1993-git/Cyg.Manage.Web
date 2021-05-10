@@ -34,18 +34,13 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/webGis': '/' },
     },
-    '/webGis2/api': {
-      target: 'http://10.6.1.36:8014/',
-      changeOrigin: true,
-      pathRewrite: { '^/webGis2': '/' },
-    },
     '/Comment/api': {
       target: 'http://10.6.1.36:8013/',
       changeOrigin: true,
       pathRewrite: { '^/Comment': '/' },
     },
     '/ProjectVisualization/api': {
-      target: 'http://10.6.1.36:8026/',
+      target: 'http://10.6.1.36:8034/',
       changeOrigin: true,
       pathRewrite: { '^/ProjectVisualization': '/' },
     },

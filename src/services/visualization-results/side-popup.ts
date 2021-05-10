@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
-export interface ReviewRequestType {
+export interface CommentRequestType {
   projectId: string;
   deviceId: string;
   deviceType: number;
@@ -10,13 +10,13 @@ export interface ReviewRequestType {
   title?: string;
 }
 
-export interface fetchReviewListType {
+export interface fetchCommentListType {
   projectId: string;
   layer: number;
   deviceId: string;
 }
 
-export interface ReviewType {
+export interface CommentType {
   content: string;
   creator: string;
   createdOn: string;
@@ -28,7 +28,7 @@ export interface ReviewType {
  * @param requestData
  * @returns
  */
-export const addReview = (requestData: ReviewRequestType) => {
+export const addComment = (requestData: CommentRequestType) => {
   return cyRequest<any>(() =>
     request(
       `${baseUrl.comment}/Comment/CreateProjectComment
@@ -38,8 +38,8 @@ export const addReview = (requestData: ReviewRequestType) => {
   );
 };
 
-export const fetchReviewList = (params: fetchReviewListType) => {
-  return cyRequest<ReviewType[]>(() =>
+export const fetchCommentList = (params: fetchCommentListType) => {
+  return cyRequest<CommentType[]>(() =>
     request(
       `${baseUrl.comment}/Comment/GetProjectCommentItemList
     `,
