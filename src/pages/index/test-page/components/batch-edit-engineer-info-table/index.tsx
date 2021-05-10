@@ -9,6 +9,7 @@ import DataSelect from '@/components/data-select';
 import { cloneDeep } from "lodash"
 import useRequest from "@ahooksjs/use-request"
 import { getCommonSelectData } from "@/services/common"
+import EditBulkEngineer from "@/pages/project-management/all-project/components/bulk-import-project/edit-bulk-engineer"
 
 
 const excelModalData = [{ "engineer": { "name": "导入工程1", "province": null, "city": null, "area": null, "libId": null, "inventoryOverviewId": null, "warehouseId": null, "compiler": "编制人1", "compileTime": 1620403200000, "organization": "编制单位1", "startTime": 1620489600000, "endTime": 1623081600000, "company": null, "importance": 1, "plannedYear": 2024, "grade": 1 }, "projects": [{ "name": "导入工程1-项目1", "category": 1, "pType": 1, "kvLevel": 1, "totalInvest": 25.5, "natures": ["128"], "startTime": 1620403200000, "endTime": 1620489600000, "assetsNature": 5, "majorCategory": 1, "isAcrossYear": false, "reformCause": 2, "reformAim": 3, "powerSupply": null, "assetsOrganization": "资产所属单位1", "cityCompany": "所属市公司1", "regionAttribute": 1, "countyCompany": "所属县公司1", "constructType": 1, "pCategory": 2, "stage": 4, "batch": 3, "pAttribute": 1, "meteorologic": 0, "disclosureRange": 50, "pileRange": 50, "deadline": 1620489600000, "dataSourceType": 0 }, { "name": "导入工程1-项目2", "category": 1, "pType": 1, "kvLevel": 1, "totalInvest": 25.5, "natures": ["128"], "startTime": 1620403200000, "endTime": 1620489600000, "assetsNature": 5, "majorCategory": 1, "isAcrossYear": false, "reformCause": 2, "reformAim": 3, "powerSupply": null, "assetsOrganization": "资产所属单位1", "cityCompany": "所属市公司1", "regionAttribute": 1, "countyCompany": "所属县公司1", "constructType": 1, "pCategory": 2, "stage": 4, "batch": 3, "pAttribute": 1, "meteorologic": 0, "disclosureRange": 50, "pileRange": 50, "deadline": 1620489600000, "dataSourceType": 0 }] }, { "engineer": { "name": "导入工程2", "province": null, "city": null, "area": null, "libId": null, "inventoryOverviewId": null, "warehouseId": null, "compiler": "编制人2", "compileTime": 1623081600000, "organization": "编制单位2", "startTime": 1623168000000, "endTime": 1625673600000, "company": null, "importance": 1, "plannedYear": 2025, "grade": 2 }, "projects": [{ "name": "导入工程2-项目1", "category": 1, "pType": 1, "kvLevel": 1, "totalInvest": 25.5, "natures": ["128"], "startTime": 1620403200000, "endTime": 1620489600000, "assetsNature": 5, "majorCategory": 1, "isAcrossYear": false, "reformCause": 2, "reformAim": 3, "powerSupply": null, "assetsOrganization": "资产所属单位1", "cityCompany": "所属市公司1", "regionAttribute": 1, "countyCompany": "所属县公司1", "constructType": 1, "pCategory": 2, "stage": 4, "batch": 3, "pAttribute": 1, "meteorologic": 0, "disclosureRange": 50, "pileRange": 50, "deadline": 1620489600000, "dataSourceType": 0 }] }]
@@ -16,6 +17,10 @@ const excelModalData = [{ "engineer": { "name": "导入工程1", "province": nul
 const BatchEditEngineerInfoTable: React.FC = () => {
     const [engineerInfo, setEngineerInfo] = useState<any[]>([])
     const [currentChooseEngineerInfo, setCurrentChooseEngineerInfo] = useState<any>()
+
+    const [currentClickEngineerInfo, setCurrentClickEngineerInfo] = useState<any>()
+
+    const [editEngineerModalVisible, setEditEngineerModalVisible] = useState<boolean>(false)
 
     const mapHandleCityData = (data: any) => {
         return {
@@ -286,6 +291,11 @@ const BatchEditEngineerInfoTable: React.FC = () => {
         setEngineerInfo(handleData)
     }
 
+    const editEngineerInfo = (engineerInfo: any) => {
+        setEditEngineerModalVisible(true)
+        setCurrentClickEngineerInfo(engineerInfo)
+    }
+
     const engineerTrElement = engineerInfo.map((item, index) => {
         let provinceValue = [
             item?.engineer.province,
@@ -321,7 +331,7 @@ const BatchEditEngineerInfoTable: React.FC = () => {
                         <DataSelect style={{width: "100%"}} value={item.engineer.company} onChange={(value) => companyChangeEvent(value, index)} options={item.selectData.companySelectData} placeholder="请先选择区域" />
                     </td>
                     <td>
-                        <Button type="text">编辑</Button>
+                        <Button type="text" onClick={() => editEngineerInfo({...item, index})}>编辑</Button>
                     </td>
                 </tr>
             )
@@ -350,7 +360,7 @@ const BatchEditEngineerInfoTable: React.FC = () => {
                     <DataSelect style={{width: "100%"}} value={item.engineer.company} onChange={(value) => companyChangeEvent(value, index)} options={item.selectData.companySelectData} placeholder="同上" />
                 </td>
                 <td>
-                    <Button type="text">编辑</Button>
+                    <Button type="text" onClick={() => editEngineerInfo({...item, index})}>编辑</Button>
                 </td>
             </tr>
         )
@@ -419,6 +429,10 @@ const BatchEditEngineerInfoTable: React.FC = () => {
         )
     })
 
+    const engineerFinishEditInfo = () => {
+
+    }
+
     return (
         <div className={styles.batchEditEngineerInfoTable}>
             <div className={styles.batchEditEngineerTableContent}>
@@ -472,6 +486,10 @@ const BatchEditEngineerInfoTable: React.FC = () => {
                     </tbody>
                 </table>
             </div>
+            {
+                editEngineerModalVisible &&
+                <EditBulkEngineer engineerInfo={currentClickEngineerInfo} finishEvent={engineerFinishEditInfo} visible={editEngineerModalVisible} onChange={setEditEngineerModalVisible} />
+            }
         </div>
     )
 }
