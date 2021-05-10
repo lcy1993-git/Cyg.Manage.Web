@@ -489,6 +489,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         {activeType?.split('&')[0] === 'annotation' && (
           <>
             <CommentList
+              height={300}
               projectId={commentRquestBody?.projectId}
               deviceId={commentRquestBody?.deviceId}
               layer={commentRquestBody?.layerType}

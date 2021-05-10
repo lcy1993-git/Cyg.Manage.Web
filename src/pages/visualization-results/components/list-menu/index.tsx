@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/mobx-store';
-import CommentTable from '../../components/comment-table';
+import CommentTable from '../comment-table';
 
 import { ColumnsType } from 'antd/es/table';
 import { useRequest } from 'ahooks';
@@ -342,7 +342,7 @@ const ListMenu: FC = observer(() => {
           onCancel={() => setCommentTableModalVisible(false)}
           width={1500}
         >
-          <CommentTable visible={commentTableModalVisible} />
+          <CommentTable />
         </Modal>
       ) : null}
     </>
