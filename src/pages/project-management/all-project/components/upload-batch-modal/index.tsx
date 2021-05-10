@@ -48,21 +48,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
       setRequestLoading(false);
     });
   };
-
-  //批量上传
-  const saveBatchAddProjectEvent = () => {
-    batchAddForm.validateFields().then(async (values) => {
-      //   console.log(values);
-
-      try {
-        setRequestLoading(true);
-      } catch (msg) {
-        console.log(msg);
-      } finally {
-        setRequestLoading(false);
-      }
-    });
-  };
+  console.log(excelModalData);
 
   return (
     <>
@@ -82,9 +68,6 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
           </Button>,
         ]}
         onCancel={() => closeModalEvent()}
-        // afterClose={() => {
-        //   setBulkImportModalVisible(true);
-        // }}
       >
         <Form form={form}>
           <CyFormItem
@@ -114,19 +97,12 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
           </CyFormItem>
         </Form>
       </Modal>
-      <Modal
-        maskClosable={false}
-        width="98%"
-        bodyStyle={{ height: 700 }}
-        centered
-        title="立项批量导入"
+
+      <BatchEditEngineerInfoTable
+        onChange={setBulkImportModalVisible}
         visible={bulkImportModalVisible}
-        okText="保存"
-        onOk={() => saveBatchAddProjectEvent()}
-        onCancel={() => setBulkImportModalVisible(false)}
-      >
-        <BatchEditEngineerInfoTable batchAddForm={batchAddForm} excelModalData={excelModalData?.content} />
-      </Modal>
+        excelModalData={excelModalData?.content}
+      />
     </>
   );
 };

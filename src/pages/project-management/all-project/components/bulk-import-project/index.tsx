@@ -1,6 +1,6 @@
-import { Button, Cascader, Checkbox, Form } from 'antd';
+import { Button, Cascader, Checkbox, Form, Modal } from 'antd';
 import uuid from 'node-uuid';
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useMemo } from 'react';
 import styles from './index.less';
 import city from '@/assets/local-data/area';
@@ -12,10 +12,13 @@ import { getCommonSelectData } from '@/services/common';
 import CyFormItem from '@/components/cy-form-item';
 import EditBulkEngineer from './edit-bulk-engineer';
 import moment from 'moment';
+import { useControllableValue } from 'ahooks';
+import { importBulkEngineerProject } from '@/services/project-management/all-project';
 
 interface BatchEditEngineerInfoProps {
   excelModalData: any;
-  batchAddForm: any;
+  onChange: Dispatch<SetStateAction<boolean>>;
+  visible: boolean;
 }
 
 const excelModalData = [
@@ -156,7 +159,9 @@ const excelModalData = [
 ];
 
 const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props) => {
-  const { excelModalData, batchAddForm } = props;
+  const { excelModalData = [] } = props;
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [requestLoading, setRequestLoading] = useState(false);
 
   const [engineerInfo, setEngineerInfo] = useState<any[]>([]);
   const [currentChooseEngineerInfo, setCurrentChooseEngineerInfo] = useState<any>();
@@ -674,56 +679,150 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
     setCurrentEngineerModalVisible(true);
   };
 
+  const handleFinallyData = () => {
+    const saveData = cloneDeep(engineerInfo).map((item) => {
+      return {
+        engineer: item.engineer,
+        projects: item.projects,
+      };
+    });
+    const engineerKeys = [
+      'area',
+      'city',
+      'province',
+      'warehouseId',
+      'libId',
+      'inventoryOverviewId',
+      'company',
+    ];
+
+    // projects 里面的供应组也要同上
+    saveData.forEach((item, index) => {
+      const sliceData = saveData.slice(0, index);
+
+      // 如果没有值，才需要做处理
+      if (!item.engineer['company']) {
+        const hasValueData = sliceData.filter((it) => it.engineer['company']);
+
+        if (hasValueData && hasValueData.length > 0) {
+          // 找这个数据下的projects 第一个的 powerSupply
+
+          const thisPowerSupply = hasValueData[hasValueData.length - 1].projects[0].powerSupply;
+
+          item.projects.forEach((it:any) => {
+            it.powerSupply = thisPowerSupply;
+          });
+        }
+      } else {
+        item.projects.forEach((ite: any, ind: number) => {
+          if (!ite['powerSupply']) {
+            const copyProjects = cloneDeep(item.projects);
+            const sliceProjectData = copyProjects.slice(0, ind);
+
+            const hasThisValueData = sliceProjectData.filter((it: any) => it['powerSupply']);
+
+            if (hasThisValueData && hasThisValueData.length > 0) {
+              ite['powerSupply'] = hasThisValueData[hasThisValueData.length - 1]['powerSupply'];
+            }
+          }
+        });
+      }
+    });
+
+    saveData.forEach((item, index) => {
+      if (index > 0) {
+        engineerKeys.forEach((ite: any) => {
+          // 如果没有值，才需要做处理
+          if (!item.engineer[ite]) {
+            const sliceData = saveData.slice(0, index);
+
+            const hasValueData = sliceData.filter((it) => it.engineer[ite]);
+
+            if (hasValueData && hasValueData.length > 0) {
+              item.engineer[ite] = hasValueData[hasValueData.length - 1].engineer[ite];
+            }
+          }
+        });
+      }
+    });
+    return saveData;
+  };
+
+  const closeModalEvent = () => {
+    setState(false);
+  };
+
+  //批量上传
+  const saveBatchAddProjectEvent = async () => {
+    const submitInfo = handleFinallyData();
+    console.log(submitInfo);
+    
+    await importBulkEngineerProject({ datas: submitInfo });
+
+  };
+
   return (
     <>
-      <Form form={batchAddForm}>
-        <CyFormItem
-          required
-          labelWidth={720}
-          label="立项批量导入模板中的工程/项目信息已经录入，但是还需要您对其他一些选项进行补充选择，请完善一下所有工程以及项目的信息，确认无误后点击【保存】按钮，随后会为您创建好所有项目"
-        />
-        <div className={styles.batchEditEngineerInfoTable}>
-          <div className={styles.batchEditEngineerTableContent}>
-            <table>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>工程名称</th>
-                  <th>区域</th>
-                  <th>资源库</th>
-                  <th>协议库</th>
-                  <th>利旧协议库</th>
-                  <th>所属公司</th>
-                  <th>已录入信息</th>
-                </tr>
-              </thead>
-              <tbody>{engineerTrElement}</tbody>
-            </table>
+      <Modal
+        maskClosable={false}
+        width="98%"
+        bodyStyle={{ height: 700 }}
+        centered
+        title="立项批量导入"
+        visible={state as boolean}
+        okText="保存"
+        onOk={() => saveBatchAddProjectEvent()}
+        onCancel={() => closeModalEvent()}
+      >
+        <Form>
+          <CyFormItem
+            required
+            labelWidth={720}
+            label="立项批量导入模板中的工程/项目信息已经录入，但是还需要您对其他一些选项进行补充选择，请完善一下所有工程以及项目的信息，确认无误后点击【保存】按钮，随后会为您创建好所有项目"
+          />
+          <div className={styles.batchEditEngineerInfoTable}>
+            <div className={styles.batchEditEngineerTableContent}>
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>工程名称</th>
+                    <th>区域</th>
+                    <th>资源库</th>
+                    <th>协议库</th>
+                    <th>利旧协议库</th>
+                    <th>所属公司</th>
+                    <th>已录入信息</th>
+                  </tr>
+                </thead>
+                <tbody>{engineerTrElement}</tbody>
+              </table>
+            </div>
+            <div className={styles.batchEditProjectTable}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>项目名称</th>
+                    <th>供电公司/班组</th>
+                    <th>已录入信息</th>
+                  </tr>
+                </thead>
+                <tbody>{projectTrElement}</tbody>
+              </table>
+            </div>
           </div>
-          <div className={styles.batchEditProjectTable}>
-            <table>
-              <thead>
-                <tr>
-                  <th>项目名称</th>
-                  <th>供电公司/班组</th>
-                  <th>已录入信息</th>
-                </tr>
-              </thead>
-              <tbody>{projectTrElement}</tbody>
-            </table>
-          </div>
-        </div>
-      </Form>
+        </Form>
+      </Modal>
       <Form form={editEngineerForm}>
         <EditBulkEngineer
           visible={currentEngineerModalVisible}
           onChange={setCurrentEngineerModalVisible}
-          libSelectData = {libSelectData}
+          libSelectData={libSelectData}
           cityData={afterHandleData}
           libChangeEvent={libChangeEvent}
-          currentInfo = {currentChooseEngineerInfo}
+          currentInfo={currentChooseEngineerInfo}
           areaChangeEvent={areaChangeEvent}
-        //   wareHouseChangeEvent={wareHouseChangeEvent}
+          //   wareHouseChangeEvent={wareHouseChangeEvent}
         />
       </Form>
     </>

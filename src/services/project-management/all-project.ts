@@ -654,3 +654,14 @@ export const uploadBulkProject = (files: any[], requestSource: 'project', url: s
     requestType: 'form',
   });
 };
+
+
+//批量导入工程项目
+export const importBulkEngineerProject = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ImportEngineerProject`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
