@@ -434,6 +434,7 @@ const BatchEditEngineerInfoTable: React.FC = () => {
         )
     })
 
+    
     const handleFinallyData = () => {
         const saveData = cloneDeep(engineerInfo).map((item) => {
             return {
@@ -443,43 +444,22 @@ const BatchEditEngineerInfoTable: React.FC = () => {
         });
         const engineerKeys = ["area","city","province","warehouseId","libId","inventoryOverviewId","company"];
     
-        saveData.forEach((item, index) => {
-            if (index > 0) {
-                engineerKeys.forEach((ite: any) => {
-                    // 如果没有值，才需要做处理
-                    if (!item.engineer[ite]) {
-                        const sliceData = saveData.slice(0, index);
-                        
-                        const hasValueData = sliceData.filter((it) => it.engineer[ite]);
-
-                        if (hasValueData && hasValueData.length > 0) {
-
-                            item.engineer[ite] = hasValueData[hasValueData.length - 1].engineer[ite]
-                        }
-                    }
-                })
-            }
-        })
-
         // projects 里面的供应组也要同上
         saveData.forEach((item, index) => {
-            
                 const sliceData = saveData.slice(0, index);
+                
                 // 如果没有值，才需要做处理
                 if (!item.engineer["company"]) {
             
                     const hasValueData = sliceData.filter((it) => it.engineer["company"]);
-
+                    
                     if (hasValueData && hasValueData.length > 0) {
                         // 找这个数据下的projects 第一个的 powerSupply
                         
                         const thisPowerSupply = hasValueData[hasValueData.length - 1].projects[0].powerSupply;
-
+                        
                         item.projects.forEach((it) => {
-                            return {
-                                ...it,
-                                powerSupply: thisPowerSupply
-                            }
+                            it.powerSupply = thisPowerSupply;
                         })
                     }
                 }else {
@@ -499,6 +479,24 @@ const BatchEditEngineerInfoTable: React.FC = () => {
                     })
                 }
            
+        })
+
+        saveData.forEach((item, index) => {
+            if (index > 0) {
+                engineerKeys.forEach((ite: any) => {
+                    // 如果没有值，才需要做处理
+                    if (!item.engineer[ite]) {
+                        const sliceData = saveData.slice(0, index);
+                        
+                        const hasValueData = sliceData.filter((it) => it.engineer[ite]);
+
+                        if (hasValueData && hasValueData.length > 0) {
+
+                            item.engineer[ite] = hasValueData[hasValueData.length - 1].engineer[ite]
+                        }
+                    }
+                })
+            }
         })
         console.log(saveData)
     }
