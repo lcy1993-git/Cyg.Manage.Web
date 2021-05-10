@@ -106,7 +106,7 @@ const TestPage = () => {
 
       <EditFormTable formName="project" columns={columns}></EditFormTable>
 
-      <GanttComponentView />
+      {/* <GanttComponentView /> */}
 
       <Button onClick={() => getFormValue()}>测试</Button>
     </Form>
