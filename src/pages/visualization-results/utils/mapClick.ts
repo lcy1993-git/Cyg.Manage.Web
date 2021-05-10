@@ -31,7 +31,6 @@ const mappingTagsDictionary: any = mappingTagsData ? JSON.parse(mappingTagsData)
 //         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
 //     return fmt;
 // }
-
 const mediaLayers = [
   'tower',
   'cable',
@@ -252,7 +251,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     // 批注功能
     if (commentLayers.indexOf(layerName) >= 0) {
-      pJSON['批注'] = { id: feature.getProperties().project_id };
+      pJSON['审阅'] = { id: feature.getProperties().project_id };
     }
 
     // 相应数据到右侧边栏

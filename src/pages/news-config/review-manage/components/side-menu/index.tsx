@@ -4,7 +4,9 @@ import styles from './index.less';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import moment from 'moment';
-import { fetchEngineerProjectListByParams } from '@/services/visualization-results/side-tree';
+import {
+  GetEngineerProjectCommentListByParams,
+} from '@/services/news-config/review-manage';
 import { useContainer } from '../../store';
 import { observer } from 'mobx-react-lite';
 const { TabPane } = Tabs;
@@ -97,7 +99,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    * 获取全部数据
    */
   const { data: allData, run: fetchAll, loading: allLoading } = useRequest(
-    () => fetchEngineerProjectListByParams(filterCondition),
+    () => GetEngineerProjectCommentListByParams(filterCondition),
 
     {
       refreshDeps: [filterCondition],
@@ -120,6 +122,7 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               }
             }),
           );
+          store.setProjectId(reShapeData[0].children[0].key);
         } else {
           message.warning('没有检索到数据');
         }
@@ -136,7 +139,6 @@ const SideMenu: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   return (
     <div ref={ref} className={classNames(className, styles.sideMenuContainer)}>
-      <div className={styles.title}>工程项目</div>
       {allLoading ? (
         <Spin spinning={allLoading} className={styles.loading} tip="正在载入中..."></Spin>
       ) : null}
