@@ -12,6 +12,11 @@ const QuotaList = Loadable({
   loading: Loading,
   delay: 150,
 });
+const QuotaProject = Loadable({
+  loader: () => import('@/pages/technology-economics/quota-project'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -23,5 +28,10 @@ export default [
     title: '定额库目录',
     path: '/technology-economics/quota-list',
     component: <QuotaList />,
+  },
+  {
+    title: '定额项',
+    path: '/technology-economics/quota-project',
+    component: <QuotaProject />,
   },
 ];
