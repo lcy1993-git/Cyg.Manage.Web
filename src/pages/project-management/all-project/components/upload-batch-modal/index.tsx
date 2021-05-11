@@ -51,6 +51,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
       setState(false);
       setBulkImportModalVisible(true);
       setRequestLoading(false);
+      form.resetFields();
     });
   };
 
