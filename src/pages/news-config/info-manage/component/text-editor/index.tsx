@@ -11,8 +11,8 @@ import { useRequest } from 'ahooks';
 import mammoth from 'mammoth';
 import { getGroupInfo } from '@/services/project-management/all-project';
 import uuid from 'node-uuid';
-
 import pdfjs from 'pdfjs-dist';
+import FormSwitch from '@/components/form-switch';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -238,16 +238,8 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
         </CyFormItem>
 
         <CyFormItem label="状态" name="isEnable" required labelWidth={60}>
-          <Switch onChange={() => setIsChecked(!isChecked)} defaultChecked />
-          {isChecked ? (
-            <span className="ml10" style={{ color: '#2e815c' }}>
-              启用
-            </span>
-          ) : (
-            <span className="ml10" style={{ color: '#8c8c8c' }}>
-              禁用
-            </span>
-          )}
+          {/* <Switch checked={isChecked} onChange={() => setIsChecked(!isChecked)} /> */}
+          <FormSwitch />
         </CyFormItem>
         <CyFormItem label="对象" name="userIds" required labelWidth={60}>
           <TreeSelect

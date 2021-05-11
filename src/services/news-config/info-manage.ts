@@ -7,11 +7,11 @@ interface InfoManageItemParams {
   createdBy: string;
   createByUser: string; //创建者用户名
   createdOn: Date;
+  isEnable: boolean;
 }
 
 interface ItemDetailData extends InfoManageItemParams {
   id: string;
-  isEnable: boolean;
 }
 
 //获取选中数据
@@ -36,9 +36,9 @@ export const updateNewsItem = (params: ItemDetailData) => {
 };
 
 //更新宣贯状态
-export const updateNewsState = (params: ItemDetailData) => {
+export const updateNewsState = (id: string, isEnable: boolean) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Article/ModifyState`, { method: 'POST', data: params }),
+    request(`${baseUrl.project}/Article/ModifyState`, { method: 'POST', data: { id, isEnable } }),
   );
 };
 

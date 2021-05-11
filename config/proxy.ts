@@ -10,7 +10,7 @@ export default {
     '/project/api': {
       // http://10.6.1.36:8026/api/
       // 171.223.214.154
-      target: 'http://10.6.1.36:8026',
+      target: 'http://10.6.1.36:8034',
       changeOrigin: true,
       pathRewrite: { '^/project': '/' },
     },

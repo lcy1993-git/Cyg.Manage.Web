@@ -24,6 +24,7 @@ import TextEditor from './component/text-editor';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import CyTag from '@/components/cy-tag';
+import { useEffect } from 'react';
 
 const { Search } = Input;
 
@@ -33,6 +34,7 @@ const InfoManage: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [status, setStatus] = useState<number>(0);
   // const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
   // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
@@ -77,7 +79,7 @@ const InfoManage: React.FC = () => {
           <EnumSelect
             enumList={BelongManageEnum}
             placeholder="-全部-"
-            // onChange={(value: any) => searchByStatus(value)}
+            onChange={(value: any) => searchByStatus(value)}
           />
         </TableSearch>
       </div>
@@ -114,12 +116,9 @@ const InfoManage: React.FC = () => {
     }
   };
 
-  const updateStatus = async (record: any) => {
-    const { id } = record;
-    console.log(id);
-
-    await updateNewsState({ id });
-    refresh();
+  const updateStatus = async (id: string, status: boolean) => {
+    updateNewsState(id, status);
+    search();
     message.success('状态修改成功');
   };
 
@@ -138,18 +137,29 @@ const InfoManage: React.FC = () => {
         const isChecked = !record.isEnable;
         return (
           <>
-            {buttonJurisdictionArray?.includes('start-forbid') && (
-              <>
-                <Switch checked={isChecked} onChange={() => updateStatus(record)} />
-                {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
-              </>
-            )}
+            {buttonJurisdictionArray?.includes('start-forbid') &&
+              (record.isEnable === true ? (
+                <>
+                  <Switch
+                    key={status}
+                    defaultChecked
+                    onChange={() => updateStatus(record.id, isChecked)}
+                  />
+                  <span className="formSwitchOpenTip">启用</span>
+                </>
+              ) : (
+                <>
+                  <Switch onChange={() => updateStatus(record.id, isChecked)} />
+                  <span className="formSwitchCloseTip">禁用</span>
+                </>
+              ))}
             {!buttonJurisdictionArray?.includes('start-forbid') &&
-              (isChecked ? <span>启用</span> : <span>禁用</span>)}
+              (record.isEnable === true ? <span>启用</span> : <span>禁用</span>)}
           </>
         );
       },
     },
+
     {
       dataIndex: 'users',
       index: 'users',
@@ -190,6 +200,17 @@ const InfoManage: React.FC = () => {
     },
   ];
 
+  //按宣贯状态查找
+  const searchByStatus = (value: any) => {
+    setStatus(value);
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        state: value,
+      });
+    }
+  };
+
   //添加
   const addEvent = () => {
     setAddFormVisible(true);
@@ -201,7 +222,7 @@ const InfoManage: React.FC = () => {
         {
           title: '',
           content: content,
-          isEnable: '',
+          isEnable: true,
           clientCategorys: '',
           userIds: '',
         },
@@ -328,6 +349,7 @@ const InfoManage: React.FC = () => {
         tableTitle="宣贯管理"
         getSelectData={(data) => setTableSelectRow(data)}
         extractParams={{
+          state: status,
           keyWord: searchKeyWord,
         }}
       />
