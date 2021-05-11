@@ -335,7 +335,7 @@ const ListMenu: FC = observer(() => {
       </Modal>
       {commentTableModalVisible ? (
         <Modal
-          title="评审列表"
+          title="审阅列表"
           centered
           visible={commentTableModalVisible}
           onOk={() => setCommentTableModalVisible(false)}

@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
-import _ from 'lodash';
+import _, { size } from 'lodash';
 import { Tree, Tabs, Spin, message } from 'antd';
-import { useRequest } from 'ahooks';
+import { useRequest, useSize } from 'ahooks';
 import {
   fetchEngineerProjectListByParamsAndArea,
   fetchEngineerProjectListByParamsAndCompany,
@@ -61,7 +61,7 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
   return {
     id: item.id,
     time: moment(item.propertys?.deadline).format('YYYY-MM-DD'),
-    engineerId: item.engineerId,
+    engineerId: item.engineerId ?? '',
     status: item.propertys?.status,
     isExecutor: item.propertys?.isExecutor,
   };
@@ -85,6 +85,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const { className } = props;
 
   const ref = useRef<HTMLDivElement>(null);
+  const size = useSize(ref);
 
   const { data: dataByCattegory, loading } = useRequest(
     () =>
@@ -176,7 +177,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
             {dataByCattegory ? (
               <Tree
-                height={660}
+                height={size.height ? size.height - 100 : 680}
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}
@@ -193,7 +194,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
             {dataByCattegory ? (
               <Tree
-                height={660}
+                height={size.height ? size.height - 100 : 680}
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}

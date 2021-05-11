@@ -6,15 +6,13 @@ import SideTree from '../components/side-tree';
 import MapContainerShell from '../components/map-container-shell';
 import Filterbar from '../components/filter-bar';
 import { Provider, useContainer } from './mobx-store';
-import Timeline from '../components/timeline';
-import ListMenu from '../components/list-menu';
 import { observer } from 'mobx-react-lite';
 import { MenuFoldOutlined } from '@ant-design/icons';
 
 const VisualizationResults: React.FC = observer(() => {
   const store = useContainer();
   const { vState } = store;
-  const { visibleLeftSidebar, checkedProjectDateList } = vState;
+  const { visibleLeftSidebar } = vState;
   return (
     <PageCommonWrap noPadding={true}>
       <Filterbar />
@@ -38,17 +36,6 @@ const VisualizationResults: React.FC = observer(() => {
         </div>
 
         <div className={classNames(styles.mapContainer, 'flex1')}>
-          <div className={styles.timelineContainer}>
-            <div>
-              {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
-                <Timeline type="normal" height={60} width={400} dates={checkedProjectDateList} />
-              ) : null}
-            </div>
-          </div>
-
-          <div className={styles.listMenuContainer}>
-            <ListMenu />
-          </div>
           <MapContainerShell />
         </div>
       </main>
