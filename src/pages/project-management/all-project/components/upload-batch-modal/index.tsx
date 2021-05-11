@@ -42,7 +42,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
       setRequestLoading(true);
       const res = await uploadBulkProject(file, 'project', '/Porject/ResolveImportData');
       if (res.code === 5000) {
-        message.error('导入项目数据不能为空或工程名已存在');
+        message.error('导入数据有误或工程名已存在');
         setRequestLoading(false);
         return;
       }
