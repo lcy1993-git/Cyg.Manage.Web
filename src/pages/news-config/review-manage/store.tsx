@@ -1,14 +1,17 @@
 import { EngineerProjetListFilterParams } from '@/services/visualization-results/side-tree';
 import { makeAutoObservable } from 'mobx';
-import moment from 'moment';
 import { createContext, useContext } from 'react';
+export interface ProjectInfo {
+  projectId: string;
+  engineerId: string;
+}
 export interface StateType {
-  filterCondition?: EngineerProjetListFilterParams;
-  projectId?: string;
+  filterCondition: EngineerProjetListFilterParams;
+  projectInfo?: ProjectInfo;
 }
 
 const initState: StateType = {
-  filterCondition: {},
+  filterCondition: { kvLevel: -1 },
 };
 
 function Store(vState: StateType) {
@@ -17,8 +20,8 @@ function Store(vState: StateType) {
     setFilterCondition(filterCondition: EngineerProjetListFilterParams) {
       this.vState.filterCondition = filterCondition;
     },
-    setProjectId(projectId: string) {
-      this.vState.projectId = projectId;
+    setProjectInfo(projectInfo: ProjectInfo) {
+      this.vState.projectInfo = projectInfo;
     },
   });
 }

@@ -51,21 +51,23 @@ const searchChildrenList = [
   {
     width: 111,
   },
+  {
+    width: 111,
+  },
 ];
+
 const FilterBar: FC = observer(() => {
   const [keyWord, setKeyWord] = useState<string>(''); //搜索关键词
-  const [category, setCategory] = useState<number>(); //项目分类
-  const [pCategory, setPCategory] = useState<number>(); //项目类别
-  const [stage, setStage] = useState<number>(); //项目阶段
-  const [constructType, setConstructType] = useState<number>(); //建设性质
-  const [nature, setNature] = useState<number>(); //项目性质
-  const [kvLevel, setKvLevel] = useState<number>(); //电压等级
+  const [category, setCategory] = useState<string>(); //项目分类
+  const [pCategory, setPCategory] = useState<string>(); //项目类别
+  const [comment, setComment] = useState<number>(); //审阅
+  const [stage, setStage] = useState<string>(); //项目阶段
+  const [constructType, setConstructType] = useState<string>(); //建设性质
+  const [nature, setNature] = useState<string>(); //项目性质
+  const [kvLevel, setKvLevel] = useState<string>(); //电压等级
   const [statuss, setStatuss] = useState<number[]>(); //状态
-  const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
-  const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
   const [sourceType, setSourceType] = useState<string>(); //项目来源
   const [identityType, setIdentityType] = useState<string>(); //项目身份
-  const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
 
   const store = useContainer();
 
@@ -101,47 +103,27 @@ const FilterBar: FC = observer(() => {
     setNature(undefined);
     setKvLevel(undefined);
     setStatuss(undefined);
-    setCreatedOn(undefined);
-    setsModiyDate(undefined);
     setSourceType(undefined);
     setIdentityType(undefined);
-    setAreaInfo({
-      areaType: '-1',
-      areaId: '',
-    });
-    const condition = {
-      keyWord: '',
-      category: -1,
-      pCategory: -1,
-      stage: -1,
-      constructType: -1,
-      nature: -1,
-      kvLevel: -1,
-      statuss: [],
-      createdOn: '',
-      modifyDate: '',
-      sourceType: '-1',
-      identityType: '-1',
-    };
+    setComment(undefined);
+    const condition = {};
 
     store.setFilterCondition(condition);
   };
 
   const search = () => {
     const condition = {
-      keyWord,
-      category: category ?? -1,
-      pCategory: pCategory ?? -1,
-      stage: stage ?? -1,
-      constructType: constructType ?? -1,
-      nature: nature ?? -1,
-      kvLevel: kvLevel ?? -1,
-      statuss: statuss ?? [],
-      createdOn: createdOn?.year().toString() ?? '',
-      modifyDate: modifyDate?.year().toString() ?? '',
-      sourceType: sourceType ?? '-1',
-      identityType: identityType ?? '-1',
-      ...areaInfo,
+      keyWord: keyWord,
+      category: category && category !== "-1" ? [category] : undefined,
+      pCategory: pCategory && pCategory !== "-1" ? [pCategory] : undefined,
+      stage: stage && stage !== "-1" ? [stage] : undefined,
+      constructType: constructType && constructType !== "-1" ? [constructType] : undefined,
+      nature: nature && nature !== "-1" ? [nature] : undefined,
+      kvLevel: kvLevel && kvLevel !== "-1" ? [kvLevel] : undefined,
+      status: statuss ?? undefined,
+      sourceType: sourceType && sourceType !== "-1" ? [sourceType] : undefined,
+      identityType: identityType && identityType !== "-1" ? [identityType] : undefined,
+      haveAnnotate: comment ?? undefined,
     };
 
     store.setFilterCondition(condition);
@@ -181,7 +163,7 @@ const FilterBar: FC = observer(() => {
               defaultData={projectCategory}
               className="widthAll"
               value={category}
-              onChange={(value) => setCategory(value as number)}
+              onChange={(value) => setCategory(value as string)}
               placeholder="项目分类"
               needAll={true}
               allValue="-1"
@@ -194,7 +176,7 @@ const FilterBar: FC = observer(() => {
               defaultData={projectPType}
               value={pCategory}
               dropdownMatchSelectWidth={168}
-              onChange={(value) => setPCategory(value as number)}
+              onChange={(value) => setPCategory(value as string)}
               className="widthAll"
               placeholder="项目类别"
               needAll={true}
@@ -208,7 +190,7 @@ const FilterBar: FC = observer(() => {
               defaultData={projectStage}
               value={stage}
               className="widthAll"
-              onChange={(value) => setStage(value as number)}
+              onChange={(value) => setStage(value as string)}
               placeholder="项目阶段"
               needAll={true}
               allValue="-1"
@@ -222,7 +204,7 @@ const FilterBar: FC = observer(() => {
               value={constructType}
               className="widthAll"
               placeholder="建设类型"
-              onChange={(value) => setConstructType(value as number)}
+              onChange={(value) => setConstructType(value as string)}
               needAll={true}
               allValue="-1"
             />
@@ -233,7 +215,7 @@ const FilterBar: FC = observer(() => {
               titleKey="text"
               defaultData={projectKvLevel}
               value={kvLevel}
-              onChange={(value) => setKvLevel(value as number)}
+              onChange={(value) => setKvLevel(value as string)}
               className="widthAll"
               placeholder="电压等级"
               needAll={true}
@@ -247,7 +229,7 @@ const FilterBar: FC = observer(() => {
               defaultData={projectNature}
               value={nature}
               dropdownMatchSelectWidth={168}
-              onChange={(value) => setNature(value as number)}
+              onChange={(value) => setNature(value as string)}
               className="widthAll"
               placeholder="项目性质"
               needAll={true}
@@ -259,23 +241,36 @@ const FilterBar: FC = observer(() => {
             <EnumSelect
               enumList={ProjectSourceType}
               value={sourceType}
-              onChange={(value) => setSourceType(String(value))}
+              onChange={(value) => setSourceType(value as string)}
               className="widthAll"
               placeholder="项目来源"
               needAll={true}
               allValue="-1"
             />
           </TableSearch>
-          <TableSearch width="111px">
+          <TableSearch width="111px" className="mb10">
             <EnumSelect
               enumList={ProjectIdentityType}
               value={identityType}
-              onChange={(value) => setIdentityType(String(value))}
+              onChange={(value) => setIdentityType(value as string)}
               className="widthAll"
               placeholder="项目身份"
               needAll={true}
               allValue="-1"
             />
+          </TableSearch>
+          <TableSearch className="mb10" width="111px">
+            <Select
+              allowClear
+              value={comment}
+              onChange={(value) => setComment(value)}
+              style={{ width: '100%' }}
+              placeholder="存在审阅"
+            >
+              <Select.Option value="-1" children={'全部'} />
+              <Select.Option value="1" children={'是'} />
+              <Select.Option value="0" children={'否'} />
+            </Select>
           </TableSearch>
         </OverFlowHiddenComponent>
       </div>

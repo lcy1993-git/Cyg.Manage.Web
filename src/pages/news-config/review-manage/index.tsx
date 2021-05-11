@@ -1,28 +1,24 @@
-import React, { FC } from 'react';
-import PageCommonWrap from '@/components/page-common-wrap';
+import React from 'react';
 import styles from './index.less';
+import classNames from 'classnames';
+import PageCommonWrap from '@/components/page-common-wrap';
+import SideTree from './components/side-menu';
 import Filterbar from './components/filter-bar';
-import SideMenu from './components/side-menu';
-import classnames from 'classnames';
 import { Provider, useContainer } from './store';
-
-import ReviewTable from './components/review-table';
 import { observer } from 'mobx-react-lite';
+import ReviewTable from './components/review-table';
 
-interface ReviewProps {}
-
-const ReviewManage: FC<ReviewProps> = observer(() => {
+const VisualizationResults: React.FC = observer(() => {
   return (
-    <PageCommonWrap noPadding className={styles.container}>
-      <div className={styles.main}>
+    <PageCommonWrap noPadding={true}>
+      <div className={styles.container}>
         <Filterbar />
-
-        <main className={classnames('flex', styles.main)}>
-          <div className={styles.sidemenuContainer}>
-            <SideMenu />
+        <main className={classNames(styles.content, 'flex')}>
+          <div className={styles.sideTreeContainer}>
+            <SideTree />
           </div>
 
-          <div className={styles.reviewTableContainer}>
+          <div className={classNames(styles.tableContainer, 'flex1')}>
             <ReviewTable />
           </div>
         </main>
@@ -34,7 +30,7 @@ const ReviewManage: FC<ReviewProps> = observer(() => {
 const StoreProvider: React.FC = () => {
   return (
     <Provider>
-      <ReviewManage />
+      <VisualizationResults />
     </Provider>
   );
 };

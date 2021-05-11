@@ -1,189 +1,15 @@
 import React, { createRef, useEffect, useMemo, useRef, useState } from 'react';
-import { Drawer, Table, Modal, Carousel, Input, message, Tooltip, Comment, List } from 'antd';
+import { Drawer, Table, Modal, Carousel, Input, message } from 'antd';
 import { useContainer } from '../../result-page/mobx-store';
 import { MenuUnfoldOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
-import { ReviewRequestType, addReview } from '@/services/visualization-results/side-popup';
-// import { publishMessage } from '@/services/news-config/review-manage';
-
+import { CommentRequestType, addComment } from '@/services/visualization-results/side-popup';
+// import { publishMessage } from '@/services/news-config/Comment-manage';
+import CommentList from './components/comment-list';
 import uuid from 'node-uuid';
 import styles from './index.less';
-import moment from 'moment';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useRequest } from 'ahooks';
 import { observer } from 'mobx-react-lite';
-
-const Commentdata = [
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-    author: 'Han Solo',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-    content: (
-      <p>
-        We supply a series of design principles, practical patterns and high quality design
-        resources (Sketch and Axure), to help people create their product prototypes beautifully and
-        efficiently.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-];
 
 export interface TableDataType {
   // propertyName: string;
@@ -298,15 +124,26 @@ const mediaItem = (data: any) => {
   const authorization = window.localStorage.getItem('Authorization');
   return data.map((item: any, index: any) => {
     if (item.type === 1) {
-      return (<div className={styles.mediaItem} key={uuid.v1()}>
-        <img className={styles.img} crossOrigin={""} src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`} />
-      </div>)
+      return (
+        <div className={styles.mediaItem} key={uuid.v1()}>
+          <img
+            className={styles.img}
+            crossOrigin={''}
+            src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
+          />
+        </div>
+      );
     } else if (item.type !== 1) {
-      return (<div className={styles.mediaItem} key={uuid.v1()}>
-        {/* <audio controls={true} /> */}
-        <audio className={styles.audio} src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`} controls={true} />
-      </div>);
-
+      return (
+        <div className={styles.mediaItem} key={uuid.v1()}>
+          {/* <audio controls={true} /> */}
+          <audio
+            className={styles.audio}
+            src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
+            controls={true}
+          />
+        </div>
+      );
     }
     return <div className={styles.mediaItem} key={uuid.v1()} />;
   });
@@ -337,11 +174,17 @@ const LAYER_TYPE: { [propertyName: string]: string } = {
   dismantle: '拆除',
 };
 
+export interface CommentListItemDataType {
+  author: string;
+  content: React.ReactNode;
+  datetime: React.ReactNode;
+}
 const SidePopup: React.FC<Props> = observer((props) => {
   const { data, rightSidebarVisible, setRightSidebarVisiviabel } = props;
-  const [reviewRquestBody, setReviewRquestBody] = useState<ReviewRequestType>();
+  const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
-  const [review, setReview] = useState('');
+
+  const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
   const { checkedProjectIdList } = useContainer().vState;
@@ -387,11 +230,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         } else if (record.propertyName === '审阅') {
           if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
             return (
-              <span
-                className={styles.link}
-                onClick={() => setActiveType('annotation&' + value.id)}
-                key={index}
-              >
+              <span className={styles.link} onClick={() => onAddComment(value)} key={index}>
                 添加审阅
               </span>
             );
@@ -453,31 +292,19 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   ];
 
-  const { run: addReviewRequest } = useRequest(addReview, {
+  const { run: addCommentRequest } = useRequest(addComment, {
     manual: true,
     onSuccess: () => {
       message.success('添加成功');
+      setComment('');
     },
     onError: () => {
-      message.success('添加失败');
+      message.error('添加失败');
     },
   });
-  useEffect(() => {
-    setRightSidebarVisiviabel(false);
-  }, [JSON.stringify(checkedProjectIdList)]);
 
-  const modalData = useMemo(() => {
-    const media = removeEmptChildren(
-      data.find((item: any) => item.propertyName === '多媒体')?.data,
-    );
-    const material = removeEmptChildren(
-      data.find((item: any) => item.propertyName === '材料表')?.data,
-    );
-    /**
-     * 获取添加审阅的一些关键信息
-     * http://10.6.1.36:8025/help/index.html 接口文档
-     *
-     */
+  const onAddComment = (value: any) => {
+    setActiveType('annotation&' + value.id);
 
     const feature = data.find((item: any) => item.propertyName === '审阅')?.data.feature;
     if (feature) {
@@ -490,7 +317,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
           if (l.key === type) {
             l.value.forEach((e) => {
               if (e.text === v) {
-                console.log(e.text);
                 res = e.value as number;
               }
             });
@@ -511,7 +337,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
       /**
        * 初始化请求body
        */
-      setReviewRquestBody({
+      setcommentRquestBody({
         layerType: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
         deviceType: findEnumKey(DEVICE_TYPE[enDeviceType], 'ProjectCommentDevice'),
         deviceId,
@@ -519,6 +345,18 @@ const SidePopup: React.FC<Props> = observer((props) => {
         content: '',
       });
     }
+  };
+  useEffect(() => {
+    setRightSidebarVisiviabel(false);
+  }, [JSON.stringify(checkedProjectIdList)]);
+
+  const modalData = useMemo(() => {
+    const media = removeEmptChildren(
+      data.find((item: any) => item.propertyName === '多媒体')?.data,
+    );
+    const material = removeEmptChildren(
+      data.find((item: any) => item.propertyName === '材料表')?.data,
+    );
 
     // const {  values } = feature;
     // const { project_id } = values;
@@ -555,34 +393,26 @@ const SidePopup: React.FC<Props> = observer((props) => {
      * 如果要在添加审阅相应事件只能在这个if下面
      */
     if (activeType?.split('&')[0] === 'annotation') {
-      // publishMessage({ content: annotation, projectId: activeType.split('&')[1] }).then((res) => {
-      //   if (res.code === 200 && res.isSuccess === true) {
-      //     message.success('审阅推送成功');
-      //   } else {
-      //     message.error('审阅推送失败');
-      //   }
-      // });
-      addReviewRequest({
-        projectId: reviewRquestBody?.projectId ?? '',
-        layerType: reviewRquestBody?.layerType ?? -100,
-        deviceType: reviewRquestBody?.deviceType ?? -100,
-        deviceId: reviewRquestBody?.deviceId ?? -100,
-        content: review,
+      addCommentRequest({
+        projectId: commentRquestBody?.projectId ?? '',
+        layerType: commentRquestBody?.layerType ?? -100,
+        deviceType: commentRquestBody?.deviceType ?? -100,
+        deviceId: commentRquestBody?.deviceId ?? '-100',
+        content: Comment,
       });
     }
-    setActiveType(undefined);
   };
 
   const DrawerWrap = useMemo(() => {
     return (
       <Drawer
-        title={"title"}
+        title={'属性栏'}
         placement="right"
         closable={false}
         visible={rightSidebarVisible}
         destroyOnClose={true}
         mask={false}
-        className={rightSidebarVisible ? "" : styles.poiontEventNone}
+        className={rightSidebarVisible ? '' : styles.poiontEventNone}
         getContainer={false}
         key={uuid.v1()}
         style={{ position: 'absolute', width: 340 }}
@@ -590,10 +420,17 @@ const SidePopup: React.FC<Props> = observer((props) => {
         <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
           <MenuUnfoldOutlined />
         </div>
-        <Table style={{ height: 30 }} pagination={false} columns={columns} dataSource={data} rowClassName={styles.row} rowKey={r => r.propertyName} />
+        <Table
+          style={{ height: 30 }}
+          pagination={false}
+          columns={columns}
+          dataSource={data}
+          rowClassName={styles.row}
+          rowKey={(r) => r.propertyName}
+        />
       </Drawer>
-    )
-  }, [rightSidebarVisible, JSON.stringify(data)])
+    );
+  }, [rightSidebarVisible, JSON.stringify(data)]);
 
   return (
     <div className={styles.wrap}>
@@ -651,25 +488,18 @@ const SidePopup: React.FC<Props> = observer((props) => {
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
-            <Scrollbars autoHide ref={scrollbars} style={{ marginBottom: 32, height: 300 }}>
-              <List
-                className="comment-list"
-                header={`${data.length}条 审阅内容`}
-                itemLayout="horizontal"
-                dataSource={Commentdata}
-                renderItem={(item) => (
-                  <li>
-                    <Comment author={item.author} content={item.content} datetime={item.datetime} />
-                  </li>
-                )}
-              />
-            </Scrollbars>
+            <CommentList
+              height={300}
+              projectId={commentRquestBody?.projectId}
+              deviceId={commentRquestBody?.deviceId}
+              layer={commentRquestBody?.layerType}
+            />
             <Input.TextArea
               placeholder="添加审阅"
               autoSize={{ minRows: 8, maxRows: 8 }}
-              defaultValue={review}
-              value={review}
-              onChange={(e) => setReview(e.target.value)}
+              defaultValue={Comment}
+              value={Comment}
+              onChange={(e) => setComment(e.target.value)}
             />
           </>
         )}

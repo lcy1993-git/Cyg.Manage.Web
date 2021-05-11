@@ -2,6 +2,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { Menu, message, Modal, Switch, Table, Tooltip } from 'antd';
 import styles from './index.less';
 import {
+  CommentOutlined,
   CopyOutlined,
   HeatMapOutlined,
   NodeIndexOutlined,
@@ -9,6 +10,8 @@ import {
 } from '@ant-design/icons';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/mobx-store';
+import CommentTable from '../comment-table';
+
 import { ColumnsType } from 'antd/es/table';
 import { useRequest } from 'ahooks';
 import {
@@ -140,6 +143,7 @@ const ListMenu: FC = observer(() => {
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
   const [materialList, setMaterialList] = useState<MaterialDataType[]>();
+  const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList } = vState;
@@ -187,7 +191,7 @@ const ListMenu: FC = observer(() => {
         fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
         break;
       case '4':
-        onClickObserveTrack();
+        onClickCommentTable();
         break;
       default:
         break;
@@ -207,18 +211,19 @@ const ListMenu: FC = observer(() => {
     }
   };
 
-  const onClickObserveTrack = () => {
-    if (checkedProjectIdList.length === 1) {
-      store.toggleObserveTrack(true);
+  const onClickCommentTable = () => {
+    if (checkedProjectIdList?.length !== 1) {
+      setProjectModalVisible(false);
+      message.warning('请选择一个项目');
     } else {
-      setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
-      message.warning('请选择一个数据');
+      setCommentTableModalVisible(true);
     }
   };
 
   const onClickProjectDetailInfo = () => {
     if (checkedProjectIdList?.length !== 1) {
       message.warning('请选择一个项目');
+      setProjectModalVisible(false);
     } else {
       setProjectModalVisible(true);
     }
@@ -284,6 +289,20 @@ const ListMenu: FC = observer(() => {
         <Menu.Item key="3" icon={<NodeIndexOutlined />}>
           材料表
         </Menu.Item>
+        {checkedProjectIdList?.length > 1 ? (
+          <Menu.Item key="4" disabled>
+            <Tooltip title="同时只能查看一个评审">
+              <CommentOutlined style={{ color: 'red' }} />
+              <span style={{ color: 'red' }}>评审列表 </span>
+              <QuestionCircleOutlined style={{ color: 'red', marginLeft: 4 }} />
+            </Tooltip>
+          </Menu.Item>
+        ) : (
+          <Menu.Item key="4" className={styles.menuItem}>
+            <CommentOutlined />
+            评审列表
+          </Menu.Item>
+        )}
 
         <div className={styles.observeTrack}>
           勘察轨迹
@@ -314,6 +333,18 @@ const ListMenu: FC = observer(() => {
           scroll={{ x: 1400, y: 400 }}
         />
       </Modal>
+      {commentTableModalVisible ? (
+        <Modal
+          title="审阅列表"
+          centered
+          visible={commentTableModalVisible}
+          onOk={() => setCommentTableModalVisible(false)}
+          onCancel={() => setCommentTableModalVisible(false)}
+          width={1500}
+        >
+          <CommentTable />
+        </Modal>
+      ) : null}
     </>
   );
 });

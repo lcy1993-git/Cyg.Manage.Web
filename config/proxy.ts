@@ -34,10 +34,15 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/webGis': '/' },
     },
-    '/webGis2/api': {
-      target: 'http://10.6.1.36:8014/',
+    '/Comment/api': {
+      target: 'http://10.6.1.36:8013/',
       changeOrigin: true,
-      pathRewrite: { '^/webGis2': '/' },
+      pathRewrite: { '^/Comment': '/' },
+    },
+    '/ProjectVisualization/api': {
+      target: 'http://10.6.1.36:8034/',
+      changeOrigin: true,
+      pathRewrite: { '^/ProjectVisualization': '/' },
     },
     '/baidu/api': {
       target: 'https://map.baidu.com/',

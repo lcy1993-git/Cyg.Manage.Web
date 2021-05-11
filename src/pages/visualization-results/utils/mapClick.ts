@@ -251,7 +251,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     // 批注功能
     if (commentLayers.indexOf(layerName) >= 0) {
-      pJSON['审阅'] = { id: feature.getProperties().project_id };
+      pJSON['审阅'] = { id: feature.getProperties().project_id, feature };
     }
 
     // 相应数据到右侧边栏

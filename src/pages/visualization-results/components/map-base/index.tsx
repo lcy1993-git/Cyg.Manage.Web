@@ -28,6 +28,9 @@ import { BaseMapProps } from '../../utils/init';
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import styles from './index.less';
 import MapDisplay from '../map-display';
+import Timeline from '../timeline';
+import ListMenu from '../list-menu';
+import classnames from 'classnames';
 
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
@@ -51,6 +54,7 @@ const BaseMap = observer((props: BaseMapProps) => {
     positionMap,
     observeTrack,
     confessionTrack,
+    checkedProjectDateList,
   } = vState;
   const { kvLevel } = filterCondition;
 
@@ -221,18 +225,33 @@ const BaseMap = observer((props: BaseMapProps) => {
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
 
-      <CtrolLayers
-        surveyLayerVisible={surveyLayerVisible}
-        planLayerVisible={planLayerVisible}
-        designLayerVisible={designLayerVisible}
-        dismantleLayerVisible={dismantleLayerVisible}
-        setSurveyLayerVisible={setSurveyLayerVisible}
-        setPlanLayerVisible={setPlanLayerVisible}
-        setDesignLayerVisible={setDesignLayerVisible}
-        setDismantleLayerVisible={setDismantleLayerVisible}
-      />
+      <div className={styles.timeline}>
+        <div>
+          {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
+            <Timeline type="normal" height={60} width={400} dates={checkedProjectDateList} />
+          ) : null}
+        </div>
+      </div>
 
-      <MapDisplay onSatelliteMapClick={onSatelliteMapClick} onStreetMapClick={onStreetMapClick} />
+      <div className={styles.listMenu}>
+        <ListMenu />
+      </div>
+      <div className={styles.controlLayer}>
+        <CtrolLayers
+          surveyLayerVisible={surveyLayerVisible}
+          planLayerVisible={planLayerVisible}
+          designLayerVisible={designLayerVisible}
+          dismantleLayerVisible={dismantleLayerVisible}
+          setSurveyLayerVisible={setSurveyLayerVisible}
+          setPlanLayerVisible={setPlanLayerVisible}
+          setDesignLayerVisible={setDesignLayerVisible}
+          setDismantleLayerVisible={setDismantleLayerVisible}
+        />
+      </div>
+
+      <div className={styles.mapDisplay}>
+        <MapDisplay onSatelliteMapClick={onSatelliteMapClick} onStreetMapClick={onStreetMapClick} />
+      </div>
 
       <Footer onlocationClick={onlocationClick} />
       <SidePopup

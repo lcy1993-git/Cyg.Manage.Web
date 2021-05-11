@@ -28,10 +28,8 @@ const webConfig = {
 export interface ProjectList {
   id: string;
   time?: string; // '2021-04-19'
-  status?: string;
-  haveData?: boolean;
-  haveSurveyData?: boolean;
-  haveDesignData?: boolean;
+  status?: number;
+  engineerId: string;
   isExecutor?: boolean;
 }
 
@@ -75,12 +73,11 @@ export const getMaterialItemData = (params: any) => {
    *        当图层是tower时,type 为0
    */
   let { type = 0, ...rest } = params;
-  if (params.layerName !== 'tower')
-    type = 1;
+  if (params.layerName !== 'tower') type = 1;
   const url = ['LibraryDesign/GetModuleDetailView', 'LibraryComponent/GetComponentDetailView'];
   return request(
     `http://${webConfig.resourceServiceServerIP}${webConfig.resourceServiceServerPort}/api/` +
-    url[type],
+      url[type],
     { method: 'POST', data: { ...rest } },
   );
 };
