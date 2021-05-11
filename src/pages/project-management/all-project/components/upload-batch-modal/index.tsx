@@ -40,6 +40,13 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
         return;
       }
       setRequestLoading(true);
+      console.log(file[0].name);
+
+      // if (file[0].name.indexOf('.xlsx') == -1) {
+      //   message.warning('请上传正确的Excel模板文件');
+      //   setRequestLoading(false);
+      //   return;
+      // }
       const res = await uploadBulkProject(file, 'project', '/Porject/ResolveImportData');
       if (res.code === 5000) {
         message.error(res.message);
@@ -98,7 +105,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
             valuePropName="fileList"
             required
           >
-            <FileUpload maxCount={1} />
+            <FileUpload maxCount={1} accept=".xlsx" />
           </CyFormItem>
         </Form>
       </Modal>
