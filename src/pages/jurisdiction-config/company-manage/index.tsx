@@ -154,6 +154,8 @@ const CompanyManage: React.FC = () => {
       return;
     }
     const editData = data!;
+    console.log(editData);
+    
 
     editForm.validateFields().then(async (value) => {
       const userSkuQtys = [
@@ -170,6 +172,8 @@ const CompanyManage: React.FC = () => {
         remark: editData.remark,
         userSkuQtys,
       };
+      console.log(submitInfo);
+      
 
       await updateCompanyManageItem(submitInfo);
       tableFresh();
