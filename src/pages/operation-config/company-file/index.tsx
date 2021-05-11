@@ -28,6 +28,7 @@ import FileGroupForm from './components/add-file-group';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { TableRequestResult } from '@/services/table';
+import { UploadStatus } from '@/components/file-upload';
 
 const { Search } = Input;
 
@@ -42,7 +43,7 @@ const CompanyFile: React.FC = () => {
   const [fileGroupId, setFileGroupId] = useState<string>();
   const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
   const [editingFileName, setEditingFileName] = useState<string>('');
-
+  const [fileId, setFileId] = useState<string>();
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [tableData, setTableData] = useState<TableRequestResult>();
@@ -156,27 +157,45 @@ const CompanyFile: React.FC = () => {
     setAddFormVisible(true);
   };
 
+  const uploadFile = async (setStatus: (uploadStatus: UploadStatus) => void) => {
+    await uploadCompanyFile(
+      addForm.getFieldValue('file'),
+      { securityKey },
+      '/Upload/CompanyFile',
+    ).then(
+      (fileId: string) => {
+        setStatus('success');
+        setFileId(fileId);
+      },
+      () => {
+        message.warn('文件上传失败');
+        setStatus('error');
+      },
+    );
+  };
+
   const sureAddCompanyFile = () => {
     addForm.validateFields().then(async (values) => {
-      const { file } = values;
-      const fileId = await uploadCompanyFile(file, { securityKey }, '/Upload/CompanyFile');
+      if (fileId) {
+        const submitInfo = Object.assign(
+          {
+            name: '',
+            fileId: fileId,
+            fileCategory: 0,
+            describe: '',
+            groupId: fileGroupId,
+          },
+          values,
+        );
 
-      const submitInfo = Object.assign(
-        {
-          name: '',
-          fileId: fileId,
-          fileCategory: 0,
-          describe: '',
-          groupId: fileGroupId,
-        },
-        values,
-      );
-
-      await addCompanyFileItem(submitInfo);
-      refresh();
-      message.success('添加成功');
-      setAddFormVisible(false);
-      addForm.resetFields();
+        await addCompanyFileItem(submitInfo);
+        refresh();
+        message.success('添加成功');
+        setAddFormVisible(false);
+        addForm.resetFields();
+      } else {
+        message.warn('文件未上传或上传失败');
+      }
     });
   };
 
@@ -429,7 +448,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={addForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm type="add" groupData={tableData} />
+            <CompanyFileForm uploadFileFn={uploadFile} type="add" groupData={tableData} />
           </Spin>
         </Form>
       </Modal>
@@ -446,7 +465,11 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm groupData={tableData} editingName={editingFileName} />
+            <CompanyFileForm
+              uploadFileFn={uploadFile}
+              groupData={tableData}
+              editingName={editingFileName}
+            />
           </Spin>
         </Form>
       </Modal>
