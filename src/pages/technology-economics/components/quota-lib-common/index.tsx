@@ -55,15 +55,70 @@ const reducer = (state: State, action: any) => {
 interface Props {
   url: string;
   title: string;
-  DictionaryForm: ReactNode | JSX.Element;
+  dictionaryForm: ()=> JSX.Element;
+  columns: any[],
+  add: any;
+  edit: any;
+  del: any;
 }
 
-const QuotaLibrary: React.FC<Props> = ({
+
+const columns = [
+  {
+    dataIndex: 'id',
+    index: 'id',
+    title: '编号',
+    width: 120,
+    // render: (text: string, record: any) => {
+    //   return (
+    //     <span
+    //       className={styles.dictionaryKeyCell}
+    //       onClick={() => keyCellClickEvent(record.id, record.key)}
+    //     >
+    //       {record.key}
+    //     </span>
+    //   );
+    // },
+  },
+  {
+    dataIndex: 'name',
+    index: 'name',
+    title: '名称',
+    width: 360,
+  },
+  {
+    dataIndex: 'categoryText',
+    index: 'categoryText',
+    title: '类型',
+    width: 180,
+  },
+  {
+    dataIndex: 'releaseDate',
+    index: 'releaseDate',
+    title: '发行日期',
+    width: 80,
+  },
+  {
+    dataIndex: 'remark',
+    index: 'remark',
+    title: '描述',
+  },
+];
+
+const QuotaLibCommon: React.FC<Props> = ({
   url = "",
   title="",
-  DictionaryForm = <div />,
-
+  dictionaryForm = ()=> null,
+  columns,
+  add,
+  edit,
+  del
 }) => {
+  console.log(columns);
+  console.log(title);
+  
+  
+  
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -91,7 +146,8 @@ const QuotaLibrary: React.FC<Props> = ({
       releaseDateText: "2021-02-05",
       remark: null,
     }
-  ]
+  ];
+
   const searchComponent = () => {
     return (
       <TableSearch label="关键词" width="203px">
@@ -163,48 +219,6 @@ const QuotaLibrary: React.FC<Props> = ({
       parentId: id,
     });
   };
-
-  const columns = [
-    {
-      dataIndex: 'id',
-      index: 'id',
-      title: '编号',
-      width: 120,
-      // render: (text: string, record: any) => {
-      //   return (
-      //     <span
-      //       className={styles.dictionaryKeyCell}
-      //       onClick={() => keyCellClickEvent(record.id, record.key)}
-      //     >
-      //       {record.key}
-      //     </span>
-      //   );
-      // },
-    },
-    {
-      dataIndex: 'name',
-      index: 'name',
-      title: '名称',
-      width: 360,
-    },
-    {
-      dataIndex: 'categoryText',
-      index: 'categoryText',
-      title: '类型',
-      width: 180,
-    },
-    {
-      dataIndex: 'releaseDate',
-      index: 'releaseDate',
-      title: '发行日期',
-      width: 80,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '描述',
-    },
-  ];
 
   //添加
   const addEvent = () => {
@@ -361,7 +375,7 @@ const QuotaLibrary: React.FC<Props> = ({
         needCommonButton={true}
         columns={columns}
         url="/Dictionary/GetPagedList"
-        tableTitle="定额库管理"
+        tableTitle={title}
         getSelectData={tableSelectEvent}
         type="checkbox"
         extractParams={{
@@ -371,7 +385,7 @@ const QuotaLibrary: React.FC<Props> = ({
       />
       <Modal
         maskClosable={false}
-        title="添加-定额库"
+        title={add.title}
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -381,12 +395,12 @@ const QuotaLibrary: React.FC<Props> = ({
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
+        {dictionaryForm()}
         </Form>
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-定额库"
+        title={add.edit}
         width="680px"
         visible={editFormVisible}
         okText="确认"
@@ -396,11 +410,11 @@ const QuotaLibrary: React.FC<Props> = ({
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
+          {dictionaryForm()}
         </Form>
       </Modal>
     </PageCommonWrap>
   );
 };
 
-export default QuotaLibrary;
+export default QuotaLibCommon;
