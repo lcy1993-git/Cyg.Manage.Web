@@ -8,7 +8,6 @@ import styles from './index.less';
 import { useRequest } from 'ahooks';
 import { isArray } from 'lodash';
 import '@/assets/icon/iconfont.css';
-// import CompanyFileForm from './components/add-edit-form';
 import {
   getNewsItemDetail,
   updateNewsItem,
@@ -20,11 +19,9 @@ import {
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
 import TextEditor from './component/text-editor';
-// import { getGroupInfo } from '@/services/project-management/all-project';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import CyTag from '@/components/cy-tag';
-import { useEffect } from 'react';
 
 const { Search } = Input;
 
@@ -248,9 +245,10 @@ const InfoManage: React.FC = () => {
     const editDataId = editData.id;
 
     const checkContentData = await run(editDataId);
+    console.log(checkContentData);
 
-    setEditFormVisible(true);
-    editForm.setFieldsValue(checkContentData);
+    setAddFormVisible(true);
+    addForm.setFieldsValue({ checkContentData });
     setContent(checkContentData.content);
   };
 
