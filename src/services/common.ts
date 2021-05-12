@@ -34,7 +34,10 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
       } else {
         if (res.content && isArray(res.content) && res.content.length > 0) {
           const errorMsgArray = res.content.map((item) => item.errorMessages).flat();
-          const showErrorMsg = errorMsgArray.join('\n');
+          const filterErrorMsg = errorMsgArray.filter((item, index, arr) => {
+            return arr.indexOf(item) == index;
+          });
+          const showErrorMsg = filterErrorMsg.join('\n');
           message.error(showErrorMsg);
         } else {
           message.error(res.message);
@@ -115,7 +118,6 @@ interface GetCommonSelectDataParams {
   method?: 'get' | 'post';
   postType?: 'body' | 'query';
 }
-
 
 export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) => {
   const { url, params, requestSource = 'project', method = 'get', postType } = data;

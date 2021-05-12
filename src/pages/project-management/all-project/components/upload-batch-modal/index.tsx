@@ -40,7 +40,6 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
         return;
       }
       setRequestLoading(true);
-      console.log(file[0].name);
 
       // if (file[0].name.indexOf('.xlsx') == -1) {
       //   message.warning('请上传正确的Excel模板文件');
