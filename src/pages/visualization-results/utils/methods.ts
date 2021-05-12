@@ -135,7 +135,6 @@ const loadLayers = (
 ) => {
   layerParams.forEach((item: any) => {
     let layerName = item.layerName;
-    var styleCache = {};
     loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) => {
       if (groupLayers[layerType + '_' + layerName]) {
         if (groupLayers[layerType + '_' + layerName].getSource() instanceof Cluster)
@@ -261,48 +260,37 @@ const loadWFS = async (postData: string, layerName: string, callBack: (o: any) =
 
 // 加载勘察轨迹图层
 const loadTrackLayers = (
-  id: string,
   map: any,
   trackLayers: any,
   type: number = 0,
-  time?: string,
 ) => {
   const trackType = ['survey_track', 'disclosure_track'];
   const track = ['survey_Track', 'disclosure_Track'];
   const trackLine = ['survey_TrackLine', 'disclosure_TrackLine'];
   const groupLayer = clearTrackLayers(trackLayers, type);
 
-  var postData =
-    "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
-  postData = postData + '<ogc:Filter><Or>';
-  postData =
-    postData +
-    '<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>' +
-    id +
-    '</Literal></PropertyIsEqualTo>';
-  postData = postData + '</Or></ogc:Filter>';
-  postData = postData + '</wfs:Query></wfs:GetFeature>';
+  var postData = getXmlData(projects, undefined);
 
-  if (time) {
-    time = time.replaceAll('/', '-');
-    var startDate = new Date(time);
-    var endDate = new Date(time);
-    endDate.setDate(endDate.getDate() + 1);
-    var postDataStart = postData.substr(0, 418);
-    var postDataEnd = postData.substr(postData.length - 29, 29);
-    postData =
-      postDataStart +
-      '<ogc:Filter><And>' +
-      '<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>' +
-      id +
-      '</Literal></PropertyIsEqualTo>' +
-      '<PropertyIsLessThanOrEqualTo><PropertyName>record_date</PropertyName><Literal>' +
-      endDate.toISOString() +
-      '</Literal></PropertyIsLessThanOrEqualTo><PropertyIsGreaterThanOrEqualTo><PropertyName>record_date</PropertyName><Literal>' +
-      startDate.toISOString() +
-      '</Literal></PropertyIsGreaterThanOrEqualTo></And></ogc:Filter>' +
-      postDataEnd;
-  }
+  // if (time) {
+  //   time = time.replaceAll('/', '-');
+  //   var startDate = new Date(time);
+  //   var endDate = new Date(time);
+  //   endDate.setDate(endDate.getDate() + 1);
+  //   var postDataStart = postData.substr(0, 418);
+  //   var postDataEnd = postData.substr(postData.length - 29, 29);
+  //   postData =
+  //     postDataStart +
+  //     '<ogc:Filter><And>' +
+  //     '<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>' +
+  //     id +
+  //     '</Literal></PropertyIsEqualTo>' +
+  //     '<PropertyIsLessThanOrEqualTo><PropertyName>record_date</PropertyName><Literal>' +
+  //     endDate.toISOString() +
+  //     '</Literal></PropertyIsLessThanOrEqualTo><PropertyIsGreaterThanOrEqualTo><PropertyName>record_date</PropertyName><Literal>' +
+  //     startDate.toISOString() +
+  //     '</Literal></PropertyIsGreaterThanOrEqualTo></And></ogc:Filter>' +
+  //     postDataEnd;
+  // }
   const promise = loadLayer(wfsBaseURL, postData, 'pdd:' + trackType[type]);
   promise.then((data: any) => {
     let surveyTrackLayer = getLayerByName(track[type], groupLayer.getLayers().getArray());
