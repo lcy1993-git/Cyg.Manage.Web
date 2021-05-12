@@ -1,9 +1,9 @@
 import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
+import FileUpload, { UploadStatus } from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
 import { useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
@@ -20,6 +20,26 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
+
+  const [fileId, setFileId] = useState<string>();
+
+  const uploadFile = async (setStatus: (uploadStatus: UploadStatus) => void) => {
+    await uploadLineStressSag(
+      form.getFieldValue('file'),
+      { libId },
+      requestSource,
+      '/Component/SaveImport',
+    ).then(
+      () => {
+        setStatus('success');
+        setFileId(fileId);
+      },
+      () => {
+        message.warn('文件上传失败');
+        setStatus('error');
+      },
+    );
+  };
 
   const saveImportComponentEvent = () => {
     form.validateFields().then(async (values) => {
