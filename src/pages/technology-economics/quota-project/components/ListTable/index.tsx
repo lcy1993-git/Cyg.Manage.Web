@@ -1,10 +1,12 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined, AccountBookOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
 import React, { useState, useMemo, useCallback, useReducer } from 'react';
 import DictionaryForm from '../add-edit-form';
+import QuotaDetails from '../quota-details';
+
 
 import { useRequest } from 'ahooks';
 import {
@@ -58,6 +60,8 @@ const QuotaLibrary: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [activeDetailId, setDetailId] = useState<string>("");
+
 
   const [state, dispatch] = useReducer(reducer, ROUTE_LIST_STATE);
 
@@ -271,6 +275,16 @@ const QuotaLibrary: React.FC = () => {
     editForm.setFieldsValue(AuthorizationData);
   };
 
+  // 明细
+  const detailsEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据查看明细');
+      return;
+    }
+    const activeID = tableSelectRows[0].id;
+    setDetailId(activeID);
+  }
+
   const sureEditAuthorization = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
@@ -334,8 +348,10 @@ const QuotaLibrary: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        {/* <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
-        <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" /> */}
+        <Button className="mr7" onClick={() => detailsEvent()}>
+          <AccountBookOutlined />
+          定额明细
+        </Button>
       </div>
     );
   };
@@ -423,6 +439,9 @@ const QuotaLibrary: React.FC = () => {
           <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
         </Form>
       </Modal>
+      {
+        activeDetailId && <QuotaDetails id={activeDetailId} setDetailId={setDetailId}/>
+      }
     </>
   );
 };

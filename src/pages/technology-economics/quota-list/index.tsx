@@ -6,7 +6,7 @@ import EditForm from './components/edit-from';
 import React, { useMemo, useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
-import TreeTable from './components/file-tree-table';
+import TreeTable from '../components/file-tree-table';
 
 import { TreeData, formatDataTree } from '@/utils/utils';
 const data = [
@@ -279,13 +279,12 @@ const QuotaList: React.FC = () => {
   return (
     <PageCommonWrap>
       <TreeTable
-        tableTitle="定额库目录"
+        tableTitle="定额库目录管理"
         dataSource={dataSource}
         columns={columns}
         refreshTable={() => 1}
         buttonLeftContentSlot={searchElement}
         buttonRightContentSlot={rightButton}
-        pageIndex={1}
         expKeysAll={expKeysAll}
       />
       <Modal

@@ -110,8 +110,8 @@ const QuotaLibCommon: React.FC<Props> = ({
   title="",
   dictionaryForm = ()=> null,
   columns,
-  add,
-  edit,
+  add={title: ""},
+  edit={title: ""},
   del
 }) => {
   console.log(columns);

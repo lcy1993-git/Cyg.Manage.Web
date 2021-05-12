@@ -9,13 +9,13 @@ import styles from './index.less';
 interface Props {
   dataSource: any[];
   columns: any[];
-  refreshTable: () => void;
+  refreshTable?: () => void;
   tableTitle?: string | JSX.Element;
   openIcon?: JSX.Element;
   closeIcon?: JSX.Element;
   noPaging?: boolean;
   needTitleLine?: boolean;
-  pageIndex: number;
+  pageIndex?: number;
   total?: number;
   // 外部获取被选中的数据
   getSelectData?: (value: object[]) => void;
@@ -29,8 +29,8 @@ interface Props {
 const FileTreeTable: React.FC<Props> = ({
   dataSource,
   columns,
-  refreshTable,
-  pageIndex,
+  refreshTable = () => void 0,
+  pageIndex = 1,
   total,
   noPaging = true,
   tableTitle = "",
@@ -192,24 +192,6 @@ const FileTreeTable: React.FC<Props> = ({
           }}
           {...rest}
         />
-        {/* <WrapperComponent
-        bordered={true}
-        dataSource={tableResultData.items}
-        pagination={false}
-        rowKey={rowKey}
-        columns={finallyColumns.filter((item) => item.checked)}
-        loading={loading}
-        locale={{
-          emptyText: <EmptyTip className="pt20 pb20" />,
-        }}
-        rowSelection={{
-          type: type,
-          columnWidth: '38px',
-          selectedRowKeys: selectedRowKeys,
-          ...rowSelection,
-        }}
-        {...((rest as unknown) as P)}
-      /> */}
       </div>
       {!noPaging && (
         <div className={styles.cyGeneralTablePaging}>
