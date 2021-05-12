@@ -40,12 +40,22 @@ const mediaLayers = [
   'mark',
   'electric_meter',
 ];
-const materiaLayers = ['tower', 'cable', 'transformer', 'cable_equipment', 'pull_line'];
+const materiaLayers = ['tower',  'transformer', 'cable_equipment', 'pull_line'];
 const commentLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
+const layerTypeEnum = {
+'survey' : '勘察',
+'plan' : '方案',
+'design' : '设计',
+'dismantle': '拆除'
+}
+const elementTypeEnum = {
+  'tower': '杆塔',
+  'cable': '电缆井'
+}
 export const mapClick = (evt: any, map: any, ops: any) => {
   clearHighlightLayer(map);
   ops.setRightSidebarVisiviabel(false);
-  let mappingTags, mappingTagValues;
+  let mappingTags: any, mappingTagValues;
   let selected = false;
 
   // 遍历选中的数据
@@ -61,21 +71,29 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
     }
+    console.log(feature)
+    let layerName = layer.getProperties().name;
+    layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
+
     // 判断选中的图层类型
     let layerType = layer.getProperties().name.split('_')[0];
     if (layerType) {
       switch (layerType) {
         case 'survey':
           feature.set('layerType', 1);
+          mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags1;
           break;
         case 'plan':
           feature.set('layerType', 2);
+          mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags1;
           break;
         case 'design':
           feature.set('layerType', 3);
+          mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags2;
           break;
         case 'dismantle':
           feature.set('layerType', 4);
+          mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags2;
           break;
         default:
           feature.set('layerType', null);
@@ -83,11 +101,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     } else {
       feature.set('layerType', null);
     }
-
-    let layerName = layer.getProperties().name;
-    layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
     // 映射图层相对应的字段
-    mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags;
     mappingTagValues = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTagValues;
 
     let featureId = feature.getProperties().id;
@@ -159,6 +173,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                 : null;
               break;
             case 'azimuth':
+              console.log( Number(feature.getProperties()[p]))
               pJSON[mappingTag] = Number(feature.getProperties()[p])
                 ? Number(feature.getProperties()[p])?.toFixed(2)
                 : 0;
@@ -172,36 +187,39 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
 
     // 查看多媒体功能
-    if (mediaLayers.indexOf(layerName) >= 0) {
-      let params = {
-        projectId: feature.getProperties().project_id,
-        devices: [
-          {
-            category: 1, // 1为勘察，2为预设
-            deviceId: featureId,
-          },
-        ],
-      };
-      if (layerType) {
-        switch (layerType) {
-          case 'survey':
-            params.devices[0].category = 1;
-            break;
-          case 'plan':
-            params.devices[0].category = 4;
-            break;
-          case 'design':
-            params.devices[0].category = 2;
-            break;
-          case 'dismantle':
-            params.devices[0].category = 3;
-            break;
+    if (layerType === 'survey' || layerType === 'plan') {
+      if (mediaLayers.indexOf(layerName) >= 0) {
+        let params = {
+          projectId: feature.getProperties().project_id,
+          devices: [
+            {
+              category: 1, // 1为勘察，2为预设
+              deviceId: featureId,
+            },
+          ],
+        };
+        if (layerType) {
+          switch (layerType) {
+            case 'survey':
+              params.devices[0].category = 1;
+              break;
+            case 'plan':
+              params.devices[0].category = 4;
+              break;
+            // case 'design':
+            //   params.devices[0].category = 2;
+            //   break;
+            // case 'dismantle':
+            //   params.devices[0].category = 3;
+            //   break;
+          }
         }
+        await getMedium(params).then((data: any) => {
+          pJSON['多媒体'] = data.content || [];
+        });
       }
-      await getMedium(params).then((data: any) => {
-        pJSON['多媒体'] = data.content || [];
-      });
     }
+
     // 仅有设计图层和拆除图层可以查看相关的材料表
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
@@ -249,14 +267,20 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       }
     }
 
-    // 批注功能
-    if (commentLayers.indexOf(layerName) >= 0) {
-      pJSON['审阅'] = { id: feature.getProperties().project_id };
+    if (layerType === 'design' || layerType === 'dismantle') {
+      // 批注功能
+      if (commentLayers.indexOf(layerName) >= 0) {
+        pJSON['审阅'] = { id: feature.getProperties().project_id };
+      }
     }
 
     // 相应数据到右侧边栏
     const resData = [];
+    resData.push({propertyName: '所属图层',  data: layerTypeEnum[layerType] + '图层'});
+    resData.push({propertyName: '元素类型',  data: elementTypeEnum[layerName]});
     for (let p in pJSON) {
+      if(p === '方位角' && layerName === 'tower')
+        resData.push({propertyName: '呼称高',  data: pJSON['高度(m)'] - pJSON['埋深']});
       resData.push({ propertyName: p, data: pJSON[p] || '' });
     }
     ops.setRightSidebarVisiviabel(true);

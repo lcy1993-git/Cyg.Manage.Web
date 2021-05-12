@@ -47,10 +47,8 @@ const BaseMap = observer((props: BaseMapProps) => {
     filterCondition,
     visibleLeftSidebar,
     normalClickDate,
-    observeClickDate,
     positionMap,
     observeTrack,
-    confessionTrack,
   } = vState;
   const { kvLevel } = filterCondition;
 
@@ -110,22 +108,10 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 动态刷新轨迹
   useEffect(() => {
     // 加载勘察轨迹
-    map && loadTrackLayers(projects[0].id, map, trackLayers, 0, observeClickDate);
-  }, [JSON.stringify(observeClickDate)]);
+    if (observeTrack) map && loadTrackLayers(map, trackLayers);
+    else clearTrackLayers(trackLayers);
+  }, [JSON.stringify(observeTrack), JSON.stringify(projects)]);
 
-  // 动态刷新轨迹
-  useEffect(() => {
-    // 加载勘察轨迹
-    if (observeTrack) map && loadTrackLayers(projects[0].id, map, trackLayers, 0);
-    else clearTrackLayers(trackLayers, 0);
-  }, [JSON.stringify(observeTrack)]);
-
-  // 动态刷新轨迹
-  useEffect(() => {
-    // 加载交底轨迹
-    if (confessionTrack) map && loadTrackLayers(projects[0].id, map, trackLayers, 1);
-    else clearTrackLayers(trackLayers, 1);
-  }, [JSON.stringify(confessionTrack)]);
 
   // 地图定位
   useEffect(() => {
