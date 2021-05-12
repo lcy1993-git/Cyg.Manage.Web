@@ -66,10 +66,11 @@ export const newUploadLineStressSag = (
   });
 
   const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`;
-
-  return request(uploadUrl, {
+  return cyRequest<any>(() =>
+    request(uploadUrl, {
       method: 'POST',
       data: formData,
       requestType: 'form',
-    })
+    }),
+  );
 };

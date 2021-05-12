@@ -8,6 +8,7 @@ import { SetStateAction } from 'react';
 import { Input, Form, message, Row, Col, Modal, Button } from 'antd';
 import UrlSelect from '@/components/url-select';
 import rule from '../rules';
+import { reject } from 'lodash';
 
 interface ImportInventoryProps {
   visible: boolean;
@@ -32,41 +33,43 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const { requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
 
-  const saveInventoryEvent = async (setStatus: (uploadStatus: UploadStatus) => void) => {
-    form.validateFields().then(async (values) => {
-      const { file } = values;
-      setRequestLoading(true);
-      try {
-        const resData = await newUploadLineStressSag(
+  const saveInventoryEvent = () => {
+    return form
+      .validateFields()
+      .then((values) => {
+        const { file } = values;
+        setRequestLoading(true);
+
+        return newUploadLineStressSag(
           file,
           { province, resourceLibId, versionName, inventoryName },
           requestSource,
           '/Inventory/SaveImport',
         );
-        if (resData && !resData.isSuccess) {
-          setStatus('error');
-
-          message.error(resData.message);
-          return;
-        } else {
-          setStatus('success');
+      })
+      .then(
+        () => {
           setTimeout(() => {
             setState(false);
           }, 1000);
-        }
-
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('上传失败');
+        },
+      )
+      .finally(() => {
         changeFinishEvent?.();
-      } catch (error) {
-        console.log(error);
-      } finally {
         setUploadFileFalse();
+
         setRequestLoading(false);
-      }
-    });
+      });
   };
 
   const onSave = () => {
-    setUploadFileTrue();
+    form.validateFields().then(() => {
+      setUploadFileTrue();
+    });
   };
 
   return (

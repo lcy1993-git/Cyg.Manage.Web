@@ -9,7 +9,7 @@ interface CompanyFileForm {
   securityKey?: string;
   groupData?: any;
   editingName?: string;
-  uploadFileFn: (setStatus: (uploadStatus: UploadStatus) => void) => Promise<void>;
+  uploadFileFn: () => Promise<void>;
 }
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {

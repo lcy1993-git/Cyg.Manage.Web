@@ -25,26 +25,32 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
 
-  const saveDrawingEvent = async (setStatus: (uploadStatus: UploadStatus) => void) => {
-    form.validateFields().then(async (values) => {
-      const { file } = values;
-      try {
+  const saveDrawingEvent = () => {
+    return form
+      .validateFields()
+      .then((values) => {
+        const { file } = values;
+
         setRequestLoading(true);
-        await uploadDrawing(file, { libId, securityKey });
-        message.success('导入成功');
-        setStatus('success');
-        setTimeout(() => {
-          setState(false);
-        }, 1000);
-      } catch (msg) {
-        setStatus('error');
-        console.error(msg);
-      } finally {
+        return uploadDrawing(file, { libId, securityKey });
+      })
+      .then(
+        () => {
+          message.success('导入成功');
+          setTimeout(() => {
+            setState(false);
+          }, 1000);
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('导入失败');
+        },
+      )
+      .finally(() => {
         changeFinishEvent?.();
         setUploadFileFalse();
         setRequestLoading(false);
-      }
-    });
+      });
   };
 
   const onSave = () => {

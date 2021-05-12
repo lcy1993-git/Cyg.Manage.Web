@@ -43,29 +43,34 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
   } = props;
   const [form] = Form.useForm();
 
-  const saveLineStreesSagEvent = async (setStatus: (uploadStatus: UploadStatus) => void) => {
-    form.validateFields().then(async (values) => {
-      try {
+  const saveLineStreesSagEvent = () => {
+    return form
+      .validateFields()
+      .then((values) => {
         const { file } = values;
-        await uploadLineStressSag(
+        return uploadLineStressSag(
           file,
           { province, companyId, overviewId },
           requestSource,
           '/WareHouse/SaveImport',
         );
-
-        message.success('导入成功');
-        setTimeout(() => {
-          setState(false);
-        }, 1000);
-        setStatus('success');
-      } catch (error) {
-        setStatus('error');
-      } finally {
+      })
+      .then(
+        () => {
+          message.success('导入成功');
+          setTimeout(() => {
+            setState(false);
+          }, 1000);
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('导入失败');
+        },
+      )
+      .finally(() => {
         setUploadFileFalse();
         changeFinishEvent?.();
-      }
-    });
+      });
   };
 
   const onSave = () => {

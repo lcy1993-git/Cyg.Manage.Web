@@ -10,7 +10,7 @@ export interface FileUploadProcessProps {
 const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
   const { status, fileSize } = props;
   const [percent, setPercent] = useState<number>(0);
-  const [interval, setInterval] = useState<number | undefined>(500);
+  const [interval, setInterval] = useState<number | undefined>(1000);
 
   useEffect(() => {
     if (status === 'start') {
@@ -20,13 +20,11 @@ const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
 
   const medium = () => {
     if (percent <= 50) {
-      setPercent(percent + _.random(8, 15));
-    } else if (percent >= 50 && percent < 70) {
-      setPercent(percent + _.random(8, 12));
-    } else if (percent <= 95 && percent >= 70) {
-      setPercent(percent + _.random(5, 10));
+      setPercent(percent + _.random(0, 5));
     } else if (percent >= 85) {
-      setPercent(99);
+      setPercent(90);
+    } else {
+      setPercent(percent + _.random(0, 8));
     }
   };
 
@@ -36,13 +34,11 @@ const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
 
   const large = () => {
     if (percent <= 50) {
-      setPercent(percent + _.random(0, 10));
-    } else if (percent >= 50 && percent < 70) {
-      setPercent(percent + _.random(0, 15));
-    } else if (percent <= 95 && percent >= 70) {
       setPercent(percent + _.random(0, 5));
-    } else if (percent >= 95) {
-      setPercent(99);
+    } else if (percent >= 85) {
+      setPercent(90);
+    } else {
+      setPercent(percent + _.random(0, 8));
     }
   };
 
