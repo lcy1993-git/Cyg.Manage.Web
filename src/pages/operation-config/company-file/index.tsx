@@ -305,7 +305,10 @@ const CompanyFile: React.FC = () => {
 
   //下载公司文件
   const downLoadEvent = async () => {
-    console.log(tableSelectRows);
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请先选择一条公司文件下载');
+      return;
+    }
     const fileId = tableSelectRows[0].fileId;
     const fileName = tableSelectRows[0].fileName;
 
