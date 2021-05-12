@@ -195,13 +195,13 @@ const loadLayers = (
           });
           obj.source = clusterSource;
           obj.style = (feature: any, resolution: any) => {
-            var size = feature.get('features').length; //获取该要素所在聚合群的要素数量
-            var style = styleCache[size];
-            if (!style) {
-              style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
-              styleCache[size] = style;
-            }
-
+            // var size = feature.get('features').length; //获取该要素所在聚合群的要素数量
+            // var style = styleCache[size];
+            // if (!style) {
+            //   style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
+            //   styleCache[size] = style;
+            // }
+            var style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
             return style;
           };
         }

@@ -1,7 +1,8 @@
 
 import PageCommonWrap from '@/components/page-common-wrap';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin } from 'antd';
+import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin, Form, Select } from 'antd';
+import EditForm from './components/edit-from';
 import React, { useMemo, useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
@@ -155,18 +156,59 @@ const columns = [
     title: "层级",
     dataIndex: "level",
     key: "level",
+    width: 180
   },
   {
     title: "排序码",
     dataIndex: "sort",
-    key: "sort"
+    key: "sort",
+    width: 180
   },
 ];
 
 const QuotaList: React.FC = () => {
+
+  // const { data, run, loading } = useRequest(getMapFieldDetail, {
+  //   manual: true,
+  // });
+
   const dataSource = formatDataTree(data);
+  console.log(dataSource);
+  
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [addForm] = Form.useForm();
+  const [editForm] = Form.useForm();
+
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+
+  const sureEditMapField = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    const editData = data!;
+
+    editForm.validateFields().then(async (values) => {
+      // const submitInfo = Object.assign(
+      //   {
+      //     id: editData.id,
+      //     deviceType: editData.deviceType,
+      //     dsName: editData.dsName,
+      //     responseName: editData.responseName,
+      //     postGISName: editData.postGISName,
+      //     pgModelName: editData.pgModelName,
+      //     description: editData.description,
+      //   },
+      //   values,
+      // );
+      // await updateMapFieldItem(submitInfo);
+      // refresh();
+      message.success('更新成功');
+      editForm.resetFields();
+      setEditFormVisible(false);
+    });
+  };
 
   const expKeysAll = useMemo(() => data.flat(Infinity).map((i: TreeData) => i.id), [JSON.stringify(data)])
 
@@ -187,7 +229,7 @@ const QuotaList: React.FC = () => {
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
-          // disabled
+        // disabled
         >
           <Button className="mr7">
             <DeleteOutlined />
@@ -197,6 +239,14 @@ const QuotaList: React.FC = () => {
       </div>
     );
   };
+
+  const searchElement = () => {
+    return (
+      <div>
+        定额库 <Select style={{width: 200}} placeholder="- 请选择定额库 -"></Select>
+      </div>
+    );
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -233,10 +283,28 @@ const QuotaList: React.FC = () => {
         dataSource={dataSource}
         columns={columns}
         refreshTable={() => 1}
-        buttonRightContentSlot = {rightButton}
+        buttonLeftContentSlot={searchElement}
+        buttonRightContentSlot={rightButton}
         pageIndex={1}
         expKeysAll={expKeysAll}
       />
+      <Modal
+        maskClosable={false}
+        title="编辑-映射"
+        width="680px"
+        visible={editFormVisible}
+        okText="确认"
+        onOk={() => sureEditMapField()}
+        onCancel={() => setEditFormVisible(false)}
+        cancelText="取消"
+        destroyOnClose
+      >
+        <Form form={editForm} preserve={false}>
+          {/* <Spin spinning={loading}> */}
+            <EditForm />
+          {/* </Spin> */}
+        </Form>
+      </Modal>
     </PageCommonWrap>
   );
 };

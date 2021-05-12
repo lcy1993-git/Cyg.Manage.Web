@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import { Table, Tooltip, Pagination, Button } from "antd"
 import EmptyTip from '@/components/empty-tip'
-import { FolderOutlined, FolderOpenOutlined, FullscreenOutlined, RedoOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
+import { FolderOutlined, FolderOpenOutlined, FullscreenOutlined, RedoOutlined, UpOutlined, DownOutlined, FileOutlined } from '@ant-design/icons';
 import CommonTitle from "@/components/common-title"
 
 import styles from './index.less';
@@ -52,13 +52,6 @@ const FileTreeTable: React.FC<Props> = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [expKeys, setExpKeys] = useState<string[]>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
-  const rowSelection = {
-    onChange: (values: any[], selectedRows: any[]) => {
-      setSelectedRowKeys(selectedRows.map((item) => item[rowKey]));
-      getSelectData?.(selectedRows);
-    },
-  };
 
   const page = useMemo(() => {
     return {
@@ -164,12 +157,18 @@ const FileTreeTable: React.FC<Props> = ({
             expandRowByClick: true,
             defaultExpandAllRows: true,
             expandIcon: (r) => {
+              if(!r.record.children || r.record.children?.length === 0) {
+                return (
+                  <span className={styles.folder}>
+                    <FileOutlined />&nbsp;
+                  </span>
+                );
+              }
               if (r.expanded) {
                 return (
                   <span className={styles.folder}>
                     <FolderOpenOutlined />&nbsp;
                   </span>
-
                 );
               } else {
                 return (
@@ -182,10 +181,10 @@ const FileTreeTable: React.FC<Props> = ({
             }
           }}
           rowSelection={{
-            type: "checkbox",
+            type: "radio",
             columnWidth: '38px',
-            selectedRowKeys: selectedRowKeys,
-            ...rowSelection,
+            // selectedRowKeys: selectedRowKeys,
+            // ...rowSelection,
           }}
           pagination={false}
           locale={{
