@@ -11,11 +11,11 @@ interface FileUploadShowItemProps {
   deleteEvent: (uid: string) => void;
   uploadEvent: () => void;
   status?: 'error' | 'normal';
-  compositional: boolean;
+  uploadFileBtn: boolean;
 }
 
 const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
-  const { name, uid, deleteEvent, uploadEvent, compositional, status = 'normal' } = props;
+  const { name, uid, deleteEvent, uploadEvent, uploadFileBtn, status = 'normal' } = props;
 
   const deleteFunction = () => {
     deleteEvent?.(uid);
@@ -45,7 +45,7 @@ const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
                     </span>
                 </span> */}
 
-          {compositional ? (
+          {uploadFileBtn ? (
             <span className={styles.uploadButton} onClick={() => uploadFunction()}>
               <span className={styles.controlButtonIcon}>
                 <CloudUploadOutlined />

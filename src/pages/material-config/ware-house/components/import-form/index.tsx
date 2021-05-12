@@ -1,8 +1,8 @@
 import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
+import FileUpload, { UploadStatus } from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useControllableValue } from 'ahooks';
-import React, { useState } from 'react';
+import { useBoolean, useControllableValue } from 'ahooks';
+import React, { useEffect, useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 import { Input, Form, message, Row, Col, Modal, Button } from 'antd';
@@ -30,6 +30,10 @@ interface ImportWareHouseProps {
 const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyId, setCompanyId] = useState<string>('');
+  const [
+    triggerUploadFile,
+    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
+  ] = useBoolean(false);
   const {
     province = '',
     provinceName = '',
@@ -39,24 +43,38 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
   } = props;
   const [form] = Form.useForm();
 
-  const saveLineStreesSagEvent = () => {
+  const saveLineStreesSagEvent = async (setStatus: (uploadStatus: UploadStatus) => void) => {
     form.validateFields().then(async (values) => {
-      const { file } = values;
-      await uploadLineStressSag(
-        file,
-        { province, companyId, overviewId },
-        requestSource,
-        '/WareHouse/SaveImport',
-      );
-      message.success('导入成功');
-      setState(false);
-      changeFinishEvent?.();
+      try {
+        const { file } = values;
+        await uploadLineStressSag(
+          file,
+          { province, companyId, overviewId },
+          requestSource,
+          '/WareHouse/SaveImport',
+        );
+
+        message.success('导入成功');
+        setTimeout(() => {
+          setState(false);
+        }, 1000);
+        setStatus('success');
+      } catch (error) {
+        setStatus('error');
+      } finally {
+        setUploadFileFalse();
+        changeFinishEvent?.();
+      }
     });
+  };
+
+  const onSave = () => {
+    setUploadFileTrue();
   };
 
   return (
     <Modal
-    maskClosable={false}
+      maskClosable={false}
       destroyOnClose
       width="780px"
       title="导入利库"
@@ -65,7 +83,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveLineStreesSagEvent()}>
+        <Button key="save" type="primary" onClick={() => onSave()}>
           保存
         </Button>,
       ]}
@@ -96,7 +114,11 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         </Row>
 
         <CyFormItem labelWidth={80} label="导入" name="file" required>
-          <FileUpload maxCount={1} />
+          <FileUpload
+            trigger={triggerUploadFile}
+            uploadFileFn={saveLineStreesSagEvent}
+            maxCount={1}
+          />
         </CyFormItem>
       </Form>
     </Modal>

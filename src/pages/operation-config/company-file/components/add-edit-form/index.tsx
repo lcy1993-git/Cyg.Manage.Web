@@ -52,13 +52,13 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
       )}
       {type === 'add' && (
         <CyFormItem label="上传文件" name="file" required rules={rules.fileld}>
-          <FileUpload compositional={true} uploadFileFn={uploadFileFn} maxCount={1} />
+          <FileUpload uploadFileBtn uploadFileFn={uploadFileFn} maxCount={1} />
         </CyFormItem>
       )}
 
       {type === 'edit' && (
         <CyFormItem label="上传文件" name="file">
-          <FileUpload compositional={true} uploadFileFn={uploadFileFn} maxCount={1} />
+          <FileUpload uploadFileBtn uploadFileFn={uploadFileFn} maxCount={1} />
         </CyFormItem>
       )}
 

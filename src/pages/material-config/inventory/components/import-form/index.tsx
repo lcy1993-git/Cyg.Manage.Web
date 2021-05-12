@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload, { UploadStatus } from '@/components/file-upload';
 import { newUploadLineStressSag } from '@/services/resource-config/drawing';
-import { useControllableValue } from 'ahooks';
+import { useBoolean, useControllableValue } from 'ahooks';
 import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
@@ -24,7 +24,10 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [province, setProvince] = useState<string>('');
   const [versionName, setVersionName] = useState<string>('');
-  const [triggerUploadFile, setTriggerUploadFile] = useState<boolean>(false);
+  const [
+    triggerUploadFile,
+    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
+  ] = useBoolean(false);
   const [inventoryName, setInventoryName] = useState<string>('');
   const { requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
@@ -40,26 +43,30 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           requestSource,
           '/Inventory/SaveImport',
         );
-        if (resData && resData.isSuccess === false) {
+        if (resData && !resData.isSuccess) {
+          setStatus('error');
+
           message.error(resData.message);
           return;
+        } else {
+          setStatus('success');
+          setTimeout(() => {
+            setState(false);
+          }, 1000);
         }
-        message.success('导入成功');
-        setStatus('success');
-        setState(false);
+
         changeFinishEvent?.();
       } catch (error) {
-        setStatus('error');
-        message.warn('导入失败');
         console.log(error);
       } finally {
+        setUploadFileFalse();
         setRequestLoading(false);
       }
     });
   };
 
   const onSave = () => {
-    setTriggerUploadFile(true);
+    setUploadFileTrue();
   };
 
   return (
@@ -165,10 +172,11 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           align="right"
           label="导入"
           name="file"
+          style={{ width: '565px' }}
           required
           rules={rule.file}
         >
-          <FileUpload trigger={triggerUploadFile} uploadFileFn={saveInventoryEvent} style={{ width: '565px' }} maxCount={1} />
+          <FileUpload trigger={triggerUploadFile} uploadFileFn={saveInventoryEvent} maxCount={1} />
         </CyFormItem>
       </Form>
     </Modal>

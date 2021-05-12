@@ -168,7 +168,6 @@ const CompanyFile: React.FC = () => {
         setFileId(fileId);
       },
       () => {
-        message.warn('文件上传失败');
         setStatus('error');
       },
     );
