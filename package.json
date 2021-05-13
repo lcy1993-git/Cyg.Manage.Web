@@ -44,11 +44,8 @@
     "@ant-design/pro-layout": "^6.5.0",
     "@ant-design/pro-table": "^2.9.16",
     "@types/echarts": "^4.9.3",
-<<<<<<< HEAD
-=======
     "@types/jsonp": "^0.2.0",
     "@types/ol": "^6.4.2",
->>>>>>> 4月29日发布版本
     "@types/react-custom-scrollbars": "^4.0.7",
     "@types/react-resizable": "^1.7.2",
     "@umijs/route-utils": "^1.0.33",
@@ -59,12 +56,9 @@
     "echarts-for-react": "^3.0.1",
     "echarts-gl": "^2.0.1",
     "lodash": "^4.17.11",
-<<<<<<< HEAD
     "mammoth": "^1.4.16",
-=======
     "mobx": "^6.2.0",
     "mobx-react-lite": "^3.2.0",
->>>>>>> 4月29日发布版本
     "moment": "^2.25.3",
     "node-uuid": "^1.4.8",
     "omit.js": "^2.0.2",
