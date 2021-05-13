@@ -1,4 +1,4 @@
-import { Button, Cascader, Checkbox, Form, message, Modal } from 'antd';
+import { Button, Cascader, Checkbox, message, Modal } from 'antd';
 import uuid from 'node-uuid';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useMemo } from 'react';
@@ -6,14 +6,14 @@ import styles from './index.less';
 import city from '@/assets/local-data/area';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, findLastKey } from 'lodash';
 import useRequest from '@ahooksjs/use-request';
 import { getCommonSelectData } from '@/services/common';
-import CyFormItem from '@/components/cy-form-item';
 import EditBulkEngineer from './edit-bulk-engineer';
 import { useControllableValue } from 'ahooks';
 import { importBulkEngineerProject } from '@/services/project-management/all-project';
 import EditBulkProject from './edit-bulk-project';
+import CyTip from '@/components/cy-tip';
 
 interface BatchEditEngineerInfoProps {
   excelModalData: any;
@@ -41,9 +41,9 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       value: data.id,
       children: data.children
         ? [
-            { label: '无', value: `${data.id}_null`, children: undefined },
-            ...data.children.map(mapHandleCityData),
-          ]
+          { label: '无', value: `${data.id}_null`, children: undefined },
+          ...data.children.map(mapHandleCityData),
+        ]
         : undefined,
     };
   };
@@ -70,6 +70,9 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         id: uuid.v1(),
         checked: index === 0 ? true : false,
         index: index,
+        areaChange: false,
+        libChange: false,
+        companyChange: false,
         selectData: {
           inventoryOverviewSelectData: [],
           warehouseSelectData: [],
@@ -125,51 +128,37 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         const handleProjects = item.projects.map((ite: any) => {
           return {
             ...ite,
-            powerSupply: '',
+            powerSupply: null,
           };
         });
-        if (item.checked) {
-          setCurrentChooseEngineerInfo({
-            ...item,
-            index: numberIndex,
-            engineer: {
-              ...item.engineer,
-              province,
-              city,
-              area,
-              warehouseId: '',
-              company: '',
-            },
-            selectData: {
-              ...item.selectData,
-              warehouseSelectData: handleWarehouseSelectData,
-              companySelectData: handleCompanySelectData,
-            },
-            projects: handleProjects,
-          });
-        }
         return {
           ...item,
+          areaChange: true,
+          companyChange: true,
+          checked: true,
           engineer: {
             ...item.engineer,
             province,
             city,
             area,
-            warehouseId: '',
-            company: '',
+            warehouseId: null,
+            company: null,
           },
           selectData: {
             ...item.selectData,
             warehouseSelectData: handleWarehouseSelectData,
             companySelectData: handleCompanySelectData,
+            departmentSelectData: []
           },
           projects: handleProjects,
         };
       }
-      return item;
+      return {...item,checked: false};
     });
 
-    setEngineerInfo(handleData);
+    const finalyResultData = handleWillStateEngineerInfo(handleData);
+    setEngineerInfo(finalyResultData);
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
   };
 
   const libChangeEvent = async (value: any, numberIndex: number) => {
@@ -192,10 +181,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       if (index === numberIndex) {
         return {
           ...item,
+          libChange: true,
+          checked: true,
           engineer: {
             ...item.engineer,
             libId: value,
-            inventoryOverviewId: '',
+            inventoryOverviewId: null,
           },
           selectData: {
             ...item.selectData,
@@ -203,10 +194,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           },
         };
       }
-      return item;
+      return {...item, checked: false};
     });
 
-    setEngineerInfo(handleData);
+    const finalyResultData = handleWillStateEngineerInfo(handleData);
+    setEngineerInfo(finalyResultData);
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
   };
 
   const wareHouseChangeEvent = (value: any, numberIndex: number) => {
@@ -216,16 +209,19 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       if (index === numberIndex) {
         return {
           ...item,
+          checked: true,
           engineer: {
             ...item.engineer,
             warehouseId: value,
           },
         };
       }
-      return item;
+      return {...item, checked: false};
     });
 
-    setEngineerInfo(handleData);
+    const finalyResultData = handleWillStateEngineerInfo(handleData);
+    setEngineerInfo(finalyResultData);
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
   };
 
   const companyChangeEvent = async (value: any, numberIndex: number) => {
@@ -250,27 +246,14 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         const handleProjects = item.projects.map((ite: any) => {
           return {
             ...ite,
-            powerSupply: '',
+            powerSupply: null,
           };
         });
-        if (item.checked) {
-          setCurrentChooseEngineerInfo({
-            ...item,
-            index: numberIndex,
-            engineer: {
-              ...item.engineer,
-              company: value,
-            },
-            selectData: {
-              ...item.selectData,
-              departmentSelectData: handleDepartmentSelectData,
-            },
-            projects: handleProjects,
-          });
-        }
         return {
           ...item,
           index: numberIndex,
+          companyChange: true,
+          checked: true,
           engineer: {
             ...item.engineer,
             company: value,
@@ -282,10 +265,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           projects: handleProjects,
         };
       }
-      return item;
+      return {...item, checked: false};
     });
 
-    setEngineerInfo(handleData);
+    const finalyResultData = handleWillStateEngineerInfo(handleData);
+    setEngineerInfo(finalyResultData);
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
   };
 
   const inventoryOverviewChange = (value: any, numberIndex: number) => {
@@ -295,16 +280,19 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       if (index === numberIndex) {
         return {
           ...item,
+          checked: true,
           engineer: {
             ...item.engineer,
             inventoryOverviewId: value,
           },
         };
       }
-      return item;
+      return {...item, checked: false};
     });
 
-    setEngineerInfo(handleData);
+    const finalyResultData = handleWillStateEngineerInfo(handleData);
+    setEngineerInfo(finalyResultData);
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
   };
 
   const checkboxChangeEvent = (value: any, numberIndex: number) => {
@@ -325,7 +313,9 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       };
     });
 
-    setEngineerInfo(handleData);
+    const finalyResultData = handleWillStateEngineerInfo(handleData);
+    setEngineerInfo(finalyResultData);
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
   };
 
   const engineerTrElement = engineerInfo.map((item, index) => {
@@ -334,13 +324,13 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       item?.engineer.city
         ? item?.engineer.city
         : item?.engineer.province
-        ? `${item?.engineer.province}_null`
-        : undefined,
+          ? `${item?.engineer.province}_null`
+          : undefined,
       item?.engineer.area
         ? item?.engineer.area
         : item?.engineer.city
-        ? `${item?.engineer.city}_null`
-        : undefined,
+          ? `${item?.engineer.city}_null`
+          : undefined,
     ];
     if (!item?.engineer.province) {
       provinceValue = [];
@@ -348,7 +338,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
     if (index === 0) {
       return (
-        <tr key={item.id}>
+        <tr key={item.id} className={item.checked ? styles.checked : ""}>
           <td>
             <Checkbox
               onChange={(checked) => checkboxChangeEvent(checked, index)}
@@ -360,6 +350,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             <Cascader
               style={{ width: '100%' }}
               value={provinceValue}
+              allowClear={false}
               onChange={(value) => areaChangeEvent(value, index)}
               options={afterHandleData}
             />
@@ -402,14 +393,14 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           </td>
           <td>
             <Button type="text" onClick={() => editEngineerInfo({ ...item, index })}>
-              编辑
+              <span className="canClick">编辑</span>
             </Button>
           </td>
         </tr>
       );
     }
     return (
-      <tr key={item.id}>
+      <tr key={item.id} className={item.checked ? styles.checked : ""}>
         <td>
           <Checkbox
             onChange={(checked) => checkboxChangeEvent(checked, index)}
@@ -421,6 +412,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           <Cascader
             style={{ width: '100%' }}
             value={provinceValue}
+            allowClear={false}
             onChange={(value) => areaChangeEvent(value, index)}
             options={afterHandleData}
             placeholder="同上"
@@ -441,7 +433,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             value={item.engineer.inventoryOverviewId}
             onChange={(value) => inventoryOverviewChange(value, index)}
             options={item.selectData.inventoryOverviewSelectData}
-            placeholder="同上"
+            placeholder={item.libChange ? "请选择" : "同上"}
           />
         </td>
         <td>
@@ -450,7 +442,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             value={item.engineer.warehouseId}
             onChange={(value) => wareHouseChangeEvent(value, index)}
             options={item.selectData.warehouseSelectData}
-            placeholder="同上"
+            placeholder={item.areaChange ? "请选择" : "同上"}
           />
         </td>
         <td>
@@ -459,12 +451,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             value={item.engineer.company}
             onChange={(value) => companyChangeEvent(value, index)}
             options={item.selectData.companySelectData}
-            placeholder="同上"
+            placeholder={item.areaChange ? "请选择" : "同上"}
           />
         </td>
         <td>
           <Button type="text" onClick={() => editEngineerInfo({ ...item, index })}>
-            编辑
+            <span className="canClick">编辑</span>
           </Button>
         </td>
       </tr>
@@ -501,7 +493,10 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       index: numberIndex,
       projects: handleData,
     });
-    setEngineerInfo(handleEngineerData);
+
+    const finalyResultData = handleWillStateEngineerInfo(handleEngineerData);
+    setEngineerInfo(finalyResultData);
+    //setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
   };
 
   const projectTrElement = currentChooseEngineerInfo?.projects.map((item: any, index: number) => {
@@ -515,12 +510,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
               value={item.powerSupply}
               onChange={(value) => departmentChangeEvent(value, index)}
               options={currentChooseEngineerInfo.selectData.departmentSelectData}
-              placeholder="部组"
+              placeholder={(currentChooseEngineerInfo.index === 0 || currentChooseEngineerInfo.companyChange) ? "部组" : "同上"}
             />
           </td>
           <td>
             <Button type="text" onClick={() => editProjectInfo({ ...item, index })}>
-              编辑
+              <span className="canClick">编辑</span>
             </Button>
           </td>
         </tr>
@@ -540,26 +535,58 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         </td>
         <td>
           <Button type="text" onClick={() => editProjectInfo({ ...item, index })}>
-            编辑
+            <span className="canClick">编辑</span>
           </Button>
         </td>
       </tr>
     );
   });
 
-  //编辑行工程信息
-  // const editEngineer = (record: any) => {
-  //   editEngineerForm.setFieldsValue({
-  //     ...record,
-  //     compileTime: record?.compileTime ? moment(record?.compileTime) : null,
-  //     startTime: record?.startTime ? moment(record?.startTime) : null,
-  //     endTime: record?.endTime ? moment(record?.endTime) : null,
-  //     importance: String(record?.importance),
-  //     grade: String(record?.grade),
-  //     area: record?.area ? record.area : null,
-  //   });
-  //   setCurrentEngineerModalVisible(true);
-  // };
+  const judgeCanSaveFunction = () => {
+    const copyEngineerInfo = cloneDeep(engineerInfo);
+    let canSave = true;
+    const errorInfo: {
+      wareHouseNoChoose: any[],
+      companyNoChoose: any[],
+      departmentNoChoose: any[],
+      inventoryOverviewNoChoose: any[]
+    } = {
+      wareHouseNoChoose: [],
+      companyNoChoose: [],
+      departmentNoChoose: [],
+      inventoryOverviewNoChoose: []
+    }
+    copyEngineerInfo.forEach((item, index) => {
+      if(item.areaChange) {
+        if(!item.engineer.warehouseId) {
+          canSave = false;
+          errorInfo.wareHouseNoChoose.push(item.engineer)
+        }
+        if(!item.engineer.company) {
+          canSave = false;
+          errorInfo.companyNoChoose.push(item.engineer)
+        }
+      }
+      if(item.companyChange) {
+        if(item.projects && item.projects.length > 0) {
+          if(!item.projects[0].powerSupply) {
+            canSave = false;
+            errorInfo.departmentNoChoose.push(item.engineer)
+          }
+        }
+      }
+      if(item.libChange) {
+        if(!item.engineer.inventoryOverviewId) {
+          canSave = false;
+          errorInfo.inventoryOverviewNoChoose.push(item.engineer)
+        }
+      }
+    })
+    return {
+      canSave,
+      errorInfo
+    }
+  }
 
   const handleFinallyData = () => {
     const saveData = cloneDeep(engineerInfo).map((item) => {
@@ -636,6 +663,42 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
   //批量上传
   const saveBatchAddProjectEvent = async () => {
+
+    // 如果存在含 areaChange、companyChange、libChange 为true的选型，如果没有重新选值，那么就不进行保存
+    const judgeInfo = judgeCanSaveFunction();
+    if(!judgeInfo.canSave) {
+      let tipMessage = "";
+      if(judgeInfo.errorInfo.wareHouseNoChoose.length > 0) {
+        judgeInfo.errorInfo.wareHouseNoChoose.forEach((item, index) => {
+          tipMessage = tipMessage + item.name;
+        })
+        tipMessage += "未选择利旧协议库。"
+      }
+
+      if(judgeInfo.errorInfo.companyNoChoose.length > 0) {
+        judgeInfo.errorInfo.companyNoChoose.forEach((item, index) => {
+          tipMessage = tipMessage + item.name;
+        })
+        tipMessage += "未选择所属公司。"
+      }
+
+      if(judgeInfo.errorInfo.inventoryOverviewNoChoose.length > 0) {
+        judgeInfo.errorInfo.inventoryOverviewNoChoose.forEach((item, index) => {
+          tipMessage = tipMessage + item.name;
+        })
+        tipMessage += "未选择协议库。"
+      }
+
+      if(judgeInfo.errorInfo.departmentNoChoose.length > 0) {
+        judgeInfo.errorInfo.departmentNoChoose.forEach((item, index) => {
+          tipMessage = tipMessage + item.name;
+        })
+        tipMessage += "下第一个项目未选择部组。"
+      }
+      message.error(tipMessage);
+      return
+    }
+
     const submitInfo = handleFinallyData();
     await importBulkEngineerProject({ datas: submitInfo });
     setState(false);
@@ -645,8 +708,19 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
   const engineerFinishEditInfo = (values: any) => {
     const copyEngineerInfo = cloneDeep(engineerInfo);
-    copyEngineerInfo.splice(values.index, 1, values);
-    setEngineerInfo(copyEngineerInfo);
+    //copyEngineerInfo.splice(values.index, 1, values);
+    
+    const handleResultData = copyEngineerInfo.map((item, index) => {
+      if(index === values.index) {
+        return {...values, checked: true}
+      }
+      return {...item, checked: false}
+    })
+    
+    const finalyResultData = handleWillStateEngineerInfo(handleResultData);
+    setEngineerInfo(finalyResultData);
+
+    setCurrentChooseEngineerInfo(finalyResultData[values.index]);
   };
 
   const projectFinishEditInfo = (values: any) => {
@@ -654,7 +728,8 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
     copyEngineerInfo.splice(values.index, 1, values);
 
-    setEngineerInfo(copyEngineerInfo);
+    const finalyResultData = handleWillStateEngineerInfo(copyEngineerInfo);
+    setEngineerInfo(finalyResultData);
     setCurrentChooseEngineerInfo(values);
   };
 
@@ -668,12 +743,69 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
     setCurrentClickProjectInfo(projectInfo);
   };
 
+  // 每一次设置engineerInfo的时候，需要把数据进行处理，可以获取到上面的select
+  const handleWillStateEngineerInfo = (willStateEngineerInfo: any) => {
+    const copyData = cloneDeep(willStateEngineerInfo);
+    const engineerKeys = [
+      'warehouseId',
+      'inventoryOverviewId',
+      'company',
+    ];
+
+    copyData.forEach((item: any, index: number) => {
+      if (index > 0) {
+        engineerKeys.forEach((ite: any) => {
+          // 如果没有值，并且这个数据的item的area没有发生过变化，那么可以更新同步  warehouseSelectData， companySelectData
+          if(!item.engineer[ite] && ite === "warehouseId" && !item.areaChange) {
+            const sliceData = copyData.slice(0, index);
+
+            const hasValueData = sliceData.filter((it: any) => it.engineer[ite]);
+
+            if (hasValueData && hasValueData.length > 0) {
+              item.selectData.warehouseSelectData = hasValueData[hasValueData.length - 1].selectData.warehouseSelectData;
+            }
+          }
+
+          if(!item.engineer[ite] && ite === "company") {
+            const sliceData = copyData.slice(0, index);
+
+            const hasValueData = sliceData.filter((it: any) => it.engineer[ite]);
+
+            if (hasValueData && hasValueData.length > 0) {
+              if(!item.areaChange) {
+                item.selectData.companySelectData = hasValueData[hasValueData.length - 1].selectData.companySelectData;
+              }
+              if(!item.companyChange) {
+                item.selectData.departmentSelectData = hasValueData[hasValueData.length - 1].selectData.departmentSelectData;
+              }
+            }
+          }
+
+          if(!item.engineer[ite] && ite === "inventoryOverviewId") {
+            const sliceData = copyData.slice(0, index);
+
+            const hasValueData = sliceData.filter((it: any) => it.engineer[ite]);
+
+            if (hasValueData && hasValueData.length > 0) {
+              if(!item.libChange) {
+                item.selectData.inventoryOverviewSelectData = hasValueData[hasValueData.length - 1].selectData.inventoryOverviewSelectData;
+              }
+            }
+          }
+        });
+      }
+    });
+
+    return copyData
+  }
+
+
   return (
     <>
       <Modal
         maskClosable={false}
         width="98%"
-        bodyStyle={{ height: 700 }}
+        bodyStyle={{ height: 700, overflowY: "auto", padding: "0" }}
         centered
         title="立项批量导入"
         visible={state as boolean}
@@ -681,44 +813,41 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         onOk={() => saveBatchAddProjectEvent()}
         onCancel={() => closeModalEvent()}
       >
-        <Form>
-          <CyFormItem
-            required
-            labelWidth={720}
-            label="立项批量导入模板中的工程/项目信息已经录入，但是还需要您对其他一些选项进行补充选择，请完善一下所有工程以及项目的信息，确认无误后点击【保存】按钮，随后会为您创建好所有项目"
-          />
-          <div className={styles.batchEditEngineerInfoTable}>
-            <div className={styles.batchEditEngineerTableContent}>
-              <table>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>工程名称</th>
-                    <th>区域</th>
-                    <th>资源库</th>
-                    <th>协议库</th>
-                    <th>利旧协议库</th>
-                    <th>所属公司</th>
-                    <th>已录入信息</th>
-                  </tr>
-                </thead>
-                <tbody>{engineerTrElement}</tbody>
-              </table>
-            </div>
-            <div className={styles.batchEditProjectTable}>
-              <table>
-                <thead>
-                  <tr>
-                    <th>项目名称</th>
-                    <th>供电公司/班组</th>
-                    <th>已录入信息</th>
-                  </tr>
-                </thead>
-                <tbody>{projectTrElement}</tbody>
-              </table>
-            </div>
+        <CyTip>
+          立项批量导入模板中的工程/项目信息已经录入，但是还需要您对其他一些选项进行补充选择，请完善一下所有工程以及项目的信息，确认无误后点击【保存】按钮，随后会为您创建好所有项目
+          </CyTip>
+        <div className={styles.batchEditEngineerInfoTable}>
+          <div className={styles.batchEditEngineerTableContent}>
+            <table>
+              <thead>
+                <tr>
+                  <th style={{ width: "40px" }}></th>
+                  <th>工程名称</th>
+                  <th>区域</th>
+                  <th>资源库</th>
+                  <th>协议库</th>
+                  <th>利旧协议库</th>
+                  <th>所属公司</th>
+                  <th style={{ width: "100px" }}>已录入信息</th>
+                </tr>
+              </thead>
+              <tbody>{engineerTrElement}</tbody>
+            </table>
           </div>
-        </Form>
+          <div className={styles.batchEditProjectTable}>
+            <div className={styles.currentControlEngineer}>{currentChooseEngineerInfo?.engineer?.name}</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>项目名称</th>
+                  <th style={{ width: "140px" }}>供电公司/班组</th>
+                  <th style={{ width: "100px" }}>已录入信息</th>
+                </tr>
+              </thead>
+              <tbody>{projectTrElement}</tbody>
+            </table>
+          </div>
+        </div>
       </Modal>
       {editEngineerModalVisible && (
         <EditBulkEngineer
@@ -736,7 +865,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           visible={editProjectModalVisible}
           onChange={setEditProjectModalVisible}
           currentChooseEngineerInfo={currentChooseEngineerInfo}
-          // setCurrent={setCurrentChooseEngineerInfo}
+        // setCurrent={setCurrentChooseEngineerInfo}
         />
       )}
     </>

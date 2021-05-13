@@ -22,9 +22,14 @@ interface EditBulkEngineerProps {
 const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
 
+  const [areaChange, setAreaChange] = useState<boolean>(false);
+  const [libChange, setLibChange] = useState<boolean>(false);
+  const [companyChangeFlag, setCompanyChangeFlag] = useState<boolean>(false);
+
   const [inventoryOverviewSelectData, setInventoryOverviewSelectData] = useState<any[]>([]);
   const [warehouseSelectData, setWarehouseSelectData] = useState<any[]>([]);
   const [companySelectData, setCompanySelectData] = useState<any[]>([]);
+  const [departmentSelectData, setDepartmentSelectData] = useState<any[]>([]);
 
   const [provinceValue, setProvinceValue] = useState<any[]>([]);
   const [libId, setLibId] = useState<string>('');
@@ -37,6 +42,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
 
   const saveCurrentEngineer = () => {
     form.validateFields().then((values) => {
+      const [province, city, area] = provinceValue;
       const engineerSaveInfo = {
         ...engineerInfo,
         engineer: {
@@ -46,12 +52,19 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
           inventoryOverviewId,
           warehouseId,
           company,
+          province: isNaN(province) ? "" : province,
+          city: isNaN(city) ? "" : city,
+          area: isNaN(area) ? "" : area,
         },
+        areaChange,
+        libChange,
+        companyChange: companyChangeFlag,
         selectData: {
           ...engineerInfo.selectData,
           inventoryOverviewSelectData,
           warehouseSelectData,
           companySelectData,
+          departmentSelectData
         },
       };
       finishEvent(engineerSaveInfo);
@@ -68,6 +81,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
 
   const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true });
   const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true });
+  const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true });
 
   const closeModalEvent = () => {
     setState(false);
@@ -117,6 +131,8 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     setInventoryOverviewSelectData(selectData.inventoryOverviewSelectData);
     setWarehouseSelectData(selectData.warehouseSelectData);
     setCompanySelectData(selectData.companySelectData);
+    setDepartmentSelectData(selectData.departmentSelectData);
+
     setLibId(engineer.libId);
     setProvinceValue(provinceValue);
     setInventoryOverviewId(engineer.inventoryOverviewId);
@@ -156,6 +172,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       };
     });
 
+    setAreaChange(true)
     setWarehouseSelectData(handleWarehouseSelectData);
     setCompanySelectData(handleCompanySelectData);
   };
@@ -175,7 +192,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         value: item.value,
       };
     });
-
+    setLibChange(true)
     setInventoryOverviewSelectData(handleInventoryOverviewSelectData);
   };
 
@@ -187,8 +204,18 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     setWarehouseId(value);
   };
 
-  const companyChange = (value: any) => {
+  const companyChange = async (value: any) => {
     setCompany(value);
+
+    const [province] = provinceValue;
+    const departmentSelectData = await getDepartmentSelectData({
+      url: '/ElectricityCompany/GetPowerSupplys',
+      method: 'post',
+      params: { areaId: province, company: value },
+      requestSource: 'project',
+    });
+    setCompanyChangeFlag(true)
+    setDepartmentSelectData(departmentSelectData)
   };
 
   return (
@@ -213,6 +240,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 <div>
                   <Cascader
                     style={{ width: '100%' }}
+                    allowClear={false}
                     value={provinceValue}
                     onChange={(value) => areaChangeEvent(value)}
                     options={afterHandleData}

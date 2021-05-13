@@ -69,7 +69,7 @@ const ProjectManagement: React.FC = () => {
   const [status, setStatus] = useState<string>();
   const [sourceType, setSourceType] = useState<string>();
   const [identityType, setIdentityType] = useState<string>();
-  const [areaInfo, setAreaInfo] = useState({ areaType: "-1", areaId: ""});
+  const [areaInfo, setAreaInfo] = useState({ areaType: "-1", areaId: "" });
 
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
@@ -409,7 +409,7 @@ const ProjectManagement: React.FC = () => {
       status: '-1',
       statisticalCategory: statisticalCategory,
       sourceType: "-1",
-      identityType:  "-1",
+      identityType: "-1",
       areaType: "-1",
       areaId: ""
     });
@@ -571,29 +571,29 @@ const ProjectManagement: React.FC = () => {
   ]
 
   const areaChangeEvent = (params: any) => {
-    const {provinceId,cityId,areaId} = params;
-    if(areaId) {
+    const { provinceId, cityId, areaId } = params;
+    if (areaId) {
       setAreaInfo({
         areaType: "3",
         areaId: areaId
       })
       return
     }
-    if(cityId) {
+    if (cityId) {
       setAreaInfo({
         areaType: "2",
         areaId: cityId
       })
       return
     }
-    if(provinceId) {
+    if (provinceId) {
       setAreaInfo({
         areaType: "1",
         areaId: provinceId
       })
       return
     }
-    if(!provinceId && !cityId && !areaId) {
+    if (!provinceId && !cityId && !areaId) {
       setAreaInfo({
         areaType: "-1",
         areaId: ""
@@ -602,7 +602,7 @@ const ProjectManagement: React.FC = () => {
   }
 
   const areaSelectReset = () => {
-    if(areaRef && areaRef.current) {
+    if (areaRef && areaRef.current) {
       //@ts-ignore
       areaRef.current.reset();
     }
@@ -613,7 +613,7 @@ const ProjectManagement: React.FC = () => {
       <div className={styles.projectManagement}>
         <div className={styles.projectManagemnetSearch}>
           <div className="flex">
-            <div className="flex1 flex" style={{overflow: "hidden"}}>
+            <div className="flex1 flex" style={{ overflow: "hidden" }}>
               <OverFlowHiddenComponent childrenList={searchChildrenList}>
                 <TableSearch className="mr22" label="项目名称" width="300px">
                   <Search
@@ -900,13 +900,13 @@ const ProjectManagement: React.FC = () => {
         </div>
       </div>
 
-      
-        <UploadAddProjectModal
-          visible={upLoadAddProjectModalVisible}
-          onChange={setUploadAddProjectModalVisible}
-          refreshEvent={search}
-        />
-     
+
+      <UploadAddProjectModal
+        visible={upLoadAddProjectModalVisible}
+        onChange={setUploadAddProjectModalVisible}
+        refreshEvent={search}
+      />
+
 
       {addEngineerModalFlag && (
         <Modal
