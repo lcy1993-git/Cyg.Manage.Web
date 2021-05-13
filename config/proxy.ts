@@ -29,6 +29,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/resource': '/' },
     },
+    '/CompanyUser/api': {
+      target: 'http://10.6.1.36:8034/',
+      changeOrigin: true,
+      pathRewrite: { '^/CompanyUser': '/' },
+    },
   },
   test: {
     '/api/': {
