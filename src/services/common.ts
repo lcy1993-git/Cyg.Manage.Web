@@ -12,6 +12,7 @@ const devBaseUrl = {
   common: '/common/api',
   upload: '/upload/api',
   resource: '/resource/api',
+  companyUser: '/CompanyUser/api'
 };
 
 // interface UrlSelectParams {

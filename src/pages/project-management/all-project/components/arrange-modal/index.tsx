@@ -4,7 +4,7 @@ import { Modal } from 'antd';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import ArrangeForm from '../arrange-form';
 import { saveArrange } from '@/services/project-management/all-project';
-
+import SelectAddListForm from '../select-add-list-form';
 interface ArrangeModalProps {
   projectIds: string[];
   visible: boolean;
@@ -128,7 +128,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         </TabPane>
         {(selectType === '2' || selectType === '4') && (
           <TabPane tab="外审安排" key="2">
-            Tab 2
+            <SelectAddListForm />
           </TabPane>
         )}
         {(selectType === '1' || selectType === '3') && (
