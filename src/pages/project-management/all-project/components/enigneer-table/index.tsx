@@ -284,6 +284,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         return (
           <>
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
+            
               <span>
                 {!stateInfo.isArrange &&
                   identitys.findIndex((item: any) => item.value === 4) > -1 ? (
@@ -293,9 +294,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
-                ) : (
-                  <span>{stateInfo?.statusText}</span>
-                )}
+                ) : stateInfo.status === 17}
               </span>
             )}
             {!buttonJurisdictionArray?.includes('all-project-copy-project') && (
@@ -372,7 +371,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     if (hasData > -1) {
       copyData.splice(hasData, 1, projectSelectInfo);
       setTableSelectData(copyData);
-      onSelect?.(copyData);
     } else {
       // 代表没有数据，那就直接插进去
       setTableSelectData([...tableSelectData, projectSelectInfo]);

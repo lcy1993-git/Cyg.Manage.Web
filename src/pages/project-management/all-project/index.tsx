@@ -69,7 +69,7 @@ const ProjectManagement: React.FC = () => {
   const [status, setStatus] = useState<string>();
   const [sourceType, setSourceType] = useState<string>();
   const [identityType, setIdentityType] = useState<string>();
-  const [areaInfo, setAreaInfo] = useState({ areaType: "-1", areaId: ""});
+  const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
 
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
@@ -99,8 +99,8 @@ const ProjectManagement: React.FC = () => {
 
   const [upLoadAddProjectModalVisible, setUploadAddProjectModalVisible] = useState<boolean>(false);
 
-  //获取上传立项模板后的List数据
-  const [excelListData, setExcelListData] = useState<any>();
+  //获取当前选择数据
+  const [currentSelectData, setCurrentSelectData] = useState<any>();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -152,9 +152,9 @@ const ProjectManagement: React.FC = () => {
         nature: nature ?? '-1',
         kvLevel: kvLevel ?? '-1',
         status: status ?? '-1',
-        sourceType: sourceType ?? "-1",
-        identityType: identityType ?? "-1",
-        ...areaInfo
+        sourceType: sourceType ?? '-1',
+        identityType: identityType ?? '-1',
+        ...areaInfo,
       });
     }
   };
@@ -227,7 +227,10 @@ const ProjectManagement: React.FC = () => {
       message.error('请选择修改安排的项目！');
       return;
     }
-
+    if (tableSelectData[0]?.projectInfo?.status[0].status === 7) {
+      message.error('当前处于设计完成，不可修改安排！');
+      return;
+    }
     const resData = await canEditArrange(projectIds);
 
     const { allotCompanyGroup = '' } = resData;
@@ -375,9 +378,9 @@ const ProjectManagement: React.FC = () => {
       nature: '-1',
       kvLevel: '-1',
       status: '-1',
-      sourceType: sourceType ?? "-1",
-      identityType: identityType ?? "-1",
-      ...areaInfo
+      sourceType: sourceType ?? '-1',
+      identityType: identityType ?? '-1',
+      ...areaInfo,
     });
   });
 
@@ -391,11 +394,11 @@ const ProjectManagement: React.FC = () => {
     setKvLevel(undefined);
     setStatus(undefined);
     setIdentityType(undefined);
-    setSourceType(undefined)
+    setSourceType(undefined);
     setAreaInfo({
-      areaType: "-1",
-      areaId: ""
-    })
+      areaType: '-1',
+      areaId: '',
+    });
     areaSelectReset();
     // TODO 重置完是否进行查询
     searchByParams({
@@ -408,10 +411,10 @@ const ProjectManagement: React.FC = () => {
       kvLevel: '-1',
       status: '-1',
       statisticalCategory: statisticalCategory,
-      sourceType: "-1",
-      identityType:  "-1",
-      areaType: "-1",
-      areaId: ""
+      sourceType: '-1',
+      identityType: '-1',
+      areaType: '-1',
+      areaId: '',
     });
   };
 
@@ -427,9 +430,9 @@ const ProjectManagement: React.FC = () => {
       kvLevel: kvLevel ?? '-1',
       status: status ?? '-1',
       statisticalCategory: statisticsType,
-      sourceType: sourceType ?? "-1",
-      identityType: identityType ?? "-1",
-      ...areaInfo
+      sourceType: sourceType ?? '-1',
+      identityType: identityType ?? '-1',
+      ...areaInfo,
     });
   };
 
@@ -536,84 +539,84 @@ const ProjectManagement: React.FC = () => {
   //上传模板后跳转
   const searchChildrenList = [
     {
-      width: 300
+      width: 300,
     },
     {
-      width: 188
+      width: 188,
     },
     {
-      width: 111
+      width: 111,
     },
     {
-      width: 111
+      width: 111,
     },
     {
-      width: 111
+      width: 111,
     },
     {
-      width: 111
+      width: 111,
     },
     {
-      width: 111
+      width: 111,
     },
     {
-      width: 111
+      width: 111,
     },
     {
-      width: 111
+      width: 111,
     },
     {
-      width: 111
+      width: 111,
     },
     {
-      width: 111
+      width: 111,
     },
-  ]
+  ];
 
   const areaChangeEvent = (params: any) => {
-    const {provinceId,cityId,areaId} = params;
-    if(areaId) {
+    const { provinceId, cityId, areaId } = params;
+    if (areaId) {
       setAreaInfo({
-        areaType: "3",
-        areaId: areaId
-      })
-      return
+        areaType: '3',
+        areaId: areaId,
+      });
+      return;
     }
-    if(cityId) {
+    if (cityId) {
       setAreaInfo({
-        areaType: "2",
-        areaId: cityId
-      })
-      return
+        areaType: '2',
+        areaId: cityId,
+      });
+      return;
     }
-    if(provinceId) {
+    if (provinceId) {
       setAreaInfo({
-        areaType: "1",
-        areaId: provinceId
-      })
-      return
+        areaType: '1',
+        areaId: provinceId,
+      });
+      return;
     }
-    if(!provinceId && !cityId && !areaId) {
+    if (!provinceId && !cityId && !areaId) {
       setAreaInfo({
-        areaType: "-1",
-        areaId: ""
-      })
+        areaType: '-1',
+        areaId: '',
+      });
     }
-  }
+  };
 
   const areaSelectReset = () => {
-    if(areaRef && areaRef.current) {
+    if (areaRef && areaRef.current) {
       //@ts-ignore
       areaRef.current.reset();
     }
-  }
+  };
 
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectManagement}>
         <div className={styles.projectManagemnetSearch}>
           <div className="flex">
-            <div className="flex1 flex" style={{overflow: "hidden"}}>
+            <div className="flex1 flex" style={{ overflow: 'hidden' }}>
               <OverFlowHiddenComponent childrenList={searchChildrenList}>
                 <TableSearch className="mr22" label="项目名称" width="300px">
                   <Search
@@ -824,20 +827,20 @@ const ProjectManagement: React.FC = () => {
                 {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
                   buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
                   buttonJurisdictionArray?.includes('all-project-recall-project')) && (
-                    <Dropdown overlay={arrangeMenu}>
-                      <Button className="mr7">
-                        安排 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
+                  <Dropdown overlay={arrangeMenu}>
+                    <Button className="mr7">
+                      安排 <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                )}
                 {(buttonJurisdictionArray?.includes('all-project-share') ||
                   buttonJurisdictionArray?.includes('all-project-share-recall')) && (
-                    <Dropdown overlay={shareMenu}>
-                      <Button className="mr7">
-                        共享 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
+                  <Dropdown overlay={shareMenu}>
+                    <Button className="mr7">
+                      共享 <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                )}
                 {buttonJurisdictionArray?.includes('all-project-export') && (
                   <div className="mr7">
                     <TableExportButton
@@ -853,9 +856,9 @@ const ProjectManagement: React.FC = () => {
                         kvLevel: kvLevel ?? '-1',
                         status: status ?? '-1',
                         statisticalCategory: statisticalCategory ?? '-1',
-                        sourceType: sourceType ?? "-1",
-                        identityType: identityType ?? "-1",
-                        ...areaInfo
+                        sourceType: sourceType ?? '-1',
+                        identityType: identityType ?? '-1',
+                        ...areaInfo,
                       }}
                     />
                   </div>
@@ -864,12 +867,12 @@ const ProjectManagement: React.FC = () => {
                   buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
                   buttonJurisdictionArray?.includes('all-project-kont-pass') ||
                   buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
-                    <Dropdown overlay={postProjectMenu}>
-                      <Button className="mr7">
-                        结项 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
+                  <Dropdown overlay={postProjectMenu}>
+                    <Button className="mr7">
+                      结项 <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                )}
                 {buttonJurisdictionArray?.includes('all-project-resource') && (
                   <Button onClick={() => setLibVisible(true)}>资源库迭代</Button>
                 )}
@@ -891,22 +894,20 @@ const ProjectManagement: React.FC = () => {
                 kvLevel: kvLevel ?? '-1',
                 status: status ?? '-1',
                 statisticalCategory: statisticalCategory ?? '-1',
-                sourceType: sourceType ?? "-1",
-                identityType: identityType ?? "-1",
-                ...areaInfo
+                sourceType: sourceType ?? '-1',
+                identityType: identityType ?? '-1',
+                ...areaInfo,
               }}
             />
           </div>
         </div>
       </div>
 
-      
-        <UploadAddProjectModal
-          visible={upLoadAddProjectModalVisible}
-          onChange={setUploadAddProjectModalVisible}
-          refreshEvent={search}
-        />
-     
+      <UploadAddProjectModal
+        visible={upLoadAddProjectModalVisible}
+        onChange={setUploadAddProjectModalVisible}
+        refreshEvent={search}
+      />
 
       {addEngineerModalFlag && (
         <Modal
