@@ -9,16 +9,12 @@ const dictionaryForm = () => {
         <span>123</span>
       </CyFormItem>
 
-      <CyFormItem label="材料名称" name="key" required>
+      <CyFormItem label="未计价材料名称" name="key" required>
         <Input placeholder="请输入名称" />
       </CyFormItem>
 
       <CyFormItem label="单位" name="value">
         <Input placeholder="请输入类型" />
-      </CyFormItem>
-
-      <CyFormItem label="单重" name="extensionColumn">
-        <Input placeholder="请输入发行日期" />
       </CyFormItem>
     </>
   );
@@ -34,7 +30,7 @@ const columns = [
   {
     dataIndex: 'name',
     index: 'name',
-    title: '材料名称',
+    title: '未计价材料名称',
     width: 360,
   },
   {
@@ -42,21 +38,15 @@ const columns = [
     index: 'categoryText',
     title: '单位',
     width: 180,
-  },
-  {
-    dataIndex: 'releaseDate',
-    index: 'releaseDate',
-    title: '单重',
-    width: 80,
   }
 ];
 
-const QuotaMechanics = () => {
+const UnpricedMaterials = () => {
 
   return (
     <>
       <QuotaLibCommon
-        title="定额库材料项"
+        title="未计价材料项列表"
         columns={columns}
         url=""
         dictionaryForm={dictionaryForm}
@@ -76,4 +66,4 @@ const QuotaMechanics = () => {
   );
 }
 
-export default QuotaMechanics;
+export default UnpricedMaterials;
