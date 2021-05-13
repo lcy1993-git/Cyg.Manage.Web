@@ -21,8 +21,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [companyInfo, setCompanyInfo] = useState<any>();
   const { projectIds, finishEvent, defaultSelectType = '2', allotCompanyId } = props;
 
-  const [arrangeType, setArrangeType] = useState<string>('');
-
   const [selectType, setSelectType] = useState<string>('');
 
   const [form] = Form.useForm();
@@ -122,7 +120,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
               allotCompanyId={allotCompanyId}
               getCompanyInfo={getCompanyInfo}
               onChange={(value) => setSelectType(value)}
-              // checkArrangeType={setArrangeType}
             />
           </Form>
         </TabPane>
