@@ -301,8 +301,9 @@ const Inventroy: React.FC = () => {
   ];
 
   const titleSlotElement = () => {
-    console.log(nowSelectedInv)
-    return nowSelectedInv ? <div style={{paddingTop: "3px",fontSize: "13px"}}>{` - ${nowSelectedInv}`}</div> : null;
+    return nowSelectedInv ? (
+      <div style={{ paddingTop: '2px', fontSize: '13px' }}>{` -${nowSelectedInv}`}</div>
+    ) : null;
   };
 
   const tableElement = () => {

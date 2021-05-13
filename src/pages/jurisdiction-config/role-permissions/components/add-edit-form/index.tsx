@@ -11,7 +11,13 @@ const RolePermissionsForm: React.FC = () => {
         label="角色名称"
         name="name"
         required
-        rules={[{ required: true, message: '角色名称不能为空' }]}
+        rules={[
+          { required: true, message: '角色名称不能为空' },
+          {
+            max: 10,
+            message: '角色名称超出字符数限制，限制为10个字符',
+          },
+        ]}
       >
         <Input placeholder="请输入角色名称" />
       </CyFormItem>

@@ -169,15 +169,31 @@ const ProjectManagement: React.FC = () => {
   const revokeAllotEvent = async () => {
     const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
+    const checkedArray = tableSelectData
+      .map((item: any) => {
+        return item.projectInfo?.status?.map((item: any) => {
+          return { status: item.status, isAllot: item.isAllot };
+        });
+      })
+      .flat();
+
     if (projectIds.length === 0) {
       message.error('请至少选择一个项目');
       return;
     }
+    console.log(checkedArray);
 
-    await revokeAllot(projectIds);
-    message.success('撤回安排成功');
-    search();
-    // refresh();
+    if (
+      JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 14, isAllot: true })) != -1 ||
+      JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 1, isAllot: true })) != -1
+    ) {
+      await revokeAllot(projectIds);
+      message.success('撤回安排成功');
+      search();
+    } else {
+      message.error('该项目的状态非“待安排”或“未勘察”，无法进行此操作');
+      return;
+    }
   };
 
   const arrangeEvent = async () => {

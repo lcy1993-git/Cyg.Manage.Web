@@ -65,7 +65,6 @@ const CompanyUser: React.FC = () => {
   });
 
   const { data: accreditData, run: getAccreditData } = useRequest(() => getCurrentCompanyInfo());
-  console.log(accreditData);
 
   const handleData = useMemo(() => {
     if (accreditData) {
@@ -76,7 +75,6 @@ const CompanyUser: React.FC = () => {
     return;
   }, [accreditData]);
 
-  console.log(handleData);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 

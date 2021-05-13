@@ -44,9 +44,8 @@ const CutAccount = (props: EditPasswordProps) => {
         history.push('/index');
         location.reload();
       }else {
-
-        history.go(-1);
         finishEvent?.();
+        //history.go(-1);
         setState(false);
       }
     });

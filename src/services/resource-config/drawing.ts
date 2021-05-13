@@ -38,7 +38,7 @@ export const uploadLineStressSag = (
   url: string,
 ) => {
   const formData = new FormData();
-  files.forEach((item) => {
+  files?.forEach((item) => {
     formData.append('file', item);
   });
 

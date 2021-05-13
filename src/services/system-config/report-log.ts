@@ -28,7 +28,7 @@ export interface ItemDetailData extends SearchLogItemParams {
 
 // 获取一条数据
 export const getFileLogDetail = (id: string) => {
-  return cyRequest<any>(() =>
+  return cyRequest<ItemDetailData>(() =>
     request(`${baseUrl.project}/FileLog/GetById`, { method: 'GET', params: { id } }),
   );
 };
