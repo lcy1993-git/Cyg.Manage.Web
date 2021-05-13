@@ -180,7 +180,7 @@ export interface CommentListItemDataType {
   datetime: React.ReactNode;
 }
 const SidePopup: React.FC<Props> = observer((props) => {
-  const { data, rightSidebarVisible, setRightSidebarVisiviabel } = props;
+  const { data: dataSource, rightSidebarVisible, setRightSidebarVisiviabel } = props;
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
 
@@ -190,16 +190,24 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const { checkedProjectIdList } = useContainer().vState;
   const scrollbars = createRef<Scrollbars>();
 
+  const data = useMemo(() => {  
+    const title = dataSource.find((o) => o.propertyName === 'title')?.data;
+    return [dataSource.filter((o) => o.propertyName !== 'title'), title];
+  }, [JSON.stringify(dataSource)]);
+
   const columns = [
     {
       title: '属性名',
       dataIndex: 'propertyName',
+      width: 55
     },
     {
       title: '属性值',
       dataIndex: 'data',
+      width: 65,
       render(value: any, record: any, index: any) {
-        if (typeof value === 'string' || typeof value === 'number')
+        if(record.propertyName === 'title') return null;
+        if (typeof value === 'string' || typeof value === 'number') 
           return <span key={index}>{value}</span>;
         if (record.propertyName === '多媒体') {
           if (value?.length === 0) {
@@ -306,7 +314,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const onAddComment = (value: any) => {
     setActiveType('annotation&' + value.id);
 
-    const feature = data.find((item: any) => item.propertyName === '审阅')?.data.feature;
+    const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature;
     if (feature) {
       const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
       console.log(loadEnumsData);
@@ -352,10 +360,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
 
   const modalData = useMemo(() => {
     const media = removeEmptChildren(
-      data.find((item: any) => item.propertyName === '多媒体')?.data,
+      data[0].find((item: any) => item.propertyName === '多媒体')?.data,
     );
     const material = removeEmptChildren(
-      data.find((item: any) => item.propertyName === '材料表')?.data,
+      data[0].find((item: any) => item.propertyName === '材料表')?.data,
     );
 
     // const {  values } = feature;
@@ -403,10 +411,12 @@ const SidePopup: React.FC<Props> = observer((props) => {
     }
   };
 
+  console.log(data[1]);
+  
   const DrawerWrap = useMemo(() => {
     return (
       <Drawer
-        title={'属性栏'}
+        title={data[1]}
         placement="right"
         closable={false}
         visible={rightSidebarVisible}
@@ -424,7 +434,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           style={{ height: 30 }}
           pagination={false}
           columns={columns}
-          dataSource={data}
+          dataSource={data[0]}
           rowClassName={styles.row}
           rowKey={(r) => r.propertyName}
         />

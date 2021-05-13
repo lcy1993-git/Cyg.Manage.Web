@@ -281,7 +281,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     for (let p in pJSON) {
       if(p === '方位角' && layerName === 'tower')
         resData.push({propertyName: '呼称高',  data: pJSON['高度(m)'] - pJSON['埋深']});
-      resData.push({ propertyName: p, data: pJSON[p] || '' });
+      resData.push({ propertyName: p, data: pJSON[p] || "0" });
     }
     ops.setRightSidebarVisiviabel(true);
     ops.setRightSidebarData(resData);

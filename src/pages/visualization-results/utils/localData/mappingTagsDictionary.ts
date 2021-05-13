@@ -16,7 +16,8 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "surveyor": "勘测人员",
         "survey_time": "勘测时间",
-        "remark": "备注"
+        "remark": "备注",
+        "project_id": "title"
       },
       mappingTags2: {
         "code": "名称",
@@ -24,7 +25,8 @@ function getMappingTagsDictionary() {
         "mode": "型号",
         "state": "状态",
         "azimuth": "转角度数",
-        "remark": "备注"
+        "remark": "备注",
+        "project_id": "title"
       },
       mappingTagValues: {
         "type": findenumsValue("CableType"),
@@ -47,7 +49,8 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "surveyor": "勘测人员",
         "survey_time": "勘测日期",
-        "remark": "备注"
+        "remark": "备注",
+        "project_id": "title"
       },
       mappingTags2: {
         "code": "名称",
@@ -61,7 +64,8 @@ function getMappingTagsDictionary() {
         "depth": "埋深",
         "mode": "型号",
         "loop_name": "所属回路",
-        "remark": "备注"
+        "remark": "备注",
+        "project_id": "title"
       },
       mappingTagValues: {
         "sort": findenumsValue("Arrangement"),
