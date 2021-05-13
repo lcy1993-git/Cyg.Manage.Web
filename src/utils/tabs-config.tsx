@@ -13,6 +13,7 @@ import VisualizationResults from '@/pages/visualization-results/route';
 import NewsConfig from '@/pages/news-config/route';
 import CockpitManage from "@/pages/cockpit-manage/route"
 import AgainLogin from "@/pages/again-login/route"
+import TechnologyEconomics from "@/pages/technology-economics/route";
 
 export interface RouteListItem {
   title: string;
@@ -37,7 +38,8 @@ const routeList: TabRouteListItem[] = [
   ...VisualizationResults,
   ...NewsConfig,
   ...CockpitManage,
-  ...AgainLogin
+  ...AgainLogin,
+  ...TechnologyEconomics
 ];
 
 export const getTabsComponent = (key: string): TabRouteListItem => {

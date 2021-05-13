@@ -29,6 +29,21 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/resource': '/' },
     },
+    '/webGis/api': {
+      target: 'http://10.6.1.36:8025/',
+      changeOrigin: true,
+      pathRewrite: { '^/webGis': '/' },
+    },
+    '/Comment/api': {
+      target: 'http://10.6.1.36:8013/',
+      changeOrigin: true,
+      pathRewrite: { '^/Comment': '/' },
+    },
+    '/ProjectVisualization/api': {
+      target: 'http://10.6.1.36:8034/',
+      changeOrigin: true,
+      pathRewrite: { '^/ProjectVisualization': '/' },
+    },
   },
   test: {
     '/api/': {

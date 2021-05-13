@@ -1,0 +1,61 @@
+@sideNavWidth: 260px;
+.content {
+  position: relative;
+  &.sideNavShow {
+    .sideNav {
+      left: 0px;
+      width: @sideNavWidth;
+      height: 100%;
+    }
+  }
+  .sideNav,
+  .sideTreeContainer,
+  .mapContainer {
+    transition: all 0.3s ease-in;
+  }
+  &.sideNavHide {
+    .sideNav {
+      position: relative;
+      width: 0;
+      left: (0px - @sideNavWidth);
+    }
+  }
+  .sideTreeContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    .sideTreefooter {
+      position: absolute;
+      bottom: 0px;
+      height: 30px;
+      .icon {
+        position: relative;
+        top: 4px;
+        left: 16px;
+        display: block;
+        width: 36px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .mapContainer {
+    position: relative;
+    width: 100%;
+    height: 746px;
+    .timelineContainer {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .listMenuContainer {
+      position: absolute;
+      top: 100px;
+      left: 20px;
+      z-index: 10;
+    }
+  }
+}
