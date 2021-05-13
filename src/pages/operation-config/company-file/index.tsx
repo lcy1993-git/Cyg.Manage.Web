@@ -157,20 +157,16 @@ const CompanyFile: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const uploadFile = async (setStatus: (uploadStatus: UploadStatus) => void) => {
-    await uploadCompanyFile(
+  const uploadFile = async () => {
+    return uploadCompanyFile(
       addForm.getFieldValue('file'),
       { securityKey },
       '/Upload/CompanyFile',
     ).then(
       (fileId: string) => {
-        setStatus('success');
         setFileId(fileId);
       },
-      () => {
-        message.warn('文件上传失败');
-        setStatus('error');
-      },
+      () => {},
     );
   };
 

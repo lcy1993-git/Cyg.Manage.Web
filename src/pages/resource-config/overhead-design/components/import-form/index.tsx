@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useControllableValue } from 'ahooks';
+import { useBoolean, useControllableValue } from 'ahooks';
 import React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
@@ -20,15 +20,37 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId, requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
+  const [
+    triggerUploadFile,
+    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
+  ] = useBoolean(false);
+  const saveImportOverHeadEvent = () => {
+    return form
+      .validateFields()
+      .then((values) => {
+        const { file } = values;
+        return uploadLineStressSag(file, { libId }, requestSource, '/PoleType/SaveImport');
+      })
+      .then(
+        () => {
+          message.success('导入成功');
+          setTimeout(() => {
+            setState(false);
+          }, 1000);
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('导入失败');
+        },
+      )
+      .finally(() => {
+        changeFinishEvent?.();
+        setUploadFileFalse();
+      });
+  };
 
-  const saveImportCableEvent = () => {
-    form.validateFields().then(async (values) => {
-      const { file } = values;
-      await uploadLineStressSag(file, { libId }, requestSource, '/PoleType/SaveImport');
-      message.success('导入成功');
-      setState(false);
-      changeFinishEvent?.();
-    });
+  const onSave = () => {
+    setUploadFileTrue();
   };
 
   return (
@@ -42,16 +64,19 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveImportCableEvent()}>
+        <Button key="save" type="primary" onClick={() => onSave()}>
           保存
         </Button>,
       ]}
       onCancel={() => setState(false)}
-      
     >
       <Form form={form} preserve={false}>
         <CyFormItem labelWidth={80} label="导入" name="file" required>
-          <FileUpload maxCount={1} />
+          <FileUpload
+            trigger={triggerUploadFile}
+            maxCount={1}
+            uploadFileFn={saveImportOverHeadEvent}
+          />
         </CyFormItem>
       </Form>
     </Modal>

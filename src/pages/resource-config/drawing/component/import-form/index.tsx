@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useControllableValue } from 'ahooks';
+import { useBoolean, useControllableValue } from 'ahooks';
 import React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
@@ -20,17 +20,38 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId, securityKey, requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
-
+  const [
+    triggerUploadFile,
+    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
+  ] = useBoolean(false);
   const saveImportChartEvent = () => {
-    form.validateFields().then(async (values) => {
-      const { file } = values;
-      await uploadLineStressSag(file, { libId, securityKey }, requestSource, '/Upload/Chart');
-      message.success('导入成功');
-      setState(false);
-      changeFinishEvent?.();
-    });
+    return form
+      .validateFields()
+      .then((values) => {
+        const { file } = values;
+        return uploadLineStressSag(file, { libId, securityKey }, requestSource, '/Upload/Chart');
+      })
+      .then(
+        () => {
+          message.success('导入成功');
+          setTimeout(() => {
+            setState(false);
+          }, 1000);
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('导入失败');
+        },
+      )
+      .finally(() => {
+        changeFinishEvent?.();
+        setUploadFileFalse();
+      });
   };
 
+  const onSave = () => {
+    setUploadFileTrue();
+  };
   return (
     <Modal
       maskClosable={false}
@@ -42,7 +63,7 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveImportChartEvent()}>
+        <Button key="save" type="primary" onClick={() => onSave()}>
           保存
         </Button>,
       ]}
@@ -50,7 +71,11 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
     >
       <Form form={form} preserve={false}>
         <CyFormItem labelWidth={80} label="导入" name="file" required>
-          <FileUpload maxCount={1} />
+          <FileUpload
+            trigger={triggerUploadFile}
+            maxCount={1}
+            uploadFileFn={saveImportChartEvent}
+          />
         </CyFormItem>
       </Form>
     </Modal>
