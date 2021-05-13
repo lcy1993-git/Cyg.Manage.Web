@@ -173,7 +173,6 @@ const QuotaList: React.FC = () => {
   // });
 
   const dataSource = formatDataTree(data);
-  console.log(dataSource);
   
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [addForm] = Form.useForm();

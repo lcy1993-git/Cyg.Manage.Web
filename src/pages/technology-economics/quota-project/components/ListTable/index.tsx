@@ -440,7 +440,7 @@ const QuotaLibrary: React.FC = () => {
         </Form>
       </Modal>
       {
-        activeDetailId && <QuotaDetails id={activeDetailId} setDetailId={setDetailId}/>
+        true && <QuotaDetails id={activeDetailId} setDetailId={setDetailId}/>
       }
     </>
   );
