@@ -71,23 +71,16 @@ const RolePermissions: React.FC = () => {
         const isChecked = !record.isDisable;
         return (
           <>
-            {
-              buttonJurisdictionArray?.includes("role-permissions-start-using") &&
+            {buttonJurisdictionArray?.includes('role-permissions-start-using') && (
               <>
                 <Switch checked={isChecked} onChange={() => updateStatus(record)} />
-                {
-                  isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>
-                }
+                {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
               </>
-            }
-            {
-              !buttonJurisdictionArray?.includes("role-permissions-start-using") &&
-              (
-                isChecked ? <span>启用</span> : <span>禁用</span>
-              )
-            }
+            )}
+            {!buttonJurisdictionArray?.includes('role-permissions-start-using') &&
+              (isChecked ? <span>启用</span> : <span>禁用</span>)}
           </>
-        )
+        );
       },
     },
     {
@@ -97,8 +90,12 @@ const RolePermissions: React.FC = () => {
       render: (text: any, record: any) => {
         return record.users
           ? record.users.map((item: any) => {
-            return <CyTag className="mr7" key={uuid.v1()}>{item.text}</CyTag>;
-          })
+              return (
+                <CyTag className="mr7" key={uuid.v1()}>
+                  {item.text}
+                </CyTag>
+              );
+            })
           : null;
       },
     },
@@ -262,50 +259,44 @@ const RolePermissions: React.FC = () => {
   const buttonElement = () => {
     return (
       <div>
-        {
-          buttonJurisdictionArray?.includes("role-permissions-add") &&
+        {buttonJurisdictionArray?.includes('role-permissions-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
-          添加
-        </Button>
-        }
-        {
-          buttonJurisdictionArray?.includes("role-permissions-edit") &&
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('role-permissions-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
-          编辑
-        </Button>
-        }
-        {
-          buttonJurisdictionArray?.includes("role-permissions-delete") &&
+            编辑
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('role-permissions-delete') && (
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
             okText="确认"
             cancelText="取消"
-          // disabled
+            // disabled
           >
             <Button className="mr7">
               <DeleteOutlined />
-            删除
-          </Button>
+              删除
+            </Button>
           </Popconfirm>
-        }
-        {
-          buttonJurisdictionArray?.includes("role-permissions-allocation-function") &&
+        )}
+        {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
           <Button className="mr7" onClick={() => distributeEvent()}>
             <ApartmentOutlined />
-          分配功能模块
-        </Button>
-        }
-        {
-          buttonJurisdictionArray?.includes("role-permissions-authorization") &&
+            分配功能模块
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('role-permissions-authorization') && (
           <Button className="mr7" onClick={() => authorizationEvent()}>
             <i className="iconfont iconshouquan" />
             授权
           </Button>
-        }
-
+        )}
       </div>
     );
   };
@@ -325,7 +316,7 @@ const RolePermissions: React.FC = () => {
         }}
       />
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="添加-角色"
         width="680px"
         visible={addFormVisible}
@@ -340,7 +331,7 @@ const RolePermissions: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="编辑-角色"
         width="680px"
         visible={editFormVisible}
@@ -355,7 +346,7 @@ const RolePermissions: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="分配功能模块"
         width="80%"
         visible={distributeFormVisible}
@@ -372,7 +363,7 @@ const RolePermissions: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         footer=""
         title="授权"
         width="90%"
@@ -384,6 +375,7 @@ const RolePermissions: React.FC = () => {
       >
         <Spin spinning={loading}>
           <UserAuthorization
+            onChange={tableFresh}
             extractParams={{
               templateId: currentId,
             }}

@@ -100,7 +100,6 @@ const ProjectManagement: React.FC = () => {
   const [upLoadAddProjectModalVisible, setUploadAddProjectModalVisible] = useState<boolean>(false);
 
   //获取上传立项模板后的List数据
-  const [excelListData, setExcelListData] = useState<any>();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 

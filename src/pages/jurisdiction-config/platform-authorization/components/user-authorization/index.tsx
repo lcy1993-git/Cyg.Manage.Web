@@ -16,6 +16,7 @@ interface ExtractParams {
 
 interface UserAuthorizationProps {
   extractParams: ExtractParams;
+  onChange: () => void;
 }
 
 const { Search } = Input;
@@ -23,7 +24,7 @@ const { Search } = Input;
 const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
   const tableRef = useRef<HTMLDivElement>(null);
 
-  const { extractParams } = props;
+  const { extractParams, onChange } = props;
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [selectRows, setSelectRows] = useState<any[]>([]);
@@ -151,6 +152,7 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
     message.success('授权成功');
     reset();
     refresh();
+    onChange?.();
   };
 
   const batchRemoveAuthorizationEvent = async () => {
@@ -171,6 +173,7 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
       message.success('授权移除成功');
       reset();
       refresh();
+      onChange?.();
     } else {
       message.error('选中的用户尚未授权');
       return;
