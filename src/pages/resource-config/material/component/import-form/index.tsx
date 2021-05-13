@@ -4,7 +4,6 @@ import { uploadLineStressSag } from '@/services/resource-config/drawing';
 import { useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
 import React from 'react';
-import { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
@@ -23,7 +22,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
   // const [requestLoading, setRequestLoading] = useState(false);
 
   const [form] = Form.useForm();
-
+  const map = new Map();
   const saveLineStreesSagEvent = () => {
     form.validateFields().then(async (values) => {
       const { file } = values;

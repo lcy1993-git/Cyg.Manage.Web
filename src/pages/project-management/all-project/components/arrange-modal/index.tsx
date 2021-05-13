@@ -125,7 +125,9 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         </TabPane>
         {(selectType === '2' || selectType === '4') && (
           <TabPane tab="外审安排" key="2">
-            <SelectAddListForm />
+            <Form style={{ width: '100%' }}>
+              <SelectAddListForm />
+            </Form>
           </TabPane>
         )}
         {(selectType === '1' || selectType === '3') && (

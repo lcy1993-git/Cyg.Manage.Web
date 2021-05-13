@@ -3,7 +3,6 @@
   .title {
     display: flex;
 
-    margin: 16px 0;
     color: inherit;
     font-weight: inherit;
     font-size: inherit;
@@ -20,6 +19,36 @@
       border-bottom: 0;
       transform: translateY(50%);
       content: '';
+    }
+  }
+
+  .people {
+   
+    .person {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      .content {
+        color: black;
+        font-weight: 600;
+      }
+      .icon {
+        cursor: pointer;
+      }
+    }
+  }
+}
+
+.optionList {
+  padding: 12px 16px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  .optionItem {
+    display: flex;
+    justify-content: space-between;
+    .icon {
+      cursor: pointer;
     }
   }
 }
