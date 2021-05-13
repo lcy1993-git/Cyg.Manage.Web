@@ -317,7 +317,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
     const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature;
     if (feature) {
       const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
-      console.log(loadEnumsData);
 
       const findEnumKey = (v: string, type: string): number => {
         let res: number = -100;
