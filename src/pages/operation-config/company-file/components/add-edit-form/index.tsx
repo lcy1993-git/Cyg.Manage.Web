@@ -10,6 +10,7 @@ interface CompanyFileForm {
   groupData?: any;
   editingName?: string;
   uploadFileFn: () => Promise<void>;
+  onFileSuccess: (fileId: string) => void;
 }
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {

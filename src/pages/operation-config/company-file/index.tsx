@@ -165,9 +165,10 @@ const CompanyFile: React.FC = () => {
       '/Upload/CompanyFile',
     ).then(
       (fileId: string) => {
-        setFileId(fileId);
       },
-      () => {},
+      () => {
+        setFileId(undefined);
+      },
     );
   };
 
@@ -217,29 +218,28 @@ const CompanyFile: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const editData = data!;
 
     editForm.validateFields().then(async (values) => {
-      const { file } = values;
-      let fileId = editData.fileId;
-      if (file && file.length > 0) {
-        fileId = await uploadCompanyFile(file, { securityKey }, '/Upload/CompanyFile');
-      }
+      if (fileId) {
+        const submitInfo = Object.assign(
+          {
+            name: '',
+            fileId: fileId,
+            fileCategory: 0,
+            describe: '',
+            groupId: fileGroupId,
+          },
+          values,
+        );
 
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-          name: editData.name,
-          fileId: fileId,
-          describe: editData.describe,
-          groupId: editData.groupId,
-        },
-        values,
-      );
-      await updateCompanyFileItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      setEditFormVisible(false);
+        await updateCompanyFileItem(submitInfo);
+        refresh();
+        message.success('添加成功');
+        setAddFormVisible(false);
+        addForm.resetFields();
+      } else {
+        message.warn('文件未上传或上传失败');
+      }
     });
   };
 
@@ -504,6 +504,7 @@ const CompanyFile: React.FC = () => {
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
             <CompanyFileForm
+              onFileSuccess={(fileId) => setFileId(fileId)}
               uploadFileFn={uploadFile}
               groupData={tableData}
               editingName={editingFileName}
