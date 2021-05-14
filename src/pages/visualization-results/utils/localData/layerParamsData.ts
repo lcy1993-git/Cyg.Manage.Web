@@ -22,7 +22,7 @@ export const layerParams: LayerParams[] = [
     layerName: 'mark', // 地物
     zIndex: 1,
     declutter: false,
-    type: 'mark',
+    type: 'point',
   },
   {
     layerName: 'line',

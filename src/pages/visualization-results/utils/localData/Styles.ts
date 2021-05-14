@@ -149,17 +149,17 @@ const Styles = {
     },
     over_head_device: {//杆上物
         size: 18,
-        fillSize: 20,
-        strokeSize: 22,
+        fillSize: 13,
+        strokeSize: 15,
         color: 'white',
         fillColor: 'rgba(134, 117, 234, 1)',
         strokeColor: 'rgba(50, 46, 77, 0.5)',
         selected: {
             size: 18,
-            fillSize: 20,
-            strokeSize: 22,
+            fillSize: 14,
+            strokeSize: 16,
             color: 'white',
-            fillColor: 'rgba(75, 32, 238, 1)',
+            fillColor: 'rgba(249, 149, 52, 1)',
             strokeColor: 'rgba(255, 255, 255, 0.5)',
         },
         empty: {

@@ -41,12 +41,31 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
     let azimuth = feature.getProperties().azimuth || 0;
     let isDismantle;
 
+    if(type.indexOf('mark') >= 0){
+        style = mark_style(feature);
+        if (selected) {
+            imageStyle = new Circle({
+                radius: 17,
+                stroke: new Stroke({
+                    color: 'rgba(249, 149, 52, 1)',
+                    width: 2
+                }),
+                fill: new Fill({
+                    color: 'rgba(249, 149, 52, 1)'
+                })
+            })
+            style = [new ClassStyle({
+                image: imageStyle,
+            }), style]
+        }
+        return style;
+    }
     if (type == 'design_pull_line') {
         size = 26;
         let textFillColor = '#366871';
         if (selected) {
             size = 28;
-            textFillColor = 'rgba(250, 104, 135, 1)';
+            textFillColor = 'rgba(249, 149, 52, 1)';
         }
         style = new ClassStyle({
             text: new Text({
@@ -496,16 +515,6 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
         }
     }
 
-    if (selected) { // 选中样式
-        size = Styles[value].selected.size;
-        backgroundColor = Styles[value].selected.backgroundColor;
-        fillSize = Styles[value].selected.fillSize;
-        strokeSize = Styles[value].selected.strokeSize;
-        color = Styles[value].selected.color;
-        fillColor = Styles[value].selected.fillColor;
-        strokeColor = Styles[value].selected.strokeColor;
-    }
-
     if (value == 'cross_arm') { // 横担
         if (feature.getProperties().type == null)
             iconFontText = '\ue824';
@@ -635,10 +644,20 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
         }
     }
 
+    if (selected) { // 选中样式
+        size = Styles[value].selected.size;
+        backgroundColor = Styles[value].selected.backgroundColor;
+        fillSize = Styles[value].selected.fillSize;
+        strokeSize = Styles[value].selected.strokeSize;
+        color = Styles[value].selected.color;
+        fillColor = Styles[value].selected.fillColor;
+        strokeColor = Styles[value].selected.strokeColor;
+    }
+
     if (regular) {
         imageStyle = new RegularShape({
             points: 4,
-            radius: strokeSize / 2,
+            radius: strokeSize,
             rotation: (azimuth - 45) * (Math.PI / 180) * -1,
             fill: new Fill({
                 color: fillColor

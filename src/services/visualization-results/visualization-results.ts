@@ -24,6 +24,7 @@ const webConfig = {
   webSocketIP: ip,
   webSocketPort: ':8032',
 };
+const wfsBaseURL = `http://${webConfig.geoServerIP}${webConfig.geoServerPort}/geoserver/pdd/ows`;
 
 export interface ProjectList {
   id: string;
@@ -116,8 +117,8 @@ function format(that: any, ...args: any) {
   }
   return result;
 }
-export const loadLayer: any = (url: any, postData: any, layerName: any) => {
-  return request(url, { method: 'POST', data: format(postData, { '0': layerName }) });
+export const loadLayer: any = (postData: any, layerName: any) => {
+  return request(wfsBaseURL, { method: 'POST', data: format(postData, { '0': layerName }) });
 };
 
 // FindLineDetailInfo线条

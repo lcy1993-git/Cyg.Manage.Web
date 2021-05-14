@@ -5,53 +5,57 @@ import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName } from './methods';
+import { getCustomXmlData } from './utils';
 import {
   getGisDetail,
   getlibId,
   getMedium,
   getMaterialItemData,
+  loadLayer,
 } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 const mappingTagsData = getMappingTagsDictionary();
 const mappingTagsDictionary: any = mappingTagsData ? JSON.parse(mappingTagsData) : {};
-
-// 格式化输出时间
-// const format = (fmt: string, date: Date) => { //author: meizz
-//     var o = {
-//         "M+": date.getMonth() + 1, //月份
-//         "d+": date.getDate(), //日
-//         "h+": date.getHours(), //小时
-//         "m+": date.getMinutes(), //分
-//         "s+": date.getSeconds(), //秒
-//         "q+": Math.floor((date.getMonth() + 3) / 3), //季度
-//         "S": date.getMilliseconds() //毫秒
-//     };
-//     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
-//     for (var k in o)
-//         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-//     return fmt;
-// }
-const mediaLayers = [
+const mediaLayers = ['tower', 'cable', 'cable_equipment'];
+const materiaLayers = [
   'tower',
-  'cable',
-  'cable_channel',
   'transformer',
-  'cable_equipment',
-  'mark',
+  'over_head_device',
+  'pull_line',
   'electric_meter',
+  'cross_arm',
+  'user_line',
 ];
-const materiaLayers = ['tower',  'transformer', 'cable_equipment', 'pull_line'];
-const commentLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
+const commentLayers = ['tower', 'cable', 'cable_equipment', 'mark', 'transformer'];
 const layerTypeEnum = {
-'survey' : '勘察',
-'plan' : '方案',
-'design' : '设计',
-'dismantle': '拆除'
-}
+  survey: '勘察',
+  plan: '方案',
+  design: '设计',
+  dismantle: '拆除',
+};
+const layerTypeIDEnum = {
+  survey: 1,
+  plan: 2,
+  design: 3,
+  dismantle: 4,
+};
 const elementTypeEnum = {
-  'tower': '杆塔',
-  'cable': '电缆井'
-}
+  tower: '杆塔',
+  cable: '电缆井',
+  cable_equipment: '电气设备',
+  mark: '地物',
+  transformer: '变压器',
+  over_head_device: '柱上设备',
+  line: '线路' || '电缆',
+  cable_channel: '电缆通道',
+  electric_meter: '户表',
+  cross_arm: '横担',
+  user_line: '下户线',
+  fault_indicator: '故障指示器',
+  pull_line: '拉线',
+  Track: '轨迹点',
+  TrackLine: '轨迹线',
+};
 export const mapClick = (evt: any, map: any, ops: any) => {
   clearHighlightLayer(map);
   ops.setRightSidebarVisiviabel(false);
@@ -71,43 +75,44 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
     }
-    console.log(feature)
+    console.log(feature);
     let layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
 
     // 判断选中的图层类型
     let layerType = layer.getProperties().name.split('_')[0];
-    if (layerType) {
-      switch (layerType) {
-        case 'survey':
-          feature.set('layerType', 1);
-          mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags1;
-          break;
-        case 'plan':
-          feature.set('layerType', 2);
-          mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags1;
-          break;
-        case 'design':
-          feature.set('layerType', 3);
-          mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags2;
-          break;
-        case 'dismantle':
-          feature.set('layerType', 4);
-          mappingTags = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags2;
-          break;
-        default:
-          feature.set('layerType', null);
-      }
-    } else {
-      feature.set('layerType', null);
+    feature.set('layerType', layerTypeIDEnum[layerType]);
+    switch (layerType) {
+      case 'survey':
+      case 'plan':
+        mappingTags =
+          mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags1 ||
+          mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags;
+        break;
+      case 'design':
+      case 'dismantle':
+        if (layerName === 'line') {
+          elementTypeEnum[layerName] = feature.getProperties().is_cable ? '电缆' : '线路';
+          mappingTags = feature.getProperties().is_cable
+            ? mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags3
+            : mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags2;
+        } else {
+          mappingTags =
+            mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags2 ||
+            mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTags;
+        }
+
+        break;
     }
+
     // 映射图层相对应的字段
     mappingTagValues = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTagValues;
 
     let featureId = feature.getProperties().id;
-    if (!featureId) featureId = feature.getId().split('.')[1];
+    // if (!featureId) featureId = feature.getId().split('.')[1];
     // 有些想要展示的字段需要通过接口进行查询
     let parmas = {
+      layerType: layerTypeIDEnum[layerType],
       companyId:
         feature.getProperties().company === undefined ? null : feature.getProperties().company,
       projectId:
@@ -118,20 +123,19 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         feature.getProperties().recorder === undefined ? null : feature.getProperties().recorder,
       surveyId:
         feature.getProperties().surveyor === undefined ? null : feature.getProperties().surveyor,
-      mainId:
-        feature.getProperties().main_id === undefined ? null : feature.getProperties().main_id,
       pullLineId: featureId,
     };
+    map.getTargetElement().style.cursor = 'wait';
     await getGisDetail(parmas).then((data: any) => {
       if (data.content) {
         feature.set('companyName', data.content.companyName);
         feature.set('projectName', data.content.projectName);
         feature.set('recorderName', data.content.recordName);
         feature.set('surveyorName', data.content.surveyName);
-        feature.set('mainName', data.content.mainName);
         feature.set('modeName', data.content.pullLineModelName);
       }
     });
+    map.getTargetElement().style.cursor = 'pointer';
 
     var pJSON = {};
     // 遍历属性，进行一一匹配
@@ -156,7 +160,64 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               pJSON[mappingTag] = feature.getProperties()['surveyorName'];
               break;
             case 'main_id':
-              pJSON[mappingTag] = feature.getProperties()['mainName'];
+              await loadLayer(
+                getCustomXmlData('id', feature.getProperties()['main_id']),
+                `pdd:${layerType}_tower`,
+              ).then((data: any) => {
+                if (data.features && data.features.length === 1) {
+                  pJSON[mappingTag] = data.features[0].properties.code;
+                } else {
+                  pJSON[mappingTag] = '';
+                }
+              });
+              break;
+            case 'sub_id':
+              await loadLayer(
+                getCustomXmlData('id', feature.getProperties()['sub_id']),
+                `pdd:${layerType}_tower`,
+              ).then((data: any) => {
+                if (data.features && data.features.length === 1) {
+                  pJSON[mappingTag] = data.features[0].properties.code;
+                } else {
+                  pJSON[mappingTag] = '';
+                }
+              });
+              break;
+            case 'start_id':
+              await loadLayer(
+                getCustomXmlData('id', feature.getProperties()['start_id']),
+                `pdd:${layerType}_tower`,
+              ).then((data: any) => {
+                if (data.features && data.features.length === 1) {
+                  pJSON[mappingTag] = data.features[0].properties.code;
+                } else {
+                  pJSON[mappingTag] = '';
+                }
+              });
+              break;
+            case 'end_id':
+              await loadLayer(
+                getCustomXmlData('id', feature.getProperties()['end_id']),
+                `pdd:${layerType}_tower`,
+              ).then((data: any) => {
+                if (data.features && data.features.length === 1) {
+                  pJSON[mappingTag] = data.features[0].properties.code;
+                } else {
+                  pJSON[mappingTag] = '';
+                }
+              });
+              break;
+            case 'parent_id':
+              await loadLayer(
+                getCustomXmlData('id', feature.getProperties()['parent_id']),
+                `pdd:${layerType}_tower`,
+              ).then((data: any) => {
+                if (data.features && data.features.length === 1) {
+                  pJSON[mappingTag] = data.features[0].properties.code;
+                } else {
+                  pJSON[mappingTag] = '';
+                }
+              });
               break;
             case 'mode_id':
               pJSON[mappingTag] = feature.getProperties()['modeName'];
@@ -173,7 +234,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                 : null;
               break;
             case 'azimuth':
-              console.log( Number(feature.getProperties()[p]))
               pJSON[mappingTag] = Number(feature.getProperties()[p])
                 ? Number(feature.getProperties()[p])?.toFixed(2)
                 : 0;
@@ -214,9 +274,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             //   break;
           }
         }
+        map.getTargetElement().style.cursor = 'wait';
         await getMedium(params).then((data: any) => {
           pJSON['多媒体'] = data.content || [];
         });
+        map.getTargetElement().style.cursor = 'pointer';
       }
     }
 
@@ -224,6 +286,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
+        map.getTargetElement().style.cursor = 'wait';
         await getlibId({ id: feature.getProperties().project_id }).then(async (data: any) => {
           const resourceLibID = data.content.libId;
           const objectID =
@@ -264,6 +327,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             }
           });
         });
+        map.getTargetElement().style.cursor = 'pointer';
       }
     }
 
@@ -276,18 +340,19 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     // 相应数据到右侧边栏
     const resData = [];
-    resData.push({propertyName: '所属图层',  data: layerTypeEnum[layerType] + '图层'});
-    resData.push({propertyName: '元素类型',  data: elementTypeEnum[layerName]});
+    resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
+    resData.push({ propertyName: '元素类型', data: elementTypeEnum[layerName] });
     for (let p in pJSON) {
-      if(p === '方位角' && layerName === 'tower')
-        resData.push({propertyName: '呼称高',  data: pJSON['高度(m)'] - pJSON['埋深']});
-      resData.push({ propertyName: p, data: pJSON[p] || "0" });
+      if (p === '方位角' && layerName === 'tower')
+        resData.push({ propertyName: '呼称高', data: pJSON['高度(m)'] - pJSON['埋深'] });
+      if (p === '材料表' && layerName === 'electric_meter') {
+        let linePhase = feature.getProperties().kv_level === 2 ? '三相' : '两相';
+        resData.push({ propertyName: '导线相数', data: linePhase });
+      }
+      resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
     ops.setRightSidebarVisiviabel(true);
     ops.setRightSidebarData(resData);
-
-    // 地物图层不需要高亮
-    if (layer.getProperties().name.indexOf('mark') > -1) return;
 
     // 轨迹图层也无高亮
     if (layer.getProperties().name.indexOf('Track') > -1) return;
@@ -370,6 +435,13 @@ export const mapPointermove = (evt: any, map: any) => {
   const y = document.getElementById('currentPositionY');
   if (x !== null) x.innerHTML = lont[0].toFixed(4);
   if (y !== null) y.innerHTML = lont[0].toFixed(4);
+  map.getTargetElement().style.cursor = 'default';
+  let allowed = true;
+  map.forEachFeatureAtPixel(evt.pixel, function (feature: any, layer: any) {
+    if (layer.getSource() instanceof Cluster && feature.get('features').length > 1) allowed = false;
+    if (allowed) map.getTargetElement().style.cursor = 'pointer';
+    else map.getTargetElement().style.cursor = 'not-allowed';
+  });
 };
 
 // 当前比例尺映射到HTML节点
