@@ -5,6 +5,7 @@ import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
 import React, { useState, useMemo, useCallback, useReducer } from 'react';
 import DictionaryForm from './components/add-edit-form';
+import { getQuotaLibrary } from '@/services/technology-economics/quota-library';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -66,21 +67,24 @@ const QuotaLibrary: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data1, run } = useRequest(getDictionaryDetail, {
-    manual: true,
+  const { data, run } = useRequest(getQuotaLibrary, {
+    manual: false,
   });
 
-  const data = [
-    {
-      category: 1,
-      categoryText: "预算",
-      id: "1357588635508068352",
-      name: "默认预算定额",
-      releaseDate: 1612454400000,
-      releaseDateText: "2021-02-05",
-      remark: null,
-    }
-  ]
+  console.log(data);
+  
+
+  // const data = [
+  //   {
+  //     category: 1,
+  //     categoryText: "预算",
+  //     id: "1357588635508068352",
+  //     name: "默认预算定额",
+  //     releaseDate: 1612454400000,
+  //     releaseDateText: "2021-02-05",
+  //     remark: null,
+  //   }
+  // ]
   const searchComponent = () => {
     return (
       <TableSearch label="关键词" width="203px">
@@ -349,9 +353,10 @@ const QuotaLibrary: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/Dictionary/GetPagedList"
+        url="/Quota/GetQuotaLibrary"
         tableTitle="定额库管理"
         getSelectData={tableSelectEvent}
+        requestSource='tecEco'
         type="checkbox"
         extractParams={{
           keyWord: searchKeyWord,
