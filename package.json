@@ -56,12 +56,14 @@
     "echarts-for-react": "^3.0.1",
     "echarts-gl": "^2.0.1",
     "lodash": "^4.17.11",
+    "mammoth": "^1.4.16",
     "mobx": "^6.2.0",
     "mobx-react-lite": "^3.2.0",
     "moment": "^2.25.3",
     "node-uuid": "^1.4.8",
     "ol": "^6.5.0",
     "omit.js": "^2.0.2",
+    "pdfjs-dist": "^2.3.200",
     "qs": "^6.9.0",
     "react": "^17.0.0",
     "react-collapsed": "^3.0.2",
@@ -76,7 +78,8 @@
     "umi-request": "^1.0.8",
     "unstated-next": "^1.1.0",
     "use-merge-value": "^1.0.1",
-    "wangeditor": "^4.6.9"
+    "wangeditor": "^4.6.9",
+    "worker-loader": "^3.0.8"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.0.2",
@@ -88,6 +91,7 @@
     "@types/jest": "^26.0.0",
     "@types/lodash": "^4.14.144",
     "@types/node-uuid": "0.0.28",
+    "@types/pdfjs-dist": "^2.7.1",
     "@types/qs": "^6.5.3",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",

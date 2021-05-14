@@ -26,7 +26,7 @@ import {
 import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
 import CommonTitle from '@/components/common-title';
-import { DeleteOutlined, DownOutlined, FileAddOutlined } from '@ant-design/icons';
+import { CopyOutlined, DeleteOutlined, DownOutlined, FileAddOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { Dropdown } from 'antd';
 import TableExportButton from '@/components/table-export-button';
@@ -44,6 +44,7 @@ import { useGetButtonJurisdictionArray, useGetProjectEnum } from '@/utils/hooks'
 import UrlSelect from '@/components/url-select';
 import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 import ProjectRecallModal from './components/project-recall-modal';
+import UploadAddProjectModal from './components/upload-batch-modal';
 import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
 
@@ -68,7 +69,7 @@ const ProjectManagement: React.FC = () => {
   const [status, setStatus] = useState<string>();
   const [sourceType, setSourceType] = useState<string>();
   const [identityType, setIdentityType] = useState<string>();
-  const [areaInfo, setAreaInfo] = useState({ areaType: "-1", areaId: ""});
+  const [areaInfo, setAreaInfo] = useState({ areaType: "-1", areaId: "" });
 
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
@@ -95,6 +96,10 @@ const ProjectManagement: React.FC = () => {
 
   const [currentRecallProjectId, setCurrentRecallProjectId] = useState<string>('');
   const [recallModalVisible, setRecallModalVisible] = useState(false);
+
+  const [upLoadAddProjectModalVisible, setUploadAddProjectModalVisible] = useState<boolean>(false);
+
+  //获取上传立项模板后的List数据
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -164,15 +169,31 @@ const ProjectManagement: React.FC = () => {
   const revokeAllotEvent = async () => {
     const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
+    const checkedArray = tableSelectData
+      .map((item: any) => {
+        return item.projectInfo?.status?.map((item: any) => {
+          return { status: item.status, isAllot: item.isAllot };
+        });
+      })
+      .flat();
+
     if (projectIds.length === 0) {
       message.error('请至少选择一个项目');
       return;
     }
+    console.log(checkedArray);
 
-    await revokeAllot(projectIds);
-    message.success('撤回安排成功');
-    search();
-    // refresh();
+    if (
+      JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 14, isAllot: true })) != -1 ||
+      JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 1, isAllot: true })) != -1
+    ) {
+      await revokeAllot(projectIds);
+      message.success('撤回安排成功');
+      search();
+    } else {
+      message.error('该项目的状态非“待安排”或“未勘察”，无法进行此操作');
+      return;
+    }
   };
 
   const arrangeEvent = async () => {
@@ -393,7 +414,7 @@ const ProjectManagement: React.FC = () => {
     areaSelectReset();
     // TODO 重置完是否进行查询
     searchByParams({
-      keyWord: "",
+      keyWord: '',
       category: '-1',
       pCategory: '-1',
       stage: '-1',
@@ -403,7 +424,7 @@ const ProjectManagement: React.FC = () => {
       status: '-1',
       statisticalCategory: statisticalCategory,
       sourceType: "-1",
-      identityType:  "-1",
+      identityType: "-1",
       areaType: "-1",
       areaId: ""
     });
@@ -522,6 +543,12 @@ const ProjectManagement: React.FC = () => {
     form.setFieldsValue({ projects: [{ name: '' }] });
   };
 
+  //打开上传批量模板
+  const openBatchAddEngineerModal = () => {
+    setUploadAddProjectModalVisible(true);
+  };
+
+  //上传模板后跳转
   const searchChildrenList = [
     {
       width: 300
@@ -559,29 +586,29 @@ const ProjectManagement: React.FC = () => {
   ]
 
   const areaChangeEvent = (params: any) => {
-    const {provinceId,cityId,areaId} = params;
-    if(areaId) {
+    const { provinceId, cityId, areaId } = params;
+    if (areaId) {
       setAreaInfo({
         areaType: "3",
         areaId: areaId
       })
       return
     }
-    if(cityId) {
+    if (cityId) {
       setAreaInfo({
         areaType: "2",
         areaId: cityId
       })
       return
     }
-    if(provinceId) {
+    if (provinceId) {
       setAreaInfo({
         areaType: "1",
         areaId: provinceId
       })
       return
     }
-    if(!provinceId && !cityId && !areaId) {
+    if (!provinceId && !cityId && !areaId) {
       setAreaInfo({
         areaType: "-1",
         areaId: ""
@@ -590,7 +617,7 @@ const ProjectManagement: React.FC = () => {
   }
 
   const areaSelectReset = () => {
-    if(areaRef && areaRef.current) {
+    if (areaRef && areaRef.current) {
       //@ts-ignore
       areaRef.current.reset();
     }
@@ -601,7 +628,7 @@ const ProjectManagement: React.FC = () => {
       <div className={styles.projectManagement}>
         <div className={styles.projectManagemnetSearch}>
           <div className="flex">
-            <div className="flex1 flex" style={{overflow: "hidden"}}>
+            <div className="flex1 flex" style={{ overflow: "hidden" }}>
               <OverFlowHiddenComponent childrenList={searchChildrenList}>
                 <TableSearch className="mr22" label="项目名称" width="300px">
                   <Search
@@ -790,6 +817,12 @@ const ProjectManagement: React.FC = () => {
                     立项
                   </Button>
                 )}
+                {buttonJurisdictionArray?.includes('all-project-batch-project') && (
+                  <Button className="mr7" onClick={() => openBatchAddEngineerModal()}>
+                    <CopyOutlined />
+                    批量立项
+                  </Button>
+                )}
                 {buttonJurisdictionArray?.includes('all-project-delete-project') && (
                   <Popconfirm
                     title="确认对勾选的项目进行删除吗?"
@@ -881,6 +914,15 @@ const ProjectManagement: React.FC = () => {
           </div>
         </div>
       </div>
+
+
+      <UploadAddProjectModal
+        visible={upLoadAddProjectModalVisible}
+        onChange={setUploadAddProjectModalVisible}
+        refreshEvent={search}
+      />
+
+
       {addEngineerModalFlag && (
         <Modal
           maskClosable={false}
