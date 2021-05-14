@@ -141,11 +141,6 @@ const CommentTable: FC<CommentProps> = observer((props) => {
     },
   );
 
-  useEffect(() => {
-    setLayer(0);
-    setType(undefined);
-  }, [layer, type]);
-
   const search = () => {
     setFilterData(data?.filter((v) => v.deviceName?.includes(keyWord)));
   };
@@ -158,23 +153,28 @@ const CommentTable: FC<CommentProps> = observer((props) => {
 
   function onSelectLayer(value: number) {
     setLayer(value);
-    if (value) {
-      setFilterData(data?.filter((v) => v.layerType === value));
-    } else if (type) {
-      setFilterData(data?.filter((v) => v.deviceType === type));
-    } else {
+    if (!value && !type) {
       setFilterData(data);
+    } else if (type && !value) {
+      setFilterData(data?.filter((v) => v.deviceType === type));
+    } else if (value && !type) {
+      console.log(data);
+      setFilterData(data?.filter((v) => v.layerType === value));
+    } else {
+      setFilterData(data?.filter((v) => v.layerType === value && v.deviceType === type));
     }
   }
 
   function onSelectType(value: number) {
     setType(value);
-    if (value) {
-      setFilterData(data?.filter((v) => v.deviceType === value));
-    } else if (layer) {
-      setFilterData(data?.filter((v) => v.layerType === layer));
-    } else {
+    if (!value && !type) {
       setFilterData(data);
+    } else if (layer && !value) {
+      setFilterData(data?.filter((v) => v.layerType === layer));
+    } else if (value && !layer) {
+      setFilterData(data?.filter((v) => v.deviceType === value));
+    } else {
+      setFilterData(data?.filter((v) => v.layerType === layer && v.deviceType === value));
     }
   }
   return (
