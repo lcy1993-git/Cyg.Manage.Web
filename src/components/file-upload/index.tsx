@@ -54,9 +54,6 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
     if (maxCount && maxCount == 1) {
       const newArray: any[] = [];
       newArray.push(file);
-
-      setUploadStatus('hasNotStarted');
-
       let size = newArray.reduce((pre, cur) => cur.size + pre, 0) / 1000000;
 
       if (size < 50) {
@@ -94,11 +91,14 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
       uploadItem();
     }
   }, [trigger, fileList.length]);
-
+  const onFileChange = () => {
+    setUploadStatus('hasNotStarted');
+  };
   const params = {
     ...rest,
     beforeUpload: beforeUploadEvent,
     showUploadList: false,
+    onChange: onFileChange,
   };
 
   const deleteUploadItem = (uid: string) => {
