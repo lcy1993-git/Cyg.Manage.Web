@@ -26,7 +26,6 @@ import arrowSrc from '@/assets/image/webgis/arrow.png';
 import { getXmlData, sortByTime } from './utils';
 
 var projects: any;
-const wfsBaseURL = 'http://10.6.1.36:8099/geoserver/pdd/ows';
 const refreshMap = async (
   ops: any,
   projects_: ProjectList[],
@@ -109,7 +108,7 @@ const loadDesignLayers = async (
       let pJSON = new GeoJSON().readFeatures(data);
       for (var i = 0; i < pJSON.length; i++) {
         pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
-        let s = pointStyle('design_pull_line', pJSON[i], false);
+        let s:any = pointStyle('design_pull_line', pJSON[i], false);
         pJSON[i].setStyle(s);
       }
       groupLayers['design_pull_line'].getSource().addFeatures(pJSON);
@@ -155,8 +154,6 @@ const loadLayers = (
               // style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
             } else if (item.type == 'cable_channel') {
               style = cable_channel_styles(pJSON[i]);
-            } else if (item.type == 'mark') {
-              style = mark_style(pJSON[i]);
             } else if (item.type == 'subline') {
               style = fzx_styles();
             }
@@ -242,7 +239,7 @@ const clearHighlightLayer = (map: any) => {
  * @param callBack
  */
 const loadWFS = async (postData: string, layerName: string, callBack: (o: any) => void) => {
-  const promise = loadLayer(wfsBaseURL, postData, layerName);
+  const promise = loadLayer(postData, layerName);
   await promise.then((data: any) => {
     if (data.features && data.features.length > 0) {
       // let flag;
@@ -291,7 +288,7 @@ const loadTrackLayers = (
   //     '</Literal></PropertyIsGreaterThanOrEqualTo></And></ogc:Filter>' +
   //     postDataEnd;
   // }
-  const promise = loadLayer(wfsBaseURL, postData, 'pdd:' + trackType[type]);
+  const promise = loadLayer(postData, 'pdd:' + trackType[type]);
   promise.then((data: any) => {
     let surveyTrackLayer = getLayerByName(track[type], groupLayer.getLayers().getArray());
     let surveyTrackLineLayer = getLayerByName(trackLine[type], groupLayer.getLayers().getArray());
@@ -310,7 +307,7 @@ const loadTrackLayers = (
         source,
         zIndex: 5,
       });
-      surveyTrackLayer.set('name', trackLine[type]);
+      surveyTrackLineLayer.set('name', trackLine[type]);
       groupLayer.getLayers().push(surveyTrackLineLayer);
     }
 

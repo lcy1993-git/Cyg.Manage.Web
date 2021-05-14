@@ -409,8 +409,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
       });
     }
   };
-
-  console.log(data[1]);
   
   const DrawerWrap = useMemo(() => {
     return (
