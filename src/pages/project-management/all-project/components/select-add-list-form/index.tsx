@@ -1,6 +1,6 @@
 import React, { FC, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
-import { Divider, Dropdown, Form, Input, Menu, message, Select, Spin } from 'antd';
+import { Divider, Dropdown, Form, Input, Menu, message, Radio, Select, Spin } from 'antd';
 import debounce from 'lodash/debounce';
 import {
   queryOuterAuditUserByPhoneAndUsername,
@@ -8,14 +8,31 @@ import {
 } from '@/services/project-management/select-add-list-form';
 export interface SelectAddListFormProps {
   personList?: UserInfo[];
+  /**
+   * sketch是没有不安排外审的，第一种和第三种种
+   * confirm有不安排外审的，第二种
+   *
+   */
+  projectName?: string;
+  onAddPeople: (userInfo: UserInfo[]) => void; //获取添加的外审人员list
+  notArrangeShow?: boolean; //checkbox的标志用来是否显示不安排外审的内容
+  onSetPassArrangeStatus?: (flag: boolean) => void; //获取外审通不通过状态的callback
 }
 import styles from './index.less';
 import { CloseCircleOutlined, UserAddOutlined } from '@ant-design/icons';
 
 const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
-  const { personList } = props;
+  const {
+    personList,
+    onAddPeople,
+    notArrangeShow = false,
+    onSetPassArrangeStatus,
+    type,
+    projectName,
+  } = props;
   const debounceTimeout = 800;
   const [fetching, setFetching] = useState<boolean>(false);
+  const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
   const [people, setPeople] = useState<UserInfo[]>(personList ?? []);
   const [options, setOptions] = useState<
     {
@@ -24,6 +41,9 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     }[]
   >([]);
 
+  /**
+   * 获取外审人员
+   */
   const debounceFetcher = useMemo(() => {
     const loadOptions = (value: string) => {
       if (value) {
@@ -61,6 +81,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
                 <div className={styles.icon}>
                   <UserAddOutlined
                     onClick={() => {
+                      onAddPeople([...people.filter((v) => v.value !== option.value), option]);
                       setPeople([...people.filter((v) => v.value !== option.value), option]);
                     }}
                   />
@@ -95,6 +116,11 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     );
   };
 
+  const onSetNotArrangePeopleStatus = (notArrangeStatus: boolean) => {
+    onSetPassArrangeStatus?.(notArrangeStatus);
+    setNotArrangePeopleStatus(notArrangeStatus);
+  };
+
   return (
     <div className={styles.selectForm}>
       <CyFormItem label="账号">
@@ -105,9 +131,24 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
           />
         </Dropdown>
       </CyFormItem>
-
       <div className={styles.title}>外审人员列表</div>
       <People />
+
+      {notArrangeShow && projectName ? (
+        <>
+          <Divider />
+          <div className={styles.notArrange}>
+            <p style={{ textAlign: 'center' }}>请确认项目：{projectName}是否通过外审</p>
+            <Radio.Group
+              onChange={(e) => onSetNotArrangePeopleStatus(e.target.value)}
+              value={notArrangePeopleStatus}
+            >
+              <Radio value={false}>外审不通过</Radio>
+              <Radio value={true}>外审通过</Radio>
+            </Radio.Group>
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };

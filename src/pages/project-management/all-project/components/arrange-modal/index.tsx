@@ -5,6 +5,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import ArrangeForm from '../arrange-form';
 import { saveArrange } from '@/services/project-management/all-project';
 import SelectAddListForm from '../select-add-list-form';
+import { UserInfo } from '@/services/project-management/select-add-list-form';
 interface ArrangeModalProps {
   projectIds: string[];
   visible: boolean;
@@ -20,8 +21,8 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyInfo, setCompanyInfo] = useState<any>();
   const { projectIds, finishEvent, defaultSelectType = '2', allotCompanyId } = props;
-
-  const [arrangeType, setArrangeType] = useState<string>('');
+  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
+  const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
 
   const [selectType, setSelectType] = useState<string>('');
 
@@ -129,7 +130,12 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         {(selectType === '2' || selectType === '4') && (
           <TabPane tab="外审安排" key="2">
             <Form style={{ width: '100%' }}>
-              <SelectAddListForm />
+              <SelectAddListForm
+                onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
+                notArrangeShow
+                projectName="测试项目名称"
+                onAddPeople={(people) => setArrangePeople(people)}
+              />
             </Form>
           </TabPane>
         )}
