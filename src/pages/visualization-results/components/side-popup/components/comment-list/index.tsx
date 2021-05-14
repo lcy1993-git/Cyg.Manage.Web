@@ -44,7 +44,7 @@ const CommentList: FC<CommentListProps> = (props) => {
         setCommentListDate(generatprCommentListDate(responseCommentList));
       },
       onError: () => {
-        message.success('获取审阅失败');
+        message.error('获取审阅失败');
       },
     },
   );
