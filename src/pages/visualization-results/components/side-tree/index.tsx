@@ -77,7 +77,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   >();
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]); //筛选的id数据
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>();
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
@@ -86,6 +86,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
+
+  const pushAllKeys = (data: TreeNodeType[]) => {
+    data.forEach((v) => {
+      if (v.children) {
+        expandedKeys.push(v.key);
+        pushAllKeys(v.children);
+      }
+    });
+  };
 
   const { data: dataByCattegory, loading } = useRequest(
     () =>
@@ -99,12 +108,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         let data = generateProjectTree(dataByCattegory);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
-          let expandedKeys = [];
+
+          pushAllKeys(data);
           expandedKeys.push('-1');
-          expandedKeys.push(...data.map(v => v.key));
-          
-          expandedKeys.push()
-          setExpandedKeys(expandedKeys);
+
+          setExpandedKeys([...expandedKeys]);
           setCheckedKeys([]);
         } else {
           message.warning('无数据');
