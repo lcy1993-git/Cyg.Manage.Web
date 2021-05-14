@@ -5,9 +5,13 @@ let mappingTagsDictionary: any =null;
 function getMappingTagsDictionary() {
   if(mappingTagsDictionary) return mappingTagsDictionary;
   mappingTagsDictionary = Object.create(null);
-  const enumsData = localStorage.getItem('loadEnumsData')
-  if (enumsData) {
-    enums = enums || JSON.parse(enumsData);
+  const enumsData = localStorage.getItem('loadEnumsData');
+  if (enumsData && enumsData !== 'undefined') {
+    if(!enums) {
+      enums = JSON.parse(enumsData) ;
+    }
+    // const enumsDataParse = JSON.parse(enumsData)
+    // enums = enums ? enums : JSON.parse(enumsData) ;
     mappingTagsDictionary.cable = {
       mappingTags1: {
         "code": "名称",
