@@ -2,6 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import _, { size } from 'lodash';
+import Tab from './components/tab';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import {
@@ -77,7 +78,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   >();
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]); //筛选的id数据
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>();
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
@@ -86,6 +87,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
+
+  const pushAllKeys = (data: TreeNodeType[]) => {
+    data.forEach((v) => {
+      if (v.children) {
+        expandedKeys.push(v.key);
+        pushAllKeys(v.children);
+      }
+    });
+  };
 
   const { data: dataByCattegory, loading } = useRequest(
     () =>
@@ -99,7 +109,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         let data = generateProjectTree(dataByCattegory);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
-          setExpandedKeys(['-1']);
+
+          pushAllKeys(data);
+          expandedKeys.push('-1');
+
+          setExpandedKeys([...expandedKeys]);
           setCheckedKeys([]);
         } else {
           message.warning('无数据');
@@ -146,20 +160,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setCheckedKeys(checked);
   };
 
-  const onTabChnage = (activeKey: string) => {
-    setTreeData([]);
-    switch (activeKey) {
-      case '1':
-        setTabActiveKey('1');
-        break;
-      case '2':
-        setTabActiveKey('2');
-        break;
-      default:
-        break;
-    }
-  };
-
   useEffect(() => {
     store.setProjectIdList(projectIdList);
     if (projectIdList.length === 0) {
@@ -167,19 +167,51 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }, [checkedKeys]);
 
+  const activeStyle = '#ebedee';
+
   return (
     <>
       <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
-        <Tabs type="line" defaultActiveKey="1" onChange={onTabChnage} style={{ height: '100%' }}>
-          <TabPane style={{ overflow: 'hidden' }} tab="按地区" key="1">
+        <div
+          style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
+          className={styles.tabBar}
+        >
+          <div
+            className={styles.tabBarItem}
+            onClick={() => {
+              if (tabActiveKey === '2') {
+                setTreeData([]);
+                setTabActiveKey('1');
+              }
+            }}
+          >
+            按地方
+          </div>
+          <div
+            style={{ backgroundColor: tabActiveKey === '2' ? activeStyle : '#fff' }}
+            className={styles.tabBarItem}
+            onClick={() => {
+              if (tabActiveKey === '1') {
+                setTreeData([]);
+                setTabActiveKey('2');
+              }
+            }}
+          >
+            按公司
+          </div>
+        </div>
+
+        <Tabs renderTabBar={() => <></>} style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle }}>
+          <TabPane style={{ overflow: 'hidden' }} key="1">
             {loading ? (
               <Spin spinning={loading} className={styles.loading} tip="正在载入中..."></Spin>
             ) : null}
             {dataByCattegory ? (
               <Tree
-                height={size.height ? size.height - 100 : 680}
+                height={size.height ? size.height - 85 : 680}
                 checkable
                 onExpand={onExpand}
+                defaultExpandAll
                 expandedKeys={expandedKeys}
                 onCheck={(checked, info) => onCheck(checked, info)}
                 checkedKeys={checkedKeys}
@@ -194,7 +226,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
             {dataByCattegory ? (
               <Tree
-                height={size.height ? size.height - 100 : 680}
+                height={size.height ? size.height - 85 : 680}
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}

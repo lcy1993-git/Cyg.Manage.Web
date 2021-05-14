@@ -154,7 +154,7 @@ const ListMenu: FC = observer(() => {
     }
   }, [checkedProjectIdList]);
 
-  const { data: materialData, run: fetchMaterialList } = useRequest(
+  const { data: materialData, run: fetchMaterialList, loading: fetchMaterialListLoading } = useRequest(
     fetchMaterialListByProjectIdList,
     {
       manual: true,
@@ -166,9 +166,7 @@ const ListMenu: FC = observer(() => {
          */
         if (materialData?.length) {
           setMaterialList(generateMaterialTreeList(materialData));
-          setMaterialModalVisible(true);
         } else {
-          setMaterialModalVisible(false);
           message.warning('没有检索到数据');
         }
       },
@@ -188,6 +186,7 @@ const ListMenu: FC = observer(() => {
         store.setOnPositionClickState();
         break;
       case '3':
+        setMaterialModalVisible(true);
         fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
         break;
       case '4':
@@ -327,6 +326,7 @@ const ListMenu: FC = observer(() => {
         <Table
           columns={columns}
           bordered
+          loading={fetchMaterialListLoading}
           rowKey="key"
           pagination={false}
           dataSource={materialList}

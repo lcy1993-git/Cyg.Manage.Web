@@ -30,7 +30,7 @@ const VisualizationResults: React.FC = observer(() => {
           </div>
           <div className={styles.sideTreefooter}>
             <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
-              {visibleLeftSidebar ? <MenuFoldOutlined /> : null}
+              {visibleLeftSidebar ? <MenuFoldOutlined style={{ fontSize: 16 }} /> : null}
             </div>
           </div>
         </div>

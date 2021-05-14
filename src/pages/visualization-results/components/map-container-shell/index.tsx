@@ -10,8 +10,9 @@ const UrlMapContainerBox = (props: any) => {
     getMapList({ sourceType: 0, layerType: 0, enableStatus: 1, availableStatus: 0 }),
   );
   const getLocation = async () => {
-    const resData = await initIpLocation();
+    await initIpLocation();
   };
+
   useMount(() => {
     getLocation();
   });

@@ -1,10 +1,11 @@
-import { List, Comment, Tooltip, message } from 'antd';
+import { List, Comment, Tooltip, message, Spin } from 'antd';
 import React, { createRef, FC, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { CommentType, fetchCommentList } from '@/services/visualization-results/side-popup';
 import moment from 'moment';
 import { useRequest } from 'ahooks';
 import { CommentListItemDataType } from '../..';
+import styles from './index.less';
 export interface ReviewListItemDataType {
   author: string;
   content: React.ReactNode;
@@ -36,7 +37,7 @@ const CommentList: FC<CommentListProps> = (props) => {
       return [];
     }
   }
-  const { data: responseCommentList } = useRequest(
+  const { data: responseCommentList, loading } = useRequest(
     () => fetchCommentList({ projectId, layer, deviceId }),
     {
       refreshDeps: [deviceId],
@@ -44,24 +45,28 @@ const CommentList: FC<CommentListProps> = (props) => {
         setCommentListDate(generatprCommentListDate(responseCommentList));
       },
       onError: () => {
-        message.success('获取审阅失败');
+        message.error('获取审阅失败');
       },
     },
   );
   return (
     <>
       <Scrollbars autoHide ref={scrollbars} style={{ marginBottom: 32, height }}>
-        <List
-          className="comment-list"
-          header={`${commentListData?.length}条 审阅内容`}
-          itemLayout="horizontal"
-          dataSource={commentListData}
-          renderItem={(item) => (
-            <li>
-              <Comment author={item.author} content={item.content} datetime={item.datetime} />
-            </li>
-          )}
-        />
+        {loading ? (
+          <Spin spinning={loading} className={styles.loading} tip="正在载入中..."></Spin>
+        ) : (
+          <List
+            className="comment-list"
+            header={`${commentListData?.length}条 审阅内容`}
+            itemLayout="horizontal"
+            dataSource={commentListData}
+            renderItem={(item) => (
+              <li>
+                <Comment author={item.author} content={item.content} datetime={item.datetime} />
+              </li>
+            )}
+          />
+        )}
       </Scrollbars>
     </>
   );

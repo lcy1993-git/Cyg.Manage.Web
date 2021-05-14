@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload, { UploadStatus } from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useControllableValue } from 'ahooks';
+import { useBoolean, useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
 import React, { useState } from 'react';
 import { Dispatch } from 'react';
@@ -20,35 +20,37 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
-
-  const [fileId, setFileId] = useState<string>();
-
-  const uploadFile = async (setStatus: (uploadStatus: UploadStatus) => void) => {
-    await uploadLineStressSag(
-      form.getFieldValue('file'),
-      { libId },
-      requestSource,
-      '/Component/SaveImport',
-    ).then(
-      () => {
-        setStatus('success');
-        setFileId(fileId);
-      },
-      () => {
-        message.warn('文件上传失败');
-        setStatus('error');
-      },
-    );
+  const [
+    triggerUploadFile,
+    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
+  ] = useBoolean(false);
+  const saveImportComponentEvent = () => {
+    return form
+      .validateFields()
+      .then((values) => {
+        const { file } = values;
+        return uploadLineStressSag(file, { libId }, requestSource, '/Component/SaveImport');
+      })
+      .then(
+        () => {
+          message.success('导入成功');
+          setTimeout(() => {
+            setState(false);
+          }, 1000);
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('导入失败');
+        },
+      )
+      .finally(() => {
+        changeFinishEvent?.();
+        setUploadFileFalse();
+      });
   };
 
-  const saveImportComponentEvent = () => {
-    form.validateFields().then(async (values) => {
-      const { file } = values;
-      await uploadLineStressSag(file, { libId }, requestSource, '/Component/SaveImport');
-      message.success('导入成功');
-      setState(false);
-      changeFinishEvent?.();
-    });
+  const onSave = () => {
+    setUploadFileTrue();
   };
 
   return (
@@ -60,7 +62,7 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveImportComponentEvent()}>
+        <Button key="save" type="primary" onClick={() => onSave()}>
           保存
         </Button>,
       ]}
@@ -69,7 +71,11 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
     >
       <Form form={form} preserve={false}>
         <CyFormItem label="导入" name="file" required>
-          <FileUpload maxCount={1} />
+          <FileUpload
+            trigger={triggerUploadFile}
+            maxCount={1}
+            uploadFileFn={saveImportComponentEvent}
+          />
         </CyFormItem>
       </Form>
     </Modal>

@@ -160,19 +160,19 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           </Menu.Item>
         )}
         {buttonJurisdictionArray?.includes('all-project-check-result') && (
-            <Menu.Item
-              onClick={() =>
-                checkResult({
-                  projectId: tableItemData.id,
-                  projectName: tableItemData.name,
-                  projectStatus: tableItemData.stateInfo.statusText,
-                  projectStage: tableItemData.stageText,
-                })
-              }
-            >
-              查看成果
-            </Menu.Item>
-          )}
+          <Menu.Item
+            onClick={() =>
+              checkResult({
+                projectId: tableItemData.id,
+                projectName: tableItemData.name,
+                projectStatus: tableItemData.stateInfo.statusText,
+                projectStage: tableItemData.stageText,
+              })
+            }
+          >
+            查看成果
+          </Menu.Item>
+        )}
       </Menu>
     );
   };
@@ -286,7 +286,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
               <span>
                 {!stateInfo.isArrange &&
-                  identitys.findIndex((item: any) => item.value === 4) > -1 ? (
+                identitys.findIndex((item: any) => item.value === 4) > -1 ? (
                   <span
                     className="canClick"
                     onClick={() => arrange(record.id, arrangeType, allotCompanyId)}

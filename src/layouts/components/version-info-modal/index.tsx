@@ -46,26 +46,28 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   const checkHistoryInfo = async (item: any) => {
     setNowClickVersion(item);
     setHistoryVersionModalVisible(true);
-    setVersionLoading(true)
-    try{
+    setVersionLoading(true);
+    try {
       const data = await getVersionUpdate({
         productCode: '1301726010322214912',
         moduleCode: 'ManageWebV2',
         versionNo: item,
         serverCode: serverCode,
-      })
+      });
       setHistoryVersionData(data.data.description);
-    }catch(msg) {
+    } catch (msg) {
       console.error(msg);
-    }finally {
-      setVersionLoading(false)
+    } finally {
+      setVersionLoading(false);
     }
   };
+
+  let titleName = `版本功能更新 V${versionInfo?.data.versionNo}`;
 
   return (
     <>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         footer=""
         title={`v${nowClickVersion}`}
         visible={historyVersionModalVisible}
@@ -82,8 +84,8 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
         </Spin>
       </Modal>
       <Modal
-      maskClosable={false}
-        title="版本功能更新"
+        maskClosable={false}
+        title={titleName}
         width={820}
         visible={state as boolean}
         footer=""
@@ -98,19 +100,23 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
           <div className={styles.versionItem}>
             <div className={styles.versionItemTitle}>【历史版本】</div>
 
-            {versionInfo?.data.branchAvailableVersions
-              ?.map((item: string) => {
-                return (
-                  <div
-                    key={uuid.v1()}
-                    onClick={() => checkHistoryInfo(item)}
-                    className={styles.historyVersion}
-                  >
-                    {`V${item}`}
-                  </div>
-                );
-              })
-              .slice(0, 5)}
+            {versionInfo?.data.branchAvailableVersions ? (
+              versionInfo?.data.branchAvailableVersions
+                ?.map((item: string) => {
+                  return (
+                    <div
+                      key={uuid.v1()}
+                      onClick={() => checkHistoryInfo(item)}
+                      className={styles.historyVersion}
+                    >
+                      {`V${item}`}
+                    </div>
+                  );
+                })
+                .slice(0, 5)
+            ) : (
+              <div className={styles.versionItemContent}>无</div>
+            )}
           </div>
         </Spin>
       </Modal>

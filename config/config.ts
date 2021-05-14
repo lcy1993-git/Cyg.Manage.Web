@@ -55,5 +55,20 @@ export default defineConfig({
       'hack': `true; @import "~@/styles/base.less";`
     }
   },
-  
+  chainWebpack(config) {
+    config.module.rule('docx-with-file')
+      .test(/.docx$/)
+      .use('url-loader')
+      .loader('file-loader')
+
+    config.module.rule('xls-with-file')
+      .test(/.xls$/)
+      .use('url-loader')
+      .loader('file-loader')
+      
+    config.module.rule('xlsx-with-file')
+      .test(/.xlsx$/)
+      .use('url-loader')
+      .loader('file-loader')
+  },
 });

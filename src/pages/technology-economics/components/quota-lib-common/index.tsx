@@ -3,7 +3,8 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
-import React, { useState, useMemo, useCallback, useReducer, ReactNode } from 'react';
+import React, { useState, useMemo, useCallback, useReducer, ReactNode, useEffect } from 'react';
+import UrlSelect from '@/components/url-select';
 import DictionaryForm from './components/add-edit-form';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -114,11 +115,7 @@ const QuotaLibCommon: React.FC<Props> = ({
   edit={title: ""},
   del
 }) => {
-  console.log(columns);
-  console.log(title);
-  
-  
-  
+
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -131,6 +128,12 @@ const QuotaLibCommon: React.FC<Props> = ({
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
+
+  const [libID, setLibId] = useState("");
+
+  useEffect(() => {
+    // run({libId})
+  }, [libID])
 
   const { data1, run } = useRequest(getDictionaryDetail, {
     manual: true,
@@ -150,15 +153,28 @@ const QuotaLibCommon: React.FC<Props> = ({
 
   const searchComponent = () => {
     return (
-      <TableSearch label="关键词" width="203px">
-        <Search
-          value={searchKeyWord}
-          onChange={(e) => setSearchKeyWord(e.target.value)}
-          onSearch={() => tableSearchEvent()}
-          enterButton
-          placeholder="键名"
-        />
-      </TableSearch>
+      <div className={styles.flex}>
+        <TableSearch label="" width="203px">
+          <Search
+            value={searchKeyWord}
+            onChange={(e) => setSearchKeyWord(e.target.value)}
+            onSearch={() => tableSearchEvent()}
+            enterButton
+            placeholder="编号/名称"
+          />
+        </TableSearch>
+        <div className={styles.empty}/>
+        <TableSearch label="选择定额库" width="400px">
+          <UrlSelect
+            placeholder="请选择"
+            style={{width: 300}}
+            onChange={(e)=> {console.log(e);
+              setLibId("")
+            }}
+          />
+        </TableSearch>
+      </div>
+
     );
   };
 
@@ -324,8 +340,6 @@ const QuotaLibCommon: React.FC<Props> = ({
             删除
           </Button>
         </Popconfirm>
-        {/* <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
-        <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" /> */}
       </div>
     );
   };

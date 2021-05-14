@@ -24,7 +24,7 @@ export interface Props {
 }
 
 const loadEnumsData = window.localStorage.getItem('loadEnumsData');
-const surveyData = loadEnumsData ? JSON.parse(loadEnumsData) : [];
+const surveyData = loadEnumsData && loadEnumsData !== 'undefined' ? JSON.parse(loadEnumsData) : [];
 const surveyEnum = surveyData.find((i: any) => i.key === 'SurveyState')?.value;
 
 const materiaColumns = [
@@ -199,12 +199,14 @@ const SidePopup: React.FC<Props> = observer((props) => {
     {
       title: '属性名',
       dataIndex: 'propertyName',
-      width: 55
+      width: 55,
+      ellipsis: true
     },
     {
       title: '属性值',
       dataIndex: 'data',
       width: 65,
+      ellipsis: true,
       render(value: any, record: any, index: any) {
         if(record.propertyName === 'title') return null;
         if (typeof value === 'string' || typeof value === 'number') 
@@ -316,7 +318,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
 
     const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature;
     if (feature) {
-      const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
+      const localData = localStorage.getItem('loadEnumsData');
+      const loadEnumsData = localData && localData !== 'undefined' ? JSON.parse(localStorage.getItem('loadEnumsData')!) : [];
 
       const findEnumKey = (v: string, type: string): number => {
         let res: number = -100;

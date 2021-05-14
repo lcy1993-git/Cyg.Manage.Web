@@ -7,7 +7,7 @@ interface TableCommonRequestParams {
   pageSize: number;
   url: string;
   extraParams?: object;
-  requestSource: 'project' | 'common' | 'resource';
+  requestSource: 'project' | 'common' | 'resource' | 'tecEco';
   postType: 'body' | 'query';
 }
 

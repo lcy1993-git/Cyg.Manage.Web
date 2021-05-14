@@ -215,7 +215,7 @@ const BaseMap = observer((props: BaseMapProps) => {
       <div className={styles.timeline}>
         <div>
           {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
-            <Timeline type="normal" height={60} width={400} dates={checkedProjectDateList} />
+            <Timeline type="normal" height={80} width={400} dates={checkedProjectDateList} />
           ) : null}
         </div>
       </div>

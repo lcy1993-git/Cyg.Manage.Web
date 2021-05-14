@@ -44,7 +44,7 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
         />
       </CyFormItem>
       <CyFormItem label="部组名称" name="name" required rules={rules.name}>
-        <Input placeholder="请输入" />
+        <Input placeholder="请输入部组名称" />
       </CyFormItem>
 
       {type === 'add' && (

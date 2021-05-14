@@ -5,16 +5,13 @@ import rules from '../rule';
 import { CompanyGroupTreeData } from '@/services/operation-config/company-group';
 import styles from './index.less';
 import UrlSelect from '@/components/url-select';
-import { useRequest } from 'ahooks';
-import { getCompanyInfo } from '@/services/personnel-config/company-user';
+
 interface CompanyUserFormProps {
   treeData: CompanyGroupTreeData[];
 }
 
 const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
   const { treeData = [] } = props;
-
-  const { data: companyInfo } = useRequest(() => getCompanyInfo());
 
   const mapTreeData = (data: any) => {
     return {
@@ -37,7 +34,7 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
         initialValue={1}
         required
       >
-        <InputNumber min={1} />
+        <InputNumber min={1} max={50} />
       </CyFormItem>
 
       <CyFormItem label="所属部组" name="groupIds">

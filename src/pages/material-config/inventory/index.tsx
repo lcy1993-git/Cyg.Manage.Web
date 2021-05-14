@@ -58,7 +58,7 @@ const Inventroy: React.FC = () => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="物料编号"
+            placeholder="物料编号/物料描述"
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="" width="230px">
@@ -301,8 +301,9 @@ const Inventroy: React.FC = () => {
   ];
 
   const titleSlotElement = () => {
-    console.log(nowSelectedInv)
-    return nowSelectedInv ? <div style={{paddingTop: "3px",fontSize: "13px"}}>{` - ${nowSelectedInv}`}</div> : null;
+    return nowSelectedInv ? (
+      <div style={{ paddingTop: '2px', fontSize: '13px' }}>{` -${nowSelectedInv}`}</div>
+    ) : null;
   };
 
   const tableElement = () => {

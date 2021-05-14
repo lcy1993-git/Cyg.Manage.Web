@@ -1,33 +1,27 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import {
-  EditOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  PushpinOutlined,
-  UndoOutlined,
-} from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Tree } from 'antd';
-import React, { useMemo, useState } from 'react';
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Input, Button, Modal, Form, Popconfirm, message, Switch } from 'antd';
+import React, { useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import { isArray } from 'lodash';
 import '@/assets/icon/iconfont.css';
-// import CompanyFileForm from './components/add-edit-form';
 import {
   getNewsItemDetail,
   updateNewsItem,
   deleteNewsItem,
-  undoNewsItem,
   addNewsItem,
-  pushNewsItem,
+  updateNewsState,
 } from '@/services/news-config/info-manage';
 // import DefaultParams from './components/default-params';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
 import TextEditor from './component/text-editor';
-import { getGroupInfo } from '@/services/project-management/all-project';
+import EnumSelect from '@/components/enum-select';
+import { BelongManageEnum } from '@/services/personnel-config/manage-user';
+import CyTag from '@/components/cy-tag';
 
 const { Search } = Input;
 
@@ -37,12 +31,13 @@ const InfoManage: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
-  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [status, setStatus] = useState<number>(0);
+  // const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
+  // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
   // 富文本框内容
   const [content, setContent] = useState<string>('');
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  // const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
@@ -52,30 +47,22 @@ const InfoManage: React.FC = () => {
     manual: true,
   });
 
-  const { data: TreeData = [] } = useRequest(() => getGroupInfo('4'));
-  const mapTreeData = (data: any) => {
-    return {
-      title: data.text,
-      key: data.id,
-      children: data.children ? data.children.map(mapTreeData) : [],
-    };
-  };
+  // const { data: TreeData = [] } = useRequest(() => getGroupInfo('4'));
+  // const mapTreeData = (data: any) => {
+  //   return {
+  //     title: data.text,
+  //     key: data.id,
+  //     children: data.children ? data.children.map(mapTreeData) : [],
+  //   };
+  // };
 
-  const handleData = useMemo(() => {
-    return TreeData?.map(mapTreeData);
-  }, [JSON.stringify(TreeData)]);
-
-  const parentIds = handleData?.map((item) => {
-    return item.key;
-  });
-  console.log(parentIds);
-
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(parentIds);
-  console.log(expandedKeys);
+  // const handleData = useMemo(() => {
+  //   return TreeData?.map(mapTreeData);
+  // }, [JSON.stringify(TreeData)]);
 
   const searchComponent = () => {
     return (
-      <div>
+      <div className={styles.search}>
         <TableSearch label="标题" width="230px">
           <Search
             value={searchKeyWord}
@@ -83,6 +70,13 @@ const InfoManage: React.FC = () => {
             onSearch={() => search()}
             enterButton
             placeholder="请输入搜索内容"
+          />
+        </TableSearch>
+        <TableSearch label="状态" width="200px" marginLeft="20px">
+          <EnumSelect
+            enumList={BelongManageEnum}
+            placeholder="-全部-"
+            onChange={(value: any) => searchByStatus(value)}
           />
         </TableSearch>
       </div>
@@ -119,6 +113,12 @@ const InfoManage: React.FC = () => {
     }
   };
 
+  const updateStatus = async (id: string, status: boolean) => {
+    updateNewsState(id, status);
+    search();
+    message.success('状态修改成功');
+  };
+
   const columns = [
     {
       dataIndex: 'title',
@@ -126,21 +126,87 @@ const InfoManage: React.FC = () => {
       title: '标题',
     },
     {
-      dataIndex: 'createByUser',
-      index: 'createByUser',
-      title: '创建用户',
-      width: 220,
+      title: '状态',
+      dataIndex: 'isEnable',
+      index: 'isEnable',
+      width: 120,
+      render: (text: any, record: any) => {
+        const isChecked = !record.isEnable;
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('start-forbid') &&
+              (record.isEnable === true ? (
+                <>
+                  <Switch
+                    key={status}
+                    defaultChecked
+                    onChange={() => updateStatus(record.id, isChecked)}
+                  />
+                  <span className="formSwitchOpenTip">启用</span>
+                </>
+              ) : (
+                <>
+                  <Switch onChange={() => updateStatus(record.id, isChecked)} />
+                  <span className="formSwitchCloseTip">禁用</span>
+                </>
+              ))}
+            {!buttonJurisdictionArray?.includes('start-forbid') &&
+              (record.isEnable === true ? <span>启用</span> : <span>禁用</span>)}
+          </>
+        );
+      },
+    },
+
+    {
+      dataIndex: 'users',
+      index: 'users',
+      title: '对象',
+      render: (text: any, record: any) => {
+        return record.users.map((item: any) => {
+          return (
+            <CyTag key={item.value} className="mr7">
+              {item.text}
+            </CyTag>
+          );
+        });
+      },
+    },
+    {
+      dataIndex: 'createdByUser',
+      index: 'createdByUser',
+      title: '创建人',
+      width: 140,
     },
     {
       dataIndex: 'createdOn',
       index: 'createdOn',
-      title: '创建日期',
+      title: '创建时间',
       width: 220,
       render: (text: any, record: any) => {
-        return moment(record.createdOn).format('YYYY-MM-DD HH:mm:ss');
+        return moment(record.createdOn).format('YYYY-MM-DD HH:mm');
+      },
+    },
+    {
+      dataIndex: 'updateOn',
+      index: 'updateOn',
+      title: '更新时间',
+      width: 220,
+      render: (text: any, record: any) => {
+        return moment(record.createdOn).format('YYYY-MM-DD HH:mm');
       },
     },
   ];
+
+  //按宣贯状态查找
+  const searchByStatus = (value: any) => {
+    setStatus(value);
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        state: value,
+      });
+    }
+  };
 
   //添加
   const addEvent = () => {
@@ -153,9 +219,13 @@ const InfoManage: React.FC = () => {
         {
           title: '',
           content: content,
+          isEnable: true,
+          clientCategorys: '',
+          userIds: '',
         },
         values,
       );
+      console.log(submitInfo);
 
       await addNewsItem(submitInfo);
       refresh();
@@ -175,9 +245,10 @@ const InfoManage: React.FC = () => {
     const editDataId = editData.id;
 
     const checkContentData = await run(editDataId);
+    console.log(checkContentData);
 
-    setEditFormVisible(true);
-    editForm.setFieldsValue(checkContentData);
+    setAddFormVisible(true);
+    addForm.setFieldsValue({ checkContentData });
     setContent(checkContentData.content);
   };
 
@@ -204,58 +275,38 @@ const InfoManage: React.FC = () => {
     });
   };
 
-  //撤回
-  const withdrawEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行撤回');
-      return;
-    }
-    await undoNewsItem(tableSelectRows[0].id);
-    message.success('操作成功');
-    refresh();
-  };
-
-  const pushEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条资讯推送');
-      return;
-    }
-    setPushTreeVisible(true);
-  };
-
-  const surePushNewsItem = async () => {
-    const newsId = tableSelectRows[0].id;
-    await pushNewsItem(newsId, selectedIds);
-    message.success('推送成功');
-    setPushTreeVisible(false);
-    refresh();
-  };
+  // const surePushNewsItem = async () => {
+  //   const newsId = tableSelectRows[0].id;
+  //   await pushNewsItem(newsId, selectedIds);
+  //   message.success('推送成功');
+  //   setPushTreeVisible(false);
+  //   refresh();
+  // };
 
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('company-file-add') && (
+        {buttonJurisdictionArray?.includes('add-info') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('company-file-edit') && (
+        {buttonJurisdictionArray?.includes('edit-info') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         )}
-
-        {buttonJurisdictionArray?.includes('company-file-edit') && (
-          <Button className="mr7" onClick={() => pushEvent()}>
-            <PushpinOutlined />
-            推送
+        {buttonJurisdictionArray?.includes('check-info') && (
+          <Button className="mr7" onClick={() => checkEvent()}>
+            <EditOutlined />
+            查看
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('company-file-delete') && (
+        {buttonJurisdictionArray?.includes('delete-info') && (
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -268,24 +319,22 @@ const InfoManage: React.FC = () => {
             </Button>
           </Popconfirm>
         )}
-        {buttonJurisdictionArray?.includes('company-file-defaultOptions') && (
-          <Button className={styles.iconParams} onClick={() => withdrawEvent()}>
-            <UndoOutlined />
-            撤回
-          </Button>
-        )}
       </div>
     );
   };
 
-  const pushSelectEvent = (checkedValue: string[]) => {
-    setSelectedIds(checkedValue);
+  const checkEvent = () => {
+    console.log();
   };
 
-  const onExpand = (expandedKeysValue: React.Key[]) => {
-    setExpandedKeys(expandedKeysValue);
-    setAutoExpandParent(false);
-  };
+  // const pushSelectEvent = (checkedValue: string[]) => {
+  //   setSelectedIds(checkedValue);
+  // };
+
+  // const onExpand = (expandedKeysValue: React.Key[]) => {
+  //   setExpandedKeys(expandedKeysValue);
+  //   setAutoExpandParent(false);
+  // };
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -294,17 +343,18 @@ const InfoManage: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/News/GetPagedList"
-        tableTitle="资讯管理"
+        url="/Article/GetPagedList"
+        tableTitle="宣贯管理"
         getSelectData={(data) => setTableSelectRow(data)}
         extractParams={{
+          state: status,
           keyWord: searchKeyWord,
         }}
       />
       <Modal
         maskClosable={false}
-        title="添加-资讯"
-        width="820px"
+        title="添加-宣贯"
+        width="880px"
         visible={addFormVisible}
         okText="保存"
         onOk={() => sureAddNews()}
@@ -316,8 +366,8 @@ const InfoManage: React.FC = () => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-资讯"
-        width="820px"
+        title="编辑-宣贯"
+        width="880px"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditNewsItem()}
@@ -326,27 +376,6 @@ const InfoManage: React.FC = () => {
         destroyOnClose
       >
         <TextEditor onChange={setContent} titleForm={editForm} htmlContent={content} type="edit" />
-      </Modal>
-      <Modal
-        maskClosable={false}
-        title="推送-资讯"
-        width="450px"
-        visible={pushTreeVisible}
-        okText="保存"
-        onOk={() => surePushNewsItem()}
-        onCancel={() => setPushTreeVisible(false)}
-        cancelText="取消"
-        destroyOnClose
-      >
-        <Tree
-          onExpand={onExpand}
-          checkable
-          treeData={handleData}
-          onCheck={(value: any) => pushSelectEvent(value)}
-          autoExpandParent={autoExpandParent}
-          // selectedKeys={selectedIds}
-          expandedKeys={expandedKeys}
-        />
       </Modal>
     </PageCommonWrap>
   );
