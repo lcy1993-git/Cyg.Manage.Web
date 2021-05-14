@@ -158,9 +158,22 @@ const CompanyFile: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const uploadFile = async () => {
+  const addUploadFile = async () => {
     return uploadCompanyFile(
       addForm.getFieldValue('file'),
+      { securityKey },
+      '/Upload/CompanyFile',
+    ).then(
+      (fileId: string) => {
+        setFileId(fileId);
+      },
+      () => {},
+    );
+  };
+
+  const editUploadFile = async () => {
+    return uploadCompanyFile(
+      editForm.getFieldValue('file'),
       { securityKey },
       '/Upload/CompanyFile',
     ).then(
@@ -218,28 +231,25 @@ const CompanyFile: React.FC = () => {
       return;
     }
     const editData = data!;
-
     editForm.validateFields().then(async (values) => {
-      const { file } = values;
-      let fileId = editData.fileId;
-      if (file && file.length > 0) {
-        fileId = await uploadCompanyFile(file, { securityKey }, '/Upload/CompanyFile');
+      if (fileId) {
+        const submitInfo = Object.assign(
+          {
+            id: editData.id,
+            name: editData.name,
+            fileId: fileId,
+            describe: editData.describe,
+            groupId: editData.groupId,
+          },
+          values,
+        );
+        await updateCompanyFileItem(submitInfo);
+        refresh();
+        message.success('更新成功');
+        setEditFormVisible(false);
+      } else {
+        message.warn('文件未上传或上传失败');
       }
-
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-          name: editData.name,
-          fileId: fileId,
-          describe: editData.describe,
-          groupId: editData.groupId,
-        },
-        values,
-      );
-      await updateCompanyFileItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      setEditFormVisible(false);
     });
   };
 
@@ -417,6 +427,18 @@ const CompanyFile: React.FC = () => {
     return <div>{`-${nowSelectGroup}`}</div>;
   };
 
+  const onAddFormChange = (changedValues: any) => {
+    if (changedValues.file) {
+      setFileId(undefined);
+    }
+  };
+
+  const onEditFormChange = (changedValues: any) => {
+    if (changedValues.file) {
+      setFileId(undefined);
+    }
+  };
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.companyFile}>
@@ -484,17 +506,9 @@ const CompanyFile: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form
-          onValuesChange={(changedValues, allValues) => {
-            if (changedValues.file) {
-              setFileId(undefined);
-            }
-          }}
-          form={addForm}
-          preserve={false}
-        >
+        <Form onValuesChange={onAddFormChange} form={addForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm uploadFileFn={uploadFile} type="add" groupData={tableData} />
+            <CompanyFileForm uploadFileFn={addUploadFile} type="add" groupData={tableData} />
           </Spin>
         </Form>
       </Modal>
@@ -509,10 +523,10 @@ const CompanyFile: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editForm} preserve={false}>
+        <Form form={editForm} onValuesChange={onEditFormChange} preserve={false}>
           <Spin spinning={loading}>
             <CompanyFileForm
-              uploadFileFn={uploadFile}
+              uploadFileFn={editUploadFile}
               groupData={tableData}
               editingName={editingFileName}
             />
