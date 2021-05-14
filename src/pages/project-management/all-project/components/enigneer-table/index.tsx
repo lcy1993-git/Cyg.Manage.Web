@@ -499,7 +499,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setCurrentEditEngineerId(data.engineerId);
   };
 
-  const projectTableShow = testData?.map((item: any, index: number) => {
+  const projectTableShow = tableResultData?.items.map((item: any, index: number) => {
     return (
       <ProjectTableItem
         editEngineer={editEngineerEvent}

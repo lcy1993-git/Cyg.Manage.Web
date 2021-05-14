@@ -97,7 +97,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
 
   return (
     <div className={styles.selectForm}>
-      <CyFormItem label="账号">
+      <CyFormItem label="账号" name='outerAuditUsers'>
         <Dropdown overlay={OptionList}>
           <Input
             placeholder="请输入账号/手机号"

@@ -86,6 +86,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
             designAssessUser2: '',
             designAssessUser3: '',
             designAssessUser4: '',
+            outerAuditUsers: [],
           },
           values,
         );
@@ -112,28 +113,26 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       onOk={() => saveInfo()}
       onCancel={() => closeModalEvent()}
     >
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="项目安排" key="1">
-          <Form form={form} preserve={false}>
+      <Form form={form} preserve={false}>
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="项目安排" key="1">
             <ArrangeForm
               defaultType={defaultSelectType}
               allotCompanyId={allotCompanyId}
               getCompanyInfo={getCompanyInfo}
               onChange={(value) => setSelectType(value)}
             />
-          </Form>
-        </TabPane>
-        {(selectType === '2' || selectType === '4') && (
-          <TabPane tab="外审安排" key="2">
-            <Form style={{ width: '100%' }}>
-              <SelectAddListForm />
-            </Form>
           </TabPane>
-        )}
-        {(selectType === '1' || selectType === '3') && (
-          <TabPane tab="外审安排" disabled key="2"></TabPane>
-        )}
-      </Tabs>
+          {(selectType === '2' || selectType === '4') && (
+            <TabPane tab="外审安排" key="2">
+              <SelectAddListForm />
+            </TabPane>
+          )}
+          {(selectType === '1' || selectType === '3') && (
+            <TabPane tab="外审安排" disabled key="2"></TabPane>
+          )}
+        </Tabs>
+      </Form>
     </Modal>
   );
 };

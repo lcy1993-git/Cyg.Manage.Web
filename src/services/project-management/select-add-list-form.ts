@@ -11,7 +11,7 @@ export interface UserInfo {
 }
 export function queryOuterAuditUserByPhoneAndUsername(keyWord: string) {
   return cyRequest<UserInfo>(() =>
-    request(`${baseUrl.companyUser}/CompanyUser/QueryOuterAuditUser`, {
+    request(`${baseUrl.project}/CompanyUser/QueryOuterAuditUser`, {
       method: 'POST',
       data: { keyWord },
     }),
