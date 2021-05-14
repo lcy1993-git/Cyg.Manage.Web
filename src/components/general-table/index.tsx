@@ -42,7 +42,7 @@ interface GeneralTableProps {
 
   rowKey?: string;
 
-  requestSource?: 'project' | 'common' | 'resource';
+  requestSource?: 'project' | 'common' | 'resource' | 'tecEco';
 
   noPaging?: boolean;
 

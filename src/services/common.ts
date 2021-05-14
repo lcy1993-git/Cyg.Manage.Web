@@ -16,6 +16,7 @@ const devBaseUrl = {
   webGis2: '/webGis2/api',
   comment: '/Comment/api',
   projectVisualization: '/ProjectVisualization/api',
+  tecEco: '/tecEco/api',
 };
 
 // interface UrlSelectParams {
