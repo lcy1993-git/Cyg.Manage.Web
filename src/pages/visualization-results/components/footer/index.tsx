@@ -19,7 +19,7 @@ const Footer = observer((props: Props) => {
   return (
     <div className={`${styles.footerContainer} flex`}>
       <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
-        {visibleLeftSidebar ? null : <MenuUnfoldOutlined />}
+        {visibleLeftSidebar ? null : <MenuUnfoldOutlined style={{ fontSize: 16 }} />}
       </div>
       <div className={'flex1'}></div>
       <div className={styles.mapInfo}>

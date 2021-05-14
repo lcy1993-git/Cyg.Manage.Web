@@ -91,11 +91,14 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
       uploadItem();
     }
   }, [trigger, fileList.length]);
-
+  const onFileChange = () => {
+    setUploadStatus('hasNotStarted');
+  };
   const params = {
     ...rest,
     beforeUpload: beforeUploadEvent,
     showUploadList: false,
+    onChange: onFileChange,
   };
 
   const deleteUploadItem = (uid: string) => {
@@ -126,7 +129,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
       <FileUploadShowItem
         deleteEvent={deleteUploadItem}
         uploadEvent={uploadItem}
-        uploadFileBtn={uploadFileBtn}
+        uploadFileBtn={uploadStatus === 'success' ? false : uploadFileBtn}
         uid={file.uid}
         name={file.name}
         key={file.uid}
