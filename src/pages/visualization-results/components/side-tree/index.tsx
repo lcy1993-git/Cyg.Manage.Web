@@ -99,7 +99,12 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         let data = generateProjectTree(dataByCattegory);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
-          setExpandedKeys(['-1']);
+          let expandedKeys = [];
+          expandedKeys.push('-1');
+          expandedKeys.push(...data.map(v => v.key));
+          
+          expandedKeys.push()
+          setExpandedKeys(expandedKeys);
           setCheckedKeys([]);
         } else {
           message.warning('无数据');
@@ -180,6 +185,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                 height={size.height ? size.height - 100 : 680}
                 checkable
                 onExpand={onExpand}
+                defaultExpandAll
                 expandedKeys={expandedKeys}
                 onCheck={(checked, info) => onCheck(checked, info)}
                 checkedKeys={checkedKeys}
