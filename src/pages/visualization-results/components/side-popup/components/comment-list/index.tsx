@@ -12,17 +12,16 @@ export interface ReviewListItemDataType {
   datetime: React.ReactNode;
 }
 export interface CommentListProps {
-  projectId?: string;
-  layer?: number;
-  deviceId?: string;
   height: number;
+  loading?: boolean;
+  CommentList: CommentType[];
 }
 
 const CommentList: FC<CommentListProps> = (props) => {
-  const { projectId, layer, deviceId, height } = props;
-  const [commentListData, setCommentListDate] = useState<CommentListItemDataType[]>();
+  const { height, CommentList, loading } = props;
+
   const scrollbars = createRef<Scrollbars>();
-  function generatprCommentListDate(CommentList?: CommentType[]) {
+  function generatprCommentListDate() {
     if (CommentList) {
       return CommentList.map((v) => ({
         author: v.creator,
@@ -37,18 +36,7 @@ const CommentList: FC<CommentListProps> = (props) => {
       return [];
     }
   }
-  const { data: responseCommentList, loading } = useRequest(
-    () => fetchCommentList({ projectId, layer, deviceId }),
-    {
-      refreshDeps: [deviceId],
-      onSuccess: () => {
-        setCommentListDate(generatprCommentListDate(responseCommentList));
-      },
-      onError: () => {
-        message.error('获取审阅失败');
-      },
-    },
-  );
+
   return (
     <>
       <Scrollbars autoHide ref={scrollbars} style={{ marginBottom: 32, height }}>
@@ -57,9 +45,9 @@ const CommentList: FC<CommentListProps> = (props) => {
         ) : (
           <List
             className="comment-list"
-            header={`${commentListData?.length}条 审阅内容`}
+            header={`${CommentList?.length}条 审阅内容`}
             itemLayout="horizontal"
-            dataSource={commentListData}
+            dataSource={generatprCommentListDate()}
             renderItem={(item) => (
               <li>
                 <Comment author={item.author} content={item.content} datetime={item.datetime} />

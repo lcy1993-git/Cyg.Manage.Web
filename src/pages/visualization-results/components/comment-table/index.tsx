@@ -14,6 +14,7 @@ import CommentList from '../side-popup/components/comment-list';
 import { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import { isArray } from 'lodash';
+import { CommentType, fetchCommentList } from '@/services/visualization-results/side-popup';
 
 const { Option } = Select;
 
@@ -27,6 +28,7 @@ const CommentTable: FC<CommentProps> = observer((props) => {
   const [deviceId, setDeviceId] = useState<string>();
   const [filterData, setFilterData] = useState<CommentListItemType[]>();
   const [clickLayer, setClickLayer] = useState<number>();
+  const [commentListDatas, setCommentListDate] = useState<CommentType[]>([]);
   const [commentListModalVisible, setCommentListModalVisible] = useState<boolean>(false);
   const store = useContainer();
   const { vState } = store;
@@ -36,7 +38,7 @@ const CommentTable: FC<CommentProps> = observer((props) => {
 
   const findEnumKey = (type: string) => {
     let res: any[] = [];
-    if(isArray(loadEnumsData)) {
+    if (isArray(loadEnumsData)) {
       loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
         if (l.key === type) {
           res = l.value.map((e) => {
@@ -107,16 +109,30 @@ const CommentTable: FC<CommentProps> = observer((props) => {
           type="primary"
           onClick={() => onClickViewCommentList(record.deviceId, record.layerType)}
         >
-          {' '}
           查看
         </Button>
       ),
     },
   ];
 
+  const { data: responseCommentList, run: fetchComment, loading: commentListloading } = useRequest(
+    fetchCommentList,
+    {
+      manual: true,
+      onSuccess: () => {
+        console.log(responseCommentList);
+
+        setCommentListDate(responseCommentList ?? []);
+      },
+      onError: () => {
+        message.error('获取审阅失败');
+      },
+    },
+  );
   const onClickViewCommentList = (deviceId: string, layerType: number) => {
     setDeviceId(deviceId);
     setClickLayer(layerType);
+    fetchComment({ projectId: checkedProjectIdList[0].id, layer: layerType, deviceId });
     setCommentListModalVisible(true);
   };
   /**
@@ -240,10 +256,9 @@ const CommentTable: FC<CommentProps> = observer((props) => {
         width={1500}
       >
         <CommentList
+          CommentList={commentListDatas ?? []}
+          loading={commentListloading}
           height={600}
-          deviceId={deviceId}
-          layer={clickLayer}
-          projectId={checkedProjectIdList[0].id}
         />
       </Modal>
     </>

@@ -40,18 +40,18 @@ const mediaLayers = [
   'mark',
   'electric_meter',
 ];
-const materiaLayers = ['tower',  'transformer', 'cable_equipment', 'pull_line'];
+const materiaLayers = ['tower', 'transformer', 'cable_equipment', 'pull_line'];
 const commentLayers = ['tower', 'cable', 'cable_channel', 'transformer', 'cable_equipment', 'mark'];
 const layerTypeEnum = {
-'survey' : '勘察',
-'plan' : '方案',
-'design' : '设计',
-'dismantle': '拆除'
-}
+  survey: '勘察',
+  plan: '方案',
+  design: '设计',
+  dismantle: '拆除',
+};
 const elementTypeEnum = {
-  'tower': '杆塔',
-  'cable': '电缆井'
-}
+  tower: '杆塔',
+  cable: '电缆井',
+};
 export const mapClick = (evt: any, map: any, ops: any) => {
   clearHighlightLayer(map);
   ops.setRightSidebarVisiviabel(false);
@@ -71,7 +71,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
     }
-    console.log(feature)
+    console.log(feature);
     let layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
 
@@ -173,7 +173,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                 : null;
               break;
             case 'azimuth':
-              console.log( Number(feature.getProperties()[p]))
+              console.log(Number(feature.getProperties()[p]));
               pJSON[mappingTag] = Number(feature.getProperties()[p])
                 ? Number(feature.getProperties()[p])?.toFixed(2)
                 : 0;
@@ -270,18 +270,18 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 批注功能
       if (commentLayers.indexOf(layerName) >= 0) {
-        pJSON['审阅'] = { id: feature.getProperties().project_id };
+        pJSON['审阅'] = { id: feature.getProperties().project_id, feature };
       }
     }
 
     // 相应数据到右侧边栏
     const resData = [];
-    resData.push({propertyName: '所属图层',  data: layerTypeEnum[layerType] + '图层'});
-    resData.push({propertyName: '元素类型',  data: elementTypeEnum[layerName]});
+    resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
+    resData.push({ propertyName: '元素类型', data: elementTypeEnum[layerName] });
     for (let p in pJSON) {
-      if(p === '方位角' && layerName === 'tower')
-        resData.push({propertyName: '呼称高',  data: pJSON['高度(m)'] - pJSON['埋深']});
-      resData.push({ propertyName: p, data: pJSON[p] || "0" });
+      if (p === '方位角' && layerName === 'tower')
+        resData.push({ propertyName: '呼称高', data: pJSON['高度(m)'] - pJSON['埋深'] });
+      resData.push({ propertyName: p, data: pJSON[p] || '0' });
     }
     ops.setRightSidebarVisiviabel(true);
     ops.setRightSidebarData(resData);

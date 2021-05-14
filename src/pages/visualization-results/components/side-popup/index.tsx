@@ -2,7 +2,12 @@ import React, { createRef, useEffect, useMemo, useRef, useState } from 'react';
 import { Drawer, Table, Modal, Carousel, Input, message } from 'antd';
 import { useContainer } from '../../result-page/mobx-store';
 import { MenuUnfoldOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
-import { CommentRequestType, addComment } from '@/services/visualization-results/side-popup';
+import {
+  CommentRequestType,
+  addComment,
+  fetchCommentList,
+  CommentType,
+} from '@/services/visualization-results/side-popup';
 // import { publishMessage } from '@/services/news-config/Comment-manage';
 import CommentList from './components/comment-list';
 import uuid from 'node-uuid';
@@ -190,7 +195,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const { checkedProjectIdList } = useContainer().vState;
   const scrollbars = createRef<Scrollbars>();
 
-  const data = useMemo(() => {  
+  const data = useMemo(() => {
     const title = dataSource.find((o) => o.propertyName === 'title')?.data;
     return [dataSource.filter((o) => o.propertyName !== 'title'), title];
   }, [JSON.stringify(dataSource)]);
@@ -199,15 +204,15 @@ const SidePopup: React.FC<Props> = observer((props) => {
     {
       title: '属性名',
       dataIndex: 'propertyName',
-      width: 55
+      width: 55,
     },
     {
       title: '属性值',
       dataIndex: 'data',
       width: 65,
       render(value: any, record: any, index: any) {
-        if(record.propertyName === 'title') return null;
-        if (typeof value === 'string' || typeof value === 'number') 
+        if (record.propertyName === 'title') return null;
+        if (typeof value === 'string' || typeof value === 'number')
           return <span key={index}>{value}</span>;
         if (record.propertyName === '多媒体') {
           if (value?.length === 0) {
@@ -299,11 +304,25 @@ const SidePopup: React.FC<Props> = observer((props) => {
       },
     },
   ];
-
+  const { data: responseCommentList, run: fetchComment, loading: commentListloading } = useRequest(
+    fetchCommentList,
+    {
+      manual: true,
+      onSuccess: () => {},
+      onError: () => {
+        message.error('获取审阅失败');
+      },
+    },
+  );
   const { run: addCommentRequest } = useRequest(addComment, {
     manual: true,
     onSuccess: () => {
       message.success('添加成功');
+      fetchComment({
+        layer: commentRquestBody?.layerType,
+        deviceId: commentRquestBody?.deviceId,
+        projectId: commentRquestBody?.projectId,
+      });
       setComment('');
     },
     onError: () => {
@@ -317,7 +336,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
     const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature;
     if (feature) {
       const localData = localStorage.getItem('loadEnumsData');
-      const loadEnumsData = localData && localData !== 'undefined' ? JSON.parse(localStorage.getItem('loadEnumsData')!) : [];
+      const loadEnumsData =
+        localData && localData !== 'undefined'
+          ? JSON.parse(localStorage.getItem('loadEnumsData')!)
+          : [];
 
       const findEnumKey = (v: string, type: string): number => {
         let res: number = -100;
@@ -341,17 +363,21 @@ const SidePopup: React.FC<Props> = observer((props) => {
       let split = id_.split('.');
       const [enLayerType, enDeviceType] = split[0].split('_');
       const deviceId = split[1];
+      console.log(projectId);
 
       /**
        * 初始化请求body
        */
-      setcommentRquestBody({
+
+      let body = {
         layerType: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
         deviceType: findEnumKey(DEVICE_TYPE[enDeviceType], 'ProjectCommentDevice'),
         deviceId,
         projectId,
         content: '',
-      });
+      };
+      setcommentRquestBody(body);
+      fetchComment({ layer: body.layerType, deviceId: body.deviceId, projectId });
     }
   };
   useEffect(() => {
@@ -396,7 +422,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
    * 当modal click确定的时候
    * @param id
    */
-  const onOkClick = (id: string | undefined) => {
+  const onOkClick = () => {
     /**
      * 如果要在添加审阅相应事件只能在这个if下面
      */
@@ -411,8 +437,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
     }
   };
 
-  console.log(data[1]);
-  
   const DrawerWrap = useMemo(() => {
     return (
       <Drawer
@@ -500,9 +524,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
           <>
             <CommentList
               height={300}
-              projectId={commentRquestBody?.projectId}
-              deviceId={commentRquestBody?.deviceId}
-              layer={commentRquestBody?.layerType}
+              CommentList={responseCommentList ?? []}
+              loading={commentListloading}
             />
             <Input.TextArea
               placeholder="添加审阅"
