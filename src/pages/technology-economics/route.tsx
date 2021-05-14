@@ -12,6 +12,31 @@ const QuotaList = Loadable({
   loading: Loading,
   delay: 150,
 });
+const QuotaProject = Loadable({
+  loader: () => import('@/pages/technology-economics/quota-project'),
+  loading: Loading,
+  delay: 150,
+});
+const QuotaMachanics = Loadable({
+  loader: () => import('@/pages/technology-economics/quota-mechanics'),
+  loading: Loading,
+  delay: 150,
+});
+const QuotaMaterial = Loadable({
+  loader: () => import('@/pages/technology-economics/quota-material'),
+  loading: Loading,
+  delay: 150,
+});
+const QuotaLabour = Loadable({
+  loader: () => import('@/pages/technology-economics/quota-labour'),
+  loading: Loading,
+  delay: 150,
+});
+const UnpricedMaterials = Loadable({
+  loader: () => import('@/pages/technology-economics/unpriced-materials'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -23,5 +48,30 @@ export default [
     title: '定额库目录',
     path: '/technology-economics/quota-list',
     component: <QuotaList />,
+  },
+  {
+    title: '定额项',
+    path: '/technology-economics/quota-project',
+    component: <QuotaProject />,
+  },
+  {
+    title: '定额库机械项',
+    path: '/technology-economics/quota-mechanics',
+    component: <QuotaMachanics />,
+  },
+  {
+    title: '定额库材料项',
+    path: '/technology-economics/quota-material',
+    component: <QuotaMaterial />,
+  },
+  {
+    title: '定额库人工项',
+    path: '/technology-economics/quota-labour',
+    component: <QuotaLabour />,
+  },
+  {
+    title: '未计价材料表',
+    path: '/technology-economics/unpriced-materials',
+    component: <UnpricedMaterials />,
   },
 ];

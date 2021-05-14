@@ -3,9 +3,9 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
-import React, { useState, useMemo, useCallback, useReducer } from 'react';
+import React, { useState, useMemo, useCallback, useReducer, ReactNode, useEffect } from 'react';
+import UrlSelect from '@/components/url-select';
 import DictionaryForm from './components/add-edit-form';
-import { getQuotaLibrary } from '@/services/technology-economics/quota-library';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -53,7 +53,69 @@ const reducer = (state: State, action: any) => {
   }
 };
 
-const QuotaLibrary: React.FC = () => {
+interface Props {
+  url: string;
+  title: string;
+  dictionaryForm: ()=> JSX.Element;
+  columns: any[],
+  add: any;
+  edit: any;
+  del: any;
+}
+
+
+const columns = [
+  {
+    dataIndex: 'id',
+    index: 'id',
+    title: '编号',
+    width: 120,
+    // render: (text: string, record: any) => {
+    //   return (
+    //     <span
+    //       className={styles.dictionaryKeyCell}
+    //       onClick={() => keyCellClickEvent(record.id, record.key)}
+    //     >
+    //       {record.key}
+    //     </span>
+    //   );
+    // },
+  },
+  {
+    dataIndex: 'name',
+    index: 'name',
+    title: '名称',
+    width: 360,
+  },
+  {
+    dataIndex: 'categoryText',
+    index: 'categoryText',
+    title: '类型',
+    width: 180,
+  },
+  {
+    dataIndex: 'releaseDate',
+    index: 'releaseDate',
+    title: '发行日期',
+    width: 80,
+  },
+  {
+    dataIndex: 'remark',
+    index: 'remark',
+    title: '描述',
+  },
+];
+
+const QuotaLibCommon: React.FC<Props> = ({
+  url = "",
+  title="",
+  dictionaryForm = ()=> null,
+  columns,
+  add={title: ""},
+  edit={title: ""},
+  del
+}) => {
+
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -67,35 +129,52 @@ const QuotaLibrary: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run } = useRequest(getQuotaLibrary, {
-    manual: false,
+  const [libID, setLibId] = useState("");
+
+  useEffect(() => {
+    // run({libId})
+  }, [libID])
+
+  const { data1, run } = useRequest(getDictionaryDetail, {
+    manual: true,
   });
 
-  console.log(data);
-  
+  const data = [
+    {
+      category: 1,
+      categoryText: "预算",
+      id: "1357588635508068352",
+      name: "默认预算定额",
+      releaseDate: 1612454400000,
+      releaseDateText: "2021-02-05",
+      remark: null,
+    }
+  ];
 
-  // const data = [
-  //   {
-  //     category: 1,
-  //     categoryText: "预算",
-  //     id: "1357588635508068352",
-  //     name: "默认预算定额",
-  //     releaseDate: 1612454400000,
-  //     releaseDateText: "2021-02-05",
-  //     remark: null,
-  //   }
-  // ]
   const searchComponent = () => {
     return (
-      <TableSearch label="关键词" width="203px">
-        <Search
-          value={searchKeyWord}
-          onChange={(e) => setSearchKeyWord(e.target.value)}
-          onSearch={() => tableSearchEvent()}
-          enterButton
-          placeholder="键名"
-        />
-      </TableSearch>
+      <div className={styles.flex}>
+        <TableSearch label="" width="203px">
+          <Search
+            value={searchKeyWord}
+            onChange={(e) => setSearchKeyWord(e.target.value)}
+            onSearch={() => tableSearchEvent()}
+            enterButton
+            placeholder="编号/名称"
+          />
+        </TableSearch>
+        <div className={styles.empty}/>
+        <TableSearch label="选择定额库" width="400px">
+          <UrlSelect
+            placeholder="请选择"
+            style={{width: 300}}
+            onChange={(e)=> {console.log(e);
+              setLibId("")
+            }}
+          />
+        </TableSearch>
+      </div>
+
     );
   };
 
@@ -156,48 +235,6 @@ const QuotaLibrary: React.FC = () => {
       parentId: id,
     });
   };
-
-  const columns = [
-    {
-      dataIndex: 'id',
-      index: 'id',
-      title: '编号',
-      width: 120,
-      // render: (text: string, record: any) => {
-      //   return (
-      //     <span
-      //       className={styles.dictionaryKeyCell}
-      //       onClick={() => keyCellClickEvent(record.id, record.key)}
-      //     >
-      //       {record.key}
-      //     </span>
-      //   );
-      // },
-    },
-    {
-      dataIndex: 'name',
-      index: 'name',
-      title: '名称',
-      width: 360,
-    },
-    {
-      dataIndex: 'categoryText',
-      index: 'categoryText',
-      title: '类型',
-      width: 180,
-    },
-    {
-      dataIndex: 'releaseDate',
-      index: 'releaseDate',
-      title: '发行日期',
-      width: 80,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '描述',
-    },
-  ];
 
   //添加
   const addEvent = () => {
@@ -303,8 +340,6 @@ const QuotaLibrary: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        {/* <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
-        <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" /> */}
       </div>
     );
   };
@@ -353,10 +388,9 @@ const QuotaLibrary: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/Quota/GetQuotaLibrary"
-        tableTitle="定额库管理"
+        url="/Dictionary/GetPagedList"
+        tableTitle={title}
         getSelectData={tableSelectEvent}
-        requestSource='tecEco'
         type="checkbox"
         extractParams={{
           keyWord: searchKeyWord,
@@ -365,7 +399,7 @@ const QuotaLibrary: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        title="添加-定额库"
+        title={add.title}
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -375,12 +409,12 @@ const QuotaLibrary: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
+        {dictionaryForm()}
         </Form>
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-定额库"
+        title={add.edit}
         width="680px"
         visible={editFormVisible}
         okText="确认"
@@ -390,11 +424,11 @@ const QuotaLibrary: React.FC = () => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
+          {dictionaryForm()}
         </Form>
       </Modal>
     </PageCommonWrap>
   );
 };
 
-export default QuotaLibrary;
+export default QuotaLibCommon;

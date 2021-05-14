@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import { Table, Tooltip, Pagination, Button } from "antd"
 import EmptyTip from '@/components/empty-tip'
-import { FolderOutlined, FolderOpenOutlined, FullscreenOutlined, RedoOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
+import { FolderOutlined, FolderOpenOutlined, FullscreenOutlined, RedoOutlined, UpOutlined, DownOutlined, FileOutlined } from '@ant-design/icons';
 import CommonTitle from "@/components/common-title"
 
 import styles from './index.less';
@@ -9,13 +9,13 @@ import styles from './index.less';
 interface Props {
   dataSource: any[];
   columns: any[];
-  refreshTable: () => void;
+  refreshTable?: () => void;
   tableTitle?: string | JSX.Element;
   openIcon?: JSX.Element;
   closeIcon?: JSX.Element;
   noPaging?: boolean;
   needTitleLine?: boolean;
-  pageIndex: number;
+  pageIndex?: number;
   total?: number;
   // 外部获取被选中的数据
   getSelectData?: (value: object[]) => void;
@@ -29,8 +29,8 @@ interface Props {
 const FileTreeTable: React.FC<Props> = ({
   dataSource,
   columns,
-  refreshTable,
-  pageIndex,
+  refreshTable = () => void 0,
+  pageIndex = 1,
   total,
   noPaging = true,
   tableTitle = "",
@@ -52,13 +52,6 @@ const FileTreeTable: React.FC<Props> = ({
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [expKeys, setExpKeys] = useState<string[]>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
-  const rowSelection = {
-    onChange: (values: any[], selectedRows: any[]) => {
-      setSelectedRowKeys(selectedRows.map((item) => item[rowKey]));
-      getSelectData?.(selectedRows);
-    },
-  };
 
   const page = useMemo(() => {
     return {
@@ -164,12 +157,18 @@ const FileTreeTable: React.FC<Props> = ({
             expandRowByClick: true,
             defaultExpandAllRows: true,
             expandIcon: (r) => {
+              if(!r.record.children || r.record.children?.length === 0) {
+                return (
+                  <span className={styles.folder}>
+                    <FileOutlined />&nbsp;
+                  </span>
+                );
+              }
               if (r.expanded) {
                 return (
                   <span className={styles.folder}>
                     <FolderOpenOutlined />&nbsp;
                   </span>
-
                 );
               } else {
                 return (
@@ -182,10 +181,10 @@ const FileTreeTable: React.FC<Props> = ({
             }
           }}
           rowSelection={{
-            type: "checkbox",
+            type: "radio",
             columnWidth: '38px',
-            selectedRowKeys: selectedRowKeys,
-            ...rowSelection,
+            // selectedRowKeys: selectedRowKeys,
+            // ...rowSelection,
           }}
           pagination={false}
           locale={{
@@ -193,24 +192,6 @@ const FileTreeTable: React.FC<Props> = ({
           }}
           {...rest}
         />
-        {/* <WrapperComponent
-        bordered={true}
-        dataSource={tableResultData.items}
-        pagination={false}
-        rowKey={rowKey}
-        columns={finallyColumns.filter((item) => item.checked)}
-        loading={loading}
-        locale={{
-          emptyText: <EmptyTip className="pt20 pb20" />,
-        }}
-        rowSelection={{
-          type: type,
-          columnWidth: '38px',
-          selectedRowKeys: selectedRowKeys,
-          ...rowSelection,
-        }}
-        {...((rest as unknown) as P)}
-      /> */}
       </div>
       {!noPaging && (
         <div className={styles.cyGeneralTablePaging}>

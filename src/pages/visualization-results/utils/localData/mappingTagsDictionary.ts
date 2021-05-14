@@ -5,58 +5,76 @@ let mappingTagsDictionary: any =null;
 function getMappingTagsDictionary() {
   if(mappingTagsDictionary) return mappingTagsDictionary;
   mappingTagsDictionary = Object.create(null);
-  const enumsData = localStorage.getItem('loadEnumsData')
-  if (enumsData) {
-    enums = enums || JSON.parse(enumsData);
+  const enumsData = localStorage.getItem('loadEnumsData');
+  if (enumsData && enumsData !== 'undefined') {
+    if(!enums) {
+      enums = JSON.parse(enumsData) ;
+    }
+    // const enumsDataParse = JSON.parse(enumsData)
+    // enums = enums ? enums : JSON.parse(enumsData) ;
     mappingTagsDictionary.cable = {
-      mappingTags: {
-        "code": "电缆井编号",
-        "type": "电缆井类型",
+      mappingTags1: {
+        "code": "名称",
+        "type": "类型",
+        "mode": "型号",
         "state": "状态",
-        "mode_id": "型号",
-        "mode": "方案型号",
-        "project_id": "所属项目",
-        "electrified_work": "带电作业",
-        "remark": "备注",
         "surveyor": "勘测人员",
-        "survey_time": "勘测时间"
+        "survey_time": "勘测时间",
+        "remark": "备注",
+        "project_id": "title"
+      },
+      mappingTags2: {
+        "code": "名称",
+        "type": "类型",
+        "mode": "型号",
+        "state": "状态",
+        "azimuth": "转角度数",
+        "remark": "备注",
+        "project_id": "title"
       },
       mappingTagValues: {
         "type": findenumsValue("CableType"),
         "state": findenumsValue("SurveyState"),
-        "lay_mode": findenumsValue("CableLayMode"),
-        // "type": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "CableType")].value) || "",
-        // "state": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "SurveyState")].value) || "",
-        // "lay_mode": convertEnums(enums && enums[enums.findIndex((e: any) => e.key == "CableLayMode")].value) || "",
-        "electrified_work": {
-          false: "不带电",
-          true: "带电"
-        }
+        // "lay_mode": findenumsValue("CableLayMode"),
+        // "electrified_work": {
+        //   false: "不带电",
+        //   true: "带电"
+        // }
       }
     };
     mappingTagsDictionary.tower = {
-      mappingTags: {
-        "code": "杆塔编号",
-        "type": "杆塔类型",
-        "mode_id": "型号",
+      mappingTags1: {
+        "code": "名称",
+        "type": "杆型",
         "rod": "杆梢径(mm)",
-        "segment": "分段方式",
         "height": "高度(m)",
+        "segment": "分段方式",
+        "sort": "排列方式",
         "state": "状态",
-        "pole_type_code": "型号",
-        "sort": "排序",
-        "remark": "备注",
-        "loop_name": "所属回路",
-        "loop_level": "回路层级",
-        "project_id": "所属项目",
-        "electrified_work": "带电作业",
         "surveyor": "勘测人员",
-        "survey_time": "勘测日期"
+        "survey_time": "勘测日期",
+        "remark": "备注",
+        "project_id": "title"
+      },
+      mappingTags2: {
+        "code": "名称",
+        "type": "杆型",
+        "rod": "杆梢径(mm)",
+        "height": "高度(m)",
+        "segment": "分段方式",
+        "sort": "排列方式",
+        "state": "状态",
+        "azimuth": "方位角",
+        "depth": "埋深",
+        "mode": "型号",
+        "loop_name": "所属回路",
+        "remark": "备注",
+        "project_id": "title"
       },
       mappingTagValues: {
         "sort": findenumsValue("Arrangement"),
         "state": findenumsValue("SurveyState"),
-        "segement": findenumsValue("SegmentMode"),
+        "segment": findenumsValue("SegmentMode"),
         "kv_level": findenumsValue("KVLevel"),
         "pre_node_type": findenumsValue("NodeType"),
         // "sort": convertEnums(enums[enums.findIndex((e: any) => e.key == "Arrangement")].value) || "",

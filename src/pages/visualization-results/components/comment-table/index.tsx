@@ -13,6 +13,7 @@ import {
 import CommentList from '../side-popup/components/comment-list';
 import { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
+import { isArray } from 'lodash';
 
 const { Option } = Select;
 
@@ -34,16 +35,16 @@ const CommentTable: FC<CommentProps> = observer((props) => {
   const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
 
   const findEnumKey = (type: string) => {
-    let res;
-
-    loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
-      if (l.key === type) {
-        res = l.value.map((e) => {
-          return [e.value, e.text];
-        });
-      }
-    });
-
+    let res: any[] = [];
+    if(isArray(loadEnumsData)) {
+      loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
+        if (l.key === type) {
+          res = l.value.map((e) => {
+            return [e.value, e.text];
+          });
+        }
+      });
+    }
     return res;
   };
 

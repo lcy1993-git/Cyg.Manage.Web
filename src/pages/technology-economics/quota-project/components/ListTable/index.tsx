@@ -1,12 +1,13 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined, AccountBookOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
 import React, { useState, useMemo, useCallback, useReducer } from 'react';
-import DictionaryForm from './components/add-edit-form';
-import { getQuotaLibrary } from '@/services/technology-economics/quota-library';
-import styles from './index.less';
+import DictionaryForm from '../add-edit-form';
+import QuotaDetails from '../quota-details';
+
+
 import { useRequest } from 'ahooks';
 import {
   getDictionaryDetail,
@@ -16,7 +17,7 @@ import {
   deleteDictionaryItem,
 } from '@/services/system-config/dictyionary-manage';
 import { isArray } from 'lodash';
-
+import styles from './index.less';
 const { Search } = Input;
 
 interface RouteListItem {
@@ -59,6 +60,8 @@ const QuotaLibrary: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [activeDetailId, setDetailId] = useState<string>("");
+
 
   const [state, dispatch] = useReducer(reducer, ROUTE_LIST_STATE);
 
@@ -67,12 +70,44 @@ const QuotaLibrary: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run } = useRequest(getQuotaLibrary, {
-    manual: false,
+  const { data1, run } = useRequest(getDictionaryDetail, {
+    manual: true,
   });
 
-  console.log(data);
+  const tableData = [
+    {
+      calculation: 0,
+      catalogueId: "1369223437942743044",
+      content: null,
+      id: "1369223437951131650",
+      laborCost: 0,
+      libId: "1357588635508068352",
+      machineryFee: 0,
+      materialFee: 0,
+      name: "人工施工土方 挖土方 坚土 深2m以内",
+      price: 13.56,
+      quotaId: "PT1-4",
+      unit: "m³",
+      valence: 13.56,
+    },
+    {
+      calculation: 0,
+      catalogueId: "1369223437942743044",
+      content: null,
+      id: "1369223437951131651",
+      laborCost: 0,
+      libId: "1357588635508068352",
+      machineryFee: 0,
+      materialFee: 0,
+      name: "222",
+      price: 13.56,
+      quotaId: "PT1-4",
+      unit: "m³",
+      valence: 13.56,
+    },
+  ];
   
+  const tableColumns = [];
 
   // const data = [
   //   {
@@ -87,7 +122,7 @@ const QuotaLibrary: React.FC = () => {
   // ]
   const searchComponent = () => {
     return (
-      <TableSearch label="关键词" width="203px">
+      <TableSearch label="搜索" width="203px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -240,6 +275,16 @@ const QuotaLibrary: React.FC = () => {
     editForm.setFieldsValue(AuthorizationData);
   };
 
+  // 明细
+  const detailsEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据查看明细');
+      return;
+    }
+    const activeID = tableSelectRows[0].id;
+    setDetailId(activeID);
+  }
+
   const sureEditAuthorization = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
@@ -303,8 +348,10 @@ const QuotaLibrary: React.FC = () => {
             删除
           </Button>
         </Popconfirm>
-        {/* <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
-        <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" /> */}
+        <Button className="mr7" onClick={() => detailsEvent()}>
+          <AccountBookOutlined />
+          定额明细
+        </Button>
       </div>
     );
   };
@@ -345,7 +392,7 @@ const QuotaLibrary: React.FC = () => {
   };
 
   return (
-    <PageCommonWrap>
+    <>
       <GeneralTable
         ref={tableRef}
         // titleSlot={titleSlotElement}
@@ -353,10 +400,9 @@ const QuotaLibrary: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/Quota/GetQuotaLibrary"
-        tableTitle="定额库管理"
+        url="/Dictionary/GetPagedList"
+        // tableTitle="定额库管理"
         getSelectData={tableSelectEvent}
-        requestSource='tecEco'
         type="checkbox"
         extractParams={{
           keyWord: searchKeyWord,
@@ -393,7 +439,10 @@ const QuotaLibrary: React.FC = () => {
           <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
         </Form>
       </Modal>
-    </PageCommonWrap>
+      {
+        true && <QuotaDetails id={activeDetailId} setDetailId={setDetailId}/>
+      }
+    </>
   );
 };
 
