@@ -135,12 +135,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   };
 
   const clearAgainLogin = () => {
-    const copyRouteList = [...routeList];
 
-    const filterList = copyRouteList.filter((item) => item.tabKey !== "/again-login");
-    
-    setRouteList(filterList)
-  
+    editTabsEvent("/again-login","remove")
   }
 
   const OperationsSlot = {
