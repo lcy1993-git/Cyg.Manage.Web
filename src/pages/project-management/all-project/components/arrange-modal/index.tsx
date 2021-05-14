@@ -123,7 +123,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
               allotCompanyId={allotCompanyId}
               getCompanyInfo={getCompanyInfo}
               onChange={(value) => setSelectType(value)}
-              // checkArrangeType={setArrangeType}
             />
           </Form>
         </TabPane>
@@ -140,9 +139,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           </TabPane>
         )}
         {(selectType === '1' || selectType === '3') && (
-          <TabPane tab="外审安排" disabled key="2">
-            Tab 2
-          </TabPane>
+          <TabPane tab="外审安排" disabled key="2"></TabPane>
         )}
       </Tabs>
     </Modal>
