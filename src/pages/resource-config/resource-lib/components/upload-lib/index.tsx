@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { newUploadLineStressSag } from '@/services/resource-config/drawing';
-import { useControllableValue } from 'ahooks';
+import { useBoolean, useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
 import React, { useState } from 'react';
 import { Dispatch } from 'react';
@@ -23,34 +23,40 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
   const [falseData, setFalseData] = useState<string>('');
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false);
   const [form] = Form.useForm();
-
+  const [
+    triggerUploadFile,
+    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
+  ] = useBoolean(false);
   const saveImportLibEvent = () => {
-    form.validateFields().then(async (values) => {
-      const { file } = values;
-      try {
+    return form
+      .validateFields()
+      .then((values) => {
+        const { file } = values;
+
         setRequestLoading(true);
-        const resData = await newUploadLineStressSag(
-          file,
-          { libId },
-          requestSource,
-          '/ResourceLib/SaveImport',
-        );
-        if (resData && resData.isSuccess === false) {
-          setFalseData(resData.message);
-          setImportTipsVisible(true);
-        } else if (resData && resData.isSuccess === true) {
+        return newUploadLineStressSag(file, { libId }, requestSource, '/ResourceLib/SaveImport');
+      })
+      .then(
+        () => {
           message.success('导入成功');
-          setState(false);
-          changeFinishEvent?.();
-        } else {
-          message.error(resData?.message);
-        }
-      } catch (msg) {
-        message.error(msg);
-      } finally {
+          setTimeout(() => {
+            setState(false);
+          }, 1000);
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('导入失败');
+        },
+      )
+      .finally(() => {
+        changeFinishEvent?.();
+        setUploadFileFalse();
         setRequestLoading(false);
-      }
-    });
+      });
+  };
+
+  const onSave = () => {
+    setUploadFileTrue();
   };
 
   return (
@@ -62,12 +68,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button
-          key="save"
-          type="primary"
-          loading={requestLoading}
-          onClick={() => saveImportLibEvent()}
-        >
+        <Button key="save" type="primary" loading={requestLoading} onClick={() => onSave()}>
           保存
         </Button>,
       ]}
@@ -76,7 +77,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
     >
       <Form form={form} preserve={false}>
         <CyFormItem label="导入" name="file" required>
-          <FileUpload maxCount={1} />
+          <FileUpload trigger={triggerUploadFile} maxCount={1} uploadFileFn={saveImportLibEvent} />
         </CyFormItem>
       </Form>
       <Modal

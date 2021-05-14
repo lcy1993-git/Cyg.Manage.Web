@@ -40,7 +40,7 @@ export default {
       pathRewrite: { '^/Comment': '/' },
     },
     '/ProjectVisualization/api': {
-      target: 'http://10.6.1.36:8034/',
+      target: 'http://10.6.1.36:8026/',
       changeOrigin: true,
       pathRewrite: { '^/ProjectVisualization': '/' },
     },
