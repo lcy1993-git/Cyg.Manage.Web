@@ -13,14 +13,6 @@ function getTime (t: any) {
  * @returns xml文本 STRING
  */
 export const getXmlData = (projects: ProjectList[], propTime: string | undefined) => {
-  const head = `<?xml 
-                  version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' 
-                  outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' 
-                  xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
-                  xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'>
-                  <wfs:Query typeName='{0}' srsName='EPSG:4326'><ogc:Filter><Or>`;
-  const end = "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
-
   const postData = projects.reduce((pre, { id, time }) => {
     let value = "";
     if(!time || !propTime || getTime(propTime) > getTime(time)) {
@@ -28,6 +20,22 @@ export const getXmlData = (projects: ProjectList[], propTime: string | undefined
     }
     return pre + value
   }, "");
+  return getBaseXmlData(postData);
+}
+
+export const getCustomXmlData = (name: string, vlaue: any) => {
+  const postData = `<PropertyIsEqualTo><PropertyName>${name}</PropertyName><Literal>${vlaue}</Literal></PropertyIsEqualTo>`;
+  return getBaseXmlData(postData);
+}
+
+const getBaseXmlData = (postData: string) => {
+  const head = `<?xml 
+                  version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' 
+                  outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' 
+                  xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
+                  xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'>
+                  <wfs:Query typeName='{0}' srsName='EPSG:4326'><ogc:Filter><Or>`;
+  const end = "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
   return head + postData + end;
 }
 
