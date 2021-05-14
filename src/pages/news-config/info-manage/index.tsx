@@ -3,7 +3,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Switch } from 'antd';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import { isArray } from 'lodash';
@@ -37,7 +37,10 @@ const InfoManage: React.FC = () => {
 
   // 富文本框内容
   const [content, setContent] = useState<string>('');
+  const [editContent, setEditContent] = useState<string>('');
   // const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  const editFormRef = useRef<HTMLDivElement>(null);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
@@ -245,11 +248,17 @@ const InfoManage: React.FC = () => {
     const editDataId = editData.id;
 
     const checkContentData = await run(editDataId);
-    console.log(checkContentData);
 
-    setAddFormVisible(true);
-    addForm.setFieldsValue({ checkContentData });
-    setContent(checkContentData.content);
+    const userIds = checkContentData.users.map((item) => item.value);
+    const clientCategorys = checkContentData.clientCategorys.map((item) => item.value);
+    setEditFormVisible(true);
+    setEditContent(checkContentData.content)
+    editForm.setFieldsValue({
+      userIds,
+      title: checkContentData.title,
+      isEnable: checkContentData.isEnable,
+      clientCategorys
+    });
   };
 
   const sureEditNewsItem = () => {
@@ -275,13 +284,9 @@ const InfoManage: React.FC = () => {
     });
   };
 
-  // const surePushNewsItem = async () => {
-  //   const newsId = tableSelectRows[0].id;
-  //   await pushNewsItem(newsId, selectedIds);
-  //   message.success('推送成功');
-  //   setPushTreeVisible(false);
-  //   refresh();
-  // };
+  const checkEvent = () => {
+
+  }
 
   const tableElement = () => {
     return (
@@ -323,18 +328,6 @@ const InfoManage: React.FC = () => {
     );
   };
 
-  const checkEvent = () => {
-    console.log();
-  };
-
-  // const pushSelectEvent = (checkedValue: string[]) => {
-  //   setSelectedIds(checkedValue);
-  // };
-
-  // const onExpand = (expandedKeysValue: React.Key[]) => {
-  //   setExpandedKeys(expandedKeysValue);
-  //   setAutoExpandParent(false);
-  // };
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -351,19 +344,23 @@ const InfoManage: React.FC = () => {
           keyWord: searchKeyWord,
         }}
       />
-      <Modal
-        maskClosable={false}
-        title="添加-宣贯"
-        width="880px"
-        visible={addFormVisible}
-        okText="保存"
-        onOk={() => sureAddNews()}
-        onCancel={() => setAddFormVisible(false)}
-        cancelText="取消"
-        destroyOnClose
-      >
-        <TextEditor onChange={setContent} titleForm={addForm} type="add" />
-      </Modal>
+      {
+        addFormVisible &&
+        <Modal
+          maskClosable={false}
+          title="添加-宣贯"
+          width="880px"
+          visible={addFormVisible}
+          okText="保存"
+          onOk={() => sureAddNews()}
+          onCancel={() => setAddFormVisible(false)}
+          cancelText="取消"
+          destroyOnClose
+        >
+          <TextEditor onChange={setContent} titleForm={addForm} type="add" />
+        </Modal>
+      }
+
       <Modal
         maskClosable={false}
         title="编辑-宣贯"
@@ -375,7 +372,7 @@ const InfoManage: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <TextEditor onChange={setContent} titleForm={editForm} htmlContent={content} type="edit" />
+        <TextEditor htmlContent={editContent} onChange={setContent} titleForm={editForm} />
       </Modal>
     </PageCommonWrap>
   );

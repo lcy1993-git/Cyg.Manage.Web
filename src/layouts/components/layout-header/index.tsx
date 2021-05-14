@@ -50,12 +50,12 @@ const LayoutHeader: React.FC = () => {
         </span>
         <span>密码修改</span>
       </Menu.Item>
-      <Menu.Item onClick={() => setCutAccountModalVisible(true)}>
+      {/* <Menu.Item onClick={() => setCutAccountModalVisible(true)}>
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="qiehuan.png" />
         </span>
         <span>快捷登录</span>
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Item onClick={() => loginOut()}>
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="out.png" />
