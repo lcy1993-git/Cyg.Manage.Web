@@ -163,13 +163,16 @@ const CompanyManage: React.FC = () => {
         { key: 16, value: value.review },
         { key: 2, value: value.manage },
       ];
-      const submitInfo = {
-        id: editData.id,
-        name: editData.name,
-        address: editData.address,
-        remark: editData.remark,
-        userSkuQtys,
-      };
+      const submitInfo = Object.assign(
+        {
+          id: editData.id,
+          name: editData.name,
+          address: editData.address,
+          remark: editData.remark,
+          userSkuQtys,
+        },
+        value,
+      );
 
       await updateCompanyManageItem(submitInfo);
       tableFresh();

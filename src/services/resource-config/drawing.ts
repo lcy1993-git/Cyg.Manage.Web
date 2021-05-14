@@ -38,7 +38,7 @@ export const uploadLineStressSag = (
   url: string,
 ) => {
   const formData = new FormData();
-  files.forEach((item) => {
+  files?.forEach((item) => {
     formData.append('file', item);
   });
 
@@ -53,7 +53,7 @@ export const uploadLineStressSag = (
   );
 };
 
-//上传应力弧垂表图纸
+
 export const newUploadLineStressSag = (
   files: any[],
   params: any,

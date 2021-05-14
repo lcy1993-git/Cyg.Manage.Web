@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
@@ -19,6 +19,7 @@ import {
   uploadCompanyFile,
   addFileGroupItem,
   deleteFileGroupItem,
+  downLoadFileItem,
 } from '@/services/operation-config/company-file';
 import DefaultParams from './components/default-params';
 import { getUploadUrl } from '@/services/resource-config/drawing';
@@ -80,13 +81,13 @@ const CompanyFile: React.FC = () => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="文件名称" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入关键词搜索"
+            placeholder="请输入文件名搜索"
           />
         </TableSearch>
       </div>
@@ -287,6 +288,12 @@ const CompanyFile: React.FC = () => {
             编辑
           </Button>
         )}
+        {/* {buttonJurisdictionArray?.includes('company-file-edit') && ( */}
+        <Button className="mr7" onClick={() => downLoadEvent()}>
+          <DownloadOutlined />
+          下载
+        </Button>
+        {/* )} */}
 
         {buttonJurisdictionArray?.includes('company-file-delete') && (
           <Popconfirm
@@ -309,6 +316,41 @@ const CompanyFile: React.FC = () => {
         )}
       </div>
     );
+  };
+
+  //下载公司文件
+  const downLoadEvent = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请先选择一条公司文件下载');
+      return;
+    }
+    const fileId = tableSelectRows[0].fileId;
+    const fileName = tableSelectRows[0].fileName;
+
+    const res = await downLoadFileItem({ fileId, securityKey });
+
+    const suffix = fileName.substring(fileName.lastIndexOf('.') + 1);
+    // console.log(suffix);
+
+    let blob = new Blob([res], {
+      type: `application/${suffix}`,
+    });
+    let finallyFileName = `${tableSelectRows[0].name}.${suffix}`;
+    //for IE
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, finallyFileName);
+    } else {
+      // for Non-IE
+      let objectUrl = URL.createObjectURL(blob);
+      let link = document.createElement('a');
+      link.href = objectUrl;
+      link.setAttribute('download', finallyFileName);
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+      document.body.removeChild(link);
+    }
+    message.success('下载成功');
   };
 
   //公司文件组操作

@@ -2,7 +2,7 @@ import CyFormItem from '@/components/cy-form-item';
 import DataSelect from '@/components/data-select';
 import UrlSelect from '@/components/url-select';
 import { useGetProjectEnum, useGetSelectData } from '@/utils/hooks';
-import { DatePicker, Input, Select } from 'antd';
+import { DatePicker, Input, InputNumber, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { memo } from 'react';
 
@@ -483,9 +483,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             required
             labelWidth={120}
             align="right"
-            rules={Rule.required}
+            rules={Rule.jdScope}
           >
-            <Input type="number" placeholder="请输入" />
+            <InputNumber
+              placeholder="请输入交底范围"
+              min={1}
+              max={99999}
+              style={{ width: '100%' }}
+            />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -497,9 +502,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             required
             labelWidth={120}
             align="right"
-            rules={Rule.required}
+            rules={Rule.zwScope}
           >
-            <Input type="number" placeholder="请输入" />
+            <InputNumber
+              placeholder="请输入交底范围"
+              min={1}
+              max={99999}
+              style={{ width: '100%' }}
+            />
           </CyFormItem>
         </div>
       </div>
