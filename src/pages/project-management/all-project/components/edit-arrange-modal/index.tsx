@@ -11,7 +11,7 @@ interface EditArrangeProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: () => void;
-  allotCompanyId?: string
+  allotCompanyId?: string;
 }
 
 const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
@@ -19,44 +19,48 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { projectIds, changeFinishEvent,allotCompanyId } = props;
+  const { projectIds, changeFinishEvent, allotCompanyId } = props;
 
-  const {data: projectInfo, run} = useRequest(getProjectInfo,{
+  const { data: projectInfo, run } = useRequest(getProjectInfo, {
     manual: true,
     onSuccess: () => {
-      const {allots} = projectInfo ?? {};
-      if(allots && allots.length > 0) {
+      const { allots } = projectInfo ?? {};
+      if (allots && allots.length > 0) {
         const latestAllot = allots[allots?.length - 1];
         const allotType = latestAllot.allotType;
         const users = latestAllot.users;
 
-        if(allotType === 2 || allotType === 4) {
+        if (allotType === 2 || allotType === 4) {
           let personObj = {};
-          users.filter((item: any) => item.key.value === 1 || item.key.value === 2).forEach((item: any) => {
-            if(item.key.value === 1) {
-              personObj["surveyUser"] = (item.value ?? [])[0].userId;
-            }
-            if(item.key.value === 2) {
-              personObj["designUser"] = (item.value ?? [])[0].userId;
-            }
-          })
-          let auditPersonObj = {};
-          users.filter((item: any) => item.key.value === 4).forEach((item: any) => {
-            const auditPersonArray = item.value ?? [];
-            auditPersonArray.forEach((ite: any) => {
-              if(ite.auditSubType !== 0) {
-                auditPersonObj[`designAssessUser${ite.auditSubType}`] = ite.userId;
+          users
+            .filter((item: any) => item.key.value === 1 || item.key.value === 2)
+            .forEach((item: any) => {
+              if (item.key.value === 1) {
+                personObj['surveyUser'] = (item.value ?? [])[0].userId;
               }
-            })
-          })
+              if (item.key.value === 2) {
+                personObj['designUser'] = (item.value ?? [])[0].userId;
+              }
+            });
+          let auditPersonObj = {};
+          users
+            .filter((item: any) => item.key.value === 4)
+            .forEach((item: any) => {
+              const auditPersonArray = item.value ?? [];
+              auditPersonArray.forEach((ite: any) => {
+                if (ite.auditSubType !== 0) {
+                  auditPersonObj[`designAssessUser${ite.auditSubType}`] = ite.userId;
+                }
+              });
+            });
           form.setFieldsValue({
             ...personObj,
-            ...auditPersonObj
-          })
+            ...auditPersonObj,
+          });
         }
       }
-    }
-  })
+    },
+  });
 
   const edit = () => {
     form.validateFields().then(async (value) => {
@@ -73,6 +77,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
           },
           value,
         );
+
         await editArrange(arrangeInfo);
         message.success('安排信息更新成功');
         setState(false);
@@ -87,18 +92,17 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   };
 
   useEffect(() => {
-    if(projectIds.length === 1) {
-      if(state) {
-        run(projectIds[0])
+    if (projectIds.length === 1) {
+      if (state) {
+        run(projectIds[0]);
       }
     }
-  }, [JSON.stringify(projectIds),state])
-  
+  }, [JSON.stringify(projectIds), state]);
 
   const modalCloseEvent = () => {
     form.resetFields();
-    setState(false)
-  }
+    setState(false);
+  };
 
   return (
     <Modal
@@ -119,7 +123,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <EditArrangeForm allotCompanyId={allotCompanyId}  />
+        <EditArrangeForm allotCompanyId={allotCompanyId} />
       </Form>
     </Modal>
   );

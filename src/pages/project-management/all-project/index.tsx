@@ -233,7 +233,8 @@ const ProjectManagement: React.FC = () => {
     }
     const resData = await canEditArrange(projectIds);
 
-    const { allotCompanyGroup = '' } = resData;
+    const { allotCompanyGroup = '', canEditInternalAudit } = resData;
+    console.log(canEditInternalAudit);
 
     setEditCurrentAllotCompanyId(allotCompanyGroup);
     setSelectProjectIds(projectIds);

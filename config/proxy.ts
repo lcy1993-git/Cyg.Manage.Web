@@ -29,10 +29,10 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/resource': '/' },
     },
-    '/CompanyUser/api': {
-      target: 'http://10.6.1.36:8034/',
+    '/review/api': {
+      target: 'http://10.6.1.36:8041/',
       changeOrigin: true,
-      pathRewrite: { '^/CompanyUser': '/' },
+      pathRewrite: { '^/review': '/' },
     },
   },
   test: {
