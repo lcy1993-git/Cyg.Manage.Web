@@ -1,5 +1,5 @@
-import { Form, Input, Switch, TreeSelect } from 'antd';
-import React, { useState, useEffect, useMemo } from 'react';
+import { Form, Input, TreeSelect } from 'antd';
+import React, { useEffect, useMemo } from 'react';
 import E from 'wangeditor';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
@@ -17,8 +17,7 @@ import FormSwitch from '@/components/form-switch';
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
   titleForm: any;
-  htmlContent?: string;
-  type: 'edit' | 'add';
+  htmlContent?: string
 }
 
 const { BtnMenu } = E;
@@ -121,13 +120,11 @@ class AlertMenu extends BtnMenu {
 
 // }
 
-const TextEditorModal: React.FC<EditorParams> = (props: any) => {
-  const { onChange, titleForm, htmlContent, type } = props;
-  const [isChecked, setIsChecked] = useState<boolean>(true);
-  const [allIds, setAllIds] = useState<string[]>([]);
-  const [userIds, setUserIds] = useState<string[]>([]);
+const TextEditorModal = (props: EditorParams) => {
+  const { onChange, titleForm, htmlContent } = props;
 
   const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
+
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
@@ -139,6 +136,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
 
   //获取当前列表全部用户id
   const getUserIds = (groupArray: any) => {
+    let allIds: any[] = [];
     (function deep(groupArray) {
       groupArray.forEach((item: any) => {
         if (item.children) {
@@ -169,66 +167,55 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
       .slice(0, 1);
   }, [JSON.stringify(groupData)]);
 
-  // const parentIds = handleData?.map((item: any) => {
-  //   return item.key;
-  // });
+  // useEffect(() => {
 
-  // const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(parentIds);
+  //   const menuKey = 'alertMenuKey';
 
-  if (type === 'add') {
-    useEffect(() => {
-      const menuKey = 'alertMenuKey';
+  //   E.registerMenu(menuKey, AlertMenu);
+  //   const editor = new E('#div1');
+  //   editor.config.uploadImgShowBase64 = true;
+  //   editor.config.showLinkImg = false;
+  //   // editor.config.menus = ['bold', 'head', 'link', 'italic', 'underline'];
+  //   // editor.config.uploadImgServer = '/upload';
+  //   //上传图片到服务器
+  //   editor.config.uploadFileName = 'myFile'; //设置文件上传的参数名称
+  //   // editor.config.uploadImgServer = '/upload'; //设置上传文件的服务器路径
+  //   // editor.config.uploadImgMaxSize = 3 * 1024 * 1024; // 将图片大小限制为 3M
 
-      E.registerMenu(menuKey, AlertMenu);
+  //   editor.config.onchange = (newHtml: string) => {
+  //     onChange(newHtml);
+  //   };
+  //   editor.create();
 
-      const editor = new E('#div1');
-      editor.config.uploadImgShowBase64 = true;
-      editor.config.showLinkImg = false;
-      // editor.config.menus = ['bold', 'head', 'link', 'italic', 'underline'];
-      // editor.config.uploadImgServer = '/upload';
-      //上传图片到服务器
-      editor.config.uploadFileName = 'myFile'; //设置文件上传的参数名称
-      // editor.config.uploadImgServer = '/upload'; //设置上传文件的服务器路径
-      // editor.config.uploadImgMaxSize = 3 * 1024 * 1024; // 将图片大小限制为 3M
+  //   return () => {
+  //     editor.destroy();
+  //   };
 
-      editor.config.onchange = (newHtml: string) => {
-        onChange(newHtml);
-      };
-      editor.create();
-      return () => {
-        editor.destroy();
-      };
-    }, []);
-  }
+  // }, []);
 
-  if (type === 'edit') {
-    useEffect(() => {
-      const editor = new E('#div1');
-      editor.config.uploadImgShowBase64 = true;
-      editor.config.showLinkImg = false;
-      editor.config.onchange = (newHtml: string) => {
-        onChange(newHtml);
-      };
-      editor.create();
+  useEffect(() => {
+    const menuKey = 'alertMenuKey';
 
-      editor.txt.html(htmlContent);
+    E.registerMenu(menuKey, AlertMenu);
+    const editor = new E('#div1');
+    editor.config.uploadImgShowBase64 = true;
+    editor.config.showLinkImg = false;
+    // editor.config.menus = ['bold', 'head', 'link', 'italic', 'underline'];
+    // editor.config.uploadImgServer = '/upload';
+    //上传图片到服务器
+    editor.config.uploadFileName = 'myFile'; //设置文件上传的参数名称
+    editor.config.onchange = (newHtml: string) => {
+      onChange(newHtml);
+    };
+    editor.create();
+    editor.txt.html(htmlContent)
+    onChange(htmlContent!)
 
-      return () => {
-        editor.destroy();
-      };
-    }, []);
-  }
+    return () => {
+      editor.destroy();
+    };
 
-  //   const onExpand = (expandedKeysValue: React.Key[]) => {
-  //   setExpandedKeys(expandedKeysValue);
-  //   setAutoExpandParent(false);
-  // };
-
-  const hasCheckEvent = (checkedValue: string[]) => {
-    setUserIds(checkedValue);
-  };
-
-  console.log(userIds);
+  }, [htmlContent])
 
   return (
     <>
@@ -246,9 +233,7 @@ const TextEditorModal: React.FC<EditorParams> = (props: any) => {
             placeholder="请选择对象"
             treeCheckable
             treeData={handleData}
-            // showCheckedStrategy="SHOW_PARENT"
             treeDefaultExpandAll
-            onChange={hasCheckEvent}
           />
         </CyFormItem>
         <CyFormItem label="端口" labelWidth={60} name="clientCategorys" required>

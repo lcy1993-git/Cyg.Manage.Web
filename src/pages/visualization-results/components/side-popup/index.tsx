@@ -205,11 +205,13 @@ const SidePopup: React.FC<Props> = observer((props) => {
       title: '属性名',
       dataIndex: 'propertyName',
       width: 55,
+      ellipsis: true,
     },
     {
       title: '属性值',
       dataIndex: 'data',
       width: 65,
+      ellipsis: true,
       render(value: any, record: any, index: any) {
         if (record.propertyName === 'title') return null;
         if (typeof value === 'string' || typeof value === 'number')
