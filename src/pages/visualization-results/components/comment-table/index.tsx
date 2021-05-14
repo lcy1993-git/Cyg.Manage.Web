@@ -239,6 +239,7 @@ const CommentTable: FC<CommentProps> = observer((props) => {
         width={1500}
       >
         <CommentList
+          height={600}
           deviceId={deviceId}
           layer={clickLayer}
           projectId={checkedProjectIdList[0].id}

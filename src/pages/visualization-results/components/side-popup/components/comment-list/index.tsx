@@ -14,10 +14,11 @@ export interface CommentListProps {
   projectId?: string;
   layer?: number;
   deviceId?: string;
+  height: number;
 }
 
 const CommentList: FC<CommentListProps> = (props) => {
-  const { projectId, layer, deviceId } = props;
+  const { projectId, layer, deviceId, height } = props;
   const [commentListData, setCommentListDate] = useState<CommentListItemDataType[]>();
   const scrollbars = createRef<Scrollbars>();
   function generatprCommentListDate(CommentList?: CommentType[]) {
@@ -27,7 +28,7 @@ const CommentList: FC<CommentListProps> = (props) => {
         content: <p>{v.content}</p>,
         datetime: (
           <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-            <span>{moment().fromNow()}</span>
+            <span>{moment(v.createdOn).fromNow()}</span>
           </Tooltip>
         ),
       }));
@@ -49,7 +50,7 @@ const CommentList: FC<CommentListProps> = (props) => {
   );
   return (
     <>
-      <Scrollbars autoHide ref={scrollbars} style={{ marginBottom: 32, height: 300 }}>
+      <Scrollbars autoHide ref={scrollbars} style={{ marginBottom: 32, height }}>
         <List
           className="comment-list"
           header={`${commentListData?.length}条 审阅内容`}

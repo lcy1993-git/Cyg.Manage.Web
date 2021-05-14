@@ -28,6 +28,9 @@ import { BaseMapProps } from '../../utils/init';
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import styles from './index.less';
 import MapDisplay from '../map-display';
+import Timeline from '../timeline';
+import ListMenu from '../list-menu';
+import classnames from 'classnames';
 
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
@@ -36,8 +39,8 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 图层控制层数据
   const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(false);
-  const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(true);
-  const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false);
+  const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false);
+  const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(true);
   const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false);
   // 从Vstate获取外部传入的数据
   const store = useContainer();
@@ -47,10 +50,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     filterCondition,
     visibleLeftSidebar,
     normalClickDate,
-    observeClickDate,
     positionMap,
     observeTrack,
     confessionTrack,
+    checkedProjectDateList,
   } = vState;
   const { kvLevel } = filterCondition;
 
@@ -110,22 +113,10 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 动态刷新轨迹
   useEffect(() => {
     // 加载勘察轨迹
-    map && loadTrackLayers(projects[0].id, map, trackLayers, 0, observeClickDate);
-  }, [JSON.stringify(observeClickDate)]);
+    if (observeTrack) map && loadTrackLayers(map, trackLayers);
+    else clearTrackLayers(trackLayers);
+  }, [JSON.stringify(observeTrack), JSON.stringify(projects)]);
 
-  // 动态刷新轨迹
-  useEffect(() => {
-    // 加载勘察轨迹
-    if (observeTrack) map && loadTrackLayers(projects[0].id, map, trackLayers, 0);
-    else clearTrackLayers(trackLayers, 0);
-  }, [JSON.stringify(observeTrack)]);
-
-  // 动态刷新轨迹
-  useEffect(() => {
-    // 加载交底轨迹
-    if (confessionTrack) map && loadTrackLayers(projects[0].id, map, trackLayers, 1);
-    else clearTrackLayers(trackLayers, 1);
-  }, [JSON.stringify(confessionTrack)]);
 
   // 地图定位
   useEffect(() => {
@@ -221,18 +212,33 @@ const BaseMap = observer((props: BaseMapProps) => {
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
 
-      <CtrolLayers
-        surveyLayerVisible={surveyLayerVisible}
-        planLayerVisible={planLayerVisible}
-        designLayerVisible={designLayerVisible}
-        dismantleLayerVisible={dismantleLayerVisible}
-        setSurveyLayerVisible={setSurveyLayerVisible}
-        setPlanLayerVisible={setPlanLayerVisible}
-        setDesignLayerVisible={setDesignLayerVisible}
-        setDismantleLayerVisible={setDismantleLayerVisible}
-      />
+      <div className={styles.timeline}>
+        <div>
+          {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
+            <Timeline type="normal" height={70} width={400} dates={checkedProjectDateList} />
+          ) : null}
+        </div>
+      </div>
 
-      <MapDisplay onSatelliteMapClick={onSatelliteMapClick} onStreetMapClick={onStreetMapClick} />
+      <div className={styles.listMenu}>
+        <ListMenu />
+      </div>
+      <div className={styles.controlLayer}>
+        <CtrolLayers
+          surveyLayerVisible={surveyLayerVisible}
+          planLayerVisible={planLayerVisible}
+          designLayerVisible={designLayerVisible}
+          dismantleLayerVisible={dismantleLayerVisible}
+          setSurveyLayerVisible={setSurveyLayerVisible}
+          setPlanLayerVisible={setPlanLayerVisible}
+          setDesignLayerVisible={setDesignLayerVisible}
+          setDismantleLayerVisible={setDismantleLayerVisible}
+        />
+      </div>
+
+      <div className={styles.mapDisplay}>
+        <MapDisplay onSatelliteMapClick={onSatelliteMapClick} onStreetMapClick={onStreetMapClick} />
+      </div>
 
       <Footer onlocationClick={onlocationClick} />
       <SidePopup
