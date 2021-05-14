@@ -1,8 +1,7 @@
 import QuotaLibCommon from '../components/quota-lib-common';
 import {Input} from 'antd';
 import CyFormItem from '@/components/cy-form-item';
-
-
+import { useState } from 'react'
 
 const dictionaryForm = () => {
   return (
@@ -26,6 +25,7 @@ const dictionaryForm = () => {
   );
 }
 
+// 外部
 const columns = [
   {
     dataIndex: 'id',

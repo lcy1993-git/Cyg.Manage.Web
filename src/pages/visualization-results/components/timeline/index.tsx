@@ -92,47 +92,49 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
   };
 
   return (
-    <Scrollbars
-      autoHide
-      ref={scrollbars}
-      style={{ width: dates.length > 7 ? 600 : dates.length * 70 + 16, height: height }}
-    >
-      <div
-        className={styles.timeline}
-        style={{
-          width: `${dates.length > 7 ? dates.length * 70 + 36 : dates.length * 70 + 16}px`,
-          height: `${height}px`,
-          paddingLeft: '8px',
-          paddingRight: '8px',
-        }}
-      >
-        {/* 是否显示滚动到最后 */}
-        {dates.length > 10 ? (
-          <div onClick={onClickScrollLeft} className={styles.leftArrow}>
+    <div className={styles.container}>
+      {/* 是否显示滚动到最后 */}
+      {dates.length > 10 ? (
+        <div className={styles.action}>
+          <span onClick={onClickScrollLeft} className={styles.leftArrow}>
             {'<'}
-          </div>
-        ) : null}
-        {/* 是否显示滚动到最开始 */}
-        {dates.length > 10 ? (
-          <div onClick={onClickScrollRight} className={styles.rightArrow}>
+          </span>
+          {/* 是否显示滚动到最开始 */}
+          <span onClick={onClickScrollRight} className={styles.rightArrow}>
             {'>'}
-          </div>
-        ) : null}
-        {activeList?.map(({ date, active, idx, click }) => {
-          return (
-            <TimelineItem
-              key={date}
-              index={idx}
-              click={click}
-              date={date}
-              length={activeList.length}
-              onClick={onClick}
-              active={active}
-            />
-          );
-        })}
-      </div>
-    </Scrollbars>
+          </span>
+        </div>
+      ) : null}
+      <Scrollbars
+        autoHide
+        ref={scrollbars}
+        style={{ width: dates.length > 7 ? 600 : dates.length * 70 + 16, height: height }}
+      >
+        <div
+          className={styles.timeline}
+          style={{
+            width: `${dates.length > 7 ? dates.length * 70 + 36 : dates.length * 70 + 16}px`,
+            height: `${height}px`,
+            paddingLeft: '8px',
+            paddingRight: '8px',
+          }}
+        >
+          {activeList?.map(({ date, active, idx, click }) => {
+            return (
+              <TimelineItem
+                key={date}
+                index={idx}
+                click={click}
+                date={date}
+                length={activeList.length}
+                onClick={onClick}
+                active={active}
+              />
+            );
+          })}
+        </div>
+      </Scrollbars>
+    </div>
   );
 });
 

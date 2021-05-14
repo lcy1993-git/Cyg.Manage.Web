@@ -49,6 +49,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/baidu/api': '/' },
     },
+    '/tecEco/api': {
+      target: 'http://10.6.1.36:8033',
+      changeOrigin: true,
+      pathRewrite: { '^/tecEco': '/' },
+    }
   },
   test: {
     '/api/': {

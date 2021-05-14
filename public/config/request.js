@@ -25,6 +25,7 @@ const arrayHasIpBaseUrlArray = {
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
     projectVisualization: `${baseUrl}:8034/api`,
+    tecEco: `${baseUrl}:8033/api`
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -36,6 +37,7 @@ const arrayHasNotBaseUrlArray = {
     webGis2: '/webGis2/api',
     comment: '/Comment/api',
     projectVisualization: '/ProjectVisualization/api',
+    tecEco: '/tecEco/api'
 }
 
 export const logoArray = {
@@ -79,4 +81,5 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.40";
+export const version = "1.0.43";
+

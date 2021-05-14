@@ -41,7 +41,6 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [ids, setIds] = useState<string[]>([]);
   const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false);
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
   const [moduleDetailVisible, setModuleDetailVisible] = useState<boolean>(false);
@@ -312,18 +311,13 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   };
 
   const sureDeleteData = async () => {
-    if (
-      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
-      tableSelectRows.length > 1
-    ) {
-      message.error('请选择一条数据删除');
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行删除');
       return;
     }
-    tableSelectRows.map((item) => {
-      ids.push(item.id);
-    });
+    const editDataId = [tableSelectRows[0].id];
 
-    await deleteModulesPropertyItem({ libId, ids });
+    await deleteModulesPropertyItem(libId, editDataId);
     refresh();
     message.success('删除成功');
   };

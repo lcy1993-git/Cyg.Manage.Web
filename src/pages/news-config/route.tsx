@@ -16,7 +16,7 @@ const ReviewManage = Loadable({
 
 export default [
   {
-    title: '资讯管理',
+    title: '宣贯管理',
     path: '/news-config/info-manage',
     component: <InfoManage />,
   },

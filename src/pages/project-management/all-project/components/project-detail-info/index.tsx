@@ -47,9 +47,9 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           <TabPane key="base" tab="基本信息">
             <ProjectBaseInfo projectInfo={projectInfo} />
           </TabPane>
-          <TabPane key="schedule" tab="项目进度">
+          {/* <TabPane key="schedule" tab="项目进度">
             <ProjectSchedule />
-          </TabPane>
+          </TabPane> */}
           <TabPane key="process" tab="项目过程">
             <ProjectProcessInfo projectInfo={projectInfo} />
           </TabPane>

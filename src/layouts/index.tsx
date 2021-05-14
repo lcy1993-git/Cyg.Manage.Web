@@ -10,6 +10,7 @@ moment.locale('zh-cn');
 
 import styles from './index.less';
 import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons';
+import { LayoutProvider } from './context';
 
 const { TabPane } = Tabs;
 
@@ -133,6 +134,11 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     }
   };
 
+  const clearAgainLogin = () => {
+
+    editTabsEvent("/again-login","remove")
+  }
+
   const OperationsSlot = {
     left: (
       <div className={styles.tabsLeftContent}>
@@ -157,24 +163,28 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
 
   return (
     <ConfigProvider locale={zhCN}>
-      <div className={styles.layoutContent}>
-        <div className={layoutIsFold ? 'hide' : ''}>
-          <LayoutHeader />
+      <LayoutProvider value={{
+        clearAgainLogin
+      }}>
+        <div className={styles.layoutContent}>
+          <div className={layoutIsFold ? 'hide' : ''}>
+            <LayoutHeader />
+          </div>
+          <div className={styles.tabsContent} id="layoutTabs">
+            <Tabs
+              hideAdd
+              tabBarGutter={0}
+              tabBarExtraContent={OperationsSlot}
+              onEdit={editTabsEvent}
+              type="editable-card"
+              onChange={tabChangeEvent}
+              activeKey={activeKey}
+            >
+              {routeShowElement}
+            </Tabs>
+          </div>
         </div>
-        <div className={styles.tabsContent} id="layoutTabs">
-          <Tabs
-            hideAdd
-            tabBarGutter={0}
-            tabBarExtraContent={OperationsSlot}
-            onEdit={editTabsEvent}
-            type="editable-card"
-            onChange={tabChangeEvent}
-            activeKey={activeKey}
-          >
-            {routeShowElement}
-          </Tabs>
-        </div>
-      </div>
+      </LayoutProvider>
     </ConfigProvider>
   );
 };

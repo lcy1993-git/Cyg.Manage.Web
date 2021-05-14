@@ -1,13 +1,14 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload, { UploadStatus } from '@/components/file-upload';
 import { newUploadLineStressSag } from '@/services/resource-config/drawing';
-import { useControllableValue } from 'ahooks';
+import { useBoolean, useControllableValue } from 'ahooks';
 import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 import { Input, Form, message, Row, Col, Modal, Button } from 'antd';
 import UrlSelect from '@/components/url-select';
 import rule from '../rules';
+import { reject } from 'lodash';
 
 interface ImportInventoryProps {
   visible: boolean;
@@ -24,42 +25,51 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [province, setProvince] = useState<string>('');
   const [versionName, setVersionName] = useState<string>('');
-  const [triggerUploadFile, setTriggerUploadFile] = useState<boolean>(false);
+  const [
+    triggerUploadFile,
+    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
+  ] = useBoolean(false);
   const [inventoryName, setInventoryName] = useState<string>('');
   const { requestSource, changeFinishEvent } = props;
   const [form] = Form.useForm();
 
-  const saveInventoryEvent = async (setStatus: (uploadStatus: UploadStatus) => void) => {
-    form.validateFields().then(async (values) => {
-      const { file } = values;
-      setRequestLoading(true);
-      try {
-        const resData = await newUploadLineStressSag(
+  const saveInventoryEvent = () => {
+    return form
+      .validateFields()
+      .then((values) => {
+        const { file } = values;
+        setRequestLoading(true);
+
+        return newUploadLineStressSag(
           file,
           { province, resourceLibId, versionName, inventoryName },
           requestSource,
           '/Inventory/SaveImport',
         );
-        if (resData && resData.isSuccess === false) {
-          message.error(resData.message);
-          return;
-        }
-        message.success('导入成功');
-        setStatus('success');
-        setState(false);
+      })
+      .then(
+        () => {
+          setTimeout(() => {
+            setState(false);
+          }, 1000);
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('上传失败');
+        },
+      )
+      .finally(() => {
         changeFinishEvent?.();
-      } catch (error) {
-        setStatus('error');
-        message.warn('导入失败');
-        console.log(error);
-      } finally {
+        setUploadFileFalse();
+
         setRequestLoading(false);
-      }
-    });
+      });
   };
 
   const onSave = () => {
-    setTriggerUploadFile(true);
+    form.validateFields().then(() => {
+      setUploadFileTrue();
+    });
   };
 
   return (
@@ -165,10 +175,11 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           align="right"
           label="导入"
           name="file"
+          style={{ width: '565px' }}
           required
           rules={rule.file}
         >
-          <FileUpload trigger={triggerUploadFile} uploadFileFn={saveInventoryEvent} style={{ width: '565px' }} maxCount={1} />
+          <FileUpload trigger={triggerUploadFile} uploadFileFn={saveInventoryEvent} maxCount={1} />
         </CyFormItem>
       </Form>
     </Modal>

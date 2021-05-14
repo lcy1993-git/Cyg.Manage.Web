@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, {  useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
 import {

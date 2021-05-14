@@ -18,9 +18,10 @@ interface FileUploadProps extends UploadProps {
   onChange?: (value: any) => {};
   maxSize?: number;
   maxCount?: number;
-  compositional?: boolean;
-  trigger?: boolean;
-  uploadFileFn: (setStatus: (uploadStatus: UploadStatus) => void) => Promise<void>;
+  uploadFileBtn?: boolean; //是否file和表单捆绑上传
+  trigger?: boolean; //在file和表单捆绑上传的情况下，需要在提交表单的触发进度条,true就没有开始上传按钮
+  process?: boolean; //是否需要进度条
+  uploadFileFn?: () => Promise<void>;
 }
 
 export type UploadStatus = 'hasNotStarted' | 'start' | 'success' | 'error' | 'delete';
@@ -32,7 +33,8 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
     maxCount,
     uploadFileFn,
     trigger = false,
-    compositional = false,
+    process = true,
+    uploadFileBtn = false,
     ...rest
   } = props;
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('hasNotStarted');
@@ -85,15 +87,18 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
   };
 
   useEffect(() => {
-    if (trigger) {
+    if (trigger && fileList.length !== 0) {
       uploadItem();
     }
-  }, [trigger]);
-
+  }, [trigger, fileList.length]);
+  const onFileChange = () => {
+    setUploadStatus('hasNotStarted');
+  };
   const params = {
     ...rest,
     beforeUpload: beforeUploadEvent,
     showUploadList: false,
+    onChange: onFileChange,
   };
 
   const deleteUploadItem = (uid: string) => {
@@ -109,7 +114,14 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
 
   const uploadItem = () => {
     setUploadStatus('start');
-    uploadFileFn?.(setUploadStatus);
+    uploadFileFn?.().then(
+      () => {
+        setUploadStatus('success');
+      },
+      () => {
+        setUploadStatus('error');
+      },
+    );
   };
 
   const hasUploadFileShow = fileList.map((file) => {
@@ -117,7 +129,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
       <FileUploadShowItem
         deleteEvent={deleteUploadItem}
         uploadEvent={uploadItem}
-        compositional={compositional}
+        uploadFileBtn={uploadStatus === 'success' ? false : uploadFileBtn}
         uid={file.uid}
         name={file.name}
         key={file.uid}
@@ -138,7 +150,8 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
 
       <div className={styles.uploadProcess}>
         <div className={styles.hasUploadFile}>{hasUploadFileShow}</div>
-        {uploadStatus === 'start' || uploadStatus === 'error' || uploadStatus === 'success' ? (
+        {process &&
+        (uploadStatus === 'start' || uploadStatus === 'error' || uploadStatus === 'success') ? (
           <FileUploadProcess fileSize={fileSize} status={uploadStatus} />
         ) : null}
       </div>

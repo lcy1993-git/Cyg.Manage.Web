@@ -16,6 +16,7 @@ const devBaseUrl = {
   webGis2: '/webGis2/api',
   comment: '/Comment/api',
   projectVisualization: '/ProjectVisualization/api',
+  tecEco: '/tecEco/api',
 };
 
 // interface UrlSelectParams {
@@ -33,12 +34,15 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
       resolve(content);
     } else {
       if (code === 401) {
-        history.push('/login');
-        message.error('会话超时，已自动跳转到登录界面');
+        history.push('/again-login');
+        //message.error('会话超时，已自动跳转到登录界面');
       } else {
         if (res.content && isArray(res.content) && res.content.length > 0) {
           const errorMsgArray = res.content.map((item) => item.errorMessages).flat();
-          const showErrorMsg = errorMsgArray.join('\n');
+          const filterErrorMsg = errorMsgArray.filter((item, index, arr) => {
+            return arr.indexOf(item) == index;
+          });
+          const showErrorMsg = filterErrorMsg.join('\n');
           message.error(showErrorMsg);
         } else {
           message.error(res.message);

@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
@@ -19,6 +19,7 @@ import {
   uploadCompanyFile,
   addFileGroupItem,
   deleteFileGroupItem,
+  downLoadFileItem,
 } from '@/services/operation-config/company-file';
 import DefaultParams from './components/default-params';
 import { getUploadUrl } from '@/services/resource-config/drawing';
@@ -80,13 +81,13 @@ const CompanyFile: React.FC = () => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="文件名称" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入关键词搜索"
+            placeholder="请输入文件名搜索"
           />
         </TableSearch>
       </div>
@@ -157,20 +158,29 @@ const CompanyFile: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const uploadFile = async (setStatus: (uploadStatus: UploadStatus) => void) => {
-    await uploadCompanyFile(
+  const addUploadFile = async () => {
+    return uploadCompanyFile(
       addForm.getFieldValue('file'),
       { securityKey },
       '/Upload/CompanyFile',
     ).then(
       (fileId: string) => {
-        setStatus('success');
         setFileId(fileId);
       },
-      () => {
-        message.warn('文件上传失败');
-        setStatus('error');
+      () => {},
+    );
+  };
+
+  const editUploadFile = async () => {
+    return uploadCompanyFile(
+      editForm.getFieldValue('file'),
+      { securityKey },
+      '/Upload/CompanyFile',
+    ).then(
+      (fileId: string) => {
+        setFileId(fileId);
       },
+      () => {},
     );
   };
 
@@ -221,28 +231,25 @@ const CompanyFile: React.FC = () => {
       return;
     }
     const editData = data!;
-
     editForm.validateFields().then(async (values) => {
-      const { file } = values;
-      let fileId = editData.fileId;
-      if (file && file.length > 0) {
-        fileId = await uploadCompanyFile(file, { securityKey }, '/Upload/CompanyFile');
+      if (fileId) {
+        const submitInfo = Object.assign(
+          {
+            id: editData.id,
+            name: editData.name,
+            fileId: fileId,
+            describe: editData.describe,
+            groupId: editData.groupId,
+          },
+          values,
+        );
+        await updateCompanyFileItem(submitInfo);
+        refresh();
+        message.success('更新成功');
+        setEditFormVisible(false);
+      } else {
+        message.warn('文件未上传或上传失败');
       }
-
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-          name: editData.name,
-          fileId: fileId,
-          describe: editData.describe,
-          groupId: editData.groupId,
-        },
-        values,
-      );
-      await updateCompanyFileItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      setEditFormVisible(false);
     });
   };
 
@@ -291,6 +298,12 @@ const CompanyFile: React.FC = () => {
             编辑
           </Button>
         )}
+        {/* {buttonJurisdictionArray?.includes('company-file-edit') && ( */}
+        <Button className="mr7" onClick={() => downLoadEvent()}>
+          <DownloadOutlined />
+          下载
+        </Button>
+        {/* )} */}
 
         {buttonJurisdictionArray?.includes('company-file-delete') && (
           <Popconfirm
@@ -313,6 +326,41 @@ const CompanyFile: React.FC = () => {
         )}
       </div>
     );
+  };
+
+  //下载公司文件
+  const downLoadEvent = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请先选择一条公司文件下载');
+      return;
+    }
+    const fileId = tableSelectRows[0].fileId;
+    const fileName = tableSelectRows[0].fileName;
+
+    const res = await downLoadFileItem({ fileId, securityKey });
+
+    const suffix = fileName.substring(fileName.lastIndexOf('.') + 1);
+    // console.log(suffix);
+
+    let blob = new Blob([res], {
+      type: `application/${suffix}`,
+    });
+    let finallyFileName = `${tableSelectRows[0].name}.${suffix}`;
+    //for IE
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, finallyFileName);
+    } else {
+      // for Non-IE
+      let objectUrl = URL.createObjectURL(blob);
+      let link = document.createElement('a');
+      link.href = objectUrl;
+      link.setAttribute('download', finallyFileName);
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+      document.body.removeChild(link);
+    }
+    message.success('下载成功');
   };
 
   //公司文件组操作
@@ -377,6 +425,18 @@ const CompanyFile: React.FC = () => {
 
   const titleSlotElement = () => {
     return <div>{`-${nowSelectGroup}`}</div>;
+  };
+
+  const onAddFormChange = (changedValues: any) => {
+    if (changedValues.file) {
+      setFileId(undefined);
+    }
+  };
+
+  const onEditFormChange = (changedValues: any) => {
+    if (changedValues.file) {
+      setFileId(undefined);
+    }
   };
 
   return (
@@ -446,9 +506,9 @@ const CompanyFile: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
+        <Form onValuesChange={onAddFormChange} form={addForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm uploadFileFn={uploadFile} type="add" groupData={tableData} />
+            <CompanyFileForm uploadFileFn={addUploadFile} type="add" groupData={tableData} />
           </Spin>
         </Form>
       </Modal>
@@ -463,10 +523,10 @@ const CompanyFile: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editForm} preserve={false}>
+        <Form form={editForm} onValuesChange={onEditFormChange} preserve={false}>
           <Spin spinning={loading}>
             <CompanyFileForm
-              uploadFileFn={uploadFile}
+              uploadFileFn={editUploadFile}
               groupData={tableData}
               editingName={editingFileName}
             />

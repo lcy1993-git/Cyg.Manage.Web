@@ -32,6 +32,11 @@ const QuotaLabour = Loadable({
   loading: Loading,
   delay: 150,
 });
+const UnpricedMaterials = Loadable({
+  loader: () => import('@/pages/technology-economics/unpriced-materials'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -63,5 +68,10 @@ export default [
     title: '定额库人工项',
     path: '/technology-economics/quota-labour',
     component: <QuotaLabour />,
+  },
+  {
+    title: '未计价材料表',
+    path: '/technology-economics/unpriced-materials',
+    component: <UnpricedMaterials />,
   },
 ];

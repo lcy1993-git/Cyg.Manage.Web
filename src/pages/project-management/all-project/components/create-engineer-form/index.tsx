@@ -136,7 +136,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             </div>
             <div className="flex ">
                 <div className="flex1 flowHidden">
-                    <CyFormItem label="编辑时间" name="compileTime" initialValue={moment()} labelWidth={120} align="right" required rules={Rule.required}>
+                    <CyFormItem label="编制时间" name="compileTime" initialValue={moment()} labelWidth={120} align="right" required rules={Rule.required}>
                         <DatePicker />
                     </CyFormItem>
                 </div>
