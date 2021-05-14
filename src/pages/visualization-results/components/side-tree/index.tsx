@@ -2,6 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import _, { size } from 'lodash';
+import Tab from './components/tab';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import {
@@ -159,20 +160,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setCheckedKeys(checked);
   };
 
-  const onTabChnage = (activeKey: string) => {
-    setTreeData([]);
-    switch (activeKey) {
-      case '1':
-        setTabActiveKey('1');
-        break;
-      case '2':
-        setTabActiveKey('2');
-        break;
-      default:
-        break;
-    }
-  };
-
   useEffect(() => {
     store.setProjectIdList(projectIdList);
     if (projectIdList.length === 0) {
@@ -180,17 +167,48 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }, [checkedKeys]);
 
+  const activeStyle = '#ebedee';
+
   return (
     <>
       <div ref={ref} className={classNames(className, styles.sideMenuContainer, styles.tabPane)}>
-        <Tabs type="line" defaultActiveKey="1" onChange={onTabChnage} style={{ height: '100%' }}>
-          <TabPane style={{ overflow: 'hidden' }} tab="按地区" key="1">
+        <div
+          style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
+          className={styles.tabBar}
+        >
+          <div
+            className={styles.tabBarItem}
+            onClick={() => {
+              if (tabActiveKey === '2') {
+                setTreeData([]);
+                setTabActiveKey('1');
+              }
+            }}
+          >
+            按地方
+          </div>
+          <div
+            style={{ backgroundColor: tabActiveKey === '2' ? activeStyle : '#fff' }}
+            className={styles.tabBarItem}
+            onClick={() => {
+              if (tabActiveKey === '1') {
+                setTreeData([]);
+                setTabActiveKey('2');
+              }
+            }}
+          >
+            按公司
+          </div>
+        </div>
+
+        <Tabs renderTabBar={() => <></>} style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle }}>
+          <TabPane style={{ overflow: 'hidden' }} key="1">
             {loading ? (
               <Spin spinning={loading} className={styles.loading} tip="正在载入中..."></Spin>
             ) : null}
             {dataByCattegory ? (
               <Tree
-                height={size.height ? size.height - 100 : 680}
+                height={size.height ? size.height - 85 : 680}
                 checkable
                 onExpand={onExpand}
                 defaultExpandAll
@@ -208,7 +226,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
             {dataByCattegory ? (
               <Tree
-                height={size.height ? size.height - 100 : 680}
+                height={size.height ? size.height - 85 : 680}
                 checkable
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}

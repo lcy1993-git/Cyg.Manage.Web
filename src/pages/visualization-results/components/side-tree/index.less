@@ -1,11 +1,24 @@
 .sideMenuContainer {
   position: relative;
   height: 100%;
+  .tabBar {
+    display: flex;
+    justify-content: space-evenly;
+
+    text-align: center;
+    .tabBarItem {
+      width: 100%;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      cursor: pointer;
+    }
+  }
   .sideMenu {
     height: 100%;
     padding: 8px;
+
     overflow: hidden;
-    background-color: inherit;
+    background-color: #ebedee;
   }
 
   .loading {
@@ -16,8 +29,4 @@
     left: 0;
     margin: auto;
   }
-}
-
-.tabPane :global(.ant-tabs-tab) {
-  margin: 0;
 }
