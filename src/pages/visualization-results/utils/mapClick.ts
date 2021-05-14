@@ -24,7 +24,7 @@ const materiaLayers = [
   'pull_line',
   'electric_meter',
   'cross_arm',
-  'user_line'
+  'user_line',
 ];
 const commentLayers = ['tower', 'cable', 'cable_equipment', 'mark', 'transformer'];
 const layerTypeEnum = {
@@ -54,7 +54,7 @@ const elementTypeEnum = {
   fault_indicator: '故障指示器',
   pull_line: '拉线',
   Track: '轨迹点',
-  TrackLine: '轨迹线'
+  TrackLine: '轨迹线',
 };
 export const mapClick = (evt: any, map: any, ops: any) => {
   clearHighlightLayer(map);
@@ -436,10 +436,11 @@ export const mapPointermove = (evt: any, map: any) => {
   if (x !== null) x.innerHTML = lont[0].toFixed(4);
   if (y !== null) y.innerHTML = lont[0].toFixed(4);
   map.getTargetElement().style.cursor = 'default';
+  let allowed = true;
   map.forEachFeatureAtPixel(evt.pixel, function (feature: any, layer: any) {
-    if (layer.getSource() instanceof Cluster && feature.get('features').length > 1)
-      map.getTargetElement().style.cursor = 'not-allowed';
-    else map.getTargetElement().style.cursor = 'pointer';
+    if (layer.getSource() instanceof Cluster && feature.get('features').length > 1) allowed = false;
+    if (allowed) map.getTargetElement().style.cursor = 'pointer';
+    else map.getTargetElement().style.cursor = 'not-allowed';
   });
 };
 
