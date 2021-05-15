@@ -332,7 +332,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       }
     }
 
-    if (layerType === 'design' || layerType === 'dismantle') {
+    if (layerType === 'design' || layerType === 'dismantle' || layerType === 'survey' ) {
       // 批注功能
       if (commentLayers.indexOf(layerName) >= 0) {
         pJSON['审阅'] = { id: feature.getProperties().project_id, feature };
