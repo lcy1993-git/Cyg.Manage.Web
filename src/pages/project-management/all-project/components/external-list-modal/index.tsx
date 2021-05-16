@@ -25,11 +25,11 @@ interface GetGroupUserProps {
 
 const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [userName, setUserName] = useState<string>('');
-  const [reviewStatus, setReviewStatus] = useState<number>(0);
+  // const [userName, setUserName] = useState<string>('');
+  // const [reviewStatus, setReviewStatus] = useState<number>(0);
   //   const [status, setUserName] = useState<string>('');
 
-  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
+  // const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
   const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false);
 
   const [form] = Form.useForm();
@@ -98,7 +98,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
           <div className={styles.single} key={el.id}>
             <div>外审 {idx + 1}</div>
             <div>{el.expectExecutorNickName}</div>
-            <div className={styles.status}>{el.status}</div>
+            <div className={styles.status}>{el.statusDescription}</div>
           </div>
         ))}
 

@@ -35,24 +35,18 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   //   form.resetFields();
   // };
   const hasExArrangeList = useMemo(() => {
-    if (arrangeUsers) {
-      return arrangeUsers?.map((item: any) => {
-        return {
-          value: item.userId,
-          text: item.userNameText,
-        };
-      });
-    }
-    return;
+    return arrangeUsers?.map((item: any) => {
+      return {
+        value: item.userId,
+        text: item.userNameText,
+      };
+    });
   }, [arrangeUsers]);
 
   const handleExternalMen = useMemo(() => {
-    if (hasExArrangeList) {
-      return hasExArrangeList.map((item: any) => {
-        return item.value;
-      });
-    }
-    return;
+    return hasExArrangeList.map((item: any) => {
+      return item.value;
+    });
   }, [arrangePeople]);
 
   const saveExternalArrange = async () => {
