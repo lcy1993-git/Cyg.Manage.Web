@@ -3,7 +3,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Switch } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import { isArray } from 'lodash';
@@ -22,6 +22,7 @@ import TextEditor from './component/text-editor';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import CyTag from '@/components/cy-tag';
+import CheckInfoModal from './check-info-modal';
 
 const { Search } = Input;
 
@@ -32,6 +33,16 @@ const InfoManage: React.FC = () => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [status, setStatus] = useState<number>(0);
+
+  const [checkInfoVisible, setCheckInfoVisible] = useState<boolean>(false);
+  
+  const currentCheckNewsId = useMemo(() => {
+    if(tableSelectRows && tableSelectRows.length > 0) {
+      return tableSelectRows[0].id
+    }
+    return ""
+  },[tableSelectRows])
+
   // const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
   // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
@@ -285,7 +296,7 @@ const InfoManage: React.FC = () => {
   };
 
   const checkEvent = () => {
-
+    setCheckInfoVisible(true)
   }
 
   const tableElement = () => {
@@ -372,8 +383,14 @@ const InfoManage: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <TextEditor htmlContent={editContent} onChange={setContent} titleForm={editForm} />
+        <TextEditor htmlContent={editContent} type="edit" onChange={setContent} titleForm={editForm} />
       </Modal>
+      {
+        checkInfoVisible &&
+        <CheckInfoModal visible={checkInfoVisible} onChange={setCheckInfoVisible} newsId={currentCheckNewsId} />
+
+      }
+      
     </PageCommonWrap>
   );
 };
