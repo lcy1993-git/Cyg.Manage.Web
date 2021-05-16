@@ -493,6 +493,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
+  
     // 监测现在数组是否含有此id的数据
     const hasData = tableSelectData.findIndex(
       (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id,
@@ -501,6 +502,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     if (hasData > -1) {
       copyData.splice(hasData, 1, projectSelectInfo);
       setTableSelectData(copyData);
+      onSelect?.(copyData);
     } else {
       // 代表没有数据，那就直接插进去
       setTableSelectData([...tableSelectData, projectSelectInfo]);

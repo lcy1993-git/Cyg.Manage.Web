@@ -101,7 +101,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     setCheckedList(e.target.checked ? valueList : []);
     setIndeterminate(false);
     setCheckAll(e.target.checked);
-
+    
     onChange?.({
       projectInfo: {
         id: projectInfo.id,

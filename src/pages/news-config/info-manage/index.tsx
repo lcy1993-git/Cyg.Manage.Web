@@ -138,6 +138,7 @@ const InfoManage: React.FC = () => {
       dataIndex: 'title',
       index: 'title',
       title: '标题',
+      width: 240,
     },
     {
       title: '状态',
