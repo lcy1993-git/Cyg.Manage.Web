@@ -1,16 +1,12 @@
-import React, { SetStateAction, useMemo, useState } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import { Button, Divider, Form, message, Modal, Radio } from 'antd';
 
-import { useControllableValue, useRequest } from 'ahooks';
-import SelectAddListForm from '../select-add-list-form';
-import uuid from 'node-uuid';
+import { useControllableValue } from 'ahooks';
+// import uuid from 'node-uuid';
 import { Dispatch } from 'react';
-import { UserInfo } from '@/services/project-management/select-add-list-form';
-import { Checkbox } from 'antd';
-import {
-  executeExternalArrange,
-  getExternalArrangeStep,
-} from '@/services/project-management/all-project';
+// import { UserInfo } from '@/services/project-management/select-add-list-form';
+// import { Checkbox } from 'antd';
+import { executeExternalArrange } from '@/services/project-management/all-project';
 import styles from './index.less';
 
 interface GetGroupUserProps {
