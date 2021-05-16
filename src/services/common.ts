@@ -17,6 +17,7 @@ const devBaseUrl = {
   comment: '/Comment/api',
   projectVisualization: '/ProjectVisualization/api',
   tecEco: '/tecEco/api',
+  review: '/review/api'
 };
 
 // interface UrlSelectParams {
