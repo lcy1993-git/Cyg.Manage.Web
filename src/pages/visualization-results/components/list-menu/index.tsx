@@ -337,7 +337,7 @@ const ListMenu: FC = observer(() => {
       >
         {checkedProjectIdList.length > 0 ? (
           <CommentTable
-            projectIds={[checkedProjectIdList[0].id]}
+            projectId={checkedProjectIdList[0].id}
             engineerId={checkedProjectIdList[0].engineerId}
           />
         ) : null}

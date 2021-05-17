@@ -18,13 +18,13 @@ import { fetchCommentList } from '@/services/visualization-results/side-popup';
 const { Option } = Select;
 
 interface CommentProps {
-  projectIds: string[];
+  projectId: string;
   engineerId: string;
 }
 const { Search } = Input;
 
 const CommentTable: FC<CommentProps> = (props) => {
-  const { projectIds, engineerId } = props;
+  const { projectId, engineerId } = props;
   const [keyword, setKeyword] = useState<string>();
   const [layerType, setLayerType] = useState<number>();
   const [deviceType, setDeviceType] = useState<number>();
@@ -146,7 +146,7 @@ const CommentTable: FC<CommentProps> = (props) => {
    */
   const onClickViewCommentList = (deviceId: string, layerType: number, isDelete: boolean) => {
     setIsItemDelete(isDelete);
-    fetchCommentRequest({ projectId: checkedProjectIdList[0].id, layer: layerType, deviceId });
+    fetchCommentRequest({ projectId: projectId, layer: layerType, deviceId });
     setCommentListModalVisible(true);
   };
   /**
@@ -160,14 +160,14 @@ const CommentTable: FC<CommentProps> = (props) => {
     (keyword?: string) =>
       fetchCommentListByParams({
         engineerId: engineerId,
-        projectIds: projectIds,
+        projectIds: [projectId],
         layerTypes: layerType ? [layerType] : undefined,
         deviceType,
         deviceName: keyword,
       }),
 
     {
-      refreshDeps: [layerType, deviceType, engineerId, projectIds],
+      refreshDeps: [layerType, deviceType, engineerId, projectId],
       onSuccess: () => {
         if (projectCommentListResponseData) {
           setProjectCommentList(projectCommentListResponseData);
