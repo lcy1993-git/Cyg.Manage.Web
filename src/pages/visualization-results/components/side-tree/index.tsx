@@ -171,7 +171,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   return (
     <>
       <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>
-        <div className={styles.sideTreeTitle}>全部项目</div>
         <div
           style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
           className={styles.tabBar}
