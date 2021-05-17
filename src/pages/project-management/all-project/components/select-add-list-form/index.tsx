@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
-import { Divider, Dropdown, Input, message, Radio, Spin } from 'antd';
+import { Divider, Dropdown, Input, message, Radio } from 'antd';
 
 import {
   queryOuterAuditUserByPhoneAndUsername,
@@ -28,6 +28,9 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     projectName,
     onDeletePeople,
   } = props;
+
+  // const debounceTimeout = 800;
+  // const [fetching, setFetching] = useState<boolean>(false);
   const [keyword, setKeyword] = useState<string>();
   const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
   const [people, setPeople] = useState<UserInfo[]>(initPeople);

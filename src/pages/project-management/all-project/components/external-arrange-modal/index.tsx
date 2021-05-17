@@ -1,7 +1,7 @@
 import React, { SetStateAction, useMemo, useState } from 'react';
 import { Button, Form, message, Modal } from 'antd';
 
-import { useControllableValue, useRequest } from 'ahooks';
+import { useControllableValue } from 'ahooks';
 import SelectAddListForm from '../select-add-list-form';
 import uuid from 'node-uuid';
 import { Dispatch } from 'react';
@@ -18,15 +18,17 @@ interface GetGroupUserProps {
   visible: boolean;
   arrangeUsers?: any;
   projectId: string;
+  search?: () => void;
 }
 
 const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
   const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
+  const [isArrangePeople, setIsArrangePeople] = useState<boolean>(false); //不安排外审status
 
   const [form] = Form.useForm();
-  const { arrangeUsers, projectId } = props;
+  const { arrangeUsers, projectId, search } = props;
 
   // const { data: exArrangeUsers = [] } = useRequest(() => getAllotUsers(projectId, 6));
 
@@ -39,12 +41,13 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       return {
         value: item.userId,
         text: item.userNameText,
+        key: uuid.v1(),
       };
     });
   }, [arrangeUsers]);
 
   const handleExternalMen = useMemo(() => {
-    return hasExArrangeList.map((item: any) => {
+    return hasExArrangeList?.concat(arrangePeople).map((item: any) => {
       return item.value;
     });
   }, [arrangePeople]);
@@ -53,9 +56,12 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     await allotOuterAudit({
       projectId: projectId,
       userIds: handleExternalMen,
-      notArrangeAudit: false,
-      auditResult: false,
+      notArrangeAudit: isArrangePeople,
+      auditResult: isPassArrangePeople,
     });
+    message.success('外审安排成功');
+    setState(false);
+    search?.();
   };
 
   return (
@@ -69,7 +75,13 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       // onCancel={() => modalCloseEvent()}
       footer={[
         <div className={styles.externalModal}>
-          <Checkbox onChange={() => setIsPassArrangePeople(!false)}>不安排外审</Checkbox>
+          <Checkbox
+            onChange={() => {
+              setIsArrangePeople(!isArrangePeople);
+            }}
+          >
+            不安排外审
+          </Checkbox>
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>
@@ -85,7 +97,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           initPeople={hasExArrangeList}
           projectName="testName"
           onAddPeople={(people) => setArrangePeople(people)}
-          notArrangeShow={isPassArrangePeople}
+          notArrangeShow={isArrangePeople}
           onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
         />
       </Form>
