@@ -1,29 +1,9 @@
 import request from '@/utils/request';
 import JsonP from 'jsonp';
+import { webConfig } from '../../../public/config/request';
+// const ip = window.location.hostname;
 
-var ip = '10.6.1.36';
-const webConfig = {
-  satelliteServerIP: ip,
-  satelliteServerPort: ':8020',
-  geoServerIP: ip,
-  geoServerPort: ':8099',
-  manageSideInteractiveServiceServerIP: ip,
-  manageSideInteractiveServiceServerPort: ':8025',
-  manageSideInteractiveServiceServerIP_V2: ip,
-  manageSideInteractiveServiceServerPort_V2: ':8026',
-  designSideInteractiveServiceServerIP: ip,
-  designSideInteractiveServiceServerPort: ':8014',
-  publicServiceServerIP: ip,
-  publicServiceServerPort: ':8022',
-  engineeringBusinessServiceServerIP: ip,
-  engineeringBusinessServiceServerPort: ':8013',
-  fileStorageServiceServerIP: ip,
-  fileStorageServiceServerPort: ':8023',
-  resourceServiceServerIP: ip,
-  resourceServiceServerPort: ':8015',
-  webSocketIP: ip,
-  webSocketPort: ':8032',
-};
+
 const wfsBaseURL = `http://${webConfig.geoServerIP}${webConfig.geoServerPort}/geoserver/pdd/ows`;
 
 export interface ProjectList {

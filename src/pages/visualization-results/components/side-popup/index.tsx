@@ -449,7 +449,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const DrawerWrap = useMemo(() => {
     return (
       <Drawer
-        title={data[1]}
+        title={'项目名称：' + data[1]}
         placement="right"
         closable={false}
         visible={rightSidebarVisible}

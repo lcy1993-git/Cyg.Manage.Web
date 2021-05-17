@@ -22,12 +22,14 @@ const CommentList: FC<CommentListProps> = (props) => {
   console.log(commentList.length);
 
   const scrollbars = createRef<Scrollbars>();
-  const generatprCommentListData = commentList.map((v) => ({
-    author: <>由 {v.creator} </>,
+  const generatprCommentListData = commentList.map((v, idx) => ({
+    author: <>{idx + 1}. 由 {v.creator} </>,
     content: <p>{v.content}</p>,
     datetime: (
       <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment(v.createdOn).fromNow()} 添加</span>
+        <span>
+           {moment(v.createdOn).fromNow()} 添加
+        </span>
       </Tooltip>
     ),
   }));
@@ -50,7 +52,7 @@ const CommentList: FC<CommentListProps> = (props) => {
               itemLayout="horizontal"
               header={!horizontal ? `${commentList?.length}条 审阅内容` : null}
               dataSource={generatprCommentListData}
-              renderItem={(item) => (
+              renderItem={(item, idx) => (
                 <li>
                   <Comment author={item.author} content={item.content} datetime={item.datetime} />
                 </li>

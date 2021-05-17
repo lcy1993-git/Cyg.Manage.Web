@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Form, Modal, Input, message } from 'antd';
 import ImageIcon from '@/components/image-icon';
 import { loginRules } from '@/pages/login/components/login-form/rule';
@@ -6,6 +6,7 @@ import { phoneNumberRule } from '@/utils/common-rule';
 import VerificationCode from '@/components/verification-code';
 import { changeUserPhone } from '@/services/user/user-info';
 import styles from './index.less';
+import { useExternal } from 'ahooks';
 
 interface ChangedValues {
   phone?: string;
@@ -37,10 +38,10 @@ const ChangePhoneModal = (props: Props) => {
 
   const [form] = Form.useForm();
 
-  const testNumberRule = () => {
+  useEffect(() => {
     const state = phoneNumberRule.test(phoneNumber);
-    setCanSendCode(state);
-  }
+    canSendCode !== state && setCanSendCode(state);
+  }, [phoneNumber]);
 
   const formChangeEvent = (changedValues: ChangedValues) => {
     if(changedValues.hasOwnProperty('phone')){
@@ -93,7 +94,6 @@ const ChangePhoneModal = (props: Props) => {
           <Input
             suffix={<ImageIcon imgUrl="phone.png" />}
             placeholder="手机号"
-            onBlur={testNumberRule}
             className={styles.loginInput}
             type="text"
           />

@@ -2,7 +2,6 @@ import React, { FC, useState } from 'react';
 import styles from './index.less';
 import TableSearch from '@/components/table-search';
 import { Button, Input, Select, message, Table, Tag, Modal } from 'antd';
-import { useContainer } from '../../result-page/mobx-store';
 import classnames from 'classnames';
 import { useRequest } from 'ahooks';
 import {
@@ -60,10 +59,10 @@ const CommentTable: FC<CommentProps> = (props) => {
   const columns: ColumnsType<any> = [
     {
       title: '序号',
-      width: 30,
+      width: 10,
       dataIndex: 'index',
       key: 'index',
-      fixed: 'left',
+      align: 'center',
       render: (text, record, idx: number) => (currentPage - 1) * 10 + idx + 1,
     },
 
@@ -93,29 +92,30 @@ const CommentTable: FC<CommentProps> = (props) => {
       title: '创建时间',
       dataIndex: 'createdOn',
       key: 'createdOn',
-      width: 50,
+      width: 40,
       render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '更新时间',
       dataIndex: 'lastUpdateDate',
       key: 'modifiedDate',
-      width: 50,
+      width: 40,
       render: (text) => moment(text).format('YYYY-MM-DD HH:mm:ss'),
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 30,
+      align: 'center',
+      width: 20,
       render: (text) =>
         text === 1 ? <Tag color="#87d068">正常</Tag> : <Tag color="#f50">删除</Tag>,
     },
     {
       title: '',
       key: 'operation',
-      fixed: 'right',
-      width: 30,
+      align: 'center',
+      width: 20,
       render: (record) => (
         <Button
           type="primary"
@@ -204,7 +204,7 @@ const CommentTable: FC<CommentProps> = (props) => {
   };
   return (
     <>
-      <div className={styles.tableContainer}>
+      <div className={styles.commentTable}>
         <div className={classnames(styles.tableFilterbar, 'flex')}>
           <TableSearch className="mr10" label="名称" width="268px">
             <Search
