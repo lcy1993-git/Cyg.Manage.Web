@@ -2,7 +2,6 @@ import React, { FC, useState } from 'react';
 import styles from './index.less';
 import TableSearch from '@/components/table-search';
 import { Button, Input, Select, message, Table, Tag, Modal } from 'antd';
-import { useContainer } from '../../result-page/mobx-store';
 import classnames from 'classnames';
 import { useRequest } from 'ahooks';
 import {
