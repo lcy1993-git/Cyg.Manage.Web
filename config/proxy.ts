@@ -53,7 +53,12 @@ export default {
       target: 'http://10.6.1.36:8033',
       changeOrigin: true,
       pathRewrite: { '^/tecEco': '/' },
-    }
+    },
+    '/review/api': {
+      target: 'http://10.6.1.36:8041/',
+      changeOrigin: true,
+      pathRewrite: { '^/review': '/' },
+    },
   },
   test: {
     '/api/': {

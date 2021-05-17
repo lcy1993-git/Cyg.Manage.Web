@@ -537,6 +537,7 @@ interface AllotParams {
   designAssessUser2: string;
   designAssessUser3: string;
   designAssessUser4: string;
+  outerAuditUsers: string[] | undefined;
 }
 
 export const saveArrange = (params: AllotParams) => {
@@ -659,6 +660,56 @@ export const uploadBulkProject = (files: any[], requestSource: 'project', url: s
 export const importBulkEngineerProject = (params: any) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/ImportEngineerProject`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+//获取项目导入工程项目
+export const getAllotUsers = (projectId: string, arrangeType: number) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/Porject/GetAllotUsers`, {
+      method: 'POST',
+      data: { projectId, arrangeType },
+    }),
+  );
+};
+
+interface AllotOuterAuditParams {
+  projectId: string;
+  userIds: string[];
+  notArrangeAudit?: boolean;
+  auditResult?: boolean;
+}
+//安排外审
+export const allotOuterAudit = (params: AllotOuterAuditParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/AllotOuterAudit`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+//获取外审人员列表及当前步骤
+export const getExternalArrangeStep = (projectId: string) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.review}/ReviewProject/GetOutAuditSteps`, {
+      method: 'GET',
+      params: { projectId },
+    }),
+  );
+};
+
+interface ExecuteExternalArrangeParams {
+  projectId: string;
+  parameter: {};
+}
+//外审通过执行
+export const executeExternalArrange = (params: ExecuteExternalArrangeParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.review}/ReviewProject/OutAuditCheckExecute`, {
       method: 'POST',
       data: params,
     }),

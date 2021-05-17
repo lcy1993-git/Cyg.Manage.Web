@@ -2,7 +2,9 @@ import { useRequest } from 'ahooks';
 import React, { forwardRef, Ref, useImperativeHandle, useState } from 'react';
 import {
   AllProjectStatisticsParams,
+  getAllotUsers,
   getProjectTableList,
+  getExternalArrangeStep,
 } from '@/services/project-management/all-project';
 
 import styles from './index.less';
@@ -24,7 +26,9 @@ import EditProjectModal from '../edit-project-modal';
 import CopyProjectModal from '../copy-project-modal';
 import ArrangeModal from '../arrange-modal';
 import CheckResultModal from '../check-result-modal';
+import ExternalArrangeModal from '../external-arrange-modal';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ExternalListModal from '../external-list-modal';
 
 interface ExtractParams extends AllProjectStatisticsParams {
   statisticalCategory?: string;
@@ -48,6 +52,82 @@ const colorMap = {
   执行: 'yellow',
 };
 
+// const testData = [
+//   {
+//     id: '1392813588021792768',
+//     companyId: '1266016355747741696',
+//     name: '导入工程56',
+//     startTime: 1623168000000,
+//     endTime: 1625673600000,
+//     compileTime: 1623081600000,
+//     province: '510000',
+//     city: '513400',
+//     area: '513438',
+//     company: '成都yl电力有限公司',
+//     projects: [
+//       {
+//         id: '1392813588021792769',
+//         engineerId: '1392813588021792768',
+//         name: '导入工程2-项目24',
+//         category: 1,
+//         categoryText: '10kV线路',
+//         kvLevel: 1,
+//         kvLevelText: '交流20kV',
+//         nature: 128,
+//         natureTexts: ['村村通动力电'],
+//         majorCategory: 1,
+//         majorCategoryText: '配电线路',
+//         constructType: 1,
+//         constructTypeText: '新建',
+//         batch: 3,
+//         batchText: '第三批',
+//         stage: 4,
+//         stageText: '施工图',
+//         dataSourceType: 0,
+//         dataSourceTypeText: '勘察',
+//         sources: ['无'],
+//         allot: null,
+//         stateInfo: {
+//           id: '1392813588021792769',
+//           isResetSurvey: false,
+//           status: 17,
+//           statusText: '待安排外审',
+//           outsideStatus: 0,
+//           outsideStatusText: '',
+//           isAllot: false,
+//           allotId: null,
+//           isArrange: true,
+//           showStatusText: '待安排',
+//           surveyAssessState: 1,
+//           surveyAssessStateText: '未评审',
+//           designAssessState: 1,
+//           designAssessStateText: '未评审',
+//           updateTime: 1620907611266,
+//           auditStatus: 10,
+//         },
+//         identitys: [
+//           {
+//             value: 1,
+//             text: '立项',
+//           },
+//           {
+//             value: 4,
+//             text: '执行',
+//           },
+//         ],
+//         operationAuthority: {
+//           canEdit: true,
+//           canCopy: true,
+//         },
+//       },
+//     ],
+//     operationAuthority: {
+//       canEdit: true,
+//       canAddProject: true,
+//     },
+//   },
+// ];
+
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const { extractParams, onSelect, afterSearch } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
@@ -60,6 +140,12 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const [currentClickProjectId, setCurrentClickProjectId] = useState('');
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
+  const [arrangeUsers, setArrangeUsers] = useState<any>();
+
+  const [externalStepData, setExternalStepData] = useState<any>();
+
+  const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false);
+  const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false);
 
   const [currentEditEngineerId, setCurrentEditEngineerId] = useState<string>('');
   const [currentEditProjectInfo, setCurrentEditProjectInfo] = useState<any>({});
@@ -95,6 +181,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
+  const { data: exArrangeUsers = [], run: getArrangeUsers } = useRequest(getAllotUsers, {
+    manual: true,
+  });
+
+  const { data: stepData = [], run: getExternalStep } = useRequest(getExternalArrangeStep, {
+    manual: true,
+  });
+
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const tableResultData = useMemo(() => {
@@ -108,7 +202,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         total,
         dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
         dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
-        projectLen: (items?.filter((item: any) => item.projects && item.projects.length > 0).map((item: any) => item.projects).flat().length) ?? 0, 
+        projectLen:
+          items
+            ?.filter((item: any) => item.projects && item.projects.length > 0)
+            .map((item: any) => item.projects)
+            .flat().length ?? 0,
       };
     }
     return {
@@ -293,6 +391,20 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 5 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                  <span className="canClick" onClick={() => externalArrange(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
                 ) : (
                   <span>{stateInfo?.statusText}</span>
                 )}
@@ -363,7 +475,25 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
   ];
 
+  //外审安排
+  const externalArrange = async (projectId: string, userIds?: string[]) => {
+    await getArrangeUsers(projectId, 6);
+    setCurrentClickProjectId(projectId);
+    setArrangeUsers(exArrangeUsers);
+    setExternalArrangeModalVisible(true);
+  };
+
+  //外审列表
+  const externalEdit = async (projectId: string) => {
+    const res = await getExternalStep(projectId);
+
+    setCurrentClickProjectId(projectId);
+    setExternalStepData(res);
+    setExternalListModalVisible(true);
+  };
+
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
+  
     // 监测现在数组是否含有此id的数据
     const hasData = tableSelectData.findIndex(
       (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id,
@@ -400,7 +530,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setCurrentEditEngineerId(data.engineerId);
   };
 
-  const projectTableShow = tableResultData.items.map((item: any, index: number) => {
+  const projectTableShow = tableResultData?.items.map((item: any, index: number) => {
     return (
       <ProjectTableItem
         editEngineer={editEngineerEvent}
@@ -583,6 +713,24 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           engineerId={projectNeedInfo.engineerId}
           areaId={projectNeedInfo.areaId}
           company={projectNeedInfo.company}
+        />
+      )}
+
+      {externalArrangeModalVisible && (
+        <ExternalArrangeModal
+          projectId={currentClickProjectId}
+          arrangeUsers={arrangeUsers}
+          onChange={setExternalArrangeModalVisible}
+          visible={externalArrangeModalVisible}
+        />
+      )}
+
+      {externalListModalVisible && (
+        <ExternalListModal
+          projectId={currentClickProjectId}
+          visible={externalListModalVisible}
+          onChange={setExternalListModalVisible}
+          stepData={externalStepData}
         />
       )}
     </div>

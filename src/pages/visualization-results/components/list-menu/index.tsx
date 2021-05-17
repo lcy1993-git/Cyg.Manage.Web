@@ -23,6 +23,14 @@ import { observer } from 'mobx-react-lite';
 
 export const columns: ColumnsType<MaterialDataType> = [
   {
+    title: '编号',
+    width: 100,
+    dataIndex: 'index',
+    key: 'index',
+    fixed: 'left',
+    render: (text, record, idx) => (record.children ? idx + 1 : null),
+  },
+  {
     title: '物料类型',
     width: 200,
     dataIndex: 'type',
@@ -154,27 +162,28 @@ const ListMenu: FC = observer(() => {
     }
   }, [checkedProjectIdList]);
 
-  const { data: materialData, run: fetchMaterialList, loading: fetchMaterialListLoading } = useRequest(
-    fetchMaterialListByProjectIdList,
-    {
-      manual: true,
-      onSuccess: () => {
-        /**
-         * 材料的table树
-         *  - 类型
-         *    - 类型 ------------
-         */
-        if (materialData?.length) {
-          setMaterialList(generateMaterialTreeList(materialData));
-        } else {
-          message.warning('没有检索到数据');
-        }
-      },
-      onError: () => {
-        message.warning('获取数据失败');
-      },
+  const {
+    data: materialListReponseData,
+    run: fetchMaterialListRquest,
+    loading: fetchMaterialListLoading,
+  } = useRequest(fetchMaterialListByProjectIdList, {
+    manual: true,
+    onSuccess: () => {
+      /**
+       * 材料的table树
+       *  - 类型
+       *    - 类型 ------------
+       */
+      if (materialListReponseData?.length) {
+        setMaterialList(generateMaterialTreeList(materialListReponseData));
+      } else {
+        message.warning('没有检索到数据');
+      }
     },
-  );
+    onError: () => {
+      message.warning('获取数据失败');
+    },
+  });
 
   const onSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
     switch (key.toString()) {
@@ -187,7 +196,7 @@ const ListMenu: FC = observer(() => {
         break;
       case '3':
         setMaterialModalVisible(true);
-        fetchMaterialList(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
+        fetchMaterialListRquest(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
         break;
       case '4':
         onClickCommentTable();
@@ -199,15 +208,6 @@ const ListMenu: FC = observer(() => {
 
   const onDeSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
     setSelectedKeys(selectedKeys?.map((v: React.Key) => v.toString()) ?? []);
-
-    switch (key.toString()) {
-      case '4':
-        store.toggleObserveTrack(false);
-        break;
-      case '5':
-        store.toggleConfessionTrack(false);
-        break;
-    }
   };
 
   const onClickCommentTable = () => {
@@ -228,17 +228,9 @@ const ListMenu: FC = observer(() => {
     }
   };
 
-  const onSwitchChange = (checked: boolean) => {
-    if (checked) {
-      store.toggleObserveTrack(true);
-    } else {
-      store.toggleObserveTrack(false);
-    }
-  };
-
   return (
     <>
-      {checkedProjectIdList?.length === 1 && projectModalVisible ? (
+      {checkedProjectIdList?.length === 1 ? (
         <ProjectDetailInfo
           projectId={checkedProjectIdList[0].id}
           visible={projectModalVisible}
@@ -307,7 +299,7 @@ const ListMenu: FC = observer(() => {
           勘察轨迹
           <Switch
             style={{ marginLeft: 8 }}
-            onChange={(checked) => onSwitchChange(checked)}
+            onChange={() => store.toggleObserveTrack()}
             size="small"
             checkedChildren="开启"
             unCheckedChildren="关闭"
@@ -321,30 +313,35 @@ const ListMenu: FC = observer(() => {
         visible={materialModalVisible}
         onOk={() => setMaterialModalVisible(false)}
         onCancel={() => setMaterialModalVisible(false)}
-        width={1500}
+        width={2000}
       >
         <Table
           columns={columns}
           bordered
+          size="middle"
           loading={fetchMaterialListLoading}
           rowKey="key"
           pagination={false}
           dataSource={materialList}
-          scroll={{ x: 1400, y: 400 }}
+          scroll={{ x: 1400, y: 1000 }}
         />
       </Modal>
-      {commentTableModalVisible ? (
-        <Modal
-          title="审阅列表"
-          centered
-          visible={commentTableModalVisible}
-          onOk={() => setCommentTableModalVisible(false)}
-          onCancel={() => setCommentTableModalVisible(false)}
-          width={1500}
-        >
-          <CommentTable />
-        </Modal>
-      ) : null}
+
+      <Modal
+        title="审阅列表"
+        centered
+        visible={commentTableModalVisible}
+        onOk={() => setCommentTableModalVisible(false)}
+        onCancel={() => setCommentTableModalVisible(false)}
+        width={1500}
+      >
+        {checkedProjectIdList.length > 0 ? (
+          <CommentTable
+            projectId={checkedProjectIdList[0].id}
+            engineerId={checkedProjectIdList[0].engineerId}
+          />
+        ) : null}
+      </Modal>
     </>
   );
 });

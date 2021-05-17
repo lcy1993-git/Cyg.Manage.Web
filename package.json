@@ -20,6 +20,7 @@
     "lint:style": "stylelint --fix \"src/**/*.less\" --syntax less",
     "prettier": "prettier -c --write \"src/**/*\"",
     "start": "umi dev",
+    "prepare": "husky install",
     "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
     "start:no-mock": "cross-env MOCK=none umi dev",
     "start:no-ui": "cross-env UMI_UI=none umi dev",
@@ -78,7 +79,7 @@
     "umi-request": "^1.0.8",
     "unstated-next": "^1.1.0",
     "use-merge-value": "^1.0.1",
-    "wangeditor": "^4.6.9",
+    "wangeditor": "^4.7.0",
     "worker-loader": "^3.0.8"
   },
   "devDependencies": {

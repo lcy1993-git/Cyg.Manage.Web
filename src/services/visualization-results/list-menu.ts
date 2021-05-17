@@ -19,7 +19,7 @@ export interface MaterialDataType {
   key?: string;
 }
 
-export interface CommentListItemType {
+export interface ProjectCommentListItemType {
   id: string;
   createdOn: string;
   status: number;
@@ -40,10 +40,8 @@ export interface CommentListParams {
   projectIds?: string[];
   engineerId?: string;
   layerTypes?: number[];
-}
-export interface TrackTimelineType {
-  surveyTimeLine: string[];
-  disclosureTimeLine: string[];
+  deviceType?: number;
+  deviceName?: string;
 }
 
 /**
@@ -70,24 +68,12 @@ export const fetchMaterialListByProjectIdList = (projectIdList: string[]) => {
   );
 };
 
-export const fetchTrackTimeLine = (projectId: string) => {
-  return cyRequest<TrackTimelineType>(() =>
-    request(
-      `${baseUrl.webGis2}/WebGis/GetTrackTimeLine?projectId=${projectId}
-    `,
-      {
-        method: 'POST',
-      },
-    ),
-  );
-};
-
-export const fetchReviewListByParams = (projectIds: string[], engineerId: string) => {
-  return cyRequest<CommentListItemType[]>(() =>
+export const fetchCommentListByParams = (params: CommentListParams) => {
+  return cyRequest<ProjectCommentListItemType[]>(() =>
     request(
       `${baseUrl.comment}/Comment/GetProjectCommentList
     `,
-      { method: 'POST', data: { projectIds, engineerId } },
+      { method: 'POST', data: params },
     ),
   );
 };

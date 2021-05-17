@@ -13,8 +13,8 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 interface TableCheckedItemProjectInfo {
   id: string;
-  status?: string;
   isAllChecked: boolean;
+  status?: any;
 }
 
 export interface TableItemCheckedInfo {
@@ -84,6 +84,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     onChange?.({
       projectInfo: {
         id: projectInfo.id,
+        isAllChecked: list.length === valueList.length,
         status: projectInfo.projects
           .map((item: any) => {
             if (list.includes(item.id)) {
@@ -91,7 +92,6 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
             }
           })
           .filter(Boolean),
-        isAllChecked: list.length === valueList.length,
       },
       checkedArray: list as string[],
     });
@@ -101,7 +101,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     setCheckedList(e.target.checked ? valueList : []);
     setIndeterminate(false);
     setCheckAll(e.target.checked);
-
+    
     onChange?.({
       projectInfo: {
         id: projectInfo.id,

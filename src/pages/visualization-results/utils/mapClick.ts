@@ -234,6 +234,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                 : null;
               break;
             case 'azimuth':
+              console.log(Number(feature.getProperties()[p]));
               pJSON[mappingTag] = Number(feature.getProperties()[p])
                 ? Number(feature.getProperties()[p])?.toFixed(2)
                 : 0;
@@ -331,10 +332,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       }
     }
 
-    if (layerType === 'design' || layerType === 'dismantle') {
+    if (layerType === 'design' || layerType === 'dismantle' || layerType === 'survey' ) {
       // 批注功能
       if (commentLayers.indexOf(layerName) >= 0) {
-        pJSON['审阅'] = { id: feature.getProperties().project_id };
+        pJSON['审阅'] = { id: feature.getProperties().project_id, feature };
       }
     }
 

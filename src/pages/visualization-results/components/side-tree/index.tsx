@@ -2,7 +2,6 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import _, { size } from 'lodash';
-import Tab from './components/tab';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import {
@@ -97,7 +96,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     });
   };
 
-  const { data: dataByCattegory, loading } = useRequest(
+  const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(
     () =>
       tabActiveKey === '2'
         ? fetchEngineerProjectListByParamsAndCompany(filterCondition)
@@ -106,7 +105,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     {
       refreshDeps: [filterCondition, tabActiveKey],
       onSuccess: () => {
-        let data = generateProjectTree(dataByCattegory);
+        let data = generateProjectTree(treeListReponseData);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
 
@@ -201,12 +200,19 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           </div>
         </div>
 
-        <Tabs renderTabBar={() => <></>} style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle }}>
+        <Tabs
+          renderTabBar={() => <></>}
+          style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle }}
+        >
           <TabPane style={{ overflow: 'hidden' }} key="1">
-            {loading ? (
-              <Spin spinning={loading} className={styles.loading} tip="正在载入中..."></Spin>
+            {treeListDataLoading ? (
+              <Spin
+                spinning={treeListDataLoading}
+                className={styles.loading}
+                tip="正在载入中..."
+              ></Spin>
             ) : null}
-            {dataByCattegory ? (
+            {treeListReponseData ? (
               <Tree
                 height={size.height ? size.height - 85 : 680}
                 checkable
@@ -221,10 +227,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
           </TabPane>
           <TabPane style={{ overflow: 'hidden' }} tab="按公司" key="2">
-            {loading ? (
-              <Spin spinning={loading} className={styles.loading} tip="正在载入中..."></Spin>
+            {treeListDataLoading ? (
+              <Spin
+                spinning={treeListDataLoading}
+                className={styles.loading}
+                tip="正在载入中..."
+              ></Spin>
             ) : null}
-            {dataByCattegory ? (
+            {treeListReponseData ? (
               <Tree
                 height={size.height ? size.height - 85 : 680}
                 checkable
