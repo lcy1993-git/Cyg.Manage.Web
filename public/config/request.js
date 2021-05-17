@@ -24,7 +24,7 @@ const arrayHasIpBaseUrlArray = {
     upload: `${baseUrl}:8023/api`,
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
-    projectVisualization: `${baseUrl}:8034/api`,
+    projectVisualization: `${baseUrl}:8026/api`,
     tecEco: `${baseUrl}:8033/api`,
     review: `${baseUrl}:8041/api`
 }
@@ -83,5 +83,29 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.44";
+export const version = "1.0.45";
 
+const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
+
+export const webConfig = {
+    satelliteServerIP: ip,
+    satelliteServerPort: ':8020',
+    geoServerIP: ip,
+    geoServerPort: ':8099',
+    manageSideInteractiveServiceServerIP: ip,
+    manageSideInteractiveServiceServerPort: ':8025',
+    manageSideInteractiveServiceServerIP_V2: ip,
+    manageSideInteractiveServiceServerPort_V2: ':8026',
+    designSideInteractiveServiceServerIP: ip,
+    designSideInteractiveServiceServerPort: ':8014',
+    publicServiceServerIP: ip,
+    publicServiceServerPort: ':8022',
+    engineeringBusinessServiceServerIP: ip,
+    engineeringBusinessServiceServerPort: ':8013',
+    fileStorageServiceServerIP: ip,
+    fileStorageServiceServerPort: ':8023',
+    resourceServiceServerIP: ip,
+    resourceServiceServerPort: ':8015',
+    webSocketIP: ip,
+    webSocketPort: ':8032',
+  };

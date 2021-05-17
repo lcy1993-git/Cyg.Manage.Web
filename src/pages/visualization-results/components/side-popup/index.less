@@ -1,14 +1,14 @@
 .wrap{
   .drawerClose {
-      position: absolute;
-      top: 45%;
-      bottom: 55%;
-      left: 0;
+      position: fixed;
+      // top: 45%;
+      bottom: 0%;
+      left: -22px;
       z-index: 1004;
-      font-size: 14px;
+      font-size: 18px;
       padding: 0 6px;
       cursor: pointer;
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: #fff;
       &:hover {
         color: #0e7b3b;
       }
@@ -16,6 +16,28 @@
 
   .poiontEventNone {
     pointer-events: none;
+  }
+  :global {
+    .ant-drawer-body {
+      padding: 0;
+    }
+    .ant-table-row {
+      height: 15px;
+    }
+    .ant-table-cell {
+      padding: 12px;
+      padding-right: 0;
+    }
+    .ant-table-thead .ant-table-cell {
+      font-size: 18px;
+      font-weight: 550;
+    }
+    .ant-drawer-header {
+      padding-left: 12px;
+      overflow: hidden;
+      text-overflow:ellipsis;
+      white-space: nowrap;
+    }
   }
 }
 .mediaItem {

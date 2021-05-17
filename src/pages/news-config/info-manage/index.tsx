@@ -177,7 +177,8 @@ const InfoManage: React.FC = () => {
       index: 'users',
       title: '对象',
       render: (text: any, record: any) => {
-        return record.users.map((item: any) => {
+        console.log(record)
+        return record?.users?.map((item: any) => {
           return (
             <CyTag key={item.value} className="mr7">
               {item.text}

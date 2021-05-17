@@ -39,22 +39,20 @@ export interface SideMenuProps {
  * @returns TreeNodeType[]
  */
 function generateProjectTree(projectList?: ProjectListByAreaType[]): TreeNodeType[] {
-  if (!projectList) {
-    return [];
-  } else {
-    return projectList.map((v) => {
-      return {
-        title: v.name,
-        id: v.id,
-        key: Math.random().toString(),
-        engineerId: v.parentId,
-        parentId: v.parentId,
-        levelCategory: v.levelCategory,
-        propertys: v.propertys,
-        children: generateProjectTree(v.children),
-      };
-    });
-  }
+  return projectList
+    ? projectList.map((v) => {
+        return {
+          title: v.name,
+          id: v.id,
+          key: Math.random().toString(),
+          engineerId: v.parentId,
+          parentId: v.parentId,
+          levelCategory: v.levelCategory,
+          propertys: v.propertys,
+          children: generateProjectTree(v.children),
+        };
+      })
+    : [];
 }
 
 function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
@@ -67,14 +65,15 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
   };
 }
 
+type keyType =
+  | React.Key[]
+  | {
+      checked: React.Key[];
+      halfChecked: React.Key[];
+    };
+
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
-  const [checkedKeys, setCheckedKeys] = useState<
-    | React.Key[]
-    | {
-        checked: React.Key[];
-        halfChecked: React.Key[];
-      }
-  >();
+  const [checkedKeys, setCheckedKeys] = useState<keyType>();
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]); //筛选的id数据
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
@@ -109,10 +108,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
 
-          pushAllKeys(data);
-          expandedKeys.push('-1');
+          // pushAllKeys(data);
+          // expandedKeys.push('-1');
 
-          setExpandedKeys([...expandedKeys]);
+          // setExpandedKeys([...expandedKeys]);
+          setExpandedKeys(['-1']);
           setCheckedKeys([]);
         } else {
           message.warning('无数据');
