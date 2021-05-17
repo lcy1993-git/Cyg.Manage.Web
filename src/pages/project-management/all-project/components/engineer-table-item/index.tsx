@@ -5,7 +5,7 @@ import React from 'react';
 import styles from './index.less';
 
 import uuid from 'node-uuid';
-import { Button, Checkbox } from 'antd';
+import { Button, Checkbox, Tooltip } from 'antd';
 import { useMemo } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import EmptyTip from '@/components/empty-tip';
@@ -167,9 +167,12 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
             indeterminate={indeterminate}
             checked={checkAll}
           />
+          <Tooltip title={projectInfo.name}>
           <u className="canClick" onClick={() => projectNameClickEvent(projectInfo.id)}>
             {projectInfo.name}
           </u>
+          </Tooltip>
+
         </div>
         <div className={styles.projectTime}>
           <span className={styles.label}>工程日期:</span>
