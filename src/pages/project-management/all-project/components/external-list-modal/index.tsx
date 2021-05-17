@@ -96,7 +96,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
 
         {!stepData
           .map((item: any) => {
-            if (item.status === 3) {
+            if (item.status === 20) {
               return true;
             }
             return false;
