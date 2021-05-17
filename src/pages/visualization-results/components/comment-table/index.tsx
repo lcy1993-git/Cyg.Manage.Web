@@ -130,7 +130,7 @@ const CommentTable: FC<CommentProps> = (props) => {
   ];
 
   const {
-    data: commentList,
+    data: commentListResponseData,
     run: fetchCommentRequest,
     loading: fetchCommentListloading,
   } = useRequest(fetchCommentList, {
@@ -153,7 +153,7 @@ const CommentTable: FC<CommentProps> = (props) => {
    * 获取全部数据
    */
   const {
-    data: projectCommentListData,
+    data: projectCommentListResponseData,
     run: fetchProjectCommentListRquest,
     loading: fetchProjectCommentListLoading,
   } = useRequest(
@@ -169,8 +169,8 @@ const CommentTable: FC<CommentProps> = (props) => {
     {
       refreshDeps: [layerType, deviceType, engineerId, projectIds],
       onSuccess: () => {
-        if (projectCommentListData) {
-          setProjectCommentList(projectCommentListData);
+        if (projectCommentListResponseData) {
+          setProjectCommentList(projectCommentListResponseData);
         } else {
           message.warn('没有数据');
         }
@@ -248,7 +248,7 @@ const CommentTable: FC<CommentProps> = (props) => {
         </div>
         <Table
           bordered
-          size="large"
+          size="middle"
           rowKey="createdOn"
           pagination={{ ...pagination }}
           loading={fetchProjectCommentListLoading}
@@ -269,7 +269,7 @@ const CommentTable: FC<CommentProps> = (props) => {
       >
         <CommentList
           isDelete={clickItemIsDelete}
-          commentList={commentList}
+          commentList={commentListResponseData}
           loading={fetchCommentListloading}
           height={600}
         />

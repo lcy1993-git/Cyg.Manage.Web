@@ -96,7 +96,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     });
   };
 
-  const { data: dataByCategory, loading } = useRequest(
+  const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(
     () =>
       tabActiveKey === '2'
         ? fetchEngineerProjectListByParamsAndCompany(filterCondition)
@@ -105,7 +105,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     {
       refreshDeps: [filterCondition, tabActiveKey],
       onSuccess: () => {
-        let data = generateProjectTree(dataByCategory);
+        let data = generateProjectTree(treeListReponseData);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
 
@@ -205,10 +205,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle }}
         >
           <TabPane style={{ overflow: 'hidden' }} key="1">
-            {loading ? (
-              <Spin spinning={loading} className={styles.loading} tip="正在载入中..."></Spin>
+            {treeListDataLoading ? (
+              <Spin
+                spinning={treeListDataLoading}
+                className={styles.loading}
+                tip="正在载入中..."
+              ></Spin>
             ) : null}
-            {dataByCategory ? (
+            {treeListReponseData ? (
               <Tree
                 height={size.height ? size.height - 85 : 680}
                 checkable
@@ -223,10 +227,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
           </TabPane>
           <TabPane style={{ overflow: 'hidden' }} tab="按公司" key="2">
-            {loading ? (
-              <Spin spinning={loading} className={styles.loading} tip="正在载入中..."></Spin>
+            {treeListDataLoading ? (
+              <Spin
+                spinning={treeListDataLoading}
+                className={styles.loading}
+                tip="正在载入中..."
+              ></Spin>
             ) : null}
-            {dataByCategory ? (
+            {treeListReponseData ? (
               <Tree
                 height={size.height ? size.height - 85 : 680}
                 checkable
