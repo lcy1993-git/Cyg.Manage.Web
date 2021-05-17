@@ -1,9 +1,9 @@
-import React, { SetStateAction, useMemo, useState } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import { Button, Form, message, Modal } from 'antd';
 
 import { useControllableValue } from 'ahooks';
 import SelectAddListForm from '../select-add-list-form';
-import uuid from 'node-uuid';
+// import uuid from 'node-uuid';
 import { Dispatch } from 'react';
 import { UserInfo } from '@/services/project-management/select-add-list-form';
 import { modifyExternalArrange } from '@/services/project-management/all-project';
@@ -25,19 +25,6 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
   const [form] = Form.useForm();
   const { notBeginUsers, projectId } = props;
-
-  console.log(arrangePeople);
-
-  const addUsers = useMemo(() => {
-    return arrangePeople
-      .map((item) => {
-        if (!notBeginUsers.includes(item)) {
-          return item.value;
-        }
-        return;
-      })
-      .filter(Boolean);
-  }, [arrangePeople]);
 
   //获取新增外审
   function getAddUsers(preArray: any, nexArray: any) {
@@ -64,26 +51,6 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       });
   }
 
-  // const { data: exArrangeUsers = [] } = useRequest(() => getAllotUsers(projectId, 6));
-  // const modalCloseEvent = () => {
-  //   setState(false);
-  //   form.resetFields();
-  // };
-  // const hasExArrangeList = useMemo(() => {
-  //   return notBeginUsers?.map((item: any) => {
-  //     return {
-  //       value: item.userId,
-  //       text: item.userNameText,
-  //     };
-  //   });
-  // }, [notBeginUsers]);
-
-  // const handleExternalMen = useMemo(() => {
-  //   return notBeginUsers?.concat(arrangePeople).map((item: any) => {
-  //     return item.value;
-  //   });
-  // }, [arrangePeople]);
-
   const saveExternalArrange = async () => {
     console.log(getAddUsers(notBeginUsers, arrangePeople));
     console.log(getDelUsers(notBeginUsers, arrangePeople));
@@ -105,7 +72,6 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       width={700}
       onCancel={() => setState(false)}
       destroyOnClose
-      // onCancel={() => modalCloseEvent()}
       footer={[
         <>
           <Button key="cancle" onClick={() => setState(false)}>
@@ -120,7 +86,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     >
       <Form style={{ width: '100%' }} form={form}>
         <SelectAddListForm
-          personList={notBeginUsers}
+          initPeople={notBeginUsers}
           onAddPeople={(people) => setArrangePeople(people)}
         />
       </Form>

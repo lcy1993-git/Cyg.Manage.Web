@@ -23,9 +23,6 @@ interface GetGroupUserProps {
 const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
-  // const [userName, setUserName] = useState<string>('');
-  // const [reviewStatus, setReviewStatus] = useState<number>(0);
-  //   const [status, setUserName] = useState<string>('');
 
   // const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
   const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false);
@@ -33,37 +30,12 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [form] = Form.useForm();
   const { stepData, projectId } = props;
 
-  // const modalCloseEvent = () => {
-  //   setState(false);
-  //   form.resetFields();
-  // };
-  //   const hasExArrangeList = useMemo(() => {
-  //     if (arrangeUsers) {
-  //       return arrangeUsers?.map((item: any) => {
-  //         return {
-  //           value: item.userId,
-  //           text: item.userNameText,
-  //         };
-  //       });
-  //     }
-  //     return;
-  //   }, [arrangeUsers]);
-
-  //   const handleExternalMen = useMemo(() => {
-  //     if (hasExArrangeList) {
-  //       return hasExArrangeList.map((item: any) => {
-  //         return item.value;
-  //       });
-  //     }
-  //     return;
-  //   }, [arrangePeople]);
-
   const executeArrangeEvent = async () => {
     await executeExternalArrange({
       projectId: projectId,
       parameter: { 是否结束: `${isPassExternalArrange}` },
     });
-    message.success('已通过外审');
+    message.success('外审已通过');
   };
 
   const notBeginList = useMemo(() => {
@@ -91,8 +63,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         width={850}
         style={{ height: '500px' }}
         onCancel={() => setState(false)}
-        destroyOnClose
-        // onCancel={() => modalCloseEvent()}
         footer={[
           // <div className={styles.externalModal}>
           //   <Checkbox onChange={() => setIsPassArrangePeople(!false)}>不安排外审</Checkbox>

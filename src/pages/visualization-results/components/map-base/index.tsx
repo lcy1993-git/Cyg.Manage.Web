@@ -117,7 +117,6 @@ const BaseMap = observer((props: BaseMapProps) => {
     else clearTrackLayers(trackLayers);
   }, [JSON.stringify(observeTrack), JSON.stringify(projects)]);
 
-
   // 地图定位
   useEffect(() => {
     map && relocateMap('', layerGroups, view, setView, map);
@@ -215,7 +214,12 @@ const BaseMap = observer((props: BaseMapProps) => {
       <div className={styles.timeline}>
         <div>
           {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
-            <Timeline type="normal" height={80} width={400} dates={checkedProjectDateList} />
+            <Timeline
+              type="normal"
+              height={checkedProjectDateList.length > 6 ? 90 : 75}
+              width={400}
+              dates={checkedProjectDateList}
+            />
           ) : null}
         </div>
       </div>

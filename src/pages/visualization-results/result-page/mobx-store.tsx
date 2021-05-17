@@ -62,16 +62,7 @@ function Store(vState: VisualizationResultsStateType) {
     },
     //设置timeline点击的日期
     setClickDate(clickDate: string, type: string) {
-      switch (type) {
-        case 'normal':
-          this.vState.normalClickDate = clickDate;
-          break;
-        case 'observe':
-          this.vState.observeClickDate = clickDate;
-          break;
-        default:
-          break;
-      }
+      this.vState.normalClickDate = clickDate;
     },
 
     togglePositionMap() {
@@ -84,16 +75,6 @@ function Store(vState: VisualizationResultsStateType) {
       } else {
         this.vState.observeTrack = flag;
       }
-    },
-    toggleConfessionTrack(flag?: boolean) {
-      if (flag === undefined) {
-        this.vState.confessionTrack = !this.vState.confessionTrack;
-      } else {
-        this.vState.confessionTrack = flag;
-      }
-    },
-    setObeserveTrackTimeline(observeTrackTimeline: string[]) {
-      this.vState.observeTrackTimeline = observeTrackTimeline;
     },
   });
 }

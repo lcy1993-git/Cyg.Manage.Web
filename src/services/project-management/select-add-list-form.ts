@@ -11,11 +11,11 @@ export interface UserInfo {
   // 用户信息
   text: string;
 }
-export function queryOuterAuditUserByPhoneAndUsername(keyWord: string) {
+export function queryOuterAuditUserByPhoneAndUsername(keyword?: string) {
   return cyRequest<UserInfo>(() =>
     request(`${baseUrl.project}/CompanyUser/QueryOuterAuditUser`, {
       method: 'POST',
-      data: { keyWord },
+      data: { keyWord: keyword },
     }),
   );
 }

@@ -185,7 +185,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     manual: true,
   });
 
-  const { data: stepData = [], run: getExternalStep } = useRequest(getExternalArrangeStep, {
+  const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
     manual: true,
   });
 

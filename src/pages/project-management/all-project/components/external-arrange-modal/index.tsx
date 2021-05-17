@@ -1,7 +1,7 @@
 import React, { SetStateAction, useMemo, useState } from 'react';
 import { Button, Form, message, Modal } from 'antd';
 
-import { useControllableValue, useRequest } from 'ahooks';
+import { useControllableValue } from 'ahooks';
 import SelectAddListForm from '../select-add-list-form';
 import uuid from 'node-uuid';
 import { Dispatch } from 'react';
@@ -41,6 +41,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       return {
         value: item.userId,
         text: item.userNameText,
+        key: uuid.v1(),
       };
     });
   }, [arrangeUsers]);
@@ -93,7 +94,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     >
       <Form style={{ width: '100%' }} form={form}>
         <SelectAddListForm
-          personList={hasExArrangeList}
+          initPeople={hasExArrangeList}
           projectName="testName"
           onAddPeople={(people) => setArrangePeople(people)}
           notArrangeShow={isArrangePeople}

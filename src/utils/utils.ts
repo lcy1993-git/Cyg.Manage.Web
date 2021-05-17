@@ -103,6 +103,8 @@ export interface TreeData {
  * @returns 树形结构数组
  */
 export const formatDataTree = (data: TreeData[]) => {
+  
+  // if(!Array.isArray(data)) return [];
   let parents = data.filter(p => p.parentId === null);
   let children = data.filter(p => p.parentId !== null);
   dataToTree(parents, children);

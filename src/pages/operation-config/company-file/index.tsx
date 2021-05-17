@@ -299,10 +299,18 @@ const CompanyFile: React.FC = () => {
           </Button>
         )}
         {/* {buttonJurisdictionArray?.includes('company-file-edit') && ( */}
-        <Button className="mr7" onClick={() => downLoadEvent()}>
-          <DownloadOutlined />
-          下载
-        </Button>
+        <Popconfirm
+          title="您确定要下载该公司文件？"
+          onConfirm={() => downLoadEvent()}
+          okText="确认"
+          cancelText="取消"
+        >
+          <Button className="mr7">
+            <DownloadOutlined />
+            下载
+          </Button>
+        </Popconfirm>
+
         {/* )} */}
 
         {buttonJurisdictionArray?.includes('company-file-delete') && (
