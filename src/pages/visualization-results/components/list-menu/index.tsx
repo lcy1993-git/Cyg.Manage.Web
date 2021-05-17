@@ -138,7 +138,7 @@ const ListMenu: FC = observer(() => {
       >
         {checkedProjectIdList?.length > 1 ? (
           <Menu.Item key="projectDetail" disabled>
-            <Tooltip title="同时只能查看一个项目详情">
+            <Tooltip title="多选状态下无法查看项目详情">
               <CopyOutlined style={{ color: 'red' }} />
               <span style={{ color: 'red' }}>项目详情</span>
 
@@ -160,7 +160,7 @@ const ListMenu: FC = observer(() => {
         </Menu.Item>
         {checkedProjectIdList?.length > 1 ? (
           <Menu.Item key="commentTable" disabled>
-            <Tooltip title="同时只能查看一个评审">
+            <Tooltip title="多选状态下无法查看审阅消息">
               <CommentOutlined style={{ color: 'red' }} />
               <span style={{ color: 'red' }}>评审列表 </span>
               <QuestionCircleOutlined style={{ color: 'red', marginLeft: 4 }} />
@@ -169,7 +169,7 @@ const ListMenu: FC = observer(() => {
         ) : (
           <Menu.Item key="commentTable" className={styles.menuItem}>
             <CommentOutlined />
-            评审列表
+            审阅消息
           </Menu.Item>
         )}
 

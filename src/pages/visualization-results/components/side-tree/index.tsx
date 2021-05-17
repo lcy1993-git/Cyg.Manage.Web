@@ -214,7 +214,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
             {treeListReponseData ? (
               <Tree
-                height={size.height ? size.height - 85 : 680}
+                height={size.height ? size.height - 80 : 680}
                 checkable
                 onExpand={onExpand}
                 defaultExpandAll
