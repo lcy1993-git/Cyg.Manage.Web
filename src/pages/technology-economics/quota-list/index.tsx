@@ -3,11 +3,13 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin, Form, Select } from 'antd';
 import EditForm from './components/edit-from';
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { isArray } from 'lodash';
-import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
+import { getCatalogueList, getTreeQuotaLibraryCatalogue } from '@/services/technology-economics/quota-library';
+import UrlSelect from '@/components/url-select';
 import TreeTable from '../components/file-tree-table';
-
+import { useRequest } from 'ahooks';
+import QuotaLibSelect from '../components/quota-lib-select';
 import { TreeData, formatDataTree } from '@/utils/utils';
 const data = [
   {
@@ -168,12 +170,22 @@ const columns = [
 
 const QuotaList: React.FC = () => {
 
-  // const { data, run, loading } = useRequest(getMapFieldDetail, {
-  //   manual: true,
+  const { data = [{}], run, loading } = useRequest(getCatalogueList, {
+    manual: false,
+  });
+  // const { data1 = [{}], run1, loading1} = useRequest(getTreeQuotaLibraryCatalogue, {
+  //   manual: false,
   // });
 
-  const dataSource = formatDataTree(data);
+  console.log(data);
   
+  const dataSource = data && formatDataTree(data);
+
+  const [activeLibId, setActiveLibId] = useState<string>("");
+  useEffect(() => {
+    run(activeLibId);    
+  }, [activeLibId])
+
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -242,7 +254,19 @@ const QuotaList: React.FC = () => {
   const searchElement = () => {
     return (
       <div>
-        定额库 <Select style={{width: 200}} placeholder="- 请选择定额库 -"></Select>
+        定额库 
+        <QuotaLibSelect />
+        {/* <UrlSelect
+          url="/QuotaLibraryManager/GetPageList"
+          requestSource="tecEco"
+          requestType = 'post'
+          style={{width: 200}}
+          placeholder="- 请选择定额库 -"
+          titleKey="name"
+          valueKey="id"
+          needFilter={true}
+          onChange={(e)=> e && setActiveLibId(e + "")}
+        /> */}
       </div>
     );
   }

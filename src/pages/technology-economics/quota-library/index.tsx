@@ -2,19 +2,12 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
-import React, { useState, useMemo, useCallback, useReducer } from 'react';
+import { Input, Button, Modal, Form, Popconfirm, message } from 'antd';
+import React, { useState, useReducer } from 'react';
 import DictionaryForm from './components/add-edit-form';
-import { getQuotaLibrary } from '@/services/technology-economics/quota-library';
+import { modifyQuotaLibrary, createQuotaLibrary, delQuotaLibrary } from '@/services/technology-economics/quota-library';
 import styles from './index.less';
-import { useRequest } from 'ahooks';
-import {
-  getDictionaryDetail,
-  addDictionaryItem,
-  updateDictionaryItemStatus,
-  updateDictionaryItem,
-  deleteDictionaryItem,
-} from '@/services/system-config/dictyionary-manage';
+import moment from 'moment';
 import { isArray } from 'lodash';
 
 const { Search } = Input;
@@ -23,6 +16,42 @@ interface RouteListItem {
   name: string;
   id: string;
 }
+
+const columns = [
+  {
+    dataIndex: 'id',
+    index: 'id',
+    title: '编号',
+    width: 120,
+  },
+  {
+    dataIndex: 'name',
+    index: 'name',
+    title: '名称',
+    width: 400,
+  },
+  {
+    dataIndex: 'categoryText',
+    index: 'categoryText',
+    title: '类型',
+    width: 160,
+  },
+  {
+    dataIndex: 'releaseDate',
+    index: 'releaseDate',
+    title: '发行日期',
+    width: 90,
+    render(v: number) {
+      return moment(v).format('LL')
+    }
+  },
+  {
+    dataIndex: 'remark',
+    index: 'remark',
+    title: '描述',
+    width: 400
+  },
+];
 
 const ROUTE_LIST_STATE = {
   routeList: [
@@ -67,24 +96,6 @@ const QuotaLibrary: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const { data, run } = useRequest(getQuotaLibrary, {
-    manual: false,
-  });
-
-  console.log(data);
-  
-
-  // const data = [
-  //   {
-  //     category: 1,
-  //     categoryText: "预算",
-  //     id: "1357588635508068352",
-  //     name: "默认预算定额",
-  //     releaseDate: 1612454400000,
-  //     releaseDateText: "2021-02-05",
-  //     remark: null,
-  //   }
-  // ]
   const searchComponent = () => {
     return (
       <TableSearch label="关键词" width="203px">
@@ -105,19 +116,11 @@ const QuotaLibrary: React.FC = () => {
       return;
     }
     const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const id = editData.id;
 
-    await deleteDictionaryItem(editDataId);
+    await delQuotaLibrary(id);
     refresh();
     message.success('删除成功');
-  };
-
-  const updateStatus = async (record: any) => {
-    const { id } = record;
-
-    await updateDictionaryItemStatus(id);
-    refresh();
-    message.success('状态修改成功');
   };
 
   const tableSearchEvent = () => {
@@ -157,68 +160,15 @@ const QuotaLibrary: React.FC = () => {
     });
   };
 
-  const columns = [
-    {
-      dataIndex: 'id',
-      index: 'id',
-      title: '编号',
-      width: 120,
-      // render: (text: string, record: any) => {
-      //   return (
-      //     <span
-      //       className={styles.dictionaryKeyCell}
-      //       onClick={() => keyCellClickEvent(record.id, record.key)}
-      //     >
-      //       {record.key}
-      //     </span>
-      //   );
-      // },
-    },
-    {
-      dataIndex: 'name',
-      index: 'name',
-      title: '名称',
-      width: 360,
-    },
-    {
-      dataIndex: 'categoryText',
-      index: 'categoryText',
-      title: '类型',
-      width: 180,
-    },
-    {
-      dataIndex: 'releaseDate',
-      index: 'releaseDate',
-      title: '发行日期',
-      width: 80,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '描述',
-    },
-  ];
-
   //添加
   const addEvent = () => {
     setAddFormVisible(true);
   };
 
   const sureAddAuthorization = () => {
-    addForm.validateFields().then(async (value) => {
-      const submitInfo = Object.assign(
-        {
-          parentId: state.routeList[state.routeList.length - 1].id ?? '',
-          name: '',
-          value: '',
-          categoryText: '',
-          category: 0,
-          releaseDate: false,
-          remark: '',
-        },
-        value,
-      );
-      await addDictionaryItem(submitInfo);
+    addForm.validateFields().then(async (values) => {
+      
+      await createQuotaLibrary({releaseDate: new Date().getTime(), ...values});
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -232,12 +182,12 @@ const QuotaLibrary: React.FC = () => {
       return;
     }
     const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    // const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const AuthorizationData = await run(editDataId);
+    // const AuthorizationData = await run(editDataId);
 
-    editForm.setFieldsValue(AuthorizationData);
+    editForm.setFieldsValue(editData);
   };
 
   const sureEditAuthorization = () => {
@@ -257,21 +207,8 @@ const QuotaLibrary: React.FC = () => {
       };
     const editData = data!;
 
-    editForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-          name: editData.name,
-          category: editData.category,
-          categoryText: editData.categoryText,
-          releaseDate: editData.releaseDate,
-          releaseDateText: editData.releaseDateText,
-          remark: editData.remark,
-          // parentId: editData.parentId,
-        },
-        values,
-      );
-      await updateDictionaryItem(submitInfo);
+    editForm.validateFields().then(async (values) => {      
+      await modifyQuotaLibrary(values);
       refresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -309,36 +246,6 @@ const QuotaLibrary: React.FC = () => {
     );
   };
 
-  const routeItemClickEvent = (id: string, name: string) => {
-    dispatch({ code: 'edit', id });
-    setSearchKeyWord('');
-    searchByParams({
-      keyWord: '',
-      parentId: id,
-    });
-  };
-
-  const routeElement = state.routeList.map((item) => {
-    return (
-      <div
-        key={`menu_${item.id}`}
-        className={styles.routeItem}
-        onClick={() => routeItemClickEvent(item.id, item.name)}
-      >
-        {item.name}/
-      </div>
-    );
-  });
-
-  const titleSlotElement = () => {
-    return (
-      <div className={styles.routeComponent}>
-        <span>/</span>
-        {routeElement}
-      </div>
-    );
-  };
-
   const tableSelectEvent = (data: any) => {
     setTableSelectRow(data);
     setSelectIds(data.map((item: any) => item.id));
@@ -348,16 +255,15 @@ const QuotaLibrary: React.FC = () => {
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
-        // titleSlot={titleSlotElement}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/Quota/GetQuotaLibrary"
+        url="/QuotaLibraryManager/GetPageList"
         tableTitle="定额库管理"
         getSelectData={tableSelectEvent}
         requestSource='tecEco'
-        type="checkbox"
+        type="radio"
         extractParams={{
           keyWord: searchKeyWord,
           parentId: state.routeList[state.routeList.length - 1].id ?? '',
@@ -375,7 +281,7 @@ const QuotaLibrary: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
+          <DictionaryForm type='add' />
         </Form>
       </Modal>
       <Modal
@@ -390,7 +296,7 @@ const QuotaLibrary: React.FC = () => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <DictionaryForm parentName={state.routeList[state.routeList.length - 1].name ?? ''} />
+          <DictionaryForm type='edit' />
         </Form>
       </Modal>
     </PageCommonWrap>

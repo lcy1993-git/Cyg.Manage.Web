@@ -96,7 +96,7 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource',
+  requestSource: 'common' | 'project' | 'resource' | 'tecEco',
   requestType = 'get',
   postType = 'body',
   libId: string,
