@@ -10,9 +10,10 @@ const { Search } = Input;
 export interface SelectAddListFormProps {
   initPeople?: UserInfo[];
   projectName?: string;
-  onAddPeople: (userInfo: UserInfo[]) => void; //获取添加的外审人员list
+  onAddPeople: (userInfoList: UserInfo[]) => void; //获取添加的外审人员list
   notArrangeShow?: boolean; //checkbox的标志用来是否显示不安排外审的内容
   onSetPassArrangeStatus?: (flag: boolean) => void; //获取外审通不通过状态的callback
+  onDeletePeople?: (userInfo: UserInfo) => void; //删除事件
 }
 import styles from './index.less';
 import { CloseCircleOutlined, UserAddOutlined } from '@ant-design/icons';
@@ -25,6 +26,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     notArrangeShow = false,
     onSetPassArrangeStatus,
     projectName,
+    onDeletePeople,
   } = props;
   const [keyword, setKeyword] = useState<string>();
   const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
@@ -87,6 +89,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
               <CloseCircleOutlined
                 onClick={() => {
                   setPeople([...people.filter((v) => v.value !== p.value)]);
+                  onDeletePeople?.(p);
                 }}
               />
             </div>
