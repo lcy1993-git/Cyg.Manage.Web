@@ -533,19 +533,23 @@ const SidePopup: React.FC<Props> = observer((props) => {
           <>
             <div>
               <CommentList
+                horizontal
                 height={300}
                 commentList={commentList}
                 loading={fetchCommentListloading}
               />
 
-              <Input.TextArea
-                maxLength={200}
-                placeholder="请输入"
-                autoSize={{ minRows: 3, maxRows: 3 }}
-                defaultValue={Comment}
-                value={Comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
+              <div className="flex">
+                <div style={{ width: '8%' }}>添加审阅</div>
+                <Input.TextArea
+                  maxLength={200}
+                  placeholder="请输入"
+                  autoSize={{ minRows: 3, maxRows: 3 }}
+                  defaultValue={Comment}
+                  value={Comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+              </div>
             </div>
           </>
         )}
