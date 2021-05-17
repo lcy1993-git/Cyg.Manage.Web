@@ -171,6 +171,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   return (
     <>
       <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>
+        <div className={styles.sideTreeTitle}>全部项目</div>
         <div
           style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
           className={styles.tabBar}
@@ -214,7 +215,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             ) : null}
             {treeListReponseData ? (
               <Tree
-                height={size.height ? size.height - 85 : 680}
+                height={size.height ? size.height - 80 : 680}
                 checkable
                 onExpand={onExpand}
                 defaultExpandAll
