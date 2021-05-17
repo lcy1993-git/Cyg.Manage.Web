@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
 import { Divider, Dropdown, Input, message, Radio, Spin } from 'antd';
 
@@ -8,7 +8,7 @@ import {
 } from '@/services/project-management/select-add-list-form';
 const { Search } = Input;
 export interface SelectAddListFormProps {
-  personList?: UserInfo[];
+  initPeople?: UserInfo[];
   projectName?: string;
   onAddPeople: (userInfo: UserInfo[]) => void; //获取添加的外审人员list
   notArrangeShow?: boolean; //checkbox的标志用来是否显示不安排外审的内容
@@ -16,20 +16,19 @@ export interface SelectAddListFormProps {
 }
 import styles from './index.less';
 import { CloseCircleOutlined, UserAddOutlined } from '@ant-design/icons';
+import { useRequest } from 'ahooks';
 
 const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const {
-    personList = [],
+    initPeople = [],
     onAddPeople,
     notArrangeShow = false,
     onSetPassArrangeStatus,
     projectName,
   } = props;
   const [keyword, setKeyword] = useState<string>();
-  const [fetching, setFetching] = useState<boolean>(false);
-  const [dropDownVisible, setDropDownVisible] = useState<boolean>(false);
   const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
-  const [people, setPeople] = useState<UserInfo[]>(personList);
+  const [people, setPeople] = useState<UserInfo[]>(initPeople);
   const [options, setOptions] = useState<
     {
       text: string;
@@ -40,34 +39,21 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   /**
    * 获取外审人员
    */
-
-  const onSearch = () => {
-    setOptions([]);
-    if (keyword) {
-      setFetching(true);
-      setDropDownVisible(true);
-      queryOuterAuditUserByPhoneAndUsername(keyword).then((userInfo) => {
-        if (userInfo) {
-          const option = {
-            ...userInfo,
-          };
-
-          setOptions([option]);
-        } else {
-          setDropDownVisible(false);
-          message.warn('账号不存在！请重新输入');
-        }
-        setFetching(false);
-      });
-    }
-  };
+  const { data, run, loading } = useRequest(() => queryOuterAuditUserByPhoneAndUsername(keyword), {
+    manual: true,
+    onSuccess: () => {
+      if (data) {
+        setOptions([data]);
+      } else {
+        message.warn('账号不存在！请重新输入');
+      }
+    },
+  });
 
   const OptionList = () => {
     return (
       <div className={styles.optionList}>
-        {fetching ? (
-          <Spin size="small" />
-        ) : options.length ? (
+        {options.length ? (
           options.map((option) => {
             return (
               <div className={styles.optionItem} key={option.value}>
@@ -84,13 +70,13 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
             );
           })
         ) : (
-          <div>无任何内容</div>
+          <div>无内容，请先搜索</div>
         )}
       </div>
     );
   };
 
-  const People = () => {
+  const AddPeople = () => {
     return (
       <div className={styles.people}>
         {people.map((p, idx) => (
@@ -118,18 +104,19 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   return (
     <div className={styles.selectForm}>
       <CyFormItem label="账号" name="outerAuditUsers">
-        <Dropdown overlay={OptionList} >
+        <Dropdown overlay={<OptionList />}>
           <Search
             placeholder="请输入项目名称"
             enterButton
+            loading={loading}
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            onSearch={() => onSearch()}
+            onSearch={() => run()}
           />
         </Dropdown>
       </CyFormItem>
       <div className={styles.title}>外审人员列表</div>
-      <People />
+      <AddPeople />
 
       {notArrangeShow && projectName ? (
         <>
