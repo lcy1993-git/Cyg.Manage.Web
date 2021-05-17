@@ -464,6 +464,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           <MenuUnfoldOutlined />
         </div>
         <Table
+          bordered
           style={{ height: 30 }}
           pagination={false}
           columns={columns}

@@ -2,6 +2,12 @@
     font-size: 0;
     line-height: 1;
    
+    .tooltip {
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+    }
+
     .projectTitle {
         display: flex;
         background-color: @table-thead-color;
@@ -23,7 +29,10 @@
             flex: 2;
             padding-left: 10px;
             padding-top: 8px;
-         
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-all;
+            height: 28px;
         }
         .projectTime {
 
