@@ -1,3 +1,4 @@
+import { isNumber } from 'lodash';
 import getMappingTagsDictionary from './localData/mappingTagsDictionary';
 import { pointStyle, line_style } from './localData/pointStyle';
 import VectorSource from 'ol/source/Vector';
@@ -344,8 +345,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
     resData.push({ propertyName: '元素类型', data: elementTypeEnum[layerName] });
     for (let p in pJSON) {
-      if (p === '方位角' && layerName === 'tower')
-        resData.push({ propertyName: '呼称高', data: pJSON['高度(m)'] - pJSON['埋深'] });
+      if (p === '方位角' && layerName === 'tower'){
+        let hcg = pJSON['高度(m)'] - pJSON['埋深'];
+        hcg = isNumber(hcg) ? hcg : 0;
+        resData.push({ propertyName: '呼称高', data: hcg });
+      }
       if (p === '材料表' && layerName === 'electric_meter') {
         let linePhase = feature.getProperties().kv_level === 2 ? '三相' : '两相';
         resData.push({ propertyName: '导线相数', data: linePhase });
