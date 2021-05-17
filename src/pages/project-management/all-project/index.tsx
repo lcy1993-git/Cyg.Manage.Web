@@ -47,6 +47,7 @@ import ProjectRecallModal from './components/project-recall-modal';
 import UploadAddProjectModal from './components/upload-batch-modal';
 import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
+import EditExternalArrangeForm from './components/edit-external-modal';
 
 const { Search } = Input;
 
@@ -69,13 +70,15 @@ const ProjectManagement: React.FC = () => {
   const [status, setStatus] = useState<string>();
   const [sourceType, setSourceType] = useState<string>();
   const [identityType, setIdentityType] = useState<string>();
-  const [areaInfo, setAreaInfo] = useState({ areaType: "-1", areaId: "" });
-  
+  const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
+
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
   const [shareModalVisible, setShareModalVisible] = useState<boolean>(false);
+
+  const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
 
   const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
 
@@ -101,7 +104,7 @@ const ProjectManagement: React.FC = () => {
 
   //获取上传立项模板后的List数据
   //获取当前选择数据
-  const [currentSelectData, setCurrentSelectData] = useState<any>();
+  const [currentProjectId, setCurrentProjectId] = useState<string>('');
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -248,10 +251,18 @@ const ProjectManagement: React.FC = () => {
       message.error('当前处于设计完成，不可修改安排！');
       return;
     }
+    if (
+      tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
+      tableSelectData[0]?.projectInfo?.status[0].auditStatus === 13
+    ) {
+      setCurrentProjectId(tableSelectData[0]?.projectInfo.id);
+      setEditExternalArrangeModal(true);
+      return;
+    }
+
     const resData = await canEditArrange(projectIds);
 
-    const { allotCompanyGroup = '', canEditInternalAudit } = resData;
-    console.log(canEditInternalAudit);
+    const { allotCompanyGroup = '' } = resData;
 
     setEditCurrentAllotCompanyId(allotCompanyGroup);
     setSelectProjectIds(projectIds);
@@ -429,10 +440,10 @@ const ProjectManagement: React.FC = () => {
       kvLevel: '-1',
       status: '-1',
       statisticalCategory: statisticalCategory,
-      sourceType: "-1",
-      identityType: "-1",
-      areaType: "-1",
-      areaId: ""
+      sourceType: '-1',
+      identityType: '-1',
+      areaType: '-1',
+      areaId: '',
     });
   };
 
@@ -634,7 +645,7 @@ const ProjectManagement: React.FC = () => {
       <div className={styles.projectManagement}>
         <div className={styles.projectManagemnetSearch}>
           <div className="flex">
-            <div className="flex1 flex" style={{ overflow: "hidden" }}>
+            <div className="flex1 flex" style={{ overflow: 'hidden' }}>
               <OverFlowHiddenComponent childrenList={searchChildrenList}>
                 <TableSearch className="mr22" label="项目名称" width="300px">
                   <Search
@@ -996,6 +1007,14 @@ const ProjectManagement: React.FC = () => {
           visible={libVisible}
           onChange={setLibVisible}
           changeFinishEvent={refreshEvent}
+        />
+      )}
+      {editExternalArrangeModal && (
+        <EditExternalArrangeForm
+          projectId={currentProjectId}
+          visible={editExternalArrangeModal}
+          onChange={setEditExternalArrangeModal}
+          notBeginUsers={[]}
         />
       )}
     </PageCommonWrap>

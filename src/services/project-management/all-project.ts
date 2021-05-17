@@ -715,3 +715,18 @@ export const executeExternalArrange = (params: ExecuteExternalArrangeParams) => 
     }),
   );
 };
+
+interface ModifyOuterAuditParams {
+  projectId: string;
+  addUserIds: any;
+  delUserIds: string[];
+}
+//修改外审安排
+export const modifyExternalArrange = (params: ModifyOuterAuditParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ModifyOuterAudit`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};

@@ -493,7 +493,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
-  
     // 监测现在数组是否含有此id的数据
     const hasData = tableSelectData.findIndex(
       (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id,
@@ -722,6 +721,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           arrangeUsers={arrangeUsers}
           onChange={setExternalArrangeModalVisible}
           visible={externalArrangeModalVisible}
+          search={afterSearch}
         />
       )}
 

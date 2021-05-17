@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
-import { Divider, Dropdown, Form, Input, Menu, message, Radio, Select, Spin } from 'antd';
+import { Divider, Dropdown, Input, message, Radio, Spin } from 'antd';
 import debounce from 'lodash/debounce';
 import {
   queryOuterAuditUserByPhoneAndUsername,
@@ -21,13 +21,12 @@ import { CloseCircleOutlined, UserAddOutlined } from '@ant-design/icons';
 const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const {
     personList,
-    onAddPeople,  
+    onAddPeople,
     notArrangeShow = false,
     onSetPassArrangeStatus,
     // type,
     projectName,
   } = props;
-  console.log(personList);
 
   const debounceTimeout = 800;
   const [fetching, setFetching] = useState<boolean>(false);
