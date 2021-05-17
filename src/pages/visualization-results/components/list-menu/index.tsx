@@ -1,5 +1,5 @@
-import React, { FC, useMemo, useState } from 'react';
-import { Menu, message, Modal, Switch, Table, Tooltip } from 'antd';
+import React, { FC, useState } from 'react';
+import { Menu, message, Modal, Switch, Tooltip } from 'antd';
 import styles from './index.less';
 import {
   CommentOutlined,
@@ -11,8 +11,6 @@ import {
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/mobx-store';
 import CommentTable from '../comment-table';
-
-import { ColumnsType } from 'antd/es/table';
 import { useRequest } from 'ahooks';
 import {
   fetchMaterialListByProjectIdList,
@@ -20,99 +18,7 @@ import {
 } from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-
-export const columns: ColumnsType<MaterialDataType> = [
-  {
-    title: '编号',
-    width: 100,
-    dataIndex: 'index',
-    key: 'index',
-    fixed: 'left',
-    render: (text, record, idx) => (record.children ? idx + 1 : null),
-  },
-  {
-    title: '物料类型',
-    width: 200,
-    dataIndex: 'type',
-    key: 'type',
-    fixed: 'left',
-  },
-  {
-    title: '物料名称',
-    width: 200,
-    dataIndex: 'name',
-    key: 'name',
-    fixed: 'left',
-  },
-  {
-    title: '物料型号',
-    width: 500,
-    dataIndex: 'spec',
-    key: 'spec',
-  },
-  {
-    title: '物料编号',
-    width: 150,
-    dataIndex: 'code',
-    key: 'code',
-  },
-  {
-    title: '物料编号',
-    width: 150,
-    dataIndex: 'materialId',
-    key: 'materialId',
-  },
-
-  {
-    title: '物料单位',
-    width: 80,
-    dataIndex: 'unit',
-    key: 'unit',
-  },
-  {
-    title: '数量',
-    width: 80,
-    dataIndex: 'itemNumber',
-    key: 'itemNumber',
-  },
-
-  {
-    title: '单价(元)',
-    width: 80,
-    dataIndex: 'unitPrice',
-    key: 'unitPrice',
-  },
-  {
-    title: '单重(kg)',
-    width: 80,
-    dataIndex: 'pieceWeight',
-    key: 'pieceWeight',
-  },
-  {
-    title: '状态',
-    width: 80,
-    dataIndex: 'state',
-    key: 'state',
-  },
-  {
-    title: '物料 描述',
-    width: 200,
-    dataIndex: 'description',
-    key: 'description',
-  },
-  {
-    title: '供给方',
-    width: 200,
-    dataIndex: 'supplySide',
-    key: 'supplySide',
-  },
-  {
-    title: '备注',
-    width: 200,
-    dataIndex: 'remark',
-    key: 'remark',
-  },
-];
+import { MaterialTable } from '../material-table';
 
 const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDataType[] => {
   /**
@@ -147,7 +53,6 @@ const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDat
 };
 
 const ListMenu: FC = observer(() => {
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
   const [materialList, setMaterialList] = useState<MaterialDataType[]>();
@@ -155,12 +60,6 @@ const ListMenu: FC = observer(() => {
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList } = vState;
-
-  useMemo(() => {
-    if (checkedProjectIdList.length === 0) {
-      setSelectedKeys(selectedKeys.filter((v: string) => v !== '4'));
-    }
-  }, [checkedProjectIdList]);
 
   const {
     data: materialListReponseData,
@@ -185,29 +84,14 @@ const ListMenu: FC = observer(() => {
     },
   });
 
-  const onSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
-    switch (key.toString()) {
-      case '1':
-        onClickProjectDetailInfo();
-        break;
-      case '2':
-        store.togglePositionMap();
-        store.setOnPositionClickState();
-        break;
-      case '3':
-        setMaterialModalVisible(true);
-        fetchMaterialListRquest(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
-        break;
-      case '4':
-        onClickCommentTable();
-        break;
-      default:
-        break;
-    }
+  const onCilickPositionMap = () => {
+    store.togglePositionMap();
+    store.setOnPositionClickState();
   };
 
-  const onDeSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
-    setSelectedKeys(selectedKeys?.map((v: React.Key) => v.toString()) ?? []);
+  const onClickMaterialTable = () => {
+    setMaterialModalVisible(true);
+    fetchMaterialListRquest(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
   };
 
   const onClickCommentTable = () => {
@@ -228,6 +112,13 @@ const ListMenu: FC = observer(() => {
     }
   };
 
+  const menuListProcessor = {
+    projectDetail: onClickProjectDetailInfo,
+    positionMap: onCilickPositionMap,
+    materialTable: onClickMaterialTable,
+    commentTable: onClickCommentTable,
+  };
+
   return (
     <>
       {checkedProjectIdList?.length === 1 ? (
@@ -240,26 +131,13 @@ const ListMenu: FC = observer(() => {
 
       <Menu
         style={{ width: 152, backgroundColor: 'rgba(233, 233, 235, 0.8)' }}
-        selectedKeys={selectedKeys}
-        onSelect={(info: {
-          key: React.Key;
-          keyPath: React.Key[];
-          item: React.ReactInstance;
-          domEvent: React.MouseEvent<HTMLElement>;
-          selectedKeys?: React.Key[];
-        }) => onSelected(info.key, info.selectedKeys)}
+        selectedKeys={[]}
+        onSelect={(info) => menuListProcessor[info.key.toString()]()}
         multiple={true}
-        onDeselect={(info: {
-          key: React.Key;
-          keyPath: React.Key[];
-          item: React.ReactInstance;
-          domEvent: React.MouseEvent<HTMLElement>;
-          selectedKeys?: React.Key[];
-        }) => onDeSelected(info.key, info.selectedKeys)}
         mode="inline"
       >
         {checkedProjectIdList?.length > 1 ? (
-          <Menu.Item key="1" disabled>
+          <Menu.Item key="projectDetail" disabled>
             <Tooltip title="同时只能查看一个项目详情">
               <CopyOutlined style={{ color: 'red' }} />
               <span style={{ color: 'red' }}>项目详情</span>
@@ -268,20 +146,20 @@ const ListMenu: FC = observer(() => {
             </Tooltip>
           </Menu.Item>
         ) : (
-          <Menu.Item key="1" className={styles.menuItem}>
+          <Menu.Item key="projectDetail" className={styles.menuItem}>
             <CopyOutlined />
             项目详情
           </Menu.Item>
         )}
 
-        <Menu.Item key="2" icon={<HeatMapOutlined />}>
+        <Menu.Item key="positionMap" icon={<HeatMapOutlined />}>
           地图定位
         </Menu.Item>
-        <Menu.Item key="3" icon={<NodeIndexOutlined />}>
+        <Menu.Item key="materialTable" icon={<NodeIndexOutlined />}>
           材料表
         </Menu.Item>
         {checkedProjectIdList?.length > 1 ? (
-          <Menu.Item key="4" disabled>
+          <Menu.Item key="commentTable" disabled>
             <Tooltip title="同时只能查看一个评审">
               <CommentOutlined style={{ color: 'red' }} />
               <span style={{ color: 'red' }}>评审列表 </span>
@@ -289,7 +167,7 @@ const ListMenu: FC = observer(() => {
             </Tooltip>
           </Menu.Item>
         ) : (
-          <Menu.Item key="4" className={styles.menuItem}>
+          <Menu.Item key="commentTable" className={styles.menuItem}>
             <CommentOutlined />
             评审列表
           </Menu.Item>
@@ -315,16 +193,7 @@ const ListMenu: FC = observer(() => {
         onCancel={() => setMaterialModalVisible(false)}
         width={2000}
       >
-        <Table
-          columns={columns}
-          bordered
-          size="middle"
-          loading={fetchMaterialListLoading}
-          rowKey="key"
-          pagination={false}
-          dataSource={materialList}
-          scroll={{ x: 1400, y: 1000 }}
-        />
+        <MaterialTable data={materialList} loading={fetchMaterialListLoading} />
       </Modal>
 
       <Modal

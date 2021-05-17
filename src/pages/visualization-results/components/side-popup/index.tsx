@@ -531,14 +531,26 @@ const SidePopup: React.FC<Props> = observer((props) => {
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
-            <CommentList height={300} commentList={commentList} loading={fetchCommentListloading} />
-            <Input.TextArea
-              placeholder="添加审阅"
-              autoSize={{ minRows: 8, maxRows: 8 }}
-              defaultValue={Comment}
-              value={Comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
+            <div>
+              <CommentList
+                horizontal
+                height={300}
+                commentList={commentList}
+                loading={fetchCommentListloading}
+              />
+
+              <div className="flex">
+                <div style={{ width: '8%' }}>添加审阅</div>
+                <Input.TextArea
+                  maxLength={200}
+                  placeholder="请输入"
+                  autoSize={{ minRows: 3, maxRows: 3 }}
+                  defaultValue={Comment}
+                  value={Comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+              </div>
+            </div>
           </>
         )}
       </Modal>
