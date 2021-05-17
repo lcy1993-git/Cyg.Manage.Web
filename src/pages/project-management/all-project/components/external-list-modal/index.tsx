@@ -61,7 +61,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         visible={state as boolean}
         maskClosable={false}
         width={850}
-        style={{ height: '500px' }}
         onCancel={() => setState(false)}
         footer={[
           // <div className={styles.externalModal}>

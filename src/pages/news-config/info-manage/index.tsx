@@ -35,13 +35,13 @@ const InfoManage: React.FC = () => {
   const [status, setStatus] = useState<number>(0);
 
   const [checkInfoVisible, setCheckInfoVisible] = useState<boolean>(false);
-  
+
   const currentCheckNewsId = useMemo(() => {
-    if(tableSelectRows && tableSelectRows.length > 0) {
-      return tableSelectRows[0].id
+    if (tableSelectRows && tableSelectRows.length > 0) {
+      return tableSelectRows[0].id;
     }
-    return ""
-  },[tableSelectRows])
+    return '';
+  }, [tableSelectRows]);
 
   // const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
   // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -177,7 +177,7 @@ const InfoManage: React.FC = () => {
       index: 'users',
       title: '对象',
       render: (text: any, record: any) => {
-        console.log(record)
+        console.log(record);
         return record?.users?.map((item: any) => {
           return (
             <CyTag key={item.value} className="mr7">
@@ -265,12 +265,12 @@ const InfoManage: React.FC = () => {
     const userIds = checkContentData.users.map((item) => item.value);
     const clientCategorys = checkContentData.clientCategorys.map((item) => item.value);
     setEditFormVisible(true);
-    setEditContent(checkContentData.content)
+    setEditContent(checkContentData.content);
     editForm.setFieldsValue({
       userIds,
       title: checkContentData.title,
       isEnable: checkContentData.isEnable,
-      clientCategorys
+      clientCategorys,
     });
   };
 
@@ -298,8 +298,8 @@ const InfoManage: React.FC = () => {
   };
 
   const checkEvent = () => {
-    setCheckInfoVisible(true)
-  }
+    setCheckInfoVisible(true);
+  };
 
   const tableElement = () => {
     return (
@@ -357,8 +357,7 @@ const InfoManage: React.FC = () => {
           keyWord: searchKeyWord,
         }}
       />
-      {
-        addFormVisible &&
+      {addFormVisible && (
         <Modal
           maskClosable={false}
           title="添加-宣贯"
@@ -372,7 +371,7 @@ const InfoManage: React.FC = () => {
         >
           <TextEditor onChange={setContent} titleForm={addForm} type="add" />
         </Modal>
-      }
+      )}
 
       <Modal
         maskClosable={false}
@@ -385,14 +384,20 @@ const InfoManage: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <TextEditor htmlContent={editContent} type="edit" onChange={setContent} titleForm={editForm} />
+        <TextEditor
+          htmlContent={editContent}
+          type="edit"
+          onChange={setContent}
+          titleForm={editForm}
+        />
       </Modal>
-      {
-        checkInfoVisible &&
-        <CheckInfoModal visible={checkInfoVisible} onChange={setCheckInfoVisible} newsId={currentCheckNewsId} />
-
-      }
-      
+      {checkInfoVisible && (
+        <CheckInfoModal
+          visible={checkInfoVisible}
+          onChange={setCheckInfoVisible}
+          newsId={currentCheckNewsId}
+        />
+      )}
     </PageCommonWrap>
   );
 };

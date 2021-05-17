@@ -477,9 +477,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   //外审安排
   const externalArrange = async (projectId: string, userIds?: string[]) => {
-    await getArrangeUsers(projectId, 6);
+    const res = await getArrangeUsers(projectId, 6);
     setCurrentClickProjectId(projectId);
-    setArrangeUsers(exArrangeUsers);
+    const exUsers = res?.map((item) => {
+      return {
+        value: item.userId,
+        text: item.userNameText,
+      };
+    });
+    setArrangeUsers(exUsers);
     setExternalArrangeModalVisible(true);
   };
 

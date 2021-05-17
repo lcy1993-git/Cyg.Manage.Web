@@ -36,18 +36,20 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   //   setState(false);
   //   form.resetFields();
   // };
-  const hasExArrangeList = useMemo(() => {
-    return arrangeUsers?.map((item: any) => {
-      return {
-        value: item.userId,
-        text: item.userNameText,
-        key: uuid.v1(),
-      };
-    });
-  }, [arrangeUsers]);
+
+  console.log(arrangeUsers);
+
+  // const hasExArrangeList = useMemo(() => {
+  //   return arrangeUsers?.map((item: any) => {
+  //     return {
+  //       value: item.userId,
+  //       text: item.userNameText,
+  //     };
+  //   });
+  // }, [arrangeUsers]);
 
   const handleExternalMen = useMemo(() => {
-    return hasExArrangeList?.concat(arrangePeople).map((item: any) => {
+    return arrangeUsers?.concat(arrangePeople).map((item: any) => {
       return item.value;
     });
   }, [arrangePeople]);
@@ -94,7 +96,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     >
       <Form style={{ width: '100%' }} form={form}>
         <SelectAddListForm
-          initPeople={hasExArrangeList}
+          initPeople={arrangeUsers}
           projectName="testName"
           onAddPeople={(people) => setArrangePeople(people)}
           notArrangeShow={isArrangePeople}
