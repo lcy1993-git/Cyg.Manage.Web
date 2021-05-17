@@ -136,6 +136,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
   const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('');
+  const [currentProName, setCurrentProName] = useState<string | undefined>('');
+
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
 
   const [currentClickProjectId, setCurrentClickProjectId] = useState('');
@@ -181,7 +183,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
-  const { data: exArrangeUsers = [], run: getArrangeUsers } = useRequest(getAllotUsers, {
+  const { run: getArrangeUsers } = useRequest(getAllotUsers, {
     manual: true,
   });
 
@@ -394,7 +396,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 5 ? (
                   <span>{stateInfo?.auditStatusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
-                  <span className="canClick" onClick={() => externalArrange(record.id)}>
+                  <span
+                    className="canClick"
+                    onClick={() => externalArrange(record.id, record.name)}
+                  >
                     {stateInfo?.auditStatusText}
                   </span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
@@ -476,9 +481,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   ];
 
   //外审安排
-  const externalArrange = async (projectId: string, userIds?: string[]) => {
+  const externalArrange = async (projectId: string, proName?: string) => {
     const res = await getArrangeUsers(projectId, 6);
     setCurrentClickProjectId(projectId);
+    setCurrentProName(proName);
     const exUsers = res?.map((item) => {
       return {
         value: item.userId,
@@ -486,6 +492,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       };
     });
     setArrangeUsers(exUsers);
+
     setExternalArrangeModalVisible(true);
   };
 
@@ -724,6 +731,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       {externalArrangeModalVisible && (
         <ExternalArrangeModal
           projectId={currentClickProjectId}
+          proName={currentProName}
           arrangeUsers={arrangeUsers}
           onChange={setExternalArrangeModalVisible}
           visible={externalArrangeModalVisible}

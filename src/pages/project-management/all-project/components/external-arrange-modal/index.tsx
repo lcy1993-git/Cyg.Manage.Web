@@ -19,6 +19,7 @@ interface GetGroupUserProps {
   arrangeUsers?: any;
   projectId: string;
   search?: () => void;
+  proName?: string;
 }
 
 const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
@@ -28,25 +29,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const [isArrangePeople, setIsArrangePeople] = useState<boolean>(false); //不安排外审status
 
   const [form] = Form.useForm();
-  const { arrangeUsers, projectId, search } = props;
-
-  // const { data: exArrangeUsers = [] } = useRequest(() => getAllotUsers(projectId, 6));
-
-  // const modalCloseEvent = () => {
-  //   setState(false);
-  //   form.resetFields();
-  // };
-
-  console.log(arrangeUsers);
-
-  // const hasExArrangeList = useMemo(() => {
-  //   return arrangeUsers?.map((item: any) => {
-  //     return {
-  //       value: item.userId,
-  //       text: item.userNameText,
-  //     };
-  //   });
-  // }, [arrangeUsers]);
+  const { arrangeUsers, projectId, search, proName } = props;
 
   const handleExternalMen = useMemo(() => {
     return arrangeUsers?.concat(arrangePeople).map((item: any) => {
@@ -76,7 +59,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       destroyOnClose
       // onCancel={() => modalCloseEvent()}
       footer={[
-        <div className={styles.externalModal}>
+        <div className={styles.externalModal} key="outSider">
           <Checkbox
             onChange={() => {
               setIsArrangePeople(!isArrangePeople);
@@ -97,7 +80,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       <Form style={{ width: '100%' }} form={form}>
         <SelectAddListForm
           initPeople={arrangeUsers}
-          projectName="testName"
+          projectName={proName}
           onAddPeople={(people) => setArrangePeople(people)}
           notArrangeShow={isArrangePeople}
           onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}

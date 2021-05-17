@@ -36,19 +36,23 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
       parameter: { 是否结束: `${isPassExternalArrange}` },
     });
     message.success('外审已通过');
+    setState(false);
   };
 
   const notBeginList = useMemo(() => {
-    return stepData.map((item: any) => {
-      if (item.status === 1) {
-        return {
-          value: item.expectExecutor,
-          text: item.name,
-        };
-      }
-      return;
-    });
+    return stepData
+      .map((item: any) => {
+        if (item.status === 1) {
+          return {
+            value: item.expectExecutor,
+            text: item.name,
+          };
+        }
+        return;
+      })
+      .filter(Boolean);
   }, [stepData]);
+  console.log(notBeginList);
 
   const modifyEvent = () => {
     setEditExternalArrangeModal(true);
