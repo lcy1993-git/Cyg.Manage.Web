@@ -347,7 +347,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     for (let p in pJSON) {
       if (p === '方位角' && layerName === 'tower'){
         let hcg = pJSON['高度(m)'] - pJSON['埋深'];
-        hcg = isNumber(hcg) ? hcg : 0;
+        hcg = isNaN(hcg) ? 0 : hcg;
         resData.push({ propertyName: '呼称高', data: hcg });
       }
       if (p === '材料表' && layerName === 'electric_meter') {
