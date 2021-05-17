@@ -534,7 +534,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
             <CommentList height={300} commentList={commentList} loading={fetchCommentListloading} />
             <Input.TextArea
               placeholder="添加审阅"
-              autoSize={{ minRows: 8, maxRows: 8 }}
+              autoSize={{ minRows: 3, maxRows: 3 }}
               defaultValue={Comment}
               value={Comment}
               onChange={(e) => setComment(e.target.value)}

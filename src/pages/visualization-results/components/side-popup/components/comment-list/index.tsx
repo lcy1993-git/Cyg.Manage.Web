@@ -18,6 +18,7 @@ export interface CommentListProps {
 
 const CommentList: FC<CommentListProps> = (props) => {
   const { height, commentList = [], loading = true, isDelete = false } = props;
+  console.log(commentList.length);
 
   const scrollbars = createRef<Scrollbars>();
   const generatprCommentListData = commentList.map((v) => ({
@@ -42,7 +43,7 @@ const CommentList: FC<CommentListProps> = (props) => {
 
           <List
             className="comment-list"
-            header={`${CommentList?.length}条 审阅内容`}
+            header={`${commentList?.length}条 审阅内容`}
             itemLayout="horizontal"
             dataSource={generatprCommentListData}
             renderItem={(item) => (
