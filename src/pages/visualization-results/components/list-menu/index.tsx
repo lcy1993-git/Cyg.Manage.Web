@@ -154,27 +154,28 @@ const ListMenu: FC = observer(() => {
     }
   }, [checkedProjectIdList]);
 
-  const { data: materialData, run: fetchMaterialList, loading: fetchMaterialListLoading } = useRequest(
-    fetchMaterialListByProjectIdList,
-    {
-      manual: true,
-      onSuccess: () => {
-        /**
-         * 材料的table树
-         *  - 类型
-         *    - 类型 ------------
-         */
-        if (materialData?.length) {
-          setMaterialList(generateMaterialTreeList(materialData));
-        } else {
-          message.warning('没有检索到数据');
-        }
-      },
-      onError: () => {
-        message.warning('获取数据失败');
-      },
+  const {
+    data: materialData,
+    run: fetchMaterialList,
+    loading: fetchMaterialListLoading,
+  } = useRequest(fetchMaterialListByProjectIdList, {
+    manual: true,
+    onSuccess: () => {
+      /**
+       * 材料的table树
+       *  - 类型
+       *    - 类型 ------------
+       */
+      if (materialData?.length) {
+        setMaterialList(generateMaterialTreeList(materialData));
+      } else {
+        message.warning('没有检索到数据');
+      }
     },
-  );
+    onError: () => {
+      message.warning('获取数据失败');
+    },
+  });
 
   const onSelected = (key: React.Key, selectedKeys?: React.Key[]) => {
     switch (key.toString()) {
@@ -333,18 +334,22 @@ const ListMenu: FC = observer(() => {
           scroll={{ x: 1400, y: 400 }}
         />
       </Modal>
-      {commentTableModalVisible ? (
-        <Modal
-          title="审阅列表"
-          centered
-          visible={commentTableModalVisible}
-          onOk={() => setCommentTableModalVisible(false)}
-          onCancel={() => setCommentTableModalVisible(false)}
-          width={1500}
-        >
-          <CommentTable />
-        </Modal>
-      ) : null}
+
+      <Modal
+        title="审阅列表"
+        centered
+        visible={commentTableModalVisible}
+        onOk={() => setCommentTableModalVisible(false)}
+        onCancel={() => setCommentTableModalVisible(false)}
+        width={1500}
+      >
+        {checkedProjectIdList.length > 0 ? (
+          <CommentTable
+            projectIds={[checkedProjectIdList[0].id]}
+            engineerId={checkedProjectIdList[0].engineerId}
+          />
+        ) : null}
+      </Modal>
     </>
   );
 });

@@ -4,7 +4,6 @@ import UrlSelect from '@/components/url-select';
 import { Button, Input, Select } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import styles from './index.less';
-import { Moment } from 'moment';
 import { useContainer } from '../../result-page/mobx-store';
 import EnumSelect from '@/components/enum-select';
 import { observer } from 'mobx-react-lite';
@@ -107,9 +106,7 @@ const FilterBar: FC = observer(() => {
     setIdentityType(undefined);
     setComment(undefined);
 
-    const condition = {};
-
-    store.setFilterCondition(condition);
+    store.setFilterCondition({});
   };
 
   const search = () => {
@@ -126,8 +123,6 @@ const FilterBar: FC = observer(() => {
       identityType: identityType && identityType !== '-1' ? [identityType] : undefined,
       haveAnnotate: comment && comment !== -1 ? comment : undefined,
     };
-
-    console.log(condition);
 
     store.setFilterCondition(condition);
   };
