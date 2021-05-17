@@ -745,6 +745,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           visible={externalListModalVisible}
           onChange={setExternalListModalVisible}
           stepData={externalStepData}
+          refresh={afterSearch}
         />
       )}
     </div>

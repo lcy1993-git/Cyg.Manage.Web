@@ -9,6 +9,7 @@ import { Dispatch } from 'react';
 import { executeExternalArrange } from '@/services/project-management/all-project';
 import styles from './index.less';
 import EditExternalArrangeForm from '../edit-external-modal';
+import { CheckCircleOutlined, CloseCircleOutlined, FieldTimeOutlined } from '@ant-design/icons';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -18,6 +19,7 @@ interface GetGroupUserProps {
   visible: boolean;
   projectId: string;
   stepData?: any;
+  refresh?: () => void;
 }
 
 const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
@@ -28,7 +30,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false);
 
   const [form] = Form.useForm();
-  const { stepData, projectId } = props;
+  const { stepData, projectId, refresh } = props;
 
   const executeArrangeEvent = async () => {
     await executeExternalArrange({
@@ -37,6 +39,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     });
     message.success('外审已通过');
     setState(false);
+    refresh?.();
   };
 
   const notBeginList = useMemo(() => {
@@ -52,7 +55,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
       })
       .filter(Boolean);
   }, [stepData]);
-  console.log(notBeginList);
 
   const modifyEvent = () => {
     setEditExternalArrangeModal(true);
@@ -85,6 +87,17 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
             <div className={styles.single} key={el.id}>
               <div>外审 {idx + 1}</div>
               <div>{el.name}</div>
+              <div>
+                {el.status === 1 ? (
+                  '待执行'
+                ) : el.status === 10 ? (
+                  <FieldTimeOutlined />
+                ) : el.status === 20 && el.resultParameterDisplay[0] === '不通过' ? (
+                  <CloseCircleOutlined style={{ color: 'red' }} />
+                ) : (
+                  <CheckCircleOutlined style={{ color: 'green' }} />
+                )}
+              </div>
               <div className={styles.status}>{el.statusDescription}</div>
             </div>
           ))}
@@ -96,7 +109,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
 
         {!stepData
           .map((item: any) => {
-            if (item.status === 3) {
+            if (item.status === 20) {
               return true;
             }
             return false;
