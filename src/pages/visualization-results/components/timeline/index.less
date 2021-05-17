@@ -24,20 +24,35 @@
   }
   .action {
     position: absolute;
-    top: 45px;
+    top: 63px;
     bottom: 0px;
     left: 8px;
     z-index: 1000000000;
-    width: 32px;
+    display: flex;
+
     margin: 0;
     padding: 0;
-    font-size: 24px;
+    font-size: 14px;
+    text-align: center;
     .leftArrow {
+      width: 20px;
+      height: 20px;
+      background-color: #fff;
       cursor: pointer;
+      &:hover {
+        color: @primary-color;
+      }
     }
 
     .rightArrow {
+      width: 20px;
+      height: 20px;
+      margin-left: 8px;
+      background-color: #fff;
       cursor: pointer;
+      &:hover {
+        color: @primary-color;
+      }
     }
   }
 }

@@ -6,6 +6,7 @@ import TimelineItem from './components/TimelineItem';
 import Scrollbars from 'react-custom-scrollbars';
 import { useContainer } from '../../result-page/mobx-store';
 import { observer } from 'mobx-react-lite';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
 interface dataItem {
   idx: number;
@@ -96,13 +97,13 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
       {/* 是否显示滚动到最后 */}
       {dates.length > 10 ? (
         <div className={styles.action}>
-          <span onClick={onClickScrollLeft} className={styles.leftArrow}>
-            {'<'}
-          </span>
+          <div onClick={onClickScrollLeft} className={styles.leftArrow}>
+            <LeftOutlined />
+          </div>
           {/* 是否显示滚动到最开始 */}
-          <span onClick={onClickScrollRight} className={styles.rightArrow}>
-            {'>'}
-          </span>
+          <div onClick={onClickScrollRight} className={styles.rightArrow}>
+            <RightOutlined />
+          </div>
         </div>
       ) : null}
       <Scrollbars
