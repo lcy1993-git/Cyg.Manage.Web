@@ -205,7 +205,7 @@ const CommentTable: FC<CommentProps> = (props) => {
   };
   return (
     <>
-      <div className={styles.tableContainer}>
+      <div className={styles.commentTable}>
         <div className={classnames(styles.tableFilterbar, 'flex')}>
           <TableSearch className="mr10" label="名称" width="268px">
             <Search
