@@ -57,7 +57,7 @@ const searchChildrenList = [
 ];
 
 const FilterBar: FC = observer(() => {
-  const [keyWord, setKeyWord] = useState<string>(''); //搜索关键词
+  const [keyWord, setKeyWord] = useState<string>(); //搜索关键词
   const [category, setCategory] = useState<string>(); //项目分类
   const [pCategory, setPCategory] = useState<string>(); //项目类别
   const [comment, setComment] = useState<number>(); //审阅
@@ -95,7 +95,7 @@ const FilterBar: FC = observer(() => {
   };
 
   const reset = () => {
-    setKeyWord('');
+    setKeyWord(undefined);
     setCategory(undefined);
     setPCategory(undefined);
     setStage(undefined);
@@ -106,6 +106,7 @@ const FilterBar: FC = observer(() => {
     setSourceType(undefined);
     setIdentityType(undefined);
     setComment(undefined);
+
     const condition = {};
 
     store.setFilterCondition(condition);
@@ -113,18 +114,20 @@ const FilterBar: FC = observer(() => {
 
   const search = () => {
     const condition = {
-      keyWord: keyWord,
-      category: category && category !== "-1" ? [category] : undefined,
-      pCategory: pCategory && pCategory !== "-1" ? [pCategory] : undefined,
-      stage: stage && stage !== "-1" ? [stage] : undefined,
-      constructType: constructType && constructType !== "-1" ? [constructType] : undefined,
-      nature: nature && nature !== "-1" ? [nature] : undefined,
-      kvLevel: kvLevel && kvLevel !== "-1" ? [kvLevel] : undefined,
+      keyWord: keyWord ?? undefined,
+      category: category && category !== '-1' ? [category] : undefined,
+      pCategory: pCategory && pCategory !== '-1' ? [pCategory] : undefined,
+      stage: stage && stage !== '-1' ? [stage] : undefined,
+      constructType: constructType && constructType !== '-1' ? [constructType] : undefined,
+      nature: nature && nature !== '-1' ? [nature] : undefined,
+      kvLevel: kvLevel && kvLevel !== '-1' ? [kvLevel] : undefined,
       status: statuss ?? undefined,
-      sourceType: sourceType && sourceType !== "-1" ? [sourceType] : undefined,
-      identityType: identityType && identityType !== "-1" ? [identityType] : undefined,
-      haveAnnotate: comment ?? undefined,
+      sourceType: sourceType && sourceType !== '-1' ? [sourceType] : undefined,
+      identityType: identityType && identityType !== '-1' ? [identityType] : undefined,
+      haveAnnotate: comment && comment !== -1 ? comment : undefined,
     };
+
+    console.log(condition);
 
     store.setFilterCondition(condition);
   };
@@ -267,9 +270,9 @@ const FilterBar: FC = observer(() => {
               style={{ width: '100%' }}
               placeholder="存在审阅"
             >
-              <Select.Option value="-1" children={'全部'} />
-              <Select.Option value="1" children={'是'} />
-              <Select.Option value="0" children={'否'} />
+              <Select.Option value={-1} children={'全部'} />
+              <Select.Option value={1} children={'是'} />
+              <Select.Option value={0} children={'否'} />
             </Select>
           </TableSearch>
         </OverFlowHiddenComponent>

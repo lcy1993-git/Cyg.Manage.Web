@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styles from './index.less';
 import TableSearch from '@/components/table-search';
 import { Button, Input, Select, message, Table, Tag, Modal } from 'antd';
@@ -7,14 +7,14 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react-lite';
 import { useRequest } from 'ahooks';
 import {
-  fetchReviewListByParams,
-  CommentListItemType,
+  fetchCommentListByParams,
+  ProjectCommentListItemType,
 } from '@/services/visualization-results/list-menu';
 import CommentList from '../side-popup/components/comment-list';
 import { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import { isArray } from 'lodash';
-import { CommentType, fetchCommentList } from '@/services/visualization-results/side-popup';
+import { fetchCommentList } from '@/services/visualization-results/side-popup';
 
 const { Option } = Select;
 
@@ -22,13 +22,10 @@ interface CommentProps {}
 const { Search } = Input;
 
 const CommentTable: FC<CommentProps> = observer((props) => {
-  const [keyWord, setKeyWord] = useState<string>('');
-  const [layer, setLayer] = useState<number>(0);
-  const [type, setType] = useState<number>();
-  const [deviceId, setDeviceId] = useState<string>();
-  const [filterData, setFilterData] = useState<CommentListItemType[]>();
-  const [clickLayer, setClickLayer] = useState<number>();
-  const [commentListDatas, setCommentListDate] = useState<CommentType[]>([]);
+  const [keyWord, setKeyWord] = useState<string>();
+  const [layerType, setLayerType] = useState<number>();
+  const [deviceType, setDeviceType] = useState<number>();
+  const [projectCommentList, setProjectCommentList] = useState<ProjectCommentListItemType[]>();
   const [commentListModalVisible, setCommentListModalVisible] = useState<boolean>(false);
   const store = useContainer();
   const { vState } = store;
@@ -36,6 +33,11 @@ const CommentTable: FC<CommentProps> = observer((props) => {
 
   const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
 
+  /**
+   * 获取枚举值
+   * @param type
+   * @returns
+   */
   const findEnumKey = (type: string) => {
     let res: any[] = [];
     if (isArray(loadEnumsData)) {
@@ -115,41 +117,46 @@ const CommentTable: FC<CommentProps> = observer((props) => {
     },
   ];
 
-  const { data: responseCommentList, run: fetchComment, loading: commentListloading } = useRequest(
-    fetchCommentList,
-    {
-      manual: true,
-      onSuccess: () => {
-        console.log(responseCommentList);
-
-        setCommentListDate(responseCommentList ?? []);
-      },
-      onError: () => {
-        message.error('获取审阅失败');
-      },
+  const {
+    data: commentList,
+    run: fetchCommentRequest,
+    loading: fetchCommentListloading,
+  } = useRequest(fetchCommentList, {
+    manual: true,
+    onError: () => {
+      message.error('获取审阅失败');
     },
-  );
+  });
+  /**
+   * 查看某个设备的评审记录
+   * @param deviceId
+   * @param layerType
+   */
   const onClickViewCommentList = (deviceId: string, layerType: number) => {
-    setDeviceId(deviceId);
-    setClickLayer(layerType);
-    fetchComment({ projectId: checkedProjectIdList[0].id, layer: layerType, deviceId });
+    fetchCommentRequest({ projectId: checkedProjectIdList[0].id, layer: layerType, deviceId });
     setCommentListModalVisible(true);
   };
   /**
    * 获取全部数据
    */
-  const { data, loading } = useRequest(
+  const {
+    data: projectCommentListData,
+    run: fetchProjectCommentListRquest,
+    loading: fetchProjectCommentListLoading,
+  } = useRequest(
     () =>
-      fetchReviewListByParams(
-        checkedProjectIdList.map((v) => v.id),
-        checkedProjectIdList[0].engineerId,
-      ),
+      fetchCommentListByParams({
+        engineerId: checkedProjectIdList[0].engineerId,
+        projectIds: checkedProjectIdList.map((v) => v.id),
+        layerTypes: layerType ? [layerType] : undefined,
+        deviceType,
+        deviceName: keyWord,
+      }),
 
     {
+      refreshDeps: [layerType, deviceType],
       onSuccess: () => {
-        console.log(data);
-
-        setFilterData(data);
+        setProjectCommentList(projectCommentListData);
       },
       onError: () => {
         message.error('获取数据失败');
@@ -158,40 +165,25 @@ const CommentTable: FC<CommentProps> = observer((props) => {
   );
 
   const search = () => {
-    setFilterData(data?.filter((v) => v.deviceName?.includes(keyWord)));
+    fetchProjectCommentListRquest();
   };
 
   const reset = () => {
-    setFilterData(data);
-    setType(undefined);
-    setLayer(0);
+    setDeviceType(undefined);
+    setLayerType(undefined);
+    setKeyWord(undefined);
+    console.log(123);
+    
+
+    fetchProjectCommentListRquest();
   };
 
   function onSelectLayer(value: number) {
-    setLayer(value);
-    if (!value && !type) {
-      setFilterData(data);
-    } else if (type && !value) {
-      setFilterData(data?.filter((v) => v.deviceType === type));
-    } else if (value && !type) {
-      console.log(data);
-      setFilterData(data?.filter((v) => v.layerType === value));
-    } else {
-      setFilterData(data?.filter((v) => v.layerType === value && v.deviceType === type));
-    }
+    setLayerType(value);
   }
 
   function onSelectType(value: number) {
-    setType(value);
-    if (!value && !type) {
-      setFilterData(data);
-    } else if (layer && !value) {
-      setFilterData(data?.filter((v) => v.layerType === layer));
-    } else if (value && !layer) {
-      setFilterData(data?.filter((v) => v.deviceType === value));
-    } else {
-      setFilterData(data?.filter((v) => v.layerType === layer && v.deviceType === value));
-    }
+    setDeviceType(value);
   }
   return (
     <>
@@ -208,7 +200,7 @@ const CommentTable: FC<CommentProps> = observer((props) => {
           </TableSearch>
           <TableSearch className="mr10" label="所属图层" width="178px">
             <Select
-              value={layer}
+              value={layerType}
               placeholder="选择图层"
               style={{ width: '100%' }}
               onSelect={onSelectLayer}
@@ -220,7 +212,7 @@ const CommentTable: FC<CommentProps> = observer((props) => {
           </TableSearch>
           <TableSearch className="mr10" width="138px">
             <Select
-              value={type}
+              value={deviceType}
               placeholder="类型"
               style={{ width: '100%' }}
               onSelect={onSelectType}
@@ -239,10 +231,10 @@ const CommentTable: FC<CommentProps> = observer((props) => {
           bordered
           size="large"
           rowKey="createdOn"
-          loading={loading}
+          loading={fetchProjectCommentListLoading}
           columns={columns}
           scroll={{ x: 1000 }}
-          dataSource={filterData}
+          dataSource={projectCommentList}
           sticky
         />
       </div>
@@ -255,11 +247,7 @@ const CommentTable: FC<CommentProps> = observer((props) => {
         onCancel={() => setCommentListModalVisible(false)}
         width={1500}
       >
-        <CommentList
-          CommentList={commentListDatas ?? []}
-          loading={commentListloading}
-          height={600}
-        />
+        <CommentList commentList={commentList} loading={fetchCommentListloading} height={600} />
       </Modal>
     </>
   );

@@ -6,7 +6,6 @@ import {
   CommentRequestType,
   addComment,
   fetchCommentList,
-  CommentType,
 } from '@/services/visualization-results/side-popup';
 // import { publishMessage } from '@/services/news-config/Comment-manage';
 import CommentList from './components/comment-list';
@@ -193,7 +192,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
   const { checkedProjectIdList } = useContainer().vState;
-  const scrollbars = createRef<Scrollbars>();
 
   const data = useMemo(() => {
     const title = dataSource.find((o) => o.propertyName === 'title')?.data;
@@ -306,21 +304,28 @@ const SidePopup: React.FC<Props> = observer((props) => {
       },
     },
   ];
-  const { data: responseCommentList, run: fetchComment, loading: commentListloading } = useRequest(
-    fetchCommentList,
-    {
-      manual: true,
-      onSuccess: () => {},
-      onError: () => {
-        message.error('获取审阅失败');
-      },
+
+  /**
+   * 获取评审list
+   */
+  const {
+    data: commentList,
+    run: fetchCommentListRequest,
+    loading: fetchCommentListloading,
+  } = useRequest(fetchCommentList, {
+    manual: true,
+    onError: () => {
+      message.error('获取审阅失败');
     },
-  );
+  });
+  /**
+   * 添加评审
+   */
   const { run: addCommentRequest } = useRequest(addComment, {
     manual: true,
     onSuccess: () => {
       message.success('添加成功');
-      fetchComment({
+      fetchCommentListRequest({
         layer: commentRquestBody?.layerType,
         deviceId: commentRquestBody?.deviceId,
         projectId: commentRquestBody?.projectId,
@@ -336,6 +341,9 @@ const SidePopup: React.FC<Props> = observer((props) => {
     setActiveType('annotation&' + value.id);
 
     const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature;
+    /**
+     * 从feature这个对象里面取出关键信息，由于localstorage里面存的是中文枚举值，这里取出来的是英文，所以要根据中英文转换一下
+     */
     if (feature) {
       const localData = localStorage.getItem('loadEnumsData');
       const loadEnumsData =
@@ -365,7 +373,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
       let split = id_.split('.');
       const [enLayerType, enDeviceType] = split[0].split('_');
       const deviceId = split[1];
-      console.log(projectId);
 
       /**
        * 初始化请求body
@@ -379,7 +386,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         content: '',
       };
       setcommentRquestBody(body);
-      fetchComment({ layer: body.layerType, deviceId: body.deviceId, projectId });
+      fetchCommentListRequest({ layer: body.layerType, deviceId: body.deviceId, projectId });
     }
   };
   useEffect(() => {
@@ -524,11 +531,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
-            <CommentList
-              height={300}
-              CommentList={responseCommentList ?? []}
-              loading={commentListloading}
-            />
+            <CommentList height={300} commentList={commentList} loading={fetchCommentListloading} />
             <Input.TextArea
               placeholder="添加审阅"
               autoSize={{ minRows: 8, maxRows: 8 }}
