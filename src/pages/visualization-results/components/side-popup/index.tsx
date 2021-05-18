@@ -195,7 +195,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
 
   const data = useMemo(() => {
     const title = dataSource.find((o) => o.propertyName === 'title')?.data;
-    return [dataSource.filter((o) => o.propertyName !== 'title'), title];
+    return [dataSource.filter((o) => o.propertyName !== 'title'), title ? title : ""];
   }, [JSON.stringify(dataSource)]);
 
   const columns = [
