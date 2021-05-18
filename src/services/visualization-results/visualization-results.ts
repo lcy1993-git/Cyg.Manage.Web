@@ -34,7 +34,7 @@ export const getMapList = (params: any) => {
 // }
 export const getGisDetail = (params: any) => {
   return request(
-    'common/api/System/GetGisDetail',
+    `${baseUrl.common}/System/GetGisDetail`,
     { method: 'POST', data: { ...params } },
   );
 };
