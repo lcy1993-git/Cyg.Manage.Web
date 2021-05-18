@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import EditFormTable from '@/components/edit-form-table';
 import { InputNumber, Form, Input } from 'antd';
 import UrlSelect from '@/components/url-select';
@@ -16,6 +16,7 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
       dataIndex: 'cableChannelId',
       index: 'cableChannelId',
       rules: [{ required: true, message: '该值必填' }],
+
       width: 180,
       render: () => {
         return <Input />;
@@ -25,6 +26,7 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
       title: '组件',
       dataIndex: 'componentId',
       index: 'componentId',
+      cascader: true,
       width: 180,
       render: () => {
         return (

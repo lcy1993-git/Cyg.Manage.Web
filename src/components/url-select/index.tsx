@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { Select } from 'antd';
 import { useRequest } from 'ahooks';
 import { getDataByUrl } from '@/services/common';
 
-interface UrlSelectProps {
+export interface UrlSelectProps {
   url?: string;
   titleKey?: string;
   valueKey?: string;
@@ -16,8 +16,9 @@ interface UrlSelectProps {
   paramsMust?: string[];
   postType?: 'query' | 'body';
   libId?: string;
-  needAll?: boolean
-  allValue?: string
+  needAll?: boolean;
+  allValue?: string;
+  manual?: boolean;
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
@@ -25,6 +26,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
 ) => {
   const {
     url = '',
+    manual = false,
     titleKey = 'Title',
     valueKey = 'ID',
     defaultData,
@@ -36,7 +38,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     postType = 'body',
     needAll = false,
     libId = '',
-    allValue = "",
+    allValue = '',
     ...rest
   } = props;
 
@@ -44,9 +46,10 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
   // defaultData 没有数值
   // 必须传的参数不为空
 
-  const { data: resData } = useRequest(
+  const { data: resData, run } = useRequest(
     () => getDataByUrl(url, extraParams, requestSource, requestType, postType, libId),
     {
+      manual,
       ready: !!(
         url &&
         !defaultData &&
@@ -56,14 +59,20 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     },
   );
 
+  useEffect(() => {
+    if (!manual) {
+      run();
+    }
+  }, [manual]);
+
   const afterHanldeData = useMemo(() => {
     if (defaultData) {
       const copyData = [...defaultData];
-      if(needAll) {
+      if (needAll) {
         const newObject = {};
-        newObject[titleKey] = "全部";
+        newObject[titleKey] = '全部';
         newObject[valueKey] = allValue;
-        copyData.unshift(newObject)
+        copyData.unshift(newObject);
       }
       return copyData.map((item: any) => {
         return { label: item[titleKey], value: item[valueKey] };
