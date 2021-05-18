@@ -41,7 +41,6 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     allValue = '',
     ...rest
   } = props;
-  console.log(props);
 
   // URL 有数值
   // defaultData 没有数值

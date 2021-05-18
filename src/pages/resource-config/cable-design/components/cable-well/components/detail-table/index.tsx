@@ -243,7 +243,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
         maskClosable={false}
         title="添加-电缆井明细"
         width="70%"
-        visible={addFormVisible}
+        visible={true}
         okText="确认"
         onOk={() => sureAddCableWellDetail()}
         onCancel={() => setAddFormVisible(false)}

@@ -36,7 +36,7 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
             valueKey="componentId"
             titleKey="componentName"
             allowClear
-            manual
+            manual={true}
             requestType="post"
             postType="query"
             placeholder="--组件--"
@@ -58,7 +58,7 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
             valueKey="materialId"
             titleKey="materialName"
             allowClear
-            test={"111"}
+            manual={true}
             requestType="post"
             postType="query"
             placeholder="--物料--"
