@@ -1,7 +1,7 @@
 
 
 import { useControllableValue, useRequest } from 'ahooks';
-import { Modal, Spin, message, Tabs } from 'antd';
+import { Modal, Spin } from 'antd';
 import TableStatus from '@/components/table-status';
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import {
@@ -76,7 +76,7 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
                 <ReadonlyItem label="对象">
                     <div className={styles.object}>
                         <div className={styles.name}>{userShowInfo}</div>
-                        <div className={styles.readInfo}>共<span>{newsInfo?.receiveQty ?? 0}</span>人收到/<span className={styles.readPerson}>{newsInfo?.readQty ?? 0}</span>人已经读</div>                   
+                        <div className={styles.readInfo}>共<span>{newsInfo?.receiveQty ?? 0}</span>人收到/<span className={styles.readPerson}>{newsInfo?.readQty ?? 0}</span>人已读</div>                   
                     </div>
 
                 </ReadonlyItem>

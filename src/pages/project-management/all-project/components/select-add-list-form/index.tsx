@@ -32,7 +32,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const [keyword, setKeyword] = useState<string>();
   const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
   const [people, setPeople] = useState<UserInfo[]>([]);
-  const [visible, { toggle, setTrue, setFalse }] = useBoolean(false);
+  const [visible, { setTrue, setFalse }] = useBoolean(false);
 
   /**
    * 获取外审人员
@@ -142,7 +142,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   return (
     <div className={styles.selectForm}>
       <CyFormItem label="账号" className={styles.account} name="outerAuditUsers">
-        <Dropdown overlay={<OptionList />} visible={visible}>
+        <Dropdown overlay={<OptionList />} visible={visible} onVisibleChange={setFalse}>
           <Search
             id="hover-div"
             placeholder="请输入项目名称"
