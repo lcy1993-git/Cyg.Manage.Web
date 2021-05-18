@@ -95,7 +95,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <Row gutter={24}>
+        <Row gutter={24} style={{ minWidth: 800 }}>
           <Col>
             <CyFormItem labelWidth={80} label="区域" name="province">
               <Input defaultValue={provinceName} disabled />
@@ -104,13 +104,13 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
           <Col>
             <CyFormItem labelWidth={120} label="所属供电公司" name="companyId">
               <UrlSelect
-                style={{ width: '330px' }}
-                requestSource="project"
-                url="/ElectricityCompany/GetListByAreaId"
-                titleKey="text"
-                valueKey="value"
+                style={{ width: '342px' }}
+                requestSource="resource"
+                url="/ElectricityCompany"
+                titleKey="powerSupply"
+                valueKey="id"
                 placeholder="请选择供电公司"
-                extraParams={{ areaId: province }}
+                extraParams={{ area: province }}
                 allowClear
                 onChange={(value: any) => setCompanyId(value)}
               />
@@ -120,6 +120,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
 
         <CyFormItem labelWidth={80} label="导入" name="file" required>
           <FileUpload
+            accept=".xlsx"
             trigger={triggerUploadFile}
             uploadFileFn={saveLineStreesSagEvent}
             maxCount={1}
