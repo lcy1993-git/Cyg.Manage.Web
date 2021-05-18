@@ -1,8 +1,9 @@
 
 
 import { useControllableValue, useRequest } from 'ahooks';
-import { Button, Modal, Spin, message, Tabs } from 'antd';
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import { Modal, Spin, message, Tabs } from 'antd';
+import TableStatus from '@/components/table-status';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import {
     getNewsItemDetail,
 } from '@/services/news-config/info-manage';
@@ -16,6 +17,15 @@ interface CheckInfoModalProps {
     onChange: Dispatch<SetStateAction<boolean>>;
     newsId: string
 }
+
+const mapColor = {
+    无: 'gray',
+    管理端: 'greenOne',
+    勘察端: 'greenTwo',
+    评审端: 'greenThree',
+    技经端: 'greenFour',
+    设计端: 'greenFive',
+};
 
 const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
     const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
@@ -39,8 +49,11 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
     })
 
     const clientCategorysInfo = newsInfo?.clientCategorys.map((item) => {
-        return <CyTag key={uuid.v1()} className="mr7 mb7">{item.text}</CyTag>
+        return <TableStatus color={mapColor[item.text] ?? 'gray'} key={uuid.v1()} className="mr7 mb7">{item.text}</TableStatus>
     })
+
+    console.log(newsInfo);
+    
 
     return (
         <Modal
@@ -58,10 +71,14 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
                     {newsInfo?.title}
                 </ReadonlyItem>
                 <ReadonlyItem label="状态">
-                    {newsInfo?.isEnable ? "启用" : "禁用"}
+                    {newsInfo?.isEnable ? <span className={styles.open}>启用</span> : <span className={styles.close}>禁用</span>}
                 </ReadonlyItem>
                 <ReadonlyItem label="对象">
-                    {userShowInfo}
+                    <div className={styles.object}>
+                        <div className={styles.name}>{userShowInfo}</div>
+                        <div className={styles.readInfo}>共<span>{newsInfo?.receiveQty ?? 0}</span>人收到/<span className={styles.readPerson}>{newsInfo?.readQty ?? 0}</span>人已经读</div>                   
+                    </div>
+
                 </ReadonlyItem>
                 <ReadonlyItem label="端口">
                     {clientCategorysInfo}
