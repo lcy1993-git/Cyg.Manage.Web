@@ -27,7 +27,21 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       index: 'componentId',
       width: 400,
       render: () => {
-        return <CascaderUrlSelect libId={resourceLibId} />;
+        return (
+          <UrlSelect
+            requestSource="resource"
+            url="/Material/GetList"
+            valueKey="materialId"
+            titleKey="materialName"
+            allowClear
+            labelInValue
+            maxTagTextLength={5}
+            requestType="post"
+            postType="query"
+            placeholder="--物料1--"
+            libId={resourceLibId}
+          />
+        );
       },
     },
     {
