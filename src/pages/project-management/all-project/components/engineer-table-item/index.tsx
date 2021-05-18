@@ -168,11 +168,10 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
             checked={checkAll}
           />
           <Tooltip title={projectInfo.name}>
-          <u className="canClick" onClick={() => projectNameClickEvent(projectInfo.id)}>
-            {projectInfo.name}
-          </u>
+            <u className="canClick" onClick={() => projectNameClickEvent(projectInfo.id)}>
+              {projectInfo.name}
+            </u>
           </Tooltip>
-
         </div>
         <div className={styles.projectTime}>
           <span className={styles.label}>工程日期:</span>

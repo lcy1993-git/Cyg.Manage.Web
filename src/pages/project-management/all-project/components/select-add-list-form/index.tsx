@@ -61,13 +61,13 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
         {options.length ? (
           options.map((option) => {
             return (
-              <div className={styles.optionItem} key={option.value}>
-                <div>{option.text}</div>{' '}
+              <div className={styles.optionItem} key={option?.value}>
+                <div>{option?.text}</div>{' '}
                 <div className={styles.icon}>
                   <UserAddOutlined
                     onClick={() => {
-                      onAddPeople([...people.filter((v) => v.value !== option.value), option]);
-                      setPeople([...people.filter((v) => v.value !== option.value), option]);
+                      onAddPeople([...people.filter((v) => v?.value !== option?.value), option]);
+                      setPeople([...people.filter((v) => v?.value !== option?.value), option]);
                     }}
                   />
                 </div>
@@ -85,13 +85,13 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     return (
       <div className={styles.people}>
         {people.map((p, idx) => (
-          <div className={styles.person} key={p.value}>
+          <div className={styles.person} key={p?.value}>
             <div>外审 {idx + 1}</div>
-            <div>{p.text}</div>
+            <div>{p?.text}</div>
             <div className={styles.icon}>
               <CloseCircleOutlined
                 onClick={() => {
-                  setPeople([...people.filter((v) => v.value !== p.value)]);
+                  setPeople([...people.filter((v) => v?.value !== p?.value)]);
                   onDeletePeople?.(p);
                 }}
               />
