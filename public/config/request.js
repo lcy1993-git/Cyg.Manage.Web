@@ -25,8 +25,19 @@ const arrayHasIpBaseUrlArray = {
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
     projectVisualization: `${baseUrl}:8026/api`,
-    tecEco: `${baseUrl}:8033/api`,
-    review: `${baseUrl}:8041/api`
+    // tecEco: `${baseUrl}:8013/api`,
+    review: `${baseUrl}:8014/api`,
+
+    // webGis
+
+    // webGis4: `${baseUrl}:8020/api`, // resource
+    // webGis5: `${baseUrl}:8022/api`, // common
+    // webGis6: `${baseUrl}:8023/api`, //upload
+    // webGis8: `${baseUrl}:8026/api`, //project
+    webGis3: `${baseUrl}:8015/api`,
+    webGis4: `${baseUrl}:8025/api`,
+    webGis5: `${baseUrl}:8032/api`,
+    webGis6: `${baseUrl}:8099/api`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -38,8 +49,14 @@ const arrayHasNotBaseUrlArray = {
     webGis2: '/webGis2/api',
     comment: '/Comment/api',
     projectVisualization: '/ProjectVisualization/api',
-    tecEco: '/tecEco/api',
-    review: "/review/api"
+    // tecEco: '/tecEco/api',
+    review: "/review/api",
+
+    // webGis
+    webGis3: '/webGis3/api',
+    webGis4: '/webGis4/api',
+    webGis5: '/webGis5/api',
+    webGis6: '/webGis6/api',
 }
 
 export const logoArray = {
@@ -85,27 +102,27 @@ export const serverCodeArray = {
 
 export const version = "1.0.45";
 
-const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
+// const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
 
-export const webConfig = {
-    satelliteServerIP: ip,
-    satelliteServerPort: ':8020',
-    geoServerIP: ip,
-    geoServerPort: ':8099',
-    manageSideInteractiveServiceServerIP: ip,
-    manageSideInteractiveServiceServerPort: ':8025',
-    manageSideInteractiveServiceServerIP_V2: ip,
-    manageSideInteractiveServiceServerPort_V2: ':8026',
-    designSideInteractiveServiceServerIP: ip,
-    designSideInteractiveServiceServerPort: ':8014',
-    publicServiceServerIP: ip,
-    publicServiceServerPort: ':8022',
-    engineeringBusinessServiceServerIP: ip,
-    engineeringBusinessServiceServerPort: ':8013',
-    fileStorageServiceServerIP: ip,
-    fileStorageServiceServerPort: ':8023',
-    resourceServiceServerIP: ip,
-    resourceServiceServerPort: ':8015',
-    webSocketIP: ip,
-    webSocketPort: ':8032',
-  };
+// export const webConfig = {
+//     satelliteServerIP: ip,
+//     satelliteServerPort: ':8020',
+//     geoServerIP: ip,
+//     geoServerPort: ':8099',
+//     manageSideInteractiveServiceServerIP: ip,
+//     manageSideInteractiveServiceServerPort: ':8025',
+//     manageSideInteractiveServiceServerIP_V2: ip,
+//     manageSideInteractiveServiceServerPort_V2: ':8026',
+//     designSideInteractiveServiceServerIP: ip,
+//     designSideInteractiveServiceServerPort: ':8014',
+//     publicServiceServerIP: ip,
+//     publicServiceServerPort: ':8022',
+//     engineeringBusinessServiceServerIP: ip,
+//     engineeringBusinessServiceServerPort: ':8013',
+//     fileStorageServiceServerIP: ip,
+//     fileStorageServiceServerPort: ':8023',
+//     resourceServiceServerIP: ip,
+//     resourceServiceServerPort: ':8015',
+//     webSocketIP: ip,
+//     webSocketPort: ':8032',
+// };

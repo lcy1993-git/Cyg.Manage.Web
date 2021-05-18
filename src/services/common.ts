@@ -17,7 +17,12 @@ const devBaseUrl = {
   comment: '/Comment/api',
   projectVisualization: '/ProjectVisualization/api',
   tecEco: '/tecEco/api',
-  review: '/review/api'
+  review: '/review/api',
+  // gis
+  webGis3: '/webGis3/api',
+  webGis4: '/webGis4/api',
+  webGis5: '/webGis5/api',
+  webGis6: '/webGis6/api',
 };
 
 // interface UrlSelectParams {

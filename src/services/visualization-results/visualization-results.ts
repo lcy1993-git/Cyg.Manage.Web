@@ -1,10 +1,11 @@
 import request from '@/utils/request';
 import JsonP from 'jsonp';
-import { webConfig } from '../../../public/config/request';
+// import { webConfig } from '../../../public/config/request';
+import { baseUrl } from '../common';
 // const ip = window.location.hostname;
 
-
-const wfsBaseURL = `http://${webConfig.geoServerIP}${webConfig.geoServerPort}/geoserver/pdd/ows`;
+// const wfsBaseURL = `http://${webConfig.geoServerIP}${webConfig.geoServerPort}/geoserver/pdd/ows`;
+const wfsBaseURL = `${baseUrl.webGis6}/geoserver/pdd/ows`;
 
 export interface ProjectList {
   id: string;
@@ -33,7 +34,7 @@ export const getMapList = (params: any) => {
 // }
 export const getGisDetail = (params: any) => {
   return request(
-    `http://${webConfig.publicServiceServerIP}${webConfig.publicServiceServerPort}/api/System/GetGisDetail`,
+    'common/api/System/GetGisDetail',
     { method: 'POST', data: { ...params } },
   );
 };
@@ -41,7 +42,7 @@ export const getGisDetail = (params: any) => {
 // 消息推送
 export const publishMessage = (params: any) => {
   return request(
-    `http://${webConfig.designSideInteractiveServiceServerIP}${webConfig.designSideInteractiveServiceServerPort}/api/WebGis/PublishMessage`,
+    `${baseUrl.review}/api/WebGis/PublishMessage`,
     { method: 'POST', data: { ...params } },
   );
 };
@@ -57,7 +58,7 @@ export const getMaterialItemData = (params: any) => {
   if (params.layerName !== 'tower') type = 1;
   const url = ['LibraryDesign/GetModuleDetailView', 'LibraryComponent/GetComponentDetailView'];
   return request(
-    `http://${webConfig.resourceServiceServerIP}${webConfig.resourceServiceServerPort}/api/` +
+    `${baseUrl.webGis3}/api/` +
       url[type],
     { method: 'POST', data: { ...rest } },
   );
@@ -66,7 +67,7 @@ export const getMaterialItemData = (params: any) => {
 // 获取多媒体数据
 export const getMedium = (params: any) => {
   return request(
-    `http://${webConfig.designSideInteractiveServiceServerIP}${webConfig.designSideInteractiveServiceServerPort}/api/WebGis/GetMedias`,
+    `${baseUrl.review}/api/WebGis/GetMedias`,
     { method: 'POST', data: { ...params } },
   );
 };
@@ -74,7 +75,7 @@ export const getMedium = (params: any) => {
 // 获取资源库id
 export const getlibId = (params: any) => {
   return request(
-    `http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/GetProjectById`,
+    `${baseUrl.webGis4}/api/WebGis/GetProjectById`,
     { method: 'GET', params },
   );
 };
@@ -104,7 +105,7 @@ export const loadLayer: any = (postData: any, layerName: any) => {
 // FindLineDetailInfo线条
 export const findLineDetailInfo = (params: any) => {
   return request(
-    `http://${webConfig.manageSideInteractiveServiceServerIP}${webConfig.manageSideInteractiveServiceServerPort}/api/WebGis/FindLineDetailInfo`,
+    `${baseUrl.webGis4}/api/WebGis/FindLineDetailInfo`,
     { method: 'POST', data: { ...params } },
   );
 };
@@ -130,7 +131,7 @@ export const initIpLocation = () => {
 // 加载项目中所需的枚举
 export const loadEnums = (params: any = {}) => {
   return request(
-    `http://${webConfig.publicServiceServerIP}${webConfig.publicServiceServerPort}/api/System/GetEnums`,
+    `${baseUrl.common}/api/System/GetEnums`,
     { method: 'POST', data: { ...params } },
   );
 };
