@@ -127,6 +127,9 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const sureAddCableWellDetail = () => {
     addForm.validateFields().then(async (value) => {
+     
+      console.log(value);
+      
       const saveInfo = Object.assign(
         {
           libId: libId,
@@ -136,10 +139,10 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
       );
 
       await addCableWellDetailItem(saveInfo);
-      message.success('添加成功');
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
+      // message.success('添加成功');
+      // refresh();
+      // setAddFormVisible(false);
+      // addForm.resetFields();
     });
   };
 
@@ -253,7 +256,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <AddCableWellDetail addForm={addForm} resourceLibId={libId} />
+          <AddCableWellDetail resourceLibId={libId} />
         </Form>
       </Modal>
 

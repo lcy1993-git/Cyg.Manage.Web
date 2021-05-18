@@ -79,6 +79,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/Material': '/' },
     },
+    '/ModulesDetails': {
+      target: 'http://10.6.1.36:8020/',
+      changeOrigin: true,
+      pathRewrite: { '^/ModulesDetails': '/' },
+    },
   },
   test: {
     '/api/': {

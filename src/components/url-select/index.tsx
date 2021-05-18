@@ -62,8 +62,6 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
   );
 
   useEffect(() => {
-
-    const {name} = extraParams
     if (!manual) {
       run();
     }

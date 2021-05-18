@@ -20,6 +20,7 @@ const devBaseUrl = {
   projectVisualization: '/ProjectVisualization/api',
   tecEco: '/tecEco/api',
   review: '/review/api',
+  ModulesDetails: '/ModulesDetails/api',
   // gis
   resourceV1: '/resource/api',
   manage: '/manage/api',
