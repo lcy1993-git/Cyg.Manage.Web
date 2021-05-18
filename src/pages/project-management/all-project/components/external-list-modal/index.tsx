@@ -9,7 +9,7 @@ import { Dispatch } from 'react';
 import { executeExternalArrange } from '@/services/project-management/all-project';
 import styles from './index.less';
 import EditExternalArrangeForm from '../edit-external-modal';
-import { CheckCircleOutlined, CloseCircleOutlined, FieldTimeOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -86,16 +86,16 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
           {stepData.map((el: any, idx: any) => (
             <div className={styles.single} key={el.id}>
               <div>外审 {idx + 1}</div>
-              <div>{el.name}</div>
+              <div>{`${el.companyName}-${el.expectExecutorName}`}</div>
               <div>
                 {el.status === 1 ? (
-                  '待执行'
+                  '未执行'
                 ) : el.status === 10 ? (
-                  <FieldTimeOutlined />
+                  <ClockCircleOutlined />
                 ) : el.status === 20 && el.resultParameterDisplay[0] === '不通过' ? (
-                  <CloseCircleOutlined style={{ color: 'red' }} />
+                  <CloseCircleOutlined style={{ color: 'red', fontSize: '22px' }} />
                 ) : (
-                  <CheckCircleOutlined style={{ color: 'green' }} />
+                  <CheckCircleOutlined style={{ color: '#0e7b3b', fontSize: '22px' }} />
                 )}
               </div>
               <div className={styles.status}>{el.statusDescription}</div>

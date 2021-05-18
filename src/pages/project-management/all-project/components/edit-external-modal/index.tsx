@@ -73,7 +73,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       onCancel={() => setState(false)}
       destroyOnClose
       footer={[
-        <>
+        <div key="edit">
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>
@@ -81,7 +81,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           <Button key="save" type="primary" onClick={() => saveExternalArrange()}>
             保存
           </Button>
-        </>,
+        </div>,
       ]}
     >
       <Form style={{ width: '100%' }} form={form}>
