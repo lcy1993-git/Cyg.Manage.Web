@@ -48,6 +48,7 @@ import UploadAddProjectModal from './components/upload-batch-modal';
 import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
 import EditExternalArrangeForm from './components/edit-external-modal';
+import ExternalArrangeForm from './components/external-arrange-modal';
 
 const { Search } = Input;
 
@@ -79,6 +80,8 @@ const ProjectManagement: React.FC = () => {
   const [shareModalVisible, setShareModalVisible] = useState<boolean>(false);
 
   const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
+
+  const [externalArrangeModal, setExternalArrangeModal] = useState<boolean>(false);
 
   const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
 
@@ -252,14 +255,24 @@ const ProjectManagement: React.FC = () => {
       return;
     }
     if (
-      tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
-      tableSelectData[0]?.projectInfo?.status[0].auditStatus === 13
+      (tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0].auditStatus === 13) ||
+      (tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0].auditStatus === 15)
     ) {
       setCurrentProjectId(tableSelectData[0]?.projectInfo.id);
       setEditExternalArrangeModal(true);
       return;
     }
 
+    if (
+      tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
+      tableSelectData[0]?.projectInfo?.status[0].auditStatus === 10
+    ) {
+      setCurrentProjectId(tableSelectData[0]?.projectInfo.id);
+      setExternalArrangeModal(true);
+      return;
+    }
     const resData = await canEditArrange(projectIds);
 
     const { allotCompanyGroup = '' } = resData;
@@ -1015,6 +1028,13 @@ const ProjectManagement: React.FC = () => {
           visible={editExternalArrangeModal}
           onChange={setEditExternalArrangeModal}
           notBeginUsers={[]}
+        />
+      )}
+      {externalArrangeModal && (
+        <ExternalArrangeForm
+          visible={externalArrangeModal}
+          onChange={setExternalArrangeModal}
+          projectId={currentProjectId}
         />
       )}
     </PageCommonWrap>

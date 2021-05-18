@@ -44,6 +44,8 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       return [];
     }
 
+    console.log(preArray, nexArray);
+
     return preArray
       .filter((item: any) => !nexArray.includes(item))
       .map((item: any) => {
@@ -52,14 +54,14 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   }
 
   const saveExternalArrange = async () => {
-    console.log(getAddUsers(notBeginUsers, arrangePeople));
-    console.log(getDelUsers(notBeginUsers, arrangePeople));
+    // console.log(getAddUsers(notBeginUsers, arrangePeople));
+    // console.log(getDelUsers(notBeginUsers, arrangePeople), '1');
 
-    await modifyExternalArrange({
-      projectId: projectId,
-      addUserIds: getAddUsers(notBeginUsers, arrangePeople),
-      delUserIds: getDelUsers(notBeginUsers, arrangePeople),
-    });
+    // await modifyExternalArrange({
+    //   projectId: projectId,
+    //   addUserIds: getAddUsers(notBeginUsers, arrangePeople),
+    //   delUserIds: getDelUsers(notBeginUsers, arrangePeople),
+    // });
     message.success('外审修改成功');
     setState(false);
   };
@@ -87,7 +89,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       <Form style={{ width: '100%' }} form={form}>
         <SelectAddListForm
           initPeople={notBeginUsers}
-          onAddPeople={(people) => setArrangePeople(people)}
+          onChange={(people) => setArrangePeople(people)}
         />
       </Form>
     </Modal>
