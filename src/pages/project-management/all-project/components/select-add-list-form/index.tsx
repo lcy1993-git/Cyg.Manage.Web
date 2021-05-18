@@ -142,7 +142,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   return (
     <div className={styles.selectForm}>
       <CyFormItem label="账号" className={styles.account} name="outerAuditUsers">
-        <Dropdown overlay={<OptionList />} visible={visible}>
+        <Dropdown overlay={<OptionList />} visible={visible} onVisibleChange={setFalse}>
           <Search
             id="hover-div"
             placeholder="请输入项目名称"
