@@ -42,7 +42,7 @@ export const getGisDetail = (params: any) => {
 // 消息推送
 export const publishMessage = (params: any) => {
   return request(
-    `${baseUrl.review}/api/WebGis/PublishMessage`,
+    `${baseUrl.review}/WebGis/PublishMessage`,
     { method: 'POST', data: { ...params } },
   );
 };
@@ -58,7 +58,7 @@ export const getMaterialItemData = (params: any) => {
   if (params.layerName !== 'tower') type = 1;
   const url = ['LibraryDesign/GetModuleDetailView', 'LibraryComponent/GetComponentDetailView'];
   return request(
-    `${baseUrl.resourceV1}/api/` +
+    `${baseUrl.resourceV1}` +
       url[type],
     { method: 'POST', data: { ...rest } },
   );
@@ -67,7 +67,7 @@ export const getMaterialItemData = (params: any) => {
 // 获取多媒体数据
 export const getMedium = (params: any) => {
   return request(
-    `${baseUrl.review}/api/WebGis/GetMedias`,
+    `${baseUrl.review}/WebGis/GetMedias`,
     { method: 'POST', data: { ...params } },
   );
 };
@@ -75,7 +75,7 @@ export const getMedium = (params: any) => {
 // 获取资源库id
 export const getlibId = (params: any) => {
   return request(
-    `${baseUrl.webGis4}/api/WebGis/GetProjectById`,
+    `${baseUrl.manage}/WebGis/GetProjectById`,
     { method: 'GET', params },
   );
 };
@@ -131,7 +131,7 @@ export const initIpLocation = () => {
 // 加载项目中所需的枚举
 export const loadEnums = (params: any = {}) => {
   return request(
-    `${baseUrl.common}/api/System/GetEnums`,
+    `${baseUrl.common}/System/GetEnums`,
     { method: 'POST', data: { ...params } },
   );
 };

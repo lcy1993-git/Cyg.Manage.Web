@@ -32,7 +32,7 @@ const arrayHasIpBaseUrlArray = {
     resourceV1: `${baseUrl}:8015/api`,
     manage: `${baseUrl}:8025/api`,
     webGis5: `${baseUrl}:8032/api`,
-    geoserver: `${baseUrl}:8099/api`,
+    geoserver: `${baseUrl}:8099`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -50,7 +50,7 @@ const arrayHasNotBaseUrlArray = {
     // webGis
     resourceV1: '/resource/api',
     manage: '/manage/api',
-    geoserver: '/geoserver/api',
+    geoserver: '/geoserver',
 }
 
 export const logoArray = {
