@@ -739,6 +739,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         />
       )}
 
+      <ExternalArrangeModal
+        projectId={currentClickProjectId}
+        proName={currentProName}
+        arrangeUsers={arrangeUsers}
+        onChange={setExternalArrangeModalVisible}
+        visible={true}
+        search={afterSearch}
+      />
+
       {externalListModalVisible && (
         <ExternalListModal
           projectId={currentClickProjectId}

@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
-import { Divider, Dropdown, Input, message, Radio } from 'antd';
+import { Button, Divider, Dropdown, Input, message, Radio } from 'antd';
 
 import {
   queryOuterAuditUserByPhoneAndUsername,
@@ -10,14 +10,15 @@ const { Search } = Input;
 export interface SelectAddListFormProps {
   initPeople?: UserInfo[];
   projectName?: string;
+  onChange: (userInfoList: UserInfo[]) => void;
   onAddPeople: (userInfoList: UserInfo[]) => void; //获取添加的外审人员list
   notArrangeShow?: boolean; //checkbox的标志用来是否显示不安排外审的内容
   onSetPassArrangeStatus?: (flag: boolean) => void; //获取外审通不通过状态的callback
   onDeletePeople?: (userInfo: UserInfo) => void; //删除事件
 }
 import styles from './index.less';
-import { CloseCircleOutlined, UserAddOutlined } from '@ant-design/icons';
-import { useRequest } from 'ahooks';
+import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useBoolean, useHover, useRequest } from 'ahooks';
 
 const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const {
@@ -27,6 +28,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     onSetPassArrangeStatus,
     projectName,
     onDeletePeople,
+    onChange,
   } = props;
 
   // const debounceTimeout = 800;
@@ -34,12 +36,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const [keyword, setKeyword] = useState<string>();
   const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
   const [people, setPeople] = useState<UserInfo[]>(initPeople);
-  const [options, setOptions] = useState<
-    {
-      text: string;
-      value: string;
-    }[]
-  >([]);
+  const [visible, { toggle, setTrue, setFalse }] = useBoolean(false);
 
   /**
    * 获取外审人员
@@ -48,12 +45,39 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     manual: true,
     onSuccess: () => {
       if (data) {
+        setTrue();
         setOptions([data]);
       } else {
         message.warn('账号不存在！请重新输入');
       }
     },
   });
+
+  useHover(() => document.getElementById('hover-div'), {
+    onEnter: () => {
+      if (data) {
+        setTrue();
+      }
+    },
+    onLeave: () => {},
+  });
+
+  const onPepleAdd = (p: UserInfo) => {
+    setFalse();
+    setPeople([...people.filter((v) => v?.value !== p?.value), p]);
+    onChange?.(people);
+  };
+
+  const onPeopleDelete = (p: UserInfo) => {
+    setPeople([...people.filter((v) => v?.value !== p?.value)]);
+    onChange?.(people);
+  };
+  const [options, setOptions] = useState<
+    {
+      text: string;
+      value: string;
+    }[]
+  >([]);
 
   const OptionList = () => {
     return (
@@ -62,14 +86,19 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
           options.map((option) => {
             return (
               <div className={styles.optionItem} key={option?.value}>
-                <div>{option?.text}</div>{' '}
+                <div className={styles.itemText} style={{ paddingTop: '5px' }}>
+                  {option?.text}
+                </div>
+
                 <div className={styles.icon}>
-                  <UserAddOutlined
-                    onClick={() => {
-                      onAddPeople([...people.filter((v) => v?.value !== option?.value), option]);
-                      setPeople([...people.filter((v) => v?.value !== option?.value), option]);
-                    }}
-                  />
+                  <Button
+                    type="link"
+                    onClick={() => onPepleAdd(option)}
+                    shape="circle"
+                    icon={<PlusCircleOutlined style={{ color: '#0076FF' }} />}
+                  >
+                    <span style={{ color: '#0076FF' }}>添加</span>
+                  </Button>
                 </div>
               </div>
             );
@@ -86,15 +115,18 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
       <div className={styles.people}>
         {people.map((p, idx) => (
           <div className={styles.person} key={p?.value}>
-            <div>外审 {idx + 1}</div>
-            <div>{p?.text}</div>
+            <div className={styles.itemText} style={{ paddingTop: '5px' }}>
+              {p?.text}
+            </div>
             <div className={styles.icon}>
-              <CloseCircleOutlined
-                onClick={() => {
-                  setPeople([...people.filter((v) => v?.value !== p?.value)]);
-                  onDeletePeople?.(p);
-                }}
-              />
+              <Button
+                type="link"
+                onClick={() => onPeopleDelete(p)}
+                shape="circle"
+                icon={<DeleteOutlined style={{ color: 'red' }} />}
+              >
+                <span style={{ color: 'red' }}>删除</span>
+              </Button>
             </div>
           </div>
         ))}
@@ -109,9 +141,10 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
 
   return (
     <div className={styles.selectForm}>
-      <CyFormItem label="账号" name="outerAuditUsers">
-        <Dropdown overlay={<OptionList />}>
+      <CyFormItem label="账号" className={styles.account} name="outerAuditUsers">
+        <Dropdown overlay={<OptionList />} visible={visible}>
           <Search
+            id="hover-div"
             placeholder="请输入项目名称"
             enterButton
             loading={loading}
