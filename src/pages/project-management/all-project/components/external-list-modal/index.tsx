@@ -55,7 +55,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   }, [stepData]);
 
   const modifyEvent = () => {
-    setState(false);
     setEditExternalArrangeModal(true);
   };
 

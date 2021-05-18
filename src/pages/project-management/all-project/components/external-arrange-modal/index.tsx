@@ -82,7 +82,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         <SelectAddListForm
           initPeople={arrangeUsers}
           projectName={proName}
-          onAddPeople={(people) => setArrangePeople(people)}
+          onChange={(people) => setArrangePeople(people)}
           notArrangeShow={isArrangePeople}
           onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
         />
