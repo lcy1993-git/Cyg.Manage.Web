@@ -30,11 +30,28 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
         className={styles.qtyNumber}
         label="生成数量"
         name="qty"
-        rules={rules.qtyNumber}
+        rules={[
+          {
+            required: true,
+            message: '生成数量不能为0',
+          },
+          () => ({
+            validator(_, value) {
+              if (value <= 50 && value >= 1) {
+                return Promise.resolve();
+              }
+              return Promise.reject('请填写1~50以内的整数');
+            },
+          }),
+          {
+            pattern: /^[0-9]\d*$/,
+            message: '请输入正整数',
+          },
+        ]}
         initialValue={1}
         required
       >
-        <InputNumber min={1} max={50} />
+        <InputNumber />
       </CyFormItem>
 
       <CyFormItem label="所属部组" name="groupIds">
