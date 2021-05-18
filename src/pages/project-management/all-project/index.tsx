@@ -14,6 +14,8 @@ import {
   canEditArrange,
   checkCanArrange,
   deleteProject,
+  getAllotUsers,
+  getExternalArrangeStep,
   getProjectInfo,
   getProjectTableStatistics,
   noAuditKnot,
@@ -109,6 +111,9 @@ const ProjectManagement: React.FC = () => {
   //获取当前选择数据
   const [currentProjectId, setCurrentProjectId] = useState<string>('');
 
+  const [notBeginUsers, setNotBeginUsers] = useState<any>();
+  const [arrangeUsers, setArrangeUsers] = useState<any>();
+
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const tableRef = useRef<HTMLDivElement>(null);
@@ -117,6 +122,14 @@ const ProjectManagement: React.FC = () => {
   const [form] = Form.useForm();
 
   const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, {
+    manual: true,
+  });
+
+  const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
+    manual: true,
+  });
+
+  const { run: getArrangeUsers } = useRequest(getAllotUsers, {
     manual: true,
   });
 
@@ -189,7 +202,6 @@ const ProjectManagement: React.FC = () => {
       message.error('请至少选择一个项目');
       return;
     }
-    console.log(checkedArray);
 
     if (
       JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 14, isAllot: true })) != -1 ||
@@ -260,7 +272,18 @@ const ProjectManagement: React.FC = () => {
       (tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
         tableSelectData[0]?.projectInfo?.status[0].auditStatus === 15)
     ) {
-      setCurrentProjectId(tableSelectData[0]?.projectInfo.id);
+      setCurrentProjectId(tableSelectData[0].checkedArray[0]);
+      const res = await getExternalStep(tableSelectData[0]?.checkedArray[0]);
+      const notBegin = res?.map((item: any) => {
+        if (item.status === 1) {
+          return {
+            value: item.expectExecutor,
+            text: `${item.companyName}-${item.expectExecutorName}`,
+          };
+        }
+        return;
+      });
+      setNotBeginUsers(notBegin);
       setEditExternalArrangeModal(true);
       return;
     }
@@ -269,7 +292,19 @@ const ProjectManagement: React.FC = () => {
       tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
       tableSelectData[0]?.projectInfo?.status[0].auditStatus === 10
     ) {
-      setCurrentProjectId(tableSelectData[0]?.projectInfo.id);
+      setCurrentProjectId(tableSelectData[0].checkedArray[0]);
+      const res = await getArrangeUsers(tableSelectData[0].checkedArray[0], 6);
+
+      // setCurrentProName(proName);
+      const exUsers = res?.map((item) => {
+        return {
+          value: item.userId,
+          text: item.userNameText,
+        };
+      });
+      console.log(exUsers);
+
+      setArrangeUsers(exUsers);
       setExternalArrangeModal(true);
       return;
     }
@@ -1027,7 +1062,7 @@ const ProjectManagement: React.FC = () => {
           projectId={currentProjectId}
           visible={editExternalArrangeModal}
           onChange={setEditExternalArrangeModal}
-          notBeginUsers={[]}
+          notBeginUsers={notBeginUsers}
         />
       )}
       {externalArrangeModal && (
@@ -1035,6 +1070,7 @@ const ProjectManagement: React.FC = () => {
           visible={externalArrangeModal}
           onChange={setExternalArrangeModal}
           projectId={currentProjectId}
+          arrangeUsers={arrangeUsers}
         />
       )}
     </PageCommonWrap>
