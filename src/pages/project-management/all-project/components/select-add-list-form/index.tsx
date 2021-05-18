@@ -32,7 +32,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const [keyword, setKeyword] = useState<string>();
   const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
   const [people, setPeople] = useState<UserInfo[]>([]);
-  const [visible, { toggle, setTrue, setFalse }] = useBoolean(false);
+  const [visible, { setTrue, setFalse }] = useBoolean(false);
 
   /**
    * 获取外审人员
