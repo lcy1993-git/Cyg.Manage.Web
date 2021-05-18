@@ -83,7 +83,7 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.45";
+export const version = "1.0.46";
 
 const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
 

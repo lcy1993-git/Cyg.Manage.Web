@@ -207,7 +207,7 @@ const InfoManage: React.FC = () => {
       title: '更新时间',
       width: 220,
       render: (text: any, record: any) => {
-        return moment(record.createdOn).format('YYYY-MM-DD HH:mm');
+        return moment(record.modifiedOn).format('YYYY-MM-DD HH:mm');
       },
     },
   ];
