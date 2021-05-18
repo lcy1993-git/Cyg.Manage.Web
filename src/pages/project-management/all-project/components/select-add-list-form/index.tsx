@@ -51,7 +51,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
 
   useEffect(() => {
     setPeople(initPeople);
-  }, [initPeople]);
+  }, [JSON.stringify(initPeople)]);
 
   useHover(() => document.getElementById('hover-div'), {
     onEnter: () => {

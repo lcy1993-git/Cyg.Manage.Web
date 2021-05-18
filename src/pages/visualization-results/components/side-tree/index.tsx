@@ -114,6 +114,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           // setExpandedKeys([...expandedKeys]);
           setExpandedKeys(['-1']);
           setCheckedKeys([]);
+          store.setProjectIdList([]);
         } else {
           message.warning('无数据');
         }
@@ -154,6 +155,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       .map((v: TreeNodeType) => generatorProjectInfoItem(v));
     //去重
     let res = _.unionBy(r, (item: ProjectList) => item.id);
+
     setProjectIdList(res);
 
     setCheckedKeys(checked);
@@ -161,6 +163,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   useEffect(() => {
     store.setProjectIdList(projectIdList);
+
     if (projectIdList.length === 0) {
       store.toggleObserveTrack(false);
     }
@@ -180,6 +183,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             onClick={() => {
               if (tabActiveKey === '2') {
                 setTreeData([]);
+                setCheckedKeys([]);
+                setProjectIdList([]);
                 setTabActiveKey('1');
               }
             }}
@@ -192,6 +197,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             onClick={() => {
               if (tabActiveKey === '1') {
                 setTreeData([]);
+                setCheckedKeys([]);
+                setProjectIdList([]);
                 setTabActiveKey('2');
               }
             }}
