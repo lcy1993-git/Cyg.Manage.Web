@@ -11,14 +11,15 @@ export interface UrlSelectProps {
   extraParams?: object;
   defaultData?: any[];
   needFilter?: boolean;
-  requestSource?: 'project' | 'common' | 'resource';
+  requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component';
   requestType?: 'post' | 'get';
   paramsMust?: string[];
   postType?: 'query' | 'body';
   libId?: string;
   needAll?: boolean;
   allValue?: string;
-  manual?: boolean;
+  manual?: boolean; //是否手动执行fetch数据
+  trigger?: boolean; //用来触发fetch方法
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
@@ -37,6 +38,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     requestType = 'get',
     postType = 'body',
     needAll = false,
+    trigger = false,
     libId = '',
     allValue = '',
     ...rest
@@ -60,10 +62,12 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
   );
 
   useEffect(() => {
+
+    const {name} = extraParams
     if (!manual) {
       run();
     }
-  }, [manual]);
+  }, [trigger]);
 
   const afterHanldeData = useMemo(() => {
     if (defaultData) {

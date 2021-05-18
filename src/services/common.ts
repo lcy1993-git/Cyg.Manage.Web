@@ -15,6 +15,8 @@ const devBaseUrl = {
   webGis: '/webGis/api',
   webGis2: '/webGis2/api',
   comment: '/Comment/api',
+  component: '/Component/api',
+  material: '/Material/api/',
   projectVisualization: '/ProjectVisualization/api',
   tecEco: '/tecEco/api',
   review: '/review/api',
@@ -100,12 +102,13 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco',
+  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'material' | 'component',
   requestType = 'get',
   postType = 'body',
   libId: string,
 ) => {
   const requestBaseUrl = baseUrl[requestSource];
+
   if (requestType === 'get') {
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),

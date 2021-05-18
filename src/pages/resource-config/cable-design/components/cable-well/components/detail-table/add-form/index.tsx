@@ -2,7 +2,7 @@ import React from 'react';
 import EditFormTable from '@/components/edit-form-table';
 import { InputNumber, Form, Input } from 'antd';
 import UrlSelect from '@/components/url-select';
-import CascaderUrlSelect from '@/components/cascader-url-select';
+import CascaderUrlSelect from '@/components/material-cascader-url-select';
 interface AddDetailParams {
   resourceLibId: string;
   addForm: any;
@@ -25,20 +25,18 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       title: '组件',
       dataIndex: 'componentId',
       index: 'componentId',
-      width: 400,
+      width: 240,
       render: () => {
         return (
           <UrlSelect
-            requestSource="resource"
-            url="/Material/GetList"
-            valueKey="materialId"
-            titleKey="materialName"
+            requestSource="component"
+            url="/Component/GetList"
+            valueKey="componentId"
+            titleKey="componentName"
             allowClear
-            labelInValue
-            maxTagTextLength={5}
             requestType="post"
             postType="query"
-            placeholder="--物料1--"
+            placeholder="--物料--"
             libId={resourceLibId}
           />
         );
@@ -48,21 +46,11 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       title: '物料',
       dataIndex: 'materialId',
       index: 'materialId',
-      width: 240,
+
+      width: 400,
+
       render: () => {
-        return (
-          <UrlSelect
-            requestSource="resource"
-            url="/Material/GetList"
-            valueKey="materialId"
-            titleKey="materialName"
-            allowClear
-            requestType="post"
-            postType="query"
-            placeholder="--物料--"
-            libId={resourceLibId}
-          />
-        );
+        return <CascaderUrlSelect libId={resourceLibId} />;
       },
     },
     {

@@ -69,6 +69,16 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/manage': '/' },
     },
+    '/Component': {
+      target: 'http://10.6.1.36:8020/',
+      changeOrigin: true,
+      pathRewrite: { '^/Component': '/' },
+    },
+    '/Material': {
+      target: 'http://10.6.1.36:8020/',
+      changeOrigin: true,
+      pathRewrite: { '^/Material': '/' },
+    },
   },
   test: {
     '/api/': {
