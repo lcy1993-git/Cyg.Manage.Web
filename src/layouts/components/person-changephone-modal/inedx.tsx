@@ -36,6 +36,8 @@ const ChangePhoneModal = (props: Props) => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [codeNumber, setCodeNumber] = useState('');
 
+  const [canOkClick, setCanOkClick] = useState<boolean>(false)
+
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -52,22 +54,30 @@ const ChangePhoneModal = (props: Props) => {
   };
 
   const submit = () => {
-    form.validateFields().then(() => {
-      let params = {
+    if(!canOkClick) {
+      message.error('请点击发送验证码按钮并确保手机格式正确');
+    }else if((/^\d{6}$/).test(codeNumber)) {
+      const params = {
         code: codeNumber,
         phone: phoneNumber
       };
       if(type === 1){
-        changeUserPhone(params)
+        changeUserPhone(params).then(() => {
+          message.success("操作成功");
+          closeChangePhoneModal();
+          reload();
+        })
       }else if(type === 0) {
         // bind
-        changeUserPhone(params)
+        changeUserPhone(params).then(() => {
+          message.success("操作成功");
+          closeChangePhoneModal();
+          reload();
+        })
       }
-    }).then(() => {
-      message.success("操作成功");
-      closeChangePhoneModal();
-      reload();
-    })
+    }else{
+      message.error('请输入有效6位数验证码')
+    }
   }
 
   return (
@@ -103,7 +113,7 @@ const ChangePhoneModal = (props: Props) => {
           name="code"
           rules={loginRules['phone'].verificationCode}
         >
-          <VerificationCode canSend={canSendCode} type={1} phoneNumber={phoneNumber} />
+          <VerificationCode setCanOkClick={setCanOkClick} canSend={canSendCode} type={1} phoneNumber={phoneNumber} />
         </Form.Item>
       </Form>
     </Modal>

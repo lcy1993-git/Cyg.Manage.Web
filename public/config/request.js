@@ -26,7 +26,7 @@ const arrayHasIpBaseUrlArray = {
     comment: `${baseUrl}:8013/api`,
     projectVisualization: `${baseUrl}:8026/api`,
     tecEco: `${baseUrl}:8033/api`,
-    review: `${baseUrl}:8014/api`,
+    review: `${baseUrl}:8041/api`,
 
     // webGis
     resourceV1: `${baseUrl}:8015/api`,
@@ -94,7 +94,7 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.46";
+export const version = "1.0.47";
 
 // const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
 
