@@ -3,7 +3,6 @@ import { Button, Form, message, Modal } from 'antd';
 
 import { useControllableValue } from 'ahooks';
 import SelectAddListForm from '../select-add-list-form';
-import uuid from 'node-uuid';
 import { Dispatch } from 'react';
 import { UserInfo } from '@/services/project-management/select-add-list-form';
 import { Checkbox } from 'antd';
@@ -36,6 +35,8 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       return item.value;
     });
   }, [arrangePeople]);
+  console.log(projectId);
+  
 
   const saveExternalArrange = async () => {
     await allotOuterAudit({
@@ -81,7 +82,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         <SelectAddListForm
           initPeople={arrangeUsers}
           projectName={proName}
-          onAddPeople={(people) => setArrangePeople(people)}
+          onChange={(people) => setArrangePeople(people)}
           notArrangeShow={isArrangePeople}
           onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
         />
