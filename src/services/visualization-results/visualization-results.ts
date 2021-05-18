@@ -58,7 +58,11 @@ export const getMaterialItemData = (params: any) => {
   if (params.layerName !== 'tower') type = 1;
   const url = ['LibraryDesign/GetModuleDetailView', 'LibraryComponent/GetComponentDetailView'];
   return request(
+<<<<<<< HEAD
     `${baseUrl.resourceV1}` +
+=======
+    `${baseUrl.resourceV1}/api/` +
+>>>>>>> 4598b95b9b440a4388a47434516ca1924abe128e
       url[type],
     { method: 'POST', data: { ...rest } },
   );
