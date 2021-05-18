@@ -146,7 +146,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
               <SelectAddListForm
                 onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
                 projectName="测试项目名称"
-                onAddPeople={(people) => setArrangePeople(people)}
+                onChange={(people) => setArrangePeople(people)}
               />
             </TabPane>
           )}
