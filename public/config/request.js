@@ -26,7 +26,13 @@ const arrayHasIpBaseUrlArray = {
     comment: `${baseUrl}:8013/api`,
     projectVisualization: `${baseUrl}:8026/api`,
     tecEco: `${baseUrl}:8033/api`,
-    review: `${baseUrl}:8041/api`
+    review: `${baseUrl}:8014/api`,
+
+    // webGis
+    resourceV1: `${baseUrl}:8015/api`,
+    manage: `${baseUrl}:8025/api`,
+    webGis5: `${baseUrl}:8032/api`,
+    geoserver: `${baseUrl}:8099`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -39,7 +45,12 @@ const arrayHasNotBaseUrlArray = {
     comment: '/Comment/api',
     projectVisualization: '/ProjectVisualization/api',
     tecEco: '/tecEco/api',
-    review: "/review/api"
+    review: "/review/api",
+
+    // webGis
+    resourceV1: '/resource/api',
+    manage: '/manage/api',
+    geoserver: '/geoserver',
 }
 
 export const logoArray = {
@@ -85,27 +96,27 @@ export const serverCodeArray = {
 
 export const version = "1.0.46";
 
-const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
+// const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
 
-export const webConfig = {
-    satelliteServerIP: ip,
-    satelliteServerPort: ':8020',
-    geoServerIP: ip,
-    geoServerPort: ':8099',
-    manageSideInteractiveServiceServerIP: ip,
-    manageSideInteractiveServiceServerPort: ':8025',
-    manageSideInteractiveServiceServerIP_V2: ip,
-    manageSideInteractiveServiceServerPort_V2: ':8026',
-    designSideInteractiveServiceServerIP: ip,
-    designSideInteractiveServiceServerPort: ':8014',
-    publicServiceServerIP: ip,
-    publicServiceServerPort: ':8022',
-    engineeringBusinessServiceServerIP: ip,
-    engineeringBusinessServiceServerPort: ':8013',
-    fileStorageServiceServerIP: ip,
-    fileStorageServiceServerPort: ':8023',
-    resourceServiceServerIP: ip,
-    resourceServiceServerPort: ':8015',
-    webSocketIP: ip,
-    webSocketPort: ':8032',
-  };
+// export const webConfig = {
+//     satelliteServerIP: ip,
+//     satelliteServerPort: ':8020',
+//     geoServerIP: ip,
+//     geoServerPort: ':8099',
+//     manageSideInteractiveServiceServerIP: ip,
+//     manageSideInteractiveServiceServerPort: ':8025',
+//     manageSideInteractiveServiceServerIP_V2: ip,
+//     manageSideInteractiveServiceServerPort_V2: ':8026',
+//     designSideInteractiveServiceServerIP: ip,
+//     designSideInteractiveServiceServerPort: ':8014',
+//     publicServiceServerIP: ip,
+//     publicServiceServerPort: ':8022',
+//     engineeringBusinessServiceServerIP: ip,
+//     engineeringBusinessServiceServerPort: ':8013',
+//     fileStorageServiceServerIP: ip,
+//     fileStorageServiceServerPort: ':8023',
+//     resourceServiceServerIP: ip,
+//     resourceServiceServerPort: ':8015',
+//     webSocketIP: ip,
+//     webSocketPort: ':8032',
+// };

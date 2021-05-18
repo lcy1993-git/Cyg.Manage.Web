@@ -17,7 +17,11 @@ const devBaseUrl = {
   comment: '/Comment/api',
   projectVisualization: '/ProjectVisualization/api',
   tecEco: '/tecEco/api',
-  review: '/review/api'
+  review: '/review/api',
+  // gis
+  resourceV1: '/resource/api',
+  manage: '/manage/api',
+  geoserver: '/geoserver',
 };
 
 // interface UrlSelectParams {
