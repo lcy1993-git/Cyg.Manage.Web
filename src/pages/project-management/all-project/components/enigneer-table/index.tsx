@@ -739,19 +739,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         />
       )}
 
-<<<<<<< HEAD
-    
-=======
-      {externalListModalVisible && (
->>>>>>> 1d115516468b88e8ce352549e70f789ecdeef0c2
-        <ExternalListModal
-          projectId={currentClickProjectId}
-          visible={externalListModalVisible}
-          onChange={setExternalListModalVisible}
-          stepData={externalStepData}
-          refresh={afterSearch}
-        />
-    
+      <ExternalListModal
+        projectId={currentClickProjectId}
+        visible={externalListModalVisible}
+        onChange={setExternalListModalVisible}
+        stepData={externalStepData}
+        refresh={afterSearch}
+      />
     </div>
   );
 };
