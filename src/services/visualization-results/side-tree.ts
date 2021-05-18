@@ -7,7 +7,7 @@ export interface EngineerProjetListFilterParams {
   stage?: string[]; //项目阶段
   constructType?: string[]; //建设性质
   nature?: string[]; //项目性质
-  kvLevel?: string[]; //电压等级
+  kvLevel?: any[]; //电压等级
   status?: number[]; //项目状态
   keyWord?: string;
   haveAnnotate?: number;

@@ -1,3 +1,4 @@
+import material from '@/pages/resource-config/material';
 import React, { FC, useEffect, useState } from 'react';
 import UrlSelect from '../url-select';
 import styles from './index.less';
@@ -6,27 +7,39 @@ interface CascaderProps {
   libId: string;
 }
 
+interface Material {
+  name: string;
+  id: string;
+}
+
+interface Component {
+  name: string;
+  id: string;
+}
+
 interface MaterialAndComponent {
-  materailId?: string;
-  componentId?: string;
+  material?: Material;
+  component?: Component;
 }
 
 const MCCascaderUrlSelect: FC<CascaderProps> = (props) => {
   const { onChange, libId } = props;
-  const [materialComponent, setMaterialComponent] = useState<MaterialAndComponent>();
-  const onMaterialChange = (materailId: string) => {
-    setMaterialComponent({ ...materialComponent, materailId });
-    onChange?.({ ...materialComponent, materailId });
+  const [material, setMaterial] = useState<Material>();
+  const [component, setComponent] = useState<Component>();
+  const [active, setActive] = useState<boolean>(true);
+
+  const onMaterialChange = (materail: { label: string; value: string }) => {
+    setMaterial({ name: materail.label, id: materail.value });
+    setActive(false);
   };
 
-  const onComponentChange = (componentId: string) => {
-    setMaterialComponent({ ...materialComponent, componentId });
-    onChange?.({ ...materialComponent, componentId });
+  const onComponentChange = (component: { label: string; value: string }) => {
+    setComponent({ name: component.label, id: component.value });
   };
 
   useEffect(() => {
-    console.log(materialComponent);
-  }, [materialComponent]);
+    onChange?.({ component, material });
+  }, [material, component]);
   return (
     <div className={styles.cascader}>
       <UrlSelect
@@ -35,26 +48,29 @@ const MCCascaderUrlSelect: FC<CascaderProps> = (props) => {
         valueKey="materialId"
         titleKey="materialName"
         allowClear
+        labelInValue
         className={styles.selectItem}
         maxTagTextLength={5}
-        onChange={(value) => onMaterialChange(value as string)}
+        onChange={(value) => onMaterialChange(value as { label: string; value: string })}
         requestType="post"
         postType="query"
-        placeholder="--物料--"
+        placeholder="--物料1--"
         libId={libId}
       />
       <UrlSelect
         requestSource="resource"
-        url="/Component/GetList"
+        url="Component/GetListByName"
+        manual={active}
+        extraParams={{ libId, name: material?.name }}
         maxTagTextLength={5}
         valueKey="componentId"
         titleKey="componentName"
         allowClear
-        onChange={(value) => onComponentChange(value as string)}
+        labelInValue
+        onChange={(value) => onComponentChange(value as { label: string; value: string })}
         requestType="post"
-        postType="query"
-        placeholder="--组件--"
-        libId={libId}
+        postType="body"
+        placeholder="--组件1--"
       />
     </div>
   );

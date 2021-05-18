@@ -63,7 +63,7 @@ const FilterBar: FC = observer(() => {
   const [stage, setStage] = useState<string>(); //项目阶段
   const [constructType, setConstructType] = useState<string>(); //建设性质
   const [nature, setNature] = useState<string>(); //项目性质
-  const [kvLevel, setKvLevel] = useState<string>(); //电压等级
+  const [kvLevel, setKvLevel] = useState<number | string>(); //电压等级
   const [statuss, setStatuss] = useState<number[]>(); //状态
   const [sourceType, setSourceType] = useState<string>(); //项目来源
   const [identityType, setIdentityType] = useState<string>(); //项目身份
@@ -106,7 +106,7 @@ const FilterBar: FC = observer(() => {
     setIdentityType(undefined);
     setComment(undefined);
 
-    store.setFilterCondition({});
+    store.setFilterCondition({ haveAnnotate: -1 });
   };
 
   const search = () => {
@@ -117,11 +117,11 @@ const FilterBar: FC = observer(() => {
       stage: stage && stage !== '-1' ? [stage] : undefined,
       constructType: constructType && constructType !== '-1' ? [constructType] : undefined,
       nature: nature && nature !== '-1' ? [nature] : undefined,
-      kvLevel: kvLevel && kvLevel !== '-1' ? [kvLevel] : undefined,
+      kvLevel: (kvLevel === 0 || kvLevel) && kvLevel !== '-1' ? [kvLevel] : undefined,
       status: statuss ?? undefined,
       sourceType: sourceType && sourceType !== '-1' ? [sourceType] : undefined,
       identityType: identityType && identityType !== '-1' ? [identityType] : undefined,
-      haveAnnotate: comment && comment !== -1 ? comment : undefined,
+      haveAnnotate: comment && comment !== -1 ? comment : -1,
     };
 
     store.setFilterCondition(condition);
@@ -213,7 +213,7 @@ const FilterBar: FC = observer(() => {
               titleKey="text"
               defaultData={projectKvLevel}
               value={kvLevel}
-              onChange={(value) => setKvLevel(value as string)}
+              onChange={(value) => setKvLevel(value as number)}
               className="widthAll"
               placeholder="电压等级"
               needAll={true}

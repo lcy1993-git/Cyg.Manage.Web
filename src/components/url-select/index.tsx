@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { Select } from 'antd';
 import { useRequest } from 'ahooks';
@@ -58,6 +58,12 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
       refreshDeps: [url, JSON.stringify(extraParams)],
     },
   );
+
+  useEffect(() => {
+    if (!manual) {
+      run();
+    }
+  }, [manual]);
 
   const afterHanldeData = useMemo(() => {
     if (defaultData) {
