@@ -8,12 +8,14 @@ interface InfoManageItemParams {
   createByUser: string; //创建者用户名
   createdOn: Date;
   isEnable: boolean;
-  users: any[]
-  clientCategorys: any[]
+  users: any[];
+  clientCategorys: any[];
 }
 
 interface ItemDetailData extends InfoManageItemParams {
   id: string;
+  receiveQty: number;
+  readQty: number;
 }
 
 //获取选中数据
