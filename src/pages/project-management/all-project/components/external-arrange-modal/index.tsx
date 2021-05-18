@@ -35,8 +35,6 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       return item.value;
     });
   }, [arrangePeople]);
-  console.log(projectId);
-  
 
   const saveExternalArrange = async () => {
     await allotOuterAudit({
