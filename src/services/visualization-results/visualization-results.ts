@@ -5,7 +5,7 @@ import { baseUrl } from '../common';
 // const ip = window.location.hostname;
 
 // const wfsBaseURL = `http://${webConfig.geoServerIP}${webConfig.geoServerPort}/geoserver/pdd/ows`;
-const wfsBaseURL = `${baseUrl.webGis6}/geoserver/pdd/ows`;
+const wfsBaseURL = `${baseUrl.geoserver}/geoserver/pdd/ows`;
 
 export interface ProjectList {
   id: string;
@@ -58,7 +58,7 @@ export const getMaterialItemData = (params: any) => {
   if (params.layerName !== 'tower') type = 1;
   const url = ['LibraryDesign/GetModuleDetailView', 'LibraryComponent/GetComponentDetailView'];
   return request(
-    `${baseUrl.webGis3}/api/` +
+    `${baseUrl.resourceV1}/api/` +
       url[type],
     { method: 'POST', data: { ...rest } },
   );
@@ -105,7 +105,7 @@ export const loadLayer: any = (postData: any, layerName: any) => {
 // FindLineDetailInfo线条
 export const findLineDetailInfo = (params: any) => {
   return request(
-    `${baseUrl.webGis4}/api/WebGis/FindLineDetailInfo`,
+    `${baseUrl.manage}/api/WebGis/FindLineDetailInfo`,
     { method: 'POST', data: { ...params } },
   );
 };

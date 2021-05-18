@@ -25,19 +25,14 @@ const arrayHasIpBaseUrlArray = {
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
     projectVisualization: `${baseUrl}:8026/api`,
-    // tecEco: `${baseUrl}:8013/api`,
+    tecEco: `${baseUrl}:8033/api`,
     review: `${baseUrl}:8014/api`,
 
     // webGis
-
-    // webGis4: `${baseUrl}:8020/api`, // resource
-    // webGis5: `${baseUrl}:8022/api`, // common
-    // webGis6: `${baseUrl}:8023/api`, //upload
-    // webGis8: `${baseUrl}:8026/api`, //project
-    webGis3: `${baseUrl}:8015/api`,
-    webGis4: `${baseUrl}:8025/api`,
+    resourceV1: `${baseUrl}:8015/api`,
+    manage: `${baseUrl}:8025/api`,
     webGis5: `${baseUrl}:8032/api`,
-    webGis6: `${baseUrl}:8099/api`,
+    geoserver: `${baseUrl}:8099/api`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -49,14 +44,13 @@ const arrayHasNotBaseUrlArray = {
     webGis2: '/webGis2/api',
     comment: '/Comment/api',
     projectVisualization: '/ProjectVisualization/api',
-    // tecEco: '/tecEco/api',
+    tecEco: '/tecEco/api',
     review: "/review/api",
 
     // webGis
-    webGis3: '/webGis3/api',
-    webGis4: '/webGis4/api',
-    webGis5: '/webGis5/api',
-    webGis6: '/webGis6/api',
+    resourceV1: '/resource/api',
+    manage: '/manage/api',
+    geoserver: '/geoserver/api',
 }
 
 export const logoArray = {
