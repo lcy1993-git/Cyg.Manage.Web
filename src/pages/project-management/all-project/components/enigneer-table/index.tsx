@@ -52,81 +52,7 @@ const colorMap = {
   执行: 'yellow',
 };
 
-// const testData = [
-//   {
-//     id: '1392813588021792768',
-//     companyId: '1266016355747741696',
-//     name: '导入工程56',
-//     startTime: 1623168000000,
-//     endTime: 1625673600000,
-//     compileTime: 1623081600000,
-//     province: '510000',
-//     city: '513400',
-//     area: '513438',
-//     company: '成都yl电力有限公司',
-//     projects: [
-//       {
-//         id: '1392813588021792769',
-//         engineerId: '1392813588021792768',
-//         name: '导入工程2-项目24',
-//         category: 1,
-//         categoryText: '10kV线路',
-//         kvLevel: 1,
-//         kvLevelText: '交流20kV',
-//         nature: 128,
-//         natureTexts: ['村村通动力电'],
-//         majorCategory: 1,
-//         majorCategoryText: '配电线路',
-//         constructType: 1,
-//         constructTypeText: '新建',
-//         batch: 3,
-//         batchText: '第三批',
-//         stage: 4,
-//         stageText: '施工图',
-//         dataSourceType: 0,
-//         dataSourceTypeText: '勘察',
-//         sources: ['无'],
-//         allot: null,
-//         stateInfo: {
-//           id: '1392813588021792769',
-//           isResetSurvey: false,
-//           status: 17,
-//           statusText: '待安排外审',
-//           outsideStatus: 0,
-//           outsideStatusText: '',
-//           isAllot: false,
-//           allotId: null,
-//           isArrange: true,
-//           showStatusText: '待安排',
-//           surveyAssessState: 1,
-//           surveyAssessStateText: '未评审',
-//           designAssessState: 1,
-//           designAssessStateText: '未评审',
-//           updateTime: 1620907611266,
-//           auditStatus: 10,
-//         },
-//         identitys: [
-//           {
-//             value: 1,
-//             text: '立项',
-//           },
-//           {
-//             value: 4,
-//             text: '执行',
-//           },
-//         ],
-//         operationAuthority: {
-//           canEdit: true,
-//           canCopy: true,
-//         },
-//       },
-//     ],
-//     operationAuthority: {
-//       canEdit: true,
-//       canAddProject: true,
-//     },
-//   },
-// ];
+
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const { extractParams, onSelect, afterSearch } = props;
@@ -740,6 +666,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       )}
 
     
+      {externalListModalVisible && (
         <ExternalListModal
           projectId={currentClickProjectId}
           visible={externalListModalVisible}
@@ -747,7 +674,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           stepData={externalStepData}
           refresh={afterSearch}
         />
-    
+      )}
     </div>
   );
 };

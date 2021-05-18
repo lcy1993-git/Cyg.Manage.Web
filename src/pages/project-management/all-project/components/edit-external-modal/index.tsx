@@ -14,6 +14,7 @@ interface GetGroupUserProps {
   visible: boolean;
   projectId: string;
   notBeginUsers: any;
+  closeModalEvent?: () => void
 }
 
 const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
@@ -24,7 +25,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   // const [delUserIds, setDelUserIds] = useState<string[]>([]);
 
   const [form] = Form.useForm();
-  const { notBeginUsers, projectId } = props;
+  const { notBeginUsers, projectId, closeModalEvent } = props;
 
   //获取新增外审
   function getAddUsers(preArray: any, nexArray: any) {
@@ -44,8 +45,6 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       return [];
     }
 
-    console.log(preArray, nexArray);
-
     return preArray
       .filter((item: any) => !nexArray.includes(item))
       .map((item: any) => {
@@ -54,15 +53,14 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   }
 
   const saveExternalArrange = async () => {
-    // console.log(getAddUsers(notBeginUsers, arrangePeople));
-    // console.log(getDelUsers(notBeginUsers, arrangePeople), '1');
 
-    // await modifyExternalArrange({
-    //   projectId: projectId,
-    //   addUserIds: getAddUsers(notBeginUsers, arrangePeople),
-    //   delUserIds: getDelUsers(notBeginUsers, arrangePeople),
-    // });
+    await modifyExternalArrange({
+      projectId: projectId,
+      addUserIds: getAddUsers(notBeginUsers, arrangePeople),
+      delUserIds: getDelUsers(notBeginUsers, arrangePeople),
+    });
     message.success('外审修改成功');
+    closeModalEvent?.()
     setState(false);
   };
 

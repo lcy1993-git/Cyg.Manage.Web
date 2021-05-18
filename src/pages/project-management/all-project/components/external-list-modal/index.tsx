@@ -6,10 +6,13 @@ import { useControllableValue } from 'ahooks';
 import { Dispatch } from 'react';
 // import { UserInfo } from '@/services/project-management/select-add-list-form';
 // import { Checkbox } from 'antd';
-import { executeExternalArrange } from '@/services/project-management/all-project';
+import { executeExternalArrange, getExternalArrangeStep } from '@/services/project-management/all-project';
 import styles from './index.less';
 import EditExternalArrangeForm from '../edit-external-modal';
 import { CheckCircleOutlined, ClockCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+
+import { useRequest } from 'ahooks';
+import { useEffect } from 'react';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -27,21 +30,32 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
   const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false);
 
+  const [newStepData, setNewStepData] = useState<any[]>([])
+
   const [form] = Form.useForm();
   const { stepData, projectId, refresh } = props;
+
+  const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
+    manual: true,
+  });
 
   const executeArrangeEvent = async () => {
     await executeExternalArrange({
       projectId: projectId,
       parameter: { 是否结束: `${isPassExternalArrange}` },
     });
+
     message.success('外审已通过');
     setState(false);
     refresh?.();
   };
 
+  useEffect(() => {
+    setNewStepData(stepData)
+  }, [stepData])
+
   const notBeginList = useMemo(() => {
-    return stepData
+    return newStepData
       ?.map((item: any) => {
         if (item.status === 1) {
           return {
@@ -52,11 +66,16 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         return;
       })
       .filter(Boolean);
-  }, [stepData]);
+  }, [newStepData]);
 
   const modifyEvent = () => {
     setEditExternalArrangeModal(true);
   };
+
+  const finishEditEvent = async () => {
+    const res = await getExternalStep(projectId);
+    setNewStepData(res)
+  }
 
   return (
     <>
@@ -66,22 +85,34 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         maskClosable={false}
         width={850}
         onCancel={() => setState(false)}
-        footer={[
-          // <div className={styles.externalModal}>
-          //   <Checkbox onChange={() => setIsPassArrangePeople(!false)}>不安排外审</Checkbox>
-          //   <Button key="cancle" onClick={() => setState(false)}>
-          //     取消
-          //   </Button>
+        footer={
+          !newStepData?.map((item: any) => {
+            if (item.status === 20) {
+              return true;
+            }
+            return false;
+          }).includes(false) ?
 
-          <Button key="save" type="primary" onClick={() => executeArrangeEvent()}>
-            提交
-          </Button>,
-          // </div>,
-        ]}
+            [
+
+              <Button key="save" type="primary" onClick={() => executeArrangeEvent()}>
+                提交
+              </Button>,
+              // </div>,
+            ] :
+            [
+  
+              <Button key="save" type="primary" onClick={() => setState(false)}>
+                确认
+              </Button>,
+              // </div>,
+            ]
+
+        }
       >
         {/* 当前外审人员列表 */}
         <div className={styles.peopleList}>
-          {stepData?.map((el: any, idx: any) => (
+          {newStepData?.map((el: any, idx: any) => (
             <div className={styles.single} key={el.id}>
               <div>外审 {idx + 1}</div>
               <div>{`${el.companyName}-${el.expectExecutorName}`}</div>
@@ -105,7 +136,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
           </Button>
         </div>
 
-        {!stepData
+        {!newStepData
           ?.map((item: any) => {
             if (item.status === 20) {
               return true;
@@ -113,27 +144,32 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
             return false;
           })
           .includes(false) && (
-          <Form style={{ width: '100%' }} form={form}>
-            <Divider />
-            <div className={styles.notArrange}>
-              <p style={{ textAlign: 'center' }}>外审结果确认</p>
-              <Radio.Group
-                onChange={(e) => setIsPassExternalArrange(e.target.value)}
+            <Form style={{ width: '100%' }} form={form}>
+              <Divider />
+              <div className={styles.notArrange}>
+                <p style={{ textAlign: 'center' }}>外审结果确认</p>
+                <Radio.Group
+                  onChange={(e) => setIsPassExternalArrange(e.target.value)}
                 //   value={notArrangePeopleStatus}
-              >
-                <Radio value={false}>外审不通过</Radio>
-                <Radio value={true}>外审通过</Radio>
-              </Radio.Group>
-            </div>
-          </Form>
-        )}
+                >
+                  <Radio value={false}>外审不通过</Radio>
+                  <Radio value={true}>外审通过</Radio>
+                </Radio.Group>
+              </div>
+            </Form>
+          )}
       </Modal>
-      <EditExternalArrangeForm
-        projectId={projectId}
-        visible={editExternalArrangeModal}
-        onChange={setEditExternalArrangeModal}
-        notBeginUsers={notBeginList}
-      />
+      {
+        editExternalArrangeModal &&
+        <EditExternalArrangeForm
+          projectId={projectId}
+          visible={editExternalArrangeModal}
+          onChange={setEditExternalArrangeModal}
+          notBeginUsers={notBeginList}
+          closeModalEvent={finishEditEvent}
+        />
+      }
+
     </>
   );
 };
