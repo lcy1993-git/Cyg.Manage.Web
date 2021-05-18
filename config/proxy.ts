@@ -69,6 +69,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/manage': '/' },
     },
+    '/resourceV1': {
+      target: 'http://10.6.1.36:8015/',
+      changeOrigin: true,
+      pathRewrite: { '^/resourceV1': '/' },
+    },
   },
   test: {
     '/api/': {
