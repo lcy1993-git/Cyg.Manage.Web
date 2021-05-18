@@ -1,5 +1,5 @@
 import { Button, Input, message } from "antd";
-import React, { useState,useMemo } from "react";
+import React, { useState,useMemo, useEffect } from "react";
 import styles from "./index.less";
 import {useInterval} from "ahooks";
 import {SendSmsType,getSmsCode} from "@/services/common"
@@ -8,11 +8,12 @@ interface VerificationCodeProps {
     type: SendSmsType,
     phoneNumber: string,
     onChange?: (value: string) => void
-    canSend?: boolean
+    canSend?: boolean;
+    setCanOkClick?: (arg0: boolean) => void | false
 }
 
 const VerificationCode:React.FC<VerificationCodeProps> = (props) => {
-    const {onChange,type,phoneNumber,canSend = false} = props;
+    const {onChange,type,phoneNumber,canSend = false, setCanOkClick=false} = props;
     const [delayNumber, setDelayNumber] = useState<number>();
     const [residueNumber, setResidueNumber] = useState<number>(0);
 
@@ -28,6 +29,12 @@ const VerificationCode:React.FC<VerificationCodeProps> = (props) => {
     },delayNumber,{immediate: false})
 
     const buttonShowWord = delayNumber ? `倒计时${residueNumber}秒` : "发送验证码";
+
+    useEffect(() => {
+        if(setCanOkClick) {
+            delayNumber ? setCanOkClick(true) : setCanOkClick(false)
+        }
+    }, [delayNumber])
 
     // TODO 发送请求验证码请求
     const sendVerificationCode = async () => {

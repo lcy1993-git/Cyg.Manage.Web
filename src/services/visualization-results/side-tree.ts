@@ -32,6 +32,10 @@ export interface ProjectListByAreaType {
   children?: ProjectListByAreaType[];
 }
 
+export interface CommentCount {
+  totalQty: number;
+  unReadQty: number;
+}
 /**
  *
  * 接口文档 http://10.6.1.36:8025/help/index.html
@@ -58,6 +62,16 @@ export const fetchEngineerProjectListByParamsAndCompany = (
       `${baseUrl.projectVisualization}/ProjectVisualization/GetProjectListByCompany
     `,
       { method: 'POST', data: params },
+    ),
+  );
+};
+
+export const fetchCommentCountById = (projectId: string) => {
+  return cyRequest<CommentCount>(() =>
+    request(
+      `${baseUrl.comment}/Comment/GetCommentCount
+    `,
+      { method: 'POST', data: { projectId } },
     ),
   );
 };
