@@ -19,7 +19,7 @@ const devBaseUrl = {
   tecEco: '/tecEco/api',
   review: '/review/api',
   // gis
-  resourceV1: '/resource/api',
+  resourceV1: '/resourceV1/api',
   manage: '/manage/api',
   geoserver: '/geoserver',
 };

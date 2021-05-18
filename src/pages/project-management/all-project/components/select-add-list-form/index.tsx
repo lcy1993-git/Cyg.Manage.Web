@@ -145,7 +145,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
         <Dropdown overlay={<OptionList />} visible={visible} onVisibleChange={setFalse}>
           <Search
             id="hover-div"
-            placeholder="请输入项目名称"
+            placeholder="请输入账号/手机号"
             enterButton
             loading={loading}
             value={keyword}

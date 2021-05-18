@@ -26,7 +26,7 @@ const arrayHasIpBaseUrlArray = {
     comment: `${baseUrl}:8013/api`,
     projectVisualization: `${baseUrl}:8026/api`,
     tecEco: `${baseUrl}:8033/api`,
-    review: `${baseUrl}:8041/api`,
+    review: `${baseUrl}:8014/api`,
 
     // webGis
     resourceV1: `${baseUrl}:8015/api`,

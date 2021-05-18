@@ -1,11 +1,4 @@
 export default {
-  qtyNumber: [
-    { required: true, message: '生产数量不能为0' },
-    {
-      pattern: /^[0-9]\d*$/,
-      message: '请填写1~50以内的整数',
-    },
-  ],
   pwd: [
     { required: true, message: '密码不能为空', max: 16 },
     {
