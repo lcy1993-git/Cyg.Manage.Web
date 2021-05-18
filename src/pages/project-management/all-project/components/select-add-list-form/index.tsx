@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
 import { Button, Divider, Dropdown, Input, message, Radio } from 'antd';
 
@@ -11,10 +11,8 @@ export interface SelectAddListFormProps {
   initPeople?: UserInfo[];
   projectName?: string;
   onChange: (userInfoList: UserInfo[]) => void;
-  onAddPeople: (userInfoList: UserInfo[]) => void; //获取添加的外审人员list
   notArrangeShow?: boolean; //checkbox的标志用来是否显示不安排外审的内容
   onSetPassArrangeStatus?: (flag: boolean) => void; //获取外审通不通过状态的callback
-  onDeletePeople?: (userInfo: UserInfo) => void; //删除事件
 }
 import styles from './index.less';
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
@@ -23,11 +21,9 @@ import { useBoolean, useHover, useRequest } from 'ahooks';
 const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const {
     initPeople = [],
-    onAddPeople,
     notArrangeShow = false,
     onSetPassArrangeStatus,
     projectName,
-    onDeletePeople,
     onChange,
   } = props;
 
@@ -35,7 +31,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   // const [fetching, setFetching] = useState<boolean>(false);
   const [keyword, setKeyword] = useState<string>();
   const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
-  const [people, setPeople] = useState<UserInfo[]>(initPeople);
+  const [people, setPeople] = useState<UserInfo[]>([]);
   const [visible, { toggle, setTrue, setFalse }] = useBoolean(false);
 
   /**
@@ -52,6 +48,10 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
       }
     },
   });
+
+  useEffect(() => {
+    setPeople(initPeople);
+  }, [initPeople]);
 
   useHover(() => document.getElementById('hover-div'), {
     onEnter: () => {
