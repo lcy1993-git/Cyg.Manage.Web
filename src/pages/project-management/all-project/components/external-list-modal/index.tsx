@@ -25,8 +25,6 @@ interface GetGroupUserProps {
 const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
-
-  // const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
   const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false);
 
   const [form] = Form.useForm();
@@ -44,11 +42,11 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
 
   const notBeginList = useMemo(() => {
     return stepData
-      .map((item: any) => {
+      ?.map((item: any) => {
         if (item.status === 1) {
           return {
             value: item.expectExecutor,
-            text: item.name,
+            text: `${item.companyName}-${item.expectExecutorName}`,
           };
         }
         return;
@@ -57,6 +55,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   }, [stepData]);
 
   const modifyEvent = () => {
+    setState(false);
     setEditExternalArrangeModal(true);
   };
 
@@ -83,7 +82,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
       >
         {/* 当前外审人员列表 */}
         <div className={styles.peopleList}>
-          {stepData.map((el: any, idx: any) => (
+          {stepData?.map((el: any, idx: any) => (
             <div className={styles.single} key={el.id}>
               <div>外审 {idx + 1}</div>
               <div>{`${el.companyName}-${el.expectExecutorName}`}</div>
@@ -108,7 +107,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         </div>
 
         {!stepData
-          .map((item: any) => {
+          ?.map((item: any) => {
             if (item.status === 20) {
               return true;
             }

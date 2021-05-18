@@ -739,7 +739,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         />
       )}
 
-      {externalListModalVisible && (
+    
         <ExternalListModal
           projectId={currentClickProjectId}
           visible={externalListModalVisible}
@@ -747,7 +747,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           stepData={externalStepData}
           refresh={afterSearch}
         />
-      )}
+    
     </div>
   );
 };

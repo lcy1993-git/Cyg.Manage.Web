@@ -52,8 +52,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   }
 
   const saveExternalArrange = async () => {
-    console.log(getAddUsers(notBeginUsers, arrangePeople));
-    console.log(getDelUsers(notBeginUsers, arrangePeople));
+    // console.log(getAddUsers(notBeginUsers, arrangePeople));
 
     await modifyExternalArrange({
       projectId: projectId,
@@ -87,7 +86,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       <Form style={{ width: '100%' }} form={form}>
         <SelectAddListForm
           initPeople={notBeginUsers}
-          onAddPeople={(people) => setArrangePeople(people)}
+          onChange={(people) => setArrangePeople(people)}
         />
       </Form>
     </Modal>
