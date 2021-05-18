@@ -14,6 +14,7 @@ import {
   canEditArrange,
   checkCanArrange,
   deleteProject,
+  getAllotUsers,
   getExternalArrangeStep,
   getProjectInfo,
   getProjectTableStatistics,
@@ -111,6 +112,7 @@ const ProjectManagement: React.FC = () => {
   const [currentProjectId, setCurrentProjectId] = useState<string>('');
 
   const [notBeginUsers, setNotBeginUsers] = useState<any>();
+  const [arrangeUsers, setArrangeUsers] = useState<any>();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -124,6 +126,10 @@ const ProjectManagement: React.FC = () => {
   });
 
   const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
+    manual: true,
+  });
+
+  const { run: getArrangeUsers } = useRequest(getAllotUsers, {
     manual: true,
   });
 
@@ -266,10 +272,8 @@ const ProjectManagement: React.FC = () => {
       (tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
         tableSelectData[0]?.projectInfo?.status[0].auditStatus === 15)
     ) {
-      console.log(tableSelectData[0].checkedArray[0]);
-
       setCurrentProjectId(tableSelectData[0].checkedArray[0]);
-      const res = await getExternalStep(tableSelectData[0].checkedArray[0]);
+      const res = await getExternalStep(tableSelectData[0]?.checkedArray[0]);
       const notBegin = res?.map((item: any) => {
         if (item.status === 1) {
           return {
@@ -289,6 +293,18 @@ const ProjectManagement: React.FC = () => {
       tableSelectData[0]?.projectInfo?.status[0].auditStatus === 10
     ) {
       setCurrentProjectId(tableSelectData[0].checkedArray[0]);
+      const res = await getArrangeUsers(tableSelectData[0].checkedArray[0], 6);
+
+      // setCurrentProName(proName);
+      const exUsers = res?.map((item) => {
+        return {
+          value: item.userId,
+          text: item.userNameText,
+        };
+      });
+      console.log(exUsers);
+
+      setArrangeUsers(exUsers);
       setExternalArrangeModal(true);
       return;
     }
@@ -1054,6 +1070,7 @@ const ProjectManagement: React.FC = () => {
           visible={externalArrangeModal}
           onChange={setExternalArrangeModal}
           projectId={currentProjectId}
+          arrangeUsers={arrangeUsers}
         />
       )}
     </PageCommonWrap>
