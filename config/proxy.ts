@@ -59,6 +59,16 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/review': '/' },
     },
+    '/geoserver': {
+      target: 'http://10.6.1.36:8099/',
+      changeOrigin: true,
+      pathRewrite: { '^/geoserver': '/' },
+    },
+    '/manage': {
+      target: 'http://10.6.1.36:8025/',
+      changeOrigin: true,
+      pathRewrite: { '^/manage': '/' },
+    },
   },
   test: {
     '/api/': {
