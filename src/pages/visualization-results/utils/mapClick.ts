@@ -139,114 +139,219 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     map.getTargetElement().style.cursor = 'pointer';
 
     var pJSON = {};
-    // 遍历属性，进行一一匹配
-    for (var p in feature.getProperties()) {
-      if (mappingTags != undefined && mappingTags[p] != undefined) {
-        var mappingTag = mappingTags[p];
-        if (mappingTagValues != undefined && mappingTagValues[p] != undefined) {
-          pJSON[mappingTag] = mappingTagValues[p][feature.getProperties()[p]];
-        } else {
-          switch (p) {
-            case 'company':
-              pJSON[mappingTag] = feature.getProperties()['companyName'];
-              break;
-            case 'project_id':
-              pJSON[mappingTag] = feature.getProperties()['projectName'];
-              break;
-            case 'recorder':
-              pJSON[mappingTag] = feature.getProperties()['recorderName'];
-              break;
-            case 'surveyor':
-              if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员';
-              pJSON[mappingTag] = feature.getProperties()['surveyorName'];
-              break;
-            case 'main_id':
-              await loadLayer(
-                getCustomXmlData('id', feature.getProperties()['main_id']),
-                `pdd:${layerType}_tower`,
-              ).then((data: any) => {
-                if (data.features && data.features.length === 1) {
-                  pJSON[mappingTag] = data.features[0].properties.code;
-                } else {
-                  pJSON[mappingTag] = '';
-                }
-              });
-              break;
-            case 'sub_id':
-              await loadLayer(
-                getCustomXmlData('id', feature.getProperties()['sub_id']),
-                `pdd:${layerType}_tower`,
-              ).then((data: any) => {
-                if (data.features && data.features.length === 1) {
-                  pJSON[mappingTag] = data.features[0].properties.code;
-                } else {
-                  pJSON[mappingTag] = '';
-                }
-              });
-              break;
-            case 'start_id':
-              await loadLayer(
-                getCustomXmlData('id', feature.getProperties()['start_id']),
-                `pdd:${layerType}_tower`,
-              ).then((data: any) => {
-                if (data.features && data.features.length === 1) {
-                  pJSON[mappingTag] = data.features[0].properties.code;
-                } else {
-                  pJSON[mappingTag] = '';
-                }
-              });
-              break;
-            case 'end_id':
-              await loadLayer(
-                getCustomXmlData('id', feature.getProperties()['end_id']),
-                `pdd:${layerType}_tower`,
-              ).then((data: any) => {
-                if (data.features && data.features.length === 1) {
-                  pJSON[mappingTag] = data.features[0].properties.code;
-                } else {
-                  pJSON[mappingTag] = '';
-                }
-              });
-              break;
-            case 'parent_id':
-              await loadLayer(
-                getCustomXmlData('id', feature.getProperties()['parent_id']),
-                `pdd:${layerType}_tower`,
-              ).then((data: any) => {
-                if (data.features && data.features.length === 1) {
-                  pJSON[mappingTag] = data.features[0].properties.code;
-                } else {
-                  pJSON[mappingTag] = '';
-                }
-              });
-              break;
-            case 'mode_id':
-              pJSON[mappingTag] = feature.getProperties()['modeName'];
-              break;
-            case 'survey_time':
-              if (layer.getProperties().name.split('_')[0] !== 'design')
-                pJSON[mappingTag] = feature.getProperties()[p]
-                  ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p]))
-                  : null;
-              break;
-            case 'record_date':
+    for(var p in mappingTags){
+      var mappingTag = mappingTags[p];
+      if (mappingTagValues != undefined && mappingTagValues[p] != undefined) {
+        pJSON[mappingTag] = mappingTagValues[p][feature.getProperties()[p]];
+      } else {
+        switch (p) {
+          case 'company':
+            pJSON[mappingTag] = feature.getProperties()['companyName'];
+            break;
+          case 'project_id':
+            pJSON[mappingTag] = feature.getProperties()['projectName'];
+            break;
+          case 'recorder':
+            pJSON[mappingTag] = feature.getProperties()['recorderName'];
+            break;
+          case 'surveyor':
+            if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员';
+            pJSON[mappingTag] = feature.getProperties()['surveyorName'];
+            break;
+          case 'main_id':
+            await loadLayer(
+              getCustomXmlData('id', feature.getProperties()['main_id']),
+              `pdd:${layerType}_tower`,
+            ).then((data: any) => {
+              if (data.features && data.features.length === 1) {
+                pJSON[mappingTag] = data.features[0].properties.code;
+              } else {
+                pJSON[mappingTag] = '';
+              }
+            });
+            break;
+          case 'sub_id':
+            await loadLayer(
+              getCustomXmlData('id', feature.getProperties()['sub_id']),
+              `pdd:${layerType}_tower`,
+            ).then((data: any) => {
+              if (data.features && data.features.length === 1) {
+                pJSON[mappingTag] = data.features[0].properties.code;
+              } else {
+                pJSON[mappingTag] = '';
+              }
+            });
+            break;
+          case 'start_id':
+            await loadLayer(
+              getCustomXmlData('id', feature.getProperties()['start_id']),
+              `pdd:${layerType}_tower`,
+            ).then((data: any) => {
+              if (data.features && data.features.length === 1) {
+                pJSON[mappingTag] = data.features[0].properties.code;
+              } else {
+                pJSON[mappingTag] = '';
+              }
+            });
+            break;
+          case 'end_id':
+            await loadLayer(
+              getCustomXmlData('id', feature.getProperties()['end_id']),
+              `pdd:${layerType}_tower`,
+            ).then((data: any) => {
+              if (data.features && data.features.length === 1) {
+                pJSON[mappingTag] = data.features[0].properties.code;
+              } else {
+                pJSON[mappingTag] = '';
+              }
+            });
+            break;
+          case 'parent_id':
+            await loadLayer(
+              getCustomXmlData('id', feature.getProperties()['parent_id']),
+              `pdd:${layerType}_tower`,
+            ).then((data: any) => {
+              if (data.features && data.features.length === 1) {
+                pJSON[mappingTag] = data.features[0].properties.code;
+              } else {
+                pJSON[mappingTag] = '';
+              }
+            });
+            break;
+          case 'mode_id':
+            pJSON[mappingTag] = feature.getProperties()['modeName'];
+            break;
+          case 'survey_time':
+            if (layer.getProperties().name.split('_')[0] !== 'design')
               pJSON[mappingTag] = feature.getProperties()[p]
                 ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p]))
                 : null;
-              break;
-            case 'azimuth':
-              console.log(Number(feature.getProperties()[p]));
-              pJSON[mappingTag] = Number(feature.getProperties()[p])
-                ? Number(feature.getProperties()[p])?.toFixed(2)
-                : 0;
-              break;
-            default:
-              pJSON[mappingTag] = feature.getProperties()[p];
-              break;
-          }
+            break;
+          case 'record_date':
+            pJSON[mappingTag] = feature.getProperties()[p]
+              ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p]))
+              : null;
+            break;
+          case 'azimuth':
+            console.log(Number(feature.getProperties()[p]));
+            pJSON[mappingTag] = Number(feature.getProperties()[p])
+              ? Number(feature.getProperties()[p])?.toFixed(2)
+              : 0;
+            break;
+          default:
+            pJSON[mappingTag] = feature.getProperties()[p];
+            break;
         }
       }
     }
+    // 遍历属性，进行一一匹配
+    // for (var p in feature.getProperties()) {
+    //   if (mappingTags != undefined && mappingTags[p] != undefined) {
+    //     var mappingTag = mappingTags[p];
+    //     if (mappingTagValues != undefined && mappingTagValues[p] != undefined) {
+    //       pJSON[mappingTag] = mappingTagValues[p][feature.getProperties()[p]];
+    //     } else {
+    //       switch (p) {
+    //         case 'company':
+    //           pJSON[mappingTag] = feature.getProperties()['companyName'];
+    //           break;
+    //         case 'project_id':
+    //           pJSON[mappingTag] = feature.getProperties()['projectName'];
+    //           break;
+    //         case 'recorder':
+    //           pJSON[mappingTag] = feature.getProperties()['recorderName'];
+    //           break;
+    //         case 'surveyor':
+    //           if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员';
+    //           pJSON[mappingTag] = feature.getProperties()['surveyorName'];
+    //           break;
+    //         case 'main_id':
+    //           await loadLayer(
+    //             getCustomXmlData('id', feature.getProperties()['main_id']),
+    //             `pdd:${layerType}_tower`,
+    //           ).then((data: any) => {
+    //             if (data.features && data.features.length === 1) {
+    //               pJSON[mappingTag] = data.features[0].properties.code;
+    //             } else {
+    //               pJSON[mappingTag] = '';
+    //             }
+    //           });
+    //           break;
+    //         case 'sub_id':
+    //           await loadLayer(
+    //             getCustomXmlData('id', feature.getProperties()['sub_id']),
+    //             `pdd:${layerType}_tower`,
+    //           ).then((data: any) => {
+    //             if (data.features && data.features.length === 1) {
+    //               pJSON[mappingTag] = data.features[0].properties.code;
+    //             } else {
+    //               pJSON[mappingTag] = '';
+    //             }
+    //           });
+    //           break;
+    //         case 'start_id':
+    //           await loadLayer(
+    //             getCustomXmlData('id', feature.getProperties()['start_id']),
+    //             `pdd:${layerType}_tower`,
+    //           ).then((data: any) => {
+    //             if (data.features && data.features.length === 1) {
+    //               pJSON[mappingTag] = data.features[0].properties.code;
+    //             } else {
+    //               pJSON[mappingTag] = '';
+    //             }
+    //           });
+    //           break;
+    //         case 'end_id':
+    //           await loadLayer(
+    //             getCustomXmlData('id', feature.getProperties()['end_id']),
+    //             `pdd:${layerType}_tower`,
+    //           ).then((data: any) => {
+    //             if (data.features && data.features.length === 1) {
+    //               pJSON[mappingTag] = data.features[0].properties.code;
+    //             } else {
+    //               pJSON[mappingTag] = '';
+    //             }
+    //           });
+    //           break;
+    //         case 'parent_id':
+    //           await loadLayer(
+    //             getCustomXmlData('id', feature.getProperties()['parent_id']),
+    //             `pdd:${layerType}_tower`,
+    //           ).then((data: any) => {
+    //             if (data.features && data.features.length === 1) {
+    //               pJSON[mappingTag] = data.features[0].properties.code;
+    //             } else {
+    //               pJSON[mappingTag] = '';
+    //             }
+    //           });
+    //           break;
+    //         case 'mode_id':
+    //           pJSON[mappingTag] = feature.getProperties()['modeName'];
+    //           break;
+    //         case 'survey_time':
+    //           if (layer.getProperties().name.split('_')[0] !== 'design')
+    //             pJSON[mappingTag] = feature.getProperties()[p]
+    //               ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p]))
+    //               : null;
+    //           break;
+    //         case 'record_date':
+    //           pJSON[mappingTag] = feature.getProperties()[p]
+    //             ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p]))
+    //             : null;
+    //           break;
+    //         case 'azimuth':
+    //           console.log(Number(feature.getProperties()[p]));
+    //           pJSON[mappingTag] = Number(feature.getProperties()[p])
+    //             ? Number(feature.getProperties()[p])?.toFixed(2)
+    //             : 0;
+    //           break;
+    //         default:
+    //           pJSON[mappingTag] = feature.getProperties()[p];
+    //           break;
+    //       }
+    //     }
+    //   }
+    // }
 
     // 查看多媒体功能
     if (layerType === 'survey' || layerType === 'plan') {
@@ -305,6 +410,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             pJSON['材料表'] = [];
             if (res.isSuccess) {
               const filterData = res.content.filter((item: any) => item.parentID !== -1);
+              console.log(filterData, 22)
               const data = filterData.map((item: any) => {
                 return {
                   ...item,
@@ -345,14 +451,16 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
     resData.push({ propertyName: '元素类型', data: elementTypeEnum[layerName] });
     for (let p in pJSON) {
-      if (p === '方位角' && layerName === 'tower'){
-        let hcg = pJSON['高度(m)'] - pJSON['埋深'];
-        hcg = isNaN(hcg) ? 0 : hcg;
-        resData.push({ propertyName: '呼称高', data: hcg });
+      if(p === '杆规格'){
+        pJSON[p] = `${feature.getProperties().height}*${feature.getProperties().rod}`;
       }
-      if (p === '材料表' && layerName === 'electric_meter') {
-        let linePhase = feature.getProperties().kv_level === 2 ? '三相' : '两相';
-        resData.push({ propertyName: '导线相数', data: linePhase });
+      if (p === '呼称高'){
+        let hcg = pJSON['高度(m)'] - pJSON['埋深(m)'];
+        hcg = isNaN(hcg) ? 0 : hcg;
+        pJSON[p] = hcg;
+      }
+      if (p === '导线相数') {
+        pJSON[p] = feature.getProperties().kv_level === 2 ? '三相' : '两相';
       }
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }

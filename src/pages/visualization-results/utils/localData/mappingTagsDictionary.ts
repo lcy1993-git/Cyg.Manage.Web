@@ -27,7 +27,6 @@ function getMappingTagsDictionary() {
         "code": "名称",
         "type": "类型",
         "mode": "型号",
-        "state": "状态",
         "azimuth": "转角度数",
         "remark": "备注",
         "project_id": "title"
@@ -41,8 +40,7 @@ function getMappingTagsDictionary() {
       mappingTags1: {
         "code": "名称",
         "type": "杆型",
-        "rod": "杆梢径(mm)",
-        "height": "高度(m)",
+        "rod": "杆规格",
         "segment": "分段方式",
         "sort": "排列方式",
         "state": "状态",
@@ -53,13 +51,14 @@ function getMappingTagsDictionary() {
       },
       mappingTags2: {
         "code": "名称",
-        "type": "杆型",
+        "type": "类型",
         "rod": "杆梢径(mm)",
         "height": "高度(m)",
         "segment": "分段方式",
         "sort": "排列方式",
         "state": "状态",
         "azimuth": "方位角",
+        "hcg": "呼称高",
         "depth": "埋深(m)",
         "mode": "型号",
         "loop_name": "所属回路",
@@ -137,7 +136,7 @@ function getMappingTagsDictionary() {
       },
       mappingTags2: {
         "type": "导线类型",
-        "mode": "线路型号",
+        "mode": "导线型号",
         "length": "长度(m)",
         "kv_level": "电压等级",
         "loop_name": "回路名称",
@@ -148,7 +147,7 @@ function getMappingTagsDictionary() {
       },
       mappingTags3: {
         "type": "导线类型",
-        "mode": "线路型号",
+        "mode": "导线型号",
         "length": "长度(m)",
         "kv_level": "电压等级",
         "state": "状态",
@@ -202,8 +201,9 @@ function getMappingTagsDictionary() {
       mappingTags2: {
         "lay_mode": "敷设方式",
         "mode": "通道型号",
-        "length": "长度(m)",
         "arrangement": "排列方式",
+        "length": "长度(m)",
+        "state": "状态",
         "remark": "备注",
         "project_id": "title"
       },
@@ -219,8 +219,8 @@ function getMappingTagsDictionary() {
         "capacity": "容量",
         "state": "状态",
         "fix_mode": "安装方法",
-        "survey_time": "勘测时间",
         "surveyor": "勘测人员",
+        "survey_time": "勘测时间",
         "remark": "备注",
         "project_id": "title"
       },
@@ -267,8 +267,8 @@ function getMappingTagsDictionary() {
       mappingTags1: {
         "type": "地物类型",
         "name": "地物名称",
-        "width": "宽(m)",
-        "height": "高(m)",
+        "width": "宽度(m)",
+        "height": "高度(m)",
         "road_level": "道路等级",
         "line_kv_level": "电压等级",
         "surveyor": "勘测人员",
@@ -279,8 +279,8 @@ function getMappingTagsDictionary() {
       mappingTags2: {
         "type": "地物类型",
         "name": "地物名称",
-        "width": "宽(m)",
-        "height": "高(m)",
+        "width": "宽度(m)",
+        "height": "高度(m)",
         "road_level": "道路等级",
         "line_kv_level": "电压等级",
         "remark": "备注",
@@ -321,6 +321,7 @@ function getMappingTagsDictionary() {
         "state": "户表状态",
         "total_count": "户表位",
         "count": "户表数",
+        "linePhase": "导线相数",
         "remark": "备注",
         "project_id": "title"
       },
