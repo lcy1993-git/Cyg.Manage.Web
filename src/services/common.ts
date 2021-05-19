@@ -8,19 +8,21 @@ import { isArray } from 'lodash';
 const { NODE_ENV } = process.env;
 
 const devBaseUrl = {
-  project: '/api/manage/v2/api',
-  common: '/api/common/api',
-  upload: '/api/storage/api',
-  resource: '/api/resourcemanage/v2/api',
-  webGis: '/api/webGis/api',
-  webGis2: '/api/webGis2/api',
-  comment: '/api/Comment/api',
-  tecEco: '/api/tecEco/api',
-  review: '/api/review/api',
-  resourceV1: '/api/resource/api',
-  manage: '/api/manage/api',
-  geoserver: '/api/geoserver',
-  design: 'api/design/api',
+    project: "/api/manage/v2/api",
+    common: "/api/common/api",
+    upload: "/api/storage/api",
+    resource: "/api/resourcemanage/v2/api",
+    webGis: '/api/webgis/api',
+    webGis2: '/api/webGis2/api',
+    comment: '/api/project/api',
+    tecEco: '/api/tecEco/api',
+    review: "/api/review/api",
+
+    // webGis
+    resourceV1: '/api/resource/api',
+    manage: '/api/manage/api',
+    geoserver: '/api/geoserver',
+    design: 'api/design/api',
 };
 
 // interface UrlSelectParams {

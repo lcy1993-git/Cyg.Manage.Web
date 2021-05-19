@@ -25,7 +25,9 @@ const arrayHasIpBaseUrlArray = {
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
     tecEco: `${baseUrl}:8033/api`,
-    review: `${baseUrl}:8014/api`,
+    review: `${baseUrl}:8041/api`,
+
+    webGis: `${baseUrl}:8021/api`,
     // webGis
     resourceV1: `${baseUrl}:8015/api`,
     manage: `${baseUrl}:8025/api`,
@@ -39,8 +41,9 @@ const arrayHasNotBaseUrlArray = {
     common: "/common/api",
     upload: "/storage/api",
     resource: "/resourcemanage/v2/api",
-    webGis: '/webGis/api',
-    comment: '/Comment/api',
+    webGis: '/webgis/api',
+    webGis2: '/webGis2/api',
+    comment: '/project/api',
     tecEco: '/tecEco/api',
     review: "/review/api",
     component: '/Component/api',
