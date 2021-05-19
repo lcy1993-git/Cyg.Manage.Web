@@ -25,10 +25,7 @@ import AddEngineerAndProjectModule from './components/add-engineer-project-modal
 import AddEngineerTypeModal from './components/add-engineer-type-modal';
 import AddDeliveryStatisticModal from './components/add-delivery-statistic-modal';
 import AddOtherStatisticModal from './components/add-other-statistic-modal';
-import {
-  getChartConfig,
-  saveChartConfig,
-} from '@/services/operation-config/cockpit';
+import { getChartConfig, saveChartConfig } from '@/services/operation-config/cockpit';
 import EmptyTip from '@/components/empty-tip';
 
 import ConfigWindow from './components/config-window';
@@ -157,7 +154,15 @@ const CockpitManage: React.FC = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
     const totalHeight = divide(thisBoxHeight, 18);
     setConfigArray([
-      { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1()},
+      {
+        name: 'toDo',
+        x: 0,
+        y: 0,
+        w: 3,
+        h: 11,
+        key: uuid.v1(),
+        componentProps: ['wait', 'arrange', 'other'],
+      },
       {
         name: 'mapComponent',
         x: 3,
@@ -165,11 +170,35 @@ const CockpitManage: React.FC = () => {
         w: 6,
         h: subtract(totalHeight, divide(totalHeight - 11, 2)),
         key: uuid.v1(),
-        componentProps: ["province"]
+        componentProps: ['province'],
       },
-      { name: 'projectType', x: 9, y: 0, w: 3, h: 11, key: uuid.v1() },
-      { name: 'deliveryManage', x: 0, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
-      { name: 'personLoad', x: 9, y: 10, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
+      {
+        name: 'projectType',
+        x: 9,
+        y: 0,
+        w: 3,
+        h: 11,
+        key: uuid.v1(),
+        componentProps: ['classify', 'category', 'stage', 'buildType', 'level'],
+      },
+      {
+        name: 'deliveryManage',
+        x: 0,
+        y: 10,
+        w: 3,
+        h: divide(totalHeight - 11, 2),
+        key: uuid.v1(),
+        componentProps: ['person', 'department', 'company'],
+      },
+      {
+        name: 'personLoad',
+        x: 9,
+        y: 10,
+        w: 3,
+        h: divide(totalHeight - 11, 2),
+        key: uuid.v1(),
+        componentProps: ['person', 'department', 'company'],
+      },
       {
         name: 'projectSchedule',
         x: 0,
@@ -177,6 +206,7 @@ const CockpitManage: React.FC = () => {
         w: 6,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
+        componentProps: ['status', 'nature'],
       },
       {
         name: 'projectProgress',
@@ -185,6 +215,7 @@ const CockpitManage: React.FC = () => {
         w: 6,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
+        componentProps: ['gantt'],
       },
     ]);
   };
@@ -439,12 +470,11 @@ const CockpitManage: React.FC = () => {
                   />
                 </div>
               )}
-              {
-                loading &&
-                <div style={{ width: "100%", height: "100%" }}>
+              {loading && (
+                <div style={{ width: '100%', height: '100%' }}>
                   <Spin spinning={loading}></Spin>
                 </div>
-              }
+              )}
             </div>
           </div>
         </div>

@@ -50,10 +50,10 @@ const AddEngineerProcessModal: React.FC<AddEngineerProcessStatistic> = (props) =
       'projectProgress',
     );
     const unChooseProgressComponentProps = processComponentPropsArray.filter(
-      (item) => !hasChooseProgressComponentCodeArray.includes(item.code),
+      (item) => !hasChooseProgressComponentCodeArray?.includes(item.code),
     );
     const hasChooseProgressComponentProps = processComponentPropsArray.filter((item) =>
-    hasChooseProgressComponentCodeArray.includes(item.code),
+    hasChooseProgressComponentCodeArray?.includes(item.code),
     );
     return {
       hasChooseProgressComponentProps,

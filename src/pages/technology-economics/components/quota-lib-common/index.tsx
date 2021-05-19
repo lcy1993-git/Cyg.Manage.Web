@@ -1,11 +1,9 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
-import React, { useState, useMemo, useCallback, useReducer, ReactNode, useEffect } from 'react';
-import UrlSelect from '@/components/url-select';
-import DictionaryForm from './components/add-edit-form';
+import { Button, Modal, Form, Popconfirm, message } from 'antd';
+import React, { useState, useReducer, useEffect } from 'react';
+import QuotaLibSlot from '../../components/quota-lib-slot';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -17,7 +15,6 @@ import {
 } from '@/services/system-config/dictyionary-manage';
 import { isArray } from 'lodash';
 
-const { Search } = Input;
 
 interface RouteListItem {
   name: string;
@@ -129,52 +126,23 @@ const QuotaLibCommon: React.FC<Props> = ({
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const [libID, setLibId] = useState("");
+  const [activeLibId, setActiveLibId] = useState("1357588635508068352");
 
-  useEffect(() => {
-    // run({libId})
-  }, [libID])
+
 
   const { data1, run } = useRequest(getDictionaryDetail, {
     manual: true,
   });
 
-  const data = [
-    {
-      category: 1,
-      categoryText: "预算",
-      id: "1357588635508068352",
-      name: "默认预算定额",
-      releaseDate: 1612454400000,
-      releaseDateText: "2021-02-05",
-      remark: null,
-    }
-  ];
+  useEffect(() => {
+    // run({libId})
+  }, [activeLibId])
 
   const searchComponent = () => {
     return (
-      <div className={styles.flex}>
-        <TableSearch label="" width="203px">
-          <Search
-            value={searchKeyWord}
-            onChange={(e) => setSearchKeyWord(e.target.value)}
-            onSearch={() => tableSearchEvent()}
-            enterButton
-            placeholder="编号/名称"
-          />
-        </TableSearch>
-        <div className={styles.empty}/>
-        <TableSearch label="选择定额库" width="400px">
-          <UrlSelect
-            placeholder="请选择"
-            style={{width: 300}}
-            onChange={(e)=> {console.log(e);
-              setLibId("")
-            }}
-          />
-        </TableSearch>
-      </div>
-
+      <>
+        <QuotaLibSlot onChange={setActiveLibId}/>
+      </>
     );
   };
 

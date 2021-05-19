@@ -51,10 +51,10 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
   const productionComponentProps = useMemo(() => {
     const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, 'personLoad');
     const currentProductionProps = productionComponentPropsArray.filter((item) =>
-      currentRecord.componentProps.includes(item.code),
+      currentRecord.componentProps?.includes(item.code),
     );
     const unChooseProductionProps = productionComponentPropsArray.filter(
-      (item) => !currentRecord.componentProps.includes(item.code),
+      (item) => !currentRecord.componentProps?.includes(item.code),
     );
     return {
       hasChooseProductionCodeArray,

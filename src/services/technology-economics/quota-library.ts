@@ -1,12 +1,12 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
-// 获取定额库列表
-export const getQuotaLibrary = () => {
+// 定额库 - 列表查询
+export const getQuotaLibrary = (keyWord: string = "") => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/QuotaLibraryManager/GetPageList`, { method: 'POST', data: {pageIndex: 1, pageSize: 10000}})
+    request(`${baseUrl.tecEco}/QuotaLibraryManager/GetPageList`, { method: 'POST', data: {pageIndex: 1, pageSize: 10000, keyWord}})
   )
 }
-// 修改定额库
+// 定额库 - 编辑
 interface ModifyParams {
   id: string;
   name: string;
@@ -17,7 +17,7 @@ export const modifyQuotaLibrary = (params: ModifyParams) => {
     request(`${baseUrl.tecEco}/QuotaLibraryManager/SaveModify`, { method: 'POST', data: params })
   )
 }
-// 添加定额库
+// 定额库 - 添加
 interface CreateParams {
   name: string;
   category: number;
@@ -29,32 +29,75 @@ export const createQuotaLibrary = (params: CreateParams) => {
     request(`${baseUrl.tecEco}/QuotaLibraryManager/SaveCreate`, { method: 'POST', data: params })
   )
 }
-//删除定额库
+//定额库 - 删除
 export const delQuotaLibrary = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/QuotaLibraryManager/Delete`, { method: 'GET', params: { id } })
   )
 }
 
-// 定额库目录列表
+// 定额库树 /Quota/GetQuotaLibraryCatalogue
+// export const getQuotaLibraryTree= (id: string) => {
+//   return cyRequest(() =>
+//     request(`${baseUrl.tecEco}/Quota/GetQuotaLibraryCatalogue`, { method: 'GET', params: { id } })
+//   )
+// }
+
+// 定额库目录 - 平铺表格数据列表
 export const getCatalogueList = (libId: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/GetList`, { method: 'GET', params: { libId: "1357588635508068352" } }),
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/GetList`, { method: 'GET', params: { libId } }),
   );
 }
 
-// 定额库目录
+// 获取定额库目录详情-查看
+export const getCatalogueDetaile = (libId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/GetDetail`, { method: 'GET', params: { id: "1357588635508068352" } }),
+  );
+}
 
 // 定额库目录树详情
-export const getQuotaLibraryCatalogue = (id: string) => {
+export const getQuotaLibraryGetDetail = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/QuotaLibraryManager/GetDetail`, { method: 'GET', params: { libId: "1357588635508068352" } }),
+    request(`${baseUrl.tecEco}/QuotaLibraryManager/GetDetail`, { method: 'GET', params: { id } }),
+  );
+}
+
+
+// 保存添加定额库目录 - 添加
+interface CatalogueSaveCreate {
+  name?: string;
+  parentId?: string;
+  libId?: string;
+  explain?: string;
+  sort?: number;
+}
+export const catalogueSaveCreate = (data: CatalogueSaveCreate) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/SaveCreate`, { method: 'PORT', data }),
+  );
+}
+
+// 定额库目录 - 编辑
+export const catalogueModify = (data: CatalogueSaveCreate) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/SaveModify`, { method: 'PORT', data }),
+  );
+}
+
+// 定额库目录删除
+export const catalogueDel = (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/Delete`, { method: 'GET', params: { id } }),
   );
 }
 
 // 获取定额目录树
 export const getTreeQuotaLibraryCatalogue = (libId: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}QuotaLibraryCatalogueManager/GetTree`, { method: 'GET', params: { libId: "1357588635508068352" } }),
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/GetTree`, { method: 'GET', params: { libId: "1357588635508068352" } }),
   );
 }
+
+
