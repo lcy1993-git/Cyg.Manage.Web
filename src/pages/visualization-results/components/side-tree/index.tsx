@@ -80,6 +80,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+  const [showDefaultSelectCity, setShowDefaultSelectCity] = useState<boolean>(true);
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
   const { filterCondition } = vState;
@@ -145,7 +146,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
     // setExpandedKeys([...expandedKeys]);
 
-    if (selectCityId && tabActiveKey === '1') {
+    if (selectCityId && tabActiveKey === '1' && showDefaultSelectCity) {
       const key = getExpanedCityProjectKeys(data);
       const { expanded, checked } = key;
       setExpandedKeys(['-1', ...expanded]);
@@ -254,6 +255,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       clearState();
       setTabActiveKey('2');
     }
+    setShowDefaultSelectCity(false);
   };
 
   const activeStyle = '#ebedee';
