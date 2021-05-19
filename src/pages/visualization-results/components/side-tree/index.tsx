@@ -205,7 +205,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               }
             }}
           >
-            按地方
+            按地区
           </div>
           <div
             style={{ backgroundColor: tabActiveKey === '2' ? activeStyle : '#fff' }}

@@ -5,11 +5,10 @@ import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin, Form, Sele
 import EditForm from './components/edit-from';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { isArray } from 'lodash';
-import { getCatalogueList, getTreeQuotaLibraryCatalogue } from '@/services/technology-economics/quota-library';
-import UrlSelect from '@/components/url-select';
+import { getQuotaLibrary, getTreeQuotaLibraryCatalogue } from '@/services/technology-economics/quota-library';
 import TreeTable from '../components/file-tree-table';
 import { useRequest } from 'ahooks';
-import QuotaLibSelect from '../components/quota-lib-select';
+import QuotaLibSlot from '../components/quota-lib-slot';
 import { TreeData, formatDataTree } from '@/utils/utils';
 const data = [
   {
@@ -170,20 +169,27 @@ const columns = [
 
 const QuotaList: React.FC = () => {
 
-  const { data = [{}], run, loading } = useRequest(getCatalogueList, {
+  const { data: data1, run, loading } = useRequest(getQuotaLibrary, {
     manual: false,
   });
   // const { data1 = [{}], run1, loading1} = useRequest(getTreeQuotaLibraryCatalogue, {
   //   manual: false,
   // });
 
-  console.log(data);
-  
-  const dataSource = data && formatDataTree(data);
+
+  const data = useMemo(() => {
+    if (data1 && Array.isArray(data1?.items)) {
+      return data1?.items
+    } else {
+      return [];
+    }
+  }, [JSON.stringify(data1)])
+
+  const dataSource = data.length > 0 ? formatDataTree(data) : [];
 
   const [activeLibId, setActiveLibId] = useState<string>("");
   useEffect(() => {
-    run(activeLibId);    
+    run(activeLibId);
   }, [activeLibId])
 
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -221,6 +227,9 @@ const QuotaList: React.FC = () => {
     });
   };
 
+
+
+
   const expKeysAll = useMemo(() => data.flat(Infinity).map((i: TreeData) => i.id), [JSON.stringify(data)])
 
   const rightButton = () => {
@@ -251,11 +260,14 @@ const QuotaList: React.FC = () => {
     );
   };
 
+  const onActiveIdChange = (e: string) => {
+    console.log(e);
+  }
+
   const searchElement = () => {
     return (
       <div>
-        定额库 
-        <QuotaLibSelect />
+        <QuotaLibSlot onChange={onActiveIdChange}/>
         {/* <UrlSelect
           url="/QuotaLibraryManager/GetPageList"
           requestSource="tecEco"
@@ -323,7 +335,7 @@ const QuotaList: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           {/* <Spin spinning={loading}> */}
-            <EditForm />
+          <EditForm />
           {/* </Spin> */}
         </Form>
       </Modal>

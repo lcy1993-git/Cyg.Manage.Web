@@ -65,6 +65,13 @@ const CommentTable: FC<CommentProps> = (props) => {
       align: 'center',
       render: (text, record, idx: number) => (currentPage - 1) * 10 + idx + 1,
     },
+    {
+      title: '名称',
+      width: 50,
+      dataIndex: 'deviceName',
+      key: 'type',
+      fixed: 'left',
+    },
 
     {
       title: '类型',
@@ -81,13 +88,7 @@ const CommentTable: FC<CommentProps> = (props) => {
       width: 30,
       render: (text) => layers.get(text),
     },
-    {
-      title: '名称',
-      width: 50,
-      dataIndex: 'deviceName',
-      key: 'type',
-      fixed: 'left',
-    },
+
     {
       title: '创建时间',
       dataIndex: 'createdOn',
@@ -208,7 +209,7 @@ const CommentTable: FC<CommentProps> = (props) => {
         <div className={classnames(styles.tableFilterbar, 'flex')}>
           <TableSearch className="mr10" label="名称" width="268px">
             <Search
-              placeholder="请输入名称"
+              placeholder="请搜索名称"
               value={keyword}
               onSearch={() => search()}
               onChange={(e) => {

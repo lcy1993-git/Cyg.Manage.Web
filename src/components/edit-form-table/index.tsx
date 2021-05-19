@@ -11,6 +11,10 @@ interface EditFormTableProps {
 
 const EditFormTable: React.FC<EditFormTableProps> = (props) => {
   const { formName, columns } = props;
+  console.log(columns);
+
+  const cascaders = columns.filter((item) => item.cascader);
+  console.log(cascaders);
 
   const theadElement = columns.map((item) => {
     return (
