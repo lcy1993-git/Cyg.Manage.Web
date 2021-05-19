@@ -5,7 +5,7 @@ import {
   getMapStatisticsData,
   MapStatisticsData,
 } from '@/services/index';
-import { useMount, useRequest, useSize } from 'ahooks';
+import { useMount, useMouse, useRequest, useSize } from 'ahooks';
 
 import styles from './index.less';
 
@@ -66,9 +66,11 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     return {
       tooltip: {
         trigger: 'item',
-        showDelay: 300,
-        hideDelay: 300,
-        position: 'inside',
+        showDelay: 600,
+        position: function (pt: any) {
+          return [pt[0] - 95, pt[1] - 74];
+        },
+        confine: true,
         formatter: function (params: any) {
           const { name } = params;
 
@@ -77,7 +79,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             return `
                             ${name} <br />
                             项目数量: ${getMapStatisticData[nameIndex!].projectQuantity}
-                            <div>可视化成果: <a target="_blank" href='/visualization-results/result-page?selectCity=${
+                            <div>可视化成果: <a  href='/visualization-results/result-page?selectCity=${
                               cityCodeObject[params.name]
                             }'>跳转</a></div>
                             
