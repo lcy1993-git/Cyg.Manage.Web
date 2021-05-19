@@ -1,5 +1,10 @@
 import { useRequest } from 'ahooks';
-import React, { forwardRef, Ref, useImperativeHandle, useState } from 'react';
+import React, {
+  forwardRef,
+  Ref,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import {
   AllProjectStatisticsParams,
   getAllotUsers,
@@ -51,8 +56,6 @@ const colorMap = {
   共享: 'yellow',
   执行: 'yellow',
 };
-
-
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const { extractParams, onSelect, afterSearch } = props;
@@ -665,7 +668,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         />
       )}
 
-    
       {externalListModalVisible && (
         <ExternalListModal
           projectId={currentClickProjectId}

@@ -12,6 +12,7 @@ interface EditArrangeProps {
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: () => void;
   allotCompanyId?: string;
+  canEdit?: any;
 }
 
 const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
@@ -19,7 +20,15 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { projectIds, changeFinishEvent, allotCompanyId } = props;
+  const { projectIds, changeFinishEvent, allotCompanyId, canEdit } = props;
+  const {
+    canEditDesign,
+    canEditSurvey,
+    canEditInternalAudit1,
+    canEditInternalAudit2,
+    canEditInternalAudit3,
+    canEditInternalAudit4,
+  } = canEdit;
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
     manual: true,
@@ -65,6 +74,24 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const edit = () => {
     form.validateFields().then(async (value) => {
       try {
+        if (!canEditDesign) {
+          value.designUser = '';
+        }
+        if (!canEditSurvey) {
+          value.surveyUser = '';
+        }
+        if (!canEditInternalAudit1) {
+          value.designAssessUser1 = '';
+        }
+        if (!canEditInternalAudit2) {
+          value.designAssessUser2 = '';
+        }
+        if (!canEditInternalAudit3) {
+          value.designAssessUser3 = '';
+        }
+        if (!canEditInternalAudit4) {
+          value.designAssessUser4 = '';
+        }
         const arrangeInfo = Object.assign(
           {
             projectIds: projectIds,
@@ -123,7 +150,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <EditArrangeForm allotCompanyId={allotCompanyId} />
+        <EditArrangeForm allotCompanyId={allotCompanyId} canEdit={canEdit} />
       </Form>
     </Modal>
   );
