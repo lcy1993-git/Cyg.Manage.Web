@@ -2,7 +2,7 @@ import React from 'react';
 import EditFormTable from '@/components/edit-form-table';
 import { InputNumber, Form, Input } from 'antd';
 import UrlSelect from '@/components/url-select';
-
+import CascaderUrlSelect from '@/components/cascader-url-select';
 interface AddDetailParams {
   resourceLibId: string;
   addForm: any;
@@ -25,18 +25,20 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       title: '组件',
       dataIndex: 'componentId',
       index: 'componentId',
-      width: 180,
+      width: 400,
       render: () => {
         return (
           <UrlSelect
             requestSource="resource"
-            url="/Component/GetList"
-            valueKey="componentId"
-            titleKey="componentName"
+            url="/Material/GetList"
+            valueKey="materialId"
+            titleKey="materialName"
             allowClear
+            labelInValue
+            maxTagTextLength={5}
             requestType="post"
             postType="query"
-            placeholder="--组件--"
+            placeholder="--物料1--"
             libId={resourceLibId}
           />
         );

@@ -71,15 +71,15 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Spin spinning={loading} tip="正在加载...">
-        <ReadonlyItem label="标题">{newsInfo?.title}</ReadonlyItem>
-        <ReadonlyItem label="状态">
+        <ReadonlyItem labelWidth={40} align="left" label="标题">{newsInfo?.title}</ReadonlyItem>
+        <ReadonlyItem labelWidth={40} align="left" label="状态">
           {newsInfo?.isEnable ? (
             <span className={styles.open}>启用</span>
           ) : (
             <span className={styles.close}>禁用</span>
           )}
         </ReadonlyItem>
-        <ReadonlyItem label="对象">
+        <ReadonlyItem labelWidth={40} align="left" label="对象">
           <div className={styles.object}>
             <div className={styles.name}>{userShowInfo}</div>
             <div className={styles.readInfo}>
@@ -88,9 +88,9 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
             </div>
           </div>
         </ReadonlyItem>
-        <ReadonlyItem label="端口">{clientCategorysInfo}</ReadonlyItem>
+        <ReadonlyItem labelWidth={40} align="left" label="端口">{clientCategorysInfo}</ReadonlyItem>
         <div style={{ width: '100%' }}>
-          <ReadonlyItem label="内容">
+          <ReadonlyItem labelWidth={40} align="left" label="内容">
             {newsInfo?.content && (
               <div dangerouslySetInnerHTML={{ __html: newsInfo?.content! }}></div>
             )}

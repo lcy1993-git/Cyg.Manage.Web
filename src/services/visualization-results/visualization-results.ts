@@ -42,7 +42,7 @@ export const getGisDetail = (params: any) => {
 // 消息推送
 export const publishMessage = (params: any) => {
   return request(
-    `${baseUrl.review}/WebGis/PublishMessage`,
+    `${baseUrl.design}/WebGis/PublishMessage`,
     { method: 'POST', data: { ...params } },
   );
 };
@@ -68,7 +68,7 @@ export const getMaterialItemData = (params: any) => {
 // 获取多媒体数据
 export const getMedium = (params: any) => {
   return request(
-    `${baseUrl.review}/WebGis/GetMedias`,
+    `${baseUrl.design}/WebGis/GetMedias`,
     { method: 'POST', data: { ...params } },
   );
 };
