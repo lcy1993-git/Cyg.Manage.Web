@@ -32,8 +32,6 @@ const DefaultParams: React.FC = () => {
     });
   });
 
-  console.log(treeData);
-
   return (
     <>
       <Row gutter={18}>

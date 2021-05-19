@@ -8,7 +8,6 @@ interface AttributeParams {
 
 const ModuleAttributeForm: React.FC<AttributeParams> = (props) => {
   const { resourceLibId } = props;
-  console.log(resourceLibId);
 
   return (
     <>

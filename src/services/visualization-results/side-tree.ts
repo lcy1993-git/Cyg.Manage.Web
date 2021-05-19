@@ -59,7 +59,7 @@ export const fetchEngineerProjectListByParamsAndCompany = (
 ) => {
   return cyRequest<ProjectListByAreaType[]>(() =>
     request(
-      `${baseUrl.projectVisualization}/ProjectVisualization/GetProjectListByCompany
+      `${baseUrl.project}/ProjectVisualization/GetProjectListByCompany
     `,
       { method: 'POST', data: params },
     ),

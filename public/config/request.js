@@ -41,7 +41,6 @@ const arrayHasNotBaseUrlArray = {
     resource: "/resourcemanage/v2/api",
     webGis: '/webGis/api',
     comment: '/Comment/api',
-    projectVisualization: '/ProjectVisualization/api',
     tecEco: '/tecEco/api',
     review: "/review/api",
     component: '/Component/api',

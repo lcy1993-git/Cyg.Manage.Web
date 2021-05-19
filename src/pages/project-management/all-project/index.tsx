@@ -97,6 +97,8 @@ const ProjectManagement: React.FC = () => {
 
   const [selectProjectIds, setSelectProjectIds] = useState<string[]>([]);
 
+  const [projectName, setProjectName] = useState<string>('');
+
   const [currentArrangeProjectType, setCurrentArrangeProjectType] = useState<string>('2');
   const [currentArrangeProjectIsArrange, setCurrentArrangeProjectIsArrange] = useState<string>('');
 
@@ -110,6 +112,8 @@ const ProjectManagement: React.FC = () => {
   //获取上传立项模板后的List数据
   //获取当前选择数据
   const [currentProjectId, setCurrentProjectId] = useState<string>('');
+
+  const [ifCanEdit, setIfCanEdit] = useState<any>([]);
 
   const [notBeginUsers, setNotBeginUsers] = useState<any>();
   const [arrangeUsers, setArrangeUsers] = useState<any>();
@@ -256,23 +260,23 @@ const ProjectManagement: React.FC = () => {
   };
 
   const editArrangeEvent = async () => {
-    const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
+    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
 
     if (projectIds && projectIds.length === 0) {
       message.error('请选择修改安排的项目！');
       return;
     }
-    if (tableSelectData[0]?.projectInfo?.status[0].status === 7) {
+    if (tableSelectData[0]?.projectInfo?.status[0]?.status === 7) {
       message.error('当前处于设计完成，不可修改安排！');
       return;
     }
     if (
-      (tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
-        tableSelectData[0]?.projectInfo?.status[0].auditStatus === 13) ||
-      (tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
-        tableSelectData[0]?.projectInfo?.status[0].auditStatus === 15)
+      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
+      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
     ) {
-      setCurrentProjectId(tableSelectData[0].checkedArray[0]);
+      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
       const res = await getExternalStep(tableSelectData[0]?.checkedArray[0]);
       const notBegin = res?.map((item: any) => {
         if (item.status === 1) {
@@ -287,22 +291,20 @@ const ProjectManagement: React.FC = () => {
       setEditExternalArrangeModal(true);
       return;
     }
-
     if (
-      tableSelectData[0]?.projectInfo?.status[0].status === 17 &&
-      tableSelectData[0]?.projectInfo?.status[0].auditStatus === 10
+      tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+      tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
     ) {
-      setCurrentProjectId(tableSelectData[0].checkedArray[0]);
-      const res = await getArrangeUsers(tableSelectData[0].checkedArray[0], 6);
+      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+      setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
+      const res = await getArrangeUsers(tableSelectData[0]?.checkedArray[0], 6);
 
-      // setCurrentProName(proName);
       const exUsers = res?.map((item) => {
         return {
           value: item.userId,
           text: item.userNameText,
         };
       });
-      console.log(exUsers);
 
       setArrangeUsers(exUsers);
       setExternalArrangeModal(true);
@@ -311,6 +313,8 @@ const ProjectManagement: React.FC = () => {
     const resData = await canEditArrange(projectIds);
 
     const { allotCompanyGroup = '' } = resData;
+
+    setIfCanEdit(resData);
 
     setEditCurrentAllotCompanyId(allotCompanyGroup);
     setSelectProjectIds(projectIds);
@@ -1032,6 +1036,7 @@ const ProjectManagement: React.FC = () => {
           visible={editArrangeModalVisible}
           onChange={setEditArrangeModalVisible}
           projectIds={selectProjectIds}
+          canEdit={ifCanEdit}
         />
       )}
       {recallModalVisible && (
@@ -1071,6 +1076,7 @@ const ProjectManagement: React.FC = () => {
           onChange={setExternalArrangeModal}
           projectId={currentProjectId}
           arrangeUsers={arrangeUsers}
+          proName={projectName}
         />
       )}
     </PageCommonWrap>
