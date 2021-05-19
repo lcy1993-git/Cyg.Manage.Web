@@ -96,6 +96,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     });
   };
 
+  const clearState = () => {
+    setCheckedKeys([]);
+    setProjectIdList([]);
+  };
+  useEffect(() => {
+    clearState();
+  }, [filterCondition]);
+
   const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(
     () =>
       tabActiveKey === '2'
@@ -185,6 +193,19 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }, [checkedKeys]);
 
+  const onTabChange = () => {
+    if (tabActiveKey === '2') {
+      setTreeData([]);
+      clearState();
+      setTabActiveKey('1');
+    }
+    if (tabActiveKey === '1') {
+      setTreeData([]);
+      clearState();
+      setTabActiveKey('2');
+    }
+  };
+
   const activeStyle = '#ebedee';
 
   return (
@@ -194,30 +215,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
           className={styles.tabBar}
         >
-          <div
-            className={styles.tabBarItem}
-            onClick={() => {
-              if (tabActiveKey === '2') {
-                setTreeData([]);
-                setCheckedKeys([]);
-                setProjectIdList([]);
-                setTabActiveKey('1');
-              }
-            }}
-          >
-            按地区
+          <div className={styles.tabBarItem} onClick={() => onTabChange()}>
+            按地方
           </div>
           <div
             style={{ backgroundColor: tabActiveKey === '2' ? activeStyle : '#fff' }}
             className={styles.tabBarItem}
-            onClick={() => {
-              if (tabActiveKey === '1') {
-                setTreeData([]);
-                setCheckedKeys([]);
-                setProjectIdList([]);
-                setTabActiveKey('2');
-              }
-            }}
+            onClick={() => onTabChange()}
           >
             按公司
           </div>
