@@ -42,7 +42,7 @@ export const getGisDetail = (params: any) => {
 // 消息推送
 export const publishMessage = (params: any) => {
   return request(
-    `${baseUrl.review}/WebGis/PublishMessage`,
+    `${baseUrl.design}/WebGis/PublishMessage`,
     { method: 'POST', data: { ...params } },
   );
 };
@@ -56,10 +56,11 @@ export const getMaterialItemData = (params: any) => {
    */
   let { type = 0, ...rest } = params;
   if (params.layerName !== 'tower') type = 1;
-  const url = ['LibraryDesign/GetModuleDetailView', 'LibraryComponent/GetComponentDetailView'];
+  const url = ['/LibraryDesign/GetModuleDetailView', '/LibraryComponent/GetComponentDetailView'];
   return request(
     `${baseUrl.resourceV1}` +
       url[type],
+    // 'http://10.6.1.36:8015/api/LibraryDesign/GetModuleDetailView',
     { method: 'POST', data: { ...rest } },
   );
 };
@@ -67,7 +68,7 @@ export const getMaterialItemData = (params: any) => {
 // 获取多媒体数据
 export const getMedium = (params: any) => {
   return request(
-    `${baseUrl.review}/WebGis/GetMedias`,
+    `${baseUrl.design}/WebGis/GetMedias`,
     { method: 'POST', data: { ...params } },
   );
 };

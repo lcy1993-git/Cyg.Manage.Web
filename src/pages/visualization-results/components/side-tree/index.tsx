@@ -8,6 +8,7 @@ import {
   fetchEngineerProjectListByParamsAndArea,
   fetchEngineerProjectListByParamsAndCompany,
   ProjectListByAreaType,
+  fetchCommentCountById,
   Properties,
 } from '@/services/visualization-results/side-tree';
 import { useContainer } from '../../result-page/mobx-store';
@@ -95,6 +96,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     });
   };
 
+  const clearState = () => {
+    setCheckedKeys([]);
+    setProjectIdList([]);
+  };
+  useEffect(() => {
+    clearState();
+  }, [filterCondition]);
+
   const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(
     () =>
       tabActiveKey === '2'
@@ -114,12 +123,25 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           // setExpandedKeys([...expandedKeys]);
           setExpandedKeys(['-1']);
           setCheckedKeys([]);
+          store.setProjectIdList([]);
         } else {
           message.warning('无数据');
         }
       },
       onError: () => {
         message.error('获取数据失败');
+      },
+    },
+  );
+
+  const { data: commentCountResponseData, run: feetchCommentCountRquest } = useRequest(
+    () => fetchCommentCountById(projectIdList[0].id),
+    {
+      manual: true,
+      onSuccess: () => {
+        if (!commentCountResponseData?.totalQty) {
+          message.warn('当前项目不存在审阅消息');
+        }
       },
     },
   );
@@ -154,17 +176,35 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       .map((v: TreeNodeType) => generatorProjectInfoItem(v));
     //去重
     let res = _.unionBy(r, (item: ProjectList) => item.id);
+
     setProjectIdList(res);
 
     setCheckedKeys(checked);
   };
 
   useEffect(() => {
+    if (projectIdList.length === 1) {
+      feetchCommentCountRquest();
+    }
     store.setProjectIdList(projectIdList);
+
     if (projectIdList.length === 0) {
       store.toggleObserveTrack(false);
     }
   }, [checkedKeys]);
+
+  const onTabChange = () => {
+    if (tabActiveKey === '2') {
+      setTreeData([]);
+      clearState();
+      setTabActiveKey('1');
+    }
+    if (tabActiveKey === '1') {
+      setTreeData([]);
+      clearState();
+      setTabActiveKey('2');
+    }
+  };
 
   const activeStyle = '#ebedee';
 
@@ -175,26 +215,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
           className={styles.tabBar}
         >
-          <div
-            className={styles.tabBarItem}
-            onClick={() => {
-              if (tabActiveKey === '2') {
-                setTreeData([]);
-                setTabActiveKey('1');
-              }
-            }}
-          >
+          <div className={styles.tabBarItem} onClick={() => onTabChange()}>
             按地方
           </div>
           <div
             style={{ backgroundColor: tabActiveKey === '2' ? activeStyle : '#fff' }}
             className={styles.tabBarItem}
-            onClick={() => {
-              if (tabActiveKey === '1') {
-                setTreeData([]);
-                setTabActiveKey('2');
-              }
-            }}
+            onClick={() => onTabChange()}
           >
             按公司
           </div>

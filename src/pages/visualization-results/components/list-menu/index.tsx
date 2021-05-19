@@ -162,7 +162,7 @@ const ListMenu: FC = observer(() => {
           <Menu.Item key="commentTable" disabled>
             <Tooltip title="多选状态下无法查看审阅消息">
               <CommentOutlined style={{ color: 'red' }} />
-              <span style={{ color: 'red' }}>评审列表 </span>
+              <span style={{ color: 'red' }}>审阅消息</span>
               <QuestionCircleOutlined style={{ color: 'red', marginLeft: 4 }} />
             </Tooltip>
           </Menu.Item>

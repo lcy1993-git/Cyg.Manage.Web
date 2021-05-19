@@ -112,3 +112,10 @@ export const getCurrentCompanyInfo = () => {
     request(`${baseUrl.project}/Company/GetCurrent`, { method: 'GET' }),
   );
 };
+
+//获取端口类别
+export const getClientCategorys = () => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/CompanyUser/GetClientCategorys`, { method: 'GET' }),
+  );
+};

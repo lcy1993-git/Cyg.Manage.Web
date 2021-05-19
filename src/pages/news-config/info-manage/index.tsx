@@ -77,13 +77,13 @@ const InfoManage: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="标题" width="230px">
+        <TableSearch label="搜索" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入搜索内容"
+            placeholder="请输入标题或内容"
           />
         </TableSearch>
         <TableSearch label="状态" width="200px" marginLeft="20px">
@@ -240,7 +240,6 @@ const InfoManage: React.FC = () => {
         },
         values,
       );
-      console.log(submitInfo);
 
       await addNewsItem(submitInfo);
       refresh();
@@ -297,6 +296,10 @@ const InfoManage: React.FC = () => {
   };
 
   const checkEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请先选择一条宣贯进行查看');
+      return;
+    }
     setCheckInfoVisible(true);
   };
 

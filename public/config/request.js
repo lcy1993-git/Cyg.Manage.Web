@@ -12,7 +12,7 @@
 
 // 如果数组里面包含这个ip,那么就代表是IIS部署的，就直接用url + 端口去访问。  如果没包含，代表是nginx部署，那么就用代理
 
-const ipArray = ["10.6.1.36","10.6.1.37","171.223.214.154","47.108.63.23","39.99.251.67","10.6.1.38"];
+const ipArray = ["47.108.63.23","39.99.251.67"];
 
 const thisHostName = window.location.hostname;
 
@@ -24,15 +24,16 @@ const arrayHasIpBaseUrlArray = {
     upload: `${baseUrl}:8023/api`,
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
-    projectVisualization: `${baseUrl}:8026/api`,
     tecEco: `${baseUrl}:8033/api`,
-    review: `${baseUrl}:8014/api`,
+    review: `${baseUrl}:8041/api`,
 
+    webGis: `${baseUrl}:8021/api`,
     // webGis
     resourceV1: `${baseUrl}:8015/api`,
     manage: `${baseUrl}:8025/api`,
     webGis5: `${baseUrl}:8032/api`,
     geoserver: `${baseUrl}:8099`,
+    design: `${baseUrl}:8014`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -40,10 +41,9 @@ const arrayHasNotBaseUrlArray = {
     common: "/common/api",
     upload: "/storage/api",
     resource: "/resourcemanage/v2/api",
-    webGis: '/webGis/api',
+    webGis: '/webgis/api',
     webGis2: '/webGis2/api',
-    comment: '/Comment/api',
-    projectVisualization: '/ProjectVisualization/api',
+    comment: '/project/api',
     tecEco: '/tecEco/api',
     review: "/review/api",
 
@@ -51,6 +51,7 @@ const arrayHasNotBaseUrlArray = {
     resourceV1: '/resource/api',
     manage: '/manage/api',
     geoserver: '/geoserver',
+    design: '/design/api',
 }
 
 export const logoArray = {
@@ -94,7 +95,7 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.46";
+export const version = "1.0.47";
 
 // const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
 

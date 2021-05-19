@@ -13,11 +13,13 @@ import { getGroupInfo } from '@/services/project-management/all-project';
 import uuid from 'node-uuid';
 import pdfjs from 'pdfjs-dist';
 import FormSwitch from '@/components/form-switch';
+import { getClientCategorys } from '@/services/personnel-config/company-user';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
   titleForm: any;
-  htmlContent?: string
+  htmlContent?: string;
+  type?: 'edit' | 'add';
 }
 
 const { BtnMenu } = E;
@@ -75,6 +77,7 @@ class AlertMenu extends BtnMenu {
             .getDocument(res as string)
             .promise.then(async function (pdf: any) {
               const numPages = pdf.numPages;
+              let pdfHtml = "";
               for (let i = 1; i <= numPages; i++) {
                 await pdf.getPage(i).then(async function getPageHelloWorld(page: any) {
                   var scale = 2;
@@ -88,13 +91,12 @@ class AlertMenu extends BtnMenu {
                     viewport: viewport,
                   };
                   await page.render(renderContext);
-                  that.txt.append(
-                    `<image style="width:100%;height:auto" src="${canvas.toDataURL(
-                      'image/png',
-                    )}"></image>`,
-                  );
+                  pdfHtml += `<image style="width:100%;height:auto" src="${canvas.toDataURL(
+                    'image/png',
+                  )}"></image>`
                   // console.log(that.txt.html());
                 });
+                that.txt.append(pdfHtml);
               }
             })
             .catch((err: any) => {
@@ -105,17 +107,6 @@ class AlertMenu extends BtnMenu {
       }
     }
   }
-
-  tryChangeActive() {
-    // 激活菜单
-    // 1. 菜单 DOM 节点会增加一个 .w-e-active 的 css class
-    // 2. this.this.isActive === true
-    // this.active();
-    // // 取消激活菜单
-    // // 1. 菜单 DOM 节点会删掉 .w-e-active
-    // 2. this.this.isActive === false
-    // this.unActive()
-  }
 }
 
 // }
@@ -124,6 +115,24 @@ const TextEditorModal = (props: EditorParams) => {
   const { onChange, titleForm, htmlContent } = props;
 
   const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
+  const { data } = useRequest(() => getClientCategorys(), {});
+
+  const categoryData = useMemo(() => {
+    if (data) {
+      return data
+        .map((item: any) => {
+          if (item.value === 4 || item.value === 8) {
+            return {
+              value: item.value,
+              text: item.text,
+            };
+          }
+          return;
+        })
+        .filter(Boolean);
+    }
+    return;
+  }, [data]);
 
   const mapTreeData = (data: any) => {
     return {
@@ -208,14 +217,13 @@ const TextEditorModal = (props: EditorParams) => {
       onChange(newHtml);
     };
     editor.create();
-    editor.txt.html(htmlContent)
-    onChange(htmlContent!)
+    editor.txt.html(htmlContent);
+    onChange(htmlContent!);
 
     return () => {
       editor.destroy();
     };
-
-  }, [htmlContent])
+  }, [htmlContent]);
 
   return (
     <>
@@ -241,7 +249,7 @@ const TextEditorModal = (props: EditorParams) => {
             mode="multiple"
             requestSource="project"
             showSearch
-            url="/CompanyUser/GetClientCategorys"
+            defaultData={categoryData}
             titleKey="text"
             valueKey="value"
             placeholder="请选择授权端口"

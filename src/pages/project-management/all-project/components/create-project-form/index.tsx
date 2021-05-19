@@ -483,14 +483,26 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             required
             labelWidth={120}
             align="right"
-            rules={Rule.jdScope}
+            rules={[
+              {
+                required: true,
+                message: '交底范围不能为空',
+              },
+              () => ({
+                validator(_, value) {
+                  if (value <= 99999 && value >= 1) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('请填写1~99999以内的整数');
+                },
+              }),
+              {
+                pattern: /^[0-9]\d*$/,
+                message: '请输入正整数',
+              },
+            ]}
           >
-            <InputNumber
-              placeholder="请输入交底范围"
-              min={1}
-              max={99999}
-              style={{ width: '100%' }}
-            />
+            <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -502,14 +514,26 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             required
             labelWidth={120}
             align="right"
-            rules={Rule.zwScope}
+            rules={[
+              {
+                required: true,
+                message: '桩位范围不能为空',
+              },
+              () => ({
+                validator(_, value) {
+                  if (value <= 99999 && value >= 1) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('请填写1~99999以内的整数');
+                },
+              }),
+              {
+                pattern: /^[0-9]\d*$/,
+                message: '请输入正整数',
+              },
+            ]}
           >
-            <InputNumber
-              placeholder="请输入交底范围"
-              min={1}
-              max={99999}
-              style={{ width: '100%' }}
-            />
+            <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
           </CyFormItem>
         </div>
       </div>

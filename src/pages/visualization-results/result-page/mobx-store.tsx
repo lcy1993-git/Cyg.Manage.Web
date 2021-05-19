@@ -22,7 +22,7 @@ export interface VisualizationResultsStateType {
 }
 
 const initState = {
-  filterCondition: {},
+  filterCondition: { haveAnnotate: -1 },
   propertySidePopupShow: false,
   projectDetailModalShow: false,
   materialModalShow: false,

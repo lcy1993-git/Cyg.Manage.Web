@@ -44,7 +44,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
 
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
-      console.log(values);
       const outerAuditUsers = handleExternalMen;
       if (selectType === '2') {
         const arrangeInfo = {
@@ -145,8 +144,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
             <TabPane tab="外审安排" key="2">
               <SelectAddListForm
                 onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
-                projectName="测试项目名称"
-                onAddPeople={(people) => setArrangePeople(people)}
+                onChange={(people) => setArrangePeople(people)}
               />
             </TabPane>
           )}

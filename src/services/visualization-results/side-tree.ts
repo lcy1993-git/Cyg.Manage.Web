@@ -7,7 +7,7 @@ export interface EngineerProjetListFilterParams {
   stage?: string[]; //项目阶段
   constructType?: string[]; //建设性质
   nature?: string[]; //项目性质
-  kvLevel?: string[]; //电压等级
+  kvLevel?: any[]; //电压等级
   status?: number[]; //项目状态
   keyWord?: string;
   haveAnnotate?: number;
@@ -32,6 +32,10 @@ export interface ProjectListByAreaType {
   children?: ProjectListByAreaType[];
 }
 
+export interface CommentCount {
+  totalQty: number;
+  unReadQty: number;
+}
 /**
  *
  * 接口文档 http://10.6.1.36:8025/help/index.html
@@ -43,7 +47,7 @@ export interface ProjectListByAreaType {
 export const fetchEngineerProjectListByParamsAndArea = (params: EngineerProjetListFilterParams) => {
   return cyRequest<ProjectListByAreaType[]>(() =>
     request(
-      `${baseUrl.projectVisualization}/ProjectVisualization/GetProjectListByArea
+      `${baseUrl.project}/ProjectVisualization/GetProjectListByArea
     `,
       { method: 'POST', data: params },
     ),
@@ -55,9 +59,19 @@ export const fetchEngineerProjectListByParamsAndCompany = (
 ) => {
   return cyRequest<ProjectListByAreaType[]>(() =>
     request(
-      `${baseUrl.projectVisualization}/ProjectVisualization/GetProjectListByCompany
+      `${baseUrl.project}/ProjectVisualization/GetProjectListByCompany
     `,
       { method: 'POST', data: params },
+    ),
+  );
+};
+
+export const fetchCommentCountById = (projectId: string) => {
+  return cyRequest<CommentCount>(() =>
+    request(
+      `${baseUrl.comment}/Comment/GetCommentCount
+    `,
+      { method: 'POST', data: { projectId } },
     ),
   );
 };
