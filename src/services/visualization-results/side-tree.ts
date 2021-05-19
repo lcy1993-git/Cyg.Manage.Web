@@ -47,7 +47,7 @@ export interface CommentCount {
 export const fetchEngineerProjectListByParamsAndArea = (params: EngineerProjetListFilterParams) => {
   return cyRequest<ProjectListByAreaType[]>(() =>
     request(
-      `${baseUrl.projectVisualization}/ProjectVisualization/GetProjectListByArea
+      `${baseUrl.project}/ProjectVisualization/GetProjectListByArea
     `,
       { method: 'POST', data: params },
     ),
