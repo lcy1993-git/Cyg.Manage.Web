@@ -33,7 +33,7 @@ const arrayHasIpBaseUrlArray = {
     manage: `${baseUrl}:8025/api`,
     webGis5: `${baseUrl}:8032/api`,
     geoserver: `${baseUrl}:8099`,
-    design: `${baseUrl}:8014`,
+    ModulesDetails: `${baseUrl}:8020/api`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -46,8 +46,8 @@ const arrayHasNotBaseUrlArray = {
     comment: '/project/api',
     tecEco: '/quato/api',
     review: "/review/api",
-
-    // webGis
+    component: '/Component/api',
+    material: '/Material/api/',
     resourceV1: '/resource/api',
     manage: '/manage/api',
     geoserver: '/geoserver',

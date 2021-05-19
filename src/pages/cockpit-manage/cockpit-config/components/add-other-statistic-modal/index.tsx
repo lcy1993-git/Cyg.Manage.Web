@@ -48,10 +48,10 @@ const AddOtherStatisticModal: React.FC<AddOtherStatistic> = (props) => {
   const toDoCompoentProps = useMemo(() => {
     const hasChoosetoDoComponentCodeArray = getHasChooseComponentsProps(configArray, 'toDo');
     const unChoosetoDoComponentProps = toDoComponentPropsArray.filter(
-      (item) => !hasChoosetoDoComponentCodeArray.includes(item.code),
+      (item) => !hasChoosetoDoComponentCodeArray?.includes(item.code),
     );
     const hasChoosetoDoComponentProps = toDoComponentPropsArray.filter((item) =>
-      hasChoosetoDoComponentCodeArray.includes(item.code),
+      hasChoosetoDoComponentCodeArray?.includes(item.code),
     );
     return {
       unChoosetoDoComponentProps,

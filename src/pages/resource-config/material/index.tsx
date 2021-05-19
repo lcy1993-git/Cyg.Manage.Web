@@ -380,14 +380,19 @@ const Material: React.FC = () => {
   };
 
   const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
+    if (!resourceLibId) {
+      message.warning('请先选择资源库');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
 
-    await deleteMaterialItem(editDataId);
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择需要删除的行');
+      return;
+    }
+    const deleteIds = tableSelectRows?.map((item) => item.id);
+    console.log(deleteIds);
+
+    await deleteMaterialItem({ libId: resourceLibId, ids: deleteIds });
     refresh();
     message.success('删除成功');
   };

@@ -51,9 +51,13 @@ export const updateMaterialItem = (params: ItemDetailData) => {
   );
 };
 
+interface DeleteItemParams {
+  libId: string;
+  ids: string[];
+}
 // 删除物料
-export const deleteMaterialItem = (id: string) => {
+export const deleteMaterialItem = (params: DeleteItemParams) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/Material/Delete`, { method: 'POST', data: { id } }),
+    request(`${baseUrl.resource}/Material/Delete`, { method: 'POST', data: params }),
   );
 };

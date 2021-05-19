@@ -62,8 +62,8 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
 
   const mapCompoentProps = useMemo(() => {
     const hasChooseMapComponentCodeArray = getHasChooseComponentsProps(configArray, "mapComponent");
-    const unChooseMapComponentProps = mapComponentPropsArray.filter((item) => !hasChooseMapComponentCodeArray.includes(item.code));
-    const hasChooseMapComponentProps = mapComponentPropsArray.filter((item) => hasChooseMapComponentCodeArray.includes(item.code));
+    const unChooseMapComponentProps = mapComponentPropsArray.filter((item) => !hasChooseMapComponentCodeArray?.includes(item.code));
+    const hasChooseMapComponentProps = mapComponentPropsArray.filter((item) => hasChooseMapComponentCodeArray?.includes(item.code));
     return {
       hasChooseMapComponentProps,
       unChooseMapComponentProps
@@ -72,8 +72,8 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
 
   const productionComponentProps = useMemo(() => {
     const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, "personLoad");
-    const unChooseProductionProps = productionComponentPropsArray.filter((item) => !hasChooseProductionCodeArray.includes(item.code));
-    const hasChooseProductionProps = productionComponentPropsArray.filter((item) => hasChooseProductionCodeArray.includes(item.code));
+    const unChooseProductionProps = productionComponentPropsArray.filter((item) => !hasChooseProductionCodeArray?.includes(item.code));
+    const hasChooseProductionProps = productionComponentPropsArray.filter((item) => hasChooseProductionCodeArray?.includes(item.code));
     return {
       hasChooseProductionProps,
       unChooseProductionProps

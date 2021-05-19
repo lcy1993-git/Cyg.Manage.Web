@@ -180,9 +180,7 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
         centered
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <AddComponentProperty addForm={addForm} />
-        </Form>
+        <AddComponentProperty addForm={addForm} />
       </Modal>
 
       <Modal

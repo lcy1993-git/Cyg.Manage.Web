@@ -251,9 +251,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         centered
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <AddcableChannelDetail addForm={addForm} resourceLibId={libId} />
-        </Form>
+        <AddcableChannelDetail addForm={addForm} resourceLibId={libId} />
       </Modal>
 
       <Modal

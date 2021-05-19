@@ -55,10 +55,10 @@ const EditProjectTypeModal: React.FC<EditProjectTypeStatistic> = (props) => {
   const typeComponentProps = useMemo(() => {
     const hasChooseTypeCodeArray = getHasChooseComponentsProps(configArray, 'projectType');
     const currentTypeProps = typeComponentPropsArray.filter((item) =>
-      currentRecord.componentProps.includes(item.code),
+      currentRecord.componentProps?.includes(item.code),
     );
     const unChooseTypeProps = typeComponentPropsArray.filter(
-      (item) => !currentRecord.componentProps.includes(item.code),
+      (item) => !currentRecord.componentProps?.includes(item.code),
     );
     return {
       hasChooseTypeCodeArray,
