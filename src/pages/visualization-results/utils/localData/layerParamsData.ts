@@ -1,8 +1,14 @@
-interface LayerParams {
+export interface LayerParams {
   layerName: string; // 下户线
   zIndex: number;
   declutter?: boolean;
-  type: 'line' | 'cable_channel' | 'mark' | 'point';
+  type: 'line' | 'cable_channel' | 'mark' | 'point' | 'pullline';
+}
+
+export interface LayerDatas {
+  projectID: string;
+  time: string;
+  data: any
 }
 
 export const layerParams: LayerParams[] = [
@@ -90,3 +96,5 @@ export const layerParams: LayerParams[] = [
     type: 'point',
   },
 ];
+
+export const layerDatas: LayerDatas[] = [];
