@@ -17,7 +17,7 @@ import {
 import { format } from './utils';
 const mappingTagsData = getMappingTagsDictionary();
 const mappingTagsDictionary: any = mappingTagsData ? JSON.parse(mappingTagsData) : {};
-const mediaLayers = ['tower', 'cable', 'cable_equipment'];
+const mediaLayers = ['tower', 'cable', 'cable_equipment', 'electric_meter'];
 const materiaLayers = [
   'tower',
   'transformer',
