@@ -12,7 +12,7 @@
 
 // 如果数组里面包含这个ip,那么就代表是IIS部署的，就直接用url + 端口去访问。  如果没包含，代表是nginx部署，那么就用代理
 
-const ipArray = ["10.6.1.36","10.6.1.37","171.223.214.154","47.108.63.23","39.99.251.67","10.6.1.38"];
+const ipArray = ["47.108.63.23","39.99.251.67"];
 
 const thisHostName = window.location.hostname;
 
@@ -33,6 +33,7 @@ const arrayHasIpBaseUrlArray = {
     manage: `${baseUrl}:8025/api`,
     webGis5: `${baseUrl}:8032/api`,
     geoserver: `${baseUrl}:8099`,
+    design: `${baseUrl}:8014`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -51,6 +52,7 @@ const arrayHasNotBaseUrlArray = {
     resourceV1: '/resource/api',
     manage: '/manage/api',
     geoserver: '/geoserver',
+    design: '/design/api',
 }
 
 export const logoArray = {

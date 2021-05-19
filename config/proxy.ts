@@ -7,72 +7,17 @@
  */
 export default {
   dev: {
-    '/project/api': {
+    '/api/': {
       // http://10.6.1.36:8026/api/
       // 171.223.214.154
-      target: 'http://10.6.1.36:8026',
+      target: 'http://10.6.1.36:21525',
       changeOrigin: true,
-      pathRewrite: { '^/project': '/' },
+      pathRewrite: { '^/api': '/' },
     },
-    '/common/api': {
-      target: 'http://10.6.1.36:8022/',
+    '/design/api': {
+      target: 'http://10.6.1.36:8014/',
       changeOrigin: true,
-      pathRewrite: { '^/common': '/' },
-    },
-    '/upload/api': {
-      target: 'http://10.6.1.36:8023/',
-      changeOrigin: true,
-      pathRewrite: { '^/upload': '/' },
-    },
-    '/resource/api': {
-      target: 'http://10.6.1.36:8020/',
-      changeOrigin: true,
-      pathRewrite: { '^/resource': '/' },
-    },
-    '/webGis/api': {
-      target: 'http://10.6.1.36:8025/',
-      changeOrigin: true,
-      pathRewrite: { '^/webGis': '/' },
-    },
-    '/Comment/api': {
-      target: 'http://10.6.1.36:8013/',
-      changeOrigin: true,
-      pathRewrite: { '^/Comment': '/' },
-    },
-    '/ProjectVisualization/api': {
-      target: 'http://10.6.1.36:8026/',
-      changeOrigin: true,
-      pathRewrite: { '^/ProjectVisualization': '/' },
-    },
-    '/baidu/api': {
-      target: 'https://map.baidu.com/',
-      changeOrigin: true,
-      pathRewrite: { '^/baidu/api': '/' },
-    },
-    '/tecEco/api': {
-      target: 'http://10.6.1.36:8033',
-      changeOrigin: true,
-      pathRewrite: { '^/tecEco': '/' },
-    },
-    '/review/api': {
-      target: 'http://10.6.1.36:8041/',
-      changeOrigin: true,
-      pathRewrite: { '^/review': '/' },
-    },
-    '/geoserver': {
-      target: 'http://10.6.1.36:8099/',
-      changeOrigin: true,
-      pathRewrite: { '^/geoserver': '/' },
-    },
-    '/manage': {
-      target: 'http://10.6.1.36:8025/',
-      changeOrigin: true,
-      pathRewrite: { '^/manage': '/' },
-    },
-    '/resourceV1': {
-      target: 'http://10.6.1.36:8015/',
-      changeOrigin: true,
-      pathRewrite: { '^/resourceV1': '/' },
+      pathRewrite: { '^/design': '/' },
     },
   },
   test: {
