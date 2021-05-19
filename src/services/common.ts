@@ -8,22 +8,23 @@ import { isArray } from 'lodash';
 const { NODE_ENV } = process.env;
 
 const devBaseUrl = {
-    project: "/api/manage/v2/api",
-    common: "/api/common/api",
-    upload: "/api/storage/api",
-    resource: "/api/resourcemanage/v2/api",
-    webGis: '/api/webGis/api',
-    webGis2: '/api/webGis2/api',
-    comment: '/api/Comment/api',
-    projectVisualization: '/api/ProjectVisualization/api',
-    tecEco: '/api/tecEco/api',
-    review: "/api/review/api",
-
-    // webGis
-    resourceV1: '/api/resource/api',
-    manage: '/api/manage/api',
-    geoserver: '/api/geoserver',
-    design: 'api/design/api',
+  project: '/project/api',
+  common: '/common/api',
+  upload: '/upload/api',
+  resource: '/resource/api',
+  webGis: '/webGis/api',
+  webGis2: '/webGis2/api',
+  comment: '/Comment/api',
+  component: '/Component/api',
+  material: '/Material/api/',
+  projectVisualization: '/ProjectVisualization/api',
+  tecEco: '/tecEco/api',
+  review: '/review/api',
+  ModulesDetails: '/ModulesDetails/api',
+  // gis
+  resourceV1: '/resource/api',
+  manage: '/manage/api',
+  geoserver: '/geoserver',
 };
 
 // interface UrlSelectParams {
@@ -102,12 +103,13 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco',
+  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'material' | 'component',
   requestType = 'get',
   postType = 'body',
   libId: string,
 ) => {
   const requestBaseUrl = baseUrl[requestSource];
+
   if (requestType === 'get') {
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),

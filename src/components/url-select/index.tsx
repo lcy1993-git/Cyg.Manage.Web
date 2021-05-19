@@ -11,14 +11,15 @@ export interface UrlSelectProps {
   extraParams?: object;
   defaultData?: any[];
   needFilter?: boolean;
-  requestSource?: 'project' | 'common' | 'resource';
+  requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component';
   requestType?: 'post' | 'get';
   paramsMust?: string[];
   postType?: 'query' | 'body';
   libId?: string;
   needAll?: boolean;
   allValue?: string;
-  manual?: boolean;
+  manual?: boolean; //是否手动执行fetch数据
+  trigger?: boolean; //用来触发fetch方法
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
@@ -26,7 +27,6 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
 ) => {
   const {
     url = '',
-    manual = false,
     titleKey = 'Title',
     valueKey = 'ID',
     defaultData,
@@ -45,11 +45,9 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
   // URL 有数值
   // defaultData 没有数值
   // 必须传的参数不为空
-
-  const { data: resData, run } = useRequest(
+  const { data: resData } = useRequest(
     () => getDataByUrl(url, extraParams, requestSource, requestType, postType, libId),
     {
-      manual,
       ready: !!(
         url &&
         !defaultData &&
@@ -58,12 +56,6 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
       refreshDeps: [url, JSON.stringify(extraParams)],
     },
   );
-
-  useEffect(() => {
-    if (!manual) {
-      run();
-    }
-  }, [manual]);
 
   const afterHanldeData = useMemo(() => {
     if (defaultData) {

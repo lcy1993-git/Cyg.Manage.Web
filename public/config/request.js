@@ -26,14 +26,15 @@ const arrayHasIpBaseUrlArray = {
     comment: `${baseUrl}:8013/api`,
     projectVisualization: `${baseUrl}:8026/api`,
     tecEco: `${baseUrl}:8033/api`,
-    review: `${baseUrl}:8041/api`,
-
+    review: `${baseUrl}:8014/api`,
+    material: `${baseUrl}:8020/api`,
+    component: `${baseUrl}:8020/api`,
     // webGis
     resourceV1: `${baseUrl}:8015/api`,
     manage: `${baseUrl}:8025/api`,
     webGis5: `${baseUrl}:8032/api`,
     geoserver: `${baseUrl}:8099`,
-    design: `${baseUrl}:8014`,
+    ModulesDetails: `${baseUrl}:8020/api`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -47,7 +48,9 @@ const arrayHasNotBaseUrlArray = {
     projectVisualization: '/ProjectVisualization/api',
     tecEco: '/tecEco/api',
     review: "/review/api",
-
+    component: '/Component/api',
+    material: '/Material/api/',
+    ModulesDetails: '/ModulesDetails/api',
     // webGis
     resourceV1: '/resource/api',
     manage: '/manage/api',
