@@ -1,5 +1,6 @@
 import CyFormItem from '@/components/cy-form-item';
 import { userLoginRequest } from '@/services/login';
+import { useGetUserInfo } from '@/utils/hooks';
 import { flatten } from '@/utils/utils';
 import { useControllableValue } from 'ahooks';
 import { Form, Input, message, Modal } from 'antd';
@@ -26,6 +27,11 @@ const CutAccount = (props: EditPasswordProps) => {
       // TODO 快捷切换
       const resData = await userLoginRequest({ userName, pwd });
 
+      // 如果这次登录的账号跟之前的不一样，那么就只到首页
+      const lastAccount = useGetUserInfo();
+
+      const isLastAccount = (lastAccount && lastAccount.userName === userName);
+
       const { accessToken, modules, user } = resData;
 
       const buttonModules = flatten(modules);
@@ -38,7 +44,7 @@ const CutAccount = (props: EditPasswordProps) => {
       localStorage.setItem('userInfo', JSON.stringify(user));
       localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
 
-      if (!againLogin) {
+      if (!againLogin || !isLastAccount) {
         setState(false);
         message.success('账户快捷登录成功');
         history.push('/index');

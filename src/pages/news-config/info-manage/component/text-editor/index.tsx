@@ -77,6 +77,7 @@ class AlertMenu extends BtnMenu {
             .getDocument(res as string)
             .promise.then(async function (pdf: any) {
               const numPages = pdf.numPages;
+              let pdfHtml = "";
               for (let i = 1; i <= numPages; i++) {
                 await pdf.getPage(i).then(async function getPageHelloWorld(page: any) {
                   var scale = 2;
@@ -90,13 +91,12 @@ class AlertMenu extends BtnMenu {
                     viewport: viewport,
                   };
                   await page.render(renderContext);
-                  that.txt.append(
-                    `<image style="width:100%;height:auto" src="${canvas.toDataURL(
-                      'image/png',
-                    )}"></image>`,
-                  );
+                  pdfHtml += `<image style="width:100%;height:auto" src="${canvas.toDataURL(
+                    'image/png',
+                  )}"></image>`
                   // console.log(that.txt.html());
                 });
+                that.txt.append(pdfHtml);
               }
             })
             .catch((err: any) => {
