@@ -32,6 +32,7 @@ export interface TreeNodeType {
 }
 export interface SideMenuProps {
   className?: string;
+  selectCityId?: string;
 }
 
 /**
@@ -79,10 +80,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+  const [showDefaultSelectCity, setShowDefaultSelectCity] = useState<boolean>(true);
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
   const { filterCondition } = vState;
-  const { className } = props;
+  const { className, selectCityId } = props;
 
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
@@ -100,6 +102,61 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setCheckedKeys([]);
     setProjectIdList([]);
   };
+
+  const getExpanedCityProjectKeys = (
+    items: TreeNodeType[],
+  ): { expanded: string[]; checked: TreeNodeType[] } => {
+    const expanded = new Array<string>();
+    const checked = new Array<TreeNodeType>();
+    const dfs = (node: TreeNodeType, isSelect: boolean) => {
+      const { id, children, key, levelCategory } = node;
+      expanded.push(key);
+      if (id === selectCityId) {
+        children?.forEach((v) => {
+          dfs(v, true);
+        });
+
+        return;
+      }
+
+      if (isSelect && levelCategory === 6) {
+        checked.push(node);
+      }
+
+      if (isSelect && levelCategory !== 6) {
+        expanded.push(key);
+      }
+
+      children?.forEach((v) => {
+        dfs(v, isSelect);
+      });
+      expanded.pop();
+      return;
+    };
+    items.forEach((v) => {
+      dfs(v, false);
+    });
+
+    return { expanded, checked };
+  };
+
+  const initSideTree = (data: TreeNodeType[]) => {
+    // pushAllKeys(data);
+    // expandedKeys.push('-1');
+
+    // setExpandedKeys([...expandedKeys]);
+
+    if (selectCityId && tabActiveKey === '1' && showDefaultSelectCity) {
+      const key = getExpanedCityProjectKeys(data);
+      const { expanded, checked } = key;
+      setExpandedKeys(['-1', ...expanded]);
+      setCheckedKeys(checked.map((v: TreeNodeType) => v.key));
+      setProjectIdList(checked.map((v: TreeNodeType) => generatorProjectInfoItem(v)));
+    } else {
+      setExpandedKeys(['-1']);
+      clearState();
+    }
+  };
   useEffect(() => {
     clearState();
   }, [filterCondition]);
@@ -116,14 +173,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         let data = generateProjectTree(treeListReponseData);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
-
-          // pushAllKeys(data);
-          // expandedKeys.push('-1');
-
-          // setExpandedKeys([...expandedKeys]);
-          setExpandedKeys(['-1']);
-          setCheckedKeys([]);
-          store.setProjectIdList([]);
+          initSideTree(data);
         } else {
           message.warning('无数据');
         }
@@ -186,12 +236,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     if (projectIdList.length === 1) {
       feetchCommentCountRquest();
     }
+
     store.setProjectIdList(projectIdList);
 
     if (projectIdList.length === 0) {
       store.toggleObserveTrack(false);
     }
-  }, [checkedKeys]);
+  }, [projectIdList]);
 
   const onTabChange = () => {
     if (tabActiveKey === '2') {
@@ -204,6 +255,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       clearState();
       setTabActiveKey('2');
     }
+    setShowDefaultSelectCity(false);
   };
 
   const activeStyle = '#ebedee';

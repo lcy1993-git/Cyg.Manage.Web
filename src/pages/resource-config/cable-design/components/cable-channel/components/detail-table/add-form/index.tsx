@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import EditFormTable from '@/components/edit-form-table';
 import { InputNumber, Form, Input } from 'antd';
 import UrlSelect from '@/components/url-select';
+import CascaderUrlSelect from '@/components/material-cascader-url-select';
 
 interface AddDetailParams {
   resourceLibId: string;
@@ -26,44 +27,15 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
       title: '组件',
       dataIndex: 'componentId',
       index: 'componentId',
-      cascader: true,
-      width: 180,
-      render: () => {
-        return (
-          <UrlSelect
-            requestSource="resource"
-            url="/Component/GetList"
-            valueKey="componentId"
-            titleKey="componentName"
-            allowClear
-            requestType="post"
-            postType="query"
-            placeholder="--组件--"
-            libId={resourceLibId}
-          />
-        );
-      },
+      width: 400,
+      render: () => <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />,
     },
     {
       title: '物料',
       dataIndex: 'materialId',
       index: 'materialId',
-      width: 240,
-      render: () => {
-        return (
-          <UrlSelect
-            requestSource="resource"
-            url="/Material/GetList"
-            valueKey="materialId"
-            titleKey="materialName"
-            allowClear
-            requestType="post"
-            postType="query"
-            placeholder="--物料--"
-            libId={resourceLibId}
-          />
-        );
-      },
+      width: 400,
+      render: () => <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />,
     },
     {
       title: '数量',

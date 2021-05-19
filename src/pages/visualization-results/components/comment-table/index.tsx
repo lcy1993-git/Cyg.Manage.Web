@@ -261,7 +261,7 @@ const CommentTable: FC<CommentProps> = (props) => {
       </div>
 
       <Modal
-        title="评审详细列表"
+        title="审阅列表"
         centered
         visible={commentListModalVisible}
         onOk={() => setCommentListModalVisible(false)}

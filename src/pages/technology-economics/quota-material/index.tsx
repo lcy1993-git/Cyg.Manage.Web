@@ -3,6 +3,7 @@ import {Input} from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import { useState } from 'react'
 
+// 编辑弹窗
 const dictionaryForm = () => {
   return (
     <>
@@ -25,7 +26,7 @@ const dictionaryForm = () => {
   );
 }
 
-// 外部
+// 表格配置列
 const columns = [
   {
     dataIndex: 'id',
@@ -64,15 +65,18 @@ const QuotaMechanics = () => {
         dictionaryForm={dictionaryForm}
         add={{
           title: "添加-定额库材料项",
-          url: "",
+          api: "",
           ok: ()=> console.log("add")
         }}
         edit={{
           title: "添加-定额库材料项",
-          url: "",
+          api: "",
           ok: ()=> console.log("edit")
         }}
-        del={{ok:()=>console.log("del")}}
+        del={{
+          ok:()=>console.log("del"),
+          api: ""
+        }}
       />
     </>
   );
