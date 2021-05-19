@@ -54,6 +54,6 @@ export const updateMaterialItem = (params: ItemDetailData) => {
 // 删除物料
 export const deleteMaterialItem = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/Material/Delete`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.resource}/Material/Delete`, { method: 'POST', data: { id } }),
   );
 };
