@@ -1,33 +1,41 @@
-import material from '@/pages/resource-config/material';
+import { getDataByUrl } from '@/services/common';
 import { useBoolean, useRequest } from 'ahooks';
 import React, { FC, useEffect, useState } from 'react';
 import UrlSelect from '../url-select';
 import styles from './index.less';
 interface CascaderProps {
-  onChange?: (spec: string) => void;
+  onChange?: (spec?: string) => void;
   libId: string;
   requestSource: 'project' | 'common' | 'resource' | 'material' | 'component';
   urlHead: string;
 }
 
-const CascaderUrlSelect: FC<CascaderProps> = (props) => {
+const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   const { onChange, libId, requestSource, urlHead } = props;
-  const [active, setActive] = useState<boolean>(true);
   const [spec, setSpec] = useState<string>();
-  const [id, setId] = useState<string>();
-  const [name, setName] = useState<string>();
-  const [trigger, { toggle, setTrue }] = useBoolean(false);
+
+  const { data: nameReponseData } = useRequest(
+    () => getDataByUrl(`/${urlHead}/GetList`, {}, requestSource, 'post', 'params', libId),
+    { refreshDeps: [urlHead, libId, requestSource] },
+  );
+
+  const { data: specReponseData, run: fetchSpecRequest } = useRequest(
+    (name) =>
+      getDataByUrl(
+        `/${urlHead}/GetListByName`,
+        { libId, name },
+        requestSource,
+        'post',
+        'body',
+        libId,
+      ),
+    { manual: true },
+  );
 
   const onNameChange = (v: { label: string; value: string }) => {
     if (v) {
-      setName(v.label);
-      setId(v.value);
-      setActive(false);
       setSpec(undefined);
-      toggle();
-    } else {
-      setName(undefined);
-      setId(undefined);
+      fetchSpecRequest(v.label);
     }
   };
 
@@ -37,39 +45,31 @@ const CascaderUrlSelect: FC<CascaderProps> = (props) => {
 
   useEffect(() => {
     onChange?.(spec);
-  }, [spec, name]);
+  }, [spec]);
   return (
     <div className={styles.cascader}>
       <UrlSelect
-        requestSource={requestSource}
-        url={`/${urlHead}/GetList`}
+        defaultData={nameReponseData}
         valueKey={`id`}
         titleKey={`${requestSource}Name`}
         labelInValue
+        allowClear
         className={styles.selectItem}
         onChange={(value) => onNameChange(value as { label: string; value: string })}
-        requestType="post"
-        postType="query"
         placeholder={`${requestSource === 'material' ? '物料1' : '组件1'}`}
         libId={libId}
       />
       <UrlSelect
-        requestSource={requestSource}
-        url={`/${urlHead}/GetListByName`}
-        manual={active}
-        trigger={trigger}
-        value={spec}
-        extraParams={{ libId, name }}
+        defaultData={specReponseData}
+        allowClear
         className={styles.selectItem}
-        valueKey={`id`}
+        valueKey={`${requestSource}Id`}
         titleKey={`${requestSource === 'material' ? 'spec' : 'componentSpec'}`}
         onChange={(value) => onSpecChange(value as string)}
-        requestType="post"
-        postType="body"
         placeholder={`${requestSource === 'material' ? '物料2' : '组件2'}`}
       />
     </div>
   );
-};
+});
 
 export default CascaderUrlSelect;

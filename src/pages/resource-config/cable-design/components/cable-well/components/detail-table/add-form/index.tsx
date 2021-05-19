@@ -1,13 +1,13 @@
 import React from 'react';
 import EditFormTable from '@/components/edit-form-table';
 import { InputNumber, Form, Input } from 'antd';
-import UrlSelect from '@/components/url-select';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
 interface AddDetailParams {
   resourceLibId: string;
+  addForm: any;
 }
 const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
-  const { resourceLibId } = props;
+  const { resourceLibId, addForm } = props;
 
   const columns = [
     {
@@ -25,22 +25,18 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       dataIndex: 'componentId',
       index: 'componentId',
       width: 400,
-      render: () => {
-        return (
-          <CascaderUrlSelect requestSource="component" urlHead="Component" libId={resourceLibId} />
-        );
-      },
+      render: () => (
+        <CascaderUrlSelect requestSource="component" urlHead="Component" libId={resourceLibId} />
+      ),
     },
     {
       title: '物料',
       dataIndex: 'materialId',
       index: 'materialId',
       width: 400,
-      render: () => {
-        return (
-          <CascaderUrlSelect requestSource="material" urlHead="Material" libId={resourceLibId} />
-        );
-      },
+      render: () => (
+        <CascaderUrlSelect requestSource="material" urlHead="Material" libId={resourceLibId} />
+      ),
     },
     {
       title: '数量',
@@ -52,8 +48,11 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       },
     },
   ];
-
-  return <EditFormTable formName="items" columns={columns} />;
+  return (
+    <Form form={addForm} preserve={false}>
+      <EditFormTable formName="items" columns={columns} />;
+    </Form>
+  );
 };
 
 export default AddCableWellDetailTable;

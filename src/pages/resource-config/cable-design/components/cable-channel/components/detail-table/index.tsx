@@ -126,8 +126,6 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const sureAddcableChannelDetail = () => {
     addForm.validateFields().then(async (value) => {
-      console.log(123);
-      
       const saveInfo = Object.assign(
         {
           libId: libId,
