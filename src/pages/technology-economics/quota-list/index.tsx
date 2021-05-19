@@ -5,7 +5,7 @@ import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin, Form, Sele
 import EditForm from './components/edit-from';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { isArray } from 'lodash';
-import { getQuotaLibrary, getTreeQuotaLibraryCatalogue } from '@/services/technology-economics/quota-library';
+import { getCatalogueList } from '@/services/technology-economics/quota-library';
 import TreeTable from '../components/file-tree-table';
 import { useRequest } from 'ahooks';
 import QuotaLibSlot from '../components/quota-lib-slot';
@@ -169,25 +169,15 @@ const columns = [
 
 const QuotaList: React.FC = () => {
 
-  const { data: data1, run, loading } = useRequest(getQuotaLibrary, {
-    manual: false,
+  const { data = [], run, loading } = useRequest(getCatalogueList, {
+    manual: true,
   });
-  // const { data1 = [{}], run1, loading1} = useRequest(getTreeQuotaLibraryCatalogue, {
-  //   manual: false,
-  // });
 
+  const dataSource = useMemo(() => {
+    return data?.length > 0 ? formatDataTree(data) : [];
+  }, [JSON.stringify(data)])
 
-  const data = useMemo(() => {
-    if (data1 && Array.isArray(data1?.items)) {
-      return data1?.items
-    } else {
-      return [];
-    }
-  }, [JSON.stringify(data1)])
-
-  const dataSource = data.length > 0 ? formatDataTree(data) : [];
-
-  const [activeLibId, setActiveLibId] = useState<string>("");
+  const [activeLibId, setActiveLibId] = useState<string>("1357588635508068352");
   useEffect(() => {
     run(activeLibId);
   }, [activeLibId])
@@ -260,25 +250,10 @@ const QuotaList: React.FC = () => {
     );
   };
 
-  const onActiveIdChange = (e: string) => {
-    console.log(e);
-  }
-
   const searchElement = () => {
     return (
       <div>
-        <QuotaLibSlot onChange={onActiveIdChange}/>
-        {/* <UrlSelect
-          url="/QuotaLibraryManager/GetPageList"
-          requestSource="tecEco"
-          requestType = 'post'
-          style={{width: 200}}
-          placeholder="- 请选择定额库 -"
-          titleKey="name"
-          valueKey="id"
-          needFilter={true}
-          onChange={(e)=> e && setActiveLibId(e + "")}
-        /> */}
+        <QuotaLibSlot onChange={setActiveLibId}/>
       </div>
     );
   }
