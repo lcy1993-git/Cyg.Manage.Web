@@ -12,9 +12,9 @@ const devBaseUrl = {
     common: "/api/common/api",
     upload: "/api/storage/api",
     resource: "/api/resourcemanage/v2/api",
-    webGis: '/api/webGis/api',
+    webGis: '/api/webgis/api',
     webGis2: '/api/webGis2/api',
-    comment: '/api/Comment/api',
+    comment: '/api/project/api',
     tecEco: '/api/tecEco/api',
     review: "/api/review/api",
 
