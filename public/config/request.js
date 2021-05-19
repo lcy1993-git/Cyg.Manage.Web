@@ -44,7 +44,7 @@ const arrayHasNotBaseUrlArray = {
     webGis: '/webgis/api',
     webGis2: '/webGis2/api',
     comment: '/project/api',
-    tecEco: '/tecEco/api',
+    tecEco: '/quato/api',
     review: "/review/api",
 
     // webGis
