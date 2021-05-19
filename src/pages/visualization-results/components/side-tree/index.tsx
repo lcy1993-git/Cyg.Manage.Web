@@ -4,6 +4,7 @@ import styles from './index.less';
 import _, { size } from 'lodash';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
+import { useLocation } from 'react-router-dom';
 import {
   fetchEngineerProjectListByParamsAndArea,
   fetchEngineerProjectListByParamsAndCompany,
@@ -32,7 +33,6 @@ export interface TreeNodeType {
 }
 export interface SideMenuProps {
   className?: string;
-  selectCityId?: string;
 }
 
 /**
@@ -84,7 +84,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
   const { filterCondition } = vState;
-  const { className, selectCityId } = props;
+  const { className } = props;
+  const location: any = useLocation();
+  const { query } = location;
 
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
@@ -111,7 +113,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const dfs = (node: TreeNodeType, isSelect: boolean) => {
       const { id, children, key, levelCategory } = node;
       expanded.push(key);
-      if (id === selectCityId) {
+      if (id === query.selectCity) {
         children?.forEach((v) => {
           dfs(v, true);
         });
@@ -143,10 +145,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const initSideTree = (data: TreeNodeType[]) => {
     // pushAllKeys(data);
     // expandedKeys.push('-1');
-
     // setExpandedKeys([...expandedKeys]);
 
-    if (selectCityId && tabActiveKey === '1' && showDefaultSelectCity) {
+    if (query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity) {
+      console.log(123);
+
       const key = getExpanedCityProjectKeys(data);
       const { expanded, checked } = key;
       setExpandedKeys(['-1', ...expanded]);
@@ -170,6 +173,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     {
       refreshDeps: [filterCondition, tabActiveKey],
       onSuccess: () => {
+        // console.log(window.location.search.substring(1).split('='));
         let data = generateProjectTree(treeListReponseData);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);

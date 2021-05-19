@@ -26,7 +26,7 @@ const VisualizationResults: React.FC = observer(() => {
       >
         <div className={styles.sideTreeContainer}>
           <div className={styles.sideNav}>
-            <SideTree selectCityId="510000"/>
+            <SideTree selectCityId="510000" />
           </div>
           <div className={styles.sideTreefooter}>
             <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
@@ -34,7 +34,6 @@ const VisualizationResults: React.FC = observer(() => {
             </div>
           </div>
         </div>
-
         <div className={classNames(styles.mapContainer, 'flex1')}>
           <MapContainerShell />
         </div>
