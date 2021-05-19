@@ -250,9 +250,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         centered
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <AddComponentDetail addForm={addForm} resourceLibId={libId} />
-        </Form>
+        <AddComponentDetail addForm={addForm} resourceLibId={libId} />
       </Modal>
 
       <Modal

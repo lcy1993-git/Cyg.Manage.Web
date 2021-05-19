@@ -12,10 +12,9 @@ const devBaseUrl = {
     common: "/api/common/api",
     upload: "/api/storage/api",
     resource: "/api/resourcemanage/v2/api",
-    webGis: '/api/webGis/api',
+    webGis: '/api/webgis/api',
     webGis2: '/api/webGis2/api',
-    comment: '/api/Comment/api',
-    projectVisualization: '/api/ProjectVisualization/api',
+    comment: '/api/project/api',
     tecEco: '/api/tecEco/api',
     review: "/api/review/api",
 
@@ -25,6 +24,9 @@ const devBaseUrl = {
     geoserver: '/api/geoserver',
     design: 'api/design/api',
 };
+
+const geoServerBaseUrl = window.location.hostname === "localhost" ? "10.6.1.36" : window.location.hostname;
+export const geoServeUrl = `${document.location.protocol}//${geoServerBaseUrl}:21523/geoserver/pdd/ows`;
 
 // interface UrlSelectParams {
 //   requestSource: 'project' | 'resource';
@@ -102,12 +104,13 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco',
+  requestSource: 'common' | 'project' | 'resource' | 'tecEco' ,
   requestType = 'get',
   postType = 'body',
   libId: string,
 ) => {
   const requestBaseUrl = baseUrl[requestSource];
+
   if (requestType === 'get') {
     return cyRequest<any[]>(() =>
       tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),

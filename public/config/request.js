@@ -24,16 +24,16 @@ const arrayHasIpBaseUrlArray = {
     upload: `${baseUrl}:8023/api`,
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
-    projectVisualization: `${baseUrl}:8026/api`,
     tecEco: `${baseUrl}:8033/api`,
     review: `${baseUrl}:8041/api`,
 
+    webGis: `${baseUrl}:8021/api`,
     // webGis
     resourceV1: `${baseUrl}:8015/api`,
     manage: `${baseUrl}:8025/api`,
     webGis5: `${baseUrl}:8032/api`,
     geoserver: `${baseUrl}:8099`,
-    design: `${baseUrl}:8014`,
+    ModulesDetails: `${baseUrl}:8020/api`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -41,14 +41,13 @@ const arrayHasNotBaseUrlArray = {
     common: "/common/api",
     upload: "/storage/api",
     resource: "/resourcemanage/v2/api",
-    webGis: '/webGis/api',
+    webGis: '/webgis/api',
     webGis2: '/webGis2/api',
-    comment: '/Comment/api',
-    projectVisualization: '/ProjectVisualization/api',
+    comment: '/project/api',
     tecEco: '/tecEco/api',
     review: "/review/api",
-
-    // webGis
+    component: '/Component/api',
+    material: '/Material/api/',
     resourceV1: '/resource/api',
     manage: '/manage/api',
     geoserver: '/geoserver',

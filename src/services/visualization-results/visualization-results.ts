@@ -1,11 +1,11 @@
 import request from '@/utils/request';
 import JsonP from 'jsonp';
 // import { webConfig } from '../../../public/config/request';
-import { baseUrl } from '../common';
+import { baseUrl, geoServeUrl } from '../common';
 // const ip = window.location.hostname;
 
 // const wfsBaseURL = `http://${webConfig.geoServerIP}${webConfig.geoServerPort}/geoserver/pdd/ows`;
-const wfsBaseURL = `${baseUrl.geoserver}/geoserver/pdd/ows`;
+const wfsBaseURL = geoServeUrl;
 
 export interface ProjectList {
   id: string;

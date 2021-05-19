@@ -252,9 +252,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
         centered
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <AddCableWellDetail addForm={addForm} resourceLibId={libId} />
-        </Form>
+        <AddCableWellDetail addForm={addForm} resourceLibId={libId} />
       </Modal>
 
       <Modal
