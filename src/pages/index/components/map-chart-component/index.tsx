@@ -66,7 +66,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     return {
       tooltip: {
         trigger: 'item',
-        showDelay: 600,
+        showDelay: 400,
         position: function (pt: any) {
           return [pt[0] - 95, pt[1] - 74];
         },
