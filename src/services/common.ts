@@ -15,7 +15,6 @@ const devBaseUrl = {
     webGis: '/api/webGis/api',
     webGis2: '/api/webGis2/api',
     comment: '/api/Comment/api',
-    projectVisualization: '/api/ProjectVisualization/api',
     tecEco: '/api/tecEco/api',
     review: "/api/review/api",
 
