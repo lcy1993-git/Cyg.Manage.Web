@@ -55,7 +55,7 @@ export default {
       pathRewrite: { '^/tecEco': '/' },
     },
     '/review/api': {
-      target: 'http://10.6.1.36:8014/',
+      target: 'http://10.6.1.36:8041/',
       changeOrigin: true,
       pathRewrite: { '^/review': '/' },
     },
@@ -73,6 +73,11 @@ export default {
       target: 'http://10.6.1.36:8015/',
       changeOrigin: true,
       pathRewrite: { '^/resourceV1': '/' },
+    },
+    '/design': {
+      target: 'http://10.6.1.36:8014/',
+      changeOrigin: true,
+      pathRewrite: { '^/design': '/' },
     },
   },
   test: {
