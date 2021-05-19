@@ -32,8 +32,6 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
     refreshDeps: [newsId],
   });
 
-  console.log(newsInfo);
-
   useEffect(() => {
     if (state) {
       run();
@@ -56,8 +54,6 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
     );
   });
 
-  console.log(newsInfo);
-
   return (
     <Modal
       maskClosable={false}
@@ -71,7 +67,9 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Spin spinning={loading} tip="正在加载...">
-        <ReadonlyItem labelWidth={40} align="left" label="标题">{newsInfo?.title}</ReadonlyItem>
+        <ReadonlyItem labelWidth={40} align="left" label="标题">
+          {newsInfo?.title}
+        </ReadonlyItem>
         <ReadonlyItem labelWidth={40} align="left" label="状态">
           {newsInfo?.isEnable ? (
             <span className={styles.open}>启用</span>
@@ -88,7 +86,9 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
             </div>
           </div>
         </ReadonlyItem>
-        <ReadonlyItem labelWidth={40} align="left" label="端口">{clientCategorysInfo}</ReadonlyItem>
+        <ReadonlyItem labelWidth={40} align="left" label="端口">
+          {clientCategorysInfo}
+        </ReadonlyItem>
         <div style={{ width: '100%' }}>
           <ReadonlyItem labelWidth={40} align="left" label="内容">
             {newsInfo?.content && (

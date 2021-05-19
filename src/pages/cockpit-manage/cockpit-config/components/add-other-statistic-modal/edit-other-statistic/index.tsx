@@ -23,7 +23,6 @@ const EditOtherStatisticModal: React.FC<EditOtherStatistic> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { changeFinishEvent, currentRecord, configArray } = props;
   const [form] = Form.useForm();
-  console.log(currentRecord);
 
   const sureEditEvent = () => {
     form.validateFields().then((values) => {
