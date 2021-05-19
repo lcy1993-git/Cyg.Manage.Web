@@ -14,11 +14,16 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   const { onChange, libId, requestSource, urlHead } = props;
   const [spec, setSpec] = useState<string>();
 
+
+ 
   const { data: nameReponseData } = useRequest(
     () => getDataByUrl(`/${urlHead}/GetList`, {}, requestSource, 'post', 'params', libId),
     { refreshDeps: [urlHead, libId, requestSource] },
   );
 
+   /**
+   * 根据上面名字获取spec的id
+   */
   const { data: specReponseData, run: fetchSpecRequest } = useRequest(
     (name) =>
       getDataByUrl(
