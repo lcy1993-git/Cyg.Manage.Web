@@ -106,13 +106,11 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                 <Button key="save" type="primary" onClick={() => executeArrangeEvent()}>
                   提交
                 </Button>,
-                // </div>,
               ]
             : [
                 <Button key="save" type="primary" onClick={() => setState(false)}>
                   确认
                 </Button>,
-                // </div>,
               ]
         }
       >

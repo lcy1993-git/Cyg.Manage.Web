@@ -15,6 +15,7 @@ interface TableCheckedItemProjectInfo {
   id: string;
   isAllChecked: boolean;
   status?: any;
+  name?: any;
 }
 
 export interface TableItemCheckedInfo {
@@ -89,6 +90,13 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
           .map((item: any) => {
             if (list.includes(item.id)) {
               return item.stateInfo;
+            }
+          })
+          .filter(Boolean),
+        name: projectInfo.projects
+          .map((item: any) => {
+            if (list.includes(item.id)) {
+              return item.name;
             }
           })
           .filter(Boolean),
