@@ -28,18 +28,14 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
       dataIndex: 'componentId',
       index: 'componentId',
       width: 400,
-      render: () => (
-        <CascaderUrlSelect requestSource="component" urlHead="Component" libId={resourceLibId} />
-      ),
+      render: () => <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />,
     },
     {
       title: '物料',
       dataIndex: 'materialId',
       index: 'materialId',
       width: 400,
-      render: () => (
-        <CascaderUrlSelect requestSource="material" urlHead="Material" libId={resourceLibId} />
-      ),
+      render: () => <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />,
     },
     {
       title: '数量',

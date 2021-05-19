@@ -6,22 +6,20 @@ import styles from './index.less';
 interface CascaderProps {
   onChange?: (spec?: string) => void;
   libId: string;
-  requestSource: 'project' | 'common' | 'resource' | 'material' | 'component';
+  requestSource?: 'project' | 'common' | 'resource';
   urlHead: string;
 }
 
 const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
-  const { onChange, libId, requestSource, urlHead } = props;
+  const { onChange, libId, requestSource = 'resource', urlHead } = props;
   const [spec, setSpec] = useState<string>();
 
-
- 
   const { data: nameReponseData } = useRequest(
     () => getDataByUrl(`/${urlHead}/GetList`, {}, requestSource, 'post', 'params', libId),
     { refreshDeps: [urlHead, libId, requestSource] },
   );
-
-   /**
+   const specTitleKey = urlHead.toLocaleLowerCase() === 'material' ? 'spec' : 'componentSpec';
+  /**
    * 根据上面名字获取spec的id
    */
   const { data: specReponseData, run: fetchSpecRequest } = useRequest(
@@ -38,6 +36,8 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   );
 
   const onNameChange = (v: { label: string; value: string }) => {
+    
+    
     if (v) {
       setSpec(undefined);
       fetchSpecRequest(v.label);
@@ -45,6 +45,7 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   };
 
   const onSpecChange = (v: string) => {
+    console.log(123);
     setSpec(v);
   };
 
@@ -56,22 +57,20 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
       <UrlSelect
         defaultData={nameReponseData}
         valueKey={`id`}
-        titleKey={`${requestSource}Name`}
+        titleKey={`${urlHead.toLocaleLowerCase()}Name`}
         labelInValue
         allowClear
         className={styles.selectItem}
         onChange={(value) => onNameChange(value as { label: string; value: string })}
-        placeholder={`${requestSource === 'material' ? '物料1' : '组件1'}`}
         libId={libId}
       />
       <UrlSelect
         defaultData={specReponseData}
         allowClear
         className={styles.selectItem}
-        valueKey={`${requestSource}Id`}
-        titleKey={`${requestSource === 'material' ? 'spec' : 'componentSpec'}`}
+        valueKey={`${urlHead.toLocaleLowerCase()}Id`}
+        titleKey={`${specTitleKey}`}
         onChange={(value) => onSpecChange(value as string)}
-        placeholder={`${requestSource === 'material' ? '物料2' : '组件2'}`}
       />
     </div>
   );

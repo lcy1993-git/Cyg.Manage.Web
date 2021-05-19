@@ -39,7 +39,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       index: 'componentId',
       width: 400,
       render: () => (
-        <CascaderUrlSelect requestSource="component" urlHead="Component" libId={resourceLibId} />
+        <CascaderUrlSelect  urlHead="Component" libId={resourceLibId} />
       ),
     },
     {
@@ -48,7 +48,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       index: 'materialId',
       width: 400,
       render: () => (
-        <CascaderUrlSelect requestSource="material" urlHead="Material" libId={resourceLibId} />
+        <CascaderUrlSelect  urlHead="Material" libId={resourceLibId} />
       ),
     },
     {

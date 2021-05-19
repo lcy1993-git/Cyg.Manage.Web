@@ -14,11 +14,11 @@ const EditCableWellDetail: React.FC<EditCableWellDetailParams> = (props) => {
   return (
     <>
       <CyFormItem label="组件" name="componentId">
-        <CascaderUrlSelect requestSource="component" urlHead="Component" libId={resourceLibId} />
+        <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />
       </CyFormItem>
 
       <CyFormItem label="物料" name="materialId">
-        <CascaderUrlSelect requestSource="material" urlHead="Material" libId={resourceLibId} />
+        <CascaderUrlSelect  urlHead="Material" libId={resourceLibId} />
       </CyFormItem>
 
       <CyFormItem label="数量" name="itemNumber">
