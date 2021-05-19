@@ -352,7 +352,7 @@ const ElectricalEquipment: React.FC = () => {
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
     ) {
-      message.error('请选择要查看的行');
+      message.warning('请选择单行数据查看');
       return;
     }
     setAttributeVisible(true);
