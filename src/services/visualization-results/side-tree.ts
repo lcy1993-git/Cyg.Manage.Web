@@ -47,7 +47,7 @@ export interface CommentCount {
 export const fetchEngineerProjectListByParamsAndArea = (params: EngineerProjetListFilterParams) => {
   return cyRequest<ProjectListByAreaType[]>(() =>
     request(
-      `${baseUrl.projectVisualization}/ProjectVisualization/GetProjectListByArea
+      `${baseUrl.project}/ProjectVisualization/GetProjectListByArea
     `,
       { method: 'POST', data: params },
     ),
@@ -59,7 +59,7 @@ export const fetchEngineerProjectListByParamsAndCompany = (
 ) => {
   return cyRequest<ProjectListByAreaType[]>(() =>
     request(
-      `${baseUrl.projectVisualization}/ProjectVisualization/GetProjectListByCompany
+      `${baseUrl.project}/ProjectVisualization/GetProjectListByCompany
     `,
       { method: 'POST', data: params },
     ),
