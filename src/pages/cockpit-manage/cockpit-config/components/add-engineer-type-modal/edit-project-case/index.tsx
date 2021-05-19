@@ -41,6 +41,7 @@ const EditProjectCaseModal: React.FC<EditProjectCaseStatistic> = (props) => {
       });
     });
   };
+  console.log(currentRecord.componentProps);
 
   useEffect(() => {
     if (currentRecord.componentProps && currentRecord.componentProps.length > 0) {
@@ -51,10 +52,10 @@ const EditProjectCaseModal: React.FC<EditProjectCaseStatistic> = (props) => {
   const caseComponentProps = useMemo(() => {
     const hasChooseCaseCodeArray = getHasChooseComponentsProps(configArray, 'projectSchedule');
     const currentCaseProps = caseComponentPropsArray.filter((item) =>
-      currentRecord.componentProps.includes(item.code),
+      currentRecord.componentProps?.includes(item.code),
     );
     const unChooseCaseProps = caseComponentPropsArray.filter(
-      (item) => !currentRecord.componentProps.includes(item.code),
+      (item) => !currentRecord.componentProps?.includes(item.code),
     );
     return {
       hasChooseCaseCodeArray,

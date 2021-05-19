@@ -29,7 +29,7 @@ import FileGroupForm from './components/add-file-group';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { TableRequestResult } from '@/services/table';
-import { UploadStatus } from '@/components/file-upload';
+// import { UploadStatus } from '@/components/file-upload';
 
 const { Search } = Input;
 
@@ -339,7 +339,7 @@ const CompanyFile: React.FC = () => {
   //下载公司文件
   const downLoadEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请先选择一条公司文件下载');
+      message.warning('请选择公司文件下载');
       return;
     }
     const fileId = tableSelectRows[0].fileId;

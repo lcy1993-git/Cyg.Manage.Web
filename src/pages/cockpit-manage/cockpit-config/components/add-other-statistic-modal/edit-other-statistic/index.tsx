@@ -51,10 +51,10 @@ const EditOtherStatisticModal: React.FC<EditOtherStatistic> = (props) => {
   const toDoComponentProps = useMemo(() => {
     const hasChooseTodoCodeArray = getHasChooseComponentsProps(configArray, 'toDo');
     const currentTodoProps = toDoComponentPropsArray.filter((item) =>
-      currentRecord.componentProps.includes(item.code),
+      currentRecord.componentProps?.includes(item.code),
     );
     const unChooseTodoProps = toDoComponentPropsArray.filter(
-      (item) => !currentRecord.componentProps.includes(item.code),
+      (item) => !currentRecord.componentProps?.includes(item.code),
     );
     return {
       hasChooseTodoCodeArray,

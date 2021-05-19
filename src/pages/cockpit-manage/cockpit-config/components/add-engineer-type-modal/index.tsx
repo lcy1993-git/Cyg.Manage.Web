@@ -67,10 +67,10 @@ const AddEngineerTypeModal: React.FC<AddEngineerTypeStatistic> = (props) => {
   const typeCompoentProps = useMemo(() => {
     const hasChooseMapComponentCodeArray = getHasChooseComponentsProps(configArray, 'projectType');
     const unChooseMapComponentProps = typeComponentPropsArray.filter(
-      (item) => !hasChooseMapComponentCodeArray.includes(item.code),
+      (item) => !hasChooseMapComponentCodeArray?.includes(item.code),
     );
     const hasChooseMapComponentProps = typeComponentPropsArray.filter((item) =>
-      hasChooseMapComponentCodeArray.includes(item.code),
+      hasChooseMapComponentCodeArray?.includes(item.code),
     );
     return {
       hasChooseMapComponentProps,

@@ -49,10 +49,10 @@ const EditDeliveryStatisticModal: React.FC<EditDeliveryStatistic> = (props) => {
   const deliveryComponentProps = useMemo(() => {
     const hasChooseDeliveryCodeArray = getHasChooseComponentsProps(configArray, 'deliveryManage');
     const currentDeliveryProps = deliveryComponentPropsArray.filter((item) =>
-      currentRecord.componentProps.includes(item.code),
+      currentRecord.componentProps?.includes(item.code),
     );
     const unChooseDeliveryProps = deliveryComponentPropsArray.filter(
-      (item) => !currentRecord.componentProps.includes(item.code),
+      (item) => !currentRecord.componentProps?.includes(item.code),
     );
     return {
       hasChooseDeliveryCodeArray,
@@ -70,7 +70,7 @@ const EditDeliveryStatisticModal: React.FC<EditDeliveryStatistic> = (props) => {
   });
 
   const deliveryStatisticHasCheck = deliveryComponentProps.unChooseDeliveryProps.map((item) => {
-    if (deliveryComponentProps.hasChooseDeliveryCodeArray.includes(item.code)) {
+    if (deliveryComponentProps.hasChooseDeliveryCodeArray?.includes(item.code)) {
       return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
     } else {
       return (
