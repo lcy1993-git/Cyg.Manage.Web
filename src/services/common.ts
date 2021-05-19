@@ -22,6 +22,7 @@ const devBaseUrl = {
   resourceV1: '/resourceV1/api',
   manage: '/manage/api',
   geoserver: '/geoserver',
+  design: '/design/api',
 };
 
 // interface UrlSelectParams {

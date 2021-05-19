@@ -74,7 +74,7 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/resourceV1': '/' },
     },
-    '/design': {
+    '/design/api': {
       target: 'http://10.6.1.36:8014/',
       changeOrigin: true,
       pathRewrite: { '^/design': '/' },
