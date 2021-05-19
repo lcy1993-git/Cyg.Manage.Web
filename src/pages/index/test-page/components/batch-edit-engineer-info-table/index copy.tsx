@@ -498,7 +498,6 @@ const BatchEditEngineerInfoTable: React.FC = () => {
                 })
             }
         })
-        console.log(saveData)
     }
 
     return (

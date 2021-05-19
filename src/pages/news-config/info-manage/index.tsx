@@ -240,7 +240,6 @@ const InfoManage: React.FC = () => {
         },
         values,
       );
-      console.log(submitInfo);
 
       await addNewsItem(submitInfo);
       refresh();

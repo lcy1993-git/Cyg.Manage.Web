@@ -27,7 +27,6 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
   const sureEditEvent = () => {
     form.validateFields().then((values) => {
       const { production } = values;
-      console.log(production);
 
       setState(false);
 
