@@ -80,7 +80,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                             ${name} <br />
                             项目数量: ${getMapStatisticData[nameIndex!].projectQuantity}
                             <div>可视化成果: <a  href='/visualization-results/result-page?selectCity=${
-                              cityCodeObject[params.name]
+                              cityCodeObject[name] ?? name
                             }'>跳转</a></div>
                             
                         `;

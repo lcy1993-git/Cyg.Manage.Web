@@ -108,31 +108,56 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const getExpanedCityProjectKeys = (
     items: TreeNodeType[],
   ): { expanded: string[]; checked: TreeNodeType[] } => {
+    const reg = new RegExp('^[0-9]*$');
     const expanded = new Array<string>();
     const checked = new Array<TreeNodeType>();
     const dfs = (node: TreeNodeType, isSelect: boolean) => {
-      const { id, children, key, levelCategory } = node;
+      const { id, children, key, title, levelCategory } = node;
       expanded.push(key);
-      if (id === query.selectCity) {
+      if (reg.test(query.selectCity)) {
+        if (id === query.selectCity) {
+          children?.forEach((v) => {
+            dfs(v, true);
+          });
+
+          return;
+        }
+
+        if (isSelect && levelCategory === 6) {
+          checked.push(node);
+        }
+
+        if (isSelect && levelCategory !== 6) {
+          expanded.push(key);
+        }
+
         children?.forEach((v) => {
-          dfs(v, true);
+          dfs(v, isSelect);
         });
+        expanded.pop();
+      } else {
+        if (title === query.selectCity) {
+          children?.forEach((v) => {
+            dfs(v, true);
+          });
 
-        return;
+          return;
+        }
+
+        if (isSelect && levelCategory === 6) {
+          checked.push(node);
+        }
+
+        if (isSelect && levelCategory !== 6) {
+          expanded.push(key);
+        }
+
+        children?.forEach((v) => {
+          dfs(v, isSelect);
+        });
+        expanded.pop();
       }
 
-      if (isSelect && levelCategory === 6) {
-        checked.push(node);
-      }
-
-      if (isSelect && levelCategory !== 6) {
-        expanded.push(key);
-      }
-
-      children?.forEach((v) => {
-        dfs(v, isSelect);
-      });
-      expanded.pop();
       return;
     };
     items.forEach((v) => {
@@ -148,8 +173,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     // setExpandedKeys([...expandedKeys]);
 
     if (query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity) {
-      console.log(123);
-
       const key = getExpanedCityProjectKeys(data);
       const { expanded, checked } = key;
       setExpandedKeys(['-1', ...expanded]);
@@ -189,8 +212,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   );
 
   /**
-   * 
-   * @param expandedKeysValue 
+   *
+   * @param expandedKeysValue
    */
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
