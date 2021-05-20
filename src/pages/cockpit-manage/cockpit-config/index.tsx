@@ -290,11 +290,10 @@ const CockpitManage: React.FC = () => {
   });
 
   const engineerProjectArray = [
-    { name: '地图可视化统计(省)', value: 'province' },
-    { name: '地图可视化统计(市)', value: 'city' },
-    { name: '人员负荷(员工)', value: 'person' },
-    { name: '人员负荷(部组)', value: 'department' },
-    { name: '人员负荷(公司)', value: 'company' },
+    { name: '项目数量(地图)', value: 'province' },
+    { name: '生产负荷(员工)', value: 'person' },
+    { name: '生产负荷(部组)', value: 'department' },
+    { name: '生产负荷(公司)', value: 'company' },
   ];
 
   const engineerTypeStatistic = [

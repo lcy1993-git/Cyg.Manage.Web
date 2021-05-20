@@ -36,18 +36,27 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
         setRequestLoading(true);
         return newUploadLineStressSag(file, { libId }, requestSource, '/ResourceLib/SaveImport');
       })
+
       .then(
-        () => {
-          message.success('导入成功');
-          setTimeout(() => {
-            setState(false);
-          }, 1000);
-          return Promise.resolve();
+        (res) => {
+          if (!res.isSuccess && res.code === 6000) {
+            setFalseData(res.message);
+            setImportTipsVisible(true);
+            message.success('导入成功');
+            setTimeout(() => {
+              setState(false);
+            }, 1000);
+            return Promise.resolve();
+          }
+          if (!res.isSuccess) {
+            return Promise.reject();
+          }
         },
-        () => {
-          return Promise.reject('导入失败');
+        (res) => {
+          return Promise.reject(res);
         },
       )
+
       .finally(() => {
         changeFinishEvent?.();
         setUploadFileFalse();

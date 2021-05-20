@@ -118,7 +118,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
       () => {
         setUploadStatus('success');
       },
-      () => {
+      (res) => {
         setUploadStatus('error');
       },
     );

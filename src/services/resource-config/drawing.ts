@@ -53,7 +53,6 @@ export const uploadLineStressSag = (
   );
 };
 
-
 export const newUploadLineStressSag = (
   files: any[],
   params: any,
@@ -66,11 +65,9 @@ export const newUploadLineStressSag = (
   });
 
   const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`;
-  return cyRequest<any>(() =>
-    request(uploadUrl, {
-      method: 'POST',
-      data: formData,
-      requestType: 'form',
-    }),
-  );
+  return request(uploadUrl, {
+    method: 'POST',
+    data: formData,
+    requestType: 'form',
+  });
 };
