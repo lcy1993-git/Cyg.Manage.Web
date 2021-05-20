@@ -14,7 +14,7 @@ import {
   canEditArrange,
   checkCanArrange,
   deleteProject,
-  getAllotUsers,
+  // getAllotUsers,
   getExternalArrangeStep,
   getProjectInfo,
   getProjectTableStatistics,
@@ -116,7 +116,6 @@ const ProjectManagement: React.FC = () => {
   const [ifCanEdit, setIfCanEdit] = useState<any>([]);
 
   const [notBeginUsers, setNotBeginUsers] = useState<any>();
-  const [arrangeUsers, setArrangeUsers] = useState<any>();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -130,10 +129,6 @@ const ProjectManagement: React.FC = () => {
   });
 
   const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
-    manual: true,
-  });
-
-  const { run: getArrangeUsers } = useRequest(getAllotUsers, {
     manual: true,
   });
 
@@ -280,16 +275,16 @@ const ProjectManagement: React.FC = () => {
     ) {
       setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
       setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
-      const res = await getArrangeUsers(tableSelectData[0]?.checkedArray[0], 6);
+      // const res = await getArrangeUsers(tableSelectData[0]?.checkedArray[0], 6);
 
-      const exUsers = res?.map((item) => {
-        return {
-          value: item.userId,
-          text: item.userNameText,
-        };
-      });
+      // const exUsers = res?.map((item) => {
+      //   return {
+      //     value: item.userId,
+      //     text: item.userNameText,
+      //   };
+      // });
 
-      setArrangeUsers(exUsers);
+      // setArrangeUsers(exUsers);
       setExternalArrangeModal(true);
       return;
     }
@@ -1058,7 +1053,6 @@ const ProjectManagement: React.FC = () => {
           visible={externalArrangeModal}
           onChange={setExternalArrangeModal}
           projectId={currentProjectId}
-          arrangeUsers={arrangeUsers}
           proName={projectName}
         />
       )}

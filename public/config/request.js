@@ -72,16 +72,8 @@ export const visualUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8021/index
 
 export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8029/index.html` : `${baseUrl}/chart/index.html`;
 
-export const serverCodeArray = {
-    "localhost":"10.6.1.36",
-    "218.6.242.125":"218.6.242.125", 
-    "10.6.1.36":"10.6.1.36",
-    "10.6.1.37":"10.6.1.37",
-    "171.223.214.154":"171.223.214.154",
-    "47.108.63.23":"47.108.63.23",
-    "39.99.251.67":"39.99.251.67",
-    "10.6.1.38":"10.6.1.38"
-}
+export const serverCodeArray = {hostName:`${thisHostName}`}
+
 
 export const version = "1.0.50";
 
