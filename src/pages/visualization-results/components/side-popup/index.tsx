@@ -11,9 +11,10 @@ import {
 import CommentList from './components/comment-list';
 import uuid from 'node-uuid';
 import styles from './index.less';
-import { Scrollbars } from 'react-custom-scrollbars';
 import { useRequest } from 'ahooks';
 import { observer } from 'mobx-react-lite';
+import { baseUrl } from '@/services/common';
+import moment from 'moment';
 
 export interface TableDataType {
   // propertyName: string;
@@ -133,7 +134,7 @@ const mediaItem = (data: any) => {
           <img
             className={styles.img}
             crossOrigin={''}
-            src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
+            src={`${baseUrl.upload}/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
           />
         </div>
       );
@@ -143,7 +144,7 @@ const mediaItem = (data: any) => {
           {/* <audio controls={true} /> */}
           <audio
             className={styles.audio}
-            src={`http://10.6.1.36:8023/api/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
+            src={`${baseUrl.upload}/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
             controls={true}
           />
         </div>
@@ -283,6 +284,9 @@ const SidePopup: React.FC<Props> = observer((props) => {
       title: '勘测日期',
       dataIndex: 'surveyTime',
       key: uuid.v1(),
+      render(t: number){        
+        return moment(t).format("YYYY-MM-DD");
+      }
     },
     {
       title: '操作',

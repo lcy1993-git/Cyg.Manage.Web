@@ -22,7 +22,7 @@ const devBaseUrl = {
     resourceV1: '/api/resource/api',
     manage: '/api/manage/api',
     geoserver: '/api/geoserver',
-    design: 'api/design/api',
+    design: '/api/design/api',
 };
 
 // 在这里面不匹配的，统统都是21523端口
