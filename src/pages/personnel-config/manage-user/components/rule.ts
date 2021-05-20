@@ -1,7 +1,13 @@
 export default {
   userName: [
-    { required: true, message: '用户名不能为空', maxlength: 16, pattern: /^[0-9a-zA-Z_]{1,}$/ },
+    { required: true, message: '用户名不能为空' },
+    {
+      maxlength: 16,
+      message: '请输入16位数字和英文字母',
+      pattern: /^[0-9a-zA-Z_]{1,}$/,
+    },
   ],
+
   pwd: [
     { required: true, message: '密码不能为空', max: 16 },
     {

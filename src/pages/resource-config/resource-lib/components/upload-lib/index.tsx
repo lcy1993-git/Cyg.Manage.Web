@@ -37,25 +37,21 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
         return newUploadLineStressSag(file, { libId }, requestSource, '/ResourceLib/SaveImport');
       })
 
-      .then(
-        (res) => {
-          if (!res.isSuccess && res.code === 6000) {
-            setFalseData(res.message);
-            setImportTipsVisible(true);
-            message.success('导入成功');
-            setTimeout(() => {
-              setState(false);
-            }, 1000);
-            return Promise.resolve();
-          }
-          if (!res.isSuccess) {
-            return Promise.reject();
-          }
-        },
-        (res) => {
-          return Promise.reject(res);
-        },
-      )
+      .then((res) => {
+        if (res && res.code === 6000) {
+          setFalseData(res.message);
+          setImportTipsVisible(true);
+          message.success('导入成功');
+          setTimeout(() => {
+            setState(false);
+            setImportTipsVisible(false);
+          }, 5000);
+          return Promise.resolve();
+        } else {
+          message.error(res.message);
+          return Promise.reject();
+        }
+      })
 
       .finally(() => {
         changeFinishEvent?.();
@@ -86,7 +82,12 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
     >
       <Form form={form} preserve={false}>
         <CyFormItem label="导入" name="file" required>
-          <FileUpload trigger={triggerUploadFile} maxCount={1} uploadFileFn={saveImportLibEvent} />
+          <FileUpload
+            accept=".zip"
+            trigger={triggerUploadFile}
+            maxCount={1}
+            uploadFileFn={saveImportLibEvent}
+          />
         </CyFormItem>
       </Form>
       <Modal
