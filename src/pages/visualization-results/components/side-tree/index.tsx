@@ -248,19 +248,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }, [projectIdList]);
 
-  const onTabChange = () => {
-    if (tabActiveKey === '2') {
-      setTreeData([]);
-      clearState();
-      setTabActiveKey('1');
-    }
-    if (tabActiveKey === '1') {
-      setTreeData([]);
-      clearState();
-      setTabActiveKey('2');
-    }
+  const onTabChange = (key: string) => {
+    setTabActiveKey(key);
     setShowDefaultSelectCity(false);
   };
+
+  useEffect(() => {
+    setTreeData([]);
+    clearState();
+  }, [tabActiveKey]);
 
   const activeStyle = '#ebedee';
 
@@ -271,13 +267,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
           className={styles.tabBar}
         >
-          <div className={styles.tabBarItem} onClick={() => onTabChange()}>
-            按地方
+          <div className={styles.tabBarItem} onClick={() => onTabChange('1')}>
+            按地区
           </div>
           <div
             style={{ backgroundColor: tabActiveKey === '2' ? activeStyle : '#fff' }}
             className={styles.tabBarItem}
-            onClick={() => onTabChange()}
+            onClick={() => onTabChange('2')}
           >
             按公司
           </div>
@@ -285,6 +281,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
         <Tabs
           renderTabBar={() => <></>}
+          onChange={(tabActiveKey) => setTabActiveKey(tabActiveKey)}
           style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle }}
         >
           <TabPane style={{ overflow: 'hidden' }} key="1">
