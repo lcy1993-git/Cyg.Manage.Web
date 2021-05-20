@@ -64,18 +64,6 @@ export const logoArray = {
     "10.6.1.38": "logo.png",
 }
 
-const mapConfig = {
-    "10.6.1.36": {areaId: "620000", mapName: "gansu"},
-    "10.6.1.37": {areaId: "650000", mapName: "xinjiang"},
-    "10.6.1.38": {areaId: "640000", mapName: "ningxia"},
-    "171.223.214.154": {areaId: "640000", mapName: "ningxia"},
-    "218.6.242.125": {areaId: "510000", mapName: "sichuan"},
-    "39.99.251.67": {areaId: "650000", mapName: "xinjiang"},
-    "47.108.63.23": {areaId: "650000", mapName: "xinjiang"},
-}
-// 默认是新疆
-export const mapInfo = mapConfig[thisHostName] ? mapConfig[thisHostName] : {areaId: "650000", mapName: "xinjiang"};
-
 export const requestBaseUrl = ipArray.includes(thisHostName) ? arrayHasIpBaseUrlArray : arrayHasNotBaseUrlArray;
 
 export const explainUrl = "http://service.pwcloud.cdsrth.com:8200/management";
@@ -95,29 +83,5 @@ export const serverCodeArray = {
     "10.6.1.38":"10.6.1.38"
 }
 
-export const version = "1.0.49";
+export const version = "1.0.50";
 
-// const ip = window.location.hostname === 'localhost' ?  '10.6.1.36' : window.location.hostname;
-
-// export const webConfig = {
-//     satelliteServerIP: ip,
-//     satelliteServerPort: ':8020',
-//     geoServerIP: ip,
-//     geoServerPort: ':8099',
-//     manageSideInteractiveServiceServerIP: ip,
-//     manageSideInteractiveServiceServerPort: ':8025',
-//     manageSideInteractiveServiceServerIP_V2: ip,
-//     manageSideInteractiveServiceServerPort_V2: ':8026',
-//     designSideInteractiveServiceServerIP: ip,
-//     designSideInteractiveServiceServerPort: ':8014',
-//     publicServiceServerIP: ip,
-//     publicServiceServerPort: ':8022',
-//     engineeringBusinessServiceServerIP: ip,
-//     engineeringBusinessServiceServerPort: ':8013',
-//     fileStorageServiceServerIP: ip,
-//     fileStorageServiceServerPort: ':8023',
-//     resourceServiceServerIP: ip,
-//     resourceServiceServerPort: ':8015',
-//     webSocketIP: ip,
-//     webSocketPort: ':8032',
-// };
