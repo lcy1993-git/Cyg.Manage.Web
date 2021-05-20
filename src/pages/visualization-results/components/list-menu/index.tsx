@@ -19,6 +19,7 @@ import {
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
 import { MaterialTable } from '../material-table';
+import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
 
 const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDataType[] => {
   /**
@@ -60,7 +61,19 @@ const ListMenu: FC = observer(() => {
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList } = vState;
-
+  const { data: commentCountResponseData, run: feetchCommentCountRquest } = useRequest(
+    () => fetchCommentCountById(checkedProjectIdList[0].id),
+    {
+      manual: true,
+      onSuccess: () => {
+        if (!commentCountResponseData?.totalQty) {
+          message.warn('当前项目不存在审阅消息');
+        } else {
+          setCommentTableModalVisible(true);
+        }
+      },
+    },
+  );
   const {
     data: materialListReponseData,
     run: fetchMaterialListRquest,
@@ -95,12 +108,7 @@ const ListMenu: FC = observer(() => {
   };
 
   const onClickCommentTable = () => {
-    if (checkedProjectIdList?.length !== 1) {
-      setProjectModalVisible(false);
-      message.warning('请选择一个项目');
-    } else {
-      setCommentTableModalVisible(true);
-    }
+    feetchCommentCountRquest();
   };
 
   const onClickProjectDetailInfo = () => {

@@ -188,17 +188,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     },
   );
 
-  const { data: commentCountResponseData, run: feetchCommentCountRquest } = useRequest(
-    () => fetchCommentCountById(projectIdList[0].id),
-    {
-      manual: true,
-      onSuccess: () => {
-        if (!commentCountResponseData?.totalQty) {
-          message.warn('当前项目不存在审阅消息');
-        }
-      },
-    },
-  );
+  /**
+   * 
+   * @param expandedKeysValue 
+   */
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
@@ -237,9 +230,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    if (projectIdList.length === 1) {
-      feetchCommentCountRquest();
-    }
+    // if (projectIdList.length === 1) {
+    //   feetchCommentCountRquest();
+    // }
 
     store.setProjectIdList(projectIdList);
 
