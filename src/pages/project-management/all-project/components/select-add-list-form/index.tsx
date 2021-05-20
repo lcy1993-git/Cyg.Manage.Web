@@ -53,15 +53,6 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     setPeople(initPeople);
   }, [JSON.stringify(initPeople)]);
 
-  useHover(() => document.getElementById('hover-div'), {
-    onEnter: () => {
-      if (data) {
-        setTrue();
-      }
-    },
-    onLeave: () => {},
-  });
-
   const onPepleAdd = (p: UserInfo) => {
     setFalse();
     setPeople([...people.filter((v) => v?.value !== p?.value), p]);
