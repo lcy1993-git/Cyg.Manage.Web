@@ -40,19 +40,14 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
       .then((res) => {
         if (res && res.code === 6000) {
           setFalseData(res.message);
-          setImportTipsVisible(true);
           message.success('导入成功');
-          setTimeout(() => {
-            setState(false);
-            setImportTipsVisible(false);
-          }, 5000);
+          setState(false);
+          setImportTipsVisible(true);
           return Promise.resolve();
-        } else {
-          message.error(res.message);
-          return Promise.reject();
         }
+        message.error(res.message);
+        return Promise.reject();
       })
-
       .finally(() => {
         changeFinishEvent?.();
         setUploadFileFalse();
@@ -65,31 +60,33 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
   };
 
   return (
-    <Modal
-      maskClosable={false}
-      title="导入资源库"
-      visible={state as boolean}
-      footer={[
-        <Button key="cancle" onClick={() => setState(false)}>
-          取消
-        </Button>,
-        <Button key="save" type="primary" loading={requestLoading} onClick={() => onSave()}>
-          保存
-        </Button>,
-      ]}
-      onCancel={() => setState(false)}
-      destroyOnClose
-    >
-      <Form form={form} preserve={false}>
-        <CyFormItem label="导入" name="file" required>
-          <FileUpload
-            accept=".zip"
-            trigger={triggerUploadFile}
-            maxCount={1}
-            uploadFileFn={saveImportLibEvent}
-          />
-        </CyFormItem>
-      </Form>
+    <>
+      <Modal
+        maskClosable={false}
+        title="导入资源库"
+        visible={state as boolean}
+        footer={[
+          <Button key="cancle" onClick={() => setState(false)}>
+            取消
+          </Button>,
+          <Button key="save" type="primary" loading={requestLoading} onClick={() => onSave()}>
+            保存
+          </Button>,
+        ]}
+        onCancel={() => setState(false)}
+        destroyOnClose
+      >
+        <Form form={form} preserve={false}>
+          <CyFormItem label="导入" name="file" required>
+            <FileUpload
+              accept=".zip"
+              trigger={triggerUploadFile}
+              maxCount={1}
+              uploadFileFn={saveImportLibEvent}
+            />
+          </CyFormItem>
+        </Form>
+      </Modal>
       <Modal
         maskClosable={false}
         footer=""
@@ -102,7 +99,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
           <pre>{falseData}</pre>
         </div>
       </Modal>
-    </Modal>
+    </>
   );
 };
 

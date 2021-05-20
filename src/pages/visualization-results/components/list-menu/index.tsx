@@ -214,7 +214,7 @@ const ListMenu: FC = observer(() => {
       >
         {checkedProjectIdList.length > 0 ? (
           <CommentTable
-            projectId={checkedProjectIdList[0].id}
+            projectId={commentTableModalVisible ? checkedProjectIdList[0].id : ''}
             engineerId={checkedProjectIdList[0].engineerId}
           />
         ) : null}
