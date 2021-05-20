@@ -204,6 +204,7 @@ const ProjectManagement: React.FC = () => {
   };
 
   const arrangeEvent = async () => {
+    
     const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
     if (projectIds.length === 0) {
       message.error('请至少选择一个项目');
