@@ -113,8 +113,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const checked = new Array<TreeNodeType>();
     const dfs = (node: TreeNodeType, isSelect: boolean) => {
       const { id, children, key, title, levelCategory } = node;
-      expanded.push(key);
+
       if (reg.test(query.selectCity)) {
+        expanded.push(key);
         if (id === query.selectCity) {
           children?.forEach((v) => {
             dfs(v, true);
@@ -123,19 +124,20 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           return;
         }
 
-        if (isSelect && levelCategory === 6) {
-          checked.push(node);
-        }
+        if (isSelect) {
+          levelCategory === 6 ? checked.push(node) : expanded.push(key);
 
-        if (isSelect && levelCategory !== 6) {
-          expanded.push(key);
+          children?.forEach((v) => {
+            dfs(v, isSelect);
+          });
+        } else {
+          children?.forEach((v) => {
+            dfs(v, isSelect);
+          });
+          expanded.pop();
         }
-
-        children?.forEach((v) => {
-          dfs(v, isSelect);
-        });
-        expanded.pop();
       } else {
+        expanded.push(key);
         if (title === query.selectCity) {
           children?.forEach((v) => {
             dfs(v, true);
@@ -144,21 +146,19 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           return;
         }
 
-        if (isSelect && levelCategory === 6) {
-          checked.push(node);
-        }
+        if (isSelect) {
+          levelCategory === 6 ? checked.push(node) : expanded.push(key);
 
-        if (isSelect && levelCategory !== 6) {
-          expanded.push(key);
+          children?.forEach((v) => {
+            dfs(v, isSelect);
+          });
+        } else {
+          children?.forEach((v) => {
+            dfs(v, isSelect);
+          });
+          expanded.pop();
         }
-
-        children?.forEach((v) => {
-          dfs(v, isSelect);
-        });
-        expanded.pop();
       }
-
-      return;
     };
     items.forEach((v) => {
       dfs(v, false);
