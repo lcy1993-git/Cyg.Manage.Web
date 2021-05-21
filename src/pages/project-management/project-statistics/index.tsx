@@ -6,7 +6,7 @@ const ProjectStatistics:React.FC = () => {
 
     const baseUrl = `${document.location.protocol}//${thisHostName}`;
 
-    const port = window.location.hostname === "localhost" ? "21525" : document.location.protocol;
+    const port = window.location.hostname === "localhost" ? "21525" : document.location.port;
 
     const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8029/index.html` : `${baseUrl}:${port}/chart/index.html`;
 
