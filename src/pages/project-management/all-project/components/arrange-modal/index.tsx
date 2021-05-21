@@ -24,7 +24,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const { projectIds, finishEvent, defaultSelectType = '2', allotCompanyId } = props;
   const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
   const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
-
+  const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [selectType, setSelectType] = useState<string>('');
 
   const [form] = Form.useForm();
@@ -131,7 +131,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       onCancel={() => closeModalEvent()}
     >
       <Form form={form} preserve={false}>
-        <Tabs defaultActiveKey="1">
+        <Tabs defaultActiveKey="1" onChange={(key) => setTabActiveKey(key)}>
           <TabPane tab="项目安排" key="1">
             <ArrangeForm
               defaultType={defaultSelectType}
@@ -142,10 +142,12 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           </TabPane>
           {(selectType === '2' || selectType === '4') && (
             <TabPane tab="外审安排" key="2">
-              <SelectAddListForm
-                onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
-                onChange={(people) => setArrangePeople(people)}
-              />
+              {tabActiveKey === '2' ? (
+                <SelectAddListForm
+                  onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
+                  onChange={(people) => setArrangePeople(people)}
+                />
+              ) : null}
             </TabPane>
           )}
           {(selectType === '1' || selectType === '3') && (

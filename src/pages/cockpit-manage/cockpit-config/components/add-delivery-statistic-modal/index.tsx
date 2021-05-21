@@ -50,10 +50,10 @@ const AddDeliveryStatisticModal: React.FC<AddDeliveryStatistic> = (props) => {
       'deliveryManage',
     );
     const unChooseDeliveryComponentProps = deliveryComponentPropsArray.filter(
-      (item) => !hasChooseDeliveryComponentCodeArray.includes(item.code),
+      (item) => !hasChooseDeliveryComponentCodeArray?.includes(item.code),
     );
     const hasChooseDeliveryComponentProps = deliveryComponentPropsArray.filter((item) =>
-      hasChooseDeliveryComponentCodeArray.includes(item.code),
+      hasChooseDeliveryComponentCodeArray?.includes(item.code),
     );
     return {
       unChooseDeliveryComponentProps,

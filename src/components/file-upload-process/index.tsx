@@ -49,7 +49,7 @@ const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
         setPercent(100);
       } else if (status === 'error') {
         setInterval(undefined);
-        message.warn('上传失败');
+        // message.warn('上传失败');
         setPercent(0);
       } else {
         if (fileSize === 'large') {

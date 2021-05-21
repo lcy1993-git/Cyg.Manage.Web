@@ -129,6 +129,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
       <FileUploadShowItem
         deleteEvent={deleteUploadItem}
         uploadEvent={uploadItem}
+        uploadStatus={uploadStatus}
         uploadFileBtn={uploadStatus === 'success' ? false : uploadFileBtn}
         uid={file.uid}
         name={file.name}

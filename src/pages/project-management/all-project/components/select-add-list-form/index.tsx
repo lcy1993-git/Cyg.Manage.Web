@@ -53,15 +53,6 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     setPeople(initPeople);
   }, [JSON.stringify(initPeople)]);
 
-  useHover(() => document.getElementById('hover-div'), {
-    onEnter: () => {
-      if (data) {
-        setTrue();
-      }
-    },
-    onLeave: () => {},
-  });
-
   const onPepleAdd = (p: UserInfo) => {
     setFalse();
     setPeople([...people.filter((v) => v?.value !== p?.value), p]);
@@ -142,7 +133,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   return (
     <div className={styles.selectForm}>
       <CyFormItem label="账号" className={styles.account} name="outerAuditUsers">
-        <Dropdown overlay={<OptionList />} visible={visible} onVisibleChange={setFalse}>
+        <Dropdown overlay={<OptionList />} visible={visible}>
           <Search
             id="hover-div"
             placeholder="请输入账号/手机号"

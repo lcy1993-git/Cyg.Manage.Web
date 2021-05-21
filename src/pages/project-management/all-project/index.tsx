@@ -14,7 +14,7 @@ import {
   canEditArrange,
   checkCanArrange,
   deleteProject,
-  getAllotUsers,
+  // getAllotUsers,
   getExternalArrangeStep,
   getProjectInfo,
   getProjectTableStatistics,
@@ -116,7 +116,6 @@ const ProjectManagement: React.FC = () => {
   const [ifCanEdit, setIfCanEdit] = useState<any>([]);
 
   const [notBeginUsers, setNotBeginUsers] = useState<any>();
-  const [arrangeUsers, setArrangeUsers] = useState<any>();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -130,10 +129,6 @@ const ProjectManagement: React.FC = () => {
   });
 
   const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
-    manual: true,
-  });
-
-  const { run: getArrangeUsers } = useRequest(getAllotUsers, {
     manual: true,
   });
 
@@ -194,33 +189,17 @@ const ProjectManagement: React.FC = () => {
   const revokeAllotEvent = async () => {
     const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-    const checkedArray = tableSelectData
-      .map((item: any) => {
-        return item.projectInfo?.status?.map((item: any) => {
-          return { status: item.status, isAllot: item.isAllot };
-        });
-      })
-      .flat();
-
     if (projectIds.length === 0) {
       message.error('请至少选择一个项目');
       return;
     }
-
-    if (
-      JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 14, isAllot: true })) != -1 ||
-      JSON.stringify(checkedArray).indexOf(JSON.stringify({ status: 1, isAllot: true })) != -1
-    ) {
-      await revokeAllot(projectIds);
-      message.success('撤回安排成功');
-      search();
-    } else {
-      message.error('该项目的状态非“待安排”或“未勘察”，无法进行此操作');
-      return;
-    }
+    await revokeAllot(projectIds);
+    message.success('撤回安排成功');
+    search();
   };
 
   const arrangeEvent = async () => {
+    // setArrangeModalVisible(true);
     const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
     if (projectIds.length === 0) {
       message.error('请至少选择一个项目');
@@ -297,16 +276,16 @@ const ProjectManagement: React.FC = () => {
     ) {
       setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
       setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
-      const res = await getArrangeUsers(tableSelectData[0]?.checkedArray[0], 6);
+      // const res = await getArrangeUsers(tableSelectData[0]?.checkedArray[0], 6);
 
-      const exUsers = res?.map((item) => {
-        return {
-          value: item.userId,
-          text: item.userNameText,
-        };
-      });
+      // const exUsers = res?.map((item) => {
+      //   return {
+      //     value: item.userId,
+      //     text: item.userNameText,
+      //   };
+      // });
 
-      setArrangeUsers(exUsers);
+      // setArrangeUsers(exUsers);
       setExternalArrangeModal(true);
       return;
     }
@@ -1075,7 +1054,6 @@ const ProjectManagement: React.FC = () => {
           visible={externalArrangeModal}
           onChange={setExternalArrangeModal}
           projectId={currentProjectId}
-          arrangeUsers={arrangeUsers}
           proName={projectName}
         />
       )}

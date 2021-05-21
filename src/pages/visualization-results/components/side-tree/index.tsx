@@ -4,6 +4,7 @@ import styles from './index.less';
 import _, { size } from 'lodash';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
+import { useLocation } from 'react-router-dom';
 import {
   fetchEngineerProjectListByParamsAndArea,
   fetchEngineerProjectListByParamsAndCompany,
@@ -32,7 +33,6 @@ export interface TreeNodeType {
 }
 export interface SideMenuProps {
   className?: string;
-  selectCityId?: string;
 }
 
 /**
@@ -84,7 +84,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
   const { filterCondition } = vState;
-  const { className, selectCityId } = props;
+  const { className } = props;
+  const location: any = useLocation();
+  const { query } = location;
 
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
@@ -106,32 +108,57 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const getExpanedCityProjectKeys = (
     items: TreeNodeType[],
   ): { expanded: string[]; checked: TreeNodeType[] } => {
+    const reg = new RegExp('^[0-9]*$');
     const expanded = new Array<string>();
     const checked = new Array<TreeNodeType>();
     const dfs = (node: TreeNodeType, isSelect: boolean) => {
-      const { id, children, key, levelCategory } = node;
-      expanded.push(key);
-      if (id === selectCityId) {
-        children?.forEach((v) => {
-          dfs(v, true);
-        });
+      const { id, children, key, title, levelCategory } = node;
 
-        return;
-      }
-
-      if (isSelect && levelCategory === 6) {
-        checked.push(node);
-      }
-
-      if (isSelect && levelCategory !== 6) {
+      if (reg.test(query.selectCity)) {
         expanded.push(key);
-      }
+        if (id === query.selectCity) {
+          children?.forEach((v) => {
+            dfs(v, true);
+          });
 
-      children?.forEach((v) => {
-        dfs(v, isSelect);
-      });
-      expanded.pop();
-      return;
+          return;
+        }
+
+        if (isSelect) {
+          levelCategory === 6 ? checked.push(node) : expanded.push(key);
+
+          children?.forEach((v) => {
+            dfs(v, isSelect);
+          });
+        } else {
+          children?.forEach((v) => {
+            dfs(v, isSelect);
+          });
+          expanded.pop();
+        }
+      } else {
+        expanded.push(key);
+        if (title === query.selectCity) {
+          children?.forEach((v) => {
+            dfs(v, true);
+          });
+
+          return;
+        }
+
+        if (isSelect) {
+          levelCategory === 6 ? checked.push(node) : expanded.push(key);
+
+          children?.forEach((v) => {
+            dfs(v, isSelect);
+          });
+        } else {
+          children?.forEach((v) => {
+            dfs(v, isSelect);
+          });
+          expanded.pop();
+        }
+      }
     };
     items.forEach((v) => {
       dfs(v, false);
@@ -143,10 +170,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const initSideTree = (data: TreeNodeType[]) => {
     // pushAllKeys(data);
     // expandedKeys.push('-1');
-
     // setExpandedKeys([...expandedKeys]);
 
-    if (selectCityId && tabActiveKey === '1' && showDefaultSelectCity) {
+    if (query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity) {
       const key = getExpanedCityProjectKeys(data);
       const { expanded, checked } = key;
       setExpandedKeys(['-1', ...expanded]);
@@ -170,6 +196,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     {
       refreshDeps: [filterCondition, tabActiveKey],
       onSuccess: () => {
+        // console.log(window.location.search.substring(1).split('='));
         let data = generateProjectTree(treeListReponseData);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
@@ -184,17 +211,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     },
   );
 
-  const { data: commentCountResponseData, run: feetchCommentCountRquest } = useRequest(
-    () => fetchCommentCountById(projectIdList[0].id),
-    {
-      manual: true,
-      onSuccess: () => {
-        if (!commentCountResponseData?.totalQty) {
-          message.warn('当前项目不存在审阅消息');
-        }
-      },
-    },
-  );
+  /**
+   *
+   * @param expandedKeysValue
+   */
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
@@ -233,9 +253,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    if (projectIdList.length === 1) {
-      feetchCommentCountRquest();
-    }
+    // if (projectIdList.length === 1) {
+    //   feetchCommentCountRquest();
+    // }
 
     store.setProjectIdList(projectIdList);
 
@@ -244,19 +264,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }, [projectIdList]);
 
-  const onTabChange = () => {
-    if (tabActiveKey === '2') {
-      setTreeData([]);
-      clearState();
-      setTabActiveKey('1');
-    }
-    if (tabActiveKey === '1') {
-      setTreeData([]);
-      clearState();
-      setTabActiveKey('2');
-    }
+  const onTabChange = (key: string) => {
+    setTabActiveKey(key);
     setShowDefaultSelectCity(false);
   };
+
+  useEffect(() => {
+    setTreeData([]);
+    clearState();
+  }, [tabActiveKey]);
 
   const activeStyle = '#ebedee';
 
@@ -267,13 +283,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
           className={styles.tabBar}
         >
-          <div className={styles.tabBarItem} onClick={() => onTabChange()}>
-            按地方
+          <div className={styles.tabBarItem} onClick={() => onTabChange('1')}>
+            按地区
           </div>
           <div
             style={{ backgroundColor: tabActiveKey === '2' ? activeStyle : '#fff' }}
             className={styles.tabBarItem}
-            onClick={() => onTabChange()}
+            onClick={() => onTabChange('2')}
           >
             按公司
           </div>
@@ -281,6 +297,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
         <Tabs
           renderTabBar={() => <></>}
+          onChange={(tabActiveKey) => setTabActiveKey(tabActiveKey)}
           style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle }}
         >
           <TabPane style={{ overflow: 'hidden' }} key="1">

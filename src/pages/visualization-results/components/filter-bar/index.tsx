@@ -57,16 +57,16 @@ const searchChildrenList = [
 
 const FilterBar: FC = observer(() => {
   const [keyWord, setKeyWord] = useState<string>(); //搜索关键词
-  const [category, setCategory] = useState<string>(); //项目分类
-  const [pCategory, setPCategory] = useState<string>(); //项目类别
+  const [category, setCategory] = useState<string[]>(); //项目分类
+  const [pCategory, setPCategory] = useState<string[]>(); //项目类别
   const [comment, setComment] = useState<number>(); //审阅
-  const [stage, setStage] = useState<string>(); //项目阶段
-  const [constructType, setConstructType] = useState<string>(); //建设性质
-  const [nature, setNature] = useState<string>(); //项目性质
-  const [kvLevel, setKvLevel] = useState<number | string>(); //电压等级
+  const [stage, setStage] = useState<string[]>(); //项目阶段
+  const [constructType, setConstructType] = useState<string[]>(); //建设性质
+  const [nature, setNature] = useState<string[]>(); //项目性质
+  const [kvLevel, setKvLevel] = useState<number[] | string[]>(); //电压等级
   const [statuss, setStatuss] = useState<number[]>(); //状态
-  const [sourceType, setSourceType] = useState<string>(); //项目来源
-  const [identityType, setIdentityType] = useState<string>(); //项目身份
+  const [sourceType, setSourceType] = useState<string[]>(); //项目来源
+  const [identityType, setIdentityType] = useState<string[]>(); //项目身份
 
   const store = useContainer();
 
@@ -112,15 +112,16 @@ const FilterBar: FC = observer(() => {
   const search = () => {
     const condition = {
       keyWord: keyWord ?? undefined,
-      category: category && category !== '-1' ? [category] : undefined,
-      pCategory: pCategory && pCategory !== '-1' ? [pCategory] : undefined,
-      stage: stage && stage !== '-1' ? [stage] : undefined,
-      constructType: constructType && constructType !== '-1' ? [constructType] : undefined,
-      nature: nature && nature !== '-1' ? [nature] : undefined,
-      kvLevel: (kvLevel === 0 || kvLevel) && kvLevel !== '-1' ? [kvLevel] : undefined,
+      category: category && category[0] !== '-1' ? category : undefined,
+      pCategory: pCategory && pCategory[0] !== '-1' ? pCategory : undefined,
+      stage: stage && stage[0] !== '-1' ? stage : undefined,
+      constructType: constructType && constructType[0] !== '-1' ? constructType : undefined,
+      nature: nature && nature[0] !== '-1' ? nature : undefined,
+      kvLevel:
+        kvLevel && (kvLevel[0] === 0 || kvLevel) && kvLevel[0] !== '-1' ? kvLevel : undefined,
       status: statuss ?? undefined,
-      sourceType: sourceType && sourceType !== '-1' ? [sourceType] : undefined,
-      identityType: identityType && identityType !== '-1' ? [identityType] : undefined,
+      sourceType: sourceType && sourceType[0] !== '-1' ? sourceType : undefined,
+      identityType: identityType && identityType[0] !== '-1' ? identityType : undefined,
       haveAnnotate: comment && comment !== -1 ? comment : -1,
     };
 
@@ -144,7 +145,6 @@ const FilterBar: FC = observer(() => {
             <Select
               maxTagCount={0}
               maxTagTextLength={2}
-              mode="multiple"
               allowClear
               value={statuss}
               onChange={(values: number[]) => setStatuss(values)}
@@ -158,10 +158,13 @@ const FilterBar: FC = observer(() => {
             <UrlSelect
               valueKey="value"
               titleKey="text"
+              mode="multiple"
+              maxTagCount={0}
+              maxTagTextLength={3}
               defaultData={projectCategory}
               className="widthAll"
               value={category}
-              onChange={(value) => setCategory(value as string)}
+              onChange={(value) => setCategory(value as string[])}
               placeholder="项目分类"
               needAll={true}
               allValue="-1"
@@ -173,8 +176,11 @@ const FilterBar: FC = observer(() => {
               titleKey="text"
               defaultData={projectPType}
               value={pCategory}
+              mode="multiple"
+              maxTagCount={0}
+              maxTagTextLength={3}
               dropdownMatchSelectWidth={168}
-              onChange={(value) => setPCategory(value as string)}
+              onChange={(value) => setPCategory(value as string[])}
               className="widthAll"
               placeholder="项目类别"
               needAll={true}
@@ -187,8 +193,11 @@ const FilterBar: FC = observer(() => {
               titleKey="text"
               defaultData={projectStage}
               value={stage}
+              mode="multiple"
+              maxTagCount={0}
+              maxTagTextLength={3}
               className="widthAll"
-              onChange={(value) => setStage(value as string)}
+              onChange={(value) => setStage(value as string[])}
               placeholder="项目阶段"
               needAll={true}
               allValue="-1"
@@ -201,8 +210,11 @@ const FilterBar: FC = observer(() => {
               defaultData={projectConstructType}
               value={constructType}
               className="widthAll"
+              mode="multiple"
+              maxTagCount={0}
+              maxTagTextLength={3}
               placeholder="建设类型"
-              onChange={(value) => setConstructType(value as string)}
+              onChange={(value) => setConstructType(value as string[])}
               needAll={true}
               allValue="-1"
             />
@@ -213,7 +225,10 @@ const FilterBar: FC = observer(() => {
               titleKey="text"
               defaultData={projectKvLevel}
               value={kvLevel}
-              onChange={(value) => setKvLevel(value as number)}
+              mode="multiple"
+              maxTagCount={0}
+              maxTagTextLength={3}
+              onChange={(value) => setKvLevel(value as number[])}
               className="widthAll"
               placeholder="电压等级"
               needAll={true}
@@ -226,8 +241,11 @@ const FilterBar: FC = observer(() => {
               titleKey="text"
               defaultData={projectNature}
               value={nature}
+              mode="multiple"
+              maxTagCount={0}
+              maxTagTextLength={3}
               dropdownMatchSelectWidth={168}
-              onChange={(value) => setNature(value as string)}
+              onChange={(value) => setNature(value as string[])}
               className="widthAll"
               placeholder="项目性质"
               needAll={true}
@@ -239,8 +257,11 @@ const FilterBar: FC = observer(() => {
             <EnumSelect
               enumList={ProjectSourceType}
               value={sourceType}
-              onChange={(value) => setSourceType(value as string)}
+              onChange={(value) => setSourceType(value as string[])}
               className="widthAll"
+              mode="multiple"
+              maxTagCount={0}
+              maxTagTextLength={3}
               placeholder="项目来源"
               needAll={true}
               allValue="-1"
@@ -250,8 +271,11 @@ const FilterBar: FC = observer(() => {
             <EnumSelect
               enumList={ProjectIdentityType}
               value={identityType}
-              onChange={(value) => setIdentityType(value as string)}
+              onChange={(value) => setIdentityType(value as string[])}
               className="widthAll"
+              mode="multiple"
+              maxTagCount={0}
+              maxTagTextLength={3}
               placeholder="项目身份"
               needAll={true}
               allValue="-1"

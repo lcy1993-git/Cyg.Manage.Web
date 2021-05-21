@@ -15,9 +15,9 @@ import {
   loadLayer,
 } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
-const mappingTagsData = getMappingTagsDictionary();
-const mappingTagsDictionary: any = mappingTagsData ? JSON.parse(mappingTagsData) : {};
-const mediaLayers = ['tower', 'cable', 'cable_equipment'];
+// const mappingTagsData = getMappingTagsDictionary();
+// const mappingTagsDictionary: any =typeof mappingTagsData === 'string' ? JSON.parse(mappingTagsData) : {};
+const mediaLayers = ['tower', 'cable', 'cable_equipment', 'electric_meter'];
 const materiaLayers = [
   'tower',
   'transformer',
@@ -58,6 +58,20 @@ const elementTypeEnum = {
   TrackLine: '轨迹线',
 };
 export const mapClick = (evt: any, map: any, ops: any) => {
+
+  // 解决本地存储mappingTagsData的bug
+  const mappingTagsData = getMappingTagsDictionary();
+  let mappingTagsDictionary: any;
+  if(typeof mappingTagsData === 'object' && mappingTagsData !== null) {
+    mappingTagsDictionary = mappingTagsData
+  }else if(typeof mappingTagsData === 'string') {
+    mappingTagsDictionary = JSON.parse(mappingTagsData)
+  }else {
+    mappingTagsDictionary = {}
+  }
+  
+  console.log(mappingTagsDictionary);
+  
   clearHighlightLayer(map);
   ops.setRightSidebarVisiviabel(false);
   let mappingTags: any, mappingTagValues;

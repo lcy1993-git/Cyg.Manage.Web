@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Menu, message, Modal, Switch, Tooltip } from 'antd';
 import styles from './index.less';
 import {
@@ -19,6 +19,7 @@ import {
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
 import { MaterialTable } from '../material-table';
+import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
 
 const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDataType[] => {
   /**
@@ -60,7 +61,19 @@ const ListMenu: FC = observer(() => {
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList } = vState;
-
+  const { data: commentCountResponseData, run: feetchCommentCountRquest } = useRequest(
+    () => fetchCommentCountById(checkedProjectIdList[0].id),
+    {
+      manual: true,
+      onSuccess: () => {
+        if (!commentCountResponseData?.totalQty) {
+          message.warn('当前项目不存在审阅消息');
+        } else {
+          setCommentTableModalVisible(true);
+        }
+      },
+    },
+  );
   const {
     data: materialListReponseData,
     run: fetchMaterialListRquest,
@@ -76,6 +89,7 @@ const ListMenu: FC = observer(() => {
       if (materialListReponseData?.length) {
         setMaterialList(generateMaterialTreeList(materialListReponseData));
       } else {
+        setMaterialList([]);
         message.warning('没有检索到数据');
       }
     },
@@ -95,12 +109,7 @@ const ListMenu: FC = observer(() => {
   };
 
   const onClickCommentTable = () => {
-    if (checkedProjectIdList?.length !== 1) {
-      setProjectModalVisible(false);
-      message.warning('请选择一个项目');
-    } else {
-      setCommentTableModalVisible(true);
-    }
+    feetchCommentCountRquest();
   };
 
   const onClickProjectDetailInfo = () => {
@@ -188,6 +197,7 @@ const ListMenu: FC = observer(() => {
       <Modal
         title="材料表"
         centered
+        destroyOnClose
         visible={materialModalVisible}
         onOk={() => setMaterialModalVisible(false)}
         onCancel={() => setMaterialModalVisible(false)}
@@ -199,6 +209,7 @@ const ListMenu: FC = observer(() => {
       <Modal
         title="审阅列表"
         centered
+        destroyOnClose
         visible={commentTableModalVisible}
         onOk={() => setCommentTableModalVisible(false)}
         onCancel={() => setCommentTableModalVisible(false)}
@@ -206,6 +217,7 @@ const ListMenu: FC = observer(() => {
       >
         {checkedProjectIdList.length > 0 ? (
           <CommentTable
+            trigger={commentTableModalVisible}
             projectId={checkedProjectIdList[0].id}
             engineerId={checkedProjectIdList[0].engineerId}
           />

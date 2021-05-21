@@ -20,8 +20,8 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   const [historyVersionData, setHistoryVersionData] = useState<any[]>([]);
   const [versionLoading, setVersionLoading] = useState<boolean>(false);
 
-  const thisHostName = window.location.hostname;
-  const serverCode = serverCodeArray[thisHostName];
+  const serverCode =
+    serverCodeArray.hostName === 'localhost' ? '10.6.1.36' : serverCodeArray.hostName;
 
   const { data: versionInfo, run: getVersionInfoEvent, loading } = useRequest(
     () =>
@@ -62,8 +62,6 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
     }
   };
 
-  let titleName = `版本功能更新 V${versionInfo?.data.versionNo}`;
-
   return (
     <>
       <Modal
@@ -85,7 +83,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       </Modal>
       <Modal
         maskClosable={false}
-        title={titleName}
+        title="版本功能更新"
         width={820}
         visible={state as boolean}
         footer=""
@@ -93,6 +91,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       >
         <Spin spinning={loading}>
           <div className={styles.versionItem}>
+            <div className={styles.versionNumber}>版本：{versionInfo?.data.versionNo}</div>
             <div className={styles.versionItemTitle}>【更新说明】</div>
             <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>
           </div>

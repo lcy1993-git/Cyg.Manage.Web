@@ -1,12 +1,12 @@
 import React, { SetStateAction, useMemo, useState } from 'react';
 import { Button, Form, message, Modal } from 'antd';
 
-import { useControllableValue } from 'ahooks';
+import { useControllableValue, useRequest } from 'ahooks';
 import SelectAddListForm from '../select-add-list-form';
 import { Dispatch } from 'react';
 import { UserInfo } from '@/services/project-management/select-add-list-form';
 import { Checkbox } from 'antd';
-import { allotOuterAudit } from '@/services/project-management/all-project';
+import { allotOuterAudit, getAllotUsers } from '@/services/project-management/all-project';
 import styles from './index.less';
 
 interface GetGroupUserProps {
@@ -15,7 +15,6 @@ interface GetGroupUserProps {
   defaultType?: string;
   allotCompanyId?: string;
   visible: boolean;
-  arrangeUsers?: any;
   projectId: string;
   search?: () => void;
   proName?: string;
@@ -28,10 +27,22 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const [isArrangePeople, setIsArrangePeople] = useState<boolean>(false); //不安排外审status
 
   const [form] = Form.useForm();
-  const { arrangeUsers, projectId, search, proName } = props;
+  const { projectId, search, proName } = props;
+
+  const { data } = useRequest(() => getAllotUsers(projectId, 6), {
+    onSuccess: () => {
+      const handleData = data?.map((item: any) => {
+        return {
+          value: item.userId,
+          text: item.userNameText,
+        };
+      });
+      setArrangePeople(handleData ?? []);
+    },
+  });
 
   const handleExternalMen = useMemo(() => {
-    return arrangeUsers?.concat(arrangePeople).map((item: any) => {
+    return arrangePeople?.map((item: any) => {
       return item.value;
     });
   }, [arrangePeople]);
@@ -59,26 +70,43 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       // onCancel={() => modalCloseEvent()}
       footer={[
         <div className={styles.externalModal} key="outSider">
-          <Checkbox
-            onChange={() => {
-              setIsArrangePeople(!isArrangePeople);
-            }}
-          >
-            不安排外审
-          </Checkbox>
+          {arrangePeople && arrangePeople.length > 0 ? (
+            <Checkbox
+              disabled
+              onChange={() => {
+                setIsArrangePeople(!isArrangePeople);
+              }}
+            >
+              不安排外审
+            </Checkbox>
+          ) : (
+            <Checkbox
+              onChange={() => {
+                setIsArrangePeople(!isArrangePeople);
+              }}
+            >
+              不安排外审
+            </Checkbox>
+          )}
+
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>
-
-          <Button key="save" type="primary" onClick={() => saveExternalArrange()}>
-            保存
-          </Button>
+          {(arrangePeople && arrangePeople.length > 0) || isArrangePeople ? (
+            <Button key="save" type="primary" onClick={() => saveExternalArrange()}>
+              提交
+            </Button>
+          ) : (
+            <Button disabled key="save" type="primary" onClick={() => saveExternalArrange()}>
+              提交
+            </Button>
+          )}
         </div>,
       ]}
     >
       <Form style={{ width: '100%' }} form={form}>
         <SelectAddListForm
-          initPeople={arrangeUsers}
+          initPeople={arrangePeople}
           projectName={proName}
           onChange={(people) => setArrangePeople(people)}
           notArrangeShow={isArrangePeople}

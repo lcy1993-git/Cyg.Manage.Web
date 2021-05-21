@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useControllableValue } from 'ahooks';
+import { useBoolean, useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
 import React from 'react';
 import { Dispatch } from 'react';
@@ -20,20 +20,35 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', securityKey = '', requestSource = 'upload', changeFinishEvent } = props;
   const [form] = Form.useForm();
-
+  const [
+    triggerUploadFile,
+    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
+  ] = useBoolean(false);
   const saveLineStreesSagEvent = () => {
-    form.validateFields().then(async (values) => {
-      const { file } = values;
-      await uploadLineStressSag(
-        file,
-        { libId, securityKey },
-        requestSource,
-        '/Upload/LineStressSag',
-      );
-      message.success('导入成功');
-      setState(false);
-      changeFinishEvent?.();
-    });
+    return form
+      .validateFields()
+      .then((values) => {
+        const { file } = values;
+        return uploadLineStressSag(
+          file,
+          { libId, securityKey },
+          requestSource,
+          '/Upload/LineStressSag',
+        );
+      })
+      .then(
+        () => {
+          message.success('导入成功');
+          return Promise.resolve();
+        },
+        () => {
+          return Promise.reject('');
+        },
+      )
+      .finally(() => {
+        changeFinishEvent?.();
+        setUploadFileFalse();
+      });
   };
 
   return (
@@ -45,7 +60,7 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => saveLineStreesSagEvent()}>
+        <Button key="save" type="primary" onClick={() => setState(false)}>
           保存
         </Button>,
       ]}
@@ -54,7 +69,12 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
     >
       <Form form={form} preserve={false}>
         <CyFormItem label="导入" name="file" required>
-          <FileUpload maxCount={1} />
+          <FileUpload
+            trigger={triggerUploadFile}
+            maxCount={1}
+            uploadFileBtn
+            uploadFileFn={saveLineStreesSagEvent}
+          />
         </CyFormItem>
       </Form>
     </Modal>

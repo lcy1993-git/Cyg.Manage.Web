@@ -37,9 +37,6 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-          setTimeout(() => {
-            setState(false);
-          }, 1000);
           return Promise.resolve();
         },
         () => {
@@ -54,7 +51,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
   };
 
   const onSave = () => {
-    setUploadFileTrue();
+    
   };
 
   return (
@@ -66,7 +63,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => onSave()} loading={requestLoading}>
+        <Button key="save" type="primary" onClick={() => setState(false)} loading={requestLoading}>
           保存
         </Button>,
       ]}
@@ -75,7 +72,12 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
     >
       <Form form={form} preserve={false}>
         <CyFormItem label="导入" name="file" required>
-          <FileUpload trigger={triggerUploadFile} maxCount={1} uploadFileFn={saveDrawingEvent} />
+          <FileUpload
+            uploadFileBtn
+            trigger={triggerUploadFile}
+            maxCount={1}
+            uploadFileFn={saveDrawingEvent}
+          />
         </CyFormItem>
       </Form>
     </Modal>
