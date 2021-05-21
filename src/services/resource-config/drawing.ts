@@ -61,6 +61,7 @@ export const newUploadLineStressSag = (
   files.forEach((item) => {
     formData.append('file', item);
   });
+  
 
   const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`;
   return request(uploadUrl, {
