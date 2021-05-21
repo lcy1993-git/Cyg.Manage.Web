@@ -89,6 +89,7 @@ const ListMenu: FC = observer(() => {
       if (materialListReponseData?.length) {
         setMaterialList(generateMaterialTreeList(materialListReponseData));
       } else {
+        setMaterialList([]);
         message.warning('没有检索到数据');
       }
     },
@@ -196,6 +197,7 @@ const ListMenu: FC = observer(() => {
       <Modal
         title="材料表"
         centered
+        destroyOnClose
         visible={materialModalVisible}
         onOk={() => setMaterialModalVisible(false)}
         onCancel={() => setMaterialModalVisible(false)}
