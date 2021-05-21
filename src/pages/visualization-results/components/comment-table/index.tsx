@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styles from './index.less';
 import TableSearch from '@/components/table-search';
 import { Button, Input, Select, message, Table, Tag, Modal } from 'antd';
@@ -19,11 +19,12 @@ const { Option } = Select;
 interface CommentProps {
   projectId: string;
   engineerId: string;
+  trigger?: boolean;
 }
 const { Search } = Input;
 
 const CommentTable: FC<CommentProps> = (props) => {
-  const { projectId, engineerId } = props;
+  const { projectId, engineerId, trigger } = props;
   const [keyword, setKeyword] = useState<string>();
   const [layerType, setLayerType] = useState<number>();
   const [deviceType, setDeviceType] = useState<number>();
@@ -63,6 +64,7 @@ const CommentTable: FC<CommentProps> = (props) => {
       dataIndex: 'index',
       key: 'index',
       align: 'center',
+      fixed: 'left',
       render: (text, record, idx: number) => (currentPage - 1) * 10 + idx + 1,
     },
     {

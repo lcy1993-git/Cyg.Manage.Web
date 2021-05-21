@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Menu, message, Modal, Switch, Tooltip } from 'antd';
 import styles from './index.less';
 import {
@@ -207,6 +207,7 @@ const ListMenu: FC = observer(() => {
       <Modal
         title="审阅列表"
         centered
+        destroyOnClose
         visible={commentTableModalVisible}
         onOk={() => setCommentTableModalVisible(false)}
         onCancel={() => setCommentTableModalVisible(false)}
@@ -214,7 +215,8 @@ const ListMenu: FC = observer(() => {
       >
         {checkedProjectIdList.length > 0 ? (
           <CommentTable
-            projectId={commentTableModalVisible ? checkedProjectIdList[0].id : ''}
+            trigger={commentTableModalVisible}
+            projectId={checkedProjectIdList[0].id}
             engineerId={checkedProjectIdList[0].engineerId}
           />
         ) : null}
