@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { useMount } from 'ahooks';
+import { useMount, useSize } from 'ahooks';
 import { useContainer } from '../../result-page/mobx-store';
 import { observer } from 'mobx-react-lite';
 
@@ -56,6 +56,8 @@ const BaseMap = observer((props: BaseMapProps) => {
     checkedProjectDateList,
   } = vState;
   const { kvLevel } = filterCondition;
+
+  const boxSize = useSize(mapElement);
 
   // 右侧边栏状态
   const [rightSidebarVisiviabel, setRightSidebarVisiviabelMap] = useState(false);
@@ -127,6 +129,11 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     map?.updateSize();
   }, [visibleLeftSidebar]);
+
+  useEffect(() => {
+    map?.updateSize();
+  },[JSON.stringify(boxSize)])
+
   // 处理高亮图层
   const highlight = useCallback(
     (t: number, state) => {
