@@ -34,9 +34,7 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-          setTimeout(() => {
-            setState(false);
-          }, 1000);
+
           return Promise.resolve();
         },
         () => {
@@ -49,9 +47,6 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
       });
   };
 
-  const onSave = () => {
-    setUploadFileTrue();
-  };
   return (
     <Modal
       maskClosable={false}
@@ -63,7 +58,7 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => onSave()}>
+        <Button key="save" type="primary" onClick={() => setState(false)}>
           保存
         </Button>,
       ]}
@@ -74,6 +69,7 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
           <FileUpload
             trigger={triggerUploadFile}
             maxCount={1}
+            uploadFileBtn
             uploadFileFn={saveImportChartEvent}
           />
         </CyFormItem>

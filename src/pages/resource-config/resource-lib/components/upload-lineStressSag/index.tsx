@@ -45,8 +45,6 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
         );
       })
       .then((res) => {
-        console.log(res);
-
         if (res && res.code === 6000) {
           setFalseData(res.message);
           message.success('导入成功');
@@ -76,7 +74,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
           <Button
             key="save"
             type="primary"
-            onClick={() => onSave()}
+            onClick={() => setState(false)}
             // loading={requestLoading}
           >
             保存
@@ -89,6 +87,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
           <CyFormItem label="导入" name="file" required>
             <FileUpload
               accept=".zip"
+              uploadFileBtn
               trigger={triggerUploadFile}
               maxCount={1}
               uploadFileFn={saveLineStreesSagEvent}

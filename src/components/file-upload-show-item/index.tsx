@@ -11,11 +11,20 @@ interface FileUploadShowItemProps {
   deleteEvent: (uid: string) => void;
   uploadEvent: () => void;
   status?: 'error' | 'normal';
+  uploadStatus: 'hasNotStarted' | 'start' | 'success' | 'error' | 'delete';
   uploadFileBtn: boolean;
 }
 
 const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
-  const { name, uid, deleteEvent, uploadEvent, uploadFileBtn, status = 'normal' } = props;
+  const {
+    name,
+    uid,
+    deleteEvent,
+    uploadEvent,
+    uploadFileBtn,
+    status = 'normal',
+    uploadStatus,
+  } = props;
 
   const deleteFunction = () => {
     deleteEvent?.(uid);
@@ -33,6 +42,10 @@ const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
         <div className={styles.hasUploadFileShowItemNameContent}>
           <LinkOutlined className={styles.hasUploadFileShowItemNameIcon} />
           <span className={styles.hasUploadFileShowItemName}>{name}</span>
+          &nbsp;
+          {uploadStatus === 'success' ? (
+            <span className={styles.hasUploadFileShowItemName}>上传完成</span>
+          ) : null}
         </div>
         <div className={styles.hasUploadFileShowItemControl}>
           {/* TODO 重命名功能 */}

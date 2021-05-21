@@ -40,9 +40,7 @@ const SaveImportElectrical: React.FC<SaveImportElectricalProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-          setTimeout(() => {
-            setState(false);
-          }, 1000);
+          
           return Promise.resolve();
         },
         () => {
@@ -68,7 +66,7 @@ const SaveImportElectrical: React.FC<SaveImportElectricalProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => onSave()}>
+        <Button key="save" type="primary" onClick={() => setState(false)}>
           保存
         </Button>,
       ]}
@@ -80,6 +78,7 @@ const SaveImportElectrical: React.FC<SaveImportElectricalProps> = (props) => {
           <FileUpload
             trigger={triggerUploadFile}
             maxCount={1}
+            uploadFileBtn
             uploadFileFn={saveImportElectricalEvent}
           />
         </CyFormItem>

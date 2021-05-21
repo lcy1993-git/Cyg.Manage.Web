@@ -37,7 +37,6 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
         if (res && res.code === 6000) {
           setFalseData(res.message);
           message.success('导入成功');
-          setState(false);
           setImportTipsVisible(true);
           return Promise.resolve();
         }
@@ -50,10 +49,6 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
       });
   };
 
-  const onSave = () => {
-    setUploadFileTrue();
-  };
-
   return (
     <>
       <Modal
@@ -64,7 +59,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>,
-          <Button key="save" type="primary" onClick={() => onSave()}>
+          <Button key="save" type="primary" onClick={() => setState(false)}>
             保存
           </Button>,
         ]}
@@ -77,6 +72,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
               accept=".xlsx"
               trigger={triggerUploadFile}
               maxCount={1}
+              uploadFileBtn
               uploadFileFn={saveLineStreesSagEvent}
             />
           </CyFormItem>

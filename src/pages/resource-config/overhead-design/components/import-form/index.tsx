@@ -34,9 +34,9 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-          setTimeout(() => {
+        
             setState(false);
-          }, 1000);
+       
           return Promise.resolve();
         },
         () => {
@@ -75,6 +75,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
           <FileUpload
             trigger={triggerUploadFile}
             maxCount={1}
+            uploadFileBtn
             uploadFileFn={saveImportOverHeadEvent}
           />
         </CyFormItem>

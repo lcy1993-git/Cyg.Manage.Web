@@ -69,7 +69,12 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>,
-          <Button key="save" type="primary" loading={requestLoading} onClick={() => onSave()}>
+          <Button
+            key="save"
+            type="primary"
+            loading={requestLoading}
+            onClick={() => setState(false)}
+          >
             保存
           </Button>,
         ]}
@@ -82,6 +87,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
               accept=".zip"
               trigger={triggerUploadFile}
               maxCount={1}
+              uploadFileBtn
               uploadFileFn={saveImportLibEvent}
             />
           </CyFormItem>

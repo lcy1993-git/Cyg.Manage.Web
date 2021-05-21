@@ -39,7 +39,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
         if (res && res.code === 6000) {
           setFalseData(res.message);
           message.success('导入成功');
-          setState(false);
+
           setImportTipsVisible(true);
           return Promise.resolve();
         }
@@ -69,7 +69,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
           <Button
             key="save"
             type="primary"
-            onClick={() => onSave()}
+            onClick={() => setState(false)}
             // loading={requestLoading}
           >
             保存
@@ -83,6 +83,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
             <FileUpload
               trigger={triggerUploadFile}
               maxCount={1}
+              uploadFileBtn
               uploadFileFn={saveLineStreesSagEvent}
             />
           </CyFormItem>
