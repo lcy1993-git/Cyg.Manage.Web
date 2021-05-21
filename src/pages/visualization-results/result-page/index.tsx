@@ -26,7 +26,7 @@ const VisualizationResults: React.FC = observer(() => {
       >
         <div className={styles.sideTreeContainer}>
           <div className={styles.sideNav}>
-            <SideTree selectCityId="510000"/>
+            <SideTree />
           </div>
           <div className={styles.sideTreefooter}>
             <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>

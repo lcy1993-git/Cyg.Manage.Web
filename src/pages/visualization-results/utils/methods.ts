@@ -20,7 +20,7 @@ import arrowSrc from '@/assets/image/webgis/arrow.png';
 import { getXmlData, sortByTime, getTime } from './utils';
 
 var projects: any;
-var showData: LayerDatas[] = [];
+// var showData: any = [];
 const refreshMap = async (
   ops: any,
   projects_: ProjectList[],
@@ -32,39 +32,27 @@ const refreshMap = async (
   clearGroups(groupLayers);
   clearHighlightLayer(map);
   if (projects.length === 0) return;
-  // let xmlData = "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
-  // let postData = "";
-  // xmlData += "<ogc:Filter><Or>";
-  // projects.forEach((project: ProjectList) => {
-  //   let projectId = project.id;
-  //   let projectTime = project.time;
-  //   if (time && projectTime) {
-  //     time = time.replaceAll('/','-');
-  //     projectTime = projectTime.replaceAll('/','-');
-  //     if (new Date(time).getTime() >= new Date(projectTime).getTime()) {
-  //       postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+
+  // showData = [];
+  // let p = projects.filter((project: any) => {
+  //   // 判断缓存里面有没有选择的项目
+  //   let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
+  //   if (ld) {
+  //     if (!time || !ld.time || getTime(time) > getTime(ld.time)) {
+  //       showData.push(ld.projectID);
   //     }
   //   } else {
-  //     postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+  //     let obj = {
+  //       projectID: project.id,
+  //       time: project.time,
+  //       data: [],
+  //     };
+  //     layerDatas.push(obj);
   //   }
+  //   return ld ? false : true;
   // });
-  // postData = xmlData + postData + "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
-
-  showData = [];
-  let p = projects.filter((project: any) => {
-    // 判断缓存里面有没有选择的项目
-    let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
-    if (ld) {
-      if (!time || !ld.time || getTime(time) > getTime(ld.time)) {
-        showData.push(ld);
-      }
-    }
-    return ld ? false : true;
-  });
-  console.log(projects, 0);
-  console.log(p, 1);
-  console.log(layerDatas.length, 2);
-  const postData = getXmlData(p, time); 
+  // const postData = getXmlData(p, time);
+  const postData = getXmlData(projects, time);
   await loadSurveyLayers(postData, groupLayers);
   await loadPlanLayers(postData, groupLayers);
   await loadDismantleLayers(postData, groupLayers);
@@ -99,7 +87,7 @@ const loadDesignLayers = async (
     'design',
     groupLayers,
   );
-  if(postData.length > 576){
+  if (postData.length > 576) {
     await loadWFS(postData, 'pdd:design_pull_line', (data: any) => {
       if (groupLayers['design_pull_line']) {
         groupLayers['design_pull_line'].getSource().clear();
@@ -126,7 +114,7 @@ const loadDesignLayers = async (
       }
     });
   }
-  
+
   relocateMap('', groupLayers, view, setView, map);
 };
 
@@ -145,30 +133,37 @@ const loadLayers = (
   layerType: string,
   groupLayers: LayerGroup[],
 ) => {
-  showData.forEach((ld: LayerDatas) => {
-    ld.data.forEach((data: any) => {
-      let layerName = data.name.split(':')[1];
-      let layerType = layerName.split('_')[0];
-      layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
-      let item:any = layerParams.find((item: LayerParams) => item.layerName === layerName);
-      if(data.name === 'pdd:design_pull_line'){
-        item =  {
-          layerName: 'pull_line',
-          zIndex: 1,
-          type: 'pullline'
-        }
-      }
-      loadWFSData(data.data, layerType, layerName, group, groupLayers, item);
-    })
-  });
-  showData = [];
+  // layerDatas.forEach((ld: LayerDatas) => {
+  //   ld.data.forEach((data: any) => {
+  //     let layerName = data.name.split(':')[1];
+  //     let layerType = layerName.split('_')[0];
+  //     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
+  //     let item: any = layerParams.find((item: LayerParams) => item.layerName === layerName);
+  //     if (data.name === 'pdd:design_pull_line') {
+  //       item = {
+  //         layerName: 'pull_line',
+  //         zIndex: 1,
+  //         type: 'pullline',
+  //       };
+  //     }
+  //     let d = data.data.features.filter((feature: any) => {
+  //       let idData = showData.find((id: any) => id === feature.properties.project_id);
+  //       return idData ? true : false;
+  //     });
+  //     if(d.length > 0){
+  //       data.data.features = d;
+  //       loadWFSData(data.data, layerType, layerName, group, groupLayers, item);
+  //     }
+  //   });
+  // });
+  // showData = [];
   layerParams.forEach((item: LayerParams) => {
-    if(postData.length > 576){
-      let layerName = item.layerName;
-      loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
-        loadWFSData(data, layerType, layerName, group, groupLayers, item),
-      );
-    }
+    // if (postData.length > 576) {
+    let layerName = item.layerName;
+    loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
+      loadWFSData(data, layerType, layerName, group, groupLayers, item),
+    );
+    // }
   });
 };
 
@@ -213,9 +208,11 @@ const loadWFSData = (
     // groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
   }
   if (groupLayers[layerType + '_' + layerName]) {
-    if (groupLayers[layerType + '_' + layerName].getSource() instanceof Cluster)
+    if (groupLayers[layerType + '_' + layerName].getSource() instanceof Cluster) {
       groupLayers[layerType + '_' + layerName].getSource().getSource().addFeatures(pJSON);
-    else groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
+    } else {
+      groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
+    }
   } else {
     //矢量要素数据源
     let source = new VectorSource({
@@ -257,7 +254,6 @@ const loadWFSData = (
   }
 };
 
-
 /**
  * 通过wfs方式获取数据
  * @param url
@@ -272,30 +268,29 @@ const loadWFS = async (postData: string, layerName: string, callBack: (o: any) =
       // const flag = projects.some((project: any) => {
       //   return project.id === data.features[0].properties.project_id;
       // });
-      let obj: LayerDatas;
-      const project = projects.find(
-        (project: any) => project.id === data.features[0].properties.project_id,
-      );
-      if (project) {
-        console.log(project.id, 1)
-        let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
-        if (!ld) {
-          console.log(project.id, 2)
-          obj = {
-            projectID: project.id,
-            time: project.time,
-            data: [],
-          };
-          layerDatas.push(obj);
-        } else {
-          console.log(project.id, 3)
-          ld.data.push({
-            name: layerName,
-            data
-          });
-        }
-        callBack(data);
-      }
+      // data.features.forEach((feature: any) => {
+      //   let obj: LayerDatas;
+      //   const project = projects.find(
+      //     (project: any) => project.id === feature.properties.project_id,
+      //   );
+      //   if (project) {
+      //     let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
+      //     if (!ld) {
+      //       obj = {
+      //         projectID: project.id,
+      //         time: project.time,
+      //         data: [],
+      //       };
+      //       layerDatas.push(obj);
+      //     } else {
+      //       ld.data.push({
+      //         name: layerName,
+      //         data,
+      //       });
+      //     }
+      //   }
+      // });
+      callBack(data);
     }
   });
 };
