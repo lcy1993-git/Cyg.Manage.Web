@@ -184,7 +184,8 @@ function getMappingTagsDictionary() {
         "project_id": "title",
       },
       mappingTagValues: {
-        "state": findenumsValue("SurveyState")
+        "state": findenumsValue("SurveyState"),
+        "kv_level": findenumsValue("KVLevel")
       }
     };
     mappingTagsDictionary.cable_channel = {
@@ -240,7 +241,7 @@ function getMappingTagsDictionary() {
     };
     mappingTagsDictionary.cable_equipment = {
       mappingTags1: {
-        "name": "名称",
+        "code": "名称",
         "type": "类型",
         "equip_model": "型号",
         "state": "状态",
@@ -250,7 +251,7 @@ function getMappingTagsDictionary() {
         "project_id": "title",
       },
       mappingTags2: {
-        "name": "名称",
+        "code": "名称",
         "type": "类型",
         "equip_model": "型号",
         "state": "状态",

@@ -190,7 +190,7 @@ const ListMenu: FC = observer(() => {
           勘察轨迹
           <Switch
             style={{ marginLeft: 8 }}
-            onChange={() => store.toggleObserveTrack()}
+            onChange={(checked) => store.toggleObserveTrack(checked)}
             size="small"
             checkedChildren="开启"
             unCheckedChildren="关闭"

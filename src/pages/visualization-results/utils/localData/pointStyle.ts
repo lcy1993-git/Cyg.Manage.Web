@@ -727,35 +727,37 @@ const line_style = function (feature: Feature, select: any, layerType: any) {
         strokeOpts.lineDash = style.lineDash;
     }
     let backgroundColor = Styles.line.default.backgroundColor;
-    let styleParams, selectColor;
+    let styleParams, selectColor,fontColor;
     if (select) {
         selectColor = Styles.line.selected.color;
         strokeOpts.color = selectColor;
         backgroundColor = Styles.line.selected.backgroundColor;
-        styleParams = {
-            stroke: new Stroke(strokeOpts)
-        };
+        // styleParams = {
+        //     stroke: new Stroke(strokeOpts)
+        // };
+        fontColor = 'rgba(249, 149, 52, 1)';
     } else {
         selectColor = style.color;
-        styleParams = {
-            stroke: new Stroke(strokeOpts),
-            text: new Text({
-                // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
-                text: feature.getProperties().lable,
-                textAlign: 'center',
-                font: 'bold 12px Source Han Sans SC', //字体与大小
-                placement: 'line',
-                // offsetX: 30,
-                offsetY: 20,
-                fill: new Fill({ //文字填充色
-                    color: '#E8FCF8'
-                }),
-                stroke: new Stroke({ //文字边界宽度与颜色
-                    color: 'rgba(21, 32, 32, 1)',
-                    width: 2
-                })
+        fontColor = '#E8FCF8';
+    }
+    styleParams = {
+        stroke: new Stroke(strokeOpts),
+        text: new Text({
+            // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
+            text: feature.getProperties().lable,
+            textAlign: 'center',
+            font: 'bold 12px Source Han Sans SC', //字体与大小
+            placement: 'line',
+            // offsetX: 30,
+            offsetY: 20,
+            fill: new Fill({ //文字填充色
+                color: fontColor
+            }),
+            stroke: new Stroke({ //文字边界宽度与颜色
+                color: 'rgba(21, 32, 32, 1)',
+                width: 2
             })
-        }
+        })
     }
     let style_ = new ClassStyle(styleParams);
     strokeOpts.color = backgroundColor;

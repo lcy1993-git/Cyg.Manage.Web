@@ -69,8 +69,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     mappingTagsDictionary = {};
   }
 
-  console.log(mappingTagsDictionary);
-
   clearHighlightLayer(map);
   ops.setRightSidebarVisiviabel(false);
   let mappingTags: any, mappingTagValues;
@@ -89,7 +87,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
     }
-    console.log(feature);
+    console.log(feature,2);
     let layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
 
@@ -122,8 +120,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     // 映射图层相对应的字段
     mappingTagValues = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTagValues;
 
-    // 轨迹图层也无高亮
-    if (layer.getProperties().name.indexOf('Track') > -1) return;
 
     let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray());
     // 高亮显示
@@ -131,6 +127,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       var source = new VectorSource();
       highlightLayer = new Vector({
         source,
+        // declutter: true,
         zIndex: 99,
       });
       highlightLayer.set('name', 'highlightLayer');
@@ -182,21 +179,25 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     } else {
       highlightFeatures.push(feature);
     }
-    highlightFeatures.forEach(function (feature_) {
-      // 判断类型(点线面)
-      let featureClone = feature_.clone();
-      let type = featureClone.getGeometry().getType().toLocaleLowerCase();
-      let highlightStyle;
-      if (type.indexOf('point') >= 0) {
-        highlightStyle = pointStyle(layer.getProperties().name, featureClone, true);
-      } else {
-        highlightStyle = line_style(featureClone, true, layerType);
-      }
-
-      featureClone.setStyle(highlightStyle);
-      highlightLayer.getSource().addFeature(featureClone);
-    });
-    highlightLayer.setVisible(true);
+    // 轨迹图层也高亮
+    if (layer.getProperties().name.indexOf('Track') < 0){
+      highlightFeatures.forEach(function (feature_) {
+        // 判断类型(点线面)
+        let featureClone = feature_.clone();
+        let type = featureClone.getGeometry().getType().toLocaleLowerCase();
+        let highlightStyle;
+        if (type.indexOf('point') >= 0) {
+          highlightStyle = pointStyle(layer.getProperties().name, featureClone, true);
+        } else {
+          highlightStyle = line_style(featureClone, true, layerType);
+        }
+  
+        featureClone.setStyle(highlightStyle);
+        highlightLayer.getSource().addFeature(featureClone);
+      });
+      highlightLayer.setVisible(true);
+    }
+   
 
     let featureId = feature.getProperties().id;
     // if (!featureId) featureId = feature.getId().split('.')[1];
@@ -392,7 +393,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             pJSON['材料表'] = [];
             if (res.isSuccess) {
               const filterData = res.content.filter((item: any) => item.parentID !== -1);
-              console.log(filterData, 22);
               const data = filterData.map((item: any) => {
                 return {
                   ...item,

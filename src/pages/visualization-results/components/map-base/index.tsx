@@ -113,6 +113,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 动态刷新轨迹
   useEffect(() => {
     // 加载勘察轨迹
+    console.log(observeTrack)
     if (observeTrack) map && loadTrackLayers(map, trackLayers);
     else clearTrackLayers(trackLayers);
   }, [JSON.stringify(observeTrack), JSON.stringify(projects)]);
