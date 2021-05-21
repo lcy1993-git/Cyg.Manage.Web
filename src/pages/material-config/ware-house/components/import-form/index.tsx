@@ -57,13 +57,13 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
       })
       .then(
         () => {
-          message.success('导入成功');
-          setTimeout(() => {
-            setState(false);
-          }, 1000);
           return Promise.resolve();
         },
-        () => {
+        (res) => {
+          const { code, isSuccess, message: msg } = res;
+          if (message) {
+            message.warn(msg);
+          }
           return Promise.reject('导入失败');
         },
       )
@@ -71,10 +71,6 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         setUploadFileFalse();
         changeFinishEvent?.();
       });
-  };
-
-  const onSave = () => {
-    setUploadFileTrue();
   };
 
   return (
@@ -88,7 +84,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => onSave()}>
+        <Button key="save" type="primary" onClick={() => setState(false)}>
           保存
         </Button>,
       ]}
@@ -121,6 +117,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         <CyFormItem labelWidth={80} label="导入" name="file" required>
           <FileUpload
             accept=".xlsx"
+            uploadFileBtn
             trigger={triggerUploadFile}
             uploadFileFn={saveLineStreesSagEvent}
             maxCount={1}

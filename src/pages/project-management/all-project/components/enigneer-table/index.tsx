@@ -112,6 +112,108 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
+  // const tableData = {
+  //   total: 1,
+  //   pageSize: 10,
+  //   pageIndex: 1,
+  //   totalPage: 1,
+  //   items: [
+  //     {
+  //       id: '1395300611258499072',
+  //       companyId: '1384063850188120064',
+  //       name: 'testName',
+  //       startTime: 1621500535463,
+  //       endTime: 1622018937151,
+  //       compileTime: 1621500513098,
+  //       province: '650000',
+  //       city: '',
+  //       area: '',
+  //       company: '国网新疆电力公司昌吉供电公司',
+  //       createdBy: '1384064649895092224',
+  //       projects: [
+  //         {
+  //           id: '1395300611317219328',
+  //           engineerId: '1395300611258499072',
+  //           name: 'testPro',
+  //           category: 1,
+  //           categoryText: '10kV线路',
+  //           kvLevel: 1,
+  //           kvLevelText: '交流20kV',
+  //           nature: 3,
+  //           natureTexts: ['贫困村', '深度贫困村'],
+  //           majorCategory: 1,
+  //           majorCategoryText: '配电线路',
+  //           constructType: 1,
+  //           constructTypeText: '新建',
+  //           batch: 1,
+  //           batchText: '第一批',
+  //           stage: 2,
+  //           stageText: '可研',
+  //           dataSourceType: 0,
+  //           dataSourceTypeText: '勘察',
+  //           createdBy: '1384064649895092224',
+  //           sources: ['无'],
+  //           allot: {
+  //             id: '1395303461237735424',
+  //             allotType: 2,
+  //             allotTypeText: '公司成员',
+  //             allotOrganize: '1384063850188120064',
+  //             allotOrganizeName: null,
+  //             allotCompanyGroup: null,
+  //             allotCompanyGroupName: null,
+  //             allotCompanyGroupAdmin: null,
+  //             isTransfer: false,
+  //             allotTime: 1621501243300,
+  //             arrangeTime: 1621501243302,
+  //             isArrange: true,
+  //             users: null,
+  //           },
+  //           stateInfo: {
+  //             id: '1395300611317219328',
+  //             isResetSurvey: false,
+  //             status: 1,
+  //             statusText: '未勘察',
+  //             outsideStatus: 0,
+  //             outsideStatusText: '',
+  //             isAllot: true,
+  //             allotId: '1395303461237735424',
+  //             isArrange: true,
+  //             showStatusText: '未勘察',
+  //             surveyAssessState: 1,
+  //             surveyAssessStateText: '未评审',
+  //             designAssessState: 1,
+  //             designAssessStateText: '未评审',
+  //             updateTime: 1621501243302,
+  //             auditStatus: null,
+  //             auditStatusText: null,
+  //           },
+  //           identitys: [
+  //             {
+  //               value: 1,
+  //               text: '立项',
+  //             },
+  //             {
+  //               value: 4,
+  //               text: '执行',
+  //             },
+  //           ],
+  //           operationAuthority: {
+  //             canEdit: true,
+  //             canCopy: true,
+  //           },
+  //         },
+  //       ],
+  //       operationAuthority: {
+  //         canEdit: true,
+  //         canAddProject: true,
+  //       },
+  //     },
+  //   ],
+  //   hasPrev: false,
+  //   hasNext: false,
+  //   hasItem: true,
+  // };
+
   const tableResultData = useMemo(() => {
     if (tableData) {
       const { items, pageIndex, pageSize, total } = tableData;
@@ -312,6 +414,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
+                ) : stateInfo.status === 4 && stateInfo.auditStatus === 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 5 ? (
                   <span>{stateInfo?.auditStatusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (

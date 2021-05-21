@@ -37,7 +37,11 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
 
           return Promise.resolve();
         },
-        () => {
+        (res) => {
+          const { code, isSuccess, message: msg } = res;
+          if (message) {
+            message.warn(msg);
+          }
           return Promise.reject('导入失败');
         },
       )

@@ -49,7 +49,6 @@ const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
         setPercent(100);
       } else if (status === 'error') {
         setInterval(undefined);
-        // message.warn('上传失败');
         setPercent(0);
       } else {
         if (fileSize === 'large') {
@@ -65,7 +64,7 @@ const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
     { immediate: true },
   );
 
-  return (
+  return status === 'success' || status === 'start' ? (
     <Progress
       strokeColor={{
         from: '#108ee9',
@@ -75,7 +74,7 @@ const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
       size="small"
       status={status === 'success' ? 'success' : 'exception'}
     />
-  );
+  ) : null;
 };
 
 export default FileUploadProcess;

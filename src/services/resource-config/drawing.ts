@@ -48,6 +48,16 @@ export const uploadLineStressSag = (
     method: 'POST',
     data: formData,
     requestType: 'form',
+  }).then((res) => {
+    const { code, isSuccess, message: msg } = res;
+    if (code === 6000) {
+      return Promise.resolve(res);
+    }
+    if (isSuccess) {
+      return Promise.resolve(res);
+    } else {
+      return Promise.reject(res);
+    }
   });
 };
 
@@ -67,5 +77,15 @@ export const newUploadLineStressSag = (
     method: 'POST',
     data: formData,
     requestType: 'form',
+  }).then((res) => {
+    const { code, isSuccess, message: msg } = res;
+    if (code === 6000) {
+      return Promise.resolve(res);
+    }
+    if (isSuccess) {
+      return Promise.resolve(res);
+    } else {
+      return Promise.reject(res);
+    }
   });
 };

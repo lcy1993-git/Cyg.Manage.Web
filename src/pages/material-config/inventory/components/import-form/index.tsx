@@ -48,14 +48,15 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         );
       })
       .then(
-        () => {
-          setTimeout(() => {
-            setState(false);
-          }, 1000);
+        (res) => {
           return Promise.resolve();
         },
-        () => {
-          return Promise.reject('上传失败');
+        (res) => {
+          const { code, isSuccess, message: msg } = res;
+          if (msg) {
+            message.warn(msg);
+          }
+          return Promise.reject('导入失败');
         },
       )
       .finally(() => {
@@ -64,12 +65,6 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
 
         setRequestLoading(false);
       });
-  };
-
-  const onSave = () => {
-    form.validateFields().then(() => {
-      setUploadFileTrue();
-    });
   };
 
   return (
@@ -83,7 +78,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => onSave()} loading={requestLoading}>
+        <Button key="save" type="primary" onClick={() => setState(false)} loading={requestLoading}>
           保存
         </Button>,
       ]}
@@ -179,7 +174,12 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           required
           rules={rule.file}
         >
-          <FileUpload trigger={triggerUploadFile} uploadFileFn={saveInventoryEvent} maxCount={1} />
+          <FileUpload
+            uploadFileBtn
+            trigger={triggerUploadFile}
+            uploadFileFn={saveInventoryEvent}
+            maxCount={1}
+          />
         </CyFormItem>
       </Form>
     </Modal>

@@ -12,7 +12,7 @@
 
 // 如果数组里面包含这个ip,那么就代表是IIS部署的，就直接用url + 端口去访问。  如果没包含，代表是nginx部署，那么就用代理
 
-const ipArray = ["47.108.63.23","39.99.251.67"];
+export const ipArray = ["47.108.63.23","39.99.251.67"];
 
 const thisHostName = window.location.hostname;
 
@@ -70,10 +70,10 @@ export const explainUrl = "http://service.pwcloud.cdsrth.com:8200/management";
 
 export const visualUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8021/index.html` : `${baseUrl}/webgis/index.html`;
 
-export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8029/index.html` : `${baseUrl}/chart/index.html`;
+export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:8029/index.html` : `${baseUrl}:${window.location.port}/chart/index.html`;
 
 export const serverCodeArray = {hostName:`${thisHostName}`}
 
 
-export const version = "1.0.50";
+export const version = "1.0.51";
 

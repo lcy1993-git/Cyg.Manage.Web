@@ -40,7 +40,6 @@ const SaveImportElectrical: React.FC<SaveImportElectricalProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-          
           return Promise.resolve();
         },
         () => {

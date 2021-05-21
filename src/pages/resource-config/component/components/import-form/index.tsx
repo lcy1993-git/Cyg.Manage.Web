@@ -34,12 +34,14 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-          setTimeout(() => {
-            setState(false);
-          }, 1000);
+
           return Promise.resolve();
         },
-        () => {
+        (res) => {
+          const { code, isSuccess, message: msg } = res;
+          if (message) {
+            message.warn(msg);
+          }
           return Promise.reject('导入失败');
         },
       )
@@ -47,10 +49,6 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
         changeFinishEvent?.();
         setUploadFileFalse();
       });
-  };
-
-  const onSave = () => {
-    setUploadFileTrue();
   };
 
   return (
@@ -62,7 +60,7 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => onSave()}>
+        <Button key="save" type="primary" onClick={() => setState(false)}>
           保存
         </Button>,
       ]}
@@ -74,6 +72,7 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
           <FileUpload
             trigger={triggerUploadFile}
             maxCount={1}
+            uploadFileBtn
             uploadFileFn={saveImportComponentEvent}
           />
         </CyFormItem>
