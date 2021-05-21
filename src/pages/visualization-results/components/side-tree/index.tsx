@@ -80,10 +80,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+
   const [showDefaultSelectCity, setShowDefaultSelectCity] = useState<boolean>(true);
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
-  const { filterCondition } = vState;
+  const { filterCondition, isFilter } = vState;
   const { className } = props;
   const location: any = useLocation();
   const { query } = location;
@@ -172,7 +173,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     // expandedKeys.push('-1');
     // setExpandedKeys([...expandedKeys]);
 
-    if (query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity) {
+    if (!isFilter && query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity) {
       const key = getExpanedCityProjectKeys(data);
       const { expanded, checked } = key;
       setExpandedKeys(['-1', ...expanded]);
@@ -196,7 +197,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     {
       refreshDeps: [filterCondition, tabActiveKey],
       onSuccess: () => {
-        // console.log(window.location.search.substring(1).split('='));
         let data = generateProjectTree(treeListReponseData);
         if (data.length) {
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
