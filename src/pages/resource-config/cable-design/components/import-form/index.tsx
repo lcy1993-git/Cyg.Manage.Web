@@ -51,10 +51,6 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
       });
   };
 
-  const onSave = () => {
-    setUploadFileTrue();
-  };
-
   return (
     <Modal
       maskClosable={false}
