@@ -24,12 +24,12 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
 
   // 171.223.214.154 环境需要做特殊处理
   const serverCodeObejct = {
-    "171.223.214.154:21563": "171.223.214.154",
+    "10.6.1.36:8000": "171_223_214_154_2",
     "171.223.214.154:21573": "171_223_214_154_2",
     "171.223.214.154:21583": "171_223_214_154_3",
   }
 
-  const finalyServerCode = serverCodeArray.hostName === "171.223.214.154" ? serverCodeObejct[`${serverCodeArray}:${window.location.port}`] : serverCode;
+  const finalyServerCode = serverCodeArray.hostName === "localhost" ? serverCodeObejct[`${serverCode}:${window.location.port}`] : serverCode;
 
   const { data: versionInfo, run: getVersionInfoEvent, loading } = useRequest(
     () =>
