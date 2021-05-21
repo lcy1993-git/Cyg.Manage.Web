@@ -42,6 +42,7 @@ function Store(vState: VisualizationResultsStateType) {
     vState,
     setFilterCondition(filterCondition: EngineerProjetListFilterParams) {
       this.vState.filterCondition = filterCondition;
+      this.setIsFilter(true);
     },
     togglePropertySidePopup() {
       this.vState.propertySidePopupShow = !this.vState.propertySidePopupShow;

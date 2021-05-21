@@ -72,7 +72,7 @@ const FilterBar: FC = observer(() => {
 
   const {
     projectCategory,
-    projectPType,
+    projectClassification,
     projectNature,
     projectConstructType,
     projectStage,
@@ -105,7 +105,7 @@ const FilterBar: FC = observer(() => {
     setSourceType(undefined);
     setIdentityType(undefined);
     setComment(undefined);
-    store.setIsFilter(true);
+
     store.setFilterCondition({ haveAnnotate: -1 });
   };
 
@@ -124,7 +124,7 @@ const FilterBar: FC = observer(() => {
       identityType: identityType && identityType[0] !== '-1' ? identityType : undefined,
       haveAnnotate: comment && comment !== -1 ? comment : -1,
     };
-    store.setIsFilter(true);
+
     store.setFilterCondition(condition);
   };
 
@@ -159,6 +159,7 @@ const FilterBar: FC = observer(() => {
               valueKey="value"
               titleKey="text"
               mode="multiple"
+              allowClear
               maxTagCount={0}
               maxTagTextLength={3}
               defaultData={projectCategory}
@@ -174,7 +175,8 @@ const FilterBar: FC = observer(() => {
             <UrlSelect
               valueKey="value"
               titleKey="text"
-              defaultData={projectPType}
+              allowClear
+              defaultData={projectClassification}
               value={pCategory}
               mode="multiple"
               maxTagCount={0}
@@ -191,6 +193,7 @@ const FilterBar: FC = observer(() => {
             <UrlSelect
               valueKey="value"
               titleKey="text"
+              allowClear
               defaultData={projectStage}
               value={stage}
               mode="multiple"
@@ -207,6 +210,7 @@ const FilterBar: FC = observer(() => {
             <UrlSelect
               valueKey="value"
               titleKey="text"
+              allowClear
               defaultData={projectConstructType}
               value={constructType}
               className="widthAll"
@@ -223,6 +227,7 @@ const FilterBar: FC = observer(() => {
             <UrlSelect
               valueKey="value"
               titleKey="text"
+              allowClear
               defaultData={projectKvLevel}
               value={kvLevel}
               mode="multiple"
@@ -239,6 +244,7 @@ const FilterBar: FC = observer(() => {
             <UrlSelect
               valueKey="value"
               titleKey="text"
+              allowClear
               defaultData={projectNature}
               value={nature}
               mode="multiple"
@@ -260,6 +266,7 @@ const FilterBar: FC = observer(() => {
               onChange={(value) => setSourceType(value as string[])}
               className="widthAll"
               mode="multiple"
+              allowClear
               maxTagCount={0}
               maxTagTextLength={3}
               placeholder="项目来源"
@@ -274,6 +281,7 @@ const FilterBar: FC = observer(() => {
               onChange={(value) => setIdentityType(value as string[])}
               className="widthAll"
               mode="multiple"
+              allowClear
               maxTagCount={0}
               maxTagTextLength={3}
               placeholder="项目身份"
