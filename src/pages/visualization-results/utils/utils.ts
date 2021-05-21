@@ -2,7 +2,7 @@ import Feature from "ol/Feature";
 
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 
-function getTime (t: any) {
+export const getTime = (t: any) => {
   return new Date(t.replaceAll('/','-')).getTime();
 }
 

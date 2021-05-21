@@ -109,7 +109,11 @@ const ListMenu: FC = observer(() => {
   };
 
   const onClickCommentTable = () => {
-    feetchCommentCountRquest();
+    if (checkedProjectIdList?.length) {
+      feetchCommentCountRquest();
+    } else {
+      message.warn('请选择一个项目');
+    }
   };
 
   const onClickProjectDetailInfo = () => {

@@ -58,20 +58,19 @@ const elementTypeEnum = {
   TrackLine: '轨迹线',
 };
 export const mapClick = (evt: any, map: any, ops: any) => {
-
   // 解决本地存储mappingTagsData的bug
   const mappingTagsData = getMappingTagsDictionary();
   let mappingTagsDictionary: any;
-  if(typeof mappingTagsData === 'object' && mappingTagsData !== null) {
-    mappingTagsDictionary = mappingTagsData
-  }else if(typeof mappingTagsData === 'string') {
-    mappingTagsDictionary = JSON.parse(mappingTagsData)
-  }else {
-    mappingTagsDictionary = {}
+  if (typeof mappingTagsData === 'object' && mappingTagsData !== null) {
+    mappingTagsDictionary = mappingTagsData;
+  } else if (typeof mappingTagsData === 'string') {
+    mappingTagsDictionary = JSON.parse(mappingTagsData);
+  } else {
+    mappingTagsDictionary = {};
   }
-  
+
   console.log(mappingTagsDictionary);
-  
+
   clearHighlightLayer(map);
   ops.setRightSidebarVisiviabel(false);
   let mappingTags: any, mappingTagValues;
@@ -85,7 +84,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       clearHighlightLayer(map);
       return;
     }
-
+    map.getTargetElement().style.cursor = 'wait';
     if (layer.getSource() instanceof Cluster) {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
@@ -123,6 +122,82 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     // 映射图层相对应的字段
     mappingTagValues = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTagValues;
 
+    // 轨迹图层也无高亮
+    if (layer.getProperties().name.indexOf('Track') > -1) return;
+
+    let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray());
+    // 高亮显示
+    if (!highlightLayer) {
+      var source = new VectorSource();
+      highlightLayer = new Vector({
+        source,
+        zIndex: 99,
+      });
+      highlightLayer.set('name', 'highlightLayer');
+      map.addLayer(highlightLayer);
+    }
+    let highlightFeatures = [];
+    let totalLength = 0;
+    if (layerName == 'line' || layerName == 'user_line') {
+      let layerTypeValue = feature.getProperties().layerType;
+      if (feature.getProperties().polyline_id) {
+        map
+          .getLayers()
+          .getArray()
+          .forEach(function (value: any) {
+            if (typeof value.getLayers === 'function') {
+              value
+                .getLayers()
+                .getArray()
+                .forEach(function (v: any) {
+                  let layerName_ = v.getProperties().name;
+                  let layerType_ = layerName_.split('_')[0];
+                  layerName_ = layerName_.substring(
+                    layerName_.split('_')[0].length + 1,
+                    layerName_.length,
+                  );
+                  if (
+                    layerType_ == layerType &&
+                    (layerName_ == layerName || layerName_ == 'subline')
+                  ) {
+                    v.getSource()
+                      .getFeatures()
+                      .forEach(function (f: any) {
+                        if (f.getProperties().polyline_id == feature.getProperties().polyline_id) {
+                          f.set('layerType', layerTypeValue);
+                          if (f.getProperties().length) {
+                            let l = Number(f.getProperties().length) || 0;
+                            totalLength += l;
+                          }
+                          highlightFeatures.push(f);
+                        }
+                      });
+                  }
+                });
+            }
+          });
+      } else {
+        highlightFeatures.push(feature);
+      }
+    } else {
+      highlightFeatures.push(feature);
+    }
+    highlightFeatures.forEach(function (feature_) {
+      // 判断类型(点线面)
+      let featureClone = feature_.clone();
+      let type = featureClone.getGeometry().getType().toLocaleLowerCase();
+      let highlightStyle;
+      if (type.indexOf('point') >= 0) {
+        highlightStyle = pointStyle(layer.getProperties().name, featureClone, true);
+      } else {
+        highlightStyle = line_style(featureClone, true, layerType);
+      }
+
+      featureClone.setStyle(highlightStyle);
+      highlightLayer.getSource().addFeature(featureClone);
+    });
+    highlightLayer.setVisible(true);
+
     let featureId = feature.getProperties().id;
     // if (!featureId) featureId = feature.getId().split('.')[1];
     // 有些想要展示的字段需要通过接口进行查询
@@ -140,7 +215,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         feature.getProperties().surveyor === undefined ? null : feature.getProperties().surveyor,
       pullLineId: featureId,
     };
-    map.getTargetElement().style.cursor = 'wait';
     await getGisDetail(parmas).then((data: any) => {
       if (data.content) {
         feature.set('companyName', data.content.companyName);
@@ -150,10 +224,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         feature.set('modeName', data.content.pullLineModelName);
       }
     });
-    map.getTargetElement().style.cursor = 'pointer';
 
     var pJSON = {};
-    for(var p in mappingTags){
+    for (var p in mappingTags) {
       var mappingTag = mappingTags[p];
       if (mappingTagValues != undefined && mappingTagValues[p] != undefined) {
         pJSON[mappingTag] = mappingTagValues[p][feature.getProperties()[p]];
@@ -246,8 +319,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p]))
               : null;
             break;
+          case 'length':
+            if (totalLength) pJSON[mappingTag] = totalLength.toFixed(2);
+            else
+              pJSON[mappingTag] = Number(feature.getProperties()[p])
+                ? Number(feature.getProperties()[p]).toFixed(2)
+                : 0;
+            break;
           case 'azimuth':
-            console.log(Number(feature.getProperties()[p]));
             pJSON[mappingTag] = Number(feature.getProperties()[p])
               ? Number(feature.getProperties()[p])?.toFixed(2)
               : 0;
@@ -258,114 +337,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         }
       }
     }
-    // 遍历属性，进行一一匹配
-    // for (var p in feature.getProperties()) {
-    //   if (mappingTags != undefined && mappingTags[p] != undefined) {
-    //     var mappingTag = mappingTags[p];
-    //     if (mappingTagValues != undefined && mappingTagValues[p] != undefined) {
-    //       pJSON[mappingTag] = mappingTagValues[p][feature.getProperties()[p]];
-    //     } else {
-    //       switch (p) {
-    //         case 'company':
-    //           pJSON[mappingTag] = feature.getProperties()['companyName'];
-    //           break;
-    //         case 'project_id':
-    //           pJSON[mappingTag] = feature.getProperties()['projectName'];
-    //           break;
-    //         case 'recorder':
-    //           pJSON[mappingTag] = feature.getProperties()['recorderName'];
-    //           break;
-    //         case 'surveyor':
-    //           if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员';
-    //           pJSON[mappingTag] = feature.getProperties()['surveyorName'];
-    //           break;
-    //         case 'main_id':
-    //           await loadLayer(
-    //             getCustomXmlData('id', feature.getProperties()['main_id']),
-    //             `pdd:${layerType}_tower`,
-    //           ).then((data: any) => {
-    //             if (data.features && data.features.length === 1) {
-    //               pJSON[mappingTag] = data.features[0].properties.code;
-    //             } else {
-    //               pJSON[mappingTag] = '';
-    //             }
-    //           });
-    //           break;
-    //         case 'sub_id':
-    //           await loadLayer(
-    //             getCustomXmlData('id', feature.getProperties()['sub_id']),
-    //             `pdd:${layerType}_tower`,
-    //           ).then((data: any) => {
-    //             if (data.features && data.features.length === 1) {
-    //               pJSON[mappingTag] = data.features[0].properties.code;
-    //             } else {
-    //               pJSON[mappingTag] = '';
-    //             }
-    //           });
-    //           break;
-    //         case 'start_id':
-    //           await loadLayer(
-    //             getCustomXmlData('id', feature.getProperties()['start_id']),
-    //             `pdd:${layerType}_tower`,
-    //           ).then((data: any) => {
-    //             if (data.features && data.features.length === 1) {
-    //               pJSON[mappingTag] = data.features[0].properties.code;
-    //             } else {
-    //               pJSON[mappingTag] = '';
-    //             }
-    //           });
-    //           break;
-    //         case 'end_id':
-    //           await loadLayer(
-    //             getCustomXmlData('id', feature.getProperties()['end_id']),
-    //             `pdd:${layerType}_tower`,
-    //           ).then((data: any) => {
-    //             if (data.features && data.features.length === 1) {
-    //               pJSON[mappingTag] = data.features[0].properties.code;
-    //             } else {
-    //               pJSON[mappingTag] = '';
-    //             }
-    //           });
-    //           break;
-    //         case 'parent_id':
-    //           await loadLayer(
-    //             getCustomXmlData('id', feature.getProperties()['parent_id']),
-    //             `pdd:${layerType}_tower`,
-    //           ).then((data: any) => {
-    //             if (data.features && data.features.length === 1) {
-    //               pJSON[mappingTag] = data.features[0].properties.code;
-    //             } else {
-    //               pJSON[mappingTag] = '';
-    //             }
-    //           });
-    //           break;
-    //         case 'mode_id':
-    //           pJSON[mappingTag] = feature.getProperties()['modeName'];
-    //           break;
-    //         case 'survey_time':
-    //           if (layer.getProperties().name.split('_')[0] !== 'design')
-    //             pJSON[mappingTag] = feature.getProperties()[p]
-    //               ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p]))
-    //               : null;
-    //           break;
-    //         case 'record_date':
-    //           pJSON[mappingTag] = feature.getProperties()[p]
-    //             ? format('yyyy-MM-dd hh:mm:ss', new Date(feature.getProperties()[p]))
-    //             : null;
-    //           break;
-    //         case 'azimuth':
-    //           console.log(Number(feature.getProperties()[p]));
-    //           pJSON[mappingTag] = Number(feature.getProperties()[p])
-    //             ? Number(feature.getProperties()[p])?.toFixed(2)
-    //             : 0;
-    //           break;
-    //         default:
-    //           pJSON[mappingTag] = feature.getProperties()[p];
-    //           break;
-    //       }
-    //     }
-    //   }
-    // }
 
     // 查看多媒体功能
     if (layerType === 'survey' || layerType === 'plan') {
@@ -395,11 +366,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             //   break;
           }
         }
-        map.getTargetElement().style.cursor = 'wait';
         await getMedium(params).then((data: any) => {
           pJSON['多媒体'] = data.content || [];
         });
-        map.getTargetElement().style.cursor = 'pointer';
       }
     }
 
@@ -407,7 +376,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        map.getTargetElement().style.cursor = 'wait';
         await getlibId({ id: feature.getProperties().project_id }).then(async (data: any) => {
           const resourceLibID = data.content.libId;
           const objectID =
@@ -424,7 +392,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             pJSON['材料表'] = [];
             if (res.isSuccess) {
               const filterData = res.content.filter((item: any) => item.parentID !== -1);
-              console.log(filterData, 22)
+              console.log(filterData, 22);
               const data = filterData.map((item: any) => {
                 return {
                   ...item,
@@ -449,7 +417,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             }
           });
         });
-        map.getTargetElement().style.cursor = 'pointer';
       }
     }
 
@@ -465,10 +432,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
     resData.push({ propertyName: '元素类型', data: elementTypeEnum[layerName] });
     for (let p in pJSON) {
-      if(p === '杆规格'){
+      if (p === '杆规格') {
         pJSON[p] = `${feature.getProperties().rod}*${feature.getProperties().height}`;
       }
-      if (p === '呼称高'){
+      if (p === '呼称高') {
         let hcg = pJSON['高度(m)'] - pJSON['埋深(m)'];
         hcg = isNaN(hcg) ? 0 : hcg;
         pJSON[p] = hcg;
@@ -480,77 +447,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     ops.setRightSidebarVisiviabel(true);
     ops.setRightSidebarData(resData);
-
-    // 轨迹图层也无高亮
-    if (layer.getProperties().name.indexOf('Track') > -1) return;
-
-    let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray());
-    // 高亮显示
-    if (!highlightLayer) {
-      var source = new VectorSource();
-      highlightLayer = new Vector({
-        source,
-        zIndex: 99,
-      });
-      highlightLayer.set('name', 'highlightLayer');
-      map.addLayer(highlightLayer);
-    }
-    let highlightFeatures = [];
-    if (layerName == 'line' || layerName == 'user_line') {
-      let layerTypeValue = feature.getProperties().layerType;
-      if (feature.getProperties().polyline_id) {
-        map
-          .getLayers()
-          .getArray()
-          .forEach(function (value: any) {
-            if (typeof value.getLayers === 'function') {
-              value
-                .getLayers()
-                .getArray()
-                .forEach(function (v: any) {
-                  let layerName_ = v.getProperties().name;
-                  let layerType_ = layerName_.split('_')[0];
-                  layerName_ = layerName_.substring(
-                    layerName_.split('_')[0].length + 1,
-                    layerName_.length,
-                  );
-                  if (
-                    layerType_ == layerType &&
-                    (layerName_ == layerName || layerName_ == 'subline')
-                  ) {
-                    v.getSource()
-                      .getFeatures()
-                      .forEach(function (f: any) {
-                        if (f.getProperties().polyline_id == feature.getProperties().polyline_id) {
-                          f.set('layerType', layerTypeValue);
-                          highlightFeatures.push(f);
-                        }
-                      });
-                  }
-                });
-            }
-          });
-      } else {
-        highlightFeatures.push(feature);
-      }
-    } else {
-      highlightFeatures.push(feature);
-    }
-    highlightFeatures.forEach(function (feature_) {
-      // 判断类型(点线面)
-      let featureClone = feature_.clone();
-      let type = featureClone.getGeometry().getType().toLocaleLowerCase();
-      let highlightStyle;
-      if (type.indexOf('point') >= 0) {
-        highlightStyle = pointStyle(layer.getProperties().name, featureClone, true);
-      } else {
-        highlightStyle = line_style(featureClone, true, layerType);
-      }
-
-      featureClone.setStyle(highlightStyle);
-      highlightLayer.getSource().addFeature(featureClone);
-    });
-    highlightLayer.setVisible(true);
+    map.getTargetElement().style.cursor = 'pointer';
   });
 };
 

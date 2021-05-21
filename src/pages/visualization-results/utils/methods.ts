@@ -1,18 +1,12 @@
 import LayerGroup from 'ol/layer/Group';
 import { ProjectList, loadLayer } from '@/services/visualization-results/visualization-results';
-import { layerParams } from './localData/layerParamsData';
+import { layerParams, layerDatas, LayerParams, LayerDatas } from './localData/layerParamsData';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import MultiLineString from 'ol/geom/MultiLineString';
-import {
-  pointStyle,
-  line_style,
-  cable_channel_styles,
-  mark_style,
-  fzx_styles,
-} from './localData/pointStyle';
+import { pointStyle, line_style, cable_channel_styles, fzx_styles } from './localData/pointStyle';
 import Layer from 'ol/layer/Layer';
 import Point from 'ol/geom/Point';
 import { transform, getPointResolution } from 'ol/proj';
@@ -23,9 +17,10 @@ import Stroke from 'ol/style/Stroke';
 import Icon from 'ol/style/Icon';
 import markerIconSrc from '@/assets/image/webgis/marker-icon.png';
 import arrowSrc from '@/assets/image/webgis/arrow.png';
-import { getXmlData, sortByTime } from './utils';
+import { getXmlData, sortByTime, getTime } from './utils';
 
 var projects: any;
+// var showData: any = [];
 const refreshMap = async (
   ops: any,
   projects_: ProjectList[],
@@ -37,23 +32,26 @@ const refreshMap = async (
   clearGroups(groupLayers);
   clearHighlightLayer(map);
   if (projects.length === 0) return;
-  // let xmlData = "<?xml version='1.0' encoding='GBK'?><wfs:GetFeature service='WFS' version='1.0.0' outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'><wfs:Query typeName='{0}' srsName='EPSG:4326'>";
-  // let postData = "";
-  // xmlData += "<ogc:Filter><Or>";
-  // projects.forEach((project: ProjectList) => {
-  //   let projectId = project.id;
-  //   let projectTime = project.time;
-  //   if (time && projectTime) {
-  //     time = time.replaceAll('/','-');
-  //     projectTime = projectTime.replaceAll('/','-');
-  //     if (new Date(time).getTime() >= new Date(projectTime).getTime()) {
-  //       postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+
+  // showData = [];
+  // let p = projects.filter((project: any) => {
+  //   // 判断缓存里面有没有选择的项目
+  //   let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
+  //   if (ld) {
+  //     if (!time || !ld.time || getTime(time) > getTime(ld.time)) {
+  //       showData.push(ld.projectID);
   //     }
   //   } else {
-  //     postData += "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + projectId + "</Literal></PropertyIsEqualTo>";
+  //     let obj = {
+  //       projectID: project.id,
+  //       time: project.time,
+  //       data: [],
+  //     };
+  //     layerDatas.push(obj);
   //   }
+  //   return ld ? false : true;
   // });
-  // postData = xmlData + postData + "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
+  // const postData = getXmlData(p, time);
   const postData = getXmlData(projects, time);
   await loadSurveyLayers(postData, groupLayers);
   await loadPlanLayers(postData, groupLayers);
@@ -89,31 +87,34 @@ const loadDesignLayers = async (
     'design',
     groupLayers,
   );
-  await loadWFS(postData, 'pdd:design_pull_line', (data: any) => {
-    if (groupLayers['design_pull_line']) {
-      groupLayers['design_pull_line'].getSource().clear();
-    } else {
-      var source = new VectorSource();
-      groupLayers['design_pull_line'] = new Vector({
-        source,
-        zIndex: 1,
-        // declutter: true
-      });
-      groupLayers['design_pull_line'].set('name', 'design_pull_line');
-      getLayerGroupByName('designLayer', groupLayers)
-        .getLayers()
-        .push(groupLayers['design_pull_line']);
-    }
-    if (data.features != undefined && data.features.length > 0) {
-      let pJSON = new GeoJSON().readFeatures(data);
-      for (var i = 0; i < pJSON.length; i++) {
-        pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
-        let s:any = pointStyle('design_pull_line', pJSON[i], false);
-        pJSON[i].setStyle(s);
+  if (postData.length > 576) {
+    await loadWFS(postData, 'pdd:design_pull_line', (data: any) => {
+      if (groupLayers['design_pull_line']) {
+        groupLayers['design_pull_line'].getSource().clear();
+      } else {
+        var source = new VectorSource();
+        groupLayers['design_pull_line'] = new Vector({
+          source,
+          zIndex: 1,
+          // declutter: true
+        });
+        groupLayers['design_pull_line'].set('name', 'design_pull_line');
+        getLayerGroupByName('designLayer', groupLayers)
+          .getLayers()
+          .push(groupLayers['design_pull_line']);
       }
-      groupLayers['design_pull_line'].getSource().addFeatures(pJSON);
-    }
-  });
+      if (data.features != undefined && data.features.length > 0) {
+        let pJSON = new GeoJSON().readFeatures(data);
+        for (var i = 0; i < pJSON.length; i++) {
+          pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
+          let s: any = pointStyle('design_pull_line', pJSON[i], false);
+          pJSON[i].setStyle(s);
+        }
+        groupLayers['design_pull_line'].getSource().addFeatures(pJSON);
+      }
+    });
+  }
+
   relocateMap('', groupLayers, view, setView, map);
 };
 
@@ -132,103 +133,125 @@ const loadLayers = (
   layerType: string,
   groupLayers: LayerGroup[],
 ) => {
-  layerParams.forEach((item: any) => {
+  // layerDatas.forEach((ld: LayerDatas) => {
+  //   ld.data.forEach((data: any) => {
+  //     let layerName = data.name.split(':')[1];
+  //     let layerType = layerName.split('_')[0];
+  //     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
+  //     let item: any = layerParams.find((item: LayerParams) => item.layerName === layerName);
+  //     if (data.name === 'pdd:design_pull_line') {
+  //       item = {
+  //         layerName: 'pull_line',
+  //         zIndex: 1,
+  //         type: 'pullline',
+  //       };
+  //     }
+  //     let d = data.data.features.filter((feature: any) => {
+  //       let idData = showData.find((id: any) => id === feature.properties.project_id);
+  //       return idData ? true : false;
+  //     });
+  //     if(d.length > 0){
+  //       data.data.features = d;
+  //       loadWFSData(data.data, layerType, layerName, group, groupLayers, item);
+  //     }
+  //   });
+  // });
+  // showData = [];
+  layerParams.forEach((item: LayerParams) => {
+    // if (postData.length > 576) {
     let layerName = item.layerName;
-    loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) => {
-      if (groupLayers[layerType + '_' + layerName]) {
-        if (groupLayers[layerType + '_' + layerName].getSource() instanceof Cluster)
-          groupLayers[layerType + '_' + layerName].getSource().getSource().clear();
-        else groupLayers[layerType + '_' + layerName].getSource().clear();
-      }
-      let pJSON;
-      if (data.features && data.features.length > 0) {
-        pJSON = new GeoJSON().readFeatures(data);
-        for (var i = 0; i < pJSON.length; i++) {
-          pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
-          // pJSON[i].set('styleType', item.type);
-          if (item.type !== 'point') {
-            let style;
-            if (item.type == 'line') {
-              style = line_style(pJSON[i], false, layerType);
-            } else if (item.type == 'point') {
-              // style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
-            } else if (item.type == 'cable_channel') {
-              style = cable_channel_styles(pJSON[i]);
-            } else if (item.type == 'subline') {
-              style = fzx_styles();
-            }
-            pJSON[i].setStyle(style);
-          }
-        }
-        // groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
-      }
-      if (groupLayers[layerType + '_' + layerName]) {
-        if (groupLayers[layerType + '_' + layerName].getSource() instanceof Cluster)
-          groupLayers[layerType + '_' + layerName].getSource().getSource().addFeatures(pJSON);
-        else groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
-      } else {
-        //矢量要素数据源
-        let source = new VectorSource({
-          features: pJSON,
-        });
-
-        interface LayerObject {
-          source: any;
-          zIndex: number;
-          declutter: boolean;
-          style?: any;
-        }
-        let obj: LayerObject = {
-          source,
-          zIndex: item.zIndex,
-          declutter: item.declutter,
-        };
-        if (item.type === 'point') {
-          //聚合标注数据源
-          var clusterSource = new Cluster({
-            distance: 40, //聚合的距离参数，即当标注间距离小于此值时进行聚合，单位是像素
-            source, //聚合的数据源，即矢量要素数据源对象
-          });
-          obj.source = clusterSource;
-          obj.style = (feature: any, resolution: any) => {
-            // var size = feature.get('features').length; //获取该要素所在聚合群的要素数量
-            // var style = styleCache[size];
-            // if (!style) {
-            //   style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
-            //   styleCache[size] = style;
-            // }
-            var style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
-            return style;
-          };
-        }
-        groupLayers[layerType + '_' + layerName] = new Vector(obj);
-        groupLayers[layerType + '_' + layerName].set('name', layerType + '_' + layerName);
-        group.getLayers().push(groupLayers[layerType + '_' + layerName]);
-      }
-    });
+    loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
+      loadWFSData(data, layerType, layerName, group, groupLayers, item),
+    );
+    // }
   });
 };
 
-// 清楚所有图层组中的数据
-const clearGroups = (layerGroups: LayerGroup[]) => {
-  layerGroups.forEach((item: LayerGroup) => {
-    item.getLayers().forEach((layer: any) => {
-      if (layer.getSource() instanceof Cluster) layer.getSource().getSource().clear();
-      else layer.getSource().clear();
+const loadWFSData = (
+  data: any,
+  layerType: string,
+  layerName: string,
+  group: LayerGroup,
+  groupLayers: LayerGroup[],
+  item: LayerParams,
+) => {
+  if (groupLayers[layerType + '_' + layerName]) {
+    if (groupLayers[layerType + '_' + layerName].getSource() instanceof Cluster)
+      groupLayers[layerType + '_' + layerName].getSource().getSource().clear();
+    else groupLayers[layerType + '_' + layerName].getSource().clear();
+  }
+  let pJSON;
+  if (data.features && data.features.length > 0) {
+    pJSON = new GeoJSON().readFeatures(data);
+    for (var i = 0; i < pJSON.length; i++) {
+      pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
+      // pJSON[i].set('styleType', item.type);
+      if (item.type !== 'point') {
+        let style;
+        if (item.type == 'line') {
+          style = line_style(pJSON[i], false, layerType);
+        }
+        // else if (item.type === 'point') {
+        //   style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
+        // }
+        else if (item.type === 'cable_channel') {
+          style = cable_channel_styles(pJSON[i]);
+        } else if (item.type === 'pullline') {
+          style = pointStyle('design_pull_line', pJSON[i], false);
+        }
+        //  else if (item.type === 'subline') {
+        //   style = fzx_styles();
+        // }
+        pJSON[i].setStyle(style);
+      }
+    }
+    // groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
+  }
+  if (groupLayers[layerType + '_' + layerName]) {
+    if (groupLayers[layerType + '_' + layerName].getSource() instanceof Cluster) {
+      groupLayers[layerType + '_' + layerName].getSource().getSource().addFeatures(pJSON);
+    } else {
+      groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
+    }
+  } else {
+    //矢量要素数据源
+    let source = new VectorSource({
+      features: pJSON,
     });
-  });
-};
 
-/**
- * 清除高亮图层
- */
-const clearHighlightLayer = (map: any) => {
-  map
-    ?.getLayers()
-    .getArray()
-    .forEach((layer: any) => {
-      if (layer.get('name') === 'highlightLayer') layer.getSource().clear();
-    });
+    interface LayerObject {
+      source: any;
+      zIndex: number;
+      declutter?: boolean;
+      style?: any;
+    }
+    let obj: LayerObject = {
+      source,
+      zIndex: item.zIndex,
+      declutter: item.declutter,
+    };
+    if (item.type === 'point') {
+      //聚合标注数据源
+      var clusterSource = new Cluster({
+        distance: 40, //聚合的距离参数，即当标注间距离小于此值时进行聚合，单位是像素
+        source, //聚合的数据源，即矢量要素数据源对象
+      });
+      obj.source = clusterSource;
+      obj.style = (feature: any, resolution: any) => {
+        // var size = feature.get('features').length; //获取该要素所在聚合群的要素数量
+        // var style = styleCache[size];
+        // if (!style) {
+        //   style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
+        //   styleCache[size] = style;
+        // }
+        var style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
+        return style;
+      };
+    }
+    groupLayers[layerType + '_' + layerName] = new Vector(obj);
+    groupLayers[layerType + '_' + layerName].set('name', layerType + '_' + layerName);
+    group.getLayers().push(groupLayers[layerType + '_' + layerName]);
+  }
 };
 
 /**
@@ -242,25 +265,38 @@ const loadWFS = async (postData: string, layerName: string, callBack: (o: any) =
   const promise = loadLayer(postData, layerName);
   await promise.then((data: any) => {
     if (data.features && data.features.length > 0) {
-      // let flag;
-      // projects.forEach((project: any) => {
-      //   if (project.id === data.features[0].properties.project_id)
-      //     flag = true;
-      // })
-      const flag = projects.some((project: any) => {
-        return project.id === data.features[0].properties.project_id;
-      });
-      flag && callBack(data);
+      // const flag = projects.some((project: any) => {
+      //   return project.id === data.features[0].properties.project_id;
+      // });
+      // data.features.forEach((feature: any) => {
+      //   let obj: LayerDatas;
+      //   const project = projects.find(
+      //     (project: any) => project.id === feature.properties.project_id,
+      //   );
+      //   if (project) {
+      //     let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
+      //     if (!ld) {
+      //       obj = {
+      //         projectID: project.id,
+      //         time: project.time,
+      //         data: [],
+      //       };
+      //       layerDatas.push(obj);
+      //     } else {
+      //       ld.data.push({
+      //         name: layerName,
+      //         data,
+      //       });
+      //     }
+      //   }
+      // });
+      callBack(data);
     }
   });
 };
 
 // 加载勘察轨迹图层
-const loadTrackLayers = (
-  map: any,
-  trackLayers: any,
-  type: number = 0,
-) => {
+const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
   const trackType = ['survey_track', 'disclosure_track'];
   const track = ['survey_Track', 'disclosure_Track'];
   const trackLine = ['survey_TrackLine', 'disclosure_TrackLine'];
@@ -485,6 +521,28 @@ const relocateMap = (
     view.fit(source.getExtent(), map!.getSize());
     setView(view);
   }
+};
+
+// 清楚所有图层组中的数据
+const clearGroups = (layerGroups: LayerGroup[]) => {
+  layerGroups.forEach((item: LayerGroup) => {
+    item.getLayers().forEach((layer: any) => {
+      if (layer.getSource() instanceof Cluster) layer.getSource().getSource().clear();
+      else layer.getSource().clear();
+    });
+  });
+};
+
+/**
+ * 清除高亮图层
+ */
+const clearHighlightLayer = (map: any) => {
+  map
+    ?.getLayers()
+    .getArray()
+    .forEach((layer: any) => {
+      if (layer.get('name') === 'highlightLayer') layer.getSource().clear();
+    });
 };
 
 // 获取比例尺
