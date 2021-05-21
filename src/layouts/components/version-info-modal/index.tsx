@@ -20,8 +20,8 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   const [historyVersionData, setHistoryVersionData] = useState<any[]>([]);
   const [versionLoading, setVersionLoading] = useState<boolean>(false);
 
-  const thisHostName = window.location.hostname;
-  const serverCode = serverCodeArray[thisHostName];
+  const serverCode =
+    serverCodeArray.hostName === 'localhost' ? '10.6.1.36' : serverCodeArray.hostName;
 
   const { data: versionInfo, run: getVersionInfoEvent, loading } = useRequest(
     () =>

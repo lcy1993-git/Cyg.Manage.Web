@@ -1,13 +1,8 @@
 import { useRequest } from 'ahooks';
-import React, {
-  forwardRef,
-  Ref,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import React, { forwardRef, Ref, useImperativeHandle, useState } from 'react';
 import {
   AllProjectStatisticsParams,
-  getAllotUsers,
+  // getAllotUsers,
   getProjectTableList,
   getExternalArrangeStep,
 } from '@/services/project-management/all-project';
@@ -71,7 +66,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const [currentClickProjectId, setCurrentClickProjectId] = useState('');
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
-  const [arrangeUsers, setArrangeUsers] = useState<any>();
 
   const [externalStepData, setExternalStepData] = useState<any>();
 
@@ -111,10 +105,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
-
-  const { run: getArrangeUsers } = useRequest(getAllotUsers, {
-    manual: true,
-  });
 
   const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
     manual: true,
@@ -411,16 +401,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   //外审安排
   const externalArrange = async (projectId: string, proName?: string) => {
-    const res = await getArrangeUsers(projectId, 6);
+    // const res = await getArrangeUsers(projectId, 6);
     setCurrentClickProjectId(projectId);
     setCurrentProName(proName);
-    const exUsers = res?.map((item) => {
-      return {
-        value: item.userId,
-        text: item.userNameText,
-      };
-    });
-    setArrangeUsers(exUsers);
+    // const exUsers = res?.map((item) => {
+    //   return {
+    //     value: item.userId,
+    //     text: item.userNameText,
+    //   };
+    // });
 
     setExternalArrangeModalVisible(true);
   };
@@ -661,7 +650,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         <ExternalArrangeModal
           projectId={currentClickProjectId}
           proName={currentProName}
-          arrangeUsers={arrangeUsers}
           onChange={setExternalArrangeModalVisible}
           visible={externalArrangeModalVisible}
           search={afterSearch}
