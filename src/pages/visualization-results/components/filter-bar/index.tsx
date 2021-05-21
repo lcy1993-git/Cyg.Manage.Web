@@ -105,7 +105,7 @@ const FilterBar: FC = observer(() => {
     setSourceType(undefined);
     setIdentityType(undefined);
     setComment(undefined);
-
+    store.setIsFilter(true);
     store.setFilterCondition({ haveAnnotate: -1 });
   };
 
@@ -124,7 +124,7 @@ const FilterBar: FC = observer(() => {
       identityType: identityType && identityType[0] !== '-1' ? identityType : undefined,
       haveAnnotate: comment && comment !== -1 ? comment : -1,
     };
-
+    store.setIsFilter(true);
     store.setFilterCondition(condition);
   };
 

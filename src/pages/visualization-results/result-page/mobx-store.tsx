@@ -19,6 +19,7 @@ export interface VisualizationResultsStateType {
   confessionTrack: boolean; //交底轨迹
   onPositionClickState: boolean; // 当点击地图定位时候
   observeTrackTimeline?: string[]; //勘察轨迹tiemline
+  isFilter?: boolean; //为了判断是不是通过filter来是刷新tree
 }
 
 const initState = {
@@ -33,6 +34,7 @@ const initState = {
   confessionTrack: false,
   onPositionClickState: false,
   checkedProjectIdList: [],
+  isFilter: false,
 };
 
 function Store(vState: VisualizationResultsStateType) {
@@ -63,6 +65,9 @@ function Store(vState: VisualizationResultsStateType) {
     //设置timeline点击的日期
     setClickDate(clickDate: string, type: string) {
       this.vState.normalClickDate = clickDate;
+    },
+    setIsFilter(isFilter: boolean) {
+      this.vState.isFilter = isFilter;
     },
 
     togglePositionMap() {
