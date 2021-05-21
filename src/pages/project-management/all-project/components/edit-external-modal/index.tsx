@@ -79,7 +79,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           </Button>
 
           <Button key="save" type="primary" onClick={() => saveExternalArrange()}>
-            保存
+            提交
           </Button>
         </div>,
       ]}

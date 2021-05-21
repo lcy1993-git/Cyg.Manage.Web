@@ -106,7 +106,7 @@
     "@umijs/preset-react": "^1.7.4",
     "@umijs/yorkie": "^2.0.3",
     "carlo": "^0.9.46",
-    "commitizen": "^4.2.3",
+    "commitizen": "^4.2.4",
     "cross-env": "^7.0.3",
     "cross-port-killer": "^1.1.1",
     "cz-conventional-changelog": "^3.3.0",
