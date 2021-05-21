@@ -56,30 +56,21 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         );
       })
       .then(
+        () => {
+          return Promise.resolve();
+        },
         (res) => {
           const { code, isSuccess, message: msg } = res;
-          console.log(code, isSuccess);
-          
-          if (code !== 500 && isSuccess) {
-            
-            
-            return Promise.resolve();
-          } else {
-            console.log(123);
-            message.error(msg);
-            return Promise.reject('上传失败');
+          if (message) {
+            message.warn(msg);
           }
+          return Promise.reject('导入失败');
         },
-        () => {},
       )
       .finally(() => {
         setUploadFileFalse();
         changeFinishEvent?.();
       });
-  };
-
-  const onSave = () => {
-    setUploadFileTrue();
   };
 
   return (

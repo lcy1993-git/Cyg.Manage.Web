@@ -36,7 +36,6 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
       })
       .then(
         () => {
-          message.success('导入成功');
           return Promise.resolve();
         },
         () => {
@@ -50,9 +49,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
       });
   };
 
-  const onSave = () => {
-    
-  };
+  const onSave = () => {};
 
   return (
     <Modal

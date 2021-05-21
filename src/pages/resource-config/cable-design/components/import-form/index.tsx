@@ -32,13 +32,16 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
         return uploadLineStressSag(file, { libId }, requestSource, '/CableWell/SaveImport');
       })
       .then(
-        () => {
+        (res) => {
           message.success('导入成功');
-         
-          
+
           return Promise.resolve();
         },
-        () => {
+        (res) => {
+          const { code, isSuccess, message: msg } = res;
+          if (message) {
+            message.warn(msg);
+          }
           return Promise.reject('导入失败');
         },
       )

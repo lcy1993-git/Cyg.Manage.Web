@@ -34,12 +34,14 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-          setTimeout(() => {
-            setState(false);
-          }, 1000);
+
           return Promise.resolve();
         },
-        () => {
+        (res) => {
+          const { code, isSuccess, message: msg } = res;
+          if (message) {
+            message.warn(msg);
+          }
           return Promise.reject('导入失败');
         },
       )

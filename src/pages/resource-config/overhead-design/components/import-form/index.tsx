@@ -34,10 +34,16 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-            setState(false);
+          setState(false);
           return Promise.resolve();
         },
-        () => {
+        (res) => {
+          const { code, isSuccess, message: msg } = res;
+
+          if (message) {
+            message.warn(msg);
+          }
+
           return Promise.reject('导入失败');
         },
       )

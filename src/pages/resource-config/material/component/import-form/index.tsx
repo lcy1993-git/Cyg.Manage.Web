@@ -35,17 +35,20 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
         const { file } = values;
         return uploadLineStressSag(file, { libId }, requestSource, '/Material/Import');
       })
-      .then((res) => {
-        if (res && res.code === 6000) {
-          setFalseData(res.message);
-          message.success('导入成功');
+      .then(
+        (res) => {
+          if (res && res.code === 6000) {
+            setFalseData(res.message);
+            message.success('导入成功');
 
-          setImportTipsVisible(true);
-          return Promise.resolve();
-        }
-        message.error(res.message);
-        return Promise.reject();
-      })
+            setImportTipsVisible(true);
+            return Promise.resolve();
+          }
+          message.error(res.message);
+          return Promise.reject();
+        },
+        (res) => {},
+      )
       .finally(() => {
         changeFinishEvent?.();
         setUploadFileFalse();

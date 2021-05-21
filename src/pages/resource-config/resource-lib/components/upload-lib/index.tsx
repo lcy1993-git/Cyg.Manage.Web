@@ -40,7 +40,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
       .then((res) => {
         if (res && res.code === 6000) {
           setFalseData(res.message);
-          message.success('导入成功');
+         
           setState(false);
           setImportTipsVisible(true);
           return Promise.resolve();

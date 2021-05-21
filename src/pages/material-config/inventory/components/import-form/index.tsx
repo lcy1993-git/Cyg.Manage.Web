@@ -49,17 +49,15 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       })
       .then(
         (res) => {
-          const { code, isSuccess, message: msg } = res;
-
-          if (code !== 500 && isSuccess) {
-            return Promise.resolve();
-          } else {
-            message.error(msg);
-            return Promise.reject('上传失败');
-          }
-          // message.success()
+          return Promise.resolve();
         },
-        () => {},
+        (res) => {
+          const { code, isSuccess, message: msg } = res;
+          if (msg) {
+            message.warn(msg);
+          }
+          return Promise.reject('导入失败');
+        },
       )
       .finally(() => {
         changeFinishEvent?.();
