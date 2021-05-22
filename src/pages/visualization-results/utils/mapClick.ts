@@ -87,7 +87,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
     }
-    console.log(feature,2);
+    console.log(feature, 2);
     let layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
 
@@ -119,7 +119,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     // 映射图层相对应的字段
     mappingTagValues = mappingTagsDictionary[layerName.toLocaleLowerCase()]?.mappingTagValues;
-
 
     let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray());
     // 高亮显示
@@ -180,7 +179,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       highlightFeatures.push(feature);
     }
     // 轨迹图层也高亮
-    if (layer.getProperties().name.indexOf('Track') < 0){
+    if (layer.getProperties().name.indexOf('Track') < 0) {
       highlightFeatures.forEach(function (feature_) {
         // 判断类型(点线面)
         let featureClone = feature_.clone();
@@ -191,13 +190,12 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         } else {
           highlightStyle = line_style(featureClone, true, layerType);
         }
-  
+
         featureClone.setStyle(highlightStyle);
         highlightLayer.getSource().addFeature(featureClone);
       });
       highlightLayer.setVisible(true);
     }
-   
 
     let featureId = feature.getProperties().id;
     // if (!featureId) featureId = feature.getId().split('.')[1];
@@ -332,6 +330,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               ? Number(feature.getProperties()[p])?.toFixed(2)
               : 0;
             break;
+          case 'capacity':
+            if (feature.getProperties()[p].indexOf('kVA') >= 0)
+              pJSON[mappingTag] = feature.getProperties()[p].substr(3) + 'kVA';
+            break;
           default:
             pJSON[mappingTag] = feature.getProperties()[p];
             break;
@@ -421,10 +423,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
 
     // if (layerType === 'design' || layerType === 'dismantle' || layerType === 'survey' ) {
-      // 批注功能
-      if (commentLayers.indexOf(layerName) >= 0) {
-        pJSON['审阅'] = { id: feature.getProperties().project_id, feature };
-      }
+    // 批注功能
+    if (commentLayers.indexOf(layerName) >= 0) {
+      pJSON['审阅'] = { id: feature.getProperties().project_id, feature };
+    }
     // }
 
     // 相应数据到右侧边栏
