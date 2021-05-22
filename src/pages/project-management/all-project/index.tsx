@@ -1047,6 +1047,7 @@ const ProjectManagement: React.FC = () => {
           visible={editExternalArrangeModal}
           onChange={setEditExternalArrangeModal}
           notBeginUsers={notBeginUsers}
+          closeModalEvent={refreshEvent}
         />
       )}
       {externalArrangeModal && (
@@ -1055,6 +1056,7 @@ const ProjectManagement: React.FC = () => {
           onChange={setExternalArrangeModal}
           projectId={currentProjectId}
           proName={projectName}
+          search={refreshEvent}
         />
       )}
     </PageCommonWrap>
