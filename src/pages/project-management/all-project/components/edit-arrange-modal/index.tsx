@@ -3,8 +3,11 @@ import { Button } from 'antd';
 import { Form, message, Modal } from 'antd';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import EditArrangeForm from '../edit-arrange-form';
-import { editArrange, getProjectInfo } from '@/services/project-management/all-project';
+import { editArrange, getAllotUsers, getProjectInfo } from '@/services/project-management/all-project';
 import { useRequest } from 'ahooks';
+import { Tabs } from 'antd';
+import SelectAddListForm from '../select-add-list-form';
+import { UserInfo } from '@/services/project-management/select-add-list-form';
 
 interface EditArrangeProps {
   projectIds: string[];
@@ -15,10 +18,15 @@ interface EditArrangeProps {
   canEdit?: any;
 }
 
+const { TabPane } = Tabs;
+
 const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
+
+  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
+  const [initPeople, setInitPeople] = useState<UserInfo[]>([]);
 
   const { projectIds, changeFinishEvent, allotCompanyId, canEdit } = props;
   const {
@@ -71,6 +79,19 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
     },
   });
 
+  const { run: getOuterPeople } = useRequest(getAllotUsers, {
+    manual: true,
+    onSuccess: (res) => {
+      const handleData = res?.map((item: any) => {
+        return {
+          value: item.userId,
+          text: item.userNameText,
+        };
+      });
+      setInitPeople(handleData ?? []);
+    }
+  });
+
   const edit = () => {
     form.validateFields().then(async (value) => {
       try {
@@ -92,6 +113,9 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
         if (!canEditInternalAudit4) {
           value.designAssessUser4 = '';
         }
+
+        const outerAuditUsers = arrangePeople?.map((item) => item.value)
+    
         const arrangeInfo = Object.assign(
           {
             projectIds: projectIds,
@@ -100,10 +124,12 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
             designAssessUser1: '',
             designAssessUser2: '',
             designAssessUser3: '',
-            designAssessUser4: '',
+            designAssessUser4: ''
           },
           value,
         );
+
+        arrangeInfo.outerAuditUsers = outerAuditUsers;
 
         await editArrange(arrangeInfo);
         message.success('安排信息更新成功');
@@ -122,6 +148,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
     if (projectIds.length === 1) {
       if (state) {
         run(projectIds[0]);
+        getOuterPeople(projectIds[0], 6)
       }
     }
   }, [JSON.stringify(projectIds), state]);
@@ -138,6 +165,9 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       width={750}
       visible={state as boolean}
       destroyOnClose
+      bodyStyle={{
+        padding: `0 20px 20px 20px`,
+      }}
       footer={[
         <Button key="cancle" onClick={() => modalCloseEvent()}>
           取消
@@ -150,7 +180,14 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <EditArrangeForm allotCompanyId={allotCompanyId} canEdit={canEdit} />
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="项目安排" key="1">
+            <EditArrangeForm allotCompanyId={allotCompanyId} canEdit={canEdit} />
+          </TabPane>
+          <TabPane tab="外审安排" key="2">
+            <SelectAddListForm initPeople={initPeople} onChange={(people) => setArrangePeople(people)} />
+          </TabPane>
+        </Tabs>
       </Form>
     </Modal>
   );

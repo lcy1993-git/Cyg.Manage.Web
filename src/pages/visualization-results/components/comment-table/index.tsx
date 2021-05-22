@@ -45,7 +45,7 @@ const CommentTable: FC<CommentProps> = (props) => {
     if (isArray(loadEnumsData)) {
       loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
         if (l.key === type) {
-          res = l.value.map((e) => {
+          res = l.value.filter((e) => e.value !== 6).map((e) => {
             return [e.value, e.text];
           });
         }
