@@ -36,7 +36,7 @@ interface GetGroupUserProps {
 const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
-  const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false);
+  const [isPassExternalArrange, setIsPassExternalArrange] = useState<string>('');
 
   const [newStepData, setNewStepData] = useState<any[]>([]);
 
@@ -50,7 +50,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const executeArrangeEvent = async () => {
     await executeExternalArrange({
       projectId: projectId,
-      parameter: { 是否结束: `${isPassExternalArrange}` },
+      parameter: { 是否结束: `${isPassExternalArrange === '1' ? true : false}` },
     });
 
     message.success('外审已通过');
@@ -103,7 +103,12 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
             })
             .includes(false)
             ? [
-                <Button key="save" type="primary" onClick={() => executeArrangeEvent()}>
+                <Button
+                  disabled={!isPassExternalArrange}
+                  key="save"
+                  type="primary"
+                  onClick={() => executeArrangeEvent()}
+                >
                   提交
                 </Button>,
               ]
@@ -154,10 +159,10 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
               <p style={{ textAlign: 'center' }}>外审结果确认</p>
               <Radio.Group
                 onChange={(e) => setIsPassExternalArrange(e.target.value)}
-                //   value={notArrangePeopleStatus}
+                value={isPassExternalArrange}
               >
-                <Radio value={false}>外审不通过</Radio>
-                <Radio value={true}>外审通过</Radio>
+                <Radio value="0">外审不通过</Radio>
+                <Radio value="1">外审通过</Radio>
               </Radio.Group>
             </div>
           </Form>
