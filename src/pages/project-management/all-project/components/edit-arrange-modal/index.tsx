@@ -36,6 +36,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
     canEditInternalAudit2,
     canEditInternalAudit3,
     canEditInternalAudit4,
+    canEditOuterAudit
   } = canEdit;
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
@@ -131,6 +132,10 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
 
         arrangeInfo.outerAuditUsers = outerAuditUsers;
 
+        if(!canEditOuterAudit) {
+          arrangeInfo.outerAuditUsers = [];
+        }
+
         await editArrange(arrangeInfo);
         message.success('安排信息更新成功');
         setState(false);
@@ -184,7 +189,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
           <TabPane tab="项目安排" key="1">
             <EditArrangeForm allotCompanyId={allotCompanyId} canEdit={canEdit} />
           </TabPane>
-          <TabPane tab="外审安排" key="2">
+          <TabPane tab="外审安排" key="2" disabled={!canEditOuterAudit}>
             <SelectAddListForm initPeople={initPeople} onChange={(people) => setArrangePeople(people)} />
           </TabPane>
         </Tabs>
