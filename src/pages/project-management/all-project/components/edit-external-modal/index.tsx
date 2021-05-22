@@ -14,7 +14,7 @@ interface GetGroupUserProps {
   visible: boolean;
   projectId: string;
   notBeginUsers: any;
-  closeModalEvent?: () => void
+  closeModalEvent?: () => void;
 }
 
 const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
@@ -53,14 +53,13 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   }
 
   const saveExternalArrange = async () => {
-
     await modifyExternalArrange({
       projectId: projectId,
       addUserIds: getAddUsers(notBeginUsers, arrangePeople),
       delUserIds: getDelUsers(notBeginUsers, arrangePeople),
     });
     message.success('外审修改成功');
-    closeModalEvent?.()
+    closeModalEvent?.();
     setState(false);
   };
 

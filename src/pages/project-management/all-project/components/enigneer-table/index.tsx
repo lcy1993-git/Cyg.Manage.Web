@@ -415,7 +415,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     {stateInfo?.statusText}
                   </span>
                 ) : stateInfo.status === 4 && stateInfo.auditStatus === 0 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
+                  <span>{stateInfo?.statusText}</span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
+                  <span>{stateInfo?.statusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 5 ? (
                   <span>{stateInfo?.auditStatusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
@@ -713,6 +715,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           visible={editEngineerVisible}
           onChange={setEditEngineerVisible}
           changeFinishEvent={tableItemEventFinish}
+          
         />
       )}
       {editProjectVisible && (

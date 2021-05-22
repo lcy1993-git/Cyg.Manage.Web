@@ -257,15 +257,19 @@ const ProjectManagement: React.FC = () => {
     ) {
       setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
       const res = await getExternalStep(tableSelectData[0]?.checkedArray[0]);
-      const notBegin = res?.map((item: any) => {
-        if (item.status === 1) {
-          return {
-            value: item.expectExecutor,
-            text: `${item.companyName}-${item.expectExecutorName}`,
-          };
-        }
-        return;
-      });
+
+      const notBegin = res
+        ?.map((item: any) => {
+          if (item.status === 1) {
+            return {
+              value: item.expectExecutor,
+              text: `${item.companyName}-${item.expectExecutorName}`,
+            };
+          }
+          return;
+        })
+        .filter(Boolean);
+
       setNotBeginUsers(notBegin);
       setEditExternalArrangeModal(true);
       return;
@@ -1047,6 +1051,7 @@ const ProjectManagement: React.FC = () => {
           visible={editExternalArrangeModal}
           onChange={setEditExternalArrangeModal}
           notBeginUsers={notBeginUsers}
+          closeModalEvent={refreshEvent}
         />
       )}
       {externalArrangeModal && (
@@ -1055,6 +1060,7 @@ const ProjectManagement: React.FC = () => {
           onChange={setExternalArrangeModal}
           projectId={currentProjectId}
           proName={projectName}
+          search={refreshEvent}
         />
       )}
     </PageCommonWrap>
