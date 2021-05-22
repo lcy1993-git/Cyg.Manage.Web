@@ -74,6 +74,5 @@ export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:80
 
 export const serverCodeArray = {hostName:`${thisHostName}`}
 
-
-export const version = "1.0.51";
+export const version = "1.0.52";
 
