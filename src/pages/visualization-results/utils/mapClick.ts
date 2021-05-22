@@ -137,7 +137,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     let totalLength = 0;
     if (layerName == 'line' || layerName == 'user_line') {
       let layerTypeValue = feature.getProperties().layerType;
-      if (feature.getProperties().polyline_id) {
+      if (feature.getProperties().polyline_id && feature.getProperties().is_cable) {
         map
           .getLayers()
           .getArray()
