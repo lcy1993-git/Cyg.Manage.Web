@@ -1,5 +1,5 @@
 import React, { SetStateAction, useState } from 'react';
-import { Button, Divider, Form, message, Modal, Radio } from 'antd';
+import { Button, Divider, Form, message, Modal, Radio, Spin } from 'antd';
 
 import { useControllableValue } from 'ahooks';
 // import uuid from 'node-uuid';
@@ -21,6 +21,7 @@ import {
 
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
+import { delay } from '@/utils/utils';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -37,6 +38,8 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
   const [isPassExternalArrange, setIsPassExternalArrange] = useState<string>('');
+
+  const [requestLoading, setRequestLoading] = useState(false);
 
   const [newStepData, setNewStepData] = useState<any[]>([]);
 
@@ -67,8 +70,17 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   };
 
   const finishEditEvent = async () => {
-    const res = await getExternalStep(projectId);
-    setNewStepData(res);
+    try {
+      setRequestLoading(true);
+      await delay(1000)
+      console.log(1)
+      const res = await getExternalStep(projectId);
+      setNewStepData(res);
+    } catch (msg) {
+      console.error(msg);
+    } finally {
+      setRequestLoading(false);
+    }
   };
 
   return (
@@ -106,30 +118,32 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         }
       >
         {/* 当前外审人员列表 */}
-        <div className={styles.peopleList}>
-          {newStepData?.map((el: any, idx: any) => (
-            <div className={styles.single} key={el.id}>
-              <div>外审 {idx + 1}</div>
-              <div className={styles.exName}>{`${el.companyName}-${el.expectExecutorName}`}</div>
-              <div>
-                {el.status === 1 ? (
-                  <MinusCircleOutlined style={{ fontSize: '22px' }} />
-                ) : el.status === 10 ? (
-                  <ClockCircleOutlined style={{ fontSize: '22px' }} />
-                ) : el.status === 20 && el.resultParameterDisplay[0] === '不通过' ? (
-                  <CloseCircleOutlined style={{ color: '#d81e06', fontSize: '22px' }} />
-                ) : (
-                  <CheckCircleOutlined style={{ color: '#0e7b3b', fontSize: '22px' }} />
-                )}
+        <Spin spinning={requestLoading} tip="数据重新请求中...">
+          <div className={styles.peopleList}>
+            {newStepData?.map((el: any, idx: any) => (
+              <div className={styles.single} key={el.id}>
+                <div>外审 {idx + 1}</div>
+                <div className={styles.exName}>{`${el.companyName}-${el.expectExecutorName}`}</div>
+                <div>
+                  {el.status === 1 ? (
+                    <MinusCircleOutlined style={{ fontSize: '22px' }} />
+                  ) : el.status === 10 ? (
+                    <ClockCircleOutlined style={{ fontSize: '22px' }} />
+                  ) : el.status === 20 && el.resultParameterDisplay[0] === '不通过' ? (
+                    <CloseCircleOutlined style={{ color: '#d81e06', fontSize: '22px' }} />
+                  ) : (
+                    <CheckCircleOutlined style={{ color: '#0e7b3b', fontSize: '22px' }} />
+                  )}
+                </div>
+                <div className={styles.status}>{el.statusDescription}</div>
               </div>
-              <div className={styles.status}>{el.statusDescription}</div>
-            </div>
-          ))}
+            ))}
 
-          <Button type="primary" onClick={() => modifyEvent()}>
-            修改外审
-          </Button>
-        </div>
+            <Button type="primary" onClick={() => modifyEvent()}>
+              修改外审
+            </Button>
+          </div>
+        </Spin>
 
         {!newStepData
           ?.map((item: any) => {

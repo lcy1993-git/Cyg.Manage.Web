@@ -51,6 +51,7 @@ import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
 import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
+import { delay } from '@/utils/utils';
 
 const { Search } = Input;
 
@@ -256,21 +257,7 @@ const ProjectManagement: React.FC = () => {
         tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
     ) {
       setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
-      const res = await getExternalStep(tableSelectData[0]?.checkedArray[0]);
-
-      const notBegin = res
-        ?.map((item: any) => {
-          if (item.status === 1) {
-            return {
-              value: item.expectExecutor,
-              text: `${item.companyName}-${item.expectExecutorName}`,
-            };
-          }
-          return;
-        })
-        .filter(Boolean);
-
-      setNotBeginUsers(notBegin);
+      
       setEditExternalArrangeModal(true);
       return;
     }
@@ -675,6 +662,25 @@ const ProjectManagement: React.FC = () => {
     }
   };
 
+ const delayRefresh = async () => {
+  if (tableRef && tableRef.current) {
+    //@ts-ignore
+    await tableRef.current.delayRefresh();
+    getStatisticsData({
+      keyWord,
+      category: category ?? '-1',
+      pCategory: pCategory ?? '-1',
+      stage: stage ?? '-1',
+      constructType: constructType ?? '-1',
+      nature: nature ?? '-1',
+      kvLevel: kvLevel ?? '-1',
+      status: status ?? '-1',
+      sourceType: sourceType ?? '-1',
+      identityType: identityType ?? '-1',
+      ...areaInfo,
+    });
+  }
+ }
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectManagement}>
@@ -947,6 +953,7 @@ const ProjectManagement: React.FC = () => {
             <EnigneerTable
               ref={tableRef}
               afterSearch={search}
+              delayRefresh={delayRefresh}
               onSelect={tableSelectEvent}
               extractParams={{
                 keyWord,
@@ -1050,8 +1057,7 @@ const ProjectManagement: React.FC = () => {
           projectId={currentProjectId}
           visible={editExternalArrangeModal}
           onChange={setEditExternalArrangeModal}
-          notBeginUsers={notBeginUsers}
-          closeModalEvent={refreshEvent}
+          closeModalEvent={delayRefresh}
         />
       )}
       {externalArrangeModal && (
@@ -1060,7 +1066,7 @@ const ProjectManagement: React.FC = () => {
           onChange={setExternalArrangeModal}
           projectId={currentProjectId}
           proName={projectName}
-          search={refreshEvent}
+          search={delayRefresh}
         />
       )}
     </PageCommonWrap>

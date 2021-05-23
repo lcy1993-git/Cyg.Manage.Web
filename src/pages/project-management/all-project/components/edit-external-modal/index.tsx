@@ -1,4 +1,4 @@
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction, useEffect, useState } from 'react';
 import { Button, Form, message, Modal } from 'antd';
 
 import { useControllableValue, useRequest } from 'ahooks';
@@ -33,12 +33,9 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   function getAddUsers(preArray: any, nexArray: any) {
     return nexArray
       .map((item: any) => {
-        if (!preArray.includes(item)) {
-          return item.value;
-        }
-        return;
+        return item.value
       })
-      .filter(Boolean);
+      .filter((item: any) => !preArray.map((ite: any) => ite.value).includes(item));
   }
 
   //获取删除外审
@@ -46,12 +43,12 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     if (preArray.length === 0) {
       return [];
     }
-
+    console.log(preArray);
     return preArray
-      .filter((item: any) => !nexArray.includes(item))
       .map((item: any) => {
         return item.value;
-      });
+      })
+      .filter((item: any) => !nexArray.map((ite: any) => ite.value).includes(item));
   }
 
   const saveExternalArrange = async () => {
@@ -65,7 +62,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     setState(false);
   };
 
-  const { data: AllotUsers } = useRequest(() => getAllotUsers(projectId, 6), {
+  const { data: AllotUsers, run } = useRequest(() => getAllotUsers(projectId, 6), {
     onSuccess: () => {
       const handleData = AllotUsers?.map((item: any) => {
         if (item.canDel) {
@@ -78,7 +75,14 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       }).filter(Boolean);
       setInitPeople(handleData ?? []);
     },
+    manual: true,
   });
+
+  useEffect(() => {
+    if (state) {
+      run();
+    }
+  }, [state]);
 
   return (
     <Modal
