@@ -402,6 +402,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           arrangeType = allot.allotType;
           allotCompanyId = allot.allotCompanyGroup;
         }
+        console.log(stateInfo)
+        console.log(stateInfo.status === 17 && stateInfo.auditStatus === 13)
         return (
           <>
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
@@ -420,8 +422,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   <span>{stateInfo?.auditStatusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
                   <span>{stateInfo?.statusText}</span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
                   <span
                     className="canClick"
@@ -437,6 +437,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.auditStatusText}
                   </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
                 ) : (
                   <span>{stateInfo?.statusText}</span>
                 )}
