@@ -1,4 +1,4 @@
-import React, { SetStateAction, useMemo, useState } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import { Button, Divider, Form, message, Modal, Radio } from 'antd';
 
 import { useControllableValue } from 'ahooks';
@@ -61,20 +61,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   useEffect(() => {
     setNewStepData(stepData);
   }, [stepData]);
-
-  const notBeginList = useMemo(() => {
-    return newStepData
-      ?.map((item: any) => {
-        if (item.status === 1) {
-          return {
-            value: item.expectExecutor,
-            text: `${item.companyName}-${item.expectExecutorName}`,
-          };
-        }
-        return;
-      })
-      .filter(Boolean);
-  }, [newStepData]);
 
   const modifyEvent = () => {
     setEditExternalArrangeModal(true);
@@ -173,7 +159,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
           projectId={projectId}
           visible={editExternalArrangeModal}
           onChange={setEditExternalArrangeModal}
-          notBeginUsers={notBeginList}
           closeModalEvent={finishEditEvent}
         />
       )}

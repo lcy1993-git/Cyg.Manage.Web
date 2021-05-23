@@ -402,8 +402,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           arrangeType = allot.allotType;
           allotCompanyId = allot.allotCompanyGroup;
         }
-        console.log(stateInfo)
-        console.log(stateInfo.status === 17 && stateInfo.auditStatus === 13)
+        // console.log(stateInfo)
+        // console.log(stateInfo.status === 17 && stateInfo.auditStatus === 13)
         return (
           <>
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
