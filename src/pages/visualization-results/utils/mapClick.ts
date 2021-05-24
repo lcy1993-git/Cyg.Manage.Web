@@ -57,6 +57,28 @@ const elementTypeEnum = {
   Track: '轨迹点',
   TrackLine: '轨迹线',
 };
+const lineTowerType = [
+  {
+    key: 1,
+    value: 'tower',
+  },
+  {
+    key: 2,
+    value: 'cable',
+  },
+  {
+    key: 3,
+    value: 'cable_equipment',
+  },
+  {
+    key: 4,
+    value: 'electric_meter',
+  },
+  {
+    key: 9,
+    value: 'cross_arm',
+  },
+];
 export const mapClick = (evt: any, map: any, ops: any) => {
   // 解决本地存储mappingTagsData的bug
   const mappingTagsData = getMappingTagsDictionary();
@@ -87,7 +109,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
     }
-    console.log(feature, 2);
+    // console.log(feature, 2);
     let layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
 
@@ -269,9 +291,12 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             });
             break;
           case 'start_id':
+            let startItem = lineTowerType.find(
+              (item) => item.key === feature.getProperties().start_node_type,
+            );
             await loadLayer(
               getCustomXmlData('id', feature.getProperties()['start_id']),
-              `pdd:${layerType}_tower`,
+              `pdd:${layerType}_${startItem?.value}`,
             ).then((data: any) => {
               if (data.features && data.features.length === 1) {
                 pJSON[mappingTag] = data.features[0].properties.code;
@@ -281,9 +306,12 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             });
             break;
           case 'end_id':
+            let endItem = lineTowerType.find(
+              (item) => item.key === feature.getProperties().end_node_type,
+            );
             await loadLayer(
               getCustomXmlData('id', feature.getProperties()['end_id']),
-              `pdd:${layerType}_tower`,
+              `pdd:${layerType}_${endItem?.value}`,
             ).then((data: any) => {
               if (data.features && data.features.length === 1) {
                 pJSON[mappingTag] = data.features[0].properties.code;
@@ -449,7 +477,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     ops.setRightSidebarVisiviabel(true);
     ops.setRightSidebarData(resData);
-    map.getTargetElement().style.cursor = 'pointer';
+    map.getTargetElement().style.cursor = 'default';
   });
 };
 
@@ -461,11 +489,13 @@ export const mapPointermove = (evt: any, map: any) => {
   const y = document.getElementById('currentPositionY');
   if (x !== null) x.innerHTML = lont[0].toFixed(4);
   if (y !== null) y.innerHTML = lont[0].toFixed(4);
+  if (map.getTargetElement().style.cursor === 'wait') return;
   map.getTargetElement().style.cursor = 'default';
   let allowed = true;
   map.forEachFeatureAtPixel(evt.pixel, function (feature: any, layer: any) {
     if (layer.getSource() instanceof Cluster && feature.get('features').length > 1) allowed = false;
-    if (allowed) map.getTargetElement().style.cursor = 'pointer';
+    if (allowed)
+      map.getTargetElement().style.cursor = 'pointer';
     else map.getTargetElement().style.cursor = 'not-allowed';
   });
 };
