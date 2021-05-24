@@ -12,7 +12,7 @@ const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = (props) => {
     const { projectInfo = {} } = props;
     const { allots } = projectInfo;
 
-    const allotsElement = allots.map((item: any) => {
+    const allotsElement = allots?.map((item: any) => {
         let showTitle = "";
         switch(item.allotType) {
             case 1:

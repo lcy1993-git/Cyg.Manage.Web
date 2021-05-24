@@ -47,7 +47,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
       .then((res) => {
         if (res && res.code === 6000) {
           setFalseData(res.message);
-         
+
           setState(false);
           setImportTipsVisible(true);
           return Promise.resolve();
@@ -103,7 +103,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
         visible={importTipsVisible}
         onCancel={() => setImportTipsVisible(false)}
       >
-        <div style={{ width: '100%', overflow: 'auto', height: '450px' }}>
+        <div style={{ width: '100%', overflow: 'auto', height: 'auto' }}>
           <pre>{falseData}</pre>
         </div>
       </Modal>

@@ -33,16 +33,22 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
         const { file } = values;
         return uploadLineStressSag(file, { libId }, requestSource, '/LineStressSag/SaveImport');
       })
-      .then((res) => {
-        if (res && res.code === 6000) {
-          setFalseData(res.message);
-          message.success('导入成功');
-          setImportTipsVisible(true);
-          return Promise.resolve();
-        }
-        message.error(res.message);
-        return Promise.reject();
-      })
+      .then(
+        (res) => {
+          if (res && res.code === 6000) {
+            setFalseData(res.message);
+            message.success('导入成功');
+            setImportTipsVisible(true);
+            return Promise.resolve();
+          }
+          message.error(res.message);
+          return Promise.reject();
+        },
+        (res) => {
+          message.error(res.message);
+          return Promise.reject();
+        },
+      )
       .finally(() => {
         changeFinishEvent?.();
         setUploadFileFalse();

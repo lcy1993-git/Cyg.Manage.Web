@@ -43,7 +43,6 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     if (preArray.length === 0) {
       return [];
     }
-    console.log(preArray);
     return preArray
       .map((item: any) => {
         return item.value;

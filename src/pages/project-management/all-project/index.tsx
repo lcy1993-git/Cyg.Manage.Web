@@ -246,40 +246,31 @@ const ProjectManagement: React.FC = () => {
       message.error('请选择修改安排的项目！');
       return;
     }
-    if (tableSelectData[0]?.projectInfo?.status[0]?.status === 7) {
-      message.error('当前处于设计完成，不可修改安排！');
-      return;
-    }
-    if (
-      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
-      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
-    ) {
-      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
-      
-      setEditExternalArrangeModal(true);
-      return;
-    }
-    if (
-      tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-      tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
-    ) {
-      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
-      setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
-      // const res = await getArrangeUsers(tableSelectData[0]?.checkedArray[0], 6);
+    // if (tableSelectData[0]?.projectInfo?.status[0]?.status === 7) {
+    //   message.error('当前处于设计完成，不可修改安排！');
+    //   return;
+    // }
+    // if (
+    //   (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+    //     tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
+    //   (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+    //     tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
+    // ) {
+    //   setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
 
-      // const exUsers = res?.map((item) => {
-      //   return {
-      //     value: item.userId,
-      //     text: item.userNameText,
-      //   };
-      // });
+    //   setEditExternalArrangeModal(true);
+    //   return;
+    // }
+    // if (
+    //   tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+    //   tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
+    // ) {
+    //   setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+    //   setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
 
-      // setArrangeUsers(exUsers);
-      setExternalArrangeModal(true);
-      return;
-    }
+    //   setExternalArrangeModal(true);
+    //   return;
+    // }
     const resData = await canEditArrange(projectIds);
 
     const { allotCompanyGroup = '' } = resData;
@@ -662,25 +653,25 @@ const ProjectManagement: React.FC = () => {
     }
   };
 
- const delayRefresh = async () => {
-  if (tableRef && tableRef.current) {
-    //@ts-ignore
-    await tableRef.current.delayRefresh();
-    getStatisticsData({
-      keyWord,
-      category: category ?? '-1',
-      pCategory: pCategory ?? '-1',
-      stage: stage ?? '-1',
-      constructType: constructType ?? '-1',
-      nature: nature ?? '-1',
-      kvLevel: kvLevel ?? '-1',
-      status: status ?? '-1',
-      sourceType: sourceType ?? '-1',
-      identityType: identityType ?? '-1',
-      ...areaInfo,
-    });
-  }
- }
+  const delayRefresh = async () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      await tableRef.current.delayRefresh();
+      getStatisticsData({
+        keyWord,
+        category: category ?? '-1',
+        pCategory: pCategory ?? '-1',
+        stage: stage ?? '-1',
+        constructType: constructType ?? '-1',
+        nature: nature ?? '-1',
+        kvLevel: kvLevel ?? '-1',
+        status: status ?? '-1',
+        sourceType: sourceType ?? '-1',
+        identityType: identityType ?? '-1',
+        ...areaInfo,
+      });
+    }
+  };
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectManagement}>
