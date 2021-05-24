@@ -10,53 +10,17 @@ import {
 } from '@ant-design/icons';
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/mobx-store';
-import CommentTable from '../comment-table';
+import CommentModal from '../comment-modal';
+import MaterialModal from '../material-modal';
 import { useRequest } from 'ahooks';
-import {
-  fetchMaterialListByProjectIdList,
-  MaterialDataType,
-} from '@/services/visualization-results/list-menu';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-import { MaterialTable } from '../material-table';
 import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
-
-const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDataType[] => {
-  /**
-   * 获取type
-   */
-  const typeSet: Set<string> = new Set(
-    materialData.map((v) => {
-      return v.type;
-    }),
-  );
-  /**
-   * 先获取到所有的type
-   */
-
-  const typeArr = [...typeSet];
-  //创建第一层结构
-  const parentArr: MaterialDataType[] = typeArr.map((type) => {
-    return {
-      key: `type${Math.random()}`,
-      type: type,
-      children: undefined,
-    };
-  });
-  parentArr.forEach((value) => {
-    value.children = materialData.filter((materialItem) => {
-      materialItem.key = Math.random().toLocaleString();
-      return materialItem.type === value.type;
-    });
-  });
-
-  return parentArr;
-};
 
 const ListMenu: FC = observer(() => {
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
-  const [materialList, setMaterialList] = useState<MaterialDataType[]>();
+
   const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
   const store = useContainer();
   const { vState } = store;
@@ -74,29 +38,6 @@ const ListMenu: FC = observer(() => {
       },
     },
   );
-  const {
-    data: materialListReponseData,
-    run: fetchMaterialListRquest,
-    loading: fetchMaterialListLoading,
-  } = useRequest(fetchMaterialListByProjectIdList, {
-    manual: true,
-    onSuccess: () => {
-      /**
-       * 材料的table树
-       *  - 类型
-       *    - 类型 ------------
-       */
-      if (materialListReponseData?.length) {
-        setMaterialList(generateMaterialTreeList(materialListReponseData));
-      } else {
-        setMaterialList([]);
-        message.warning('没有检索到数据');
-      }
-    },
-    onError: () => {
-      message.warning('获取数据失败');
-    },
-  });
 
   const onCilickPositionMap = () => {
     store.togglePositionMap();
@@ -105,7 +46,6 @@ const ListMenu: FC = observer(() => {
 
   const onClickMaterialTable = () => {
     setMaterialModalVisible(true);
-    fetchMaterialListRquest(checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []);
   };
 
   const onClickCommentTable = () => {
@@ -198,35 +138,19 @@ const ListMenu: FC = observer(() => {
         </div>
       </Menu>
 
-      <Modal
-        title="材料表"
-        centered
-        destroyOnClose
+      <MaterialModal
+        checkedProjectIdList={checkedProjectIdList?.map((v: ProjectList) => v.id)}
         visible={materialModalVisible}
-        onOk={() => setMaterialModalVisible(false)}
         onCancel={() => setMaterialModalVisible(false)}
-        width={2000}
-      >
-        <MaterialTable data={materialList} loading={fetchMaterialListLoading} />
-      </Modal>
+        onOk={() => setMaterialModalVisible(false)}
+      />
 
-      <Modal
-        title="审阅列表"
-        centered
-        destroyOnClose
+      <CommentModal
+        checkedProjectIdList={checkedProjectIdList}
         visible={commentTableModalVisible}
-        onOk={() => setCommentTableModalVisible(false)}
         onCancel={() => setCommentTableModalVisible(false)}
-        width={1500}
-      >
-        {checkedProjectIdList.length > 0 ? (
-          <CommentTable
-            trigger={commentTableModalVisible}
-            projectId={checkedProjectIdList[0].id}
-            engineerId={checkedProjectIdList[0].engineerId}
-          />
-        ) : null}
-      </Modal>
+        onOk={() => setCommentTableModalVisible(false)}
+      />
     </>
   );
 });

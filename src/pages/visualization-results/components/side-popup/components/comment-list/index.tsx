@@ -19,17 +19,18 @@ export interface CommentListProps {
 
 const CommentList: FC<CommentListProps> = (props) => {
   const { height, commentList = [], loading = true, isDelete = false, horizontal = false } = props;
-  console.log(commentList.length);
 
   const scrollbars = createRef<Scrollbars>();
   const generatprCommentListData = commentList.map((v, idx) => ({
-    author: <>{idx + 1}. 由 {v.creator} </>,
+    author: (
+      <>
+        {idx + 1}. 由 {v.creator}{' '}
+      </>
+    ),
     content: <p>{v.content}</p>,
     datetime: (
       <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-        <span>
-           {moment(v.createdOn).fromNow()} 添加
-        </span>
+        <span>{moment(v.createdOn).fromNow()} 添加</span>
       </Tooltip>
     ),
   }));

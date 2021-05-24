@@ -163,13 +163,19 @@ const modalTitle = {
 const DEVICE_TYPE: { [propertyName: string]: string } = {
   tower: '杆塔',
   cable: '电缆井',
-  transformer: '变压器',
-  cable_equipment: '电力设备',
-  cross_arm: '横担',
-  over_head_device: '杆上物',
-  fault_indicator: '故障指示器',
+  cable_equipment: '电气设备',
   mark: '地物',
+  transformer: '变压器',
+  over_head_device: '柱上设备',
+  line: '线路' || '电缆',
+  cable_channel: '电缆通道',
   electric_meter: '户表',
+  cross_arm: '横担',
+  user_line: '下户线',
+  fault_indicator: '故障指示器',
+  pull_line: '拉线',
+  Track: '轨迹点',
+  TrackLine: '轨迹线',
 };
 
 const LAYER_TYPE: { [propertyName: string]: string } = {
@@ -196,7 +202,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
 
   const data = useMemo(() => {
     const title = dataSource.find((o) => o.propertyName === 'title')?.data;
-    return [dataSource.filter((o) => o.propertyName !== 'title'), title ? title : ""];
+    return [dataSource.filter((o) => o.propertyName !== 'title'), title ? title : ''];
   }, [JSON.stringify(dataSource)]);
 
   const columns = [
@@ -270,9 +276,9 @@ const SidePopup: React.FC<Props> = observer((props) => {
         if (t === 1) {
           return <span key={uuid.v1()}>图片</span>;
         } else if (t === 2) {
-          return <span key={uuid.v1()}>图片</span>;
+          return <span key={uuid.v1()}>音频</span>;
         }
-        return t;
+        return t ?? "";
       },
     },
     {
@@ -284,9 +290,9 @@ const SidePopup: React.FC<Props> = observer((props) => {
       title: '勘测日期',
       dataIndex: 'surveyTime',
       key: uuid.v1(),
-      render(t: number){        
-        return moment(t).format("YYYY-MM-DD");
-      }
+      render(t: number) {
+        return moment(t).format('YYYY-MM-DD');
+      },
     },
     {
       title: '操作',
@@ -345,11 +351,13 @@ const SidePopup: React.FC<Props> = observer((props) => {
     setActiveType('annotation&' + value.id);
 
     const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature;
+
     /**
      * 从feature这个对象里面取出关键信息，由于localstorage里面存的是中文枚举值，这里取出来的是英文，所以要根据中英文转换一下
      */
     if (feature) {
       const localData = localStorage.getItem('loadEnumsData');
+
       const loadEnumsData =
         localData && localData !== 'undefined'
           ? JSON.parse(localStorage.getItem('loadEnumsData')!)
@@ -375,7 +383,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
        * "survey_tower.1386220338212147281" 切割该字符串获取图层type，设备类型，设备id
        */
       let split = id_.split('.');
-      const [enLayerType, enDeviceType] = split[0].split('_');
+      console.log(id_);
+
+      const deviceAndLayer = split[0].split('_');
+
       const deviceId = split[1];
 
       /**
@@ -383,12 +394,16 @@ const SidePopup: React.FC<Props> = observer((props) => {
        */
 
       let body = {
-        layerType: findEnumKey(LAYER_TYPE[enLayerType], 'ProjectCommentLayer'),
-        deviceType: findEnumKey(DEVICE_TYPE[enDeviceType], 'ProjectCommentDevice'),
+        layerType: findEnumKey(LAYER_TYPE[deviceAndLayer[0]], 'ProjectCommentLayer'),
+        deviceType: findEnumKey(
+          DEVICE_TYPE[deviceAndLayer.slice(1).join('_')],
+          'ProjectCommentDevice',
+        ),
         deviceId,
         projectId,
         content: '',
       };
+
       setcommentRquestBody(body);
       fetchCommentListRequest({ layer: body.layerType, deviceId: body.deviceId, projectId });
     }

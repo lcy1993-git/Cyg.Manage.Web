@@ -8,7 +8,7 @@ import {
 } from '@/services/project-management/select-add-list-form';
 const { Search } = Input;
 export interface SelectAddListFormProps {
-  initPeople?: UserInfo[];
+  initPeople?: UserInfo[] | undefined[];
   projectName?: string;
   onChange: (userInfoList: UserInfo[]) => void;
   notArrangeShow?: boolean; //checkbox的标志用来是否显示不安排外审的内容
@@ -51,7 +51,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
 
   useEffect(() => {
     setPeople(initPeople);
-    onChange?.(initPeople)
+    onChange?.(initPeople);
   }, [JSON.stringify(initPeople)]);
 
   const onPepleAdd = (p: UserInfo) => {

@@ -29,6 +29,7 @@ import CheckResultModal from '../check-result-modal';
 import ExternalArrangeModal from '../external-arrange-modal';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import ExternalListModal from '../external-list-modal';
+import { delay } from '@/utils/utils';
 
 interface ExtractParams extends AllProjectStatisticsParams {
   statisticalCategory?: string;
@@ -38,6 +39,7 @@ interface EngineerTableProps {
   extractParams: ExtractParams;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
+  delayRefresh?: () => void
 }
 
 interface JurisdictionInfo {
@@ -53,7 +55,7 @@ const colorMap = {
 };
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, afterSearch } = props;
+  const { extractParams, onSelect, afterSearch, delayRefresh } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
@@ -402,6 +404,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           arrangeType = allot.allotType;
           allotCompanyId = allot.allotCompanyGroup;
         }
+        // console.log(stateInfo)
+        // console.log(stateInfo.status === 17 && stateInfo.auditStatus === 13)
         return (
           <>
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
@@ -416,10 +420,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   </span>
                 ) : stateInfo.status === 4 && stateInfo.auditStatus === 0 ? (
                   <span>{stateInfo?.statusText}</span>
+                ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
                   <span>{stateInfo?.statusText}</span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 5 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
                 ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
                   <span
                     className="canClick"
@@ -435,6 +439,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.auditStatusText}
                   </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
                 ) : (
                   <span>{stateInfo?.statusText}</span>
                 )}
@@ -621,6 +627,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       });
       setTableSelectData([]);
     },
+    delayRefresh: async (ms: number) => {
+      await delay(500)
+      run({
+        ...extractParams,
+        pageIndex,
+        pageSize,
+      });
+      setTableSelectData([]);
+    }
   }));
 
   const tableItemEventFinish = () => {
@@ -715,7 +730,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           visible={editEngineerVisible}
           onChange={setEditEngineerVisible}
           changeFinishEvent={tableItemEventFinish}
-          
         />
       )}
       {editProjectVisible && (
@@ -759,7 +773,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           proName={currentProName}
           onChange={setExternalArrangeModalVisible}
           visible={externalArrangeModalVisible}
-          search={afterSearch}
+          search={delayRefresh}
         />
       )}
 
@@ -769,7 +783,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           visible={externalListModalVisible}
           onChange={setExternalListModalVisible}
           stepData={externalStepData}
-          refresh={afterSearch}
+          refresh={delayRefresh}
         />
       )}
     </div>
