@@ -139,7 +139,7 @@ const ListMenu: FC = observer(() => {
       </Menu>
 
       <MaterialModal
-        checkedProjectIdList={checkedProjectIdList?.map((v: ProjectList) => v.id) ?? []}
+        checkedProjectIdList={checkedProjectIdList?.map((v: ProjectList) => v.id)}
         visible={materialModalVisible}
         onCancel={() => setMaterialModalVisible(false)}
         onOk={() => setMaterialModalVisible(false)}

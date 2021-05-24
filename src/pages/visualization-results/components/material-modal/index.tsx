@@ -48,33 +48,32 @@ const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDat
 const MaterialModal: FC<MaterialModalProps> = (props) => {
   const { checkedProjectIdList, visible, onOk, onCancel } = props;
   const [materialList, setMaterialList] = useState<MaterialDataType[]>();
-  const { data, loading, run } = useRequest(
-    () => fetchMaterialListByProjectIdList(checkedProjectIdList),
-    {
-      manual: true,
-      refreshDeps: [checkedProjectIdList],
-      onSuccess: () => {
-        /**
-         * 材料的table树
-         *  - 类型
-         *    - 类型 ------------
-         */
-        if (data?.length) {
-          setMaterialList(generateMaterialTreeList(data));
-        } else {
-          setMaterialList([]);
-          message.warning('没有检索到数据');
-        }
-      },
-      onError: () => {
-        message.warning('获取数据失败');
-      },
+  const { data, loading, run } = useRequest(fetchMaterialListByProjectIdList, {
+    manual: true,
+
+    onSuccess: () => {
+      /**
+       * 材料的table树
+       *  - 类型
+       *    - 类型 ------------
+       */
+      console.log(data);
+
+      if (data) {
+        setMaterialList(generateMaterialTreeList(data));
+      } else {
+        setMaterialList([]);
+        message.warning('没有检索到数据');
+      }
     },
-  );
+    onError: () => {
+      message.warning('获取数据失败');
+    },
+  });
 
   useEffect(() => {
     if (visible) {
-      run();
+      run(checkedProjectIdList);
     }
   }, [visible]);
   return (
