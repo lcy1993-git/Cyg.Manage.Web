@@ -270,9 +270,9 @@ const SidePopup: React.FC<Props> = observer((props) => {
         if (t === 1) {
           return <span key={uuid.v1()}>图片</span>;
         } else if (t === 2) {
-          return <span key={uuid.v1()}>图片</span>;
+          return <span key={uuid.v1()}>音频</span>;
         }
-        return t;
+        return t ?? "";
       },
     },
     {
