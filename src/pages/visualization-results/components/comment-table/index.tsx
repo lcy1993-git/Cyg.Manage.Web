@@ -19,12 +19,11 @@ const { Option } = Select;
 interface CommentProps {
   projectId: string;
   engineerId: string;
-  trigger?: boolean;
 }
 const { Search } = Input;
 
 const CommentTable: FC<CommentProps> = (props) => {
-  const { projectId, engineerId, trigger } = props;
+  const { projectId, engineerId } = props;
   const [keyword, setKeyword] = useState<string>();
   const [layerType, setLayerType] = useState<number>();
   const [deviceType, setDeviceType] = useState<number>();
@@ -45,9 +44,11 @@ const CommentTable: FC<CommentProps> = (props) => {
     if (isArray(loadEnumsData)) {
       loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
         if (l.key === type) {
-          res = l.value.filter((e) => e.value !== 6).map((e) => {
-            return [e.value, e.text];
-          });
+          res = l.value
+            .filter((e) => e.value !== 6)
+            .map((e) => {
+              return [e.value, e.text];
+            });
         }
       });
     }
