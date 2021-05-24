@@ -1,8 +1,8 @@
-import { useRequest } from '@/.umi/plugin-request/request';
 import {
   fetchMaterialListByProjectIdList,
   MaterialDataType,
 } from '@/services/visualization-results/list-menu';
+import { useRequest } from 'ahooks';
 import { message, Modal } from 'antd';
 import React, { FC, useEffect, useState } from 'react';
 import { MaterialTable } from '../material-table';
@@ -57,13 +57,11 @@ const MaterialModal: FC<MaterialModalProps> = (props) => {
        *  - 类型
        *    - 类型 ------------
        */
-      console.log(data);
 
       if (data) {
         setMaterialList(generateMaterialTreeList(data));
       } else {
         setMaterialList([]);
-        message.warning('没有检索到数据');
       }
     },
     onError: () => {
