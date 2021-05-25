@@ -39,7 +39,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
           return Promise.resolve();
         },
         () => {
-          return Promise.reject('导入失败');
+          return Promise.reject();
         },
       )
       .finally(() => {
