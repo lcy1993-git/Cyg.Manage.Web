@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
-import _, { size } from 'lodash';
+import _ from 'lodash';
 import { Tree, Tabs, Spin, message } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import { useLocation } from 'react-router-dom';
@@ -9,7 +9,6 @@ import {
   fetchEngineerProjectListByParamsAndArea,
   fetchEngineerProjectListByParamsAndCompany,
   ProjectListByAreaType,
-  fetchCommentCountById,
   Properties,
 } from '@/services/visualization-results/side-tree';
 import { useContainer } from '../../result-page/mobx-store';
@@ -36,25 +35,23 @@ export interface SideMenuProps {
 }
 
 /**
- * 把传进来的projectList数据传唤成需要的数组类型
+ * 把传进来的projectList数据转换成需要的数组类型
  * @param projectList
  * @returns TreeNodeType[]
  */
-function generateProjectTree(projectList?: ProjectListByAreaType[]): TreeNodeType[] {
-  return projectList
-    ? projectList.map((v) => {
-        return {
-          title: v.name,
-          id: v.id,
-          key: Math.random().toString(),
-          engineerId: v.parentId,
-          parentId: v.parentId,
-          levelCategory: v.levelCategory,
-          propertys: v.propertys,
-          children: generateProjectTree(v.children),
-        };
-      })
-    : [];
+function generateProjectTree(projectList: ProjectListByAreaType[]): TreeNodeType[] {
+  return projectList.map((v) => {
+    return {
+      title: v.name,
+      id: v.id,
+      key: Math.random().toString(),
+      engineerId: v.parentId,
+      parentId: v.parentId,
+      levelCategory: v.levelCategory,
+      propertys: v.propertys,
+      children: v.children ? generateProjectTree(v.children) : [],
+    };
+  });
 }
 
 function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
@@ -65,6 +62,14 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
     status: item.propertys?.status,
     isExecutor: item.propertys?.isExecutor,
   };
+}
+
+function generatorProjectInfoList(list: TreeNodeType[]) {
+  return list.map((v: TreeNodeType) => generatorProjectInfoItem(v));
+}
+
+function getKeyList(list: TreeNodeType[]) {
+  return list.map((v: TreeNodeType) => v.key);
 }
 
 type keyType =
@@ -80,7 +85,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
-
   const [showDefaultSelectCity, setShowDefaultSelectCity] = useState<boolean>(true);
   const store = useContainer();
   const { vState } = store; //设置公共状态的id数据
@@ -88,105 +92,120 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const { className } = props;
   const location: any = useLocation();
   const { query } = location;
-
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
+  const activeStyle = (key: string) => (tabActiveKey === key ? '#ebedee' : '#fff');
 
-  const pushAllKeys = (data: TreeNodeType[]) => {
-    data.forEach((v) => {
-      if (v.children) {
-        expandedKeys.push(v.key);
-        pushAllKeys(v.children);
-      }
-    });
-  };
+  useEffect(() => {
+    setTreeData([]);
+    clearState();
+  }, [tabActiveKey]);
+
+  useEffect(() => {
+    clearState();
+  }, [filterCondition]);
+
+  useEffect(() => {
+    store.setProjectIdList(projectIdList);
+    if (projectIdList.length === 0) {
+      store.toggleObserveTrack(false);
+    }
+  }, [projectIdList]);
 
   const clearState = () => {
     setCheckedKeys([]);
     setProjectIdList([]);
   };
 
+  const initSideTree = (data: TreeNodeType[]) => {
+    /**
+     * 由于有从可视化界面点击的功能，所以在点过来以后，
+     * 做的任何改变树的操作都要避免自动展开可视化点击过来的城市
+     */
+    if (!isFilter && query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity) {
+      const key = getExpanedCityProjectKeys(data);
+      const { expanded, checked } = key;
+      setExpandedKeys(['-1', ...expanded]);
+      setCheckedKeys(getKeyList(checked));
+      setProjectIdList(generatorProjectInfoList(checked));
+    } else {
+      setExpandedKeys(['-1']);
+      clearState();
+    }
+  };
+
+  /**
+   * 从可视化界面跳转过来自动展开地区项目，并选中所有项目
+   * @param items
+   * @returns
+   */
   const getExpanedCityProjectKeys = (
     items: TreeNodeType[],
   ): { expanded: string[]; checked: TreeNodeType[] } => {
     const reg = new RegExp('^[0-9]*$');
     const expanded = new Array<string>();
     const checked = new Array<TreeNodeType>();
-    const dfs = (node: TreeNodeType, isSelect: boolean) => {
-      const { id, children, key, title, levelCategory } = node;
+    if (reg.test(query.selectCity)) {
+      items.forEach((v) => {
+        dfsById(v, false);
+      });
+    } else {
+      items.forEach((v) => {
+        dfsByName(v, false);
+      });
+    }
+    const dfsByName = (node: TreeNodeType, isSelect: boolean) => {
+      const { id, children, key, levelCategory } = node;
+      expanded.push(key);
+      if (id === query.selectCity) {
+        children?.forEach((v) => {
+          dfsByName(v, true);
+        });
 
-      if (reg.test(query.selectCity)) {
-        expanded.push(key);
-        if (id === query.selectCity) {
-          children?.forEach((v) => {
-            dfs(v, true);
-          });
+        return;
+      }
 
-          return;
-        }
+      if (isSelect) {
+        levelCategory === 6 ? checked.push(node) : expanded.push(key);
 
-        if (isSelect) {
-          levelCategory === 6 ? checked.push(node) : expanded.push(key);
-
-          children?.forEach((v) => {
-            dfs(v, isSelect);
-          });
-        } else {
-          children?.forEach((v) => {
-            dfs(v, isSelect);
-          });
-          expanded.pop();
-        }
+        children?.forEach((v) => {
+          dfsByName(v, isSelect);
+        });
       } else {
-        expanded.push(key);
-        if (title === query.selectCity) {
-          children?.forEach((v) => {
-            dfs(v, true);
-          });
-
-          return;
-        }
-
-        if (isSelect) {
-          levelCategory === 6 ? checked.push(node) : expanded.push(key);
-
-          children?.forEach((v) => {
-            dfs(v, isSelect);
-          });
-        } else {
-          children?.forEach((v) => {
-            dfs(v, isSelect);
-          });
-          expanded.pop();
-        }
+        children?.forEach((v) => {
+          dfsByName(v, isSelect);
+        });
+        expanded.pop();
       }
     };
-    items.forEach((v) => {
-      dfs(v, false);
-    });
+
+    const dfsById = (node: TreeNodeType, isSelect: boolean) => {
+      const { children, key, title, levelCategory } = node;
+      expanded.push(key);
+      if (title === query.selectCity) {
+        children?.forEach((v) => {
+          dfsById(v, true);
+        });
+
+        return;
+      }
+
+      if (isSelect) {
+        levelCategory === 6 ? checked.push(node) : expanded.push(key);
+
+        children?.forEach((v) => {
+          dfsById(v, isSelect);
+        });
+      } else {
+        children?.forEach((v) => {
+          dfsById(v, isSelect);
+        });
+        expanded.pop();
+      }
+    };
 
     return { expanded, checked };
   };
-
-  const initSideTree = (data: TreeNodeType[]) => {
-    // pushAllKeys(data);
-    // expandedKeys.push('-1');
-    // setExpandedKeys([...expandedKeys]);
-
-    if (!isFilter && query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity) {
-      const key = getExpanedCityProjectKeys(data);
-      const { expanded, checked } = key;
-      setExpandedKeys(['-1', ...expanded]);
-      setCheckedKeys(checked.map((v: TreeNodeType) => v.key));
-      setProjectIdList(checked.map((v: TreeNodeType) => generatorProjectInfoItem(v)));
-    } else {
-      setExpandedKeys(['-1']);
-      clearState();
-    }
-  };
-  useEffect(() => {
-    clearState();
-  }, [filterCondition]);
 
   const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(
     () =>
@@ -197,8 +216,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     {
       refreshDeps: [filterCondition, tabActiveKey],
       onSuccess: () => {
-        let data = generateProjectTree(treeListReponseData);
-        if (data.length) {
+        if (treeListReponseData?.length) {
+          let data = generateProjectTree(treeListReponseData);
           setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
           initSideTree(data);
         } else {
@@ -210,11 +229,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       },
     },
   );
-
-  /**
-   *
-   * @param expandedKeysValue
-   */
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
@@ -246,48 +260,24 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       .map((v: TreeNodeType) => generatorProjectInfoItem(v));
     //去重
     let res = _.unionBy(r, (item: ProjectList) => item.id);
-
     setProjectIdList(res);
-
     setCheckedKeys(checked);
   };
-
-  useEffect(() => {
-    // if (projectIdList.length === 1) {
-    //   feetchCommentCountRquest();
-    // }
-
-    store.setProjectIdList(projectIdList);
-
-    if (projectIdList.length === 0) {
-      store.toggleObserveTrack(false);
-    }
-  }, [projectIdList]);
 
   const onTabChange = (key: string) => {
     setTabActiveKey(key);
     setShowDefaultSelectCity(false);
   };
 
-  useEffect(() => {
-    setTreeData([]);
-    clearState();
-  }, [tabActiveKey]);
-
-  const activeStyle = '#ebedee';
-
   return (
     <>
       <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>
-        <div
-          style={{ backgroundColor: tabActiveKey === '1' ? activeStyle : '#fff' }}
-          className={styles.tabBar}
-        >
+        <div style={{ backgroundColor: activeStyle('1') }} className={styles.tabBar}>
           <div className={styles.tabBarItem} onClick={() => onTabChange('1')}>
             按地区
           </div>
           <div
-            style={{ backgroundColor: tabActiveKey === '2' ? activeStyle : '#fff' }}
+            style={{ backgroundColor: activeStyle('2') }}
             className={styles.tabBarItem}
             onClick={() => onTabChange('2')}
           >
@@ -298,7 +288,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         <Tabs
           renderTabBar={() => <></>}
           onChange={(tabActiveKey) => setTabActiveKey(tabActiveKey)}
-          style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle }}
+          style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle(tabActiveKey) }}
         >
           <TabPane style={{ overflow: 'hidden' }} key="1">
             {treeListDataLoading ? (
@@ -314,27 +304,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                 checkable
                 onExpand={onExpand}
                 defaultExpandAll
-                expandedKeys={expandedKeys}
-                onCheck={(checked, info) => onCheck(checked, info)}
-                checkedKeys={checkedKeys}
-                treeData={treeData}
-                className={classNames(styles.sideMenu)}
-              />
-            ) : null}
-          </TabPane>
-          <TabPane style={{ overflow: 'hidden' }} tab="按公司" key="2">
-            {treeListDataLoading ? (
-              <Spin
-                spinning={treeListDataLoading}
-                className={styles.loading}
-                tip="正在载入中..."
-              ></Spin>
-            ) : null}
-            {treeListReponseData ? (
-              <Tree
-                height={size.height ? size.height - 85 : 680}
-                checkable
-                onExpand={onExpand}
                 expandedKeys={expandedKeys}
                 onCheck={(checked, info) => onCheck(checked, info)}
                 checkedKeys={checkedKeys}
