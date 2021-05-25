@@ -462,6 +462,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
         deviceId: commentRquestBody?.deviceId ?? '-100',
         content: Comment,
       });
+    }else{
+      setActiveType(void 0);
     }
   };
 
