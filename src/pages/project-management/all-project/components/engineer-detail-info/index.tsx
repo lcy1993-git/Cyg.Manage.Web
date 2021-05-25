@@ -1,30 +1,30 @@
-import ReadonlyItem from "@/components/readonly-item";
-import { getEngineerInfo } from "@/services/project-management/all-project";
-import { useControllableValue, useRequest } from "ahooks";
-import { Modal } from "antd"
-import moment from "moment";
-import React, { Dispatch, SetStateAction, useEffect } from "react"
+import ReadonlyItem from '@/components/readonly-item';
+import { getEngineerInfo } from '@/services/project-management/all-project';
+import { useControllableValue, useRequest } from 'ahooks';
+import { Modal } from 'antd';
+import moment from 'moment';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 
 interface EngineerDetailInfoProps {
-    engineerId: string
-    visible: boolean
-    onChange: Dispatch<SetStateAction<boolean>>
+  engineerId: string;
+  visible: boolean;
+  onChange: Dispatch<SetStateAction<boolean>>;
 }
 
 const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
-    const [state, setState] = useControllableValue(props, { valuePropName: "visible" });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
 
-    const { engineerId } = props;
+  const { engineerId } = props;
 
-    const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
-        manual: true
-    })
+  const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
+    manual: true,
+  });
 
-    useEffect(() => {
-        if (state) {
-            run()
-        }
-    }, [state])
+  useEffect(() => {
+    if (state) {
+      run();
+    }
+  }, [state]);
 
     return (
         <Modal maskClosable={false} title="工程详情" width={680} destroyOnClose visible={state as boolean} footer={null} onCancel={() => setState(false)}>
@@ -163,4 +163,4 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
     )
 }
 
-export default EngineerDetailInfo
+export default EngineerDetailInfo;
