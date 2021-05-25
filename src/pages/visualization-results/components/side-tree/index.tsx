@@ -70,13 +70,13 @@ type keyType =
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<keyType>();
-  const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]); //筛选的id数据
+  const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [showDefaultSelectCity, setShowDefaultSelectCity] = useState<boolean>(true);
   const store = useContainer();
-  const { vState } = store; //设置公共状态的id数据
+  const { vState } = store;
   const { filterCondition, isFilter } = vState;
   const { className } = props;
   const location: any = useLocation();
@@ -221,24 +221,21 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     return { expanded, checked };
   };
 
-  const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(
-    () => whichTabToFetch(),
-    {
-      refreshDeps: [filterCondition, tabActiveKey],
-      onSuccess: () => {
-        if (treeListReponseData?.length) {
-          const data = generateProjectTree(treeListReponseData);
-          setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
-          initSideTree(data);
-        } else {
-          message.warning('无数据');
-        }
-      },
-      onError: () => {
-        message.error('获取数据失败');
-      },
+  const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(whichTabToFetch, {
+    refreshDeps: [filterCondition, tabActiveKey],
+    onSuccess: () => {
+      if (treeListReponseData?.length) {
+        const data = generateProjectTree(treeListReponseData);
+        setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
+        initSideTree(data);
+      } else {
+        message.warning('无数据');
+      }
     },
-  );
+    onError: () => {
+      message.error('获取数据失败');
+    },
+  });
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
@@ -255,9 +252,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
      node: {title: "全选", id: "-1000", key: "-1", children: Array(2), expanded: true, …}     
    */
   const onCheck = (checked: keyType, info: any) => {
-    let r = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
+    let temp = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
     //去重,这里考虑到按公司筛选的时候，不同的公司可以有同一个项目
-    let res = _.unionBy(generatorProjectInfoList(r), (item: ProjectList) => item.id);
+    let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
     setProjectIdList(res);
     setCheckedKeys(checked);
   };
@@ -284,7 +281,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
       <Tabs
         renderTabBar={() => <></>}
-        onChange={(tabActiveKey) => setTabActiveKey(tabActiveKey)}
         style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle(tabActiveKey) }}
       >
         <TabPane style={{ overflow: 'hidden' }} key="1">
