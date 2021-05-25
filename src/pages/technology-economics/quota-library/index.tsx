@@ -1,11 +1,13 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import ImpotLibModal from './components/import-modal';
+import { EditOutlined, PlusOutlined, DeleteOutlined, ImportOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message } from 'antd';
 import React, { useState, useReducer } from 'react';
 import DictionaryForm from './components/add-edit-form';
 import { modifyQuotaLibrary, createQuotaLibrary, delQuotaLibrary } from '@/services/technology-economics/quota-library';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import styles from './index.less';
 import moment from 'moment';
 import { isArray } from 'lodash';
@@ -90,6 +92,8 @@ const QuotaLibrary: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
   const [state, dispatch] = useReducer(reducer, ROUTE_LIST_STATE);
+
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [selectIds, setSelectIds] = useState<string[]>([]);
 
@@ -219,15 +223,21 @@ const QuotaLibrary: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
+        {
+          buttonJurisdictionArray?.includes('quotaLib-add') &&
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        }
+        <Button className="mr7" onClick={() => editEvent()}>
+          <ImportOutlined />
+          导入
         </Button>
         <Button className="mr7" onClick={() => editEvent()}>
           <EditOutlined />
           编辑
         </Button>
-
         <Popconfirm
           title="您确定要删除该条数据?"
           onConfirm={sureDeleteData}
@@ -299,6 +309,13 @@ const QuotaLibrary: React.FC = () => {
           <DictionaryForm type='edit' />
         </Form>
       </Modal>
+      <ImpotLibModal
+        libId={resourceLibId}
+        requestSource="resource"
+        visible={importMaterialVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportMaterialVisible}
+      />
     </PageCommonWrap>
   );
 };

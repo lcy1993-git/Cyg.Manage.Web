@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
+import qs from 'qs';
 // 定额库 - 列表查询
 export const getQuotaLibrary = (keyWord: string = "") => {
   return cyRequest(() =>
@@ -29,6 +30,40 @@ export const createQuotaLibrary = (params: CreateParams) => {
     request(`${baseUrl.tecEco}/QuotaLibraryManager/SaveCreate`, { method: 'POST', data: params })
   )
 }
+
+// 定额库 - 导入
+// export const importQuotaLibrary = (params: CreateParams) => {
+//   return cyRequest(() =>
+//     request(`${baseUrl.tecEco}/QuotaLibraryManager/Import`, { method: 'POST', data: params })
+//   )
+// }
+export const importQuotaLibrary = (
+  files: any[],
+  params: any,
+) => {
+  const formData = new FormData();
+  files.forEach((item) => {
+    formData.append('file', item);
+  });
+
+  const uploadUrl = `${baseUrl.tecEco}/QuotaLibraryManager/Import?${qs.stringify(params)}`;
+  return request(uploadUrl, {
+    method: 'POST',
+    data: formData,
+    requestType: 'form',
+  }).then((res) => {
+    const { code, isSuccess, message: msg } = res;
+    if (code === 6000) {
+      return Promise.resolve(res);
+    }
+    if (isSuccess) {
+      return Promise.resolve(res);
+    } else {
+      return Promise.reject(res);
+    }
+  });
+};
+
 //定额库 - 删除
 export const delQuotaLibrary = (id: string) => {
   return cyRequest(() =>
