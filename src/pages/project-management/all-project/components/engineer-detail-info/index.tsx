@@ -55,22 +55,18 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
                 <div className="flex1">
                     <ReadonlyItem label="协议库存">
                         {
-                            engineerInfo?.inventoryOverviewName
+                            engineerInfo?.inventoryOverviewName == '__' ? '无' : engineerInfo?.inventoryOverviewName
                         }
                     </ReadonlyItem>
                 </div>
             </div>
             <div className="flex">
                 <div className="flex1">
-                    <ReadonlyItem label="工程日期">
-                        {
-                            engineerInfo?.startTime ? moment(engineerInfo?.startTime).format("YYYY-MM-DD") : ""
-                        }
-                         至
-                        {
-                            engineerInfo?.endTime ? moment(engineerInfo?.endTime).format("YYYY-MM-DD") : ""
-                        }
-                    </ReadonlyItem>
+                        <ReadonlyItem label="利旧库存协议">
+                            {
+                                engineerInfo?.warehouseName == '_' ? '无' : engineerInfo?.warehouseName
+                            }
+                        </ReadonlyItem>
                 </div>
                 <div className="flex1">
                     <ReadonlyItem label="编制人">
@@ -128,26 +124,40 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
                     </ReadonlyItem>
                 </div>
             </div>
-            <div>
-                <ReadonlyItem label="区域">
-                    <span>
+            <div className='flex'>
+                <div className='flex1'>
+                    <ReadonlyItem label="区域">
+                        <span>
+                            {
+                                engineerInfo?.provinceName
+                            }
+                        </span>
                         {
-                            engineerInfo?.provinceName
+                            engineerInfo?.cityName &&
+                            <span>
+                                /{engineerInfo?.cityName}
+                            </span>
                         }
-                    </span>
-                    {
-                        engineerInfo?.cityName &&
-                        <span>
-                            /{engineerInfo?.cityName}
-                        </span>
-                    }
-                    {
-                        engineerInfo?.areaName &&
-                        <span>
-                            /{engineerInfo?.areaName}
-                        </span>
-                    }
-                </ReadonlyItem>
+                        {
+                            engineerInfo?.areaName &&
+                            <span>
+                                /{engineerInfo?.areaName}
+                            </span>
+                        }
+                    </ReadonlyItem>
+                </div>
+               
+                <div className="flex1">
+                    <ReadonlyItem label="工程日期">
+                        {
+                            engineerInfo?.startTime ? moment(engineerInfo?.startTime).format("YYYY-MM-DD") : ""
+                        }
+                         至
+                        {
+                            engineerInfo?.endTime ? moment(engineerInfo?.endTime).format("YYYY-MM-DD") : ""
+                        }
+                    </ReadonlyItem>
+                </div>
             </div>
         </Modal>
     )
