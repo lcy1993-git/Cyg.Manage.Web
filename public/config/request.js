@@ -34,6 +34,7 @@ const arrayHasIpBaseUrlArray = {
     webGis5: `${baseUrl}:8032/api`,
     geoserver: `${baseUrl}:8099`,
     ModulesDetails: `${baseUrl}:8020/api`,
+    design: `${baseUrl}:8014/api`,
 }
 
 const arrayHasNotBaseUrlArray = {
@@ -74,5 +75,5 @@ export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:80
 
 export const serverCodeArray = {hostName:`${thisHostName}`}
 
-export const version = "1.0.57";
+export const version = "1.0.58";
 
