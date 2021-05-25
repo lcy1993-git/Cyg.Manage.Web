@@ -38,10 +38,9 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
         () => {
           return Promise.resolve();
         },
-        (res) => {
-          message.error(res.message);
+        () => {
           return Promise.reject();
-        }
+        },
       )
       .finally(() => {
         changeFinishEvent?.();
