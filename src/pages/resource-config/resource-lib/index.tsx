@@ -1,8 +1,16 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, ImportOutlined, PlusOutlined, PoweroffOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin } from 'antd';
+import {
+  EditOutlined,
+  ImportOutlined,
+  PlusOutlined,
+  PoweroffOutlined,
+  QuestionCircleOutlined,
+  RedoOutlined,
+  StopOutlined,
+} from '@ant-design/icons';
+import { Input, Button, Modal, Form, message, Spin, Tooltip } from 'antd';
 import React, { useMemo, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -104,6 +112,24 @@ const ResourceLib: React.FC = () => {
       dataIndex: 'remark',
       index: 'remark',
       title: '备注',
+      //   width: 200,
+    },
+    {
+      dataIndex: 'remark',
+      index: 'remark',
+      title: () => {
+        return (
+          <span>
+            禁用状态
+            <Tooltip
+              title="“已禁用”表示当前资源库不可被新立项工程调用，已立项并调用该资源库的工程不受影响。"
+              placement="right"
+            >
+              <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
+            </Tooltip>
+          </span>
+        );
+      },
       //   width: 200,
     },
   ];
@@ -240,8 +266,20 @@ const ResourceLib: React.FC = () => {
 
         {buttonJurisdictionArray?.includes('lib-restart') && (
           <Button className="mr7" onClick={() => restartLib()}>
-            <PoweroffOutlined />
+            <RedoOutlined />
             重启资源服务
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('lib-restart') && (
+          <Button className="mr7" onClick={() => restartLib()}>
+            <PoweroffOutlined />
+            启用
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('lib-restart') && (
+          <Button className="mr7" onClick={() => restartLib()}>
+            <StopOutlined />
+            禁用
           </Button>
         )}
       </div>

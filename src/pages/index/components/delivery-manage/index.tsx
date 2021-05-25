@@ -1,6 +1,6 @@
 import BarChart from '@/components/bar-chart';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Select, DatePicker } from 'antd';
+import { Select, DatePicker, Button } from 'antd';
 import React, { useState } from 'react';
 import ChartBox from '../chart-box';
 import ChartTab from '../chart-tab';
@@ -15,12 +15,13 @@ import { useMemo } from 'react';
 const { RangePicker } = DatePicker;
 
 interface DeliveyManageProps {
-  componentProps?: string[]
+  componentProps?: string[];
   currentAreaInfo: AreaInfo;
 }
 
 const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
-  const { componentProps = ["person", "department", "company"], currentAreaInfo } = props;
+  const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props;
+  const [keyValue, setKeyValue] = useState<Date>();
 
   const [activeKey, setActiveKey] = useState<string>();
 
@@ -45,10 +46,10 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   const showTabData = useMemo(() => {
     const filterData = tabData.filter((item) => componentProps.includes(item.id));
     if (filterData && filterData.length > 0) {
-      setActiveKey(filterData[0].id)
+      setActiveKey(filterData[0].id);
     }
-    return filterData
-  }, [JSON.stringify(componentProps)])
+    return filterData;
+  }, [JSON.stringify(componentProps)]);
 
   const type = useMemo(() => {
     const dataIndex = tabData.findIndex((item) => item.id === activeKey);
@@ -58,10 +59,18 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
     return undefined;
   }, [activeKey]);
 
-  const { data: consignsData } = useRequest(() => getConsigns({type: type!,areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
-    ready: !!type,
-    refreshDeps: [type, currentAreaInfo],
-  });
+  const { data: consignsData } = useRequest(
+    () =>
+      getConsigns({
+        type: type!,
+        areaCode: currentAreaInfo.areaId,
+        areaType: currentAreaInfo.areaLevel,
+      }),
+    {
+      ready: !!type,
+      refreshDeps: [type, currentAreaInfo],
+    },
+  );
 
   const option = useMemo(() => {
     if (consignsData) {
@@ -176,8 +185,12 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
         // ],
       };
     }
-    return undefined
-  }, [JSON.stringify(consignsData)])
+    return undefined;
+  }, [JSON.stringify(consignsData)]);
+
+  const reset = () => {
+    setKeyValue(new Date());
+  };
 
   return (
     <ChartBox title="交付管理">
@@ -186,7 +199,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
           <div className={styles.deliverySelect}>
             <Select bordered={false} defaultValue="number" suffixIcon={<CaretDownOutlined />}>
               <Option value="number">项目数量</Option>
-              <Option value="designFee">设计费</Option>
+              {/* <Option value="designFee">设计费</Option> */}
             </Select>
           </div>
           <div className={styles.deliveryTab}>
@@ -198,17 +211,27 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
           </div>
         </div>
         <div className={styles.deliveryChart}>
-          {
-            type && option &&
-            <BarChart options={option} />
-          }
+          {type && option && <BarChart options={option} />}
         </div>
-        {/* <div className={styles.deliveryTime}>
+        <div className={styles.deliveryTime}>
           <span className={styles.deliveryChooseTimeLabel}>选择日期</span>
           <div className={styles.delivertChooseTime}>
-            <RangePicker allowClear={false} bordered={false} />
+            <RangePicker
+              allowClear={false}
+              value={keyValue}
+              onChange={(value, date) => {
+                console.log(value, date);
+                setKeyValue(value);
+              }}
+              bordered={false}
+              renderExtraFooter={() => [
+                <Button key="clearDate" onClick={() => reset()}>
+                  清除日期
+                </Button>,
+              ]}
+            />
           </div>
-        </div> */}
+        </div>
       </div>
     </ChartBox>
   );

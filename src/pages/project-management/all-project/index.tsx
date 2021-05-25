@@ -15,7 +15,7 @@ import {
   checkCanArrange,
   deleteProject,
   // getAllotUsers,
-  getExternalArrangeStep,
+  // getExternalArrangeStep,
   getProjectInfo,
   getProjectTableStatistics,
   noAuditKnot,
@@ -51,7 +51,6 @@ import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
 import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
-import { delay } from '@/utils/utils';
 
 const { Search } = Input;
 
@@ -116,7 +115,7 @@ const ProjectManagement: React.FC = () => {
 
   const [ifCanEdit, setIfCanEdit] = useState<any>([]);
 
-  const [notBeginUsers, setNotBeginUsers] = useState<any>();
+  // const [notBeginUsers, setNotBeginUsers] = useState<any>();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -129,9 +128,9 @@ const ProjectManagement: React.FC = () => {
     manual: true,
   });
 
-  const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
-    manual: true,
-  });
+  // const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
+  //   manual: true,
+  // });
 
   const {
     projectCategory,
@@ -246,31 +245,31 @@ const ProjectManagement: React.FC = () => {
       message.error('请选择修改安排的项目！');
       return;
     }
-    // if (tableSelectData[0]?.projectInfo?.status[0]?.status === 7) {
-    //   message.error('当前处于设计完成，不可修改安排！');
-    //   return;
-    // }
-    // if (
-    //   (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-    //     tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
-    //   (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-    //     tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
-    // ) {
-    //   setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+    if (tableSelectData[0]?.projectInfo?.status[0]?.status === 7) {
+      message.error('当前处于设计完成，不可修改安排！');
+      return;
+    }
+    if (
+      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
+      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
+    ) {
+      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
 
-    //   setEditExternalArrangeModal(true);
-    //   return;
-    // }
-    // if (
-    //   tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-    //   tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
-    // ) {
-    //   setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
-    //   setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
+      setEditExternalArrangeModal(true);
+      return;
+    }
+    if (
+      tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+      tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
+    ) {
+      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+      setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
 
-    //   setExternalArrangeModal(true);
-    //   return;
-    // }
+      setExternalArrangeModal(true);
+      return;
+    }
     const resData = await canEditArrange(projectIds);
 
     const { allotCompanyGroup = '' } = resData;
@@ -692,6 +691,10 @@ const ProjectManagement: React.FC = () => {
                   <UrlSelect
                     valueKey="value"
                     titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     defaultData={projectCategory}
                     className="widthAll"
                     value={category}

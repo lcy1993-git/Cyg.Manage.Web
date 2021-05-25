@@ -19,7 +19,7 @@ const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
     <div className={`${styles.pageCommonWrap} ${className}`}>
       <div className={`${styles.pageCommonWrapContent} ${noPaddingClass}`}>{props.children}</div>
       <div className={styles.explainContent}>
-        <span className={styles.explainContentImportant}>工程设计平台</span>
+        <span className={styles.explainContentImportant}>©工程设计平台</span>
         <span className={styles.explainContentCopyTip}>版权所有</span>
         <span className={styles.explainHref} onClick={() => toExplain()}>
           《工程云设计平台管理端使用说明书》
