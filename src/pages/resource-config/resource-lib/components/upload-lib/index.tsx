@@ -45,6 +45,9 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
             setState(false);
             setImportTipsVisible(true);
             return Promise.resolve();
+          } else if (res.code === 200) {
+            message.success('导入成功');
+            return Promise.resolve();
           }
           message.error(res.message);
           return Promise.reject();
