@@ -116,55 +116,59 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             />
           </CyFormItem>
 
-          <Divider>设计校审</Divider>
-
-          <CyFormItem label="校对" name="designAssessUser1">
-            <TreeSelect
-              key="designAssessUser1"
-              style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-          <CyFormItem label="校核" name="designAssessUser2">
-            <TreeSelect
-              key="designAssessUser2"
-              style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-          <CyFormItem label="审核" name="designAssessUser3">
-            <TreeSelect
-              key="designAssessUser3"
-              style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-          <CyFormItem label="审定" name="designAssessUser4">
-            <TreeSelect
-              key="designAssessUser4"
-              style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
+          {/* <Divider>设计校审</Divider> */}
+          <div style={{ display: 'none' }}>
+            <CyFormItem label="校对" name="designAssessUser1">
+              <TreeSelect
+                key="designAssessUser1"
+                style={{ width: '100%' }}
+                treeData={auditData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+            <CyFormItem label="校核" name="designAssessUser2">
+              <TreeSelect
+                key="designAssessUser2"
+                style={{ width: '100%' }}
+                treeData={auditData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+            <CyFormItem label="审核" name="designAssessUser3">
+              <TreeSelect
+                key="designAssessUser3"
+                style={{ width: '100%' }}
+                treeData={auditData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+            <CyFormItem label="审定" name="designAssessUser4">
+              <TreeSelect
+                key="designAssessUser4"
+                style={{ width: '100%' }}
+                treeData={auditData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+          </div>
         </>
       )}
       {checkedValue === '1' && (
         <>
           <CyFormItem label="单位">
             <div>
-              <Search placeholder="请输入管理员用户名或手机号码" onSearch={(value) => searchEvent(value)} />
+              <Search
+                placeholder="请输入管理员用户名或手机号码"
+                onSearch={(value) => searchEvent(value)}
+              />
             </div>
           </CyFormItem>
           <ReadonlyItem label="单位名称" align="left">
