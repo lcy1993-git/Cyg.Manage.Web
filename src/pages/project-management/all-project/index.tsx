@@ -549,7 +549,8 @@ const ProjectManagement: React.FC = () => {
     }
     await deleteProject(projectIds);
     message.success('删除成功');
-    search();
+    // search();
+    refresh();
   };
 
   const arrangeFinishEvent = () => {
@@ -946,7 +947,7 @@ const ProjectManagement: React.FC = () => {
           <div className={styles.projectManagementTableContent}>
             <EnigneerTable
               ref={tableRef}
-              afterSearch={search}
+              afterSearch={refresh}
               delayRefresh={delayRefresh}
               onSelect={tableSelectEvent}
               extractParams={{
