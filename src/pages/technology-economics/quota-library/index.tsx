@@ -90,9 +90,9 @@ const QuotaLibrary: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
+  const [importVisible, setImportVisible] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, ROUTE_LIST_STATE);
-
+  const [libId, setLibId] = useState<string>("");
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [selectIds, setSelectIds] = useState<string[]>([]);
@@ -220,6 +220,14 @@ const QuotaLibrary: React.FC = () => {
     });
   };
 
+  const importLineStreeSagEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    setImportVisible(true);
+  };
+
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -230,7 +238,7 @@ const QuotaLibrary: React.FC = () => {
             添加
           </Button>
         }
-        <Button className="mr7" onClick={() => editEvent()}>
+        <Button className="mr7" onClick={() => importLineStreeSagEvent()}>
           <ImportOutlined />
           导入
         </Button>
@@ -259,6 +267,10 @@ const QuotaLibrary: React.FC = () => {
   const tableSelectEvent = (data: any) => {
     setTableSelectRow(data);
     setSelectIds(data.map((item: any) => item.id));
+  };
+
+  const uploadFinishEvent = () => {
+    refresh();
   };
 
   return (
@@ -310,11 +322,10 @@ const QuotaLibrary: React.FC = () => {
         </Form>
       </Modal>
       <ImpotLibModal
-        libId={resourceLibId}
-        requestSource="resource"
-        visible={importMaterialVisible}
+        libId={'1357588635508068352'}
+        visible={importVisible}
         changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setImportMaterialVisible}
+        onChange={setImportVisible}
       />
     </PageCommonWrap>
   );

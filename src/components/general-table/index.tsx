@@ -53,6 +53,8 @@ interface GeneralTableProps {
   postType?: 'body' | 'query';
 
   getTableRequestData?: (data: TableRequestResult) => void;
+
+  hasFooter?: boolean;
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -80,6 +82,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     defaultPageSize = 10,
     postType = 'body',
     getTableRequestData,
+    hasFooter = true,
     ...rest
   } = props;
 
@@ -331,7 +334,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           {...((rest as unknown) as P)}
         />
       </div>
-      {!noPaging && (
+      {!noPaging && hasFooter && (
         <div className={styles.cyGeneralTablePaging}>
           <div className={styles.cyGeneralTablePagingLeft}>
             <span>显示第</span>

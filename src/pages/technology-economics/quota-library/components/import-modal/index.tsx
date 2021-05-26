@@ -33,9 +33,10 @@ const ImpotLibModal: React.FC<SaveImportLibProps> = (props) => {
       .validateFields()
       .then((values) => {
         const { file } = values;
-
+        console.log(values);
+        
         setRequestLoading(true);
-        return importQuotaLibrary(file, { libId });
+        return importQuotaLibrary(file, libId);
       })
 
       .then((res) => {
@@ -85,7 +86,7 @@ const ImpotLibModal: React.FC<SaveImportLibProps> = (props) => {
         <Form form={form} preserve={false}>
           <CyFormItem label="导入" name="file" required>
             <FileUpload
-              accept=".zip"
+              accept=".xls,.xlsx"
               trigger={triggerUploadFile}
               maxCount={1}
               uploadFileBtn
