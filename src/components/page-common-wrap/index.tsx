@@ -11,7 +11,7 @@ const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
   const { noPadding = false, className } = props;
 
   const noPaddingClass = noPadding ? styles.noPadding : '';
-
+  
   const toExplain = () => {
     window.open(explainUrl);
   };
