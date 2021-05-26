@@ -21,4 +21,10 @@ export default {
   //     message: '请填写1~99999以内的整数',
   //   },
   // ],
+  total: [
+    {
+      pattern: /^[0-9]\d*$/,
+      message: '请输入0或正整数',
+    },
+  ],
 };
