@@ -99,6 +99,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       getTableRequestData?.(data!);
     },
   });
+console.log(data);
 
   const tableResultData = useMemo(() => {
     if (!noPaging) {
@@ -213,7 +214,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       requestSource,
       postType,
     });
-  }, [pageSize, currentPage]);
+  }, [pageSize, currentPage, JSON.stringify(extractParams)]);
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法

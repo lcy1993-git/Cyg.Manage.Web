@@ -11,7 +11,7 @@ interface Props {
  * @param  null, API同DatePicker
  * @returns JSX.Element
  */
-const DatePickerForm: React.FC<Props & DatePickerProps> = ({value="", onChange, ...rest}) => {
+const DatePickerForm: React.FC<Props & DatePickerProps> = ({value= moment(new Date()), onChange, ...rest}) => {
   const momentValue = moment(value);
 
   const handleDate = (v: Moment | null, m: string) => {

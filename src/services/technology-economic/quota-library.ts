@@ -3,7 +3,7 @@ import { cyRequest, baseUrl } from '../common';
 // 定额库 - 列表查询
 export const getQuotaLibrary = (keyWord: string = "") => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/QuotaLibraryManager/GetPageList`, { method: 'POST', data: {pageIndex: 1, pageSize: 10000, keyWord}})
+    request(`${baseUrl.tecEco}/QuotaLibraryManager/GetPageList`, { method: 'POST', data: {pageIndex: 1, pageSize: 3000, keyWord}})
   )
 }
 // 定额库 - 编辑
@@ -135,3 +135,9 @@ export const getTreeQuotaLibraryCatalogue = (libId: string) => {
 }
 
 
+// 定额项 - 获取定额项列表
+export const getProjectList = (catalogueId: string, keyWord ="") => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaManager/GetList`, { method: 'POST', data: { catalogueId, keyWord } }),
+  );
+}

@@ -3,14 +3,6 @@
   width: 100%;
   height: 100%;
   background-color: @bg-primary-color;
-  :global{
-    .ant-table-cell {
-      padding: 4.5px 4px 4.5px 7px;
-    }
-    .ant-table-row-selected > td {
-      background-color: #e4f5eb !important;
-    }
-  }
   .wrap {
     display: flex;
     justify-content: space-between;
@@ -23,9 +15,6 @@
       .selectWrap {
         margin: 20px 0;
       }
-      .fileTree {
-        overflow-x: auto;
-      }
     }
     .wrapRigntContent {
       flex: 1;
@@ -37,14 +26,9 @@
         flex-direction: column;
         padding: 0 20px;
         .heightEmpty{
-
+          flex: 1;
           min-height: 10px;
           background-color: #f5f5f5;
-        }
-        .listTable {
-          // flex: 1;
-          // overflow: hidden;
-          // max-height: calc(100% - 284px);
         }
       }
     }

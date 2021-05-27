@@ -11,8 +11,12 @@ import React, { useState, useMemo, useCallback, useReducer } from 'react';
 import { useRequest } from 'ahooks';
 import {
   getDictionaryDetail,
+  addDictionaryItem,
+  updateDictionaryItemStatus,
+  updateDictionaryItem,
+  deleteDictionaryItem,
 } from '@/services/system-config/dictyionary-manage';
-
+import { isArray } from 'lodash';
 import styles from './index.less';
 const { Search } = Input;
 
@@ -46,8 +50,7 @@ const columns = [
     dataIndex: 'id',
     index: 'id',
     title: '编号',
-    width: 180,
-    ellipsis: true
+    width: 120,
     // render: (text: string, record: any) => {
     //   return (
     //     <span
@@ -63,34 +66,28 @@ const columns = [
     dataIndex: 'name',
     index: 'name',
     title: '名称',
-    width: 460,
-    ellipsis: true
+    width: 360,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '类型',
     width: 180,
-    ellipsis: true
   },
   {
     dataIndex: 'releaseDate',
     index: 'releaseDate',
     title: '发行日期',
     width: 80,
-    ellipsis: true
   },
   {
     dataIndex: 'remark',
     index: 'remark',
     title: '描述',
-    ellipsis: true
   },
 ];
 
-const QuotaLibrary: React.FC = ({catalogueId, scrolly}) => {
-  console.log(catalogueId);
-  
+const QuotaLibrary: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -182,17 +179,12 @@ const QuotaLibrary: React.FC = ({catalogueId, scrolly}) => {
         // buttonRightContentSlot={tableElement}
         needCommonButton={false}
         columns={columns}
-        noPaging={true}
-        requestSource="tecEco"
-        url="/QuotaManager/GetList"
+        url="/Dictionary/GetPagedList"
         // tableTitle="定额库管理"
         getSelectData={tableSelectEvent}
         type="radio"
-        scroll={{y: scrolly}}
         extractParams={{
           keyWord: searchKeyWord,
-          catalogueId: "1392054920689373184"
-          // catalogueId: "1392054920689373188"
         }}
       />
     </>

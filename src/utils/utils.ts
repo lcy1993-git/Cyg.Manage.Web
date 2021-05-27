@@ -122,6 +122,25 @@ export const formatDataTree = (data: TreeData[]) => {
   return parents;
 }
 
+/**
+ * 格式化数据
+ * 将树形结构数据转为Tree.DirectoryTree组件可识别数据
+ * @param data 树形结构数组
+ * @returns 带有key,title,isLeaf的树形结构数组
+ */
+export const fileTreeFormData = (data: TreeData[]) => {
+  const res = data;
+  data.forEach((i) => {
+    i.title = i.name;
+    i.key = i.id;
+    if(i.children && i.children.length > 0) {
+      fileTreeFormData(i.children)
+    }else{
+      i.isLeaf = true;
+    }
+  })
+  return res;
+}
 
 export const delay = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));

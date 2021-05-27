@@ -12,6 +12,16 @@ const QuotaInfomation = Loadable({
   loading: Loading,
   delay: 150,
 });
+const MaterialLibrary = Loadable({
+  loader: () => import('@/pages/technology-economic/material-library'),
+  loading: Loading,
+  delay: 150,
+});
+const MaterialInfomation = Loadable({
+  loader: () => import('@/pages/technology-economic/material-infomation'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -23,5 +33,15 @@ export default [
     title: '查看定额库',
     path: '/technology-economic/quota-infomation',
     component: <QuotaInfomation />,
+  },
+  {
+    title: '材机库',
+    path: '/technology-economic/material-library',
+    component: <MaterialLibrary />,
+  },
+  {
+    title: '查看材机库',
+    path: '/technology-economic/material-infomation',
+    component: <MaterialInfomation />,
   },
 ];
