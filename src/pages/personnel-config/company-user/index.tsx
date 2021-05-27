@@ -75,7 +75,6 @@ const CompanyUser: React.FC = () => {
     return;
   }, [accreditData]);
 
-
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const rightButton = () => {
@@ -234,36 +233,37 @@ const CompanyUser: React.FC = () => {
       title: '用户名',
       dataIndex: 'userName',
       index: 'userName',
-      width: 120,
+      width: '7%',
     },
     {
       title: '昵称',
       dataIndex: 'nickName',
       index: 'nickName',
-      width: 140,
+      width: '7%',
     },
     {
       title: '真实姓名',
       dataIndex: 'name',
       index: 'name',
-      width: 140,
+      width: '6%',
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       index: 'phone',
-      width: 160,
+      width: '8%',
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       index: 'email',
-      width: 150,
+      width: '10%',
     },
     {
       title: '部组',
       dataIndex: 'comapnyGroups',
       index: 'comapnyGroups',
+      width:'8%',
       render: (text: any, record: any) => {
         const { comapnyGroups } = record;
         return (comapnyGroups ?? []).map((item: any) => {
@@ -279,7 +279,7 @@ const CompanyUser: React.FC = () => {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      width: 150,
+      width: '8%',
       render: (text: any, record: any) => {
         return (
           <>
@@ -305,7 +305,6 @@ const CompanyUser: React.FC = () => {
       title: '授权端口',
       dataIndex: 'authorizeClient',
       index: 'authorizeClient',
-      // width: 240,
       render: (text: any, record: any) => {
         const { authorizeClientTexts } = record;
 
@@ -323,13 +322,13 @@ const CompanyUser: React.FC = () => {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
       index: 'lastLoginIp',
-      width: 150,
+      width: '8%',
     },
     {
       title: '最后登录日期',
       dataIndex: 'lastLoginDate',
       index: 'lastLoginDate',
-      width: 150,
+      width: '7.66%',
       render: (text: any, record: any) => {
         return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
       },

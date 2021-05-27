@@ -22,7 +22,6 @@ interface ImportInventoryProps {
 const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [requestLoading, setRequestLoading] = useState<boolean>(false);
-  const [resourceLibId, setResourceLibId] = useState<string>('');
   const [province, setProvince] = useState<string>('');
   const [versionName, setVersionName] = useState<string>('');
   const [
@@ -42,13 +41,14 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
 
         return newUploadLineStressSag(
           file,
-          { province, resourceLibId, versionName, inventoryName },
+          { province, versionName, inventoryName },
           requestSource,
           '/Inventory/SaveImport',
         );
       })
       .then(
         (res) => {
+          message.success('导入成功');
           return Promise.resolve();
         },
         (res) => {
@@ -67,110 +67,81 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       });
   };
 
+  const closeEvent = () => {
+    setState(false);
+    changeFinishEvent?.();
+  };
+
   return (
     <Modal
       maskClosable={false}
       destroyOnClose
-      width="780px"
-      title="导入"
+      width="600px"
+      title="新建"
       visible={state as boolean}
       footer={[
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => setState(false)} loading={requestLoading}>
+        <Button key="save" type="primary" onClick={() => closeEvent()} loading={requestLoading}>
           保存
         </Button>,
       ]}
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <Row gutter={24}>
-          <Col>
-            <CyFormItem
-              labelWidth={100}
-              align="right"
-              label="协议库存名称"
-              name="invName"
-              required
-              rules={rule.invName}
-            >
-              <Input
-                style={{ width: '220px' }}
-                placeholder="请输入协议库存名称"
-                onChange={(e) => setInventoryName(e.target.value)}
-              />
-            </CyFormItem>
-          </Col>
-          <Col>
-            <CyFormItem
-              labelWidth={100}
-              align="right"
-              label="版本"
-              name="version"
-              required
-              rules={rule.version}
-            >
-              <Input
-                style={{ width: '220px' }}
-                placeholder="请输入协议库存版本"
-                onChange={(e) => setVersionName(e.target.value)}
-              />
-            </CyFormItem>
-          </Col>
-        </Row>
-        <Row gutter={24}>
-          <Col>
-            <CyFormItem
-              labelWidth={100}
-              align="right"
-              label="区域"
-              name="province"
-              required
-              rules={rule.province}
-            >
-              <UrlSelect
-                style={{ width: '220px' }}
-                allowClear
-                showSearch
-                url="/Area/GetList?pId=-1"
-                titleKey="text"
-                valueKey="value"
-                placeholder="请选择"
-                onChange={(value: any) => setProvince(value)}
-              />
-            </CyFormItem>
-          </Col>
-          <Col>
-            <CyFormItem
-              labelWidth={100}
-              align="right"
-              label="资源库"
-              name="reousourceLib"
-              required
-              rules={rule.lib}
-            >
-              <UrlSelect
-                style={{ width: '220px' }}
-                allowClear
-                showSearch
-                requestSource="resource"
-                url="/ResourceLib/GetList"
-                titleKey="libName"
-                valueKey="id"
-                placeholder="请选择"
-                onChange={(value: any) => setResourceLibId(value)}
-              />
-            </CyFormItem>
-          </Col>
-        </Row>
+        <CyFormItem
+          labelWidth={100}
+          align="right"
+          label="协议库存名称"
+          name="invName"
+          required
+          rules={rule.invName}
+        >
+          <Input
+            placeholder="请输入协议库存名称"
+            onChange={(e) => setInventoryName(e.target.value)}
+          />
+        </CyFormItem>
+
+        <CyFormItem
+          labelWidth={100}
+          align="right"
+          label="版本"
+          name="version"
+          required
+          rules={rule.version}
+        >
+          <Input
+            placeholder="请输入协议库存版本"
+            onChange={(e) => setVersionName(e.target.value)}
+          />
+        </CyFormItem>
+
+        <CyFormItem
+          labelWidth={100}
+          align="right"
+          label="区域"
+          name="province"
+          required
+          rules={rule.province}
+        >
+          <UrlSelect
+            allowClear
+            showSearch
+            url="/Area/GetList?pId=-1"
+            titleKey="text"
+            valueKey="value"
+            placeholder="请选择"
+            onChange={(value: any) => setProvince(value)}
+          />
+        </CyFormItem>
 
         <CyFormItem
           labelWidth={100}
           align="right"
           label="导入"
           name="file"
-          style={{ width: '565px' }}
           required
           rules={rule.file}
         >
@@ -179,6 +150,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
             trigger={triggerUploadFile}
             uploadFileFn={saveInventoryEvent}
             maxCount={1}
+            accept=".xlsx"
           />
         </CyFormItem>
       </Form>

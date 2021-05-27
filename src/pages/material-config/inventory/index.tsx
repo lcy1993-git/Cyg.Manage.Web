@@ -312,7 +312,7 @@ const Inventroy: React.FC = () => {
         {buttonJurisdictionArray?.includes('inventory-import') && (
           <Button className="mr7" onClick={() => importInventoryEvent()}>
             <ImportOutlined />
-            导入
+            新建
           </Button>
         )}
 
