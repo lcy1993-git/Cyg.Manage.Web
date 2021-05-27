@@ -37,7 +37,7 @@ const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = (props) => {
         <div className={styles.projectProcessInfo}>
             <Timeline>
                 <Timeline.Item color="#0E7B3B">
-                    <ProjectProcessItem time={projectInfo.createdOn} title={`立项(${projectInfo.createdCompanyName}-${projectInfo.engineerCreatedByName})`} />
+                    <ProjectProcessItem time={projectInfo.createdOn} title={`立项(${projectInfo.createdCompanyName}-${projectInfo?.engineerCreatedByName ? projectInfo.engineerCreatedByName : '无'})`} />
                 </Timeline.Item>
                 {
                     allotsElement
