@@ -488,6 +488,7 @@ const getLayerGroupByName = (name: string, layerGroups: LayerGroup[]): any => {
   return layerGroups.find((item: LayerGroup) => item.get('name') === name);
 };
 
+var extent:any;
 // 根据项目进行定位
 const relocateMap = (
   projectId: string = '',
@@ -495,7 +496,13 @@ const relocateMap = (
   view: any,
   setView: any,
   map: any,
+  refresh: boolean = true
 ) => {
+  if(extent && !refresh) {
+    view.fit(extent, map!.getSize());
+    setView(view);
+    return
+  }
   let features: any = [];
   let source = new VectorSource();
   layerGroups.forEach((layerGroup: LayerGroup) => {
@@ -518,7 +525,8 @@ const relocateMap = (
 
   if (features.length > 0) {
     source.addFeatures(features);
-    view.fit(source.getExtent(), map!.getSize());
+    extent = source.getExtent()
+    view.fit(extent, map!.getSize());
     setView(view);
   }
 };

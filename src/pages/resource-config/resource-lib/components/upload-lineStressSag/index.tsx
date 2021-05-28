@@ -56,6 +56,9 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
         }
         message.error(res.message);
         return Promise.reject();
+      },(res) => {
+        message.error(res.message);
+        return Promise.reject();
       })
       .finally(() => {
         changeFinishEvent?.();

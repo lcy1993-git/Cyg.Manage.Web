@@ -462,6 +462,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
         deviceId: commentRquestBody?.deviceId ?? '-100',
         content: Comment,
       });
+    }else{
+      setActiveType(void 0);
     }
   };
 
@@ -511,6 +513,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           visible={mediaVisiable}
           width="96%"
           onCancel={() => setMediaVisiable(false)}
+          onOk={() => setMediaVisiable(false)}
         >
           <div className={styles.mediaIconWrapLeft}>
             <DoubleLeftOutlined

@@ -41,8 +41,9 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
           message.success('导入成功');
           return Promise.resolve();
         },
-        () => {
-          return Promise.reject('');
+        (res) => {
+          message.error(res.message);
+          return Promise.reject();
         },
       )
       .finally(() => {

@@ -42,8 +42,9 @@ const SaveImportElectrical: React.FC<SaveImportElectricalProps> = (props) => {
           message.success('导入成功');
           return Promise.resolve();
         },
-        () => {
-          return Promise.reject('导入失败');
+        (res) => {
+          message.error(res.message);
+          return Promise.reject();
         },
       )
       .finally(() => {
