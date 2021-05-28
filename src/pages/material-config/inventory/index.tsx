@@ -78,6 +78,7 @@ const Inventroy: React.FC = () => {
             valueKey="value"
             value={inventoryId}
             placeholder="请选择"
+            allowClear
             onChange={(value: any) => searchByInv(value)}
           />
         </TableSearch>
@@ -93,7 +94,7 @@ const Inventroy: React.FC = () => {
       }
     });
 
-    setNowSelectedInv(currentVal[0].title);
+    setNowSelectedInv(currentVal[0]?.title);
 
     setInventoryId(value);
     if (tableRef && tableRef.current) {
@@ -123,181 +124,187 @@ const Inventroy: React.FC = () => {
   };
 
   const columns = [
-    {
+        {
       dataIndex: 'version',
       index: 'version',
       title: '版本号',
       width: 180,
     },
-    {
-      dataIndex: 'versionName',
-      index: 'versionName',
-      title: '版本名称',
-      width: 180,
-    },
-    {
-      dataIndex: 'supplier',
-      index: 'supplier',
-      title: '供应商',
-      width: 400,
-    },
-    {
-      dataIndex: 'isEnd0702',
-      index: 'isEnd0702',
-      title: '是否终止0702',
-      width: 220,
-    },
-    {
-      dataIndex: 'specialClass',
-      index: 'specialClass',
-      title: '特殊类',
-      width: 140,
-    },
-    {
-      dataIndex: 'presentation',
-      index: 'presentation',
-      title: '提报要求',
-      width: 180,
-    },
-    {
-      dataIndex: 'specificationsId',
-      index: 'specificationsId',
-      title: '技术规范ID',
-      width: 180,
-    },
+    // {
+    //   dataIndex: 'version',
+    //   index: 'version',
+    //   title: '版本号',
+    //   width: 180,
+    // },
+    // {
+    //   dataIndex: 'versionName',
+    //   index: 'versionName',
+    //   title: '版本名称',
+    //   width: 180,
+    // },
+    // {
+    //   dataIndex: 'supplier',
+    //   index: 'supplier',
+    //   title: '供应商',
+    //   width: 400,
+    // },
+    // {
+    //   dataIndex: 'isEnd0702',
+    //   index: 'isEnd0702',
+    //   title: '是否终止0702',
+    //   width: 220,
+    // },
+    // {
+    //   dataIndex: 'specialClass',
+    //   index: 'specialClass',
+    //   title: '特殊类',
+    //   width: 140,
+    // },
+    // {
+    //   dataIndex: 'presentation',
+    //   index: 'presentation',
+    //   title: '提报要求',
+    //   width: 180,
+    // },
+    // {
+    //   dataIndex: 'specificationsId',
+    //   index: 'specificationsId',
+    //   title: '技术规范ID',
+    //   width: 180,
+    // },
 
-    {
-      dataIndex: 'materialCode',
-      index: 'materialCode',
-      title: '物料编号',
-      width: 180,
-    },
-    {
-      dataIndex: 'materialName',
-      index: 'materialName',
-      title: '物料描述',
-      width: 500,
-    },
-    {
-      dataIndex: 'orderPrice',
-      index: 'orderPrice',
-      title: '订单净价',
-      width: 180,
-    },
-    {
-      dataIndex: 'priceUnit',
-      index: 'priceUnit',
-      title: '价格单位',
-      width: 160,
-    },
-    {
-      dataIndex: 'area',
-      index: 'area',
-      title: '区域',
-      width: 160,
-    },
-    {
-      dataIndex: 'demandCompany',
-      index: 'demandCompany',
-      title: '需求公司',
-      width: 480,
-    },
-    {
-      dataIndex: 'targetNumber',
-      index: 'targetNumber',
-      title: '目标数量',
-      width: 120,
-    },
-    {
-      dataIndex: 'measurementUnit',
-      index: 'measurementUnit',
-      title: '计量单位',
-      width: 160,
-    },
-    {
-      dataIndex: 'taxCode',
-      index: 'taxCode',
-      title: '税码',
-      width: 120,
-    },
-    {
-      dataIndex: 'documentDateText',
-      index: 'documentDateText',
-      title: '凭证日期',
-      width: 260,
-    },
-    {
-      dataIndex: 'effectiveStartDateText',
-      index: 'effectiveStartDateText',
-      title: '有效起始日期',
-      width: 260,
-    },
-    {
-      dataIndex: 'effectiveEndDateText',
-      index: 'effectiveEndDateText',
-      title: '有效截止日期',
-      width: 260,
-    },
-    {
-      dataIndex: 'biddingBatchNum',
-      index: 'biddingBatchNum',
-      title: '招标采购批次编号',
-      width: 220,
-    },
-    {
-      dataIndex: 'gradeNum',
-      index: 'gradeNum',
-      title: '标号',
-      width: 160,
-    },
-    {
-      dataIndex: 'packageNum',
-      index: 'packageNum',
-      title: '包号',
-      width: 160,
-    },
-    {
-      dataIndex: 'lawContractNum',
-      index: 'lawContractNum',
-      title: '经法合同号',
-      width: 200,
-    },
-    {
-      dataIndex: 'contractIdentification',
-      index: 'contractIdentification',
-      title: '合同标识(电子商务)',
-      width: 260,
-    },
-    {
-      dataIndex: 'specialRemark',
-      index: 'specialRemark',
-      title: '特殊物料备注',
-      width: 200,
-    },
-    {
-      dataIndex: 'category',
-      index: 'category',
-      title: '大类描述',
-      width: 160,
-    },
-    {
-      dataIndex: 'division',
-      index: 'division',
-      title: '中类描述',
-      width: 160,
-    },
-    {
-      dataIndex: 'type',
-      index: 'type',
-      title: '小类描述',
-      width: 160,
-    },
-    {
-      dataIndex: 'group',
-      index: 'group',
-      title: '物料组',
-      width: 160,
-    },
+    // {
+    //   dataIndex: 'materialCode',
+    //   index: 'materialCode',
+    //   title: '物料编号',
+    //   width: 180,
+    // },
+    // {
+    //   dataIndex: 'materialName',
+    //   index: 'materialName',
+    //   title: '物料描述',
+    //   width: 500,
+    // },
+    // {
+    //   dataIndex: 'orderPrice',
+    //   index: 'orderPrice',
+    //   title: '订单净价',
+    //   width: 180,
+    // },
+    // {
+    //   dataIndex: 'priceUnit',
+    //   index: 'priceUnit',
+    //   title: '价格单位',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'area',
+    //   index: 'area',
+    //   title: '区域',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'demandCompany',
+    //   index: 'demandCompany',
+    //   title: '需求公司',
+    //   width: 480,
+    // },
+    // {
+    //   dataIndex: 'targetNumber',
+    //   index: 'targetNumber',
+    //   title: '目标数量',
+    //   width: 120,
+    // },
+    // {
+    //   dataIndex: 'measurementUnit',
+    //   index: 'measurementUnit',
+    //   title: '计量单位',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'taxCode',
+    //   index: 'taxCode',
+    //   title: '税码',
+    //   width: 120,
+    // },
+    // {
+    //   dataIndex: 'documentDateText',
+    //   index: 'documentDateText',
+    //   title: '凭证日期',
+    //   width: 260,
+    // },
+    // {
+    //   dataIndex: 'effectiveStartDateText',
+    //   index: 'effectiveStartDateText',
+    //   title: '有效起始日期',
+    //   width: 260,
+    // },
+    // {
+    //   dataIndex: 'effectiveEndDateText',
+    //   index: 'effectiveEndDateText',
+    //   title: '有效截止日期',
+    //   width: 260,
+    // },
+    // {
+    //   dataIndex: 'biddingBatchNum',
+    //   index: 'biddingBatchNum',
+    //   title: '招标采购批次编号',
+    //   width: 220,
+    // },
+    // {
+    //   dataIndex: 'gradeNum',
+    //   index: 'gradeNum',
+    //   title: '标号',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'packageNum',
+    //   index: 'packageNum',
+    //   title: '包号',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'lawContractNum',
+    //   index: 'lawContractNum',
+    //   title: '经法合同号',
+    //   width: 200,
+    // },
+    // {
+    //   dataIndex: 'contractIdentification',
+    //   index: 'contractIdentification',
+    //   title: '合同标识(电子商务)',
+    //   width: 260,
+    // },
+    // {
+    //   dataIndex: 'specialRemark',
+    //   index: 'specialRemark',
+    //   title: '特殊物料备注',
+    //   width: 200,
+    // },
+    // {
+    //   dataIndex: 'category',
+    //   index: 'category',
+    //   title: '大类描述',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'division',
+    //   index: 'division',
+    //   title: '中类描述',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'type',
+    //   index: 'type',
+    //   title: '小类描述',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'group',
+    //   index: 'group',
+    //   title: '物料组',
+    //   width: 160,
+    // },
   ];
 
   const titleSlotElement = () => {
@@ -372,7 +379,7 @@ const Inventroy: React.FC = () => {
           needCommonButton={true}
           columns={columns}
           requestSource="resource"
-          url="/Inventory/GetPageList"
+          url="/Inventory/GetInventoryOverviewPageList"
           tableTitle="协议库存列表"
           type="radio"
           extractParams={{
