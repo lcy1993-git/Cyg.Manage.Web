@@ -14,9 +14,9 @@ interface AddDeliveryStatistic {
 }
 
 const deliveryComponentPropsArray = [
-  { code: 'person', name: '项目交付数量/设计费(员工)' },
-  { code: 'department', name: '项目交付数量/设计费(部组)' },
-  { code: 'company', name: '项目交付数量/设计费(公司)' },
+  { code: 'person', name: '项目交付数量(员工)' },
+  { code: 'department', name: '项目交付数量(部组)' },
+  { code: 'company', name: '项目交付数量(公司)' },
 ];
 
 const AddDeliveryStatisticModal: React.FC<AddDeliveryStatistic> = (props) => {

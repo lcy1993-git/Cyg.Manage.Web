@@ -1,7 +1,7 @@
 import BarChart from '@/components/bar-chart';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Select, DatePicker, Button } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChartBox from '../chart-box';
 import ChartTab from '../chart-tab';
 import * as echarts from 'echarts/lib/echarts';
@@ -12,8 +12,7 @@ import { useRequest } from 'ahooks';
 import { getConsigns, AreaInfo } from '@/services/index';
 import { useMemo } from 'react';
 import { Moment } from 'moment';
-import { string } from '@umijs/deps/compiled/yargs';
-import { EventValue } from 'rc-picker/lib/interface';
+import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 
@@ -24,7 +23,8 @@ interface DeliveyManageProps {
 
 const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props;
-  const [keyValue, setKeyValue] = useState<[EventValue<Moment>, EventValue<Moment>] | null>();
+  const [startTime, setStartTime] = useState<Moment | string | null>(null);
+  const [endTime, setEndTime] = useState<Moment | null | string>(null);
 
   const [activeKey, setActiveKey] = useState<string>();
 
@@ -62,14 +62,14 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
     return undefined;
   }, [activeKey]);
 
-  const { data: consignsData } = useRequest(
+  const { data: consignsData, run } = useRequest(
     () =>
       getConsigns({
         type: type!,
         areaCode: currentAreaInfo.areaId,
         areaType: currentAreaInfo.areaLevel,
-        // startTime:
-        // endTime:
+        startTime: startTime,
+        endTime: endTime,
       }),
     {
       ready: !!type,
@@ -194,10 +194,13 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   }, [JSON.stringify(consignsData)]);
 
   const reset = () => {
-    setKeyValue(null);
+    setStartTime(null);
+    setEndTime(null);
   };
 
-  console.log(keyValue, '2');
+  useEffect(() => {
+    run();
+  }, [JSON.stringify(startTime), JSON.stringify(endTime)]);
 
   return (
     <ChartBox title="交付管理">
@@ -226,11 +229,14 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
             <RangePicker
               format="YYYY-MM-DD"
               allowClear={false}
-              value={keyValue}
-              onChange={(value, date) => {
-                console.log(value, date);
-                setKeyValue(value)
-                console.log(keyValue, '1');
+              value={[startTime ? moment(startTime) : null, endTime ? moment(endTime) : null]}
+              onChange={(dates, dateStrings) => {
+                console.log(dates, dateStrings);
+                setStartTime(dateStrings[0]);
+                setEndTime(dateStrings[1]);
+                // setKeyValue(dates);
+                console.log(startTime, '1');
+                console.log(endTime, '1');
               }}
               bordered={false}
               renderExtraFooter={() => [
