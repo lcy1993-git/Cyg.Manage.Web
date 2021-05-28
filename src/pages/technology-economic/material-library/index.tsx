@@ -1,11 +1,11 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { UnorderedListOutlined, PlusOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Switch, message } from 'antd';
+import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import React, { useState } from 'react';
 import DictionaryForm from './components/add-edit-form';
-import { createQuotaLibrary } from '@/services/technology-economics/quota-library';
+import { getCatalogueList } from '@/services/technology-economics/quota-library';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import styles from './index.less';
 import moment from 'moment';
@@ -86,26 +86,6 @@ const columns = [
   },
 ];
 
-interface State {
-  routeList: RouteListItem[];
-}
-
-const reducer = (state: State, action: any) => {
-  switch (action.code) {
-    case 'add':
-      return { routeList: [...state.routeList, { id: action.id, name: action.name }] };
-    case 'edit':
-      const routeList = [...state.routeList];
-      const currentDataIndex = routeList.findIndex((item) => item.id === action.id);
-      if (currentDataIndex !== routeList.length) {
-        routeList.splice(currentDataIndex + 1, routeList.length);
-      }
-      return { routeList: routeList };
-    default:
-      throw new Error('传入值不对');
-  }
-};
-
 const QuotaLibrary: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
@@ -176,6 +156,17 @@ const QuotaLibrary: React.FC = () => {
     });
   };
 
+  const sureDeleteData = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+
+    // await deleteCableChannelItem({ libId, ids });
+    refresh();
+    message.success('删除成功');
+  };
+
   const importLineStreeSagEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择要操作的行');
@@ -194,9 +185,23 @@ const QuotaLibrary: React.FC = () => {
           </Button>
         }
         {
+          !buttonJurisdictionArray?.includes('quotaLib-del') &&
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
+        }
+        {
           !buttonJurisdictionArray?.includes('quotaLib-info') &&
           <Button className="mr7" onClick={() => importLineStreeSagEvent()}>
-          <UnorderedListOutlined />
+            <EyeOutlined />
             查看详情
           </Button>
         }

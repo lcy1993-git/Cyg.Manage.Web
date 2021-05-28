@@ -22,7 +22,6 @@ const ChapterInfo = () => {
         width="80%"
         onCancel={() => setModalVisible(false)}
       >
-        
       </Modal>
     </div>
   )

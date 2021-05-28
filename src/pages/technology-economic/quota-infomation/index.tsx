@@ -1,10 +1,10 @@
 import {useEffect, useMemo, useState, useRef} from 'react';
 import PageCommonWrap from "@/components/page-common-wrap";
-import ChapterInfo from '../components/chapter-info';
+import ChapterInfo from './components/chapter-info';
 import ListTable from './components/list-table';
 import InfoTabs from './components/info-tabs';
-import { Tabs, Tree, Select, Empty } from 'antd';
-import { getQuotaLibrary, getCatalogueList, getProjectList } from '@/services/technology-economic/quota-library';
+import { Tabs, Tree, Select } from 'antd';
+import { getQuotaLibrary, getCatalogueList } from '@/services/technology-economic/quota-library';
 import styles from './index.less'
 import { useMount, useRequest, useSize } from 'ahooks';
 import {formatDataTree, fileTreeFormData, TreeData} from '@/utils/utils';
@@ -147,7 +147,7 @@ const QuotaProject = () => {
               <TabPane tab="&nbsp;&nbsp;资源列表" key="1">
                 <div className={styles.tabPaneBox}>
                   <div className={styles.listTable}>
-                    <ListTable catalogueId={catalogueId} scrolly={refWrap ? refWrap?.height-612 : 0}/>
+                    <ListTable catalogueId={catalogueId} scrolly={refWrap ? refWrap?.height-531 : 0}/>
                   </div>
                   <div className={styles.heightEmpty} />
                   <InfoTabs />
