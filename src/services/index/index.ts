@@ -7,8 +7,8 @@ interface ToDoRequestResult {
 }
 
 interface HomeStatisticCommonParams {
-  areaCode?: string
-  areaType?: string
+  areaCode?: string;
+  areaType?: string;
 }
 
 export interface AreaInfo {
@@ -20,7 +20,10 @@ export type Type = 'pie' | 'bar';
 
 export const getToDoStatistics = (params: HomeStatisticCommonParams) => {
   return cyRequest<ToDoRequestResult>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectPending`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectPending`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
@@ -32,54 +35,78 @@ interface RequestResult {
 // 建设类型
 export const getProjectBuliding = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectConstructTypes`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectConstructTypes`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
 export const getProjectStatus = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectStatus`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectStatus`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
 export const getProjectClassify = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectCategorys`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectCategorys`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
 export const getProjectCategory = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectClassifications`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectClassifications`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
 export const getProjectStage = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectStages`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectStages`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
 export const getProjectLevel = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectKvLevels`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectKvLevels`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
 export const getProjectNatures = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectNatures`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectNatures`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
 export const getBuildType = (params: HomeStatisticCommonParams) => {
   return cyRequest<RequestResult[]>(() =>
-    request(`${baseUrl.project}/HomeStatistic/GetProjectConstructTypes`, { method: 'POST', data: {...params}}),
+    request(`${baseUrl.project}/HomeStatistic/GetProjectConstructTypes`, {
+      method: 'POST',
+      data: { ...params },
+    }),
   );
 };
 
 interface GetConsignsParams extends HomeStatisticCommonParams {
-  type: string
+  type: string;
 }
 
 export const getConsigns = (params: GetConsignsParams) => {
@@ -92,7 +119,7 @@ export const getConsigns = (params: GetConsignsParams) => {
 };
 
 interface GetBurdens extends HomeStatisticCommonParams {
-  type: string
+  type: string;
 }
 
 export const getBurdens = (params: GetBurdens) => {
@@ -105,7 +132,7 @@ export const getBurdens = (params: GetBurdens) => {
 };
 
 export interface MapStatisticsData {
-  areaCode: string
+  areaCode: string;
   area: string;
   engineerQuantity: number;
   projectQuantity: number;
@@ -121,7 +148,14 @@ export const getMapStatisticsData = (params: HomeStatisticCommonParams) => {
 };
 
 // 获取甘特图的数据
-export const getProjectGanttData = ({ pageIndex = 1, pageSize = 1000, areaType = "1",sort = {}, keyWord = '', ...params}) => {
+export const getProjectGanttData = ({
+  pageIndex = 1,
+  pageSize = 1000,
+  areaType = '1',
+  sort = {},
+  keyWord = '',
+  ...params
+}) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetGanttChart`, {
       method: 'POST',
@@ -131,7 +165,7 @@ export const getProjectGanttData = ({ pageIndex = 1, pageSize = 1000, areaType =
         pageSize,
         sort,
         keyWord,
-        ...params
+        ...params,
       },
     }),
   );

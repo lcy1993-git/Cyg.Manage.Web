@@ -42,6 +42,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
       extraParams: { areaId: areaId },
       requestSource: 'resource',
       method: 'post',
+      postType:'query'
     },
     { ready: !!areaId, refreshDeps: [areaId] },
   );

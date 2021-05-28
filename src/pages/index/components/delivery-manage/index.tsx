@@ -11,6 +11,9 @@ import styles from './index.less';
 import { useRequest } from 'ahooks';
 import { getConsigns, AreaInfo } from '@/services/index';
 import { useMemo } from 'react';
+import { Moment } from 'moment';
+import { string } from '@umijs/deps/compiled/yargs';
+import { EventValue } from 'rc-picker/lib/interface';
 
 const { RangePicker } = DatePicker;
 
@@ -21,7 +24,7 @@ interface DeliveyManageProps {
 
 const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props;
-  const [keyValue, setKeyValue] = useState<Date>();
+  const [keyValue, setKeyValue] = useState<[EventValue<Moment>, EventValue<Moment>] | null>();
 
   const [activeKey, setActiveKey] = useState<string>();
 
@@ -65,6 +68,8 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
         type: type!,
         areaCode: currentAreaInfo.areaId,
         areaType: currentAreaInfo.areaLevel,
+        // startTime:
+        // endTime:
       }),
     {
       ready: !!type,
@@ -189,8 +194,10 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   }, [JSON.stringify(consignsData)]);
 
   const reset = () => {
-    setKeyValue(new Date());
+    setKeyValue(null);
   };
+
+  console.log(keyValue, '2');
 
   return (
     <ChartBox title="交付管理">
@@ -217,11 +224,13 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
           <span className={styles.deliveryChooseTimeLabel}>选择日期</span>
           <div className={styles.delivertChooseTime}>
             <RangePicker
+              format="YYYY-MM-DD"
               allowClear={false}
               value={keyValue}
               onChange={(value, date) => {
                 console.log(value, date);
-                setKeyValue(value);
+                setKeyValue(value)
+                console.log(keyValue, '1');
               }}
               bordered={false}
               renderExtraFooter={() => [
