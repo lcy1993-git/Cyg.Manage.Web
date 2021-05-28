@@ -51,7 +51,7 @@ function getMappingTagsDictionary() {
       },
       mappingTags2: {
         "code": "名称",
-        "type": "类型",
+        "pole_type_code": "类型",
         "rod": "杆梢径(mm)",
         "height": "高度(m)",
         "segment": "分段方式",

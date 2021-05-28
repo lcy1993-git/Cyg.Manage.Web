@@ -39,15 +39,20 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
         (res) => {
           if (res && res.code === 6000) {
             setFalseData(res.message);
-            message.success('导入成功');
 
             setImportTipsVisible(true);
+            return Promise.resolve();
+          } else if (res.code === 200) {
+            message.success('导入成功');
             return Promise.resolve();
           }
           message.error(res.message);
           return Promise.reject();
         },
-        (res) => {},
+        (res) => {
+          message.error(res.message);
+          return Promise.reject();
+        },
       )
       .finally(() => {
         changeFinishEvent?.();
