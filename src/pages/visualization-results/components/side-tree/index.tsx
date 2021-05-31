@@ -21,7 +21,7 @@ export interface TreeNodeType {
   title: string;
   key: string;
   id: string;
-  levelCategory?: number;
+  levelCategory: number;
   engineerId?: string;
   parentId?: string;
   propertys?: Properties;
@@ -112,10 +112,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const isSelectCity =
     !isFilter && query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity;
 
-  const isProjectLevel = (level?: number) => level === 6;
+  const isProjectLevel = (level: number | TreeNodeType): boolean =>
+    typeof level === 'number' ? level === 6 : level.levelCategory === 6;
 
-  const generatorProjectInfoList = (list: TreeNodeType[]) =>
-    list.map((v: TreeNodeType) => generatorProjectInfoItem(v));
+  const generatorProjectInfoList = (list: TreeNodeType[]) => list.map(generatorProjectInfoItem);
 
   /**
    *
@@ -221,22 +221,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     return { expanded, checked };
   };
 
-  const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(whichTabToFetch, {
-    refreshDeps: [filterCondition, tabActiveKey],
-    onSuccess: () => {
-      if (treeListReponseData?.length) {
-        const data = generateProjectTree(treeListReponseData);
-        setTreeData([{ title: '全选', id: '-1000', key: '-1', children: data }]);
-        initSideTree(data);
-      } else {
-        message.warning('无数据');
-      }
-    },
-    onError: () => {
-      message.error('获取数据失败');
-    },
-  });
-
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
   };
@@ -263,6 +247,24 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setTabActiveKey(key);
     setShowDefaultSelectCity(false);
   };
+
+  const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(whichTabToFetch, {
+    refreshDeps: [filterCondition, tabActiveKey],
+    onSuccess: () => {
+      if (treeListReponseData?.length) {
+        const data = generateProjectTree(treeListReponseData);
+        setTreeData([
+          { title: '全选', id: '-1000', key: '-1', children: data, levelCategory: -100 },
+        ]);
+        initSideTree(data);
+      } else {
+        message.warning('无数据');
+      }
+    },
+    onError: () => {
+      message.error('获取数据失败');
+    },
+  });
 
   return (
     <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>

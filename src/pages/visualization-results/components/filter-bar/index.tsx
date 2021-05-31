@@ -146,6 +146,7 @@ const FilterBar: FC = observer(() => {
               maxTagCount={0}
               maxTagTextLength={2}
               allowClear
+              mode="multiple"
               value={statuss}
               onChange={(values: number[]) => setStatuss(values)}
               style={{ width: '100%' }}

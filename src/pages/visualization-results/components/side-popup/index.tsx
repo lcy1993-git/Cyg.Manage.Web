@@ -15,7 +15,7 @@ import { useRequest } from 'ahooks';
 import { observer } from 'mobx-react-lite';
 import { baseUrl } from '@/services/common';
 import moment from 'moment';
-
+import { EnumItem, EnumValue, findEnumKeyByType, findEnumKeyByCN } from '../../utils/loadEnum';
 export interface TableDataType {
   // propertyName: string;
   // data: string;
@@ -184,16 +184,6 @@ const LAYER_TYPE: { [propertyName: string]: string } = {
   design: '设计',
   dismantle: '拆除',
 };
-
-interface EnumItem {
-  key: string;
-  value: EnumValue[];
-}
-
-interface EnumValue {
-  value: number;
-  text: string;
-}
 
 export interface CommentListItemDataType {
   author: string;
@@ -372,25 +362,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
      * 这里取出来的是英文，所以要根据中英文转换一下
      */
     if (feature) {
-      //这里从localstrage里面取数据，这里不好乱动因为设计别人的模 (:)
-      const localData = localStorage.getItem('loadEnumsData');
-
-      const loadEnumsData =
-        localData && localData !== 'undefined'
-          ? JSON.parse(localStorage.getItem('loadEnumsData')!)
-          : [];
-
-      /**
-       *
-       * @param chEnum 中文枚举值
-       * @param type 本地枚举值的类型 可以打开控制台看一下localstorage里面存的内容
-       * @returns
-       */
-      const findEnumKey = (chEnum: string, type: string) =>
-        loadEnumsData
-          .find((enumItem: EnumItem) => enumItem.key === type)
-          .value.find((value: EnumValue) => value.text === chEnum).value;
-
       const { id_ } = feature;
       const { project_id: projectId } = feature.values_;
       /**
@@ -409,8 +380,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
        */
 
       let body = {
-        layerType: findEnumKey(LAYER_TYPE[deviceAndLayer[0]], 'ProjectCommentLayer'),
-        deviceType: findEnumKey(
+        layerType: findEnumKeyByCN(LAYER_TYPE[deviceAndLayer[0]], 'ProjectCommentLayer'),
+        deviceType: findEnumKeyByCN(
           DEVICE_TYPE[deviceAndLayer.slice(1).join('_')],
           'ProjectCommentDevice',
         ),
