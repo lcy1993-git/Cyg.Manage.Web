@@ -1,22 +1,22 @@
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
-import { Input, Button } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Input } from 'antd';
 import React, { useRef, useState, useEffect } from 'react';
 import EnumSelect from '@/components/enum-select';
 import styles from './index.less';
 import { CreateMethod } from '@/services/material-config/inventory';
 
-import UrlSelect from '@/components/url-select';
 interface CheckMappingParams {
   inventoryOverviewId: string;
-  currentInv: object[];
+  invName: string;
+  mappingId: string;
 }
 
 const { Search } = Input;
 
 const CheckMapping: React.FC<CheckMappingParams> = (props) => {
-  const { inventoryOverviewId, currentInv } = props;
+  const { inventoryOverviewId, invName, mappingId } = props;
+  console.log(inventoryOverviewId, invName, mappingId);
 
   const tableRef = useRef<HTMLDivElement>(null);
   const [createMethod, setCreateMethod] = useState<string>('');
@@ -142,37 +142,17 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
         className={styles.inventorySelect}
         marginLeft="20px"
         label="当前协议库存"
-        width="400px"
+        width="300px"
       >
-        <UrlSelect
-          disabled
-          value={inventoryOverviewId}
-          allowClear
-          showSearch
-          defaultData={currentInv}
-          titleKey="title"
-          valueKey="value"
-          placeholder="请选择"
-        />
+        <Input disabled value={invName} />
       </TableSearch>
     </div>
   );
-
-  const tableRightSlot = (
-    <>
-      <Button className="mr7" type="primary" onClick={() => editMapping()}>
-        <EditOutlined />
-        编辑映射
-      </Button>
-    </>
-  );
-  const editMapping = () => {};
 
   return (
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => tableLeftSlot}
-        // buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/Inventory/GetMaterialInventoryMappingList"
         columns={columns}
@@ -183,6 +163,7 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
           inventoryOverviewId: inventoryOverviewId,
           keyWord: searchKeyWord,
           howToCreate: createMethod,
+          mappingId: mappingId,
         }}
       />
     </div>

@@ -300,9 +300,21 @@ const Inventroy: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'version',
-      index: 'version',
-      title: '版本号',
+      dataIndex: 'id',
+      index: 'id',
+      title: '编号',
+      width: 180,
+    },
+    {
+      dataIndex: 'name',
+      index: 'name',
+      title: '名称',
+      width: 180,
+    },
+    {
+      dataIndex: 'tableName',
+      index: 'tableName',
+      title: '协议库存表名',
       width: 180,
     },
     {
@@ -312,21 +324,9 @@ const Inventroy: React.FC = () => {
       width: 180,
     },
     {
-      dataIndex: 'version',
-      index: 'version',
-      title: '版本号',
-      width: 180,
-    },
-    {
-      dataIndex: 'version',
-      index: 'version',
-      title: '版本号',
-      width: 180,
-    },
-    {
-      dataIndex: 'version',
-      index: 'version',
-      title: '版本号',
+      dataIndex: 'remark',
+      index: 'remark',
+      title: '备注',
       width: 180,
     },
   ];
@@ -421,7 +421,8 @@ const Inventroy: React.FC = () => {
 
       <Modal
         maskClosable={false}
-        width="98%"
+        width="80%"
+        title="关联映射管理"
         bodyStyle={{ height: 'auto', overflowY: 'auto' }}
         visible={hasMapModalVisible}
         footer=""

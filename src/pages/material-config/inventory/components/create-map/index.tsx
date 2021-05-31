@@ -211,7 +211,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
       <TableSearch width="208px">
         <Search
           value={searchKeyWord}
-          placeholder="物料编号/名称"
+          placeholder="资源库名称"
           enterButton
           onSearch={() => resourceTableSearch()}
           onChange={(e) => setSearchKeyWord(e.target.value)}

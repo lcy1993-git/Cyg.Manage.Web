@@ -1,58 +1,87 @@
 import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useState, useMemo } from 'react';
+import { Input, Button, Modal, message, Spin } from 'antd';
+import React, { useState } from 'react';
 import styles from './index.less';
 
-import { useRequest } from 'ahooks';
-import { getInventoryOverviewList } from '@/services/material-config/inventory';
+import { deleteResourceInventoryMap } from '@/services/material-config/inventory';
 // import UrlSelect from '@/components/url-select';
 
 import { ImportOutlined } from '@ant-design/icons';
 
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-
-const { Search } = Input;
-
-// interface HasMapModalParams {
-//   inventoryId: string;
-//   versionNo?: string;
-//   invName?: string;
-// }
+import MapLibModal from '../map-lib-modal';
+import CheckMapping from '../check-mapping-form';
 
 const HasMapModal: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
-  const [companyWord, setCompanyWord] = useState<string>('');
+  // const [companyWord, setCompanyWord] = useState<string>('');
+  const [mapLibModalVisible, setMapLibModalVisible] = useState<boolean>(false);
+  const [mappingListModalVisible, setMappingListModalVisible] = useState<boolean>(false);
+  const [editMapListModalVisible, setEditMapListModalVisible] = useState<boolean>(false);
 
-  //   const { inventoryId, invName, versionNo } = props;
+  const [mappingId, setMappingId] = useState<string>('');
+  const [inventoryId, setInventoryId] = useState<string>('');
+  const [inventoryName, setInventoryName] = useState<string>('');
 
-//   const searchComponent = () => {
-//     return (
-//       <div className={styles.searchArea}>
-//         <TableSearch label="搜索" width="230px">
-//           <Search
-//             value={searchKeyWord}
-//             onChange={(e) => setSearchKeyWord(e.target.value)}
-//             onSearch={() => search()}
-//             enterButton
-//             placeholder="物料编号/物料描述"
-//           />
-//         </TableSearch>
-//         <TableSearch marginLeft="20px" label="" width="230px">
-//           <Search
-//             value={companyWord}
-//             onChange={(e) => setCompanyWord(e.target.value)}
-//             onSearch={() => search()}
-//             enterButton
-//             placeholder="需求公司"
-//           />
-//         </TableSearch>
-//       </div>
-//     );
-//   };
+  const tableElement = () => {
+    return (
+      <div className={styles.buttonArea}>
+        {/* {buttonJurisdictionArray?.includes('inventory-import') && ( */}
+        <Button className="mr7" onClick={() => createMapEvent()}>
+          <ImportOutlined />
+          新建映射
+        </Button>
+        {/* )} */}
+        {/* {buttonJurisdictionArray?.includes('inventory-check-mapping') && ( */}
+        <Button className="mr7" onClick={() => deleteMapEvent()}>
+          删除映射
+        </Button>
+        {/* )} */}
+
+        {/* {buttonJurisdictionArray?.includes('inventory-create-mapping') && ( */}
+        <Button className="mr7" onClick={() => editMapEvent()}>
+          编辑映射
+        </Button>
+        {/* )} */}
+        {/* {buttonJurisdictionArray?.includes('inventory-create-mapping') && ( */}
+        <Button className="mr7" onClick={() => checkMapEvent()}>
+          查看映射
+        </Button>
+        {/* )} */}
+      </div>
+    );
+  };
+
+  //映射操作
+  const createMapEvent = () => {
+    setMapLibModalVisible(true);
+  };
+
+  const deleteMapEvent = async () => {
+    if (tableSelectRows && tableSelectRows.length === 0) {
+      message.warning('请选择要删除的映射');
+      return;
+    }
+    await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id });
+    message.success('删除映射成功');
+    setTableSelectRow([]);
+    refresh();
+  };
+
+  const editMapEvent = () => {};
+
+  const checkMapEvent = () => {
+    if (tableSelectRows && tableSelectRows.length === 0) {
+      message.warning('请选择要查看的映射');
+      return;
+    }
+    setInventoryId(tableSelectRows[0].inventoryOverviewId);
+    setInventoryName(tableSelectRows[0].name);
+    setMappingId(tableSelectRows[0].id);
+    setMappingListModalVisible(true);
+  };
 
   // 列表刷新
   const refresh = () => {
@@ -72,58 +101,70 @@ const HasMapModal: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'version',
-      index: 'version',
-      title: '版本号',
+      dataIndex: 'resourceLibName',
+      index: 'resourceLibName',
+      title: '资源库名称',
       width: 180,
     },
     {
-      dataIndex: 'versionName',
-      index: 'versionName',
-      title: '版本名称',
+      dataIndex: 'name',
+      index: 'name',
+      title: '协议库名称',
       width: 180,
     },
     {
       dataIndex: 'supplier',
       index: 'supplier',
-      title: '供应商',
+      title: '状态',
       width: 400,
     },
     {
-      dataIndex: 'isEnd0702',
-      index: 'isEnd0702',
-      title: '是否终止0702',
-      width: 220,
-    },
-    {
-      dataIndex: 'specialClass',
-      index: 'specialClass',
-      title: '特殊类',
-      width: 140,
-    },
-    {
-      dataIndex: 'presentation',
-      index: 'presentation',
-      title: '提报要求',
+      dataIndex: 'remark',
+      index: 'remark',
+      title: '备注',
       width: 180,
     },
   ];
 
   return (
-    <GeneralTable
-      ref={tableRef}
-    //   buttonLeftContentSlot={searchComponent}
-      needCommonButton={true}
-      columns={columns}
-      requestSource="resource"
-      url="/Inventory/GetMappingInventoryOverviewPageList"
-      getSelectData={(data) => setTableSelectRow(data)}
-      tableTitle="已映射列表"
-      type="radio"
-      extractParams={{
-        keyWord: searchKeyWord,
-      }}
-    />
+    <>
+      <GeneralTable
+        ref={tableRef}
+        needCommonButton={true}
+        buttonRightContentSlot={tableElement}
+        columns={columns}
+        requestSource="resource"
+        url="/Inventory/GetMappingInventoryOverviewPageList"
+        getSelectData={(data) => setTableSelectRow(data)}
+        tableTitle="已映射列表"
+        type="radio"
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
+      />
+
+      <MapLibModal
+        visible={mapLibModalVisible}
+        onChange={setMapLibModalVisible}
+        changeFinishEvent={refresh}
+      />
+
+      <Modal
+        bodyStyle={{ height: 820, overflowY: 'auto' }}
+        footer=""
+        centered
+        width="96%"
+        title="查看映射关系"
+        visible={mappingListModalVisible}
+        onCancel={() => setMappingListModalVisible(false)}
+      >
+        <CheckMapping
+          mappingId={mappingId}
+          inventoryOverviewId={inventoryId}
+          invName={inventoryName}
+        />
+      </Modal>
+    </>
   );
 };
 

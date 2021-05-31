@@ -27,66 +27,33 @@ export const getInventoryOverviewList = () => {
   );
 };
 
-//获取单条利库数据
-export const getWareHouseDetail = (id: string) => {
-  return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.resource}/WareHouse/GetById`, { method: 'GET', params: { id } }),
-  );
-};
-
-//新增利库
-export const addWareHouseItem = (params: WareHouseParams) => {
-  return cyRequest(() =>
-    request(`${baseUrl.resource}/WareHouse/SaveCreate`, { method: 'POST', data: params }),
-  );
-};
-
-//编辑利库信息
-export const updateWareHouseItem = (params: ItemDetailData) => {
-  return cyRequest(() =>
-    request(`${baseUrl.resource}/WareHouse/SaveModify`, { method: 'POST', data: params }),
-  );
-};
-
-// 删除利库?
-export const deleteWareHouseItem = (id: string) => {
-  return cyRequest(() =>
-    request(`${baseUrl.resource}/WareHouse/Delete`, { method: 'POST', params: { id } }),
-  );
-};
-
-//重启资源服务
-export const restartWareHouse = () => {
-  return cyRequest(() =>
-    request(`${baseUrl.resource}/WareHouse/RestartService`, { method: 'POST' }),
-  );
-};
-
-//导入
-export const importWareHouseItem = (params: ItemDetailData) => {
-  return cyRequest(() =>
-    request(`${baseUrl.resource}/WareHouse/SaveImport`, { method: 'POST', data: params }),
-  );
-};
-
 // 根据InventoryOverviewId 获得 ResourceLibId
 export const getResourceLibId = (inventoryOverviewId: string) => {
   return cyRequest<any>(() =>
-    request(`${baseUrl.resource}/Inventory/GetInventoryOverview`, { method: 'GET', params: {inventoryOverviewId}}),
+    request(`${baseUrl.resource}/Inventory/GetInventoryOverview`, {
+      method: 'GET',
+      params: { inventoryOverviewId },
+    }),
   );
-}
+};
 
 // 获取创建映射的地区
 export const getAreaList = (inventoryOverviewId: string) => {
   return cyRequest<string[]>(() =>
-    request(`${baseUrl.resource}/Inventory/GetInventoryAreaList`, { method: 'GET', params: {inventoryOverviewId}}),
+    request(`${baseUrl.resource}/Inventory/GetInventoryAreaList`, {
+      method: 'GET',
+      params: { inventoryOverviewId },
+    }),
   );
-}
+};
 
-// 获取已经映射了的数据 
+// 获取已经映射了的数据
 export const getHasMapData = (params: any) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.resource}/Inventory/GetHasMappingInventoryList`, { method: 'POST', data: params }),
+    request(`${baseUrl.resource}/Inventory/GetHasMappingInventoryList`, {
+      method: 'POST',
+      data: params,
+    }),
   );
 };
 
@@ -96,3 +63,28 @@ export const saveMapData = (params: any) => {
     request(`${baseUrl.resource}/Inventory/SaveCreateMapping`, { method: 'POST', data: params }),
   );
 };
+
+//映射资源库
+export const createResourceInventoryMap = (params: {
+  resourceLibId: string;
+  inventoryOverviewIds: string[];
+}) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/Inventory/CreateResourceInventoryMapping`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+//删除当前已映射资源库和协议库存
+export const deleteResourceInventoryMap = (params: { mappingId: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/Inventory/DeleteResouceInventoryMapping`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+
