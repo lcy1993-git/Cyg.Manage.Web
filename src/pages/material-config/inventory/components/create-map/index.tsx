@@ -1,7 +1,6 @@
 import {
   getAreaList,
   getHasMapData,
-  getResourceLibId,
   saveMapData,
 } from '@/services/material-config/inventory';
 import { useControllableValue, useRequest } from 'ahooks';
@@ -19,10 +18,12 @@ import InventoryTable from '../create-mapping-form';
 // import { components, handleResize } from '@/components/resizable-table';
 
 interface CreateMapProps {
-  inventoryOverviewId: string;
+  inventoryOverviewId?: string;
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent?: () => void;
+  mappingId?: string;
+  libId?: string;
 }
 
 const { Search } = Input;
@@ -43,12 +44,12 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
 
   const resourceTableRef = useRef<HTMLDivElement>(null);
   const inventoryTableRef = useRef<HTMLDivElement>(null);
-  const { inventoryOverviewId = '' } = props;
+  const { inventoryOverviewId = '', mappingId, libId = '' } = props;
 
-  const { data: resourceData } = useRequest(() => getResourceLibId(inventoryOverviewId), {
-    ready: !!inventoryOverviewId,
-    refreshDeps: [inventoryOverviewId],
-  });
+  // const { data: resourceData } = useRequest(() => getResourceLibId(inventoryOverviewId), {
+  //   ready: !!inventoryOverviewId,
+  //   refreshDeps: [inventoryOverviewId],
+  // });
 
   const { data: areaList = [] } = useRequest(() => getAreaList(inventoryOverviewId), {
     ready: !!inventoryOverviewId,
@@ -58,7 +59,8 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
   const { data: hasMapData = [], run: getMapData, loading } = useRequest(
     () =>
       getHasMapData({
-        inventoryOverviewId,
+        inventoryOverviewId: inventoryOverviewId,
+        mappingId: mappingId,
         materialId: activeMaterialId,
         area: activeHasMapAreaId,
       }),
@@ -211,7 +213,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
       <TableSearch width="208px">
         <Search
           value={searchKeyWord}
-          placeholder="资源库名称"
+          placeholder="物料编号/名称"
           enterButton
           onSearch={() => resourceTableSearch()}
           onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -222,6 +224,8 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
 
   //当前映射过滤 --unfinished--
   const hasMapSearch = (value: any) => {
+    console.log(value);
+
     hasMapTableShowData.filter((item) => {
       if (item.demandCompany.indexOf(value)) {
         return {
@@ -291,6 +295,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
     await saveMapData({
       inventoryOverviewId,
       materialId: activeMaterialId,
+      mappingId: mappingId,
       checkedIdList,
       uncheckedIdList,
     });
@@ -315,7 +320,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         centered
         footer={[
           <Button key="cancle" onClick={() => setState(false)}>
-            取消
+            关闭
           </Button>,
           <Button key="save" type="primary" onClick={() => saveEvent()}>
             保存
@@ -325,24 +330,22 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
       >
         <div className={styles.mapForm}>
           <div className={styles.resourceTable}>
-            {resourceData?.resourceLibId && (
-              <GeneralTable
-                scroll={{ y: 547 }}
-                size="middle"
-                ref={resourceTableRef}
-                defaultPageSize={20}
-                getSelectData={resourceTableChangeEvent}
-                columns={resourceLibColumns}
-                extractParams={{
-                  resourceLibId: resourceData?.resourceLibId,
-                  keyWord: searchKeyWord,
-                }}
-                buttonLeftContentSlot={resourceLibSearch}
-                url="/Material/GetPageList"
-                requestSource="resource"
-                tableTitle="资源库列表"
-              />
-            )}
+            <GeneralTable
+              scroll={{ y: 547 }}
+              size="middle"
+              ref={resourceTableRef}
+              defaultPageSize={20}
+              getSelectData={resourceTableChangeEvent}
+              columns={resourceLibColumns}
+              extractParams={{
+                resourceLibId: libId,
+                keyWord: searchKeyWord,
+              }}
+              buttonLeftContentSlot={resourceLibSearch}
+              url="/Material/GetPageList"
+              requestSource="resource"
+              tableTitle="资源库列表"
+            />
           </div>
 
           <div className={styles.currentMapTable}>
@@ -415,6 +418,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         areaOptions={areaOptions}
         inventoryOverviewId={inventoryOverviewId}
         materialId={activeMaterialId}
+        mappingId={mappingId}
         visible={addMapTableVisible}
         onChange={setAddMapTableVisible}
       />

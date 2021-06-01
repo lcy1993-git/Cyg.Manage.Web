@@ -1,13 +1,12 @@
 import { createResourceInventoryMap } from '@/services/material-config/inventory';
 import { useControllableValue } from 'ahooks';
 import { Modal, Input, Button, message, Spin } from 'antd';
-import React, { useMemo, useRef, useState } from 'react';
+import React, {  useRef, useState } from 'react';
 import { SetStateAction } from 'react';
 import { Dispatch } from 'react';
 import styles from './index.less';
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
-import { map } from 'lodash';
 
 interface MapLibModalParams {
   visible: boolean;

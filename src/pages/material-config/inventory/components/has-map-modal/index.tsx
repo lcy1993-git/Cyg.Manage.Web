@@ -1,16 +1,16 @@
 import GeneralTable from '@/components/general-table';
-import { Input, Button, Modal, message, Spin } from 'antd';
+import {  Button, Modal, message } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 
 import { deleteResourceInventoryMap } from '@/services/material-config/inventory';
-// import UrlSelect from '@/components/url-select';
 
 import { ImportOutlined } from '@ant-design/icons';
 
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import MapLibModal from '../map-lib-modal';
 import CheckMapping from '../check-mapping-form';
+import CreateMap from '../create-map';
 
 const HasMapModal: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -23,6 +23,7 @@ const HasMapModal: React.FC = () => {
 
   const [mappingId, setMappingId] = useState<string>('');
   const [inventoryId, setInventoryId] = useState<string>('');
+  const [libId, setLibId] = useState<string>('');
   const [inventoryName, setInventoryName] = useState<string>('');
 
   const tableElement = () => {
@@ -70,7 +71,16 @@ const HasMapModal: React.FC = () => {
     refresh();
   };
 
-  const editMapEvent = () => {};
+  const editMapEvent = () => {
+    if (tableSelectRows && tableSelectRows.length === 0) {
+      message.warning('请选择要编辑的映射');
+      return;
+    }
+    setMappingId(tableSelectRows[0].id);
+    setInventoryId(tableSelectRows[0].inventoryOverviewId);
+    setLibId(tableSelectRows[0].resourceLibId);
+    setEditMapListModalVisible(true);
+  };
 
   const checkMapEvent = () => {
     if (tableSelectRows && tableSelectRows.length === 0) {
@@ -164,6 +174,14 @@ const HasMapModal: React.FC = () => {
           invName={inventoryName}
         />
       </Modal>
+
+      <CreateMap
+        visible={editMapListModalVisible}
+        onChange={setEditMapListModalVisible}
+        mappingId={mappingId}
+        inventoryOverviewId={inventoryId}
+        libId={libId}
+      />
     </>
   );
 };

@@ -1,15 +1,8 @@
 import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useState, useMemo } from 'react';
+import { Input } from 'antd';
+import React, { useState } from 'react';
 import styles from './index.less';
-
-import { useRequest } from 'ahooks';
-import { getInventoryOverviewList } from '@/services/material-config/inventory';
-// import UrlSelect from '@/components/url-select';
-
-import { ImportOutlined } from '@ant-design/icons';
 
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
@@ -24,7 +17,6 @@ interface InventoryTableParams {
 const InventroyTable: React.FC<InventoryTableParams> = (props) => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [companyWord, setCompanyWord] = useState<string>('');
 
   const { inventoryId, invName, versionNo } = props;
@@ -264,7 +256,6 @@ const InventroyTable: React.FC<InventoryTableParams> = (props) => {
       columns={columns}
       requestSource="resource"
       url="/Inventory/GetPageList"
-      getSelectData={(data) => setTableSelectRow(data)}
       tableTitle="协议库存列表"
       type="radio"
       extractParams={{

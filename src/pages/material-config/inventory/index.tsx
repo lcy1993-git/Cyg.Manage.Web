@@ -1,14 +1,11 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useState, useMemo } from 'react';
+import { Input, Button, Modal, message } from 'antd';
+import React, { useState } from 'react';
 import styles from './index.less';
 
-import { useRequest } from 'ahooks';
-import { getInventoryOverviewList } from '@/services/material-config/inventory';
 // import UrlSelect from '@/components/url-select';
-import CheckMapping from './components/check-mapping-form';
 import CreateMap from './components/create-map';
 import { ImportOutlined } from '@ant-design/icons';
 import ImportInventory from './components/import-form';
@@ -28,8 +25,6 @@ const Inventroy: React.FC = () => {
   const [inventoryId, setInventoryId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
-  const [companyWord, setCompanyWord] = useState<string>('');
-  const [checkMappingVisible, setCheckMappingVisible] = useState<boolean>(false);
   const [addMapVisible, setAddMapVisible] = useState<boolean>(false);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
 
@@ -41,8 +36,6 @@ const Inventroy: React.FC = () => {
 
   // const [nowSelectedInv, setNowSelectedInv] = useState<string>('');
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
-  const [checkForm] = Form.useForm();
 
   // const { data: inventoryData = [], loading } = useRequest(() => getInventoryOverviewList());
 
@@ -67,16 +60,7 @@ const Inventroy: React.FC = () => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="物料编号/物料描述"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="" width="230px">
-          <Search
-            value={companyWord}
-            onChange={(e) => setCompanyWord(e.target.value)}
-            onSearch={() => search()}
-            enterButton
-            placeholder="需求公司"
+            placeholder="关键词"
           />
         </TableSearch>
       </div>
@@ -402,7 +386,6 @@ const Inventroy: React.FC = () => {
         type="radio"
         extractParams={{
           inventoryOverviewId: inventoryId,
-          demandCompany: companyWord,
           keyWord: searchKeyWord,
         }}
       />
