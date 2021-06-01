@@ -104,11 +104,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       clearHighlightLayer(map);
       return;
     }
-    map.getTargetElement().style.cursor = 'wait';
     if (layer.getSource() instanceof Cluster) {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
     }
+    map.getTargetElement().style.cursor = 'wait';
     // console.log(feature, 2);
     let layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);

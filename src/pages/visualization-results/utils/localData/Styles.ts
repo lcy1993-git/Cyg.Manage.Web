@@ -96,7 +96,7 @@ const Styles = {
             strokeColor: 'rgba(210, 0, 0, 1)',
         }
     },
-    electric_meter://支架
+    electric_meter://户表
     {
         size: 28,
         fillSize: 38,
@@ -109,7 +109,7 @@ const Styles = {
             fillSize: 38,
             strokeSize: 40,
             color: 'white',
-            fillColor: 'rgba(250, 104, 135, 1)',
+            fillColor: 'rgba(249, 149, 52, 1)',
             strokeColor: 'rgba(255, 255, 255, 0.75)',
         },
         empty: {
@@ -133,7 +133,33 @@ const Styles = {
             size: 27,
             fillSize: 30,
             strokeSize: 35,
-            color: 'rgba(250, 104, 135, 1)',
+            color: 'rgba(249, 149, 52, 1)',
+            backgroundColor: 'rgba(255, 255, 255, 1)',
+            fillColor: 'rgba(250, 104, 135, 0)',
+            strokeColor: 'rgba(255, 255, 255, 0)',
+        },
+        empty: {
+            size: 27,
+            fillSize: 30,
+            strokeSize: 35,
+            color: 'rgba(221, 64, 27, 1)',
+            fillColor: 'rgba(255, 255, 255, 0)',
+            strokeColor: 'rgba(255, 255, 255, 0)',
+        }
+    },
+    hole: {// 穿孔
+        size: 25,
+        fillSize: 30,
+        strokeSize: 35,
+        color: 'rgba(90, 93, 81, 1)',
+        backgroundColor: 'rgba(255, 255, 255, 1)',
+        fillColor: 'rgba(255, 255, 255, 0)',
+        strokeColor: 'rgba(5,21,89,0)',
+        selected: {
+            size: 27,
+            fillSize: 30,
+            strokeSize: 35,
+            color: 'rgba(249, 149, 52, 1)',
             backgroundColor: 'rgba(255, 255, 255, 1)',
             fillColor: 'rgba(250, 104, 135, 0)',
             strokeColor: 'rgba(255, 255, 255, 0)',
