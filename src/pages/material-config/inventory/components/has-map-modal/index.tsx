@@ -7,14 +7,14 @@ import { deleteResourceInventoryMap } from '@/services/material-config/inventory
 
 import { ImportOutlined } from '@ant-design/icons';
 
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+// import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import MapLibModal from '../map-lib-modal';
 import CheckMapping from '../check-mapping-form';
 import CreateMap from '../create-map';
 
 const HasMapModal: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  // const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   // const [companyWord, setCompanyWord] = useState<string>('');
   const [mapLibModalVisible, setMapLibModalVisible] = useState<boolean>(false);
@@ -29,13 +29,10 @@ const HasMapModal: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('inventory-import') && ( */}
-        <Button className="mr7" onClick={() => createMapEvent()}>
+        <Button className="mr7" type="primary" onClick={() => createMapEvent()}>
           <ImportOutlined />
           新建映射
         </Button>
-        {/* )} */}
-        {/* {buttonJurisdictionArray?.includes('inventory-check-mapping') && ( */}
         <Popconfirm
           title="您确定要删除该映射?"
           onConfirm={deleteMapEvent}
@@ -44,18 +41,13 @@ const HasMapModal: React.FC = () => {
         >
           <Button className="mr7">删除映射</Button>
         </Popconfirm>
-        {/* )} */}
 
-        {/* {buttonJurisdictionArray?.includes('inventory-create-mapping') && ( */}
         <Button className="mr7" onClick={() => editMapEvent()}>
           编辑映射
         </Button>
-        {/* )} */}
-        {/* {buttonJurisdictionArray?.includes('inventory-create-mapping') && ( */}
         <Button className="mr7" onClick={() => checkMapEvent()}>
           查看映射
         </Button>
-        {/* )} */}
       </div>
     );
   };
@@ -107,12 +99,12 @@ const HasMapModal: React.FC = () => {
   };
 
   // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search();
-    }
-  };
+  // const search = () => {
+  //   if (tableRef && tableRef.current) {
+  //     // @ts-ignore
+  //     tableRef.current.search();
+  //   }
+  // };
 
   const columns = [
     {
@@ -153,9 +145,11 @@ const HasMapModal: React.FC = () => {
         getSelectData={(data) => setTableSelectRow(data)}
         tableTitle="已映射列表"
         type="radio"
-        extractParams={{
-          keyWord: searchKeyWord,
-        }}
+        extractParams={
+          {
+            // keyWord: searchKeyWord,
+          }
+        }
       />
 
       <MapLibModal

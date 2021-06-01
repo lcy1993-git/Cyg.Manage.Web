@@ -4,7 +4,7 @@ import { Input } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+// import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -47,12 +47,12 @@ const InventroyTable: React.FC<InventoryTableParams> = (props) => {
   };
 
   // 列表刷新
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh();
-    }
-  };
+  // const refresh = () => {
+  //   if (tableRef && tableRef.current) {
+  //     // @ts-ignore
+  //     tableRef.current.refresh();
+  //   }
+  // };
 
   // 列表搜索
   const search = () => {

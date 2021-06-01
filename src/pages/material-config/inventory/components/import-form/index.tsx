@@ -1,14 +1,13 @@
 import CyFormItem from '@/components/cy-form-item';
-import FileUpload, { UploadStatus } from '@/components/file-upload';
+import FileUpload from '@/components/file-upload';
 import { newUploadLineStressSag } from '@/services/resource-config/drawing';
 import { useBoolean, useControllableValue } from 'ahooks';
 import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
-import { Input, Form, message, Row, Col, Modal, Button } from 'antd';
+import { Input, Form, message, Modal, Button } from 'antd';
 import UrlSelect from '@/components/url-select';
 import rule from '../rules';
-import { reject } from 'lodash';
 
 interface ImportInventoryProps {
   visible: boolean;
@@ -18,6 +17,8 @@ interface ImportInventoryProps {
   securityKey?: string;
   requestSource: 'project' | 'resource' | 'upload';
 }
+
+const { TextArea } = Input;
 
 const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
@@ -52,7 +53,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           return Promise.resolve();
         },
         (res) => {
-          const { code, isSuccess, message: msg } = res;
+          const { message: msg } = res;
           if (msg) {
             message.warn(msg);
           }
@@ -152,6 +153,10 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
             maxCount={1}
             accept=".xlsx"
           />
+        </CyFormItem>
+
+        <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
+          <TextArea showCount maxLength={100} placeholder="备注说明" />
         </CyFormItem>
       </Form>
     </Modal>

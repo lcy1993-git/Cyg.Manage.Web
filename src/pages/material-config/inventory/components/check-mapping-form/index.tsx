@@ -102,12 +102,12 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
     }
   };
 
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current.refresh();
-    }
-  };
+  // const refresh = () => {
+  //   if (tableRef && tableRef.current) {
+  //     //@ts-ignore
+  //     tableRef.current.refresh();
+  //   }
+  // };
 
   const searchByMethod = (value: any) => {
     setCreateMethod(value);

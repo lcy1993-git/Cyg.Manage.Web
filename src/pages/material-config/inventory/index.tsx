@@ -315,28 +315,24 @@ const Inventroy: React.FC = () => {
     },
   ];
 
-  // const titleSlotElement = () => {
-  //   return nowSelectedInv ? (
-  //     <div style={{ paddingTop: '2px', fontSize: '13px' }}>{` -${nowSelectedInv}`}</div>
-  //   ) : null;
-  // };
+
 
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('inventory-import') && (
-          <Button className="mr7" onClick={() => importInventoryEvent()}>
+        {buttonJurisdictionArray?.includes('inventory-create') && (
+          <Button className="mr7" type='primary' onClick={() => importInventoryEvent()}>
             <ImportOutlined />
             新建
           </Button>
         )}
-        {buttonJurisdictionArray?.includes('inventory-check-mapping') && (
+        {buttonJurisdictionArray?.includes('inventory-check') && (
           <Button className={styles.importBtn} onClick={() => checkInventoryEvent()}>
             查看
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('inventory-create-mapping') && (
+        {buttonJurisdictionArray?.includes('inventory-mapping-manage') && (
           <Button className={styles.importBtn} onClick={() => openMapManageEvent()}>
             映射管理
           </Button>
