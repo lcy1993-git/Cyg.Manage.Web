@@ -8,7 +8,6 @@ import styles from './index.less';
 import EnumSelect from '@/components/enum-select';
 import {
   addEngineer,
-  AllProjectStatisticsParams,
   applyKnot,
   auditKnot,
   canEditArrange,
@@ -17,7 +16,6 @@ import {
   // getAllotUsers,
   // getExternalArrangeStep,
   getProjectInfo,
-  getProjectTableStatistics,
   noAuditKnot,
   ProjectIdentityType,
   ProjectSourceType,
@@ -33,7 +31,6 @@ import { Menu } from 'antd';
 import { Dropdown } from 'antd';
 import TableExportButton from '@/components/table-export-button';
 import { useState } from 'react';
-import { useMount, useRequest } from 'ahooks';
 import EnigneerTable from './components/enigneer-table';
 import { Form } from 'antd';
 import CreateEngineer from './components/create-engineer';
