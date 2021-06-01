@@ -147,13 +147,13 @@ const QuotaProject = () => {
               <TabPane tab="&nbsp;&nbsp;资源列表" key="1">
                 <div className={styles.tabPaneBox}>
                   <div className={styles.listTable}>
-                    <ListTable catalogueId={catalogueId} scrolly={refWrap ? refWrap?.height-531 : 0}/>
+                    <ListTable catalogueId={catalogueId} scrolly={refWrap?.height ? refWrap?.height-531 : 0}/>
                   </div>
                   <div className={styles.heightEmpty} />
                   <InfoTabs />
                 </div>
               </TabPane>
-              <TabPane tab="章节说明" key="2">
+              <TabPane tab="章节说明" key="章节说明">
                 <ChapterInfo />
               </TabPane>
             </Tabs>

@@ -55,24 +55,6 @@ const dataSource = [
   {
     id: 3
   },
-  {
-    id: 11
-  },
-  {
-    id: 22
-  },
-  {
-    id: 33
-  },
-  {
-    id: 13
-  },
-  {
-    id: 23
-  },
-  {
-    id: 33
-  },
 ];
 
 const InfoTabs = () => {

@@ -126,7 +126,7 @@ const QuotaProject = () => {
       <div className={styles.wrap} ref={ref}>
         <div className={styles.wrapLeftMenu}>
           <Tabs className="normalTabs noMargin" >
-              <TabPane tab="材机库目录" key="1">
+              <TabPane tab="材机库目录" key="材机库目录">
                 <div className={styles.selectWrap}>
                   <Select placeholder="请选择定额库" style={{width: '100%'}} children={options} onChange={(e)=>setActiveQuotaId(e)}/>
                 </div>
@@ -144,7 +144,7 @@ const QuotaProject = () => {
         <div className={styles.empty} />
         <div className={styles.wrapRigntContent}>
             <Tabs className="normalTabs noMargin" >
-              <TabPane tab="&nbsp;&nbsp;资源列表" key="1">
+              <TabPane tab="&nbsp;&nbsp;资源列表" key="资源列表">
                 <div className={styles.tabPaneBox}>
                   <div className={styles.listTable}>
                     <ListTable catalogueId={catalogueId} scrolly={refWrap ? refWrap?.height-531 : 0}/>
