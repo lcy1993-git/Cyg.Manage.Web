@@ -145,7 +145,7 @@ const FilterBar: FC = observer(() => {
             <Select
               maxTagCount={0}
               maxTagTextLength={2}
-              mode='multiple'
+              mode="multiple"
               allowClear
               mode="multiple"
               value={statuss}

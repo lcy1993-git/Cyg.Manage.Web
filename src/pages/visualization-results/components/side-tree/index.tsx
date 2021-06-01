@@ -2,9 +2,8 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import _ from 'lodash';
-import { Tree, Tabs, Spin, message } from 'antd';
+import { Tree, Tabs, Spin, message, Checkbox } from 'antd';
 import { useRequest, useSize } from 'ahooks';
-import { useLocation } from 'react-router-dom';
 import {
   fetchAreaEngineerProjectListByParams,
   fetchCompanyEngineerProjectListByParams,
@@ -74,13 +73,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
-  const [showDefaultSelectCity, setShowDefaultSelectCity] = useState<boolean>(true);
   const store = useContainer();
   const { vState } = store;
-  const { filterCondition, isFilter } = vState;
+  const { filterCondition } = vState;
   const { className } = props;
-  const location: any = useLocation();
-  const { query } = location;
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
   const activeStyle = (key: string) => (tabActiveKey === key ? '#ebedee' : '#fff');
@@ -106,12 +102,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setProjectIdList([]);
   };
 
-  /**
-   * 判断是否需要展开和选中从可视化界面跳转过来的城市
-   */
-  const isSelectCity =
-    !isFilter && query && query.selectCity && tabActiveKey === '1' && showDefaultSelectCity;
-
   const isProjectLevel = (level: number | TreeNodeType): boolean =>
     typeof level === 'number' ? level === 6 : level.levelCategory === 6;
 
@@ -133,10 +123,18 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     /**
      * 由于有从可视化界面点击的功能，所以在点过来以后，
      * 做的任何改变树的操作都要避免自动展开可视化点击过来的城市
+     *
+     * 判断是否需要展开和选中从可视化界面跳转过来的城市
+     * 通过localstorage是否存在来判断，用了以后立即清除这样可以当其他操作刷新tree的时候
+     * 可以不用做额外的标记来判断
+     *
      */
-    if (isSelectCity) {
-      const key = getSelectCityExpanedAndCheckedProjectKeys(data);
 
+    const selectCity = localStorage.getItem('selectCity');
+
+    if (selectCity) {
+      const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
+      localStorage.removeItem('selectCity');
       const { expanded, checked } = key;
       setExpandedKeys(['-1', ...expanded]);
       setCheckedKeys(getKeyList(checked));
@@ -154,6 +152,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    */
   const getSelectCityExpanedAndCheckedProjectKeys = (
     items: TreeNodeType[],
+    selectCity: string,
   ): { expanded: string[]; checked: TreeNodeType[] } => {
     const reg = new RegExp('^[0-9]*$');
     const expanded = new Array<string>();
@@ -162,7 +161,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const dfsByName = (node: TreeNodeType, isSelect: boolean) => {
       const { children, key, title, levelCategory } = node;
       expanded.push(key);
-      if (title === query.selectCity) {
+      if (title === selectCity) {
         children?.forEach((v) => {
           dfsByName(v, true);
         });
@@ -187,7 +186,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const dfsById = (node: TreeNodeType, isSelect: boolean) => {
       const { children, key, id, levelCategory } = node;
       expanded.push(key);
-      if (id === query.selectCity) {
+      if (id === selectCity) {
         children?.forEach((v) => {
           dfsById(v, true);
         });
@@ -208,7 +207,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       }
     };
 
-    if (reg.test(query.selectCity)) {
+    if (reg.test(selectCity)) {
       items.forEach((v) => {
         dfsById(v, false);
       });
@@ -225,6 +224,42 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(expandedKeysValue);
   };
 
+  const getAllKey = () => {
+    const keys = new Array<string>();
+    const dfs = (v: TreeNodeType) => {
+      keys.push(v.key);
+      v.children?.forEach((item) => {
+        dfs(item);
+      });
+    };
+    treeData.forEach((v) => {
+      dfs(v);
+    });
+
+    return keys;
+  };
+
+  const getAllProjectNodes = () => {
+    const nodes = new Array<TreeNodeType>();
+    const dfs = (v: TreeNodeType) => {
+      if (isProjectLevel(v)) {
+        nodes.push(v);
+      }
+
+      v.children?.forEach((item) => {
+        dfs(item);
+      });
+    };
+    treeData.forEach((v) => {
+      dfs(v);
+    });
+
+    return nodes;
+  };
+  const onCheckAll = (e: any) => {
+    e.target.checked ? onCheck(getAllKey(), { checkedNodes: getAllProjectNodes() }) : clearState();
+  };
+
   /**
    * 	
       levelCategory层级类别(1:省 2:市 3:区 4:公司 5:工程 6:项目)
@@ -237,15 +272,17 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    */
   const onCheck = (checked: keyType, info: any) => {
     let temp = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
+    console.log(info.checkedNodes);
+
     //去重,这里考虑到按公司筛选的时候，不同的公司可以有同一个项目
     let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
+
     setProjectIdList(res);
     setCheckedKeys(checked);
   };
 
   const onTabChange = (key: string) => {
     setTabActiveKey(key);
-    setShowDefaultSelectCity(false);
   };
 
   const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(whichTabToFetch, {
@@ -253,9 +290,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     onSuccess: () => {
       if (treeListReponseData?.length) {
         const data = generateProjectTree(treeListReponseData);
-        setTreeData([
-          { title: '全选', id: '-1000', key: '-1', children: data, levelCategory: -100 },
-        ]);
+        setTreeData(data);
         initSideTree(data);
       } else {
         message.warning('无数据');
@@ -293,18 +328,23 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               tip="正在载入中..."
             ></Spin>
           ) : null}
-          {treeListReponseData ? (
-            <Tree
-              height={size.height ? size.height - 80 : 680}
-              checkable
-              onExpand={onExpand}
-              defaultExpandAll
-              expandedKeys={expandedKeys}
-              onCheck={(checked, info) => onCheck(checked, info)}
-              checkedKeys={checkedKeys}
-              treeData={treeData}
-              className={classNames(styles.sideMenu)}
-            />
+          {!treeListDataLoading ? (
+            <>
+              <Checkbox style={{ marginLeft: '8px', marginTop: '4px' }} onChange={onCheckAll}>
+                全选
+              </Checkbox>
+              <Tree
+                height={size.height ? size.height - 80 : 680}
+                checkable
+                onExpand={onExpand}
+                defaultExpandAll
+                expandedKeys={expandedKeys}
+                onCheck={(checked, info) => onCheck(checked, info)}
+                checkedKeys={checkedKeys}
+                treeData={treeData}
+                className={classNames(styles.sideMenu)}
+              />
+            </>
           ) : null}
         </TabPane>
       </Tabs>

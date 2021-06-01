@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Menu, message, Modal, Switch, Tooltip } from 'antd';
+import React, { FC, useState } from 'react';
+import { Menu, message, Switch, Tooltip } from 'antd';
 import styles from './index.less';
 import {
   CommentOutlined,
