@@ -343,7 +343,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                 checkedKeys={checkedKeys}
                 treeData={treeData}
                 className={classNames(styles.sideMenu)}
-              />
+              >
+         
+              </Tree>
             </>
           ) : null}
         </TabPane>
