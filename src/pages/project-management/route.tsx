@@ -3,7 +3,7 @@ import React from 'react';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
 
 const AllProject = Loadable({
-  loader: () => import('@/pages/project-management/all-project-bak'),
+  loader: () => import('@/pages/project-management/all-project'),
   loading: () => <Loading />,
   delay: 150,
 });
@@ -36,4 +36,4 @@ export default [
     path: '/project-management/project-gantt',
     component: <ProjectGantt />,
   },
-]                                                                                                                                                                                                                                      
+];
