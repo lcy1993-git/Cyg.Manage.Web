@@ -3,25 +3,20 @@ import styles from './index.less';
 export interface ProjectItemProps {
   name: string;
   id: string;
-  operation: string;
-  operator: string;
+  content: string;
+  date: string;
 }
 
-const ProjectItem: FC<ProjectItemProps> = ({
-  operator,
-  name,
-  id,
-  operation,
-}) => {
+const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
   return (
     <div className={styles.projectItem}>
-      {operator}
-      {operation}项目 &nbsp;
-      {operation === '删除' ? (
+      {content} &nbsp;
+      {content.includes('删除') ? (
         <span className={styles.deleteItem}>{name}</span>
       ) : (
-        <a>{name}</a>
+        <a className={styles.item}>{name}</a>
       )}
+      <span style={{ float: 'right' }}>{date}</span>
     </div>
   );
 };

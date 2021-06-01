@@ -1,18 +1,19 @@
 import { List } from 'antd';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
-import { useRequest, useInterval } from 'ahooks';
+import { useRequest, useInterval, useSize } from 'ahooks';
 import { request } from 'umi';
 import ProjectItem from './components/project-Item';
-
+import {
+  AreaInfo,
+  fetchProjectOperationLog,
+  projectOperationLogParams,
+  RefreshDataType,
+} from '@/services/index';
+import moment from 'moment';
 export interface ProjectInfoRefreshListProps {
-  height: number;
-}
-export interface RefreshDataType {
-  status: number;
-  project: { name: string; id: string };
-  operator: string;
+  currentAreaInfo: AreaInfo;
 }
 
 const map = new Map<number, string>([
@@ -21,37 +22,60 @@ const map = new Map<number, string>([
   [2, '安排'],
 ]);
 
-const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ height }) => {
+const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaInfo }) => {
   const [listData, setListData] = useState<RefreshDataType[]>([]);
   const [scrollInterval, setScrollInterval] = useState<number>(5000);
-  const [fetchInterval, setFetchInterval] = useState<number>(3000);
-  const { data, error, loading, run } = useRequest(() => request('/api/refreshData'), {
+  // const [fetchInterval, setFetchInterval] = useState<number>(10000);
+  const ref = useRef<HTMLDivElement>(null);
+  const size = useSize(ref);
+  const count =1;
+  // Math.floor(size.height ? size.height / 35 : 10);
+  const params: projectOperationLogParams = {
+    limit: count,
+    areaCode: currentAreaInfo?.areaId,
+    areaType: currentAreaInfo?.areaLevel ?? '1',
+  };
+
+  useEffect(() => {
+    setListData([]);
+  }, [currentAreaInfo]);
+
+  /**
+   * count表示是可视条数是多少
+   *
+   */
+
+  const { data, error, loading, run } = useRequest(() => fetchProjectOperationLog(params), {
     // manual: true,
+    pollingInterval: 5000,
     onSuccess: () => {
-      const newListData = _.unionBy(listData, data, (v: RefreshDataType) => v.project.name);
+      const newListData = _.unionBy(listData, data, (v: RefreshDataType) => v.content);
       setListData(newListData);
     },
   });
 
   const scroll = () => {
-    if (listData.length >= 10) {
+    if (listData.length >= count) {
       const shift = listData.shift();
       shift ? setListData([...listData, shift]) : null;
     }
   };
-  useInterval(run, fetchInterval);
+  // useInterval(run, fetchInterval);
+  //  useTimeout(() => {
+  //   setState(state + 1);
+  // }, 3000);
   useInterval(scroll, scrollInterval);
 
   return (
-    <div className={styles.refreshBarn} style={{ height }}>
+    <div className={styles.refreshBarn} ref={ref}>
       <List
         dataSource={listData}
         renderItem={(item: RefreshDataType) => (
           <ProjectItem
-            name={item.project.name}
-            id={item.project.id}
-            operator={item.operator}
-            operation={map.get(item.status) ?? ''}
+            name={item.projectName}
+            id={item.projectId}
+            content={item.content}
+            date={moment(item.date).format('YYYY-MM-DD')}
           />
         )}
       />
@@ -59,4 +83,4 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ height }) => 
   );
 };
 
-export default ProjectInfoRefreshListProps;
+export default ProjectInfoRefreshList;
