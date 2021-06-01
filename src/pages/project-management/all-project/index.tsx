@@ -51,6 +51,7 @@ import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
 import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
+import PositonExportMadal from './components/position-export-modal';
 import { delay } from '@/utils/utils';
 
 const { Search } = Input;
@@ -1060,6 +1061,8 @@ const ProjectManagement: React.FC = () => {
           search={delayRefresh}
         />
       )}
+    {/* 管理端新增按钮弹窗 */}
+    {/* <PositonExportMadal /> */}
     </PageCommonWrap>
   );
 };
