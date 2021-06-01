@@ -1,5 +1,5 @@
 import GeneralTable from '@/components/general-table';
-import {  Button, Modal, message } from 'antd';
+import { Button, Modal, message, Popconfirm } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 
@@ -36,9 +36,14 @@ const HasMapModal: React.FC = () => {
         </Button>
         {/* )} */}
         {/* {buttonJurisdictionArray?.includes('inventory-check-mapping') && ( */}
-        <Button className="mr7" onClick={() => deleteMapEvent()}>
-          删除映射
-        </Button>
+        <Popconfirm
+          title="您确定要删除该映射?"
+          onConfirm={deleteMapEvent}
+          okText="确认"
+          cancelText="取消"
+        >
+          <Button className="mr7">删除映射</Button>
+        </Popconfirm>
         {/* )} */}
 
         {/* {buttonJurisdictionArray?.includes('inventory-create-mapping') && ( */}

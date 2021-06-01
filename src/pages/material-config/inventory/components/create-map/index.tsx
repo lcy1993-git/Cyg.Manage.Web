@@ -1,8 +1,4 @@
-import {
-  getAreaList,
-  getHasMapData,
-  saveMapData,
-} from '@/services/material-config/inventory';
+import { getAreaList, getHasMapData, saveMapData } from '@/services/material-config/inventory';
 import { useControllableValue, useRequest } from 'ahooks';
 import { Modal, Input, Button, Select, Table, message, Spin } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
@@ -45,11 +41,6 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
   const resourceTableRef = useRef<HTMLDivElement>(null);
   const inventoryTableRef = useRef<HTMLDivElement>(null);
   const { inventoryOverviewId = '', mappingId, libId = '' } = props;
-
-  // const { data: resourceData } = useRequest(() => getResourceLibId(inventoryOverviewId), {
-  //   ready: !!inventoryOverviewId,
-  //   refreshDeps: [inventoryOverviewId],
-  // });
 
   const { data: areaList = [] } = useRequest(() => getAreaList(inventoryOverviewId), {
     ready: !!inventoryOverviewId,
@@ -224,8 +215,6 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
 
   //当前映射过滤 --unfinished--
   const hasMapSearch = (value: any) => {
-    console.log(value);
-
     hasMapTableShowData.filter((item) => {
       if (item.demandCompany.indexOf(value)) {
         return {
@@ -319,7 +308,13 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         destroyOnClose
         centered
         footer={[
-          <Button key="cancle" onClick={() => setState(false)}>
+          <Button
+            key="cancle"
+            onClick={() => {
+              setState(false);
+              setActiveMaterialId('');
+            }}
+          >
             关闭
           </Button>,
           <Button key="save" type="primary" onClick={() => saveEvent()}>
