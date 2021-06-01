@@ -8,7 +8,7 @@ import {
 } from '@/services/project-management/all-project';
 import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useControllableValue, useRequest } from 'ahooks';
-import { Button, Modal, Spin, message, Tabs, } from 'antd';
+import { Button, Modal, Spin, message, Tabs } from 'antd';
 import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import CompileResultTab from '../check-compile-result';
 import DesignResultTab from '../check-design-result';
@@ -162,7 +162,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       {isResult && (
         <Spin spinning={requestLoading} tip="正在生成...">
           <div className={`${styles.resultButton} flex`}>
-            <div className="flex2">
+            <div className="flex2" style={{ paddingLeft: '20px' }}>
               <span className={styles.titleIcon}></span>
               <span className={styles.helpTitle}>项目名称: </span>
               <span className={styles.projectTitle}>{projectInfo?.name}</span>
@@ -172,7 +172,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
               <span className={styles.helpTitle}>当前阶段: </span>
               <span>{projectInfo?.stageText}</span>
             </div>
-            <div className={styles.resultButtonContent}>
+            <div className={styles.resultButtonContent} style={{ paddingRight: '20px' }}>
               <Button className="mr7" onClick={() => refresh()}>
                 刷新
               </Button>

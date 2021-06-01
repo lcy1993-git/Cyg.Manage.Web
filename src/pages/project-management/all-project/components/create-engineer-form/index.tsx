@@ -49,14 +49,12 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     { ready: !!areaId, refreshDeps: [areaId] },
   );
 
-  console.log(warehouseSelectData);
-
   const { data: companySelectData = [] } = useGetSelectData(
     {
       url: `/ElectricityCompany?area=${areaId}`,
       // extraParams: { area: areaId },
       titleKey: 'companyName',
-      valueKey: 'id',
+      valueKey: 'companyName',
       requestSource: 'resource',
     },
     { ready: !!areaId, refreshDeps: [areaId] },
