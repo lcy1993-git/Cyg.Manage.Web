@@ -333,6 +333,8 @@ interface EngineerInfoParams {
   plannedYear: string;
   grade: string;
   gradeText: string;
+  cityName: string;
+  areaName: string;
 }
 
 // 获取工程详细信息接口

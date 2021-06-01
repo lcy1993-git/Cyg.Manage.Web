@@ -207,6 +207,7 @@ const WareHouse: React.FC = () => {
     await deleteWareHouseItem(editDataId);
     refresh();
     message.success('删除成功');
+    setTableSelectRow([]);
   };
 
   //查看详情
@@ -305,7 +306,7 @@ const WareHouse: React.FC = () => {
         }}
       />
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="创建-利库"
         width="680px"
         visible={addFormVisible}
@@ -320,7 +321,7 @@ const WareHouse: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="编辑-利库"
         width="680px"
         visible={editFormVisible}
@@ -337,7 +338,7 @@ const WareHouse: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         footer=""
         destroyOnClose
         title="查看利库物料详情"

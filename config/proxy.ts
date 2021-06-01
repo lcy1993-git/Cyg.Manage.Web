@@ -8,8 +8,8 @@
 export default {
   dev: {
     '/api/': {
-      // http://10.6.1.36:8026/api/
-      // 171.223.214.154
+      // http://10.6.1.36:21525/api/
+      // 171.223.214.154:21573
       target: 'http://10.6.1.36:21525',
       changeOrigin: true,
       pathRewrite: { '^/api': '/' },

@@ -12,7 +12,7 @@ const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = (props) => {
     const { projectInfo = {} } = props;
     const { allots } = projectInfo;
 
-    const allotsElement = allots.map((item: any) => {
+    const allotsElement = allots?.map((item: any) => {
         let showTitle = "";
         switch(item.allotType) {
             case 1:
@@ -37,7 +37,7 @@ const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = (props) => {
         <div className={styles.projectProcessInfo}>
             <Timeline>
                 <Timeline.Item color="#0E7B3B">
-                    <ProjectProcessItem time={projectInfo.createdOn} title={`立项(${projectInfo.createdCompanyName})`} />
+                    <ProjectProcessItem time={projectInfo.createdOn} title={`立项(${projectInfo.createdCompanyName}-${projectInfo?.engineerCreatedByName ? projectInfo.engineerCreatedByName : '无'})`} />
                 </Timeline.Item>
                 {
                     allotsElement

@@ -127,8 +127,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'totalInvest']}
             name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
+            rules={Rule.total}
           >
-            <Input placeholder="请输入" />
+            <InputNumber placeholder="请输入" style={{ width: '100%' }} />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
