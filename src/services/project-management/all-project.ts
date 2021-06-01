@@ -204,15 +204,15 @@ export enum DataSourceType {
 
 export interface AllProjectStatisticsParams {
   keyWord?: string;
-  category?: string;
-  pCategory?: string;
-  stage?: string;
-  constructType?: string;
-  nature?: string;
-  kvLevel?: string;
-  status?: string;
-  sourceType?: string;
-  identityType?: string;
+  category?: number[];
+  pCategory?: number[];
+  stage?: number[];
+  constructType?: number[];
+  nature?: number[];
+  kvLevel?: number[];
+  status?: number[];
+  sourceType?: number[];
+  identityType?: number[];
 }
 
 export interface AllProjectSearchParams extends AllProjectStatisticsParams {
