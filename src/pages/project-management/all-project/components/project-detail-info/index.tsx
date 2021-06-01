@@ -8,18 +8,20 @@ import ProjectBaseInfo from '../project-base-info';
 import styles from './index.less';
 import ProjectProcessInfo from '../project-process-info';
 import ProjectSchedule from '../project-shcedule';
+import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal';
 const { TabPane } = Tabs;
 
 interface ProjectDetailInfoProps {
   projectId: string;
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
+  isResult?: boolean;
 }
 
 const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
 
-  const { projectId } = props;
+  const { projectId, isResult = false } = props;
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
@@ -53,6 +55,11 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           <TabPane key="process" tab="项目过程">
             <ProjectProcessInfo projectInfo={projectInfo} />
           </TabPane>
+          {isResult && (
+            <TabPane key="result" tab="查看成果">
+              <CheckResultModal projectInfo={projectInfo} isResult={isResult} />
+            </TabPane>
+          )}
         </Tabs>
       </div>
     </Modal>

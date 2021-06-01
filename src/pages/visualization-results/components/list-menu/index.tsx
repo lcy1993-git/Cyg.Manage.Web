@@ -79,6 +79,7 @@ const ListMenu: FC = observer(() => {
           projectId={checkedProjectIdList[0].id}
           visible={projectModalVisible}
           onChange={setProjectModalVisible}
+          isResult={true}
         />
       ) : null}
 
