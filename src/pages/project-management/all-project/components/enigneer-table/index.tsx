@@ -257,8 +257,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
           <Menu.Item
             onClick={() => {
-              console.log(tableItemData);
-
               editProjectEvent({
                 projectId: tableItemData.id,
                 areaId: engineerInfo.province,
@@ -478,18 +476,18 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
     {
       title: '勘察人',
-      dataIndex: 'designUser',
-      width: '6.5%',
-      render: (record: any) => {
-        return record.designUser.value;
-      },
-    },
-    {
-      title: '设计人',
       dataIndex: 'surveyUser',
       width: '6.5%',
       render: (record: any) => {
         return record.surveyUser.value;
+      },
+    },
+    {
+      title: '设计人',
+      dataIndex: 'designUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.designUser.value;
       },
     },
     {
@@ -613,6 +611,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setPageSize(size);
   };
 
+  
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
     refresh: () => {

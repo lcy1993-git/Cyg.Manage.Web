@@ -213,7 +213,7 @@ export interface AllProjectStatisticsParams {
   status?: number[];
   sourceType?: number[];
   identityType?: number[];
-  logicRelation?: 0 | 1
+  logicRelation?: number;
   surveyUser?: string
   designUser?: string
   areaInfo?: any

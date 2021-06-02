@@ -92,14 +92,16 @@ const PersonnelLoad: React.FC<Props> = (props) => {
                     type: 'shadow',
                 },
                 position: function (pt: any) {
-                    return [pt[0] - 115, pt[1] - 60];
+                    return [pt[0] - 125, pt[1] - 65];
                 },
                 formatter: function (params: any) {
+                    
+                    
                     const [name] = params;
-                    console.log(name);
+                    // console.log(burdensData[name.dataIndex]);
                     return `${name.name}<br />
-                    项目数量:${name.dataIndex}
-                    <div>所有项目列表：<a>跳转</a></div>
+                    项目数量:${name.value}
+                    <div>所有项目列表：<a href='/project-management/all-project'>跳转</a></div>
                     `
                 },
             },

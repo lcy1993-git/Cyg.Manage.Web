@@ -25,13 +25,13 @@ interface SelectProps {
   defaultValue?: ChooseDesignAndSurveyValue;
 }
 
-type LogicRelation = 0 | 1;
+type LogicRelation = 1 | 2;
 
 const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
   const [selectAreaVisible, setSelectAreaVisible] = useState<boolean>(false);
 
   const [survey, setSurvey] = useState<string>('');
-  const [logicRelation, setLogicRelation] = useState<LogicRelation>(0);
+  const [logicRelation, setLogicRelation] = useState<LogicRelation>(2);
   const [design, setDesign] = useState<string>('');
 
   const { data: personData = [] } = useGetSelectData({
@@ -72,7 +72,6 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
       logicRelation,
       design: design === '-1' ? '' : design,
     });
-
   }, [survey, logicRelation, design]);
 
   useEffect(() => {
@@ -87,15 +86,13 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
     const hasSurvey = survey !== '' && survey !== '-1';
     const hasDesign = design !== '' && design !== '-1';
 
-    console.log(hasSurvey, hasDesign);
-
     const designName = hasDesign
       ? personData.find((item: any) => item.value === design)?.label
       : '';
     const surveyName = hasSurvey
       ? personData.find((item: any) => item.value === survey)?.label
       : '';
-    const logicRelationWord = logicRelation === 0 ? '与' : '或';
+    const logicRelationWord = logicRelation === 2 ? '与' : '或';
 
     if (hasSurvey && hasDesign) {
       return `勘察: ${surveyName} ${logicRelationWord} 设计：${designName}`;
@@ -118,7 +115,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
         onClick={showSelectContent}
         ref={selectRef}
       >
-        {!selectHasChooseInfo && <div className={styles.selectPlaceholder}>项目区域</div>}
+        {!selectHasChooseInfo && <div className={styles.selectPlaceholder}>人员安排</div>}
         {selectHasChooseInfo && <div className={styles.hasSelectTip}>{selectHasChooseInfo}</div>}
         <div className={styles.selectFold}>
           <DownOutlined />
@@ -149,7 +146,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
               getPopupContainer={(triggerNode) => triggerNode.parentElement}
               style={{ width: '100%' }}
               options={[
-                { label: '与', value: 0 },
+                { label: '与', value: 2 },
                 { label: '或', value: 1 },
               ]}
             />
