@@ -24,6 +24,7 @@ import { Spin } from 'antd';
 import { divide, multiply, subtract } from 'lodash';
 import uuid from 'node-uuid';
 import CockpitProjectInfoFreshList from '../cockpit-manage/cockpit-config/components/cockpit-project-info-refresh-list';
+import PageCommonWrap from '@/components/page-common-wrap';
 
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
@@ -139,27 +140,29 @@ const Index: React.FC = () => {
   });
 
   return (
-    <IndexContext.Provider
-      value={{
-        currentAreaInfo,
-        setCurrentAreaInfo,
-      }}
-    >
-      <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }} ref={divRef}>
-        {!loading && (
+    <PageCommonWrap noPadding={true} className={styles.indexWrap}>
+      <IndexContext.Provider
+        value={{
+          currentAreaInfo,
+          setCurrentAreaInfo,
+        }}
+      >
+        <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }} ref={divRef}>
+          {!loading && (
+            <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+              <ResponsiveReactGridLayout breakpoints={{ lg: 120 }} cols={{ lg: 12 }} rowHeight={9}>
+                {configComponentElement}
+              </ResponsiveReactGridLayout>
+            </div>
+          )}
+        </div>
+        {loading && (
           <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-            <ResponsiveReactGridLayout breakpoints={{ lg: 120 }} cols={{ lg: 12 }} rowHeight={9}>
-              {configComponentElement}
-            </ResponsiveReactGridLayout>
+            <Spin spinning={loading} tip="正在载入中..."></Spin>
           </div>
         )}
-      </div>
-      {loading && (
-        <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-          <Spin spinning={loading} tip="正在载入中..."></Spin>
-        </div>
-      )}
-    </IndexContext.Provider>
+      </IndexContext.Provider>
+    </PageCommonWrap>
   );
 };
 

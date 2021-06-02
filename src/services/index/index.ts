@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import { Moment } from 'moment';
 import { cyRequest, baseUrl } from '../common';
 
 interface ToDoRequestResult {
@@ -119,6 +120,8 @@ export const getBuildType = (params: HomeStatisticCommonParams) => {
 
 interface GetConsignsParams extends HomeStatisticCommonParams {
   type: string;
+  startTime: Moment | null | string;
+  endTime: Moment | null | string;
 }
 
 export const getConsigns = (params: GetConsignsParams) => {

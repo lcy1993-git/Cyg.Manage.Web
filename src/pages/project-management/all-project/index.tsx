@@ -15,7 +15,7 @@ import {
   checkCanArrange,
   deleteProject,
   // getAllotUsers,
-  getExternalArrangeStep,
+  // getExternalArrangeStep,
   getProjectInfo,
   getProjectTableStatistics,
   noAuditKnot,
@@ -51,7 +51,6 @@ import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
 import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
-import { delay } from '@/utils/utils';
 
 const { Search } = Input;
 
@@ -65,16 +64,24 @@ const statisticsObject = {
 
 const ProjectManagement: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('');
-  const [category, setCategory] = useState<string>();
-  const [pCategory, setPCategory] = useState<string>();
-  const [stage, setStage] = useState<string>();
-  const [constructType, setConstructType] = useState<string>();
-  const [nature, setNature] = useState<string>();
-  const [kvLevel, setKvLevel] = useState<string>();
-  const [status, setStatus] = useState<string>();
-  const [sourceType, setSourceType] = useState<string>();
-  const [identityType, setIdentityType] = useState<string>();
+  const [category, setCategory] = useState<number[]>();
+  const [pCategory, setPCategory] = useState<number[]>();
+  const [stage, setStage] = useState<number[]>();
+  const [constructType, setConstructType] = useState<number[]>();
+  const [nature, setNature] = useState<number[]>();
+  const [kvLevel, setKvLevel] = useState<number[]>();
+  const [status, setStatus] = useState<number[]>();
+  const [sourceType, setSourceType] = useState<number[]>();
+  const [identityType, setIdentityType] = useState<number[]>();
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
+
+  const [statisticsData, setStatisticsData] = useState({
+    total: 0,
+    awaitProcess: 0,
+    inProgress: 0,
+    delegation: 0,
+    beShared: 0
+  })
 
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
@@ -116,7 +123,7 @@ const ProjectManagement: React.FC = () => {
 
   const [ifCanEdit, setIfCanEdit] = useState<any>([]);
 
-  const [notBeginUsers, setNotBeginUsers] = useState<any>();
+  // const [notBeginUsers, setNotBeginUsers] = useState<any>();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -125,13 +132,9 @@ const ProjectManagement: React.FC = () => {
 
   const [form] = Form.useForm();
 
-  const { data: statisticsData, run: getStatisticsData } = useRequest(getProjectTableStatistics, {
-    manual: true,
-  });
-
-  const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
-    manual: true,
-  });
+  // const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
+  //   manual: true,
+  // });
 
   const {
     projectCategory,
@@ -163,19 +166,7 @@ const ProjectManagement: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       tableRef.current.search();
-      getStatisticsData({
-        keyWord,
-        category: category ?? '-1',
-        pCategory: pCategory ?? '-1',
-        stage: stage ?? '-1',
-        constructType: constructType ?? '-1',
-        nature: nature ?? '-1',
-        kvLevel: kvLevel ?? '-1',
-        status: status ?? '-1',
-        sourceType: sourceType ?? '-1',
-        identityType: identityType ?? '-1',
-        ...areaInfo,
-      });
+      
     }
   };
 
@@ -183,7 +174,7 @@ const ProjectManagement: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       tableRef.current.searchByParams(params);
-      getStatisticsData({ ...(params as AllProjectStatisticsParams) });
+      
     }
   };
 
@@ -246,31 +237,31 @@ const ProjectManagement: React.FC = () => {
       message.error('请选择修改安排的项目！');
       return;
     }
-    // if (tableSelectData[0]?.projectInfo?.status[0]?.status === 7) {
-    //   message.error('当前处于设计完成，不可修改安排！');
-    //   return;
-    // }
-    // if (
-    //   (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-    //     tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
-    //   (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-    //     tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
-    // ) {
-    //   setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+    if (tableSelectData[0]?.projectInfo?.status[0]?.status === 7) {
+      message.error('当前处于设计完成，不可修改安排！');
+      return;
+    }
+    if (
+      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
+      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
+    ) {
+      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
 
-    //   setEditExternalArrangeModal(true);
-    //   return;
-    // }
-    // if (
-    //   tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-    //   tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
-    // ) {
-    //   setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
-    //   setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
+      setEditExternalArrangeModal(true);
+      return;
+    }
+    if (
+      tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+      tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
+    ) {
+      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+      setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
 
-    //   setExternalArrangeModal(true);
-    //   return;
-    // }
+      setExternalArrangeModal(true);
+      return;
+    }
     const resData = await canEditArrange(projectIds);
 
     const { allotCompanyGroup = '' } = resData;
@@ -410,22 +401,6 @@ const ProjectManagement: React.FC = () => {
     </Menu>
   );
 
-  useMount(() => {
-    getStatisticsData({
-      keyWord: '',
-      category: '-1',
-      pCategory: '-1',
-      stage: '-1',
-      constructType: '-1',
-      nature: '-1',
-      kvLevel: '-1',
-      status: '-1',
-      sourceType: sourceType ?? '-1',
-      identityType: identityType ?? '-1',
-      ...areaInfo,
-    });
-  });
-
   const resetSearch = () => {
     setKeyWord('');
     setCategory(undefined);
@@ -550,7 +525,8 @@ const ProjectManagement: React.FC = () => {
     }
     await deleteProject(projectIds);
     message.success('删除成功');
-    search();
+    // search();
+    refresh();
   };
 
   const arrangeFinishEvent = () => {
@@ -657,19 +633,7 @@ const ProjectManagement: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       await tableRef.current.delayRefresh();
-      getStatisticsData({
-        keyWord,
-        category: category ?? '-1',
-        pCategory: pCategory ?? '-1',
-        stage: stage ?? '-1',
-        constructType: constructType ?? '-1',
-        nature: nature ?? '-1',
-        kvLevel: kvLevel ?? '-1',
-        status: status ?? '-1',
-        sourceType: sourceType ?? '-1',
-        identityType: identityType ?? '-1',
-        ...areaInfo,
-      });
+      
     }
   };
   return (
@@ -692,10 +656,14 @@ const ProjectManagement: React.FC = () => {
                   <UrlSelect
                     valueKey="value"
                     titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     defaultData={projectCategory}
                     className="widthAll"
                     value={category}
-                    onChange={(value) => setCategory(value as string)}
+                    onChange={(value) => setCategory(value as number[])}
                     placeholder="项目分类"
                     needAll={true}
                     allValue="-1"
@@ -705,10 +673,14 @@ const ProjectManagement: React.FC = () => {
                   <UrlSelect
                     valueKey="value"
                     titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     defaultData={projectClassification}
                     value={pCategory}
                     dropdownMatchSelectWidth={168}
-                    onChange={(value) => setPCategory(value as string)}
+                    onChange={(value) => setPCategory(value as number[])}
                     className="widthAll"
                     placeholder="项目类别"
                     needAll={true}
@@ -719,10 +691,14 @@ const ProjectManagement: React.FC = () => {
                   <UrlSelect
                     valueKey="value"
                     titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     defaultData={projectStage}
                     value={stage}
                     className="widthAll"
-                    onChange={(value) => setStage(value as string)}
+                    onChange={(value) => setStage(value as number[])}
                     placeholder="项目阶段"
                     needAll={true}
                     allValue="-1"
@@ -732,11 +708,15 @@ const ProjectManagement: React.FC = () => {
                   <UrlSelect
                     valueKey="value"
                     titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     defaultData={projectConstructType}
                     value={constructType}
                     className="widthAll"
                     placeholder="建设类型"
-                    onChange={(value) => setConstructType(value as string)}
+                    onChange={(value) => setConstructType(value as number[])}
                     needAll={true}
                     allValue="-1"
                   />
@@ -745,9 +725,13 @@ const ProjectManagement: React.FC = () => {
                   <UrlSelect
                     valueKey="value"
                     titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     defaultData={projectKvLevel}
                     value={kvLevel}
-                    onChange={(value) => setKvLevel(value as string)}
+                    onChange={(value) => setKvLevel(value as number[])}
                     className="widthAll"
                     placeholder="电压等级"
                     needAll={true}
@@ -758,10 +742,14 @@ const ProjectManagement: React.FC = () => {
                   <UrlSelect
                     valueKey="value"
                     titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     defaultData={projectNature}
                     value={nature}
                     dropdownMatchSelectWidth={168}
-                    onChange={(value) => setNature(value as string)}
+                    onChange={(value) => setNature(value as number[])}
                     className="widthAll"
                     placeholder="项目性质"
                     needAll={true}
@@ -771,8 +759,12 @@ const ProjectManagement: React.FC = () => {
                 <TableSearch className="mb10" width="111px">
                   <EnumSelect
                     enumList={ProjectStatus}
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     value={status}
-                    onChange={(value) => setStatus(String(value))}
+                    onChange={(value) => setStatus(value as number[])}
                     className="widthAll"
                     placeholder="项目状态"
                     needAll={true}
@@ -785,8 +777,12 @@ const ProjectManagement: React.FC = () => {
                 <TableSearch width="111px" className="mb10">
                   <EnumSelect
                     enumList={ProjectSourceType}
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     value={sourceType}
-                    onChange={(value) => setSourceType(String(value))}
+                    onChange={(value) => setSourceType(value as number[])}
                     className="widthAll"
                     placeholder="项目来源"
                     needAll={true}
@@ -796,8 +792,12 @@ const ProjectManagement: React.FC = () => {
                 <TableSearch width="111px" className="mb10">
                   <EnumSelect
                     enumList={ProjectIdentityType}
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
                     value={identityType}
-                    onChange={(value) => setIdentityType(String(value))}
+                    onChange={(value) => setIdentityType(value as number[])}
                     className="widthAll"
                     placeholder="项目身份"
                     needAll={true}
@@ -909,16 +909,16 @@ const ProjectManagement: React.FC = () => {
                       selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
                       extraParams={{
                         keyWord,
-                        category: category ?? '-1',
-                        pCategory: pCategory ?? '-1',
-                        stage: stage ?? '-1',
-                        constructType: constructType ?? '-1',
-                        nature: nature ?? '-1',
-                        kvLevel: kvLevel ?? '-1',
-                        status: status ?? '-1',
-                        statisticalCategory: statisticalCategory ?? '-1',
-                        sourceType: sourceType ?? '-1',
-                        identityType: identityType ?? '-1',
+                        category: category,
+                        pCategory: pCategory,
+                        stage: stage,
+                        constructType: constructType,
+                        nature: nature,
+                        kvLevel: kvLevel,
+                        status: status,
+                        statisticalCategory: statisticalCategory,
+                        sourceType: sourceType,
+                        identityType: identityType,
                         ...areaInfo,
                       }}
                     />
@@ -943,21 +943,22 @@ const ProjectManagement: React.FC = () => {
           <div className={styles.projectManagementTableContent}>
             <EnigneerTable
               ref={tableRef}
-              afterSearch={search}
+              afterSearch={refresh}
               delayRefresh={delayRefresh}
               onSelect={tableSelectEvent}
               extractParams={{
                 keyWord,
-                category: category ?? '-1',
-                pCategory: pCategory ?? '-1',
-                stage: stage ?? '-1',
-                constructType: constructType ?? '-1',
-                nature: nature ?? '-1',
-                kvLevel: kvLevel ?? '-1',
-                status: status ?? '-1',
-                statisticalCategory: statisticalCategory ?? '-1',
-                sourceType: sourceType ?? '-1',
-                identityType: identityType ?? '-1',
+                category: category,
+                pCategory: pCategory,
+                stage: stage,
+                constructType: constructType,
+                nature: nature,
+                kvLevel: kvLevel,
+                status: status,
+                statisticalCategory: statisticalCategory,
+                sourceType: sourceType,
+                identityType: identityType,
+                LogicRelation: 1,
                 ...areaInfo,
               }}
             />

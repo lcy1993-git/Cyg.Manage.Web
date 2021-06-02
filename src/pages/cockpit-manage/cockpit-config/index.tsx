@@ -314,9 +314,9 @@ const CockpitManage: React.FC = () => {
   const engineerProgressStatistic = [{ name: '甘特图', value: 'gantt' }];
 
   const deliveryStatistic = [
-    { name: '项目交付数量/设计费(员工)', value: 'person' },
-    { name: '项目交付数量/设计费(部组)', value: 'department' },
-    { name: '项目交付数量/设计费(公司)', value: 'company' },
+    { name: '项目交付数量(员工)', value: 'person' },
+    { name: '项目交付数量(部组)', value: 'department' },
+    { name: '项目交付数量(公司)', value: 'company' },
   ];
 
   const otherStatistic = [

@@ -33,6 +33,7 @@ interface GetSelectDataParams {
   titleKey?: string;
   valueKey?: string;
   requestSource?: 'project' | 'common' | 'resource';
+  postType?: 'body' | 'query';
 }
 
 export const useGetSelectData = (params: GetSelectDataParams, options?: any) => {
@@ -43,10 +44,11 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
     titleKey = 'text',
     valueKey = 'value',
     requestSource = 'project',
+    postType = 'body',
   } = params;
 
   const { data: resData = [], loading, run } = useRequest(
-    () => getCommonSelectData({ url, method, params: extraParams, requestSource }),
+    () => getCommonSelectData({ url, method, params: extraParams, requestSource, postType }),
     {
       ...options,
     },

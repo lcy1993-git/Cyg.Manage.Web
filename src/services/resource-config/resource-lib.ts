@@ -8,6 +8,7 @@ interface ResourceLibParams {
   dbName: string;
   version: string;
   remark: string;
+  isDisabled: boolean;
 }
 
 interface ItemDetailData extends ResourceLibParams {
@@ -65,3 +66,12 @@ export const uploadDrawing = (files: any[], params: any) => {
     }),
   );
 };
+
+//启用/禁用 资源库
+export const changeLibStatus = (params: { id: string; status: number }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/ResourceLib/UpdateStatus`, { method: 'POST', data: params }),
+  );
+};
+
+
