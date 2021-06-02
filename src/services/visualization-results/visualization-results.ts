@@ -76,7 +76,7 @@ export const getMedium = (params: any) => {
 // 获取资源库id
 export const getlibId = (params: any) => {
   return request(
-    `${baseUrl.manage}/WebGis/GetProjectById`,
+    `${baseUrl.project}/Porject/GetLibId`,
     { method: 'GET', params },
   );
 };
