@@ -9,11 +9,13 @@ import { getScale, clearHighlightLayer, getLayerByName } from './methods';
 import { getCustomXmlData } from './utils';
 import {
   getGisDetail,
-  getlibId,
   getMedium,
   getMaterialItemData,
   loadLayer,
 } from '@/services/visualization-results/visualization-results';
+import {
+  getProjectInfo,
+} from '@/services/project-management/all-project';
 import { format } from './utils';
 // const mappingTagsData = getMappingTagsDictionary();
 // const mappingTagsDictionary: any =typeof mappingTagsData === 'string' ? JSON.parse(mappingTagsData) : {};
@@ -407,8 +409,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        await getlibId({ id: feature.getProperties().project_id }).then(async (data: any) => {
-          const resourceLibID = data.content.libId;
+        await getProjectInfo(feature.getProperties().project_id).then(async (data: any) => {
+          const resourceLibID = data.libId;
           const objectID =
             feature.getProperties().mode_id || feature.getProperties().equip_model_id;
           const materialParams: any = {
