@@ -213,6 +213,10 @@ export interface AllProjectStatisticsParams {
   status?: number[];
   sourceType?: number[];
   identityType?: number[];
+  logicRelation?: 0 | 1
+  surveyUser?: string
+  designUser?: string
+  areaInfo?: any
 }
 
 export interface AllProjectSearchParams extends AllProjectStatisticsParams {
@@ -221,14 +225,19 @@ export interface AllProjectSearchParams extends AllProjectStatisticsParams {
   statisticalCategory?: string;
 }
 
+interface ProjectTableRequestData {
+  pagedData: TableRequestResult,
+  statistics: ProjectTableStatisticsResult
+}
+
 // 获取列表
 export const getProjectTableList = (params: AllProjectSearchParams) => {
-  return cyRequest<TableRequestResult>(() =>
+  return cyRequest<ProjectTableRequestData>(() =>
     request(`${baseUrl.project}/Porject/GetPagedList`, { method: 'POST', data: params }),
   );
 };
 
-interface ProjectTableStatisticsResult {
+export interface ProjectTableStatisticsResult {
   total: number;
   awaitProcess: number;
   inProgress: number;
