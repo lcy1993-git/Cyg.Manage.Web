@@ -13,10 +13,11 @@ interface CreateProjectFormProps {
   areaId?: string;
   company?: string;
   companyName?: string;
+  status?: number;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
-  const { field = {}, areaId, company, companyName } = props;
+  const { field = {}, areaId, company, companyName, status } = props;
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
@@ -561,12 +562,22 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             rules={Rule.required}
           >
-            <UrlSelect
-              defaultData={projectDataSourceType}
-              valueKey="value"
-              titleKey="text"
-              placeholder="请选择"
-            />
+            {status == 1 || status == 14 ? (
+              <UrlSelect
+                defaultData={projectDataSourceType}
+                valueKey="value"
+                titleKey="text"
+                placeholder="请选择"
+              />
+            ) : (
+              <UrlSelect
+                defaultData={projectDataSourceType}
+                disabled
+                valueKey="value"
+                titleKey="text"
+                placeholder="请选择"
+              />
+            )}
           </CyFormItem>
         </div>
       </div>

@@ -40,7 +40,6 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
   delayRefresh?: () => void;
-  
 }
 
 interface JurisdictionInfo {
@@ -219,7 +218,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const tableResultData = useMemo(() => {
     if (tableData) {
-      const {pagedData, statistics} = tableData;
+      const { pagedData, statistics } = tableData;
       const { items, pageIndex, pageSize, total } = pagedData;
 
       return {
@@ -257,14 +256,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       <Menu>
         {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
           <Menu.Item
-            onClick={() =>
+            onClick={() => {
+              console.log(tableItemData);
+
               editProjectEvent({
                 projectId: tableItemData.id,
                 areaId: engineerInfo.province,
                 company: engineerInfo.company,
                 companyName: engineerInfo.company,
-              })
-            }
+                status: tableItemData.stateInfo.status,
+              });
+            }}
           >
             编辑
           </Menu.Item>
@@ -388,11 +390,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'stageText',
       width: '6.15%',
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-      width: '8%',
-    },
+
     {
       title: '项目状态',
       width: '6.15%',
@@ -476,6 +474,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             </span>
           );
         });
+      },
+    },
+    {
+      title: '勘察人',
+      dataIndex: 'designUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.designUser.value;
+      },
+    },
+    {
+      title: '设计人',
+      dataIndex: 'surveyUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.surveyUser.value;
       },
     },
     {
@@ -738,6 +752,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           projectId={currentEditProjectInfo.projectId}
           company={currentEditProjectInfo.company}
           areaId={currentEditProjectInfo.areaId}
+          status={currentEditProjectInfo.status}
           visible={editProjectVisible}
           onChange={setEditProjectVisible}
           changeFinishEvent={tableItemEventFinish}
