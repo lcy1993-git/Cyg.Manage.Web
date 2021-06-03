@@ -16,6 +16,18 @@ export interface AreaInfo {
   areaId?: string | undefined;
   areaLevel?: string | undefined;
 }
+export interface projectOperationLogParams {
+  limit: number;
+  areaCode: string | undefined;
+  areaType: string | undefined;
+}
+
+export interface RefreshDataType {
+  content: string;
+  projectName: string;
+  projectId: string;
+  date: Date;
+}
 
 export type Type = 'pie' | 'bar';
 
@@ -177,4 +189,14 @@ export const getProjectGanttData = ({
 // 获取地图组件的area组件
 export const getMapRegisterData = (areaId: string) => {
   return request(`/json/${areaId}.json`, { method: 'GET' });
+};
+
+// 获取项目操作log
+export const fetchProjectOperationLog = (params: projectOperationLogParams) => {
+  return cyRequest<RefreshDataType[]>(() =>
+    request(`${baseUrl.project}/HomeStatistic/GetProjectOperateLog`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
 };

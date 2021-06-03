@@ -1,9 +1,10 @@
 import React, { FC, useState } from 'react';
-import { Menu, message, Modal, Switch, Tooltip } from 'antd';
+import { Menu, message, Switch, Tooltip } from 'antd';
 import styles from './index.less';
 import {
   CommentOutlined,
   CopyOutlined,
+  ExportOutlined,
   HeatMapOutlined,
   NodeIndexOutlined,
   QuestionCircleOutlined,
@@ -16,10 +17,14 @@ import { useRequest } from 'ahooks';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
 import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
+import ExportMapPositionModal from '../export-map-position-modal';
 
 const ListMenu: FC = observer(() => {
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
+  const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(
+    false,
+  );
 
   const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
   const store = useContainer();
@@ -65,11 +70,21 @@ const ListMenu: FC = observer(() => {
     }
   };
 
+  const onClickExportProjectMapPosition = () => {
+    if (checkedProjectIdList?.length === 0) {
+      message.warning('请先选择项目');
+      setexportMapPositionModalVisible(false);
+    } else {
+      setexportMapPositionModalVisible(true);
+    }
+  };
+
   const menuListProcessor = {
     projectDetail: onClickProjectDetailInfo,
     positionMap: onCilickPositionMap,
     materialTable: onClickMaterialTable,
     commentTable: onClickCommentTable,
+    exportProjectMapPosition: onClickExportProjectMapPosition,
   };
 
   return (
@@ -105,7 +120,10 @@ const ListMenu: FC = observer(() => {
             项目详情
           </Menu.Item>
         )}
-
+        <Menu.Item key="exportProjectMapPosition" className={styles.menuItem}>
+          <ExportOutlined />
+          导出项目坐标
+        </Menu.Item>
         <Menu.Item key="positionMap" icon={<HeatMapOutlined />}>
           地图定位
         </Menu.Item>
@@ -151,6 +169,12 @@ const ListMenu: FC = observer(() => {
         visible={commentTableModalVisible}
         onCancel={() => setCommentTableModalVisible(false)}
         onOk={() => setCommentTableModalVisible(false)}
+      />
+
+      <ExportMapPositionModal
+        visible={exportMapPositionModalVisible}
+        onCancel={() => setexportMapPositionModalVisible(false)}
+        onOk={() => setexportMapPositionModalVisible(false)}
       />
     </>
   );

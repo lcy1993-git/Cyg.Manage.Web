@@ -11,7 +11,7 @@ import styles from './index.less';
 import uuid from 'node-uuid';
 import { useRef } from 'react';
 import { useRequest, useSize } from 'ahooks';
-import { divide, multiply, subtract } from 'lodash';
+import lodash, { divide, multiply, subtract } from 'lodash';
 import {
   DeleteOutlined,
   PlusOutlined,
@@ -49,6 +49,7 @@ import ProjectType from '../cockpit-config/components/cockpit-project-type-compo
 import ProjectProgress from '../cockpit-config/components/cockpit-progress-component';
 
 import { CockpitConfigContext } from './context';
+import CockpitProjectInfoFreshList from './components/cockpit-project-info-refresh-list';
 
 export interface CockpitProps {
   name: string;
@@ -84,6 +85,9 @@ const getComponentByType = (type: string, componentProps: any) => {
       break;
     case 'projectProgress':
       return <ProjectProgress />;
+      break;
+    case 'projectRefreshData':
+      return <CockpitProjectInfoFreshList componentProps={componentProps} />;
       break;
     default:
       return undefined;
@@ -294,6 +298,7 @@ const CockpitManage: React.FC = () => {
     { name: '生产负荷(员工)', value: 'person' },
     { name: '生产负荷(部组)', value: 'department' },
     { name: '生产负荷(公司)', value: 'company' },
+    { name: '项目实时动态', value: 'projectRefreshData' },
   ];
 
   const engineerTypeStatistic = [
@@ -322,6 +327,7 @@ const CockpitManage: React.FC = () => {
 
   const addComponentEvent = (componentProps: any) => {
     const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
+
     setConfigArray([...copyConfigArray, ...componentProps]);
   };
 

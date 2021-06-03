@@ -23,6 +23,7 @@ import { IndexContext } from './context';
 import { Spin } from 'antd';
 import { divide, multiply, subtract } from 'lodash';
 import uuid from 'node-uuid';
+import CockpitProjectInfoFreshList from '../cockpit-manage/cockpit-config/components/cockpit-project-info-refresh-list';
 import PageCommonWrap from '@/components/page-common-wrap';
 
 const getComponentByType = (type: string, componentProps: any) => {
@@ -47,6 +48,9 @@ const getComponentByType = (type: string, componentProps: any) => {
       break;
     case 'projectProgress':
       return <ProjectProgress />;
+      break;
+    case 'projectRefreshData':
+      return <CockpitProjectInfoFreshList componentProps={componentProps} />;
       break;
     default:
       return undefined;
