@@ -604,12 +604,26 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
     if (pageSize === size) {
       setPageIndex(page === 0 ? 1 : page);
+
+      run({
+        ...extractParams,
+        pageIndex: page,
+        pageSize,
+      });
+      setTableSelectData([]);
     }
   };
 
   const pageSizeChange = (page: any, size: any) => {
     setPageIndex(1);
     setPageSize(size);
+
+    run({
+      ...extractParams,
+      pageIndex,
+      pageSize: size,
+    });
+    setTableSelectData([]);
   };
 
   
@@ -661,16 +675,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setTableSelectData([]);
     afterSearch?.();
   };
-
-  // 页码发生变化，重新进行请求
-  useEffect(() => {
-    run({
-      ...extractParams,
-      pageIndex,
-      pageSize,
-    });
-    setTableSelectData([]);
-  }, [pageSize, pageIndex]);
 
   return (
     <div className={styles.projectTable}>
