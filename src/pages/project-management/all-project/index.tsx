@@ -51,6 +51,9 @@ import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
 import AreaSelect from '@/components/area-select';
 import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
+import ChooseDesignAndSurvey, {
+  ChooseDesignAndSurveyValue,
+} from '@/pages/project-management/all-project/components/choose-design-and-survey';
 
 const { Search } = Input;
 
@@ -80,8 +83,8 @@ const ProjectManagement: React.FC = () => {
     awaitProcess: 0,
     inProgress: 0,
     delegation: 0,
-    beShared: 0
-  })
+    beShared: 0,
+  });
 
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
@@ -122,6 +125,9 @@ const ProjectManagement: React.FC = () => {
   const [currentProjectId, setCurrentProjectId] = useState<string>('');
 
   const [ifCanEdit, setIfCanEdit] = useState<any>([]);
+
+  //获取筛选人员数据
+  const [personInfo, setPersonInfo] = useState<any>({});
 
   // const [notBeginUsers, setNotBeginUsers] = useState<any>();
 
@@ -166,7 +172,6 @@ const ProjectManagement: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       tableRef.current.search();
-      
     }
   };
 
@@ -174,7 +179,6 @@ const ProjectManagement: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       tableRef.current.searchByParams(params);
-      
     }
   };
 
@@ -416,6 +420,7 @@ const ProjectManagement: React.FC = () => {
       areaType: '-1',
       areaId: '',
     });
+    // setPersonInfo({});
     areaSelectReset();
     // TODO 重置完是否进行查询
     searchByParams({
@@ -589,6 +594,9 @@ const ProjectManagement: React.FC = () => {
     {
       width: 111,
     },
+    {
+      width: 111,
+    },
   ];
 
   const areaChangeEvent = (params: any) => {
@@ -633,9 +641,9 @@ const ProjectManagement: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       await tableRef.current.delayRefresh();
-      
     }
   };
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectManagement}>
@@ -804,6 +812,9 @@ const ProjectManagement: React.FC = () => {
                     allValue="-1"
                   />
                 </TableSearch>
+                <TableSearch width="121px">
+                  <ChooseDesignAndSurvey onChange={setPersonInfo} />
+                </TableSearch>
               </OverFlowHiddenComponent>
             </div>
             <div className={styles.projectManagemnetSearchButtonContent}>
@@ -958,7 +969,9 @@ const ProjectManagement: React.FC = () => {
                 statisticalCategory: statisticalCategory,
                 sourceType: sourceType,
                 identityType: identityType,
-                LogicRelation: 1,
+                logicRelation: personInfo.logicRelation ?? 2,
+                designUser: personInfo.design,
+                surveyUser: personInfo.survey,
                 ...areaInfo,
               }}
               getStatisticsData={(value: any) => setStatisticsData(value)}

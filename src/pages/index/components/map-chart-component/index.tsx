@@ -72,7 +72,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         },
         confine: true,
         formatter: function (params: any) {
-          const { name } = params;          
+          const { name } = params;
 
           const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name);
           if (nameIndex > -1) {
@@ -206,7 +206,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         }
       });
 
-      myChart.on('mouseover', function (params) {
+      myChart.on('mouseover', function (params: any) {
         myChart.dispatchAction({
           type: 'downplay',
         });
