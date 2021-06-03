@@ -709,7 +709,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         <CheckResultModal
           visible={checkResultVisible}
           onChange={setCheckResultVisible}
-          changeFinishEvent={arrangeFinish}
+          changeFinishEvent={afterSearch}
           projectInfo={checkResultPorjectInfo}
         />
       )}
