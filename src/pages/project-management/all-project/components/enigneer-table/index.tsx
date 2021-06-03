@@ -626,7 +626,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setTableSelectData([]);
   };
 
-  
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
     refresh: () => {

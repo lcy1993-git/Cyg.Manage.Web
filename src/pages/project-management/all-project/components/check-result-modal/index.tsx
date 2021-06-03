@@ -32,7 +32,8 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const { changeFinishEvent, projectInfo, isResult = false } = props;
   const [requestLoading, setRequestLoading] = useState(false);
 
-  console.log(projectInfo);
+  // console.log(projectInfo);
+
 
   const { run } = useRequest(() => getResultTreeData(projectInfo.projectId), {
     ready: !!projectInfo.projectId,
@@ -49,7 +50,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
 
   const closeEvent = () => {
     setState(false);
-    changeFinishEvent?.();
+    // changeFinishEvent?.();
   };
 
   const mapTreeData = (data: any) => {

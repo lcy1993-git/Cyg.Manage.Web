@@ -5,6 +5,8 @@ import moment from 'moment';
 import { useMemo } from 'react';
 import { useMap } from 'ahooks';
 
+// const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
+
 export interface EnumItem {
   key: string;
   value: EnumValue[];
