@@ -258,10 +258,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     // }
 
     store.setProjectIdList(projectIdList);
-
-    if (projectIdList.length === 0) {
-      store.toggleObserveTrack(false);
-    }
   }, [projectIdList]);
 
   const onTabChange = (key: string) => {
