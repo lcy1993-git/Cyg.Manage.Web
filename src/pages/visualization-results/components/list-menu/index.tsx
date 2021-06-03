@@ -45,7 +45,23 @@ const ListMenu: FC = observer(() => {
     },
   );
 
-  const { run: downloadMapPositonRequest } = useRequest(downloadMapPositon, { manual: true });
+  const { data: mapPosition, run: downloadMapPositonRequest } = useRequest(downloadMapPositon, {
+    manual: true,
+    onSuccess: () => {
+      const a = document.createElement('a');
+      a.download = '项目坐标.zip';
+      const blob = new Blob([mapPosition], { type: 'application/zip;charset=utf-8' });
+      // text指需要下载的文本或字符串内容
+      a.href = window.URL.createObjectURL(blob);
+      // 会生成一个类似blob:http://localhost:8080/d3958f5c-0777-0845-9dcf-2cb28783acaf 这样的URL字符串
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    },
+    onError: () => {
+      message.warn('导出失败');
+    },
+  });
 
   const onCilickPositionMap = () => {
     store.togglePositionMap();
