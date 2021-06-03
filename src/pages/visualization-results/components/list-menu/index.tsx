@@ -17,6 +17,7 @@ import { useRequest } from 'ahooks';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
 import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
+import { downloadMapPositon } from '@/services/visualization-results/list-menu';
 import ExportMapPositionModal from '../export-map-position-modal';
 
 const ListMenu: FC = observer(() => {
@@ -30,7 +31,7 @@ const ListMenu: FC = observer(() => {
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList } = vState;
-  const { data: commentCountResponseData, run: feetchCommentCountRquest } = useRequest(
+  const { data: commentCountResponseData, run: fetchCommentCountRquest } = useRequest(
     () => fetchCommentCountById(checkedProjectIdList[0].id),
     {
       manual: true,
@@ -44,6 +45,8 @@ const ListMenu: FC = observer(() => {
     },
   );
 
+  const { run: downloadMapPositonRequest } = useRequest(downloadMapPositon, { manual: true });
+
   const onCilickPositionMap = () => {
     store.togglePositionMap();
     store.setOnPositionClickState();
@@ -55,7 +58,7 @@ const ListMenu: FC = observer(() => {
 
   const onClickCommentTable = () => {
     if (checkedProjectIdList?.length) {
-      feetchCommentCountRquest();
+      fetchCommentCountRquest();
     } else {
       message.warn('请选择一个项目');
     }
@@ -77,6 +80,11 @@ const ListMenu: FC = observer(() => {
     } else {
       setexportMapPositionModalVisible(true);
     }
+  };
+
+  const onOkWithExportMapPosition = () => {
+    downloadMapPositonRequest(checkedProjectIdList.map((item) => item.id));
+    setexportMapPositionModalVisible(false);
   };
 
   const menuListProcessor = {
@@ -174,7 +182,7 @@ const ListMenu: FC = observer(() => {
       <ExportMapPositionModal
         visible={exportMapPositionModalVisible}
         onCancel={() => setexportMapPositionModalVisible(false)}
-        onOk={() => setexportMapPositionModalVisible(false)}
+        onOk={onOkWithExportMapPosition}
       />
     </>
   );

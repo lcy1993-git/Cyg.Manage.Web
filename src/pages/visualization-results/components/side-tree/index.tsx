@@ -133,7 +133,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
       localStorage.removeItem('selectCity');
       const { expanded, checked } = key;
-      setExpandedKeys(['-1', ...expanded]);
+      setExpandedKeys([...expanded]);
       setCheckedKeys(getKeyList(checked));
       setProjectIdList(generatorProjectInfoList(checked));
     } else {

@@ -2,7 +2,7 @@ import { List } from 'antd';
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
-import { useRequest, useInterval, useSize } from 'ahooks';
+import { useRequest, useInterval, useSize, useInViewport } from 'ahooks';
 import { request } from 'umi';
 import ProjectItem from './components/project-Item';
 import {
@@ -29,6 +29,7 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
   const [inVisibleQueue, setInVisibleQueue] = useState<RefreshDataType[]>([]);
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
+  const inViewPort = useInViewport(ref);
 
   /**
    * count表示是可视条数是多少
@@ -98,6 +99,14 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
       }
     },
   });
+
+  useEffect(() => {
+    if (inViewPort) {
+      run();
+    } else {
+      cancel();
+    }
+  }, [inViewPort]);
 
   const scroll = () => {
     // 如果等于或者超出可是条数，就开始滚动，使用循环队列的方式来实现视觉效果

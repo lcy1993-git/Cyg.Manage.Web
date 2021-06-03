@@ -77,3 +77,13 @@ export const fetchCommentListByParams = (params: CommentListParams) => {
     ),
   );
 };
+
+export const downloadMapPositon = (projectId: string[]) => {
+  return cyRequest<ProjectCommentListItemType[]>(() =>
+    request(
+      `${baseUrl.manage}/WebGisDownload/GetProjectFileById
+    `,
+      { method: 'POST', data: {projectId} },
+    ),
+  );
+};
