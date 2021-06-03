@@ -105,7 +105,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       return;
     }
     if (layer.getSource() instanceof Cluster) {
-      if (feature.get('features').length !== 1) return;
+      if (feature.get('features').length > 1) {
+        let lont = feature.get('features')[0].getGeometry().getCoordinates();
+        let item = feature
+          .get('features')
+          .find((item: any) => item.getGeometry().getCoordinates().toString() !== lont.toString());
+        if (item) return;
+      }
       feature = feature.get('features')[0];
     }
     map.getTargetElement().style.cursor = 'wait';
@@ -407,46 +413,49 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        await getlibId({ id: feature.getProperties().project_id }).then(async (data: any) => {
-          const resourceLibID = data.content.libId;
-          const objectID =
-            feature.getProperties().mode_id || feature.getProperties().equip_model_id;
-          const materialParams: any = {
-            objectID,
-            resourceLibID,
-            forProject: 0,
-            forDesign: 0,
-            materialModifyList: [],
-          };
-          materialParams.layerName = layerName;
-          await getMaterialItemData(materialParams).then((res: any) => {
-            pJSON['材料表'] = [];
-            if (res.isSuccess) {
-              const filterData = res.content.filter((item: any) => item.parentID !== -1);
-              const data = filterData.map((item: any) => {
-                return {
-                  ...item,
-                  state: feature.getProperties().state,
-                  children: [],
-                };
-              });
-              const handlerData = data.reduce((curr: any, item: any) => {
-                const exist = curr.find((currItem: any) => currItem.type === item.type);
-                if (exist) {
-                  curr.forEach((currExist: any, index: any) => {
-                    if (currExist.type === exist.type) {
-                      curr[index].children.push(item);
-                    }
-                  });
-                } else {
-                  curr.push(item);
-                }
-                return curr;
-              }, []);
-              pJSON['材料表'] = handlerData;
-            }
-          });
-        });
+        await getlibId({ projectId: feature.getProperties().project_id }).then(
+          async (data: any) => {
+            console.log(data);
+            const resourceLibID = data.content;
+            const objectID =
+              feature.getProperties().mode_id || feature.getProperties().equip_model_id;
+            const materialParams: any = {
+              objectID,
+              resourceLibID,
+              forProject: 0,
+              forDesign: 0,
+              materialModifyList: [],
+            };
+            materialParams.layerName = layerName;
+            await getMaterialItemData(materialParams).then((res: any) => {
+              pJSON['材料表'] = [];
+              if (res.isSuccess) {
+                const filterData = res.content.filter((item: any) => item.parentID !== -1);
+                const data = filterData.map((item: any) => {
+                  return {
+                    ...item,
+                    state: feature.getProperties().state,
+                    children: [],
+                  };
+                });
+                const handlerData = data.reduce((curr: any, item: any) => {
+                  const exist = curr.find((currItem: any) => currItem.type === item.type);
+                  if (exist) {
+                    curr.forEach((currExist: any, index: any) => {
+                      if (currExist.type === exist.type) {
+                        curr[index].children.push(item);
+                      }
+                    });
+                  } else {
+                    curr.push(item);
+                  }
+                  return curr;
+                }, []);
+                pJSON['材料表'] = handlerData;
+              }
+            });
+          },
+        );
       }
     }
 
@@ -488,15 +497,22 @@ export const mapPointermove = (evt: any, map: any) => {
   const x = document.getElementById('currentPositionX');
   const y = document.getElementById('currentPositionY');
   if (x !== null) x.innerHTML = lont[0].toFixed(4);
-  if (y !== null) y.innerHTML = lont[0].toFixed(4);
+  if (y !== null) y.innerHTML = lont[1].toFixed(4);
   if (map.getTargetElement().style.cursor === 'wait') return;
   map.getTargetElement().style.cursor = 'default';
   let allowed = true;
   map.forEachFeatureAtPixel(evt.pixel, function (feature: any, layer: any) {
-    if (layer.getSource() instanceof Cluster && feature.get('features').length > 1) allowed = false;
-    if (allowed)
-      map.getTargetElement().style.cursor = 'pointer';
-    else map.getTargetElement().style.cursor = 'not-allowed';
+    if (layer.getSource() instanceof Cluster) {
+      if (feature.get('features').length > 1) {
+        let lont = feature.get('features')[0].getGeometry().getCoordinates();
+        let item = feature
+          .get('features')
+          .find((item: any) => item.getGeometry().getCoordinates().toString() !== lont.toString());
+        if (item) allowed = false;
+      }
+      if (allowed) map.getTargetElement().style.cursor = 'pointer';
+      else map.getTargetElement().style.cursor = 'not-allowed';
+    }
   });
 };
 
