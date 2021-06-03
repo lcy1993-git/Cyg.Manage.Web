@@ -3,6 +3,7 @@ import styles from './index.less';
 import { Tooltip } from 'antd';
 import { useSize } from 'ahooks';
 import { Link } from 'umi';
+import { useLayoutStore } from '@/layouts/context';
 export interface ProjectItemProps {
   name: string;
   id: string;
@@ -11,8 +12,11 @@ export interface ProjectItemProps {
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
+
+  const {setAllProjectSearchProjectName} = useLayoutStore();
+ 
   const onClickProject = () => {
-    localStorage.setItem('selectProject', id);
+    setAllProjectSearchProjectName(name)
   };
 
   const ref = useRef<HTMLDivElement>(null);
@@ -28,7 +32,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
       <Tooltip
         className={styles.tooltip}
         title={
-          size.width < 500 ? (
+          size && size.width! < 500 ? (
             <>
               <div>
                 <span className={styles.content}>{content} </span>
@@ -46,7 +50,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
           <span className={styles.content}>{content} </span>
           &nbsp;
           <Link
-            to={`/project-management/all-project?selectProject=${id}`}
+            to={`/project-management/all-project`}
             
             className={styles.name}
             onClick={onClickProject}

@@ -63,7 +63,16 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
-    reset: () => {},
+    reset: () => {
+      setLogicRelation(2)
+      setSurvey("");
+      setDesign("");
+      onChange?.({
+        logicRelation: 2,
+        survey: "",
+        design: ""
+      })
+    },
   }));
 
   useEffect(() => {
@@ -130,6 +139,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
           <div className={styles.popContentItemSelect}>
             <DataSelect
               value={survey}
+              placeholder="请选择"
               onChange={(value) => setSurvey(value as string)}
               getPopupContainer={(triggerNode) => triggerNode.parentElement}
               style={{ width: '100%' }}
@@ -157,6 +167,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
           <div className={styles.popContentItemSelect}>
             <DataSelect
               value={design}
+              placeholder="请选择"
               onChange={(value) => setDesign(value as string)}
               getPopupContainer={(triggerNode) => triggerNode.parentElement}
               style={{ width: '100%' }}

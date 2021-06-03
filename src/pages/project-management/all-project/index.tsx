@@ -1,6 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Button, Input, message, Modal } from 'antd';
 
@@ -52,6 +52,7 @@ import AreaSelect from '@/components/area-select';
 import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
 import ChooseDesignAndSurvey from '@/pages/project-management/all-project/components/choose-design-and-survey';
+import { useLayoutStore } from '@/layouts/context';
 
 const { Search } = Input;
 
@@ -83,6 +84,13 @@ const ProjectManagement: React.FC = () => {
     delegation: 0,
     beShared: 0,
   });
+
+  const {
+    setAllProjectSearchProjectName,
+    setAllProjectSearchPerson,
+    allProjectSearchPerson,
+    allProjectSearchProjectName,
+  } = useLayoutStore();
 
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
   // 被勾选中的数据
@@ -133,6 +141,7 @@ const ProjectManagement: React.FC = () => {
 
   const tableRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
+  const chooseDesignAndSurveyRef = useRef<HTMLDivElement>(null);
 
   const [form] = Form.useForm();
 
@@ -418,23 +427,36 @@ const ProjectManagement: React.FC = () => {
       areaType: '-1',
       areaId: '',
     });
-    // setPersonInfo({});
+    setPersonInfo({
+      logicRelation: 2,
+      designUser: '',
+      surveyUser: '',
+    })
+
+    if(chooseDesignAndSurveyRef && chooseDesignAndSurveyRef.current) {
+      //@ts-ignore
+      chooseDesignAndSurveyRef.current.reset();
+    }
+
     areaSelectReset();
     // TODO 重置完是否进行查询
     searchByParams({
       keyWord: '',
-      category: '-1',
-      pCategory: '-1',
-      stage: '-1',
-      constructType: '-1',
-      nature: '-1',
-      kvLevel: '-1',
-      status: '-1',
+      category: [],
+      pCategory: [],
+      stage: [],
+      constructType: [],
+      nature: [],
+      kvLevel: [],
+      status: [],
       statisticalCategory: statisticalCategory,
-      sourceType: '-1',
-      identityType: '-1',
+      sourceType: [],
+      identityType: [],
       areaType: '-1',
       areaId: '',
+      logicRelation: 2,
+      designUser: '',
+      surveyUser: '',
     });
   };
 
@@ -442,16 +464,19 @@ const ProjectManagement: React.FC = () => {
     setStatisticalCategory(statisticsType);
     searchByParams({
       keyWord,
-      category: category ?? '-1',
-      pCategory: pCategory ?? '-1',
-      stage: stage ?? '-1',
-      constructType: constructType ?? '-1',
-      nature: nature ?? '-1',
-      kvLevel: kvLevel ?? '-1',
-      status: status ?? '-1',
+      category: category ?? [],
+      pCategory: pCategory ?? [],
+      stage: stage ?? [],
+      constructType: constructType ?? [],
+      nature: nature ?? [],
+      kvLevel: kvLevel ?? [],
+      status: status ?? [],
       statisticalCategory: statisticsType,
-      sourceType: sourceType ?? '-1',
-      identityType: identityType ?? '-1',
+      sourceType: sourceType ?? [],
+      identityType: identityType ?? [],
+      logicRelation: personInfo.logicRelation ?? 2,
+      designUser: personInfo.design,
+      surveyUser: personInfo.survey,
       ...areaInfo,
     });
   };
@@ -644,7 +669,58 @@ const ProjectManagement: React.FC = () => {
 
   useMount(() => {
     search();
-  })
+  });
+
+  useEffect(() => {
+    if (allProjectSearchProjectName) {
+      setKeyWord(allProjectSearchProjectName);
+      setAllProjectSearchProjectName('');
+
+      searchByParams({
+        keyWord: allProjectSearchProjectName,
+        category: category ?? [],
+        pCategory: pCategory ?? [],
+        stage: stage ?? [],
+        constructType: constructType ?? [],
+        nature: nature ?? [],
+        kvLevel: kvLevel ?? [],
+        status: status ?? [],
+        statisticalCategory: statisticalCategory,
+        sourceType: sourceType ?? [],
+        identityType: identityType ?? [],
+        logicRelation: personInfo.logicRelation ?? 2,
+        designUser: personInfo.design,
+        surveyUser: personInfo.survey,
+        ...areaInfo,
+      });
+    }
+    if (allProjectSearchPerson) {
+      setPersonInfo({
+        survey: allProjectSearchPerson,
+        logicRelation: 2,
+        desgin: allProjectSearchPerson,
+      });
+      setAllProjectSearchPerson('');
+
+      searchByParams({
+        keyWord,
+        category: category ?? [],
+        pCategory: pCategory ?? [],
+        stage: stage ?? [],
+        constructType: constructType ?? [],
+        nature: nature ?? [],
+        kvLevel: kvLevel ?? [],
+        status: status ?? [],
+        statisticalCategory: statisticalCategory,
+        sourceType: sourceType ?? [],
+        identityType: identityType ?? [],
+        logicRelation: 2,
+        designUser: allProjectSearchPerson,
+        surveyUser: allProjectSearchPerson,
+        ...areaInfo,
+      });
+    }
+  }, [allProjectSearchPerson, allProjectSearchProjectName]);
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -675,7 +751,6 @@ const ProjectManagement: React.FC = () => {
                     value={category}
                     onChange={(value) => setCategory(value as number[])}
                     placeholder="项目分类"
-                 
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -692,7 +767,6 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setPCategory(value as number[])}
                     className="widthAll"
                     placeholder="项目类别"
-                   
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -708,7 +782,6 @@ const ProjectManagement: React.FC = () => {
                     className="widthAll"
                     onChange={(value) => setStage(value as number[])}
                     placeholder="项目阶段"
-                  
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -724,7 +797,6 @@ const ProjectManagement: React.FC = () => {
                     className="widthAll"
                     placeholder="建设类型"
                     onChange={(value) => setConstructType(value as number[])}
-                   
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -740,7 +812,6 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setKvLevel(value as number[])}
                     className="widthAll"
                     placeholder="电压等级"
-            
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -757,7 +828,6 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setNature(value as number[])}
                     className="widthAll"
                     placeholder="项目性质"
-    
                   />
                 </TableSearch>
                 <TableSearch className="mb10" width="111px">
@@ -771,7 +841,6 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setStatus(value as number[])}
                     className="widthAll"
                     placeholder="项目状态"
-           
                   />
                 </TableSearch>
                 <TableSearch className="mb10" width="111px">
@@ -788,7 +857,6 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setSourceType(value as number[])}
                     className="widthAll"
                     placeholder="项目来源"
-                
                   />
                 </TableSearch>
                 <TableSearch width="111px" className="mb10">
@@ -802,11 +870,10 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setIdentityType(value as number[])}
                     className="widthAll"
                     placeholder="项目身份"
-                
                   />
                 </TableSearch>
                 <TableSearch width="121px">
-                  <ChooseDesignAndSurvey onChange={setPersonInfo} />
+                  <ChooseDesignAndSurvey ref={chooseDesignAndSurveyRef} onChange={setPersonInfo} />
                 </TableSearch>
               </OverFlowHiddenComponent>
             </div>
@@ -1068,8 +1135,8 @@ const ProjectManagement: React.FC = () => {
           search={delayRefresh}
         />
       )}
-    {/* 管理端新增按钮弹窗 */}
-    {/* <PositonExportMadal /> */}
+      {/* 管理端新增按钮弹窗 */}
+      {/* <PositonExportMadal /> */}
     </PageCommonWrap>
   );
 };
