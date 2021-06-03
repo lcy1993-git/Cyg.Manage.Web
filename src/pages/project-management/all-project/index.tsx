@@ -126,6 +126,12 @@ const ProjectManagement: React.FC = () => {
 
   const [upLoadAddProjectModalVisible, setUploadAddProjectModalVisible] = useState<boolean>(false);
 
+  const [selectDefaultData, setSelectDefaultData] = useState({
+    logicRelation: 2,
+    survey: "",
+    design: ""
+  })
+
   //获取上传立项模板后的List数据
   //获取当前选择数据
   const [currentProjectId, setCurrentProjectId] = useState<string>('');
@@ -141,7 +147,6 @@ const ProjectManagement: React.FC = () => {
 
   const tableRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
-  const chooseDesignAndSurveyRef = useRef<HTMLDivElement>(null);
 
   const [form] = Form.useForm();
 
@@ -432,11 +437,11 @@ const ProjectManagement: React.FC = () => {
       designUser: '',
       surveyUser: '',
     })
-
-    if(chooseDesignAndSurveyRef && chooseDesignAndSurveyRef.current) {
-      //@ts-ignore
-      chooseDesignAndSurveyRef.current.reset();
-    }
+    setSelectDefaultData({
+      survey: "",
+      logicRelation: 2,
+      design: "",
+    })
 
     areaSelectReset();
     // TODO 重置完是否进行查询
@@ -695,11 +700,19 @@ const ProjectManagement: React.FC = () => {
       });
     }
     if (allProjectSearchPerson) {
+      console.log(allProjectSearchPerson)
       setPersonInfo({
-        survey: allProjectSearchPerson,
+        survey: String(allProjectSearchPerson),
         logicRelation: 2,
-        desgin: allProjectSearchPerson,
+        desgin: String(allProjectSearchPerson),
       });
+
+      setSelectDefaultData({
+        survey: String(allProjectSearchPerson),
+        logicRelation: 2,
+        design: String(allProjectSearchPerson),
+      })
+      
       setAllProjectSearchPerson('');
 
       searchByParams({
@@ -715,10 +728,11 @@ const ProjectManagement: React.FC = () => {
         sourceType: sourceType ?? [],
         identityType: identityType ?? [],
         logicRelation: 2,
-        designUser: allProjectSearchPerson,
-        surveyUser: allProjectSearchPerson,
+        designUser: String(allProjectSearchPerson),
+        surveyUser: String(allProjectSearchPerson),
         ...areaInfo,
       });
+      
     }
   }, [allProjectSearchPerson, allProjectSearchProjectName]);
 
@@ -783,6 +797,9 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setStage(value as number[])}
                     placeholder="项目阶段"
                   />
+                </TableSearch>
+                <TableSearch width="121px">
+                  <ChooseDesignAndSurvey defaultValue={selectDefaultData} onChange={setPersonInfo} />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
@@ -871,9 +888,6 @@ const ProjectManagement: React.FC = () => {
                     className="widthAll"
                     placeholder="项目身份"
                   />
-                </TableSearch>
-                <TableSearch width="121px">
-                  <ChooseDesignAndSurvey ref={chooseDesignAndSurveyRef} onChange={setPersonInfo} />
                 </TableSearch>
               </OverFlowHiddenComponent>
             </div>

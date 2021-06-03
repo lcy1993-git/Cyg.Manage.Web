@@ -1,5 +1,5 @@
 import BarChart from '@/components/bar-chart';
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as echarts from 'echarts/lib/echarts';
 import ChartBox from '../chart-box';
 import ChartTab from '../chart-tab';
@@ -7,7 +7,9 @@ import styles from './index.less';
 import { useState, useMemo } from 'react';
 import { useRequest } from 'ahooks';
 import { getBurdens, AreaInfo } from '@/services/index';
-import { useHistory } from 'react-router-dom';
+import { useLayoutStore } from '@/layouts/context';
+
+import {history} from "umi"
 
 interface Props {
   componentProps?: string[];
@@ -17,7 +19,21 @@ interface Props {
 const PersonnelLoad: React.FC<Props> = (props) => {
   const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props;
   const [activeKey, setActiveKey] = useState<string>('person');
-  const history = useHistory();
+
+  const {setAllProjectSearchPerson} = useLayoutStore()
+
+  useEffect(() => {
+    //@ts-ignore
+    window.testClick = (personId: string) => {
+      setAllProjectSearchPerson(personId)
+      history.push("project-management/all-project");
+    }
+    return () => {
+      //@ts-ignore
+      window.testClick = null
+    }
+  })
+
   const tabData = [
     {
       id: 'person',
@@ -96,13 +112,17 @@ const PersonnelLoad: React.FC<Props> = (props) => {
         },
         formatter: function (params: any) {
           const [name] = params;
-          const onClickProject = () => {
-            localStorage.setItem('selectProject', burdensData[name.dataIndex].id);
-          };
-          return `${name.name}<br />
+          
+          const personId = burdensData[name.dataIndex]?.id
+
+          if(type === "1") {
+            return `${name.name}<br />
                     项目数量:${name.value}
-                    <div>所有项目列表：<Link to='/project-management/all-project?selectProject=${burdensData[name.dataIndex].id}' onClick={onClickProject}>跳转</Link></div>
+                    <div>所有项目列表：<span style="color: #0E7B3B" onclick=testClick('${personId}')>跳转</span></div>
                     `;
+          }
+          return `${name.name}<br />
+                  项目数量:${name.value}`;
         },
       },
       xAxis: {
@@ -209,7 +229,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
       //   }
       // ]
     };
-  }, [JSON.stringify(burdensData)]);
+  }, [JSON.stringify(burdensData),type]);
 
   return (
     <ChartBox title={title}>

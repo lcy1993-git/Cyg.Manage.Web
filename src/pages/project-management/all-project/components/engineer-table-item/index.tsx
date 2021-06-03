@@ -183,7 +183,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
         </div>
         <div className={styles.projectAccount}>
           <span className={styles.label}>共有项目:</span>
-          <span>{projectInfo.projects.length}个</span>
+          <span>{projectInfo.projects ? projectInfo.projects?.length : 0}个</span>
         </div>
         <div className={styles.projectTime}>
           <span className={styles.label}>工程日期:</span>
