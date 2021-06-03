@@ -8,13 +8,19 @@ export interface ProjectItemProps {
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
+  const onClickProject = () => {
+    localStorage.setItem('selectProject', id);
+
+  };
   return (
     <div className={styles.projectItem}>
       {content} &nbsp;
       {content.includes('删除') ? (
         <span className={styles.deleteItem}>{name}</span>
       ) : (
-        <a className={styles.item}>{name}</a>
+        <a href='/project-management/all-project' className={styles.item} onClick={onClickProject}>
+          {name}
+        </a>
       )}
       <span style={{ float: 'right' }}>{date}</span>
     </div>
