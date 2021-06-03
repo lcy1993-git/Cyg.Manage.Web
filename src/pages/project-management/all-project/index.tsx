@@ -961,6 +961,7 @@ const ProjectManagement: React.FC = () => {
                 LogicRelation: 1,
                 ...areaInfo,
               }}
+              getStatisticsData={(value: any) => setStatisticsData(value)}
             />
           </div>
         </div>

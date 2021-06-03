@@ -40,6 +40,7 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
   delayRefresh?: () => void;
+  getStatisticsData?: (value: any) => void
 }
 
 interface JurisdictionInfo {
@@ -55,7 +56,7 @@ const colorMap = {
 };
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, afterSearch, delayRefresh } = props;
+  const { extractParams, onSelect, afterSearch, delayRefresh, getStatisticsData } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
@@ -220,7 +221,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     if (tableData) {
       const { pagedData, statistics } = tableData;
       const { items, pageIndex, pageSize, total } = pagedData;
-
+      getStatisticsData?.(statistics)
       return {
         items: items ?? [],
         pageIndex,
