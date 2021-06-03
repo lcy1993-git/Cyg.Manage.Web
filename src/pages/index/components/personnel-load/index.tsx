@@ -96,12 +96,12 @@ const PersonnelLoad: React.FC<Props> = (props) => {
         },
         formatter: function (params: any) {
           const [name] = params;
-        //   const test = () => {
-        //     history.push('/project-management/all-project');
-        //   };
+          const onClickProject = () => {
+            localStorage.setItem('selectProject', burdensData[name.dataIndex].id);
+          };
           return `${name.name}<br />
                     项目数量:${name.value}
-                    <div>所有项目列表：<span onClick={history.push('/project-management/all-project')}>跳转</span></div>
+                    <div>所有项目列表：<Link to='/project-management/all-project?selectProject=${burdensData[name.dataIndex].id}' onClick={onClickProject}>跳转</Link></div>
                     `;
         },
       },
