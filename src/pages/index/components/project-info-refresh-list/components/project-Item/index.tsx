@@ -2,6 +2,7 @@ import React, { FC, useRef } from 'react';
 import styles from './index.less';
 import { Tooltip } from 'antd';
 import { useSize } from 'ahooks';
+import { Link } from 'umi';
 export interface ProjectItemProps {
   name: string;
   id: string;
@@ -32,11 +33,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
               <div>
                 <span className={styles.content}>{content} </span>
                 &nbsp;
-                <a
-                  href="/project-management/all-project"
-                  style={{ color: '#26f682' }}
-                  onClick={onClickProject}
-                >
+                <a style={{ color: '#26f682' }} onClick={onClickProject}>
                   {name}
                 </a>
               </div>
@@ -48,13 +45,13 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
         <div>
           <span className={styles.content}>{content} </span>
           &nbsp;
-          <a
-            href="/project-management/all-project"
+          <Link
+            to="/project-management/all-project"
             className={styles.name}
             onClick={onClickProject}
           >
             {name}
-          </a>
+          </Link>
         </div>
         <span>{date}</span>
       </Tooltip>

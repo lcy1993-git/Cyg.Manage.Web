@@ -92,7 +92,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   useEffect(() => {
     store.setProjectIdList(projectIdList);
-  
   }, [projectIdList]);
 
   const clearState = () => {
@@ -341,9 +340,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                 checkedKeys={checkedKeys}
                 treeData={treeData}
                 className={classNames(styles.sideMenu)}
-              >
-         
-              </Tree>
+              ></Tree>
             </>
           ) : null}
         </TabPane>
