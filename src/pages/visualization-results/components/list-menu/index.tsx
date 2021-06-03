@@ -1,9 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
-import { Menu, message, Modal, Switch, Tooltip } from 'antd';
+import React, { FC, useState } from 'react';
+import { Menu, message, Switch, Tooltip } from 'antd';
 import styles from './index.less';
 import {
   CommentOutlined,
   CopyOutlined,
+  ExportOutlined,
   HeatMapOutlined,
   NodeIndexOutlined,
   QuestionCircleOutlined,
@@ -16,16 +17,21 @@ import { useRequest } from 'ahooks';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
 import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
+import { downloadMapPositon } from '@/services/visualization-results/list-menu';
+import ExportMapPositionModal from '../export-map-position-modal';
 
 const ListMenu: FC = observer(() => {
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
+  const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(
+    false,
+  );
 
   const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList } = vState;
-  const { data: commentCountResponseData, run: feetchCommentCountRquest } = useRequest(
+  const { data: commentCountResponseData, run: fetchCommentCountRquest } = useRequest(
     () => fetchCommentCountById(checkedProjectIdList[0].id),
     {
       manual: true,
@@ -39,6 +45,24 @@ const ListMenu: FC = observer(() => {
     },
   );
 
+  const { data: mapPosition, run: downloadMapPositonRequest } = useRequest(downloadMapPositon, {
+    manual: true,
+    onSuccess: () => {
+      const a = document.createElement('a');
+      a.download = '项目坐标.zip';
+      const blob = new Blob([mapPosition], { type: 'application/zip;charset=utf-8' });
+      // text指需要下载的文本或字符串内容
+      a.href = window.URL.createObjectURL(blob);
+      // 会生成一个类似blob:http://localhost:8080/d3958f5c-0777-0845-9dcf-2cb28783acaf 这样的URL字符串
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    },
+    onError: () => {
+      message.warn('导出失败');
+    },
+  });
+
   const onCilickPositionMap = () => {
     store.togglePositionMap();
     store.setOnPositionClickState();
@@ -50,7 +74,7 @@ const ListMenu: FC = observer(() => {
 
   const onClickCommentTable = () => {
     if (checkedProjectIdList?.length) {
-      feetchCommentCountRquest();
+      fetchCommentCountRquest();
     } else {
       message.warn('请选择一个项目');
     }
@@ -65,11 +89,26 @@ const ListMenu: FC = observer(() => {
     }
   };
 
+  const onClickExportProjectMapPosition = () => {
+    if (checkedProjectIdList?.length === 0) {
+      message.warning('请先选择项目');
+      setexportMapPositionModalVisible(false);
+    } else {
+      setexportMapPositionModalVisible(true);
+    }
+  };
+
+  const onOkWithExportMapPosition = () => {
+    downloadMapPositonRequest(checkedProjectIdList.map((item) => item.id));
+    setexportMapPositionModalVisible(false);
+  };
+
   const menuListProcessor = {
     projectDetail: onClickProjectDetailInfo,
     positionMap: onCilickPositionMap,
     materialTable: onClickMaterialTable,
     commentTable: onClickCommentTable,
+    exportProjectMapPosition: onClickExportProjectMapPosition,
   };
 
   return (
@@ -79,6 +118,7 @@ const ListMenu: FC = observer(() => {
           projectId={checkedProjectIdList[0].id}
           visible={projectModalVisible}
           onChange={setProjectModalVisible}
+          isResult={true}
         />
       ) : null}
 
@@ -104,7 +144,10 @@ const ListMenu: FC = observer(() => {
             项目详情
           </Menu.Item>
         )}
-
+        <Menu.Item key="exportProjectMapPosition" className={styles.menuItem}>
+          <ExportOutlined />
+          导出项目坐标
+        </Menu.Item>
         <Menu.Item key="positionMap" icon={<HeatMapOutlined />}>
           地图定位
         </Menu.Item>
@@ -150,6 +193,12 @@ const ListMenu: FC = observer(() => {
         visible={commentTableModalVisible}
         onCancel={() => setCommentTableModalVisible(false)}
         onOk={() => setCommentTableModalVisible(false)}
+      />
+
+      <ExportMapPositionModal
+        visible={exportMapPositionModalVisible}
+        onCancel={() => setexportMapPositionModalVisible(false)}
+        onOk={onOkWithExportMapPosition}
       />
     </>
   );

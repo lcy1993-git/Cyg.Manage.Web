@@ -51,7 +51,7 @@ function getMappingTagsDictionary() {
       },
       mappingTags2: {
         "code": "名称",
-        "type": "类型",
+        "pole_type_code": "类型",
         "rod": "杆梢径(mm)",
         "height": "高度(m)",
         "segment": "分段方式",
@@ -347,6 +347,17 @@ function getMappingTagsDictionary() {
       mappingTagValues: {
         "voltage": findenumsValue("KVLevel"),
         "state": findenumsValue("SurveyState"),
+      }
+    };
+    mappingTagsDictionary.hole = {
+      mappingTags1: {
+        "project_id": "title"
+      },
+      mappingTags2: {
+        "code": "穿孔编号",
+        "hole_profile": "穿孔示意图",
+        'hole_direction': "方向",
+        "project_id": "title"
       }
     };
     enums.push({

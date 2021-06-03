@@ -47,11 +47,16 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
       .then((res) => {
         if (res && res.code === 6000) {
           setFalseData(res.message);
-         
           setState(false);
           setImportTipsVisible(true);
           return Promise.resolve();
+        } else if (res.code === 200) {
+          message.success('导入成功');
+          return Promise.resolve();
         }
+        message.error(res.message);
+        return Promise.reject();
+      },(res) => {
         message.error(res.message);
         return Promise.reject();
       })
@@ -98,7 +103,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
       <Modal
         maskClosable={false}
         footer=""
-        width="650px"
+        width="700px"
         title="提示信息"
         visible={importTipsVisible}
         onCancel={() => setImportTipsVisible(false)}

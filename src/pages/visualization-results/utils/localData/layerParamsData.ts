@@ -84,6 +84,12 @@ export const layerParams: LayerParams[] = [
     type: 'point',
   },
   {
+    layerName: 'hole', // 穿孔
+    zIndex: 8,
+    declutter: false,
+    type: 'point',
+  },
+  {
     layerName: 'over_head_device', // 杆上设备
     zIndex: 9,
     declutter: false,

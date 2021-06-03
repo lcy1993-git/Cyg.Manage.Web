@@ -77,3 +77,11 @@ export const fetchCommentListByParams = (params: CommentListParams) => {
     ),
   );
 };
+
+export const downloadMapPositon = (projectId: string[]) => {
+  return request(`${baseUrl.manage}/WebGisDownload/GetProjectFileById`, {
+    method: 'POST',
+    data: { projectId },
+    responseType: "blob"
+  });
+};

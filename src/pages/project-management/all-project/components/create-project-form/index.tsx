@@ -13,10 +13,12 @@ interface CreateProjectFormProps {
   areaId?: string;
   company?: string;
   companyName?: string;
+  status?: number;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
-  const { field = {}, areaId, company, companyName } = props;
+  const { field = {}, areaId, company, companyName, status } = props;
+  console.log(status);
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
@@ -127,8 +129,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'totalInvest']}
             name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
+            rules={Rule.total}
           >
-            <Input placeholder="请输入" />
+            <InputNumber placeholder="请输入" style={{ width: '100%' }} />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -560,12 +563,22 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             rules={Rule.required}
           >
-            <UrlSelect
-              defaultData={projectDataSourceType}
-              valueKey="value"
-              titleKey="text"
-              placeholder="请选择"
-            />
+            {status == 1 || status == 14 || status == undefined ? (
+              <UrlSelect
+                defaultData={projectDataSourceType}
+                valueKey="value"
+                titleKey="text"
+                placeholder="请选择"
+              />
+            ) : (
+              <UrlSelect
+                defaultData={projectDataSourceType}
+                disabled
+                valueKey="value"
+                titleKey="text"
+                placeholder="请选择"
+              />
+            )}
           </CyFormItem>
         </div>
       </div>

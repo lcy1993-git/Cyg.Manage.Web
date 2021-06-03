@@ -204,15 +204,19 @@ export enum DataSourceType {
 
 export interface AllProjectStatisticsParams {
   keyWord?: string;
-  category?: string;
-  pCategory?: string;
-  stage?: string;
-  constructType?: string;
-  nature?: string;
-  kvLevel?: string;
-  status?: string;
-  sourceType?: string;
-  identityType?: string;
+  category?: number[];
+  pCategory?: number[];
+  stage?: number[];
+  constructType?: number[];
+  nature?: number[];
+  kvLevel?: number[];
+  status?: number[];
+  sourceType?: number[];
+  identityType?: number[];
+  logicRelation?: number;
+  surveyUser?: string;
+  designUser?: string;
+  areaInfo?: any;
 }
 
 export interface AllProjectSearchParams extends AllProjectStatisticsParams {
@@ -221,14 +225,19 @@ export interface AllProjectSearchParams extends AllProjectStatisticsParams {
   statisticalCategory?: string;
 }
 
+interface ProjectTableRequestData {
+  pagedData: TableRequestResult;
+  statistics: ProjectTableStatisticsResult;
+}
+
 // 获取列表
 export const getProjectTableList = (params: AllProjectSearchParams) => {
-  return cyRequest<TableRequestResult>(() =>
+  return cyRequest<ProjectTableRequestData>(() =>
     request(`${baseUrl.project}/Porject/GetPagedList`, { method: 'POST', data: params }),
   );
 };
 
-interface ProjectTableStatisticsResult {
+export interface ProjectTableStatisticsResult {
   total: number;
   awaitProcess: number;
   inProgress: number;
@@ -333,6 +342,8 @@ interface EngineerInfoParams {
   plannedYear: string;
   grade: string;
   gradeText: string;
+  cityName: string;
+  areaName: string;
 }
 
 // 获取工程详细信息接口
@@ -725,6 +736,16 @@ interface ModifyOuterAuditParams {
 export const modifyExternalArrange = (params: ModifyOuterAuditParams) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/ModifyOuterAudit`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+//导出坐标权限设置
+export const modifyExportPowerState = (params: { isEnable: boolean; projectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ModifyExportCoordinateState`, {
       method: 'POST',
       data: params,
     }),

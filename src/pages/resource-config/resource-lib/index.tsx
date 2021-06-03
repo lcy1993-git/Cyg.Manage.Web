@@ -1,9 +1,17 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, ImportOutlined, PlusOutlined, PoweroffOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useMemo, useState } from 'react';
+import {
+  EditOutlined,
+  ImportOutlined,
+  PlusOutlined,
+  PoweroffOutlined,
+  QuestionCircleOutlined,
+  RedoOutlined,
+  StopOutlined,
+} from '@ant-design/icons';
+import { Input, Button, Modal, Form, message, Spin, Tooltip } from 'antd';
+import React, { useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -11,6 +19,7 @@ import {
   addResourceLibItem,
   updateResourceLibItem,
   restartResourceLib,
+  changeLibStatus,
 } from '@/services/resource-config/resource-lib';
 import { isArray } from 'lodash';
 import ResourceLibForm from './components/add-edit-form';
@@ -19,6 +28,8 @@ import { getUploadUrl } from '@/services/resource-config/drawing';
 import SaveImportLib from './components/upload-lib';
 import SaveImportLineStressSag from './components/upload-lineStressSag';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import EnumSelect from '@/components/enum-select';
+import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 
 const { Search } = Input;
 
@@ -33,6 +44,9 @@ const ResourceLib: React.FC = () => {
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false);
   const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const [status, setStatus] = useState<string>('0');
+
+  const [libId, setLibId] = useState<string>('');
 
   const { data: keyData } = useRequest(() => getUploadUrl());
 
@@ -55,8 +69,25 @@ const ResourceLib: React.FC = () => {
             placeholder="关键词"
           />
         </TableSearch>
+        <TableSearch marginLeft="20px" label="资源库状态" width="300px">
+          <EnumSelect
+            enumList={BelongManageEnum}
+            onChange={(value) => searchByStatus(value)}
+            placeholder="-全部-"
+          />
+        </TableSearch>
       </div>
     );
+  };
+
+  const searchByStatus = (value: any) => {
+    setStatus(value);
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        status: value,
+      });
+    }
   };
 
   // 列表刷新
@@ -105,6 +136,27 @@ const ResourceLib: React.FC = () => {
       index: 'remark',
       title: '备注',
       //   width: 200,
+    },
+    {
+      dataIndex: 'isDisabled',
+      index: 'isDisabled',
+      title: () => {
+        return (
+          <span>
+            禁用状态
+            <Tooltip
+              title="“已禁用”表示当前资源库不可被新立项工程调用，已立项并调用该资源库的工程不受影响。"
+              placement="right"
+            >
+              <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
+            </Tooltip>
+          </span>
+        );
+      },
+      width: 280,
+      render: (text: any, record: any) => {
+        return record.isDisabled === true ? '已禁用' : '';
+      },
     },
   ];
 
@@ -178,25 +230,28 @@ const ResourceLib: React.FC = () => {
 
   const importLibEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
+    setLibId(tableSelectRows[0].id);
     setUploadLibVisible(true);
   };
 
   const uploadDrawingEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
+    setLibId(tableSelectRows[0].id);
     setUploadDrawingVisible(true);
   };
 
   const importLineStreeSagEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
+    setLibId(tableSelectRows[0].id);
     setUploadLineStressSagVisible(true);
   };
 
@@ -240,24 +295,49 @@ const ResourceLib: React.FC = () => {
 
         {buttonJurisdictionArray?.includes('lib-restart') && (
           <Button className="mr7" onClick={() => restartLib()}>
-            <PoweroffOutlined />
+            <RedoOutlined />
             重启资源服务
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('lib-restart') && (
+          <Button className="mr7" onClick={() => startLib()}>
+            <PoweroffOutlined />
+            启用
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('lib-restart') && (
+          <Button className="mr7" onClick={() => forbidLib()}>
+            <StopOutlined />
+            禁用
           </Button>
         )}
       </div>
     );
   };
 
-  const uploadFinishEvent = () => {
+  const startLib = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择要操作的行');
+      return;
+    }
+    await changeLibStatus({ id: tableSelectRows[0].id, status: 1 });
+    message.success('该资源库已启用');
     refresh();
   };
 
-  const libId = useMemo(() => {
-    if (tableSelectRows && tableSelectRows.length > 0) {
-      return tableSelectRows[0].id;
+  const forbidLib = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择要操作的行');
+      return;
     }
-    return undefined;
-  }, [JSON.stringify(tableSelectRows)]);
+    await changeLibStatus({ id: tableSelectRows[0].id, status: 2 });
+    message.info('该资源库已禁用');
+    refresh();
+  };
+
+  const uploadFinishEvent = () => {
+    refresh();
+  };
 
   return (
     <PageCommonWrap>
@@ -274,6 +354,7 @@ const ResourceLib: React.FC = () => {
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
+          status: status,
         }}
       />
       <Modal

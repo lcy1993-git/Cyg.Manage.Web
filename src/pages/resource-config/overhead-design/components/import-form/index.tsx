@@ -40,7 +40,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
         (res) => {
           const { code, isSuccess, message: msg } = res;
 
-          if (message) {
+          if (msg) {
             message.warn(msg);
           }
 

@@ -1,7 +1,7 @@
 import BarChart from '@/components/bar-chart';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Select, DatePicker } from 'antd';
-import React, { useState } from 'react';
+import { Select, DatePicker, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
 import ChartBox from '../chart-box';
 import ChartTab from '../chart-tab';
 import * as echarts from 'echarts/lib/echarts';
@@ -11,16 +11,20 @@ import styles from './index.less';
 import { useRequest } from 'ahooks';
 import { getConsigns, AreaInfo } from '@/services/index';
 import { useMemo } from 'react';
+import { Moment } from 'moment';
+import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 
 interface DeliveyManageProps {
-  componentProps?: string[]
+  componentProps?: string[];
   currentAreaInfo: AreaInfo;
 }
 
 const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
-  const { componentProps = ["person", "department", "company"], currentAreaInfo } = props;
+  const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props;
+  const [startTime, setStartTime] = useState<Moment | string | null>(null);
+  const [endTime, setEndTime] = useState<Moment | null | string>(null);
 
   const [activeKey, setActiveKey] = useState<string>();
 
@@ -45,10 +49,10 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   const showTabData = useMemo(() => {
     const filterData = tabData.filter((item) => componentProps.includes(item.id));
     if (filterData && filterData.length > 0) {
-      setActiveKey(filterData[0].id)
+      setActiveKey(filterData[0].id);
     }
-    return filterData
-  }, [JSON.stringify(componentProps)])
+    return filterData;
+  }, [JSON.stringify(componentProps)]);
 
   const type = useMemo(() => {
     const dataIndex = tabData.findIndex((item) => item.id === activeKey);
@@ -58,10 +62,20 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
     return undefined;
   }, [activeKey]);
 
-  const { data: consignsData } = useRequest(() => getConsigns({type: type!,areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
-    ready: !!type,
-    refreshDeps: [type, currentAreaInfo],
-  });
+  const { data: consignsData, run } = useRequest(
+    () =>
+      getConsigns({
+        type: type!,
+        areaCode: currentAreaInfo.areaId,
+        areaType: currentAreaInfo.areaLevel,
+        startTime: startTime,
+        endTime: endTime,
+      }),
+    {
+      ready: !!type,
+      refreshDeps: [type, currentAreaInfo],
+    },
+  );
 
   const option = useMemo(() => {
     if (consignsData) {
@@ -176,8 +190,17 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
         // ],
       };
     }
-    return undefined
-  }, [JSON.stringify(consignsData)])
+    return undefined;
+  }, [JSON.stringify(consignsData)]);
+
+  const reset = () => {
+    setStartTime(null);
+    setEndTime(null);
+  };
+
+  useEffect(() => {
+    run();
+  }, [JSON.stringify(startTime), JSON.stringify(endTime)]);
 
   return (
     <ChartBox title="交付管理">
@@ -186,7 +209,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
           <div className={styles.deliverySelect}>
             <Select bordered={false} defaultValue="number" suffixIcon={<CaretDownOutlined />}>
               <Option value="number">项目数量</Option>
-              <Option value="designFee">设计费</Option>
+              {/* <Option value="designFee">设计费</Option> */}
             </Select>
           </div>
           <div className={styles.deliveryTab}>
@@ -198,17 +221,32 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
           </div>
         </div>
         <div className={styles.deliveryChart}>
-          {
-            type && option &&
-            <BarChart options={option} />
-          }
+          {type && option && <BarChart options={option} />}
         </div>
-        {/* <div className={styles.deliveryTime}>
+        <div className={styles.deliveryTime}>
           <span className={styles.deliveryChooseTimeLabel}>选择日期</span>
           <div className={styles.delivertChooseTime}>
-            <RangePicker allowClear={false} bordered={false} />
+            <RangePicker
+              format="YYYY-MM-DD"
+              allowClear={false}
+              value={[startTime ? moment(startTime) : null, endTime ? moment(endTime) : null]}
+              onChange={(dates, dateStrings) => {
+                console.log(dates, dateStrings);
+                setStartTime(dateStrings[0]);
+                setEndTime(dateStrings[1]);
+                // setKeyValue(dates);
+                console.log(startTime, '1');
+                console.log(endTime, '1');
+              }}
+              bordered={false}
+              renderExtraFooter={() => [
+                <Button key="clearDate" onClick={() => reset()}>
+                  清除日期
+                </Button>,
+              ]}
+            />
           </div>
-        </div> */}
+        </div>
       </div>
     </ChartBox>
   );

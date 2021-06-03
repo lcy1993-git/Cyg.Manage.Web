@@ -25,6 +25,10 @@ interface ElementDiv extends Element {
 
 const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, history, match }) => {
   const [activeKey, setActiveKey] = useState<string>('/index');
+
+  const [allProjectSearchProjectName, setAllProjectSearchProjectName] = useState("");
+  const [allProjectSearchPerson, setAllProjectSearchPerson] = useState("");
+
   const [routeList, setRouteList] = useState<RouteListItem[]>([
     {
       title: '首页',
@@ -164,7 +168,11 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   return (
     <ConfigProvider locale={zhCN}>
       <LayoutProvider value={{
-        clearAgainLogin
+        clearAgainLogin,
+        allProjectSearchProjectName,
+        allProjectSearchPerson,
+        setAllProjectSearchProjectName,
+        setAllProjectSearchPerson
       }}>
         <div className={styles.layoutContent}>
           <div className={layoutIsFold ? 'hide' : ''}>

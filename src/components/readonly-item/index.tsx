@@ -8,7 +8,7 @@ interface ReadonlyItemProps {
 }
 
 const ReadonlyItem:React.FC<ReadonlyItemProps> = (props) => {
-    const {label, labelWidth = 70, align = "right"} = props;
+    const {label, labelWidth = 78, align = "right"} = props;
     return (
         <div className={styles.readonlyItem}>
             <div className={styles.readonlyItemLabel} style={{width: `${labelWidth}px`,textAlign: align}}>

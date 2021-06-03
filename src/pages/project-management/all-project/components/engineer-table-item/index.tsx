@@ -1,7 +1,7 @@
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { useBoolean } from 'ahooks';
 import moment from 'moment';
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import styles from './index.less';
 
 import uuid from 'node-uuid';
@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import EmptyTip from '@/components/empty-tip';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { TableContext } from '../enigneer-table/table-store';
 
 interface TableCheckedItemProjectInfo {
   id: string;
@@ -47,6 +48,8 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
   const [indeterminate, setIndeterminate] = React.useState(false);
   const [checkAll, setCheckAll] = React.useState(false);
 
+  const {tableSelectData} = useContext(TableContext);
+
   const {
     projectInfo = {},
     columns = [],
@@ -76,6 +79,14 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
     }
     return [];
   }, [JSON.stringify(projectInfo.projects)]);
+
+  useEffect(() => {
+
+    if(tableSelectData.length === 0) {
+      setCheckedList([])
+      setCheckAll(false)
+    }
+  },[JSON.stringify(tableSelectData),projectInfo])
 
   const checkboxChange = (list: CheckboxValueType[]) => {
     setCheckedList(list);
@@ -180,6 +191,10 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
               {projectInfo.name}
             </u>
           </Tooltip>
+        </div>
+        <div className={styles.projectAccount}>
+          <span className={styles.label}>共有项目:</span>
+          <span>{projectInfo.projects ? projectInfo.projects?.length : 0}个</span>
         </div>
         <div className={styles.projectTime}>
           <span className={styles.label}>工程日期:</span>

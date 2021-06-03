@@ -238,6 +238,8 @@ console.log(data);
         requestSource,
         postType,
       });
+      setSelectedRowKeys([]);
+      getSelectData?.([]);
     },
     searchByParams: (params: object) => {
       setCurrentPage(1);
@@ -249,6 +251,8 @@ console.log(data);
         requestSource,
         postType,
       });
+      setSelectedRowKeys([]);
+      getSelectData?.([]);
     },
     reset: () => {
       setCurrentPage(1);
