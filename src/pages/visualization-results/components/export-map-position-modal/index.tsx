@@ -8,7 +8,7 @@ export interface ExportMapPositionModalProps {
 
 const ExportMapPositionModal: FC<ExportMapPositionModalProps> = (props) => {
   const { visible, onOk, onCancel } = props;
-
+  
   return (
     <Modal
       title="导出项目坐标"

@@ -1,5 +1,5 @@
 import { List } from 'antd';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
 import { useRequest, useInterval, useSize } from 'ahooks';
@@ -35,7 +35,8 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
    *
    */
   const visableCount = Math.floor(size.height ? size.height / 35 : 4);
-  const allCount = 10;
+
+  const allCount = 30;
   const invisibleCount = allCount - visableCount;
   const params: projectOperationLogParams = {
     limit: allCount,
