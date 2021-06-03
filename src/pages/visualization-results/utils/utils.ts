@@ -44,12 +44,12 @@ export const sortByTime = (arr: any[]) => {
   if(arr.length < 5) {
     return arr.sort((a: any, b: any) => {
       // @ts-ignore
-      return (new Date(a.properties.record_dateg)).getTime() - (new Date(b.properties.record_date)).getTime();
+      return (new Date(a.properties.record_date)).getTime() - (new Date(b.properties.record_date)).getTime();
     })
   } else {
     return arr.map((item: Feature | any) => {
       return {
-        t: (new Date(item.properties.record_dateg)).getTime(),
+        t: (new Date(item.properties.record_date)).getTime(),
         v: item
       }
     })
