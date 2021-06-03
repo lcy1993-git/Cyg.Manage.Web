@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Input, Select, Col, Row, Switch } from 'antd';
+import React from 'react';
+import { Input, Select, Col, Row } from 'antd';
 import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
@@ -11,12 +11,8 @@ interface Props {
   type: 'add' | 'edit';
 }
 
-const DictionaryForm: React.FC<Props> = ({ type }) => {
-  const [state, setState] = useState("");
-  const filteredOptions = [].filter(o => !selectedItems.includes(o));
-  const handleChange = (selectedItems: any) => {
-    setState({ selectedItems });
-  };
+const DictionaryForm: React.FC<Props> = () => {
+
   return (
     <>
       <Row>
@@ -25,13 +21,14 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
             <Input placeholder="请输入名称" />
           </CyFormItem>
 
-          <CyFormItem label="发布机构" name="fabujigou">
+          <CyFormItem label="发布机构" name="publishOrg">
             <Input />
           </CyFormItem>
 
-          <CyFormItem label="适用行业" name="hangyeleibie">
+          <CyFormItem label="适用行业" name="industryType">
             <Select>
-              <Option value={111}>111</Option>
+              <Option value={1}>111</Option>
+              <Option value={2}>222</Option>
             </Select>
           </CyFormItem>
         </Col>
@@ -39,15 +36,15 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
         </Col>
         <Col span={11}>
 
-          <CyFormItem label="发布时间" name="fabushijian">
+          <CyFormItem label="发布时间" name="publishDate">
             <DateFormItem />
           </CyFormItem>
 
-          <CyFormItem label="价格年度" name="jiageniandu">
+          <CyFormItem label="价格年度" name="year">
             <DateFormItem picker="year" />
           </CyFormItem>
 
-          <CyFormItem label="状态" name="id9" required>
+          <CyFormItem label="状态" name="enabled" required>
             <FormSwitch />
           </CyFormItem>
 

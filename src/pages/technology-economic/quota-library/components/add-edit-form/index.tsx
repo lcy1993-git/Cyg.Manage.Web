@@ -4,6 +4,9 @@ import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
 import FileUpload from '@/components/file-upload';
+import { useRequest, useMount } from 'ahooks';
+import { queryMaterialMachineLibraryPager } from '@/services/technology-economic';
+import moment from 'moment';
 
 const { Option } = Select;
 
@@ -11,77 +14,95 @@ interface Props {
   type: 'add' | 'edit';
 }
 
-const DictionaryForm: React.FC<Props> = ({type}) => {
-  const [state, setState] = useState("");
-  const filteredOptions = [].filter(o => !selectedItems.includes(o));
-  const handleChange = (selectedItems: any) => {
-    setState({ selectedItems });
-  };        
+interface ResponsData {
+  items: {
+    id: string;
+    name: string
+  }[]
+}
+
+const DictionaryForm: React.FC<Props> = ({ type }) => {
+
+  const { data: MaterialMachineLibraryData, run } = useRequest<ResponsData>(queryMaterialMachineLibraryPager, { manual: true });
+
+  const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
+
+  useMount(() => {
+    run({ pageIndex: 1, pageSize: 3000 })
+  })
+
+  const MaterialMachineLibraryListFn = () => {
+    console.log(MaterialMachineLibraryList);
+
+    return MaterialMachineLibraryList.map((item) => {
+      return (
+        <Option key={item.id} value={item.id}>{item.name}</Option>
+      );
+    })
+  }
+
   return (
     <>
-    <Row>
-    <Col span={11}>
-      <CyFormItem label="名称" name="name" required>
-        <Input placeholder="请输入名称" />
-      </CyFormItem>
+      <Row>
+        <Col span={11}>
+          <CyFormItem label="名称" name="name" required>
+            <Input placeholder="请输入名称" />
+          </CyFormItem>
 
-      <CyFormItem label="定额类别" name="dingeleibie" required>
-        <Select>
-          <Option value={111}>111</Option>
-        </Select>
-      </CyFormItem>
+          <CyFormItem label="定额类别" name="quotaScope" required>
+            <Select>
+              <Option value={1}>111</Option>
+              <Option value={2}>111</Option>
+            </Select>
+          </CyFormItem>
 
-      <CyFormItem label="发布机构" name="fabujigou">
-        <Input/>
-      </CyFormItem>
+          <CyFormItem label="发布机构" name="publishOrg">
+            <Input />
+          </CyFormItem>
 
-      <CyFormItem label="行业类别" name="hangyeleibie">
-        <Select>
-          <Option value={111}>111</Option>
-        </Select>
-      </CyFormItem>
+          <CyFormItem label="行业类别" name="industryType">
+            <Select>
+              <Option value={1}>111</Option>
+              <Option value={2}>222</Option>
+              <Option value={3}>333</Option>
+            </Select>
+          </CyFormItem>
 
-      <CyFormItem label="状态" name="id9" required>
-        <FormSwitch />
-      </CyFormItem>
+          <CyFormItem label="状态" name="Enabled" required>
+            <FormSwitch />
+          </CyFormItem>
 
-    </Col>
-    <Col span={2}>
-    </Col>
-    <Col span={11}>
+        </Col>
+        <Col span={2}>
+        </Col>
+        <Col span={11}>
 
-    <CyFormItem label="使用材机库" name="rencaijiku" required>
-        <Select
-          value={state}
-          onChange={handleChange}
-        >
-        {
-          filteredOptions.map((item: any) => (
-            <Select.Option key={item} value={item}>
-              {item}
-            </Select.Option>
-          ))
-        }
-        </Select>
-      </CyFormItem>
+          <CyFormItem label="使用材机库" name="materialMachineLibraryId" required>
+            <Select>
+              {MaterialMachineLibraryListFn()}
+            </Select>
+          </CyFormItem>
 
-      <CyFormItem label="发布时间" name="fabushijian">
-        <DateFormItem />
-      </CyFormItem>
+          <CyFormItem label="发布时间" name="publishDate">
+            <DateFormItem />
+          </CyFormItem>
 
-      <CyFormItem label="价格年度" name="jiageniandu">
-        <DateFormItem picker="year"/>
-      </CyFormItem>
+          <CyFormItem label="价格年度" name="year">
+            <DateFormItem picker="year" />
+          </CyFormItem>
 
-      <CyFormItem label="适用专业" name="shiyongzhuanye">
-        <Input/>
-      </CyFormItem>
+          <CyFormItem label="适用专业" name="majorType">
+            <Select>
+              <Option value={1}>111</Option>
+              <Option value={2}>222</Option>
+            </Select>
+          </CyFormItem>
 
-    </Col>
-    </Row>
+        </Col>
+      </Row>
 
-    <CyFormItem label="备注" name="remark">
-        <Input.TextArea rows={3}/>
+      <CyFormItem label="备注" name="remark">
+        <Input.TextArea rows={3} />
       </CyFormItem>
 
       <CyFormItem label="上传文件" name="file" required>

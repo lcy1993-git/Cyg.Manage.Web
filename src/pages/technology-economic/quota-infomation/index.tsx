@@ -56,8 +56,9 @@ const treeData1= [
   },
 ];
 
-const QuotaProject = () => {
-
+const QuotaProject = ({location}) => {
+  console.log(location);
+  
   const [activeQuotaId, setActiveQuotaId] = useState<string>("");
   const [catalogueId,setCatalogueId] = useState<string>("");
   console.log(catalogueId);

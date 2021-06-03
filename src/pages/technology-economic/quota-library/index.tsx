@@ -1,11 +1,12 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
+import { history } from 'umi';
 import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import React, { useState } from 'react';
 import DictionaryForm from './components/add-edit-form';
-import { getCatalogueList } from '@/services/technology-economics/quota-library';
+import { createQuotaLibrary, CreateQuotaLibrary, deleteQuotaLibrary } from '@/services/technology-economic';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import styles from './index.less';
 import moment from 'moment';
@@ -26,55 +27,55 @@ const columns = [
     width: 300,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'materialMachineLibraryName',
+    index: 'materialMachineLibraryName',
     title: '使用材机库',
     width: 160,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'quotaScopeText',
+    index: 'quotaScopeText',
     title: '定额类别',
     width: 160,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'publishDate',
+    index: 'publishDate',
     title: '发布时间',
     width: 160,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'publishOrg',
+    index: 'publishOrg',
     title: '发布机构',
     width: 160,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'year',
+    index: 'year',
     title: '价格年度',
     width: 160,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'industryTypeText',
+    index: 'industryTypeText',
     title: '行业类别',
     width: 160,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'majorTypeText',
+    index: 'majorTypeText',
     title: '适用专业',
     width: 160,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'enabled',
+    index: 'enabled',
     title: '状态',
     width: 160,
-    render(){
+    render(value: boolean){
       return (
-        <Switch/>
+        <Switch checked={value}/>
       );
     }
   },
@@ -145,14 +146,14 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const sureAddAuthorization = () => {
-    addForm.validateFields().then(async (values) => {
+    addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
       
       console.log(values);
       
-      // await createQuotaLibrary({releaseDate: new Date().getTime(), ...values});
-      // refresh();
-      // setAddFormVisible(false);
-      // addForm.resetFields();
+      await createQuotaLibrary(values);
+      refresh();
+      setAddFormVisible(false);
+      addForm.resetFields();
     });
   };
 
@@ -161,17 +162,21 @@ const QuotaLibrary: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-
-    // await deleteCableChannelItem({ libId, ids });
+    const id = tableSelectRows[0].id;
+    await deleteQuotaLibrary(id);
     refresh();
     message.success('删除成功');
   };
 
-  const importLineStreeSagEvent = () => {
+  const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择要操作的行');
       return;
     }
+    const id = tableSelectRows[0].id;
+    console.log(1);
+    
+    history.push(`/technology-economic/quota-infomation?id=${id}`)
   };
 
   const tableElement = () => {
@@ -200,7 +205,7 @@ const QuotaLibrary: React.FC = () => {
         }
         {
           !buttonJurisdictionArray?.includes('quotaLib-info') &&
-          <Button className="mr7" onClick={() => importLineStreeSagEvent()}>
+          <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             查看详情
           </Button>
@@ -223,7 +228,7 @@ const QuotaLibrary: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/QuotaLibraryManager/GetPageList"
+        url="/QuotaLibrary/QueryQuotaLibraryPager"
         tableTitle="定额库管理"
         getSelectData={tableSelectEvent}
         requestSource='tecEco'

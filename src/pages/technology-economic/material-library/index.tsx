@@ -5,7 +5,7 @@ import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import React, { useState } from 'react';
 import DictionaryForm from './components/add-edit-form';
-import { getCatalogueList } from '@/services/technology-economics/quota-library';
+import { createMaterialMachineLibrary, deleteMaterialMachineLibrary } from '@/services/technology-economic';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import styles from './index.less';
 import moment from 'moment';
@@ -29,52 +29,44 @@ const columns = [
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '使用材机库',
-    width: 160,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '定额类别',
-    width: 160,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '发布时间',
-    width: 160,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '发布机构',
-    width: 160,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '价格年度',
-    width: 160,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '行业类别',
-    width: 160,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '适用专业',
-    width: 160,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '状态',
-    width: 160,
-    render(){
+    render(value: boolean){
       return (
-        <Switch/>
+        <Switch checked={value}/>
       );
     }
   },
@@ -147,12 +139,10 @@ const QuotaLibrary: React.FC = () => {
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
       
-      console.log(values);
-      
-      // await createQuotaLibrary({releaseDate: new Date().getTime(), ...values});
-      // refresh();
-      // setAddFormVisible(false);
-      // addForm.resetFields();
+      await createMaterialMachineLibrary(values);
+      refresh();
+      setAddFormVisible(false);
+      addForm.resetFields();
     });
   };
 
@@ -161,8 +151,8 @@ const QuotaLibrary: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-
-    // await deleteCableChannelItem({ libId, ids });
+    const id = tableSelectRows[0].id;
+    await deleteMaterialMachineLibrary(id);
     refresh();
     message.success('删除成功');
   };
@@ -223,7 +213,7 @@ const QuotaLibrary: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns}
-        url="/QuotaLibraryManager/GetPageList"
+        url="/MaterialMachineLibrary/QueryMaterialMachineLibraryPager"
         tableTitle="材机库管理"
         getSelectData={tableSelectEvent}
         requestSource='tecEco'
