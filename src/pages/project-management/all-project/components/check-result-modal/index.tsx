@@ -32,19 +32,13 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const { changeFinishEvent, projectInfo, isResult = false } = props;
   const [requestLoading, setRequestLoading] = useState(false);
 
-  // console.log(projectInfo);
-
-
-  const { run } = useRequest(() => getResultTreeData(projectInfo.projectId), {
-    ready: !!projectInfo.projectId,
-    refreshDeps: [projectInfo.projectId],
+  const { run } = useRequest(getResultTreeData, {
+    manual: true
   });
 
-  const { run: getCompileTree } = useRequest(
-    () => getCompileResultTreeData(projectInfo.projectId),
+  const { run: getCompileTree } = useRequest(getCompileResultTreeData,
     {
-      ready: !!projectInfo.projectId,
-      refreshDeps: [projectInfo.projectId],
+      manual: true
     },
   );
 
@@ -67,9 +61,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const refresh = () => {
     message.success('刷新成功');
     if (currentTab === 'design') {
-      run();
+      run(projectInfo.projectId);
     } else {
-      getCompileTree();
+      getCompileTree(projectInfo.projectId);
     }
   };
 
@@ -154,7 +148,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
 
   useEffect(() => {
     if (state) {
-      run();
+      
+      run(projectInfo.projectId);
+      getCompileTree(projectInfo.projectId);
     }
   }, [state]);
 
@@ -208,63 +204,64 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           </div>
         </Spin>
       )}
-
-      <Modal
-        maskClosable={false}
-        title="查看成果"
-        width={750}
-        visible={state as boolean}
-        destroyOnClose
-        footer={null}
-        onCancel={() => closeEvent()}
-      >
-        <Spin spinning={requestLoading} tip="正在生成...">
-          <div className={`${styles.resultButton} flex`}>
-            <div className="flex2">
-              <span className={styles.titleIcon}></span>
-              <span className={styles.helpTitle}>项目名称: </span>
-              <span className={styles.projectTitle}>{projectInfo.projectName}</span>
+      {!isResult && (
+        <Modal
+          maskClosable={false}
+          title="查看成果"
+          width={750}
+          visible={state as boolean}
+          destroyOnClose
+          footer={null}
+          onCancel={() => closeEvent()}
+        >
+          <Spin spinning={requestLoading} tip="正在生成...">
+            <div className={`${styles.resultButton} flex`}>
+              <div className="flex2">
+                <span className={styles.titleIcon}></span>
+                <span className={styles.helpTitle}>项目名称: </span>
+                <span className={styles.projectTitle}>{projectInfo.projectName}</span>
+              </div>
+              <div className="flex1">
+                <span className={styles.titleIcon}></span>
+                <span className={styles.helpTitle}>当前阶段: </span>
+                <span>{projectInfo.projectStage}</span>
+              </div>
+              <div className={styles.resultButtonContent}>
+                <Button className="mr7" onClick={() => refresh()}>
+                  刷新
+                </Button>
+                <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
+                  生成
+                </Button>
+              </div>
             </div>
-            <div className="flex1">
-              <span className={styles.titleIcon}></span>
-              <span className={styles.helpTitle}>当前阶段: </span>
-              <span>{projectInfo.projectStage}</span>
+            <div className={styles.resultTable}>
+              <Tabs
+                className="normalTabs"
+                onTabClick={(key: string) => setCurrentTab(key)}
+                type="card"
+              >
+                <TabPane key="design" tab="设计成果">
+                  <DesignResultTab
+                    mapTreeData={mapTreeData}
+                    projectInfo={projectInfo}
+                    createEvent={setCheckedKeys}
+                    setTabEvent={setCurrentTab}
+                  />
+                </TabPane>
+                <TabPane key="compile" tab="项目需求编制成果">
+                  <CompileResultTab
+                    mapTreeData={mapTreeData}
+                    projectInfo={projectInfo}
+                    createEvent={setCheckedKeys}
+                    setTabEvent={setCurrentTab}
+                  />
+                </TabPane>
+              </Tabs>
             </div>
-            <div className={styles.resultButtonContent}>
-              <Button className="mr7" onClick={() => refresh()}>
-                刷新
-              </Button>
-              <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
-                生成
-              </Button>
-            </div>
-          </div>
-          <div className={styles.resultTable}>
-            <Tabs
-              className="normalTabs"
-              onTabClick={(key: string) => setCurrentTab(key)}
-              type="card"
-            >
-              <TabPane key="design" tab="设计成果">
-                <DesignResultTab
-                  mapTreeData={mapTreeData}
-                  projectInfo={projectInfo}
-                  createEvent={setCheckedKeys}
-                  setTabEvent={setCurrentTab}
-                />
-              </TabPane>
-              <TabPane key="compile" tab="项目需求编制成果">
-                <CompileResultTab
-                  mapTreeData={mapTreeData}
-                  projectInfo={projectInfo}
-                  createEvent={setCheckedKeys}
-                  setTabEvent={setCurrentTab}
-                />
-              </TabPane>
-            </Tabs>
-          </div>
-        </Spin>
-      </Modal>
+          </Spin>
+        </Modal>
+      )}
     </>
   );
 };

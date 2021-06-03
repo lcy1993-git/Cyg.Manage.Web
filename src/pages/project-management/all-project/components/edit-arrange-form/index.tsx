@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Children } from 'react';
 import { TreeSelect, Divider } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import { getGroupInfo } from '@/services/project-management/all-project';
@@ -20,6 +20,16 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     canEditInternalAudit3,
     canEditInternalAudit4,
   } = canEdit;
+
+  const notEdit = (function notChangeData() {
+    return [
+      {
+        value: '',
+        title: '不修改',
+        children: null ?? [],
+      },
+    ];
+  })();
 
   const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId), {
     refreshDeps: [allotCompanyId],
@@ -58,7 +68,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
           <TreeSelect
             key="editSurveyUser"
             style={{ width: '100%' }}
-            treeData={surveyData.map(mapTreeData)}
+            treeData={notEdit.concat(surveyData.map(mapTreeData))}
             placeholder="请选择"
             treeDefaultExpandAll
             allowClear
@@ -83,7 +93,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
           <TreeSelect
             key="editDesignUser"
             style={{ width: '100%' }}
-            treeData={designData.map(mapTreeData)}
+            treeData={notEdit.concat(designData.map(mapTreeData))}
             placeholder="请选择"
             treeDefaultExpandAll
             allowClear
@@ -110,7 +120,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             <TreeSelect
               key="editDesignAssessUser1"
               style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
+              treeData={notEdit.concat(auditData.map(mapTreeData))}
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -135,7 +145,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             <TreeSelect
               key="editDesignAssessUser2"
               style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
+              treeData={notEdit.concat(auditData.map(mapTreeData))}
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -159,7 +169,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             <TreeSelect
               key="editDesignAssessUser3"
               style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
+              treeData={notEdit.concat(auditData.map(mapTreeData))}
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
@@ -184,7 +194,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             <TreeSelect
               key="editDesignAssessUser4"
               style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
+              treeData={notEdit.concat(auditData.map(mapTreeData))}
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear

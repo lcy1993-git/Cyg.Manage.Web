@@ -57,7 +57,7 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           </TabPane>
           {isResult && (
             <TabPane key="result" tab="查看成果">
-              <CheckResultModal projectInfo={projectInfo} isResult={isResult} />
+              <CheckResultModal visible={state} onChange={setState} projectInfo={{...projectInfo, projectId: projectInfo?.id}} isResult={isResult} />
             </TabPane>
           )}
         </Tabs>

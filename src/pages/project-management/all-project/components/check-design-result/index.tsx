@@ -24,8 +24,7 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
     () => getResultTreeData(projectInfo.projectId),
     { ready: !!projectInfo.projectId, refreshDeps: [projectInfo.projectId] },
   );
-  console.log(projectInfo);
-
+  
   const onCheck = (checkedKeysValue: React.Key[]) => {
     createEvent(checkedKeysValue);
     setCheckedKeys(checkedKeysValue);

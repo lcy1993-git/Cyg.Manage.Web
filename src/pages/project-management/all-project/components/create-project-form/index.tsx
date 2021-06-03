@@ -1,7 +1,6 @@
 import CyFormItem from '@/components/cy-form-item';
-import DataSelect from '@/components/data-select';
 import UrlSelect from '@/components/url-select';
-import { useGetProjectEnum, useGetSelectData } from '@/utils/hooks';
+import { useGetProjectEnum } from '@/utils/hooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import React, { memo } from 'react';
@@ -18,7 +17,6 @@ interface CreateProjectFormProps {
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const { field = {}, areaId, company, companyName, status } = props;
-  console.log(status);
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
