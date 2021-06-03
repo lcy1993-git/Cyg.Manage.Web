@@ -700,7 +700,7 @@ const ProjectManagement: React.FC = () => {
       });
     }
     if (allProjectSearchPerson) {
-      console.log(allProjectSearchPerson)
+
       setPersonInfo({
         survey: String(allProjectSearchPerson),
         logicRelation: 2,
