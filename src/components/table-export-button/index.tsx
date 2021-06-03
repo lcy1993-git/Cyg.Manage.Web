@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Button, Dropdown, message } from 'antd';
+import { Menu, Button, Dropdown, message, Modal } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { commonExport } from '@/services/common';
 
@@ -8,10 +8,11 @@ interface TableExportButtonProps {
   exportUrl: string;
   extraParams?: object;
   fileName?: string;
+  selectSlot?: () => React.ReactNode;
 }
 
 const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
-  const { selectIds = [], exportUrl = '', extraParams, fileName = '表格' } = props;
+  const { selectIds = [], exportUrl = '', extraParams, fileName = '表格', selectSlot } = props;
 
   const exportChoosedRow = async () => {
     if (selectIds && selectIds.length === 0) {
@@ -61,19 +62,23 @@ const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
     message.success('导出成功');
   };
 
+
   const importButoonMenu = (
     <Menu>
       <Menu.Item onClick={() => exportChoosedRow()}>导出所选</Menu.Item>
       <Menu.Item onClick={() => exportAllRow()}>导出所有</Menu.Item>
+      <Menu.Item>{selectSlot?.()}</Menu.Item>
     </Menu>
   );
 
   return (
-    <Dropdown overlay={importButoonMenu}>
-      <Button>
-        导出 <DownOutlined />
-      </Button>
-    </Dropdown>
+    <>
+      <Dropdown overlay={importButoonMenu}>
+        <Button>
+          导出 <DownOutlined />
+        </Button>
+      </Dropdown>
+    </>
   );
 };
 

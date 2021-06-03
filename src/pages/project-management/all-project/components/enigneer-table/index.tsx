@@ -345,6 +345,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           </u>
         );
       },
+      // width:'10%'
     },
     {
       title: '项目分类',
@@ -379,7 +380,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     {
       title: '建设类型',
       dataIndex: 'constructTypeText',
-      width: '6.15%',
+      width: '5.45%',
     },
     {
       title: '项目批次',
@@ -389,7 +390,19 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     {
       title: '项目阶段',
       dataIndex: 'stageText',
-      width: '6.15%',
+      width: '5.45%',
+    },
+    {
+      title: '导出坐标权限',
+      dataIndex: 'exportCoordinate',
+      width: '8.15%',
+      render: (record: any) => {
+        return record.exportCoordinate === true ? (
+          <span className="colorPrimary">启用</span>
+        ) : (
+          <span className="colorRed">禁用</span>
+        );
+      },
     },
 
     {

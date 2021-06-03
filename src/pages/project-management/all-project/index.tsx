@@ -53,6 +53,7 @@ import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
 import ChooseDesignAndSurvey from '@/pages/project-management/all-project/components/choose-design-and-survey';
 import { useLayoutStore } from '@/layouts/context';
+import ExportPowerModal from './components/export-power-modal';
 
 const { Search } = Input;
 
@@ -123,6 +124,8 @@ const ProjectManagement: React.FC = () => {
 
   const [currentRecallProjectId, setCurrentRecallProjectId] = useState<string>('');
   const [recallModalVisible, setRecallModalVisible] = useState(false);
+
+  const [exportPowerModalVisible, setExportPowerModalVisible] = useState<boolean>(false);
 
   const [upLoadAddProjectModalVisible, setUploadAddProjectModalVisible] = useState<boolean>(false);
 
@@ -736,6 +739,17 @@ const ProjectManagement: React.FC = () => {
     }
   }, [allProjectSearchPerson, allProjectSearchProjectName]);
 
+  //导出坐标权限
+  const exportPowerEvent = () => {
+    if (tableSelectData && tableSelectData.length === 0) {
+      message.warning('请至少选择一条数据');
+      return;
+    }
+    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
+    setSelectProjectIds(projectIds);
+    setExportPowerModalVisible(true);
+  };
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectManagement}>
@@ -992,6 +1006,9 @@ const ProjectManagement: React.FC = () => {
                     <TableExportButton
                       exportUrl="/Porject/Export"
                       selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
+                      selectSlot={() => {
+                        return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
+                      }}
                       extraParams={{
                         keyWord,
                         category: category,
@@ -1004,6 +1021,7 @@ const ProjectManagement: React.FC = () => {
                         statisticalCategory: statisticalCategory,
                         sourceType: sourceType,
                         identityType: identityType,
+                        logicRelation: 2,
                         ...areaInfo,
                       }}
                     />
@@ -1147,6 +1165,14 @@ const ProjectManagement: React.FC = () => {
           projectId={currentProjectId}
           proName={projectName}
           search={delayRefresh}
+        />
+      )}
+      {exportPowerModalVisible && (
+        <ExportPowerModal
+          visible={exportPowerModalVisible}
+          onChange={setExportPowerModalVisible}
+          projectIds={selectProjectIds}
+          finishEvent={refresh}
         />
       )}
       {/* 管理端新增按钮弹窗 */}
