@@ -64,7 +64,10 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
           y: 0,
           w: 3,
           h: 11,
+          componentProps: dynamicData,
         }));
+        console.log(temp);
+
         chooseComponent = _.union(chooseComponent, temp);
       }
 
@@ -111,6 +114,7 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
     const hasChose = dynamicDataStatisticPropsArray.filter((item) =>
       hasChooseArray?.includes(item.code),
     );
+
     return {
       hasChose,
       unChoose,
