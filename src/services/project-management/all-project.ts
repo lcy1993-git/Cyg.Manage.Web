@@ -214,9 +214,9 @@ export interface AllProjectStatisticsParams {
   sourceType?: number[];
   identityType?: number[];
   logicRelation?: number;
-  surveyUser?: string
-  designUser?: string
-  areaInfo?: any
+  surveyUser?: string;
+  designUser?: string;
+  areaInfo?: any;
 }
 
 export interface AllProjectSearchParams extends AllProjectStatisticsParams {
@@ -226,8 +226,8 @@ export interface AllProjectSearchParams extends AllProjectStatisticsParams {
 }
 
 interface ProjectTableRequestData {
-  pagedData: TableRequestResult,
-  statistics: ProjectTableStatisticsResult
+  pagedData: TableRequestResult;
+  statistics: ProjectTableStatisticsResult;
 }
 
 // 获取列表
@@ -736,6 +736,16 @@ interface ModifyOuterAuditParams {
 export const modifyExternalArrange = (params: ModifyOuterAuditParams) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/ModifyOuterAudit`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+//导出坐标权限设置
+export const modifyExportPowerState = (params: { isEnable: boolean; projectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ModifyExportCoordinateState`, {
       method: 'POST',
       data: params,
     }),

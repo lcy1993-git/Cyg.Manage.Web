@@ -562,7 +562,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             rules={Rule.required}
           >
-            {status == 1 || status == 14 ? (
+            {status === 1 || status === 14 || status === undefined ? (
               <UrlSelect
                 defaultData={projectDataSourceType}
                 valueKey="value"
