@@ -1,5 +1,5 @@
-import React, { FC, useState } from 'react';
-import { Checkbox, Divider, Radio } from 'antd';
+import React, { FC } from 'react';
+import { Radio } from 'antd';
 import styles from './index.less';
 
 interface ListProps {
@@ -24,16 +24,7 @@ const ListItem = (props: ListProps) => {
 const MapDisplay: FC<MapDisplayProps> = (props) => {
   const { onSatelliteMapClick, onStreetMapClick } = props;
   const onChange = (value: string) => {
-    switch (value) {
-      case 'street':
-        onStreetMapClick();
-        break;
-      case 'satellite':
-        onSatelliteMapClick();
-        break;
-      default:
-        break;
-    }
+    value === 'street' ? onStreetMapClick() : onSatelliteMapClick();
   };
   return (
     <div className={styles.container}>

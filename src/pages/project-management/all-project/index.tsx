@@ -644,6 +644,10 @@ const ProjectManagement: React.FC = () => {
     }
   };
 
+  useMount(() => {
+    search();
+  })
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectManagement}>
@@ -673,8 +677,7 @@ const ProjectManagement: React.FC = () => {
                     value={category}
                     onChange={(value) => setCategory(value as number[])}
                     placeholder="项目分类"
-                    needAll={true}
-                    allValue="-1"
+                 
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -691,8 +694,7 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setPCategory(value as number[])}
                     className="widthAll"
                     placeholder="项目类别"
-                    needAll={true}
-                    allValue="-1"
+                   
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -708,8 +710,7 @@ const ProjectManagement: React.FC = () => {
                     className="widthAll"
                     onChange={(value) => setStage(value as number[])}
                     placeholder="项目阶段"
-                    needAll={true}
-                    allValue="-1"
+                  
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -725,8 +726,7 @@ const ProjectManagement: React.FC = () => {
                     className="widthAll"
                     placeholder="建设类型"
                     onChange={(value) => setConstructType(value as number[])}
-                    needAll={true}
-                    allValue="-1"
+                   
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -742,8 +742,7 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setKvLevel(value as number[])}
                     className="widthAll"
                     placeholder="电压等级"
-                    needAll={true}
-                    allValue="-1"
+            
                   />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
@@ -760,8 +759,7 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setNature(value as number[])}
                     className="widthAll"
                     placeholder="项目性质"
-                    needAll={true}
-                    allValue="-1"
+    
                   />
                 </TableSearch>
                 <TableSearch className="mb10" width="111px">
@@ -775,8 +773,7 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setStatus(value as number[])}
                     className="widthAll"
                     placeholder="项目状态"
-                    needAll={true}
-                    allValue="-1"
+           
                   />
                 </TableSearch>
                 <TableSearch className="mb10" width="111px">
@@ -793,8 +790,7 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setSourceType(value as number[])}
                     className="widthAll"
                     placeholder="项目来源"
-                    needAll={true}
-                    allValue="-1"
+                
                   />
                 </TableSearch>
                 <TableSearch width="111px" className="mb10">
@@ -808,8 +804,7 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setIdentityType(value as number[])}
                     className="widthAll"
                     placeholder="项目身份"
-                    needAll={true}
-                    allValue="-1"
+                
                   />
                 </TableSearch>
                 <TableSearch width="121px">
@@ -974,6 +969,7 @@ const ProjectManagement: React.FC = () => {
                 surveyUser: personInfo.survey,
                 ...areaInfo,
               }}
+              getStatisticsData={(value: any) => setStatisticsData(value)}
             />
           </div>
         </div>

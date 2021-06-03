@@ -40,6 +40,7 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
   delayRefresh?: () => void;
+  getStatisticsData?: (value: any) => void
 }
 
 interface JurisdictionInfo {
@@ -55,7 +56,7 @@ const colorMap = {
 };
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, afterSearch, delayRefresh } = props;
+  const { extractParams, onSelect, afterSearch, delayRefresh, getStatisticsData } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
@@ -220,7 +221,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     if (tableData) {
       const { pagedData, statistics } = tableData;
       const { items, pageIndex, pageSize, total } = pagedData;
-
+      getStatisticsData?.(statistics)
       return {
         items: items ?? [],
         pageIndex,
@@ -603,12 +604,26 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
     if (pageSize === size) {
       setPageIndex(page === 0 ? 1 : page);
+
+      run({
+        ...extractParams,
+        pageIndex: page,
+        pageSize,
+      });
+      setTableSelectData([]);
     }
   };
 
   const pageSizeChange = (page: any, size: any) => {
     setPageIndex(1);
     setPageSize(size);
+
+    run({
+      ...extractParams,
+      pageIndex,
+      pageSize: size,
+    });
+    setTableSelectData([]);
   };
 
   useImperativeHandle(ref, () => ({
@@ -659,16 +674,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setTableSelectData([]);
     afterSearch?.();
   };
-
-  // 页码发生变化，重新进行请求
-  useEffect(() => {
-    run({
-      ...extractParams,
-      pageIndex,
-      pageSize,
-    });
-    setTableSelectData([]);
-  }, [pageSize, pageIndex]);
 
   return (
     <div className={styles.projectTable}>

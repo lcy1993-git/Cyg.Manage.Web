@@ -3,7 +3,19 @@ import { getEngineerEnum } from '@/services/project-management/all-project';
 import { useRequest } from 'ahooks';
 import moment from 'moment';
 import { useMemo } from 'react';
+import { useMap } from 'ahooks';
 
+const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
+
+export interface EnumItem {
+  key: string;
+  value: EnumValue[];
+}
+
+export interface EnumValue {
+  value: number;
+  text: string;
+}
 interface UrlSelectDataParams {
   url: string;
   method?: 'post' | 'get';
@@ -109,6 +121,13 @@ export const useGetProjectEnum = () => {
     projectRegionAttribute,
     projectStage,
   };
+};
+
+export const useMapEnum = () => {
+  const [map, { set, setAll, remove, reset, get }] = useMap<string | number, string>([
+    ['msg', 'hello world'],
+    [123, 'number type'],
+  ]);
 };
 
 interface TimeArrayItem {
