@@ -332,7 +332,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                 全选
               </Checkbox>
               <Tree
-                height={size.height ? size.height - 80 : 680}
+                height={size.height ? size.height -120 : 680}
                 checkable
                 onExpand={onExpand}
                 defaultExpandAll

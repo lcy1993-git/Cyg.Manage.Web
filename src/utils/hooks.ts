@@ -5,8 +5,6 @@ import moment from 'moment';
 import { useMemo } from 'react';
 import { useMap } from 'ahooks';
 
-const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
-
 export interface EnumItem {
   key: string;
   value: EnumValue[];
@@ -121,13 +119,6 @@ export const useGetProjectEnum = () => {
     projectRegionAttribute,
     projectStage,
   };
-};
-
-export const useMapEnum = () => {
-  const [map, { set, setAll, remove, reset, get }] = useMap<string | number, string>([
-    ['msg', 'hello world'],
-    [123, 'number type'],
-  ]);
 };
 
 interface TimeArrayItem {
