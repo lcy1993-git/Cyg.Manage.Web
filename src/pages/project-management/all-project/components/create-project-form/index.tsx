@@ -18,6 +18,7 @@ interface CreateProjectFormProps {
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const { field = {}, areaId, company, companyName, status } = props;
+  console.log(status);
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
@@ -562,7 +563,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             rules={Rule.required}
           >
-            {status === 1 || status === 14 || status === undefined ? (
+            {status == 1 || status == 14 || status == undefined ? (
               <UrlSelect
                 defaultData={projectDataSourceType}
                 valueKey="value"

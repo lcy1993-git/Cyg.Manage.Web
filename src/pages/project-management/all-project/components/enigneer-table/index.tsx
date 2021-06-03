@@ -30,6 +30,7 @@ import ExternalArrangeModal from '../external-arrange-modal';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import ExternalListModal from '../external-list-modal';
 import { delay } from '@/utils/utils';
+import { TableContext } from './table-store';
 
 interface ExtractParams extends AllProjectStatisticsParams {
   statisticalCategory?: string;
@@ -323,6 +324,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       pageSize,
     });
     setTableSelectData([]);
+    onSelect?.([]);
     afterSearch?.();
   };
 
@@ -624,6 +626,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageSize,
       });
       setTableSelectData([]);
+      onSelect?.([]);
     }
   };
 
@@ -637,6 +640,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       pageSize: size,
     });
     setTableSelectData([]);
+    onSelect?.([]);
   };
 
   useImperativeHandle(ref, () => ({
@@ -648,6 +652,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageSize,
       });
       setTableSelectData([]);
+      onSelect?.([]);
     },
     search: () => {
       setPageIndex(1);
@@ -657,6 +662,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageSize,
       });
       setTableSelectData([]);
+      onSelect?.([]);
     },
     searchByParams: (params: object) => {
       setPageIndex(1);
@@ -666,6 +672,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageSize,
       });
       setTableSelectData([]);
+      onSelect?.([]);
     },
     delayRefresh: async (ms: number) => {
       await delay(500);
@@ -675,6 +682,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageSize,
       });
       setTableSelectData([]);
+      onSelect?.([]);
     },
   }));
 
@@ -685,139 +693,144 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       pageSize,
     });
     setTableSelectData([]);
-    afterSearch?.();
+    onSelect?.([]);
   };
 
   return (
-    <div className={styles.projectTable}>
-      <div className={styles.projectTableContent}>
-        <Spin spinning={loading}>
-          {tableResultData.items.length > 0 && projectTableShow}
-          {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}
-        </Spin>
-      </div>
-
-      <div className={styles.projectTablePaging}>
-        <div className={styles.projectTablePagingLeft}>
-          <span>显示第</span>
-          <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
-          <span>到第</span>
-          <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
-          <span>条记录，总共</span>
-          <span className={styles.importantTip}>{tableResultData.items.length}</span>
-          <span>个工程，</span>
-          <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+    <TableContext.Provider value={{
+      tableSelectData,
+      setTableSelectData
+    }}>
+      <div className={styles.projectTable}>
+        <div className={styles.projectTableContent}>
+          <Spin spinning={loading}>
+            {tableResultData.items.length > 0 && projectTableShow}
+            {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}
+          </Spin>
         </div>
-        <div className={styles.projectTablePagingRight}>
-          <Pagination
-            pageSize={pageSize}
-            onChange={currentPageChange}
-            size="small"
-            total={tableResultData.total}
-            current={pageIndex}
-            // hideOnSinglePage={true}
-            showSizeChanger
-            showQuickJumper
-            onShowSizeChange={pageSizeChange}
+
+        <div className={styles.projectTablePaging}>
+          <div className={styles.projectTablePagingLeft}>
+            <span>显示第</span>
+            <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
+            <span>到第</span>
+            <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
+            <span>条记录，总共</span>
+            <span className={styles.importantTip}>{tableResultData.items.length}</span>
+            <span>个工程，</span>
+            <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+          </div>
+          <div className={styles.projectTablePagingRight}>
+            <Pagination
+              pageSize={pageSize}
+              onChange={currentPageChange}
+              size="small"
+              total={tableResultData.total}
+              current={pageIndex}
+              // hideOnSinglePage={true}
+              showSizeChanger
+              showQuickJumper
+              onShowSizeChange={pageSizeChange}
+            />
+          </div>
+        </div>
+        {checkResultVisible && (
+          <CheckResultModal
+            visible={checkResultVisible}
+            onChange={setCheckResultVisible}
+            changeFinishEvent={afterSearch}
+            projectInfo={checkResultPorjectInfo}
           />
-        </div>
+        )}
+        {engineerModalVisible && (
+          <EngineerDetailInfo
+            engineerId={currentClickEngineerId}
+            visible={engineerModalVisible}
+            onChange={setEngineerModalVisible}
+          />
+        )}
+        {projectModalVisible && (
+          <ProjectDetailInfo
+            projectId={currentClickProjectId}
+            visible={projectModalVisible}
+            onChange={setProjectModalVisible}
+          />
+        )}
+        {arrangeModalVisible && (
+          <ArrangeModal
+            allotCompanyId={arrangeAllotCompanyId}
+            finishEvent={arrangeFinish}
+            visible={arrangeModalVisible}
+            onChange={setArrangeModalVisible}
+            projectIds={[currentArrageProjectId]}
+            defaultSelectType={currentProjectArrangeType}
+          />
+        )}
+        {editEngineerVisible && (
+          <EditEnigneerModal
+            engineerId={currentEditEngineerId}
+            visible={editEngineerVisible}
+            onChange={setEditEngineerVisible}
+            changeFinishEvent={tableItemEventFinish}
+          />
+        )}
+        {editProjectVisible && (
+          <EditProjectModal
+            companyName={currentEditProjectInfo.companyName}
+            projectId={currentEditProjectInfo.projectId}
+            company={currentEditProjectInfo.company}
+            areaId={currentEditProjectInfo.areaId}
+            status={currentEditProjectInfo.status}
+            visible={editProjectVisible}
+            onChange={setEditProjectVisible}
+            changeFinishEvent={tableItemEventFinish}
+          />
+        )}
+        {copyProjectVisible && (
+          <CopyProjectModal
+            companyName={currentCopyProjectInfo.companyName}
+            projectId={currentCopyProjectInfo.projectId}
+            engineerId={currentCopyProjectInfo.engineerId}
+            company={currentCopyProjectInfo.company}
+            areaId={currentCopyProjectInfo.areaId}
+            visible={copyProjectVisible}
+            onChange={setCopyProjectVisible}
+            changeFinishEvent={tableItemEventFinish}
+          />
+        )}
+        {addProjectVisible && (
+          <AddProjectModal
+            companyName={projectNeedInfo.companyName}
+            changeFinishEvent={tableItemEventFinish}
+            visible={addProjectVisible}
+            onChange={setAddProjectVisible}
+            engineerId={projectNeedInfo.engineerId}
+            areaId={projectNeedInfo.areaId}
+            company={projectNeedInfo.company}
+          />
+        )}
+
+        {externalArrangeModalVisible && (
+          <ExternalArrangeModal
+            projectId={currentClickProjectId}
+            proName={currentProName}
+            onChange={setExternalArrangeModalVisible}
+            visible={externalArrangeModalVisible}
+            search={delayRefresh}
+          />
+        )}
+
+        {externalListModalVisible && (
+          <ExternalListModal
+            projectId={currentClickProjectId}
+            visible={externalListModalVisible}
+            onChange={setExternalListModalVisible}
+            stepData={externalStepData}
+            refresh={delayRefresh}
+          />
+        )}
       </div>
-      {checkResultVisible && (
-        <CheckResultModal
-          visible={checkResultVisible}
-          onChange={setCheckResultVisible}
-          changeFinishEvent={afterSearch}
-          projectInfo={checkResultPorjectInfo}
-        />
-      )}
-      {engineerModalVisible && (
-        <EngineerDetailInfo
-          engineerId={currentClickEngineerId}
-          visible={engineerModalVisible}
-          onChange={setEngineerModalVisible}
-        />
-      )}
-      {projectModalVisible && (
-        <ProjectDetailInfo
-          projectId={currentClickProjectId}
-          visible={projectModalVisible}
-          onChange={setProjectModalVisible}
-        />
-      )}
-      {arrangeModalVisible && (
-        <ArrangeModal
-          allotCompanyId={arrangeAllotCompanyId}
-          finishEvent={arrangeFinish}
-          visible={arrangeModalVisible}
-          onChange={setArrangeModalVisible}
-          projectIds={[currentArrageProjectId]}
-          defaultSelectType={currentProjectArrangeType}
-        />
-      )}
-      {editEngineerVisible && (
-        <EditEnigneerModal
-          engineerId={currentEditEngineerId}
-          visible={editEngineerVisible}
-          onChange={setEditEngineerVisible}
-          changeFinishEvent={tableItemEventFinish}
-        />
-      )}
-      {editProjectVisible && (
-        <EditProjectModal
-          companyName={currentEditProjectInfo.companyName}
-          projectId={currentEditProjectInfo.projectId}
-          company={currentEditProjectInfo.company}
-          areaId={currentEditProjectInfo.areaId}
-          status={currentEditProjectInfo.status}
-          visible={editProjectVisible}
-          onChange={setEditProjectVisible}
-          changeFinishEvent={tableItemEventFinish}
-        />
-      )}
-      {copyProjectVisible && (
-        <CopyProjectModal
-          companyName={currentCopyProjectInfo.companyName}
-          projectId={currentCopyProjectInfo.projectId}
-          engineerId={currentCopyProjectInfo.engineerId}
-          company={currentCopyProjectInfo.company}
-          areaId={currentCopyProjectInfo.areaId}
-          visible={copyProjectVisible}
-          onChange={setCopyProjectVisible}
-          changeFinishEvent={tableItemEventFinish}
-        />
-      )}
-      {addProjectVisible && (
-        <AddProjectModal
-          companyName={projectNeedInfo.companyName}
-          changeFinishEvent={tableItemEventFinish}
-          visible={addProjectVisible}
-          onChange={setAddProjectVisible}
-          engineerId={projectNeedInfo.engineerId}
-          areaId={projectNeedInfo.areaId}
-          company={projectNeedInfo.company}
-        />
-      )}
-
-      {externalArrangeModalVisible && (
-        <ExternalArrangeModal
-          projectId={currentClickProjectId}
-          proName={currentProName}
-          onChange={setExternalArrangeModalVisible}
-          visible={externalArrangeModalVisible}
-          search={delayRefresh}
-        />
-      )}
-
-      {externalListModalVisible && (
-        <ExternalListModal
-          projectId={currentClickProjectId}
-          visible={externalListModalVisible}
-          onChange={setExternalListModalVisible}
-          stepData={externalStepData}
-          refresh={delayRefresh}
-        />
-      )}
-    </div>
+    </TableContext.Provider>
   );
 };
 

@@ -16,7 +16,7 @@ import styles from './index.less';
 
 export interface ChooseDesignAndSurveyValue {
   survey: string;
-  logicRelation: LogicRelation;
+  logicRelation: number;
   design: string;
 }
 
@@ -31,7 +31,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
   const [selectAreaVisible, setSelectAreaVisible] = useState<boolean>(false);
 
   const [survey, setSurvey] = useState<string>('');
-  const [logicRelation, setLogicRelation] = useState<LogicRelation>(2);
+  const [logicRelation, setLogicRelation] = useState<number>(2);
   const [design, setDesign] = useState<string>('');
 
   const { data: personData = [] } = useGetSelectData({
@@ -73,6 +73,17 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
         design: ""
       })
     },
+    setValue: (params: any) => {
+      setLogicRelation(params?.logicRelation ?? 2);
+      setSurvey(params?.survey ?? "");
+      setDesign(params?.design ?? "");
+
+      onChange?.({
+        logicRelation: params?.logicRelation ?? 2,
+        survey: params?.survey ?? "",
+        design: params?.design ?? ""
+      })
+    }
   }));
 
   useEffect(() => {
@@ -85,6 +96,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
 
   useEffect(() => {
     if (defaultValue) {
+      console.log(defaultValue)
       setDesign(defaultValue?.design);
       setLogicRelation(defaultValue?.logicRelation);
       setSurvey(defaultValue?.survey);
