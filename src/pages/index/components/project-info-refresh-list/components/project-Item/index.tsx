@@ -46,7 +46,8 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
           <span className={styles.content}>{content} </span>
           &nbsp;
           <Link
-            to="/project-management/all-project"
+            to={`/project-management/all-project?selectProject=${id}`}
+            
             className={styles.name}
             onClick={onClickProject}
           >
