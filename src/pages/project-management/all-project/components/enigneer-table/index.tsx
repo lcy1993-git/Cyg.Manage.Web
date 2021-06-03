@@ -40,7 +40,7 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
   delayRefresh?: () => void;
-  
+  getStatisticsData?: (value: any) => void
 }
 
 interface JurisdictionInfo {
@@ -56,7 +56,7 @@ const colorMap = {
 };
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, afterSearch, delayRefresh } = props;
+  const { extractParams, onSelect, afterSearch, delayRefresh, getStatisticsData } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
@@ -219,9 +219,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const tableResultData = useMemo(() => {
     if (tableData) {
-      const {pagedData, statistics} = tableData;
+      const { pagedData, statistics } = tableData;
       const { items, pageIndex, pageSize, total } = pagedData;
-
+      getStatisticsData?.(statistics)
       return {
         items: items ?? [],
         pageIndex,
@@ -257,14 +257,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       <Menu>
         {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
           <Menu.Item
-            onClick={() =>
+            onClick={() => {
               editProjectEvent({
                 projectId: tableItemData.id,
                 areaId: engineerInfo.province,
                 company: engineerInfo.company,
                 companyName: engineerInfo.company,
-              })
-            }
+                status: tableItemData.stateInfo.status,
+              });
+            }}
           >
             编辑
           </Menu.Item>
@@ -388,11 +389,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'stageText',
       width: '6.15%',
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-      width: '8%',
-    },
+
     {
       title: '项目状态',
       width: '6.15%',
@@ -476,6 +473,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             </span>
           );
         });
+      },
+    },
+    {
+      title: '勘察人',
+      dataIndex: 'surveyUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.surveyUser.value;
+      },
+    },
+    {
+      title: '设计人',
+      dataIndex: 'designUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.designUser.value;
       },
     },
     {
@@ -599,6 +612,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setPageSize(size);
   };
 
+  
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
     refresh: () => {
@@ -696,7 +710,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         <CheckResultModal
           visible={checkResultVisible}
           onChange={setCheckResultVisible}
-          changeFinishEvent={arrangeFinish}
+          changeFinishEvent={afterSearch}
           projectInfo={checkResultPorjectInfo}
         />
       )}
@@ -738,6 +752,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           projectId={currentEditProjectInfo.projectId}
           company={currentEditProjectInfo.company}
           areaId={currentEditProjectInfo.areaId}
+          status={currentEditProjectInfo.status}
           visible={editProjectVisible}
           onChange={setEditProjectVisible}
           changeFinishEvent={tableItemEventFinish}

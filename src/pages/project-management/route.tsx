@@ -36,4 +36,4 @@ export default [
     path: '/project-management/project-gantt',
     component: <ProjectGantt />,
   },
-]                                                                                                                                                                                                                                      
+];

@@ -26,32 +26,36 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   const [libId, setLibId] = useState<string>('');
 
   const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLib/GetList',
-    extraParams: { status: '2' },
+    url: '/ResourceLib/GetList?status=1',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
   });
   const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
-    { url: '/InventoryOverview/GetList', extraParams: { libId: libId } },
+    {
+      url: `/Inventory/GetListByResourceLibId?libId=${libId}`,
+      requestSource: 'resource',
+    },
     { ready: !!libId, refreshDeps: [libId] },
   );
   const { data: warehouseSelectData = [] } = useGetSelectData(
     {
       url: '/WareHouse/GetWareHouseListByArea',
-      extraParams: { areaId: areaId },
+      extraParams: { area: areaId },
       requestSource: 'resource',
       method: 'post',
-      postType:'query'
+      postType: 'query',
     },
     { ready: !!areaId, refreshDeps: [areaId] },
   );
+
   const { data: companySelectData = [] } = useGetSelectData(
     {
-      url: '/ElectricityCompany/GetListByAreaId',
-      extraParams: { areaId: areaId },
-      titleKey: 'text',
-      valueKey: 'text',
+      url: `/ElectricityCompany?area=${areaId}`,
+      // extraParams: { area: areaId },
+      titleKey: 'companyName',
+      valueKey: 'companyName',
+      requestSource: 'resource',
     },
     { ready: !!areaId, refreshDeps: [areaId] },
   );
@@ -175,7 +179,14 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             required
             rules={Rule.required}
           >
-            <DataSelect options={inventoryOverviewSelectData} placeholder="请先选择资源库" />
+            <DataSelect
+              options={
+                inventoryOverviewSelectData.length !== 0
+                  ? inventoryOverviewSelectData
+                  : [{ label: '无', value: 'none' }]
+              }
+              placeholder="请先选择资源库"
+            />
           </CyFormItem>
         </div>
       </div>
@@ -189,7 +200,14 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             required
             rules={Rule.required}
           >
-            <DataSelect options={warehouseSelectData} placeholder="请先选择区域" />
+            <DataSelect
+              options={
+                warehouseSelectData.length !== 0
+                  ? warehouseSelectData
+                  : [{ label: '无', value: 'none' }]
+              }
+              placeholder="请先选择区域"
+            />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
