@@ -364,8 +364,6 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
       });
     });
 
-    console.log(res);
-
     res.forEach((re: any) => {
       let geojson = { type: 'FeatureCollection', features: [] };
       geojson.features = re.data;
