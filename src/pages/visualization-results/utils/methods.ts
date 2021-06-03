@@ -347,54 +347,76 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
       groupLayer.getLayers().push(surveyTrackLineLayer);
     }
 
-    data.features.forEach((feature: any) => {
-      feature.geometry.coordinates = transform(
-        feature.geometry.coordinates,
-        'EPSG:4326',
-        'EPSG:3857',
-      );
-      // feature.setGeometry(feature.getGeometry().transform('EPSG:4326', 'EPSG:3857'));
+    let obj = {};
+    for (let i = 0; i < data.features.length; i++) {
+      let ai = data.features[i];
+      if (!obj[ai.properties.project_id]) {
+        obj[ai.properties.project_id] = [ai];
+      } else {
+        obj[ai.properties.project_id].push(ai);
+      }
+    }
+    let res: any = [];
+    Object.keys(obj).forEach((key: any) => {
+      res.push({
+        id: key,
+        data: obj[key],
+      });
     });
-    const pJSON = new GeoJSON().readFeatures(data);
-    pJSON.forEach((feature: any) => {
-      let s = trackStyle();
-      feature.setStyle(s);
-    });
-    surveyTrackLayer.getSource().addFeatures(pJSON);
 
-    let lineLatlngs: any = [];
-    let lineLatlngsSegement: any = [];
-    let segementFirstDate: Date;
-    let sortedFeatures = sortByTime(data.features);
-    // let sortedFeatures = data.features.sort(sortFeaturesFunc);
+    res.forEach((re: any) => {
+      let geojson = { type: 'FeatureCollection', features: [] };
+      geojson.features = re.data;
+      geojson.features.forEach((feature: any) => {
+        feature.geometry.coordinates = transform(
+          feature.geometry.coordinates,
+          'EPSG:4326',
+          'EPSG:3857',
+        );
+      });
+      const pJSON = new GeoJSON().readFeatures(geojson);
+      pJSON.forEach((feature: any) => {
+        let s = trackStyle();
+        feature.setStyle(s);
+      });
+      surveyTrackLayer.getSource().addFeatures(pJSON);
 
-    sortedFeatures.forEach((feature: any) => {
-      if (lineLatlngsSegement.length == 0)
-        segementFirstDate = new Date(feature.properties.record_date);
+      let lineLatlngs: any = [];
+      let lineLatlngsSegement: any = [];
+      let segementFirstDate: Date;
+      let sortedFeatures = sortByTime(geojson.features);
+      // let sortedFeatures = data.features.sort(sortFeaturesFunc);
 
-      lineLatlngsSegement.push(feature.geometry.coordinates);
+      sortedFeatures.forEach((feature: any) => {
+        if (lineLatlngsSegement.length == 0)
+          segementFirstDate = new Date(feature.properties.record_date);
 
-      var tempDate = new Date(feature.properties.record_date);
-      if (
-        tempDate.getTime() - segementFirstDate.getTime() > 1800000 ||
-        tempDate.getDay() != segementFirstDate.getDay()
-      ) {
+        lineLatlngsSegement.push(feature.geometry.coordinates);
+
+        var tempDate = new Date(feature.properties.record_date);
+        if (
+          tempDate.getTime() - segementFirstDate.getTime() > 1800000 ||
+          tempDate.getDay() != segementFirstDate.getDay()
+        ) {
+          lineLatlngs.push(lineLatlngsSegement);
+          lineLatlngsSegement = [];
+        }
+      });
+
+      if (lineLatlngsSegement!.length > 1) {
         lineLatlngs.push(lineLatlngsSegement);
         lineLatlngsSegement = [];
       }
+
+      var lineGeom = new MultiLineString(lineLatlngs);
+      var lineFeature = new Feature({
+        geometry: lineGeom,
+      });
+      lineFeature.set('project_id', re.id);
+      lineFeature.setStyle(trackLineStyle(lineFeature, 'rgba(255,204,51,1)'));
+      surveyTrackLineLayer.getSource().addFeature(lineFeature);
     });
 
-    if (lineLatlngsSegement!.length > 1) {
-      lineLatlngs.push(lineLatlngsSegement);
-      lineLatlngsSegement = [];
-    }
-
-    var lineGeom = new MultiLineString(lineLatlngs);
-    var lineFeature = new Feature({
-      geometry: lineGeom,
-    });
-    lineFeature.setStyle(trackLineStyle(lineFeature, 'rgba(255,204,51,1)'));
-    surveyTrackLineLayer.getSource().addFeature(lineFeature);
     if (surveyTrackLayer.getSource().getFeatures().length > 0)
       map.getView().fit(surveyTrackLayer.getSource().getExtent(), map.getSize());
   });
@@ -488,7 +510,7 @@ const getLayerGroupByName = (name: string, layerGroups: LayerGroup[]): any => {
   return layerGroups.find((item: LayerGroup) => item.get('name') === name);
 };
 
-var extent:any;
+var extent: any;
 // 根据项目进行定位
 const relocateMap = (
   projectId: string = '',
@@ -496,12 +518,12 @@ const relocateMap = (
   view: any,
   setView: any,
   map: any,
-  refresh: boolean = true
+  refresh: boolean = true,
 ) => {
-  if(extent && !refresh) {
+  if (extent && !refresh) {
     view.fit(extent, map!.getSize());
     setView(view);
-    return
+    return;
   }
   let features: any = [];
   let source = new VectorSource();
@@ -525,7 +547,7 @@ const relocateMap = (
 
   if (features.length > 0) {
     source.addFeatures(features);
-    extent = source.getExtent()
+    extent = source.getExtent();
     view.fit(extent, map!.getSize());
     setView(view);
   }
