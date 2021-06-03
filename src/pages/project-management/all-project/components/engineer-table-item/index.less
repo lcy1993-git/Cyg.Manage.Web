@@ -1,115 +1,118 @@
 .projectTableItem {
-    font-size: 0;
-    line-height: 1;
-   
-    .tooltip {
-        overflow: hidden;
-        text-overflow:ellipsis;
-        white-space: nowrap;
+  font-size: 0;
+  line-height: 1;
+
+  .tooltip {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .projectTitle {
+    display: flex;
+    height: 33px;
+    font-size: 13px;
+    background-color: @table-thead-color;
+    border-right: 1px solid @table-line-color;
+    border-bottom: 1px solid @table-line-color;
+    border-left: 1px solid @table-line-color;
+    .foldButton {
+      width: 44px;
+      height: 33px;
+      font-size: 14px;
+      line-height: 33px;
+      text-align: center;
+      border-right: 1px solid @table-line-color;
+      cursor: pointer;
+    }
+    .projectName {
+      flex: 2;
+      height: 26px;
+      padding-top: 8px;
+      padding-left: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
+    }
+    .projectTime {
+      width: 26.45%;
+      padding-top: 8px;
+      padding-left: 10px;
+
+      color: @black-color;
+    }
+    .projectAccount {
+      width: 8%;
+      padding-left:8px;
+      padding-top: 8px;
+    }
+    .createTime {
+      width: 26.45%;
+      padding-top: 8px;
+      padding-left: 10px;
+      color: @black-color;
+    }
+    .label {
+      color: @gray-color;
     }
 
-    .projectTitle {
+    .projectButtons {
+      width: calc(8% + 60px);
+      padding-right: 20px;
+      text-align: right;
+      :global {
+        .ant-btn {
+          height: 28px !important;
+          margin-top: 2px;
+          line-height: 1 !important;
+        }
+      }
+    }
+  }
+  :global {
+    .ant-checkbox-group {
+      width: 100%;
+      line-height: 1;
+    }
+  }
+  .engineerTable {
+    &.foldClassName {
+    }
+    .engineerTableContent {
+      width: 100%;
+      border-left: 1px solid @table-line-color;
+      .engineerTableHeader {
         display: flex;
-        background-color: @table-thead-color;
-        height: 33px;
-        border-left: 1px solid @table-line-color;
-        border-right: 1px solid @table-line-color;
-        border-bottom: 1px solid @table-line-color;
-        font-size: 13px;
-        .foldButton {
+        width: 100%;
+        .engineerTableTh {
+          padding-top: 11px;
+          padding-bottom: 11px;
+          padding-left: 10px;
+          border-right: 1px solid @table-line-color;
+          border-bottom: 1px solid @table-line-color;
+          &.checkboxTh {
             width: 44px;
-            height: 33px;
-            text-align: center;
-            line-height: 33px;
-            font-size: 14px;
-            cursor: pointer;
-            border-right: 1px solid @table-line-color;
+          }
         }
-        .projectName {
-            flex: 2;
-            padding-left: 10px;
-            padding-top: 8px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            word-break: break-all;
-            height: 26px;
+      }
+      .engineerTableBody {
+        .engineerTableTr {
+          display: flex;
         }
-        .projectTime {
-
-            width: 26.45%;
-            padding-left: 10px;
-            padding-top: 8px;
-    
-            color: @black-color;
+        .engineerTableTd {
+          padding-top: 11px;
+          padding-bottom: 11px;
+          padding-left: 10px;
+          color: @gray-color;
+          border-right: 1px solid @table-line-color;
+          border-bottom: 1px solid @table-line-color;
         }
-        .createTime {
-            width: 26.45%;
-            padding-left: 10px;
-            padding-top: 8px;
-            color: @black-color;
-        }
-        .label {
-            color: @gray-color;
-        }
-
-        .projectButtons {
-            width: calc(8% + 60px);
-            text-align: right;
-            padding-right: 20px;
-            :global {
-                .ant-btn {
-                    height: 28px !important;
-                    line-height: 1 !important;
-                    margin-top: 2px;
-                }
-            }
-        }
+      }
     }
-    :global {
-        .ant-checkbox-group {
-            line-height: 1;
-            width: 100%;
-        }
-    }
-    .engineerTable {
-        &.foldClassName {
-
-        }
-        .engineerTableContent {
-            width: 100%;
-            border-left: 1px solid @table-line-color;
-            .engineerTableHeader {
-                display: flex;
-                width: 100%;
-                .engineerTableTh {
-                    border-right: 1px solid @table-line-color;
-                    border-bottom: 1px solid @table-line-color;
-                    padding-left: 10px;
-                    padding-top: 11px;
-                    padding-bottom: 11px;
-                    &.checkboxTh {
-                        width: 44px;
-                    }
-                }
-            }
-            .engineerTableBody {
-                .engineerTableTr {
-                    display: flex;
-                }
-                .engineerTableTd {
-                    border-right: 1px solid @table-line-color;
-                    border-bottom: 1px solid @table-line-color;
-                    padding-left: 10px;
-                    padding-top: 11px;
-                    padding-bottom: 11px;
-                    color: @gray-color;
-                }
-            }
-        }
-    }
-    .noEngineerData {
-        border-left: 1px solid @table-line-color;
-        border-bottom: 1px solid @table-line-color;
-        border-right: 1px solid @table-line-color;
-    }
+  }
+  .noEngineerData {
+    border-right: 1px solid @table-line-color;
+    border-bottom: 1px solid @table-line-color;
+    border-left: 1px solid @table-line-color;
+  }
 }

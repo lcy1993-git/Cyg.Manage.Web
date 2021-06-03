@@ -13,6 +13,7 @@ interface InventoryTableParams {
   areaOptions: { label: string; value: string }[];
   inventoryOverviewId: string;
   materialId: string;
+  mappingId?: string;
   changeEvent: (value: object[]) => void;
   onChange: Dispatch<SetStateAction<boolean>>;
   visible: boolean;
@@ -22,7 +23,14 @@ interface InventoryTableParams {
 const InventoryTable: React.FC<InventoryTableParams> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
 
-  const { areaOptions, inventoryOverviewId, materialId, changeEvent, hasMapData } = props;
+  const {
+    areaOptions,
+    inventoryOverviewId,
+    materialId,
+    changeEvent,
+    hasMapData,
+    mappingId,
+  } = props;
   const inventoryTableRef = useRef<HTMLDivElement>(null);
   const [inventoryKeyWord, setInventoryKeyWord] = useState<string>('');
   const [activeInventoryAreaId, setActiveInventoryAreaId] = useState<string>('-1');
@@ -62,6 +70,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
         area: value,
         inventoryOverviewId: inventoryOverviewId,
         materialId: materialId,
+        mappingId: mappingId,
         keyWord: inventoryKeyWord,
       });
     }
@@ -169,6 +178,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
           extractParams={{
             inventoryOverviewId: inventoryOverviewId,
             area: activeInventoryAreaId,
+            mappingId: mappingId,
             materialId: materialId,
             keyWord: inventoryKeyWord,
           }}

@@ -75,12 +75,10 @@ function Store(vState: VisualizationResultsStateType) {
       this.vState.positionMap = !this.vState.positionMap;
     },
 
-    toggleObserveTrack(flag?: boolean) {
-      if (flag === undefined) {
-        this.vState.observeTrack = !this.vState.observeTrack;
-      } else {
-        this.vState.observeTrack = flag;
-      }
+    toggleObserveTrack(flag: boolean) {
+      console.log( this.vState.observeTrack, '-->', flag);
+
+      this.vState.observeTrack = flag;
     },
   });
 }

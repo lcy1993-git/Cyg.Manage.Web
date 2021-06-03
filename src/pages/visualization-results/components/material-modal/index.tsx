@@ -29,13 +29,11 @@ const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDat
 
   const typeArr = [...typeSet];
   //创建第一层结构
-  const parentArr: MaterialDataType[] = typeArr.map((type) => {
-    return {
-      key: `type${Math.random()}`,
-      type: type,
-      children: undefined,
-    };
-  });
+  const parentArr: MaterialDataType[] = typeArr.map((type) => ({
+    key: `type${Math.random()}`,
+    type: type,
+    children: undefined,
+  }));
   parentArr.forEach((value) => {
     value.children = materialData.filter((materialItem) => {
       materialItem.key = Math.random().toLocaleString();
@@ -46,18 +44,16 @@ const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDat
   return parentArr;
 };
 const MaterialModal: FC<MaterialModalProps> = (props) => {
-  const { checkedProjectIdList, visible, onOk, onCancel } = props;
+  const { checkedProjectIdList, visible = false, onOk, onCancel } = props;
   const [materialList, setMaterialList] = useState<MaterialDataType[]>();
   const { data, loading, run } = useRequest(fetchMaterialListByProjectIdList, {
     manual: true,
-
     onSuccess: () => {
       /**
        * 材料的table树
        *  - 类型
        *    - 类型 ------------
        */
-
       if (data) {
         setMaterialList(generateMaterialTreeList(data));
       } else {

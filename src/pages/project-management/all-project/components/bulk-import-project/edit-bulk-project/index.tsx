@@ -27,7 +27,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
 
   const { projectInfo, finishEvent, currentChooseEngineerInfo } = props;
 
-  const [form] = Form.useForm();  
+  const [form] = Form.useForm();
 
   useEffect(() => {
     const { selectData } = currentChooseEngineerInfo;

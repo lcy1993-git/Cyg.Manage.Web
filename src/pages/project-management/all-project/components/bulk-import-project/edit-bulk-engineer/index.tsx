@@ -8,8 +8,7 @@ import city from '@/assets/local-data/area';
 import moment from 'moment';
 import Rule from './engineer-form-rule';
 import { useControllableValue, useRequest } from 'ahooks';
-import { useState } from 'react';
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useGetSelectData } from '@/utils/hooks';
 import { getCommonSelectData } from '@/services/common';
 interface EditBulkEngineerProps {
@@ -52,9 +51,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
           inventoryOverviewId,
           warehouseId,
           company,
-          province: isNaN(province) ? "" : province,
-          city: isNaN(city) ? "" : city,
-          area: isNaN(area) ? "" : area,
+          province: isNaN(province) ? '' : province,
+          city: isNaN(city) ? '' : city,
+          area: isNaN(area) ? '' : area,
         },
         areaChange,
         libChange,
@@ -64,7 +63,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
           inventoryOverviewSelectData,
           warehouseSelectData,
           companySelectData,
-          departmentSelectData
+          departmentSelectData,
         },
       };
       finishEvent(engineerSaveInfo);
@@ -73,8 +72,10 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   };
 
   const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLibrary/GetList',
-    extraParams: { pId: '-1' },
+    url: '/ResourceLib/GetList?status=1',
+    requestSource: 'resource',
+    titleKey: 'libName',
+    valueKey: 'id',
   });
 
   const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true });
@@ -145,34 +146,35 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     const [province] = value;
 
     const warehouseSelectResData = await getWarehouseSelectData({
-      url: '/WarehouseOverview/GetList',
-      method: 'get',
-      params: { areaId: province },
-      requestSource: 'project',
+      url: '/WareHouse/GetWareHouseListByArea',
+      method: 'post',
+      postType: 'query',
+      params: { area: province },
+      requestSource: 'resource',
     });
 
     const companySelectResData = await getCompanySelectData({
-      url: '/ElectricityCompany/GetListByAreaId',
+      url: '/ElectricityCompany',
       method: 'get',
-      params: { areaId: province },
-      requestSource: 'project',
+      params: { area: province },
+      requestSource: 'resource',
     });
 
-    const handleWarehouseSelectData = warehouseSelectResData.map((item: any) => {
+    const handleWarehouseSelectData = warehouseSelectResData?.map((item: any) => {
       return {
         label: item.text,
         value: item.value,
       };
     });
 
-    const handleCompanySelectData = companySelectResData.map((item: any) => {
+    const handleCompanySelectData = companySelectResData?.map((item: any) => {
       return {
-        label: item.text,
-        value: item.text,
+        label: item.companyName,
+        value: item.companyName,
       };
     });
 
-    setAreaChange(true)
+    setAreaChange(true);
     setWarehouseSelectData(handleWarehouseSelectData);
     setCompanySelectData(handleCompanySelectData);
   };
@@ -180,19 +182,18 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   const libChangeEvent = async (value: any) => {
     setLibId(value);
     const inventoryOverviewSelectResData = await getInventoryOverviewSelectData({
-      url: '/InventoryOverview/GetList',
-      method: 'get',
+      url: '/Inventory/GetListByResourceLibId',
       params: { libId: value },
-      requestSource: 'project',
+      requestSource: 'resource',
     });
 
-    const handleInventoryOverviewSelectData = inventoryOverviewSelectResData.map((item: any) => {
+    const handleInventoryOverviewSelectData = inventoryOverviewSelectResData?.map((item: any) => {
       return {
         label: item.text,
         value: item.value,
       };
     });
-    setLibChange(true)
+    setLibChange(true);
     setInventoryOverviewSelectData(handleInventoryOverviewSelectData);
   };
 
@@ -214,8 +215,16 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       params: { areaId: province, company: value },
       requestSource: 'project',
     });
-    setCompanyChangeFlag(true)
-    setDepartmentSelectData(departmentSelectData)
+
+    const handleDepartmentSelectData = departmentSelectData?.map((item: any) => {
+      return {
+        label: item.text,
+        value: item.value,
+      };
+    });
+
+    setCompanyChangeFlag(true);
+    setDepartmentSelectData(handleDepartmentSelectData);
   };
 
   return (
@@ -276,7 +285,11 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                     style={{ width: '100%' }}
                     value={inventoryOverviewId}
                     onChange={(value) => inventoryOverviewChange(value)}
-                    options={inventoryOverviewSelectData}
+                    options={
+                      inventoryOverviewSelectData.length !== 0
+                        ? inventoryOverviewSelectData
+                        : [{ label: '无', value: 'none' }]
+                    }
                     placeholder="请先选择资源库"
                   />
                 </div>
@@ -291,14 +304,17 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-                // rules={Rule.required}
               >
                 <div>
                   <DataSelect
                     style={{ width: '100%' }}
                     value={warehouseId}
                     onChange={(value) => warehouseIdChange(value)}
-                    options={warehouseSelectData}
+                    options={
+                      warehouseSelectData.length !== 0
+                        ? warehouseSelectData
+                        : [{ label: '无', value: 'none' }]
+                    }
                     placeholder="请先选择区域"
                   />
                 </div>

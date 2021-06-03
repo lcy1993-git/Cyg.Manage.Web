@@ -210,6 +210,8 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       requestSource,
       postType,
     });
+    setSelectedRowKeys([]);
+    getSelectData?.([]);
   }, [pageSize, currentPage]);
 
   useImperativeHandle(ref, () => ({
@@ -234,6 +236,8 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         requestSource,
         postType,
       });
+      setSelectedRowKeys([]);
+      getSelectData?.([]);
     },
     searchByParams: (params: object) => {
       setCurrentPage(1);
@@ -245,6 +249,8 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         requestSource,
         postType,
       });
+      setSelectedRowKeys([]);
+      getSelectData?.([]);
     },
     reset: () => {
       setCurrentPage(1);

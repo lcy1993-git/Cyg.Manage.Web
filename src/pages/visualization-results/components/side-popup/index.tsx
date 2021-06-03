@@ -15,7 +15,7 @@ import { useRequest } from 'ahooks';
 import { observer } from 'mobx-react-lite';
 import { baseUrl } from '@/services/common';
 import moment from 'moment';
-
+import { EnumItem, EnumValue, findEnumKeyByType, findEnumKeyByCN } from '../../utils/loadEnum';
 export interface TableDataType {
   // propertyName: string;
   // data: string;
@@ -250,7 +250,11 @@ const SidePopup: React.FC<Props> = observer((props) => {
         } else if (record.propertyName === '审阅') {
           if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
             return (
-              <span className={styles.link} onClick={() => onAddComment(value)} key={index}>
+              <span
+                className={styles.link}
+                onClick={() => onOpenAddCommentModal(value)}
+                key={index}
+              >
                 添加审阅
               </span>
             );
@@ -278,7 +282,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         } else if (t === 2) {
           return <span key={uuid.v1()}>音频</span>;
         }
-        return t ?? "";
+        return t ?? '';
       },
     },
     {
@@ -319,7 +323,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
    * 获取评审list
    */
   const {
-    data: commentList,
+    data: commentListResponseData,
     run: fetchCommentListRequest,
     loading: fetchCommentListloading,
   } = useRequest(fetchCommentList, {
@@ -347,55 +351,37 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   });
 
-  const onAddComment = (value: any) => {
+  const onOpenAddCommentModal = (value: any) => {
     setActiveType('annotation&' + value.id);
 
     const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature;
 
     /**
-     * 从feature这个对象里面取出关键信息，由于localstorage里面存的是中文枚举值，这里取出来的是英文，所以要根据中英文转换一下
+     * 从feature这个对象里面取出关键信息，
+     * 由于localstorage里面存的是中文枚举值，
+     * 这里取出来的是英文，所以要根据中英文转换一下
      */
     if (feature) {
-      const localData = localStorage.getItem('loadEnumsData');
-
-      const loadEnumsData =
-        localData && localData !== 'undefined'
-          ? JSON.parse(localStorage.getItem('loadEnumsData')!)
-          : [];
-
-      const findEnumKey = (v: string, type: string): number => {
-        let res: number = -100;
-        loadEnumsData.forEach((l: { key: string; value: { value: number; text: string }[] }) => {
-          if (l.key === type) {
-            l.value.forEach((e) => {
-              if (e.text === v) {
-                res = e.value as number;
-              }
-            });
-          }
-        });
-
-        return res;
-      };
       const { id_ } = feature;
       const { project_id: projectId } = feature.values_;
       /**
        * "survey_tower.1386220338212147281" 切割该字符串获取图层type，设备类型，设备id
+       * survey_device_type.1386220338212147281
        */
-      let split = id_.split('.');
-      console.log(id_);
-
-      const deviceAndLayer = split[0].split('_');
-
+      const split = id_.split('.');
       const deviceId = split[1];
+      const deviceAndLayer = split[0].split('_');
 
       /**
        * 初始化请求body
+       * LAYER_TYPE[deviceAndLayer[0]]这里是英文转换成中文，
+       * 因为feature里面的数据是英文的，
+       * 但是本地存储的是中文？？？？？
        */
 
       let body = {
-        layerType: findEnumKey(LAYER_TYPE[deviceAndLayer[0]], 'ProjectCommentLayer'),
-        deviceType: findEnumKey(
+        layerType: findEnumKeyByCN(LAYER_TYPE[deviceAndLayer[0]], 'ProjectCommentLayer'),
+        deviceType: findEnumKeyByCN(
           DEVICE_TYPE[deviceAndLayer.slice(1).join('_')],
           'ProjectCommentDevice',
         ),
@@ -558,7 +544,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
               <CommentList
                 horizontal
                 height={300}
-                commentList={commentList}
+                commentList={commentListResponseData}
                 loading={fetchCommentListloading}
               />
 

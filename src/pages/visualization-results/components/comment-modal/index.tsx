@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
-import { MaterialTable } from '../material-table';
-import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
-import { Menu, message, Modal, Switch, Tooltip } from 'antd';
+import { Modal } from 'antd';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import CommentTable from '../comment-table';
 export interface CommentModalProps {

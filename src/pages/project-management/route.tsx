@@ -4,19 +4,19 @@ import Loading from '@ant-design/pro-layout/es/PageLoading';
 
 const AllProject = Loadable({
   loader: () => import('@/pages/project-management/all-project'),
-  loading: Loading,
+  loading: () => <Loading />,
   delay: 150,
 });
 
 const ProjectStatistics = Loadable({
   loader: () => import('@/pages/project-management/project-statistics'),
-  loading: Loading,
+  loading: () => <Loading />,
   delay: 150,
 });
 
 const ProjectGantt = Loadable({
   loader: () => import('@/pages/project-management/project-gantt'),
-  loading: Loading,
+  loading: () => <Loading />,
   delay: 150,
 });
 
@@ -36,4 +36,4 @@ export default [
     path: '/project-management/project-gantt',
     component: <ProjectGantt />,
   },
-]                                                                                                                                                                                                                                      
+];

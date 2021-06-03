@@ -40,6 +40,7 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
   delayRefresh?: () => void;
+  getStatisticsData?: (value: any) => void
 }
 
 interface JurisdictionInfo {
@@ -55,7 +56,7 @@ const colorMap = {
 };
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, afterSearch, delayRefresh } = props;
+  const { extractParams, onSelect, afterSearch, delayRefresh, getStatisticsData } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
 
@@ -218,8 +219,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const tableResultData = useMemo(() => {
     if (tableData) {
-      const { items, pageIndex, pageSize, total } = tableData;
-
+      const { pagedData, statistics } = tableData;
+      const { items, pageIndex, pageSize, total } = pagedData;
+      getStatisticsData?.(statistics)
       return {
         items: items ?? [],
         pageIndex,
@@ -255,14 +257,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       <Menu>
         {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
           <Menu.Item
-            onClick={() =>
+            onClick={() => {
               editProjectEvent({
                 projectId: tableItemData.id,
                 areaId: engineerInfo.province,
                 company: engineerInfo.company,
                 companyName: engineerInfo.company,
-              })
-            }
+                status: tableItemData.stateInfo.status,
+              });
+            }}
           >
             编辑
           </Menu.Item>
@@ -386,11 +389,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'stageText',
       width: '6.15%',
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-      width: '8%',
-    },
+
     {
       title: '项目状态',
       width: '6.15%',
@@ -418,39 +417,36 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.statusText === '设计评审中' ? (
-                  <span>设计中</span>
+                ) : stateInfo.status === 4 &&
+                  stateInfo.auditStatus === 0 &&
+                  stateInfo.auditStatusText === null ? (
+                  <span>{stateInfo?.statusText}</span>
+                ) : stateInfo.status === 4 &&
+                  stateInfo.auditStatus === 0 &&
+                  stateInfo.auditStatusText != null ? (
+                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
+                  <span>{stateInfo?.statusText}</span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                  <span
+                    className="canClick"
+                    onClick={() => externalArrange(record.id, record.name)}
+                  >
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
                 ) : (
-                  //  : stateInfo.status === 4 &&
-                  //   stateInfo.auditStatus === 0 &&
-                  //   stateInfo.auditStatusText === null ? (
-                  //   <span>{stateInfo?.statusText}</span>
-                  // ) : stateInfo.status === 4 &&
-                  //   stateInfo.auditStatus === 0 &&
-                  //   stateInfo.auditStatusText != null ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
-                  //   <span>{stateInfo?.statusText}</span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
-                  //   <span
-                  //     className="canClick"
-                  //     onClick={() => externalArrange(record.id, record.name)}
-                  //   >
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
-                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
-                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // )
                   <span>{stateInfo?.statusText}</span>
                 )}
               </span>
@@ -477,6 +473,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             </span>
           );
         });
+      },
+    },
+    {
+      title: '勘察人',
+      dataIndex: 'surveyUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.surveyUser.value;
+      },
+    },
+    {
+      title: '设计人',
+      dataIndex: 'designUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.designUser.value;
       },
     },
     {
@@ -522,16 +534,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   //外审安排
   const externalArrange = async (projectId: string, proName?: string) => {
-    // const res = await getArrangeUsers(projectId, 6);
     setCurrentClickProjectId(projectId);
     setCurrentProName(proName);
-    // const exUsers = res?.map((item) => {
-    //   return {
-    //     value: item.userId,
-    //     text: item.userNameText,
-    //   };
-    // });
-
     setExternalArrangeModalVisible(true);
   };
 
@@ -600,14 +604,29 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
     if (pageSize === size) {
       setPageIndex(page === 0 ? 1 : page);
+
+      run({
+        ...extractParams,
+        pageIndex: page,
+        pageSize,
+      });
+      setTableSelectData([]);
     }
   };
 
   const pageSizeChange = (page: any, size: any) => {
     setPageIndex(1);
     setPageSize(size);
+
+    run({
+      ...extractParams,
+      pageIndex,
+      pageSize: size,
+    });
+    setTableSelectData([]);
   };
 
+  
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
     refresh: () => {
@@ -657,16 +676,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     afterSearch?.();
   };
 
-  // 页码发生变化，重新进行请求
-  useEffect(() => {
-    run({
-      ...extractParams,
-      pageIndex,
-      pageSize,
-    });
-    setTableSelectData([]);
-  }, [pageSize, pageIndex]);
-
   return (
     <div className={styles.projectTable}>
       <div className={styles.projectTableContent}>
@@ -705,7 +714,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         <CheckResultModal
           visible={checkResultVisible}
           onChange={setCheckResultVisible}
-          changeFinishEvent={arrangeFinish}
+          changeFinishEvent={afterSearch}
           projectInfo={checkResultPorjectInfo}
         />
       )}
@@ -747,6 +756,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           projectId={currentEditProjectInfo.projectId}
           company={currentEditProjectInfo.company}
           areaId={currentEditProjectInfo.areaId}
+          status={currentEditProjectInfo.status}
           visible={editProjectVisible}
           onChange={setEditProjectVisible}
           changeFinishEvent={tableItemEventFinish}
