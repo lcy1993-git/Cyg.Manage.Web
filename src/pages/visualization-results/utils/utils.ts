@@ -15,7 +15,7 @@ export const getTime = (t: any) => {
 export const getXmlData = (projects: ProjectList[], propTime: string | undefined) => {
   const postData = projects.reduce((pre, { id, time }) => {
     let value = "";
-    if(!time || !propTime || getTime(propTime) > getTime(time)) {
+    if(!time || !propTime || getTime(propTime) >= getTime(time)) {
       value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
     }
     return pre + value

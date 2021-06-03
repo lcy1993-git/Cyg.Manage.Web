@@ -104,11 +104,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       clearHighlightLayer(map);
       return;
     }
-    map.getTargetElement().style.cursor = 'wait';
     if (layer.getSource() instanceof Cluster) {
       if (feature.get('features').length !== 1) return;
       feature = feature.get('features')[0];
     }
+    map.getTargetElement().style.cursor = 'wait';
     // console.log(feature, 2);
     let layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
@@ -407,8 +407,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        await getlibId({ id: feature.getProperties().project_id }).then(async (data: any) => {
-          const resourceLibID = data.content.libId;
+        await getlibId({ projectId: feature.getProperties().project_id }).then(async (data: any) => {
+          console.log(data);
+          const resourceLibID = data.content;
           const objectID =
             feature.getProperties().mode_id || feature.getProperties().equip_model_id;
           const materialParams: any = {

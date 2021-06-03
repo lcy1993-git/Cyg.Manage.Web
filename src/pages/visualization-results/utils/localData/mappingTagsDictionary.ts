@@ -349,6 +349,17 @@ function getMappingTagsDictionary() {
         "state": findenumsValue("SurveyState"),
       }
     };
+    mappingTagsDictionary.hole = {
+      mappingTags1: {
+        "project_id": "title"
+      },
+      mappingTags2: {
+        "code": "穿孔编号",
+        "hole_profile": "穿孔示意图",
+        'hole_direction': "方向",
+        "project_id": "title"
+      }
+    };
     enums.push({
       key: 'OverHeadDeviceType',
       value: [{
