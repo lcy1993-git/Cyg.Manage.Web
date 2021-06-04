@@ -4,7 +4,7 @@ import TableSearch from '@/components/table-search';
 import { history } from 'umi';
 import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DictionaryForm from './components/add-edit-form';
 import { createQuotaLibrary, CreateQuotaLibrary, deleteQuotaLibrary } from '@/services/technology-economic';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
@@ -36,43 +36,43 @@ const columns = [
     dataIndex: 'quotaScopeText',
     index: 'quotaScopeText',
     title: '定额类别',
-    width: 160,
+    width: 160
   },
   {
     dataIndex: 'publishDate',
     index: 'publishDate',
     title: '发布时间',
-    width: 160,
+    width: 130
   },
   {
     dataIndex: 'publishOrg',
     index: 'publishOrg',
     title: '发布机构',
-    width: 160,
+    width: 150
   },
   {
     dataIndex: 'year',
     index: 'year',
     title: '价格年度',
-    width: 160,
+    width: 100
   },
   {
     dataIndex: 'industryTypeText',
     index: 'industryTypeText',
     title: '行业类别',
-    width: 160,
+    width: 150
   },
   {
     dataIndex: 'majorTypeText',
     index: 'majorTypeText',
     title: '适用专业',
-    width: 160,
+    width: 150
   },
   {
     dataIndex: 'enabled',
     index: 'enabled',
     title: '状态',
-    width: 160,
+    width: 70,
     render(value: boolean){
       return (
         <Switch checked={value}/>
@@ -83,11 +83,12 @@ const columns = [
     dataIndex: 'remark',
     index: 'remark',
     title: '备注',
-    width: 400
+    width: 220
   },
 ];
 
 const QuotaLibrary: React.FC = () => {
+
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -174,8 +175,6 @@ const QuotaLibrary: React.FC = () => {
       return;
     }
     const id = tableSelectRows[0].id;
-    console.log(1);
-    
     history.push(`/technology-economic/quota-infomation?id=${id}`)
   };
 

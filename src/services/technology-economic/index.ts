@@ -1,6 +1,11 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
+/**
+ * 将对象传参formData格式化
+ * @param params 传参的对象
+ * @returns 对象formData实例
+ */
 const formData = (params: Object) => {
   const form = new FormData();
   for (let k in params) {
@@ -28,16 +33,24 @@ export interface CreateQuotaLibrary {
   file: File;
 }
 
+// 定额库列表查询
+
+export const queryQuotaLibraryPager = (params: GetPage) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibrary/QueryQuotaLibraryPager`, { method: 'POST', data: params })
+  )
+}
+
+// 定额库目录列表
+
+export const queryQuotaLibraryCatalogList= (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibrary/QueryQuotaLibraryCatalogList`, { method: 'GET', params: { id } }),
+  );
+}
+
 // 创建定额库
 export const createQuotaLibrary = (params: CreateQuotaLibrary) => {
-  // const formData = new FormData();
-  // for (let k in params) {
-  //   if(k === 'file') {
-  //     formData.append(k, params[k][0])
-  //   }else{
-  //     formData.append(k, params[k]);
-  //   }
-  // }
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/QuotaLibrary/CreateQuotaLibrary`, { method: 'POST', data: formData(params) })
   )
@@ -73,16 +86,16 @@ interface CreateMaterialMachineLibrary {
 }
 
 // 分页列表
-export const queryMaterialMachineLibraryPager = (params: GetPage) => {
+export const queryMaterialMachineLibraryPager = (data: GetPage) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/MaterialMachineLibrary/QueryMaterialMachineLibraryPager`, { method: 'POST', data: params })
+    request(`${baseUrl.tecEco}/MaterialMachineLibrary/QueryMaterialMachineLibraryPager`, { method: 'POST', data })
   )
 }
 
 // 创建人材机库
-export const createMaterialMachineLibrary = (params: CreateMaterialMachineLibrary) => {
+export const createMaterialMachineLibrary = (data: CreateMaterialMachineLibrary) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/MaterialMachineLibrary/CreateMaterialMachineLibrary`, { method: 'POST', data: formData(params) })
+    request(`${baseUrl.tecEco}/MaterialMachineLibrary/CreateMaterialMachineLibrary`, { method: 'POST', data: formData(data) })
   )
 }
 
@@ -98,5 +111,26 @@ export const queryMaterialMachineLibraryCatalogList = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/MaterialMachineLibrary/queryMaterialMachineLibraryCatalogList`, { method: 'GET', params: { id } }),
   );
+}
+
+// ***章节说明
+interface SaveQuotaLibraryCatalogDescription {
+  id: string;
+  chapterDescription: string;
+}
+
+
+// 获取定额库目录章节说明
+export const getQuotaLibraryCatalogDescription= (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalog/GetQuotaLibraryCatalogDescription`, { method: 'POST', data: {id} })
+  )
+}
+
+// 保存定额库目录章节说明
+export const saveQuotaLibraryCatalogDescription= (data: SaveQuotaLibraryCatalogDescription) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalog/SaveQuotaLibraryCatalogDescription`, { method: 'POST', data })
+  )
 }
 

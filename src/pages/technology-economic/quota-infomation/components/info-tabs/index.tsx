@@ -1,20 +1,22 @@
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 import { Tabs, Table } from 'antd';
 import { PlusSquareOutlined, MinusSquareOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
 const { TabPane } = Tabs;
 import styles from './index.less';
 
-
+interface Props {
+  data: any
+}
 
 const columns1 = [
   {
     title: "编号",
-    dataIndex: "id",
-    key: "id",
+    dataIndex: "no",
+    key: "no",
     width: 220,
-    render(e: string, m){
+    render(e: string, m: any){
       if(m.isRoot) {
-        return (<span><FolderOpenOutlined />&nbsp;{m.id}</span>)
+        return (<span><FolderOpenOutlined />&nbsp;{m.no}</span>)
       }
       return (<span>{e}</span>);
     }
@@ -26,8 +28,8 @@ const columns1 = [
   },
   {
     title: "单位",
-    dataIndex: "columns3",
-    key: "columns3",
+    dataIndex: "unit",
+    key: "unit",
     width: 220,
   },
   {
@@ -37,96 +39,97 @@ const columns1 = [
   },
   {
     title: "预算价（元）",
-    dataIndex: "columns4",
-    key: "columns4",
+    dataIndex: "prePrice",
+    key: "prePrice",
   },
   {
     title: "单重（kg）",
-    dataIndex: "columns4",
-    key: "columns4",
+    dataIndex: "weight",
+    key: "weight",
   },
   {
     title: "计价",
-    dataIndex: "columns4",
-    key: "columns4",
+    dataIndex: "valuationTypeText",
+    key: "valuationTypeText",
   },
 ];
 const dataSource = [
   {
     isRoot: true,
-    id: "人工",
-    children: [
-      {
-        id: 1
-      }
-    ]
+    no: "人工",
   },
   {
     isRoot: true,
-    id: "材料",
-    children: [
-      {
-        id: 2
-      }
-    ]
-
+    no: "材料",
   },
   {
     isRoot: true,
-    id: "机械",
-    children: [
-      {
-        id: 3
-      }
-    ]
+    no: "机械",
   },
 ];
 
-const dataSource2 = [
-  {id: "123"},
-  {id: "124"},
-  {id: "12"},
-]
 const columns2 = [
   {
     title: "调整项目及内容",
-    dataIndex: "id",
-    key: "id"
+    dataIndex: "adjustmentContent",
+    key: "adjustmentContent",
   },
   {
     title: "调整类型",
-    dataIndex: "name",
-    key: "name"
+    dataIndex: "typeText",
+    key: "typeText",
+    width: 120
   },
   {
     title: "人工费系数",
-    dataIndex: "part",
-    key: "part"
+    dataIndex: "laborCoefficientFormula",
+    key: "laborCoefficientFormula",
+    width: 140
   },
   {
     title: "材料费系数",
-    dataIndex: "id",
-    key: "id"
+    dataIndex: "materialCoefficientFormula",
+    key: "materialCoefficientFormula",
+    width: 140
   },
   {
     title: "机械费系数",
-    dataIndex: "id",
-    key: "id"
+    dataIndex: "machineryCoefficientFormula",
+    key: "machineryCoefficientFormula",
+    width: 140
   },
   {
     title: "消耗量系数",
-    dataIndex: "id",
-    key: "id"
+    dataIndex: "consumptionFormula",
+    key: "consumptionFormula",
+    width: 140
   },
   {
     title: "人材机编号",
-    dataIndex: "id",
-    key: "id"
+    dataIndex: "materialMachineItemNo",
+    key: "materialMachineItemNo",
+    width: 120
   },
 ]
 
-const InfoTabs = () => {
+const InfoTabs: React.FC<Props> = ({data}) => {
+  const dataSourceResult = useMemo(() => {
+    const materialMachineItems = JSON.parse(JSON.stringify(dataSource));
+    if(Array.isArray(data?.materialMachineItems) && data?.materialMachineItems.length > 0) {
+      const data1 = data.materialMachineItems.filter((item: any) => item.type === 1);
+      const data2 = data.materialMachineItems.filter((item: any) => item.type === 2);
+      const data3 = data.materialMachineItems.filter((item: any) => item.type === 3);
+      data1.length > 0 && (materialMachineItems[0].children = data.materialMachineItems.filter((item: any) => item.type === 1));
+      data2.length > 0 && (materialMachineItems[1].children = data.materialMachineItems.filter((item: any) => item.type === 2));
+      data3.length > 0 && (materialMachineItems[2].children = data.materialMachineItems.filter((item: any) => item.type === 3));
+    }
 
+    return {
+      materialMachineItems,
+      adjustments: data?.adjustments ?? [],
+      workContent: ""
+    };
+  }, [JSON.stringify(data)])
   return (
     <>
       <div className={styles.infoTabsWrap}>
@@ -134,28 +137,26 @@ const InfoTabs = () => {
           <TabPane tab="定额人材机" key="定额人材机">
               <Table
                 columns={columns1}
-                dataSource={dataSource}
+                dataSource={dataSourceResult.materialMachineItems}
                 pagination={false}
                 bordered
-                defaultExpandedRowKeys={["人工", "材料", "机械"]}
-                rowKey="id"
+                defaultExpandedRowKeys={[]}
+                // defaultExpandedRowKeys={["人工", "材料", "机械"]}
+                rowKey="no"
                 scroll={{y: 300}}
               />
           </TabPane>
           <TabPane tab="定额调整系数" key="定额调整系数">
             <Table
               columns={columns2}
-              dataSource={dataSource2}
+              dataSource={dataSourceResult.adjustments}
               pagination={false}
               bordered
               scroll={{y: 300}}
             />
           </TabPane>
           <TabPane tab="工作内容" key="工作内容">
-            <div className={styles.workContent}>工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容
-            工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容
-            工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容工作内容
-            </div>
+            <div className={styles.workContent}>{dataSourceResult.workContent}</div>
           </TabPane>
         </Tabs>
       </div>

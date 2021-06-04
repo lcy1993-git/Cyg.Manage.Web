@@ -4,10 +4,11 @@ import ChapterInfo from './components/chapter-info';
 import ListTable from './components/list-table';
 import InfoTabs from './components/info-tabs';
 import { Tabs, Tree, Select } from 'antd';
-import { getQuotaLibrary, getCatalogueList } from '@/services/technology-economic/quota-library';
+import { queryQuotaLibraryPager, queryQuotaLibraryCatalogList, getQuotaLibraryCatalogDescription } from '@/services/technology-economic';
 import styles from './index.less'
 import { useMount, useRequest, useSize } from 'ahooks';
 import {formatDataTree, fileTreeFormData, TreeData} from '@/utils/utils';
+import qs from 'qs';
 
 const { TabPane } = Tabs;
 
@@ -21,66 +22,42 @@ interface QuotaList{
   items: Items[];
 }
 
-const treeData1= [
-  {
-    title: 'parent0',
-    key: '0-0',
-    children: [
-      {
-        title: 'leaf 0-0',
-        key: '0-0-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 0-1',
-        key: '0-0-1',
-        isLeaf: true,
-      },
-    ],
-  },
-  {
-    title: 'parent 1',
-    key: '0-1',
-    children: [
-      {
-        title: 'leaf 1-0',
-        key: '0-1-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 1-1',
-        key: '0-1-1',
-        isLeaf: true,
-      },
-    ],
-  },
-];
-
-const QuotaProject = ({location}) => {
-  console.log(location);
-  
-  const [activeQuotaId, setActiveQuotaId] = useState<string>("");
+const QuotaProject = () => {
+  const [activeQuotaId, setActiveQuotaId] = useState<string>(qs.parse(window.location.href.split("?")[1]).id as string || "");
   const [catalogueId,setCatalogueId] = useState<string>("");
-  console.log(catalogueId);
-  
-  // const [activeListId, setActiveListId] = useState<string>("");
+  const [resourceItem, setResourceItem] = useState<any>({});
 
-  const {data: quotaList = {total: 0, items: []}, run: quotaListRun} = useRequest<QuotaList>(getQuotaLibrary, {
+  const {data: quotaList = {total: 0, items: []}, run: quotaListRun} = useRequest<QuotaList>(queryQuotaLibraryPager, {
     manual: true
   })
 
-  const {data: catalogueList, run: catalogueListRun } = useRequest<TreeData[]>(getCatalogueList, {
+  const {data: catalogueList, run: catalogueListRun } = useRequest<TreeData[]>(queryQuotaLibraryCatalogList, {
     manual: true
   })
+
+  const {data: chapterData, run: chapterRun} = useRequest<string>(getQuotaLibraryCatalogDescription, {manual: true});
+  console.log(chapterData);
   
-  // const { data: projectList, run: projectListRun } = useRequest(getProjectList, {
+  const [keyWord, setKeyWord] = useState("");
+  // const { data: projectList, run: projectListRun } = useRequest(queryQuotaItemList, {
   //   manual: true
   // });
-  const ref = useRef();
-  const refWrap = useSize(ref)
 
-  console.log(refWrap, "refWrap");
-  
+  // useEffect(() => {
+  //   if(catalogueId) {
+  //     projectListRun({
+  //       id: catalogueId,
+  //       pageIndex: 1,
+  //       pageSize: 10,
+  //       keyWord
+  //     })
+  //     chapterRun(catalogueId)
+  //   }
+
+  // }, [catalogueId])
+
+  const ref = useRef(null);
+  const refWrap = useSize(ref)
 
   useEffect(() => {
     activeQuotaId && catalogueListRun(activeQuotaId);
@@ -91,7 +68,8 @@ const QuotaProject = ({location}) => {
   // }, [catalogueId])
 
   useMount(() => {
-    quotaListRun();
+    quotaListRun({pageIndex: 1, pageSize: 3000});
+    activeQuotaId && catalogueListRun(activeQuotaId);
   })
 
   const treeData = useMemo(() => {
@@ -129,7 +107,7 @@ const QuotaProject = ({location}) => {
           <Tabs className="normalTabs noMargin" >
               <TabPane tab="定额库目录" key="1">
                 <div className={styles.selectWrap}>
-                  <Select placeholder="请选择定额库" style={{width: '100%'}} children={options} onChange={(e)=>setActiveQuotaId(e)}/>
+                  <Select placeholder="请选择定额库" style={{width: '100%'}} children={options} onChange={(e)=>setActiveQuotaId(e)} defaultValue={activeQuotaId}/>
                 </div>
                 <div className={styles.fileTree}>
                   <Tree.DirectoryTree
@@ -148,14 +126,14 @@ const QuotaProject = ({location}) => {
               <TabPane tab="&nbsp;&nbsp;资源列表" key="1">
                 <div className={styles.tabPaneBox}>
                   <div className={styles.listTable}>
-                    <ListTable catalogueId={catalogueId} scrolly={refWrap?.height ? refWrap?.height-531 : 0}/>
+                    <ListTable catalogueId={catalogueId} scrolly={refWrap?.height ? refWrap?.height-531 : 0} setResourceItem={setResourceItem} url="/QuotaLibraryCatalog/QueryQuotaItemPager" rowKey={(e)=>e.quotaItem?.id}/>
                   </div>
                   <div className={styles.heightEmpty} />
-                  <InfoTabs />
+                  <InfoTabs data={resourceItem}/>
                 </div>
               </TabPane>
               <TabPane tab="章节说明" key="章节说明">
-                <ChapterInfo />
+                <ChapterInfo data={chapterData || ""} id={catalogueId}/>
               </TabPane>
             </Tabs>
         </div>
