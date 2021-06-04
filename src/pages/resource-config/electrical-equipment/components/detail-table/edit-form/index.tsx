@@ -3,6 +3,7 @@ import { InputNumber } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
+import Scrollbars from 'react-custom-scrollbars';
 
 interface EditComponentDetailParams {
   resourceLibId: string;
@@ -13,7 +14,7 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
 
   return (
     <>
-      <Scrollbars style={{ height: '100px' }}>
+      <Scrollbars style={{ height: '150px' }}>
         <CyFormItem label="组件" name="componentId">
           <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />
         </CyFormItem>

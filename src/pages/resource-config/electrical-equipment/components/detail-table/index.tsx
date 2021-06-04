@@ -246,7 +246,6 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
         onOk={() => sureAddComponentDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: 480 }}
         centered
         destroyOnClose
       >
@@ -258,7 +257,7 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="编辑-组件明细"
-        width="100%"
+        width="50%"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditcomponentDetail()}

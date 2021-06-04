@@ -285,7 +285,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="编辑-模块明细"
-        width="100%"
+        width="50%"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditModuleDetail()}

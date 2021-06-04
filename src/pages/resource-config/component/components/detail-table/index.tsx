@@ -257,13 +257,14 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="编辑-组件明细"
-        width="980px"
+        width="50%"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditcomponentDetail()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         centered
+        
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>

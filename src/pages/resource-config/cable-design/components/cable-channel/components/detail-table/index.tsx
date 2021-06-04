@@ -259,7 +259,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="编辑-电缆井明细"
-        width="1280px"
+        width="50%"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditcableChannelDetail()}

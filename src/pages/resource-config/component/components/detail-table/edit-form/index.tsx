@@ -14,7 +14,7 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
 
   return (
     <>
-      <Scrollbars style={{ height: '100px' }}>
+      <Scrollbars style={{ height: '150px' }}>
         <CyFormItem label="组件" name="componentId">
           <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />
         </CyFormItem>

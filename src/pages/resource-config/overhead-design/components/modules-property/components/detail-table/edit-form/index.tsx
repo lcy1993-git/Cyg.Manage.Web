@@ -14,7 +14,7 @@ const EditModuleDetail: React.FC<EditModuleDetailParams> = (props) => {
 
   return (
     <>
-      <Scrollbars style={{ height: '100px' }}>
+      <Scrollbars style={{ height: '200px' }}>
         <CyFormItem label="所属部件" name="part">
           <UrlSelect
             requestSource="resource"
@@ -26,7 +26,7 @@ const EditModuleDetail: React.FC<EditModuleDetailParams> = (props) => {
           />
         </CyFormItem>
         <CyFormItem label="组件" name="componentId">
-          <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />,
+          <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />
         </CyFormItem>
 
         <CyFormItem label="物料" name="materialId">
