@@ -122,8 +122,13 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
       }
       setListData([...listData]);
     } else {
-      const newList = _.union(listData, inVisibleQueue);
-      setListData([...newList]);
+      const invisibleShift = inVisibleQueue.shift();
+
+      // 这里invisible出队就放入visible的队尾，然后visvible出队的加入invisible队尾
+      if (invisibleShift) {
+        listData.push(invisibleShift);
+      }
+      setListData([...listData]);
     }
   };
 
