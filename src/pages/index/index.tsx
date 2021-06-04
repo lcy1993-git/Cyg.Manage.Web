@@ -23,8 +23,8 @@ import { IndexContext } from './context';
 import { Spin } from 'antd';
 import { divide, multiply, subtract } from 'lodash';
 import uuid from 'node-uuid';
-import CockpitProjectInfoFreshList from '../cockpit-manage/cockpit-config/components/cockpit-project-info-refresh-list';
 import PageCommonWrap from '@/components/page-common-wrap';
+import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex';
 
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
@@ -50,7 +50,7 @@ const getComponentByType = (type: string, componentProps: any) => {
       return <ProjectProgress />;
       break;
     case 'projectRefreshData':
-      return <CockpitProjectInfoFreshList componentProps={componentProps} />;
+      return <ProjectRefreshListWrapper componentProps={componentProps} />;
       break;
     default:
       return undefined;

@@ -280,7 +280,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    */
   const onCheck = (checked: keyType, info: any) => {
     let temp = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
-    console.log(allProjectKey, temp);
 
     if (allProjectKey.length > temp.length) {
       setIndeterminate(true);
