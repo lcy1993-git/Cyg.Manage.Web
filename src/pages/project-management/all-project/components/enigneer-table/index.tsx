@@ -1,5 +1,5 @@
 import { useRequest } from 'ahooks';
-import React, { forwardRef, Ref, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, Ref, useImperativeHandle, useRef, useState } from 'react';
 import {
   AllProjectStatisticsParams,
   // getAllotUsers,
@@ -115,6 +115,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   });
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
+  const tableContentRef = useRef<HTMLDivElement>(null)
 
   // const tableData = {
   //   total: 1,
@@ -661,6 +663,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageIndex: 1,
         pageSize,
       });
+      if(tableContentRef && tableContentRef.current) {
+        //@ts-ignore
+        tableContentRef.current.scrollTop = 0;
+      }
       setTableSelectData([]);
       onSelect?.([]);
     },
@@ -702,7 +708,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       setTableSelectData
     }}>
       <div className={styles.projectTable}>
-        <div className={styles.projectTableContent}>
+        <div className={styles.projectTableContent} ref={tableContentRef}>
           <Spin spinning={loading}>
             {tableResultData.items.length > 0 && projectTableShow}
             {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}

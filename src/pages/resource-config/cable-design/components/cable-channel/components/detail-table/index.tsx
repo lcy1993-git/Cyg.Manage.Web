@@ -240,7 +240,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       />
       <Modal
         maskClosable={false}
-        title="添加-电缆井明细"
+        title="添加-电缆通道明细"
         width="70%"
         visible={addFormVisible}
         okText="确认"
@@ -256,7 +256,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
 
       <Modal
         maskClosable={false}
-        title="编辑-电缆井明细"
+        title="编辑-电缆通道明细"
         width="980px"
         visible={editFormVisible}
         okText="保存"
