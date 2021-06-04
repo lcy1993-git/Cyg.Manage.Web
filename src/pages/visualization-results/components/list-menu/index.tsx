@@ -26,7 +26,7 @@ const ListMenu: FC = observer(() => {
   const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(
     false,
   );
-
+  const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false);
   const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
   const store = useContainer();
   const { vState } = store;
@@ -57,6 +57,8 @@ const ListMenu: FC = observer(() => {
       document.body.appendChild(a);
       a.click();
       a.remove();
+      setexportMapPositionModalVisible(false);
+      setexportMapPositionLoading(false);
     },
     onError: () => {
       message.warn('导出失败');
@@ -100,7 +102,7 @@ const ListMenu: FC = observer(() => {
 
   const onOkWithExportMapPosition = () => {
     downloadMapPositonRequest(checkedProjectIdList.map((item) => item.id));
-    setexportMapPositionModalVisible(false);
+    setexportMapPositionLoading(true);
   };
 
   const menuListProcessor = {
@@ -196,6 +198,7 @@ const ListMenu: FC = observer(() => {
       />
 
       <ExportMapPositionModal
+        confirmLoading={exportMapPositionLoading}
         visible={exportMapPositionModalVisible}
         onCancel={() => setexportMapPositionModalVisible(false)}
         onOk={onOkWithExportMapPosition}
