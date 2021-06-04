@@ -6,7 +6,7 @@ import { useRequest } from 'ahooks';
 import uuid from 'node-uuid';
 
 interface EditArrangeFormProps {
-  allotCompanyId?: string;
+  allotCompanyId?: string | undefined;
   canEdit?: any;
 }
 
@@ -24,7 +24,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
   const notEdit = (function notChangeData() {
     return [
       {
-        value: '',
+        value: 'not_modify',
         title: '不修改',
         children: null ?? [],
       },
