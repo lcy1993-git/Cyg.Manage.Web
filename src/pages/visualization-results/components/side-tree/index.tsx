@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import _ from 'lodash';
@@ -73,6 +73,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+  const [allCheck, setAllCheck] = useState<boolean>(false);
+  const [indeterminate, setIndeterminate] = React.useState(false);
   const store = useContainer();
   const { vState } = store;
   const { filterCondition } = vState;
@@ -254,8 +256,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
     return nodes;
   };
+  const allProjectKey = useMemo(getAllProjectNodes, [treeData]);
   const onCheckAll = (e: any) => {
-    e.target.checked ? onCheck(getAllKey(), { checkedNodes: getAllProjectNodes() }) : clearState();
+    if (e.target.checked) {
+      onCheck(getAllKey(), { checkedNodes: getAllProjectNodes() });
+      setAllCheck(e.target.checked);
+      setIndeterminate(false);
+    } else {
+      clearState();
+      setAllCheck(e.target.checked);
+    }
   };
 
   /**
@@ -270,8 +280,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    */
   const onCheck = (checked: keyType, info: any) => {
     let temp = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
-    console.log(info.checkedNodes);
 
+    if (allProjectKey.length > temp.length) {
+      setIndeterminate(true);
+      setAllCheck(false);
+    }
     //去重,这里考虑到按公司筛选的时候，不同的公司可以有同一个项目
     let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
 
@@ -336,11 +349,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           ) : null}
           {!treeListDataLoading ? (
             <>
-              <Checkbox style={{ marginLeft: '8px', marginTop: '4px' }} onChange={onCheckAll}>
+              <Checkbox
+                checked={allCheck}
+                indeterminate={indeterminate}
+                style={{ marginLeft: '8px', marginTop: '4px' }}
+                onChange={onCheckAll}
+              >
                 全选
               </Checkbox>
               <Tree
-                height={size.height ? size.height - 80 : 680}
+                height={size.height ? size.height - 120 : 680}
                 checkable
                 onExpand={onExpand}
                 defaultExpandAll

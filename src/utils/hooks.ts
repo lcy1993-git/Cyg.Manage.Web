@@ -123,13 +123,6 @@ export const useGetProjectEnum = () => {
   };
 };
 
-export const useMapEnum = () => {
-  const [map, { set, setAll, remove, reset, get }] = useMap<string | number, string>([
-    ['msg', 'hello world'],
-    [123, 'number type'],
-  ]);
-};
-
 interface TimeArrayItem {
   startTime: string;
   endTime: string;

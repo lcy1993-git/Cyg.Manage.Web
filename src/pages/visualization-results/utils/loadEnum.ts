@@ -1,3 +1,6 @@
+const loadEnumsData = window.localStorage.getItem('loadEnumsData');
+const data = loadEnumsData && loadEnumsData !== 'undefined' ? JSON.parse(loadEnumsData) : [];
+
 export interface EnumItem {
   key: string;
   value: EnumValue[];
@@ -13,8 +16,7 @@ export interface EnumValue {
  * @returns
  */
 export const findEnumKeyByType = (type: string): Map<number, string> => {
-  const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
-  const res = loadEnumsData
+  const res = data
     .find((enumItem: EnumItem) => enumItem.key === type)
     .value.map((e: EnumValue) => [e.value, e.text]);
   return new Map<number, string>(res);
@@ -26,10 +28,7 @@ export const findEnumKeyByType = (type: string): Map<number, string> => {
  * @param type 本地枚举值的类型 可以打开控制台看一下localstorage里面存的内容
  * @returns
  */
-export const findEnumKeyByCN = (chEnum: string, type: string): number => {
-  const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
-  return loadEnumsData
-  .find((enumItem: EnumItem) => enumItem.key === type)
-  .value.find((value: EnumValue) => value.text === chEnum).value;
-}
-  
+export const findEnumKeyByCN = (chEnum: string, type: string): number =>
+  data
+    .find((enumItem: EnumItem) => enumItem.key === type)
+    .value.find((value: EnumValue) => value.text === chEnum).value;

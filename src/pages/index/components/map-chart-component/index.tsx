@@ -35,7 +35,16 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
 
   const divRef = useRef<HTMLDivElement>(null);
-
+  useEffect(() => {
+    //@ts-ignore
+    window.setSelectCity = (city: string) => {
+      localStorage.setItem('selectCity', city);
+    };
+    return () => {
+      //@ts-ignore
+      window.testClick = null;
+    };
+  }, []);
   const size = useSize(divRef);
 
   let myChart: any = null;
@@ -75,15 +84,10 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
 
           const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name);
           if (nameIndex > -1) {
-            cityCodeObject[name] ?? name;
-
-            console.log(cityCodeObject[name]);
-
-            localStorage.setItem('selectCity', cityCodeObject[name] ?? name);
             return `
                             ${name} <br />
                             项目数量: ${getMapStatisticData[nameIndex!].projectQuantity}
-                            <div>可视化成果: <a  href='/visualization-results/result-page'>跳转</a></div>
+                            <div>可视化成果: <a onClick={setSelectCity(${cityCodeObject[name] ?? name})}  href='/visualization-results/result-page'>跳转</a></div>
                             
                         `;
           }
