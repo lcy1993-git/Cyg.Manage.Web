@@ -464,8 +464,10 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 iconFontText = '\ue854';
             else if (feature.getProperties().state == 3) // 利旧
                 iconFontText = '\ue841';
-            else if (feature.getProperties().state == 4) // 拆除
+            else if (feature.getProperties().state == 4){ // 拆除
                 iconFontText = '\ue854';
+                isDismantle = true;
+            }
             else {
                 iconFontText = '\ue888';
                 size = Styles[value].empty.size;
@@ -694,7 +696,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
             }),
             rotation: azimuth * (Math.PI / 180) * -1,
         })
-    });
+    })
     if (type.split('_')[0] == 'dismantle' || isDismantle) {
         let dismantleColor = 'rgba(255, 0, 0, 1)';
         let dismantleStyle = new ClassStyle({
