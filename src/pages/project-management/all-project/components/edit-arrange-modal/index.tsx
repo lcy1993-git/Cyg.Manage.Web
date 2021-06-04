@@ -189,9 +189,9 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
           <TabPane tab="项目安排" key="1">
             <EditArrangeForm allotCompanyId={allotCompanyId} canEdit={canEdit} />
           </TabPane>
-          <TabPane tab="外审安排" key="2" disabled={!canEditOuterAudit}>
+          {/* <TabPane tab="外审安排" key="2" disabled={!canEditOuterAudit}>
             <SelectAddListForm initPeople={initPeople} onChange={(people) => setArrangePeople(people)} />
-          </TabPane>
+          </TabPane> */}
         </Tabs>
       </Form>
     </Modal>

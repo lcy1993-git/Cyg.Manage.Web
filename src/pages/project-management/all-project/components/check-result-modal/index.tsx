@@ -29,18 +29,16 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [currentTab, setCurrentTab] = useState<string>('design');
-  const { changeFinishEvent, projectInfo, isResult = false } = props;
+  const { projectInfo, isResult = false } = props;
   const [requestLoading, setRequestLoading] = useState(false);
 
-  const { run } = useRequest(getResultTreeData, {
-    manual: true
+  const { data: resultData, run } = useRequest(getResultTreeData, {
+    manual: true,
   });
 
-  const { run: getCompileTree } = useRequest(getCompileResultTreeData,
-    {
-      manual: true
-    },
-  );
+  const { data: compileResultData, run: getCompileTree } = useRequest(getCompileResultTreeData, {
+    manual: true,
+  });
 
   const closeEvent = () => {
     setState(false);
@@ -148,11 +146,13 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
 
   useEffect(() => {
     if (state) {
-      
-      run(projectInfo.projectId);
+      if (currentTab === 'design') {
+        run(projectInfo.projectId);
+      }
       getCompileTree(projectInfo.projectId);
     }
-  }, [state]);
+  }, [state, currentTab]);
+  // console.log(state, currentTab, '111111');
 
   return (
     <>
@@ -179,23 +179,17 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
             </div>
           </div>
           <div className={styles.resultTable}>
-            <Tabs
-              className="normalTabs"
-              onTabClick={(key: string) => setCurrentTab(key)}
-              type="card"
-            >
+            <Tabs className="normalTabs" onChange={(key: string) => setCurrentTab(key)} type="card">
               <TabPane key="design" tab="设计成果">
                 <DesignResultTab
-                  mapTreeData={mapTreeData}
-                  projectInfo={projectInfo}
+                  designData={resultData?.map(mapTreeData)}
                   createEvent={setCheckedKeys}
                   setTabEvent={setCurrentTab}
                 />
               </TabPane>
               <TabPane key="compile" tab="项目需求编制成果">
                 <CompileResultTab
-                  mapTreeData={mapTreeData}
-                  projectInfo={projectInfo}
+                  compileResultData={compileResultData?.map(mapTreeData)}
                   createEvent={setCheckedKeys}
                   setTabEvent={setCurrentTab}
                 />
@@ -238,21 +232,19 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
             <div className={styles.resultTable}>
               <Tabs
                 className="normalTabs"
-                onTabClick={(key: string) => setCurrentTab(key)}
+                onChange={(key: string) => setCurrentTab(key)}
                 type="card"
               >
                 <TabPane key="design" tab="设计成果">
                   <DesignResultTab
-                    mapTreeData={mapTreeData}
-                    projectInfo={projectInfo}
+                    designData={resultData?.map(mapTreeData)}
                     createEvent={setCheckedKeys}
                     setTabEvent={setCurrentTab}
                   />
                 </TabPane>
                 <TabPane key="compile" tab="项目需求编制成果">
                   <CompileResultTab
-                    mapTreeData={mapTreeData}
-                    projectInfo={projectInfo}
+                    compileResultData={compileResultData?.map(mapTreeData)}
                     createEvent={setCheckedKeys}
                     setTabEvent={setCurrentTab}
                   />

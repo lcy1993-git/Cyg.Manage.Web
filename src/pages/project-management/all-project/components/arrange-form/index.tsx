@@ -18,7 +18,7 @@ interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void;
   getCompanyInfo?: (companyInfo: any) => void;
   defaultType?: string;
-  allotCompanyId?: string;
+  allotCompanyId?: string | undefined;
 }
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {

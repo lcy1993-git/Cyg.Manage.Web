@@ -37,9 +37,9 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
     <Modal
       maskClosable={false}
       title="项目详情"
-      width={680}
+      width={745}
       destroyOnClose
-      bodyStyle={{ padding: '0px' }}
+      bodyStyle={{ padding: '0 0 20px 0', height: 'auto' }}
       visible={state as boolean}
       footer={null}
       onCancel={() => setState(false)}
@@ -57,7 +57,12 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           </TabPane>
           {isResult && (
             <TabPane key="result" tab="查看成果">
-              <CheckResultModal visible={state} onChange={setState} projectInfo={{...projectInfo, projectId: projectInfo?.id}} isResult={isResult} />
+              <CheckResultModal
+                visible={state}
+                onChange={setState}
+                projectInfo={{ ...projectInfo, projectId: projectInfo?.id }}
+                isResult={isResult}
+              />
             </TabPane>
           )}
         </Tabs>

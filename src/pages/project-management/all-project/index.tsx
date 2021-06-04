@@ -567,7 +567,7 @@ const ProjectManagement: React.FC = () => {
 
   const arrangeFinishEvent = () => {
     setArrangeModalVisible(false);
-    search();
+    refresh();
   };
 
   const changeArrangeFinishEvent = () => {

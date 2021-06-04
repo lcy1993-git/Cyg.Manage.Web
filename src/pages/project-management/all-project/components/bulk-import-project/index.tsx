@@ -406,7 +406,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
               value={item.engineer.warehouseId}
               onChange={(value) => wareHouseChangeEvent(value, index)}
               options={
-                item.selectData.warehouseSelectData?.length !== 0
+                item.selectData.warehouseSelectData !== undefined
                   ? item.selectData.warehouseSelectData
                   : [{ label: '无', value: 'none' }]
               }
