@@ -286,7 +286,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                     value={inventoryOverviewId}
                     onChange={(value) => inventoryOverviewChange(value)}
                     options={
-                      inventoryOverviewSelectData.length !== 0
+                      inventoryOverviewSelectData?.length !== 0
                         ? inventoryOverviewSelectData
                         : [{ label: '无', value: 'none' }]
                     }
@@ -311,7 +311,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                     value={warehouseId}
                     onChange={(value) => warehouseIdChange(value)}
                     options={
-                      warehouseSelectData.length !== 0
+                      warehouseSelectData !== undefined
                         ? warehouseSelectData
                         : [{ label: '无', value: 'none' }]
                     }
