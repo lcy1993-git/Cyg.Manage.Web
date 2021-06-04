@@ -241,23 +241,25 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-电缆井明细"
-        width="70%"
+        width="100%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddcableChannelDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: 480 }}
+        
         centered
         destroyOnClose
       >
-        <AddcableChannelDetail addForm={addForm} resourceLibId={libId} />
+        <Form form={addForm}>
+          <AddcableChannelDetail addForm={addForm} resourceLibId={libId} />
+        </Form>
       </Modal>
 
       <Modal
         maskClosable={false}
         title="编辑-电缆井明细"
-        width="980px"
+        width="1280px"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditcableChannelDetail()}

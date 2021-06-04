@@ -3,6 +3,7 @@ import EditFormTable from '@/components/edit-form-table';
 import { InputNumber, Form, Input } from 'antd';
 import UrlSelect from '@/components/url-select';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
+import Scrollbars from 'react-custom-scrollbars';
 
 interface AddDetailParams {
   resourceLibId: string;
@@ -49,9 +50,9 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
   ];
 
   return (
-    <Form form={addForm}>
+    <Scrollbars style={{ height: '100px' }}>
       <EditFormTable formName="items" columns={columns}></EditFormTable>
-    </Form>
+    </Scrollbars>
   );
 };
 

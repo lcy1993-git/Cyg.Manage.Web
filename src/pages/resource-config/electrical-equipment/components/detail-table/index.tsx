@@ -240,7 +240,7 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-组件明细"
-        width="70%"
+        width="100%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddComponentDetail()}
@@ -258,7 +258,7 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="编辑-组件明细"
-        width="980px"
+        width="100%"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditcomponentDetail()}

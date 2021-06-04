@@ -13,17 +13,19 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
 
   return (
     <>
-      <CyFormItem label="组件" name="componentId">
-        <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />
-      </CyFormItem>
+      <Scrollbars style={{ height: '100px' }}>
+        <CyFormItem label="组件" name="componentId">
+          <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />
+        </CyFormItem>
 
-      <CyFormItem label="物料" name="materialId">
-        <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />
-      </CyFormItem>
+        <CyFormItem label="物料" name="materialId">
+          <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />
+        </CyFormItem>
 
-      <CyFormItem label="数量" name="itemNumber">
-        <InputNumber min={0} />
-      </CyFormItem>
+        <CyFormItem label="数量" name="itemNumber">
+          <InputNumber min={0} />
+        </CyFormItem>
+      </Scrollbars>
     </>
   );
 };

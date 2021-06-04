@@ -19,7 +19,7 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
     { refreshDeps: [urlHead, libId, requestSource] },
   );
 
-  const placeholder = urlHead === 'Material' ? '请选择物料名称' : '请选择物料名称';
+  const placeholder = urlHead === 'Material' ? '请选择物料' : '请选择组件';
   const specTitleKey = urlHead.toLocaleLowerCase() === 'material' ? 'spec' : 'componentSpec';
   /**
    * 根据上面名字获取spec的id
@@ -59,7 +59,7 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
         titleKey={`${urlHead.toLocaleLowerCase()}Name`}
         labelInValue
         allowClear
-        placeholder={placeholder}
+        placeholder={`${placeholder}名称`}
         className={styles.selectItem}
         onChange={(value) => onNameChange(value as { label: string; value: string })}
         libId={libId}
@@ -67,7 +67,7 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
       <UrlSelect
         defaultData={specReponseData}
         allowClear
-        placeholder={placeholder}
+        placeholder={`${placeholder}型号`}
         className={styles.selectItem}
         valueKey={`${urlHead.toLocaleLowerCase()}Id`}
         titleKey={`${specTitleKey}`}
