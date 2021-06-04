@@ -2,6 +2,7 @@ import React from 'react';
 import EditFormTable from '@/components/edit-form-table';
 import { InputNumber, Form, Input } from 'antd';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
+import Scrollbars from 'react-custom-scrollbars';
 interface AddDetailParams {
   resourceLibId: string;
   addForm: any;
@@ -25,18 +26,14 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       dataIndex: 'componentId',
       index: 'componentId',
       width: 400,
-      render: () => (
-        <CascaderUrlSelect  urlHead="Component" libId={resourceLibId} />
-      ),
+      render: () => <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />,
     },
     {
       title: '物料',
       dataIndex: 'materialId',
       index: 'materialId',
       width: 400,
-      render: () => (
-        <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />
-      ),
+      render: () => <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />,
     },
     {
       title: '数量',
@@ -49,9 +46,11 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
     },
   ];
   return (
-    <Form form={addForm} preserve={false}>
-      <EditFormTable formName="items" columns={columns} />;
-    </Form>
+    <Scrollbars style={{ height: '100px' }}>
+      <Form form={addForm} preserve={false}>
+        <EditFormTable formName="items" columns={columns} />
+      </Form>
+    </Scrollbars>
   );
 };
 

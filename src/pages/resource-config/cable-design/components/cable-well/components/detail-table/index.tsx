@@ -242,13 +242,12 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-电缆井明细"
-        width="70%"
+        width="100%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddCableWellDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: 480 }}
         centered
         destroyOnClose
       >
@@ -258,7 +257,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="编辑-电缆井明细"
-        width="980px"
+        width="50%"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditCableWellDetail()}
