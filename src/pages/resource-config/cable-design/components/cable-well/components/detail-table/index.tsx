@@ -248,7 +248,6 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
         onOk={() => sureAddCableWellDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: 480 }}
         centered
         destroyOnClose
       >
