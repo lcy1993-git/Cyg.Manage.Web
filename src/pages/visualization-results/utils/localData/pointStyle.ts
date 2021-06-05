@@ -552,7 +552,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
         }
     }
 
-    if (value == 'cross_arm') { // 穿孔
+    if (value == 'hole') { // 穿孔
         iconFontText = '\ue84c';
     }
 
