@@ -251,8 +251,8 @@ const ProjectManagement: React.FC = () => {
   };
 
   const editArrangeEvent = async () => {
-    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
-
+    
+    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat();
     if (projectIds && projectIds.length === 0) {
       message.error('请选择修改安排的项目！');
       return;
