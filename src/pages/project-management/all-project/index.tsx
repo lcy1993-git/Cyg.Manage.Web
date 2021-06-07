@@ -1,6 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import React, { useEffect, useRef } from 'react';
+import React, { createRef, useEffect, useRef } from 'react';
 
 import { Button, Input, message, Modal } from 'antd';
 
@@ -131,9 +131,9 @@ const ProjectManagement: React.FC = () => {
 
   const [selectDefaultData, setSelectDefaultData] = useState({
     logicRelation: 2,
-    survey: "",
-    design: ""
-  })
+    survey: '',
+    design: '',
+  });
 
   //获取上传立项模板后的List数据
   //获取当前选择数据
@@ -187,6 +187,7 @@ const ProjectManagement: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       tableRef.current.search();
+      // scrollRef.current?.scrollToTop();
     }
   };
 
@@ -206,7 +207,7 @@ const ProjectManagement: React.FC = () => {
     }
     await revokeAllot(projectIds);
     message.success('撤回安排成功');
-    search();
+    refresh();
   };
 
   const arrangeEvent = async () => {
@@ -250,8 +251,8 @@ const ProjectManagement: React.FC = () => {
   };
 
   const editArrangeEvent = async () => {
-    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
-
+    
+    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat();
     if (projectIds && projectIds.length === 0) {
       message.error('请选择修改安排的项目！');
       return;
@@ -363,7 +364,7 @@ const ProjectManagement: React.FC = () => {
 
     await applyKnot(projectIds);
     message.success('申请结项成功');
-    search();
+    refresh();
   };
 
   const revokeKnotEvent = async () => {
@@ -375,7 +376,7 @@ const ProjectManagement: React.FC = () => {
 
     await revokeKnot(projectIds);
     message.success('撤回结项成功');
-    search();
+    refresh();
   };
 
   const auditKnotEvent = async () => {
@@ -387,7 +388,7 @@ const ProjectManagement: React.FC = () => {
 
     await auditKnot(projectIds);
     message.success('结项通过成功');
-    search();
+    refresh();
   };
 
   const noAuditKnotEvent = async () => {
@@ -400,7 +401,7 @@ const ProjectManagement: React.FC = () => {
 
     await noAuditKnot(projectIds);
     message.success('结项退回成功');
-    search();
+    refresh();
   };
 
   const postProjectMenu = (
@@ -439,12 +440,12 @@ const ProjectManagement: React.FC = () => {
       logicRelation: 2,
       designUser: '',
       surveyUser: '',
-    })
+    });
     setSelectDefaultData({
-      survey: "",
+      survey: '',
       logicRelation: 2,
-      design: "",
-    })
+      design: '',
+    });
 
     areaSelectReset();
     // TODO 重置完是否进行查询
@@ -575,10 +576,6 @@ const ProjectManagement: React.FC = () => {
     search();
   };
 
-  const refreshEvent = () => {
-    search();
-  };
-
   const openAddEngineerModal = () => {
     setAddEngineerModalFlag(true);
     form.resetFields();
@@ -703,7 +700,6 @@ const ProjectManagement: React.FC = () => {
       });
     }
     if (allProjectSearchPerson) {
-
       setPersonInfo({
         survey: String(allProjectSearchPerson),
         logicRelation: 2,
@@ -714,8 +710,8 @@ const ProjectManagement: React.FC = () => {
         survey: String(allProjectSearchPerson),
         logicRelation: 2,
         design: String(allProjectSearchPerson),
-      })
-      
+      });
+
       setAllProjectSearchPerson('');
 
       searchByParams({
@@ -735,7 +731,6 @@ const ProjectManagement: React.FC = () => {
         surveyUser: String(allProjectSearchPerson),
         ...areaInfo,
       });
-      
     }
   }, [allProjectSearchPerson, allProjectSearchProjectName]);
 
@@ -813,7 +808,10 @@ const ProjectManagement: React.FC = () => {
                   />
                 </TableSearch>
                 <TableSearch width="121px">
-                  <ChooseDesignAndSurvey defaultValue={selectDefaultData} onChange={setPersonInfo} />
+                  <ChooseDesignAndSurvey
+                    defaultValue={selectDefaultData}
+                    onChange={setPersonInfo}
+                  />
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
@@ -1043,6 +1041,7 @@ const ProjectManagement: React.FC = () => {
               </div>
             </div>
           </div>
+
           <div className={styles.projectManagementTableContent}>
             <EnigneerTable
               ref={tableRef}
@@ -1129,7 +1128,7 @@ const ProjectManagement: React.FC = () => {
       )}
       {recallModalVisible && (
         <ProjectRecallModal
-          changeFinishEvent={refreshEvent}
+          changeFinishEvent={refresh}
           visible={recallModalVisible}
           projectId={currentRecallProjectId}
           onChange={setRecallModalVisible}
@@ -1137,7 +1136,7 @@ const ProjectManagement: React.FC = () => {
       )}
       {shareModalVisible && (
         <ShareModal
-          finishEvent={refreshEvent}
+          finishEvent={refresh}
           visible={shareModalVisible}
           onChange={setShareModalVisible}
           projectIds={selectProjectIds}
@@ -1147,7 +1146,7 @@ const ProjectManagement: React.FC = () => {
         <ResourceLibraryManageModal
           visible={libVisible}
           onChange={setLibVisible}
-          changeFinishEvent={refreshEvent}
+          changeFinishEvent={refresh}
         />
       )}
       {editExternalArrangeModal && (

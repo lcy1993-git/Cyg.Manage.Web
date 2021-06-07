@@ -16,6 +16,7 @@ import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-de
 import EmptyTip from '../empty-tip';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
+
 interface GeneralTableProps {
   // 列表请求的url
   url: string;
@@ -238,6 +239,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       });
       setSelectedRowKeys([]);
       getSelectData?.([]);
+
     },
     searchByParams: (params: object) => {
       setCurrentPage(1);
@@ -317,6 +319,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           </div>
         </div>
       )}
+
       <div className={styles.cyGeneralTableConetnt}>
         <WrapperComponent
           bordered={true}
@@ -337,6 +340,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           {...((rest as unknown) as P)}
         />
       </div>
+
       {!noPaging && (
         <div className={styles.cyGeneralTablePaging}>
           <div className={styles.cyGeneralTablePagingLeft}>

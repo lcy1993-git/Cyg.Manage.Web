@@ -26,7 +26,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
     //@ts-ignore
     window.testClick = (personId: string) => {
       setAllProjectSearchPerson(personId)
-      history.push("project-management/all-project");
+      history.push("/project-management/all-project");
     }
     return () => {
       //@ts-ignore
