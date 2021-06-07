@@ -247,7 +247,7 @@ const ProjectManagement: React.FC = () => {
     }
 
     setSelectProjectIds(projectIds);
-    setArrangeModalVisible(true);
+    setArrangeModalVisible(true);  
   };
 
   const editArrangeEvent = async () => {
@@ -573,7 +573,7 @@ const ProjectManagement: React.FC = () => {
 
   const changeArrangeFinishEvent = () => {
     setEditArrangeModalVisible(false);
-    search();
+    refresh();
   };
 
   const openAddEngineerModal = () => {
