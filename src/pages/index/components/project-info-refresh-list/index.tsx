@@ -91,6 +91,9 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
         //没数据，原本有数据，保持原本的循环队列，不做任何操作
       }
     },
+    onError: () => {
+      cancel();
+    },
   });
 
   useEffect(() => {
