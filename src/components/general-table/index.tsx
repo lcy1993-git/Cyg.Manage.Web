@@ -239,7 +239,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       });
       setSelectedRowKeys([]);
       getSelectData?.([]);
-      scrollTopEvent();
+
     },
     searchByParams: (params: object) => {
       setCurrentPage(1);
