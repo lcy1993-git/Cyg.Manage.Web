@@ -1,17 +1,25 @@
 import {useEffect, useMemo, useState, useRef} from 'react';
+import { useMount, useRequest, useSize } from 'ahooks';
+import { Tabs, Tree, Select } from 'antd';
 import PageCommonWrap from "@/components/page-common-wrap";
 import ChapterInfo from './components/chapter-info';
-import ListTable from './components/list-table';
+import ListTable from '../components/list-table';
 import InfoTabs from './components/info-tabs';
-import { Tabs, Tree, Select } from 'antd';
-import { queryQuotaLibraryPager, queryQuotaLibraryCatalogList, getQuotaLibraryCatalogDescription } from '@/services/technology-economic';
-import styles from './index.less'
-import { useMount, useRequest, useSize } from 'ahooks';
-import {formatDataTree, fileTreeFormData, TreeData} from '@/utils/utils';
+
 import qs from 'qs';
+import {formatDataTree, fileTreeFormData, TreeData} from '@/utils/utils';
+import { queryQuotaLibraryPager, queryQuotaLibraryCatalogList, getQuotaLibraryCatalogDescription } from '@/services/technology-economic';
+
+import styles from './index.less'
 
 const { TabPane } = Tabs;
 
+interface DataSource {
+  quotaItem?: {
+    id: string;
+    [key: string]: string;
+  }
+}
 interface Items {
   id: string;
   total: number;
@@ -22,10 +30,92 @@ interface QuotaList{
   items: Items[];
 }
 
+const columns = [
+  {
+    dataIndex: 'id',
+    index: 'id',
+    title: '定额编号',
+    width: 180,
+    ellipsis: true,
+    render(v: string, record: DataSource){
+      return record?.quotaItem?.id
+    }
+  },
+  {
+    dataIndex: 'name',
+    index: 'name',
+    title: '定额名称',
+    width: 460,
+    ellipsis: true,
+    render(v: string, record: DataSource){
+      return record?.quotaItem?.name
+    }
+  },
+  {
+    dataIndex: 'unit',
+    index: 'unit',
+    title: '单位',
+    width: 60,
+    ellipsis: true,
+    render(v: string, record: DataSource){
+      return record?.quotaItem?.unit
+    }
+  },
+  {
+    dataIndex: 'basePrice',
+    index: 'basePrice',
+    title: '基价(元)',
+    width: 100,
+    ellipsis: true,
+    render(v: string, record: DataSource){
+      return record?.quotaItem?.basePrice
+    }
+  },
+  {
+    dataIndex: 'laborCost',
+    index: 'laborCost',
+    title: '人工费(元)',
+    width: 120,
+    ellipsis: true,
+    render(v: string, record: DataSource){
+      return record?.quotaItem?.laborCost
+    }
+  },
+  {
+    dataIndex: 'materialCost',
+    index: 'materialCost',
+    title: '材料费(元)',
+    width: 120,
+    ellipsis: true,
+    render(v: string, record: DataSource){
+      return record?.quotaItem?.materialCost
+    }
+  },
+  {
+    dataIndex: 'machineryCost',
+    index: 'machineryCost',
+    title: '机械费(元)',
+    width: 120,
+    ellipsis: true,
+    render(v: string, record: DataSource){
+      return record?.quotaItem?.machineryCost
+    }
+  },
+  {
+    dataIndex: 'scaffoldType',
+    index: 'scaffoldType',
+    title: '脚手架',
+    ellipsis: true,
+    render(v: string, record: DataSource){
+      return record?.quotaItem?.scaffoldType
+    }
+  },
+];
+
 const QuotaProject = () => {
   const [activeQuotaId, setActiveQuotaId] = useState<string>(qs.parse(window.location.href.split("?")[1]).id as string || "");
   const [catalogueId,setCatalogueId] = useState<string>("");
-  const [resourceItem, setResourceItem] = useState<any>({});
+  const [resourceItem, setResourceItem] = useState<object>({});
 
   const {data: quotaList = {total: 0, items: []}, run: quotaListRun} = useRequest<QuotaList>(queryQuotaLibraryPager, {
     manual: true
@@ -37,24 +127,10 @@ const QuotaProject = () => {
 
   const {data: chapterData, run: chapterRun} = useRequest<string>(getQuotaLibraryCatalogDescription, {manual: true});
   console.log(chapterData);
-  
-  const [keyWord, setKeyWord] = useState("");
-  // const { data: projectList, run: projectListRun } = useRequest(queryQuotaItemList, {
-  //   manual: true
-  // });
 
-  // useEffect(() => {
-  //   if(catalogueId) {
-  //     projectListRun({
-  //       id: catalogueId,
-  //       pageIndex: 1,
-  //       pageSize: 10,
-  //       keyWord
-  //     })
-  //     chapterRun(catalogueId)
-  //   }
-
-  // }, [catalogueId])
+  useEffect(() => {
+    catalogueId && chapterRun(catalogueId);
+  }, [catalogueId])
 
   const ref = useRef(null);
   const refWrap = useSize(ref)
@@ -63,13 +139,8 @@ const QuotaProject = () => {
     activeQuotaId && catalogueListRun(activeQuotaId);
   }, [activeQuotaId])
 
-  // useEffect(() => {
-  //   catalogueId && projectListRun(catalogueId);
-  // }, [catalogueId])
-
   useMount(() => {
     quotaListRun({pageIndex: 1, pageSize: 3000});
-    activeQuotaId && catalogueListRun(activeQuotaId);
   })
 
   const treeData = useMemo(() => {
@@ -97,8 +168,8 @@ const QuotaProject = () => {
 
   }, [quotaList]);
 
-  const onCheck = (kes: React.Key[], {node}: any) => {
-    setCatalogueId(node.key)
+  const onCheck = (kes: React.Key[], {node}: {node: {key: number | string}}) => {
+    catalogueId === node.key || setCatalogueId(node.key as string);
   }
   return (
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
@@ -112,7 +183,6 @@ const QuotaProject = () => {
                 <div className={styles.fileTree}>
                   <Tree.DirectoryTree
                     onSelect={onCheck}
-                    // onCheck={onCheck}
                     treeData={treeData}
                     defaultExpandAll
                   />
@@ -126,7 +196,14 @@ const QuotaProject = () => {
               <TabPane tab="&nbsp;&nbsp;资源列表" key="1">
                 <div className={styles.tabPaneBox}>
                   <div className={styles.listTable}>
-                    <ListTable catalogueId={catalogueId} scrolly={refWrap?.height ? refWrap?.height-531 : 0} setResourceItem={setResourceItem} url="/QuotaLibraryCatalog/QueryQuotaItemPager" rowKey={(e)=>e.quotaItem?.id}/>
+                    <ListTable
+                      catalogueId={catalogueId}
+                      scrolly={refWrap?.height ? refWrap?.height-531 : 0}
+                      setResourceItem={setResourceItem}
+                      url="/QuotaLibraryCatalog/QueryQuotaItemPager"
+                      rowKey={(e: DataSource)=>e.quotaItem?.id}
+                      columns={columns}
+                    />
                   </div>
                   <div className={styles.heightEmpty} />
                   <InfoTabs data={resourceItem}/>

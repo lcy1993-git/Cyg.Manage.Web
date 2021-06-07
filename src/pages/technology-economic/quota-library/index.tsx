@@ -1,81 +1,93 @@
+import React, { useState } from 'react';
+import { history } from 'umi';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
+import { ColumnsType } from 'antd/lib/table';
+import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { isArray } from 'lodash';
+
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { history } from 'umi';
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
-import React, { useState, useEffect } from 'react';
 import DictionaryForm from './components/add-edit-form';
-import { createQuotaLibrary, CreateQuotaLibrary, deleteQuotaLibrary } from '@/services/technology-economic';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import {
+  createQuotaLibrary,
+  CreateQuotaLibrary,
+  deleteQuotaLibrary,
+  setQuotaLibraryStatus
+} from '@/services/technology-economic';
+
 import styles from './index.less';
-import moment from 'moment';
-import { isArray } from 'lodash';
 
 const { Search } = Input;
 
-interface RouteListItem {
-  name: string;
+type DataSource = {
   id: string;
+  [key: string]: string;
 }
 
 const columns = [
   {
     dataIndex: 'name',
-    index: 'name',
+    key: 'name',
     title: '名称',
     width: 300,
   },
   {
     dataIndex: 'materialMachineLibraryName',
-    index: 'materialMachineLibraryName',
+    key: 'materialMachineLibraryName',
     title: '使用材机库',
     width: 160,
   },
   {
     dataIndex: 'quotaScopeText',
-    index: 'quotaScopeText',
+    key: 'quotaScopeText',
     title: '定额类别',
     width: 160
   },
   {
     dataIndex: 'publishDate',
-    index: 'publishDate',
+    key: 'publishDate',
     title: '发布时间',
     width: 130
   },
   {
     dataIndex: 'publishOrg',
-    index: 'publishOrg',
+    key: 'publishOrg',
     title: '发布机构',
     width: 150
   },
   {
     dataIndex: 'year',
-    index: 'year',
+    key: 'year',
     title: '价格年度',
     width: 100
   },
   {
     dataIndex: 'industryTypeText',
-    index: 'industryTypeText',
+    key: 'industryTypeText',
     title: '行业类别',
     width: 150
   },
   {
     dataIndex: 'majorTypeText',
-    index: 'majorTypeText',
+    key: 'majorTypeText',
     title: '适用专业',
     width: 150
   },
   {
     dataIndex: 'enabled',
-    index: 'enabled',
+    key: 'enabled',
     title: '状态',
     width: 70,
-    render(value: boolean){
+    render(value: boolean, record: DataSource) {
       return (
-        <Switch checked={value}/>
+        <Switch
+          defaultChecked={value}
+          onClick={(checked) => {
+            setQuotaLibraryStatus(record.id, checked);
+          }}
+        />
       );
     }
   },
@@ -90,13 +102,11 @@ const columns = [
 const QuotaLibrary: React.FC = () => {
 
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
-  const [selectIds, setSelectIds] = useState<string[]>([]);
 
   const [addForm] = Form.useForm();
 
@@ -134,13 +144,6 @@ const QuotaLibrary: React.FC = () => {
     }
   };
 
-  const searchByParams = (params: object) => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.searchByParams(params);
-    }
-  };
-
   //添加
   const addEvent = () => {
     setAddFormVisible(true);
@@ -148,9 +151,9 @@ const QuotaLibrary: React.FC = () => {
 
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
-      
+
       console.log(values);
-      
+
       await createQuotaLibrary(values);
       refresh();
       setAddFormVisible(false);
@@ -214,9 +217,8 @@ const QuotaLibrary: React.FC = () => {
     );
   };
 
-  const tableSelectEvent = (data: any) => {
+  const tableSelectEvent = (data: DataSource[] | object) => {
     setTableSelectRow(data);
-    setSelectIds(data.map((item: any) => item.id));
   };
 
   return (
@@ -226,7 +228,7 @@ const QuotaLibrary: React.FC = () => {
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
-        columns={columns}
+        columns={columns as (ColumnsType<object>)}
         url="/QuotaLibrary/QueryQuotaLibraryPager"
         tableTitle="定额库管理"
         getSelectData={tableSelectEvent}

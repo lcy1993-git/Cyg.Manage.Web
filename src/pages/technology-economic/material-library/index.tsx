@@ -1,78 +1,80 @@
+import React, { useState } from 'react';
+import { history } from 'umi';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
+import { ColumnsType } from 'antd/lib/table';
+import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { isArray } from 'lodash';
+
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
-import React, { useState } from 'react';
 import DictionaryForm from './components/add-edit-form';
-import { createMaterialMachineLibrary, deleteMaterialMachineLibrary } from '@/services/technology-economic';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+
+import {
+  createMaterialMachineLibrary,
+  deleteMaterialMachineLibrary,
+  setMaterialMachineLibraryStatus
+} from '@/services/technology-economic';
 import styles from './index.less';
-import moment from 'moment';
-import { isArray } from 'lodash';
+
+type DataSource = {
+  id: string;
+  [key: string]: string;
+}
 
 const { Search } = Input;
-
-interface RouteListItem {
-  name: string;
-  id: string;
-}
 
 const columns = [
   {
     dataIndex: 'name',
-    index: 'name',
+    key: 'name',
     title: '名称',
     width: 300,
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
-    title: '使用材机库',
+    dataIndex: 'quotaLibrarys',
+    key: 'quotaLibrarys',
+    title: '已关联定额库',
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
-    title: '定额类别',
-  },
-  {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'publishDate',
+    key: 'publishDate',
     title: '发布时间',
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'publishOrg',
+    key: 'publishOrg',
     title: '发布机构',
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'year',
+    key: 'year',
     title: '价格年度',
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
-    title: '行业类别',
+    dataIndex: 'industryType',
+    key: 'industryType',
+    title: '适用行业',
   },
   {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
-    title: '适用专业',
-  },
-  {
-    dataIndex: 'categoryText',
-    index: 'categoryText',
+    dataIndex: 'enabled',
+    key: 'enabled',
     title: '状态',
-    render(value: boolean){
+    render(value: boolean, record: DataSource) {
       return (
-        <Switch checked={value}/>
+        <Switch
+          defaultChecked={value}
+          onClick={(checked) => {
+            setMaterialMachineLibraryStatus(record.id, checked);
+          }}
+        />
       );
     }
   },
   {
     dataIndex: 'remark',
-    index: 'remark',
+    key: 'remark',
     title: '备注',
     width: 400
   },
@@ -80,13 +82,11 @@ const columns = [
 
 const QuotaLibrary: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
-  const [selectIds, setSelectIds] = useState<string[]>([]);
 
   const [addForm] = Form.useForm();
 
@@ -124,13 +124,6 @@ const QuotaLibrary: React.FC = () => {
     }
   };
 
-  const searchByParams = (params: object) => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.searchByParams(params);
-    }
-  };
-
   //添加
   const addEvent = () => {
     setAddFormVisible(true);
@@ -138,12 +131,12 @@ const QuotaLibrary: React.FC = () => {
 
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      
+
       await createMaterialMachineLibrary(values);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
-    });
+    })
   };
 
   const sureDeleteData = async () => {
@@ -157,11 +150,13 @@ const QuotaLibrary: React.FC = () => {
     message.success('删除成功');
   };
 
-  const importLineStreeSagEvent = () => {
+  const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择要操作的行');
       return;
     }
+    const id = tableSelectRows[0].id;
+    history.push(`/technology-economic/material-infomation?id=${id}`)
   };
 
   const tableElement = () => {
@@ -190,7 +185,7 @@ const QuotaLibrary: React.FC = () => {
         }
         {
           !buttonJurisdictionArray?.includes('quotaLib-info') &&
-          <Button className="mr7" onClick={() => importLineStreeSagEvent()}>
+          <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             查看详情
           </Button>
@@ -200,9 +195,8 @@ const QuotaLibrary: React.FC = () => {
     );
   };
 
-  const tableSelectEvent = (data: any) => {
+  const tableSelectEvent = (data: DataSource[] | Object) => {
     setTableSelectRow(data);
-    setSelectIds(data.map((item: any) => item.id));
   };
 
   return (
@@ -212,7 +206,7 @@ const QuotaLibrary: React.FC = () => {
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
-        columns={columns}
+        columns={columns as ColumnsType<DataSource | object>}
         url="/MaterialMachineLibrary/QueryMaterialMachineLibraryPager"
         tableTitle="材机库管理"
         getSelectData={tableSelectEvent}

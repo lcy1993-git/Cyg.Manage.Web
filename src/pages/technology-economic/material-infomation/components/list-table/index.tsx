@@ -16,6 +16,11 @@ import {
 import styles from './index.less';
 const { Search } = Input;
 
+interface Props {
+  catalogueId: string;
+  scrolly: number;
+}
+
 interface RouteListItem {
   name: string;
   id: string;
@@ -48,16 +53,6 @@ const columns = [
     title: '编号',
     width: 180,
     ellipsis: true
-    // render: (text: string, record: any) => {
-    //   return (
-    //     <span
-    //       className={styles.dictionaryKeyCell}
-    //       onClick={() => keyCellClickEvent(record.id, record.key)}
-    //     >
-    //       {record.key}
-    //     </span>
-    //   );
-    // },
   },
   {
     dataIndex: 'name',
@@ -88,51 +83,10 @@ const columns = [
   },
 ];
 
-const QuotaLibrary: React.FC = ({catalogueId, scrolly}) => {
-  console.log(catalogueId);
+const ListTable: React.FC<Props> = ({catalogueId, scrolly}) => {
   
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-
-  const [selectIds, setSelectIds] = useState<string[]>([]);
-
-  const { data1, run } = useRequest(getDictionaryDetail, {
-    manual: true,
-  });
-
-  const tableData = [
-    {
-      calculation: 0,
-      catalogueId: "1369223437942743044",
-      content: null,
-      id: "1369223437951131650",
-      laborCost: 0,
-      libId: "1357588635508068352",
-      machineryFee: 0,
-      materialFee: 0,
-      name: "人工施工土方 挖土方 坚土 深2m以内",
-      price: 13.56,
-      quotaId: "PT1-4",
-      unit: "m³",
-      valence: 13.56,
-    },
-    {
-      calculation: 0,
-      catalogueId: "1369223437942743044",
-      content: null,
-      id: "1369223437951131651",
-      laborCost: 0,
-      libId: "1357588635508068352",
-      machineryFee: 0,
-      materialFee: 0,
-      name: "222",
-      price: 13.56,
-      quotaId: "PT1-4",
-      unit: "m³",
-      valence: 13.56,
-    },
-  ];
 
   const searchComponent = () => {
     return (
@@ -160,43 +114,26 @@ const QuotaLibrary: React.FC = ({catalogueId, scrolly}) => {
     }
   };
 
-  // const searchByParams = (params: object) => {
-  //   if (tableRef && tableRef.current) {
-  //     // @ts-ignore
-  //     tableRef.current.searchByParams(params);
-  //   }
-  // };
-
-  const tableSelectEvent = (data: any) => {
-    setTableSelectRow(data);
-    setSelectIds(data.map((item: any) => item.id));
-  };
-
   return (
     <>
       <GeneralTable
         ref={tableRef}
         hasFooter={false}
-        // titleSlot={titleSlotElement}
         buttonLeftContentSlot={searchComponent}
-        // buttonRightContentSlot={tableElement}
         needCommonButton={false}
         columns={columns}
         noPaging={true}
         requestSource="tecEco"
         url="/QuotaManager/GetList"
-        // tableTitle="定额库管理"
-        getSelectData={tableSelectEvent}
         type="radio"
         scroll={{y: scrolly}}
         extractParams={{
           keyWord: searchKeyWord,
-          catalogueId: "1392054920689373184"
-          // catalogueId: "1392054920689373188"
+          catalogueId
         }}
       />
     </>
   );
 };
 
-export default QuotaLibrary;
+export default ListTable;

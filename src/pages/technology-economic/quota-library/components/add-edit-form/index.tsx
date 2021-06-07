@@ -5,7 +5,8 @@ import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
 import FileUpload from '@/components/file-upload';
 import { useRequest, useMount } from 'ahooks';
-import { queryMaterialMachineLibraryPager } from '@/services/technology-economic';
+import { queryMaterialMachineLibraryPager, getIndustryTypeEnums, getMajorTypeEnums, getQuotaScopeEnums } from '@/services/technology-economic';
+import UrlSelect from '@/components/url-select';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -24,7 +25,12 @@ interface ResponsData {
 const DictionaryForm: React.FC<Props> = ({ type }) => {
 
   const { data: MaterialMachineLibraryData, run } = useRequest<ResponsData>(queryMaterialMachineLibraryPager, { manual: true });
+  const { data } = useRequest<ResponsData>(getIndustryTypeEnums, { manual: false });
+  const { data1 } = useRequest<ResponsData>(getMajorTypeEnums, { manual: false });
+  const { data2 } = useRequest<ResponsData>(getQuotaScopeEnums, { manual: false });
 
+  console.log(data);
+  
   const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
 
   useMount(() => {
@@ -47,6 +53,16 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
         <Col span={11}>
           <CyFormItem label="名称" name="name" required>
             <Input placeholder="请输入名称" />
+          </CyFormItem>
+
+          <CyFormItem label="定额类别" name="quotaScope" required>
+            <UrlSelect
+              url="/CommonEnum/GetIndustryTypeEnums"
+              requestType="get"
+              requestSource="tecEco"
+            >
+
+            </UrlSelect>
           </CyFormItem>
 
           <CyFormItem label="定额类别" name="quotaScope" required>

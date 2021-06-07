@@ -63,6 +63,13 @@ export const deleteQuotaLibrary = (id: string) => {
   );
 }
 
+// 设置定额库状态
+export const setQuotaLibraryStatus = (id: string, enabled: boolean) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibrary/SetQuotaLibraryStatus`, { method: 'GET', params: { id, enabled } }),
+  );
+}
+
 // ***人材机库***
 interface GetPage {
   pageIndex: number;
@@ -106,14 +113,28 @@ export const deleteMaterialMachineLibrary = (id: string) => {
   );
 }
 
-// 人材机库下目录列表
+// 人材机库下目录列表(平铺数据)
 export const queryMaterialMachineLibraryCatalogList = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/MaterialMachineLibrary/queryMaterialMachineLibraryCatalogList`, { method: 'GET', params: { id } }),
   );
 }
 
-// ***章节说明
+// 人材机项分页列表
+export const queryMaterialMachineItemPager = (data: GetPage) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/MaterialMachineLibraryCatalog/QueryMaterialMachineItemPager`, { method: 'POST', data })
+  )
+}
+
+//设置人材机库状态
+export const setMaterialMachineLibraryStatus = (id: string, enabled: boolean) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/MaterialMachineLibrary/SetMaterialMachineLibraryStatus`, { method: 'GET', params: { id, enabled } }),
+  );
+}
+
+// ***章节说明***
 interface SaveQuotaLibraryCatalogDescription {
   id: string;
   chapterDescription: string;
@@ -132,5 +153,28 @@ export const saveQuotaLibraryCatalogDescription= (data: SaveQuotaLibraryCatalogD
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/QuotaLibraryCatalog/SaveQuotaLibraryCatalogDescription`, { method: 'POST', data })
   )
+}
+
+// ***枚举相关***
+
+// 行业类别枚举
+export const getIndustryTypeEnums = () => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/CommonEnum/GetIndustryTypeEnums`, { method: 'GET', params: {} })
+  );
+}
+
+// 适用专业枚举
+export const getMajorTypeEnums = () => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/CommonEnum/GetMajorTypeEnums`, { method: 'GET' })
+  );
+}
+
+// 定额范围枚举
+export const getQuotaScopeEnums = () => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/CommonEnum/GetQuotaScopeEnums`, { method: 'GET' })
+  );
 }
 

@@ -1,13 +1,16 @@
 import {useEffect, useMemo, useState, useRef} from 'react';
-import PageCommonWrap from "@/components/page-common-wrap";
-import ChapterInfo from '../components/chapter-info';
-import ListTable from './components/list-table';
-import InfoTabs from './components/info-tabs';
-import { Tabs, Tree, Select, Empty } from 'antd';
-import { getQuotaLibrary, getCatalogueList, getProjectList } from '@/services/technology-economic/quota-library';
-import styles from './index.less'
 import { useMount, useRequest, useSize } from 'ahooks';
+import { Tabs, Tree, Select } from 'antd';
+
+import PageCommonWrap from "@/components/page-common-wrap";
+import ListTable from '../components/list-table';
+import InfoTabs from './components/info-tabs';
+
 import {formatDataTree, fileTreeFormData, TreeData} from '@/utils/utils';
+import { queryMaterialMachineLibraryPager, queryMaterialMachineLibraryCatalogList } from '@/services/technology-economic';
+import qs from 'qs';
+
+import styles from './index.less'
 
 const { TabPane } = Tabs;
 
@@ -16,86 +19,114 @@ interface Items {
   total: number;
   name: string;
 }
-interface QuotaList{
+interface MaterialList{
   total: number;
   items: Items[];
 }
 
-const treeData1= [
+const ResourcesMachinesType = ["未知", "人工", "材料", "机械"];
+
+const columns = [
   {
-    title: 'parent0',
-    key: '0-0',
-    children: [
-      {
-        title: 'leaf 0-0',
-        key: '0-0-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 0-1',
-        key: '0-0-1',
-        isLeaf: true,
-      },
-    ],
+    dataIndex: 'no',
+    index: 'no',
+    title: '定额编号',
+    width: 100,
+    ellipsis: true,
+    render(v: any, record: any){
+      return record?.materialMachineItem?.no
+    }
   },
   {
-    title: 'parent 1',
-    key: '0-1',
-    children: [
-      {
-        title: 'leaf 1-0',
-        key: '0-1-0',
-        isLeaf: true,
-      },
-      {
-        title: 'leaf 1-1',
-        key: '0-1-1',
-        isLeaf: true,
-      },
-    ],
+    dataIndex: 'type',
+    index: 'type',
+    title: '人材机类型',
+    width: 100,
+    ellipsis: true,
+    render(v: any, record: any){
+      return ResourcesMachinesType[record?.materialMachineItem?.type] ?? ""
+    }
   },
+  {
+    dataIndex: 'name',
+    index: 'name',
+    title: '人材机名称',
+    // width: 200,
+    ellipsis: true,
+    render(v: any, record: any){
+      return record?.materialMachineItem?.name
+    }
+  },
+  {
+    dataIndex: 'unit',
+    index: 'unit',
+    title: '单位',
+    width: 100,
+    ellipsis: true,
+    render(v: any, record: any){
+      return record?.materialMachineItem?.unit
+    }
+  },
+  {
+    dataIndex: 'prePrice',
+    index: 'prePrice',
+    title: '预算价(元)',
+    width: 120,
+    ellipsis: true,
+    render(v: any, record: any){
+      return record?.materialMachineItem?.prePrice
+    }
+  },
+  {
+    dataIndex: 'weight',
+    index: 'weight',
+    title: '单重(kg)',
+    width: 120,
+    ellipsis: true,
+    render(v: any, record: any){
+      return record?.materialMachineItem?.weight
+    }
+  },
+  {
+    dataIndex: 'valuationTypeText',
+    index: 'valuationTypeText',
+    title: '类别',
+    width: 70,
+    ellipsis: true,
+    render(v: any, record: any){
+      return record?.materialMachineItem?.valuationTypeText
+    }
+  }
 ];
 
 const QuotaProject = () => {
 
-  const [activeQuotaId, setActiveQuotaId] = useState<string>("");
-  const [catalogueId,setCatalogueId] = useState<string>("");
-  console.log(catalogueId);
-  
-  // const [activeListId, setActiveListId] = useState<string>("");
+  const [materialLibraryId, setMaterialLibraryId] = useState<string>(qs.parse(window.location.href.split("?")[1]).id as string || "");
+  const [catalogueId, setCatalogueId] = useState<string>("");
+  const [resourceItem, setResourceItem] = useState<any>({});
 
-  const {data: quotaList = {total: 0, items: []}, run: quotaListRun} = useRequest<QuotaList>(getQuotaLibrary, {
+  const defaultLibValue = materialLibraryId ? {defaultValue: materialLibraryId} : {}
+
+  const {data: materialLibList = {total: 0, items: []}, run: materialLibRun} = useRequest<MaterialList>(queryMaterialMachineLibraryPager, {
     manual: true
   })
-
-  const {data: catalogueList, run: catalogueListRun } = useRequest<TreeData[]>(getCatalogueList, {
-    manual: true
-  })
-  
-  // const { data: projectList, run: projectListRun } = useRequest(getProjectList, {
-  //   manual: true
-  // });
-  const ref = useRef();
-  const refWrap = useSize(ref)
-
-  console.log(refWrap, "refWrap");
-  
-
-  useEffect(() => {
-    activeQuotaId && catalogueListRun(activeQuotaId);
-  }, [activeQuotaId])
-
-  // useEffect(() => {
-  //   catalogueId && projectListRun(catalogueId);
-  // }, [catalogueId])
 
   useMount(() => {
-    quotaListRun();
+    materialLibRun({pageIndex: 1, pageSize: 3000});
   })
 
+  const {data: catalogueList, run: catalogueListRun } = useRequest<TreeData[]>(queryMaterialMachineLibraryCatalogList, {
+    manual: true
+  })
+  
+  const ref = useRef(null);
+  const refWrap = useSize(ref)
+
+  useEffect(() => {
+    materialLibraryId && catalogueListRun(materialLibraryId);
+  }, [materialLibraryId])
+
   const treeData = useMemo(() => {
-    console.log(catalogueList);
-    
     if(catalogueList && catalogueList.length > 0) {
       return fileTreeFormData(formatDataTree(catalogueList))
     }else{
@@ -104,8 +135,8 @@ const QuotaProject = () => {
   }, [catalogueList]);
 
   const options = useMemo(() => {
-    if(quotaList.total) {
-      return quotaList.items.map((item) => {
+    if(materialLibList.total) {
+      return materialLibList.items.map((item) => {
         return (
           <Select.Option value={item.id} key={item.id}>
             {item.name}
@@ -116,9 +147,10 @@ const QuotaProject = () => {
       return null;
     }
 
-  }, [quotaList]);
+  }, [materialLibList]);
 
   const onCheck = (kes: React.Key[], {node}: any) => {
+    
     setCatalogueId(node.key)
   }
   return (
@@ -128,12 +160,17 @@ const QuotaProject = () => {
           <Tabs className="normalTabs noMargin" >
               <TabPane tab="材机库目录" key="材机库目录">
                 <div className={styles.selectWrap}>
-                  <Select placeholder="请选择定额库" style={{width: '100%'}} children={options} onChange={(e)=>setActiveQuotaId(e)}/>
+                  <Select
+                    placeholder="请选择材机库"
+                    style={{width: '100%'}}
+                    children={options}
+                    onChange={(e: any)=>setMaterialLibraryId(e)}
+                    {...defaultLibValue}
+                  />
                 </div>
                 <div className={styles.fileTree}>
                   <Tree.DirectoryTree
                     onSelect={onCheck}
-                    // onCheck={onCheck}
                     treeData={treeData}
                     defaultExpandAll
                   />
@@ -147,15 +184,20 @@ const QuotaProject = () => {
               <TabPane tab="&nbsp;&nbsp;资源列表" key="资源列表">
                 <div className={styles.tabPaneBox}>
                   <div className={styles.listTable}>
-                    <ListTable catalogueId={catalogueId} scrolly={refWrap ? refWrap?.height-531 : 0}/>
+                    <ListTable
+                      catalogueId={catalogueId}
+                      scrolly={refWrap?.height ? refWrap?.height-531 : 0}
+                      setResourceItem={setResourceItem}
+                      url="/MaterialMachineLibraryCatalog/QueryMaterialMachineItemPager"
+                      rowKey={(e: any)=>e.materialMachineItem?.id}
+                      columns={columns}
+                      cruxKey="materialMachineItem"
+                    />
                   </div>
                   <div className={styles.heightEmpty} />
-                  <InfoTabs />
+                  <InfoTabs data={resourceItem} />
                 </div>
               </TabPane>
-              {/* <TabPane tab="章节说明" key="2">
-                <ChapterInfo />
-              </TabPane> */}
             </Tabs>
         </div>
       </div>

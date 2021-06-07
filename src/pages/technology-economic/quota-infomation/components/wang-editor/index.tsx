@@ -1,6 +1,6 @@
   
 import { useMount, useUnmount } from 'ahooks';
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import TEditot from 'wangeditor/dist/editor/index';
 import E from 'wangeditor';
 
@@ -11,14 +11,20 @@ interface Props {
 let editor: TEditot;
 const WangEditor: React.FC<Props> = ({getHtml}) => {
 
-  const [content, setContent] = useState<string>('')
-
   const ref = useRef<HTMLDivElement>(null);
   useMount(() => {
     editor= new E(ref.current) as TEditot;
 
+    /**
+     * 剔除不需要的表情视频按钮,表情按钮目前上传时候后台会提示报错
+     */
+    editor.config.excludeMenus = [
+      'emoticon',
+      'video'
+    ]
+
     editor.config.onchange = (newHtml: string) => {
-      setContent(newHtml)
+
       getHtml(newHtml)
     }
     editor.create()

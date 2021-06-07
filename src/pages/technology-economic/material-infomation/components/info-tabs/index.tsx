@@ -1,63 +1,58 @@
-import {useState} from 'react';
+
 import { Tabs, Table } from 'antd';
-import { PlusSquareOutlined, MinusSquareOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
-const { TabPane } = Tabs;
 import styles from './index.less';
 
+const { TabPane } = Tabs;
 
+interface Props {
+  data: {
+    child?: {
+      [key: string]: string;
+    }[]
+  }
+}
 
 const columns = [
   {
     title: "编号",
-    dataIndex: "id",
-    key: "id",
-    width: 220,
+    dataIndex: "no",
+    key: "no",
+    width: 100,
   },
   {
-    title: "人材机名称",
+    title: "材机名称",
     dataIndex: "name",
     key: "name",
   },
   {
     title: "单位",
-    dataIndex: "columns3",
-    key: "columns3",
+    dataIndex: "unit",
+    key: "unit",
     width: 220,
   },
   {
     title: "数量",
-    dataIndex: "columns4",
-    key: "columns4",
+    dataIndex: "count",
+    key: "count",
   },
   {
     title: "预算价（元）",
-    dataIndex: "columns4",
-    key: "columns4",
+    dataIndex: "prePrice",
+    key: "prePrice",
   },
   {
     title: "单重（kg）",
-    dataIndex: "columns4",
-    key: "columns4",
+    dataIndex: "weight",
+    key: "weight",
   },
   {
     title: "计价",
-    dataIndex: "columns4",
-    key: "columns4",
-  },
-];
-const dataSource = [
-  {
-    id: 1
-  },
-  {
-    id: 2
-  },
-  {
-    id: 3
+    dataIndex: "valuationTypeText",
+    key: "valuationTypeText",
   },
 ];
 
-const InfoTabs = () => {
+const InfoTabs: React.FC<Props> = ({data}) => {
 
   return (
     <>
@@ -66,7 +61,7 @@ const InfoTabs = () => {
           <TabPane tab="拆分人材机" key="拆分人材机">
               <Table
                 columns={columns}
-                dataSource={dataSource}
+                dataSource={data?.child ?? []}
                 pagination={false}
                 bordered
                 defaultExpandedRowKeys={["人工", "材料", "机械"]}

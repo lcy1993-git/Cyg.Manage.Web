@@ -95,6 +95,7 @@ export interface TreeData {
   readonly id: string;
   parentId: string | null;
   children?: TreeData[];
+  key: string;
   [key: string]: unknown;
 } 
 /**
