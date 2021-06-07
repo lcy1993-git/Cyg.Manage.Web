@@ -251,8 +251,8 @@ const ProjectManagement: React.FC = () => {
   };
 
   const editArrangeEvent = async () => {
-    
-    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat();
+    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
+
     if (projectIds && projectIds.length === 0) {
       message.error('请选择修改安排的项目！');
       return;
@@ -702,13 +702,13 @@ const ProjectManagement: React.FC = () => {
     if (allProjectSearchPerson) {
       setPersonInfo({
         survey: String(allProjectSearchPerson),
-        logicRelation: 2,
+        logicRelation: 1,
         desgin: String(allProjectSearchPerson),
       });
 
       setSelectDefaultData({
         survey: String(allProjectSearchPerson),
-        logicRelation: 2,
+        logicRelation: 1,
         design: String(allProjectSearchPerson),
       });
 
@@ -726,7 +726,7 @@ const ProjectManagement: React.FC = () => {
         statisticalCategory: statisticalCategory,
         sourceType: sourceType ?? [],
         identityType: identityType ?? [],
-        logicRelation: 2,
+        logicRelation: 1,
         designUser: String(allProjectSearchPerson),
         surveyUser: String(allProjectSearchPerson),
         ...areaInfo,
