@@ -126,7 +126,6 @@ const QuotaProject = () => {
   })
 
   const {data: chapterData, run: chapterRun} = useRequest<string>(getQuotaLibraryCatalogDescription, {manual: true});
-  console.log(chapterData);
 
   useEffect(() => {
     catalogueId && chapterRun(catalogueId);
@@ -144,7 +143,6 @@ const QuotaProject = () => {
   })
 
   const treeData = useMemo(() => {
-    console.log(catalogueList);
     
     if(catalogueList && catalogueList.length > 0) {
       return fileTreeFormData(formatDataTree(catalogueList))

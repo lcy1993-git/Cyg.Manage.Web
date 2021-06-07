@@ -28,8 +28,6 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
   const { data } = useRequest<ResponsData>(getIndustryTypeEnums, { manual: false });
   const { data1 } = useRequest<ResponsData>(getMajorTypeEnums, { manual: false });
   const { data2 } = useRequest<ResponsData>(getQuotaScopeEnums, { manual: false });
-
-  console.log(data);
   
   const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
 
@@ -38,7 +36,6 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
   })
 
   const MaterialMachineLibraryListFn = () => {
-    console.log(MaterialMachineLibraryList);
 
     return MaterialMachineLibraryList.map((item) => {
       return (
@@ -118,7 +115,7 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
       </Row>
 
       <CyFormItem label="备注" name="remark">
-        <Input.TextArea rows={3} />
+        <Input.TextArea rows={3} defaultValue=""/>
       </CyFormItem>
 
       <CyFormItem label="上传文件" name="file" required>

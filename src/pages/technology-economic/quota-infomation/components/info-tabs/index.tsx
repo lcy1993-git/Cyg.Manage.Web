@@ -1,11 +1,22 @@
-import {useMemo, useState} from 'react';
+import React, { useMemo } from 'react';
 import { Tabs, Table } from 'antd';
-import { PlusSquareOutlined, MinusSquareOutlined, FolderOpenOutlined, FolderOutlined } from '@ant-design/icons';
+import { FolderOpenOutlined } from '@ant-design/icons';
 const { TabPane } = Tabs;
 import styles from './index.less';
 
+interface MaterialMachineItems {
+  no: string;
+  type: number;
+  [key: string]: string | number;
+}
 interface Props {
-  data: any
+  data: {
+    materialMachineItems?: MaterialMachineItems[];
+    adjustments?: {
+      no: string;
+      [key: string]: string;
+    }
+  }
 }
 
 const columns1 = [
@@ -14,8 +25,8 @@ const columns1 = [
     dataIndex: "no",
     key: "no",
     width: 220,
-    render(e: string, m: any){
-      if(m.isRoot) {
+    render(e: string, m: MaterialMachineItems) {
+      if (m.isRoot) {
         return (<span><FolderOpenOutlined />&nbsp;{m.no}</span>)
       }
       return (<span>{e}</span>);
@@ -112,16 +123,16 @@ const columns2 = [
   },
 ]
 
-const InfoTabs: React.FC<Props> = ({data}) => {
+const InfoTabs: React.FC<Props> = ({ data }) => {
   const dataSourceResult = useMemo(() => {
     const materialMachineItems = JSON.parse(JSON.stringify(dataSource));
-    if(Array.isArray(data?.materialMachineItems) && data?.materialMachineItems.length > 0) {
-      const data1 = data.materialMachineItems.filter((item: any) => item.type === 1);
-      const data2 = data.materialMachineItems.filter((item: any) => item.type === 2);
-      const data3 = data.materialMachineItems.filter((item: any) => item.type === 3);
-      data1.length > 0 && (materialMachineItems[0].children = data.materialMachineItems.filter((item: any) => item.type === 1));
-      data2.length > 0 && (materialMachineItems[1].children = data.materialMachineItems.filter((item: any) => item.type === 2));
-      data3.length > 0 && (materialMachineItems[2].children = data.materialMachineItems.filter((item: any) => item.type === 3));
+    if (Array.isArray(data?.materialMachineItems) && data?.materialMachineItems.length > 0) {
+      const data1 = data.materialMachineItems.filter((item: MaterialMachineItems) => item.type === 1);
+      const data2 = data.materialMachineItems.filter((item: MaterialMachineItems) => item.type === 2);
+      const data3 = data.materialMachineItems.filter((item: MaterialMachineItems) => item.type === 3);
+      data1.length > 0 && (materialMachineItems[0].children = data.materialMachineItems.filter((item: MaterialMachineItems) => item.type === 1));
+      data2.length > 0 && (materialMachineItems[1].children = data.materialMachineItems.filter((item: MaterialMachineItems) => item.type === 2));
+      data3.length > 0 && (materialMachineItems[2].children = data.materialMachineItems.filter((item: MaterialMachineItems) => item.type === 3));
     }
 
     return {
@@ -135,24 +146,24 @@ const InfoTabs: React.FC<Props> = ({data}) => {
       <div className={styles.infoTabsWrap}>
         <Tabs className="normalTabs noMargin">
           <TabPane tab="定额人材机" key="定额人材机">
-              <Table
-                columns={columns1}
-                dataSource={dataSourceResult.materialMachineItems}
-                pagination={false}
-                bordered
-                defaultExpandedRowKeys={[]}
-                // defaultExpandedRowKeys={["人工", "材料", "机械"]}
-                rowKey="no"
-                scroll={{y: 300}}
-              />
+            <Table
+              columns={columns1}
+              dataSource={dataSourceResult.materialMachineItems}
+              pagination={false}
+              bordered
+              defaultExpandedRowKeys={[]}
+              // defaultExpandedRowKeys={["人工", "材料", "机械"]}
+              rowKey="no"
+              scroll={{ y: 300 }}
+            />
           </TabPane>
           <TabPane tab="定额调整系数" key="定额调整系数">
             <Table
               columns={columns2}
-              dataSource={dataSourceResult.adjustments}
+              dataSource={(dataSourceResult.adjustments ?? []) as object[]}
               pagination={false}
               bordered
-              scroll={{y: 300}}
+              scroll={{ y: 300 }}
             />
           </TabPane>
           <TabPane tab="工作内容" key="工作内容">

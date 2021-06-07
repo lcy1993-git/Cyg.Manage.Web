@@ -60,7 +60,7 @@ interface GeneralTableProps {
   cruxKey?: string;
 
   // 当表格需要id传参时，判断当前id是否为空，若为空则限制请求
-  requestConditions?: any;
+  requestConditions?: string;
 }
 
 type TableSelectType = 'radio' | 'checkbox';

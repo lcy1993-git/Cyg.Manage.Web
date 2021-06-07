@@ -77,7 +77,6 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url,
         // onRow={record=> {
         //   return {
         //     onClick: event => {
-        //       console.log(event, "123", record);
         //       // setSelectedRowKeys(record)
         //     }
         //   }
