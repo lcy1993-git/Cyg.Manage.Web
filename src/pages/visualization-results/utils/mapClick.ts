@@ -51,6 +51,7 @@ const elementTypeEnum = {
   cable_channel: '电缆通道',
   electric_meter: '户表',
   cross_arm: '横担',
+  hole: '穿孔',
   user_line: '下户线',
   fault_indicator: '故障指示器',
   pull_line: '拉线',
@@ -379,7 +380,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'survey' || layerType === 'plan') {
       if (mediaLayers.indexOf(layerName) >= 0) {
         let params = {
-          projectId: feature.getProperties().project_id,
+          id: feature.getProperties().project_id,
           devices: [
             {
               category: 1, // 1为勘察，2为预设
@@ -413,9 +414,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        await getlibId({ projectId: feature.getProperties().project_id }).then(
+        await getlibId({ id: feature.getProperties().project_id }).then(
           async (data: any) => {
-            console.log(data);
             const resourceLibID = data.content;
             const objectID =
               feature.getProperties().mode_id || feature.getProperties().equip_model_id;

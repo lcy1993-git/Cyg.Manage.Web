@@ -125,6 +125,20 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
       projectInfo: {
         id: projectInfo.id,
         isAllChecked: e.target.checked,
+        status: projectInfo.projects
+          .map((item: any) => {
+            if (valueList.includes(item.id)) {
+              return item.stateInfo;
+            }
+          })
+          .filter(Boolean),
+        name: projectInfo.projects
+          .map((item: any) => {
+            if (valueList.includes(item.id)) {
+              return item.name;
+            }
+          })
+          .filter(Boolean),
       },
       checkedArray: e.target.checked ? valueList : [],
     });

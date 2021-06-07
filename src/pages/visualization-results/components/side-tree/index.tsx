@@ -260,12 +260,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const onCheckAll = (e: any) => {
     if (e.target.checked) {
       onCheck(getAllKey(), { checkedNodes: getAllProjectNodes() });
-      setAllCheck(e.target.checked);
       setIndeterminate(false);
     } else {
       clearState();
-      setAllCheck(e.target.checked);
     }
+    setAllCheck(e.target.checked);
   };
 
   /**
@@ -293,10 +292,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    // if (projectIdList.length === 1) {
-    //   feetchCommentCountRquest();
-    // }
-
     store.setProjectIdList(projectIdList);
   }, [projectIdList]);
 
