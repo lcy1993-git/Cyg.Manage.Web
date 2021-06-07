@@ -150,6 +150,7 @@ const ProjectManagement: React.FC = () => {
 
   const tableRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
+  const personRef = useRef<HTMLDivElement>(null);
 
   const [form] = Form.useForm();
 
@@ -247,7 +248,7 @@ const ProjectManagement: React.FC = () => {
     }
 
     setSelectProjectIds(projectIds);
-    setArrangeModalVisible(true);  
+    setArrangeModalVisible(true);
   };
 
   const editArrangeEvent = async () => {
@@ -438,8 +439,8 @@ const ProjectManagement: React.FC = () => {
     });
     setPersonInfo({
       logicRelation: 2,
-      designUser: '',
-      surveyUser: '',
+      design: '',
+      survey: '',
     });
     setSelectDefaultData({
       survey: '',
@@ -448,6 +449,7 @@ const ProjectManagement: React.FC = () => {
     });
 
     areaSelectReset();
+    personSelectReset();
     // TODO 重置完是否进行查询
     searchByParams({
       keyWord: '',
@@ -665,6 +667,13 @@ const ProjectManagement: React.FC = () => {
     }
   };
 
+  const personSelectReset = () => {
+    if (personRef && personRef.current) {
+      //@ts-ignore
+      personRef.current.reset();
+    }
+  };
+
   const delayRefresh = async () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
@@ -807,12 +816,7 @@ const ProjectManagement: React.FC = () => {
                     placeholder="项目阶段"
                   />
                 </TableSearch>
-                <TableSearch width="121px">
-                  <ChooseDesignAndSurvey
-                    defaultValue={selectDefaultData}
-                    onChange={setPersonInfo}
-                  />
-                </TableSearch>
+
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
                     valueKey="value"
@@ -899,6 +903,13 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setIdentityType(value as number[])}
                     className="widthAll"
                     placeholder="项目身份"
+                  />
+                </TableSearch>
+                <TableSearch width="121px">
+                  <ChooseDesignAndSurvey
+                    ref={personRef}
+                    defaultValue={selectDefaultData}
+                    onChange={setPersonInfo}
                   />
                 </TableSearch>
               </OverFlowHiddenComponent>
