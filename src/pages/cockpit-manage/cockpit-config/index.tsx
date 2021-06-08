@@ -192,7 +192,7 @@ const CockpitManage: React.FC = () => {
         w: 3,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
-        componentProps: ['person', 'department', 'company'],
+        componentProps: [],
       },
       {
         name: 'personLoad',
@@ -210,7 +210,7 @@ const CockpitManage: React.FC = () => {
         w: 6,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
-        componentProps: ['status', 'nature'],
+        componentProps: ['person', 'department', 'company'],
       },
       {
         name: 'projectProgress',
