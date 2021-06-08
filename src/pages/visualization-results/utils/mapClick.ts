@@ -9,7 +9,7 @@ import { getScale, clearHighlightLayer, getLayerByName } from './methods';
 import { getCustomXmlData } from './utils';
 import {
   getGisDetail,
-  getlibId,
+  getlibId_new,
   getMedium,
   getMaterialItemData,
   loadLayer,
@@ -380,7 +380,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'survey' || layerType === 'plan') {
       if (mediaLayers.indexOf(layerName) >= 0) {
         let params = {
-          id: feature.getProperties().project_id,
+          projectId: feature.getProperties().project_id,
           devices: [
             {
               category: 1, // 1为勘察，2为预设
@@ -414,7 +414,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        await getlibId({ id: feature.getProperties().project_id }).then(
+        await getlibId_new({ projectId: feature.getProperties().project_id }).then(
           async (data: any) => {
             const resourceLibID = data.content;
             const objectID =
@@ -510,9 +510,9 @@ export const mapPointermove = (evt: any, map: any) => {
           .find((item: any) => item.getGeometry().getCoordinates().toString() !== lont.toString());
         if (item) allowed = false;
       }
-      if (allowed) map.getTargetElement().style.cursor = 'pointer';
-      else map.getTargetElement().style.cursor = 'not-allowed';
     }
+    if (allowed) map.getTargetElement().style.cursor = 'pointer';
+    else map.getTargetElement().style.cursor = 'not-allowed';
   });
 };
 
