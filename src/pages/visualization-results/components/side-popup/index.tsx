@@ -398,6 +398,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
     setRightSidebarVisiviabel(false);
   }, [JSON.stringify(checkedProjectIdList)]);
 
+  console.log(data[0]);
+  
   const modalData = useMemo(() => {
     const media = removeEmptChildren(
       data[0].find((item: any) => item.propertyName === '多媒体')?.data,

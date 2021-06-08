@@ -11,7 +11,7 @@ export interface UrlSelectProps {
   extraParams?: object;
   defaultData?: any[];
   needFilter?: boolean;
-  requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component';
+  requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component' | 'tecEco';
   requestType?: 'post' | 'get';
   paramsMust?: string[];
   postType?: 'query' | 'body';

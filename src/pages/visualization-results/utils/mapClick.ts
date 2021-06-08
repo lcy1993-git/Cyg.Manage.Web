@@ -116,7 +116,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       feature = feature.get('features')[0];
     }
     map.getTargetElement().style.cursor = 'wait';
-    // console.log(feature, 2);
     let layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
 
@@ -380,7 +379,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'survey' || layerType === 'plan') {
       if (mediaLayers.indexOf(layerName) >= 0) {
         let params = {
-          id: feature.getProperties().project_id,
+          projectId: feature.getProperties().project_id,
           devices: [
             {
               category: 1, // 1为勘察，2为预设
@@ -416,7 +415,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (materiaLayers.indexOf(layerName) >= 0) {
         await getlibId({ id: feature.getProperties().project_id }).then(
           async (data: any) => {
-            const resourceLibID = data.content;
+            const resourceLibID = data.content.libId;
             const objectID =
               feature.getProperties().mode_id || feature.getProperties().equip_model_id;
             const materialParams: any = {
@@ -510,9 +509,9 @@ export const mapPointermove = (evt: any, map: any) => {
           .find((item: any) => item.getGeometry().getCoordinates().toString() !== lont.toString());
         if (item) allowed = false;
       }
-      if (allowed) map.getTargetElement().style.cursor = 'pointer';
-      else map.getTargetElement().style.cursor = 'not-allowed';
     }
+    if (allowed) map.getTargetElement().style.cursor = 'pointer';
+    else map.getTargetElement().style.cursor = 'not-allowed';
   });
 };
 

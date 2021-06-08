@@ -14,7 +14,7 @@ const EditCableWellDetail: React.FC<EditCableWellDetailParams> = (props) => {
 
   return (
     <>
-      <Scrollbars style={{ height: '150px' }}>
+      <Scrollbars autoHeight>
         <CyFormItem label="组件" name="componentId">
           <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />
         </CyFormItem>

@@ -14,7 +14,7 @@ const EditCableChannelDetail: React.FC<EditCableChannelDetailParams> = (props) =
 
   return (
     <>
-      <Scrollbars style={{ height: '150px' }}>
+      <Scrollbars autoHeight>
         <CyFormItem label="组件" name="componentId">
           <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />
         </CyFormItem>

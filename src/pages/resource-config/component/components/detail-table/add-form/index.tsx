@@ -60,10 +60,8 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
   ];
 
   return (
-    <Scrollbars style={{ height: '100px' }}>
-     
-        <EditFormTable formName="items" columns={columns}></EditFormTable>
-     
+    <Scrollbars autoHeight>
+      <EditFormTable formName="items" columns={columns}></EditFormTable>
     </Scrollbars>
   );
 };

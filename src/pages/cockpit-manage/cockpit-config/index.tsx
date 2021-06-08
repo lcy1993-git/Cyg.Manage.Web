@@ -186,7 +186,7 @@ const CockpitManage: React.FC = () => {
         componentProps: ['classify', 'category', 'stage', 'buildType', 'level'],
       },
       {
-        name: 'deliveryManage',
+        name: 'projectRefreshData',
         x: 0,
         y: 10,
         w: 3,
@@ -204,7 +204,7 @@ const CockpitManage: React.FC = () => {
         componentProps: ['person', 'department', 'company'],
       },
       {
-        name: 'projectSchedule',
+        name: 'deliveryManage',
         x: 0,
         y: divide(totalHeight - 11, 2) + 10,
         w: 6,
