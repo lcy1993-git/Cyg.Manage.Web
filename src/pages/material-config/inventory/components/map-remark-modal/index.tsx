@@ -8,7 +8,7 @@ import { createResourceInventoryMap } from '@/services/material-config/inventory
 
 interface MapRemarkParams {
   refreshEvent?: () => void;
-  onChange: Dispatch<SetStateAction<boolean>>;
+  onChange?: Dispatch<SetStateAction<boolean>>;
   visible: boolean;
   libId: string;
   invIds: string[];
