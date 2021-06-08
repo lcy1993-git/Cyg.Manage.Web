@@ -10,7 +10,7 @@ const formData = (params: Object) => {
   const form = new FormData();
   for (let k in params) {
     if(k === 'file') {
-      form.append(k, params[k][0])
+      form.append(k, params[k]?.[0])
     }else{
       form.append(k, params[k]);
     }

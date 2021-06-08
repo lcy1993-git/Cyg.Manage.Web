@@ -1,20 +1,14 @@
-import React, { useState } from 'react';
-import { Input, Select, Col, Row, Switch } from 'antd';
+import React from 'react';
+import { Input, Select, Col, Row } from 'antd';
 import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
 import FileUpload from '@/components/file-upload';
 import { useRequest, useMount } from 'ahooks';
-import { queryMaterialMachineLibraryPager, getIndustryTypeEnums, getMajorTypeEnums, getQuotaScopeEnums } from '@/services/technology-economic';
+import { queryMaterialMachineLibraryPager } from '@/services/technology-economic';
 import UrlSelect from '@/components/url-select';
-import moment from 'moment';
 
 const { Option } = Select;
-
-interface Props {
-  type: 'add' | 'edit';
-}
-
 interface ResponsData {
   items: {
     id: string;
@@ -22,12 +16,9 @@ interface ResponsData {
   }[]
 }
 
-const DictionaryForm: React.FC<Props> = ({ type }) => {
+const DictionaryForm: React.FC<null> = () => {
 
   const { data: MaterialMachineLibraryData, run } = useRequest<ResponsData>(queryMaterialMachineLibraryPager, { manual: true });
-  const { data } = useRequest<ResponsData>(getIndustryTypeEnums, { manual: false });
-  const { data1 } = useRequest<ResponsData>(getMajorTypeEnums, { manual: false });
-  const { data2 } = useRequest<ResponsData>(getQuotaScopeEnums, { manual: false });
   
   const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
 
@@ -36,7 +27,6 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
   })
 
   const MaterialMachineLibraryListFn = () => {
-
     return MaterialMachineLibraryList.map((item) => {
       return (
         <Option key={item.id} value={item.id}>{item.name}</Option>
@@ -54,19 +44,12 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
 
           <CyFormItem label="定额类别" name="quotaScope" required>
             <UrlSelect
-              url="/CommonEnum/GetIndustryTypeEnums"
+              url="/CommonEnum/GetQuotaScopeEnums"
               requestType="get"
               requestSource="tecEco"
-            >
-
-            </UrlSelect>
-          </CyFormItem>
-
-          <CyFormItem label="定额类别" name="quotaScope" required>
-            <Select>
-              <Option value={1}>111</Option>
-              <Option value={2}>111</Option>
-            </Select>
+              titleKey="text"
+              valueKey="value"
+            />
           </CyFormItem>
 
           <CyFormItem label="发布机构" name="publishOrg">
@@ -74,11 +57,13 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
           </CyFormItem>
 
           <CyFormItem label="行业类别" name="industryType">
-            <Select>
-              <Option value={1}>111</Option>
-              <Option value={2}>222</Option>
-              <Option value={3}>333</Option>
-            </Select>
+            <UrlSelect
+              url="/CommonEnum/GetIndustryTypeEnums"
+              requestType="get"
+              requestSource="tecEco"
+              titleKey="text"
+              valueKey="value"
+            />
           </CyFormItem>
 
           <CyFormItem label="状态" name="Enabled" required>
@@ -105,10 +90,13 @@ const DictionaryForm: React.FC<Props> = ({ type }) => {
           </CyFormItem>
 
           <CyFormItem label="适用专业" name="majorType">
-            <Select>
-              <Option value={1}>111</Option>
-              <Option value={2}>222</Option>
-            </Select>
+            <UrlSelect
+                url="/CommonEnum/GetMajorTypeEnums"
+                requestType="get"
+                requestSource="tecEco"
+                titleKey="text"
+                valueKey="value"
+              />
           </CyFormItem>
 
         </Col>

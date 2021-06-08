@@ -6,7 +6,7 @@ const { TabPane } = Tabs;
 
 interface Props {
   data: {
-    child?: {
+    childs?: {
       [key: string]: string;
     }[]
   }
@@ -61,7 +61,7 @@ const InfoTabs: React.FC<Props> = ({data}) => {
           <TabPane tab="拆分人材机" key="拆分人材机">
               <Table
                 columns={columns}
-                dataSource={data?.child ?? []}
+                dataSource={data?.childs ?? []}
                 pagination={false}
                 bordered
                 defaultExpandedRowKeys={["人工", "材料", "机械"]}

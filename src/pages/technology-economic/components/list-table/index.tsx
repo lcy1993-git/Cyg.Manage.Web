@@ -50,6 +50,8 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url,
   };
 
   const tableSelectEvent = (data: any) => {
+    console.log(data);
+    
     setResourceItem(Array.isArray(data) ? data[0] : {});
   };
 
