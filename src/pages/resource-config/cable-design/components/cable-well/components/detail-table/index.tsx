@@ -154,12 +154,18 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
 
     setEditFormVisible(true);
     const CableWellDetailData = await run(libId, editDataId);
-    CableWellDetailData.componentId =
-      CableWellDetailData.isComponent == 1 ? CableWellDetailData.itemId : '';
-    CableWellDetailData.materialId =
-      CableWellDetailData.isComponent == 0 ? CableWellDetailData.itemId : '';
+    const formData =
+      CableWellDetailData?.isComponent == 1
+        ? {
+            componentId: { id: CableWellDetailData.itemId, name: CableWellDetailData.itemName },
+            itemNumber: CableWellDetailData.itemNumber,
+          }
+        : {
+            materialId: { id: CableWellDetailData.itemId, name: CableWellDetailData.itemName },
+            itemNumber: CableWellDetailData.itemNumber,
+          };
 
-    editForm.setFieldsValue(CableWellDetailData);
+    editForm.setFieldsValue(formData);
   };
 
   const sureEditCableWellDetail = () => {

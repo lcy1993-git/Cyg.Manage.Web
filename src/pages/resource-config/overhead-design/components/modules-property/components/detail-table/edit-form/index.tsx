@@ -20,6 +20,7 @@ const EditModuleDetail: React.FC<EditModuleDetailParams> = (props) => {
             <UrlSelect
               requestSource="resource"
               url="/ModulesDetails/GetParts"
+              style={{ width: 'calc(100% - 16px)' }} 
               valueKey="value"
               titleKey="key"
               allowClear

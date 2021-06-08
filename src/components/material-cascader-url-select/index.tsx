@@ -56,8 +56,10 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
 
   const onNameChange = (v: string) => {
     if (v) {
-      setId("");
+      setId('');
       fetchSpecRequest(v);
+    } else {
+      setName(undefined);
     }
   };
 
