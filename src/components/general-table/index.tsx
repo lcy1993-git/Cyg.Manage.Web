@@ -54,6 +54,14 @@ interface GeneralTableProps {
   postType?: 'body' | 'query';
 
   getTableRequestData?: (data: TableRequestResult) => void;
+
+  hasFooter?: boolean;
+
+  // 获取id时候的bug,针对技经端拿不到行ID时的情况
+  cruxKey?: string;
+
+  // 当表格需要id传参时，判断当前id是否为空，若为空则限制请求
+  requestConditions?: string;
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -81,6 +89,9 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     defaultPageSize = 10,
     postType = 'body',
     getTableRequestData,
+    hasFooter = true,
+    cruxKey = "",
+    requestConditions = true,
     ...rest
   } = props;
 
@@ -135,7 +146,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
-      setSelectedRowKeys(selectedRows.map((item) => item[rowKey]));
+      setSelectedRowKeys(selectedRows.map((item) => cruxKey ? item[cruxKey]["id"] : item[rowKey]));
       getSelectData?.(selectedRows);
     },
   };
@@ -203,7 +214,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   useEffect(() => {
-    run({
+    requestConditions && run({
       url: url,
       extraParams: extractParams,
       pageIndex: currentPage,
@@ -211,9 +222,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       requestSource,
       postType,
     });
-    setSelectedRowKeys([]);
-    getSelectData?.([]);
-  }, [pageSize, currentPage]);
+  }, [pageSize, currentPage, requestConditions]);
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法

@@ -342,6 +342,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               setCurrentClickProjectId(record.id);
               setProjectModalVisible(true);
             }}
+            style={{
+              wordBreak: 'break-all',
+            }}
           >
             {record.name}
           </u>

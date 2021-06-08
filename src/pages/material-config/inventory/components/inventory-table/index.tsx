@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import { Input } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 
 // import { useGetButtonJurisdictionArray } from '@/utils/hooks';
@@ -14,7 +14,7 @@ interface InventoryTableParams {
   invName?: string;
 }
 
-const InventroyTable: React.FC<InventoryTableParams> = (props) => {
+const InventoryTable: React.FC<InventoryTableParams> = (props) => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [companyWord, setCompanyWord] = useState<string>('');
@@ -61,6 +61,12 @@ const InventroyTable: React.FC<InventoryTableParams> = (props) => {
       tableRef.current.search();
     }
   };
+
+  useEffect(() => {
+    if (inventoryId) {
+      search();
+    }
+  }, [inventoryId]);
 
   const columns = [
     {
@@ -267,4 +273,4 @@ const InventroyTable: React.FC<InventoryTableParams> = (props) => {
   );
 };
 
-export default InventroyTable;
+export default InventoryTable;

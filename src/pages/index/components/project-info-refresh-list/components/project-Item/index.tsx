@@ -16,6 +16,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
 
   const onClickProject = () => {
     setAllProjectSearchProjectName(name);
+    setAllProjectSearchProjectName(id);
   };
 
   const ref = useRef<HTMLDivElement>(null);

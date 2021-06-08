@@ -68,6 +68,7 @@ export const saveMapData = (params: any) => {
 export const createResourceInventoryMap = (params: {
   resourceLibId: string;
   inventoryOverviewIds: string[];
+  remark: string;
 }) => {
   return cyRequest(() =>
     request(`${baseUrl.resource}/Inventory/CreateResourceInventoryMapping`, {
@@ -86,5 +87,3 @@ export const deleteResourceInventoryMap = (params: { mappingId: string }) => {
     }),
   );
 };
-
-

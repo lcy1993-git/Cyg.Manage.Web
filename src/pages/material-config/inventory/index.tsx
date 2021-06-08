@@ -10,8 +10,9 @@ import CreateMap from './components/create-map';
 import { ImportOutlined } from '@ant-design/icons';
 import ImportInventory from './components/import-form';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import InventroyTable from './components/inventory-table';
+import InventoryTable from './components/inventory-table';
 import HasMapModal from './components/has-map-modal';
+import moment from 'moment';
 
 const { Search } = Input;
 
@@ -284,44 +285,51 @@ const Inventroy: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'id',
-      index: 'id',
-      title: '编号',
-      width: 180,
-    },
-    {
       dataIndex: 'name',
       index: 'name',
       title: '名称',
-      width: 180,
+      width: 280,
     },
     {
-      dataIndex: 'tableName',
-      index: 'tableName',
-      title: '协议库存表名',
+      dataIndex: 'province',
+      index: 'province',
+      title: '区域',
       width: 180,
+      render: (text: any, record: any) => {
+        return record.provinceName;
+      },
+    },
+    {
+      dataIndex: 'creator',
+      index: 'creator',
+      title: '创建人',
+      width: 320,
     },
     {
       dataIndex: 'version',
       index: 'version',
-      title: '版本号',
-      width: 180,
+      title: '版本',
+      width: 140,
     },
     {
       dataIndex: 'remark',
       index: 'remark',
       title: '备注',
+    },
+    {
+      dataIndex: 'createdOn',
+      index: 'createdOn',
+      title: '创建时间',
       width: 180,
+      render: (text: any) => moment(text).format('YYYY-MM-DD HH:mm'),
     },
   ];
-
-
 
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
         {buttonJurisdictionArray?.includes('inventory-create') && (
-          <Button className="mr7" type='primary' onClick={() => importInventoryEvent()}>
+          <Button className="mr7" type="primary" onClick={() => importInventoryEvent()}>
             <ImportOutlined />
             新建
           </Button>
@@ -395,7 +403,7 @@ const Inventroy: React.FC = () => {
         centered
         onCancel={() => setInventoryTableModalVisible(false)}
       >
-        <InventroyTable inventoryId={inventoryId} versionNo={versionNo} invName={invName} />
+        <InventoryTable inventoryId={inventoryId} versionNo={versionNo} invName={invName} />
       </Modal>
 
       <Modal
