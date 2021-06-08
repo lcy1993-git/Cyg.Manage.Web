@@ -1,5 +1,5 @@
 import { List } from 'antd';
-import React, { FC, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
 import { useRequest, useInterval, useSize, useInViewport } from 'ahooks';
@@ -12,6 +12,8 @@ import {
   RefreshDataType,
 } from '@/services/index';
 import moment from 'moment';
+import InifinityScrollList from './components/inifinity-scroll-list';
+import { json } from 'express';
 export interface ProjectInfoRefreshListProps {
   currentAreaInfo: AreaInfo;
 }
@@ -24,9 +26,7 @@ const map = new Map<number, string>([
 
 const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaInfo }) => {
   const [listData, setListData] = useState<RefreshDataType[]>([]);
-  const [scrollInterval, setScrollInterval] = useState<number>(2000);
-  const [isDiff, setDiff] = useState<boolean>(false);
-  const [inVisibleQueue, setInVisibleQueue] = useState<RefreshDataType[]>([]);
+  const [refreshData, setrefreshData] = useState<RefreshDataType[]>([]);
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
   const inViewPort = useInViewport(ref);
@@ -35,10 +35,10 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
    * count表示是可视条数是多少
    *
    */
-  const visableCount = Math.floor(size.height ? size.height / 35 : 4);
+  const visebleCount = Math.floor(size.height ? size.height / 35 : 4);
 
   const allCount = 30;
-  const invisibleCount = allCount - visableCount;
+
   const params: projectOperationLogParams = {
     limit: allCount,
     areaCode: currentAreaInfo?.areaId,
@@ -47,48 +47,32 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
 
   useEffect(() => {
     setListData([]);
-    setInVisibleQueue([]);
+    setrefreshData([]);
   }, [currentAreaInfo]);
 
   const { data, run, cancel } = useRequest(() => fetchProjectOperationLog(params), {
     pollingInterval: 3000,
+    refreshDeps: [JSON.stringify(currentAreaInfo)],
     onSuccess: () => {
-      //合并两个数据，重复的会自动合并成一个
       // 最近的日期是从第一个开始的，所以要把最新放在最下面，使用reverse
 
-      // 有数据，并且原本没有数据
-      if (data && listData.length === 0) {
-        // 可视的队列
-        data?.reverse();
-        const visible = data.slice(0, visableCount) ?? [];
-        // 不可视队列
-        const invisible = data?.slice(visableCount) ?? [];
-        setListData([...visible]);
-        setInVisibleQueue([...invisible]);
-        // 有数据原本有数据，做比较加入invivsble队列
-      } else if (data && listData.length !== 0) {
-        setDiff(true);
-
-        // 先把可视和不可视合并，再和新的数据对比
-        const all = _.union(listData, inVisibleQueue);
-
-        // 根据时间来比较是否是同一个操作
-        const diff = _.differenceBy(data, all, (v) => v.date);
-
-        // 如果有不同的数据，那么才发生更新
-        if (diff.length > 0) {
-          // 最新的实在前面，所以diff在前面
-
-          const union = _.union(inVisibleQueue, diff);
-          console.log(union);
-          //如不没有就是直接替代
-          setInVisibleQueue([...union]);
+      if (data && refreshData.length === 0) {
+        //如果小于可视的条数的话就直接显示并且不滚动
+        setrefreshData(data);
+        if (data.length < visebleCount) {
+          setListData([...data]);
+        } else {
+          setListData([...data, ...data]);
         }
-        setDiff(false);
-        // 没数据原本也没有数据，显示空
-      } else if (!data && listData.length !== 0) {
+      } else if (data && refreshData.length !== 0) {
+        const diff = _.differenceBy(data, refreshData, (item) => item.date);
+        if (data.length < visebleCount) {
+          setListData([...data]);
+        } else if (diff.length) {
+          setrefreshData(data);
+          setListData([...data, ...data]);
+        }
       } else {
-        //没数据，原本有数据，保持原本的循环队列，不做任何操作
       }
     },
     onError: () => {
@@ -103,53 +87,31 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
       cancel();
     }
   }, [inViewPort]);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scroll = () => {
-    // 如果等于或者超出可是条数，就开始滚动，使用循环队列的方式来实现视觉效果
-    // 把第一个元素出队，然后入队，第二个就会变成第一个，第一个变成最后一个造成视觉上上移效果
-    if (listData.length >= visableCount && !isDiff) {
-      if (inVisibleQueue.length) {
-        const shift = listData.shift();
-        const invisibleShift = inVisibleQueue.shift();
-
-        // 这里invisible出队就放入visible的队尾，然后visvible出队的加入invisible队尾
-        if (invisibleShift) {
-          listData.push(invisibleShift);
-          shift && inVisibleQueue.push(shift);
-        }
-        setListData([...listData]);
+  useEffect(() => {
+    if (scrollRef.current) {
+      const realLength = listData.length / 2;
+      if (realLength < visebleCount) {
+        scrollRef.current.style.animation = 'none';
       } else {
-        const shift = listData.shift();
-        shift && listData.push(shift);
-        setListData([...listData]);
+        scrollRef.current.style.animation = `mymove ${1.2 * realLength}s infinite linear`;
       }
-      setListData([...listData]);
-    } else {
-      const invisibleShift = inVisibleQueue.shift();
-
-      // 这里invisible出队就放入visible的队尾，然后visvible出队的加入invisible队尾
-      if (invisibleShift) {
-        listData.push(invisibleShift);
-      }
-      setListData([...listData]);
     }
-  };
-
-  useInterval(scroll, scrollInterval);
-
+  }, [listData]);
   return (
     <div className={styles.refreshBarn} ref={ref}>
-      <List
-        dataSource={listData}
-        renderItem={(item: RefreshDataType) => (
+      <div ref={scrollRef} className={styles.list}>
+        {listData.map((item: RefreshDataType, idx: number) => (
           <ProjectItem
             name={item.projectName}
+            key={`${item.date}${idx}`}
             id={item.projectId}
             content={item.content}
-            date={moment(item.date).format('YYYY-MM-DD hh:mm:ss')}
+            date={moment(item.date).format('YYYY-MM-DD HH:mm:ss')}
           />
-        )}
-      />
+        ))}
+      </div>
     </div>
   );
 };

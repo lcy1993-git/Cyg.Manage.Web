@@ -58,6 +58,7 @@ export interface CockpitProps {
   h: number;
   x: number;
   y: number;
+  edit?: boolean;
   componentProps?: any;
   // 是否需要固定宽度
   fixHeight?: boolean;
@@ -129,7 +130,7 @@ const CockpitManage: React.FC = () => {
   });
 
   const [currentRecord, setCurrentRecord] = useState<any>({});
-
+  const dontNeedEditComponent = ['mapComponent', 'projectRefreshData'];
   const { data, loading } = useRequest(() => getChartConfig(), {
     onSuccess: () => {
       if (data) {
@@ -139,11 +140,8 @@ const CockpitManage: React.FC = () => {
           const afterHanldeData = hasSaveConfig.config.map((item: any) => {
             const actualHeight = windowPercent ? multiply(item.h, windowPercent) : item.h;
             const actualY = windowPercent ? multiply(item.y, windowPercent) : item.y;
-            return {
-              ...item,
-              y: actualY,
-              h: actualHeight,
-            };
+
+            return getEditConfig(item, actualHeight, actualY);
           });
 
           setConfigArray(afterHanldeData);
@@ -153,6 +151,21 @@ const CockpitManage: React.FC = () => {
       }
     },
   });
+
+  const getEditConfig = (item: CockpitProps, actualHeight: number, actualY: number) =>
+    dontNeedEditComponent.indexOf(item.name) !== -1
+      ? {
+          ...item,
+          y: actualY,
+          edit: false,
+          h: actualHeight,
+        }
+      : {
+          ...item,
+          y: actualY,
+          edit: true,
+          h: actualHeight,
+        };
 
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
@@ -172,6 +185,7 @@ const CockpitManage: React.FC = () => {
         x: 3,
         y: 0,
         w: 6,
+        edit: true,
         h: subtract(totalHeight, divide(totalHeight - 11, 2)),
         key: uuid.v1(),
         componentProps: ['province'],
@@ -188,11 +202,19 @@ const CockpitManage: React.FC = () => {
       {
         name: 'projectRefreshData',
         x: 0,
+        y: divide(totalHeight - 11, 2) + 10,
+        w: 6,
+        h: divide(totalHeight - 11, 2),
+        key: uuid.v1(),
+        componentProps: [],
+      },
+      {
+        name: 'projectRefreshData',
+        x: 0,
         y: 10,
         w: 3,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
-        componentProps: [],
       },
       {
         name: 'personLoad',
@@ -203,18 +225,10 @@ const CockpitManage: React.FC = () => {
         key: uuid.v1(),
         componentProps: ['person', 'department', 'company'],
       },
-      {
-        name: 'deliveryManage',
-        x: 0,
-        y: divide(totalHeight - 11, 2) + 10,
-        w: 6,
-        h: divide(totalHeight - 11, 2),
-        key: uuid.v1(),
-        componentProps: ['person', 'department', 'company'],
-      },
+
       {
         name: 'projectProgress',
-        x: 6,
+        x: 8,
         y: divide(totalHeight - 11, 2) + 10,
         w: 6,
         h: divide(totalHeight - 11, 2),
@@ -286,7 +300,12 @@ const CockpitManage: React.FC = () => {
   const configComponentElement = configArray.map((item) => {
     return (
       <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h }}>
-        <ConfigWindow deleteEvent={deleteEvent} editEvent={editEvent} record={item}>
+        <ConfigWindow
+          edit={item.edit}
+          deleteEvent={deleteEvent}
+          editEvent={editEvent}
+          record={item}
+        >
           {getComponentByType(item.name, item.componentProps)}
         </ConfigWindow>
       </div>
@@ -298,7 +317,7 @@ const CockpitManage: React.FC = () => {
     { name: '生产负荷(员工)', value: 'person' },
     { name: '生产负荷(部组)', value: 'department' },
     { name: '生产负荷(公司)', value: 'company' },
-    { name: '项目实时动态', value: 'projectRefreshData' },
+    { name: '实时数据', value: 'projectRefreshData' },
   ];
 
   const engineerTypeStatistic = [
