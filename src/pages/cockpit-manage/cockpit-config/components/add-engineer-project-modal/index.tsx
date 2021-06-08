@@ -22,7 +22,7 @@ const productionComponentPropsArray = [
   { code: 'company', name: '生产负荷(公司)' },
 ];
 
-const dynamicDataStatisticPropsArray = [{ code: 'projectRefreshData', name: '项目实时动态' }];
+const dynamicDataStatisticPropsArray = [{ code: 'projectRefreshData', name: '实时数据' }];
 
 const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
