@@ -111,12 +111,19 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
 
   const searchByMethod = (value: any) => {
     setCreateMethod(value);
-    search();
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.searchByParams({
+        inventoryOverviewId: inventoryOverviewId,
+        howToCreate: value,
+        mappingId: mappingId,
+      });
+    }
   };
 
-  useEffect(() => {
-    searchByMethod(createMethod);
-  }, [createMethod]);
+  // useEffect(() => {
+  //   searchByMethod(createMethod);
+  // }, [createMethod]);
 
   const tableLeftSlot = (
     <div className={styles.searchArea}>

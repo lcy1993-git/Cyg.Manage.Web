@@ -1,12 +1,12 @@
-import { createResourceInventoryMap } from '@/services/material-config/inventory';
 import { useControllableValue } from 'ahooks';
 import { Modal, Input, Button, message, Spin } from 'antd';
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { SetStateAction } from 'react';
 import { Dispatch } from 'react';
 import styles from './index.less';
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
+import MapRemarkModal from '../map-remark-modal';
 
 interface MapLibModalParams {
   visible: boolean;
@@ -19,10 +19,9 @@ const { Search } = Input;
 const MapLibModal: React.FC<MapLibModalParams> = (props) => {
   const { changeFinishEvent } = props;
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState<boolean>(false);
-
   const [libTableSelectRows, setLibTableSelectRow] = useState<any[]>([]);
   const [invTableSelectRows, setInvTableSelectRow] = useState<any[]>([]);
+  const [remarkModalVisible, setRemarkModalVisible] = useState<boolean>(false);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [searchInvKeyWord, setSearchInvKeyWord] = useState<string>('');
 
@@ -118,26 +117,26 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
       message.warning('未选择资源库');
       return;
     }
-
     if (invTableSelectRows && invTableSelectRows.length === 0) {
       message.warning('未选择协议库存');
       return;
     }
-    const libId = libTableSelectRows[0].id;
-    const inventoryIds = invTableSelectRows?.map((item) => item.id);
-    try {
-      setRequestLoading(true);
-      await createResourceInventoryMap({
-        resourceLibId: libId,
-        inventoryOverviewIds: inventoryIds,
-      });
-      message.success('列表映射成功');
-    } catch (msg) {
-      console.error(msg);
-    } finally {
-      setRequestLoading(false);
-    }
-    changeFinishEvent?.();
+    setRemarkModalVisible(true);
+    // const libId = libTableSelectRows[0].id;
+    // const inventoryIds = invTableSelectRows?.map((item) => item.id);
+    // try {
+    //   setRequestLoading(true);
+    //   await createResourceInventoryMap({
+    //     resourceLibId: libId,
+    //     inventoryOverviewIds: inventoryIds,
+    //   });
+    //   message.success('列表映射成功');
+    // } catch (msg) {
+    //   console.error(msg);
+    // } finally {
+    //   setRequestLoading(false);
+    // }
+    // changeFinishEvent?.();
   };
 
   return (
@@ -165,45 +164,51 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
         ]}
         onCancel={() => setState(false)}
       >
-        <Spin spinning={requestLoading} tip="映射创建中...">
-          <div className={styles.mapForm}>
-            <div className={styles.resourceTable}>
+        <div className={styles.mapForm}>
+          <div className={styles.resourceTable}>
+            <GeneralTable
+              ref={resourceTableRef}
+              defaultPageSize={20}
+              columns={resourceLibColumns}
+              extractParams={{
+                keyWord: searchKeyWord,
+              }}
+              getSelectData={(data) => setLibTableSelectRow(data)}
+              buttonLeftContentSlot={resourceLibSearch}
+              url="/ResourceLib/GetPageList"
+              requestSource="resource"
+              tableTitle="资源库列表"
+            />
+          </div>
+
+          <div className={styles.currentMapTable}>
+            <div className={styles.currentMapTableContent}>
               <GeneralTable
-                ref={resourceTableRef}
+                type="checkbox"
+                ref={inventoryTableRef}
                 defaultPageSize={20}
-                columns={resourceLibColumns}
+                columns={inventoryColumns}
                 extractParams={{
-                  keyWord: searchKeyWord,
+                  keyWord: searchInvKeyWord,
                 }}
-                getSelectData={(data) => setLibTableSelectRow(data)}
-                buttonLeftContentSlot={resourceLibSearch}
-                url="/ResourceLib/GetPageList"
+                buttonLeftContentSlot={inventorySearch}
+                getSelectData={(data) => setInvTableSelectRow(data)}
+                url="/Inventory/GetInventoryOverviewPageList"
                 requestSource="resource"
-                tableTitle="资源库列表"
+                tableTitle="协议库存列表"
               />
             </div>
-
-            <div className={styles.currentMapTable}>
-              <div className={styles.currentMapTableContent}>
-                <GeneralTable
-                  type="checkbox"
-                  ref={inventoryTableRef}
-                  defaultPageSize={20}
-                  columns={inventoryColumns}
-                  extractParams={{
-                    keyWord: searchInvKeyWord,
-                  }}
-                  buttonLeftContentSlot={inventorySearch}
-                  getSelectData={(data) => setInvTableSelectRow(data)}
-                  url="/Inventory/GetInventoryOverviewPageList"
-                  requestSource="resource"
-                  tableTitle="协议库存列表"
-                />
-              </div>
-            </div>
           </div>
-        </Spin>
+        </div>
+        {/* </Spin> */}
       </Modal>
+      <MapRemarkModal
+        refreshEvent={changeFinishEvent}
+        visible={remarkModalVisible}
+        onChange={setRemarkModalVisible}
+        libId={libTableSelectRows[0]?.id}
+        invIds={invTableSelectRows?.map((item) => item.id)}
+      />
     </>
   );
 };

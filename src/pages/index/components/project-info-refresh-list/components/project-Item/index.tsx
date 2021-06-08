@@ -12,11 +12,10 @@ export interface ProjectItemProps {
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
+  const { setAllProjectSearchProjectName } = useLayoutStore();
 
-  const {setAllProjectSearchProjectName} = useLayoutStore();
- 
   const onClickProject = () => {
-    setAllProjectSearchProjectName(name)
+    setAllProjectSearchProjectName(id);
   };
 
   const ref = useRef<HTMLDivElement>(null);
@@ -51,7 +50,6 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
           &nbsp;
           <Link
             to={`/project-management/all-project`}
-            
             className={styles.name}
             onClick={onClickProject}
           >

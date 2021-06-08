@@ -24,7 +24,9 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [requestLoading, setRequestLoading] = useState<boolean>(false);
   const [province, setProvince] = useState<string>('');
+  const [remark, setRemark] = useState<string>('');
   const [versionName, setVersionName] = useState<string>('');
+  const [isUpload, setIsUpload] = useState<boolean>(false);
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
@@ -42,7 +44,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
 
         return newUploadLineStressSag(
           file,
-          { province, versionName, inventoryName },
+          { province, versionName, inventoryName, remark },
           requestSource,
           '/Inventory/SaveImport',
         );
@@ -50,12 +52,13 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       .then(
         (res) => {
           message.success('导入成功');
+          setIsUpload(true);
           return Promise.resolve();
         },
         (res) => {
           const { message: msg } = res;
           if (msg) {
-            message.warn(msg);
+            message.error('上传失败,' + msg);
           }
           return Promise.reject('导入失败');
         },
@@ -63,14 +66,17 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       .finally(() => {
         changeFinishEvent?.();
         setUploadFileFalse();
-
         setRequestLoading(false);
       });
   };
 
   const closeEvent = () => {
-    setState(false);
-    changeFinishEvent?.();
+    if (province != '' && versionName != '' && inventoryName != '' && isUpload) {
+      setState(false);
+      changeFinishEvent?.();
+      return;
+    }
+    message.info('请先填写和上传协议库存信息');
   };
 
   return (
@@ -156,7 +162,12 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         </CyFormItem>
 
         <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
-          <TextArea showCount maxLength={100} placeholder="备注说明" />
+          <TextArea
+            showCount
+            maxLength={100}
+            placeholder="备注说明"
+            onChange={(e: any) => setRemark(e.target.value)}
+          />
         </CyFormItem>
       </Form>
     </Modal>

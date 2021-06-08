@@ -184,10 +184,13 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
       width: 80,
     },
     {
-      dataIndex: 'howToCreateText',
-      index: 'howToCreateText',
+      dataIndex: 'howToCreate',
+      index: 'howToCreate',
       title: '创建方式',
       width: 80,
+      render: (text: any, record: any) => {
+        return record.howToCreateText;
+      },
     },
   ];
 
@@ -313,6 +316,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
             onClick={() => {
               setState(false);
               setActiveMaterialId('');
+              setHasMapTableShowData([]);
             }}
           >
             关闭

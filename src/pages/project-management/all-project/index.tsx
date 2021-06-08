@@ -1,6 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import React, { createRef, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Button, Input, message, Modal } from 'antd';
 
@@ -8,7 +8,7 @@ import styles from './index.less';
 import EnumSelect from '@/components/enum-select';
 import {
   addEngineer,
-  AllProjectStatisticsParams,
+  // AllProjectStatisticsParams,
   applyKnot,
   auditKnot,
   canEditArrange,
@@ -17,7 +17,7 @@ import {
   // getAllotUsers,
   // getExternalArrangeStep,
   getProjectInfo,
-  getProjectTableStatistics,
+  // getProjectTableStatistics,
   noAuditKnot,
   ProjectIdentityType,
   ProjectSourceType,
@@ -33,7 +33,7 @@ import { Menu } from 'antd';
 import { Dropdown } from 'antd';
 import TableExportButton from '@/components/table-export-button';
 import { useState } from 'react';
-import { useMount, useRequest } from 'ahooks';
+import { useMount } from 'ahooks';
 import EnigneerTable from './components/enigneer-table';
 import { Form } from 'antd';
 import CreateEngineer from './components/create-engineer';
@@ -687,11 +687,10 @@ const ProjectManagement: React.FC = () => {
 
   useEffect(() => {
     if (allProjectSearchProjectName) {
-      setKeyWord(allProjectSearchProjectName);
       setAllProjectSearchProjectName('');
 
       searchByParams({
-        keyWord: allProjectSearchProjectName,
+        projectId: allProjectSearchProjectName,
         category: category ?? [],
         pCategory: pCategory ?? [],
         stage: stage ?? [],

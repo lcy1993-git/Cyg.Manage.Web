@@ -120,9 +120,9 @@ const HasMapModal: React.FC = () => {
       width: 180,
     },
     {
-      dataIndex: 'supplier',
-      index: 'supplier',
-      title: '状态',
+      dataIndex: 'editor',
+      index: 'editor',
+      title: '编辑人',
       width: 400,
     },
     {
@@ -166,6 +166,7 @@ const HasMapModal: React.FC = () => {
         title="查看映射关系"
         visible={mappingListModalVisible}
         onCancel={() => setMappingListModalVisible(false)}
+        destroyOnClose
       >
         <CheckMapping
           mappingId={mappingId}

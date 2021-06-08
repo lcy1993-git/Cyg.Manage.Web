@@ -104,9 +104,10 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
 
     copyData.forEach((item) => {
       if (copyHasMapData.findIndex((ite) => ite.id === item.id) === -1) {
-        copyHasMapData.push({ ...item, type: 'add' });
+        copyHasMapData.unshift({ ...item, howToCreateText: '手动', type: 'add' });
       }
     });
+
     changeEvent(copyHasMapData);
     message.success('导入成功');
     setState(false);
@@ -162,6 +163,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
         onCancel={() => setState(false)}
         visible={state as boolean}
         width="72%"
+        destroyOnClose
         bodyStyle={{ height: '738px', overflowY: 'auto' }}
       >
         <GeneralTable
