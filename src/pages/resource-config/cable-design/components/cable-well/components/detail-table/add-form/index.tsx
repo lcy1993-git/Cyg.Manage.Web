@@ -46,7 +46,7 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
     },
   ];
   return (
-    <Scrollbars style={{ height: '100px' }}>
+    <Scrollbars autoHeight>
       <Form form={addForm} preserve={false}>
         <EditFormTable formName="items" columns={columns} />
       </Form>

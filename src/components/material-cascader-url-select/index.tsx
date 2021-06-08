@@ -45,7 +45,11 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   const { data: specReponseData } = useRequest(fetchFn);
 
   const onSpecChange = (v: { label: string; value: string }) => {
-    setId(v.value);
+    if (v) {
+      setId(v.value);
+    } else {
+      setId(undefined);
+    }
   };
 
   const onNameChange = (v: string) => {
@@ -66,7 +70,9 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
         className={styles.selectItem}
       >
         {specReponseData?.map((v: string) => (
-          <Select.Option value={v}>{v}</Select.Option>
+          <Select.Option key={v} value={v}>
+            {v}
+          </Select.Option>
         ))}
       </Select>
       <UrlSelect
