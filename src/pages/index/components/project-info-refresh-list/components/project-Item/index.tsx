@@ -15,6 +15,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
   const { setAllProjectSearchProjectName } = useLayoutStore();
 
   const onClickProject = () => {
+    setAllProjectSearchProjectName(name);
     setAllProjectSearchProjectName(id);
   };
 
@@ -27,13 +28,13 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
    */
 
   return (
-    <div ref={ref} className={styles.projectItem}>
+    <div key={date} ref={ref} className={styles.projectItem}>
       <Tooltip
         className={styles.tooltip}
         title={
           size && size.width! < 500 ? (
             <>
-              <div>
+              <div key={date}>
                 <span className={styles.content}>{content} </span>
                 &nbsp;
                 <a style={{ color: '#26f682' }} onClick={onClickProject}>
@@ -45,7 +46,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
           ) : null
         }
       >
-        <div>
+        <div key={date}>
           <span className={styles.content}>{content} </span>
           &nbsp;
           <Link

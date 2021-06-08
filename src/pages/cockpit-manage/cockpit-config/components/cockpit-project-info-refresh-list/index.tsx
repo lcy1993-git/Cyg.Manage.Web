@@ -12,7 +12,7 @@ const CockpitProjectInfoFreshList: React.FC<CockpitProjectInfoFreshListProps> = 
 
   return (
     <>
-      <ChartBox title="项目实时数据">
+      <ChartBox title="实时数据">
         <ProjetctRefreshList currentAreaInfo={currentAreaInfo} {...props} />
       </ChartBox>
     </>

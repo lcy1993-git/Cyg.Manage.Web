@@ -1,5 +1,14 @@
 @import '~antd/es/style/themes/default.less';
-
+@keyframes mymove {
+  0% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    -webkit-transform: translate3d(0, -50.2%, 0);
+    transform: translate3d(0, -50.2%, 0);
+  }
+}
 html,
 body,
 #root {

@@ -153,12 +153,21 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
 
     setEditFormVisible(true);
     const ComponentDetailData = await run(libId, editDataId);
-    ComponentDetailData.componentId =
-      ComponentDetailData.isComponent == 1 ? ComponentDetailData.itemId : '';
-    ComponentDetailData.materialId =
-      ComponentDetailData.isComponent == 0 ? ComponentDetailData.itemId : '';
+    
+   
+    
+    const formData =
+      ComponentDetailData?.isComponent == 1
+        ? {
+            componentId: { id: ComponentDetailData.itemId, name: ComponentDetailData.itemName },
+            itemNumber: ComponentDetailData.itemNumber,
+          }
+        : {
+            materialId: { id: ComponentDetailData.itemId, name: ComponentDetailData.itemName },
+            itemNumber: ComponentDetailData.itemNumber,
+          };
 
-    editForm.setFieldsValue(ComponentDetailData);
+    editForm.setFieldsValue(formData);
   };
 
   const sureEditcomponentDetail = () => {
@@ -264,7 +273,6 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         centered
-        
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>

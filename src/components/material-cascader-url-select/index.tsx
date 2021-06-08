@@ -9,12 +9,14 @@ interface CascaderProps {
   libId: string;
   requestSource?: 'project' | 'common' | 'resource';
   urlHead: string;
+  value?: any;
 }
 
 const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
-  const { onChange, libId, requestSource = 'resource', urlHead } = props;
+  const { onChange, libId, requestSource = 'resource', urlHead, value } = props;
 
   const [id, setId] = useState<string>();
+  const [name, setName] = useState<string>();
   const { data: nameReponseData, run: fetchSpecRequest } = useRequest(
     (name) =>
       getDataByUrl(
@@ -44,15 +46,17 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
    */
   const { data: specReponseData } = useRequest(fetchFn);
 
-  const onSpecChange = (v: { label: string; value: string }) => {
-    if (v) {
-      setId(v.value);
+  const onSpecChange = (value: string) => {
+    if (value) {
+      setId(value);
     } else {
       setId(undefined);
     }
   };
 
   const onNameChange = (v: string) => {
+    console.log(v);
+
     if (v) {
       fetchSpecRequest(v);
     }
@@ -61,11 +65,20 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   useEffect(() => {
     onChange?.(id);
   }, [id]);
+
+  useEffect(() => {
+    if (value) {
+      setName(value.name);
+      fetchSpecRequest(value.name);
+      //setId(value.id);
+    }
+  }, [value]);
   return (
     <div className={styles.cascader}>
       <Select
         placeholder={`${placeholder}名称`}
         allowClear
+        value={name}
         onChange={(value) => onNameChange(value as string)}
         className={styles.selectItem}
       >
@@ -79,21 +92,13 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
         defaultData={nameReponseData}
         valueKey={key}
         titleKey={speckey}
-        labelInValue
         allowClear
+        value={id}
         placeholder={`${placeholder}型号`}
         className={styles.selectItem}
-        onChange={(value) => onSpecChange(value as { label: string; value: string })}
+        onChange={(value) => onSpecChange(value as string)}
         libId={libId}
       />
-
-      {/* <UrlSelect
-        defaultData={specReponseData}
-        allowClear
-        placeholder={`${placeholder}型号`}
-        // valueKey={`${urlHead.toLocaleLowerCase()}Id`}
-        // titleKey={`${specTitleKey}`}
-      /> */}
     </div>
   );
 });

@@ -247,7 +247,6 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         onOk={() => sureAddcableChannelDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        
         centered
         destroyOnClose
       >
