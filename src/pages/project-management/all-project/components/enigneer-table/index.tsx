@@ -1,5 +1,5 @@
 import { useRequest } from 'ahooks';
-import React, { forwardRef, Ref, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, Ref, useImperativeHandle, useRef, useState } from 'react';
 import {
   AllProjectStatisticsParams,
   // getAllotUsers,
@@ -115,6 +115,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   });
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
+  const tableContentRef = useRef<HTMLDivElement>(null);
 
   // const tableData = {
   //   total: 1,
@@ -432,36 +434,39 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.status === 4 &&
-                  stateInfo.auditStatus === 0 &&
-                  stateInfo.auditStatusText === null ? (
-                  <span>{stateInfo?.statusText}</span>
-                ) : stateInfo.status === 4 &&
-                  stateInfo.auditStatus === 0 &&
-                  stateInfo.auditStatusText != null ? (
-                  <span>{stateInfo?.auditStatusText}</span>
-                ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
-                  <span>{stateInfo?.statusText}</span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
-                  <span
-                    className="canClick"
-                    onClick={() => externalArrange(record.id, record.name)}
-                  >
-                    {stateInfo?.auditStatusText}
-                  </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
-                  <span className="canClick" onClick={() => externalEdit(record.id)}>
-                    {stateInfo?.auditStatusText}
-                  </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
-                  <span className="canClick" onClick={() => externalEdit(record.id)}>
-                    {stateInfo?.auditStatusText}
-                  </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.statusText === '设计评审中' ? (
+                  <span>设计中</span>
                 ) : (
+                  // : stateInfo.status === 4 &&
+                  //   stateInfo.auditStatus === 0 &&
+                  //   stateInfo.auditStatusText === null ? (
+                  //   <span>{stateInfo?.statusText}</span>
+                  // ) : stateInfo.status === 4 &&
+                  //   stateInfo.auditStatus === 0 &&
+                  //   stateInfo.auditStatusText != null ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
+                  //   <span>{stateInfo?.statusText}</span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                  //   <span
+                  //     className="canClick"
+                  //     onClick={() => externalArrange(record.id, record.name)}
+                  //   >
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : (
                   <span>{stateInfo?.statusText}</span>
                 )}
               </span>
@@ -661,6 +666,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageIndex: 1,
         pageSize,
       });
+      if (tableContentRef && tableContentRef.current) {
+        //@ts-ignore
+        tableContentRef.current.scrollTop = 0;
+      }
       setTableSelectData([]);
       onSelect?.([]);
     },
@@ -697,12 +706,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   return (
-    <TableContext.Provider value={{
-      tableSelectData,
-      setTableSelectData
-    }}>
+    <TableContext.Provider
+      value={{
+        tableSelectData,
+        setTableSelectData,
+      }}
+    >
       <div className={styles.projectTable}>
-        <div className={styles.projectTableContent}>
+        <div className={styles.projectTableContent} ref={tableContentRef}>
           <Spin spinning={loading}>
             {tableResultData.items.length > 0 && projectTableShow}
             {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}

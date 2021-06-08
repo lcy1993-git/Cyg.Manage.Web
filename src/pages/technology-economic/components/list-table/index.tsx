@@ -20,9 +20,6 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url,
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
-
-
-
   const searchComponent = () => {
     return (
       <TableSearch label="搜索" width="203px">
@@ -50,8 +47,6 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url,
   };
 
   const tableSelectEvent = (data: any) => {
-    console.log(data);
-    
     setResourceItem(Array.isArray(data) ? data[0] : {});
   };
 

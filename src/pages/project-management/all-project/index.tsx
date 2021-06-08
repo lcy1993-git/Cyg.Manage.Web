@@ -1,6 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import React, { useEffect, useRef } from 'react';
+import React, { createRef, useEffect, useRef } from 'react';
 
 import { Button, Input, message, Modal } from 'antd';
 
@@ -131,9 +131,9 @@ const ProjectManagement: React.FC = () => {
 
   const [selectDefaultData, setSelectDefaultData] = useState({
     logicRelation: 2,
-    survey: "",
-    design: ""
-  })
+    survey: '',
+    design: '',
+  });
 
   //获取上传立项模板后的List数据
   //获取当前选择数据
@@ -150,6 +150,7 @@ const ProjectManagement: React.FC = () => {
 
   const tableRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
+  const personRef = useRef<HTMLDivElement>(null);
 
   const [form] = Form.useForm();
 
@@ -187,6 +188,7 @@ const ProjectManagement: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       tableRef.current.search();
+      // scrollRef.current?.scrollToTop();
     }
   };
 
@@ -206,7 +208,7 @@ const ProjectManagement: React.FC = () => {
     }
     await revokeAllot(projectIds);
     message.success('撤回安排成功');
-    search();
+    refresh();
   };
 
   const arrangeEvent = async () => {
@@ -363,7 +365,7 @@ const ProjectManagement: React.FC = () => {
 
     await applyKnot(projectIds);
     message.success('申请结项成功');
-    search();
+    refresh();
   };
 
   const revokeKnotEvent = async () => {
@@ -375,7 +377,7 @@ const ProjectManagement: React.FC = () => {
 
     await revokeKnot(projectIds);
     message.success('撤回结项成功');
-    search();
+    refresh();
   };
 
   const auditKnotEvent = async () => {
@@ -387,7 +389,7 @@ const ProjectManagement: React.FC = () => {
 
     await auditKnot(projectIds);
     message.success('结项通过成功');
-    search();
+    refresh();
   };
 
   const noAuditKnotEvent = async () => {
@@ -400,7 +402,7 @@ const ProjectManagement: React.FC = () => {
 
     await noAuditKnot(projectIds);
     message.success('结项退回成功');
-    search();
+    refresh();
   };
 
   const postProjectMenu = (
@@ -437,16 +439,17 @@ const ProjectManagement: React.FC = () => {
     });
     setPersonInfo({
       logicRelation: 2,
-      designUser: '',
-      surveyUser: '',
-    })
+      design: '',
+      survey: '',
+    });
     setSelectDefaultData({
-      survey: "",
+      survey: '',
       logicRelation: 2,
-      design: "",
-    })
+      design: '',
+    });
 
     areaSelectReset();
+    personSelectReset();
     // TODO 重置完是否进行查询
     searchByParams({
       keyWord: '',
@@ -567,16 +570,12 @@ const ProjectManagement: React.FC = () => {
 
   const arrangeFinishEvent = () => {
     setArrangeModalVisible(false);
-    search();
+    refresh();
   };
 
   const changeArrangeFinishEvent = () => {
     setEditArrangeModalVisible(false);
-    search();
-  };
-
-  const refreshEvent = () => {
-    search();
+    refresh();
   };
 
   const openAddEngineerModal = () => {
@@ -668,6 +667,13 @@ const ProjectManagement: React.FC = () => {
     }
   };
 
+  const personSelectReset = () => {
+    if (personRef && personRef.current) {
+      //@ts-ignore
+      personRef.current.reset();
+    }
+  };
+
   const delayRefresh = async () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
@@ -703,19 +709,18 @@ const ProjectManagement: React.FC = () => {
       });
     }
     if (allProjectSearchPerson) {
-
       setPersonInfo({
         survey: String(allProjectSearchPerson),
-        logicRelation: 2,
+        logicRelation: 1,
         desgin: String(allProjectSearchPerson),
       });
 
       setSelectDefaultData({
         survey: String(allProjectSearchPerson),
-        logicRelation: 2,
+        logicRelation: 1,
         design: String(allProjectSearchPerson),
-      })
-      
+      });
+
       setAllProjectSearchPerson('');
 
       searchByParams({
@@ -730,12 +735,11 @@ const ProjectManagement: React.FC = () => {
         statisticalCategory: statisticalCategory,
         sourceType: sourceType ?? [],
         identityType: identityType ?? [],
-        logicRelation: 2,
+        logicRelation: 1,
         designUser: String(allProjectSearchPerson),
         surveyUser: String(allProjectSearchPerson),
         ...areaInfo,
       });
-      
     }
   }, [allProjectSearchPerson, allProjectSearchProjectName]);
 
@@ -812,9 +816,7 @@ const ProjectManagement: React.FC = () => {
                     placeholder="项目阶段"
                   />
                 </TableSearch>
-                <TableSearch width="121px">
-                  <ChooseDesignAndSurvey defaultValue={selectDefaultData} onChange={setPersonInfo} />
-                </TableSearch>
+
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
                     valueKey="value"
@@ -901,6 +903,13 @@ const ProjectManagement: React.FC = () => {
                     onChange={(value) => setIdentityType(value as number[])}
                     className="widthAll"
                     placeholder="项目身份"
+                  />
+                </TableSearch>
+                <TableSearch width="121px">
+                  <ChooseDesignAndSurvey
+                    ref={personRef}
+                    defaultValue={selectDefaultData}
+                    onChange={setPersonInfo}
                   />
                 </TableSearch>
               </OverFlowHiddenComponent>
@@ -1043,6 +1052,7 @@ const ProjectManagement: React.FC = () => {
               </div>
             </div>
           </div>
+
           <div className={styles.projectManagementTableContent}>
             <EnigneerTable
               ref={tableRef}
@@ -1129,7 +1139,7 @@ const ProjectManagement: React.FC = () => {
       )}
       {recallModalVisible && (
         <ProjectRecallModal
-          changeFinishEvent={refreshEvent}
+          changeFinishEvent={refresh}
           visible={recallModalVisible}
           projectId={currentRecallProjectId}
           onChange={setRecallModalVisible}
@@ -1137,7 +1147,7 @@ const ProjectManagement: React.FC = () => {
       )}
       {shareModalVisible && (
         <ShareModal
-          finishEvent={refreshEvent}
+          finishEvent={refresh}
           visible={shareModalVisible}
           onChange={setShareModalVisible}
           projectIds={selectProjectIds}
@@ -1147,7 +1157,7 @@ const ProjectManagement: React.FC = () => {
         <ResourceLibraryManageModal
           visible={libVisible}
           onChange={setLibVisible}
-          changeFinishEvent={refreshEvent}
+          changeFinishEvent={refresh}
         />
       )}
       {editExternalArrangeModal && (

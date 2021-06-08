@@ -3,6 +3,7 @@ import EditFormTable from '@/components/edit-form-table';
 import { InputNumber, Form } from 'antd';
 import UrlSelect from '@/components/url-select';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
+import Scrollbars from 'react-custom-scrollbars';
 
 interface AddDetailParams {
   resourceLibId: string;
@@ -38,18 +39,14 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       dataIndex: 'componentId',
       index: 'componentId',
       width: 400,
-      render: () => (
-        <CascaderUrlSelect  urlHead="Component" libId={resourceLibId} />
-      ),
+      render: () => <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />,
     },
     {
       title: '物料',
       dataIndex: 'materialId',
       index: 'materialId',
       width: 400,
-      render: () => (
-        <CascaderUrlSelect  urlHead="Material" libId={resourceLibId} />
-      ),
+      render: () => <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />,
     },
     {
       title: '数量',
@@ -63,9 +60,9 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
   ];
 
   return (
-    <Form form={addForm}>
+    <Scrollbars autoHeight>
       <EditFormTable formName="items" columns={columns}></EditFormTable>
-    </Form>
+    </Scrollbars>
   );
 };
 

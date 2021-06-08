@@ -1,5 +1,6 @@
 import { getDataByUrl } from '@/services/common';
 import { useBoolean, useRequest } from 'ahooks';
+import { Select } from 'antd';
 import React, { FC, useEffect, useState } from 'react';
 import UrlSelect from '../url-select';
 import styles from './index.less';
@@ -12,19 +13,9 @@ interface CascaderProps {
 
 const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   const { onChange, libId, requestSource = 'resource', urlHead } = props;
-  const [spec, setSpec] = useState<string>();
 
-  const { data: nameReponseData } = useRequest(
-    () => getDataByUrl(`/${urlHead}/GetList`, {}, requestSource, 'post', 'params', libId),
-    { refreshDeps: [urlHead, libId, requestSource] },
-  );
-
-  const placeholder = urlHead === 'Material' ? '请选择物料名称' : '请选择物料名称';
-  const specTitleKey = urlHead.toLocaleLowerCase() === 'material' ? 'spec' : 'componentSpec';
-  /**
-   * 根据上面名字获取spec的id
-   */
-  const { data: specReponseData, run: fetchSpecRequest } = useRequest(
+  const [id, setId] = useState<string>();
+  const { data: nameReponseData, run: fetchSpecRequest } = useRequest(
     (name) =>
       getDataByUrl(
         `/${urlHead}/GetListByName`,
@@ -34,45 +25,75 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
         'body',
         libId,
       ),
-    { manual: true },
+    {
+      manual: true,
+      onSuccess: () => {},
+    },
   );
 
-  const onNameChange = (v: { label: string; value: string }) => {
+  const placeholder = urlHead === 'Material' ? '请选择物料' : '请选择组件';
+  const key = urlHead === 'Material' ? 'materialId' : 'componentId';
+  const speckey = urlHead === 'Material' ? 'spec' : 'componentSpec';
+  const fetchUrl =
+    urlHead === 'Material'
+      ? `/Material/GetMaterialNameList?libId=${libId}`
+      : `/Component/GetNameList?libId=${libId}`;
+  const fetchFn = () => getDataByUrl(fetchUrl, {}, requestSource, 'post', 'body', '');
+  /**
+   * 根据上面名字获取spec的id
+   */
+  const { data: specReponseData } = useRequest(fetchFn);
+
+  const onSpecChange = (v: { label: string; value: string }) => {
     if (v) {
-      setSpec(undefined);
-      fetchSpecRequest(v.label);
+      setId(v.value);
+    } else {
+      setId(undefined);
     }
   };
 
-  const onSpecChange = (v: string) => {
-    setSpec(v);
+  const onNameChange = (v: string) => {
+    if (v) {
+      fetchSpecRequest(v);
+    }
   };
 
   useEffect(() => {
-    onChange?.(spec);
-  }, [spec]);
+    onChange?.(id);
+  }, [id]);
   return (
     <div className={styles.cascader}>
+      <Select
+        placeholder={`${placeholder}名称`}
+        allowClear
+        onChange={(value) => onNameChange(value as string)}
+        className={styles.selectItem}
+      >
+        {specReponseData?.map((v: string) => (
+          <Select.Option key={v} value={v}>
+            {v}
+          </Select.Option>
+        ))}
+      </Select>
       <UrlSelect
         defaultData={nameReponseData}
-        valueKey={`id`}
-        titleKey={`${urlHead.toLocaleLowerCase()}Name`}
+        valueKey={key}
+        titleKey={speckey}
         labelInValue
         allowClear
-        placeholder={placeholder}
+        placeholder={`${placeholder}型号`}
         className={styles.selectItem}
-        onChange={(value) => onNameChange(value as { label: string; value: string })}
+        onChange={(value) => onSpecChange(value as { label: string; value: string })}
         libId={libId}
       />
-      <UrlSelect
+
+      {/* <UrlSelect
         defaultData={specReponseData}
         allowClear
-        placeholder={placeholder}
-        className={styles.selectItem}
-        valueKey={`${urlHead.toLocaleLowerCase()}Id`}
-        titleKey={`${specTitleKey}`}
-        onChange={(value) => onSpecChange(value as string)}
-      />
+        placeholder={`${placeholder}型号`}
+        // valueKey={`${urlHead.toLocaleLowerCase()}Id`}
+        // titleKey={`${specTitleKey}`}
+      /> */}
     </div>
   );
 });

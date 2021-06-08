@@ -64,26 +64,26 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
     reset: () => {
-      setLogicRelation(2)
-      setSurvey("");
-      setDesign("");
+      setLogicRelation(2);
+      setSurvey('');
+      setDesign('');
       onChange?.({
         logicRelation: 2,
-        survey: "",
-        design: ""
-      })
+        survey: '',
+        design: '',
+      });
     },
     setValue: (params: any) => {
       setLogicRelation(params?.logicRelation ?? 2);
-      setSurvey(params?.survey ?? "");
-      setDesign(params?.design ?? "");
+      setSurvey(params?.survey ?? '');
+      setDesign(params?.design ?? '');
 
       onChange?.({
         logicRelation: params?.logicRelation ?? 2,
-        survey: params?.survey ?? "",
-        design: params?.design ?? ""
-      })
-    }
+        survey: params?.survey ?? '',
+        design: params?.design ?? '',
+      });
+    },
   }));
 
   useEffect(() => {
@@ -96,7 +96,6 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
 
   useEffect(() => {
     if (defaultValue) {
-      console.log(defaultValue)
       setDesign(defaultValue?.design);
       setLogicRelation(defaultValue?.logicRelation);
       setSurvey(defaultValue?.survey);

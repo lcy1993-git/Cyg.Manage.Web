@@ -9,7 +9,7 @@ import { useRequest } from 'ahooks';
 import { getBurdens, AreaInfo } from '@/services/index';
 import { useLayoutStore } from '@/layouts/context';
 
-import {history} from "umi"
+import { history } from 'umi';
 
 interface Props {
   componentProps?: string[];
@@ -20,19 +20,19 @@ const PersonnelLoad: React.FC<Props> = (props) => {
   const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props;
   const [activeKey, setActiveKey] = useState<string>('person');
 
-  const {setAllProjectSearchPerson} = useLayoutStore()
+  const { setAllProjectSearchPerson } = useLayoutStore();
 
   useEffect(() => {
     //@ts-ignore
     window.testClick = (personId: string) => {
-      setAllProjectSearchPerson(personId)
-      history.push("project-management/all-project");
-    }
+      setAllProjectSearchPerson(personId);
+      history.push('/project-management/all-project');
+    };
     return () => {
       //@ts-ignore
-      window.testClick = null
-    }
-  })
+      window.testClick = null;
+    };
+  });
 
   const tabData = [
     {
@@ -104,6 +104,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
       },
       tooltip: {
         trigger: 'axis',
+        enterable:true,
         axisPointer: {
           type: 'shadow',
         },
@@ -112,13 +113,13 @@ const PersonnelLoad: React.FC<Props> = (props) => {
         },
         formatter: function (params: any) {
           const [name] = params;
-          
-          const personId = burdensData[name.dataIndex]?.id
 
-          if(type === "1") {
+          const personId = burdensData[name.dataIndex]?.id;
+
+          if (type === '1') {
             return `${name.name}<br />
                     项目数量:${name.value}
-                    <div>所有项目列表：<span style="color: #0E7B3B" onclick=testClick('${personId}')>跳转</span></div>
+                    <div>所有项目列表：<span  style="color: #0E7B3B;cursor: pointer;" onclick=testClick('${personId}')>跳转</span></div>
                     `;
           }
           return `${name.name}<br />
@@ -229,7 +230,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
       //   }
       // ]
     };
-  }, [JSON.stringify(burdensData),type]);
+  }, [JSON.stringify(burdensData), type]);
 
   return (
     <ChartBox title={title}>

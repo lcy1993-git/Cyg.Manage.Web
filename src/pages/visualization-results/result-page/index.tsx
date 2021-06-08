@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './index.less';
 import classNames from 'classnames';
 import PageCommonWrap from '@/components/page-common-wrap';
@@ -13,6 +13,12 @@ const VisualizationResults: React.FC = observer(() => {
   const store = useContainer();
   const { vState } = store;
   const { visibleLeftSidebar } = vState;
+  useEffect(() => {
+    return () => {
+      store.clear();
+    };
+  }, []);
+
   return (
     <PageCommonWrap noPadding={true}>
       <Filterbar />
@@ -30,7 +36,7 @@ const VisualizationResults: React.FC = observer(() => {
           </div>
           <div className={styles.sideTreefooter}>
             <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
-              {visibleLeftSidebar ? <MenuFoldOutlined style={{ fontSize: 16, }} /> : null}
+              {visibleLeftSidebar ? <MenuFoldOutlined style={{ fontSize: 16 }} /> : null}
             </div>
           </div>
         </div>

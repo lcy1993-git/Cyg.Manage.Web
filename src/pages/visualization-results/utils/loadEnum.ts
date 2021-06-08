@@ -1,4 +1,5 @@
-const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
+const loadEnumsData = window.localStorage.getItem('loadEnumsData');
+const data = loadEnumsData && loadEnumsData !== 'undefined' ? JSON.parse(loadEnumsData) : [];
 
 export interface EnumItem {
   key: string;
@@ -15,7 +16,7 @@ export interface EnumValue {
  * @returns
  */
 export const findEnumKeyByType = (type: string): Map<number, string> => {
-  const res = loadEnumsData
+  const res = data
     .find((enumItem: EnumItem) => enumItem.key === type)
     .value.map((e: EnumValue) => [e.value, e.text]);
   return new Map<number, string>(res);
@@ -28,6 +29,6 @@ export const findEnumKeyByType = (type: string): Map<number, string> => {
  * @returns
  */
 export const findEnumKeyByCN = (chEnum: string, type: string): number =>
-  loadEnumsData
+  data
     .find((enumItem: EnumItem) => enumItem.key === type)
     .value.find((value: EnumValue) => value.text === chEnum).value;

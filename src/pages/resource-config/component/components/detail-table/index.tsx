@@ -240,29 +240,31 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-组件明细"
-        width="70%"
+        width="100%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddComponentDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: 480 }}
         centered
         destroyOnClose
       >
-        <AddComponentDetail addForm={addForm} resourceLibId={libId} />
+        <Form form={addForm}>
+          <AddComponentDetail addForm={addForm} resourceLibId={libId} />
+        </Form>
       </Modal>
 
       <Modal
         maskClosable={false}
         title="编辑-组件明细"
-        width="980px"
+        width="50%"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditcomponentDetail()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         centered
+        
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>

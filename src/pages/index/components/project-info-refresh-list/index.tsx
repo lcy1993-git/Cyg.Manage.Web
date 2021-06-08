@@ -1,9 +1,9 @@
 import { List } from 'antd';
-import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
 import { useRequest, useInterval, useSize, useInViewport } from 'ahooks';
-import { request } from 'umi';
+
 import ProjectItem from './components/project-Item';
 import {
   AreaInfo,
@@ -80,16 +80,9 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
           // 最新的实在前面，所以diff在前面
 
           const union = _.union(inVisibleQueue, diff);
-
-          // 如果熟练超过不可视的数量，就把以前的切除
-          if (union.length > invisibleCount) {
-            // 把多余的去除然后，在加上最新的diff
-
-            setInVisibleQueue([...union]);
-          } else {
-            //如不没有就是直接替代
-            setInVisibleQueue([...union]);
-          }
+          console.log(union);
+          //如不没有就是直接替代
+          setInVisibleQueue([...union]);
         }
         setDiff(false);
         // 没数据原本也没有数据，显示空
@@ -97,6 +90,9 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
       } else {
         //没数据，原本有数据，保持原本的循环队列，不做任何操作
       }
+    },
+    onError: () => {
+      cancel();
     },
   });
 
@@ -126,6 +122,14 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
         const shift = listData.shift();
         shift && listData.push(shift);
         setListData([...listData]);
+      }
+      setListData([...listData]);
+    } else {
+      const invisibleShift = inVisibleQueue.shift();
+
+      // 这里invisible出队就放入visible的队尾，然后visvible出队的加入invisible队尾
+      if (invisibleShift) {
+        listData.push(invisibleShift);
       }
       setListData([...listData]);
     }

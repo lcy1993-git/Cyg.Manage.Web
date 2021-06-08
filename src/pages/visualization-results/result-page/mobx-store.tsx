@@ -76,9 +76,10 @@ function Store(vState: VisualizationResultsStateType) {
     },
 
     toggleObserveTrack(flag: boolean) {
-      console.log( this.vState.observeTrack, '-->', flag);
-
       this.vState.observeTrack = flag;
+    },
+    clear() {
+      this.vState = initState;
     },
   });
 }
