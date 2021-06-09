@@ -144,6 +144,15 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           />
         </CyFormItem>
 
+        <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
+          <TextArea
+            showCount
+            maxLength={100}
+            placeholder="备注说明"
+            onChange={(e: any) => setRemark(e.target.value)}
+          />
+        </CyFormItem>
+
         <CyFormItem
           labelWidth={100}
           align="right"
@@ -158,15 +167,6 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
             uploadFileFn={saveInventoryEvent}
             maxCount={1}
             accept=".xlsx"
-          />
-        </CyFormItem>
-
-        <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
-          <TextArea
-            showCount
-            maxLength={100}
-            placeholder="备注说明"
-            onChange={(e: any) => setRemark(e.target.value)}
           />
         </CyFormItem>
       </Form>
