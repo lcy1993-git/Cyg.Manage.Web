@@ -237,6 +237,7 @@ function getMappingTagsDictionary() {
       },
       mappingTagValues: {
         "state": findenumsValue("SurveyState"),
+        "fix_mode": findenumsValue("OverheadEquipmentFixMode"),
       }
     };
     mappingTagsDictionary.cable_equipment = {
