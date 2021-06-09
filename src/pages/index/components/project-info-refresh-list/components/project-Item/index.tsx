@@ -10,11 +10,11 @@ export interface ProjectItemProps {
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
-  const { setAllProjectSearchProjectName } = useLayoutStore();
+  const { setAllProjectSearchProjectId: setAllProjectSearchProjectId } = useLayoutStore();
 
   const onClickProject = () => {
-    setAllProjectSearchProjectName(name);
-    setAllProjectSearchProjectName(id);
+    // setAllProjectSearchProjectId(name);
+    setAllProjectSearchProjectId(id);
   };
 
   const ref = useRef<HTMLDivElement>(null);
