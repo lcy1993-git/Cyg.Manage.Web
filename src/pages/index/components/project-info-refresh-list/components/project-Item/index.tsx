@@ -32,7 +32,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
       <Tooltip
         className={styles.tooltip}
         title={
-          size && size.width! < 500 ? (
+          size && size.width! < 1000 ? (
             <>
               <div key={date}>
                 <span className={styles.content}>{content} </span>
@@ -40,8 +40,11 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
                 <a style={{ color: '#26f682' }} onClick={onClickProject}>
                   {name}
                 </a>
+                &nbsp;
               </div>
-              <span>{date}</span>
+              <div>
+                <span>{date}</span>
+              </div>
             </>
           ) : null
         }
