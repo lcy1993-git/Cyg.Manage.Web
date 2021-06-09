@@ -2,7 +2,7 @@ import { List } from 'antd';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
-import { useRequest, useInterval, useSize, useInViewport } from 'ahooks';
+import { useRequest, useInterval, useSize, useInViewport, useMount } from 'ahooks';
 
 import ProjectItem from './components/project-Item';
 import {
@@ -30,6 +30,10 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
   const inViewPort = useInViewport(ref);
+
+  useMount(() => {
+    console.log(refreshData);
+  });
 
   /**
    * count表示是可视条数是多少
@@ -98,7 +102,8 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
         scrollRef.current.style.animation = `mymove ${1.2 * realLength}s infinite linear`;
       }
     }
-  }, [listData]);
+  }, [JSON.stringify(listData)]);
+
   return (
     <div className={styles.refreshBarn} ref={ref}>
       <div ref={scrollRef} className={styles.list}>
