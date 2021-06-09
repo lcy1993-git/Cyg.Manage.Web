@@ -153,12 +153,18 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
 
     setEditFormVisible(true);
     const cableChannelDetailData = await run(libId, editDataId);
-    cableChannelDetailData.componentId =
-      cableChannelDetailData.isComponent == 1 ? cableChannelDetailData.itemId : '';
-    cableChannelDetailData.materialId =
-      cableChannelDetailData.isComponent == 0 ? cableChannelDetailData.itemId : '';
+    const formData =
+    cableChannelDetailData?.isComponent == 1
+        ? {
+            componentId: { id: cableChannelDetailData.itemId, name: cableChannelDetailData.itemName },
+            itemNumber: cableChannelDetailData.itemNumber,
+          }
+        : {
+            materialId: { id: cableChannelDetailData.itemId, name: cableChannelDetailData.itemName },
+            itemNumber: cableChannelDetailData.itemNumber,
+          };
 
-    editForm.setFieldsValue(cableChannelDetailData);
+    editForm.setFieldsValue(formData);
   };
 
   const sureEditcableChannelDetail = () => {

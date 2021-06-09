@@ -181,10 +181,20 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
 
     setEditFormVisible(true);
     const ModuleDetailData = await run(libId, editDataId);
-    ModuleDetailData.componentId = ModuleDetailData.isComponent == 1 ? ModuleDetailData.itemId : '';
-    ModuleDetailData.materialId = ModuleDetailData.isComponent == 0 ? ModuleDetailData.itemId : '';
+    const formData =
+      ModuleDetailData?.isComponent == 1
+        ? {
+            componentId: { id: ModuleDetailData.itemId, name: ModuleDetailData.itemName },
+            itemNumber: ModuleDetailData.itemNumber,
+            part: ModuleDetailData.part,
+          }
+        : {
+            materialId: { id: ModuleDetailData.itemId, name: ModuleDetailData.itemName },
+            itemNumber: ModuleDetailData.itemNumber,
+            part: ModuleDetailData.part,
+          };
 
-    editForm.setFieldsValue(ModuleDetailData);
+    editForm.setFieldsValue(formData);
   };
 
   const sureEditModuleDetail = () => {
