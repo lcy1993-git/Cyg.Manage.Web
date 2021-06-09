@@ -87,7 +87,7 @@ const ProjectManagement: React.FC = () => {
   });
 
   const {
-    setAllProjectSearchProjectName,
+    setAllProjectSearchProjectId: setAllProjectSearchProjectId,
     setAllProjectSearchPerson,
     allProjectSearchPerson,
     allProjectSearchProjectName,
@@ -687,7 +687,7 @@ const ProjectManagement: React.FC = () => {
 
   useEffect(() => {
     if (allProjectSearchProjectName) {
-      setAllProjectSearchProjectName('');
+      setAllProjectSearchProjectId('');
 
       searchByParams({
         projectId: allProjectSearchProjectName,
