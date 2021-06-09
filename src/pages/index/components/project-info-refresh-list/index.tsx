@@ -80,13 +80,13 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
     },
   });
 
-  useEffect(() => {
-    if (inViewPort) {
-      run();
-    } else {
-      cancel();
-    }
-  }, [inViewPort]);
+  // useEffect(() => {
+  //   if (inViewPort) {
+  //     run();
+  //   } else {
+  //     cancel();
+  //   }
+  // }, [inViewPort]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
