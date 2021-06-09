@@ -122,21 +122,6 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
       return;
     }
     setRemarkModalVisible(true);
-    // const libId = libTableSelectRows[0].id;
-    // const inventoryIds = invTableSelectRows?.map((item) => item.id);
-    // try {
-    //   setRequestLoading(true);
-    //   await createResourceInventoryMap({
-    //     resourceLibId: libId,
-    //     inventoryOverviewIds: inventoryIds,
-    //   });
-    //   message.success('列表映射成功');
-    // } catch (msg) {
-    //   console.error(msg);
-    // } finally {
-    //   setRequestLoading(false);
-    // }
-    // changeFinishEvent?.();
   };
 
   return (
@@ -155,14 +140,25 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
         destroyOnClose
         centered
         footer={[
-          <Button key="cancle" onClick={() => setState(false)}>
+          <Button
+            key="cancle"
+            onClick={() => {
+              setState(false);
+              setLibTableSelectRow([]);
+              setInvTableSelectRow([]);
+            }}
+          >
             关闭
           </Button>,
           <Button key="save" type="primary" onClick={() => mapLibEvent()}>
             映射
           </Button>,
         ]}
-        onCancel={() => setState(false)}
+        onCancel={() => {
+          setState(false);
+          setLibTableSelectRow([]);
+          setInvTableSelectRow([]);
+        }}
       >
         <div className={styles.mapForm}>
           <div className={styles.resourceTable}>

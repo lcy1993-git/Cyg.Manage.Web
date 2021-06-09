@@ -111,25 +111,24 @@ const HasMapModal: React.FC = () => {
       dataIndex: 'resourceLibName',
       index: 'resourceLibName',
       title: '资源库名称',
-      width: 180,
+      width: 240,
     },
     {
       dataIndex: 'name',
       index: 'name',
       title: '协议库名称',
-      width: 180,
+      width: 240,
     },
     {
       dataIndex: 'editor',
       index: 'editor',
       title: '编辑人',
-      width: 400,
+      width: 280,
     },
     {
       dataIndex: 'remark',
       index: 'remark',
       title: '备注',
-      width: 180,
     },
   ];
 
