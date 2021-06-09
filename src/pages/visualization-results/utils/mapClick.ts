@@ -91,14 +91,16 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   } else {
     mappingTagsDictionary = {};
   }
-
-  clearHighlightLayer(map);
-  ops.setRightSidebarVisiviabel(false);
+  
   let mappingTags: any, mappingTagValues;
   let selected = false;
 
+  // 处理点击事件点击到物体也会setFlase的bug
+  let setRightSidebarVisiviabelFlag = false;
+
   // 遍历选中的数据
   map.forEachFeatureAtPixel(evt.pixel, async function (feature: any, layer: any) {
+    setRightSidebarVisiviabelFlag = true;
     if (selected) return;
     selected = true;
     if (layer.getProperties().name == 'highlightLayer') {
@@ -487,6 +489,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     ops.setRightSidebarData(resData);
     map.getTargetElement().style.cursor = 'default';
   });
+  if(!setRightSidebarVisiviabelFlag) {
+    clearHighlightLayer(map)
+    // ops.setRightSidebarVisiviabel(false);
+  }
+
 };
 
 // 当前经纬度映射到HTML节点

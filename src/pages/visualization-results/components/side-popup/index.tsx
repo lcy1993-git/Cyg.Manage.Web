@@ -191,10 +191,19 @@ export interface CommentListItemDataType {
   datetime: React.ReactNode;
 }
 const SidePopup: React.FC<Props> = observer((props) => {
-  const { data: dataSource, rightSidebarVisible, setRightSidebarVisiviabel } = props;
+  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel } = props;
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
 
+  const [dataSource, setDataSource] = useState(dataResource);
+  useEffect(() => {
+    setDataSource(dataResource)
+    
+  }, [JSON.stringify(dataResource)]);
+
+  const mediaRef = useRef<HTMLSpanElement>(null);
+  const materialRef = useRef<HTMLSpanElement>(null);
+  
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
@@ -204,6 +213,18 @@ const SidePopup: React.FC<Props> = observer((props) => {
     const title = dataSource.find((o) => o.propertyName === 'title')?.data;
     return [dataSource.filter((o) => o.propertyName !== 'title'), title ? title : ''];
   }, [JSON.stringify(dataSource)]);
+
+  const handlerMediaClick = () => {
+    if(mediaRef.current?.innerHTML === "查看"){
+      setActiveType('media');
+    }
+  }
+
+  const handlerMaterialClick =() => {
+    if(mediaRef.current?.innerHTML === "查看"){
+      setActiveType('material');
+    }
+  }
 
   const columns = [
     {
@@ -222,30 +243,12 @@ const SidePopup: React.FC<Props> = observer((props) => {
         if (typeof value === 'string' || typeof value === 'number')
           return <span key={index}>{value}</span>;
         if (record.propertyName === '多媒体') {
-          if (value?.length === 0) {
-            return (
-              <span key={index} className={styles.none}>
-                暂无数据
-              </span>
-            );
-          }
           return (
-            <span className={styles.link} key={index} onClick={() => setActiveType('media')}>
-              查看
-            </span>
+            <span onClick={handlerMediaClick} ref={mediaRef}>数据请求中</span>
           );
         } else if (record.propertyName === '材料表') {
-          if (value?.length === 0) {
-            return (
-              <span key={index} className={styles.none}>
-                暂无数据
-              </span>
-            );
-          }
           return (
-            <span className={styles.link} key={index} onClick={() => setActiveType('material')}>
-              查看
-            </span>
+            <span onClick={handlerMaterialClick} ref={materialRef}>数据请求中</span>
           );
         } else if (record.propertyName === '审阅') {
           if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
@@ -394,11 +397,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
       fetchCommentListRequest({ layer: body.layerType, deviceId: body.deviceId, projectId });
     }
   };
+
   useEffect(() => {
     setRightSidebarVisiviabel(false);
   }, [JSON.stringify(checkedProjectIdList)]);
-
-  console.log(data[0]);
   
   const modalData = useMemo(() => {
     const media = removeEmptChildren(
@@ -466,7 +468,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         mask={false}
         className={rightSidebarVisible ? '' : styles.poiontEventNone}
         getContainer={false}
-        key={uuid.v1()}
+        // key={uuid.v1()}
         style={{ position: 'absolute', width: 340 }}
       >
         <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
