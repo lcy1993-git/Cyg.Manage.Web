@@ -27,11 +27,12 @@ const { Search } = Input;
 const CreateMap: React.FC<CreateMapProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [activeMaterialId, setActiveMaterialId] = useState<string>('');
-  const [libTableSelectRows, setLibTableSelectRow] = useState<any[]>([]);
+  const [libTableSelectRow, setLibTableSelectRow] = useState<any[]>([]);
 
   const [activeHasMapAreaId, setActiveHasMapAreaId] = useState<string>('-1');
   const [hasMapTableShowData, setHasMapTableShowData] = useState<any[]>([]);
   const [mapTableSelectArray, setMapTableSelectArray] = useState<any[]>([]);
+
   // const [resizableColumns, setResizableColumns] = useState<object[]>([]);
 
   const [addMapTableVisible, setAddMapTableVisible] = useState<boolean>(false);
@@ -229,6 +230,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
 
   const resourceTableChangeEvent = (data: any) => {
     setLibTableSelectRow(data);
+
     if (data && data.length > 0) {
       setActiveMaterialId(data[0].id);
       if (inventoryTableRef && inventoryTableRef.current) {
@@ -259,7 +261,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
 
   //添加映射
   const addMapEvent = () => {
-    if (libTableSelectRows && libTableSelectRows.length === 0) {
+    if (libTableSelectRow && libTableSelectRow.length === 0) {
       message.warning('请选择要添加映射的行');
       return;
     }
@@ -315,8 +317,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
             key="cancle"
             onClick={() => {
               setState(false);
-              setLibTableSelectRow([]);
-              setHasMapTableShowData([]);
+              setActiveMaterialId('');
             }}
           >
             关闭
@@ -327,8 +328,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         ]}
         onCancel={() => {
           setState(false);
-          setLibTableSelectRow([]);
-          setHasMapTableShowData([]);
+          setActiveMaterialId('');
         }}
       >
         <div className={styles.mapForm}>

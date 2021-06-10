@@ -13,7 +13,7 @@ interface InventoryTableParams {
   areaOptions: { label: string; value: string }[];
   inventoryOverviewId: string;
   materialId: string;
-  mappingId?: string;
+  mappingId?: string | undefined;
   changeEvent: (value: object[]) => void;
   onChange: Dispatch<SetStateAction<boolean>>;
   visible: boolean;
