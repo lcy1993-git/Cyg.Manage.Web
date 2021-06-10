@@ -1,4 +1,3 @@
-import { isNumber } from 'lodash';
 import getMappingTagsDictionary from './localData/mappingTagsDictionary';
 import { pointStyle, line_style } from './localData/pointStyle';
 import VectorSource from 'ol/source/Vector';
@@ -7,13 +6,7 @@ import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName } from './methods';
 import { getCustomXmlData } from './utils';
-import {
-  getGisDetail,
-  getlibId,
-  getMedium,
-  getMaterialItemData,
-  loadLayer,
-} from '@/services/visualization-results/visualization-results';
+import { getGisDetail, loadLayer } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 // const mappingTagsData = getMappingTagsDictionary();
 // const mappingTagsDictionary: any =typeof mappingTagsData === 'string' ? JSON.parse(mappingTagsData) : {};
@@ -419,57 +412,20 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (materiaLayers.indexOf(layerName) >= 0) {
 
         const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id
-        pJSON['材料表'] = {params: {
-          id: feature.getProperties().project_id,
-          objectID,
-          forProject: 0,
-          forDesign: 0,
-          materialModifyList: [],
+        console.log(feature.getProperties());
+        
+        pJSON['材料表'] = {
+          params: {
+            id: feature.getProperties().project_id,
+            rest: {
+              objectID,
+              forProject: 0,
+              forDesign: 0,
+              materialModifyList: [],
+              layerName
+            },
+            getProperties: feature.getProperties()
         }}
-        // await getlibId({ id: feature.getProperties().project_id }).then(
-        //   async (data: any) => {
-        //     const resourceLibID = data.content.libId;
-        //     const objectID =
-        //       feature.getProperties().mode_id || feature.getProperties().equip_model_id;
-        //     const materialParams: any = {
-        //       objectID,
-        //       resourceLibID,
-        //       forProject: 0,
-        //       forDesign: 0,
-        //       materialModifyList: [],
-        //     };
-        //     materialParams.layerName = layerName;
-        //     // pJSON['材料表'] = 
-
-        //     await getMaterialItemData(materialParams).then((res: any) => {
-        //       pJSON['材料表'] = [];
-        //       if (res.isSuccess) {
-        //         const filterData = res.content.filter((item: any) => item.parentID !== -1);
-        //         const data = filterData.map((item: any) => {
-        //           return {
-        //             ...item,
-        //             state: feature.getProperties().state,
-        //             children: [],
-        //           };
-        //         });
-        //         const handlerData = data.reduce((curr: any, item: any) => {
-        //           const exist = curr.find((currItem: any) => currItem.type === item.type);
-        //           if (exist) {
-        //             curr.forEach((currExist: any, index: any) => {
-        //               if (currExist.type === exist.type) {
-        //                 curr[index].children.push(item);
-        //               }
-        //             });
-        //           } else {
-        //             curr.push(item);
-        //           }
-        //           return curr;
-        //         }, []);
-        //         pJSON['材料表'] = handlerData;
-        //       }
-        //     });
-        //   },
-        // );
       }
     }
 
