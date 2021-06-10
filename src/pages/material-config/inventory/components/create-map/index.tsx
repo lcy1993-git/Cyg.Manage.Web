@@ -27,11 +27,12 @@ const { Search } = Input;
 const CreateMap: React.FC<CreateMapProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [activeMaterialId, setActiveMaterialId] = useState<string>('');
-  const [libTableSelectRows, setLibTableSelectRow] = useState<any[]>([]);
+  const [libTableSelectRow, setLibTableSelectRow] = useState<any[]>([]);
 
   const [activeHasMapAreaId, setActiveHasMapAreaId] = useState<string>('-1');
   const [hasMapTableShowData, setHasMapTableShowData] = useState<any[]>([]);
   const [mapTableSelectArray, setMapTableSelectArray] = useState<any[]>([]);
+
   // const [resizableColumns, setResizableColumns] = useState<object[]>([]);
 
   const [addMapTableVisible, setAddMapTableVisible] = useState<boolean>(false);
@@ -39,7 +40,6 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const resourceTableRef = useRef<HTMLDivElement>(null);
-  const inventoryTableRef = useRef<HTMLDivElement>(null);
   const { inventoryOverviewId = '', mappingId, libId = '' } = props;
 
   const { data: areaList = [] } = useRequest(() => getAreaList(inventoryOverviewId), {
@@ -47,22 +47,14 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
     refreshDeps: [inventoryOverviewId],
   });
 
-  const { data: hasMapData = [], run: getMapData, loading } = useRequest(
-    () =>
-      getHasMapData({
-        inventoryOverviewId: inventoryOverviewId,
-        mappingId: mappingId,
-        materialId: activeMaterialId,
-        area: activeHasMapAreaId,
-      }),
-    {
-      ready: !!inventoryOverviewId,
-      refreshDeps: [inventoryOverviewId, activeMaterialId, activeHasMapAreaId],
-      onSuccess: () => {
-        setHasMapTableShowData(hasMapData);
-      },
+  const { data: hasMapData = [], run: getMapData, loading } = useRequest(getHasMapData, {
+    manual: true,
+    // ready: !!inventoryOverviewId,
+    // refreshDeps: [inventoryOverviewId, activeMaterialId, activeHasMapAreaId],
+    onSuccess: () => {
+      setHasMapTableShowData(hasMapData);
     },
-  );
+  });
 
   /**可伸缩配置 */
   // const tableComponents = components;
@@ -218,27 +210,48 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
 
   //当前映射过滤 --unfinished--
   const hasMapSearch = (value: any) => {
-    hasMapTableShowData.filter((item) => {
-      if (item.demandCompany.indexOf(value)) {
+    if (value === '') {
+      getMapData({
+        inventoryOverviewId: inventoryOverviewId,
+        mappingId: mappingId,
+        materialId: activeMaterialId,
+        area: '-1',
+      });
+      return;
+    }
+    const filterData = hasMapTableShowData.filter((item) => {
+      if (!item.materialCode.indexOf(value)) {
         return {
           ...item,
         };
       }
     });
+
+    setHasMapTableShowData(filterData);
   };
 
-  const resourceTableChangeEvent = (data: any) => {
+  //区域变化
+  const searchByArea = async (value: any) => {
+    await getMapData({
+      inventoryOverviewId: inventoryOverviewId,
+      mappingId: mappingId,
+      materialId: activeMaterialId,
+      area: value,
+    });
+    setActiveHasMapAreaId(value);
+  };
+
+  const resourceTableChangeEvent = async (data: any) => {
     setLibTableSelectRow(data);
+
     if (data && data.length > 0) {
       setActiveMaterialId(data[0].id);
-      if (inventoryTableRef && inventoryTableRef.current) {
-        // @ts-ignore
-        inventoryTableRef.current.searchByParams({
-          materialId: data[0].id,
-          inventoryOverviewId,
-          area: '-1',
-        });
-      }
+      await getMapData({
+        inventoryOverviewId: inventoryOverviewId,
+        mappingId: mappingId,
+        materialId: data[0]?.id,
+        area: '-1',
+      });
     }
   };
 
@@ -259,7 +272,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
 
   //添加映射
   const addMapEvent = () => {
-    if (libTableSelectRows && libTableSelectRows.length === 0) {
+    if (libTableSelectRow && libTableSelectRow.length === 0) {
       message.warning('请选择要添加映射的行');
       return;
     }
@@ -292,7 +305,13 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
       uncheckedIdList,
     });
     message.success('信息保存成功');
-    getMapData();
+    getMapData({
+      inventoryOverviewId: inventoryOverviewId,
+      mappingId: mappingId,
+      materialId: activeMaterialId,
+      area: '-1',
+    });
+    setActiveHasMapAreaId('-1');
   };
 
   return (
@@ -315,8 +334,8 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
             key="cancle"
             onClick={() => {
               setState(false);
-              setLibTableSelectRow([]);
               setHasMapTableShowData([]);
+              // setActiveMaterialId('');
             }}
           >
             关闭
@@ -327,8 +346,8 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         ]}
         onCancel={() => {
           setState(false);
-          setLibTableSelectRow([]);
           setHasMapTableShowData([]);
+          // setActiveMaterialId('');
         }}
       >
         <div className={styles.mapForm}>
@@ -366,7 +385,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
                     <Select
                       options={areaOptions}
                       value={activeHasMapAreaId}
-                      onChange={(value) => setActiveHasMapAreaId(value as string)}
+                      onChange={(value) => searchByArea(value as string)}
                       placeholder="区域"
                       style={{ width: '100%' }}
                     />

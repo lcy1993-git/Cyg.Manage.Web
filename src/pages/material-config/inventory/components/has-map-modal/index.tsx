@@ -98,11 +98,10 @@ const HasMapModal: React.FC = () => {
     }
   };
 
-  // 列表搜索
-  // const search = () => {
+  // const resetEvent = () => {
   //   if (tableRef && tableRef.current) {
   //     // @ts-ignore
-  //     tableRef.current.search();
+  //     tableRef.current.reset();
   //   }
   // };
 

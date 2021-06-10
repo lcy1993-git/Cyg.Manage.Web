@@ -6,7 +6,6 @@ import React, { useState } from 'react';
 import styles from './index.less';
 
 // import UrlSelect from '@/components/url-select';
-import CreateMap from './components/create-map';
 import { ImportOutlined } from '@ant-design/icons';
 import ImportInventory from './components/import-form';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
@@ -26,7 +25,6 @@ const Inventroy: React.FC = () => {
   const [inventoryId, setInventoryId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
-  const [addMapVisible, setAddMapVisible] = useState<boolean>(false);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
 
   const [inventoryTableModalVisible, setInventoryTableModalVisible] = useState<boolean>(false);
@@ -417,35 +415,14 @@ const Inventroy: React.FC = () => {
       >
         <HasMapModal />
       </Modal>
-
-      {/* {checkMappingVisible && (
-        <Modal
-          maskClosable={false}
-          footer=""
-          title="查看映射关系"
-          width="95%"
-          visible={checkMappingVisible}
-          okText="确认"
-          centered
-          onCancel={() => setCheckMappingVisible(false)}
-          cancelText="取消"
-          bodyStyle={{ height: '820px', overflowY: 'auto' }}
-          destroyOnClose
-        >
-          <Form form={checkForm} preserve={false}>
-            <Spin spinning={loading}>
-              <CheckMapping inventoryOverviewId={inventoryId} currentInv={handleInvData} />
-            </Spin>
-          </Form>
-        </Modal>
-      )} */}
+      {/* 
       {addMapVisible && (
         <CreateMap
           visible={addMapVisible}
           inventoryOverviewId={inventoryId}
           onChange={setAddMapVisible}
         />
-      )}
+      )} */}
       {importFormVisible && (
         <ImportInventory
           requestSource="resource"

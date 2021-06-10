@@ -13,7 +13,6 @@ import {
 } from '@/services/index';
 import moment from 'moment';
 import InifinityScrollList from './components/inifinity-scroll-list';
-import { json } from 'express';
 export interface ProjectInfoRefreshListProps {
   currentAreaInfo: AreaInfo;
 }
@@ -30,10 +29,6 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
   const inViewPort = useInViewport(ref);
-
-  useMount(() => {
-    console.log(refreshData);
-  });
 
   /**
    * count表示是可视条数是多少
@@ -84,13 +79,13 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
     },
   });
 
-  // useEffect(() => {
-  //   if (inViewPort) {
-  //     run();
-  //   } else {
-  //     cancel();
-  //   }
-  // }, [inViewPort]);
+  useEffect(() => {
+    if (inViewPort) {
+      run();
+    } else {
+      cancel();
+    }
+  }, [inViewPort]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
