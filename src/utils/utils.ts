@@ -146,3 +146,19 @@ export const fileTreeFormData = (data: TreeData[]) => {
 export const delay = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export const removeEmptChildren = (v: any): any[] => {
+  if (Array.isArray(v)) {
+    return v.map((item) => {
+      if (item.children) {
+        if (item.children.length === 0) {
+          delete item.children;
+        } else {
+          item.children = removeEmptChildren(item.children);
+        }
+      }
+      return item;
+    });
+  }
+  return [];
+}

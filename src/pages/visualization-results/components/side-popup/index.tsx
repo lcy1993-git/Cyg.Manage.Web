@@ -16,9 +16,13 @@ import { observer } from 'mobx-react-lite';
 import { baseUrl } from '@/services/common';
 import moment from 'moment';
 import { EnumItem, EnumValue, findEnumKeyByType, findEnumKeyByCN } from '../../utils/loadEnum';
+import {
+  getlibId,
+  getMedium,
+  getMaterialItemData,
+} from '@/services/visualization-results/visualization-results';
+import { removeEmptChildren } from '@/utils/utils';
 export interface TableDataType {
-  // propertyName: string;
-  // data: string;
   [propName: string]: any;
 }
 
@@ -127,10 +131,11 @@ const materiaColumns = [
 
 const mediaItem = (data: any) => {
   const authorization = window.localStorage.getItem('Authorization');
-  return data.map((item: any, index: any) => {
+
+  return data?.map((item: any, index: any) => {
     if (item.type === 1) {
       return (
-        <div className={styles.mediaItem} key={uuid.v1()}>
+        <div className={styles.mediaItem} key={item.id}>
           <img
             className={styles.img}
             crossOrigin={''}
@@ -140,7 +145,7 @@ const mediaItem = (data: any) => {
       );
     } else if (item.type !== 1) {
       return (
-        <div className={styles.mediaItem} key={uuid.v1()}>
+        <div className={styles.mediaItem} key={item.id}>
           {/* <audio controls={true} /> */}
           <audio
             className={styles.audio}
@@ -150,7 +155,7 @@ const mediaItem = (data: any) => {
         </div>
       );
     }
-    return <div className={styles.mediaItem} key={uuid.v1()} />;
+    return <div className={styles.mediaItem} key={item.id} />;
   });
 };
 
@@ -196,14 +201,68 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
 
   const [dataSource, setDataSource] = useState(dataResource);
+
+  const { data: mediaData, run: mediaDataRun } = useRequest(getMedium, {
+    manual: true,
+    onSuccess(data) {
+      if (data?.content?.length > 0) {
+        mediaRef.current!.innerHTML = '查看';
+        mediaRef.current!.className = 'mapSideBarlinkBtn';
+      } else {
+        mediaRef.current!.innerHTML = '暂无数据';
+        mediaRef.current!.className = '';
+      }
+    },
+  });
+
+  const { data: materialData, run: materialDataRun } = useRequest(getMaterialItemData, {
+    manual: true,
+    onSuccess(data) {
+      if (data?.content?.length > 0) {
+        materialRef.current!.innerHTML = '查看';
+        materialRef.current!.className = 'mapSideBarlinkBtn';
+      } else {
+        materialRef.current!.innerHTML = '暂无数据';
+        materialRef.current!.className = '';
+      }
+    },
+  });
+
+  const returnlibId = async (data: any) => {
+    if (data.isSucceess) {
+      return await data.content.libId;
+    }
+  };
+
   useEffect(() => {
-    setDataSource(dataResource)
-    
+    setDataSource(dataResource);
+    // 多媒体数据请求
+    const mediaParams = dataResource?.find((item: any) => item.propertyName === '多媒体')?.data
+      ?.params;
+    if (mediaParams) {
+      mediaDataRun(mediaParams);
+    } else if (mediaRef.current) {
+      mediaRef.current.innerHTML = '暂无数据';
+      mediaRef.current.className = '';
+    }
+    // 材料表数据请求
+    const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
+      ?.params;
+    if (materialParams && materialParams.id) {
+      const { id, ...restParams } = mediaParams;
+      const resourceLibID = returnlibId(id);
+      if (resourceLibID) {
+        materialDataRun({ resourceLibID, ...restParams });
+      } else if (materialRef.current) {
+        materialData.current.innerHTML = '暂无数据';
+        materialData.current.className = '';
+      }
+    }
   }, [JSON.stringify(dataResource)]);
 
   const mediaRef = useRef<HTMLSpanElement>(null);
   const materialRef = useRef<HTMLSpanElement>(null);
-  
+
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
@@ -215,16 +274,16 @@ const SidePopup: React.FC<Props> = observer((props) => {
   }, [JSON.stringify(dataSource)]);
 
   const handlerMediaClick = () => {
-    if(mediaRef.current?.innerHTML === "查看"){
+    if (mediaRef.current?.innerHTML === '查看') {
       setActiveType('media');
     }
-  }
+  };
 
-  const handlerMaterialClick =() => {
-    if(mediaRef.current?.innerHTML === "查看"){
+  const handlerMaterialClick = () => {
+    if (mediaRef.current?.innerHTML === '查看') {
       setActiveType('material');
     }
-  }
+  };
 
   const columns = [
     {
@@ -244,11 +303,15 @@ const SidePopup: React.FC<Props> = observer((props) => {
           return <span key={index}>{value}</span>;
         if (record.propertyName === '多媒体') {
           return (
-            <span onClick={handlerMediaClick} ref={mediaRef}>数据请求中</span>
+            <span onClick={handlerMediaClick} ref={mediaRef}>
+              数据请求中
+            </span>
           );
         } else if (record.propertyName === '材料表') {
           return (
-            <span onClick={handlerMaterialClick} ref={materialRef}>数据请求中</span>
+            <span onClick={handlerMaterialClick} ref={materialRef}>
+              数据请求中
+            </span>
           );
         } else if (record.propertyName === '审阅') {
           if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
@@ -401,39 +464,33 @@ const SidePopup: React.FC<Props> = observer((props) => {
   useEffect(() => {
     setRightSidebarVisiviabel(false);
   }, [JSON.stringify(checkedProjectIdList)]);
-  
-  const modalData = useMemo(() => {
-    const media = removeEmptChildren(
-      data[0].find((item: any) => item.propertyName === '多媒体')?.data,
-    );
-    const material = removeEmptChildren(
-      data[0].find((item: any) => item.propertyName === '材料表')?.data,
-    );
 
-    // const {  values } = feature;
-    // const { project_id } = values;
-    function removeEmptChildren(v: any): any[] {
-      if (Array.isArray(v)) {
-        return v.map((item) => {
-          if (item.children) {
-            if (item.children.length === 0) {
-              delete item.children;
-            } else {
-              item.children = removeEmptChildren(item.children);
-            }
-          }
-          return item;
-        });
-      }
-      return [];
-    }
-
-    return {
-      type: 'undefined',
-      media,
-      material,
-    };
-  }, [JSON.stringify(data)]);
+  const materialDataRes = useMemo(() => {
+    // const media = removeEmptChildren(
+    //   data[0].find((item: any) => item.propertyName === '多媒体')?.data,
+    // );
+    // const material = removeEmptChildren(
+    //   data[0].find((item: any) => item.propertyName === '材料表')?.data,
+    // );
+    return materialData?.content && materialData?.content.length > 0
+      ? removeEmptChildren(materialData?.content)
+      : [];
+    // function removeEmptChildren(v: any): any[] {
+    //   if (Array.isArray(v)) {
+    //     return v.map((item) => {
+    //       if (item.children) {
+    //         if (item.children.length === 0) {
+    //           delete item.children;
+    //         } else {
+    //           item.children = removeEmptChildren(item.children);
+    //         }
+    //       }
+    //       return item;
+    //     });
+    //   }
+    //   return [];
+    // }
+  }, [JSON.stringify(materialData)]);
   // const [ modalData ] = useState<ModalData>({ type: "media", media: [] });
 
   /**
@@ -452,7 +509,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         deviceId: commentRquestBody?.deviceId ?? '-100',
         content: Comment,
       });
-    }else{
+    } else {
       setActiveType(void 0);
     }
   };
@@ -520,15 +577,15 @@ const SidePopup: React.FC<Props> = observer((props) => {
             />
           </div>
           <Carousel ref={carouselRef} dots={false}>
-            {mediaItem(modalData.media)}
+            {mediaItem(mediaData?.content ?? [])}
           </Carousel>
         </Modal>
         {activeType === 'media' && (
           <Table
             key="media"
             columns={mediaColumns}
-            dataSource={modalData.media ?? []}
-            rowKey={() => uuid.v1()}
+            dataSource={mediaData?.content ?? []}
+            rowKey={(e) => e.id}
             pagination={false}
           ></Table>
         )}
@@ -538,7 +595,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
             columns={materiaColumns}
             pagination={false}
             rowKey={(r) => r.objID}
-            dataSource={modalData.material ?? []}
+            dataSource={materialData?.content ?? []}
             scroll={{ x: 1400, y: 350 }}
           ></Table>
         )}

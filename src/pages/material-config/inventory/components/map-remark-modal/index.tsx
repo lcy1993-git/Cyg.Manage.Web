@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useControllableValue } from 'ahooks';
-import { Modal, Input, Button, Select, message, Form, Spin } from 'antd';
+import { Modal, Input, message, Form, Spin } from 'antd';
 import { SetStateAction } from 'react';
 import { Dispatch } from 'react';
 import CyFormItem from '@/components/cy-form-item';
@@ -42,6 +42,7 @@ const MapRemarkModal: React.FC<MapRemarkParams> = (props) => {
         setState(false);
       }
       refreshEvent?.();
+      form.resetFields();
     });
   };
 

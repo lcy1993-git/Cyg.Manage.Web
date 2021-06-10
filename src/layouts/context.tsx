@@ -4,7 +4,7 @@ interface LayoutContextValue {
     clearAgainLogin: () => void
     allProjectSearchProjectName: string
     allProjectSearchPerson: string
-    setAllProjectSearchProjectName: (value: string) => void
+    setAllProjectSearchProjectId: (value: string) => void
     setAllProjectSearchPerson: (value: string) => void
 }
 

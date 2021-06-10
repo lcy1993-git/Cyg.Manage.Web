@@ -67,7 +67,7 @@ const Index: React.FC = () => {
 
   const { data, loading } = useRequest(() => getChartConfig(), {
     onSuccess: () => {
-      const windowHeight = window.innerHeight - 90 > 828 ? window.innerHeight - 90 : 828;
+      const windowHeight = window.innerHeight - 120 > 828 ? window.innerHeight - 120 : 828;
       if (data) {
         const hasSaveConfig = JSON.parse(data);
         if (hasSaveConfig.config && hasSaveConfig.config.length > 0) {
@@ -86,7 +86,7 @@ const Index: React.FC = () => {
           setConfigArray(thisConfigArray);
         }
       } else {
-        const thisBoxHeight = windowHeight - 75;
+        const thisBoxHeight = windowHeight - 80;
         const totalHeight = divide(thisBoxHeight, 18);
         setConfigArray([
           { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
@@ -100,7 +100,7 @@ const Index: React.FC = () => {
           },
           { name: 'projectType', x: 9, y: 0, w: 3, h: 11, key: uuid.v1() },
           {
-            name: 'deliveryManage',
+            name: 'projectRefreshData',
             x: 0,
             y: 11,
             w: 3,
@@ -109,7 +109,7 @@ const Index: React.FC = () => {
           },
           { name: 'personLoad', x: 9, y: 11, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
           {
-            name: 'projectSchedule',
+            name: 'deliveryManage',
             x: 0,
             y: divide(totalHeight - 11, 2) + 11,
             w: 6,

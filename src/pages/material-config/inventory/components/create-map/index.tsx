@@ -315,7 +315,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
             key="cancle"
             onClick={() => {
               setState(false);
-              setActiveMaterialId('');
+              setLibTableSelectRow([]);
               setHasMapTableShowData([]);
             }}
           >
@@ -325,7 +325,11 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
             保存
           </Button>,
         ]}
-        onCancel={() => setState(false)}
+        onCancel={() => {
+          setState(false);
+          setLibTableSelectRow([]);
+          setHasMapTableShowData([]);
+        }}
       >
         <div className={styles.mapForm}>
           <div className={styles.resourceTable}>

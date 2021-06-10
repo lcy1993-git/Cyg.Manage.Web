@@ -26,7 +26,7 @@ interface ElementDiv extends Element {
 const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, history, match }) => {
   const [activeKey, setActiveKey] = useState<string>('/index');
 
-  const [allProjectSearchProjectName, setAllProjectSearchProjectName] = useState("");
+  const [allProjectSearchProjectName, setAllProjectSearchProjectId] = useState("");
   const [allProjectSearchPerson, setAllProjectSearchPerson] = useState("");
 
   const [routeList, setRouteList] = useState<RouteListItem[]>([
@@ -171,7 +171,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
         clearAgainLogin,
         allProjectSearchProjectName,
         allProjectSearchPerson,
-        setAllProjectSearchProjectName,
+        setAllProjectSearchProjectId: setAllProjectSearchProjectId,
         setAllProjectSearchPerson
       }}>
         <div className={styles.layoutContent}>

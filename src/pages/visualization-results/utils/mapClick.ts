@@ -97,7 +97,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
   // 处理点击事件点击到物体也会setFlase的bug
   let setRightSidebarVisiviabelFlag = false;
-
+  // 清除高亮
+  clearHighlightLayer(map)
   // 遍历选中的数据
   map.forEachFeatureAtPixel(evt.pixel, async function (feature: any, layer: any) {
     setRightSidebarVisiviabelFlag = true;
@@ -405,9 +406,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             //   break;
           }
         }
-        await getMedium(params).then((data: any) => {
-          pJSON['多媒体'] = data.content || [];
-        });
+        pJSON['多媒体'] = {params};
+        // await getMedium(params).then((data: any) => {
+        //   pJSON['多媒体'] = data.content || [];
+        // });
       }
     }
 
@@ -415,48 +417,59 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        await getlibId({ id: feature.getProperties().project_id }).then(
-          async (data: any) => {
-            const resourceLibID = data.content.libId;
-            const objectID =
-              feature.getProperties().mode_id || feature.getProperties().equip_model_id;
-            const materialParams: any = {
-              objectID,
-              resourceLibID,
-              forProject: 0,
-              forDesign: 0,
-              materialModifyList: [],
-            };
-            materialParams.layerName = layerName;
-            await getMaterialItemData(materialParams).then((res: any) => {
-              pJSON['材料表'] = [];
-              if (res.isSuccess) {
-                const filterData = res.content.filter((item: any) => item.parentID !== -1);
-                const data = filterData.map((item: any) => {
-                  return {
-                    ...item,
-                    state: feature.getProperties().state,
-                    children: [],
-                  };
-                });
-                const handlerData = data.reduce((curr: any, item: any) => {
-                  const exist = curr.find((currItem: any) => currItem.type === item.type);
-                  if (exist) {
-                    curr.forEach((currExist: any, index: any) => {
-                      if (currExist.type === exist.type) {
-                        curr[index].children.push(item);
-                      }
-                    });
-                  } else {
-                    curr.push(item);
-                  }
-                  return curr;
-                }, []);
-                pJSON['材料表'] = handlerData;
-              }
-            });
-          },
-        );
+
+        const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id
+        pJSON['材料表'] = {params: {
+          id: feature.getProperties().project_id,
+          objectID,
+          forProject: 0,
+          forDesign: 0,
+          materialModifyList: [],
+        }}
+        // await getlibId({ id: feature.getProperties().project_id }).then(
+        //   async (data: any) => {
+        //     const resourceLibID = data.content.libId;
+        //     const objectID =
+        //       feature.getProperties().mode_id || feature.getProperties().equip_model_id;
+        //     const materialParams: any = {
+        //       objectID,
+        //       resourceLibID,
+        //       forProject: 0,
+        //       forDesign: 0,
+        //       materialModifyList: [],
+        //     };
+        //     materialParams.layerName = layerName;
+        //     // pJSON['材料表'] = 
+
+        //     await getMaterialItemData(materialParams).then((res: any) => {
+        //       pJSON['材料表'] = [];
+        //       if (res.isSuccess) {
+        //         const filterData = res.content.filter((item: any) => item.parentID !== -1);
+        //         const data = filterData.map((item: any) => {
+        //           return {
+        //             ...item,
+        //             state: feature.getProperties().state,
+        //             children: [],
+        //           };
+        //         });
+        //         const handlerData = data.reduce((curr: any, item: any) => {
+        //           const exist = curr.find((currItem: any) => currItem.type === item.type);
+        //           if (exist) {
+        //             curr.forEach((currExist: any, index: any) => {
+        //               if (currExist.type === exist.type) {
+        //                 curr[index].children.push(item);
+        //               }
+        //             });
+        //           } else {
+        //             curr.push(item);
+        //           }
+        //           return curr;
+        //         }, []);
+        //         pJSON['材料表'] = handlerData;
+        //       }
+        //     });
+        //   },
+        // );
       }
     }
 
@@ -489,9 +502,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     ops.setRightSidebarData(resData);
     map.getTargetElement().style.cursor = 'default';
   });
+
   if(!setRightSidebarVisiviabelFlag) {
-    clearHighlightLayer(map)
-    // ops.setRightSidebarVisiviabel(false);
+    ops.setRightSidebarVisiviabel(false);
   }
 
 };
