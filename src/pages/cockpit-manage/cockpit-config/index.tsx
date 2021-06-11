@@ -218,6 +218,7 @@ const CockpitManage: React.FC = () => {
         w: 3,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
+        componentProps: ['projectRefreshData']
       },
       {
         name: 'personLoad',
