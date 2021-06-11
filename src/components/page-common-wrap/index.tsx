@@ -24,9 +24,9 @@ const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
         <span className={styles.explainHref} onClick={() => toExplain()}>
           《工程云设计平台管理端使用说明书》
         </span>
-        <div className={styles.explainContentCopyTip}>
+        {/* <div className={styles.explainContentCopyTip}>
           ©2018- 四川长园工程勘察设计有限公司 版权所有 蜀ICP备18013772号
-        </div>
+        </div> */}
       </div>
     </div>
   );
