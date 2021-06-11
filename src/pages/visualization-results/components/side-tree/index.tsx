@@ -224,6 +224,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(expandedKeysValue);
   };
 
+  const clearCheckAll = () => {
+    setIndeterminate(false);
+    setAllCheck(false);
+  };
+
   const getAllKey = () => {
     const keys = new Array<string>();
     const dfs = (v: TreeNodeType) => {
@@ -284,6 +289,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       setIndeterminate(true);
       setAllCheck(false);
     }
+
+    if (info.checkedNodes.length === 0) {
+      clearCheckAll();
+    }
     //去重,这里考虑到按公司筛选的时候，不同的公司可以有同一个项目
     let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
 
@@ -292,9 +301,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    if (projectIdList.length === 0) {
-      setIndeterminate(false);
-    }
     store.setProjectIdList(projectIdList);
   }, [projectIdList]);
 
@@ -309,6 +315,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         const data = generateProjectTree(treeListReponseData);
         setTreeData(data);
         initSideTree(data);
+        clearCheckAll();
       } else {
         message.warning('无数据');
       }
