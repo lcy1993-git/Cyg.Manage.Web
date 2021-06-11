@@ -26,7 +26,6 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [province, setProvince] = useState<string>('');
   const [remark, setRemark] = useState<string>('');
   const [versionName, setVersionName] = useState<string>('');
-  const [isUpload, setIsUpload] = useState<boolean>(false);
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
@@ -52,7 +51,8 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       .then(
         (res) => {
           message.success('导入成功');
-          setIsUpload(true);
+          setUploadFileFalse();
+          setState(false);
           return Promise.resolve();
         },
         (res) => {
@@ -60,23 +60,19 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           if (msg) {
             message.error('上传失败,' + msg);
           }
+          setUploadFileFalse();
           return Promise.reject('导入失败');
         },
       )
       .finally(() => {
         changeFinishEvent?.();
-        setUploadFileFalse();
+
         setRequestLoading(false);
       });
   };
 
-  const closeEvent = () => {
-    if (province != '' && versionName != '' && inventoryName != '' && isUpload) {
-      setState(false);
-      changeFinishEvent?.();
-      return;
-    }
-    message.info('请先填写和上传协议库存信息');
+  const onSave = () => {
+    setUploadFileTrue();
   };
 
   return (
@@ -90,7 +86,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => closeEvent()} loading={requestLoading}>
+        <Button key="save" type="primary" onClick={() => onSave()} loading={requestLoading}>
           保存
         </Button>,
       ]}
@@ -153,7 +149,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           rules={rule.file}
         >
           <FileUpload
-            uploadFileBtn
+            // uploadFileBtn={false}
             trigger={triggerUploadFile}
             uploadFileFn={saveInventoryEvent}
             maxCount={1}

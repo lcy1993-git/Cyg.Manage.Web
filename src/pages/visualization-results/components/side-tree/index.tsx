@@ -288,6 +288,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     if (allProjectKey.length > temp.length) {
       setIndeterminate(true);
       setAllCheck(false);
+    } else if (allProjectKey.length === temp.length) {
+      setAllCheck(true);
+      setIndeterminate(false);
+    } else {
+      clearCheckAll();
     }
 
     if (info.checkedNodes.length === 0) {

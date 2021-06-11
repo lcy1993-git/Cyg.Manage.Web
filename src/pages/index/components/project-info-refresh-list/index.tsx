@@ -15,22 +15,12 @@ export interface ProjectInfoRefreshListProps {
   currentAreaInfo: AreaInfo;
 }
 
-const map = new Map<number, string>([
-  [0, '删除'],
-  [1, '创建'],
-  [2, '安排'],
-]);
-
 const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaInfo }) => {
   const [listData, setListData] = useState<RefreshDataType[]>([]);
   const [refreshData, setrefreshData] = useState<RefreshDataType[]>([]);
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
   const inViewPort = useInViewport(ref);
-
-  useMount(() => {
-    console.log(refreshData);
-  });
 
   /**
    * count表示是可视条数是多少

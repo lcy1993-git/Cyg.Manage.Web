@@ -98,11 +98,10 @@ const HasMapModal: React.FC = () => {
     }
   };
 
-  // 列表搜索
-  // const search = () => {
+  // const resetEvent = () => {
   //   if (tableRef && tableRef.current) {
   //     // @ts-ignore
-  //     tableRef.current.search();
+  //     tableRef.current.reset();
   //   }
   // };
 
@@ -111,25 +110,24 @@ const HasMapModal: React.FC = () => {
       dataIndex: 'resourceLibName',
       index: 'resourceLibName',
       title: '资源库名称',
-      width: 180,
+      width: 240,
     },
     {
       dataIndex: 'name',
       index: 'name',
       title: '协议库名称',
-      width: 180,
+      width: 240,
     },
     {
       dataIndex: 'editor',
       index: 'editor',
       title: '编辑人',
-      width: 400,
+      width: 280,
     },
     {
       dataIndex: 'remark',
       index: 'remark',
       title: '备注',
-      width: 180,
     },
   ];
 

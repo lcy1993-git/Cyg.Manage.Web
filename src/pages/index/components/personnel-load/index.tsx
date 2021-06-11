@@ -24,13 +24,13 @@ const PersonnelLoad: React.FC<Props> = (props) => {
 
   useEffect(() => {
     //@ts-ignore
-    window.testClick = (personId: string) => {
+    window.toAllProject = (personId: string) => {
       setAllProjectSearchPerson(personId);
       history.push('/project-management/all-project');
     };
     return () => {
       //@ts-ignore
-      window.testClick = null;
+      window.toAllProject = null;
     };
   });
 
@@ -119,7 +119,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
           if (type === '1') {
             return `${name.name}<br />
                     项目数量:${name.value}
-                    <div>所有项目列表：<span  style="color: #0E7B3B;cursor: pointer;" onclick=testClick('${personId}')>跳转</span></div>
+                    <div>所有项目列表：<span  style="color: #0E7B3B;cursor: pointer;display: inline-block;width: 32px;height: 24px;" onclick=toAllProject('${personId}')>跳转</span></div>
                     `;
           }
           return `${name.name}<br />

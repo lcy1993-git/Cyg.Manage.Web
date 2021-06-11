@@ -28,6 +28,7 @@ interface CheckResultModalProps {
 const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
+  const [compileKeys, setCompileKeys] = useState<React.Key[]>([]);
   const [currentTab, setCurrentTab] = useState<string>('design');
   const { projectInfo, isResult = false } = props;
   const [requestLoading, setRequestLoading] = useState(false);
@@ -66,12 +67,12 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   };
 
   const createFile = async () => {
-    if (checkedKeys.length === 0) {
-      message.error('请至少选择一个文件进行下载');
-      return;
-    }
-
     if (currentTab === 'design') {
+      if (checkedKeys.length === 0) {
+        message.error('请至少选择一个文件进行下载');
+        return;
+      }
+
       try {
         setRequestLoading(true);
         const path = await createResult({
@@ -106,11 +107,15 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         setRequestLoading(false);
       }
     } else {
+      if (compileKeys.length === 0) {
+        message.error('请至少选择一个文件进行下载');
+        return;
+      }
       try {
         setRequestLoading(true);
         const path = await createCompileResult({
           projectId: projectInfo.projectId,
-          paths: checkedKeys,
+          paths: compileKeys,
         });
         const res = await downloadFileComplie({
           path: path,
@@ -190,7 +195,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
               <TabPane key="compile" tab="项目需求编制成果">
                 <CompileResultTab
                   compileResultData={compileResultData?.map(mapTreeData)}
-                  createEvent={setCheckedKeys}
+                  createEvent={setCompileKeys}
                   setTabEvent={setCurrentTab}
                 />
               </TabPane>
@@ -245,7 +250,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                 <TabPane key="compile" tab="项目需求编制成果">
                   <CompileResultTab
                     compileResultData={compileResultData?.map(mapTreeData)}
-                    createEvent={setCheckedKeys}
+                    createEvent={setCompileKeys}
                     setTabEvent={setCurrentTab}
                   />
                 </TabPane>
