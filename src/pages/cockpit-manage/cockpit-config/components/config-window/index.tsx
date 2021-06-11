@@ -7,11 +7,10 @@ interface ConfigWindowProps {
   editEvent?: (record: any) => void;
   deleteEvent?: (record: any) => void;
   record?: any;
-  edit?: boolean;
 }
 
 const ConfigWindow: React.FC<ConfigWindowProps> = (props) => {
-  const { record, deleteEvent, editEvent, edit = false, ...rest } = props;
+  const { record, deleteEvent, editEvent, ...rest } = props;
 
   const clickDeleteEvent = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, record: any) => {
     deleteEvent?.(record);
@@ -22,11 +21,10 @@ const ConfigWindow: React.FC<ConfigWindowProps> = (props) => {
 
   return (
     <div className={styles.configWindow} {...rest}>
-      {edit && (
-        <span className={styles.configWindowEditButton} onClick={() => editEvent?.(record)}>
-          <EditOutlined />
-        </span>
-      )}
+      <span className={styles.configWindowEditButton} onClick={() => editEvent?.(record)}>
+        <EditOutlined />
+      </span>
+
       <span
         className={styles.configWindowDeleteButton}
         onClick={(e) => clickDeleteEvent?.(e, record)}
