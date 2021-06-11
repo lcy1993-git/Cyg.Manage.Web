@@ -146,3 +146,39 @@ export const fileTreeFormData = (data: TreeData[]) => {
 export const delay = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+/**
+ * 可视化成果多媒体材料数据格式化
+ * @param content 
+ * @param getProperties 
+ * @returns 
+ */
+export const formDataMateral = (content: any, getProperties: any) => {
+  const filterData = content.filter((item: any) => item.parentID !== -1);
+  const data = filterData.map((item: any) => {
+    return {
+      ...item,
+      state: getProperties.state,
+      // children: [],
+    };
+  });
+  return data.reduce((curr: any, item: any) => {
+    const exist = curr.find((currItem: any) => currItem.type === item.type);
+    if (exist) {
+      curr.forEach((currExist: any, index: any) => {
+        if (currExist.type === exist.type) {
+          if(!Array.isArray(curr[index].children)){
+            curr[index].children = [];
+          }
+          curr[index].children.push(item);
+        }
+      });
+    } else {
+      if(!Array.isArray(curr)) {
+        curr = [];
+      }
+      curr.push(item);
+    }
+    return curr;
+  }, []);
+}
