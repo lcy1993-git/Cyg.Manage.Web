@@ -292,6 +292,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
+    if (projectIdList.length === 0) {
+      setIndeterminate(false);
+    }
     store.setProjectIdList(projectIdList);
   }, [projectIdList]);
 

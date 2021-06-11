@@ -1,8 +1,7 @@
-import { List } from 'antd';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
-import { useRequest, useInterval, useSize, useInViewport, useMount } from 'ahooks';
+import { useRequest, useSize, useInViewport, useMount } from 'ahooks';
 
 import ProjectItem from './components/project-Item';
 import {
@@ -12,8 +11,6 @@ import {
   RefreshDataType,
 } from '@/services/index';
 import moment from 'moment';
-import InifinityScrollList from './components/inifinity-scroll-list';
-import { json } from 'express';
 export interface ProjectInfoRefreshListProps {
   currentAreaInfo: AreaInfo;
 }
@@ -84,13 +81,13 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
     },
   });
 
-  // useEffect(() => {
-  //   if (inViewPort) {
-  //     run();
-  //   } else {
-  //     cancel();
-  //   }
-  // }, [inViewPort]);
+  useEffect(() => {
+    if (inViewPort) {
+      run();
+    } else {
+      cancel();
+    }
+  }, [inViewPort]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

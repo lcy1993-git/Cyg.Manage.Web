@@ -217,9 +217,10 @@ const CommentTable: FC<CommentProps> = (props) => {
               style={{ width: '100%' }}
               onSelect={(value) => setDeviceType(value)}
             >
-              {Array.from(types.keys()).map((v) => (
-                <Option key={v} value={v} children={types.get(v)} />
-              ))}
+              {Array.from(types.keys()).filter(
+                (v) =>
+                  types.get(v) === '下户' && <Option key={v} value={v} children={types.get(v)} />,
+              )}
             </Select>
           </TableSearch>
           <Button type="primary" onClick={() => reset()}>

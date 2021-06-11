@@ -184,7 +184,12 @@ const Index: React.FC = () => {
         <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }} ref={divRef}>
           {!loading && (
             <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-              <ResponsiveReactGridLayout breakpoints={{ lg: 120 }} cols={{ lg: 12 }} rowHeight={9}>
+              <ResponsiveReactGridLayout
+                style={{ position: 'relative' }}
+                breakpoints={{ lg: 120 }}
+                cols={{ lg: 12 }}
+                rowHeight={9}
+              >
                 {configComponentElement}
               </ResponsiveReactGridLayout>
             </div>
