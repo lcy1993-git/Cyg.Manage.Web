@@ -1,8 +1,7 @@
-import { List } from 'antd';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
-import { useRequest, useInterval, useSize, useInViewport, useMount } from 'ahooks';
+import { useRequest, useSize, useInViewport, useMount } from 'ahooks';
 
 import ProjectItem from './components/project-Item';
 import {
@@ -12,16 +11,9 @@ import {
   RefreshDataType,
 } from '@/services/index';
 import moment from 'moment';
-import InifinityScrollList from './components/inifinity-scroll-list';
 export interface ProjectInfoRefreshListProps {
   currentAreaInfo: AreaInfo;
 }
-
-const map = new Map<number, string>([
-  [0, '删除'],
-  [1, '创建'],
-  [2, '安排'],
-]);
 
 const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaInfo }) => {
   const [listData, setListData] = useState<RefreshDataType[]>([]);

@@ -67,7 +67,7 @@ const Index: React.FC = () => {
 
   const { data, loading } = useRequest(() => getChartConfig(), {
     onSuccess: () => {
-      const windowHeight = window.innerHeight - 120 > 828 ? window.innerHeight - 120 : 828;
+      const windowHeight = window.innerHeight - 90 > 828 ? window.innerHeight - 90 : 828;
       if (data) {
         const hasSaveConfig = JSON.parse(data);
         if (hasSaveConfig.config && hasSaveConfig.config.length > 0) {
@@ -86,43 +86,77 @@ const Index: React.FC = () => {
           setConfigArray(thisConfigArray);
         }
       } else {
-        const thisBoxHeight = windowHeight - 80;
+        const thisBoxHeight = windowHeight - 75;
         const totalHeight = divide(thisBoxHeight, 18);
         setConfigArray([
-          { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
+          {
+            name: 'toDo',
+            x: 0,
+            y: 0,
+            w: 3,
+            h: 11,
+            edit: true,
+            key: uuid.v1(),
+            componentProps: ['wait', 'arrange', 'other'],
+          },
           {
             name: 'mapComponent',
             x: 3,
             y: 0,
             w: 6,
+
             h: subtract(totalHeight, divide(totalHeight - 11, 2)),
             key: uuid.v1(),
+            componentProps: ['province'],
           },
-          { name: 'projectType', x: 9, y: 0, w: 3, h: 11, key: uuid.v1() },
+          {
+            name: 'projectType',
+            x: 9,
+            y: 0,
+            w: 3,
+            h: 11,
+            edit: true,
+            key: uuid.v1(),
+            componentProps: ['classify', 'category', 'stage', 'buildType', 'level'],
+          },
+          {
+            name: 'deliveryManage',
+            x: 0,
+            y: divide(totalHeight - 11, 2) + 10,
+            w: 6,
+            edit: true,
+            h: divide(totalHeight - 11, 2),
+            key: uuid.v1(),
+            componentProps: ['person', 'department', 'company'],
+          },
           {
             name: 'projectRefreshData',
             x: 0,
-            y: 11,
+            y: 10,
             w: 3,
             h: divide(totalHeight - 11, 2),
             key: uuid.v1(),
           },
-          { name: 'personLoad', x: 9, y: 11, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
           {
-            name: 'deliveryManage',
-            x: 0,
-            y: divide(totalHeight - 11, 2) + 11,
-            w: 6,
+            name: 'personLoad',
+            x: 9,
+            y: 10,
+            w: 3,
+            edit: true,
             h: divide(totalHeight - 11, 2),
             key: uuid.v1(),
+            componentProps: ['person', 'department', 'company'],
           },
+
           {
             name: 'projectProgress',
-            x: 6,
-            y: divide(totalHeight - 11, 2) + 11,
+            x: 8,
+            y: divide(totalHeight - 11, 2) + 10,
             w: 6,
+            edit: true,
             h: divide(totalHeight - 11, 2),
             key: uuid.v1(),
+            componentProps: ['gantt'],
           },
         ]);
       }
@@ -150,7 +184,12 @@ const Index: React.FC = () => {
         <div className={styles.indexPage} style={{ backgroundImage: `url(${bgSrc})` }} ref={divRef}>
           {!loading && (
             <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-              <ResponsiveReactGridLayout breakpoints={{ lg: 120 }} cols={{ lg: 12 }} rowHeight={9}>
+              <ResponsiveReactGridLayout
+                style={{ position: 'relative' }}
+                breakpoints={{ lg: 120 }}
+                cols={{ lg: 12 }}
+                rowHeight={9}
+              >
                 {configComponentElement}
               </ResponsiveReactGridLayout>
             </div>
