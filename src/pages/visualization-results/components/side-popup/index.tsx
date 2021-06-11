@@ -13,7 +13,7 @@ import { observer } from 'mobx-react-lite';
 
 import { findEnumKeyByCN } from '../../utils/loadEnum';
 import { formDataMateral } from '@/utils/utils';
-import { getlibId, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
+import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { CommentRequestType, addComment, fetchCommentList } from '@/services/visualization-results/side-popup';
 import styles from './index.less';
 
@@ -197,10 +197,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
 
   const [dataSource, setDataSource] = useState(dataResource);
 
-  const setMmaterialRefNone = (ref) => {
-    if(ref?.current?.innerHTML){
-      ref.current.innerHTML = '暂无数据';
-      ref.current.className = '';
+  const setMmaterialRefNone = () => {
+    if(materialRef?.current?.innerHTML){
+      materialRef.current.innerHTML = '暂无数据';
+      materialRef.current.className = '';
     }
   }
 
@@ -233,9 +233,9 @@ const SidePopup: React.FC<Props> = observer((props) => {
   // const [getProperties ,setProperties] = useState({});
 
   const returnlibId = async (materialParams: any) => {
-    await getlibId({ id: materialParams.id }).then((data)=> {      
+    await getlibId_new({ projectId: materialParams.id }).then((data)=> {      
       if(data.isSuccess){
-        const resourceLibID = data?.content?.libId
+        const resourceLibID = data?.content;
         materialDataRun({resourceLibID, ...materialParams.rest, layerName: "tower"});
       }
     });
@@ -256,13 +256,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
       // 材料表数据请求
       const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
         ?.params ?? {};
-      
       if (materialParams?.rest?.objectID && materialParams?.id) {
-        console.log(materialParams);
-        // setProperties(materialParams.getProperties)
         returnlibId(materialParams);
       }else{
-        setMmaterialRefNone(materialRef)
+        setMmaterialRefNone();
       }
     }
   }, [JSON.stringify(dataResource), rightSidebarVisible]);
@@ -311,13 +308,13 @@ const SidePopup: React.FC<Props> = observer((props) => {
         if (record.propertyName === '多媒体') {
           return (
             <span onClick={handlerMediaClick} ref={mediaRef}>
-              数据请求中
+              {mediaRef ? '暂无数据' : '数据请求中'}
             </span>
           );
         } else if (record.propertyName === '材料表') {
           return (
             <span onClick={handlerMaterialClick} ref={materialRef}>
-              数据请求中
+              {materialRef ? '暂无数据' : '数据请求中'}
             </span>
           );
         } else if (record.propertyName === '审阅') {
