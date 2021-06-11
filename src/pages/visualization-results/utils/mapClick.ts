@@ -452,6 +452,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (p === '导线相数') {
         pJSON[p] = feature.getProperties().kv_level === 2 ? '三相' : '两相';
       }
+      if(pJSON[p] === 'true') pJSON[p] = '是';
+      else if(pJSON[p] === 'false') pJSON[p] = '否';
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
     ops.setRightSidebarVisiviabel(true);
