@@ -67,7 +67,7 @@ const Index: React.FC = () => {
 
   const { data, loading } = useRequest(() => getChartConfig(), {
     onSuccess: () => {
-      const windowHeight = window.innerHeight - 90 > 828 ? window.innerHeight - 90 : 828;
+      const windowHeight = window.innerHeight - 115 > 828 ? window.innerHeight - 115 : 828;
       if (data) {
         const hasSaveConfig = JSON.parse(data);
         if (hasSaveConfig.config && hasSaveConfig.config.length > 0) {
@@ -89,74 +89,40 @@ const Index: React.FC = () => {
         const thisBoxHeight = windowHeight - 75;
         const totalHeight = divide(thisBoxHeight, 18);
         setConfigArray([
-          {
-            name: 'toDo',
-            x: 0,
-            y: 0,
-            w: 3,
-            h: 11,
-            edit: true,
-            key: uuid.v1(),
-            componentProps: ['wait', 'arrange', 'other'],
-          },
+          { name: 'toDo', x: 0, y: 0, w: 3, h: 11, key: uuid.v1() },
           {
             name: 'mapComponent',
             x: 3,
             y: 0,
             w: 6,
-
             h: subtract(totalHeight, divide(totalHeight - 11, 2)),
             key: uuid.v1(),
-            componentProps: ['province'],
           },
-          {
-            name: 'projectType',
-            x: 9,
-            y: 0,
-            w: 3,
-            h: 11,
-            edit: true,
-            key: uuid.v1(),
-            componentProps: ['classify', 'category', 'stage', 'buildType', 'level'],
-          },
-          {
-            name: 'deliveryManage',
-            x: 0,
-            y: divide(totalHeight - 11, 2) + 10,
-            w: 6,
-            edit: true,
-            h: divide(totalHeight - 11, 2),
-            key: uuid.v1(),
-            componentProps: ['person', 'department', 'company'],
-          },
+          { name: 'projectType', x: 9, y: 0, w: 3, h: 11, key: uuid.v1() },
           {
             name: 'projectRefreshData',
             x: 0,
-            y: 10,
+            y: 11,
             w: 3,
             h: divide(totalHeight - 11, 2),
             key: uuid.v1(),
           },
+          { name: 'personLoad', x: 9, y: 11, w: 3, h: divide(totalHeight - 11, 2), key: uuid.v1() },
           {
-            name: 'personLoad',
-            x: 9,
-            y: 10,
-            w: 3,
-            edit: true,
+            name: 'deliveryManage',
+            x: 0,
+            y: divide(totalHeight - 11, 2) + 11,
+            w: 6,
             h: divide(totalHeight - 11, 2),
             key: uuid.v1(),
-            componentProps: ['person', 'department', 'company'],
           },
-
           {
             name: 'projectProgress',
-            x: 8,
-            y: divide(totalHeight - 11, 2) + 10,
+            x: 6,
+            y: divide(totalHeight - 11, 2) + 11,
             w: 6,
-            edit: true,
             h: divide(totalHeight - 11, 2),
             key: uuid.v1(),
-            componentProps: ['gantt'],
           },
         ]);
       }
