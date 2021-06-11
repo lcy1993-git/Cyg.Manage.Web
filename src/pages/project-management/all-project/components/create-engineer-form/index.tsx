@@ -138,7 +138,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             name="name"
             labelWidth={120}
             align="right"
-            rules={Rule.required}
+            rules={Rule.name}
             required
           >
             <Input placeholder="请输入" />
@@ -218,7 +218,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.compiler}
           >
             <Input placeholder="请输入" />
           </CyFormItem>

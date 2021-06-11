@@ -304,7 +304,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'assetsOrganization' : [field.name, 'assetsOrganization']}
             labelWidth={120}
             align="right"
-            rules={Rule.required}
+            rules={Rule.assetsOrganization}
             required
           >
             <Input placeholder="请输入" />
@@ -317,6 +317,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'cityCompany' : [field.name, 'cityCompany']}
             labelWidth={120}
             align="right"
+            rules={Rule.wordsLimit}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -349,6 +350,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'countyCompany' : [field.name, 'countyCompany']}
             labelWidth={120}
             align="right"
+            rules={Rule.wordsLimit}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -491,10 +493,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               },
               () => ({
                 validator(_, value) {
-                  if (value <= 99999 && value >= 1) {
+                  if (value <= 99999 && value > 0) {
                     return Promise.resolve();
                   }
-                  return Promise.reject('请填写1~99999以内的整数');
+                  if (value === 0 || value > 99999) {
+                    return Promise.reject('请填写1~99999以内的整数');
+                  }
+                  return Promise.resolve();
                 },
               }),
               {
@@ -522,10 +527,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               },
               () => ({
                 validator(_, value) {
-                  if (value <= 99999 && value >= 1) {
+                  if (value <= 99999 && value > 0) {
                     return Promise.resolve();
                   }
-                  return Promise.reject('请填写1~99999以内的整数');
+                  if (value === 0 || value > 99999) {
+                    return Promise.reject('请填写1~99999以内的整数');
+                  }
+                  return Promise.resolve();
                 },
               }),
               {
