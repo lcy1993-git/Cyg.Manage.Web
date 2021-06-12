@@ -495,6 +495,7 @@ const CockpitManage: React.FC = () => {
             >
               {!loading && configArray.length > 0 && (
                 <ResponsiveReactGridLayout
+                  draggableCancel = ".noDraggable"
                   breakpoints={{ lg: 120 }}
                   cols={{ lg: 12 }}
                   rowHeight={9}
