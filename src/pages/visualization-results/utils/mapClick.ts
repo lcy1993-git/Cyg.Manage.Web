@@ -89,12 +89,12 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   let selected = false;
 
   // 处理点击事件点击到物体也会setFlase的bug
-  let setRightSidebarVisiviabelFlag = false;
+  // let setRightSidebarVisiviabelFlag = false;
   // 清除高亮
   clearHighlightLayer(map)
   // 遍历选中的数据
   map.forEachFeatureAtPixel(evt.pixel, async function (feature: any, layer: any) {
-    setRightSidebarVisiviabelFlag = true;
+    // setRightSidebarVisiviabelFlag = true;
     if (selected) return;
     selected = true;
     if (layer.getProperties().name == 'highlightLayer') {
@@ -410,10 +410,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-
         const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id
-        console.log(feature.getProperties());
-        
         pJSON['材料表'] = {
           params: {
             id: feature.getProperties().project_id,
@@ -452,6 +449,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (p === '导线相数') {
         pJSON[p] = feature.getProperties().kv_level === 2 ? '三相' : '两相';
       }
+      if(pJSON[p] === 'true') pJSON[p] = '是';
+      else if(pJSON[p] === 'false') pJSON[p] = '否';
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
     ops.setRightSidebarVisiviabel(true);
@@ -459,9 +458,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     map.getTargetElement().style.cursor = 'default';
   });
 
-  if(!setRightSidebarVisiviabelFlag) {
+  // if(!setRightSidebarVisiviabelFlag) {
     ops.setRightSidebarVisiviabel(false);
-  }
+  // }
 
 };
 
