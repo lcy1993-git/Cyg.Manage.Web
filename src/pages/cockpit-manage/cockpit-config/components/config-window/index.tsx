@@ -21,12 +21,12 @@ const ConfigWindow: React.FC<ConfigWindowProps> = (props) => {
 
   return (
     <div className={styles.configWindow} {...rest}>
-      <span className={styles.configWindowEditButton} onClick={() => editEvent?.(record)}>
+      <span className={`${styles.configWindowEditButton} noDraggable`} onClick={() => editEvent?.(record)}>
         <EditOutlined />
       </span>
 
       <span
-        className={styles.configWindowDeleteButton}
+        className={`${styles.configWindowDeleteButton} noDraggable`}
         onClick={(e) => clickDeleteEvent?.(e, record)}
       >
         <DeleteOutlined />
