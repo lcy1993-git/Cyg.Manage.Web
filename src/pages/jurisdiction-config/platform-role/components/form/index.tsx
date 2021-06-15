@@ -9,12 +9,21 @@ import rules from './rule';
 interface RoleManageForm {
   type?: 'add' | 'edit';
 }
+const { TextArea } = Input;
 
 const RoleManageForm: React.FC<RoleManageForm> = (props) => {
   const { type = 'edit' } = props;
   return (
     <>
-      <CyFormItem label="角色名称" name="roleName" required rules={rules.roleName}>
+      <CyFormItem
+        label="角色名称"
+        name="roleName"
+        required
+        rules={[
+          { required: true, message: '角色名称不能为空' },
+          { max: 12, message: '角色名称超出字符数限制，限制为12个字符' },
+        ]}
+      >
         <Input placeholder="请输入角色名" />
       </CyFormItem>
 
@@ -25,7 +34,7 @@ const RoleManageForm: React.FC<RoleManageForm> = (props) => {
       )}
 
       <CyFormItem label="备注" name="remark">
-        <Input placeholder="请输入备注" />
+        <TextArea placeholder="请输入备注" showCount maxLength={100} />
       </CyFormItem>
     </>
   );

@@ -259,7 +259,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={[{ required: true, message: '工程开始时间不能为空' }]}
           >
             <DatePicker />
           </CyFormItem>
@@ -271,7 +271,21 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            dependencies={['startTime']}
+            rules={[
+              { required: true, message: '工程结束时间不能为空' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    new Date(value).getTime() > new Date(getFieldValue('startTime')).getTime() ||
+                    !value
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('"工程结束时间"不得早于"工程开始时间"');
+                },
+              }),
+            ]}
           >
             <DatePicker />
           </CyFormItem>

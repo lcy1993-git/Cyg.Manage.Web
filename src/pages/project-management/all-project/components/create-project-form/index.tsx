@@ -171,6 +171,20 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'endTime']}
             name={isEmpty(field) ? 'endTime' : [field.name, 'endTime']}
+            dependencies={['startTime']}
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    new Date(value).getTime() > new Date(getFieldValue('startTime')).getTime() ||
+                    !value
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
+                },
+              }),
+            ]}
           >
             <DatePicker placeholder="请选择" />
           </CyFormItem>
@@ -542,7 +556,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               },
             ]}
           >
-            <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
+            <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
           </CyFormItem>
         </div>
       </div>

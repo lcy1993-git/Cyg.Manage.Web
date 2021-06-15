@@ -45,6 +45,7 @@ const CompanyFile: React.FC = () => {
   const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
   const [editingFileName, setEditingFileName] = useState<string>('');
   const [fileId, setFileId] = useState<string>();
+  const [fileCategory, setFileCategory] = useState<number>();
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [tableData, setTableData] = useState<TableRequestResult>();
@@ -216,7 +217,9 @@ const CompanyFile: React.FC = () => {
       return;
     }
     const editData = tableSelectRows[0];
+
     const editDataId = editData.id;
+    setFileCategory(editData.fileCategory);
     setEditingFileName(editData.name);
 
     setEditFormVisible(true);
@@ -537,6 +540,7 @@ const CompanyFile: React.FC = () => {
               uploadFileFn={editUploadFile}
               groupData={tableData}
               editingName={editingFileName}
+              fileCategory={fileCategory}
             />
           </Spin>
         </Form>
