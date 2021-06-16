@@ -3,7 +3,8 @@ import UrlSelect from '@/components/url-select';
 import { useGetProjectEnum } from '@/utils/hooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
 import { isEmpty } from 'lodash';
-import React, { memo } from 'react';
+import moment from 'moment';
+import React, { memo, useState } from 'react';
 
 import Rule from './project-form-rule';
 
@@ -17,11 +18,15 @@ interface CreateProjectFormProps {
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const { field = {}, areaId, company, companyName, status } = props;
+  const [startDate, setStartDate] = useState<Date>();
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
   //   { ready: !!areaId, refreshDeps: [areaId] },
   // );
+  const disableDate = (current: any) => {
+    return current < moment('2010-01-01') || current > moment('2051-01-01');
+  };
 
   const {
     projectCategory,
@@ -161,7 +166,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             fieldKey={[field.fieldKey, 'startTime']}
             name={isEmpty(field) ? 'startTime' : [field.name, 'startTime']}
           >
-            <DatePicker placeholder="请选择" />
+            <DatePicker
+              placeholder="请选择"
+              onChange={(value: any) => {
+                setStartDate(value);
+              }}
+              disabledDate={disableDate}
+            />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -175,10 +186,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             rules={[
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (
-                    new Date(value).getTime() > new Date(getFieldValue('startTime')).getTime() ||
-                    !value
-                  ) {
+                  if (new Date(value).getTime() > new Date(startDate).getTime() || !value) {
                     return Promise.resolve();
                   }
                   return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
@@ -186,7 +194,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               }),
             ]}
           >
-            <DatePicker placeholder="请选择" />
+            <DatePicker placeholder="请选择" disabledDate={disableDate} />
           </CyFormItem>
         </div>
       </div>
