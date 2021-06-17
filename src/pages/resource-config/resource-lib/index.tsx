@@ -30,6 +30,7 @@ import SaveImportLineStressSag from './components/upload-lineStressSag';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
+import { history } from 'umi';
 
 const { Search } = Input;
 
@@ -117,7 +118,7 @@ const ResourceLib: React.FC = () => {
       dataIndex: 'libName',
       index: 'libName',
       title: '名称',
-      width: 180,
+      width: 280,
     },
     {
       dataIndex: 'dbName',
@@ -153,9 +154,30 @@ const ResourceLib: React.FC = () => {
           </span>
         );
       },
-      width: 280,
+      width: 180,
       render: (text: any, record: any) => {
         return record.isDisabled === true ? '已禁用' : '';
+      },
+    },
+    {
+      dataIndex: 'action',
+      title: '操作',
+      width: 100,
+      render: (text: any, record: any) => {
+        return (
+          <span
+            className="canClick"
+            onClick={() => {
+              // console.log(record.id);
+
+              history.push({
+                pathname: `/resource-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
+              });
+            }}
+          >
+            <u>管理</u>
+          </span>
+        );
       },
     },
   ];

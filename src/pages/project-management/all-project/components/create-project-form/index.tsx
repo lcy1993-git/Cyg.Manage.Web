@@ -165,6 +165,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'startTime']}
             name={isEmpty(field) ? 'startTime' : [field.name, 'startTime']}
+            required
+            rules={[{ required: true, message: '项目开始日期不能为空' }]}
           >
             <DatePicker
               placeholder="请选择"
@@ -183,7 +185,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             fieldKey={[field.fieldKey, 'endTime']}
             name={isEmpty(field) ? 'endTime' : [field.name, 'endTime']}
             dependencies={['startTime']}
+            required
             rules={[
+              { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (new Date(value).getTime() > new Date(startDate).getTime() || !value) {

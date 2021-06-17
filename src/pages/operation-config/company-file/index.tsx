@@ -235,24 +235,20 @@ const CompanyFile: React.FC = () => {
     }
     const editData = data!;
     editForm.validateFields().then(async (values) => {
-      if (fileId) {
-        const submitInfo = Object.assign(
-          {
-            id: editData.id,
-            name: editData.name,
-            fileId: fileId,
-            describe: editData.describe,
-            groupId: editData.groupId,
-          },
-          values,
-        );
-        await updateCompanyFileItem(submitInfo);
-        refresh();
-        message.success('更新成功');
-        setEditFormVisible(false);
-      } else {
-        message.warn('文件未上传或上传失败');
-      }
+      const submitInfo = Object.assign(
+        {
+          id: editData.id,
+          name: editData.name,
+          fileId: fileId ?? editData.fileId,
+          describe: editData.describe,
+          groupId: editData.groupId,
+        },
+        values,
+      );
+      await updateCompanyFileItem(submitInfo);
+      message.success('更新成功');
+      setEditFormVisible(false);
+      search();
     });
   };
 
