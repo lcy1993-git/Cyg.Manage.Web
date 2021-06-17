@@ -50,6 +50,8 @@ import ProjectProgress from '../cockpit-config/components/cockpit-progress-compo
 
 import { CockpitConfigContext } from './context';
 import CockpitProjectInfoFreshList from './components/cockpit-project-info-refresh-list';
+import { copyProject } from '@/services/project-management/all-project';
+import EditRefreshDataModal from './components/add-engineer-project-modal/edit-refresh-data-form';
 
 export interface CockpitProps {
   name: string;
@@ -120,6 +122,7 @@ const CockpitManage: React.FC = () => {
   const [editDeliveryStatisticVisible, setEditDeliveryStatisticVisible] = useState<boolean>(false);
   const [editOtherStatisticVisible, setEditOtherStatisticVisible] = useState<boolean>(false);
   const [editEngineerProcessVisible, setEditEngineerProcessVisible] = useState<boolean>(false);
+  const [editRefreshDataVisible, setEditRefreshDataVisible] = useState<boolean>(false);
 
   const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
@@ -170,6 +173,7 @@ const CockpitManage: React.FC = () => {
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
     const totalHeight = divide(thisBoxHeight, 18);
+
     setConfigArray([
       {
         name: 'toDo',
@@ -218,6 +222,7 @@ const CockpitManage: React.FC = () => {
         w: 3,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
+        componentProps: ['projectRefreshData'],
       },
       {
         name: 'personLoad',
@@ -290,6 +295,10 @@ const CockpitManage: React.FC = () => {
         setCurrentRecord(record);
         setEditOtherStatisticVisible(true);
         break;
+      case 'projectRefreshData':
+        setCurrentRecord(record);
+        setEditRefreshDataVisible(true);
+        break;
     }
   };
 
@@ -298,6 +307,14 @@ const CockpitManage: React.FC = () => {
     const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
 
     const dataIndex = copyConfigArray.findIndex((item) => item.key === currentRecord.key);
+
+    // 如果componentProps 为空，删除这个组件
+    if (componentProps?.componentProps.length === 0) {
+      copyConfigArray.splice(dataIndex, 1);
+      setConfigArray(copyConfigArray);
+      return;
+    }
+
     copyConfigArray[dataIndex] = { ...componentProps };
     setConfigArray([...copyConfigArray]);
   };
@@ -305,12 +322,7 @@ const CockpitManage: React.FC = () => {
   const configComponentElement = configArray.map((item) => {
     return (
       <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h }}>
-        <ConfigWindow
-          edit={item.edit}
-          deleteEvent={deleteEvent}
-          editEvent={editEvent}
-          record={item}
-        >
+        <ConfigWindow deleteEvent={deleteEvent} editEvent={editEvent} record={item}>
           {getComponentByType(item.name, item.componentProps)}
         </ConfigWindow>
       </div>
@@ -483,6 +495,7 @@ const CockpitManage: React.FC = () => {
             >
               {!loading && configArray.length > 0 && (
                 <ResponsiveReactGridLayout
+                  draggableCancel = ".noDraggable"
                   breakpoints={{ lg: 120 }}
                   cols={{ lg: 12 }}
                   rowHeight={9}
@@ -601,6 +614,15 @@ const CockpitManage: React.FC = () => {
             changeFinishEvent={editComponentEvent}
             currentRecord={currentRecord}
             configArray={configArray}
+          />
+        )}
+
+        {editRefreshDataVisible && (
+          <EditRefreshDataModal
+            visible={editRefreshDataVisible}
+            onChange={setEditRefreshDataVisible}
+            changeFinishEvent={editComponentEvent}
+            currentRecord={currentRecord}
           />
         )}
       </PageCommonWrap>

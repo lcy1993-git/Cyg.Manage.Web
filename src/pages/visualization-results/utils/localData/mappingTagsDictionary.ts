@@ -20,6 +20,7 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "surveyor": "勘测人员",
         "survey_time": "勘测时间",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -27,7 +28,9 @@ function getMappingTagsDictionary() {
         "code": "名称",
         "type": "类型",
         "mode": "型号",
+        "state": "状态",
         "azimuth": "转角度数",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -46,6 +49,7 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "surveyor": "勘测人员",
         "survey_time": "勘测日期",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -62,6 +66,7 @@ function getMappingTagsDictionary() {
         "depth": "埋深(m)",
         "mode": "型号",
         "loop_name": "所属回路",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -98,6 +103,7 @@ function getMappingTagsDictionary() {
         "main_id": "所属杆塔",
         "azimuth": "方位角",
         "mode": "拉线型号",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -131,6 +137,7 @@ function getMappingTagsDictionary() {
         "state": "线路状态",
         "surveyor": "勘测人员",
         "survey_time": "勘测日期",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title",
       },
@@ -142,6 +149,7 @@ function getMappingTagsDictionary() {
         "loop_name": "回路名称",
         "loop_level": "回路层级",
         "state": "状态",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -152,6 +160,7 @@ function getMappingTagsDictionary() {
         "kv_level": "电压等级",
         "state": "状态",
         "name": "线路名称",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -170,6 +179,7 @@ function getMappingTagsDictionary() {
         "length": "长度(m)",
         "surveyor": "勘测人员",
         "survey_time": "勘测日期",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -180,6 +190,7 @@ function getMappingTagsDictionary() {
         "entry_mode": "下户方式",
         "state": "状态",
         "length": "长度(m)",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title",
       },
@@ -196,6 +207,7 @@ function getMappingTagsDictionary() {
         "state": "通道状态",
         "surveyor": "勘测人员",
         "survey_time": "勘测时间",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title",
       },
@@ -205,6 +217,7 @@ function getMappingTagsDictionary() {
         "arrangement": "排列方式",
         "length": "长度(m)",
         "state": "状态",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -222,6 +235,7 @@ function getMappingTagsDictionary() {
         "fix_mode": "安装方法",
         "surveyor": "勘测人员",
         "survey_time": "勘测时间",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -232,6 +246,7 @@ function getMappingTagsDictionary() {
         "capacity": "容量",
         "state": "状态",
         "mode": "型号",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -248,6 +263,7 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "surveyor": "勘测人员",
         "survey_time": "勘测时间",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title",
       },
@@ -257,6 +273,7 @@ function getMappingTagsDictionary() {
         "equip_model": "型号",
         "state": "状态",
         "azimuth": "方位角",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title",
       },
@@ -275,6 +292,7 @@ function getMappingTagsDictionary() {
         "line_kv_level": "电压等级",
         "surveyor": "勘测人员",
         "survey_time": "勘测时间",
+        //"isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title",
       },
@@ -285,6 +303,7 @@ function getMappingTagsDictionary() {
         "height": "高度(m)",
         "road_level": "道路等级",
         "line_kv_level": "电压等级",
+        //"isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title",
       },
@@ -309,6 +328,7 @@ function getMappingTagsDictionary() {
         "count": "户表数",
         "surveyor": "勘测人员",
         "survey_time": "勘测时间",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -324,6 +344,7 @@ function getMappingTagsDictionary() {
         "total_count": "户表位",
         "count": "户表数",
         "linePhase": "导线相数",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -343,6 +364,7 @@ function getMappingTagsDictionary() {
         "voltage": "电压等级",
         'parent_id': "所属杆塔",
         "state": "状态",
+        "isupgraded": "是否改造",
         "project_id": "title"
       },
       mappingTagValues: {
@@ -358,6 +380,7 @@ function getMappingTagsDictionary() {
         "code": "穿孔编号",
         "hole_profile": "穿孔示意图",
         'hole_direction': "方向",
+        "isupgraded": "是否改造",
         "project_id": "title"
       }
     };
@@ -417,6 +440,7 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "surveyor": "勘测人员",
         "survey_time": "勘测时间",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -426,6 +450,7 @@ function getMappingTagsDictionary() {
         "main_id": "所属杆塔",
         "mode": "型号",
         "state": "状态",
+        "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
@@ -441,6 +466,7 @@ function getMappingTagsDictionary() {
         "state": "状态",
         "azimuth": "方位角",
         "project_id": "所属项目",
+        "isupgraded": "是否改造",
         "remark": "备注"
       },
       mappingTagValues: {

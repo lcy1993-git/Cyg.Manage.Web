@@ -35,12 +35,10 @@ const geoServerPortObject = {
 const ipArray = ['47.108.63.23', '39.99.251.67'];
 
 const thisHost = `${window.location.hostname}:${window.location.port}`;
-// const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21571';
 const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21523';
 
 const geoServerBaseUrl =
-  // window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
-  window.location.hostname === 'localhost' ? '10.6.1.36' : window.location.hostname;
+  window.location.hostname === 'localhost' ? '10.6.1.53' : window.location.hostname;
 
 export const geoServeUrl = !ipArray.includes(`${window.location.hostname}`)
   ? `${document.location.protocol}//${geoServerBaseUrl}:${geoServerPort}/geoserver/pdd/ows`
@@ -122,7 +120,7 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'component' | 'material',
+  requestSource: 'common' | 'project' | 'resource' | 'tecEco',
   requestType = 'get',
   postType = 'body',
   libId: string,
