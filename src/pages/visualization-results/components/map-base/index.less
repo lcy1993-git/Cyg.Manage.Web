@@ -23,6 +23,38 @@
   user-select: none;
   -webkit-touch-callout: none;
 }
+
+.sideMenuTree {
+  height: calc(100% - 30px);
+  position: absolute;
+  top: 20px;
+  // left: -220px;
+  left: 13px;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  -khtml-user-select: none;
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  -webkit-touch-callout: none;
+  transition: left linear .2s;
+}
+.open {
+  left: 13px;
+}
+.close {
+  left: -220px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 .listMenu {
   position: absolute;
   top: 120px;
@@ -40,34 +72,23 @@
   -webkit-touch-callout: none;
 }
 
-.controlLayer {
-  width: 151px;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Chrome/Safari/Opera */
-  -khtml-user-select: none;
-  /* Konqueror */
-  -moz-user-select: none;
-  /* Firefox */
-  -ms-user-select: none;
-  /* Internet Explorer/Edge */
-  user-select: none;
-  -webkit-touch-callout: none;
-}
-
 .mapDisplay {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
   width: 151px;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Chrome/Safari/Opera */
-  -khtml-user-select: none;
-  /* Konqueror */
-  -moz-user-select: none;
-  /* Firefox */
-  -ms-user-select: none;
-  /* Internet Explorer/Edge */
-  user-select: none;
-  -webkit-touch-callout: none;
+  // // background-color: red;
+  // /* iOS Safari */
+  // -webkit-user-select: none;
+  // /* Chrome/Safari/Opera */
+  // -khtml-user-select: none;
+  // /* Konqueror */
+  // -moz-user-select: none;
+  // /* Firefox */
+  // -ms-user-select: none;
+  // /* Internet Explorer/Edge */
+  // user-select: none;
+  // -webkit-touch-callout: none;
 }
 
 @media (min-width: 1024px) {

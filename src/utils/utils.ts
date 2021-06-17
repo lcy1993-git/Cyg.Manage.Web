@@ -158,7 +158,7 @@ export const formDataMateral = (content: any, getProperties: any) => {
   const data = filterData.map((item: any) => {
     return {
       ...item,
-      state: getProperties.state,
+      state: getProperties?.state,
       // children: [],
     };
   });

@@ -21,29 +21,8 @@ const VisualizationResults: React.FC = observer(() => {
 
   return (
     <PageCommonWrap noPadding={true}>
-      <Filterbar />
-      <main
-        className={classNames(
-          styles.content,
-          'flex',
-          styles.sideNavShow,
-          visibleLeftSidebar ? '' : styles.sideNavHide,
-        )}
-      >
-        <div className={styles.sideTreeContainer}>
-          <div className={styles.sideNav}>
-            <SideTree />
-          </div>
-          <div className={styles.sideTreefooter}>
-            <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
-              {visibleLeftSidebar ? <MenuFoldOutlined style={{ fontSize: 16 }} /> : null}
-            </div>
-          </div>
-        </div>
-        <div className={classNames(styles.mapContainer, 'flex1')}>
-          <MapContainerShell />
-        </div>
-      </main>
+      {/* <Filterbar /> */}
+      <MapContainerShell />
     </PageCommonWrap>
   );
 });

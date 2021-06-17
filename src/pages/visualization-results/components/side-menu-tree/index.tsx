@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
-import _ from 'lodash';
-import { Tree, Tabs, Spin, message, Checkbox, Button } from 'antd';
+import _, { divide } from 'lodash';
+import { Tree, Tabs, Spin, message, Input, Button, Divider, DatePicker,  } from 'antd';
+import { SearchOutlined, AlignLeftOutlined, MessageOutlined, RightOutlined, ExportOutlined, NodeIndexOutlined, LeftOutlined } from '@ant-design/icons';
 import { useRequest, useSize } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
@@ -10,11 +11,15 @@ import {
   ProjectListByAreaType,
   Properties,
 } from '@/services/visualization-results/side-tree';
+import { downloadMapPositon } from '@/services/visualization-results/list-menu';
+import ExportMapPositionModal from '../export-map-position-modal';
+import MaterialModal from '../material-modal';
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import { flattenDeepToKey } from '../../utils/utils'
+import ControlLayers from '../control-layers';
 const { TabPane } = Tabs;
 
 export interface TreeNodeType {
@@ -29,6 +34,9 @@ export interface TreeNodeType {
 }
 export interface SideMenuProps {
   className?: string;
+  onChange: () => void;
+  sideMenuVisibel: boolean;
+  controlLayersProps: any;
 }
 
 /**
@@ -64,9 +72,9 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
 type keyType =
   | React.Key[]
   | {
-      checked: React.Key[];
-      halfChecked: React.Key[];
-    };
+    checked: React.Key[];
+    halfChecked: React.Key[];
+  };
 
 const areaArray = ["省", "市", "县", "工", "项"];
 
@@ -77,15 +85,23 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [buttonActive, setButtonActive] = useState<number>(0);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+
+  const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(
+    false,
+  );
+  const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
+
+  const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false);
+  const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
   const [allCheck, setAllCheck] = useState<boolean>(false);
   const [indeterminate, setIndeterminate] = React.useState(false);
   const store = useContainer();
   const { vState } = store;
-  const { filterCondition } = vState;
-  const { className } = props;
+  const { filterCondition, checkedProjectIdList} = vState;
+  const { className, onChange, sideMenuVisibel } = props;
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
-  const activeStyle = (key: string) => (tabActiveKey === key ? '#ebedee' : '#fff');
+  const activeStyle = (key: string) => (tabActiveKey === key ? '#0e7b3b' : '#000');
 
   useEffect(() => {
     setTreeData([]);
@@ -266,15 +282,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     return nodes;
   };
   const allProjectKey = useMemo(getAllProjectNodes, [treeData]);
-  const onCheckAll = (e: any) => {
-    if (e.target.checked) {
-      onCheck(getAllKey(), { checkedNodes: getAllProjectNodes() });
-      setIndeterminate(false);
-    } else {
-      clearState();
-    }
-    setAllCheck(e.target.checked);
-  };
+  // const onCheckAll = (e: any) => {
+  //   if (e.target.checked) {
+  //     onCheck(getAllKey(), { checkedNodes: getAllProjectNodes() });
+  //     setIndeterminate(false);
+  //   } else {
+  //     clearState();
+  //   }
+  //   setAllCheck(e.target.checked);
+  // };
 
   /**
    * 	
@@ -344,75 +360,168 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     return areaArray.map((item, index) => {
       return (
         <div key={item} className={styles.areaButtonsItem}>
-          <Button style={{width: "100%"}} type={buttonActive === index ? "primary" : "default"} onClick={() => handlerAreaButtonCheck(index)}>{item}</Button>
+          <Button style={{ width: "100%" }} type={buttonActive === index ? "primary" : "default"} onClick={() => handlerAreaButtonCheck(index)}>{item}</Button>
         </div>
 
       )
     })
   }
+  const treeNodeRender = (data: any) => {
+
+   return data.map((item: any) => {
+    let rest = {}
+    if(item.children && Array.isArray(item.Children)){
+      return <Tree.TreeNode key={item.key} title={item.title} checkable {...rest} children={treeNodeRender(item.children)}/>
+    }else{
+      return <Tree.TreeNode key={item.key} title={item.title} checkable/>
+    }
+
+  })
+
+  } 
+
+  const { data: mapPosition, run: downloadMapPositonRequest } = useRequest(downloadMapPositon, {
+    manual: true,
+    onSuccess: () => {
+      const a = document.createElement('a');
+      a.download = '项目坐标.zip';
+      const blob = new Blob([mapPosition], { type: 'application/zip;charset=utf-8' });
+      // text指需要下载的文本或字符串内容
+      a.href = window.URL.createObjectURL(blob);
+      // 会生成一个类似blob:http://localhost:8080/d3958f5c-0777-0845-9dcf-2cb28783acaf 这样的URL字符串
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setexportMapPositionModalVisible(false);
+      setexportMapPositionLoading(false);
+    },
+    onError: () => {
+      message.warn('导出失败');
+    },
+  });
+
+  const onOkWithExportMapPosition = () => {
+    downloadMapPositonRequest(checkedProjectIdList.map((item) => item.id));
+    setexportMapPositionLoading(true);
+  };
+
+  const renderStartDateButton = () => {
+    return (
+      <Button type="link" style={{width: "100%"}}>定位最早项目时间</Button>
+    );
+  }
+  const renderEndDateButton = () => {
+    return (
+      <Button type="link" style={{width: "100%"}}>定位最晚项目时间</Button>
+    );
+  }
 
   return (
-    <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>
-      <div style={{ backgroundColor: activeStyle('1') }} className={styles.tabBar}>
-        <div className={styles.tabBarItem} onClick={() => onTabChange('1')}>
-          按地区
-        </div>
-        <div
-          style={{ backgroundColor: activeStyle('2') }}
-          className={styles.tabBarItem}
-          onClick={() => onTabChange('2')}
-        >
-          按公司
-        </div>
+    <div className={styles.wrap}>
+      <div className={styles.searchWrap}>
+        <Input prefix={<SearchOutlined />} placeholder="请输入" style={{width: "78%"}}/>
+        <Button type="text"><AlignLeftOutlined />筛选</Button>
+        {/* <Button type="text"></Button> */}
       </div>
+      <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>
+        <div style={{ color: activeStyle('1') }} className={styles.tabBar}>
+          <div className={styles.tabBarItem} onClick={() => onTabChange('1')}>
+            按地区
+          </div>
+          <Divider type="vertical" />
+          <div
+            style={{ color: activeStyle('2') }}
+            className={styles.tabBarItem}
+            onClick={() => onTabChange('2')}
+          >
+            按公司
+          </div>
+        </div>
 
-      <Tabs
-        renderTabBar={() => <></>}
-        style={{ height: 'calc(100% - 72px)', backgroundColor: activeStyle(tabActiveKey) }}
-      >
-        <TabPane style={{ overflow: 'hidden' }} key="1">
-          {treeListDataLoading ? (
-            <Spin
-              spinning={treeListDataLoading}
-              className={styles.loading}
-              tip="正在载入中..."
-            ></Spin>
-          ) : null}
-          {!treeListDataLoading ? (
-            <>
-              {tabActiveKey === "1" ? (
-                <div className={styles.areaButtons}>
-                  {areaButtons(buttonActive)}
-                </div>
-              ) : null}
-              <Checkbox
+        <Tabs
+          renderTabBar={() => <></>}
+          style={{ height: 'calc(100% - 42px)', font: activeStyle(tabActiveKey), color: '#d6d6d6' }}
+        >
+          <TabPane style={{ overflow: 'hidden' }} key="1">
+            {treeListDataLoading ? (
+              <Spin
+                spinning={treeListDataLoading}
+                className={styles.loading}
+                tip="正在载入中..."
+              ></Spin>
+            ) : null}
+            {!treeListDataLoading ? (
+              <>
+                {tabActiveKey === "1" ? (
+                  <div className={styles.areaButtons}>
+                    {areaButtons(buttonActive)}
+                  </div>
+                ) : null}
+                {/* <Checkbox
                 checked={allCheck}
                 indeterminate={indeterminate}
                 style={{ marginLeft: '8px', marginTop: '4px' }}
                 onChange={onCheckAll}
               >
                 全选
-              </Checkbox>
-              <Tree
-                height={size.height ? size.height - 120 : 680}
-                checkable
-                onExpand={onExpand}
-                defaultExpandAll
-                expandedKeys={expandedKeys}
-                onCheck={(checked, info) => onCheck(checked, info)}
-                checkedKeys={checkedKeys}
-                treeData={treeData}
-                className={classNames(styles.sideMenu)}
-              >
+              </Checkbox> */}
+                <Tree
+                  height={size.height ? size.height - 120 : 680}
+                  checkable
+                  onExpand={onExpand}
+                  defaultExpandAll
+                  expandedKeys={expandedKeys}
+                  onCheck={(checked, info) => onCheck(checked, info)}
+                  checkedKeys={checkedKeys}
+                  treeData={treeData}
+                  className={classNames(styles.sideMenu)}
+                >
+                  {/* {
+                    treeNodeRender(treeData)
+                  } */}
+                </Tree>
+              </>
+            ) : null}
+          </TabPane>
+        </Tabs>
+      </div>
+      <div className={styles.timeLine}>
+      {/* <Space direction="vertical"> */}
+        <DatePicker style={{width: "100%"}} placeholder='请选择日期起' showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => store.setStartDate(e?.format('YYYY/MM/DD')) }/>
+        <DatePicker style={{width: "100%"}} placeholder='请选择日期止' showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => store.setEndDate(e?.format('YYYY/MM/DD'))}/>
 
-
-                
-              </Tree>
-            </>
-          ) : null}
-        </TabPane>
-      </Tabs>
+      {/* </Space> */}
+      </div>
+      <div className={styles.functionButton}>
+        <div className={styles.row}>
+          <Button onClick={() => setexportMapPositionModalVisible(true)}><ExportOutlined />导出坐标</Button>
+          <Button onClick={() => setMaterialModalVisible(true)}><NodeIndexOutlined />材料统计</Button>
+        </div>
+        <div className={styles.row}>
+          <Button><MessageOutlined />成果管理</Button>
+          <Button><MessageOutlined />审阅消息</Button>
+        </div>
+      </div>
+      <div className={styles.controlLayers}>
+        <ControlLayers {...props.controlLayersProps}/>
+      </div>
+      <div className={styles.handlerSideBarVisibelButton} onClick={() => onChange()}>
+        {sideMenuVisibel ? <LeftOutlined style={{fontSize: 10}} /> : <RightOutlined style={{fontSize: 10}}/>}
+      </div>
+      <ExportMapPositionModal
+        confirmLoading={exportMapPositionLoading}
+        visible={exportMapPositionModalVisible}
+        onCancel={() => setexportMapPositionModalVisible(false)}
+        onOk={onOkWithExportMapPosition}
+      />
+      <MaterialModal
+        checkedProjectIdList={checkedProjectIdList?.map((v: ProjectList) => v.id)}
+        visible={materialModalVisible}
+        onCancel={() => setMaterialModalVisible(false)}
+        onOk={() => setMaterialModalVisible(false)}
+      />
     </div>
+
   );
 });
 

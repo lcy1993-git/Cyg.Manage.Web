@@ -78,3 +78,28 @@ export const format = (fmt: string, date: Date) => { //author: meizz
       if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
   return fmt;
 }
+
+/**
+ * 可视化成果层级、省市县项工可展开列方法
+ * 
+ * 根据数据data寻找所含deep层级的数据的相关字段key,并返回一个key组成的数组
+ * @param data 数据源
+ * @param deep 层级
+ * @param key 字段名
+ * @param root 根节点key
+ * @returns key[]
+ */
+export const flattenDeepToKey = (data: any[], deep: number, key: string, root: number | string) => {
+  let resData = root ? [root] : [];
+  if(deep === 0) return resData;
+  const recursionFn = (data: any, currentDeep: any) => {
+    data.forEach((item: any) => {
+      resData.push(item[key]);
+      if(currentDeep < deep && item.children && Array.isArray(item.children)){
+        recursionFn(item.children, currentDeep + 1)
+      }
+    })
+  }
+  recursionFn(data, 1);
+  return resData;
+}
