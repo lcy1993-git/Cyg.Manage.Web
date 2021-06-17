@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Checkbox, Divider } from 'antd';
-import Icon from '@ant-design/icons';
+import { QuestionCircleOutlined }  from '@ant-design/icons';
 
 import styles from './index.less';
+import { text } from 'express';
 
 interface ListProps {
   name: string;
@@ -24,10 +25,9 @@ interface Props {
 const ListItem = (props: ListProps) => {
   const { name, state, onChange } = props;
   return (
-    <div className={styles.listItem} key={'listItem' + name}>
-      <Checkbox defaultChecked={state} onChange={onChange}>
-        {name}
-      </Checkbox>
+    <div className={styles.listItem } key={'listItem' + name} onClick={onChange}>
+        <div className={state ? styles.active : null}><QuestionCircleOutlined /></div>
+        <div className={state ? styles.active : null}><span className={styles.text}>{name}</span></div>
     </div>
   );
 };
@@ -53,19 +53,19 @@ const ControlLayers = (props: Props) => {
             state={surveyLayerVisible}
             onChange={() => setSurveyLayerVisible(!surveyLayerVisible)}
           />
-
+          <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="方案图层"
             state={planLayerVisible}
             onChange={() => setPlanLayerVisible(!planLayerVisible)}
           />
-
+          <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="设计图层"
             state={designLayerVisible}
             onChange={() => setDesignLayerVisible(!designLayerVisible)}
           />
-
+          <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="拆除图层"
             state={dismantleLayerVisible}

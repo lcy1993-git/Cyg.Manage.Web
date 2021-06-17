@@ -29,6 +29,7 @@ import { initIpLocation, loadEnums } from '@/services/visualization-results/visu
 import styles from './index.less';
 import MapDisplay from '../map-display';
 import Timeline from '../timeline';
+import SideMenuTree from '../side-menu-tree';
 import ListMenu from '../list-menu';
 import classnames from 'classnames';
 
@@ -42,6 +43,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false);
   const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false);
   const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false);
+  const [sideMenuVisibel, setSideMenuVisibel] = useState(true);
   // 从Vstate获取外部传入的数据
   const store = useContainer();
   const { vState } = store;
@@ -54,7 +56,11 @@ const BaseMap = observer((props: BaseMapProps) => {
     observeTrack,
     confessionTrack,
     checkedProjectDateList,
+    startDate,
+    endDate
   } = vState;
+  console.log(startDate, endDate);
+  
   const { kvLevel } = filterCondition;
 
   const boxSize = useSize(mapElement);
@@ -110,7 +116,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
     map && refreshMap(ops, projects!, true, normalClickDate);
-  }, [JSON.stringify(normalClickDate)]);
+  }, [startDate, endDate]);
 
   // 动态刷新轨迹
   useEffect(() => {
@@ -214,7 +220,16 @@ const BaseMap = observer((props: BaseMapProps) => {
     getLayerByName('imgLayer', layers).setVisible(false);
     getLayerByName('vecLayer', layers).setVisible(true);
   };
-
+  const controlLayersProps = {
+    surveyLayerVisible: surveyLayerVisible,
+    planLayerVisible: planLayerVisible,
+    designLayerVisible: designLayerVisible,
+    dismantleLayerVisible: dismantleLayerVisible,
+    setSurveyLayerVisible: setSurveyLayerVisible,
+    setPlanLayerVisible: setPlanLayerVisible,
+    setDesignLayerVisible: setDesignLayerVisible,
+    setDismantleLayerVisible: setDismantleLayerVisible,
+  }
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
@@ -231,11 +246,15 @@ const BaseMap = observer((props: BaseMapProps) => {
           ) : null}
         </div>
       </div>
-
-      <div className={styles.listMenu}>
-        <ListMenu />
+      
+      <div className={`${styles.sideMenuTree} ${sideMenuVisibel ? styles.open : styles.close}`}>
+        <SideMenuTree onChange={() => setSideMenuVisibel(!sideMenuVisibel)} sideMenuVisibel={sideMenuVisibel} controlLayersProps={controlLayersProps}/>
       </div>
-      <div className={styles.controlLayer}>
+
+      {/* <div className={styles.listMenu}>
+        <ListMenu />
+      </div> */}
+      {/* <div className={styles.controlLayer}>
         <CtrolLayers
           surveyLayerVisible={surveyLayerVisible}
           planLayerVisible={planLayerVisible}
@@ -246,13 +265,14 @@ const BaseMap = observer((props: BaseMapProps) => {
           setDesignLayerVisible={setDesignLayerVisible}
           setDismantleLayerVisible={setDismantleLayerVisible}
         />
-      </div>
+      </div> */}
 
       <div className={styles.mapDisplay}>
         <MapDisplay onSatelliteMapClick={onSatelliteMapClick} onStreetMapClick={onStreetMapClick} />
       </div>
-
-      <Footer onlocationClick={onlocationClick} />
+      <div className={styles.footer}>
+        <Footer onlocationClick={onlocationClick} />
+      </div>
       <SidePopup
         rightSidebarVisible={rightSidebarVisiviabel}
         data={rightSidebarData}
