@@ -88,6 +88,13 @@ export const getlibId = (params: any) => {
   );
 };
 
+export const getModulesRequest = (params: any) => {
+  return request(
+    `${baseUrl.resourceV1}/LibraryDesign/GetTowerModuleList`,
+    { method: 'POST', data: { ...params } },
+  );
+}
+
 // 加载图层模板
 function format(that: any, ...args: any) {
   let result = that;
@@ -106,6 +113,7 @@ function format(that: any, ...args: any) {
   }
   return result;
 }
+
 export const loadLayer: any = (postData: any, layerName: any) => {
   return request(wfsBaseURL, { method: 'POST', data: format(postData, { '0': layerName }) });
 };

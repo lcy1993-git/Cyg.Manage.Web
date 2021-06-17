@@ -632,6 +632,43 @@ const getScale = (map: any) => {
   return '1 : ' + text;
 };
 
+const CalcTowerAngle = (startLine: any, endLine: any, isLeft: boolean) => {
+  startLine[0] = transform(startLine[0], 'EPSG:4326', 'EPSG:3857');
+  startLine[1] = transform(startLine[1], 'EPSG:4326', 'EPSG:3857');
+  endLine[0] = transform(endLine[0], 'EPSG:4326', 'EPSG:3857');
+  endLine[1] = transform(endLine[1], 'EPSG:4326', 'EPSG:3857');
+  let startLineAngle = computeAngle(startLine[0], startLine[1]);
+  console.log(startLineAngle, 1)
+  let startLineSupAngle = startLineAngle > 180 ? startLineAngle - 180 : 180 + startLineAngle;
+  let endLineAngle = computeAngle(endLine[0], endLine[1]);
+  console.log(endLineAngle, 2)
+  let angle = Math.abs(endLineAngle - startLineAngle);
+  if (angle >= 180) angle = 360 - angle; //即为补角
+  if (startLineAngle <= 180) {
+    if (endLineAngle > startLineAngle && endLineAngle < startLineSupAngle) isLeft = true;
+    else isLeft = false;
+  } else {
+    if (endLineAngle < startLineAngle && endLineAngle > startLineSupAngle) isLeft = false;
+    else isLeft = true;
+  }
+  return [angle, isLeft];
+};
+
+const computeAngle = (point1: any, point2: any) => {
+  let dx = point2[0] - point1[0];
+  let dy = point2[1] - point1[1];
+  let radian = Math.atan2(dy, dx);
+  let angle = (180 / Math.PI) * radian;
+  return angle;
+};
+
+const ToDegrees = (val: any) => {
+  var degree = parseInt(val);
+  var min = parseInt((val - degree) * 60);
+  var sec = parseInt((val - degree) * 3600 - min * 60);
+  return degree + '°' + min + '′' + sec + '″';
+};
+
 export {
   refreshMap,
   getLayerByName,
@@ -641,4 +678,6 @@ export {
   clearTrackLayers,
   relocateMap,
   getScale,
+  CalcTowerAngle,
+  ToDegrees
 };

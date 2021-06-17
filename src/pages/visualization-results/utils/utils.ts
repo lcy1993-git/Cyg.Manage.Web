@@ -13,18 +13,22 @@ export const getTime = (t: any) => {
  * @returns xml文本 STRING
  */
 export const getXmlData = (projects: ProjectList[], propTime: string | undefined) => {
-  const postData = projects.reduce((pre, { id, time }) => {
+  const postData = '<Or>' + projects.reduce((pre, { id, time }) => {
     let value = "";
     if(!time || !propTime || getTime(propTime) >= getTime(time)) {
       value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
     }
     return pre + value
-  }, "");
+  }, "") + '</Or>';
   return getBaseXmlData(postData);
 }
 
-export const getCustomXmlData = (name: string, vlaue: any) => {
-  const postData = `<PropertyIsEqualTo><PropertyName>${name}</PropertyName><Literal>${vlaue}</Literal></PropertyIsEqualTo>`;
+export const getCustomXmlData = (name: string, value: any) => {
+    const postData = `<PropertyIsEqualTo><PropertyName>${name}</PropertyName><Literal>${value}</Literal></PropertyIsEqualTo>`;
+  return getBaseXmlData(postData);
+}
+
+export const getCustomXmlDataByWhere = (postData: string) => {
   return getBaseXmlData(postData);
 }
 
@@ -34,8 +38,8 @@ const getBaseXmlData = (postData: string) => {
                   outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' 
                   xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
                   xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'>
-                  <wfs:Query typeName='{0}' srsName='EPSG:4326'><ogc:Filter><Or>`;
-  const end = "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
+                  <wfs:Query typeName='{0}' srsName='EPSG:4326'><ogc:Filter>`;
+  const end = "</ogc:Filter></wfs:Query></wfs:GetFeature>";
   return head + postData + end;
 }
 

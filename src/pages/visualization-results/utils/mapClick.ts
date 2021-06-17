@@ -4,9 +4,9 @@ import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
-import { getScale, clearHighlightLayer, getLayerByName } from './methods';
-import { getCustomXmlData } from './utils';
-import { getGisDetail, loadLayer } from '@/services/visualization-results/visualization-results';
+import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees } from './methods';
+import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
+import { getGisDetail, loadLayer, getlibId_new, getModulesRequest } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 // const mappingTagsData = getMappingTagsDictionary();
 // const mappingTagsDictionary: any =typeof mappingTagsData === 'string' ? JSON.parse(mappingTagsData) : {};
@@ -84,14 +84,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   } else {
     mappingTagsDictionary = {};
   }
-  
+
   let mappingTags: any, mappingTagValues;
   let selected = false;
 
   // 处理点击事件点击到物体也会setFlase的bug
   // let setRightSidebarVisiviabelFlag = false;
   // 清除高亮
-  clearHighlightLayer(map)
+  clearHighlightLayer(map);
   // 遍历选中的数据
   map.forEachFeatureAtPixel(evt.pixel, async function (feature: any, layer: any) {
     // setRightSidebarVisiviabelFlag = true;
@@ -359,6 +359,73 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             pJSON[mappingTag] = Number(feature.getProperties()[p])
               ? Number(feature.getProperties()[p])?.toFixed(2)
               : 0;
+              if (layerName === 'tower') {
+                pJSON[mappingTag] = feature.getProperties()[p];
+              }
+            // if (layerName === 'tower') {
+            //   let angleString = '0';
+            //   await loadLayer(
+            //     getCustomXmlDataByWhere(
+            //       `<And><Or><PropertyIsEqualTo><PropertyName>start_id</PropertyName><Literal>${feature.getProperties().id}</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>end_id</PropertyName><Literal>${feature.getProperties().id}</Literal></PropertyIsEqualTo></Or><PropertyIsNotEqualTo><PropertyName>loop_name</PropertyName><Literal></Literal></PropertyIsNotEqualTo></And>`,
+            //     ),
+            //     `pdd:${layerType}_line`,
+            //   ).then((data: any) => {
+            //     if (data.features.length >= 2) {
+            //       let obj = {};
+            //       let loop_level_max;
+            //       for (let i = 0; i < data.features.length; i++) {
+            //         let ai = data.features[i];
+            //         if (!loop_level_max) {
+            //           loop_level_max = ai.properties.loop_level;
+            //         } else {
+            //           if (loop_level_max > ai.properties.loop_level)
+            //             loop_level_max = ai.properties.loop_level;
+            //         }
+            //         if (!obj[ai.properties.loop_name]) {
+            //           obj[ai.properties.loop_name] = [ai];
+            //         } else {
+            //           obj[ai.properties.loop_name].push(ai);
+            //         }
+            //       }
+
+            //       let angle,
+            //         angleMax = 0;
+            //       let isLeftOnMax = true,
+            //         isLeft = true;
+            //       for (let key in obj) {
+            //         let looplines = obj[key];
+            //         if (
+            //           looplines.length !== 2 ||
+            //           loop_level_max !== looplines[0].properties.loop_level ||
+            //           loop_level_max !== looplines[1].properties.loop_level
+            //         )
+            //           continue;
+            //         let line0attri = looplines[0];
+            //         let line1attri = looplines[1];
+            //         console.log(111)
+            //         if (line0attri.properties.loop_seq > line1attri.properties.loop_seq) {
+            //           line0attri = looplines[1];
+            //           line1attri = looplines[0];
+            //         }
+            //         let res: any = CalcTowerAngle(
+            //           line0attri.geometry.coordinates,
+            //           line1attri.geometry.coordinates,
+            //           isLeft,
+            //         );
+            //         angle = res[0];
+            //         isLeft = res[1];
+            //         if (angle > angleMax) {
+            //           angleMax = angle;
+            //           isLeftOnMax = isLeft;
+            //         }
+            //       }
+            //       // 格式化反回转角字符串
+            //       if (isLeftOnMax) angleString = `左:${ToDegrees(Math.abs(angleMax))}`;
+            //       else angleString = `右:${ToDegrees(Math.abs(angleMax))}`;
+            //       pJSON[mappingTag] = angleString;
+            //     }
+            //   });
+            // }
             break;
           case 'capacity':
             if (feature.getProperties()[p].indexOf('kVA') >= 0)
@@ -399,7 +466,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             //   break;
           }
         }
-        pJSON['多媒体'] = {params};
+        pJSON['多媒体'] = { params };
         // await getMedium(params).then((data: any) => {
         //   pJSON['多媒体'] = data.content || [];
         // });
@@ -410,7 +477,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id
+        const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id;
         pJSON['材料表'] = {
           params: {
             id: feature.getProperties().project_id,
@@ -419,10 +486,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               forProject: 0,
               forDesign: 0,
               materialModifyList: [],
-              layerName
+              layerName,
             },
-            getProperties: feature.getProperties()
-        }}
+            getProperties: feature.getProperties(),
+          },
+        };
       }
     }
 
@@ -442,15 +510,25 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         pJSON[p] = `${feature.getProperties().rod}*${feature.getProperties().height}`;
       }
       if (p === '呼称高') {
-        let hcg = pJSON['高度(m)'] - pJSON['埋深(m)'];
-        hcg = isNaN(hcg) ? 0 : hcg;
-        pJSON[p] = hcg;
+        await getlibId_new({ projectId: feature.getProperties().project_id }).then(async (data)=> {      
+          if(data.isSuccess){
+            const resourceLibID = data?.content;
+            await getModulesRequest({
+              moduleIDs: [feature.getProperties().mode_id],
+              resourceLibID
+            }).then((res) => {
+              if(res.isSuccess && res?.content.length > 0){
+                pJSON[p] = res?.content[0].nominalHeight;
+              }
+            })
+          }
+        });
       }
       if (p === '导线相数') {
         pJSON[p] = feature.getProperties().kv_level === 2 ? '三相' : '两相';
       }
-      if(p === "是否改造") {
-        pJSON[p] ? pJSON[p] = '是' : pJSON[p] = '否';
+      if (p === '是否改造') {
+        pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
@@ -460,9 +538,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   });
 
   // if(!setRightSidebarVisiviabelFlag) {
-    ops.setRightSidebarVisiviabel(false);
+  ops.setRightSidebarVisiviabel(false);
   // }
-
 };
 
 // 当前经纬度映射到HTML节点
