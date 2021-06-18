@@ -48,6 +48,7 @@ const ResourceLib: React.FC = () => {
   const [status, setStatus] = useState<string>('0');
 
   const [libId, setLibId] = useState<string>('');
+  const [currentManageId, setCurrentManageId] = useState<string>(''); //当前管理 模块的资源库Id
 
   const { data: keyData } = useRequest(() => getUploadUrl());
 
@@ -57,6 +58,8 @@ const ResourceLib: React.FC = () => {
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
   });
+
+  console.log(window.location.pathname);
 
   const searchComponent = () => {
     return (
@@ -164,12 +167,11 @@ const ResourceLib: React.FC = () => {
       title: '操作',
       width: 100,
       render: (text: any, record: any) => {
-        return (
+        return window.location.pathname != '/resource-config/resource-manage' ? (
           <span
             className="canClick"
             onClick={() => {
-              // console.log(record.id);
-
+              setCurrentManageId(record.id);
               history.push({
                 pathname: `/resource-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
               });
@@ -177,6 +179,8 @@ const ResourceLib: React.FC = () => {
           >
             <u>管理</u>
           </span>
+        ) : (
+          <span>管理</span>
         );
       },
     },
@@ -210,8 +214,13 @@ const ResourceLib: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
+      return;
+    }
 
     setEditFormVisible(true);
     const ResourceLibData = await run(editDataId);
@@ -255,6 +264,13 @@ const ResourceLib: React.FC = () => {
       message.warning('请选择要操作的行');
       return;
     }
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
+      return;
+    }
     setLibId(tableSelectRows[0].id);
     setUploadLibVisible(true);
   };
@@ -264,6 +280,13 @@ const ResourceLib: React.FC = () => {
       message.warning('请选择要操作的行');
       return;
     }
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
+      return;
+    }
     setLibId(tableSelectRows[0].id);
     setUploadDrawingVisible(true);
   };
@@ -271,6 +294,13 @@ const ResourceLib: React.FC = () => {
   const importLineStreeSagEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择要操作的行');
+      return;
+    }
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
       return;
     }
     setLibId(tableSelectRows[0].id);

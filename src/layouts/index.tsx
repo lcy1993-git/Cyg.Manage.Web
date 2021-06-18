@@ -84,6 +84,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   ) => {
     const copyRouteList = routeList.map((item) => item);
     const keyIndex = copyRouteList.findIndex((item) => item.tabKey === key);
+    console.log(copyRouteList)
 
     // 判断他当前删除的是不是当前激活的tab,如果是，则需要激活这个tab的相邻的tab,如果不是，就直接删除
     let needActiveIndex = 0;

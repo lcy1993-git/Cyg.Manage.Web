@@ -420,7 +420,8 @@ const Material: React.FC = () => {
   };
 
   return (
-    <PageCommonWrap>
+    // <PageCommonWrap>
+    <>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -508,7 +509,8 @@ const Material: React.FC = () => {
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportMaterialVisible}
       />
-    </PageCommonWrap>
+      {/* </PageCommonWrap> */}
+    </>
   );
 };
 
