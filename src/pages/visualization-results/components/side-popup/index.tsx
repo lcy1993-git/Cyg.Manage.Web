@@ -567,6 +567,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           width="96%"
           onCancel={() => setMediaVisiable(false)}
           onOk={() => setMediaVisiable(false)}
+          destroyOnClose={true}
         >
           <div className={styles.mediaIconWrapLeft}>
             <DoubleLeftOutlined
