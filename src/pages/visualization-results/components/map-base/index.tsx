@@ -115,7 +115,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 动态刷新图层
   useEffect(() => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
-    map && refreshMap(ops, projects!, true, normalClickDate);
+    map && refreshMap(ops, projects!, true, startDate, endDate);
   }, [startDate, endDate]);
 
   // 动态刷新轨迹

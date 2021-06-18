@@ -12,10 +12,26 @@ export const getTime = (t: any) => {
  * @param propTime 时间
  * @returns xml文本 STRING
  */
-export const getXmlData = (projects: ProjectList[], propTime: string | undefined) => {
+export const getXmlData = (projects: ProjectList[], startDate: string | undefined, endDate: string | undefined) => {
   const postData = '<Or>' + projects.reduce((pre, { id, time }) => {
     let value = "";
-    if(!time || !propTime || getTime(propTime) >= getTime(time)) {
+    if(time){
+      if(!startDate && !endDate){
+        value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
+      } else if(!startDate && endDate) {
+        if(getTime(endDate) >= getTime(time)){
+          value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
+        }
+      } else if(startDate && !endDate) {
+        if(getTime(startDate) <= getTime(time)){
+          value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
+        }
+      } else {
+        if(getTime(startDate) <= getTime(time) && getTime(endDate) >= getTime(time)) {
+          value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
+        }
+      }
+    } else {
       value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
     }
     return pre + value
