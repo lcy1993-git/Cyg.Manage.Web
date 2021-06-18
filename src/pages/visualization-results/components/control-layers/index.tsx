@@ -5,9 +5,28 @@ import { QuestionCircleOutlined }  from '@ant-design/icons';
 import styles from './index.less';
 import { text } from 'express';
 
+const imgResourse = {
+  kancha: {
+    light: require('@/assets/image/webgis/layers/kancha.png'),
+    dark: require('@/assets/image/webgis/layers/kancha1.png')
+  },
+  fangan: {
+    light: require('@/assets/image/webgis/layers/fangan.png'),
+    dark: require('@/assets/image/webgis/layers/fangan1.png')
+  },
+  sheji: {
+    light: require('@/assets/image/webgis/layers/sheji.png'),
+    dark: require('@/assets/image/webgis/layers/sheji1.png')
+  },
+  chaichu: {
+    light: require('@/assets/image/webgis/layers/chaichu.png'),
+    dark: require('@/assets/image/webgis/layers/chaichu1.png')
+  },
+}
 interface ListProps {
   name: string;
   state: boolean;
+  sign: string;
   onChange: () => void;
 }
 
@@ -23,10 +42,10 @@ interface Props {
 }
 
 const ListItem = (props: ListProps) => {
-  const { name, state, onChange } = props;
+  const { name, state, onChange, sign } = props;
   return (
     <div className={styles.listItem } key={'listItem' + name} onClick={onChange}>
-        <div className={state ? styles.active : null}><QuestionCircleOutlined /></div>
+        <div className={state ? styles.active : null}><img src={state ? imgResourse[sign].light : imgResourse[sign].dark } /></div>
         <div className={state ? styles.active : null}><span className={styles.text}>{name}</span></div>
     </div>
   );
@@ -50,24 +69,28 @@ const ControlLayers = (props: Props) => {
         <div className={styles.list}>
           <ListItem
             name="勘察图层"
+            sign="kancha"
             state={surveyLayerVisible}
             onChange={() => setSurveyLayerVisible(!surveyLayerVisible)}
           />
           <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="方案图层"
+            sign="fangan"
             state={planLayerVisible}
             onChange={() => setPlanLayerVisible(!planLayerVisible)}
           />
           <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="设计图层"
+            sign="sheji"
             state={designLayerVisible}
             onChange={() => setDesignLayerVisible(!designLayerVisible)}
           />
           <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="拆除图层"
+            sign="chaichu"
             state={dismantleLayerVisible}
             onChange={() => setDismantleLayerVisible(!dismantleLayerVisible)}
           />

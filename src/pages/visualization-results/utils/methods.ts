@@ -25,7 +25,8 @@ const refreshMap = async (
   ops: any,
   projects_: ProjectList[],
   location: boolean = true,
-  time?: string,
+  startDate?: string,
+  endDate?: string,
 ) => {
   projects = projects_;
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map } = ops;
@@ -52,7 +53,7 @@ const refreshMap = async (
   //   return ld ? false : true;
   // });
   // const postData = getXmlData(p, time);
-  const postData = getXmlData(projects, time);
+  const postData = getXmlData(projects, startDate, endDate);
   await loadSurveyLayers(postData, groupLayers);
   await loadPlanLayers(postData, groupLayers);
   await loadDismantleLayers(postData, groupLayers);

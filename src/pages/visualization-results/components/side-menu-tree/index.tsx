@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import styles from './index.less';
 import _, { divide } from 'lodash';
 import { Tree, Tabs, Spin, message, Input, Button, Divider, DatePicker, DatePickerProps,  } from 'antd';
-import { SearchOutlined, AlignLeftOutlined, MessageOutlined, RightOutlined, ExportOutlined, NodeIndexOutlined, LeftOutlined } from '@ant-design/icons';
+import Icon, { SearchOutlined, AlignLeftOutlined, MessageOutlined, RightOutlined, ExportOutlined, NodeIndexOutlined, LeftOutlined } from '@ant-design/icons';
 import { useRequest, useSize } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
@@ -22,6 +22,10 @@ import moment from 'moment';
 import { flattenDeepToKey } from '../../utils/utils'
 import ControlLayers from '../control-layers';
 const { TabPane } = Tabs;
+import achievementSvg from '@/assets/image/webgis/svg/achievements.svg'
+import exportSvg from '@/assets/image/webgis/svg/export.svg'
+import materiaSvg from '@/assets/image/webgis/svg/material.svg'
+import messageSvg from '@/assets/image/webgis/svg/message.svg';
 
 export interface TreeNodeType {
   title: string;
@@ -524,12 +528,12 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       </div>
       <div className={styles.functionButton}>
         <div className={styles.row}>
-          <Button onClick={() => setexportMapPositionModalVisible(true)}><ExportOutlined />导出坐标</Button>
-          <Button onClick={() => setMaterialModalVisible(true)}><NodeIndexOutlined />材料统计</Button>
+          <Button onClick={() => setexportMapPositionModalVisible(true)}><img className={styles.svg} src={exportSvg} />导出坐标</Button>
+          <Button onClick={() => setMaterialModalVisible(true)}><img className={styles.svg} src={materiaSvg} />材料统计</Button>
         </div>
         <div className={styles.row}>
-          <Button><MessageOutlined />成果管理</Button>
-          <Button><MessageOutlined />审阅消息</Button>
+          <Button><img className={styles.svg} src={achievementSvg} />成果管理</Button>
+          <Button><img className={styles.svg} src={messageSvg} />审阅消息</Button>
         </div>
       </div>
       <div className={styles.controlLayers}>
