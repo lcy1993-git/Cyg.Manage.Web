@@ -2,7 +2,7 @@ import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import _, { divide } from 'lodash';
-import { Tree, Tabs, Spin, message, Input, Button, Divider, DatePicker,  } from 'antd';
+import { Tree, Tabs, Spin, message, Input, Button, Divider, DatePicker, DatePickerProps,  } from 'antd';
 import { SearchOutlined, AlignLeftOutlined, MessageOutlined, RightOutlined, ExportOutlined, NodeIndexOutlined, LeftOutlined } from '@ant-design/icons';
 import { useRequest, useSize } from 'ahooks';
 import {
@@ -14,6 +14,7 @@ import {
 import { downloadMapPositon } from '@/services/visualization-results/list-menu';
 import ExportMapPositionModal from '../export-map-position-modal';
 import MaterialModal from '../material-modal';
+import SidePopup from '../side-popup';
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
@@ -37,6 +38,7 @@ export interface SideMenuProps {
   onChange: () => void;
   sideMenuVisibel: boolean;
   controlLayersProps: any;
+  sidePopupProps: any;
 }
 
 /**
@@ -90,6 +92,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     false,
   );
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
+  
+  const startDateRef = useRef(null);
+  const endDateRef = useRef(null);
+  const [startDateValue, setStartDateValue] = useState<moment.Moment | undefined>(undefined);
+  const [endDateValue, setEndDateValue] = useState<moment.Moment | undefined>(undefined);
 
   const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false);
   const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
@@ -97,7 +104,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [indeterminate, setIndeterminate] = React.useState(false);
   const store = useContainer();
   const { vState } = store;
-  const { filterCondition, checkedProjectIdList} = vState;
+  const { filterCondition, checkedProjectIdList, checkedProjectDateList} = vState;
   const { className, onChange, sideMenuVisibel } = props;
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
@@ -405,14 +412,37 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setexportMapPositionLoading(true);
   };
 
+  useEffect(() => {
+    store.setStartDate(startDateValue ? moment(startDateValue).format('YYYY/MM/DD') : startDateValue);
+  }, [startDateValue])
+
+  useEffect(() => {
+    store.setEndDate(endDateValue ? moment(endDateValue).format('YYYY/MM/DD') : endDateValue);
+  }, [endDateValue])
+
   const renderStartDateButton = () => {
     return (
-      <Button type="link" style={{width: "100%"}}>定位最早项目时间</Button>
+      <Button type="link" style={{width: "100%"}} onClick={() =>{
+        if(!checkedProjectDateList || checkedProjectDateList.length === 0){
+          message.error('当前未选择项目');
+        } else {
+          setStartDateValue(moment(checkedProjectDateList[0]))
+        }
+        startDateRef && startDateRef.current.blur();
+      }}>定位最早项目时间</Button>
     );
   }
+
   const renderEndDateButton = () => {
     return (
-      <Button type="link" style={{width: "100%"}}>定位最晚项目时间</Button>
+      <Button type="link" style={{width: "100%"}} onClick={() => {
+        if(!checkedProjectDateList || checkedProjectDateList.length === 0){
+          message.error('当前未选择项目');
+        } else {
+          setEndDateValue(moment(checkedProjectDateList[checkedProjectDateList.length - 1]))
+        }
+        endDateRef && endDateRef.current.blur();
+      }}>定位最晚项目时间</Button>
     );
   }
 
@@ -487,8 +517,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       </div>
       <div className={styles.timeLine}>
       {/* <Space direction="vertical"> */}
-        <DatePicker style={{width: "100%"}} placeholder='请选择日期起' showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => store.setStartDate(e?.format('YYYY/MM/DD')) }/>
-        <DatePicker style={{width: "100%"}} placeholder='请选择日期止' showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => store.setEndDate(e?.format('YYYY/MM/DD'))}/>
+        <DatePicker ref={startDateRef} style={{width: "100%"}} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => setStartDateValue(e!) }/>
+        <DatePicker ref={endDateRef} style={{width: "100%"}} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => setEndDateValue(e!)}/>
 
       {/* </Space> */}
       </div>
@@ -520,6 +550,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         onCancel={() => setMaterialModalVisible(false)}
         onOk={() => setMaterialModalVisible(false)}
       />
+      <div>
+      <SidePopup {...props.sidePopupProps}/>
+      </div>
     </div>
 
   );

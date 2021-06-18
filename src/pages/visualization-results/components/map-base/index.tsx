@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 
 import Footer from '../footer';
 import SidePopup, { TableDataType } from '../side-popup';
-import CtrolLayers from '../control-layers';
+import SurveyTrack from '../survey-track';
 
 import Map from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
@@ -59,7 +59,7 @@ const BaseMap = observer((props: BaseMapProps) => {
     startDate,
     endDate
   } = vState;
-  console.log(startDate, endDate);
+  console.log(checkedProjectDateList);
   
   const { kvLevel } = filterCondition;
 
@@ -230,11 +230,17 @@ const BaseMap = observer((props: BaseMapProps) => {
     setDesignLayerVisible: setDesignLayerVisible,
     setDismantleLayerVisible: setDismantleLayerVisible,
   }
+
+  const sidePopupProps = {
+    rightSidebarVisible: rightSidebarVisiviabel,
+    data: rightSidebarData,
+    setRightSidebarVisiviabel: setRightSidebarVisiviabel,
+  }
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
 
-      <div className={styles.timeline}>
+      {/* <div className={styles.timeline}>
         <div>
           {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
             <Timeline
@@ -245,10 +251,10 @@ const BaseMap = observer((props: BaseMapProps) => {
             />
           ) : null}
         </div>
-      </div>
+      </div> */}
       
       <div className={`${styles.sideMenuTree} ${sideMenuVisibel ? styles.open : styles.close}`}>
-        <SideMenuTree onChange={() => setSideMenuVisibel(!sideMenuVisibel)} sideMenuVisibel={sideMenuVisibel} controlLayersProps={controlLayersProps}/>
+        <SideMenuTree onChange={() => setSideMenuVisibel(!sideMenuVisibel)} sideMenuVisibel={sideMenuVisibel} controlLayersProps={controlLayersProps} sidePopupProps={sidePopupProps}/>
       </div>
 
       {/* <div className={styles.listMenu}>
@@ -266,18 +272,16 @@ const BaseMap = observer((props: BaseMapProps) => {
           setDismantleLayerVisible={setDismantleLayerVisible}
         />
       </div> */}
-
-      <div className={styles.mapDisplay}>
+      <div className={`${styles.surveytrack} ${!sideMenuVisibel ? styles.surveytrackCloese : ''}`}>
+        <SurveyTrack />
+      </div>
+      <div className={`${styles.mapDisplay} ${!sideMenuVisibel ? styles.mapDisplayCloese : ''}`}>
         <MapDisplay onSatelliteMapClick={onSatelliteMapClick} onStreetMapClick={onStreetMapClick} />
       </div>
       <div className={styles.footer}>
         <Footer onlocationClick={onlocationClick} />
       </div>
-      <SidePopup
-        rightSidebarVisible={rightSidebarVisiviabel}
-        data={rightSidebarData}
-        setRightSidebarVisiviabel={setRightSidebarVisiviabel}
-      />
+
     </>
   );
 });

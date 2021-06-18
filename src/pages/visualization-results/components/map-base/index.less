@@ -41,7 +41,7 @@
   /* Internet Explorer/Edge */
   user-select: none;
   -webkit-touch-callout: none;
-  transition: left linear .2s;
+  transition: left ease-in-out .2s;
 }
 .open {
   left: 13px;
@@ -73,10 +73,15 @@
 }
 
 .mapDisplay {
+  // position: absolute;
+  width: 99px;
+  height: 86px;
+  border: 2px solid #fff;
   position: absolute;
-  bottom: 30px;
-  right: 30px;
-  width: 151px;
+  overflow: hidden;
+  bottom: 35px;
+  right: 23px;
+  transition: right linear .2s;
   // // background-color: red;
   // /* iOS Safari */
   // -webkit-user-select: none;
@@ -90,77 +95,90 @@
   // user-select: none;
   // -webkit-touch-callout: none;
 }
-
-@media (min-width: 1024px) {
-  .controlLayer {
-    position: absolute;
-    top: 100px;
-    right: 16px;
-    width: atuo;
-  }
-
-  .mapDisplay {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-  }
+.mapDisplayCloese {
+  right: -100px;
+}
+.surveytrack {
+  position: absolute;
+  bottom: 135px;
+  right: 23px;
+  transition: right linear .2s;
 }
 
-@media (min-width: 1366px) {
-  .controlLayer {
-    position: absolute;
-    top: 100px;
-    right: 16px;
-    width: atuo;
-  }
-
-  .mapDisplay {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-  }
+.surveytrackCloese {
+  right: -40px;
 }
 
-@media (min-width: 1440px) {
-  .controlLayer {
-    position: absolute;
-    top: 100px;
-    right: 16px;
-    width: atuo;
-  }
+// @media (min-width: 1024px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 100px;
+//     right: 16px;
+//     width: atuo;
+//   }
 
-  .mapDisplay {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-  }
-}
+//   .mapDisplay {
+//     position: absolute;
+//     top: 16px;
+//     right: 16px;
+//   }
+// }
 
-@media (min-width: 1680px) {
-  .controlLayer {
-    position: absolute;
-    top: 423px;
-    left: 16px;
-    width: atuo;
-  }
+// @media (min-width: 1366px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 100px;
+//     right: 16px;
+//     width: atuo;
+//   }
 
-  .mapDisplay {
-    position: absolute;
-    top: 560px;
-    left: 16px;
-  }
-}
-@media (min-width: 1920px) {
-  .controlLayer {
-    position: absolute;
-    top: 423px;
-    left: 16px;
-    width: atuo;
-  }
+//   .mapDisplay {
+//     position: absolute;
+//     top: 16px;
+//     right: 16px;
+//   }
+// }
 
-  .mapDisplay {
-    position: absolute;
-    top: 560px;
-    right: 16px;
-  }
-}
+// @media (min-width: 1440px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 100px;
+//     right: 16px;
+//     width: atuo;
+//   }
+
+//   .mapDisplay {
+//     position: absolute;
+//     top: 16px;
+//     right: 16px;
+//   }
+// }
+
+// @media (min-width: 1680px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 423px;
+//     left: 16px;
+//     width: atuo;
+//   }
+
+//   .mapDisplay {
+//     position: absolute;
+//     top: 560px;
+//     left: 16px;
+//   }
+// }
+// @media (min-width: 1920px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 423px;
+//     left: 16px;
+//     width: atuo;
+//   }
+
+//   .mapDisplay {
+//     position: absolute;
+//     top: 560px;
+//     right: 16px;
+//   }
+// }
