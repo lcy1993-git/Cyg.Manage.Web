@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
-import _, { divide } from 'lodash';
-import { Tree, Tabs, Spin, message, Input, Button, Divider, DatePicker, DatePickerProps,  } from 'antd';
-import Icon, { SearchOutlined, AlignLeftOutlined, MessageOutlined, RightOutlined, ExportOutlined, NodeIndexOutlined, LeftOutlined } from '@ant-design/icons';
+import _ from 'lodash';
+import { Tree, Tabs, Spin, message, Input, Button, Divider, DatePicker } from 'antd';
+import { SearchOutlined, AlignLeftOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
 import { useRequest, useSize } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
@@ -11,8 +11,11 @@ import {
   ProjectListByAreaType,
   Properties,
 } from '@/services/visualization-results/side-tree';
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { downloadMapPositon } from '@/services/visualization-results/list-menu';
 import ExportMapPositionModal from '../export-map-position-modal';
+import CommentModal from '../comment-modal';
+import ResultModal from '../result-modal';
 import MaterialModal from '../material-modal';
 import SidePopup from '../side-popup';
 import { useContainer } from '../../result-page/mobx-store';
@@ -85,7 +88,10 @@ type keyType =
 const areaArray = ["省", "市", "县", "工", "项"];
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
+  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [checkedKeys, setCheckedKeys] = useState<keyType>();
+  const [resultVisibel, setResultVisibel] = useState<boolean>(false);
+  const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
@@ -96,19 +102,18 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     false,
   );
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
-  
-  const startDateRef = useRef(null);
-  const endDateRef = useRef(null);
+
+  const startDateRef = useRef<any>(null);
+  const endDateRef = useRef<any>(null);
   const [startDateValue, setStartDateValue] = useState<moment.Moment | undefined>(undefined);
   const [endDateValue, setEndDateValue] = useState<moment.Moment | undefined>(undefined);
 
   const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false);
-  const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
-  const [allCheck, setAllCheck] = useState<boolean>(false);
-  const [indeterminate, setIndeterminate] = React.useState(false);
+  // const [allCheck, setAllCheck] = useState<boolean>(false);
+  // const [indeterminate, setIndeterminate] = React.useState(false);
   const store = useContainer();
   const { vState } = store;
-  const { filterCondition, checkedProjectIdList, checkedProjectDateList} = vState;
+  const { filterCondition, checkedProjectIdList, checkedProjectDateList } = vState;
   const { className, onChange, sideMenuVisibel } = props;
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref);
@@ -255,10 +260,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(expandedKeysValue);
   };
 
-  const clearCheckAll = () => {
-    setIndeterminate(false);
-    setAllCheck(false);
-  };
+  // const clearCheckAll = () => {
+  //   setIndeterminate(false);
+  //   // setAllCheck(false);
+  // };
 
   const getAllKey = () => {
     const keys = new Array<string>();
@@ -317,17 +322,17 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     let temp = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
 
     if (allProjectKey.length > temp.length) {
-      setIndeterminate(true);
-      setAllCheck(false);
+      // setIndeterminate(true);
+      // setAllCheck(false);
     } else if (allProjectKey.length === temp.length) {
-      setAllCheck(true);
-      setIndeterminate(false);
+      // setAllCheck(true);
+      // setIndeterminate(false);
     } else {
-      clearCheckAll();
+      // clearCheckAll();
     }
 
     if (info.checkedNodes.length === 0) {
-      clearCheckAll();
+      // clearCheckAll();
     }
     //去重,这里考虑到按公司筛选的时候，不同的公司可以有同一个项目
     let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
@@ -351,7 +356,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         const data = generateProjectTree(treeListReponseData);
         setTreeData(data);
         initSideTree(data);
-        clearCheckAll();
+        // clearCheckAll();
       } else {
         message.warning('无数据');
       }
@@ -379,17 +384,17 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }
   const treeNodeRender = (data: any) => {
 
-   return data.map((item: any) => {
-    let rest = {}
-    if(item.children && Array.isArray(item.Children)){
-      return <Tree.TreeNode key={item.key} title={item.title} checkable {...rest} children={treeNodeRender(item.children)}/>
-    }else{
-      return <Tree.TreeNode key={item.key} title={item.title} checkable/>
-    }
+    return data.map((item: any) => {
+      let rest = {}
+      if (item.children && Array.isArray(item.Children)) {
+        return <Tree.TreeNode key={item.key} title={item.title} checkable {...rest} children={treeNodeRender(item.children)} />
+      } else {
+        return <Tree.TreeNode key={item.key} title={item.title} checkable />
+      }
 
-  })
+    })
 
-  } 
+  }
 
   const { data: mapPosition, run: downloadMapPositonRequest } = useRequest(downloadMapPositon, {
     manual: true,
@@ -426,26 +431,26 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const renderStartDateButton = () => {
     return (
-      <Button type="link" style={{width: "100%"}} onClick={() =>{
-        if(!checkedProjectDateList || checkedProjectDateList.length === 0){
+      <Button type="link" style={{ width: "100%" }} onClick={() => {
+        if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
           message.error('当前未选择项目');
         } else {
           setStartDateValue(moment(checkedProjectDateList[0]))
         }
-        startDateRef && startDateRef.current.blur();
+        startDateRef && startDateRef.current?.blur();
       }}>定位最早项目时间</Button>
     );
   }
 
   const renderEndDateButton = () => {
     return (
-      <Button type="link" style={{width: "100%"}} onClick={() => {
-        if(!checkedProjectDateList || checkedProjectDateList.length === 0){
+      <Button type="link" style={{ width: "100%" }} onClick={() => {
+        if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
           message.error('当前未选择项目');
         } else {
           setEndDateValue(moment(checkedProjectDateList[checkedProjectDateList.length - 1]))
         }
-        endDateRef && endDateRef.current.blur();
+        endDateRef && endDateRef.current?.blur();
       }}>定位最晚项目时间</Button>
     );
   }
@@ -453,7 +458,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   return (
     <div className={styles.wrap}>
       <div className={styles.searchWrap}>
-        <Input prefix={<SearchOutlined />} placeholder="请输入" style={{width: "78%"}}/>
+        <Input prefix={<SearchOutlined />} placeholder="请输入" style={{ width: "78%" }} />
         <Button type="text"><AlignLeftOutlined />筛选</Button>
         {/* <Button type="text"></Button> */}
       </div>
@@ -509,6 +514,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   checkedKeys={checkedKeys}
                   treeData={treeData}
                   className={classNames(styles.sideMenu)}
+                  onSelect={(e, g: any) => {
+                    if (!(Array.isArray(g.node.children) && g.node.children.length > 0)) {
+                      setProjectModalVisible(true);
+                    }
+                  }
+
+                  }
                 >
                   {/* {
                     treeNodeRender(treeData)
@@ -520,11 +532,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         </Tabs>
       </div>
       <div className={styles.timeLine}>
-      {/* <Space direction="vertical"> */}
-        <DatePicker ref={startDateRef} style={{width: "100%"}} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => setStartDateValue(e!) }/>
-        <DatePicker ref={endDateRef} style={{width: "100%"}} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => setEndDateValue(e!)}/>
+        {/* <Space direction="vertical"> */}
+        <DatePicker ref={startDateRef} style={{ width: "100%" }} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => setStartDateValue(e!)} />
+        <DatePicker ref={endDateRef} style={{ width: "100%" }} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => setEndDateValue(e!)} />
 
-      {/* </Space> */}
+        {/* </Space> */}
       </div>
       <div className={styles.functionButton}>
         <div className={styles.row}>
@@ -532,15 +544,26 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           <Button onClick={() => setMaterialModalVisible(true)}><img className={styles.svg} src={materiaSvg} />材料统计</Button>
         </div>
         <div className={styles.row}>
-          <Button><img className={styles.svg} src={achievementSvg} />成果管理</Button>
-          <Button><img className={styles.svg} src={messageSvg} />审阅消息</Button>
+          <Button
+            disabled={!(Array.isArray(checkedKeys) && checkedKeys?.length === 1)}
+            onClick={() => setResultVisibel(true)}
+          >
+            <img className={styles.svg} src={achievementSvg} />成果管理
+          </Button>
+          <Button
+            disabled={!(Array.isArray(checkedKeys) && checkedKeys?.length === 1)}
+            onClick={() => setCommentModalVisible(true)}
+          >
+
+            <img className={styles.svg} src={messageSvg} />审阅消息
+          </Button>
         </div>
       </div>
       <div className={styles.controlLayers}>
-        <ControlLayers {...props.controlLayersProps}/>
+        <ControlLayers {...props.controlLayersProps} />
       </div>
       <div className={styles.handlerSideBarVisibelButton} onClick={() => onChange()}>
-        {sideMenuVisibel ? <LeftOutlined style={{fontSize: 10}} /> : <RightOutlined style={{fontSize: 10}}/>}
+        {sideMenuVisibel ? <LeftOutlined style={{ fontSize: 10 }} /> : <RightOutlined style={{ fontSize: 10 }} />}
       </div>
       <ExportMapPositionModal
         confirmLoading={exportMapPositionLoading}
@@ -555,8 +578,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         onOk={() => setMaterialModalVisible(false)}
       />
       <div>
-      <SidePopup {...props.sidePopupProps}/>
+        <SidePopup {...props.sidePopupProps} />
       </div>
+      {projectModalVisible && <ProjectDetailInfo
+        projectId={projectIdList[0]?.id ?? ""}
+        visible={projectModalVisible}
+        onChange={setProjectModalVisible}
+        isResult={false}
+      />}
+      <ResultModal projectId={projectIdList[0]?.id ?? ""} visible={resultVisibel} onChange={setResultVisibel} />
+      <CommentModal visible={commentModalVisible} onOk={() => setCommentModalVisible(false)} onCancel={() => setCommentModalVisible(false)} checkedProjectIdList={checkedProjectIdList} />
     </div>
 
   );
