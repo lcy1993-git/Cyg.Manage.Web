@@ -31,6 +31,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import { history } from 'umi';
+import { useLayoutStore } from '@/layouts/context';
 
 const { Search } = Input;
 
@@ -59,7 +60,7 @@ const ResourceLib: React.FC = () => {
     manual: true,
   });
 
-  console.log(window.location.pathname);
+  const { setResourceManageFlag: setResourceManageFlag, resourceManageFlag } = useLayoutStore();
 
   const searchComponent = () => {
     return (
@@ -167,14 +168,17 @@ const ResourceLib: React.FC = () => {
       title: '操作',
       width: 100,
       render: (text: any, record: any) => {
-        return window.location.pathname != '/resource-config/resource-manage' ? (
+        return !resourceManageFlag ? (
           <span
             className="canClick"
             onClick={() => {
+              setResourceManageFlag(true);
+
               setCurrentManageId(record.id);
               history.push({
                 pathname: `/resource-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
               });
+              refresh();
             }}
           >
             <u>管理</u>
@@ -185,6 +189,7 @@ const ResourceLib: React.FC = () => {
       },
     },
   ];
+  console.log(resourceManageFlag);
 
   //添加
   const addEvent = () => {

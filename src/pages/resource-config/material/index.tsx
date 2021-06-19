@@ -22,7 +22,12 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
-const Material: React.FC = () => {
+interface libParams {
+  libId: string;
+}
+
+const Material: React.FC<libParams> = (props) => {
+  const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
@@ -47,25 +52,13 @@ const Material: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="搜索" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
             placeholder="关键词"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="300px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
           />
         </TableSearch>
       </div>
@@ -215,10 +208,10 @@ const Material: React.FC = () => {
 
   //添加
   const addEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库！');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库！');
+    //   return;
+    // }
     setAddFormVisible(true);
   };
 
@@ -226,7 +219,7 @@ const Material: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
+          libId: libId,
           materialId: '',
           category: '',
           materialName: '',
@@ -270,7 +263,7 @@ const Material: React.FC = () => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const ResourceLibData = await run(resourceLibId, editDataId);
+    const ResourceLibData = await run(libId, editDataId);
 
     editForm.setFieldsValue(ResourceLibData);
   };
@@ -286,7 +279,7 @@ const Material: React.FC = () => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
-          libId: resourceLibId,
+          libId: libId,
           materialId: editData.materialId,
           category: editData.category,
           materialName: editData.materialName,
@@ -372,18 +365,18 @@ const Material: React.FC = () => {
   };
 
   const importMaterialEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请选择资源库');
+    //   return;
+    // }
     setImportMaterialVisible(true);
   };
 
   const sureDeleteData = async () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库');
+    //   return;
+    // }
 
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择需要删除的行');
@@ -392,26 +385,26 @@ const Material: React.FC = () => {
     const deleteIds = tableSelectRows?.map((item) => item.id);
     console.log(deleteIds);
 
-    await deleteMaterialItem({ libId: resourceLibId, ids: deleteIds });
+    await deleteMaterialItem({ libId: libId, ids: deleteIds });
     refresh();
     message.success('删除成功');
   };
 
   //展示导线属性
   const openWireAttribute = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库');
+    //   return;
+    // }
     setAttributeVisible(true);
   };
 
   //展示电缆终端头映射
   const openCableTerminal = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库');
+    //   return;
+    // }
     setCableTerminalVisible(true);
   };
 
@@ -430,11 +423,11 @@ const Material: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/Material/GetPageList"
-        tableTitle="物料列表"
+        // tableTitle="物料列表"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
-          resourceLibId: resourceLibId,
+          resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
       />
@@ -451,7 +444,7 @@ const Material: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <MaterialForm resourceLibId={resourceLibId} />
+          <MaterialForm resourceLibId={libId} />
         </Form>
       </Modal>
       <Modal
@@ -468,7 +461,7 @@ const Material: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <MaterialForm resourceLibId={resourceLibId} />
+            <MaterialForm resourceLibId={libId} />
           </Spin>
         </Form>
       </Modal>
@@ -485,7 +478,7 @@ const Material: React.FC = () => {
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <LineProperty libId={resourceLibId} materialIds={[]} />
+        <LineProperty libId={libId} materialIds={[]} />
       </Modal>
 
       <Modal
@@ -500,10 +493,10 @@ const Material: React.FC = () => {
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <CableMapping libId={resourceLibId} materialIds={[]} />
+        <CableMapping libId={libId} materialIds={[]} />
       </Modal>
       <SaveImportMaterial
-        libId={resourceLibId}
+        libId={libId}
         requestSource="resource"
         visible={importMaterialVisible}
         changeFinishEvent={() => uploadFinishEvent()}

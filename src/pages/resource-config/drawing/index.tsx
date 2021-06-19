@@ -32,7 +32,7 @@ const Drawing: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="搜索" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -138,10 +138,10 @@ const Drawing: React.FC<libParams> = (props) => {
   };
 
   const importChartEvent = () => {
-    if (!resourceLibId) {
-      message.error('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.error('请先选择资源库');
+    //   return;
+    // }
     setImportFormVisible(true);
   };
 

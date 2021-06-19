@@ -117,7 +117,7 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条模块明细删除！');
+      message.error('请选择一条组件属性删除！');
       return;
     }
     const selectDataId = tableSelectRows[0].id;

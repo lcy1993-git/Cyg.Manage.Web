@@ -22,7 +22,12 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
-const Component: React.FC = () => {
+interface libParams {
+  libId: string;
+}
+
+const Component: React.FC<libParams> = (props) => {
+  const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
@@ -47,26 +52,13 @@ const Component: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="搜索" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
             placeholder="关键词"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="240px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
-            style={{ width: '180px' }}
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="组件" width="220px">
@@ -193,10 +185,10 @@ const Component: React.FC = () => {
 
   //添加
   const addEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库！');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库！');
+    //   return;
+    // }
     setAddFormVisible(true);
   };
 
@@ -204,7 +196,7 @@ const Component: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
+          libId: libId,
           componentId: '',
           componentName: '',
           componentSpec: '',
@@ -241,7 +233,7 @@ const Component: React.FC = () => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const ResourceLibData = await run(resourceLibId, editDataId);
+    const ResourceLibData = await run(libId, editDataId);
 
     editForm.setFieldsValue(ResourceLibData);
   };
@@ -256,7 +248,7 @@ const Component: React.FC = () => {
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
+          libId: libId,
           id: editData.id,
           componentName: editData.componentName,
           componentSpec: editData.componentSpec,
@@ -334,42 +326,42 @@ const Component: React.FC = () => {
   };
 
   const importComponentEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请选择资源库');
+    //   return;
+    // }
     setImportComponentVisible(true);
   };
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
+      message.error('请选择要删除的行');
       return;
     }
     const selectedDataId = tableSelectRows.map((item) => {
       return item.id;
     });
 
-    await deleteComponentItem(resourceLibId, selectedDataId);
+    await deleteComponentItem(libId, selectedDataId);
     refresh();
     message.success('删除成功');
   };
 
   //展示组件明细
   const openDetail = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库');
+    //   return;
+    // }
     setDetailVisible(true);
   };
 
   //展示组件属性
   const openProperty = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库');
+    //   return;
+    // }
     if (
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
@@ -395,11 +387,11 @@ const Component: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/Component/GetPageList"
-        tableTitle="组件列表"
+        // tableTitle="组件列表"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
-          resourceLibId: resourceLibId,
+          resourceLibId: libId,
           isElectricalEquipment: false,
           deviceCategory: deviceCategory,
           keyWord: searchKeyWord,
@@ -416,7 +408,7 @@ const Component: React.FC = () => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <ComponentForm resourceLibId={resourceLibId} type="add" />
+          <ComponentForm resourceLibId={libId} type="add" />
         </Form>
       </Modal>
       <Modal
@@ -432,7 +424,7 @@ const Component: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <ComponentForm resourceLibId={resourceLibId} />
+            <ComponentForm resourceLibId={libId} />
           </Spin>
         </Form>
       </Modal>
@@ -451,7 +443,7 @@ const Component: React.FC = () => {
       >
         <Spin spinning={loading}>
           <ComponentDetail
-            libId={resourceLibId}
+            libId={libId}
             componentId={tableSelectRows.map((item) => {
               return item.id;
             })}
@@ -473,7 +465,7 @@ const Component: React.FC = () => {
       >
         <Spin spinning={loading}>
           <ComponentProperty
-            libId={resourceLibId}
+            libId={libId}
             componentId={tableSelectRows.map((item) => {
               return item.id;
             })}
@@ -482,7 +474,7 @@ const Component: React.FC = () => {
       </Modal>
 
       <SaveImportComponent
-        libId={resourceLibId}
+        libId={libId}
         requestSource="resource"
         visible={importComponentVisible}
         changeFinishEvent={() => uploadFinishEvent()}

@@ -22,7 +22,12 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
-const ElectricalEquipment: React.FC = () => {
+interface libParams {
+  libId: string;
+}
+
+const ElectricalEquipment: React.FC<libParams> = (props) => {
+  const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
@@ -45,26 +50,13 @@ const ElectricalEquipment: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="搜索" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
             placeholder="关键词"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="240px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
-            style={{ width: '180px' }}
           />
         </TableSearch>
       </div>
@@ -169,10 +161,10 @@ const ElectricalEquipment: React.FC = () => {
 
   //添加
   const addEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库！');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库！');
+    //   return;
+    // }
     setAddFormVisible(true);
   };
 
@@ -180,7 +172,7 @@ const ElectricalEquipment: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
+          libId: libId,
           componentId: '',
           componentName: '',
           componentSpec: '',
@@ -218,7 +210,7 @@ const ElectricalEquipment: React.FC = () => {
     const editDataId = editData.id;
 
     setEditFormVisible(true);
-    const ElectricalEquipmentData = await run(resourceLibId, editDataId);
+    const ElectricalEquipmentData = await run(libId, editDataId);
 
     editForm.setFieldsValue(ElectricalEquipmentData);
   };
@@ -233,7 +225,7 @@ const ElectricalEquipment: React.FC = () => {
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
+          libId: libId,
           id: editData.id,
           componentName: editData.componentName,
           componentSpec: editData.componentSpec,
@@ -311,10 +303,10 @@ const ElectricalEquipment: React.FC = () => {
   };
 
   const importElectricalEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请选择资源库');
+    //   return;
+    // }
     setImportElectricalVisible(true);
   };
 
@@ -328,26 +320,26 @@ const ElectricalEquipment: React.FC = () => {
       return item.id;
     });
 
-    await deleteElectricalEquipmentItem(resourceLibId, editDataId);
+    await deleteElectricalEquipmentItem(libId, editDataId);
     refresh();
     message.success('删除成功');
   };
 
   //展示组件明细
   const openDetail = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库');
+    //   return;
+    // }
     setDetailVisible(true);
   };
 
   //展示组件属性
   const openProperty = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库');
+    //   return;
+    // }
     if (
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
@@ -363,7 +355,8 @@ const ElectricalEquipment: React.FC = () => {
   };
 
   return (
-    <PageCommonWrap>
+    // <PageCommonWrap>
+    <>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -372,11 +365,11 @@ const ElectricalEquipment: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/ElectricalEquipment"
-        tableTitle="电气设备列表"
+        // tableTitle="电气设备列表"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{
-          resourceLibId: resourceLibId,
+          resourceLibId: libId,
           keyWord: searchKeyWord,
           isElectricalEquipment: true,
         }}
@@ -393,7 +386,7 @@ const ElectricalEquipment: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <ElectricalEquipmentForm resourceLibId={resourceLibId} type="add" />
+          <ElectricalEquipmentForm resourceLibId={libId} type="add" />
         </Form>
       </Modal>
       <Modal
@@ -409,7 +402,7 @@ const ElectricalEquipment: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <ElectricalEquipmentForm resourceLibId={resourceLibId} />
+            <ElectricalEquipmentForm resourceLibId={libId} />
           </Spin>
         </Form>
       </Modal>
@@ -428,7 +421,7 @@ const ElectricalEquipment: React.FC = () => {
       >
         <Spin spinning={loading}>
           <ElectricDetail
-            libId={resourceLibId}
+            libId={libId}
             componentId={tableSelectRows.map((item) => {
               return item.id;
             })}
@@ -449,7 +442,7 @@ const ElectricalEquipment: React.FC = () => {
       >
         <Spin spinning={loading}>
           <ElectricProperty
-            libId={resourceLibId}
+            libId={libId}
             componentId={tableSelectRows.map((item) => {
               return item.id;
             })}
@@ -457,13 +450,14 @@ const ElectricalEquipment: React.FC = () => {
         </Spin>
       </Modal>
       <SaveImportElectrical
-        libId={resourceLibId}
+        libId={libId}
         requestSource="resource"
         visible={importElectricalVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportElectricalVisible}
       />
-    </PageCommonWrap>
+      {/* </PageCommonWrap> */}
+    </>
   );
 };
 
