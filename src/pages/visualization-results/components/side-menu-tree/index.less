@@ -6,9 +6,15 @@
   width: 220px;
   height: calc(100% - 30px);
   :global {
-    .ant-tree-list-holder-inner> .ant-tree-treenode >.ant-tree-indent>.ant-tree-indent-unit {
-      width: 0;
+    // .ant-tree-indent {
+    //   width: 0;
+    // }
+    .ant-tree-indent-unit {
+      width: 4px;
     }
+    // .ant-tree-list-holder-inner> .ant-tree-treenode >.ant-tree-indent>.ant-tree-indent-unit {
+    //   width: 0;
+    // }
   }
   .sideTree {
     // position: relative;
@@ -23,18 +29,12 @@
     .tabBar {
       display: flex;
       background-color: #d6d6d6;
-      // justify-content: center;
       align-items: center;
       padding: 0 10px;
-      // text-align: center;
       .tabBarItem {
         height: 38px;
         line-height: 38px;
         font-weight: 600;
-        // width: 30%;
-        // padding-top: 10px;
-        // padding-bottom: 10px;
-        // background-color: #d6d6d6;
         cursor: pointer;
       }
     }
