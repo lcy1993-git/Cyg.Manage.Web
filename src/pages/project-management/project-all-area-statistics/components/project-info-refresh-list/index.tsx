@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import styles from './index.less';
 import _ from 'lodash';
-import { useRequest, useSize, useInViewport, useMount } from 'ahooks';
+import { useRequest, useSize, useInViewport } from 'ahooks';
 
 import ProjectItem from './components/project-Item';
 import {
@@ -48,7 +48,7 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
       // 最近的日期是从第一个开始的，所以要把最新放在最下面，使用reverse
 
       if (data && refreshData.length === 0) {
-        //如果小于可视的条数的话就直接显示并且不滚动
+        // 如果小于可视的条数的话就直接显示并且不滚动
         setrefreshData(data);
         if (data.length < visebleCount) {
           setListData([...data]);
@@ -63,7 +63,6 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
           setrefreshData(data);
           setListData([...data, ...data]);
         }
-      } else {
       }
     },
     onError: () => {
@@ -100,7 +99,7 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
             key={`${item.date}${idx}`}
             id={item.projectId}
             content={item.content}
-            date={moment(item.date).format('YYYY-MM-DD HH:mm:ss')}
+            date={moment(item.date).format('YYYY/MM/DD')}
           />
         ))}
       </div>
