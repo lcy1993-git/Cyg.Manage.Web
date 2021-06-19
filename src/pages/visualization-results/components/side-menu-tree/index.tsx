@@ -15,6 +15,7 @@ import ProjectDetailInfo from '@/pages/project-management/all-project/components
 import { downloadMapPositon } from '@/services/visualization-results/list-menu';
 import ExportMapPositionModal from '../export-map-position-modal';
 import CommentModal from '../comment-modal';
+import FilterModal from '../filter-modal';
 import ResultModal from '../result-modal';
 import MaterialModal from '../material-modal';
 import SidePopup from '../side-popup';
@@ -90,6 +91,7 @@ const areaArray = ["省", "市", "县", "工", "项"];
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [checkedKeys, setCheckedKeys] = useState<keyType>();
+  const [filterModalVisibel, setFilterModalVisibel] = useState<boolean>(false);
   const [resultVisibel, setResultVisibel] = useState<boolean>(false);
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]);
@@ -459,7 +461,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     <div className={styles.wrap}>
       <div className={styles.searchWrap}>
         <Input prefix={<SearchOutlined />} placeholder="请输入" style={{ width: "78%" }} />
-        <Button type="text"><AlignLeftOutlined />筛选</Button>
+        <Button type="text" onClick={() => setFilterModalVisibel(true)}><AlignLeftOutlined />筛选</Button>
         {/* <Button type="text"></Button> */}
       </div>
       <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>
@@ -588,6 +590,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       />}
       <ResultModal projectId={projectIdList[0]?.id ?? ""} visible={resultVisibel} onChange={setResultVisibel} />
       <CommentModal visible={commentModalVisible} onOk={() => setCommentModalVisible(false)} onCancel={() => setCommentModalVisible(false)} checkedProjectIdList={checkedProjectIdList} />
+      <FilterModal defaultData={filterCondition} visible={filterModalVisibel} onChange={setFilterModalVisibel} onSure={(values) => store.setFilterCondition(values)}/> 
     </div>
 
   );
