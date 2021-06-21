@@ -16,6 +16,7 @@ import DataSelect from '@/components/data-select';
 import { divide } from 'lodash';
 import ProjectProcessListComponent from './components/projectProcessListComponent';
 
+
 const ProjectAllAreaStatistics: React.FC = () => {
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
   const [processListActiveTab, setProcessListActiveTab] = useState<string>('comprehensive');

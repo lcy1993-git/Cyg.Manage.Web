@@ -6,22 +6,37 @@ import 'echarts/lib/component/grid';
 import 'echarts/lib/component/tooltip';
 import { useRef } from 'react';
 import { useMount } from 'ahooks';
+import { useRequest } from 'ahooks';
+import { getSurveyRate } from '@/services/project-management/project-all-area-statistics';
+import moment from 'moment';
 
 const SurveyRateComponent: React.FC = () => {
   const divRef = useRef<HTMLDivElement>(null);
+  const { data = [] } = useRequest(() => getSurveyRate());
+
+  const weekDate = data.map((item: any) => {
+    return moment(item.date);
+  });
+
+  console.log(data);
+
   let myChart: any = null;
 
   const options = {
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      boundaryGap: false,
     },
     yAxis: {
       type: 'value',
+      splitNumber: 5,
+      axisLabel: {
+        formatter: `{value}%`,
+      },
     },
     series: [
       {
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
+        data: data.map((item: any) => item.surveyRate),
         type: 'line',
         smooth: true,
       },
