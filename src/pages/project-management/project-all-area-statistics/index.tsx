@@ -10,11 +10,19 @@ import TitleWindow from './components/title-window';
 import styles from './index.less';
 import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
 import ComprehensiveProcessComponent from './components/comprehensive-process-component';
+import ProjectProcessComponent from './components/project-process-component';
+import { useGetSelectData } from '@/utils/hooks';
+import DataSelect from '@/components/data-select';
+import { divide } from 'lodash';
 
 const ProjectAllAreaStatistics: React.FC = () => {
   const [tabsChooseValue, setTabsChooseValue] = useState<string>('1');
+  const [processActiveTab, setProcessActiveTab] = useState<string>('project');
+  const [companyId, setCompanyId] = useState<string>('');
 
-  const [processActiveTab, setProcessActiveTab] = useState<string>('project')
+  const { data: companySelectData = [] } = useGetSelectData({
+    url: '/ProjectStatistics/GetCompanys',
+  });
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -24,17 +32,26 @@ const ProjectAllAreaStatistics: React.FC = () => {
             <TabsWindow
               value={processActiveTab}
               onChange={setProcessActiveTab}
+              titleCustomSlot={() =>
+                processActiveTab === 'project' && (
+                  <div style={{ paddingTop: '8px', paddingRight: '10px', width: '120px' }}>
+                    <DataSelect
+                      style={{ width: '100%' }}
+                      value={companyId}
+                      onChange={(value: any) => {setCompanyId(value)}}
+                      placeholder="请选择设计院单位"
+                      options={companySelectData}
+                    />
+                  </div>
+                )
+              }
               tabsArray={[
                 { name: '项目进度', value: 'project' },
                 { name: '综合进度', value: 'comprehensive' },
               ]}
             >
-              
-              {
-                processActiveTab === 'comprehensive' &&
-                <ComprehensiveProcessComponent />
-              }
-              
+              {processActiveTab === 'project' && <ProjectProcessComponent companyId={companyId} />}
+              {processActiveTab === 'comprehensive' && <ComprehensiveProcessComponent />}
             </TabsWindow>
           </div>
           <div className={styles.topOtherContent}>
