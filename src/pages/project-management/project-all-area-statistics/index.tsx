@@ -1,4 +1,5 @@
 import PageCommonWrap from '@/components/page-common-wrap';
+import ProjectInfoRefreshList from './components/project-info-refresh-list';
 import React from 'react';
 import { useState } from 'react';
 import OverdueComponent from './components/overdue-component';
@@ -31,7 +32,9 @@ const ProjectAllAreaStatistics: React.FC = () => {
               </TitleWindow>
             </div>
             <div className={styles.projectDataContent}>
-              <TitleWindow title="实时项目数据"></TitleWindow>
+              <TitleWindow title="实时项目数据">
+                <ProjectInfoRefreshList />
+              </TitleWindow>
             </div>
           </div>
         </div>

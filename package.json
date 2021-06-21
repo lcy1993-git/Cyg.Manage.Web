@@ -133,9 +133,6 @@
   "engines": {
     "node": ">=10.0.0"
   },
-  "__npminstall_done": false,
-  "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
-  }
+  "__npminstall_done": false
+  
 }
