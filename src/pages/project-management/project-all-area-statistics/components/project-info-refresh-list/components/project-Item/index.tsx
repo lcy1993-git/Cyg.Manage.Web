@@ -26,7 +26,7 @@ const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
   return (
     <div className={styles.projectItem}>
       <div className={styles.content}>
-        <img src={User} style={{ marginRight: 8 }} />
+        <img src={User} style={{ marginRight: 8,width: "16px" }} />
         {content}
       </div>
       <div className={styles.projectName}>

@@ -11,6 +11,7 @@ import {
   RefreshDataType,
 } from '@/services/index';
 import moment from 'moment';
+import EmptyTip from '@/components/empty-tip';
 export interface ProjectInfoRefreshListProps {
   currentAreaInfo?: AreaInfo;
 }
@@ -92,17 +93,21 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
 
   return (
     <div className={styles.refreshBarn} ref={ref}>
-      <div ref={scrollRef} className={styles.list}>
-        {listData.map((item: RefreshDataType, idx: number) => (
-          <ProjectItem
-            name={item.projectName}
-            key={`${item.date}${idx}`}
-            id={item.projectId}
-            content={item.content}
-            date={moment(item.date).format('YYYY/MM/DD')}
-          />
-        ))}
-      </div>
+      {listData.length > 0 && (
+        <div ref={scrollRef} className={styles.list}>
+          {listData.map((item: RefreshDataType, idx: number) => (
+            <ProjectItem
+              name={item.projectName}
+              key={`${item.date}${idx}`}
+              id={item.projectId}
+              content={`${item.operator}${item.operationCategory}`}
+              date={moment(item.date).format('YYYY/MM/DD')}
+            />
+          ))}
+        </div>
+      )}
+
+      {listData.length === 0 && <EmptyTip />}
     </div>
   );
 };
