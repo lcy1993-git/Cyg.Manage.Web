@@ -9,22 +9,33 @@ import TabsWindow from './components/tabs-window';
 import TitleWindow from './components/title-window';
 import styles from './index.less';
 import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
+import ComprehensiveProcessComponent from './components/comprehensive-process-component';
 
 const ProjectAllAreaStatistics: React.FC = () => {
   const [tabsChooseValue, setTabsChooseValue] = useState<string>('1');
+
+  const [processActiveTab, setProcessActiveTab] = useState<string>('project')
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.projectAllAreaStatistics}>
         <div className={styles.statisticsTop}>
           <div className={styles.processContent}>
             <TabsWindow
-              value={tabsChooseValue}
-              onChange={setTabsChooseValue}
+              value={processActiveTab}
+              onChange={setProcessActiveTab}
               tabsArray={[
-                { name: '综合进度', value: '1' },
-                { name: '项目进度', value: '2' },
+                { name: '项目进度', value: 'project' },
+                { name: '综合进度', value: 'comprehensive' },
               ]}
-            ></TabsWindow>
+            >
+              
+              {
+                processActiveTab === 'comprehensive' &&
+                <ComprehensiveProcessComponent />
+              }
+              
+            </TabsWindow>
           </div>
           <div className={styles.topOtherContent}>
             <div className={styles.overdueContent}>
