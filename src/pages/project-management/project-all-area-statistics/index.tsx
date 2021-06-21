@@ -8,6 +8,7 @@ import SurveyRateComponent from './components/survey-rate-component';
 import TabsWindow from './components/tabs-window';
 import TitleWindow from './components/title-window';
 import styles from './index.less';
+import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
 
 const ProjectAllAreaStatistics: React.FC = () => {
   const [tabsChooseValue, setTabsChooseValue] = useState<string>('1');
@@ -57,7 +58,9 @@ const ProjectAllAreaStatistics: React.FC = () => {
                 { name: '综合进度', value: '1' },
                 { name: '项目进度', value: '2' },
               ]}
-            ></TabsWindow>
+            >
+              <ComprehensiveProcessListComponent />
+            </TabsWindow>
           </div>
         </div>
       </div>
