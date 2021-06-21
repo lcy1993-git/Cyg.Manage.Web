@@ -26,6 +26,7 @@ const SurveyRateComponent: React.FC = () => {
     xAxis: {
       type: 'category',
       boundaryGap: false,
+      // data:[1,2,3,4,5]
     },
     yAxis: {
       type: 'value',
@@ -36,9 +37,10 @@ const SurveyRateComponent: React.FC = () => {
     },
     series: [
       {
-        data: data.map((item: any) => item.surveyRate),
+        // data: [1,2,3,4,5],
         type: 'line',
         smooth: true,
+        color: '#4DA944',
       },
     ],
   };

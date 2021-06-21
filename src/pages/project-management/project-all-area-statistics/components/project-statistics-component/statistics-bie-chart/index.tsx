@@ -21,14 +21,17 @@ const StatisticsBieChart: React.FC<statusDataParams> = (props) => {
         type: 'pie',
         radius: ['60%', '80%'],
         avoidLabelOverlap: false,
-        data: [
-          { value: 1000, name: '待安排' },
-          { value: 735, name: '未勘察' },
-          { value: 580, name: '勘查中' },
-          { value: 484, name: '已勘察' },
-          { value: 300, name: '设计中' },
-          { value: 300, name: '已设计' },
-        ],
+        data: statusData?.items?.map((item: any) => {
+          return { value: item.value, name: item.key };
+        }),
+        // [
+        //   { value: 1000, name: '待安排' },
+        //   { value: 735, name: '未勘察' },
+        //   { value: 580, name: '勘查中' },
+        //   { value: 484, name: '已勘察' },
+        //   { value: 300, name: '设计中' },
+        //   { value: 300, name: '已设计' },
+        // ],
       },
     ],
   };

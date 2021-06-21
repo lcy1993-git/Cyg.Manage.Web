@@ -13,7 +13,7 @@ const OverdueComponent: React.FC = () => {
       <ScrollView>
         <div style={{ paddingRight: '20px' }}>
           {data && data.length > 0 ? (
-            data.map((item) => {
+            data.map((item: any) => {
               return <OverdueItem overdueNumber={item.value}>{item.companyName}</OverdueItem>;
             })
           ) : (
