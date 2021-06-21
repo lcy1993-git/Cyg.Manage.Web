@@ -3,7 +3,8 @@ import UrlSelect from '@/components/url-select';
 import { useGetProjectEnum } from '@/utils/hooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
 import { isEmpty } from 'lodash';
-import React, { memo } from 'react';
+import moment from 'moment';
+import React, { memo, useState } from 'react';
 
 import Rule from './project-form-rule';
 
@@ -17,11 +18,16 @@ interface CreateProjectFormProps {
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const { field = {}, areaId, company, companyName, status } = props;
+  const [startDate, setStartDate] = useState<Date>();
+  const [dataSourceType, setDataSourceType] = useState<number>();
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
   //   { ready: !!areaId, refreshDeps: [areaId] },
   // );
+  const disableDate = (current: any) => {
+    return current < moment('2010-01-01') || current > moment('2051-01-01');
+  };
 
   const {
     projectCategory,
@@ -160,8 +166,16 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'startTime']}
             name={isEmpty(field) ? 'startTime' : [field.name, 'startTime']}
+            required
+            rules={[{ required: true, message: '项目开始日期不能为空' }]}
           >
-            <DatePicker placeholder="请选择" />
+            <DatePicker
+              placeholder="请选择"
+              onChange={(value: any) => {
+                setStartDate(value);
+              }}
+              disabledDate={disableDate}
+            />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -171,8 +185,21 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'endTime']}
             name={isEmpty(field) ? 'endTime' : [field.name, 'endTime']}
+            dependencies={['startTime']}
+            required
+            rules={[
+              { required: true, message: '项目结束日期不能为空' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (new Date(value).getTime() > new Date(startDate).getTime() || !value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
+                },
+              }),
+            ]}
           >
-            <DatePicker placeholder="请选择" />
+            <DatePicker placeholder="请选择" disabledDate={disableDate} />
           </CyFormItem>
         </div>
       </div>
@@ -304,7 +331,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'assetsOrganization' : [field.name, 'assetsOrganization']}
             labelWidth={120}
             align="right"
-            rules={Rule.required}
+            rules={Rule.assetsOrganization}
             required
           >
             <Input placeholder="请输入" />
@@ -317,6 +344,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'cityCompany' : [field.name, 'cityCompany']}
             labelWidth={120}
             align="right"
+            rules={Rule.wordsLimit}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -349,6 +377,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'countyCompany' : [field.name, 'countyCompany']}
             labelWidth={120}
             align="right"
+            rules={Rule.wordsLimit}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -474,70 +503,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="交底范围(米)"
-            initialValue={'50'}
-            fieldKey={[field.fieldKey, 'disclosureRange']}
-            name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={[
-              {
-                required: true,
-                message: '交底范围不能为空',
-              },
-              () => ({
-                validator(_, value) {
-                  if (value <= 99999 && value >= 1) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject('请填写1~99999以内的整数');
-                },
-              }),
-              {
-                pattern: /^[0-9]\d*$/,
-                message: '请输入正整数',
-              },
-            ]}
-          >
-            <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="桩位范围(米)"
-            initialValue={'50'}
-            fieldKey={[field.fieldKey, 'pileRange']}
-            name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={[
-              {
-                required: true,
-                message: '桩位范围不能为空',
-              },
-              () => ({
-                validator(_, value) {
-                  if (value <= 99999 && value >= 1) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject('请填写1~99999以内的整数');
-                },
-              }),
-              {
-                pattern: /^[0-9]\d*$/,
-                message: '请输入正整数',
-              },
-            ]}
-          >
-            <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
-          </CyFormItem>
-        </div>
-      </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -567,6 +533,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 valueKey="value"
                 titleKey="text"
                 placeholder="请选择"
+                onChange={(value: any) => {
+                  setDataSourceType(value);
+                }}
               />
             ) : (
               <UrlSelect
@@ -577,6 +546,85 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 placeholder="请选择"
               />
             )}
+          </CyFormItem>
+        </div>
+      </div>
+
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="交底范围(米)"
+            // initialValue={'50'}
+            fieldKey={[field.fieldKey, 'disclosureRange']}
+            name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
+            required
+            labelWidth={120}
+            align="right"
+            rules={[
+              {
+                required: true,
+                message: '交底范围不能为空',
+              },
+              () => ({
+                validator(_, value) {
+                  if (value <= 99999 && value > 0) {
+                    return Promise.resolve();
+                  }
+                  if (value === 0 || value > 99999) {
+                    return Promise.reject('请填写1~99999以内的整数');
+                  }
+                  return Promise.resolve();
+                },
+              }),
+              {
+                pattern: /^[0-9]\d*$/,
+                message: '请输入正整数',
+              },
+            ]}
+          >
+            {dataSourceType === 1 ? (
+              <InputNumber
+                disabled
+                placeholder="“无需现场数据”项目，免设置此条目"
+                style={{ width: '100%' }}
+              />
+            ) : (
+              <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
+            )}
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="桩位范围(米)"
+            initialValue={'50'}
+            fieldKey={[field.fieldKey, 'pileRange']}
+            name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
+            required
+            labelWidth={120}
+            align="right"
+            rules={[
+              {
+                required: true,
+                message: '桩位范围不能为空',
+              },
+              () => ({
+                validator(_, value) {
+                  if (value <= 99999 && value > 0) {
+                    return Promise.resolve();
+                  }
+                  if (value === 0 || value > 99999) {
+                    return Promise.reject('请填写1~99999以内的整数');
+                  }
+                  return Promise.resolve();
+                },
+              }),
+              {
+                pattern: /^[0-9]\d*$/,
+                message: '请输入正整数',
+              },
+            ]}
+          >
+            <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
           </CyFormItem>
         </div>
       </div>

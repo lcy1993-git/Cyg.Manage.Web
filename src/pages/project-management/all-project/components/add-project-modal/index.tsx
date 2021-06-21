@@ -51,7 +51,8 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
     <Modal
       maskClosable={false}
       title="新增项目"
-      width={750}
+      centered
+      width={780}
       visible={state as boolean}
       destroyOnClose
       footer={[

@@ -208,12 +208,26 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           </div>
           <div className="flex">
             <div className="flex1 flowHidden">
-              <CyFormItem label="项目开始日期" labelWidth={120} align="right" name="startTime">
+              <CyFormItem
+                label="项目开始日期"
+                labelWidth={120}
+                align="right"
+                name="startTime"
+                required
+                rules={[{ required: true, message: '项目开始日期不能为空' }]}
+              >
                 <DatePicker placeholder="请选择" />
               </CyFormItem>
             </div>
             <div className="flex1 flowHidden">
-              <CyFormItem label="项目结束日期" labelWidth={120} align="right" name="endTime">
+              <CyFormItem
+                label="项目结束日期"
+                labelWidth={120}
+                align="right"
+                name="endTime"
+                required
+                rules={[{ required: true, message: '项目结束日期不能为空' }]}
+              >
                 <DatePicker placeholder="请选择" />
               </CyFormItem>
             </div>

@@ -2,66 +2,23 @@ import React from 'react';
 import styles from './index.less';
 import OverdueItem from './overdue-item';
 import ScrollView from 'react-custom-scrollbars';
+import { useRequest } from 'ahooks';
+import { getOverdues } from '@/services/project-management/project-all-area-statistics';
+import EmptyTip from '@/components/empty-tip';
 
 const OverdueComponent: React.FC = () => {
+  const { data = [] } = useRequest(() => getOverdues({ limit: 100 }));
   return (
     <div className={styles.overdueComponent}>
       <ScrollView>
         <div style={{ paddingRight: '20px' }}>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjsadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadadaddhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
-          <OverdueItem overdueNumber={1}>
-            代码shdasjkdhasjkhdsjkahdjkashdasjkhdsjkahdjksdhajksdhsajkhdaskjdhjk
-          </OverdueItem>
+          {data && data.length > 0 ? (
+            data.map((item) => {
+              return <OverdueItem overdueNumber={item.value}>{item.companyName}</OverdueItem>;
+            })
+          ) : (
+            <EmptyTip description="当前暂无即将逾期或已逾期项目" />
+          )}
         </div>
       </ScrollView>
     </div>

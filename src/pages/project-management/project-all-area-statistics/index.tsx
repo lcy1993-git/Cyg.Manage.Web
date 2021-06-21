@@ -15,6 +15,7 @@ import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { divide } from 'lodash';
 
+
 const ProjectAllAreaStatistics: React.FC = () => {
   const [tabsChooseValue, setTabsChooseValue] = useState<string>('1');
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
