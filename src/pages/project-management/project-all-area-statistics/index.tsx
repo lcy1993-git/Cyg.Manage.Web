@@ -14,11 +14,12 @@ import ProjectProcessComponent from './components/project-process-component';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { divide } from 'lodash';
+import ProjectProcessListComponent from './components/projectProcessListComponent';
 
 
 const ProjectAllAreaStatistics: React.FC = () => {
-  const [tabsChooseValue, setTabsChooseValue] = useState<string>('1');
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
+  const [processListActiveTab, setProcessListActiveTab] = useState<string>('comprehensive');
   const [companyId, setCompanyId] = useState<string>('');
 
   const { data: companySelectData = [] } = useGetSelectData({
@@ -39,7 +40,9 @@ const ProjectAllAreaStatistics: React.FC = () => {
                     <DataSelect
                       style={{ width: '100%' }}
                       value={companyId}
-                      onChange={(value: any) => {setCompanyId(value)}}
+                      onChange={(value: any) => {
+                        setCompanyId(value);
+                      }}
                       placeholder="请选择设计院单位"
                       options={companySelectData}
                     />
@@ -81,14 +84,15 @@ const ProjectAllAreaStatistics: React.FC = () => {
           </div>
           <div className={styles.projectProcessListContent}>
             <TabsWindow
-              value={tabsChooseValue}
-              onChange={setTabsChooseValue}
+              value={processListActiveTab}
+              onChange={setProcessListActiveTab}
               tabsArray={[
-                { name: '综合进度', value: '1' },
-                { name: '项目进度', value: '2' },
+                { name: '综合进度榜', value: 'comprehensive' },
+                { name: '项目进度榜', value: 'project' },
               ]}
             >
-              <ComprehensiveProcessListComponent />
+              {processListActiveTab === 'comprehensive' && <ComprehensiveProcessListComponent />}
+              {processListActiveTab === 'project' && <ProjectProcessListComponent />} 
             </TabsWindow>
           </div>
         </div>
