@@ -11,7 +11,7 @@ import {
   StopOutlined,
 } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Tooltip } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -172,7 +172,7 @@ const ResourceLib: React.FC = () => {
           <span
             className="canClick"
             onClick={() => {
-              setResourceManageFlag(true);
+              setResourceManageFlag?.(true);
 
               setCurrentManageId(record.id);
               history.push({
@@ -184,12 +184,17 @@ const ResourceLib: React.FC = () => {
             <u>管理</u>
           </span>
         ) : (
-          <span>管理</span>
+          <span
+            // className="canClick"
+            onClick={() => message.error('当前资源库已打开"模块管理"界面，请关闭后重试')}
+          >
+            <u>管理</u>
+          </span>
         );
       },
     },
   ];
-  console.log(resourceManageFlag);
+  // console.log(resourceManageFlag);
 
   //添加
   const addEvent = () => {

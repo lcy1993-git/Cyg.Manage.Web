@@ -178,7 +178,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
           setAllProjectSearchProjectId: setAllProjectSearchProjectId,
           setAllProjectSearchPerson,
           resourceManageFlag,
-          setResourceManageFlag: setResourceManageFlag,
+          setResourceManageFlag,
         }}
       >
         <div className={styles.layoutContent}>

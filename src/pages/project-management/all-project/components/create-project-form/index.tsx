@@ -502,6 +502,50 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
+
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="截止日期"
+            fieldKey={[field.fieldKey, 'deadline']}
+            name={isEmpty(field) ? 'deadline' : [field.name, 'deadline']}
+            labelWidth={120}
+            align="right"
+          >
+            <DatePicker placeholder="请选择" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="现场数据来源"
+            initialValue={0}
+            fieldKey={[field.fieldKey, 'dataSourceType']}
+            name={isEmpty(field) ? 'dataSourceType' : [field.name, 'dataSourceType']}
+            required
+            labelWidth={120}
+            align="right"
+            rules={Rule.required}
+          >
+            {status == 1 || status == 14 || status == undefined ? (
+              <UrlSelect
+                defaultData={projectDataSourceType}
+                valueKey="value"
+                titleKey="text"
+                placeholder="请选择"
+              />
+            ) : (
+              <UrlSelect
+                defaultData={projectDataSourceType}
+                disabled
+                valueKey="value"
+                titleKey="text"
+                placeholder="请选择"
+              />
+            )}
+          </CyFormItem>
+        </div>
+      </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -569,48 +613,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             ]}
           >
             <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="截止日期"
-            fieldKey={[field.fieldKey, 'deadline']}
-            name={isEmpty(field) ? 'deadline' : [field.name, 'deadline']}
-            labelWidth={120}
-            align="right"
-          >
-            <DatePicker placeholder="请选择" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="现场数据来源"
-            initialValue={0}
-            fieldKey={[field.fieldKey, 'dataSourceType']}
-            name={isEmpty(field) ? 'dataSourceType' : [field.name, 'dataSourceType']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-          >
-            {status == 1 || status == 14 || status == undefined ? (
-              <UrlSelect
-                defaultData={projectDataSourceType}
-                valueKey="value"
-                titleKey="text"
-                placeholder="请选择"
-              />
-            ) : (
-              <UrlSelect
-                defaultData={projectDataSourceType}
-                disabled
-                valueKey="value"
-                titleKey="text"
-                placeholder="请选择"
-              />
-            )}
           </CyFormItem>
         </div>
       </div>
