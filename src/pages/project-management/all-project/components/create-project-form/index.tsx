@@ -19,6 +19,7 @@ interface CreateProjectFormProps {
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const { field = {}, areaId, company, companyName, status } = props;
   const [startDate, setStartDate] = useState<Date>();
+  const [dataSourceType, setDataSourceType] = useState<number>();
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
@@ -532,6 +533,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 valueKey="value"
                 titleKey="text"
                 placeholder="请选择"
+                onChange={(value: any) => {
+                  setDataSourceType(value);
+                }}
               />
             ) : (
               <UrlSelect
@@ -550,7 +554,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         <div className="flex1 flowHidden">
           <CyFormItem
             label="交底范围(米)"
-            initialValue={'50'}
+            // initialValue={'50'}
             fieldKey={[field.fieldKey, 'disclosureRange']}
             name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
             required
@@ -578,7 +582,15 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               },
             ]}
           >
-            <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
+            {dataSourceType === 1 ? (
+              <InputNumber
+                disabled
+                placeholder="“无需现场数据”项目，免设置此条目"
+                style={{ width: '100%' }}
+              />
+            ) : (
+              <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
+            )}
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
