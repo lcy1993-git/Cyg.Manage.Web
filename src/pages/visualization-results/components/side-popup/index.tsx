@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Drawer, Table, Modal, Carousel, Input, message } from 'antd';
 
-import { MenuUnfoldOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
+import { CloseOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 
 import { useContainer } from '../../result-page/mobx-store';
 import CommentList from './components/comment-list';
@@ -523,19 +523,17 @@ const SidePopup: React.FC<Props> = observer((props) => {
 
   const DrawerWrap = useMemo(() => {
     return (
-      <Drawer
+      rightSidebarVisible ? <div
         title={'项目名称：' + data[1]}
-        placement="right"
-        closable={false}
-        visible={rightSidebarVisible}
-        destroyOnClose={true}
-        mask={false}
-        className={rightSidebarVisible ? '' : styles.poiontEventNone}
-        getContainer={false}
-        style={{ position: 'absolute', width: 340 }}
+        className={styles.sidePopupWrap}
+        // style={{ position: 'absolute', width: 200, top: 100, left: 240,backgroundColor: "#fff" }}
       >
+        <div className={styles.title}>
+          <span className={styles.head}>项目名称：</span>
+          <span className={styles.body}>{data[1]}</span>
+        </div>
         <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
-          <MenuUnfoldOutlined />
+          <CloseOutlined />
         </div>
         <Table
           bordered
@@ -546,7 +544,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           rowClassName={styles.row}
           rowKey={(r) => r.propertyName}
         />
-      </Drawer>
+      </div> : null
     );
   }, [rightSidebarVisible, JSON.stringify(data)]);
 
@@ -567,6 +565,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           width="96%"
           onCancel={() => setMediaVisiable(false)}
           onOk={() => setMediaVisiable(false)}
+          destroyOnClose={true}
         >
           <div className={styles.mediaIconWrapLeft}>
             <DoubleLeftOutlined

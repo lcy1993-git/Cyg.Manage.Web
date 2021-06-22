@@ -10,7 +10,12 @@ import { ImportOutlined } from '@ant-design/icons';
 import ImportOverheadModal from './components/import-form';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
-const OverheadDesign: React.FC = () => {
+interface libParams {
+  libId: string;
+}
+
+const OverheadDesign: React.FC<libParams> = (props) => {
+  const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false);
@@ -40,35 +45,21 @@ const OverheadDesign: React.FC = () => {
   };
 
   const importOverheadDesignEvent = () => {
-    if (!resourceLibId) {
-      message.error('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.error('请先选择资源库');
+    //   return;
+    // }
     setImportOverheadVisible(true);
   };
 
   return (
-    <PageCommonWrap noPadding={true}>
+    // <PageCommonWrap noPadding={true}>
+    <>
       <div className={styles.overHeadDesign}>
-        <div className={styles.overHeadTitle}>
-          <div className="flex1">
-            <CommonTitle>架空设计</CommonTitle>
-          </div>
+        <div className={styles.overHeadTable}>
           <div className="flex">
             <div className="flex1 flex">
-              <TableSearch label="资源库" width="240px">
-                <UrlSelect
-                  allowClear
-                  showSearch
-                  style={{ width: '180px' }}
-                  requestSource="resource"
-                  url="/ResourceLib/GetList"
-                  titleKey="libName"
-                  valueKey="id"
-                  placeholder="请选择"
-                  onChange={(value: any) => searchByLib(value)}
-                />
-              </TableSearch>
+              <CommonTitle>架空设计</CommonTitle>
             </div>
             <div>
               {buttonJurisdictionArray?.includes('modules-import') && (
@@ -79,19 +70,18 @@ const OverheadDesign: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
-        <div className={styles.overHeadTable}>
-          <OverHeadDesignTab libId={resourceLibId} />
+          <OverHeadDesignTab libId={libId} />
         </div>
       </div>
       <ImportOverheadModal
-        libId={resourceLibId}
+        libId={libId}
         requestSource="resource"
         visible={importOverheadVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportOverheadVisible}
       />
-    </PageCommonWrap>
+      {/* </PageCommonWrap> */}
+    </>
   );
 };
 

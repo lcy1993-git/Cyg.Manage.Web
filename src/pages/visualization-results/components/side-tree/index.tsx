@@ -2,7 +2,7 @@ import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import styles from './index.less';
 import _ from 'lodash';
-import { Tree, Tabs, Spin, message, Checkbox } from 'antd';
+import { Tree, Tabs, Spin, message, Checkbox, Button } from 'antd';
 import { useRequest, useSize } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
@@ -14,6 +14,7 @@ import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
+import { flattenDeepToKey } from '../../utils/utils'
 const { TabPane } = Tabs;
 
 export interface TreeNodeType {
@@ -67,11 +68,14 @@ type keyType =
       halfChecked: React.Key[];
     };
 
+const areaArray = ["省", "市", "县", "工", "项"];
+
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<keyType>();
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+  const [buttonActive, setButtonActive] = useState<number>(0);
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [allCheck, setAllCheck] = useState<boolean>(false);
   const [indeterminate, setIndeterminate] = React.useState(false);
@@ -330,6 +334,23 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     },
   });
 
+  const handlerAreaButtonCheck = (index: number) => {
+    const resKey = flattenDeepToKey(treeData, index, "key", "-1");
+    setExpandedKeys(resKey);
+    setButtonActive(index);
+  }
+
+  const areaButtons = (buttonActive: number) => {
+    return areaArray.map((item, index) => {
+      return (
+        <div key={item} className={styles.areaButtonsItem}>
+          <Button style={{width: "100%"}} type={buttonActive === index ? "primary" : "default"} onClick={() => handlerAreaButtonCheck(index)}>{item}</Button>
+        </div>
+
+      )
+    })
+  }
+
   return (
     <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>
       <div style={{ backgroundColor: activeStyle('1') }} className={styles.tabBar}>
@@ -359,6 +380,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           ) : null}
           {!treeListDataLoading ? (
             <>
+              {tabActiveKey === "1" ? (
+                <div className={styles.areaButtons}>
+                  {areaButtons(buttonActive)}
+                </div>
+              ) : null}
               <Checkbox
                 checked={allCheck}
                 indeterminate={indeterminate}
@@ -377,7 +403,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                 checkedKeys={checkedKeys}
                 treeData={treeData}
                 className={classNames(styles.sideMenu)}
-              ></Tree>
+              >
+
+
+                
+              </Tree>
             </>
           ) : null}
         </TabPane>

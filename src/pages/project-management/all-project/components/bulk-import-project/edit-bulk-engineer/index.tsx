@@ -154,10 +154,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     });
 
     const companySelectResData = await getCompanySelectData({
-      url: '/ElectricityCompany',
+      url: '/ElectricityCompany/GetListByAreaId',
       method: 'get',
-      params: { area: province },
-      requestSource: 'resource',
+      params: { areaId: province },
     });
 
     const handleWarehouseSelectData = warehouseSelectResData?.map((item: any) => {
@@ -169,8 +168,8 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
 
     const handleCompanySelectData = companySelectResData?.map((item: any) => {
       return {
-        label: item.companyName,
-        value: item.companyName,
+        label: item.text,
+        value: item.text,
       };
     });
 

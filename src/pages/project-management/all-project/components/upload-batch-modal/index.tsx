@@ -99,7 +99,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
                 style={{ width: '100px' }}
                 onClick={() => downloadModalFileEvent()}
               >
-                <a href={'/template/project.xlsx'} download="批量立项模板文件.xlsx">
+                <a href={'/template/proTemp.xlsx'} download="批量立项模板文件.xlsx">
                   点击下载
               </a>
               </Button>

@@ -12,9 +12,14 @@ import { ImportOutlined } from '@ant-design/icons';
 import ImportChartModal from './component/import-form';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
-const { Search } = Input;
+interface libParams {
+  libId: string;
+}
 
-const Drawing: React.FC = () => {
+const { Search } = Input;
+const Drawing: React.FC<libParams> = (props) => {
+  const { libId } = props;
+
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
@@ -27,7 +32,7 @@ const Drawing: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="搜索" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -36,7 +41,7 @@ const Drawing: React.FC = () => {
             placeholder="关键词"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="选择资源" width="300px">
+        {/* <TableSearch marginLeft="20px" label="选择资源" width="300px">
           <UrlSelect
             allowClear
             showSearch
@@ -47,7 +52,7 @@ const Drawing: React.FC = () => {
             placeholder="请选择"
             onChange={(value: any) => searchByLib(value)}
           />
-        </TableSearch>
+        </TableSearch> */}
       </div>
     );
   };
@@ -133,15 +138,16 @@ const Drawing: React.FC = () => {
   };
 
   const importChartEvent = () => {
-    if (!resourceLibId) {
-      message.error('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.error('请先选择资源库');
+    //   return;
+    // }
     setImportFormVisible(true);
   };
 
   return (
-    <PageCommonWrap>
+    <>
+      {/* <PageCommonWrap> */}
       <GeneralTable
         rowKey="chartId"
         ref={tableRef}
@@ -151,22 +157,23 @@ const Drawing: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/Chart/GetPageList"
-        tableTitle="图纸"
+        // tableTitle="图纸"
         type="radio"
         extractParams={{
-          resourceLibId: resourceLibId,
+          resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
       />
       <ImportChartModal
-        libId={resourceLibId}
+        libId={libId}
         securityKey={chartSecurityKey}
         requestSource="upload"
         visible={importFormVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportFormVisible}
       />
-    </PageCommonWrap>
+      {/* </PageCommonWrap> */}
+    </>
   );
 };
 

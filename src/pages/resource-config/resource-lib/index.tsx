@@ -11,7 +11,7 @@ import {
   StopOutlined,
 } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message, Spin, Tooltip } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import {
@@ -30,6 +30,8 @@ import SaveImportLineStressSag from './components/upload-lineStressSag';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
+import { history } from 'umi';
+import { useLayoutStore } from '@/layouts/context';
 
 const { Search } = Input;
 
@@ -47,6 +49,7 @@ const ResourceLib: React.FC = () => {
   const [status, setStatus] = useState<string>('0');
 
   const [libId, setLibId] = useState<string>('');
+  const [currentManageId, setCurrentManageId] = useState<string>(''); //当前管理 模块的资源库Id
 
   const { data: keyData } = useRequest(() => getUploadUrl());
 
@@ -56,6 +59,8 @@ const ResourceLib: React.FC = () => {
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
   });
+
+  const { setResourceManageFlag: setResourceManageFlag, resourceManageFlag } = useLayoutStore();
 
   const searchComponent = () => {
     return (
@@ -117,7 +122,7 @@ const ResourceLib: React.FC = () => {
       dataIndex: 'libName',
       index: 'libName',
       title: '名称',
-      width: 180,
+      width: 280,
     },
     {
       dataIndex: 'dbName',
@@ -153,12 +158,43 @@ const ResourceLib: React.FC = () => {
           </span>
         );
       },
-      width: 280,
+      width: 180,
       render: (text: any, record: any) => {
         return record.isDisabled === true ? '已禁用' : '';
       },
     },
+    {
+      dataIndex: 'action',
+      title: '操作',
+      width: 100,
+      render: (text: any, record: any) => {
+        return !resourceManageFlag ? (
+          <span
+            className="canClick"
+            onClick={() => {
+              setResourceManageFlag?.(true);
+
+              setCurrentManageId(record.id);
+              history.push({
+                pathname: `/resource-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
+              });
+              refresh();
+            }}
+          >
+            <u>管理</u>
+          </span>
+        ) : (
+          <span
+            // className="canClick"
+            onClick={() => message.error('当前资源库已打开"模块管理"界面，请关闭后重试')}
+          >
+            <u>管理</u>
+          </span>
+        );
+      },
+    },
   ];
+  // console.log(resourceManageFlag);
 
   //添加
   const addEvent = () => {
@@ -188,8 +224,13 @@ const ResourceLib: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
+      return;
+    }
 
     setEditFormVisible(true);
     const ResourceLibData = await run(editDataId);
@@ -233,6 +274,13 @@ const ResourceLib: React.FC = () => {
       message.warning('请选择要操作的行');
       return;
     }
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
+      return;
+    }
     setLibId(tableSelectRows[0].id);
     setUploadLibVisible(true);
   };
@@ -242,6 +290,13 @@ const ResourceLib: React.FC = () => {
       message.warning('请选择要操作的行');
       return;
     }
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
+      return;
+    }
     setLibId(tableSelectRows[0].id);
     setUploadDrawingVisible(true);
   };
@@ -249,6 +304,13 @@ const ResourceLib: React.FC = () => {
   const importLineStreeSagEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择要操作的行');
+      return;
+    }
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
       return;
     }
     setLibId(tableSelectRows[0].id);

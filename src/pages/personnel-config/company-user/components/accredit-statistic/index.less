@@ -1,54 +1,57 @@
+.accreditStatistics {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  .accreditLeft {
+    height: 60px;
+    padding-right: 22px;
+    line-height: 64px;
+    img {
+      width: 54px;
+      height: 54px;
+    }
+  }
 
-.accreditStatistics{
+  .accreditRight {
     display: flex;
-    align-items: center;
-    .accreditLeft{
-        .accreditTitle {
-            height:70px;
-            margin-right:35px;
-            border-right:1px solid #e8ebee;
-        }
+    flex-direction: column;
+    .accreditTitle {
+      height: 22px;
+      color: #000000;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      opacity: 1;
     }
-    .accreditTitle{
-        width:90px;
-        height:90px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        .accreditIcon{
-           img{
-               width:32px;
-               height:32px
-           }
+    .accreditAccount {
+      display: flex;
+      .accreditWord {
+        height: 22px;
+        margin-right: 35px;
+        padding-top: 6px;
+        color: #8c8c8c;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 22px;
+        .totalNumber {
+          padding-left: 10px;
+          color: #000000;
+          font-weight: bold;
+          font-size: 22px;
+          font-family: DIN Alternate;
+          line-height: 26px;
+          opacity: 1;
         }
-        .accreditWord{
-            width: 45px;
-            height: 22px;
-            font-size: 15px;
-            font-weight: 400;
-            line-height: 22px;
-            color: #8C8C8C;
-            padding-top:6px;
+        .availableNumber {
+          padding-left: 10px;
+          color: #4da944;
+          font-weight: bold;
+          font-size: 22px;
+          font-family: DIN Alternate;
+          line-height: 26px;
+          opacity: 1;
         }
-        .statisticTotalNumber{
-            width:40px;
-            height: 32px;
-            font-size: 22px;
-            font-weight: bold;
-            line-height: 32px;
-            color: #000000;
-        }
-        .statisticAvailableNumber{
-            width:40px;
-            height: 32px;
-            font-size: 22px;
-            font-weight: bold;
-            line-height: 32px;
-            color: #FF2929;;
-        }
-        
+      }
     }
-  
+  }
 }
-

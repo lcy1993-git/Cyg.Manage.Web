@@ -31,7 +31,7 @@ const EditPassword = (props: EditPasswordProps) => {
 
   return (
     <Modal
-    maskClosable={false}
+      maskClosable={false}
       title="修改密码"
       visible={state as boolean}
       destroyOnClose
@@ -67,6 +67,11 @@ const EditPassword = (props: EditPasswordProps) => {
               min: 6,
               message: '密码不能少于6个字符',
             },
+            {
+              max: 20,
+              message: '密码不能多于20个字符',
+            },
+            { required: true, message: '密码不能为空' },
           ]}
         >
           <Input type="password" placeholder="请输入" />

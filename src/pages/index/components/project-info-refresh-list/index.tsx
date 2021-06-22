@@ -12,7 +12,7 @@ import {
 } from '@/services/index';
 import moment from 'moment';
 export interface ProjectInfoRefreshListProps {
-  currentAreaInfo: AreaInfo;
+  currentAreaInfo?: AreaInfo;
 }
 
 const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaInfo }) => {
@@ -99,7 +99,7 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
             name={item.projectName}
             key={`${item.date}${idx}`}
             id={item.projectId}
-            content={item.content}
+            content={`${item.operator}${item.operationCategory}`}
             date={moment(item.date).format('YYYY-MM-DD HH:mm:ss')}
           />
         ))}

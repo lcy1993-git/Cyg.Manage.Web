@@ -20,6 +20,8 @@ export interface VisualizationResultsStateType {
   onPositionClickState: boolean; // 当点击地图定位时候
   observeTrackTimeline?: string[]; //勘察轨迹tiemline
   isFilter?: boolean; //为了判断是不是通过filter来是刷新tree
+  startDate: string | undefined, // 开始日期
+  endDate: string | undefined // 终止日期
 }
 
 const initState = {
@@ -35,6 +37,8 @@ const initState = {
   onPositionClickState: false,
   checkedProjectIdList: [],
   isFilter: false,
+  startDate: undefined,
+  endDate: undefined
 };
 
 function Store(vState: VisualizationResultsStateType) {
@@ -66,6 +70,14 @@ function Store(vState: VisualizationResultsStateType) {
     //设置timeline点击的日期
     setClickDate(clickDate: string, type: string) {
       this.vState.normalClickDate = clickDate;
+    },
+    // 设置开始日期
+    setStartDate(time: string | undefined) {
+      this.vState.startDate = time;
+    },
+    // 设置结束日期
+    setEndDate(time: string | undefined) {
+      this.vState.endDate = time;
     },
     setIsFilter(isFilter: boolean) {
       this.vState.isFilter = isFilter;

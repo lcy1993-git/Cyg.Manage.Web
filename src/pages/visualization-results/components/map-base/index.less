@@ -23,6 +23,38 @@
   user-select: none;
   -webkit-touch-callout: none;
 }
+
+.sideMenuTree {
+  height: calc(100% - 30px);
+  position: absolute;
+  top: 20px;
+  // left: -220px;
+  left: 13px;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  -khtml-user-select: none;
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  -webkit-touch-callout: none;
+  transition: left ease-in-out .2s;
+}
+.open {
+  left: 13px;
+}
+.close {
+  left: -220px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
 .listMenu {
   position: absolute;
   top: 120px;
@@ -40,106 +72,111 @@
   -webkit-touch-callout: none;
 }
 
-.controlLayer {
-  width: 151px;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Chrome/Safari/Opera */
-  -khtml-user-select: none;
-  /* Konqueror */
-  -moz-user-select: none;
-  /* Firefox */
-  -ms-user-select: none;
-  /* Internet Explorer/Edge */
-  user-select: none;
-  -webkit-touch-callout: none;
-}
-
 .mapDisplay {
-  width: 151px;
-  /* iOS Safari */
-  -webkit-user-select: none;
-  /* Chrome/Safari/Opera */
-  -khtml-user-select: none;
-  /* Konqueror */
-  -moz-user-select: none;
-  /* Firefox */
-  -ms-user-select: none;
-  /* Internet Explorer/Edge */
-  user-select: none;
-  -webkit-touch-callout: none;
+  // position: absolute;
+  // border: 2px solid #fff;
+  position: absolute;
+  overflow: hidden;
+  bottom: 35px;
+  right: 23px;
+  transition: right linear .2s;
+  // // background-color: red;
+  // /* iOS Safari */
+  // -webkit-user-select: none;
+  // /* Chrome/Safari/Opera */
+  // -khtml-user-select: none;
+  // /* Konqueror */
+  // -moz-user-select: none;
+  // /* Firefox */
+  // -ms-user-select: none;
+  // /* Internet Explorer/Edge */
+  // user-select: none;
+  // -webkit-touch-callout: none;
+}
+.mapDisplayCloese {
+  right: -120px;
+}
+.surveytrack {
+  position: absolute;
+  bottom: 135px;
+  right: 23px;
+  transition: right linear .2s;
 }
 
-@media (min-width: 1024px) {
-  .controlLayer {
-    position: absolute;
-    top: 100px;
-    right: 16px;
-    width: atuo;
-  }
-
-  .mapDisplay {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-  }
+.surveytrackCloese {
+  right: -40px;
 }
 
-@media (min-width: 1366px) {
-  .controlLayer {
-    position: absolute;
-    top: 100px;
-    right: 16px;
-    width: atuo;
-  }
+// @media (min-width: 1024px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 100px;
+//     right: 16px;
+//     width: atuo;
+//   }
 
-  .mapDisplay {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-  }
-}
+//   .mapDisplay {
+//     position: absolute;
+//     top: 16px;
+//     right: 16px;
+//   }
+// }
 
-@media (min-width: 1440px) {
-  .controlLayer {
-    position: absolute;
-    top: 100px;
-    right: 16px;
-    width: atuo;
-  }
+// @media (min-width: 1366px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 100px;
+//     right: 16px;
+//     width: atuo;
+//   }
 
-  .mapDisplay {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-  }
-}
+//   .mapDisplay {
+//     position: absolute;
+//     top: 16px;
+//     right: 16px;
+//   }
+// }
 
-@media (min-width: 1680px) {
-  .controlLayer {
-    position: absolute;
-    top: 423px;
-    left: 16px;
-    width: atuo;
-  }
+// @media (min-width: 1440px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 100px;
+//     right: 16px;
+//     width: atuo;
+//   }
 
-  .mapDisplay {
-    position: absolute;
-    top: 560px;
-    left: 16px;
-  }
-}
-@media (min-width: 1920px) {
-  .controlLayer {
-    position: absolute;
-    top: 423px;
-    left: 16px;
-    width: atuo;
-  }
+//   .mapDisplay {
+//     position: absolute;
+//     top: 16px;
+//     right: 16px;
+//   }
+// }
 
-  .mapDisplay {
-    position: absolute;
-    top: 560px;
-    right: 16px;
-  }
-}
+// @media (min-width: 1680px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 423px;
+//     left: 16px;
+//     width: atuo;
+//   }
+
+//   .mapDisplay {
+//     position: absolute;
+//     top: 560px;
+//     left: 16px;
+//   }
+// }
+// @media (min-width: 1920px) {
+//   .controlLayer {
+//     position: absolute;
+//     top: 423px;
+//     left: 16px;
+//     width: atuo;
+//   }
+
+//   .mapDisplay {
+//     position: absolute;
+//     top: 560px;
+//     right: 16px;
+//   }
+// }
