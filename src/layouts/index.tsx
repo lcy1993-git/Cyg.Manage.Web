@@ -10,7 +10,7 @@ moment.locale('zh-cn');
 
 import styles from './index.less';
 import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons';
-import { LayoutProvider } from './context';
+import { LayoutProvider, useLayoutStore } from './context';
 
 const { TabPane } = Tabs;
 
@@ -26,8 +26,9 @@ interface ElementDiv extends Element {
 const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, history, match }) => {
   const [activeKey, setActiveKey] = useState<string>('/index');
 
-  const [allProjectSearchProjectName, setAllProjectSearchProjectId] = useState("");
-  const [allProjectSearchPerson, setAllProjectSearchPerson] = useState("");
+  const [allProjectSearchProjectName, setAllProjectSearchProjectId] = useState('');
+  const [allProjectSearchPerson, setAllProjectSearchPerson] = useState('');
+  const [resourceManageFlag, setResourceManageFlag] = useState<boolean>(false);
 
   const [routeList, setRouteList] = useState<RouteListItem[]>([
     {
@@ -85,6 +86,9 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     const copyRouteList = routeList.map((item) => item);
     const keyIndex = copyRouteList.findIndex((item) => item.tabKey === key);
 
+    if (copyRouteList[keyIndex].title.indexOf('resource-manage') != -1) {
+      setResourceManageFlag(false);
+    }
     // 判断他当前删除的是不是当前激活的tab,如果是，则需要激活这个tab的相邻的tab,如果不是，就直接删除
     let needActiveIndex = 0;
     if (activeKey === key) {
@@ -139,9 +143,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   };
 
   const clearAgainLogin = () => {
-
-    editTabsEvent("/again-login","remove")
-  }
+    editTabsEvent('/again-login', 'remove');
+  };
 
   const OperationsSlot = {
     left: (
@@ -167,13 +170,17 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
 
   return (
     <ConfigProvider locale={zhCN}>
-      <LayoutProvider value={{
-        clearAgainLogin,
-        allProjectSearchProjectName,
-        allProjectSearchPerson,
-        setAllProjectSearchProjectId: setAllProjectSearchProjectId,
-        setAllProjectSearchPerson
-      }}>
+      <LayoutProvider
+        value={{
+          clearAgainLogin,
+          allProjectSearchProjectName,
+          allProjectSearchPerson,
+          setAllProjectSearchProjectId: setAllProjectSearchProjectId,
+          setAllProjectSearchPerson,
+          resourceManageFlag,
+          setResourceManageFlag,
+        }}
+      >
         <div className={styles.layoutContent}>
           <div className={layoutIsFold ? 'hide' : ''}>
             <LayoutHeader />

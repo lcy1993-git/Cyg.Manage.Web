@@ -176,6 +176,7 @@ const RolePermissions: React.FC = () => {
       setDistributeFormVisible(false);
       tableFresh();
       message.success('角色功能分配成功');
+      apportionForm.resetFields();
     });
   };
 

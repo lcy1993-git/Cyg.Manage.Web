@@ -15,29 +15,21 @@ const AccreditStatistics: React.FC<AccreditStatisticsProps> = (props) => {
   return (
     <div className={styles.accreditStatistics}>
       <div className={styles.accreditLeft}>
-        <div className={styles.accreditTitle}>
-          <div className={styles.accreditIcon}>
-            <img src={imgSrc} />
-          </div>
-          <div className={styles.accreditWord}>{label}</div>
-        </div>
-      </div>
-      <div className={styles.accreditTitle}>
-        <div className={styles.statisticTotalNumber}>
-          {accreditData?.totalQty < 10 && accreditData?.totalQty > 0
-            ? `0${accreditData?.totalQty}`
-            : accreditData?.totalQty}
-        </div>
-        <div className={styles.accreditWord}>总量</div>
+        <img src={imgSrc} />
       </div>
 
-      <div className={styles.accreditTitle}>
-        <div className={styles.statisticAvailableNumber}>
-          {accreditData?.availableQty < 10 && accreditData?.availableQty > 0
-            ? `0${accreditData?.availableQty}`
-            : accreditData?.availableQty}
+      <div className={styles.accreditRight}>
+        <div className={styles.accreditTitle}>{label}</div>
+        <div className={styles.accreditAccount}>
+          <div className={styles.accreditWord}>
+            总量
+            <span className={styles.totalNumber}>{accreditData?.totalQty}</span>
+          </div>
+          <div className={styles.accreditWord}>
+            可用
+            <span className={styles.availableNumber}>{accreditData?.availableQty}</span>
+          </div>
         </div>
-        <div className={styles.accreditWord}>可用</div>
       </div>
     </div>
   );

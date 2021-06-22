@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from 'antd';
 import FileUpload, { UploadStatus } from '@/components/file-upload';
 import CyFormItem from '@/components/cy-form-item';
@@ -9,12 +9,13 @@ interface CompanyFileForm {
   securityKey?: string;
   groupData?: any;
   editingName?: string;
+  fileCategory?: number | undefined;
   uploadFileFn: () => Promise<void>;
 }
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
-  const { type = 'edit', groupData, editingName, uploadFileFn } = props;
-
+  const { type = 'edit', groupData, editingName, uploadFileFn, fileCategory } = props;
+  const [categoryValue, setCategoryValue] = useState<number>();
   const groupName = groupData.items?.map((item: any) => {
     return item.name;
   });
@@ -27,6 +28,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         required
         hasFeedback
         rules={[
+          { max: 12, message: '名称超出字符数限制，限制为12个字符' },
           { required: true, message: '文件名不能为空' },
           () => ({
             validator(_, value) {
@@ -43,6 +45,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
       {type === 'add' && (
         <CyFormItem label="文件类别" name="fileCategory" required rules={rules.fileCategory}>
           <UrlSelect
+            onChange={(value: any) => setCategoryValue(value)}
             titleKey="text"
             valueKey="value"
             url="/CompanyFile/GetCategorys"
@@ -52,13 +55,34 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
       )}
       {type === 'add' && (
         <CyFormItem label="上传文件" name="file" required rules={rules.fileld}>
-          <FileUpload uploadFileBtn uploadFileFn={uploadFileFn} maxCount={1} />
+          <FileUpload
+            uploadFileBtn
+            uploadFileFn={uploadFileFn}
+            maxCount={1}
+            accept={
+              categoryValue === 5 ||
+              categoryValue === 6 ||
+              categoryValue === 8 ||
+              categoryValue === 9
+                ? '.docx,.doc'
+                : '.dwg'
+            }
+          />
         </CyFormItem>
       )}
 
       {type === 'edit' && (
         <CyFormItem label="上传文件" name="file">
-          <FileUpload uploadFileBtn uploadFileFn={uploadFileFn} maxCount={1} />
+          <FileUpload
+            uploadFileBtn
+            uploadFileFn={uploadFileFn}
+            maxCount={1}
+            accept={
+              fileCategory === 5 || fileCategory === 6 || fileCategory === 8 || fileCategory === 9
+                ? '.docx,.doc'
+                : '.dwg'
+            }
+          />
         </CyFormItem>
       )}
 

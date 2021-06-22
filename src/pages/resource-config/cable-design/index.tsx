@@ -12,7 +12,12 @@ import ImportCableModal from './components/import-form';
 
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
-const CableDesign: React.FC = () => {
+interface libParams {
+  libId: string;
+}
+
+const CableDesign: React.FC<libParams> = (props) => {
+  const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
   const [importCableVisible, setImportCableVisible] = useState<boolean>(false);
@@ -42,35 +47,21 @@ const CableDesign: React.FC = () => {
   };
 
   const importCableDesignEvent = () => {
-    if (!resourceLibId) {
-      message.error('请先选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.error('请先选择资源库');
+    //   return;
+    // }
     setImportCableVisible(true);
   };
 
   return (
-    <PageCommonWrap noPadding={true}>
+    // <PageCommonWrap noPadding={true}>
+    <>
       <div className={styles.cableDesign}>
-        <div className={styles.cableTitle}>
-          <div className="flex1">
-            <CommonTitle>电缆设计</CommonTitle>
-          </div>
+        <div className={styles.cableTable}>
           <div className="flex">
             <div className="flex1 flex">
-              <TableSearch className={styles.libSearch} label="资源库" width="240px">
-                <UrlSelect
-                  style={{ width: '180px' }}
-                  allowClear
-                  showSearch
-                  requestSource="resource"
-                  url="/ResourceLib/GetList"
-                  titleKey="libName"
-                  valueKey="id"
-                  placeholder="请选择"
-                  onChange={(value: any) => searchByLib(value)}
-                />
-              </TableSearch>
+              <CommonTitle>电缆设计</CommonTitle>
             </div>
             <div>
               {buttonJurisdictionArray?.includes('cable-design-import') && (
@@ -81,19 +72,18 @@ const CableDesign: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
-        <div className={styles.cableTable}>
-          <CableDesignTab libId={resourceLibId} />
+          <CableDesignTab libId={libId} />
         </div>
       </div>
       <ImportCableModal
-        libId={resourceLibId}
+        libId={libId}
         requestSource="resource"
         visible={importCableVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportCableVisible}
       />
-    </PageCommonWrap>
+      {/* </PageCommonWrap> */}
+    </>
   );
 };
 
