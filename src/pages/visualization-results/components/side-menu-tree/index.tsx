@@ -106,8 +106,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
   const [buttonActive, setButtonActive] = useState<number>(-1);
   // Tree State
-  const [selectArrayStuck, setSelectArrayStuck] = useState<any[]>([]);
-  const [selectedKeys, setSelectedKeys] = useState<any[]>([]);
+  const [selectArrayStuck, setSelectArrayStuck] = useState<string[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [checkedKeys, setCheckedKeys] = useState<keyType>();
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);

@@ -22,6 +22,11 @@ const MaterialInfomation = Loadable({
   loading: Loading,
   delay: 150,
 });
+const PricingTemplates = Loadable({
+  loader: () => import('@/pages/technology-economic/pricing-templates'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -43,5 +48,10 @@ export default [
     title: '查看材机库',
     path: '/technology-economic/material-infomation',
     component: <MaterialInfomation />,
+  },
+  {
+    title: '计价模板',
+    path: '/technology-economic/pricing-templates',
+    component: <PricingTemplates />,
   },
 ];
