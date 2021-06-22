@@ -75,6 +75,7 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
         name="confirmPwd"
         required
         hasFeedback
+        dependencies={['pwd']}
         rules={[
           {
             required: true,

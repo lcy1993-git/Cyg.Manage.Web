@@ -12,28 +12,31 @@
   height: 100%;
   background-color: @bg-primary-color;
   .accreditNumber {
-    // display: flex;
-    align-items: center;
     box-sizing: border-box;
-    height: 160px;
+    height: 150px;
     margin-bottom: 13px;
     padding: 20px;
     background-color: @white-color;
-    
+
     .accreditStatisticItem {
-      flex:1;
-      width: 180px;
+      position: relative;
+      flex: 1;
       height: 90px;
-      border-left: 3px solid #51ab48;
-      background-color: #f4f7fc;
-      margin-top:10px;
+      margin: 10px 20px;
     }
-    .accreditStatisticItem:not(:first-child){
-      margin-left:50px;
+    .accreditStatisticItem:not(:last-child):after {
+      position: absolute;
+      right: 10%;
+      bottom: 50%;
+      z-index: 1;
+      width: 1px;
+      height: 28px;
+      background-color: #c5c0c0;
+      content: '';
     }
   }
   .userTable {
-    height: calc(100% - 125px);
+    height: calc(100% - 163px);
     padding: 20px 20px 0px 20px;
     background-color: @white-color;
   }

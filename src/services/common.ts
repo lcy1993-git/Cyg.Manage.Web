@@ -1,3 +1,4 @@
+/* eslint-disable no-async-promise-executor */
 import { message } from 'antd';
 import { request, history } from 'umi';
 import tokenRequest from '@/utils/request';
@@ -61,12 +62,13 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
     } else {
       if (code === 401) {
         history.push('/again-login');
-        //message.error('会话超时，已自动跳转到登录界面');
+        // message.error('会话超时，已自动跳转到登录界面');
       } else {
+        // eslint-disable-next-line no-lonely-if
         if (res.content && isArray(res.content) && res.content.length > 0) {
           const errorMsgArray = res.content.map((item) => item.errorMessages).flat();
           const filterErrorMsg = errorMsgArray.filter((item, index, arr) => {
-            return arr.indexOf(item) == index;
+            return arr.indexOf(item) === index;
           });
           const showErrorMsg = filterErrorMsg.join('\n');
           message.error(showErrorMsg);
@@ -126,20 +128,20 @@ export const getDataByUrl = (
   postType = 'body',
   libId: string,
 ) => {
-  const requestBaseUrl = baseUrl[requestSource];
+  const requestFinallyBaseUrl = baseUrl[requestSource];
 
   if (requestType === 'get') {
     return cyRequest<any[]>(() =>
-      tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params }),
+      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, params }),
     );
   }
   if (postType === 'body') {
     return cyRequest<any[]>(() =>
-      tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, data: params }),
+      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, data: params }),
     );
   }
   return cyRequest<any[]>(() =>
-    tokenRequest(`${requestBaseUrl}${url}`, { method: requestType, params: { libId } }),
+    tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, params: { libId } }),
   );
 };
 
@@ -154,17 +156,23 @@ interface GetCommonSelectDataParams {
 export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) => {
   const { url, params, requestSource = 'project', method = 'get', postType } = data;
 
-  const requestBaseUrl = baseUrl[requestSource];
+  const requestFinallyBaseUrl = baseUrl[requestSource];
   if (method === 'post') {
     if (postType === 'query') {
-      return cyRequest<T[]>(() => tokenRequest(`${requestBaseUrl}${url}`, { method, params }));
+      return cyRequest<T[]>(() =>
+        tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params }),
+      );
     }
-    return cyRequest<T[]>(() => tokenRequest(`${requestBaseUrl}${url}`, { method, data: params }));
+    return cyRequest<T[]>(() =>
+      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, data: params }),
+    );
   }
   if (method === 'get' && postType) {
-    return cyRequest<T[]>(() => tokenRequest(`${requestBaseUrl}${url}`, { method, data: params }));
+    return cyRequest<T[]>(() =>
+      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, data: params }),
+    );
   }
-  return cyRequest<T[]>(() => tokenRequest(`${requestBaseUrl}${url}`, { method, params }));
+  return cyRequest<T[]>(() => tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params }));
 };
 
 export const commonUpload = (
@@ -197,7 +205,7 @@ export const commonExport = (url: string, params: any, selectIds: string[]) => {
   });
 };
 
-//导出权限
+// 导出权限
 export const exportAuthority = (url: string, params: any) => {
   return tokenRequest(`${baseUrl.project}${url}`, {
     method: 'POST',
@@ -206,7 +214,7 @@ export const exportAuthority = (url: string, params: any) => {
   });
 };
 
-//版本更新内容
+// 版本更新内容
 
 interface VersionParams {
   productCode: string;

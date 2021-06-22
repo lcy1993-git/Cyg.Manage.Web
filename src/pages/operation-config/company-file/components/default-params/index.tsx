@@ -36,7 +36,13 @@ const DefaultParams: React.FC = () => {
     <>
       <Row gutter={18}>
         <Col>
-          <CyFormItem labelWidth={120} align="right" label="设计单位" name="designOrganize">
+          <CyFormItem
+            labelWidth={120}
+            align="right"
+            label="设计单位"
+            name="designOrganize"
+            rules={[{ max: 12, message: '设计单位超出字符数限制，限制为12个字符' }]}
+          >
             <Input style={{ width: '200px' }} placeholder="--请输入设计单位--" />
           </CyFormItem>
         </Col>

@@ -98,15 +98,14 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
             </CyFormItem>
           </Col>
           <Col>
-            <CyFormItem labelWidth={120} label="所属供电公司" name="companyId">
+            <CyFormItem labelWidth={120} label="所属供电公司" name="companyId" required>
               <UrlSelect
                 style={{ width: '342px' }}
-                requestSource="resource"
-                url="/ElectricityCompany"
-                titleKey="powerSupply"
-                valueKey="id"
+                url="/ElectricityCompany/GetListByAreaId"
+                titleKey="text"
+                valueKey="text"
                 placeholder="请选择供电公司"
-                extraParams={{ area: province }}
+                extraParams={{ areaId: province }}
                 allowClear
                 onChange={(value: any) => setCompanyId(value)}
               />

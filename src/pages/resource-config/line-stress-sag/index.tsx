@@ -19,7 +19,12 @@ import { ImportOutlined } from '@ant-design/icons';
 
 const { Search } = Input;
 
-const LineStressSag: React.FC = () => {
+interface libParams {
+  libId: string;
+}
+
+const LineStressSag: React.FC<libParams> = (props) => {
+  const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [resourceLibId, setResourceLibId] = useState<string | undefined>('');
@@ -41,18 +46,6 @@ const LineStressSag: React.FC = () => {
             onSearch={() => search()}
             enterButton
             placeholder="导线型号"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="资源库" width="300px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
           />
         </TableSearch>
       </div>
@@ -144,23 +137,24 @@ const LineStressSag: React.FC = () => {
   };
 
   const importLineStressEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请选择资源库');
+    //   return;
+    // }
     setImportLineStreesSagVisible(true);
   };
 
   const importLineStressDrawingEvent = () => {
-    if (!resourceLibId) {
-      message.warning('请选择资源库');
-      return;
-    }
+    // if (!resourceLibId) {
+    //   message.warning('请选择资源库');
+    //   return;
+    // }
     setUploadLineStreesSagVisible(true);
   };
 
   return (
-    <PageCommonWrap>
+    // <PageCommonWrap>
+    <>
       <GeneralTable
         rowKey="id"
         ref={tableRef}
@@ -170,16 +164,16 @@ const LineStressSag: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/LineStressSag/GetPageList"
-        tableTitle="应力弧垂表"
+        // tableTitle="应力弧垂表"
         type="radio"
         extractParams={{
-          resourceLibId: resourceLibId,
+          resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
       />
 
       <UploadLineStressSag
-        libId={resourceLibId}
+        libId={libId}
         securityKey={LineStressChartApiSecurity}
         visible={uploadLineStressSagVisible}
         changeFinishEvent={() => uploadFinishEvent()}
@@ -187,13 +181,14 @@ const LineStressSag: React.FC = () => {
       />
 
       <ImportLineStressSag
-        libId={resourceLibId}
+        libId={libId}
         requestSource="resource"
         visible={importLineStressSagVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportLineStreesSagVisible}
       />
-    </PageCommonWrap>
+      {/* </PageCommonWrap> */}
+    </>
   );
 };
 

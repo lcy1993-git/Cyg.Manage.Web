@@ -4,6 +4,8 @@ import CyFormItem from '@/components/cy-form-item';
 
 import FormSwitch from '@/components/form-switch';
 
+const { TextArea } = Input;
+
 const RolePermissionsForm: React.FC = () => {
   return (
     <>
@@ -14,8 +16,8 @@ const RolePermissionsForm: React.FC = () => {
         rules={[
           { required: true, message: '角色名称不能为空' },
           {
-            max: 10,
-            message: '角色名称超出字符数限制，限制为10个字符',
+            max: 12,
+            message: '角色名称超出字符数限制，限制为12个字符',
           },
         ]}
       >
@@ -26,8 +28,9 @@ const RolePermissionsForm: React.FC = () => {
       </CyFormItem>
 
       <CyFormItem label="备注" name="remark">
-        <Input placeholder="请输入备注信息" />
+        <TextArea placeholder="请输入备注" showCount maxLength={100} />
       </CyFormItem>
+      
     </>
   );
 };
