@@ -10,7 +10,7 @@ export default {
     '/api/': {
       // http://10.6.1.36:21525/api/
       // 171.223.214.154:21573
-      target: 'http://171.223.214.154:21573/',
+      target: 'http://10.6.1.53:21525',
       changeOrigin: true,
       pathRewrite: { '^/api': '/' },
     },

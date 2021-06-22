@@ -4,22 +4,24 @@ import { makeAutoObservable } from 'mobx';
 import moment from 'moment';
 import { createContext, useContext } from 'react';
 export interface VisualizationResultsStateType {
-  filterCondition: EngineerProjetListFilterParams; // filter条件
-  checkedProjectIdList: ProjectList[]; // 选中的project id数组
-  checkedProjectDateList?: string[]; // 选中的project 日期数组
+  filterCondition: EngineerProjetListFilterParams; //filter条件
+  checkedProjectIdList: ProjectList[]; //选中的project id数组
+  checkedProjectDateList?: string[]; //选中的project 日期数组
   materialModalShow?: boolean;
   projectDetailModalShow?: boolean;
   propertySidePopupShow?: boolean;
   visibleLeftSidebar: boolean; // 左侧边栏伸缩状态
   sideRightActiveId: string; // 右侧边栏的回调ID
-  normalClickDate?: string; // 普通timeline的点击日期
+  normalClickDate?: string; //普通timeline的点击日期
   observeClickDate?: string; // 勘察轨迹timeline点击的日期
-  positionMap: boolean; // 地图定位
-  observeTrack: boolean; // 勘察轨迹
-  confessionTrack: boolean; // 交底轨迹
+  positionMap: boolean; //地图定位
+  observeTrack: boolean; //勘察轨迹
+  confessionTrack: boolean; //交底轨迹
   onPositionClickState: boolean; // 当点击地图定位时候
-  observeTrackTimeline?: string[]; // 勘察轨迹tiemline
-  isFilter?: boolean; // 为了判断是不是通过filter来是刷新tree
+  observeTrackTimeline?: string[]; //勘察轨迹tiemline
+  isFilter?: boolean; //为了判断是不是通过filter来是刷新tree
+  startDate: string | undefined, // 开始日期
+  endDate: string | undefined // 终止日期
 }
 
 const initState = {
@@ -35,6 +37,8 @@ const initState = {
   onPositionClickState: false,
   checkedProjectIdList: [],
   isFilter: false,
+  startDate: undefined,
+  endDate: undefined
 };
 
 function Store(vState: VisualizationResultsStateType) {
@@ -63,9 +67,17 @@ function Store(vState: VisualizationResultsStateType) {
         .map((v) => moment(v).format('YYYY/MM/DD'));
       this.vState.checkedProjectIdList = checkedProjectIdList;
     },
-    // 设置timeline点击的日期
-    setClickDate(clickDate: string) {
+    //设置timeline点击的日期
+    setClickDate(clickDate: string, type: string) {
       this.vState.normalClickDate = clickDate;
+    },
+    // 设置开始日期
+    setStartDate(time: string | undefined) {
+      this.vState.startDate = time;
+    },
+    // 设置结束日期
+    setEndDate(time: string | undefined) {
+      this.vState.endDate = time;
     },
     setIsFilter(isFilter: boolean) {
       this.vState.isFilter = isFilter;
