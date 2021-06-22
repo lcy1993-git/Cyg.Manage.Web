@@ -13,14 +13,13 @@ import ComprehensiveProcessComponent from './components/comprehensive-process-co
 import ProjectProcessComponent from './components/project-process-component';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
-import { divide } from 'lodash';
-import ProjectProcessListComponent from './components/projectProcessListComponent';
+import ProjectProcessListComponent from './components/project-process-list-component';
 
 
 const ProjectAllAreaStatistics: React.FC = () => {
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
   const [processListActiveTab, setProcessListActiveTab] = useState<string>('comprehensive');
-  const [companyId, setCompanyId] = useState<string>('');
+  const [companyId, setCompanyId] = useState<string>(null);
 
   const { data: companySelectData = [] } = useGetSelectData({
     url: '/ProjectStatistics/GetCompanys',
@@ -36,7 +35,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
               onChange={setProcessActiveTab}
               titleCustomSlot={() =>
                 processActiveTab === 'project' && (
-                  <div style={{ paddingTop: '8px', paddingRight: '10px', width: '120px' }}>
+                  <div style={{ paddingTop: '8px', paddingRight: '10px', width: '180px' }}>
                     <DataSelect
                       style={{ width: '100%' }}
                       value={companyId}

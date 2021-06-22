@@ -12,15 +12,15 @@ const ProjectStatisticsCompoent: React.FC = () => {
     <div className={styles.projectStatisticsComponent}>
       <div className={styles.projectStatisticsChart}>
         <div className={styles.projectTotalNumber}>
-          <NumberStatisticsComponent title={'项目总数'} num={data?.totalQty} unit={'个'} />
+          <NumberStatisticsComponent title={'项目总数'} num={data?.totalQty ?? 0} unit={'个'} />
         </div>
         <StatisticsBieChart statusData={data} />
       </div>
       <div className={styles.projectStatisticsOther}>
         <div style={{ marginBottom: '48px' }}>
-          <NumberStatisticsComponent title={'已设计数'} num={data?.designedQty} unit={'个'} />
+          <NumberStatisticsComponent title={'已设计数'} num={data?.designedQty ?? 0} unit={'个'} />
         </div>
-        <NumberStatisticsComponent title={'完成率'} num={data?.completionRate} unit={'%'} />
+        <NumberStatisticsComponent title={'完成率'} num={data?.completionRate ?? 0} unit={'%'} />
       </div>
     </div>
   );

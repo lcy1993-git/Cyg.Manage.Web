@@ -12,34 +12,78 @@ import moment from 'moment';
 
 const SurveyRateComponent: React.FC = () => {
   const divRef = useRef<HTMLDivElement>(null);
-  const { data = [] } = useRequest(() => getSurveyRate());
-
-  const weekDate = data.map((item: any) => {
-    return moment(item.date);
+  const { data = [] } = useRequest(() => getSurveyRate(), {
+    onSuccess: () => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      initChart();
+    },
   });
 
-  console.log(data);
+  const dateData = [...data].reverse().map((item: any) => {
+    return moment(item.date).format('MM-DD');
+  });
+
+  const rateData = [...data].reverse().map((item: any) => {
+    return item.surveyRate;
+  });
 
   let myChart: any = null;
 
   const options = {
+    grid: {
+      top: 20,
+      bottom: 40,
+      right: 30,
+      left: 60,
+    },
+    tooltip: {
+      trigger: 'axis',
+      formatter: (params: any) => {
+        const {dataIndex} = params[0];
+        const copyData = [...data];
+        const thisTime = moment(copyData[dataIndex].date).format("YYYY-MM-DD");
+        const thisRate = copyData[dataIndex].surveyRate ?? 0;
+        const thisNumber = copyData[dataIndex].totalQty ?? 0;
+
+        return `
+          <span style="font-size: 14px; font-weight: 600; color: #505050">${thisTime}</span><br />
+          <span style="display: inline-block; width: 6px;height: 6px;border-radius: 50%; background: #4DA944;vertical-align: middle; margin-right: 6px;"></span><span style="color: #505050">项目总数：${thisNumber}</span><br />
+          <span style="display: inline-block; width: 6px;height: 6px;border-radius: 50%; background: #0076FF;vertical-align: middle; margin-right: 6px;"></span><span style="color: #505050">勘察率: ${thisRate}%</span>
+        `
+      }
+    },
     xAxis: {
       type: 'category',
       boundaryGap: false,
-      // data:[1,2,3,4,5]
+      axisLabel: {
+        lineStyle: {
+          color: '#505050',
+        },
+      },
+      data: dateData,
     },
     yAxis: {
       type: 'value',
       splitNumber: 5,
       axisLabel: {
         formatter: `{value}%`,
+        lineStyle: {
+          color: '#505050',
+        },
       },
+      splitLine: {
+        lineStyle: {
+          color: '#E9E9E9',
+          type: 'dashed',
+        },
+      },
+      min: 0,
+      max: 100,
     },
     series: [
       {
-        // data: [1,2,3,4,5],
+        data: rateData,
         type: 'line',
-        smooth: true,
         color: '#4DA944',
       },
     ],
@@ -52,9 +96,9 @@ const SurveyRateComponent: React.FC = () => {
     }
   };
 
-  useMount(() => {
-    initChart();
-  });
+  // useMount(() => {
+  //   initChart();
+  // });
 
   return (
     <div className={styles.surveyRateComponent}>

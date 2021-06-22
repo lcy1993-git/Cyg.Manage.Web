@@ -14,12 +14,14 @@ const ProjectProcessListComponent: React.FC = () => {
     return <ProcessListItem key={uuid.v1()} num={index + 1} rate={item.value} name={item.key} />;
   });
   return (
-    <div className={styles.comprehensiveProcessListContent}>
+    <div className={styles.projectProcessListContent}>
       <ScrollView>
         {projectData && projectData.length > 0 && (
           <div style={{ paddingRight: '14px', paddingTop: '20px' }}>{listElement}</div>
         )}
-        {projectData && projectData.length === 0 && <EmptyTip />}
+        {(!projectData || (projectData && projectData.length === 0)) && (
+          <EmptyTip className={'pt20'} />
+        )}
       </ScrollView>
     </div>
   );

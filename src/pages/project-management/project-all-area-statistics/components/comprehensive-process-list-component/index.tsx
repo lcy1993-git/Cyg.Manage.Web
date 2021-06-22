@@ -9,7 +9,6 @@ import EmptyTip from '@/components/empty-tip';
 
 const ComprehensiveProcessListComponent: React.FC = () => {
   const { data: comprehensiveData = [] } = useRequest(() => getComprehensiveProcessList());
-
   const listElement = comprehensiveData?.map((item: any, index: number) => {
     return <ProcessListItem key={uuid.v1()} num={index + 1} rate={item.value} name={item.key} />;
   });
@@ -20,8 +19,8 @@ const ComprehensiveProcessListComponent: React.FC = () => {
           <div style={{ paddingRight: '14px', paddingTop: '20px' }}>{listElement}</div>
         )}
         {
-          comprehensiveData && comprehensiveData.length === 0 &&
-          <EmptyTip />
+          (!comprehensiveData || (comprehensiveData && comprehensiveData.length === 0)) &&
+          <EmptyTip className={'pt20'} />
         }
       </ScrollView>
     </div>

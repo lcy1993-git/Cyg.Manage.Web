@@ -27,7 +27,7 @@ export const getStatus = () => {
 };
 
 export const getSurveyRate = () => {
-  return cyRequest(() =>
+  return cyRequest<any>(() =>
     request(`${baseUrl.project}/ProjectStatistics/GetSurveyRate`, { method: 'GET' }),
   );
 };
