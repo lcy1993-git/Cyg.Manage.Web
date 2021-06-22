@@ -1,18 +1,29 @@
-.container {
+.container,
+.containerActive{
   z-index: 1001;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(233, 233, 235, 0.8);
-  .icon {
+  width: 115px;
+  height: 97px;
+  background-color: rgba(255, 255, 255, 0.1);
+  box-sizing: content-box;
+  transition: all linear .1s;
+  border-radius: 2px;
+  // position: relative;
+  .icon,
+  .icon1 {
+    box-sizing: border-box;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border: 2px solid rgba(0,0,0,0);
+    transition: all linear .2s;
+    z-index: 1000;
+    &:hover {
+      border: 2px solid #0e7b3b;
+    }
     .list {
-      top: 8px;
-      right: 8px;
       width: 99px;
-      height: 86px;
+      height: 76px;
       cursor: pointer;
-      // border: 2px solid #fff;
-      // padding: 8px 8px;
-
       .img {
         position: relative;
         width: 100%;
@@ -21,12 +32,13 @@
       .text {
         position: absolute;
         color: #fff;
-        font-weight: 600;
+        // font-weight: 600;
         font-size: 13px;
         letter-spacing: 1px;
-        right: 4px;
-        bottom: 4px;
-        background-color: rgba(0,0,0,.6);
+        right: 0px;
+        bottom: 0px;
+        background-color: #0e7b3b;
+        padding: 2px;
       }
       // .listItem {
       //   width: 120px;
@@ -42,4 +54,21 @@
       // }
     }
   }
+  .icon1Active {
+    z-index: 999;
+    right: 126px;
+  }
+  .streetActive {
+    border: 2px solid #0e7b3b;
+  }
+
+}
+
+.containerActive {
+  z-index: 1001;
+  width: 235px;
+  height: 97px;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-sizing: content-box;
+  transition: all linear .1s;
 }
