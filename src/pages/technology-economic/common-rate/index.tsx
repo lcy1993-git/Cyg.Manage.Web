@@ -1,0 +1,302 @@
+import React, { useState } from 'react';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
+import { ColumnsType } from 'antd/lib/table';
+import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { isArray } from 'lodash';
+
+import GeneralTable from '@/components/general-table';
+import PageCommonWrap from '@/components/page-common-wrap';
+import TableSearch from '@/components/table-search';
+import ImfomationModal from './components/infomation-modal';
+import AddDictionaryForm from './components/add-edit-form';
+import {
+  createQuotaLibrary,
+  CreateQuotaLibrary,
+  deleteQuotaLibrary,
+  setQuotaLibraryStatus
+} from '@/services/technology-economic';
+import qs from 'qs';
+import styles from './index.less';
+
+const { Search } = Input;
+
+type DataSource = {
+  id: string;
+  [key: string]: string;
+}
+
+const columns = [
+  {
+    dataIndex: 'name',
+    key: 'name',
+    title: '序号',
+    width: 300,
+  },
+  {
+    dataIndex: 'materialMachineLibraryName',
+    key: 'materialMachineLibraryName',
+    title: '费率类型',
+    width: 160,
+  },
+  {
+    dataIndex: 'quotaScopeText',
+    key: 'quotaScopeText',
+    title: '关联模板',
+    width: 160
+  },
+  {
+    dataIndex: 'publishDate',
+    key: 'publishDate',
+    title: '发布时间',
+    width: 130
+  },
+  {
+    dataIndex: 'publishOrg',
+    key: 'publishOrg',
+    title: '发布机构',
+    width: 150
+  },
+  {
+    dataIndex: 'year',
+    key: 'year',
+    title: '费率年度',
+    width: 100
+  },
+  {
+    dataIndex: 'industryTypeText',
+    key: 'industryTypeText',
+    title: '行业类别',
+    width: 150
+  },
+  {
+    dataIndex: 'majorTypeText',
+    key: 'majorTypeText',
+    title: '适用专业',
+    width: 150
+  },
+  {
+    dataIndex: 'enabled',
+    key: 'enabled',
+    title: '状态',
+    width: 70,
+    render(value: boolean, record: DataSource) {
+      return (
+        <Switch
+          defaultChecked={value}
+          onClick={(checked) => {
+            setQuotaLibraryStatus(record.id, checked);
+          }}
+        />
+      );
+    }
+  },
+  {
+    dataIndex: 'remark',
+    index: 'remark',
+    title: '备注',
+    width: 220
+  },
+];
+
+const ProjectList: React.FC = () => {
+  const [id, setId] = useState<string>(qs.parse(window.location.href.split("?")[1]).id as string );
+  const tableRef = React.useRef<HTMLDivElement>(null);
+  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [imfomationModalVsibel, setImfomationModalVsibel] = useState<boolean>(false);
+  const [imfomationModalId, setImfomationModalId] = useState<string>("");
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
+  const [addForm] = Form.useForm();
+  const [editForm] = Form.useForm();
+
+  const searchComponent = () => {
+    return (
+      <TableSearch label="关键词" width="203px">
+        <Search
+          value={searchKeyWord}
+          onChange={(e) => setSearchKeyWord(e.target.value)}
+          onSearch={() => tableSearchEvent()}
+          enterButton
+          placeholder="键名"
+        />
+      </TableSearch>
+    );
+  };
+
+  const tableSearchEvent = () => {
+    search();
+  };
+
+  // 列表刷新
+  const refresh = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.refresh();
+    }
+  };
+
+  // 列表搜索
+  const search = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.search();
+    }
+  };
+
+  //添加
+  const addEvent = () => {
+    setAddFormVisible(true);
+  };
+
+  const sureAddAuthorization = () => {
+    addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
+      await createQuotaLibrary(values);
+      refresh();
+      setAddFormVisible(false);
+      addForm.resetFields();
+    });
+  };
+  
+  // 编辑
+  const sureEditAuthorization = () => {
+    addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
+      await createQuotaLibrary(values);
+      refresh();
+      setAddFormVisible(false);
+      addForm.resetFields();
+    });
+  };
+
+  // 查看详情 setImfomationModalVsibel
+  const sureDeleteData = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    const id = tableSelectRows[0].id;
+    await deleteQuotaLibrary(id);
+    refresh();
+    message.success('删除成功');
+  };
+
+  const moreInfoEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+    const id = tableSelectRows[0].id;
+    setImfomationModalId(id);
+    setImfomationModalVsibel(true);
+  };
+
+  const tableElement = () => {
+    return (
+      <div className={styles.buttonArea}>
+
+        {
+          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        }
+        {
+          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          <Button className="mr7" onClick={() => addEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        }
+        {
+          !buttonJurisdictionArray?.includes('quotaLib-del') &&
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={sureDeleteData}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
+        }
+        {
+          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          <Button className="mr7" onClick={() => moreInfoEvent()}>
+            <EyeOutlined />
+            查看内容
+          </Button>
+        }
+
+      </div>
+    );
+  };
+
+  const tableSelectEvent = (data: DataSource[] | object) => {
+    setTableSelectRow(data);
+  };
+
+  return (
+    <PageCommonWrap>
+      <GeneralTable
+        ref={tableRef}
+        buttonLeftContentSlot={searchComponent}
+        buttonRightContentSlot={tableElement}
+        needCommonButton={true}
+        columns={columns as (ColumnsType<object>)}
+        url="/RateTable/QueryRatePager"
+        tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
+        getSelectData={tableSelectEvent}
+        requestSource='tecEco1'
+        type="radio"
+        extractParams={{
+          keyWord: searchKeyWord,
+          id
+        }}
+        requestConditions={id}
+      />
+      <Modal
+        maskClosable={false}
+        title="添加-常用费率"
+        width="880px"
+        visible={addFormVisible}
+        okText="确认"
+        onOk={() => sureAddAuthorization()}
+        onCancel={() => setAddFormVisible(false)}
+        cancelText="取消"
+        destroyOnClose
+      >
+        <Form form={addForm} preserve={false}>
+          <AddDictionaryForm type='add' />
+        </Form>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        title="编辑-常用费率"
+        width="880px"
+        visible={editFormVisible}
+        okText="确认"
+        onOk={() => sureEditAuthorization()}
+        onCancel={() => setEditFormVisible(false)}
+        cancelText="取消"
+        destroyOnClose
+      >
+        <Form form={editForm} preserve={false}>
+          <AddDictionaryForm type='edit' />
+        </Form>
+      </Modal>
+      {
+        imfomationModalId && imfomationModalId &&
+        <ImfomationModal id={imfomationModalId} onChange={setImfomationModalVsibel} visible={imfomationModalVsibel}/>
+      }
+      
+    </PageCommonWrap>
+  );
+};
+
+export default ProjectList;

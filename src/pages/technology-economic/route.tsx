@@ -27,6 +27,16 @@ const PricingTemplates = Loadable({
   loading: Loading,
   delay: 150,
 });
+const CommonRate = Loadable({
+  loader: () => import('@/pages/technology-economic/common-rate'),
+  loading: Loading,
+  delay: 150,
+});
+const ProjectList = Loadable({
+  loader: () => import('@/pages/technology-economic/project-list'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -53,5 +63,15 @@ export default [
     title: '计价模板',
     path: '/technology-economic/pricing-templates',
     component: <PricingTemplates />,
+  },
+  {
+    title: '常用费率',
+    path: '/technology-economic/common-rate',
+    component: <CommonRate />,
+  },
+  {
+    title: '工程目录',
+    path: '/technology-economic/project-list',
+    component: <ProjectList />,
   },
 ];

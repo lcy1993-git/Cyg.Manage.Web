@@ -17,6 +17,7 @@ const devBaseUrl = {
   webGis2: '/api/webGis2/api',
   comment: '/api/project/api',
   tecEco: '/api/quato/api',
+  tecEco1: '/api/quato1/api',
   review: '/api/review/api',
 
   // webGis
@@ -123,7 +124,7 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco',
+  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'tecEco1',
   requestType = 'get',
   postType = 'body',
   libId: string,

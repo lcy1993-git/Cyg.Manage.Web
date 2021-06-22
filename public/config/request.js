@@ -25,6 +25,7 @@ const arrayHasIpBaseUrlArray = {
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
     tecEco: `${baseUrl}:8033/api`,
+    tecEco1: `http://www.technicaleconomy.cyg.com/api`,
     review: `${baseUrl}:8041/api`,
 
     webGis: `${baseUrl}:8021/api`,
@@ -46,6 +47,7 @@ const arrayHasNotBaseUrlArray = {
     webGis2: '/webGis2/api',
     comment: '/project/api',
     tecEco: '/quato/api',
+    tecEco1: '/quato1/api',
     review: "/review/api",
     component: '/Component/api',
     material: '/Material/api/',
