@@ -96,6 +96,26 @@ function getMappingTagsDictionary() {
       mappingTagValues: {
       }
     };
+    enums.push({
+      key: 'PullLineType',
+      value: [{
+        value: 0,
+        text: '无'
+      },
+      {
+        value: 1,
+        text: 'V型拉线'
+      },
+      {
+        value: 2,
+        text: '普通拉线'
+      },
+      {
+        value: 2,
+        text: '低压普通拉线'
+      }
+      ]
+    });
     mappingTagsDictionary.pull_line = {
       mappingTags: {
         "id": "拉线ID",
@@ -103,11 +123,14 @@ function getMappingTagsDictionary() {
         "main_id": "所属杆塔",
         "azimuth": "方位角",
         "mode": "拉线型号",
+        "type": "拉线类型",
         "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
-      mappingTagValues: {}
+      mappingTagValues: {
+        "type": findenumsValue("PullLineType"),
+      }
     };
 
     enums.push({
