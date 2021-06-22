@@ -22,7 +22,6 @@ import SidePopup from '../side-popup';
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
-import moment from 'moment';
 import { flattenDeepToKey } from '../../utils/utils'
 import ControlLayers from '../control-layers';
 const { TabPane } = Tabs;
@@ -30,6 +29,12 @@ import achievementSvg from '@/assets/image/webgis/svg/achievements.svg'
 import exportSvg from '@/assets/image/webgis/svg/export.svg'
 import materiaSvg from '@/assets/image/webgis/svg/material.svg'
 import messageSvg from '@/assets/image/webgis/svg/message.svg';
+
+// 解决datePiker月份不为中文的bug
+import moment from 'moment'
+import locale from 'antd/lib/date-picker/locale/zh_CN'
+import 'moment/locale/zh-cn'
+moment.locale('zh-cn')
 
 export interface TreeNodeType {
   title: string;
@@ -89,16 +94,36 @@ type keyType =
 const areaArray = ["省", "市", "县", "工", "项"];
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
+  // 项目详情
+  const [projectModalActiveId, setProjectModalActiveId] = useState<string>("");
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
-  const [checkedKeys, setCheckedKeys] = useState<keyType>();
+
+  // 筛选
   const [filterModalVisibel, setFilterModalVisibel] = useState<boolean>(false);
+  // 成果管理
   const [resultVisibel, setResultVisibel] = useState<boolean>(false);
+  // 审阅消息
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
+  const [buttonActive, setButtonActive] = useState<number>(-1);
+  // Tree State
+  const [selectArrayStuck, setSelectArrayStuck] = useState<string[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  const [checkedKeys, setCheckedKeys] = useState<keyType>();
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
-  const [buttonActive, setButtonActive] = useState<number>(0);
+
+  // 地区or公司状态
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+
+  // 处理关闭项目详情模态框，没有关闭选中状态的bug
+  useEffect(() => {
+    if(!projectModalVisible){
+      setSelectedKeys([])
+      setSelectedKeys(selectArrayStuck)
+    }
+
+  }, [projectModalVisible])
 
   const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(
     false,
@@ -124,6 +149,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   useEffect(() => {
     setTreeData([]);
     clearState();
+    setSelectedKeys([]);
+    setButtonActive(-1);
   }, [tabActiveKey]);
 
   useEffect(() => {
@@ -368,8 +395,39 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     },
   });
 
-  const handlerAreaButtonCheck = (index: number) => {
+  const handlerAreaButtonCheck = (index: number, buttonActive: number) => {
+    if(index === buttonActive) {
+      setButtonActive(-1);
+      setSelectedKeys([])
+      return;
+    }
     const resKey = flattenDeepToKey(treeData, index, "key", "-1");
+    let keyArray: string[] = [];
+    if (index < 0) {
+      setSelectedKeys(keyArray)
+    } else {
+      const deepKeyArray = (data: TreeNodeType[]) => {
+        data.forEach((item: TreeNodeType) => {
+          // console.log(item.levelCategory, "等级", index + 1, "按钮等级");
+          // if(item.levelCategory === 4) console.log(item);
+          /**
+           * 判断按钮区与tree数据层级的关系比较
+           */
+          const levelCategoryFlag = item.levelCategory < 4 ? item.levelCategory >= index + 1 :  item.levelCategory > index + 1
+          if(levelCategoryFlag) {
+            keyArray.push(item.key)
+          }
+          if(Array.isArray(item.children)) {
+            deepKeyArray(item.children)
+          }
+        })
+      }
+      deepKeyArray(treeData);
+      console.log(keyArray);
+      
+      setSelectedKeys(keyArray)
+    }
+
     setExpandedKeys(resKey);
     setButtonActive(index);
   }
@@ -378,7 +436,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     return areaArray.map((item, index) => {
       return (
         <div key={item} className={styles.areaButtonsItem}>
-          <Button style={{ width: "100%" }} type={buttonActive === index ? "primary" : "default"} onClick={() => handlerAreaButtonCheck(index)}>{item}</Button>
+          <Button style={{ width: "100%" }} type={buttonActive === index ? "primary" : "default"} onClick={() => handlerAreaButtonCheck(index, buttonActive)}>{item}</Button>
         </div>
 
       )
@@ -458,7 +516,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }
 
   return (
-    <div className={styles.wrap}>
+    <div className={`${styles.wrap} ${projectModalVisible? styles.wrapSelect : ""}`}>
       <div className={styles.searchWrap}>
         <Input prefix={<SearchOutlined />} placeholder="请输入" style={{ width: "78%" }} />
         <Button type="text" onClick={() => setFilterModalVisibel(true)}><AlignLeftOutlined />筛选</Button>
@@ -498,14 +556,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                     {areaButtons(buttonActive)}
                   </div>
                 ) : null}
-                {/* <Checkbox
-                checked={allCheck}
-                indeterminate={indeterminate}
-                style={{ marginLeft: '8px', marginTop: '4px' }}
-                onChange={onCheckAll}
-              >
-                全选
-              </Checkbox> */}
                 <Tree
                   height={size.height ? size.height - 120 : 680}
                   checkable
@@ -516,17 +566,18 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   checkedKeys={checkedKeys}
                   treeData={treeData}
                   className={classNames(styles.sideMenu)}
+                  selectedKeys={selectedKeys}
+                  multiple={true}
                   onSelect={(e, g: any) => {
                     if (!(Array.isArray(g.node.children) && g.node.children.length > 0)) {
+                      setSelectedKeys([g.node.key]);
+                      setProjectModalActiveId(g.node.id)
                       setProjectModalVisible(true);
+                      setSelectArrayStuck(selectedKeys);
                     }
                   }
-
                   }
                 >
-                  {/* {
-                    treeNodeRender(treeData)
-                  } */}
                 </Tree>
               </>
             ) : null}
@@ -535,8 +586,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       </div>
       <div className={styles.timeLine}>
         {/* <Space direction="vertical"> */}
-        <DatePicker ref={startDateRef} style={{ width: "100%" }} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => setStartDateValue(e!)} />
-        <DatePicker ref={endDateRef} style={{ width: "100%" }} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => setEndDateValue(e!)} />
+        <DatePicker ref={startDateRef} locale={locale} style={{ width: "100%" }} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => setStartDateValue(e!)} />
+        <DatePicker ref={endDateRef} locale={locale} style={{ width: "100%" }} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => setEndDateValue(e!)} />
 
         {/* </Space> */}
       </div>
@@ -583,14 +634,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         <SidePopup {...props.sidePopupProps} />
       </div>
       {projectModalVisible && <ProjectDetailInfo
-        projectId={projectIdList[0]?.id ?? ""}
+        projectId={projectModalActiveId}
         visible={projectModalVisible}
         onChange={setProjectModalVisible}
         isResult={false}
       />}
       <ResultModal projectId={projectIdList[0]?.id ?? ""} visible={resultVisibel} onChange={setResultVisibel} />
       <CommentModal visible={commentModalVisible} onOk={() => setCommentModalVisible(false)} onCancel={() => setCommentModalVisible(false)} checkedProjectIdList={checkedProjectIdList} />
-      <FilterModal defaultData={filterCondition} visible={filterModalVisibel} onChange={setFilterModalVisibel} onSure={(values) => store.setFilterCondition(values)}/> 
+      <FilterModal defaultData={filterCondition} visible={filterModalVisibel} onChange={setFilterModalVisibel} onSure={(values) => store.setFilterCondition(values)} />
     </div>
 
   );

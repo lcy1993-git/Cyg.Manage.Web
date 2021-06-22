@@ -30,6 +30,7 @@ interface MapChartComponentProps {
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const { setCurrentAreaInfo, currentAreaInfo } = props;
   const [activeCityCode, setActiveCityCode] = useState<string>();
+  
   const [activeAreaCode, setActiveAreaCide] = useState<string>();
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
