@@ -31,3 +31,21 @@ export const getSurveyRate = () => {
     request(`${baseUrl.project}/ProjectStatistics/GetSurveyRate`, { method: 'GET' }),
   );
 };
+
+export const getComprehensiveProcessList = () => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.project}/ProjectStatistics/GetLeaderboardByCompany`, {
+      method: 'POST',
+      data: { limit: 10 },
+    }),
+  );
+};
+
+export const getProjectProcessList = () => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.project}/ProjectStatistics/GetLeaderboardByProject`, {
+      method: 'POST',
+      data: { limit: 10 },
+    }),
+  );
+};
