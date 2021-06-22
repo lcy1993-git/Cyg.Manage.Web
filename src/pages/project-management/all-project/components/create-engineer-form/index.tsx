@@ -25,6 +25,10 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   const [areaId, setAreaId] = useState<string>('');
   const [libId, setLibId] = useState<string>('');
 
+  const disableDate = (current: any) => {
+    return current < moment('2010-01-01') || current > moment('2051-01-01');
+  };
+
   const { data: libSelectData = [] } = useGetSelectData({
     url: '/ResourceLib/GetList?status=1',
     requestSource: 'resource',
@@ -51,11 +55,10 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
 
   const { data: companySelectData = [] } = useGetSelectData(
     {
-      url: `/ElectricityCompany?area=${areaId}`,
+      url: `/ElectricityCompany/GetListByAreaId?areaId=${areaId}`,
       // extraParams: { area: areaId },
-      titleKey: 'companyName',
-      valueKey: 'companyName',
-      requestSource: 'resource',
+      titleKey: 'text',
+      valueKey: 'text',
     },
     { ready: !!areaId, refreshDeps: [areaId] },
   );
@@ -138,7 +141,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             name="name"
             labelWidth={120}
             align="right"
-            rules={Rule.required}
+            rules={Rule.name}
             required
           >
             <Input placeholder="请输入" />
@@ -218,7 +221,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.compiler}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -259,9 +262,9 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={[{ required: true, message: '工程开始时间不能为空' }]}
           >
-            <DatePicker />
+            <DatePicker disabledDate={disableDate} />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -271,9 +274,24 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            dependencies={['startTime']}
+            rules={[
+              { required: true, message: '工程结束时间不能为空' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    new Date(value).getTime() > new Date(getFieldValue('startTime')).getTime() ||
+                    !value ||
+                    !getFieldValue('startTime')
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('"工程结束时间"不得早于"工程开始时间"');
+                },
+              }),
+            ]}
           >
-            <DatePicker />
+            <DatePicker disabledDate={disableDate} />
           </CyFormItem>
         </div>
       </div>
