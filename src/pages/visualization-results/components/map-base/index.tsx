@@ -239,39 +239,11 @@ const BaseMap = observer((props: BaseMapProps) => {
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
-
-      {/* <div className={styles.timeline}>
-        <div>
-          {checkedProjectDateList && checkedProjectDateList.length > 0 ? (
-            <Timeline
-              type="normal"
-              height={checkedProjectDateList.length > 6 ? 90 : 75}
-              width={400}
-              dates={checkedProjectDateList}
-            />
-          ) : null}
-        </div>
-      </div> */}
       
       <div className={`${styles.sideMenuTree} ${sideMenuVisibel ? styles.open : styles.close}`}>
         <SideMenuTree onChange={() => setSideMenuVisibel(!sideMenuVisibel)} sideMenuVisibel={sideMenuVisibel} controlLayersProps={controlLayersProps} sidePopupProps={sidePopupProps}/>
       </div>
 
-      {/* <div className={styles.listMenu}>
-        <ListMenu />
-      </div> */}
-      {/* <div className={styles.controlLayer}>
-        <CtrolLayers
-          surveyLayerVisible={surveyLayerVisible}
-          planLayerVisible={planLayerVisible}
-          designLayerVisible={designLayerVisible}
-          dismantleLayerVisible={dismantleLayerVisible}
-          setSurveyLayerVisible={setSurveyLayerVisible}
-          setPlanLayerVisible={setPlanLayerVisible}
-          setDesignLayerVisible={setDesignLayerVisible}
-          setDismantleLayerVisible={setDismantleLayerVisible}
-        />
-      </div> */}
       <div className={`${styles.surveytrack} ${!sideMenuVisibel ? styles.surveytrackCloese : ''}`}>
         <SurveyTrack />
       </div>
