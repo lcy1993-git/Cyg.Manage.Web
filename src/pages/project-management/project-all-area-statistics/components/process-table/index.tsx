@@ -88,7 +88,7 @@ const withProcessTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         requestSource: 'project',
       });
     }
-  }, [currentPageSize, currentPage]);
+  }, [currentPageSize, currentPage,JSON.stringify(extraParams)]);
 
   return (
     <div className={styles.processTable}>
