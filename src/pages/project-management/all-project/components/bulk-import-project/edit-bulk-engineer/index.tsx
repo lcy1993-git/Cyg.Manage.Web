@@ -172,7 +172,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         value: item.text,
       };
     });
-
+    setCompany('');
     setAreaChange(true);
     setWarehouseSelectData(handleWarehouseSelectData);
     setCompanySelectData(handleCompanySelectData);
@@ -186,13 +186,16 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       requestSource: 'resource',
     });
 
-    const handleInventoryOverviewSelectData = inventoryOverviewSelectResData?.map((item: any) => {
-      return {
-        label: item.text,
-        value: item.value,
-      };
-    });
+    const handleInventoryOverviewSelectData = inventoryOverviewSelectResData
+      ? inventoryOverviewSelectResData?.map((item: any) => {
+          return {
+            label: item.text,
+            value: item.value,
+          };
+        })
+      : [{ label: '无', value: 'none' }];
     setLibChange(true);
+    setInventoryOverviewId('');
     setInventoryOverviewSelectData(handleInventoryOverviewSelectData);
   };
 

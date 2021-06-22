@@ -12,6 +12,7 @@ interface CompanyManageItemParams {
   remark: string;
   // 公司用户库存
   userSkuQtys: object[];
+  isEnabled: boolean;
 }
 
 interface ItemDetailData extends CompanyManageItemParams {
@@ -51,5 +52,19 @@ export const addCompanyManageItem = (params: CompanyManageItemParams) => {
 export const updateCompanyManageItem = (params: TreeDataItem) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Company/Modify`, { method: 'POST', data: params }),
+  );
+};
+
+//启用
+export const enabledCompanyStatus = (companyId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Company/Enabled`, { method: 'POST', params: { companyId } }),
+  );
+};
+
+//禁用
+export const disabledCompanyStatus = (companyId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Company/Disabled`, { method: 'POST', params: { companyId } }),
   );
 };

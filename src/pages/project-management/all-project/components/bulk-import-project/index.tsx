@@ -117,10 +117,9 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
     // );
 
     const companySelectData = await getCompanySelectData({
-      url: '/ElectricityCompany',
+      url: '/ElectricityCompany/GetListByAreaId',
       method: 'get',
-      params: { area: province },
-      requestSource: 'resource',
+      params: { areaId: province },
     });
     // const { data: companySelectData = [] } = useGetSelectData(
     //   {
@@ -142,8 +141,8 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
     const handleCompanySelectData = companySelectData?.map((item: any) => {
       return {
-        label: item.companyName,
-        value: item.companyName,
+        label: item.text,
+        value: item.text,
       };
     });
 
@@ -193,12 +192,14 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       requestSource: 'resource',
     });
 
-    const handleInventoryOverviewSelectData = inventoryOverviewSelectData.map((item: any) => {
-      return {
-        label: item.text,
-        value: item.value,
-      };
-    });
+    const handleInventoryOverviewSelectData = inventoryOverviewSelectData
+      ? inventoryOverviewSelectData?.map((item: any) => {
+          return {
+            label: item.text,
+            value: item.value,
+          };
+        })
+      : [{ label: '无', value: 'none' }];
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {

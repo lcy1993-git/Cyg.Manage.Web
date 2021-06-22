@@ -9,6 +9,8 @@ import {
   addCompanyManageItem,
   getCompanyManageDetail,
   getTreeSelectData,
+  disabledCompanyStatus,
+  enabledCompanyStatus,
 } from '@/services/jurisdiction-config/company-manage';
 import { isArray } from 'lodash';
 import CompanyManageForm from './components/add-form';
@@ -16,6 +18,7 @@ import EditCompanyManageForm from './components/edit-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { SpaceContext } from 'antd/lib/space';
 
 const mapColor = {
   无: 'gray',
@@ -79,25 +82,34 @@ const CompanyManage: React.FC = () => {
     // onChange={() => updateStatus(record.id)}
     {
       title: '状态',
-      dataIndex: 'isDisable',
-      index: 'isDisable',
+      dataIndex: 'isEnabled',
+      index: 'isEnabled',
       width: 120,
       render: (text: any, record: any) => {
-        const isChecked = !record.isDisable;
+        // const isChecked = !record.isEnable;
         return (
           <>
-            {buttonJurisdictionArray?.includes('manage-user-start-using') && (
-              <>
-                <Switch checked={isChecked} />
-                {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
-              </>
-            )}
-            {!buttonJurisdictionArray?.includes('manage-user-start-using') &&
-              (isChecked ? <span className='colorPrimary'>启用</span> : <span className='colorRed'>禁用</span>)}
+            {buttonJurisdictionArray?.includes('start-forbid') &&
+              (record.isEnable === true ? (
+                <>
+                  <Switch
+                    key={status}
+                    defaultChecked
+                    onChange={() => disabledCompanyStatus(record.id)}
+                  />
+                  <span className="formSwitchOpenTip">启用</span>
+                </>
+              ) : (
+                <>
+                  <Switch onChange={() => enabledCompanyStatus(record.id)} />
+                  <span className="formSwitchCloseTip">禁用</span>
+                </>
+              ))}
           </>
         );
       },
     },
+
     {
       title: '详细地址',
       dataIndex: 'address',
@@ -143,6 +155,7 @@ const CompanyManage: React.FC = () => {
         name: value.name,
         parentId: value.parentId,
         address: value.address,
+        isEnabled: value.isEnabled,
         userSkuQtys,
         remark: value.remark,
       };
@@ -193,6 +206,7 @@ const CompanyManage: React.FC = () => {
           name: editData.name,
           address: editData.address,
           remark: editData.remark,
+          isEnabled: editData.isEnabled,
           userSkuQtys,
         },
         value,
