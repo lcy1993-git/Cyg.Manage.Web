@@ -39,6 +39,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
                     <DataSelect
                       style={{ width: '100%' }}
                       value={companyId}
+                      allowClear
                       onChange={(value: any) => {
                         setCompanyId(value);
                       }}
