@@ -552,80 +552,106 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
 
       <div className="flex">
         <div className="flex1 flowHidden">
-          <CyFormItem
-            label="交底范围(米)"
-            // initialValue={'50'}
-            fieldKey={[field.fieldKey, 'disclosureRange']}
-            name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={[
-              {
-                required: true,
-                message: '交底范围不能为空',
-              },
-              () => ({
-                validator(_, value) {
-                  if (value <= 99999 && value > 0) {
-                    return Promise.resolve();
-                  }
-                  if (value === 0 || value > 99999) {
-                    return Promise.reject('请填写1~99999以内的整数');
-                  }
-                  return Promise.resolve();
-                },
-              }),
-              {
-                pattern: /^[0-9]\d*$/,
-                message: '请输入正整数',
-              },
-            ]}
-          >
-            {dataSourceType === 1 ? (
+          {dataSourceType === 1 ? (
+            <CyFormItem
+              label="交底范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'disclosureRange']}
+              name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
+              labelWidth={120}
+              align="right"
+            >
               <InputNumber
                 disabled
                 placeholder="“无需现场数据”项目，免设置此条目"
                 style={{ width: '100%' }}
               />
-            ) : (
+            </CyFormItem>
+          ) : (
+            <CyFormItem
+              label="交底范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'disclosureRange']}
+              name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
+              labelWidth={120}
+              required
+              align="right"
+              rules={[
+                {
+                  required: true,
+                  message: '交底范围不能为空',
+                },
+                () => ({
+                  validator(_, value) {
+                    if (value <= 99999 && value > 0) {
+                      return Promise.resolve();
+                    }
+                    if (value === 0 || value > 99999) {
+                      return Promise.reject('请填写1~99999以内的整数');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+                {
+                  pattern: /^[0-9]\d*$/,
+                  message: '请输入正整数',
+                },
+              ]}
+            >
               <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
-            )}
-          </CyFormItem>
+            </CyFormItem>
+          )}
         </div>
         <div className="flex1 flowHidden">
-          <CyFormItem
-            label="桩位范围(米)"
-            initialValue={'50'}
-            fieldKey={[field.fieldKey, 'pileRange']}
-            name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={[
-              {
-                required: true,
-                message: '桩位范围不能为空',
-              },
-              () => ({
-                validator(_, value) {
-                  if (value <= 99999 && value > 0) {
-                    return Promise.resolve();
-                  }
-                  if (value === 0 || value > 99999) {
-                    return Promise.reject('请填写1~99999以内的整数');
-                  }
-                  return Promise.resolve();
+          {dataSourceType === 1 ? (
+            <CyFormItem
+              label="桩位范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'pileRange']}
+              name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
+              labelWidth={120}
+              align="right"
+            >
+              <InputNumber
+                disabled
+                placeholder="“无需现场数据”项目，免设置此条目"
+                style={{ width: '100%' }}
+              />
+            </CyFormItem>
+          ) : (
+            <CyFormItem
+              label="桩位范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'pileRange']}
+              name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
+              required
+              labelWidth={120}
+              align="right"
+              rules={[
+                {
+                  required: true,
+                  message: '桩位范围不能为空',
                 },
-              }),
-              {
-                pattern: /^[0-9]\d*$/,
-                message: '请输入正整数',
-              },
-            ]}
-          >
-            <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
-          </CyFormItem>
+                () => ({
+                  validator(_, value) {
+                    if (value <= 99999 && value > 0) {
+                      return Promise.resolve();
+                    }
+                    if (value === 0 || value > 99999) {
+                      return Promise.reject('请填写1~99999以内的整数');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+                {
+                  pattern: /^[0-9]\d*$/,
+                  message: '请输入正整数',
+                },
+              ]}
+            >
+              <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
+            </CyFormItem>
+          )}
         </div>
       </div>
     </>

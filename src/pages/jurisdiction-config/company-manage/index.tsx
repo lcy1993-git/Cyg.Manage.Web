@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Modal, Form, message } from 'antd';
+import { Button, Modal, Form, message, Switch } from 'antd';
 import TreeTable from '@/components/tree-table/index';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
@@ -15,6 +15,7 @@ import CompanyManageForm from './components/add-form';
 import EditCompanyManageForm from './components/edit-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const mapColor = {
   无: 'gray',
@@ -31,6 +32,7 @@ const CompanyManage: React.FC = () => {
   const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -72,6 +74,28 @@ const CompanyManage: React.FC = () => {
           );
         });
         return <>{element}</>;
+      },
+    },
+    // onChange={() => updateStatus(record.id)}
+    {
+      title: '状态',
+      dataIndex: 'isDisable',
+      index: 'isDisable',
+      width: 120,
+      render: (text: any, record: any) => {
+        const isChecked = !record.isDisable;
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('manage-user-start-using') && (
+              <>
+                <Switch checked={isChecked} />
+                {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
+              </>
+            )}
+            {!buttonJurisdictionArray?.includes('manage-user-start-using') &&
+              (isChecked ? <span className='colorPrimary'>启用</span> : <span className='colorRed'>禁用</span>)}
+          </>
+        );
       },
     },
     {

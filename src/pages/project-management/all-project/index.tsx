@@ -77,6 +77,7 @@ const ProjectManagement: React.FC = () => {
   const [sourceType, setSourceType] = useState<number[]>();
   const [identityType, setIdentityType] = useState<number[]>();
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
+  const [dataSourceType, setDataSourceType] = useState<string>('');
 
   const [statisticsData, setStatisticsData] = useState({
     total: 0,
@@ -225,6 +226,8 @@ const ProjectManagement: React.FC = () => {
     if (projectIds.length === 1) {
       const thisProjectId = projectIds[0];
       const projectInfo = await getProjectInfo(thisProjectId);
+      setDataSourceType(projectInfo.dataSourceType);
+      // console.log(projectInfo);
 
       const { allots = [] } = projectInfo ?? {};
       if (allots.length > 0) {
@@ -687,7 +690,7 @@ const ProjectManagement: React.FC = () => {
 
   useEffect(() => {
     if (allProjectSearchProjectName) {
-      setAllProjectSearchProjectId('');
+      setAllProjectSearchProjectId?.('');
 
       searchByParams({
         projectId: allProjectSearchProjectName,
@@ -720,7 +723,7 @@ const ProjectManagement: React.FC = () => {
         design: String(allProjectSearchPerson),
       });
 
-      setAllProjectSearchPerson('');
+      setAllProjectSearchPerson?.('');
 
       searchByParams({
         keyWord,
@@ -1124,6 +1127,7 @@ const ProjectManagement: React.FC = () => {
           defaultSelectType={currentArrangeProjectType}
           allotCompanyId={currentArrangeProjectIsArrange}
           projectIds={selectProjectIds}
+          dataSourceType={dataSourceType}
         />
       )}
       {editArrangeModalVisible && (

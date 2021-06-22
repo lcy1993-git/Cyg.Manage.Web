@@ -204,19 +204,19 @@ const ManageUser: React.FC = () => {
       index: 'provinceName',
       width: 220,
     },
-    {
-      title: '状态',
-      dataIndex: 'userStatus',
-      index: 'userStatus',
-      width: 100,
-      render: (text: any, record: any) => {
-        return record.userStatus === 1 ? (
-          <Switch defaultChecked onChange={() => updateStatus(record.id)} />
-        ) : (
-          <Switch onChange={() => updateStatus(record.id)} />
-        );
-      },
-    },
+    // {
+    //   title: '状态',
+    //   dataIndex: 'userStatus',
+    //   index: 'userStatus',
+    //   width: 100,
+    //   render: (text: any, record: any) => {
+    //     return record.userStatus === 1 ? (
+    //       <Switch defaultChecked onChange={() => updateStatus(record.id)} />
+    //     ) : (
+    //       <Switch onChange={() => updateStatus(record.id)} />
+    //     );
+    //   },
+    // },
     {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
