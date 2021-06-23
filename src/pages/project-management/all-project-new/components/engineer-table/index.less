@@ -1,0 +1,32 @@
+.engineerTable {
+  .engineerTableContent {}
+
+  .engineerTablePaging {
+    padding-top: 20px;
+    display: flex;
+
+    .engineerTablePagingLeft {
+      flex: 1;
+      font-size: 12px;
+      color: @gray-color;
+
+      .importantTip {
+        color: @primary-color;
+        font-weight: 500;
+      }
+    }
+
+    :global {
+      .ant-pagination.mini {
+        font-size: 12px;
+        color: @gray-color;
+
+        .ant-pagination-options {
+          .ant-select-selection-item {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}

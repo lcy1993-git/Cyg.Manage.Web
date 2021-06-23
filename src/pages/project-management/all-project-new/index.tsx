@@ -6,13 +6,15 @@ import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
 import { Button, Input } from 'antd';
 import styles from './index.less';
-import ImageIcon from '@/components/image-icon';
+import EngineerTable from './components/engineer-table';
 
 const { Search } = Input;
 
 const AllProject: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('');
   // 从列表返回的数据中获取
+
+  // TODO 搜索、以及弹窗部分都还没做
   const [statisticsData, setStatisticsData] = useState({
     total: 0,
     awaitProcess: 0,
@@ -88,11 +90,11 @@ const AllProject: React.FC = () => {
               </TableSearch>
               <Button>筛选</Button>
             </div>
-            <div className={styles.allProjectFunctionButtonContent}>
-                
-            </div>
+            <div className={styles.allProjectFunctionButtonContent}>{/* TODO 按钮区域 */}</div>
           </div>
-          <div className={styles.allProjectTableContent}></div>
+          <div className={styles.engineerTableContent}>
+            <EngineerTable />
+          </div>
         </div>
       </div>
     </PageCommonWrap>
