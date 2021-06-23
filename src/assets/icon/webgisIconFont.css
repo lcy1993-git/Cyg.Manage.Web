@@ -1,9 +1,7 @@
 @font-face {
-  font-family: 'webgisIconFont';  /* project id 2301692 */
-  src: url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.eot');
-  src: url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.woff') format('woff'),
-  url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_2301692_jo6cxmgdywa.svg#iconfont') format('svg');
+  font-family: 'webgisIconFont';
+  /* Project id 2301692 */
+  src: url('//at.alicdn.com/t/font_2301692_cgp5s67iee4.woff2?t=1623913240942') format('woff2'),
+    url('//at.alicdn.com/t/font_2301692_cgp5s67iee4.woff?t=1623913240942') format('woff'),
+    url('//at.alicdn.com/t/font_2301692_cgp5s67iee4.ttf?t=1623913240942') format('truetype');
 }
