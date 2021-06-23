@@ -9,6 +9,7 @@ import { Pagination } from 'antd';
 import { useRef } from 'react';
 import EmptyTip from '@/components/empty-tip';
 import { useEffect } from 'react';
+import uuid from 'node-uuid';
 
 interface ProcessTableProps {
   url: string;
@@ -29,7 +30,7 @@ const withProcessTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   const currentPageSize = useMemo(() => {
     if (!contentSize.height) return 0;
-    return Math.ceil(contentSize.height / 40) - 1;
+    return Math.floor(contentSize.height / 38) - 1;
   }, [contentSize.height]);
 
   const tableResultData = useMemo(() => {
@@ -46,11 +47,15 @@ const withProcessTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         });
         const emptyObjectArray = new Array(currentPageSize - items.length).fill(emptyObject);
 
-        handleItems = [...items,...emptyObjectArray]
+        handleItems = [...items, ...emptyObjectArray];
       }
 
       const afterHanldeItems = handleItems.map((item, index) => {
-        return { ...item, index: Math.floor((pageIndex - 1) * pageSize + index + 1) };
+        return {
+          ...item,
+          index: Math.floor((pageIndex - 1) * pageSize + index + 1),
+          key: uuid.v1(),
+        };
       });
 
       return {
@@ -90,6 +95,20 @@ const withProcessTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     }
   }, [currentPageSize, currentPage,JSON.stringify(extraParams)]);
 
+  useEffect(() => {
+    if (extraParams && currentPageSize) {
+      setCurrentPage(1);
+      run({
+        url,
+        pageSize: currentPageSize,
+        pageIndex: 1,
+        extraParams,
+        postType: 'body',
+        requestSource: 'project',
+      });
+    }
+  }, [JSON.stringify(extraParams)]);
+
   return (
     <div className={styles.processTable}>
       <div className={styles.processTableContent} ref={contentRef}>
@@ -98,6 +117,7 @@ const withProcessTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           dataSource={tableResultData.items}
           loading={loading}
           pagination={false}
+          rowKey={'key'}
           locale={{
             emptyText: <EmptyTip className="pt20 pb20" />,
           }}

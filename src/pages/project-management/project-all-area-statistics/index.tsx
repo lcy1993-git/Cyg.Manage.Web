@@ -19,7 +19,7 @@ import ProjectProcessListComponent from './components/project-process-list-compo
 const ProjectAllAreaStatistics: React.FC = () => {
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
   const [processListActiveTab, setProcessListActiveTab] = useState<string>('comprehensive');
-  const [companyId, setCompanyId] = useState<string>(null);
+  const [companyId, setCompanyId] = useState<string | null>(null);
 
   const { data: companySelectData = [] } = useGetSelectData({
     url: '/ProjectStatistics/GetCompanys',

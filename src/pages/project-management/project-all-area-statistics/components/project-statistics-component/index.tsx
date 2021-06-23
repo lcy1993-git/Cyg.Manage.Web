@@ -4,6 +4,7 @@ import NumberStatisticsComponent from './number-statistics-component';
 import StatisticsBieChart from './statistics-bie-chart';
 import { useRequest } from 'ahooks';
 import { getStatus } from '@/services/project-management/project-all-area-statistics';
+import { handleRate } from '@/utils/utils';
 
 const ProjectStatisticsCompoent: React.FC = () => {
   const { data } = useRequest(() => getStatus());
@@ -20,7 +21,7 @@ const ProjectStatisticsCompoent: React.FC = () => {
         <div style={{ marginBottom: '48px' }}>
           <NumberStatisticsComponent title={'已设计数'} num={data?.designedQty ?? 0} unit={'个'} />
         </div>
-        <NumberStatisticsComponent title={'完成率'} num={data?.completionRate ?? 0} unit={'%'} />
+        <NumberStatisticsComponent title={'完成率'} num={handleRate(data?.completionRate ?? 0)} unit={'%'} />
       </div>
     </div>
   );
