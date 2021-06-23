@@ -86,25 +86,24 @@ const CompanyManage: React.FC = () => {
       index: 'isEnabled',
       width: 120,
       render: (text: any, record: any) => {
-        // const isChecked = !record.isEnable;
+        const isChecked = record.isEnabled;
         return (
           <>
-            {buttonJurisdictionArray?.includes('start-forbid') &&
-              (record.isEnable === true ? (
-                <>
-                  <Switch
-                    key={status}
-                    defaultChecked
-                    onChange={() => disabledCompanyStatus(record.id)}
-                  />
-                  <span className="formSwitchOpenTip">启用</span>
-                </>
-              ) : (
-                <>
-                  <Switch onChange={() => enabledCompanyStatus(record.id)} />
-                  <span className="formSwitchCloseTip">禁用</span>
-                </>
-              ))}
+            {isChecked === true ? (
+              <>
+                <Switch
+                  checked={isChecked}
+                  // key={isChecked}
+                  onChange={() => changeStateEvent(record.id, isChecked)}
+                />
+                <span className="formSwitchOpenTip">启用</span>
+              </>
+            ) : (
+              <>
+                <Switch onChange={() => changeStateEvent(record.id, isChecked)} />
+                <span className="formSwitchCloseTip">禁用</span>
+              </>
+            )}
           </>
         );
       },
@@ -121,6 +120,16 @@ const CompanyManage: React.FC = () => {
       index: 'remark',
     },
   ];
+
+  const changeStateEvent = async (id: string, isChecked: boolean) => {
+    if (isChecked) {
+      await disabledCompanyStatus(id);
+    } else {
+      await enabledCompanyStatus(id);
+    }
+    message.success('状态修改成功');
+    tableFresh();
+  };
 
   const companyManageButton = () => {
     return (

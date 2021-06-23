@@ -120,7 +120,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
       <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
         <Input placeholder="请输入备注信息" />
       </CyFormItem>
-      <CyFormItem label="是否禁用" name="isEnabled" labelWidth={100} align="right">
+      <CyFormItem label="状态" name="isEnabled" labelWidth={100} initialValue={true} align="right">
         <FormSwitch />
       </CyFormItem>
     </>

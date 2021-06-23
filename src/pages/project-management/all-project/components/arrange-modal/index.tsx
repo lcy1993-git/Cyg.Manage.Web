@@ -14,7 +14,7 @@ interface ArrangeModalProps {
   finishEvent?: () => void;
   defaultSelectType?: string;
   allotCompanyId?: string;
-  dataSourceType?: string;
+  dataSourceType?: number;
 }
 
 const { TabPane } = Tabs;
@@ -39,7 +39,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const getCompanyInfo = (companyInfo: any) => {
     setCompanyInfo(companyInfo);
   };
-  
+
   const handleExternalMen = useMemo(() => {
     if (arrangePeople) {
       return arrangePeople.map((item) => {
@@ -145,6 +145,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
               allotCompanyId={allotCompanyId}
               getCompanyInfo={getCompanyInfo}
               onChange={(value) => setSelectType(value)}
+              dataSourceType={dataSourceType}
             />
           </TabPane>
           {/* {(selectType === '2' || selectType === '4') && (

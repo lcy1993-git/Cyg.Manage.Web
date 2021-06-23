@@ -19,10 +19,17 @@ interface GetGroupUserProps {
   getCompanyInfo?: (companyInfo: any) => void;
   defaultType?: string;
   allotCompanyId?: string | undefined;
+  dataSourceType?: number;
 }
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
-  const { onChange, getCompanyInfo, defaultType = '2', allotCompanyId = '' } = props;
+  const {
+    onChange,
+    getCompanyInfo,
+    defaultType = '2',
+    allotCompanyId = '',
+    dataSourceType,
+  } = props;
 
   const { data: companyInfo, run: getCompanyInfoEvent } = useRequest(getCompanyName, {
     manual: true,
@@ -94,16 +101,29 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       </CyFormItem>
       {(checkedValue === '2' || checkedValue === '4') && (
         <>
-          <CyFormItem label="勘察" name="surveyUser" required>
-            <TreeSelect
-              key="surveyUser"
-              style={{ width: '100%' }}
-              treeData={surveyData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
+          {dataSourceType === 2 ? (
+            <CyFormItem label="勘察" name="surveyUser" required>
+              <TreeSelect
+                key="surveyUser"
+                style={{ width: '100%' }}
+                treeData={surveyData.map(mapTreeData)}
+                placeholder="“无需现场数据”项目，免安排勘察人员"
+                treeDefaultExpandAll
+                disabled
+              />
+            </CyFormItem>
+          ) : (
+            <CyFormItem label="勘察" name="surveyUser" required>
+              <TreeSelect
+                key="surveyUser"
+                style={{ width: '100%' }}
+                treeData={surveyData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+          )}
 
           <CyFormItem label="设计" name="designUser" required>
             <TreeSelect
@@ -115,7 +135,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-
           {/* <Divider>设计校审</Divider> */}
           <div style={{ display: 'none' }}>
             <CyFormItem label="校对" name="designAssessUser1">

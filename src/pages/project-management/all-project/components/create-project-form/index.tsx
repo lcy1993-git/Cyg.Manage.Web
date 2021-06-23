@@ -14,11 +14,12 @@ interface CreateProjectFormProps {
   company?: string;
   companyName?: string;
   status?: number;
+  projectInfo?: any;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
-  const { field = {}, areaId, company, companyName, status } = props;
-  const [startDate, setStartDate] = useState<Date>();
+  const { field = {}, areaId, company, companyName, status, projectInfo } = props;
+  const [startDate, setStartDate] = useState(moment(projectInfo?.startTime) ?? null);
   const [dataSourceType, setDataSourceType] = useState<number>();
 
   // const { data: areaSelectData } = useGetSelectData(
@@ -167,7 +168,23 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             fieldKey={[field.fieldKey, 'startTime']}
             name={isEmpty(field) ? 'startTime' : [field.name, 'startTime']}
             required
-            rules={[{ required: true, message: '项目开始日期不能为空' }]}
+            dependencies={['startTime']}
+            rules={[
+              { required: true, message: '项目开始日期不能为空' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  console.log(value);
+                  if (
+                    new Date(value).getTime() >= new Date(getFieldValue('startTime')).getTime() ||
+                    !value ||
+                    !getFieldValue('startTime')
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('"项目开始日期"不得早于"工程开始日期"');
+                },
+              }),
+            ]}
           >
             <DatePicker
               placeholder="请选择"
@@ -185,15 +202,24 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'endTime']}
             name={isEmpty(field) ? 'endTime' : [field.name, 'endTime']}
-            dependencies={['startTime']}
+            dependencies={['endTime']}
             required
             rules={[
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (new Date(value).getTime() > new Date(startDate).getTime() || !value) {
+                  console.log(value);
+                  if (
+                    new Date(value).getTime() > new Date(startDate).getTime() ||
+                    !value ||
+                    !getFieldValue('startTime')
+                  ) {
+                    if (new Date(value).getTime() > new Date(getFieldValue('endTime')).getTime()) {
+                      return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
+                    }
                     return Promise.resolve();
                   }
+
                   return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
                 },
               }),
@@ -552,13 +578,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
 
       <div className="flex">
         <div className="flex1 flowHidden">
-          {dataSourceType === 1 ? (
+          {dataSourceType === 2 ? (
             <CyFormItem
               label="交底范围(米)"
               // initialValue={'50'}
               fieldKey={[field.fieldKey, 'disclosureRange']}
               name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
               labelWidth={120}
+              required
               align="right"
             >
               <InputNumber
@@ -603,13 +630,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           )}
         </div>
         <div className="flex1 flowHidden">
-          {dataSourceType === 1 ? (
+          {dataSourceType === 2 ? (
             <CyFormItem
               label="桩位范围(米)"
               // initialValue={'50'}
               fieldKey={[field.fieldKey, 'pileRange']}
               name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
               labelWidth={120}
+              required
               align="right"
             >
               <InputNumber

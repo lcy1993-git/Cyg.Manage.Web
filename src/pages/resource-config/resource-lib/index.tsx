@@ -111,6 +111,10 @@ const ResourceLib: React.FC = () => {
     }
   };
 
+useEffect(() => {
+  
+}, [resourceManageFlag])
+
   const columns = [
     {
       dataIndex: 'id',
@@ -160,7 +164,7 @@ const ResourceLib: React.FC = () => {
       },
       width: 180,
       render: (text: any, record: any) => {
-        return record.isDisabled === true ? '已禁用' : '';
+        return record.isDisabled === true ? '已禁用' : '-';
       },
     },
     {
@@ -168,6 +172,8 @@ const ResourceLib: React.FC = () => {
       title: '操作',
       width: 100,
       render: (text: any, record: any) => {
+        console.log(resourceManageFlag, '111111');
+
         return !resourceManageFlag ? (
           <span
             className="canClick"
@@ -194,7 +200,8 @@ const ResourceLib: React.FC = () => {
       },
     },
   ];
-  // console.log(resourceManageFlag);
+  console.log(resourceManageFlag, '2222222');
+
 
   //添加
   const addEvent = () => {

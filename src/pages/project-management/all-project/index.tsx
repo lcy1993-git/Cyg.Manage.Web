@@ -77,7 +77,7 @@ const ProjectManagement: React.FC = () => {
   const [sourceType, setSourceType] = useState<number[]>();
   const [identityType, setIdentityType] = useState<number[]>();
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
-  const [dataSourceType, setDataSourceType] = useState<string>('');
+  const [dataSourceType, setDataSourceType] = useState<number>();
 
   const [statisticsData, setStatisticsData] = useState({
     total: 0,
@@ -226,7 +226,7 @@ const ProjectManagement: React.FC = () => {
     if (projectIds.length === 1) {
       const thisProjectId = projectIds[0];
       const projectInfo = await getProjectInfo(thisProjectId);
-      setDataSourceType(projectInfo.dataSourceType);
+      setDataSourceType(Number(projectInfo.dataSourceType));
       // console.log(projectInfo);
 
       const { allots = [] } = projectInfo ?? {};
