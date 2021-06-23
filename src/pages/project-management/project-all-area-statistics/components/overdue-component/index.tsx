@@ -5,6 +5,7 @@ import ScrollView from 'react-custom-scrollbars';
 import { useRequest } from 'ahooks';
 import { getOverdues } from '@/services/project-management/project-all-area-statistics';
 import EmptyTip from '@/components/empty-tip';
+import uuid from 'node-uuid';
 
 const OverdueComponent: React.FC = () => {
   const { data = [] } = useRequest(() => getOverdues({ limit: 100 }));
@@ -14,7 +15,7 @@ const OverdueComponent: React.FC = () => {
         <div style={{ paddingRight: '20px' }}>
           {data && data.length > 0 ? (
             data.map((item: any) => {
-              return <OverdueItem overdueNumber={item.value}>{item.companyName}</OverdueItem>;
+              return <OverdueItem key={uuid.v1()} overdueNumber={item.value}>{item.companyName}</OverdueItem>;
             })
           ) : (
             <EmptyTip description="当前暂无即将逾期或已逾期项目" />
