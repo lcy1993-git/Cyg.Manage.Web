@@ -19,7 +19,7 @@ import ProjectProcessListComponent from './components/project-process-list-compo
 const ProjectAllAreaStatistics: React.FC = () => {
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
   const [processListActiveTab, setProcessListActiveTab] = useState<string>('comprehensive');
-  const [companyId, setCompanyId] = useState<string>(null);
+  const [companyId, setCompanyId] = useState<string | undefined>(undefined);
 
   const { data: companySelectData = [] } = useGetSelectData({
     url: '/ProjectStatistics/GetCompanys',
@@ -44,7 +44,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
                         setCompanyId(value);
                       }}
                       placeholder="请选择设计院单位"
-                      options={companySelectData}
+                      options={[{label: "全部", value: ""},...companySelectData]}
                     />
                   </div>
                 )

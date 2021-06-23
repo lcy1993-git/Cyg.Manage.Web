@@ -8,9 +8,6 @@ interface RateComponentProps {
 
 const RateComponent: React.FC<RateComponentProps> = (props) => {
   const { rate = 0 } = props;
-
-  
-
   return (
     <div className={styles.rateComponent}>
       <div className={styles.rateComponentChart}>
