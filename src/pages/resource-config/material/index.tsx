@@ -414,7 +414,7 @@ const Material: React.FC<libParams> = (props) => {
 
   return (
     // <PageCommonWrap>
-    <>
+    <div>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -502,8 +502,7 @@ const Material: React.FC<libParams> = (props) => {
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportMaterialVisible}
       />
-      {/* </PageCommonWrap> */}
-    </>
+    </div>
   );
 };
 

@@ -5,6 +5,7 @@ import {
   // getAllotUsers,
   getProjectTableList,
   getExternalArrangeStep,
+  getProjectInfo,
 } from '@/services/project-management/all-project';
 
 import styles from './index.less';
@@ -69,6 +70,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
 
   const [currentClickProjectId, setCurrentClickProjectId] = useState('');
+  const [currentDataSourceType, setCurrentDataSourceType] = useState<number>();
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
 
   const [externalStepData, setExternalStepData] = useState<any>();
@@ -209,7 +211,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setCheckResultVisible(true);
   };
 
-  const arrange = (projectId: string, projectType?: number, allotCompanyId?: string) => {
+  const arrange = async (projectId: string, projectType?: number, allotCompanyId?: string) => {
+    const projectInfo = await getProjectInfo(projectId);
+    console.log(projectInfo);
+    setCurrentDataSourceType(Number(projectInfo?.dataSourceType));
     setCurrentArrageProjectId(projectId);
     setCurrentProjectArrageType(projectType ? String(projectType) : undefined);
     setArrangeAllotCompanyId(allotCompanyId);
@@ -398,7 +403,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'surveyUser',
       width: '6.5%',
       render: (record: any) => {
-        return record.surveyUser.value;
+        return record.surveyUser ? record.surveyUser.value : '-';
       },
     },
     {
@@ -673,6 +678,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             onChange={setArrangeModalVisible}
             projectIds={[currentArrageProjectId]}
             defaultSelectType={currentProjectArrangeType}
+            dataSourceType={currentDataSourceType}
           />
         )}
         {editEngineerVisible && (
