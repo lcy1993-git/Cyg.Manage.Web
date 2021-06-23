@@ -16,7 +16,6 @@ import {
   deleteQuotaLibrary,
   setQuotaLibraryStatus
 } from '@/services/technology-economic';
-import qs from 'qs';
 import styles from './index.less';
 
 const { Search } = Input;
@@ -100,7 +99,6 @@ const columns = [
 ];
 
 const ProjectList: React.FC = () => {
-  const [id, setId] = useState<string>(qs.parse(window.location.href.split("?")[1]).id as string );
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -249,16 +247,15 @@ const ProjectList: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns as (ColumnsType<object>)}
-        url="/RateTable/QueryRatePager"
+        // url="/RateTable/QueryRatePager"
+        url="/QuotaLibrary/QueryQuotaLibraryPager"
         tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
         getSelectData={tableSelectEvent}
-        requestSource='tecEco1'
+        requestSource='tecEco'
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
-          id
         }}
-        requestConditions={id}
       />
       <Modal
         maskClosable={false}
