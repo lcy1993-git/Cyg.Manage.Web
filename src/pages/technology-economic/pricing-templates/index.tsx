@@ -3,12 +3,18 @@ import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  EyeOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  FileSearchOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import { isArray } from 'lodash';
 
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
+// import TableSearch from '@/components/table-search';
 import DictionaryForm from './components/add-edit-form';
 
 import {
@@ -33,8 +39,8 @@ const columns = [
     width: 300,
   },
   {
-    dataIndex: 'quotaLibrarys',
-    key: 'quotaLibrarys',
+    dataIndex: 'templateType',
+    key: 'templateType',
     title: '模板类型',
   },
   {
@@ -43,13 +49,13 @@ const columns = [
     title: '发布时间',
   },
   {
-    dataIndex: 'publishOrg',
-    key: 'publishOrg',
+    dataIndex: 'version',
+    key: 'version',
     title: '版本',
   },
   {
-    dataIndex: 'year',
-    key: 'year',
+    dataIndex: 'remark',
+    key: 'remark',
     title: '备注',
   },
   {
@@ -74,28 +80,12 @@ const PricingTemplates: React.FC = () => {
   const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
-
-  const searchComponent = () => {
-    return (
-      <TableSearch label="关键词" width="203px">
-        <Search
-          value={searchKeyWord}
-          onChange={(e) => setSearchKeyWord(e.target.value)}
-          onSearch={() => tableSearchEvent()}
-          enterButton
-          placeholder="键名"
-        />
-      </TableSearch>
-    );
-  };
-
-  const tableSearchEvent = () => {
-    search();
-  };
+  const [editForm] = Form.useForm();
 
   // 列表刷新
   const refresh = () => {
@@ -105,19 +95,11 @@ const PricingTemplates: React.FC = () => {
     }
   };
 
-  // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search();
-    }
-  };
-
-  //添加
+  // 创建按钮
   const addEvent = () => {
     setAddFormVisible(true);
   };
-
+  // 新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
       await createMaterialMachineLibrary(values);
@@ -126,7 +108,17 @@ const PricingTemplates: React.FC = () => {
       addForm.resetFields();
     });
   };
-
+  // 编辑确认按钮
+  const sureEditAuthorization = () => {
+    editForm.validateFields().then(async (values) => {
+      // TODO 编辑接口
+      await createMaterialMachineLibrary(values);
+      refresh();
+      setEditFormVisible(false);
+      editForm.resetFields();
+    });
+  };
+  // 删除
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
@@ -138,13 +130,18 @@ const PricingTemplates: React.FC = () => {
     message.success('删除成功');
   };
 
-  const gotoMoreInfo = () => {
+  // 编辑按钮
+  const editEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择要操作的行');
       return;
     }
-    const id = tableSelectRows[0].id;
-    history.push(`/technology-economic/material-infomation?id=${id}`);
+    // const id = tableSelectRows[0].id;
+    // history.push(`/technology-economic/material-infomation?id=${id}`);
+    setEditFormVisible(true);
+    editForm.setFieldsValue({
+      ...tableSelectRows[0],
+    });
   };
 
   const tableElement = () => {
@@ -154,6 +151,12 @@ const PricingTemplates: React.FC = () => {
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
+          </Button>
+        )}
+        {!buttonJurisdictionArray?.includes('quotaLib-info') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
           </Button>
         )}
         {!buttonJurisdictionArray?.includes('quotaLib-del') && (
@@ -169,12 +172,22 @@ const PricingTemplates: React.FC = () => {
             </Button>
           </Popconfirm>
         )}
-        {!buttonJurisdictionArray?.includes('quotaLib-info') && (
-          <Button className="mr7" onClick={() => gotoMoreInfo()}>
-            <EyeOutlined />
-            查看详情
-          </Button>
-        )}
+        <Button className="mr7" onClick={() => editEvent()}>
+          <FileSearchOutlined />
+          工程量目录
+        </Button>
+        <Button className="mr7" onClick={() => editEvent()}>
+          <FileSearchOutlined />
+          常用费率
+        </Button>
+        <Button className="mr7" onClick={() => editEvent()}>
+          <FileSearchOutlined />
+          费用模板
+        </Button>
+        <Button className="mr7" onClick={() => editEvent()}>
+          <FileSearchOutlined />
+          报表模板
+        </Button>
       </div>
     );
   };
@@ -187,12 +200,11 @@ const PricingTemplates: React.FC = () => {
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns as ColumnsType<DataSource | object>}
         url="/MaterialMachineLibrary/QueryMaterialMachineLibraryPager"
-        tableTitle="材机库管理"
+        tableTitle="计价模板管理"
         getSelectData={tableSelectEvent}
         requestSource="tecEco"
         type="radio"
@@ -202,7 +214,7 @@ const PricingTemplates: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        title="添加-定额库"
+        title="创建-计价模板"
         width="880px"
         visible={addFormVisible}
         okText="确认"
@@ -213,6 +225,21 @@ const PricingTemplates: React.FC = () => {
       >
         <Form form={addForm} preserve={false}>
           <DictionaryForm type="add" />
+        </Form>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        title="编辑-计价模板"
+        width="880px"
+        visible={editFormVisible}
+        okText="确认"
+        onOk={() => sureEditAuthorization()}
+        onCancel={() => setEditFormVisible(false)}
+        cancelText="取消"
+        destroyOnClose
+      >
+        <Form form={editForm} preserve={false}>
+          <DictionaryForm type="edit" />
         </Form>
       </Modal>
     </PageCommonWrap>
