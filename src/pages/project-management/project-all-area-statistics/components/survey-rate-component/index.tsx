@@ -9,6 +9,7 @@ import { useRequest } from 'ahooks';
 import { getSurveyRate } from '@/services/project-management/project-all-area-statistics';
 import moment from 'moment';
 import { useEffect } from 'react';
+import { handleRate } from '@/utils/utils';
 
 const SurveyRateComponent: React.FC = () => {
   const divRef = useRef<HTMLDivElement>(null);
@@ -40,7 +41,7 @@ const SurveyRateComponent: React.FC = () => {
       trigger: 'axis',
       formatter: (params: any) => {
         const { dataIndex } = params[0];
-        const copyData = [...data];
+        const copyData = [...data].reverse();
         const thisTime = moment(copyData[dataIndex].date).format('YYYY-MM-DD');
         const thisRate = copyData[dataIndex].surveyRate ?? 0;
         const thisNumber = copyData[dataIndex].totalQty ?? 0;
@@ -48,7 +49,7 @@ const SurveyRateComponent: React.FC = () => {
         return `
           <span style="font-size: 14px; font-weight: 600; color: #505050">${thisTime}</span><br />
           <span style="display: inline-block; width: 6px;height: 6px;border-radius: 50%; background: #4DA944;vertical-align: middle; margin-right: 6px;"></span><span style="color: #505050">项目总数：${thisNumber}</span><br />
-          <span style="display: inline-block; width: 6px;height: 6px;border-radius: 50%; background: #0076FF;vertical-align: middle; margin-right: 6px;"></span><span style="color: #505050">勘察率: ${thisRate}%</span>
+          <span style="display: inline-block; width: 6px;height: 6px;border-radius: 50%; background: #0076FF;vertical-align: middle; margin-right: 6px;"></span><span style="color: #505050">勘察率: ${handleRate(thisRate)}%</span>
         `;
       },
     },
