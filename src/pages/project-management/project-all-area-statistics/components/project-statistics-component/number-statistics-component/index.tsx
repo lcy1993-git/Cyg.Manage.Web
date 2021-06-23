@@ -3,7 +3,7 @@ import styles from './index.less';
 
 interface NumberStatisticsComponentProps {
   title: string;
-  num: number;
+  num: number | string;
   unit: string;
 }
 

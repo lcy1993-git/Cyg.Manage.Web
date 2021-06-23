@@ -29,7 +29,7 @@ const withProcessTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   const currentPageSize = useMemo(() => {
     if (!contentSize.height) return 0;
-    return Math.ceil(contentSize.height / 40) - 1;
+    return Math.floor(contentSize.height / 38) - 1;
   }, [contentSize.height]);
 
   const tableResultData = useMemo(() => {
