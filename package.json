@@ -91,6 +91,7 @@
     "@types/jest": "^26.0.0",
     "@types/lodash": "^4.14.144",
     "@types/node-uuid": "0.0.28",
+    "@types/numeral": "^2.0.1",
     "@types/pdfjs-dist": "^2.7.1",
     "@types/qs": "^6.5.3",
     "@types/react": "^17.0.0",
@@ -133,9 +134,5 @@
   "engines": {
     "node": ">=10.0.0"
   },
-  "__npminstall_done": false,
-  "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
-  }
+  "__npminstall_done": false
 }

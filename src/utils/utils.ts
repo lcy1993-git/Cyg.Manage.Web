@@ -158,7 +158,7 @@ export const formDataMateral = (content: any, getProperties: any) => {
   const data = filterData.map((item: any) => {
     return {
       ...item,
-      state: getProperties.state,
+      state: getProperties?.state,
       // children: [],
     };
   });
@@ -181,4 +181,10 @@ export const formDataMateral = (content: any, getProperties: any) => {
     }
     return curr;
   }, []);
+}
+
+export const handleRate = (number: number) => {
+  const ret = new RegExp(/^\d+(\.\d{1,2})?$/);
+  if(ret.test(String(number))) return number
+  return number.toFixed(2);
 }

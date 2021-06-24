@@ -12,19 +12,39 @@ export const getTime = (t: any) => {
  * @param propTime 时间
  * @returns xml文本 STRING
  */
-export const getXmlData = (projects: ProjectList[], propTime: string | undefined) => {
-  const postData = projects.reduce((pre, { id, time }) => {
+export const getXmlData = (projects: ProjectList[], startDate: string | undefined, endDate: string | undefined) => {
+  const postData = '<Or>' + projects.reduce((pre, { id, time }) => {
     let value = "";
-    if(!time || !propTime || getTime(propTime) >= getTime(time)) {
+    if(time){
+      if(!startDate && !endDate){
+        value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
+      } else if(!startDate && endDate) {
+        if(getTime(endDate) >= getTime(time)){
+          value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
+        }
+      } else if(startDate && !endDate) {
+        if(getTime(startDate) <= getTime(time)){
+          value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
+        }
+      } else {
+        if(getTime(startDate) <= getTime(time) && getTime(endDate) >= getTime(time)) {
+          value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
+        }
+      }
+    } else {
       value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
     }
     return pre + value
-  }, "");
+  }, "") + '</Or>';
   return getBaseXmlData(postData);
 }
 
-export const getCustomXmlData = (name: string, vlaue: any) => {
-  const postData = `<PropertyIsEqualTo><PropertyName>${name}</PropertyName><Literal>${vlaue}</Literal></PropertyIsEqualTo>`;
+export const getCustomXmlData = (name: string, value: any) => {
+    const postData = `<PropertyIsEqualTo><PropertyName>${name}</PropertyName><Literal>${value}</Literal></PropertyIsEqualTo>`;
+  return getBaseXmlData(postData);
+}
+
+export const getCustomXmlDataByWhere = (postData: string) => {
   return getBaseXmlData(postData);
 }
 
@@ -34,8 +54,8 @@ const getBaseXmlData = (postData: string) => {
                   outputFormat='JSON' xmlns:wfs='http://www.opengis.net/wfs' xmlns:ogc='http://www.opengis.net/ogc' 
                   xmlns:gml='http://www.opengis.net/gml' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' 
                   xsi:schemaLocation='http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd'>
-                  <wfs:Query typeName='{0}' srsName='EPSG:4326'><ogc:Filter><Or>`;
-  const end = "</Or></ogc:Filter></wfs:Query></wfs:GetFeature>";
+                  <wfs:Query typeName='{0}' srsName='EPSG:4326'><ogc:Filter>`;
+  const end = "</ogc:Filter></wfs:Query></wfs:GetFeature>";
   return head + postData + end;
 }
 
@@ -73,4 +93,29 @@ export const format = (fmt: string, date: Date) => { //author: meizz
   for (var k in o)
       if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
   return fmt;
+}
+
+/**
+ * 可视化成果层级、省市县项工可展开列方法
+ * 
+ * 根据数据data寻找所含deep层级的数据的相关字段key,并返回一个key组成的数组
+ * @param data 数据源
+ * @param deep 层级
+ * @param key 字段名
+ * @param root 根节点key
+ * @returns key[]
+ */
+export const flattenDeepToKey = (data: any[], deep: number, key: string, root: number | string) => {
+  let resData = root ? [root] : [];
+  if(deep === 0) return resData;
+  const recursionFn = (data: any, currentDeep: any) => {
+    data.forEach((item: any) => {
+      resData.push(item[key]);
+      if(currentDeep < deep && item.children && Array.isArray(item.children)){
+        recursionFn(item.children, currentDeep + 1)
+      }
+    })
+  }
+  recursionFn(data, 1);
+  return resData;
 }

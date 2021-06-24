@@ -67,10 +67,15 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
             size = 28;
             textFillColor = 'rgba(249, 149, 52, 1)';
         }
+        iconFontText = '\ue884';
+        console.log(feature.getProperties().type)
+        if(feature.getProperties().type === '1'){
+            iconFontText = '\ue896';
+        }
         style = new ClassStyle({
             text: new Text({
                 font: 'Normal ' + size + 'px ' + iconFont,
-                text: '\ue884',
+                text: iconFontText,
                 rotation: (feature.getProperties().azimuth + 90) * (Math.PI / 180) * -1,
                 offsetY: 13,
                 fill: new Fill({

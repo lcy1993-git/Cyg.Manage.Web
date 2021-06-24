@@ -1,0 +1,44 @@
+.allProjectPage {
+  width: 100%;
+  height: 100%;
+  background-color: @bg-primary-color;
+  box-sizing: border-box;
+
+  .allProjectStatistics {
+    height: 90px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    display: flex;
+    padding: 20px;
+
+    .projectManagementStatisticItem {
+      border-left: 1px solid @split-color;
+      padding-left: 10px;
+      flex: 1;
+      cursor: pointer;
+    }
+  }
+
+  .allProjectTableContent {
+    width: 100%;
+    height: calc(100% - 100px);
+    background-color: #ffffff;
+    padding: 20px 20px 0px 20px;
+    box-sizing: border-box;
+
+    .allProjectSearch {
+      height: 32px;
+      display: flex;
+
+      .allProjectSearchContent {
+        display: flex;
+      }
+    }
+
+    .engineerTableContent {
+      height: calc(100% - 72px);
+    }
+  }
+}

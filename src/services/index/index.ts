@@ -27,6 +27,8 @@ export interface RefreshDataType {
   projectName: string;
   projectId: string;
   date: Date;
+  operator: string;
+  operationCategory: string;
 }
 
 export type Type = 'pie' | 'bar';

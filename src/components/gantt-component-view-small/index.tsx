@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { Tooltip } from 'antd';
 import uuid from 'node-uuid';
 import moment from "moment";
-import ScrollView from 'react-custom-scrollbars'
+import ScrollView from 'react-custom-scrollbars';
 import styles from './index.less';
 import { useRef } from 'react';
 
