@@ -7,14 +7,14 @@ import { SetStateAction } from 'react';
 
 // import styles from './index.less';
 
-interface ExportPowerModalModalProps {
+interface ExportPowerModalParams {
   projectIds: string[];
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   finishEvent: () => void;
 }
 
-const ExportPowerModal: React.FC<ExportPowerModalModalProps> = (props) => {
+const ExportPowerModal: React.FC<ExportPowerModalParams> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [powerStatus, setPowerStatus] = useState<boolean>(true);
 
