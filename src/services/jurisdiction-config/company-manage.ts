@@ -55,16 +55,12 @@ export const updateCompanyManageItem = (params: TreeDataItem) => {
   );
 };
 
-//启用
-export const enabledCompanyStatus = (companyId: string) => {
+//启用/禁用
+export const changeCompanyStatus = (id: string, isEnable: boolean) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Company/Enabled`, { method: 'POST', params: { companyId } }),
-  );
-};
-
-//禁用
-export const disabledCompanyStatus = (companyId: string) => {
-  return cyRequest(() =>
-    request(`${baseUrl.project}/Company/Disabled`, { method: 'POST', params: { companyId } }),
+    request(`${baseUrl.project}/Company/ModifyEnableStatus`, {
+      method: 'POST',
+      data: { id, isEnable },
+    }),
   );
 };

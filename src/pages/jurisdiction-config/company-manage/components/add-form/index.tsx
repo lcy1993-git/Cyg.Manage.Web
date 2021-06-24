@@ -19,7 +19,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
     return {
       title: data.text,
       value: data.id,
-      children: data.children.map(mapTreeData),
+      children: data.children?.map(mapTreeData),
     };
   };
 

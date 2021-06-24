@@ -9,8 +9,7 @@ import {
   addCompanyManageItem,
   getCompanyManageDetail,
   getTreeSelectData,
-  disabledCompanyStatus,
-  enabledCompanyStatus,
+  changeCompanyStatus,
 } from '@/services/jurisdiction-config/company-manage';
 import { isArray } from 'lodash';
 import CompanyManageForm from './components/add-form';
@@ -18,7 +17,6 @@ import EditCompanyManageForm from './components/edit-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { SpaceContext } from 'antd/lib/space';
 
 const mapColor = {
   无: 'gray',
@@ -86,16 +84,12 @@ const CompanyManage: React.FC = () => {
       index: 'isEnabled',
       width: 120,
       render: (text: any, record: any) => {
-        const isChecked = record.isEnabled;
+        const isChecked = !record.isEnabled;
         return (
           <>
-            {isChecked === true ? (
+            {record.isEnabled === true ? (
               <>
-                <Switch
-                  checked={isChecked}
-                  // key={isChecked}
-                  onChange={() => changeStateEvent(record.id, isChecked)}
-                />
+                <Switch checked={!isChecked} onChange={() => changeStateEvent(record.id, isChecked)} />
                 <span className="formSwitchOpenTip">启用</span>
               </>
             ) : (
@@ -122,13 +116,9 @@ const CompanyManage: React.FC = () => {
   ];
 
   const changeStateEvent = async (id: string, isChecked: boolean) => {
-    if (isChecked) {
-      await disabledCompanyStatus(id);
-    } else {
-      await enabledCompanyStatus(id);
-    }
-    message.success('状态修改成功');
+    await changeCompanyStatus(id, isChecked);
     tableFresh();
+    message.success('状态修改成功');
   };
 
   const companyManageButton = () => {
@@ -222,10 +212,10 @@ const CompanyManage: React.FC = () => {
       );
 
       await updateCompanyManageItem(submitInfo);
-      tableFresh();
       message.success('更新成功');
       editForm.resetFields();
       setEditFormVisible(false);
+      tableFresh();
     });
   };
 

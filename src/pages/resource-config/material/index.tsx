@@ -414,7 +414,7 @@ const Material: React.FC<libParams> = (props) => {
 
   return (
     // <PageCommonWrap>
-    <div>
+    <div className={styles.material}>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}

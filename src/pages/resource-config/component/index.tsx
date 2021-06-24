@@ -378,7 +378,7 @@ const Component: React.FC<libParams> = (props) => {
 
   return (
     // <PageCommonWrap>
-    <>
+    <div className={styles.component}>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -481,7 +481,7 @@ const Component: React.FC<libParams> = (props) => {
         onChange={setImportComponentVisible}
       />
       {/* </PageCommonWrap> */}
-    </>
+    </div>
   );
 };
 
