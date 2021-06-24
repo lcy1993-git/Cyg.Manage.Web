@@ -37,7 +37,7 @@ const ProjectProcessComponent: React.FC<ProjectProcessComponentProps> = (props) 
       title: '计划天数',
       dataIndex: 'planDays',
       index: 'planDays',
-      width: 80,
+      width: 100,
       render: (text: any, record: any) => {
         if(!record.empty) {
           return `${record.planDays}天`;

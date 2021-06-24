@@ -57,7 +57,7 @@ const LoginForm: React.FC = () => {
         localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
 
 
-        message.success('登录成功');
+        message.success('登录成功',1.5);
         history.push('/index');
       } catch (msg) {
         console.error(msg)

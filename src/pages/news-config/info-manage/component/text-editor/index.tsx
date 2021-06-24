@@ -147,7 +147,7 @@ const TextEditorModal = (props: EditorParams) => {
   const getUserIds = (groupArray: any) => {
     let allIds: any[] = [];
     (function deep(groupArray) {
-      groupArray.forEach((item: any) => {
+      groupArray?.forEach((item: any) => {
         if (item.children) {
           if (item.children?.length > 0) {
             deep(item.children);
@@ -164,9 +164,9 @@ const TextEditorModal = (props: EditorParams) => {
 
   const handleData = useMemo(() => {
     const copyOptions = JSON.parse(JSON.stringify(groupData))?.map(mapTreeData);
-    copyOptions.unshift({ title: '所有人', value: allUserIds, children: groupData });
+    copyOptions?.unshift({ title: '所有人', value: allUserIds, children: groupData });
     return copyOptions
-      .map((item: any) => {
+      ?.map((item: any) => {
         return {
           title: item.title,
           value: item.value,

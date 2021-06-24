@@ -1,16 +1,4 @@
-import React, { memo, useState, useMemo } from 'react';
-import styles from './index.less';
-import { WidthProvider, Responsive } from 'react-grid-layout';
-import bgSrc from '@/assets/image/index/bg.png';
-import { useRequest, useSize } from 'ahooks';
-import { getChartConfig } from '@/services/operation-config/cockpit';
-import { useRef } from 'react';
-
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
-
-const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
+import React, { useState, useMemo } from 'react';
 import MapComponent from '@/pages/index/components/index-map-component';
 import PersonnelLoad from '@/pages/index/components/index-personnel-load-component';
 import ToDo from '@/pages/index/components/index-to-do-component';
@@ -24,6 +12,17 @@ import { Spin } from 'antd';
 import PageCommonWrap from '@/components/page-common-wrap';
 import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex';
 import initConfigArray from './utils/initConfigArray';
+import styles from './index.less';
+import { WidthProvider, Responsive } from 'react-grid-layout';
+import bgSrc from '@/assets/image/index/bg.png';
+import { useRequest, useSize } from 'ahooks';
+import { getChartConfig } from '@/services/operation-config/cockpit';
+import { useRef } from 'react';
+
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {

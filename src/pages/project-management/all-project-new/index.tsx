@@ -7,12 +7,41 @@ import SingleStatistics from './components/single-statistics';
 import { Button, Input } from 'antd';
 import styles from './index.less';
 import EngineerTable from './components/engineer-table';
+import { useRef } from 'react';
+import { useLayoutStore } from '@/layouts/context';
+import { useEffect } from 'react';
 
 const { Search } = Input;
 
 const AllProject: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('');
   // 从列表返回的数据中获取
+  const [searchParams, setSearchParams] = useState({
+    category: [],
+    pCategory: [],
+    stage: [],
+    constructType: [],
+    nature: [],
+    kvLevel: [],
+    status: [],
+    statisticalCategory: "-1",
+    sourceType: [],
+    identityType: [],
+    logicRelation: 2,
+    designUser: '',
+    surveyUser: '',
+    areaType: '-1',
+    areaId: '',
+  });
+
+  const {
+    setAllProjectSearchProjectId,
+    setAllProjectSearchPerson,
+    allProjectSearchPerson,
+    allProjectSearchProjectName,
+  } = useLayoutStore();
+
+  const tableRef = useRef<HTMLDivElement>(null);
 
   // TODO 搜索、以及弹窗部分都还没做
   const [statisticsData, setStatisticsData] = useState({
@@ -36,6 +65,34 @@ const AllProject: React.FC = () => {
   };
 
   const statisticsClickEvent = (statisticsType: string) => {};
+
+  const searchByParams = (params: any) => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.searchByParams(params);
+    }
+  };
+
+  useEffect(() => {
+    if (allProjectSearchProjectName) {
+      searchByParams({
+        keyWord,
+        ...searchParams
+      });
+    }
+    if (allProjectSearchPerson) {
+      searchByParams({
+        keyWord,
+        ...searchParams
+      });
+    }
+    if(!allProjectSearchPerson && !allProjectSearchPerson) {
+      searchByParams({
+        keyWord,
+        ...searchParams
+      });
+    }
+  }, [allProjectSearchPerson, allProjectSearchProjectName]);
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -93,7 +150,7 @@ const AllProject: React.FC = () => {
             <div className={styles.allProjectFunctionButtonContent}>{/* TODO 按钮区域 */}</div>
           </div>
           <div className={styles.engineerTableContent}>
-            <EngineerTable />
+            <EngineerTable ref={tableRef} extractParams={{keyWord, ...searchParams}} />
           </div>
         </div>
       </div>

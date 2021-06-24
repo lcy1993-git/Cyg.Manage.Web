@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
+import { BarsOutlined, CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tooltip } from 'antd';
 import { useBoolean } from 'ahooks';
 
@@ -9,6 +9,9 @@ import moment from 'moment';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import uuid from 'node-uuid';
 import EmptyTip from '@/components/empty-tip';
+import CyTag from '@/components/cy-tag';
+import { Dropdown } from 'antd';
+import { Menu } from 'antd';
 
 export interface AddProjectValue {
   engineerId: string;
@@ -37,6 +40,18 @@ export interface TableItemCheckedInfo {
   checkedArray: string[];
 }
 
+interface JurisdictionInfo {
+  canEdit: boolean;
+  canCopy: boolean;
+}
+
+const colorMap = {
+  立项: 'green',
+  委托: 'blue',
+  共享: 'yellow',
+  执行: 'yellow',
+};
+
 const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   const [isFold, { toggle: foldEvent }] = useBoolean(false);
 
@@ -48,12 +63,245 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   const {
     projectInfo = {},
-    columns = [],
+    //columns = [],
     onChange,
     getClickProjectId,
     addProject,
     editEngineer,
+    left
   } = props;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  const columns = [
+    {
+      title: '项目名称',
+      dataIndex: 'name',
+      render: (record: any) => {
+        return (
+          <u
+            className="canClick"
+            // onClick={() => {
+            //   setCurrentClickProjectId(record.id);
+            //   setProjectModalVisible(true);
+            // }}
+          >
+            {record.name}
+          </u>
+        );
+      },
+      // width:'10%'
+    },
+    {
+      title: '项目分类',
+      dataIndex: 'categoryText',
+      width: '6.15%',
+    },
+    {
+      title: '电压等级',
+      dataIndex: 'kvLevelText',
+      width: '6.15%',
+    },
+    {
+      title: '项目性质',
+      dataIndex: 'natureTexts',
+      width: '10%',
+      render: (record: any) => {
+        const { natureTexts = [] } = record;
+        return natureTexts.map((item: any) => {
+          return (
+            <CyTag key={uuid.v1()} className="mr7">
+              {item}
+            </CyTag>
+          );
+        });
+      },
+    },
+    {
+      title: '专业类别',
+      dataIndex: 'majorCategoryText',
+      width: '6.15%',
+    },
+    {
+      title: '建设类型',
+      dataIndex: 'constructTypeText',
+      width: '5.45%',
+    },
+    {
+      title: '项目批次',
+      dataIndex: 'batchText',
+      width: '6.15%',
+    },
+    {
+      title: '项目阶段',
+      dataIndex: 'stageText',
+      width: '5.45%',
+    },
+    {
+      title: '导出坐标权限',
+      dataIndex: 'exportCoordinate',
+      width: '8.15%',
+      render: (record: any) => {
+        return record.exportCoordinate === true ? (
+          <span className="colorPrimary">启用</span>
+        ) : (
+          <span className="colorRed">禁用</span>
+        );
+      },
+    },
+
+    {
+      title: '项目状态',
+      width: '6.15%',
+      dataIndex: 'statusText',
+      render: (record: any) => {},
+    },
+    {
+      title: '项目来源',
+      dataIndex: 'sources',
+      width: '6.15%',
+      render: (record: any) => {
+        const { sources = [] } = record;
+        return sources.map((item: any) => {
+          return (
+            <span key={uuid.v1()}>
+              <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
+                <span>{item}</span>
+              </CyTag>
+            </span>
+          );
+        });
+      },
+    },
+    {
+      title: '勘察人',
+      dataIndex: 'surveyUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.surveyUser.value;
+      },
+    },
+    {
+      title: '设计人',
+      dataIndex: 'designUser',
+      width: '6.5%',
+      render: (record: any) => {
+        return record.designUser.value;
+      },
+    },
+    {
+      title: '项目身份',
+      dataIndex: 'identitys',
+      width: '8%',
+      render: (record: any) => {
+        const { identitys = [] } = record;
+        return identitys
+          .filter((item: any) => item.text)
+          .map((item: any) => {
+            return (
+              <span className="mr7" key={uuid.v1()}>
+                <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
+                  {item.text}
+                </CyTag>
+              </span>
+            );
+          });
+      },
+    },
+    {
+      title: '操作',
+      dataIndex: 'operationAuthority',
+      width: '60px',
+      render: (record: any, engineerInfo: any) => {
+        const { operationAuthority } = record;
+
+        return (
+          <Dropdown
+            overlay={() =>
+              projectItemMenu(operationAuthority, record, engineerInfo, record.stateInfo.status)
+            }
+            placement="bottomLeft"
+            arrow
+          >
+            <BarsOutlined />
+          </Dropdown>
+        );
+      },
+    },
+  ];
+
+  const projectItemMenu = (
+    jurisdictionInfo: JurisdictionInfo,
+    tableItemData: any,
+    engineerInfo: any,
+  ) => {
+    return (
+      <Menu>
+        {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
+          <Menu.Item
+            // onClick={() => {
+            //   editProjectEvent({
+            //     projectId: tableItemData.id,
+            //     areaId: engineerInfo.province,
+            //     company: engineerInfo.company,
+            //     companyName: engineerInfo.company,
+            //     status: tableItemData.stateInfo.status,
+            //   });
+            // }}
+          >
+            编辑
+          </Menu.Item>
+        )}
+        {jurisdictionInfo.canCopy && buttonJurisdictionArray?.includes('all-project-copy-project') && (
+          <Menu.Item
+            // onClick={() =>
+            //   copyProjectEvent({
+            //     projectId: tableItemData.id,
+            //     areaId: engineerInfo.province,
+            //     company: engineerInfo.company,
+            //     engineerId: engineerInfo.id,
+            //     companyName: engineerInfo.company,
+            //   })
+            // }
+          >
+            复制项目
+          </Menu.Item>
+        )}
+        {buttonJurisdictionArray?.includes('all-project-check-result') && (
+          <Menu.Item
+            // onClick={() =>
+            //   checkResult({
+            //     projectId: tableItemData.id,
+            //     projectName: tableItemData.name,
+            //     projectStatus: tableItemData.stateInfo.statusText,
+            //     projectStage: tableItemData.stageText,
+            //   })
+            // }
+          >
+            查看成果
+          </Menu.Item>
+        )}
+      </Menu>
+    );
+  };
 
   const valueList = useMemo(() => {
     if (projectInfo.projects) {
@@ -155,7 +403,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   const tbodyElement = (projectInfo.projects ?? []).map((item: any) => {
     return (
       <div key={uuid.v1()} className={styles.engineerTableTr}>
-        <div className={styles.engineerTableTd} style={{ width: '44px' }}>
+        <div className={styles.engineerTableTd} style={{ width: '38px' }}>
           <Checkbox style={{ marginLeft: '4px' }} value={item.id} />
         </div>
         {columns.map((ite) => {
@@ -175,11 +423,11 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   return (
     <div className={styles.engineerTableItem}>
-      <div className={styles.engineerTableItemHeader}>
+      <div className={styles.engineerTableItemHeader} style={{left: `${left}px`}}>
         <div className={styles.foldButton} onClick={() => foldEvent()}>
           <span>{isFold ? <CaretUpOutlined /> : <CaretDownOutlined />}</span>
         </div>
-        <div className={styles.projectName}>
+        <div className={styles.engineerName}>
           <Checkbox
             onChange={checkAllEvent}
             style={{ marginRight: '7px' }}
@@ -187,7 +435,10 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             checked={checkAll}
           />
           <Tooltip title={projectInfo.name}>
-            <u className="canClick" onClick={() => projectNameClickEvent(projectInfo.id)}>
+            <u
+              className={`canClick ${styles.engineerNameContent}`}
+              onClick={() => projectNameClickEvent(projectInfo.id)}
+            >
               {projectInfo.name}
             </u>
           </Tooltip>
@@ -230,7 +481,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             <div className={styles.engineerTable}>
               <div className={styles.engineerTableContent}>
                 <div className={styles.engineerTableHeader}>
-                  <div className={styles.engineerTableTh} style={{ width: '44px' }}></div>
+                  <div className={styles.engineerTableTh} style={{ width: '38px' }}></div>
                   {theadElement}
                 </div>
                 <div className={styles.engineerTableBody}>{tbodyElement}</div>
