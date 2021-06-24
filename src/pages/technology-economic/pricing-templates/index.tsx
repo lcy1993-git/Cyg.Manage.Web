@@ -22,6 +22,10 @@ import {
   deleteMaterialMachineLibrary,
   setMaterialMachineLibraryStatus,
 } from '@/services/technology-economic';
+import {
+  addPricingTemplate,
+  editPricingTemplate,
+} from '@/services/technology-economic/pricing-template';
 import styles from './index.less';
 
 type DataSource = {
@@ -33,14 +37,14 @@ const { Search } = Input;
 
 const columns = [
   {
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'no',
+    key: 'no',
     title: '编号',
     width: 300,
   },
   {
-    dataIndex: 'templateType',
-    key: 'templateType',
+    dataIndex: 'engineeringTemplateType',
+    key: 'engineeringTemplateType',
     title: '模板类型',
   },
   {
@@ -102,7 +106,7 @@ const PricingTemplates: React.FC = () => {
   // 新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      await createMaterialMachineLibrary(values);
+      await addPricingTemplate(values);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -112,7 +116,7 @@ const PricingTemplates: React.FC = () => {
   const sureEditAuthorization = () => {
     editForm.validateFields().then(async (values) => {
       // TODO 编辑接口
-      await createMaterialMachineLibrary(values);
+      await editPricingTemplate(values);
       refresh();
       setEditFormVisible(false);
       editForm.resetFields();
@@ -208,11 +212,11 @@ const PricingTemplates: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns as ColumnsType<DataSource | object>}
-        url="/MaterialMachineLibrary/QueryMaterialMachineLibraryPager"
+        url="/EngineerTemplate/QueryEngineeringTemplatePager"
         tableTitle="计价模板管理"
         getSelectData={tableSelectEvent}
-        requestSource="tecEco"
         type="radio"
+        requestSource="tecEco1"
         extractParams={{
           keyWord: searchKeyWord,
         }}

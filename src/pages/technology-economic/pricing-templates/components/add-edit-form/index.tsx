@@ -8,7 +8,6 @@ interface IForm {
   type?: 'add' | 'edit';
   selectList?: any[];
 }
-
 const DictionaryForm: React.FC<IForm> = (props) => {
   const { type, selectList = [{ value: 1 }] } = props;
   useEffect(() => {}, []);
@@ -16,13 +15,13 @@ const DictionaryForm: React.FC<IForm> = (props) => {
     <>
       <Row>
         <Col span={11}>
-          <CyFormItem label="编号" name="name" required>
+          <CyFormItem label="编号" name="no" required>
             <Input placeholder="请输入编号" />
           </CyFormItem>
           <CyFormItem label="版本" name="version">
             <Input />
           </CyFormItem>
-          <CyFormItem label="模板类型" name="templateType">
+          <CyFormItem label="模板类型" name="engineeringTemplateType">
             {type === 'edit' ? (
               <Select disabled />
             ) : (
