@@ -1,3 +1,4 @@
+import { handleRate } from '@/utils/utils';
 import React from 'react';
 import ProcessTable from '../process-table';
 import RateComponent from '../rate-component';
@@ -35,7 +36,7 @@ const ComprehensiveProcessComponent: React.FC = () => {
       width: 80,
       render: (text: any, record: any) => {
         if(!record.empty) {
-          return `${record.surveyRate}%`;
+          return `${handleRate(record.surveyRate)}%`;
         }
       }
     },
