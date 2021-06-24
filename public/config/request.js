@@ -25,7 +25,7 @@ const arrayHasIpBaseUrlArray = {
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
     tecEco: `${baseUrl}:8033/api`,
-    tecEco1: `http://www.technicaleconomy.cyg.com/api`,
+    tecEco1: `${baseUrl}:8080/api`,
     review: `${baseUrl}:8041/api`,
 
     webGis: `${baseUrl}:8021/api`,

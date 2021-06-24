@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
@@ -8,14 +9,15 @@ import { isArray } from 'lodash';
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import ImfomationModal from './components/infomation-modal';
+// import ImfomationModal from './components/infomation-modal';
 import AddDictionaryForm from './components/add-edit-form';
-import {
-  createQuotaLibrary,
-  CreateQuotaLibrary,
-  deleteQuotaLibrary,
-  setQuotaLibraryStatus
-} from '@/services/technology-economic';
+import { setRateTableStatus,
+  deleteRateTable,
+  AddRateTable,
+  addRateTable,
+  EditRateTable,
+  editRateTable
+} from '@/services/technology-economic/common-rate'; 
 import styles from './index.less';
 
 const { Search } = Input;
@@ -27,21 +29,21 @@ type DataSource = {
 
 const columns = [
   {
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'number',
+    key: 'number',
     title: '序号',
     width: 300,
   },
   {
-    dataIndex: 'materialMachineLibraryName',
-    key: 'materialMachineLibraryName',
+    dataIndex: 'rateTableType',
+    key: 'rateTableType',
     title: '费率类型',
     width: 160,
   },
   {
-    dataIndex: 'quotaScopeText',
-    key: 'quotaScopeText',
-    title: '关联模板',
+    dataIndex: 'sourceFile',
+    key: 'sourceFile',
+    title: '来源文件',
     width: 160
   },
   {
@@ -63,14 +65,14 @@ const columns = [
     width: 100
   },
   {
-    dataIndex: 'industryTypeText',
-    key: 'industryTypeText',
+    dataIndex: 'industryType',
+    key: 'industryType',
     title: '行业类别',
     width: 150
   },
   {
-    dataIndex: 'majorTypeText',
-    key: 'majorTypeText',
+    dataIndex: 'majorType',
+    key: 'majorType',
     title: '适用专业',
     width: 150
   },
@@ -84,7 +86,7 @@ const columns = [
         <Switch
           defaultChecked={value}
           onClick={(checked) => {
-            setQuotaLibraryStatus(record.id, checked);
+            setRateTableStatus(record.id, checked);
           }}
         />
       );
@@ -104,8 +106,6 @@ const ProjectList: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [imfomationModalVsibel, setImfomationModalVsibel] = useState<boolean>(false);
-  const [imfomationModalId, setImfomationModalId] = useState<string>("");
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
@@ -151,8 +151,8 @@ const ProjectList: React.FC = () => {
   };
 
   const sureAddAuthorization = () => {
-    addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
-      await createQuotaLibrary(values);
+    addForm.validateFields().then(async (values: AddRateTable) => {
+      await addRateTable({...values, number: "123456"});
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -160,35 +160,43 @@ const ProjectList: React.FC = () => {
   };
   
   // 编辑
+  const editEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑');
+      return;
+    }
+
+    editForm.setFieldsValue({...tableSelectRows[0]})
+    setEditFormVisible(true);
+  };
   const sureEditAuthorization = () => {
-    addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
-      await createQuotaLibrary(values);
+    editForm.validateFields().then(async (values: EditRateTable) => {
+      await editRateTable(values);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
     });
   };
 
-  // 查看详情 setImfomationModalVsibel
+  // 查看详情
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
     }
     const id = tableSelectRows[0].id;
-    await deleteQuotaLibrary(id);
+    await deleteRateTable(id);
     refresh();
     message.success('删除成功');
   };
 
-  const moreInfoEvent = () => {
+  const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
     }
     const id = tableSelectRows[0].id;
-    setImfomationModalId(id);
-    setImfomationModalVsibel(true);
+    history.push(`/technology-economic/common-rate-infomation?id=${id}`)
   };
 
   const tableElement = () => {
@@ -204,7 +212,7 @@ const ProjectList: React.FC = () => {
         }
         {
           !buttonJurisdictionArray?.includes('quotaLib-add') &&
-          <Button className="mr7" onClick={() => addEvent()}>
+          <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
@@ -225,7 +233,7 @@ const ProjectList: React.FC = () => {
         }
         {
           !buttonJurisdictionArray?.includes('quotaLib-add') &&
-          <Button className="mr7" onClick={() => moreInfoEvent()}>
+          <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             查看内容
           </Button>
@@ -247,11 +255,11 @@ const ProjectList: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns as (ColumnsType<object>)}
-        // url="/RateTable/QueryRatePager"
-        url="/QuotaLibrary/QueryQuotaLibraryPager"
+        url="/RateTable/QueryRatePager"
+        // url="/QuotaLibrary/QueryQuotaLibraryPager"
         tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
         getSelectData={tableSelectEvent}
-        requestSource='tecEco'
+        requestSource='tecEco1'
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
@@ -287,11 +295,6 @@ const ProjectList: React.FC = () => {
           <AddDictionaryForm type='edit' />
         </Form>
       </Modal>
-      {
-        imfomationModalId && imfomationModalId &&
-        <ImfomationModal id={imfomationModalId} onChange={setImfomationModalVsibel} visible={imfomationModalVsibel}/>
-      }
-      
     </PageCommonWrap>
   );
 };

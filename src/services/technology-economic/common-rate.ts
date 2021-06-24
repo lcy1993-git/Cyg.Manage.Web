@@ -2,7 +2,7 @@ import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
 // 创建定额库
-interface AddRateTable {
+export interface AddRateTable {
   number: string;
   rateTableType: number;
   engineeringTemplateId: string;
@@ -21,7 +21,7 @@ export const addRateTable = (params: AddRateTable) => {
 }
 
 // 编辑定额库
-type EditRateTable = AddRateTable & {id: string}
+export type EditRateTable = AddRateTable & {id: string}
 export const editRateTable = (params: EditRateTable) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/RateTable/EditRateTable`, { method: 'POST', data: params })
