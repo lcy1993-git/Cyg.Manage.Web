@@ -178,3 +178,10 @@ export const getQuotaScopeEnums = () => {
   );
 }
 
+// 获取所有枚举值
+
+export const getTechnicalEconomyEnums= () => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/System/GetTechnicalEconomyEnums`, { method: 'POST', data: null })
+  )
+}
