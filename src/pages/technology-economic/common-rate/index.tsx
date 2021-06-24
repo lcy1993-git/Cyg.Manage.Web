@@ -5,7 +5,7 @@ import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
-
+import {getEnums} from '../utils';
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
@@ -110,6 +110,11 @@ const ProjectList: React.FC = () => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
+
+  console.log(getEnums('AreaType'));
+  console.log(getEnums('地区类型', true));
+  
+  
 
   const searchComponent = () => {
     return (
