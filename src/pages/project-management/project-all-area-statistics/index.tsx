@@ -19,7 +19,7 @@ import ProjectProcessListComponent from './components/project-process-list-compo
 const ProjectAllAreaStatistics: React.FC = () => {
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
   const [processListActiveTab, setProcessListActiveTab] = useState<string>('comprehensive');
-  const [companyId, setCompanyId] = useState<string>(null);
+  const [companyId, setCompanyId] = useState<string | null>(null);
 
   const { data: companySelectData = [] } = useGetSelectData({
     url: '/ProjectStatistics/GetCompanys',
@@ -39,6 +39,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
                     <DataSelect
                       style={{ width: '100%' }}
                       value={companyId}
+                      allowClear
                       onChange={(value: any) => {
                         setCompanyId(value);
                       }}
