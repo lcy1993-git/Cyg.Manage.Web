@@ -1,39 +1,46 @@
-import React from 'react';
-import { Input, Col, Row } from 'antd';
-import UrlSelect from '@/components/url-select';
+import React, { useEffect } from 'react';
+import { Input, Col, Row, Select } from 'antd';
+import UrlSelect from '../url-select';
 import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
-import FileUpload from '@/components/file-upload';
+interface IForm {
+  type?: 'add' | 'edit';
+  selectList?: any[];
+}
 
-const DictionaryForm: React.FC<{ type?: string }> = () => {
+const DictionaryForm: React.FC<IForm> = (props) => {
+  const { type, selectList = [{ value: 1 }] } = props;
+  useEffect(() => {}, []);
   return (
     <>
       <Row>
         <Col span={11}>
-          <CyFormItem label="名称" name="name" required>
-            <Input placeholder="请输入名称" />
+          <CyFormItem label="编号" name="name" required>
+            <Input placeholder="请输入编号" />
           </CyFormItem>
-          <CyFormItem label="发布机构" name="publishOrg">
+          <CyFormItem label="版本" name="version">
             <Input />
           </CyFormItem>
-          <CyFormItem label="适用行业" name="industryType">
-            <UrlSelect
-              url="/CommonEnum/GetMajorTypeEnums"
-              requestType="get"
-              requestSource="tecEco"
-              titleKey="text"
-              valueKey="value"
-            />
+          <CyFormItem label="模板类型" name="templateType">
+            {type === 'edit' ? (
+              <Select disabled />
+            ) : (
+              <UrlSelect
+                url="/CommonEnum/GetMajorTypeEnums"
+                requestType="get"
+                requestSource="tecEco"
+                titleKey="text"
+                valueKey="value"
+                selectList={selectList}
+              />
+            )}
           </CyFormItem>
         </Col>
         <Col span={2}></Col>
         <Col span={11}>
           <CyFormItem label="发布时间" name="publishDate">
             <DateFormItem />
-          </CyFormItem>
-          <CyFormItem label="价格年度" name="year">
-            <DateFormItem picker="year" />
           </CyFormItem>
           <CyFormItem label="状态" name="enabled" required>
             <FormSwitch />
@@ -42,10 +49,6 @@ const DictionaryForm: React.FC<{ type?: string }> = () => {
       </Row>
       <CyFormItem label="备注" name="remark">
         <Input.TextArea rows={3} />
-      </CyFormItem>
-
-      <CyFormItem label="上传文件" name="file" required>
-        <FileUpload accept=".xls,.xlsx" maxCount={1} trigger={false} />
       </CyFormItem>
     </>
   );
