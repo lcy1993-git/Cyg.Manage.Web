@@ -160,7 +160,7 @@ export const saveQuotaLibraryCatalogDescription= (data: SaveQuotaLibraryCatalogD
 // 行业类别枚举
 export const getIndustryTypeEnums = () => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/CommonEnum/GetIndustryTypeEnums`, { method: 'GET', params: {} })
+    request(`${baseUrl.tecEco}/CommonEnum/GetIndustryTypeEnums`, { method: 'GET' })
   );
 }
 
@@ -184,3 +184,6 @@ export const getTechnicalEconomyEnums= () => {
     request(`${baseUrl.tecEco1}/System/GetTechnicalEconomyEnums`, { method: 'POST', data: null })
   )
 }
+
+
+
