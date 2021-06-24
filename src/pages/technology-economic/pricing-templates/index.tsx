@@ -143,7 +143,12 @@ const PricingTemplates: React.FC = () => {
       ...tableSelectRows[0],
     });
   };
-
+  const engineeringCatalog = () => {
+    history.push(`/technology-economic/project-list`);
+  };
+  const commonRates = () => {
+    history.push(`/technology-economic/common-rate`);
+  };
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -172,11 +177,11 @@ const PricingTemplates: React.FC = () => {
             </Button>
           </Popconfirm>
         )}
-        <Button className="mr7" onClick={() => editEvent()}>
+        <Button className="mr7" onClick={() => engineeringCatalog()}>
           <FileSearchOutlined />
           工程量目录
         </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
+        <Button className="mr7" onClick={() => commonRates()}>
           <FileSearchOutlined />
           常用费率
         </Button>
