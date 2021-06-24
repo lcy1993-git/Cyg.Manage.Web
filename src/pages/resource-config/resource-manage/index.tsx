@@ -11,12 +11,25 @@ import ElectricalEquipment from '../electrical-equipment';
 import CableDesign from '../cable-design';
 import OverheadDesign from '../overhead-design';
 import LineStressSag from '../line-stress-sag';
+import { useMount, useUnmount } from 'ahooks';
+import { useLayoutStore } from '@/layouts/context';
 
 const { TabPane } = Tabs;
 
 const ResourceManage: React.FC = () => {
   const libId = qs.parse(window.location.href.split('?')[1]).libId as string;
   const libName = qs.parse(window.location.href.split('?')[1]).libName as string;
+
+  const { setResourceManageFlag } = useLayoutStore();
+
+  useMount(() => {
+    setResourceManageFlag?.(true)
+  })
+
+  useUnmount(() => {
+    setResourceManageFlag?.(false)
+  })
+
 
   return (
     <PageCommonWrap noPadding={true}>
