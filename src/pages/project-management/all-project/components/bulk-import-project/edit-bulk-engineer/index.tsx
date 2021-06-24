@@ -32,9 +32,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
 
   const [provinceValue, setProvinceValue] = useState<any[]>([]);
   const [libId, setLibId] = useState<string>('');
-  const [inventoryOverviewId, setInventoryOverviewId] = useState<string>('');
-  const [warehouseId, setWarehouseId] = useState<string>('');
-  const [company, setCompany] = useState<string>('');
+  const [inventoryOverviewId, setInventoryOverviewId] = useState<string | undefined>('');
+  const [warehouseId, setWarehouseId] = useState<string | undefined>('');
+  const [company, setCompany] = useState<string | undefined>('');
 
   const [form] = Form.useForm();
   const { engineerInfo, finishEvent } = props;
@@ -172,7 +172,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         value: item.text,
       };
     });
-    setCompany('');
+
+    setCompany(undefined);
+    setWarehouseId(undefined);
     setAreaChange(true);
     setWarehouseSelectData(handleWarehouseSelectData);
     setCompanySelectData(handleCompanySelectData);
@@ -195,7 +197,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         })
       : [{ label: '无', value: 'none' }];
     setLibChange(true);
-    setInventoryOverviewId('');
+    setInventoryOverviewId(undefined);
     setInventoryOverviewSelectData(handleInventoryOverviewSelectData);
   };
 
