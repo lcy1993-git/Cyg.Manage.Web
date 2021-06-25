@@ -546,12 +546,15 @@ const relocateMap = (
       });
   });
 
-  if (features.length > 0) {
-    source.addFeatures(features);
-    extent = source.getExtent();
-    view.fit(extent, map!.getSize());
-    setView(view);
-  }
+  if (features.length > 0) {
+        source.addFeatures(features);
+        extent = source.getExtent();
+        let dx = extent[2] - extent[0];
+        let dy = extent[3] - extent[1];
+        let extent_ = [extent[0]*(1-dx/extent[0]/10), extent[1]*(1-dy/extent[1]/10), extent[2]*(1+dx/extent[2]/10), extent[3]*(1+dy/extent[3]/10)];
+        view.fit(extent_, map!.getSize());
+        setView(view);
+      }
 };
 
 // 清楚所有图层组中的数据

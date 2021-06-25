@@ -1,4 +1,5 @@
-import { Modal, Form, Select, Input } from 'antd';
+import { Modal, Form, Select, Button } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons'
 import { useRequest, useMo, useMount } from 'ahooks';
 import UrlSelect from '@/components/url-select';
 import EnumSelect from '@/components/enum-select';
@@ -57,13 +58,33 @@ const FilterModal: React.FC<Props> = ({
     });
   };
 
+  const onReset= () => {
+    form.setFieldsValue({
+      statuss: undefined,
+      pCategory: undefined,
+      constructType: undefined,
+      nature: undefined,
+      identityType: undefined,
+      category: undefined,
+      stage: undefined,
+      kvLevel: undefined,
+      sourceType: undefined,
+      comment: undefined
+    })
+  }
+
+  const footer = [
+    <Button style={{width: 68}} onClick={onReset}><ReloadOutlined />重置</Button>,
+    <Button style={{width: 68}} onClick={sureEvent}type="primary">确定</Button>,
+  ]
   return (
     <Modal
       title="条件筛选"
-      onOk={sureEvent}
       visible={visible}
       onCancel={onCancel ?? (() => onChange(false))}
+      cancelText="重置"
       width={827}
+      footer={footer}
     >
       <Form form={form}>
         <div className={styles.filterModalWrap}>

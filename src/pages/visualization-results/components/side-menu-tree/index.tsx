@@ -19,6 +19,7 @@ import FilterModal from '../filter-modal';
 import ResultModal from '../result-modal';
 import MaterialModal from '../material-modal';
 import SidePopup from '../side-popup';
+import ToolTipButton from './components/TooltipButton';
 import { useContainer } from '../../result-page/mobx-store';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { observer } from 'mobx-react-lite';
@@ -84,7 +85,7 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
   };
 }
 
-type keyType =
+type KeyType =
   | React.Key[]
   | {
     checked: React.Key[];
@@ -108,7 +109,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // Tree State
   const [selectArrayStuck, setSelectArrayStuck] = useState<string[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
-  const [checkedKeys, setCheckedKeys] = useState<keyType>();
+  const [checkedKeys, setCheckedKeys] = useState<KeyType>([]);
   const [projectIdList, setProjectIdList] = useState<ProjectList[]>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
@@ -304,26 +305,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(expandedKeysValue);
   };
 
-  // const clearCheckAll = () => {
-  //   setIndeterminate(false);
-  //   // setAllCheck(false);
-  // };
-
-  // const getAllKey = () => {
-  //   const keys = new Array<string>();
-  //   const dfs = (v: TreeNodeType) => {
-  //     keys.push(v.key);
-  //     v.children?.forEach((item) => {
-  //       dfs(item);
-  //     });
-  //   };
-  //   treeData.forEach((v) => {
-  //     dfs(v);
-  //   });
-
-  //   return keys;
-  // };
-
   const getAllProjectNodes = () => {
     const nodes = new Array<TreeNodeType>();
     const dfs = (v: TreeNodeType) => {
@@ -362,7 +343,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
      halfCheckedKeys: []
      node: {title: "全选", id: "-1000", key: "-1", children: Array(2), expanded: true, …}     
    */
-  const onCheck = (checked: keyType, info: any) => {
+  const onCheck = (checked: KeyType, info: any) => {
     let temp = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
 
     if (allProjectKey.length > temp.length) {
@@ -617,31 +598,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           <Button onClick={() => setMaterialModalVisible(true)}><img className={styles.svg} src={materiaSvg} />材料统计</Button>
         </div>
         <div className={styles.row}>
-          <Tooltip placement="top" title={(Array.isArray(checkedKeys) && checkedKeys?.length === 1) ? "" : "多选状态下不可操作"}>
-            <div className={styles.buttonWrap}>
-              <div className={`${(Array.isArray(checkedKeys) && checkedKeys?.length === 1) ? "" : styles.redTip}`}>?</div>
-              <Button
-                disabled={!(Array.isArray(checkedKeys) && checkedKeys?.length === 1)}
-                onClick={() => setResultVisibel(true)}
-              >
-                <img className={styles.svg} src={achievementSvg} />成果管理
-              </Button>
-            </div>
-
-          </Tooltip>
-          <Tooltip placement="top" title={(Array.isArray(checkedKeys) && checkedKeys?.length === 1) ? "" : "多选状态下不可操作"}>
-          <div className={styles.buttonWrap}>
-              <div className={`${(Array.isArray(checkedKeys) && checkedKeys?.length === 1) ? "" : styles.redTip}`}>?</div>
-              <Button
-              disabled={!(Array.isArray(checkedKeys) && checkedKeys?.length === 1)}
-              onClick={() => setCommentModalVisible(true)}
-            >
-
-              <img className={styles.svg} src={messageSvg} />审阅消息
-            </Button>
-            </div>
-
-          </Tooltip>
+          <ToolTipButton buttonName="成果管理" onClick={() => setResultVisibel(true)} checkedKeys={projectIdList} svg={achievementSvg} />
+          <ToolTipButton buttonName="审阅消息" onClick={() => setCommentModalVisible(true)} checkedKeys={projectIdList} svg={messageSvg} />
         </div>
       </div>
       <div className={styles.controlLayers}>
