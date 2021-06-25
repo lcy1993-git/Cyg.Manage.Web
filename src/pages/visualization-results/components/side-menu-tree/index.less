@@ -106,6 +106,25 @@
     .row {
       display: inline-flex;
       justify-content: space-around;
+      .buttonWrap {
+        position: relative;
+        .redTip {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background-color: red;
+          right: 1px;
+          top: 1px;
+          border-radius: 5px;
+          font-size: 2px;
+          color: #fff;
+          line-height: 10px;
+          text-align: center;
+          z-index: 999;
+
+        }
+      }
+
       .svg {
         width: 16px;
         height: 16px;
