@@ -88,6 +88,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           areaId={areaId}
           company={company}
           projectInfo={projectInfo}
+          form={form}
         />
       </Form>
     </Modal>

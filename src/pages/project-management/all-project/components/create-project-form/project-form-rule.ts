@@ -4,8 +4,8 @@ export default {
   name: [
     { required: true, message: '项目名称不能为空' },
     {
-      pattern: /^[^\\^/:*?？！!@￥"<>|;'、=]+$/,
-      message: '项目名不能包含/:*?"<>|等字符',
+      pattern: /^[^\\^/:*?？！!@￥"<>|;'、=\^\s]+$/,
+      message: '项目名不能包含/:*?"<>|空格等字符',
     },
     {
       max: 64,
