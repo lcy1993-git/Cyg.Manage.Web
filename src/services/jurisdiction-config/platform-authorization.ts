@@ -15,6 +15,8 @@ interface AuthorizationItemParams {
 
   //备注
   remark: string;
+
+  modules: any[];
 }
 
 interface ItemDetailData extends AuthorizationItemParams {
@@ -73,7 +75,7 @@ export const updateAuthorizationItemStatus = (id: string) => {
 };
 
 // 获取功能模块列表的数据
-export const getAuthorizationTreeList = (id: string): Promise<TreeDataItem[]> => {
+export const getAuthorizationTreeList = (id?: string): Promise<TreeDataItem[]> => {
   return cyRequest<TreeDataItem[]>(() =>
     request(`${baseUrl.project}/AuthTemplate/GetModules`, { method: 'GET', params: { id } }),
   );

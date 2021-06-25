@@ -111,6 +111,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                     areaId={areaId}
                     company={company}
                     field={field}
+                    form={form}
                   />
                 </TabPane>
               ))}

@@ -101,7 +101,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       </CyFormItem>
       {(checkedValue === '2' || checkedValue === '4') && (
         <>
-          {dataSourceType === 2 ? (
+          {dataSourceType === 2 || dataSourceType === 1 ? (
             <CyFormItem label="勘察" name="surveyUser" required>
               <TreeSelect
                 key="surveyUser"
