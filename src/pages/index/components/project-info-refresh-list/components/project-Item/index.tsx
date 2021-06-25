@@ -5,31 +5,36 @@ import { useLayoutStore } from '@/layouts/context';
 export interface ProjectItemProps {
   name: string;
   id: string;
-  content: string;
+  //content: string;
   date: string;
+  operator: string;
+  operationCategory: string;
 }
 
-const ProjectItem: FC<ProjectItemProps> = ({ content, name, id, date }) => {
-  const { setAllProjectSearchProjectId: setAllProjectSearchProjectId } = useLayoutStore();
+const ProjectItem: FC<ProjectItemProps> = ({ operator, name, id, date, operationCategory }) => {
+  const { setAllProjectSearchProjectId } = useLayoutStore();
 
   const onClickProject = () => {
     // setAllProjectSearchProjectId(name);
-    setAllProjectSearchProjectId(id);
+    setAllProjectSearchProjectId?.(id);
   };
-
-  const ref = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
 
   /**
    * count表示是可视条数是多少
    *
    */
-
+  const handle0perator = (propName: string) => {
+    if(propName && propName.length > 6) {
+      const newOperator = propName.substring(0,6);
+      return `${newOperator}...`;
+    }
+    return propName
+  }
   return (
-    <div ref={ref} className={styles.projectItem}>
-      <div ref={contentRef} className={styles.content}>
-        <span>{content} </span>
-        &nbsp;
+    <div className={styles.projectItem}>
+      <div className={styles.operator}>{handle0perator(operator)}</div>
+      <div className={styles.operationCategory}>{operationCategory}</div>
+      <div className={styles.projectName}>
         <Link
           to={`/project-management/all-project`}
           className={styles.name}
