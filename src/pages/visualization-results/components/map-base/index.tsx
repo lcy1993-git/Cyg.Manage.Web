@@ -28,10 +28,7 @@ import { BaseMapProps } from '../../utils/init';
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
 import styles from './index.less';
 import MapDisplay from '../map-display';
-import Timeline from '../timeline';
 import SideMenuTree from '../side-menu-tree';
-import ListMenu from '../list-menu';
-import classnames from 'classnames';
 
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
@@ -51,15 +48,12 @@ const BaseMap = observer((props: BaseMapProps) => {
     checkedProjectIdList: projects,
     filterCondition,
     visibleLeftSidebar,
-    normalClickDate,
     positionMap,
     observeTrack,
-    confessionTrack,
-    checkedProjectDateList,
     startDate,
     endDate
   } = vState;
-  console.log(checkedProjectDateList);
+  console.log(projects, "mapbase");
   
   const { kvLevel } = filterCondition;
 
