@@ -50,7 +50,7 @@ const ResourceLib: React.FC = () => {
   const [status, setStatus] = useState<string>('0');
 
   const [libId, setLibId] = useState<string>('');
-  const [currentManageId, setCurrentManageId] = useState<string>(''); //当前管理 模块的资源库Id
+  const [currentManageId, setCurrentManageId] = useState<string>(window.localStorage.manageId); //当前管理 模块的资源库Id
 
   const { data: keyData } = useRequest(() => getUploadUrl());
 
@@ -60,6 +60,7 @@ const ResourceLib: React.FC = () => {
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
   });
+  console.log(currentManageId);
 
   const { setResourceManageFlag: setResourceManageFlag, resourceManageFlag } = useLayoutStore();
 
@@ -114,6 +115,7 @@ const ResourceLib: React.FC = () => {
 
   const columns = useMemo(() => {
     if (!resourceManageFlag) {
+      setCurrentManageId('');
       return [
         {
           dataIndex: 'id',
@@ -171,15 +173,16 @@ const ResourceLib: React.FC = () => {
           title: '操作',
           width: 100,
           render: (text: any, record: any) => {
+            const storage = window.localStorage;
             return (
               <span
                 className="canClick"
                 onClick={() => {
                   setCurrentManageId(record.id);
+                  storage.setItem('manageId', record.id);
                   history.push({
                     pathname: `/resource-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
                   });
-                  //refresh();
                 }}
               >
                 <u>管理</u>
@@ -248,7 +251,7 @@ const ResourceLib: React.FC = () => {
         render: (text: any, record: any) => {
           return (
             <span
-              // className="canClick"
+              className="canClick"
               onClick={() => message.error('当前资源库已打开"模块管理"界面，请关闭后重试')}
             >
               <u>管理</u>

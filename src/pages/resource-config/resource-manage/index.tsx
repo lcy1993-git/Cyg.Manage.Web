@@ -23,13 +23,13 @@ const ResourceManage: React.FC = () => {
   const { setResourceManageFlag } = useLayoutStore();
 
   useMount(() => {
-    setResourceManageFlag?.(true)
-  })
+    setResourceManageFlag?.(true);
+  });
 
   useUnmount(() => {
-    setResourceManageFlag?.(false)
-  })
-
+    setResourceManageFlag?.(false);
+    window.localStorage.setItem('manageId', '');
+  });
 
   return (
     <PageCommonWrap noPadding={true}>

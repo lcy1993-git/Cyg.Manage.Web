@@ -4,7 +4,7 @@ import { useGetProjectEnum } from '@/utils/hooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import Rule from './project-form-rule';
 
@@ -15,12 +15,15 @@ interface CreateProjectFormProps {
   companyName?: string;
   status?: number;
   projectInfo?: any;
+  form?: any;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
-  const { field = {}, areaId, company, companyName, status, projectInfo } = props;
+  const { field = {}, areaId, company, companyName, status, projectInfo, form } = props;
   const [startDate, setStartDate] = useState(moment(projectInfo?.startTime) ?? null);
   const [dataSourceType, setDataSourceType] = useState<number>();
+  const [disRangeValue, setDisRangeValue] = useState<number>();
+  const [pileRangeValue, setPileRangeValue] = useState<number>();
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
@@ -29,6 +32,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const disableDate = (current: any) => {
     return current < moment('2010-01-01') || current > moment('2051-01-01');
   };
+
+  useEffect(() => {
+    setDataSourceType(projectInfo?.dataSourceType);
+  }, [JSON.stringify(projectInfo)]);
 
   const {
     projectCategory,
@@ -208,13 +215,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  console.log(value);
                   if (
                     new Date(value).getTime() > new Date(startDate).getTime() ||
                     !value ||
                     !getFieldValue('startTime')
                   ) {
+                    console.log(1);
                     if (new Date(value).getTime() > new Date(getFieldValue('endTime')).getTime()) {
+                      console.log(2);
                       return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                     }
                     return Promise.resolve();
@@ -560,6 +568,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 titleKey="text"
                 placeholder="请选择"
                 onChange={(value: any) => {
+                  if (value === 2) {
+                    form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
+                  }
                   setDataSourceType(value);
                 }}
               />
@@ -592,6 +603,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 disabled
                 placeholder="“无需现场数据”项目，免设置此条目"
                 style={{ width: '100%' }}
+                value={disRangeValue}
               />
             </CyFormItem>
           ) : (
@@ -610,11 +622,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
                 () => ({
                   validator(_, value) {
-                    if (value <= 99999 && value > 0) {
+                    if (value <= 99999 && value > -1) {
                       return Promise.resolve();
                     }
-                    if (value === 0 || value > 99999) {
-                      return Promise.reject('请填写1~99999以内的整数');
+                    if (value > 99999) {
+                      return Promise.reject('请填写0~99999以内的整数');
                     }
                     return Promise.resolve();
                   },
@@ -625,7 +637,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
               ]}
             >
-              <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
+              <InputNumber
+                placeholder="请输入交底范围"
+                style={{ width: '100%' }}
+                value={disRangeValue}
+              />
             </CyFormItem>
           )}
         </div>
@@ -641,6 +657,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               align="right"
             >
               <InputNumber
+                value={pileRangeValue}
                 disabled
                 placeholder="“无需现场数据”项目，免设置此条目"
                 style={{ width: '100%' }}
@@ -662,10 +679,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
                 () => ({
                   validator(_, value) {
-                    if (value <= 99999 && value > 0) {
+                    if (value <= 99999 && value > -1) {
                       return Promise.resolve();
                     }
-                    if (value === 0 || value > 99999) {
+                    if (value > 99999) {
                       return Promise.reject('请填写1~99999以内的整数');
                     }
                     return Promise.resolve();

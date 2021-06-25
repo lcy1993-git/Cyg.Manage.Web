@@ -28,7 +28,7 @@ const ToolTipButton: React.FC<Props> = ({
         onClick={() => {
           if(Array.isArray(checkedKeys) && checkedKeys?.length === 1) {
             onClick()
-          }else{
+          }else if(Array.isArray(checkedKeys) && checkedKeys?.length === 0){
             message.error('当前未选择项目')
           }
         }}
