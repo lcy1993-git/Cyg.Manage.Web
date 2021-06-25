@@ -100,8 +100,10 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
               name={item.projectName}
               key={`${item.date}${idx}`}
               id={item.projectId}
-              content={`${item.operator}${item.operationCategory}`}
-              date={moment(item.date).format('YYYY-MM-DD HH:mm:ss')}
+              //content={`${item.operator}${item.operationCategory}`}
+              operator={item.operator}
+              operationCategory={item.operationCategory}
+              date={moment(item.date).format('MM-DD HH:mm')}
             />
           ))}
         </div>
