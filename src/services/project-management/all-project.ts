@@ -461,20 +461,11 @@ export const revokeKnot = (projectIds: string[]) => {
 };
 
 // 结项通过
-export const auditKnot = (projectIds: string[]) => {
+export const auditKnot = (isPass: boolean, projectIds: string[]) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/AuditKnot`, {
       method: 'POST',
-      data: { isPass: 'true', projectIds },
-    }),
-  );
-};
-// 结项退回
-export const noAuditKnot = (projectIds: string[]) => {
-  return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/AuditKnot`, {
-      method: 'POST',
-      data: { isPass: 'false', projectIds },
+      data: { isPass, projectIds },
     }),
   );
 };

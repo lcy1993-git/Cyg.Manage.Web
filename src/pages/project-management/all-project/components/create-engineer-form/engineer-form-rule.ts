@@ -3,7 +3,7 @@ export default {
   name: [
     { required: true, message: '工程名称不能为空' },
     {
-      pattern: /^[^\\^/:*?？！!@￥"<>|;'、=\^\s]+$/,
+      pattern: /^[^\\^/:*?？！!@￥"<>|;；：'‘’“”、=\^\s]+$/,
       message: '工程名不能包含/:*?"<>|空格等字符',
     },
     {
