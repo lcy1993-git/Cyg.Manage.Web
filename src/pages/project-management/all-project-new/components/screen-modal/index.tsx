@@ -4,7 +4,7 @@ interface ScreenModalProps {
     
 }
 
-const ScreenModal:React.FC = () => {
+const ScreenModal:React.FC<ScreenModalProps> = () => {
 
 }
 
