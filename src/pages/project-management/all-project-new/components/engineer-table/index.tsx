@@ -40,6 +40,7 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
   delayRefresh?: () => void;
+  getStatisticsData?: (value: any) => void;
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
