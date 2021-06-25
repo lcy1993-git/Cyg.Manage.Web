@@ -155,6 +155,10 @@ const AllProject: React.FC = () => {
     const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
   };
 
+  const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
+    setTableSelectData(checkedValue);
+  };
+
   const addEngineerMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('all-project-project-approval') && (
@@ -298,6 +302,7 @@ const AllProject: React.FC = () => {
                   onSearch={() => publicSearch()}
                 />
               </TableSearch>
+              <Button className="mr7" onClick={() => setScreenModalVisible(true)}>重置</Button>
               <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
             </div>
             <div className={styles.allProjectFunctionButtonContent}>
@@ -371,6 +376,7 @@ const AllProject: React.FC = () => {
               getStatisticsData={(value: any) => setStatisticsData(value)}
               ref={tableRef}
               extractParams={{ keyWord, ...searchParams }}
+              onSelect={tableSelectEvent}
             />
           </div>
         </div>

@@ -3,12 +3,15 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tooltip } from 'antd';
 import { useBoolean } from 'ahooks';
+import { TableContext } from '../table-store';
 
 import styles from './index.less';
 import moment from 'moment';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import uuid from 'node-uuid';
 import EmptyTip from '@/components/empty-tip';
+import { useContext } from 'react';
+import { useEffect } from 'react';
 
 export interface AddProjectValue {
   engineerId: string;
@@ -47,6 +50,8 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   const [checkedList, setCheckedList] = React.useState<CheckboxValueType[]>([]);
   const [indeterminate, setIndeterminate] = React.useState(false);
   const [checkAll, setCheckAll] = React.useState(false);
+
+  const { tableSelectData } = useContext(TableContext);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -197,6 +202,13 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
       </div>
     );
   });
+
+  useEffect(() => {
+    if (tableSelectData.length === 0) {
+      setCheckedList([]);
+      setCheckAll(false);
+    }
+  }, [JSON.stringify(tableSelectData), projectInfo]);
 
   return (
     <div className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}>

@@ -23,6 +23,7 @@ import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { Dropdown } from 'antd';
 import { BarsOutlined } from '@ant-design/icons';
+import { TableContext } from './table-store';
 
 const colorMap = {
   立项: 'green',
@@ -376,7 +377,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const addProjectEvent = (data: any) => {};
 
-  const tableItemSelectEvent = (data: any) => {};
+  const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
+    // 监测现在数组是否含有此id的数据
+    const hasData = tableSelectData.findIndex(
+      (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id,
+    );
+    const copyData: TableItemCheckedInfo[] = JSON.parse(JSON.stringify(tableSelectData));
+    if (hasData > -1) {
+      copyData.splice(hasData, 1, projectSelectInfo);
+      setTableSelectData(copyData);
+      onSelect?.(copyData);
+    } else {
+      // 代表没有数据，那就直接插进去
+      setTableSelectData([...tableSelectData, projectSelectInfo]);
+      onSelect?.([...tableSelectData, projectSelectInfo]);
+    }
+  };
 
   const engineerTableElement = tableResultData?.items.map((item: any) => {
     return (
@@ -448,53 +464,60 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const scrollBarRenderView = (params: any) => {
-    const {style,...rest} = params;
+    const { style, ...rest } = params;
     const viewStyle = {
       backgroundColor: `rgba(0, 0, 0, 0.2)`,
-      borderRadius: "6px",
-      cursor: "pointer",
-      zIndex: 100
+      borderRadius: '6px',
+      cursor: 'pointer',
+      zIndex: 100,
     };
-    return (
-      <div style={{ ...style,...viewStyle }} {...rest} />
-    );
-  }
+    return <div style={{ ...style, ...viewStyle }} {...rest} />;
+  };
   return (
-    <div className={styles.engineerTable}>
-      <div className={styles.engineerTableContent} ref={tableContentRef}>
-        <ScrollView onUpdate={scrollEvent} renderThumbHorizontal={scrollBarRenderView} renderThumbVertical={scrollBarRenderView}>
-          <Spin spinning={loading}>
-            {tableResultData.items.length > 0 && engineerTableElement}
-            {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}
-          </Spin>
-        </ScrollView>
-      </div>
-      <div className={styles.engineerTablePaging}>
-        <div className={styles.engineerTablePagingLeft}>
-          <span>显示第</span>
-          <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
-          <span>到第</span>
-          <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
-          <span>条记录，总共</span>
-          <span className={styles.importantTip}>{tableResultData.items.length}</span>
-          <span>个工程，</span>
-          <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+    <TableContext.Provider value={{
+      tableSelectData,
+      setTableSelectData,
+    }}>
+      <div className={styles.engineerTable}>
+        <div className={styles.engineerTableContent} ref={tableContentRef}>
+          <ScrollView
+            onUpdate={scrollEvent}
+            renderThumbHorizontal={scrollBarRenderView}
+            renderThumbVertical={scrollBarRenderView}
+          >
+            <Spin spinning={loading}>
+              {tableResultData.items.length > 0 && engineerTableElement}
+              {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}
+            </Spin>
+          </ScrollView>
         </div>
-        <div className={styles.engineerTablePagingRight}>
-          <Pagination
-            pageSize={pageSize}
-            onChange={currentPageChange}
-            size="small"
-            total={tableResultData.total}
-            current={pageIndex}
-            // hideOnSinglePage={true}
-            showSizeChanger
-            showQuickJumper
-            onShowSizeChange={pageSizeChange}
-          />
+        <div className={styles.engineerTablePaging}>
+          <div className={styles.engineerTablePagingLeft}>
+            <span>显示第</span>
+            <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
+            <span>到第</span>
+            <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
+            <span>条记录，总共</span>
+            <span className={styles.importantTip}>{tableResultData.items.length}</span>
+            <span>个工程，</span>
+            <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+          </div>
+          <div className={styles.engineerTablePagingRight}>
+            <Pagination
+              pageSize={pageSize}
+              onChange={currentPageChange}
+              size="small"
+              total={tableResultData.total}
+              current={pageIndex}
+              // hideOnSinglePage={true}
+              showSizeChanger
+              showQuickJumper
+              onShowSizeChange={pageSizeChange}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </TableContext.Provider>
   );
 };
 

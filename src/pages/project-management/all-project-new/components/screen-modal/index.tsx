@@ -3,6 +3,8 @@ import { useControllableValue } from 'ahooks';
 
 import { Button, Modal, Form } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
+import CyFormItem from '@/components/cy-form-item';
+import { Input } from 'antd';
 
 interface ScreenModalProps {
   visible: boolean;
@@ -19,7 +21,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const resetEvent = () => {};
 
   const closeEvent = () => {
-    setState(false)
+    setState(false);
   };
 
   const {
@@ -50,7 +52,18 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       onCancel={() => closeEvent()}
     >
       <Form preserve={false}>
-
+        <div className="flex">
+          <div className="flex1">
+            <CyFormItem label="项目名称">
+              <Input placeholder="请输入项目名称" />
+            </CyFormItem>
+          </div>
+          <div className="flex1">
+            <CyFormItem label="项目起止日期">
+              
+            </CyFormItem>
+          </div>
+        </div>
       </Form>
     </Modal>
   );
