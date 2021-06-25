@@ -52,7 +52,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
-  const tableContentRef = useRef<HTMLDivElement>(null);
+  const scrollbar = useRef<any>(null);
+  const tableContentRef = useRef<HTMLDivElement>(null)
 
   const tableContentSize = useSize(tableContentRef);
 
@@ -430,9 +431,12 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageIndex: 1,
         pageSize,
       });
-      if (tableContentRef && tableContentRef.current) {
+      if (scrollbar && scrollbar.current) {
         //@ts-ignore
-        tableContentRef.current.scrollTop = 0;
+        scrollbar.current.view.scroll({
+          top: 0,
+          behavior: 'smooth',
+        });
       }
       setTableSelectData([]);
       onSelect?.([]);
@@ -444,6 +448,12 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageIndex: 1,
         pageSize,
       });
+      if (scrollbar && scrollbar.current) {
+        scrollbar.current.view.scroll({
+          top: 0,
+          behavior: 'smooth',
+        });
+      }
       setTableSelectData([]);
       onSelect?.([]);
     },
@@ -481,6 +491,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       <div className={styles.engineerTable}>
         <div className={styles.engineerTableContent} ref={tableContentRef}>
           <ScrollView
+            ref={scrollbar}
             onUpdate={scrollEvent}
             renderThumbHorizontal={scrollBarRenderView}
             renderThumbVertical={scrollBarRenderView}

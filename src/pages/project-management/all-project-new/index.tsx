@@ -19,8 +19,18 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { TableItemCheckedInfo } from './components/engineer-table-item';
 import { Popconfirm } from 'antd';
 import { message } from 'antd';
-import { deleteProject } from '@/services/project-management/all-project';
+import {
+  canEditArrange,
+  checkCanArrange,
+  deleteProject,
+  getProjectInfo,
+} from '@/services/project-management/all-project';
 import TableExportButton from '@/components/table-export-button';
+import UploadAddProjectModal from './components/upload-batch-modal';
+import ArrangeModal from './components/arrange-modal';
+import EditArrangeModal from './components/edit-arrange-modal';
+import EditExternalArrangeForm from './components/edit-external-modal';
+import ExternalArrangeForm from './components/external-arrange-modal';
 
 const { Search } = Input;
 
@@ -61,11 +71,29 @@ const AllProject: React.FC = () => {
     beShared: 0,
   });
 
+  const [currentProjectId, setCurrentProjectId] = useState<string>('');
+  const [projectName, setProjectName] = useState<string>('');
+
+  // 安排的时候需要用到
+  const [currentArrangeProjectType, setCurrentArrangeProjectType] = useState<string>('2');
+  const [currentArrangeProjectIsArrange, setCurrentArrangeProjectIsArrange] = useState<string>('');
+  const [selectProjectIds, setSelectProjectIds] = useState<string[]>([]);
+  const [dataSourceType, setDataSourceType] = useState<number>();
+
+  // 编辑安排的时候需要用到的数据
+  const [editCurrentAllotCompanyId, setEditCurrentAllotCompanyId] = useState<string>('');
+  const [ifCanEdit, setIfCanEdit] = useState<any>([]);
+
   // 被勾选中的数据
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
   const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
+  const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
   const [screenModalVisible, setScreenModalVisible] = useState(false);
+  const [arrangeModalVisible, setArrangeModalVisible] = useState(false);
+  const [editArrangeModalVisible, setEditArrangeModalVisible] = useState<boolean>(false);
+  const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
+  const [externalArrangeModal, setExternalArrangeModal] = useState<boolean>(false);
   const [libVisible, setLibVisible] = useState(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
@@ -93,6 +121,13 @@ const AllProject: React.FC = () => {
     }
   };
 
+  const delayRefresh = async () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      await tableRef.current.delayRefresh();
+    }
+  };
+
   const publicSearch = () => {};
 
   const handleStatisticsData = (statisticsDataItem?: number) => {
@@ -111,12 +146,16 @@ const AllProject: React.FC = () => {
       statisticalCategory: statisticsType,
       keyWord,
       ...searchParams,
-    })
+    });
   };
 
-  const addEngineerEvent = () => {};
+  const addEngineerEvent = () => {
+    setAddEngineerModalVisible(true);
+  };
 
-  const batchAddEngineerEvent = () => {};
+  const batchAddEngineerEvent = () => {
+    setBatchAddEngineerModalVisible(true);
+  };
 
   const sureDeleteProject = async () => {
     const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
@@ -130,9 +169,89 @@ const AllProject: React.FC = () => {
     refresh();
   };
 
-  const arrangeEvent = async () => {};
+  const arrangeEvent = async () => {
+    // setArrangeModalVisible(true);
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat(1);
+    if (projectIds.length === 0) {
+      message.error('请至少选择一个项目');
+      return;
+    }
 
-  const editArrangeEvent = async () => {};
+    await checkCanArrange(projectIds);
+
+    // 如果只有一个项目需要安排的时候，需要去检查他是不是被安排了部组
+    if (projectIds.length === 1) {
+      const thisProjectId = projectIds[0];
+      const projectInfo = await getProjectInfo(thisProjectId);
+      setDataSourceType(Number(projectInfo.dataSourceType));
+      // console.log(projectInfo);
+
+      const { allots = [] } = projectInfo ?? {};
+      if (allots.length > 0) {
+        const latestAllot = allots[allots?.length - 1];
+        const { allotType, allotCompanyGroup } = latestAllot;
+        if (allotType) {
+          setCurrentArrangeProjectType(String(allotType));
+        } else {
+          setCurrentArrangeProjectType('2');
+        }
+        if (allotCompanyGroup) {
+          setCurrentArrangeProjectIsArrange(allotCompanyGroup);
+        } else {
+          setCurrentArrangeProjectIsArrange('');
+        }
+      } else {
+        setCurrentArrangeProjectType('2');
+        setCurrentArrangeProjectIsArrange('');
+      }
+    }
+
+    setSelectProjectIds(projectIds);
+    setArrangeModalVisible(true);
+  };
+
+  const editArrangeEvent = async () => {
+    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
+
+    if (projectIds && projectIds.length === 0) {
+      message.error('请选择修改安排的项目！');
+      return;
+    }
+    if (tableSelectData[0]?.projectInfo?.status[0]?.status === 7) {
+      message.error('当前处于设计完成，不可修改安排！');
+      return;
+    }
+    if (
+      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
+      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
+    ) {
+      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+
+      setEditExternalArrangeModal(true);
+      return;
+    }
+    if (
+      tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+      tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
+    ) {
+      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+      setProjectName(tableSelectData[0]?.projectInfo?.name[0]);
+
+      setExternalArrangeModal(true);
+      return;
+    }
+    const resData = await canEditArrange(projectIds);
+
+    const { allotCompanyGroup = '' } = resData;
+
+    setIfCanEdit(resData);
+
+    setEditCurrentAllotCompanyId(allotCompanyGroup);
+    setSelectProjectIds(projectIds);
+    setEditArrangeModalVisible(true);
+  };
 
   const revokeAllotEvent = async () => {};
 
@@ -145,6 +264,14 @@ const AllProject: React.FC = () => {
   const revokeKnotEvent = () => {};
 
   const auditKnotEvent = () => {};
+
+  const searchEvent = () => {
+    searchByParams({
+      statisticalCategory,
+      keyWord,
+      ...searchParams,
+    });
+  };
 
   // 导出坐标权限
   const exportPowerEvent = () => {
@@ -299,10 +426,12 @@ const AllProject: React.FC = () => {
                   enterButton
                   value={keyWord}
                   onChange={(e) => setKeyWord(e.target.value)}
-                  onSearch={() => publicSearch()}
+                  onSearch={() => searchEvent()}
                 />
               </TableSearch>
-              <Button className="mr7" onClick={() => setScreenModalVisible(true)}>重置</Button>
+              <Button className="mr7" onClick={() => setScreenModalVisible(true)}>
+                重置
+              </Button>
               <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
             </div>
             <div className={styles.allProjectFunctionButtonContent}>
@@ -385,7 +514,59 @@ const AllProject: React.FC = () => {
         <ScreenModal visible={screenModalVisible} onChange={setScreenModalVisible} />
       )}
       {addEngineerModalVisible && (
-        <AddEngineerModal visible={addEngineerModalVisible} onChange={setAddEngineerModalVisible} />
+        <AddEngineerModal
+          finishEvent={searchEvent}
+          visible={addEngineerModalVisible}
+          onChange={setAddEngineerModalVisible}
+        />
+      )}
+
+      <UploadAddProjectModal
+        visible={batchAddEngineerModalVisible}
+        onChange={setBatchAddEngineerModalVisible}
+        refreshEvent={searchEvent}
+      />
+
+      {arrangeModalVisible && (
+        <ArrangeModal
+          finishEvent={refresh}
+          visible={arrangeModalVisible}
+          onChange={setArrangeModalVisible}
+          defaultSelectType={currentArrangeProjectType}
+          allotCompanyId={currentArrangeProjectIsArrange}
+          projectIds={selectProjectIds}
+          dataSourceType={dataSourceType}
+        />
+      )}
+
+      {editArrangeModalVisible && (
+        <EditArrangeModal
+          allotCompanyId={editCurrentAllotCompanyId}
+          changeFinishEvent={refresh}
+          visible={editArrangeModalVisible}
+          onChange={setEditArrangeModalVisible}
+          projectIds={selectProjectIds}
+          canEdit={ifCanEdit}
+        />
+      )}
+
+      {editExternalArrangeModal && (
+        <EditExternalArrangeForm
+          projectId={currentProjectId}
+          visible={editExternalArrangeModal}
+          onChange={setEditExternalArrangeModal}
+          closeModalEvent={delayRefresh}
+        />
+      )}
+
+      {externalArrangeModal && (
+        <ExternalArrangeForm
+          visible={externalArrangeModal}
+          onChange={setExternalArrangeModal}
+          projectId={currentProjectId}
+          proName={projectName}
+          search={delayRefresh}
+        />
       )}
     </PageCommonWrap>
   );
