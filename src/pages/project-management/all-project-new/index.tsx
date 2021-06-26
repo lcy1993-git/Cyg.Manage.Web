@@ -26,6 +26,7 @@ import {
   deleteProject,
   getColumnsConfig,
   getProjectInfo,
+  revokeAllot,
   revokeKnot,
 } from '@/services/project-management/all-project';
 import TableExportButton from '@/components/table-export-button';
@@ -40,7 +41,7 @@ import ResourceLibraryManageModal from './components/resource-library-manage-mod
 import ExportPowerModal from './components/export-power-modal';
 import AuditKnotModal from './components/audit-knot-modal';
 import ColumnsConfigModal from './components/columns-config-modal';
-import { useRequest } from 'ahooks';
+import { useMount, useRequest } from 'ahooks';
 
 const { Search } = Input;
 
@@ -58,19 +59,26 @@ const AllProject: React.FC = () => {
   // 从列表返回的数据中获取 TODO设置search的参数
   const [searchParams, setSearchParams] = useState({
     category: [],
-    pCategory: [],
     stage: [],
     constructType: [],
     nature: [],
     kvLevel: [],
     status: [],
+    majorCategory: [],
+    proType: [],
+    reformAim: [],
+    classification: [],
+    attribute: [],
     sourceType: [],
     identityType: [],
-    logicRelation: 2,
-    designUser: '',
-    surveyUser: '',
     areaType: '-1',
     areaId: '',
+    dataSourceType: [],
+    logicRelation: 2,
+    startTime: '',
+    endTime: '',
+    designUser: '',
+    surveyUser: '',
   });
 
   const [statisticsData, setStatisticsData] = useState({
@@ -100,6 +108,12 @@ const AllProject: React.FC = () => {
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
   const [chooseColumns, setChooseColumns] = useState<string[]>([]);
 
+  const [defaultPersonInfo, setDefaultPersonInfo] = useState({
+    logicRelation: 2,
+    survey: '',
+    design: '',
+  });
+
   const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
   const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
   const [screenModalVisible, setScreenModalVisible] = useState(false);
@@ -113,31 +127,33 @@ const AllProject: React.FC = () => {
   const [exportPowerModalVisible, setExportPowerModalVisible] = useState<boolean>(false);
   const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false);
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false);
-
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const {
     setAllProjectSearchProjectId,
     setAllProjectSearchPerson,
     allProjectSearchPerson,
-    allProjectSearchProjectName,
+    allProjectSearchProjectId,
   } = useLayoutStore();
 
-  const {data: columnsData} = useRequest(() => getColumnsConfig(), {
+  const { data: columnsData } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
-      setChooseColumns(columnsData ? JSON.parse(columnsData) : [
-        "categoryText",
-        "kvLevelText",
-        "natureTexts",
-        "majorCategoryText",
-        "constructTypeText",
-        "batchText",
-        "stageText",
-        "exportCoordinate",
-        "surveyUser",
-        "designUser",
-        "identitys"
-      ]);
+      setChooseColumns(
+        columnsData
+          ? JSON.parse(columnsData)
+          : [
+            'categoryText',
+            'kvLevelText',
+            'natureTexts',
+            'majorCategoryText',
+            'constructTypeText',
+            'stageText',
+            'exportCoordinate',
+            'surveyUser',
+            'designUser',
+            'identitys',
+            ],
+      );
     },
   });
 
@@ -177,9 +193,9 @@ const AllProject: React.FC = () => {
   const statisticsClickEvent = (statisticsType: string) => {
     setStatisticalCategory(statisticsType);
     searchByParams({
+      ...searchParams,
       statisticalCategory: statisticsType,
       keyWord,
-      ...searchParams,
     });
   };
 
@@ -287,7 +303,17 @@ const AllProject: React.FC = () => {
     setEditArrangeModalVisible(true);
   };
 
-  const revokeAllotEvent = async () => {};
+  const revokeAllotEvent = async () => {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+
+    if (projectIds.length === 0) {
+      message.error('请至少选择一个项目');
+      return;
+    }
+    await revokeAllot(projectIds);
+    message.success('撤回安排成功');
+    refresh();
+  };
 
   const shareEvent = async () => {
     const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
@@ -353,9 +379,9 @@ const AllProject: React.FC = () => {
   const searchEvent = () => {
     // TODO
     searchByParams({
+      ...searchParams,
       statisticalCategory,
       keyWord,
-      ...searchParams,
     });
   };
 
@@ -445,31 +471,54 @@ const AllProject: React.FC = () => {
     </Menu>
   );
 
+  useMount(() => {
+    searchByParams({
+      ...searchParams,
+      keyWord,
+      statisticalCategory,
+    });
+  })
+
   useEffect(() => {
-    if (allProjectSearchProjectName) {
+    if (allProjectSearchProjectId) {
       // TODO 有projectName的时候设置projectName
       searchByParams({
+        ...searchParams,
+        projectId: allProjectSearchProjectId,
         keyWord,
         statisticalCategory,
-        ...searchParams,
       });
+      setAllProjectSearchProjectId?.("");
     }
     if (allProjectSearchPerson) {
+      setAllProjectSearchPerson?.("");
+
+      setDefaultPersonInfo({
+        survey: String(allProjectSearchPerson),
+        logicRelation: 1,
+        design: String(allProjectSearchPerson),
+      })
+
       // TODO 有人的时候设置人
       searchByParams({
+        ...searchParams,
         keyWord,
         statisticalCategory,
-        ...searchParams,
+        surveyUser: String(allProjectSearchPerson),
+        logicRelation: 1,
+        designUser: String(allProjectSearchPerson),
       });
     }
-    if (!allProjectSearchPerson && !allProjectSearchPerson) {
-      searchByParams({
-        keyWord,
-        statisticalCategory,
-        ...searchParams,
-      });
-    }
-  }, [allProjectSearchPerson, allProjectSearchProjectName]);
+  }, [allProjectSearchPerson, allProjectSearchProjectId]);
+
+  const configChangeEvent = (config: any) => {
+    setChooseColumns(config);
+  };
+
+  const screenClickEvent = (params: any) => {
+    setSearchParams({ ...params, keyWord, statisticalCategory });
+    searchByParams({ ...params, keyWord, statisticalCategory });
+  };
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -513,18 +562,15 @@ const AllProject: React.FC = () => {
           <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
           <div className={styles.allProjectSearch}>
             <div className={styles.allProjectSearchContent}>
-              <TableSearch className="mr22" label="项目名称" width="300px">
+              <TableSearch className="mr22" label="" width="300px">
                 <Search
-                  placeholder="请输入项目名称"
+                  placeholder="请输入工程/项目名称"
                   enterButton
                   value={keyWord}
                   onChange={(e) => setKeyWord(e.target.value)}
                   onSearch={() => searchEvent()}
                 />
               </TableSearch>
-              <Button className="mr7" onClick={() => setScreenModalVisible(true)}>
-                重置
-              </Button>
               <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
             </div>
             <div className={styles.allProjectFunctionButtonContent}>
@@ -575,7 +621,11 @@ const AllProject: React.FC = () => {
                       return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
                     }}
                     // TODO 待添加参数
-                    extraParams={{}}
+                    extraParams={{
+                      ...searchParams,
+                      keyWord,
+                      statisticalCategory,
+                    }}
                   />
                 </div>
               )}
@@ -601,21 +651,21 @@ const AllProject: React.FC = () => {
             <EngineerTable
               getStatisticsData={(value: any) => setStatisticsData(value)}
               ref={tableRef}
-              extractParams={{ keyWord, ...searchParams }}
+              extractParams={{ keyWord, statisticalCategory, ...searchParams }}
               onSelect={tableSelectEvent}
               columnsConfig={chooseColumns}
             />
           </div>
         </div>
       </div>
-      {screenModalVisible && (
-        <ScreenModal
-          visible={screenModalVisible}
-          onChange={setScreenModalVisible}
-          finishEvent={searchEvent}
-          searchParams={searchParams}
-        />
-      )}
+
+      <ScreenModal
+        visible={screenModalVisible}
+        onChange={setScreenModalVisible}
+        finishEvent={screenClickEvent}
+        defaultPersonInfo={defaultPersonInfo}
+      />
+
       {addEngineerModalVisible && (
         <AddEngineerModal
           finishEvent={searchEvent}
@@ -716,7 +766,7 @@ const AllProject: React.FC = () => {
           hasCheckColumns={chooseColumns}
           visible={chooseColumnsModal}
           onChange={setChooseColumnsModal}
-          finishEvent={refresh}
+          finishEvent={configChangeEvent}
         />
       )}
     </PageCommonWrap>

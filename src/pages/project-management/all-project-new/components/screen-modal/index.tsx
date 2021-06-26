@@ -4,7 +4,7 @@ import UrlSelect from '@/components/url-select';
 import { Button, Modal, Form, DatePicker, Select } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import CyFormItem from '@/components/cy-form-item';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 import AreaSelect from '@/components/area-select';
 import EnumSelect from '@/components/enum-select';
 import {
@@ -14,12 +14,13 @@ import {
 } from '@/services/project-management/all-project';
 import ChooseDesignAndSurvey from '@/pages/project-management/all-project/components/choose-design-and-survey';
 import styles from './index.less';
+import { useEffect } from 'react';
 
 interface ScreenModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: () => void;
-  searchParams?: any;
+  finishEvent?: (value: any) => void;
+  defaultPersonInfo: any;
 }
 
 const { RangePicker } = DatePicker;
@@ -27,32 +28,35 @@ const { RangePicker } = DatePicker;
 const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [icon, setIcon] = useState<string>('bottom');
+  const {
+    finishEvent,
+    defaultPersonInfo = { logicRelation: 2, design: '', survey: '' },
+  } = props;
 
-  const [category, setCategory] = useState<number[]>(); //项目分类
-  const [pCategory, setPCategory] = useState<number[]>(); //项目类别
-  const [stage, setStage] = useState<number[]>(); //项目阶段
-  const [constructType, setConstructType] = useState<number[]>(); //建设性质
-  const [nature, setNature] = useState<number[]>(); //项目性质
-  const [kvLevel, setKvLevel] = useState<number[]>(); //电压等级
-  const [status, setStatus] = useState<number[]>(); //状态
-  const [majorCategory, setMajorCategory] = useState<number[]>(); //专业类别
-  const [proType, setProType] = useState<number[]>(); //项目类型
-  const [reformAim, setReformAim] = useState<number[]>(); //建设改造目的
-  const [classification, setClassification] = useState<number[]>(); //项目类别
-  const [attribute, setAttribute] = useState<number[]>(); //项目属性
-  const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
-  const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
-  const [sourceType, setSourceType] = useState<number[]>(); //项目来源
-  const [identityType, setIdentityType] = useState<number[]>(); //项目身份
+  const [category, setCategory] = useState<number[]>([]); //项目分类
+  const [stage, setStage] = useState<number[]>([]); //项目阶段
+  const [constructType, setConstructType] = useState<number[]>([]); //建设性质
+  const [nature, setNature] = useState<number[]>([]); //项目性质
+  const [kvLevel, setKvLevel] = useState<number[]>([]); //电压等级
+  const [status, setStatus] = useState<number[]>([]); //状态
+  const [majorCategory, setMajorCategory] = useState<number[]>([]); //专业类别
+  const [proType, setProType] = useState<number[]>([]); //项目类型
+  const [reformAim, setReformAim] = useState<number[]>([]); //建设改造目的
+  const [classification, setClassification] = useState<number[]>([]); //项目类别
+  const [attribute, setAttribute] = useState<number[]>([]); //项目属性
+  // const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
+  // const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
+  const [sourceType, setSourceType] = useState<number[]>([]); //项目来源
+  const [identityType, setIdentityType] = useState<number[]>([]); //项目身份
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
-  const [dataSourceType, setDataSourceType] = useState<number[]>();
-  const [personInfo, setPersonInfo] = useState<any>({});
+  const [dataSourceType, setDataSourceType] = useState<number[]>([]);
+  const [personInfo, setPersonInfo] = useState<any>({ logicRelation: 2, design: '', survey: '' });
+  const [startTime, setStartTime] = useState<null | string>("");
+  const [endTime, setEndTime] = useState<null | string>("");
   const areaRef = useRef<HTMLDivElement>(null);
   const personRef = useRef<HTMLDivElement>(null);
 
-  const [form] = Form.useForm();
-
-  //更多条件
+  // 更多条件
   const [showMoreFlag, setShowMoreFlag] = useState<boolean>(false);
 
   const [selectDefaultData, setSelectDefaultData] = useState({
@@ -63,26 +67,88 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
   const imgSrc = require('../../../../../assets/icon-image/' + icon + '.png');
 
-  const searchEvent = () => {};
+  const searchEvent = () => {
+    finishEvent?.({
+      category,
+      stage,
+      constructType,
+      nature,
+      kvLevel,
+      status,
+      majorCategory,
+      proType,
+      reformAim,
+      classification,
+      attribute,
+      sourceType,
+      identityType,
+      ...areaInfo,
+      dataSourceType,
+      startTime: startTime ?? "",
+      endTime: endTime ?? "",
+      surveyUser: personInfo.survey,
+      designUser: personInfo.design,
+      logicRelation: personInfo.logicRelation,
+    });
+    setState(false);
+  };
+
+  const resetRef = () => {
+    if (areaRef && areaRef.current) {
+      //@ts-ignore
+      areaRef.current.reset();
+    }
+    if (personRef && personRef.current) {
+      //@ts-ignore
+      personRef.current.reset();
+    }
+  };
 
   const resetEvent = () => {
-    setCategory(undefined);
-    setStage(undefined);
-    setConstructType(undefined);
-    setNature(undefined);
-    setKvLevel(undefined);
-    setStatus(undefined);
-    setMajorCategory(undefined);
-    setProType(undefined);
-    setReformAim(undefined);
-    setClassification(undefined);
-    setAttribute(undefined);
-    setSourceType(undefined);
-    setIdentityType(undefined);
-    setDataSourceType(undefined);
-    setSourceType(undefined);
-    setSourceType(undefined);
+    setCategory([]);
+    setStage([]);
+    setConstructType([]);
+    setNature([]);
+    setKvLevel([]);
+    setStatus([]);
+    setMajorCategory([]);
+    setProType([]);
+    setReformAim([]);
+    setClassification([]);
+    setAttribute([]);
+    setSourceType([]);
+    setIdentityType([]);
+    setDataSourceType([]);
+    setSourceType([]);
+    setSourceType([]);
+    setStartTime(null);
+    setEndTime(null);
     resetRef();
+
+    finishEvent?.({
+      category: [],
+      stage: [],
+      constructType: [],
+      nature: [],
+      kvLevel: [],
+      status: [],
+      majorCategory: [],
+      proType: [],
+      reformAim: [],
+      classification: [],
+      attribute: [],
+      sourceType: [],
+      identityType: [],
+      areaType: '-1',
+      areaId: '',
+      dataSourceType: [],
+      logicRelation: 2,
+      startTime: '',
+      endTime: '',
+      designUser: '',
+      surveyUser: '',
+    });
+    setState(false);
   };
 
   const areaChangeEvent = (params: any) => {
@@ -90,7 +156,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     if (areaId) {
       setAreaInfo({
         areaType: '3',
-        areaId: areaId,
+        areaId,
       });
       return;
     }
@@ -116,17 +182,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     }
   };
 
-  const resetRef = () => {
-    if (areaRef && areaRef.current) {
-      //@ts-ignore
-      areaRef.current.reset();
-    }
-    if (personRef && personRef.current) {
-      //@ts-ignore
-      personRef.current.reset();
-    }
-  };
-
   const closeEvent = () => {
     setState(false);
   };
@@ -145,14 +200,22 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     projectDataSourceType,
   } = useGetProjectEnum();
 
+  const timeChange = (dates, dateStrings) => {
+    setStartTime(dateStrings[0]);
+    setEndTime(dateStrings[1])
+  }
+
+  useEffect(() => {
+    setSelectDefaultData(defaultPersonInfo)
+  },[JSON.stringify(defaultPersonInfo)])
+
   return (
     <Modal
       maskClosable={false}
       title="条件筛选"
       centered
-      width={820}
+      width={860}
       visible={state as boolean}
-      destroyOnClose
       footer={[
         <Button key="cancle" onClick={() => resetEvent()}>
           重置
@@ -163,54 +226,62 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       ]}
       onCancel={() => closeEvent()}
     >
-      <Form form={form} preserve={false}>
+      <Form>
         <>
           <div className="flex">
             <div className="flex1">
               <CyFormItem label="项目区域" align="right" labelWidth={111}>
-                <AreaSelect ref={areaRef} onChange={areaChangeEvent} />
+                <div style={{ width: '100%' }}>
+                  <AreaSelect ref={areaRef} onChange={areaChangeEvent} />
+                </div>
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目截止日期" align="right" labelWidth={111}>
-                <RangePicker />
+              <CyFormItem label="项目起止日期" align="right" labelWidth={111}>
+                <div style={{ width: '100%' }}>
+                  <RangePicker value={(startTime && endTime) ? [moment(startTime),moment(endTime)] : [null,null]} onChange={timeChange}  />
+                </div>
               </CyFormItem>
             </div>
           </div>
 
           <div className="flex">
             <div className="flex1">
-              <CyFormItem label="建设类型" align="right" labelWidth={111}>
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  mode="multiple"
-                  allowClear
-                  maxTagCount={0}
-                  maxTagTextLength={3}
-                  defaultData={projectConstructType}
-                  value={constructType}
-                  className="widthAll"
-                  placeholder="建设类型"
-                  onChange={(value) => setConstructType(value as number[])}
-                />
+              <CyFormItem label="建设类型" name="constructType" align="right" labelWidth={111}>
+                <div style={{ width: '100%' }}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={3}
+                    maxTagTextLength={3}
+                    defaultData={projectConstructType}
+                    value={constructType}
+                    className="widthAll"
+                    placeholder="建设类型"
+                    onChange={(value) => setConstructType(value as number[])}
+                  />
+                </div>
               </CyFormItem>
             </div>
             <div className="flex1">
               <CyFormItem label="项目阶段" align="right" labelWidth={111}>
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  mode="multiple"
-                  allowClear
-                  maxTagCount={0}
-                  maxTagTextLength={3}
-                  defaultData={projectStage}
-                  value={stage}
-                  className="widthAll"
-                  onChange={(value) => setStage(value as number[])}
-                  placeholder="项目阶段"
-                />
+                <div style={{ width: '100%' }}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={3}
+                    maxTagTextLength={3}
+                    defaultData={projectStage}
+                    value={stage}
+                    className="widthAll"
+                    onChange={(value) => setStage(value as number[])}
+                    placeholder="项目阶段"
+                  />
+                </div>
               </CyFormItem>
             </div>
           </div>
@@ -218,35 +289,39 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
           <div className="flex">
             <div className="flex1">
               <CyFormItem label="专业类别" align="right" labelWidth={111}>
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  mode="multiple"
-                  maxTagCount={0}
-                  maxTagTextLength={3}
-                  defaultData={projectMajorCategory}
-                  value={majorCategory}
-                  dropdownMatchSelectWidth={168}
-                  onChange={(values: number[]) => setMajorCategory(values)}
-                  className="widthAll"
-                  placeholder="项目类别"
-                  allValue="-1"
-                />
+                <div style={{ width: '100%' }}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    maxTagCount={3}
+                    maxTagTextLength={3}
+                    defaultData={projectMajorCategory}
+                    value={majorCategory}
+                    dropdownMatchSelectWidth={168}
+                    onChange={(values: number[]) => setMajorCategory(values)}
+                    className="widthAll"
+                    placeholder="专业类别"
+                    allValue="-1"
+                  />
+                </div>
               </CyFormItem>
             </div>
             <div className="flex1">
               <CyFormItem label="项目状态" align="right" labelWidth={111}>
-                <EnumSelect
-                  enumList={ProjectStatus}
-                  mode="multiple"
-                  allowClear
-                  maxTagCount={0}
-                  maxTagTextLength={3}
-                  value={status}
-                  onChange={(value) => setStatus(value as number[])}
-                  className="widthAll"
-                  placeholder="项目状态"
-                />
+                <div style={{ width: '100%' }}>
+                  <EnumSelect
+                    enumList={ProjectStatus}
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={3}
+                    maxTagTextLength={3}
+                    value={status}
+                    onChange={(value) => setStatus(value as number[])}
+                    className="widthAll"
+                    placeholder="项目状态"
+                  />
+                </div>
               </CyFormItem>
             </div>
           </div>
@@ -254,60 +329,68 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
           <div className="flex">
             <div className="flex1">
               <CyFormItem label="项目来源" align="right" labelWidth={111}>
-                <EnumSelect
-                  enumList={ProjectSourceType}
-                  mode="multiple"
-                  allowClear
-                  maxTagCount={0}
-                  maxTagTextLength={3}
-                  value={sourceType}
-                  onChange={(value) => setSourceType(value as number[])}
-                  className="widthAll"
-                  placeholder="项目来源"
-                />
+                <div style={{ width: '100%' }}>
+                  <EnumSelect
+                    enumList={ProjectSourceType}
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={3}
+                    maxTagTextLength={3}
+                    value={sourceType}
+                    onChange={(value) => setSourceType(value as number[])}
+                    className="widthAll"
+                    placeholder="项目来源"
+                  />
+                </div>
               </CyFormItem>
             </div>
             <div className="flex1">
               <CyFormItem label="项目身份" align="right" labelWidth={111}>
-                <EnumSelect
-                  enumList={ProjectIdentityType}
-                  mode="multiple"
-                  allowClear
-                  maxTagCount={0}
-                  maxTagTextLength={3}
-                  value={identityType}
-                  onChange={(value) => setIdentityType(value as number[])}
-                  className="widthAll"
-                  placeholder="项目身份"
-                />
+                <div style={{ width: '100%' }}>
+                  <EnumSelect
+                    enumList={ProjectIdentityType}
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={3}
+                    maxTagTextLength={3}
+                    value={identityType}
+                    onChange={(value) => setIdentityType(value as number[])}
+                    className="widthAll"
+                    placeholder="项目身份"
+                  />
+                </div>
               </CyFormItem>
             </div>
           </div>
           <div className="flex">
             <div className="flex1">
               <CyFormItem label="人员安排" align="right" labelWidth={111}>
-                <ChooseDesignAndSurvey
-                  ref={personRef}
-                  defaultValue={selectDefaultData}
-                  onChange={setPersonInfo}
-                />
+                <div style={{ width: '100%' }}>
+                  <ChooseDesignAndSurvey
+                    ref={personRef}
+                    defaultValue={selectDefaultData}
+                    onChange={setPersonInfo}
+                  />
+                </div>
               </CyFormItem>
             </div>
             <div className="flex1">
               <CyFormItem label="电压等级" align="right" labelWidth={111}>
-                <UrlSelect
-                  valueKey="value"
-                  titleKey="text"
-                  mode="multiple"
-                  allowClear
-                  maxTagCount={0}
-                  maxTagTextLength={3}
-                  defaultData={projectKvLevel}
-                  value={kvLevel}
-                  onChange={(value) => setKvLevel(value as number[])}
-                  className="widthAll"
-                  placeholder="电压等级"
-                />
+                <div style={{ width: '100%' }}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={3}
+                    maxTagTextLength={3}
+                    defaultData={projectKvLevel}
+                    value={kvLevel}
+                    onChange={(value) => setKvLevel(value as number[])}
+                    className="widthAll"
+                    placeholder="电压等级"
+                  />
+                </div>
               </CyFormItem>
             </div>
           </div>
@@ -346,36 +429,40 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             <div className="flex">
               <div className="flex1">
                 <CyFormItem label="项目分类" align="right" labelWidth={111}>
-                  <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
-                    allowClear
-                    maxTagCount={0}
-                    maxTagTextLength={3}
-                    defaultData={projectCategory}
-                    className="widthAll"
-                    value={category}
-                    onChange={(value) => setCategory(value as number[])}
-                    placeholder="项目分类"
-                  />
+                  <div style={{ width: '100%' }}>
+                    <UrlSelect
+                      valueKey="value"
+                      titleKey="text"
+                      mode="multiple"
+                      allowClear
+                      maxTagCount={3}
+                      maxTagTextLength={3}
+                      defaultData={projectCategory}
+                      className="widthAll"
+                      value={category}
+                      onChange={(value) => setCategory(value as number[])}
+                      placeholder="项目分类"
+                    />
+                  </div>
                 </CyFormItem>
               </div>
               <div className="flex1">
                 <CyFormItem label="项目类型" align="right" labelWidth={111}>
-                  <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
-                    allowClear
-                    maxTagCount={0}
-                    maxTagTextLength={3}
-                    defaultData={projectPType}
-                    className="widthAll"
-                    value={proType}
-                    onChange={(value) => setProType(value as number[])}
-                    placeholder="项目类型"
-                  />
+                  <div style={{ width: '100%' }}>
+                    <UrlSelect
+                      valueKey="value"
+                      titleKey="text"
+                      mode="multiple"
+                      allowClear
+                      maxTagCount={3}
+                      maxTagTextLength={3}
+                      defaultData={projectPType}
+                      className="widthAll"
+                      value={proType}
+                      onChange={(value) => setProType(value as number[])}
+                      placeholder="项目类型"
+                    />
+                  </div>
                 </CyFormItem>
               </div>
             </div>
@@ -383,37 +470,41 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             <div className="flex">
               <div className="flex1">
                 <CyFormItem label="项目性质" align="right" labelWidth={111}>
-                  <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
-                    allowClear
-                    maxTagCount={0}
-                    maxTagTextLength={3}
-                    defaultData={projectNature}
-                    value={nature}
-                    dropdownMatchSelectWidth={168}
-                    onChange={(value) => setNature(value as number[])}
-                    className="widthAll"
-                    placeholder="项目性质"
-                  />
+                  <div style={{ width: '100%' }}>
+                    <UrlSelect
+                      valueKey="value"
+                      titleKey="text"
+                      mode="multiple"
+                      allowClear
+                      maxTagCount={3}
+                      maxTagTextLength={3}
+                      defaultData={projectNature}
+                      value={nature}
+                      dropdownMatchSelectWidth={168}
+                      onChange={(value) => setNature(value as number[])}
+                      className="widthAll"
+                      placeholder="项目性质"
+                    />
+                  </div>
                 </CyFormItem>
               </div>
               <div className="flex1">
                 <CyFormItem label="建设改造目的" align="right" labelWidth={111}>
-                  <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
-                    allowClear
-                    maxTagCount={0}
-                    maxTagTextLength={3}
-                    defaultData={projectReformAim}
-                    className="widthAll"
-                    value={reformAim}
-                    onChange={(value) => setReformAim(value as number[])}
-                    placeholder="请选择"
-                  />
+                  <div style={{ width: '100%' }}>
+                    <UrlSelect
+                      valueKey="value"
+                      titleKey="text"
+                      mode="multiple"
+                      allowClear
+                      maxTagCount={3}
+                      maxTagTextLength={3}
+                      defaultData={projectReformAim}
+                      className="widthAll"
+                      value={reformAim}
+                      onChange={(value) => setReformAim(value as number[])}
+                      placeholder="请选择"
+                    />
+                  </div>
                 </CyFormItem>
               </div>
             </div>
@@ -421,37 +512,41 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             <div className="flex">
               <div className="flex1">
                 <CyFormItem label="项目类别" align="right" labelWidth={111}>
-                  <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
-                    allowClear
-                    maxTagCount={0}
-                    maxTagTextLength={3}
-                    defaultData={projectClassification}
-                    value={classification}
-                    dropdownMatchSelectWidth={168}
-                    onChange={(value) => setClassification(value as number[])}
-                    className="widthAll"
-                    placeholder="项目类别"
-                  />
+                  <div style={{ width: '100%' }}>
+                    <UrlSelect
+                      valueKey="value"
+                      titleKey="text"
+                      mode="multiple"
+                      allowClear
+                      maxTagCount={3}
+                      maxTagTextLength={3}
+                      defaultData={projectClassification}
+                      value={classification}
+                      dropdownMatchSelectWidth={168}
+                      onChange={(value) => setClassification(value as number[])}
+                      className="widthAll"
+                      placeholder="项目类别"
+                    />
+                  </div>
                 </CyFormItem>
               </div>
               <div className="flex1">
                 <CyFormItem label="项目属性" align="right" labelWidth={111}>
-                  <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
-                    allowClear
-                    maxTagCount={0}
-                    maxTagTextLength={3}
-                    defaultData={projectAttribute}
-                    className="widthAll"
-                    value={attribute}
-                    onChange={(value) => setAttribute(value as number[])}
-                    placeholder="请选择"
-                  />
+                  <div style={{ width: '100%' }}>
+                    <UrlSelect
+                      valueKey="value"
+                      titleKey="text"
+                      mode="multiple"
+                      allowClear
+                      maxTagCount={3}
+                      maxTagTextLength={3}
+                      defaultData={projectAttribute}
+                      className="widthAll"
+                      value={attribute}
+                      onChange={(value) => setAttribute(value as number[])}
+                      placeholder="请选择"
+                    />
+                  </div>
                 </CyFormItem>
               </div>
             </div>
@@ -459,21 +554,23 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             <div className="flex">
               <div className="flex1">
                 <CyFormItem label="现场数据来源" align="right" labelWidth={111}>
-                  <UrlSelect
-                    style={{ width: '275px' }}
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
-                    allowClear
-                    maxTagCount={0}
-                    maxTagTextLength={3}
-                    defaultData={projectDataSourceType}
-                    value={dataSourceType}
-                    dropdownMatchSelectWidth={168}
-                    onChange={(value) => setDataSourceType(value as number[])}
-                    className="widthAll"
-                    placeholder="请选择"
-                  />
+                  <div style={{ width: '100%' }}>
+                    <UrlSelect
+                      style={{ width: '295px' }}
+                      valueKey="value"
+                      titleKey="text"
+                      mode="multiple"
+                      allowClear
+                      maxTagCount={3}
+                      maxTagTextLength={3}
+                      defaultData={projectDataSourceType}
+                      value={dataSourceType}
+                      dropdownMatchSelectWidth={168}
+                      onChange={(value) => setDataSourceType(value as number[])}
+                      className="widthAll"
+                      placeholder="请选择"
+                    />
+                  </div>
                 </CyFormItem>
               </div>
             </div>

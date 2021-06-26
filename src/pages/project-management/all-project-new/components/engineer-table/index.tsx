@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import EmptyTip from '@/components/empty-tip';
 import {
   AllProjectStatisticsParams,
@@ -260,7 +261,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     {
       title: '项目性质',
       dataIndex: 'natureTexts',
-      width: 160,
+      width: 180,
       render: (record: any) => {
         const { natureTexts = [] } = record;
         return natureTexts.map((item: any) => {
@@ -497,7 +498,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const chooseColumns = useMemo(() => {
     if (columnsConfig) {
-      console.log(columnsConfig)
+      console.log(columnsConfig);
       return ['name', ...columnsConfig, 'sources', 'identitys', 'status', 'action'];
     }
     return [
@@ -506,7 +507,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       'natureTexts',
       'majorCategoryText',
       'constructTypeText',
-      'batchText',
       'stageText',
       'exportCoordinate',
       'surveyUser',
@@ -657,6 +657,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       onSelect?.([]);
     },
     searchByParams: (params: object) => {
+      console.log(params);
       setPageIndex(1);
       run({
         ...params,
@@ -699,9 +700,26 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     return <div style={{ ...style, ...viewStyle }} {...rest} />;
   };
 
-  const refreshEvent = () => {};
+  const refreshEvent = () => {
+    run({
+      ...extractParams,
+      pageIndex,
+      pageSize,
+    });
+    setTableSelectData([]);
+    onSelect?.([]);
+  };
 
-  const delayRefresh = () => {};
+  const delayRefresh = async () => {
+    await delay(500);
+    run({
+      ...extractParams,
+      pageIndex,
+      pageSize,
+    });
+    setTableSelectData([]);
+    onSelect?.([]);
+  };
 
   return (
     <TableContext.Provider

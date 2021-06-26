@@ -179,6 +179,23 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
     }
   };
 
+  const defaultConfig = [
+    'categoryText',
+    'kvLevelText',
+    'natureTexts',
+    'majorCategoryText',
+    'constructTypeText',
+    'stageText',
+    'exportCoordinate',
+    'surveyUser',
+    'designUser',
+    'identitys',
+  ];
+
+  const revertConfig = () => {
+    setCheckedList(defaultConfig)
+  }
+
   return (
     <Modal
       maskClosable={false}
@@ -187,6 +204,9 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       width={820}
       onCancel={() => setState(false)}
       footer={[
+        <Button key="revert" onClick={() => revertConfig()}>
+          恢复默认
+        </Button>,
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
