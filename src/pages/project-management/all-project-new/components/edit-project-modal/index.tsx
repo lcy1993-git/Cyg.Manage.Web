@@ -47,10 +47,12 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
 
   const edit = () => {
     form.validateFields().then(async (value) => {
+      console.log(value);
       try {
         await editProject({
           id: projectId,
           ...value,
+          totalInvest: value.totalInvest ?? 0,
         });
         message.success('项目信息更新成功');
         setState(false);

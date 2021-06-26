@@ -19,4 +19,8 @@ export default {
     { required: true, message: '编制单位不能为空' },
     { max: 32, message: '此项不能超过32个字符' },
   ],
+  plannedYear: [
+    { required: true, message: '计划年度不能为空' },
+    { pattern: /^[0-9]\d*$/, message: '请输入正确的年份' },
+  ],
 };

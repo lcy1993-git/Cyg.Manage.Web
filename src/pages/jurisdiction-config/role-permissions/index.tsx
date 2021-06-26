@@ -99,6 +99,12 @@ const RolePermissions: React.FC = () => {
           : null;
       },
     },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      index: 'remark',
+      width: 150,
+    },
   ];
 
   const updateStatus = async (record: any) => {
@@ -153,31 +159,31 @@ const RolePermissions: React.FC = () => {
     setTableSelectRow([]);
   };
 
-  const distributeEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择角色模板');
-      return;
-    }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+  // const distributeEvent = async () => {
+  //   if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+  //     message.error('请选择角色模板');
+  //     return;
+  //   }
+  //   const editData = tableSelectRows[0];
+  //   const editDataId = editData.id;
 
-    setDistributeFormVisible(true);
+  //   setDistributeFormVisible(true);
 
-    await getModuleTreeData(editDataId);
-  };
+  //   await getModuleTreeData(editDataId);
+  // };
 
-  const sureDistribute = () => {
-    apportionForm.validateFields().then(async (values) => {
-      const templateId = tableSelectRows[0].id;
-      const { moduleIds } = values;
+  // const sureDistribute = () => {
+  //   apportionForm.validateFields().then(async (values) => {
+  //     const templateId = tableSelectRows[0].id;
+  //     const { moduleIds } = values;
 
-      await updateAuthorizationModules({ templateId, moduleIds });
-      setDistributeFormVisible(false);
-      tableFresh();
-      message.success('角色功能分配成功');
-      apportionForm.resetFields();
-    });
-  };
+  //     await updateAuthorizationModules({ templateId, moduleIds });
+  //     setDistributeFormVisible(false);
+  //     tableFresh();
+  //     message.success('角色功能分配成功');
+  //     apportionForm.resetFields();
+  //   });
+  // };
 
   //授权
   const authorizationEvent = async () => {
