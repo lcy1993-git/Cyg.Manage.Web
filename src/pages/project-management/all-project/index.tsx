@@ -18,7 +18,6 @@ import {
   // getExternalArrangeStep,
   getProjectInfo,
   // getProjectTableStatistics,
-  noAuditKnot,
   ProjectIdentityType,
   ProjectSourceType,
   ProjectStatus,

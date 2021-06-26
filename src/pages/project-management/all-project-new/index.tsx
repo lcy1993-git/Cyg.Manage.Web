@@ -609,7 +609,12 @@ const AllProject: React.FC = () => {
         </div>
       </div>
       {screenModalVisible && (
-        <ScreenModal visible={screenModalVisible} onChange={setScreenModalVisible} />
+        <ScreenModal
+          visible={screenModalVisible}
+          onChange={setScreenModalVisible}
+          finishEvent={searchEvent}
+          searchParams={searchParams}
+        />
       )}
       {addEngineerModalVisible && (
         <AddEngineerModal

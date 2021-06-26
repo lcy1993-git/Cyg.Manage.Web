@@ -350,7 +350,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'surveyUser',
       width: 120,
       render: (record: any) => {
-        return record.surveyUser.value;
+        return record.surveyUser ? record.surveyUser.value : '-';
       },
     },
     {
