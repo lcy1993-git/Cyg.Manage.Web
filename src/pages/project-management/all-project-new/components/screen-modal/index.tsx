@@ -26,6 +26,8 @@ const { RangePicker } = DatePicker;
 
 const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [icon, setIcon] = useState<string>('bottom');
+
   const [category, setCategory] = useState<number[]>(); //项目分类
   const [pCategory, setPCategory] = useState<number[]>(); //项目类别
   const [stage, setStage] = useState<number[]>(); //项目阶段
@@ -34,15 +36,24 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [kvLevel, setKvLevel] = useState<number[]>(); //电压等级
   const [status, setStatus] = useState<number[]>(); //状态
   const [majorCategory, setMajorCategory] = useState<number[]>(); //专业类别
+  const [proType, setProType] = useState<number[]>(); //项目类型
+  const [reformAim, setReformAim] = useState<number[]>(); //建设改造目的
+  const [classification, setClassification] = useState<number[]>(); //项目类别
+  const [attribute, setAttribute] = useState<number[]>(); //项目属性
   const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
   const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
   const [sourceType, setSourceType] = useState<number[]>(); //项目来源
   const [identityType, setIdentityType] = useState<number[]>(); //项目身份
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
-  const [dataSourceType, setDataSourceType] = useState<number>();
+  const [dataSourceType, setDataSourceType] = useState<number[]>();
   const [personInfo, setPersonInfo] = useState<any>({});
   const areaRef = useRef<HTMLDivElement>(null);
   const personRef = useRef<HTMLDivElement>(null);
+
+  const [form] = Form.useForm();
+
+  //更多条件
+  const [showMoreFlag, setShowMoreFlag] = useState<boolean>(false);
 
   const [selectDefaultData, setSelectDefaultData] = useState({
     logicRelation: 2,
@@ -50,11 +61,29 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     design: '',
   });
 
-  const imgSrc = require('../../../../../assets/icon-image/bottom.png');
+  const imgSrc = require('../../../../../assets/icon-image/' + icon + '.png');
 
   const searchEvent = () => {};
 
-  const resetEvent = () => {};
+  const resetEvent = () => {
+    setCategory(undefined);
+    setStage(undefined);
+    setConstructType(undefined);
+    setNature(undefined);
+    setKvLevel(undefined);
+    setStatus(undefined);
+    setMajorCategory(undefined);
+    setProType(undefined);
+    setReformAim(undefined);
+    setClassification(undefined);
+    setAttribute(undefined);
+    setSourceType(undefined);
+    setIdentityType(undefined);
+    setDataSourceType(undefined);
+    setSourceType(undefined);
+    setSourceType(undefined);
+    resetRef();
+  };
 
   const areaChangeEvent = (params: any) => {
     const { provinceId, cityId, areaId } = params;
@@ -87,6 +116,17 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     }
   };
 
+  const resetRef = () => {
+    if (areaRef && areaRef.current) {
+      //@ts-ignore
+      areaRef.current.reset();
+    }
+    if (personRef && personRef.current) {
+      //@ts-ignore
+      personRef.current.reset();
+    }
+  };
+
   const closeEvent = () => {
     setState(false);
   };
@@ -100,6 +140,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     projectStage,
     projectKvLevel,
     projectMajorCategory,
+    projectReformAim,
+    projectAttribute,
+    projectDataSourceType,
   } = useGetProjectEnum();
 
   return (
@@ -115,12 +158,12 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
           重置
         </Button>,
         <Button key="save" type="primary" onClick={() => searchEvent()}>
-          确定
+          查询
         </Button>,
       ]}
       onCancel={() => closeEvent()}
     >
-      <Form preserve={false}>
+      <Form form={form} preserve={false}>
         <>
           <div className="flex">
             <div className="flex1">
@@ -129,7 +172,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目起止日期" align="right" labelWidth={111}>
+              <CyFormItem label="项目截止日期" align="right" labelWidth={111}>
                 <RangePicker />
               </CyFormItem>
             </div>
@@ -178,31 +221,32 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <UrlSelect
                   valueKey="value"
                   titleKey="text"
+                  mode="multiple"
+                  maxTagCount={0}
+                  maxTagTextLength={3}
                   defaultData={projectMajorCategory}
                   value={majorCategory}
                   dropdownMatchSelectWidth={168}
                   onChange={(values: number[]) => setMajorCategory(values)}
                   className="widthAll"
                   placeholder="项目类别"
-                  needAll={true}
                   allValue="-1"
                 />
               </CyFormItem>
             </div>
             <div className="flex1">
               <CyFormItem label="项目状态" align="right" labelWidth={111}>
-                <UrlSelect
-                  maxTagCount={0}
-                  maxTagTextLength={2}
+                <EnumSelect
+                  enumList={ProjectStatus}
                   mode="multiple"
                   allowClear
+                  maxTagCount={0}
+                  maxTagTextLength={3}
                   value={status}
                   onChange={(value) => setStatus(value as number[])}
-                  style={{ width: '100%' }}
+                  className="widthAll"
                   placeholder="项目状态"
                 />
-                {/* {getProjectStatusOption()} */}
-                {/* </Select> */}
               </CyFormItem>
             </div>
           </div>
@@ -268,8 +312,171 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             </div>
           </div>
           <div className={styles.moreInfo}>
-            更多条件
-            <img src={imgSrc} alt="" />
+            {!showMoreFlag ? (
+              <>
+                <span
+                  className={styles.expandWord}
+                  onClick={() => {
+                    setShowMoreFlag(!showMoreFlag);
+                    setIcon(showMoreFlag ? 'bottom' : 'up');
+                  }}
+                >
+                  更多条件
+                </span>
+                <img src={imgSrc} alt="" />
+              </>
+            ) : (
+              <>
+                <span
+                  className={styles.expandWord}
+                  onClick={() => {
+                    setShowMoreFlag(!showMoreFlag);
+                    setIcon(showMoreFlag ? 'bottom' : 'up');
+                  }}
+                >
+                  收起条件
+                </span>
+                <img src={imgSrc} alt="" />
+              </>
+            )}
+          </div>
+
+          {/* 更多条件 */}
+          <div style={{ display: showMoreFlag ? 'block' : 'none' }}>
+            <div className="flex">
+              <div className="flex1">
+                <CyFormItem label="项目分类" align="right" labelWidth={111}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
+                    defaultData={projectCategory}
+                    className="widthAll"
+                    value={category}
+                    onChange={(value) => setCategory(value as number[])}
+                    placeholder="项目分类"
+                  />
+                </CyFormItem>
+              </div>
+              <div className="flex1">
+                <CyFormItem label="项目类型" align="right" labelWidth={111}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
+                    defaultData={projectPType}
+                    className="widthAll"
+                    value={proType}
+                    onChange={(value) => setProType(value as number[])}
+                    placeholder="项目类型"
+                  />
+                </CyFormItem>
+              </div>
+            </div>
+
+            <div className="flex">
+              <div className="flex1">
+                <CyFormItem label="项目性质" align="right" labelWidth={111}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
+                    defaultData={projectNature}
+                    value={nature}
+                    dropdownMatchSelectWidth={168}
+                    onChange={(value) => setNature(value as number[])}
+                    className="widthAll"
+                    placeholder="项目性质"
+                  />
+                </CyFormItem>
+              </div>
+              <div className="flex1">
+                <CyFormItem label="建设改造目的" align="right" labelWidth={111}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
+                    defaultData={projectReformAim}
+                    className="widthAll"
+                    value={reformAim}
+                    onChange={(value) => setReformAim(value as number[])}
+                    placeholder="请选择"
+                  />
+                </CyFormItem>
+              </div>
+            </div>
+
+            <div className="flex">
+              <div className="flex1">
+                <CyFormItem label="项目类别" align="right" labelWidth={111}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
+                    defaultData={projectClassification}
+                    value={classification}
+                    dropdownMatchSelectWidth={168}
+                    onChange={(value) => setClassification(value as number[])}
+                    className="widthAll"
+                    placeholder="项目类别"
+                  />
+                </CyFormItem>
+              </div>
+              <div className="flex1">
+                <CyFormItem label="项目属性" align="right" labelWidth={111}>
+                  <UrlSelect
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
+                    defaultData={projectAttribute}
+                    className="widthAll"
+                    value={attribute}
+                    onChange={(value) => setAttribute(value as number[])}
+                    placeholder="请选择"
+                  />
+                </CyFormItem>
+              </div>
+            </div>
+
+            <div className="flex">
+              <div className="flex1">
+                <CyFormItem label="现场数据来源" align="right" labelWidth={111}>
+                  <UrlSelect
+                    style={{ width: '275px' }}
+                    valueKey="value"
+                    titleKey="text"
+                    mode="multiple"
+                    allowClear
+                    maxTagCount={0}
+                    maxTagTextLength={3}
+                    defaultData={projectDataSourceType}
+                    value={dataSourceType}
+                    dropdownMatchSelectWidth={168}
+                    onChange={(value) => setDataSourceType(value as number[])}
+                    className="widthAll"
+                    placeholder="请选择"
+                  />
+                </CyFormItem>
+              </div>
+            </div>
           </div>
         </>
       </Form>

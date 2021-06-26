@@ -291,7 +291,6 @@ const AllProject: React.FC = () => {
 
     setCurrentRecallProjectId(projectIds[0]);
     setRecallModalVisible(true);
-
   };
 
   const applyKnotEvent = async () => {
@@ -583,7 +582,12 @@ const AllProject: React.FC = () => {
         </div>
       </div>
       {screenModalVisible && (
-        <ScreenModal visible={screenModalVisible} onChange={setScreenModalVisible} />
+        <ScreenModal
+          visible={screenModalVisible}
+          onChange={setScreenModalVisible}
+          finishEvent={searchEvent}
+          searchParams={searchParams}
+        />
       )}
       {addEngineerModalVisible && (
         <AddEngineerModal

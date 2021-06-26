@@ -338,7 +338,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'surveyUser',
       width: 120,
       render: (record: any) => {
-        return record.surveyUser.value;
+        return record.surveyUser ? record.surveyUser.value : '-';
       },
     },
     {
@@ -843,4 +843,3 @@ export default forwardRef(EngineerTable);
 function getExternalStep(projectId: string) {
   throw new Error('Function not implemented.');
 }
-
