@@ -1,6 +1,7 @@
 import EmptyTip from '@/components/empty-tip';
 import {
   AllProjectStatisticsParams,
+  getProjectInfo,
   getProjectTableList,
 } from '@/services/project-management/all-project';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
@@ -24,6 +25,16 @@ import uuid from 'node-uuid';
 import { Dropdown } from 'antd';
 import { BarsOutlined } from '@ant-design/icons';
 import { TableContext } from './table-store';
+import CheckResultModal from '../check-result-modal';
+import EngineerDetailInfo from '../engineer-detail-info';
+import ProjectDetailInfo from '../project-detail-info';
+import ArrangeModal from '../arrange-modal';
+import EditEnigneerModal from '../edit-engineer-modal';
+import EditProjectModal from '../edit-project-modal';
+import CopyProjectModal from '../copy-project-modal';
+import AddProjectModal from '../add-project-modal';
+import ExternalArrangeModal from '../external-arrange-modal';
+import ExternalListModal from '../external-list-modal';
 
 const colorMap = {
   立项: 'green',
@@ -36,36 +47,92 @@ interface ExtractParams extends AllProjectStatisticsParams {
   statisticalCategory?: string;
 }
 
+interface JurisdictionInfo {
+  canEdit: boolean;
+  canCopy: boolean;
+}
+
 interface EngineerTableProps {
   extractParams: ExtractParams;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
-  delayRefresh?: () => void;
   getStatisticsData?: (value: any) => void;
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, afterSearch, delayRefresh, getStatisticsData } = props;
+  const { extractParams, onSelect, getStatisticsData } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
+  const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('');
+  const [checkResultPorjectInfo, setCheckResultProjectInfo] = useState({
+    projectId: '',
+    projectName: '',
+    projectStatus: '',
+    projectStage: '',
+  });
+  const [currentClickProjectId, setCurrentClickProjectId] = useState('');
+  const [currentArrageProjectId, setCurrentArrageProjectId] = useState<string>('');
+  const [currentProjectArrangeType, setCurrentProjectArrageType] = useState<string>();
+  const [arrangeAllotCompanyId, setArrangeAllotCompanyId] = useState<string>();
+  const [currentDataSourceType, setCurrentDataSourceType] = useState<number>();
+  const [currentEditEngineerId, setCurrentEditEngineerId] = useState<string>('');
+  const [currentEditProjectInfo, setCurrentEditProjectInfo] = useState<any>({});
+  const [currentCopyProjectInfo, setCurrentCopyProjectInfo] = useState<any>({});
+  const [projectNeedInfo, setProjectNeedInfo] = useState({
+    engineerId: '',
+    areaId: '',
+    company: '',
+    companyName: '',
+  });
+  const [currentProName, setCurrentProName] = useState<string | undefined>('');
+  const [externalStepData, setExternalStepData] = useState<any>();
+
+  const [checkResultVisible, setCheckResultVisible] = useState<boolean>(false);
+  const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
+  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
+  const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false);
+  const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false);
+  const [copyProjectVisible, setCopyProjectVisible] = useState<boolean>(false);
+  const [addProjectVisible, setAddProjectVisible] = useState<boolean>(false);
+  const [editProjectVisible, setEditProjectVisible] = useState<boolean>(false);
+  const [editEngineerVisible, setEditEngineerVisible] = useState<boolean>(false);
+  const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
+
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
   const scrollbar = useRef<any>(null);
-  const tableContentRef = useRef<HTMLDivElement>(null)
+  const tableContentRef = useRef<HTMLDivElement>(null);
 
   const tableContentSize = useSize(tableContentRef);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
-  const projectNameClickEvent = (engineerId: string) => {};
+  const projectNameClickEvent = (engineerId: string) => {
+    setCurrentClickEngineerId(engineerId);
+    setEngineerModalVisible(true);
+  };
 
-  const editProjectEvent = (projectNeedInfo: any) => {};
+  const editProjectEvent = (info: any) => {
+    setEditProjectVisible(true);
+    setCurrentEditProjectInfo(info);
+  };
 
-  const copyProjectEvent = (projectNeedInfo: any) => {};
+  const copyProjectEvent = (info: any) => {
+    setCopyProjectVisible(true);
+    setCurrentCopyProjectInfo(info);
+  };
 
-  const editEngineerEvent = (data: AddProjectValue) => {};
+  const editEngineerEvent = (data: AddProjectValue) => {
+    setEditEngineerVisible(true);
+    setCurrentEditEngineerId(data.engineerId);
+  };
+
+  const checkResult = (projectInfo: any) => {
+    setCheckResultProjectInfo(projectInfo);
+    setCheckResultVisible(true);
+  };
 
   const [leftNumber, setLeftNumber] = useState<number>(0);
 
@@ -78,50 +145,75 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       <Menu>
         {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
           <Menu.Item
-          // onClick={() => {
-          //   editProjectEvent({
-          //     projectId: tableItemData.id,
-          //     areaId: engineerInfo.province,
-          //     company: engineerInfo.company,
-          //     companyName: engineerInfo.company,
-          //     status: tableItemData.stateInfo.status,
-          //   });
-          // }}
+            onClick={() => {
+              editProjectEvent({
+                projectId: tableItemData.id,
+                areaId: engineerInfo.province,
+                company: engineerInfo.company,
+                companyName: engineerInfo.company,
+                status: tableItemData.stateInfo.status,
+              });
+            }}
           >
             编辑
           </Menu.Item>
         )}
         {jurisdictionInfo.canCopy && buttonJurisdictionArray?.includes('all-project-copy-project') && (
           <Menu.Item
-          // onClick={() =>
-          //   copyProjectEvent({
-          //     projectId: tableItemData.id,
-          //     areaId: engineerInfo.province,
-          //     company: engineerInfo.company,
-          //     engineerId: engineerInfo.id,
-          //     companyName: engineerInfo.company,
-          //   })
-          // }
+            onClick={() =>
+              copyProjectEvent({
+                projectId: tableItemData.id,
+                areaId: engineerInfo.province,
+                company: engineerInfo.company,
+                engineerId: engineerInfo.id,
+                companyName: engineerInfo.company,
+              })
+            }
           >
             复制项目
           </Menu.Item>
         )}
         {buttonJurisdictionArray?.includes('all-project-check-result') && (
           <Menu.Item
-          // onClick={() =>
-          //   checkResult({
-          //     projectId: tableItemData.id,
-          //     projectName: tableItemData.name,
-          //     projectStatus: tableItemData.stateInfo.statusText,
-          //     projectStage: tableItemData.stageText,
-          //   })
-          // }
+            onClick={() =>
+              checkResult({
+                projectId: tableItemData.id,
+                projectName: tableItemData.name,
+                projectStatus: tableItemData.stateInfo.statusText,
+                projectStage: tableItemData.stageText,
+              })
+            }
           >
             查看成果
           </Menu.Item>
         )}
       </Menu>
     );
+  };
+
+  const arrange = async (projectId: string, projectType?: number, allotCompanyId?: string) => {
+    const projectInfo = await getProjectInfo(projectId);
+    setCurrentDataSourceType(Number(projectInfo?.dataSourceType));
+    setCurrentArrageProjectId(projectId);
+    setCurrentProjectArrageType(projectType ? String(projectType) : undefined);
+    setArrangeAllotCompanyId(allotCompanyId);
+    setArrangeModalVisible(true);
+  };
+
+  // 外审安排
+  const externalArrange = async (projectId: string, proName?: string) => {
+    setCurrentClickProjectId(projectId);
+    setCurrentProName(proName);
+    setExternalArrangeModalVisible(true);
+  };
+
+  // 外审列表
+  const externalEdit = async (projectId: string) => {
+    const res = await getExternalStep(projectId);
+
+    setCurrentClickProjectId(projectId);
+    setExternalStepData(res);
+    setExternalListModalVisible(true);
   };
 
   const completeConfig = [
@@ -133,10 +225,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         return (
           <u
             className="canClick"
-            // onClick={() => {
-            //   setCurrentClickProjectId(record.id);
-            //   setProjectModalVisible(true);
-            // }}
+            onClick={() => {
+              setCurrentClickProjectId(record.id);
+              setProjectModalVisible(true);
+            }}
           >
             {record.name}
           </u>
@@ -176,17 +268,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
     {
       title: '建设建造目的',
-      dataIndex: 'majorCategoryText',
+      dataIndex: 'reformAimText',
       width: 120,
     },
     {
       title: '所属市公司',
-      dataIndex: 'majorCategoryText',
+      dataIndex: 'cityCompany',
       width: 120,
     },
     {
       title: '所属县公司',
-      dataIndex: 'majorCategoryText',
+      dataIndex: 'countyCompany',
       width: 120,
     },
     {
@@ -195,8 +287,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
     },
     {
+      title: '项目批次',
+      dataIndex: 'batchText',
+      width: 120,
+    },
+    {
       title: '项目类别',
-      dataIndex: 'constructTypeText',
+      dataIndex: 'pCategoryText',
       width: 120,
     },
     {
@@ -206,22 +303,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
     {
       title: '项目属性',
-      dataIndex: 'batchText',
+      dataIndex: 'pAttributeText',
       width: 120,
     },
     {
       title: '交底范围',
-      dataIndex: 'batchText',
+      dataIndex: 'disclosureRange',
       width: 120,
     },
     {
       title: '桩位范围',
-      dataIndex: 'batchText',
+      dataIndex: 'pileRange',
       width: 120,
     },
     {
       title: '现场数据来源',
-      dataIndex: 'batchText',
+      dataIndex: 'dataSourceType',
       width: 120,
     },
     {
@@ -292,7 +389,72 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       title: '项目状态',
       width: 120,
       dataIndex: 'status',
-      render: (record: any) => {},
+      render: (record: any) => {
+        const { stateInfo, allot, identitys } = record;
+        let arrangeType: any = null;
+        let allotCompanyId: any = null;
+
+        if (allot) {
+          arrangeType = allot.allotType;
+          allotCompanyId = allot.allotCompanyGroup;
+        }
+        // console.log(stateInfo)
+        // console.log(stateInfo.status === 17 && stateInfo.auditStatus === 13)
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('all-project-copy-project') && (
+              <span>
+                {!stateInfo.isArrange &&
+                identitys.findIndex((item: any) => item.value === 4) > -1 ? (
+                  <span
+                    className="canClick"
+                    onClick={() => arrange(record.id, arrangeType, allotCompanyId)}
+                  >
+                    {stateInfo?.statusText}
+                  </span>
+                ) : stateInfo.statusText === '设计评审中' ? (
+                  <span>设计中</span>
+                ) : (
+                  // : stateInfo.status === 4 &&
+                  //   stateInfo.auditStatus === 0 &&
+                  //   stateInfo.auditStatusText === null ? (
+                  //   <span>{stateInfo?.statusText}</span>
+                  // ) : stateInfo.status === 4 &&
+                  //   stateInfo.auditStatus === 0 &&
+                  //   stateInfo.auditStatusText != null ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
+                  //   <span>{stateInfo?.statusText}</span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                  //   <span
+                  //     className="canClick"
+                  //     onClick={() => externalArrange(record.id, record.name)}
+                  //   >
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : (
+                  <span>{stateInfo?.statusText}</span>
+                )}
+              </span>
+            )}
+            {!buttonJurisdictionArray?.includes('all-project-copy-project') && (
+              <span>{stateInfo?.statusText}</span>
+            )}
+          </>
+        );
+      },
     },
     {
       title: '操作',
@@ -322,8 +484,21 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     'kvLevelText',
     'natureTexts',
     'majorCategoryText',
+    'reformAimText',
+    'cityCompany',
+    'countyCompany',
     'constructTypeText',
+    'pCategoryText',
     'stageText',
+    'pAttributeText',
+    'disclosureRange',
+    'pileRange',
+    'dataSourceType',
+    'exportCoordinate',
+    'surveyUser',
+    'designUser',
+    'sources',
+    'identitys',
     'batchText',
     'status',
     'action',
@@ -345,15 +520,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const tableResultData = useMemo(() => {
     if (tableData) {
       const { pagedData, statistics } = tableData;
-      const { items, pageIndex, pageSize, total } = pagedData;
+      const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = pagedData;
       getStatisticsData?.(statistics);
       return {
         items: items ?? [],
-        pageIndex,
-        pageSize,
+        pageIndex: resPageIndex,
+        pageSize: resPageSize,
         total,
-        dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
-        dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
+        dataStartIndex: Math.floor((resPageIndex - 1) * pageSize + 1),
+        dataEndIndex: Math.floor((resPageIndex - 1) * pageSize + (items ?? []).length),
         projectLen:
           items
             ?.filter((item: any) => item.projects && item.projects.length > 0)
@@ -372,11 +547,39 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     };
   }, [JSON.stringify(tableData)]);
 
-  const pageSizeChange = () => {};
+  const pageSizeChange = (page: any, size: any) => {
+    setPageIndex(1);
+    setPageSize(size);
 
-  const currentPageChange = () => {};
+    run({
+      ...extractParams,
+      pageIndex,
+      pageSize: size,
+    });
+    setTableSelectData([]);
+    onSelect?.([]);
+  };
 
-  const addProjectEvent = (data: any) => {};
+  // 列显示处理
+  const currentPageChange = (page: any, size: any) => {
+    // 判断当前page是否改变, 没有改变代表是change页面触发
+    if (pageSize === size) {
+      setPageIndex(page === 0 ? 1 : page);
+
+      run({
+        ...extractParams,
+        pageIndex: page,
+        pageSize,
+      });
+      setTableSelectData([]);
+      onSelect?.([]);
+    }
+  };
+
+  const addProjectEvent = (projectNeedValue: AddProjectValue) => {
+    setAddProjectVisible(true);
+    setProjectNeedInfo(projectNeedValue);
+  };
 
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
     // 监测现在数组是否含有此id的数据
@@ -483,11 +686,18 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     };
     return <div style={{ ...style, ...viewStyle }} {...rest} />;
   };
+
+  const refreshEvent = () => {};
+
+  const delayRefresh = () => {};
+
   return (
-    <TableContext.Provider value={{
-      tableSelectData,
-      setTableSelectData,
-    }}>
+    <TableContext.Provider
+      value={{
+        tableSelectData,
+        setTableSelectData,
+      }}
+    >
       <div className={styles.engineerTable}>
         <div className={styles.engineerTableContent} ref={tableContentRef}>
           <ScrollView
@@ -527,9 +737,110 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             />
           </div>
         </div>
+
+        {checkResultVisible && (
+          <CheckResultModal
+            visible={checkResultVisible}
+            onChange={setCheckResultVisible}
+            changeFinishEvent={refreshEvent}
+            projectInfo={checkResultPorjectInfo}
+          />
+        )}
+        {engineerModalVisible && (
+          <EngineerDetailInfo
+            engineerId={currentClickEngineerId}
+            visible={engineerModalVisible}
+            onChange={setEngineerModalVisible}
+          />
+        )}
+        {projectModalVisible && (
+          <ProjectDetailInfo
+            projectId={currentClickProjectId}
+            visible={projectModalVisible}
+            onChange={setProjectModalVisible}
+          />
+        )}
+        {arrangeModalVisible && (
+          <ArrangeModal
+            allotCompanyId={arrangeAllotCompanyId}
+            finishEvent={refreshEvent}
+            visible={arrangeModalVisible}
+            onChange={setArrangeModalVisible}
+            projectIds={[currentArrageProjectId]}
+            defaultSelectType={currentProjectArrangeType}
+            dataSourceType={currentDataSourceType}
+          />
+        )}
+        {editEngineerVisible && (
+          <EditEnigneerModal
+            engineerId={currentEditEngineerId}
+            visible={editEngineerVisible}
+            onChange={setEditEngineerVisible}
+            changeFinishEvent={refreshEvent}
+          />
+        )}
+        {editProjectVisible && (
+          <EditProjectModal
+            companyName={currentEditProjectInfo.companyName}
+            projectId={currentEditProjectInfo.projectId}
+            company={currentEditProjectInfo.company}
+            areaId={currentEditProjectInfo.areaId}
+            status={currentEditProjectInfo.status}
+            visible={editProjectVisible}
+            onChange={setEditProjectVisible}
+            changeFinishEvent={refreshEvent}
+          />
+        )}
+        {copyProjectVisible && (
+          <CopyProjectModal
+            companyName={currentCopyProjectInfo.companyName}
+            projectId={currentCopyProjectInfo.projectId}
+            engineerId={currentCopyProjectInfo.engineerId}
+            company={currentCopyProjectInfo.company}
+            areaId={currentCopyProjectInfo.areaId}
+            visible={copyProjectVisible}
+            onChange={setCopyProjectVisible}
+            changeFinishEvent={refreshEvent}
+          />
+        )}
+        {addProjectVisible && (
+          <AddProjectModal
+            companyName={projectNeedInfo.companyName}
+            changeFinishEvent={refreshEvent}
+            visible={addProjectVisible}
+            onChange={setAddProjectVisible}
+            engineerId={projectNeedInfo.engineerId}
+            areaId={projectNeedInfo.areaId}
+            company={projectNeedInfo.company}
+          />
+        )}
+
+        {externalArrangeModalVisible && (
+          <ExternalArrangeModal
+            projectId={currentClickProjectId}
+            proName={currentProName}
+            onChange={setExternalArrangeModalVisible}
+            visible={externalArrangeModalVisible}
+            search={delayRefresh}
+          />
+        )}
+
+        {externalListModalVisible && (
+          <ExternalListModal
+            projectId={currentClickProjectId}
+            visible={externalListModalVisible}
+            onChange={setExternalListModalVisible}
+            stepData={externalStepData}
+            refresh={delayRefresh}
+          />
+        )}
       </div>
     </TableContext.Provider>
   );
 };
 
 export default forwardRef(EngineerTable);
+function getExternalStep(projectId: string) {
+  throw new Error('Function not implemented.');
+}
+

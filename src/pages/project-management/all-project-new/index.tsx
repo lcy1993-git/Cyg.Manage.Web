@@ -20,10 +20,12 @@ import { TableItemCheckedInfo } from './components/engineer-table-item';
 import { Popconfirm } from 'antd';
 import { message } from 'antd';
 import {
+  applyKnot,
   canEditArrange,
   checkCanArrange,
   deleteProject,
   getProjectInfo,
+  revokeKnot,
 } from '@/services/project-management/all-project';
 import TableExportButton from '@/components/table-export-button';
 import UploadAddProjectModal from './components/upload-batch-modal';
@@ -31,6 +33,11 @@ import ArrangeModal from './components/arrange-modal';
 import EditArrangeModal from './components/edit-arrange-modal';
 import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
+import ShareModal from './components/share-modal';
+import ProjectRecallModal from './components/project-recall-modal';
+import ResourceLibraryManageModal from './components/resource-library-manage-modal';
+import ExportPowerModal from './components/export-power-modal';
+import AuditKnotModal from './components/audit-knot-modal';
 
 const { Search } = Input;
 
@@ -45,7 +52,7 @@ const statisticsObject = {
 const AllProject: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('');
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
-  // 从列表返回的数据中获取
+  // 从列表返回的数据中获取 TODO设置search的参数
   const [searchParams, setSearchParams] = useState({
     category: [],
     pCategory: [],
@@ -70,7 +77,7 @@ const AllProject: React.FC = () => {
     delegation: 0,
     beShared: 0,
   });
-
+  // 外审安排的时候用到
   const [currentProjectId, setCurrentProjectId] = useState<string>('');
   const [projectName, setProjectName] = useState<string>('');
 
@@ -84,6 +91,8 @@ const AllProject: React.FC = () => {
   const [editCurrentAllotCompanyId, setEditCurrentAllotCompanyId] = useState<string>('');
   const [ifCanEdit, setIfCanEdit] = useState<any>([]);
 
+  // 撤回共享的时候用到
+  const [currentRecallProjectId, setCurrentRecallProjectId] = useState<string>('');
   // 被勾选中的数据
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
@@ -94,7 +103,11 @@ const AllProject: React.FC = () => {
   const [editArrangeModalVisible, setEditArrangeModalVisible] = useState<boolean>(false);
   const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
   const [externalArrangeModal, setExternalArrangeModal] = useState<boolean>(false);
+  const [shareModalVisible, setShareModalVisible] = useState<boolean>(false);
+  const [recallModalVisible, setRecallModalVisible] = useState(false);
   const [libVisible, setLibVisible] = useState(false);
+  const [exportPowerModalVisible, setExportPowerModalVisible] = useState<boolean>(false);
+  const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -127,8 +140,6 @@ const AllProject: React.FC = () => {
       await tableRef.current.delayRefresh();
     }
   };
-
-  const publicSearch = () => {};
 
   const handleStatisticsData = (statisticsDataItem?: number) => {
     if (statisticsDataItem) {
@@ -255,17 +266,70 @@ const AllProject: React.FC = () => {
 
   const revokeAllotEvent = async () => {};
 
-  const shareEvent = () => {};
+  const shareEvent = async () => {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+    if (projectIds.length === 0) {
+      message.error('请至少选择一个项目');
+      return;
+    }
 
-  const recallShareEvent = () => {};
+    setSelectProjectIds(projectIds);
+    setShareModalVisible(true);
+  };
 
-  const applyKnotEvent = () => {};
+  const recallShareEvent = async () => {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+    if (projectIds.length === 0) {
+      message.error('请至少选择一个项目');
+      return;
+    }
 
-  const revokeKnotEvent = () => {};
+    if (projectIds.length > 1) {
+      message.error('只能对一个项目进行撤回共享操作');
+      return;
+    }
 
-  const auditKnotEvent = () => {};
+    setCurrentRecallProjectId(projectIds[0]);
+    setRecallModalVisible(true);
+
+  };
+
+  const applyKnotEvent = async () => {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+    if (projectIds.length === 0) {
+      message.error('请至少选择一个项目');
+      return;
+    }
+
+    await applyKnot(projectIds);
+    message.success('申请结项成功');
+    refresh();
+  };
+
+  const revokeKnotEvent = async () => {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+    if (projectIds.length === 0) {
+      message.error('请至少选择一个项目');
+      return;
+    }
+
+    await revokeKnot(projectIds);
+    message.success('撤回结项成功');
+    refresh();
+  };
+
+  const auditKnotEvent = async () => {
+    if (tableSelectData && tableSelectData.length === 0) {
+      message.warning('请至少选择一条数据');
+      return;
+    }
+    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
+    setSelectProjectIds(projectIds);
+    setProjectAuditKnotModal(true);
+  };
 
   const searchEvent = () => {
+    // TODO
     searchByParams({
       statisticalCategory,
       keyWord,
@@ -280,6 +344,8 @@ const AllProject: React.FC = () => {
       return;
     }
     const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
+    setSelectProjectIds(projectIds);
+    setExportPowerModalVisible(true);
   };
 
   const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
@@ -359,20 +425,25 @@ const AllProject: React.FC = () => {
 
   useEffect(() => {
     if (allProjectSearchProjectName) {
+      // TODO 有projectName的时候设置projectName
       searchByParams({
         keyWord,
+        statisticalCategory,
         ...searchParams,
       });
     }
     if (allProjectSearchPerson) {
+      // TODO 有人的时候设置人
       searchByParams({
         keyWord,
+        statisticalCategory,
         ...searchParams,
       });
     }
     if (!allProjectSearchPerson && !allProjectSearchPerson) {
       searchByParams({
         keyWord,
+        statisticalCategory,
         ...searchParams,
       });
     }
@@ -481,6 +552,7 @@ const AllProject: React.FC = () => {
                     selectSlot={() => {
                       return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
                     }}
+                    // TODO 待添加参数
                     extraParams={{}}
                   />
                 </div>
@@ -566,6 +638,46 @@ const AllProject: React.FC = () => {
           projectId={currentProjectId}
           proName={projectName}
           search={delayRefresh}
+        />
+      )}
+
+      {shareModalVisible && (
+        <ShareModal
+          finishEvent={refresh}
+          visible={shareModalVisible}
+          onChange={setShareModalVisible}
+          projectIds={selectProjectIds}
+        />
+      )}
+      {recallModalVisible && (
+        <ProjectRecallModal
+          changeFinishEvent={refresh}
+          visible={recallModalVisible}
+          projectId={currentRecallProjectId}
+          onChange={setRecallModalVisible}
+        />
+      )}
+      {libVisible && (
+        <ResourceLibraryManageModal
+          visible={libVisible}
+          onChange={setLibVisible}
+          changeFinishEvent={refresh}
+        />
+      )}
+      {exportPowerModalVisible && (
+        <ExportPowerModal
+          visible={exportPowerModalVisible}
+          onChange={setExportPowerModalVisible}
+          projectIds={selectProjectIds}
+          finishEvent={refresh}
+        />
+      )}
+      {projectAuditKnotModal && (
+        <AuditKnotModal
+          visible={projectAuditKnotModal}
+          onChange={setProjectAuditKnotModal}
+          projectIds={selectProjectIds}
+          finishEvent={refresh}
         />
       )}
     </PageCommonWrap>
