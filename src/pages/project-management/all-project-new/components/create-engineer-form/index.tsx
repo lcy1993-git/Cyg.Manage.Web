@@ -248,7 +248,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.organization}
           >
             <Input placeholder="请输入" />
           </CyFormItem>

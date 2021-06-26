@@ -10,7 +10,7 @@ import { useControllableValue, useRequest } from 'ahooks';
 import { useState, useMemo } from 'react';
 import { useGetSelectData } from '@/utils/hooks';
 import { getCommonSelectData } from '@/services/common';
-import rule from './engineer-form-rule';
+import rule from '../../create-engineer-form/engineer-form-rule';
 interface EditBulkEngineerProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
