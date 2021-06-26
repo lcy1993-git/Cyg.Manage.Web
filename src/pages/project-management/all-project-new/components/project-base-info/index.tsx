@@ -155,7 +155,9 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
         </div>
         <div className="flex1">
           <ReadonlyItem label="所属市公司" labelWidth={100}>
-            {projectInfo?.cityCompany ? projectInfo?.cityCompany : '无'}
+            <Tooltip title={projectInfo?.cityCompany} placement="topLeft">
+              {projectInfo?.cityCompany ? projectInfo?.cityCompany : '无'}
+            </Tooltip>
           </ReadonlyItem>
         </div>
       </div>
@@ -174,7 +176,9 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       <div className="flex">
         <div className="flex1">
           <ReadonlyItem label="所属县公司" labelWidth={100}>
-            {projectInfo?.countyCompany ? projectInfo?.countyCompany : '无'}
+            <Tooltip title={projectInfo?.countyCompany}>
+              {projectInfo?.countyCompany ? projectInfo?.countyCompany : '无'}
+            </Tooltip>
           </ReadonlyItem>
         </div>
 

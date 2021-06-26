@@ -14,6 +14,7 @@ import uuid from 'node-uuid';
 import pdfjs from 'pdfjs-dist';
 import FormSwitch from '@/components/form-switch';
 import { getClientCategorys } from '@/services/personnel-config/company-user';
+import rule from '../../news-rule';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -228,7 +229,7 @@ const TextEditorModal = (props: EditorParams) => {
   return (
     <>
       <Form form={titleForm}>
-        <CyFormItem label="标题" name="title" required labelWidth={60}>
+        <CyFormItem label="标题" name="title" required labelWidth={60} rules={rule.title}>
           <Input placeholder="标题" />
         </CyFormItem>
 

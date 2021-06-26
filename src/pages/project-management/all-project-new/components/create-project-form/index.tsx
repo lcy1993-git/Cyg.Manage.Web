@@ -143,7 +143,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
             rules={Rule.total}
           >
-            <InputNumber placeholder="请输入" style={{ width: '100%' }} />
+            <Input
+              type="number"
+              placeholder="请输入"
+              style={{ width: '100%' }}
+              min={0}
+              defaultValue={0}
+            />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -637,7 +643,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
               ]}
             >
-              <InputNumber
+              <Input
+                type="number"
                 placeholder="请输入交底范围"
                 style={{ width: '100%' }}
                 value={disRangeValue}
@@ -694,7 +701,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
               ]}
             >
-              <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
+              <Input type="number" placeholder="请输入桩位范围" style={{ width: '100%' }} />
             </CyFormItem>
           )}
         </div>

@@ -331,7 +331,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             align="right"
             initialValue={new Date().getFullYear()}
             required
-            rules={Rule.required}
+            rules={Rule.plannedYear}
           >
             <Input type="number" placeholder="请输入" />
           </CyFormItem>

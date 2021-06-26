@@ -70,6 +70,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
       <Form form={form} preserve={false}>
         <CyFormItem label="导入" name="file" required>
           <FileUpload
+            accept=".zip"
             uploadFileBtn
             trigger={triggerUploadFile}
             maxCount={1}
