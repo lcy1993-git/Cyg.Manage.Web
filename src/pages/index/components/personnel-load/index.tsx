@@ -104,22 +104,24 @@ const PersonnelLoad: React.FC<Props> = (props) => {
       },
       tooltip: {
         trigger: 'axis',
-        enterable:true,
+        enterable: true,
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        borderColor: '#000',
         axisPointer: {
           type: 'shadow',
         },
-        position: function (pt: any) {
+        position (pt: any) {
           return [pt[0] - 122, pt[1] - 62];
         },
-        formatter: function (params: any) {
+        formatter (params: any) {
           const [name] = params;
 
           const personId = burdensData[name.dataIndex]?.id;
 
           if (type === '1') {
-            return `${name.name}<br />
-                    项目数量:${name.value}
-                    <div>所有项目列表：<span  style="color: #0E7B3B;cursor: pointer;display: inline-block;width: 32px;height: 24px;" onclick=toAllProject('${personId}')>跳转</span></div>
+            return `<span style="color: #fff">${name.name}</span><br />
+            <span style="color: #2AFE97">项目数量：</span>:<span style="color: #fff">${name.value}</span>
+                    <div style="color: #2AFE97">所有项目列表：<span  style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;" onclick=toAllProject('${personId}')>跳转</span></div>
                     `;
           }
           return `${name.name}<br />
@@ -161,7 +163,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
           },
           fontSize: 10,
           align: 'right',
-          formatter: function (params: any) {
+          formatter (params: any) {
             let newParamsName = '';
             let paramsNameNumber = params.length;
             if (params.length > 12) {
@@ -194,7 +196,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
           type: 'bar',
           itemStyle: {
             normal: {
-              color: function () {
+              color () {
                 return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
                   {
                     offset: 0,

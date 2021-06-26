@@ -16,7 +16,7 @@ import ProjectProgress from '@/pages/index/components/index-project-progress-com
 
 import { IndexContext } from './context';
 import { Spin } from 'antd';
-import { divide, multiply, subtract } from 'lodash';
+import { divide, multiply, size, subtract } from 'lodash';
 import uuid from 'node-uuid';
 import PageCommonWrap from '@/components/page-common-wrap';
 import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex';
@@ -148,8 +148,10 @@ const Index: React.FC = () => {
   useEffect(() => {
     setReloadLoading(true)
     initPage();
-    setReloadLoading(false);
-  },[JSON.stringify(height)])
+    setTimeout(() => {
+      setReloadLoading(false);
+    },0)
+  },[height])
 
   return (
     <PageCommonWrap noPadding={true} className={styles.indexWrap}>
