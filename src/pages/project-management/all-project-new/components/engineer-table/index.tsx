@@ -220,7 +220,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     {
       title: '项目名称',
       dataIndex: 'name',
-      width: 120,
+      width: 300,
       render: (record: any) => {
         return (
           <u
@@ -249,7 +249,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     {
       title: '项目性质',
       dataIndex: 'natureTexts',
-      width: 120,
+      width: 160,
       render: (record: any) => {
         const { natureTexts = [] } = record;
         return natureTexts.map((item: any) => {
@@ -270,16 +270,19 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       title: '建设建造目的',
       dataIndex: 'reformAimText',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '所属市公司',
       dataIndex: 'cityCompany',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '所属县公司',
       dataIndex: 'countyCompany',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '建设类型',
@@ -295,16 +298,19 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       title: '项目类别',
       dataIndex: 'pCategoryText',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '项目阶段',
       dataIndex: 'stageText',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '项目属性',
       dataIndex: 'pAttributeText',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '交底范围',
@@ -369,7 +375,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     {
       title: '项目身份',
       dataIndex: 'identitys',
-      width: 140,
+      width: 180,
       render: (record: any) => {
         const { identitys = [] } = record;
         return identitys
@@ -510,12 +516,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       return sum + (item.width ? item.width : 100);
     }, 0);
     const isOverflow = (tableContentSize.width ?? 0) - 50 - columnsWidth < 0;
+
     return {
       isOverflow,
       columns: showColumns,
       columnsWidth: columnsWidth + 38,
     };
-  }, [chooseColumns, JSON.stringify(tableContentSize)]);
+    
+  }, [chooseColumns, JSON.stringify(tableContentSize.width)]);
 
   const tableResultData = useMemo(() => {
     if (tableData) {

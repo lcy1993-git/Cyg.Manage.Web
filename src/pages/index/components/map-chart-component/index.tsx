@@ -30,7 +30,7 @@ interface MapChartComponentProps {
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const { setCurrentAreaInfo, currentAreaInfo } = props;
   const [activeCityCode, setActiveCityCode] = useState<string>();
-  
+
   const [activeAreaCode, setActiveAreaCide] = useState<string>();
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
@@ -76,25 +76,31 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
       tooltip: {
         trigger: 'item',
         showDelay: 400,
-        position: function (pt: any) {
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        borderColor: '#000',
+        position(pt: any) {
           return [pt[0] - 95, pt[1] - 74];
         },
         confine: true,
-        formatter: function (params: any) {
+        formatter(params: any) {
           const { name } = params;
 
           const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name);
           if (nameIndex > -1) {
             return `
-                            ${name} <br />
-                            项目数量: ${getMapStatisticData[nameIndex!].projectQuantity}
-                            <div>可视化成果: <a onclick=setSelectCity("${cityCodeObject[name] ?? name}")  href='/visualization-results/result-page'>跳转</a></div>
+                            <span style="color: #fff">${name}</span> <br />
+                            <span style="color: #2AFE97">项目数量</span>: <span style="color: #fff">${
+                              getMapStatisticData[nameIndex!].projectQuantity
+                            }</span>
+                            <div style="color: #2AFE97">可视化成果: <a onclick=setSelectCity("${
+                              cityCodeObject[name] ?? name
+                            }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</a></div>
                             
                         `;
           }
-          return `
-                        ${name} <br />
-                        项目数量: 0
+            return `
+                        <span style="color: #fff">${name}</span>  <br />
+                        <span style="color: #2AFE97">项目数量:</span> <span style="color: #fff">0</span>
                     `;
         },
       },

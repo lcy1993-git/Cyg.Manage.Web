@@ -160,12 +160,19 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
           item.dataIndex === 'action' ? styles.actionTd : ''
         } ${item.dataIndex === 'status' ? styles.statusTd : ''}`}
         key={uuid.v1()}
-        style={{
-          width: `${item.width}px`,
-          left: `${item.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
-            item.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-          }`,
-        }}
+        style={
+          isOverflow
+            ? {
+                width: `${item.width}px`,
+                left: `${item.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
+                  item.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
+                }`,
+              }
+            : {
+                width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
+                flex: `${item.dataIndex === 'name' ? '1' : 'none'}`,
+              }
+        }
       >
         {item.title}
       </div>
@@ -188,12 +195,19 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                 ite.dataIndex === 'action' ? styles.actionTd : ''
               } ${ite.dataIndex === 'status' ? styles.statusTd : ''}`}
               key={uuid.v1()}
-              style={{
-                width: `${ite.width}px`,
-                left: `${ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
-                  ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                }`,
-              }}
+              style={
+                isOverflow
+                  ? {
+                      width: `${ite.width}px`,
+                      left: `${ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
+                        ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
+                      }`,
+                    }
+                  : {
+                      width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
+                      flex: `${ite.dataIndex === 'name' ? '1' : 'none'}`,
+                    }
+              }
             >
               {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
             </div>
