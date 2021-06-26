@@ -1,6 +1,7 @@
 import EmptyTip from '@/components/empty-tip';
 import {
   AllProjectStatisticsParams,
+  getExternalArrangeStep,
   getProjectInfo,
   getProjectTableList,
 } from '@/services/project-management/all-project';
@@ -57,10 +58,11 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   afterSearch?: () => void;
   getStatisticsData?: (value: any) => void;
+  columnsConfig: string[];
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, getStatisticsData } = props;
+  const { extractParams, onSelect, getStatisticsData, columnsConfig = [] } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -135,6 +137,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const [leftNumber, setLeftNumber] = useState<number>(0);
+
+  const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
+    manual: true,
+  });
 
   const projectItemMenu = (
     jurisdictionInfo: JurisdictionInfo,
@@ -242,6 +248,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 100,
     },
     {
+      title: '项目类型',
+      dataIndex: 'pType',
+      width: 100,
+    },
+    {
       title: '电压等级',
       dataIndex: 'kvLevelText',
       width: 100,
@@ -287,11 +298,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     {
       title: '建设类型',
       dataIndex: 'constructTypeText',
-      width: 120,
-    },
-    {
-      title: '项目批次',
-      dataIndex: 'batchText',
       width: 120,
     },
     {
@@ -354,6 +360,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       render: (record: any) => {
         return record.designUser.value;
       },
+    },
+    {
+      title: '项目批次',
+      dataIndex: 'batchText',
+      width: 120,
     },
     {
       title: '项目来源',
@@ -484,31 +495,25 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
   ];
 
-  const chooseColumns = [
-    'name',
-    'categoryText',
-    'kvLevelText',
-    'natureTexts',
-    'majorCategoryText',
-    'reformAimText',
-    'cityCompany',
-    'countyCompany',
-    'constructTypeText',
-    'pCategoryText',
-    'stageText',
-    'pAttributeText',
-    'disclosureRange',
-    'pileRange',
-    'dataSourceType',
-    'exportCoordinate',
-    'surveyUser',
-    'designUser',
-    'sources',
-    'identitys',
-    'batchText',
-    'status',
-    'action',
-  ];
+  const chooseColumns = useMemo(() => {
+    if (columnsConfig) {
+      console.log(columnsConfig)
+      return ['name', ...columnsConfig, 'sources', 'identitys', 'status', 'action'];
+    }
+    return [
+      'categoryText',
+      'kvLevelText',
+      'natureTexts',
+      'majorCategoryText',
+      'constructTypeText',
+      'batchText',
+      'stageText',
+      'exportCoordinate',
+      'surveyUser',
+      'designUser',
+      'identitys',
+    ];
+  }, [JSON.stringify(columnsConfig)]);
 
   const columnsInfo = useMemo(() => {
     const showColumns = completeConfig.filter((item) => chooseColumns.includes(item.dataIndex));
@@ -522,7 +527,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       columns: showColumns,
       columnsWidth: columnsWidth + 38,
     };
-    
   }, [chooseColumns, JSON.stringify(tableContentSize.width)]);
 
   const tableResultData = useMemo(() => {
@@ -848,7 +852,3 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 };
 
 export default forwardRef(EngineerTable);
-function getExternalStep(projectId: string) {
-  throw new Error('Function not implemented.');
-}
-

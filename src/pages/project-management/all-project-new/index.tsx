@@ -24,6 +24,7 @@ import {
   canEditArrange,
   checkCanArrange,
   deleteProject,
+  getColumnsConfig,
   getProjectInfo,
   revokeKnot,
 } from '@/services/project-management/all-project';
@@ -38,6 +39,8 @@ import ProjectRecallModal from './components/project-recall-modal';
 import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 import ExportPowerModal from './components/export-power-modal';
 import AuditKnotModal from './components/audit-knot-modal';
+import ColumnsConfigModal from './components/columns-config-modal';
+import { useRequest } from 'ahooks';
 
 const { Search } = Input;
 
@@ -95,6 +98,7 @@ const AllProject: React.FC = () => {
   const [currentRecallProjectId, setCurrentRecallProjectId] = useState<string>('');
   // 被勾选中的数据
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
+  const [chooseColumns, setChooseColumns] = useState<string[]>([]);
 
   const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
   const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
@@ -108,6 +112,7 @@ const AllProject: React.FC = () => {
   const [libVisible, setLibVisible] = useState(false);
   const [exportPowerModalVisible, setExportPowerModalVisible] = useState<boolean>(false);
   const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false);
+  const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -117,6 +122,24 @@ const AllProject: React.FC = () => {
     allProjectSearchPerson,
     allProjectSearchProjectName,
   } = useLayoutStore();
+
+  const {data: columnsData} = useRequest(() => getColumnsConfig(), {
+    onSuccess: () => {
+      setChooseColumns(columnsData ? JSON.parse(columnsData) : [
+        "categoryText",
+        "kvLevelText",
+        "natureTexts",
+        "majorCategoryText",
+        "constructTypeText",
+        "batchText",
+        "stageText",
+        "exportCoordinate",
+        "surveyUser",
+        "designUser",
+        "identitys"
+      ]);
+    },
+  });
 
   const tableRef = useRef<HTMLDivElement>(null);
 
@@ -291,7 +314,6 @@ const AllProject: React.FC = () => {
 
     setCurrentRecallProjectId(projectIds[0]);
     setRecallModalVisible(true);
-
   };
 
   const applyKnotEvent = async () => {
@@ -568,8 +590,11 @@ const AllProject: React.FC = () => {
                 </Dropdown>
               )}
               {buttonJurisdictionArray?.includes('all-project-resource') && (
-                <Button onClick={() => setLibVisible(true)}>资源库迭代</Button>
+                <Button className="mr7" onClick={() => setLibVisible(true)}>
+                  资源库迭代
+                </Button>
               )}
+              <Button onClick={() => setChooseColumnsModal(true)}>自定义表头</Button>
             </div>
           </div>
           <div className={styles.engineerTableContent}>
@@ -578,6 +603,7 @@ const AllProject: React.FC = () => {
               ref={tableRef}
               extractParams={{ keyWord, ...searchParams }}
               onSelect={tableSelectEvent}
+              columnsConfig={chooseColumns}
             />
           </div>
         </div>
@@ -677,6 +703,14 @@ const AllProject: React.FC = () => {
           visible={projectAuditKnotModal}
           onChange={setProjectAuditKnotModal}
           projectIds={selectProjectIds}
+          finishEvent={refresh}
+        />
+      )}
+      {chooseColumnsModal && (
+        <ColumnsConfigModal
+          hasCheckColumns={chooseColumns}
+          visible={chooseColumnsModal}
+          onChange={setChooseColumnsModal}
           finishEvent={refresh}
         />
       )}
