@@ -1,11 +1,10 @@
 import CyTip from '@/components/cy-tip';
-import { modifyExportPowerState } from '@/services/project-management/all-project';
+import { auditKnot } from '@/services/project-management/all-project';
 import { useControllableValue } from 'ahooks';
-import { Divider, Form, message, Modal, Radio } from 'antd';
+import { message, Modal, Radio } from 'antd';
 import React, { Dispatch, useState } from 'react';
 import { SetStateAction } from 'react';
-
-// import styles from './index.less';
+import styles from './index.less';
 
 interface AuditKnotParams {
   projectIds: string[];
@@ -20,11 +19,8 @@ const AuditKnotModal: React.FC<AuditKnotParams> = (props) => {
 
   const { projectIds, finishEvent } = props;
 
-  const modifyPowerStatus = async () => {
-    await modifyExportPowerState({
-      isEnable: powerStatus,
-      projectIds: projectIds,
-    });
+  const auditKnotEvent = async () => {
+    await auditKnot(powerStatus, projectIds);
     message.success('操作成功');
     setState(false);
     finishEvent?.();
@@ -34,22 +30,24 @@ const AuditKnotModal: React.FC<AuditKnotParams> = (props) => {
     <Modal
       maskClosable={false}
       title="结项审批"
-      width={755}
+      width="500px"
       visible={state as boolean}
       destroyOnClose
       onCancel={() => setState(false)}
-      onOk={() => modifyPowerStatus()}
+      onOk={() => auditKnotEvent()}
       cancelText="取消"
       okText="确认"
-      bodyStyle={{ height: 120, padding: 0 }}
+      bodyStyle={{ height: 150, padding: 0 }}
     >
       <CyTip>该项目已申请结项，请选择执行以下操作：</CyTip>
-      <Divider>
-        <Radio.Group onChange={(e) => setPowerStatus(e.target.value)} value={powerStatus}>
-          <Radio value={true}>启用</Radio>
-          <Radio value={false}>禁用</Radio>
-        </Radio.Group>
-      </Divider>
+      <Radio.Group onChange={(e) => setPowerStatus(e.target.value)} value={powerStatus}>
+        <div className={styles.auditKnot}>
+          <Radio value={true}>结项通过</Radio>
+          <div className={styles.noAuditKnot}>
+            <Radio value={false}>结项退回</Radio>
+          </div>
+        </div>
+      </Radio.Group>
     </Modal>
   );
 };
