@@ -1,31 +1,32 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-
-import { Tree, Tabs, Spin, message, Input, Button, Divider, DatePicker } from 'antd';
+import { Tree, message, Input, Button, DatePicker } from 'antd';
 import { SearchOutlined, AlignLeftOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
-import { useRequest, useSize } from 'ahooks';
+import { useRequest } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
   fetchCompanyEngineerProjectListByParams,
   ProjectListByAreaType,
   Properties,
 } from '@/services/visualization-results/side-tree';
+import { ProjectList } from '@/services/visualization-results/visualization-results';
+
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { downloadMapPositon } from '@/services/visualization-results/list-menu';
 import ExportMapPositionModal from '../export-map-position-modal';
-import CommentModal from '../comment-modal';
 import FilterModal from '../filter-modal';
 import ResultModal from '../result-modal';
+import CommentModal from '../comment-modal';
 import MaterialModal from '../material-modal';
 import SidePopup from '../side-popup';
+import MenuTree from './components/menu-tree';
 import ToolTipButton from './components/TooltipButton';
-import { useContainer } from '../../result-page/mobx-store';
-import { ProjectList } from '@/services/visualization-results/visualization-results';
-import { observer } from 'mobx-react-lite';
-import { flattenDeepToKey } from '../../utils/utils'
 import ControlLayers from '../control-layers';
 
+import { observer } from 'mobx-react-lite';
+import { useContainer } from '../../result-page/mobx-store';
 import moment from 'moment';
 import _ from 'lodash';
+import { flattenDeepToKey } from '../../utils/utils'
 import classNames from 'classnames';
 import styles from './index.less';
 
@@ -33,9 +34,6 @@ import achievementSvg from '@/assets/image/webgis/svg/achievements.svg'
 import exportSvg from '@/assets/image/webgis/svg/export.svg'
 import materiaSvg from '@/assets/image/webgis/svg/material.svg'
 import messageSvg from '@/assets/image/webgis/svg/message.svg';
-import MenuTree from './components/menu-tree';
-
-const { TabPane } = Tabs;
 
 export interface TreeNodeType {
   title: string;
@@ -91,8 +89,6 @@ type KeyType =
     checked: React.Key[];
     halfChecked: React.Key[];
   };
-
-const areaArray = ["省", "市", "县", "工", "项"];
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 项目详情
@@ -155,8 +151,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }, [checkedProjectIdList.length])
 
   const { className, onChange, sideMenuVisibel } = props;
-  const ref = useRef<HTMLDivElement>(null);
-  const size = useSize(ref);
   const activeStyle = (key: string) => (tabActiveKey === key ? '#0e7b3b' : '#000');
 
   useEffect(() => {
@@ -239,13 +233,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         children?.forEach((v) => {
           dfsByName(v, true);
         });
-
         return;
       }
 
       if (isSelect) {
         isProjectLevel(levelCategory) ? checked.push(node) : expanded.push(key);
-
         children?.forEach((v) => {
           dfsByName(v, isSelect);
         });
@@ -264,7 +256,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         children?.forEach((v) => {
           dfsById(v, true);
         });
-
         return;
       }
 
@@ -364,15 +355,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setButtonActive(index);
   }
 
-  // const areaButtons = (buttonActive: number) => {
-  //   return areaArray.map((item, index) => {
-  //     return (
-  //       <div key={item} className={styles.areaButtonsItem}>
-  //         <Button style={{ width: "100%" }} type={buttonActive === index ? "primary" : "default"} onClick={() => handlerAreaButtonCheck(index, buttonActive)}>{item}</Button>
-  //       </div>
-  //     )
-  //   })
-  // }
   const treeNodeRender = (data: any) => {
     return data.map((item: any) => {
       let rest = {}
@@ -457,8 +439,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }
 
   const treeProps = {
-    height: size.height ? size.height - 120 : 680,
-    checkable: true,
     onExpand: onExpand,
     expandedKeys: expandedKeys,
     onCheck: (checked: any, info: any) => onCheck(checked, info),
@@ -466,7 +446,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     treeData: treeData,
     className: classNames(styles.sideMenu),
     selectedKeys: selectedKeys,
-    multiple: true,
     onSelect: onSelect,
   }
 
@@ -478,8 +457,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       </div>
       <div className={styles.menuTree}>
         <MenuTree
-          className={className}
-          ref={ref}
+          className={className!}
           onTabChange={onTabChange}
           activeStyle={activeStyle}
           tabActiveKey={tabActiveKey}
@@ -490,61 +468,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         />
       </div>
 
-      {/* <div ref={ref} className={classNames(className, styles.sideTree, styles.tabPane)}>
-        <div style={{ color: activeStyle('1') }} className={styles.tabBar}>
-          <div className={styles.tabBarItem} onClick={() => onTabChange('1')}>
-            按地区
-          </div>
-          <Divider type="vertical" />
-          <div
-            style={{ color: activeStyle('2') }}
-            className={styles.tabBarItem}
-            onClick={() => onTabChange('2')}
-          >
-            按公司
-          </div>
-        </div>
-
-        <Tabs
-          renderTabBar={() => <></>}
-          style={{ height: 'calc(100% - 42px)', font: activeStyle(tabActiveKey), color: '#d6d6d6' }}
-        >
-          <TabPane style={{ overflow: 'hidden' }} key="1">
-            {treeListDataLoading ? (
-              <Spin
-                spinning={treeListDataLoading}
-                className={styles.loading}
-                tip="正在载入中..."
-              ></Spin>
-            ) : null}
-            {!treeListDataLoading ? (
-              <>
-                {tabActiveKey === "1" ? (
-                  <div className={styles.areaButtons}>
-                    {areaButtons(buttonActive)}
-                  </div>
-                ) : null}
-                <Tree
-                  // height={size.height ? size.height - 120 : 680}
-                  // checkable
-                  // onExpand={onExpand}
-                  // defaultExpandAll
-                  // expandedKeys={expandedKeys}
-                  // onCheck={(checked, info) => onCheck(checked, info)}
-                  // checkedKeys={checkedKeys}
-                  // treeData={treeData}
-                  // className={classNames(styles.sideMenu)}
-                  // selectedKeys={selectedKeys}
-                  // multiple={true}
-                  // onSelect={onSelect}
-                  {...treeProps}
-                >
-                </Tree>
-              </>
-            ) : null}
-          </TabPane>
-        </Tabs>
-      </div> */}
       <div className={styles.timeLine}>
         <DatePicker ref={startDateRef} style={{ width: "100%" }} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => setStartDateValue(e!)} />
         <DatePicker ref={endDateRef} style={{ width: "100%" }} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => setEndDateValue(e!)} />

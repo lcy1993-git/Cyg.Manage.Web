@@ -1,29 +1,47 @@
+import { useRef, useMemo } from 'react';
 import { Divider, Tree, Tabs, Spin, Button } from 'antd';
 import { useSize } from 'ahooks';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
+interface TreeDataProps {
+  onExpand: any;
+  onCheck: (checked: any, info: any) => void;
+  checkedKeys: any;
+  treeData: any[];
+  className: string;
+  selectedKeys: string[];
+  onSelect: (a0: any, a1: any) => void;
+}
+
 interface Props {
-  className: any;
+  className: string;
+  onTabChange: (arg0: "1" | "2") => void;
+  activeStyle: (arg0: string) => string;
+  tabActiveKey: string;
+  treeListDataLoading: boolean;
+  buttonActive: number;
+  handlerAreaButtonCheck: (index: number, active: number) => void;
+  treeProps: TreeDataProps
 }
 
 const areaArray = ["省", "市", "县", "工", "项"];
 
-const MenuTree: React.FC<any> = ({
+const MenuTree: React.FC<Props> = ({
   className,
-  ref,
   onTabChange,
   activeStyle,
   tabActiveKey,
   treeListDataLoading,
   buttonActive,
   treeProps,
-  handlerAreaButtonCheck
+  handlerAreaButtonCheck,
 
 }) => {
-  const size = useSize(ref);
-  console.log(size);
+  
+  const ref = useRef<HTMLDivElement>(null);
+  const size = useSize(ref)
 
   const areaButtons = (buttonActive: number) => {
     return areaArray.map((item, index) => {
@@ -34,6 +52,16 @@ const MenuTree: React.FC<any> = ({
       )
     })
   }
+
+  // 计算高度
+  const operrationHeight = useMemo(() => {
+    const addTopHeight = tabActiveKey === "1" ? -30 : 0; 
+    if(size.height){
+      return size.height - 60 + addTopHeight
+    }
+    return window.innerHeight > 936 ?  820 : 460
+
+  }, [JSON.stringify(size), tabActiveKey])
 
   return (
     <div ref={ref} className={styles.sideTree}>
@@ -72,7 +100,7 @@ const MenuTree: React.FC<any> = ({
               ) : null}
               <div style={{ height: "calc(100% - 36px)" }}>
                 
-                <Tree {...treeProps} />
+                { size.height &&  <Tree {...treeProps} height={operrationHeight} checkable={true} multiple={true} />}
               </div>
             </div>
           ) : null}
