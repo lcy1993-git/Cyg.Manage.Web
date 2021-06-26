@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react';
 interface LayoutContextValue {
   resourceManageFlag?: boolean;
   clearAgainLogin?: () => void;
-  allProjectSearchProjectName?: string;
+  allProjectSearchProjectId?: string;
   allProjectSearchPerson?: string;
   setResourceManageFlag?: (value: boolean) => void;
   setAllProjectSearchProjectId?: (value: string) => void;
