@@ -237,7 +237,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目起止日期" align="right" labelWidth={111}>
+              <CyFormItem label="项目截止日期" align="right" labelWidth={111}>
                 <div style={{ width: '100%' }}>
                   <RangePicker value={(startTime && endTime) ? [moment(startTime),moment(endTime)] : [null,null]} onChange={timeChange}  />
                 </div>
