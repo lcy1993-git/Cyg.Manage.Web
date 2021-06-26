@@ -1,6 +1,6 @@
 import { Modal, Form, Select, Button } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons'
-import { useRequest, useMo, useMount } from 'ahooks';
+import { useRequest, useMount } from 'ahooks';
 import UrlSelect from '@/components/url-select';
 import EnumSelect from '@/components/enum-select';
 // import { useGetProjectEnum } from '@/utils/hooks';
@@ -77,6 +77,12 @@ const FilterModal: React.FC<Props> = ({
     <Button style={{width: 68}} onClick={onReset}><ReloadOutlined />重置</Button>,
     <Button style={{width: 68}} onClick={sureEvent}type="primary">确定</Button>,
   ]
+  const selectStyle = {
+    maxTagPlaceholder : (e: any[]) => `已选择${e.length}项`,
+    maxTagCount: 0,
+    maxTagTextLength: 2
+  }
+
   return (
     <Modal
       title="条件筛选"
@@ -94,8 +100,7 @@ const FilterModal: React.FC<Props> = ({
               label="项目状态"
             >
               <Select
-                maxTagCount={0}
-                maxTagTextLength={2}
+                {...selectStyle}
                 mode="multiple"
                 allowClear
                 style={{ width: 200 }}
@@ -109,6 +114,7 @@ const FilterModal: React.FC<Props> = ({
               label="项目类别"
             >
               <UrlSelect
+                {...selectStyle}
                 defaultValue={defaultData.pCategory}
                 allowClear
                 mode="multiple"
@@ -126,6 +132,7 @@ const FilterModal: React.FC<Props> = ({
               label="建设类别"
             >
               <UrlSelect
+                {...selectStyle}
                 allowClear
                 defaultValue={defaultData.constructType}
                 valueKey="value"
@@ -142,14 +149,13 @@ const FilterModal: React.FC<Props> = ({
               label="项目性质"
             >
               <UrlSelect
+                {...selectStyle}
                 valueKey="value"
                 titleKey="text"
                 allowClear
                 defaultValue={defaultData.nature}
                 defaultData={resData.projectNature}
                 mode="multiple"
-                maxTagCount={0}
-                maxTagTextLength={3}
                 dropdownMatchSelectWidth={168}
                 className="widthAll"
                 placeholder="项目性质"
@@ -166,8 +172,7 @@ const FilterModal: React.FC<Props> = ({
                 className="widthAll"
                 mode="multiple"
                 allowClear
-                maxTagCount={0}
-                maxTagTextLength={3}
+                {...selectStyle}
                 placeholder="项目身份"
                 style={{ width: 200 }}
               />
@@ -179,6 +184,7 @@ const FilterModal: React.FC<Props> = ({
               label="项目分类"
             >
               <UrlSelect
+                {...selectStyle}
                 allowClear
                 defaultValue={defaultData.category}
                 mode="multiple"
@@ -195,6 +201,7 @@ const FilterModal: React.FC<Props> = ({
               label="项目阶段"
             >
               <UrlSelect
+                {...selectStyle}
                 allowClear
                 defaultValue={defaultData.stage}
                 mode="multiple"
@@ -211,6 +218,7 @@ const FilterModal: React.FC<Props> = ({
               label="电压等级"
             >
               <UrlSelect
+                {...selectStyle}
                 allowClear
                 defaultValue={defaultData.kvLevel}
                 mode="multiple"
@@ -227,13 +235,12 @@ const FilterModal: React.FC<Props> = ({
               label="项目来源"
             >
               <EnumSelect
+                {...selectStyle}
                 defaultValue={defaultData.sourceType}
                 enumList={ProjectSourceType}
                 className="widthAll"
                 mode="multiple"
                 allowClear
-                maxTagCount={0}
-                maxTagTextLength={3}
                 placeholder="项目来源"
                 style={{ width: 200 }}
               />

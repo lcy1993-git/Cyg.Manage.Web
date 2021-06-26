@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Tree, message, Input, Button, DatePicker } from 'antd';
 import { SearchOutlined, AlignLeftOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
-import { useRequest } from 'ahooks';
+import { useMount, useRequest } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
   fetchCompanyEngineerProjectListByParams,
@@ -53,6 +53,8 @@ export interface SideMenuProps {
   sidePopupProps: any;
 }
 
+type Moment = moment.Moment | undefined;
+
 /**
  * 把传进来的projectList数据转换成需要的数组类型
  * @param projectList
@@ -101,7 +103,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [resultVisibel, setResultVisibel] = useState<boolean>(false);
   // 审阅消息
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
-  const [buttonActive, setButtonActive] = useState<number>(-1);
+  const [buttonActive, setButtonActive] = useState<number>(window.localStorage.getItem('selectCity') ? -1 : 2);
+  
   // Tree State
   const [selectArrayStuck, setSelectArrayStuck] = useState<string[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -111,6 +114,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   // 地区or公司状态
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+
+  useMount(() => {
+
+  })
 
   // 处理关闭项目详情模态框，没有关闭选中状态的bug
   useEffect(() => {
@@ -128,8 +135,19 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const startDateRef = useRef<any>(null);
   const endDateRef = useRef<any>(null);
-  const [startDateValue, setStartDateValue] = useState<moment.Moment | undefined>(undefined);
-  const [endDateValue, setEndDateValue] = useState<moment.Moment | undefined>(undefined);
+  const [startDateValue, setStartDateValue] = useState<Moment>(undefined);
+  const [endDateValue, setEndDateValue] = useState<Moment>(undefined);
+
+  // 判断开始时间不能大于结束时间
+  const compareData = (start: Moment, end: Moment) => {
+    if(start && end) {
+      if(start.valueOf() > end.valueOf()) {
+        message.error("开始时间不能大于结束时间");
+        return false;
+      }
+    }
+    return true
+  }
 
   const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false);
   const store = useContainer();
@@ -157,7 +175,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setTreeData([]);
     clearState();
     setSelectedKeys([]);
-    setButtonActive(-1);
+    // setButtonActive(-1);
   }, [tabActiveKey]);
 
   useEffect(() => {
@@ -321,32 +339,35 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   });
 
   const handlerAreaButtonCheck = (index: number, buttonActive: number) => {
+    console.log(index, buttonActive);
+    
     if (index === buttonActive) {
       setButtonActive(-1);
       setSelectedKeys([])
       return;
     }
-    const resKey = flattenDeepToKey(treeData, index, "key", "-1");
+    const resKey = flattenDeepToKey(treeData, index <= 2 ? index : index + 1, "key", "-1");
     let keyArray: string[] = [];
     if (index < 0) {
       setSelectedKeys(keyArray)
     } else {
-      const deepKeyArray = (data: TreeNodeType[]) => {
+      const deepKeyArray = (data: TreeNodeType[], flag1: boolean) => {
         data.forEach((item: TreeNodeType) => {
           // console.log(item.levelCategory, "等级", index + 1, "按钮等级");
           /**
            * 判断按钮区与tree数据层级的关系比较
            */
-          const levelCategoryFlag = item.levelCategory < 4 ? item.levelCategory >= index + 1 : item.levelCategory > index + 1
-          if (levelCategoryFlag) {
+          const levelCategoryFlag = item.levelCategory < 4 ? item.levelCategory === index + 1 : item.levelCategory === index + 2;
+          const flag = flag1 || levelCategoryFlag;
+          if (flag) {
             keyArray.push(item.key)
           }
           if (Array.isArray(item.children)) {
-            deepKeyArray(item.children)
+            deepKeyArray(item.children, flag)
           }
         })
       }
-      deepKeyArray(treeData);
+      deepKeyArray(treeData, false);
 
       setSelectedKeys(keyArray)
     }
@@ -425,10 +446,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     );
   }
 
-  useEffect(() => {
-    setfilterCondition({ ...filterCondition, keyWord })
-  }, [keyWord])
-
   const onSelect = (e: any, g: any) => {
     if (!(Array.isArray(g.node.children) && g.node.children.length > 0)) {
       setSelectedKeys([g.node.key]);
@@ -440,19 +457,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const treeProps = {
     onExpand: onExpand,
-    expandedKeys: expandedKeys,
     onCheck: (checked: any, info: any) => onCheck(checked, info),
-    checkedKeys: checkedKeys,
     treeData: treeData,
     className: classNames(styles.sideMenu),
-    selectedKeys: selectedKeys,
     onSelect: onSelect,
   }
 
   return (
     <div className={`${styles.wrap} ${projectModalVisible ? styles.wrapSelect : ""}`}>
       <div className={styles.searchWrap}>
-        <Input prefix={<SearchOutlined />} placeholder="请输入" value={keyWord} onChange={(e) => setkeyWord(e.target.value)} style={{ width: "78%" }} />
+        <Input prefix={<SearchOutlined />} placeholder="请输入" value={keyWord} onChange={(e) => {setkeyWord(e.target.value);setfilterCondition({...filterCondition, keyWord: e.target.value},)}} style={{ width: "78%" }} />
         <Button type="text" onClick={() => setFilterModalVisibel(true)}><AlignLeftOutlined />筛选</Button>
       </div>
       <div className={styles.menuTree}>
@@ -464,13 +478,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           treeListDataLoading={treeListDataLoading}
           buttonActive={buttonActive}
           handlerAreaButtonCheck={handlerAreaButtonCheck}
+          expandedKeys={expandedKeys}
+          selectedKeys={selectedKeys}
+          checkedKeys={checkedKeys}
           treeProps={treeProps}
         />
       </div>
 
       <div className={styles.timeLine}>
-        <DatePicker ref={startDateRef} style={{ width: "100%" }} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => setStartDateValue(e!)} />
-        <DatePicker ref={endDateRef} style={{ width: "100%" }} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => setEndDateValue(e!)} />
+        <DatePicker ref={startDateRef} style={{ width: "100%" }} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => compareData(e!, endDateValue) && setStartDateValue(e!)} />
+        <DatePicker ref={endDateRef} style={{ width: "100%" }} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => compareData(startDateValue, e!) && setEndDateValue(e!)} />
       </div>
       <div className={styles.functionButton}>
         <div className={styles.row}>

@@ -8,10 +8,8 @@ const { TabPane } = Tabs;
 interface TreeDataProps {
   onExpand: any;
   onCheck: (checked: any, info: any) => void;
-  checkedKeys: any;
   treeData: any[];
   className: string;
-  selectedKeys: string[];
   onSelect: (a0: any, a1: any) => void;
 }
 
@@ -23,7 +21,10 @@ interface Props {
   treeListDataLoading: boolean;
   buttonActive: number;
   handlerAreaButtonCheck: (index: number, active: number) => void;
-  treeProps: TreeDataProps
+  expandedKeys: any[];
+  selectedKeys: string[],
+  treeProps: TreeDataProps;
+  checkedKeys: any[];
 }
 
 const areaArray = ["省", "市", "县", "工", "项"];
@@ -35,8 +36,11 @@ const MenuTree: React.FC<Props> = ({
   tabActiveKey,
   treeListDataLoading,
   buttonActive,
+  expandedKeys,
+  selectedKeys,
   treeProps,
   handlerAreaButtonCheck,
+  checkedKeys
 
 }) => {
   
@@ -100,7 +104,8 @@ const MenuTree: React.FC<Props> = ({
               ) : null}
               <div style={{ height: "calc(100% - 36px)" }}>
                 
-                { size.height &&  <Tree {...treeProps} height={operrationHeight} checkable={true} multiple={true} />}
+                {/* { size.height &&  <Tree {...treeProps} height={operrationHeight} checkable={true} multiple={true} expandedKeys={expandedKeys} selectedKeys={expandedKeys} checkedKeys={checkedKeys}/>} */}
+                { size.height && <Tree {...treeProps} height={operrationHeight} checkable={true} multiple={true} expandedKeys={expandedKeys} selectedKeys={selectedKeys} checkedKeys={checkedKeys}/>}
               </div>
             </div>
           ) : null}
