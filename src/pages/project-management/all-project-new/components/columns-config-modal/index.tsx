@@ -48,6 +48,10 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       dataIndex: 'natureTexts',
     },
     {
+      title: '项目起止时间',
+      dataIndex: 'projectTime',
+    },
+    {
       title: '专业类别',
       dataIndex: 'majorCategoryText',
     },

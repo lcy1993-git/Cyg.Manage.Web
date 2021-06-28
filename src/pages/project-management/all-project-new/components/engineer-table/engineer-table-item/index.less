@@ -106,7 +106,7 @@
       .engineerTableContent {
         .engineerTableHeader {
           position: relative;
-          padding-left: 38px;
+          padding-left: 338px;
           .actionTd {
             position: absolute;
             top: 0;
@@ -120,6 +120,15 @@
             background-color: #fff;
             border-left: 1px solid @table-line-color;
             box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.16);
+          }
+          .nameTd {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            z-index: 100;
+            background-color: #fff;
+            border-right: 1px solid @table-line-color;
+            box-shadow: 5px 0 10px -5px rgba(0, 0, 0, 0.16);
           }
           .engineerTableThCheckbox {
             height: 100%;
@@ -135,7 +144,7 @@
         .engineerTableBody {
           .engineerTableTr {
             position: relative;
-            padding-left: 38px;
+            padding-left: 338px;
             padding-right: 120px;
             .engineerTableTd {
               &.engineerTableThCheckbox {
@@ -145,6 +154,15 @@
                 top: 0;
                 background-color: #fff;
                 z-index: 100;
+              }
+              &.nameTd {
+                position: absolute;
+                top: 0;
+                height: 100%;
+                z-index: 100;
+                background-color: #fff;
+                border-right: 1px solid @table-line-color;
+                box-shadow: 5px 0 10px -5px rgba(0, 0, 0, 0.16);
               }
               &.actionTd {
                 position: absolute;
