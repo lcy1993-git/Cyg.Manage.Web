@@ -65,7 +65,7 @@ const AllProject: React.FC = () => {
     kvLevel: [],
     status: [],
     majorCategory: [],
-    proType: [],
+    pType: [],
     reformAim: [],
     classification: [],
     attribute: [],

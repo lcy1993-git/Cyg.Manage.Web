@@ -40,7 +40,7 @@ import AddProjectModal from '../add-project-modal';
 import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
-import { Tooltip } from 'antd';
+import moment from 'moment';
 
 const colorMap = {
   立项: 'green',
@@ -243,7 +243,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               setProjectModalVisible(true);
             }}
           >
-            <Tooltip title={record.name}>{record.name}</Tooltip>
+            {record.name}
           </u>
         );
       },
@@ -253,16 +253,19 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       title: '项目分类',
       dataIndex: 'categoryText',
       width: 100,
+      ellipsis: true,
     },
     {
       title: '项目类型',
-      dataIndex: 'pType',
-      width: 100,
+      dataIndex: 'pTypeText',
+      width: 140,
+      ellipsis: true,
     },
     {
       title: '电压等级',
       dataIndex: 'kvLevelText',
       width: 100,
+      ellipsis: true,
     },
     {
       title: '项目性质',
@@ -280,9 +283,29 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       },
     },
     {
+      title: '项目起止时间',
+      dataIndex: 'projectTime',
+      width: 190,
+      ellipsis: true,
+      render: (record: any) => {
+        const {startTime, endTime} = record;
+        if(startTime && endTime) {
+          return `${moment(startTime).format("YYYY-MM-DD")} 至 ${moment(endTime).format("YYYY-MM-DD")}`
+        }
+        if(startTime && !endTime) {
+          return `开始时间: ${moment(startTime).format("YYYY-MM-DD")}`
+        }
+        if(!startTime && endTime) {
+          return `截止时间: ${moment(startTime).format("YYYY-MM-DD")}`
+        }
+        return "未设置起止时间"
+      }
+    },
+    {
       title: '专业类别',
       dataIndex: 'majorCategoryText',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '建设建造目的',
@@ -306,6 +329,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       title: '建设类型',
       dataIndex: 'constructTypeText',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '项目类别',
@@ -337,7 +361,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
     {
       title: '现场数据来源',
-      dataIndex: 'dataSourceType',
+      dataIndex: 'dataSourceTypeText',
       width: 120,
     },
     {
@@ -356,6 +380,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       title: '勘察人',
       dataIndex: 'surveyUser',
       width: 120,
+      ellipsis: true,
       render: (record: any) => {
         return record.surveyUser ? record.surveyUser.value : '无需安排';
       },
@@ -364,6 +389,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       title: '设计人',
       dataIndex: 'designUser',
       width: 120,
+      ellipsis: true,
       render: (record: any) => {
         return record.designUser ? record.designUser.value : '';
       },
@@ -372,6 +398,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       title: '项目批次',
       dataIndex: 'batchText',
       width: 120,
+      ellipsis: true,
     },
     {
       title: '项目来源',
@@ -525,7 +552,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
   ];
 
-  //申请结项
+  // 申请结项
   const applyKnotEvent = async (projectId: string[]) => {
     await applyKnot(projectId);
     message.success('申请结项成功');
@@ -556,6 +583,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       return sum + (item.width ? item.width : 100);
     }, 0);
     const isOverflow = (tableContentSize.width ?? 0) - 50 - columnsWidth < 0;
+
+    if (scrollbar && scrollbar.current) {
+      // @ts-ignore
+      scrollbar.current.view.scroll({
+        left: 0,
+        behavior: 'auto',
+      });
+    }
 
     return {
       isOverflow,
@@ -600,7 +635,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
     run({
       ...extractParams,
-      pageIndex,
+      pageIndex: 1,
       pageSize: size,
     });
     setTableSelectData([]);
@@ -682,7 +717,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageSize,
       });
       if (scrollbar && scrollbar.current) {
-        //@ts-ignore
+        // @ts-ignore
         scrollbar.current.view.scroll({
           top: 0,
           behavior: 'smooth',
@@ -692,7 +727,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       onSelect?.([]);
     },
     searchByParams: (params: object) => {
-      console.log(params);
+
       setPageIndex(1);
       run({
         ...params,
