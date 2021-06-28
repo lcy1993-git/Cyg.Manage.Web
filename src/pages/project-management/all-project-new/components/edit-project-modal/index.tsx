@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { Form, message, Modal } from 'antd';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useRequest } from 'ahooks';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import CreateProjectForm from '../create-project-form';
 
 interface EditProjectProps {
@@ -16,6 +16,8 @@ interface EditProjectProps {
   company: string;
   companyName?: string;
   status: number;
+  startTime?: Moment;
+  endTime?: Moment;
 }
 
 const EditProjectModal: React.FC<EditProjectProps> = (props) => {
@@ -23,7 +25,16 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { projectId, changeFinishEvent, areaId, company, companyName, status } = props;
+  const {
+    projectId,
+    changeFinishEvent,
+    areaId,
+    company,
+    companyName,
+    status,
+    startTime,
+    endTime,
+  } = props;
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
@@ -98,6 +109,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
           companyName={companyName}
           status={status}
           projectInfo={projectInfo}
+          engineerStart={startTime}
+          engineerEnd={endTime}
           form={form}
         />
       </Form>

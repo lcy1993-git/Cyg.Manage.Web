@@ -164,6 +164,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 areaId: engineerInfo.province,
                 company: engineerInfo.company,
                 companyName: engineerInfo.company,
+                startTime: engineerInfo.startTime,
+                endTime: engineerInfo.endTime,
                 status: tableItemData.stateInfo.status,
               });
             }}
@@ -180,6 +182,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 company: engineerInfo.company,
                 engineerId: engineerInfo.id,
                 companyName: engineerInfo.company,
+                startTime: engineerInfo.startTime,
+                endTime: engineerInfo.endTime,
               })
             }
           >
@@ -288,18 +292,20 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 190,
       ellipsis: true,
       render: (record: any) => {
-        const {startTime, endTime} = record;
-        if(startTime && endTime) {
-          return `${moment(startTime).format("YYYY-MM-DD")} 至 ${moment(endTime).format("YYYY-MM-DD")}`
+        const { startTime, endTime } = record;
+        if (startTime && endTime) {
+          return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
+            'YYYY-MM-DD',
+          )}`;
         }
-        if(startTime && !endTime) {
-          return `开始时间: ${moment(startTime).format("YYYY-MM-DD")}`
+        if (startTime && !endTime) {
+          return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
         }
-        if(!startTime && endTime) {
-          return `截止时间: ${moment(startTime).format("YYYY-MM-DD")}`
+        if (!startTime && endTime) {
+          return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
         }
-        return "未设置起止时间"
-      }
+        return '未设置起止时间';
+      },
     },
     {
       title: '专业类别',
@@ -659,6 +665,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const addProjectEvent = (projectNeedValue: AddProjectValue) => {
+    console.log(projectNeedValue);
+
     setAddProjectVisible(true);
     setProjectNeedInfo(projectNeedValue);
   };
@@ -727,7 +735,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       onSelect?.([]);
     },
     searchByParams: (params: object) => {
-
       setPageIndex(1);
       run({
         ...params,
@@ -886,6 +893,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             company={currentEditProjectInfo.company}
             areaId={currentEditProjectInfo.areaId}
             status={currentEditProjectInfo.status}
+            startTime={currentEditProjectInfo.startTime}
+            endTime={currentEditProjectInfo.endTime}
             visible={editProjectVisible}
             onChange={setEditProjectVisible}
             changeFinishEvent={refreshEvent}
@@ -899,6 +908,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             company={currentCopyProjectInfo.company}
             areaId={currentCopyProjectInfo.areaId}
             visible={copyProjectVisible}
+            startTime={currentCopyProjectInfo.startTime}
+            endTime={currentCopyProjectInfo.endTime}
             onChange={setCopyProjectVisible}
             changeFinishEvent={refreshEvent}
           />
