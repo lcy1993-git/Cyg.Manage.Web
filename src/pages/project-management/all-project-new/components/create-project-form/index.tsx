@@ -86,8 +86,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectCategory}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -107,8 +107,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectPType}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -126,8 +126,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectKvLevel}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -165,8 +165,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={projectNature}
               mode="multiple"
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -257,8 +257,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectAssetsNature}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -276,8 +276,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectMajorCategory}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -314,8 +314,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectReformCause}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -335,8 +335,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectReformAim}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -357,8 +357,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               paramsMust={['areaId', 'company']}
               requestType="post"
               placeholder="请选择"
-              titleKey="text"
-              valueKey="value"
+              valuekey="value"
+              titlekey="text"
             />
           </CyFormItem>
         </div>
@@ -404,8 +404,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectRegionAttribute}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -437,8 +437,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectConstructType}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -456,8 +456,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectClassification}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -477,8 +477,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectStage}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -496,8 +496,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectBatch}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -517,8 +517,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectAttribute}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -536,8 +536,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={meteorologicLevel}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -570,8 +570,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             {status == 1 || status == 14 || status == undefined ? (
               <UrlSelect
                 defaultData={projectDataSourceType}
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 placeholder="请选择"
                 onChange={(value: any) => {
                   if (value === 2) {
@@ -584,8 +584,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <UrlSelect
                 defaultData={projectDataSourceType}
                 disabled
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 placeholder="请选择"
               />
             )}

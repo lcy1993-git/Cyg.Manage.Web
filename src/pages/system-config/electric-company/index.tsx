@@ -52,8 +52,8 @@ const ElectricCompany: React.FC = () => {
           <UrlSelect
             showSearch
             url="/Area/GetList?pId=-1"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择"
             onChange={(value: any) => searchBySelectProvince(value)}
           />

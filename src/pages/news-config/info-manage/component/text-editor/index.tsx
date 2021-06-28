@@ -251,8 +251,8 @@ const TextEditorModal = (props: EditorParams) => {
             requestSource="project"
             showSearch
             defaultData={categoryData}
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择授权端口"
           />
         </CyFormItem>

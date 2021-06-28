@@ -28,10 +28,7 @@ const { RangePicker } = DatePicker;
 const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [icon, setIcon] = useState<string>('bottom');
-  const {
-    finishEvent,
-    defaultPersonInfo = { logicRelation: 2, design: '', survey: '' },
-  } = props;
+  const { finishEvent, defaultPersonInfo = { logicRelation: 2, design: '', survey: '' } } = props;
 
   const [category, setCategory] = useState<number[]>([]); //项目分类
   const [stage, setStage] = useState<number[]>([]); //项目阶段
@@ -51,8 +48,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
   const [dataSourceType, setDataSourceType] = useState<number[]>([]);
   const [personInfo, setPersonInfo] = useState<any>({ logicRelation: 2, design: '', survey: '' });
-  const [startTime, setStartTime] = useState<null | string>("");
-  const [endTime, setEndTime] = useState<null | string>("");
+  const [startTime, setStartTime] = useState<null | string>('');
+  const [endTime, setEndTime] = useState<null | string>('');
   const areaRef = useRef<HTMLDivElement>(null);
   const personRef = useRef<HTMLDivElement>(null);
 
@@ -84,8 +81,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       identityType,
       ...areaInfo,
       dataSourceType,
-      startTime: startTime ?? "",
-      endTime: endTime ?? "",
+      startTime: startTime ?? '',
+      endTime: endTime ?? '',
       surveyUser: personInfo.survey,
       designUser: personInfo.design,
       logicRelation: personInfo.logicRelation,
@@ -202,12 +199,20 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
   const timeChange = (dates, dateStrings) => {
     setStartTime(dateStrings[0]);
-    setEndTime(dateStrings[1])
-  }
+    setEndTime(dateStrings[1]);
+  };
 
   useEffect(() => {
-    setSelectDefaultData(defaultPersonInfo)
-  },[JSON.stringify(defaultPersonInfo)])
+    setSelectDefaultData(defaultPersonInfo);
+  }, [JSON.stringify(defaultPersonInfo)]);
+
+  const selectStyle = {
+    maxTagPlaceholder: (e: any[]) => `已选择${e.length}项`,
+    maxTagCount: 0,
+    maxTagTextLength: 2,
+    valuekey: 'value',
+    titlekey: 'text',
+  };
 
   return (
     <Modal
@@ -239,7 +244,12 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             <div className="flex1">
               <CyFormItem label="项目截止日期" align="right" labelWidth={111}>
                 <div style={{ width: '100%' }}>
-                  <RangePicker value={(startTime && endTime) ? [moment(startTime),moment(endTime)] : [null,null]} onChange={timeChange}  />
+                  <RangePicker
+                    value={
+                      startTime && endTime ? [moment(startTime), moment(endTime)] : [null, null]
+                    }
+                    onChange={timeChange}
+                  />
                 </div>
               </CyFormItem>
             </div>
@@ -250,12 +260,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               <CyFormItem label="建设类型" name="constructType" align="right" labelWidth={111}>
                 <div style={{ width: '100%' }}>
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
+                    {...selectStyle}
                     allowClear
-                    maxTagCount={3}
-                    maxTagTextLength={3}
+                    mode= 'multiple'
                     defaultData={projectConstructType}
                     value={constructType}
                     className="widthAll"
@@ -269,12 +276,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               <CyFormItem label="项目阶段" align="right" labelWidth={111}>
                 <div style={{ width: '100%' }}>
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
+                    {...selectStyle}
                     allowClear
-                    maxTagCount={3}
-                    maxTagTextLength={3}
+                    mode= 'multiple'
                     defaultData={projectStage}
                     value={stage}
                     className="widthAll"
@@ -291,11 +295,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               <CyFormItem label="专业类别" align="right" labelWidth={111}>
                 <div style={{ width: '100%' }}>
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
-                    maxTagCount={3}
-                    maxTagTextLength={3}
+                    {...selectStyle}
+                    allowClear
+                    mode= 'multiple'
                     defaultData={projectMajorCategory}
                     value={majorCategory}
                     dropdownMatchSelectWidth={168}
@@ -312,10 +314,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <div style={{ width: '100%' }}>
                   <EnumSelect
                     enumList={ProjectStatus}
-                    mode="multiple"
+                    {...selectStyle}
                     allowClear
-                    maxTagCount={3}
-                    maxTagTextLength={3}
+                    mode= 'multiple'
                     value={status}
                     onChange={(value) => setStatus(value as number[])}
                     className="widthAll"
@@ -332,10 +333,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <div style={{ width: '100%' }}>
                   <EnumSelect
                     enumList={ProjectSourceType}
-                    mode="multiple"
+                    {...selectStyle}
                     allowClear
-                    maxTagCount={3}
-                    maxTagTextLength={3}
+                    mode= 'multiple'
                     value={sourceType}
                     onChange={(value) => setSourceType(value as number[])}
                     className="widthAll"
@@ -349,10 +349,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <div style={{ width: '100%' }}>
                   <EnumSelect
                     enumList={ProjectIdentityType}
-                    mode="multiple"
+                    {...selectStyle}
                     allowClear
-                    maxTagCount={3}
-                    maxTagTextLength={3}
+                    mode= 'multiple'
                     value={identityType}
                     onChange={(value) => setIdentityType(value as number[])}
                     className="widthAll"
@@ -378,12 +377,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               <CyFormItem label="电压等级" align="right" labelWidth={111}>
                 <div style={{ width: '100%' }}>
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
-                    mode="multiple"
+                    {...selectStyle}
                     allowClear
-                    maxTagCount={3}
-                    maxTagTextLength={3}
+                    mode= 'multiple'
                     defaultData={projectKvLevel}
                     value={kvLevel}
                     onChange={(value) => setKvLevel(value as number[])}
@@ -431,12 +427,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <CyFormItem label="项目分类" align="right" labelWidth={111}>
                   <div style={{ width: '100%' }}>
                     <UrlSelect
-                      valueKey="value"
-                      titleKey="text"
-                      mode="multiple"
+                      {...selectStyle}
                       allowClear
-                      maxTagCount={3}
-                      maxTagTextLength={3}
+                      mode= 'multiple'
                       defaultData={projectCategory}
                       className="widthAll"
                       value={category}
@@ -450,12 +443,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <CyFormItem label="项目类型" align="right" labelWidth={111}>
                   <div style={{ width: '100%' }}>
                     <UrlSelect
-                      valueKey="value"
-                      titleKey="text"
-                      mode="multiple"
+                      {...selectStyle}
                       allowClear
-                      maxTagCount={3}
-                      maxTagTextLength={3}
+                      mode= 'multiple'
                       defaultData={projectPType}
                       className="widthAll"
                       value={proType}
@@ -472,12 +462,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <CyFormItem label="项目性质" align="right" labelWidth={111}>
                   <div style={{ width: '100%' }}>
                     <UrlSelect
-                      valueKey="value"
-                      titleKey="text"
-                      mode="multiple"
+                      {...selectStyle}
                       allowClear
-                      maxTagCount={3}
-                      maxTagTextLength={3}
+                      mode= 'multiple'
                       defaultData={projectNature}
                       value={nature}
                       dropdownMatchSelectWidth={168}
@@ -492,12 +479,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <CyFormItem label="建设改造目的" align="right" labelWidth={111}>
                   <div style={{ width: '100%' }}>
                     <UrlSelect
-                      valueKey="value"
-                      titleKey="text"
-                      mode="multiple"
+                      {...selectStyle}
                       allowClear
-                      maxTagCount={3}
-                      maxTagTextLength={3}
+                      mode= 'multiple'
                       defaultData={projectReformAim}
                       className="widthAll"
                       value={reformAim}
@@ -514,12 +498,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <CyFormItem label="项目类别" align="right" labelWidth={111}>
                   <div style={{ width: '100%' }}>
                     <UrlSelect
-                      valueKey="value"
-                      titleKey="text"
-                      mode="multiple"
+                      {...selectStyle}
                       allowClear
-                      maxTagCount={3}
-                      maxTagTextLength={3}
+                      mode= 'multiple'
                       defaultData={projectClassification}
                       value={classification}
                       dropdownMatchSelectWidth={168}
@@ -534,12 +515,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <CyFormItem label="项目属性" align="right" labelWidth={111}>
                   <div style={{ width: '100%' }}>
                     <UrlSelect
-                      valueKey="value"
-                      titleKey="text"
-                      mode="multiple"
+                      {...selectStyle}
                       allowClear
-                      maxTagCount={3}
-                      maxTagTextLength={3}
+                      mode= 'multiple'
                       defaultData={projectAttribute}
                       className="widthAll"
                       value={attribute}
@@ -556,13 +534,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 <CyFormItem label="现场数据来源" align="right" labelWidth={111}>
                   <div style={{ width: '100%' }}>
                     <UrlSelect
-                      style={{ width: '295px' }}
-                      valueKey="value"
-                      titleKey="text"
-                      mode="multiple"
+                      {...selectStyle}
                       allowClear
-                      maxTagCount={3}
-                      maxTagTextLength={3}
+                      mode= 'multiple'
                       defaultData={projectDataSourceType}
                       value={dataSourceType}
                       dropdownMatchSelectWidth={168}

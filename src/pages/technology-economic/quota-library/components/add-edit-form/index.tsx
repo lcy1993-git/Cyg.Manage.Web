@@ -47,8 +47,8 @@ const DictionaryForm: React.FC<null> = () => {
               url="/CommonEnum/GetQuotaScopeEnums"
               requestType="get"
               requestSource="tecEco"
-              titleKey="text"
-              valueKey="value"
+              titlekey="text"
+              valuekey="value"
             />
           </CyFormItem>
 
@@ -61,8 +61,8 @@ const DictionaryForm: React.FC<null> = () => {
               url="/CommonEnum/GetIndustryTypeEnums"
               requestType="get"
               requestSource="tecEco"
-              titleKey="text"
-              valueKey="value"
+              titlekey="text"
+              valuekey="value"
             />
           </CyFormItem>
 
@@ -94,8 +94,8 @@ const DictionaryForm: React.FC<null> = () => {
                 url="/CommonEnum/GetMajorTypeEnums"
                 requestType="get"
                 requestSource="tecEco"
-                titleKey="text"
-                valueKey="value"
+                titlekey="text"
+                valuekey="value"
               />
           </CyFormItem>
 

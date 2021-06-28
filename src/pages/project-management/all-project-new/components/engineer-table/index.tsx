@@ -37,6 +37,7 @@ import CopyProjectModal from '../copy-project-modal';
 import AddProjectModal from '../add-project-modal';
 import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
+import { Tooltip } from 'antd';
 
 const colorMap = {
   立项: 'green',
@@ -237,7 +238,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               setProjectModalVisible(true);
             }}
           >
-            {record.name}
+            <Tooltip title={record.name}>{record.name}</Tooltip>
           </u>
         );
       },
@@ -498,7 +499,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const chooseColumns = useMemo(() => {
     if (columnsConfig) {
-      console.log(columnsConfig);
       return ['name', ...columnsConfig, 'sources', 'identitys', 'status', 'action'];
     }
     return [

@@ -21,8 +21,8 @@ const EditModuleDetail: React.FC<EditModuleDetailParams> = (props) => {
               requestSource="resource"
               url="/ModulesDetails/GetParts"
               style={{ width: 'calc(100% - 16px)' }} 
-              valueKey="value"
-              titleKey="key"
+              valuekey="value"
+              titlekey="key"
               allowClear
               placeholder="--所属部件--"
             />

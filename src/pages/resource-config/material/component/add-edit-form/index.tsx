@@ -93,8 +93,8 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           showSearch
           requestSource="resource"
           url="/Chart/GetList"
-          titleKey="chartName"
-          valueKey="chartId"
+          titlekey="chartName"
+          valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
           libId={resourceLibId}

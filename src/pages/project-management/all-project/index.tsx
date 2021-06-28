@@ -792,8 +792,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="ml10 mb10" label="全部状态" width="178px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -807,8 +807,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -823,8 +823,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -839,8 +839,8 @@ const ProjectManagement: React.FC = () => {
 
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -854,8 +854,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -869,8 +869,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}

@@ -24,8 +24,8 @@ const AddModuleDetailTable: React.FC<AddDetailParams> = (props) => {
           <UrlSelect
             requestSource="resource"
             url="/ModulesDetails/GetParts"
-            valueKey="value"
-            titleKey="key"
+            valuekey="value"
+            titlekey="key"
             allowClear
             placeholder="--所属部件--"
           />

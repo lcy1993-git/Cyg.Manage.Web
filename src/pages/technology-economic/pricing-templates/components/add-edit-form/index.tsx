@@ -22,8 +22,8 @@ const DictionaryForm: React.FC<{ type?: string }> = () => {
               url="/CommonEnum/GetMajorTypeEnums"
               requestType="get"
               requestSource="tecEco"
-              titleKey="text"
-              valueKey="value"
+              titlekey="text"
+              valuekey="value"
             />
           </CyFormItem>
         </Col>

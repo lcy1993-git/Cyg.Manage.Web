@@ -52,8 +52,8 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
           <UrlSelect
             showSearch
             url="/CompanyUser/GetList"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择部组管理员"
           />
         </CyFormItem>
@@ -64,8 +64,8 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
           <UrlSelect
             showSearch
             url="/CompanyUser/GetList"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择部组管理员"
             disabled
           />
@@ -77,8 +77,8 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
           mode="multiple"
           showSearch
           url="/CompanyUser/GetList"
-          titleKey="text"
-          valueKey="value"
+          titlekey="text"
+          valuekey="value"
           placeholder="请选择部组成员"
         />
       </CyFormItem>

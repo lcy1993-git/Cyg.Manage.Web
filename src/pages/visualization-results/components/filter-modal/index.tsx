@@ -118,8 +118,8 @@ const FilterModal: React.FC<Props> = ({
                 defaultValue={defaultData.pCategory}
                 allowClear
                 mode="multiple"
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectPType}
                 dropdownMatchSelectWidth={168}
                 className="widthAll"
@@ -135,8 +135,8 @@ const FilterModal: React.FC<Props> = ({
                 {...selectStyle}
                 allowClear
                 defaultValue={defaultData.constructType}
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectConstructType}
                 className="widthAll"
                 mode="multiple"
@@ -150,8 +150,8 @@ const FilterModal: React.FC<Props> = ({
             >
               <UrlSelect
                 {...selectStyle}
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 allowClear
                 defaultValue={defaultData.nature}
                 defaultData={resData.projectNature}
@@ -188,8 +188,8 @@ const FilterModal: React.FC<Props> = ({
                 allowClear
                 defaultValue={defaultData.category}
                 mode="multiple"
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectCategory}
                 className="widthAll"
                 placeholder="项目分类"
@@ -205,8 +205,8 @@ const FilterModal: React.FC<Props> = ({
                 allowClear
                 defaultValue={defaultData.stage}
                 mode="multiple"
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectStage}
                 className="widthAll"
                 placeholder="项目阶段"
@@ -222,8 +222,8 @@ const FilterModal: React.FC<Props> = ({
                 allowClear
                 defaultValue={defaultData.kvLevel}
                 mode="multiple"
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectKvLevel}
                 className="widthAll"
                 placeholder="电压等级"
