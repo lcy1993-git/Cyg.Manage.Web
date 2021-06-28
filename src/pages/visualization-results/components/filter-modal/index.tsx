@@ -40,7 +40,7 @@ const FilterModal: React.FC<Props> = ({
   const [form] = Form.useForm();
   const sureEvent = () => {
     form.validateFields().then((values) => {
-      console.log(values)
+
       onSure?.(values)
     })
     onChange(false);
