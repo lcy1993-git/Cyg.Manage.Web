@@ -25,6 +25,7 @@ export interface Props {
   data: TableDataType[];
   rightSidebarVisible: boolean;
   setRightSidebarVisiviabel: (arg0: boolean) => void;
+  height: number;
 }
 
 const loadEnumsData = window.localStorage.getItem('loadEnumsData');
@@ -191,7 +192,7 @@ export interface CommentListItemDataType {
   datetime: React.ReactNode;
 }
 const SidePopup: React.FC<Props> = observer((props) => {
-  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel } = props;
+  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props;
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
 
@@ -542,6 +543,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           columns={columns}
           dataSource={data[0]}
           rowClassName={styles.row}
+          scroll={{ y: height - 160 }}
           rowKey={(r) => r.propertyName}
         />
       </div> : null

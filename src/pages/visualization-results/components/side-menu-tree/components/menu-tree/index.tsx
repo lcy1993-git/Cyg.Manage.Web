@@ -4,12 +4,10 @@ import { useSize } from 'ahooks';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-
+const { TreeNode } = Tree;
 interface TreeDataProps {
   onExpand: any;
   onCheck: (checked: any, info: any) => void;
-  treeData: any[];
-  className: string;
   onSelect: (a0: any, a1: any) => void;
 }
 
@@ -25,6 +23,7 @@ interface Props {
   selectedKeys: string[],
   treeProps: TreeDataProps;
   checkedKeys: any[];
+  treeData: any[];
 }
 
 const areaArray = ["省", "市", "县", "工", "项"];
@@ -40,10 +39,11 @@ const MenuTree: React.FC<Props> = ({
   selectedKeys,
   treeProps,
   handlerAreaButtonCheck,
-  checkedKeys
+  checkedKeys,
+  treeData
 
 }) => {
-  
+
   const ref = useRef<HTMLDivElement>(null);
   const size = useSize(ref)
 
@@ -59,11 +59,11 @@ const MenuTree: React.FC<Props> = ({
 
   // 计算高度
   const operrationHeight = useMemo(() => {
-    const addTopHeight = tabActiveKey === "1" ? -30 : 0; 
-    if(size.height){
+    const addTopHeight = tabActiveKey === "1" ? -30 : 0;
+    if (size.height) {
       return size.height - 60 + addTopHeight
     }
-    return window.innerHeight > 936 ?  820 : 460
+    return window.innerHeight > 936 ? 820 : 460
 
   }, [JSON.stringify(size), tabActiveKey])
 
@@ -103,9 +103,8 @@ const MenuTree: React.FC<Props> = ({
                 </div>
               ) : null}
               <div style={{ height: "calc(100% - 36px)" }}>
-                
-                {/* { size.height &&  <Tree {...treeProps} height={operrationHeight} checkable={true} multiple={true} expandedKeys={expandedKeys} selectedKeys={expandedKeys} checkedKeys={checkedKeys}/>} */}
-                { size.height && <Tree {...treeProps} height={operrationHeight} checkable={true} multiple={true} expandedKeys={expandedKeys} selectedKeys={selectedKeys} checkedKeys={checkedKeys}/>}
+
+                { size.height && <Tree {...treeProps} height={operrationHeight} checkable={true} multiple={true} expandedKeys={expandedKeys} selectedKeys={selectedKeys} checkedKeys={checkedKeys} treeData={treeData}/>}
               </div>
             </div>
           ) : null}

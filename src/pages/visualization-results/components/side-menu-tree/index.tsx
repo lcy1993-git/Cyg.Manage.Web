@@ -1,12 +1,11 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Tree, message, Input, Button, DatePicker } from 'antd';
 import { SearchOutlined, AlignLeftOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
-import { useMount, useRequest } from 'ahooks';
+import { useMount, useRequest, useSize } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
   fetchCompanyEngineerProjectListByParams,
   ProjectListByAreaType,
-  Properties,
 } from '@/services/visualization-results/side-tree';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 
@@ -26,7 +25,7 @@ import { observer } from 'mobx-react-lite';
 import { useContainer } from '../../result-page/mobx-store';
 import moment from 'moment';
 import _ from 'lodash';
-import { flattenDeepToKey } from '../../utils/utils'
+import { flattenDeepToKey, TreeNodeType, getSelectKeyByKeyword } from '../../utils/utils'
 import classNames from 'classnames';
 import styles from './index.less';
 
@@ -35,16 +34,6 @@ import exportSvg from '@/assets/image/webgis/svg/export.svg'
 import materiaSvg from '@/assets/image/webgis/svg/material.svg'
 import messageSvg from '@/assets/image/webgis/svg/message.svg';
 
-export interface TreeNodeType {
-  title: string;
-  key: string;
-  id: string;
-  levelCategory: number;
-  engineerId?: string;
-  parentId?: string;
-  propertys?: Properties;
-  children?: TreeNodeType[];
-}
 export interface SideMenuProps {
   className?: string;
   onChange: () => void;
@@ -54,6 +43,26 @@ export interface SideMenuProps {
 }
 
 type Moment = moment.Moment | undefined;
+
+// 用于判断是否页面为初次请求数据状态，是则为true
+let isFirstRequest: boolean;
+
+/**
+ * 判断按钮区与tree数据层级的关系比较
+ */
+function deepKeyArray  (data: TreeNodeType[], flag1: boolean, index: number, keyArray: any) {
+  data.forEach((item: TreeNodeType) => {
+
+    const levelCategoryFlag = item.levelCategory < 4 ? item.levelCategory === index + 1 : item.levelCategory === index + 2;
+    const flag = flag1 || levelCategoryFlag;
+    if (flag) {
+      keyArray.push(item.key)
+    }
+    if (Array.isArray(item.children)) {
+      deepKeyArray(item.children, flag, index, keyArray)
+    }
+  })
+}
 
 /**
  * 把传进来的projectList数据转换成需要的数组类型
@@ -76,9 +85,11 @@ function generateProjectTree(projectList: ProjectListByAreaType[]): TreeNodeType
 }
 
 function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
+  console.log(item);
+  
   return {
     id: item.id,
-    time: moment(item.propertys?.deadline).format('YYYY-MM-DD'),
+    time: moment(item.propertys?.endTime).format('YYYY-MM-DD'),
     engineerId: item.engineerId ?? '',
     status: item.propertys?.status,
     isExecutor: item.propertys?.isExecutor,
@@ -93,6 +104,7 @@ type KeyType =
   };
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
+
   // 项目详情
   const [projectModalActiveId, setProjectModalActiveId] = useState<string>("");
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
@@ -115,9 +127,37 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 地区or公司状态
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
 
+  //  卸载清楚请求次数
   useMount(() => {
-
+    setExpandedKeys(["-1"])
+    isFirstRequest = true;
   })
+
+  useEffect(() => {
+    if(!Array.isArray(treeData) || treeData.length === 0) return;
+    let selectArray: any[] = [];
+    if(isFirstRequest) {
+      if(buttonActive === 2) { // 初次请求初始化默认省级状态
+
+        deepKeyArray(treeData, false, 2, selectArray)
+        
+        setSelectedKeys(selectArray)
+        
+        setExpandedKeys(flattenDeepToKey(treeData, 2, "key", "-1"));
+      }else if(buttonActive === -1) {
+        // alert(-111111111111)
+      }
+      isFirstRequest = false;
+    }else if(!isFirstRequest && keyWord){ // 实时搜索定位
+      setButtonActive(4)
+      console.log(getSelectKeyByKeyword(treeData, keyWord));
+      
+      setSelectedKeys(getSelectKeyByKeyword(treeData, keyWord));
+      setExpandedKeys(flattenDeepToKey(treeData, 5, "key", "-1"))
+
+    }
+
+  }, [JSON.stringify(treeData)])
 
   // 处理关闭项目详情模态框，没有关闭选中状态的bug
   useEffect(() => {
@@ -135,6 +175,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const startDateRef = useRef<any>(null);
   const endDateRef = useRef<any>(null);
+  const sideMenuRef = useRef<HTMLDivElement>(null);
+  const {height: sidePopupHeight} = useSize(sideMenuRef);
+
   const [startDateValue, setStartDateValue] = useState<Moment>(undefined);
   const [endDateValue, setEndDateValue] = useState<Moment>(undefined);
 
@@ -309,10 +352,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const onCheck = (checked: KeyType, info: any) => {
     let temp = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
-
     //去重,这里考虑到按公司筛选的时候，不同的公司可以有同一个项目
     let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
-
+    
     store.setProjectIdList(res);
     setCheckedKeys(checked);
   };
@@ -329,6 +371,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         const data = generateProjectTree(treeListReponseData);
         setTreeData(data);
         initSideTree(data);
+        // 修复初次请求默认到县级的bug
+        console.log(isFirstRequest);
+        
+
       } else {
         message.warning('无数据');
       }
@@ -339,7 +385,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   });
 
   const handlerAreaButtonCheck = (index: number, buttonActive: number) => {
-    console.log(index, buttonActive);
     
     if (index === buttonActive) {
       setButtonActive(-1);
@@ -347,29 +392,27 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       return;
     }
     const resKey = flattenDeepToKey(treeData, index <= 2 ? index : index + 1, "key", "-1");
-    let keyArray: string[] = [];
+    let selecyKeyArray: string[] = [];
     if (index < 0) {
-      setSelectedKeys(keyArray)
+      setSelectedKeys(selecyKeyArray)
     } else {
-      const deepKeyArray = (data: TreeNodeType[], flag1: boolean) => {
-        data.forEach((item: TreeNodeType) => {
-          // console.log(item.levelCategory, "等级", index + 1, "按钮等级");
-          /**
-           * 判断按钮区与tree数据层级的关系比较
-           */
-          const levelCategoryFlag = item.levelCategory < 4 ? item.levelCategory === index + 1 : item.levelCategory === index + 2;
-          const flag = flag1 || levelCategoryFlag;
-          if (flag) {
-            keyArray.push(item.key)
-          }
-          if (Array.isArray(item.children)) {
-            deepKeyArray(item.children, flag)
-          }
-        })
-      }
-      deepKeyArray(treeData, false);
-
-      setSelectedKeys(keyArray)
+      // const deepKeyArray = (data: TreeNodeType[], flag1: boolean) => {
+      //   data.forEach((item: TreeNodeType) => {
+      //     /**
+      //      * 判断按钮区与tree数据层级的关系比较
+      //      */
+      //     const levelCategoryFlag = item.levelCategory < 4 ? item.levelCategory === index + 1 : item.levelCategory === index + 2;
+      //     const flag = flag1 || levelCategoryFlag;
+      //     if (flag) {
+      //       keyArray.push(item.key)
+      //     }
+      //     if (Array.isArray(item.children)) {
+      //       deepKeyArray(item.children, flag)
+      //     }
+      //   })
+      // }
+      deepKeyArray(treeData, false, index, selecyKeyArray);
+      setSelectedKeys(selecyKeyArray)
     }
 
     setExpandedKeys(resKey);
@@ -458,13 +501,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const treeProps = {
     onExpand: onExpand,
     onCheck: (checked: any, info: any) => onCheck(checked, info),
-    treeData: treeData,
+    // treeData: treeData,
     className: classNames(styles.sideMenu),
     onSelect: onSelect,
   }
 
   return (
-    <div className={`${styles.wrap} ${projectModalVisible ? styles.wrapSelect : ""}`}>
+    <div ref={sideMenuRef} className={`${styles.wrap} ${projectModalVisible ? styles.wrapSelect : ""}`}>
       <div className={styles.searchWrap}>
         <Input prefix={<SearchOutlined />} placeholder="请输入" value={keyWord} onChange={(e) => {setkeyWord(e.target.value);setfilterCondition({...filterCondition, keyWord: e.target.value},)}} style={{ width: "78%" }} />
         <Button type="text" onClick={() => setFilterModalVisibel(true)}><AlignLeftOutlined />筛选</Button>
@@ -482,6 +525,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           selectedKeys={selectedKeys}
           checkedKeys={checkedKeys}
           treeProps={treeProps}
+          treeData={treeData}
         />
       </div>
 
@@ -518,7 +562,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         onOk={() => setMaterialModalVisible(false)}
       />
       <div>
-        <SidePopup {...props.sidePopupProps} />
+        {sidePopupHeight && <SidePopup {...props.sidePopupProps} height={sidePopupHeight}   />}
       </div>
       {projectModalVisible && <ProjectDetailInfo
         projectId={projectModalActiveId}
