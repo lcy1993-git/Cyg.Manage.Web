@@ -37,7 +37,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [kvLevel, setKvLevel] = useState<number[]>([]); //电压等级
   const [status, setStatus] = useState<number[]>([]); //状态
   const [majorCategory, setMajorCategory] = useState<number[]>([]); //专业类别
-  const [proType, setProType] = useState<number[]>([]); //项目类型
+  const [pType, setPType] = useState<number[]>([]); //项目类型
   const [reformAim, setReformAim] = useState<number[]>([]); //建设改造目的
   const [classification, setClassification] = useState<number[]>([]); //项目类别
   const [attribute, setAttribute] = useState<number[]>([]); //项目属性
@@ -73,7 +73,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       kvLevel,
       status,
       majorCategory,
-      proType,
+      pType,
       reformAim,
       classification,
       attribute,
@@ -109,7 +109,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setKvLevel([]);
     setStatus([]);
     setMajorCategory([]);
-    setProType([]);
+    setPType([]);
     setReformAim([]);
     setClassification([]);
     setAttribute([]);
@@ -130,7 +130,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       kvLevel: [],
       status: [],
       majorCategory: [],
-      proType: [],
+      pType: [],
       reformAim: [],
       classification: [],
       attribute: [],
@@ -448,8 +448,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                       mode= 'multiple'
                       defaultData={projectPType}
                       className="widthAll"
-                      value={proType}
-                      onChange={(value) => setProType(value as number[])}
+                      value={pType}
+                      onChange={(value) => setPType(value as number[])}
                       placeholder="项目类型"
                     />
                   </div>

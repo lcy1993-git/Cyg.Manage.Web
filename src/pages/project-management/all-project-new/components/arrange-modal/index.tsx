@@ -1,3 +1,4 @@
+/* eslint-disable prefer-object-spread */
 import { useControllableValue } from 'ahooks';
 import { Form, message, Tabs } from 'antd';
 import { Modal } from 'antd';
@@ -46,7 +47,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         return item.value;
       });
     }
-    return;
+    return [];
   }, [arrangePeople]);
 
   const saveInfo = () => {
@@ -55,7 +56,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       if (selectType === '2') {
         const arrangeInfo = {
           allotType: Number(selectType),
-          projectIds: projectIds,
+          projectIds,
           surveyUser: values.surveyUser,
           designUser: values.designUser,
           designAssessUser1: values.designAssessUser1,
@@ -67,8 +68,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           outerAuditUsers,
         };
 
-        console.log(arrangeInfo);
-
         await saveArrange(arrangeInfo);
       }
       if (selectType === '1') {
@@ -79,7 +78,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         const arrangeInfo = Object.assign(
           {
             allotType: selectType,
-            projectIds: projectIds,
+            projectIds,
             allotOrganizeUser: companyInfo.value,
           },
           values,
@@ -91,7 +90,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         const arrangeInfo = Object.assign(
           {
             allotType: selectType,
-            projectIds: projectIds,
+            projectIds,
             allotCompanyGroup: '',
           },
           values,
@@ -103,7 +102,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         const arrangeInfo = Object.assign(
           {
             allotType: selectType,
-            projectIds: projectIds,
+            projectIds,
             surveyUser: '',
             designUser: '',
             designAssessUser1: '',
@@ -119,6 +118,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       message.success('操作成功！');
       finishEvent?.();
       form.resetFields();
+      setState(false);
     });
   };
 

@@ -238,7 +238,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               setProjectModalVisible(true);
             }}
           >
-            <Tooltip title={record.name}>{record.name}</Tooltip>
+            {record.name}
           </u>
         );
       },
@@ -251,8 +251,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
     {
       title: '项目类型',
-      dataIndex: 'pType',
-      width: 100,
+      dataIndex: 'pTypeText',
+      width: 140,
     },
     {
       title: '电压等级',
@@ -332,7 +332,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
     {
       title: '现场数据来源',
-      dataIndex: 'dataSourceType',
+      dataIndex: 'dataSourceTypeText',
       width: 120,
     },
     {
@@ -499,6 +499,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const chooseColumns = useMemo(() => {
     if (columnsConfig) {
+      console.log(columnsConfig)
       return ['name', ...columnsConfig, 'sources', 'identitys', 'status', 'action'];
     }
     return [

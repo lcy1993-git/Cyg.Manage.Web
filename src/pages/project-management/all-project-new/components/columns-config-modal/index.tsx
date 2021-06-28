@@ -37,7 +37,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
     },
     {
       title: '项目类型',
-      dataIndex: 'pType',
+      dataIndex: 'pTypeText',
     },
     {
       title: '电压等级',

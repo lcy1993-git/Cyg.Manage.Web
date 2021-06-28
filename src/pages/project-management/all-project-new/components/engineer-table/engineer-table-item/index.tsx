@@ -209,7 +209,15 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                     }
               }
             >
-              {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
+              {
+                ite.ellipsis ?
+                <Tooltip title={item[ite.dataIndex]}>
+                  {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
+                </Tooltip> :
+                <span>
+                  {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
+                </span>
+              }
             </div>
           );
         })}
