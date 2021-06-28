@@ -142,16 +142,16 @@ const AllProject: React.FC = () => {
         columnsData
           ? JSON.parse(columnsData)
           : [
-            'categoryText',
-            'kvLevelText',
-            'natureTexts',
-            'majorCategoryText',
-            'constructTypeText',
-            'stageText',
-            'exportCoordinate',
-            'surveyUser',
-            'designUser',
-            'identitys',
+              'categoryText',
+              'kvLevelText',
+              'natureTexts',
+              'majorCategoryText',
+              'constructTypeText',
+              'stageText',
+              'exportCoordinate',
+              'surveyUser',
+              'designUser',
+              'identitys',
             ],
       );
     },
@@ -477,7 +477,7 @@ const AllProject: React.FC = () => {
       keyWord,
       statisticalCategory,
     });
-  })
+  });
 
   useEffect(() => {
     if (allProjectSearchProjectId) {
@@ -488,16 +488,16 @@ const AllProject: React.FC = () => {
         keyWord,
         statisticalCategory,
       });
-      setAllProjectSearchProjectId?.("");
+      setAllProjectSearchProjectId?.('');
     }
     if (allProjectSearchPerson) {
-      setAllProjectSearchPerson?.("");
+      setAllProjectSearchPerson?.('');
 
       setDefaultPersonInfo({
         survey: String(allProjectSearchPerson),
         logicRelation: 1,
         design: String(allProjectSearchPerson),
-      })
+      });
 
       // TODO 有人的时候设置人
       searchByParams({
@@ -654,6 +654,7 @@ const AllProject: React.FC = () => {
               extractParams={{ keyWord, statisticalCategory, ...searchParams }}
               onSelect={tableSelectEvent}
               columnsConfig={chooseColumns}
+              finishEvent={refresh}
             />
           </div>
         </div>

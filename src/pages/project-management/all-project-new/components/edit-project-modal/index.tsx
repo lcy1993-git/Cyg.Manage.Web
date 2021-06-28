@@ -52,7 +52,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         await editProject({
           id: projectId,
           ...value,
-          totalInvest: value.totalInvest ?? 0,
+          totalInvest: value.totalInvest ? value.totalInvest : 0,
         });
         message.success('项目信息更新成功');
         setState(false);
