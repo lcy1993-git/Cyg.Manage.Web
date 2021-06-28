@@ -10,7 +10,6 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
   const { onSatelliteMapClick, onStreetMapClick } = props;
   const [isStreet, setIsStreet] = useState(false);
   const [active, setActive] = useState<boolean>(false);
-  console.log(active);
 
   const onChange = (value: string) => {
     if (value === 'street') {

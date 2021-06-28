@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Drawer, Table, Modal, Carousel, Input, message } from 'antd';
+import React, { useEffect, useMemo, useRef, useState, useLayoutEffect } from 'react';
+import { Table, Modal, Carousel, Input, message } from 'antd';
 
 import { CloseOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 
@@ -16,6 +16,7 @@ import { formDataMateral } from '@/utils/utils';
 import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { CommentRequestType, addComment, fetchCommentList } from '@/services/visualization-results/side-popup';
 import styles from './index.less';
+import Index from '@/pages/index';
 
 export interface TableDataType {
   [propName: string]: any;
@@ -25,6 +26,7 @@ export interface Props {
   data: TableDataType[];
   rightSidebarVisible: boolean;
   setRightSidebarVisiviabel: (arg0: boolean) => void;
+  height: number;
 }
 
 const loadEnumsData = window.localStorage.getItem('loadEnumsData');
@@ -191,7 +193,7 @@ export interface CommentListItemDataType {
   datetime: React.ReactNode;
 }
 const SidePopup: React.FC<Props> = observer((props) => {
-  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel } = props;
+  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props;
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
 
@@ -267,6 +269,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const mediaRef = useRef<HTMLSpanElement>(null);
   const materialRef = useRef<HTMLSpanElement>(null);
 
+  const [gotoNumber, setGotoNumber] = useState<undefined | number>(undefined);
+
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
@@ -341,6 +345,15 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   ];
 
+  useEffect(() => {
+    if(mediaVisiable) {
+      setTimeout(() => {
+        carouselRef.current?.goTo(gotoNumber, true);
+      }, 50)
+
+    }
+  }, [mediaVisiable])
+
   const mediaColumns = [
     {
       title: '类型、序号',
@@ -378,7 +391,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
             key={record.id}
             className={styles.link}
             onClick={() => {
-              carouselRef.current?.goTo(index, true);
+              setGotoNumber(index)
               setMediaVisiable(true);
             }}
           >
@@ -542,6 +555,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           columns={columns}
           dataSource={data[0]}
           rowClassName={styles.row}
+          scroll={{ y: height - 160 }}
           rowKey={(r) => r.propertyName}
         />
       </div> : null

@@ -53,7 +53,6 @@ const BaseMap = observer((props: BaseMapProps) => {
     startDate,
     endDate
   } = vState;
-  console.log(projects, "mapbase");
   
   const { kvLevel } = filterCondition;
 
