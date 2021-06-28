@@ -2,6 +2,8 @@
 import EmptyTip from '@/components/empty-tip';
 import {
   AllProjectStatisticsParams,
+  applyKnot,
+  auditKnot,
   getExternalArrangeStep,
   getProjectInfo,
   getProjectTableList,
@@ -9,7 +11,7 @@ import {
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
 import { useRequest, useSize } from 'ahooks';
-import { Menu } from 'antd';
+import { Menu, message, Popconfirm } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
 import React from 'react';
@@ -37,6 +39,7 @@ import CopyProjectModal from '../copy-project-modal';
 import AddProjectModal from '../add-project-modal';
 import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
+import AuditKnotModal from '../audit-knot-modal';
 
 const colorMap = {
   立项: 'green',
@@ -57,13 +60,13 @@ interface JurisdictionInfo {
 interface EngineerTableProps {
   extractParams: ExtractParams;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
-  afterSearch?: () => void;
+  finishEvent?: () => void;
   getStatisticsData?: (value: any) => void;
   columnsConfig: string[];
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, getStatisticsData, columnsConfig = [] } = props;
+  const { extractParams, onSelect, getStatisticsData, columnsConfig = [], finishEvent } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -75,7 +78,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     projectStatus: '',
     projectStage: '',
   });
-  const [currentClickProjectId, setCurrentClickProjectId] = useState('');
+  const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('');
   const [currentArrageProjectId, setCurrentArrageProjectId] = useState<string>('');
   const [currentProjectArrangeType, setCurrentProjectArrageType] = useState<string>();
   const [arrangeAllotCompanyId, setArrangeAllotCompanyId] = useState<string>();
@@ -102,6 +105,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [editProjectVisible, setEditProjectVisible] = useState<boolean>(false);
   const [editEngineerVisible, setEditEngineerVisible] = useState<boolean>(false);
   const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
+
+  const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false);
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
@@ -430,6 +435,29 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 7 ? (
+                  <span className="canClick">
+                    <Popconfirm
+                      title="确认对该项目进行“申请结项”?"
+                      onConfirm={() => applyKnotEvent([record.id])}
+                      okText="确认"
+                      cancelText="取消"
+                    >
+                      {stateInfo?.statusText}
+                    </Popconfirm>
+                  </span>
+                ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
+                  stateInfo.status === 15 ? (
+                  <span
+                    className="canClick"
+                    onClick={() => {
+                      setCurrentClickProjectId(record.id);
+                      setAuditKnotModalVisible(true);
+                    }}
+                  >
+                    {stateInfo?.statusText}
+                  </span>
                 ) : stateInfo.statusText === '设计评审中' ? (
                   <span>设计中</span>
                 ) : (
@@ -495,6 +523,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       },
     },
   ];
+
+  //申请结项
+  const applyKnotEvent = async (projectId: string[]) => {
+    await applyKnot(projectId);
+    message.success('申请结项成功');
+    finishEvent?.();
+  };
 
   const chooseColumns = useMemo(() => {
     if (columnsConfig) {
@@ -862,6 +897,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             onChange={setExternalListModalVisible}
             stepData={externalStepData}
             refresh={delayRefresh}
+          />
+        )}
+
+        {auditKnotModalVisible && (
+          <AuditKnotModal
+            visible={auditKnotModalVisible}
+            onChange={setAuditKnotModalVisible}
+            projectIds={[currentClickProjectId]}
+            finishEvent={finishEvent}
           />
         )}
       </div>

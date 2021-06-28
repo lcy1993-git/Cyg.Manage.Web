@@ -10,7 +10,7 @@ interface AuditKnotParams {
   projectIds: string[];
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent: () => void;
+  finishEvent: (() => void) | undefined;
 }
 
 const AuditKnotModal: React.FC<AuditKnotParams> = (props) => {

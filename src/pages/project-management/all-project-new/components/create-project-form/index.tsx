@@ -146,7 +146,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <Input
               type="number"
               placeholder="请输入"
-              style={{ width: '100%' }}
               min={0}
               defaultValue={0}
             />
