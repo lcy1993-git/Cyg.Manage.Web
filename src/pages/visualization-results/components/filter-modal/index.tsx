@@ -11,6 +11,7 @@ import {
 } from '@/services/project-management/all-project';
 import { getEngineerEnum } from '@/services/project-management/all-project';
 import styles from './index.less';
+import { useEffect } from 'react';
 
 const { Item } = Form;
 const { Option } = Select;
@@ -38,7 +39,8 @@ const FilterModal: React.FC<Props> = ({
   useMount(() => run());
   const [form] = Form.useForm();
   const sureEvent = () => {
-    form.validateFields().then(async (values) => {
+    form.validateFields().then((values) => {
+      console.log(values)
       onSure?.(values)
     })
     onChange(false);
@@ -69,7 +71,8 @@ const FilterModal: React.FC<Props> = ({
       stage: undefined,
       kvLevel: undefined,
       sourceType: undefined,
-      comment: undefined
+      comment: undefined,
+      haveAnnotate: -1
     })
   }
 
@@ -82,6 +85,12 @@ const FilterModal: React.FC<Props> = ({
     maxTagCount: 0,
     maxTagTextLength: 2
   }
+
+  useEffect(() => {
+    if(defaultData) {
+      form.setFieldsValue(defaultData)
+    }
+  }, [JSON.stringify(defaultData)])
 
   return (
     <Modal
@@ -115,12 +124,12 @@ const FilterModal: React.FC<Props> = ({
             >
               <UrlSelect
                 {...selectStyle}
-                defaultValue={defaultData.pCategory}
+            
                 allowClear
                 mode="multiple"
                 valuekey="value"
                 titlekey="text"
-                defaultData={resData.projectPType}
+                defaultData={resData.projectClassification}
                 dropdownMatchSelectWidth={168}
                 className="widthAll"
                 placeholder="项目类别"
@@ -134,7 +143,7 @@ const FilterModal: React.FC<Props> = ({
               <UrlSelect
                 {...selectStyle}
                 allowClear
-                defaultValue={defaultData.constructType}
+              
                 valuekey="value"
                 titlekey="text"
                 defaultData={resData.projectConstructType}
@@ -153,7 +162,7 @@ const FilterModal: React.FC<Props> = ({
                 valuekey="value"
                 titlekey="text"
                 allowClear
-                defaultValue={defaultData.nature}
+
                 defaultData={resData.projectNature}
                 mode="multiple"
                 dropdownMatchSelectWidth={168}
@@ -168,7 +177,7 @@ const FilterModal: React.FC<Props> = ({
             >
               <EnumSelect
                 enumList={ProjectIdentityType}
-                defaultValue={defaultData.identityType}
+         
                 className="widthAll"
                 mode="multiple"
                 allowClear
@@ -186,7 +195,7 @@ const FilterModal: React.FC<Props> = ({
               <UrlSelect
                 {...selectStyle}
                 allowClear
-                defaultValue={defaultData.category}
+     
                 mode="multiple"
                 valuekey="value"
                 titlekey="text"
@@ -203,7 +212,7 @@ const FilterModal: React.FC<Props> = ({
               <UrlSelect
                 {...selectStyle}
                 allowClear
-                defaultValue={defaultData.stage}
+        
                 mode="multiple"
                 valuekey="value"
                 titlekey="text"
@@ -220,7 +229,7 @@ const FilterModal: React.FC<Props> = ({
               <UrlSelect
                 {...selectStyle}
                 allowClear
-                defaultValue={defaultData.kvLevel}
+       
                 mode="multiple"
                 valuekey="value"
                 titlekey="text"
@@ -236,7 +245,7 @@ const FilterModal: React.FC<Props> = ({
             >
               <EnumSelect
                 {...selectStyle}
-                defaultValue={defaultData.sourceType}
+           
                 enumList={ProjectSourceType}
                 className="widthAll"
                 mode="multiple"
@@ -246,11 +255,11 @@ const FilterModal: React.FC<Props> = ({
               />
             </Item>
             <Item
-              name="comment"
+              name="haveAnnotate"
               label="存在审阅"
             >
               <Select
-                defaultValue={defaultData.comment}
+        
                 allowClear
                 style={{ width: 200 }}
                 placeholder="存在审阅"
