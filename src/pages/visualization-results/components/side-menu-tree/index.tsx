@@ -8,9 +8,8 @@ import {
   ProjectListByAreaType,
 } from '@/services/visualization-results/side-tree';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
-import { getEngineerInfo } from '@/services/project-management/all-project';
 
-import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
+import ProjectDetailInfo from '@/pages/project-management/all-project-new/components/project-detail-info';
 import { downloadMapPositon } from '@/services/visualization-results/list-menu';
 import ExportMapPositionModal from '../export-map-position-modal';
 import FilterModal from '../filter-modal';
@@ -26,14 +25,15 @@ import { observer } from 'mobx-react-lite';
 import { useContainer } from '../../result-page/mobx-store';
 import moment from 'moment';
 import _ from 'lodash';
-import { flattenDeepToKey, TreeNodeType, getSelectKeyByKeyword } from '../../utils/utils'
+import { flattenDeepToKey, TreeNodeType, getSelectKeyByKeyword } from '../../utils/utils';
 import classNames from 'classnames';
 import styles from './index.less';
 
-import achievementSvg from '@/assets/image/webgis/svg/achievements.svg'
-import exportSvg from '@/assets/image/webgis/svg/export.svg'
-import materiaSvg from '@/assets/image/webgis/svg/material.svg'
+import achievementSvg from '@/assets/image/webgis/svg/achievements.svg';
+import exportSvg from '@/assets/image/webgis/svg/export.svg';
+import materiaSvg from '@/assets/image/webgis/svg/material.svg';
 import messageSvg from '@/assets/image/webgis/svg/message.svg';
+import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
 
 export interface SideMenuProps {
   className?: string;
@@ -51,18 +51,18 @@ let isFirstRequest: boolean;
 /**
  * 判断按钮区与tree数据层级的关系比较
  */
-function deepKeyArray  (data: TreeNodeType[], flag1: boolean, index: number, keyArray: any) {
+function deepKeyArray(data: TreeNodeType[], flag1: boolean, index: number, keyArray: any) {
   data.forEach((item: TreeNodeType) => {
-
-    const levelCategoryFlag = item.levelCategory < 4 ? item.levelCategory === index + 1 : item.levelCategory === index + 2;
+    const levelCategoryFlag =
+      item.levelCategory < 4 ? item.levelCategory === index + 1 : item.levelCategory === index + 2;
     const flag = flag1 || levelCategoryFlag;
     if (flag) {
-      keyArray.push(item.key)
+      keyArray.push(item.key);
     }
     if (Array.isArray(item.children)) {
-      deepKeyArray(item.children, flag, index, keyArray)
+      deepKeyArray(item.children, flag, index, keyArray);
     }
-  })
+  });
 }
 
 /**
@@ -87,7 +87,7 @@ function generateProjectTree(projectList: ProjectListByAreaType[]): TreeNodeType
 
 function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
   console.log(item);
-  
+
   return {
     id: item.id,
     time: moment(item.propertys?.endTime).format('YYYY-MM-DD'),
@@ -100,25 +100,29 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
 type KeyType =
   | React.Key[]
   | {
-    checked: React.Key[];
-    halfChecked: React.Key[];
-  };
+      checked: React.Key[];
+      halfChecked: React.Key[];
+    };
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
-
   // 项目详情
-  const [projectModalActiveId, setProjectModalActiveId] = useState<string>("");
+  const [projectModalActiveId, setProjectModalActiveId] = useState<string>('');
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
-  const [keyWord, setkeyWord] = useState("");
 
+  const [engineerModalActiveId, setEngineerModalActiveId] = useState<string>('');
+  const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
+
+  const [keyWord, setkeyWord] = useState('');
   // 筛选
   const [filterModalVisibel, setFilterModalVisibel] = useState<boolean>(false);
   // 成果管理
   const [resultVisibel, setResultVisibel] = useState<boolean>(false);
   // 审阅消息
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
-  const [buttonActive, setButtonActive] = useState<number>(window.localStorage.getItem('selectCity') ? -1 : 2);
-  
+  const [buttonActive, setButtonActive] = useState<number>(
+    window.localStorage.getItem('selectCity') ? -1 : 2,
+  );
+
   // Tree State
   const [selectArrayStuck, setSelectArrayStuck] = useState<string[]>([]);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -131,44 +135,43 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   //  卸载清楚请求次数
   useMount(() => {
-    setExpandedKeys(["-1"])
+    setExpandedKeys(['-1']);
     isFirstRequest = true;
-  })
+  });
 
   useEffect(() => {
-    if(!Array.isArray(treeData) || treeData.length === 0) return;
+    if (!Array.isArray(treeData) || treeData.length === 0) return;
     let selectArray: any[] = [];
-    if(isFirstRequest) {
-      if(buttonActive === 2) { // 初次请求初始化默认省级状态
+    if (isFirstRequest) {
+      if (buttonActive === 2) {
+        // 初次请求初始化默认省级状态
 
-        deepKeyArray(treeData, false, 2, selectArray)
-        
-        setSelectedKeys(selectArray)
-        
-        setExpandedKeys(flattenDeepToKey(treeData, 2, "key", "-1"));
-      }else if(buttonActive === -1) {
+        deepKeyArray(treeData, false, 2, selectArray);
+
+        setSelectedKeys(selectArray);
+
+        setExpandedKeys(flattenDeepToKey(treeData, 2, 'key', '-1'));
+      } else if (buttonActive === -1) {
         // alert(-111111111111)
       }
       isFirstRequest = false;
-    }else if(!isFirstRequest && keyWord){ // 实时搜索定位
-      setButtonActive(4)
+    } else if (!isFirstRequest && keyWord) {
+      // 实时搜索定位
+      setButtonActive(4);
       console.log(getSelectKeyByKeyword(treeData, keyWord));
-      
+
       setSelectedKeys(getSelectKeyByKeyword(treeData, keyWord));
-      setExpandedKeys(flattenDeepToKey(treeData, 5, "key", "-1"))
-
+      setExpandedKeys(flattenDeepToKey(treeData, 5, 'key', '-1'));
     }
-
-  }, [JSON.stringify(treeData)])
+  }, [JSON.stringify(treeData)]);
 
   // 处理关闭项目详情模态框，没有关闭选中状态的bug
   useEffect(() => {
     if (!projectModalVisible) {
-      setSelectedKeys([])
-      setSelectedKeys(selectArrayStuck)
+      setSelectedKeys([]);
+      setSelectedKeys(selectArrayStuck);
     }
-
-  }, [projectModalVisible])
+  }, [projectModalVisible]);
 
   const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(
     false,
@@ -178,27 +181,27 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const startDateRef = useRef<any>(null);
   const endDateRef = useRef<any>(null);
   const sideMenuRef = useRef<HTMLDivElement>(null);
-  const {height: sidePopupHeight} = useSize(sideMenuRef);
+  const { height: sidePopupHeight } = useSize(sideMenuRef);
 
   const [startDateValue, setStartDateValue] = useState<Moment>(undefined);
   const [endDateValue, setEndDateValue] = useState<Moment>(undefined);
 
   // 判断开始时间不能大于结束时间
   const compareData = (start: Moment, end: Moment) => {
-    if(start && end) {
-      if(start.valueOf() > end.valueOf()) {
-        message.error("开始时间不能大于结束时间");
+    if (start && end) {
+      if (start.valueOf() > end.valueOf()) {
+        message.error('开始时间不能大于结束时间');
         return false;
       }
     }
-    return true
-  }
+    return true;
+  };
 
   const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false);
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList, checkedProjectDateList } = vState;
-  const [filterCondition, setfilterCondition] = useState({});
+  const [filterCondition, setfilterCondition] = useState({ haveAnnotate: -1 });
   /**
    * 根据用户实时选择的数据动态添加初始和截至时间
    */
@@ -208,10 +211,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       setEndDateValue(undefined);
     } else {
       const checkedProject = checkedProjectDateList || [undefined];
-      setStartDateValue(moment(checkedProject[0]))
-      setEndDateValue(moment(checkedProject[checkedProject.length - 1]))
+      setStartDateValue(moment(checkedProject[0]));
+      setEndDateValue(moment(checkedProject[checkedProject.length - 1]));
     }
-  }, [checkedProjectIdList.length])
+  }, [checkedProjectIdList.length]);
 
   const { className, onChange, sideMenuVisibel } = props;
   const activeStyle = (key: string) => (tabActiveKey === key ? '#0e7b3b' : '#000');
@@ -356,7 +359,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     let temp = info.checkedNodes.filter((v: TreeNodeType) => isProjectLevel(v.levelCategory));
     //去重,这里考虑到按公司筛选的时候，不同的公司可以有同一个项目
     let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
-    
+
     store.setProjectIdList(res);
     setCheckedKeys(checked);
   };
@@ -375,8 +378,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         initSideTree(data);
         // 修复初次请求默认到县级的bug
         console.log(isFirstRequest);
-        
-
       } else {
         message.warning('无数据');
       }
@@ -387,16 +388,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   });
 
   const handlerAreaButtonCheck = (index: number, buttonActive: number) => {
-    
     if (index === buttonActive) {
       setButtonActive(-1);
-      setSelectedKeys([])
+      setSelectedKeys([]);
       return;
     }
-    const resKey = flattenDeepToKey(treeData, index <= 2 ? index : index + 1, "key", "-1");
+    const resKey = flattenDeepToKey(treeData, index <= 2 ? index : index + 1, 'key', '-1');
     let selecyKeyArray: string[] = [];
     if (index < 0) {
-      setSelectedKeys(selecyKeyArray)
+      setSelectedKeys(selecyKeyArray);
     } else {
       // const deepKeyArray = (data: TreeNodeType[], flag1: boolean) => {
       //   data.forEach((item: TreeNodeType) => {
@@ -414,23 +414,31 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       //   })
       // }
       deepKeyArray(treeData, false, index, selecyKeyArray);
-      setSelectedKeys(selecyKeyArray)
+      setSelectedKeys(selecyKeyArray);
     }
 
     setExpandedKeys(resKey);
     setButtonActive(index);
-  }
+  };
 
   const treeNodeRender = (data: any) => {
     return data.map((item: any) => {
-      let rest = {}
+      let rest = {};
       if (item.children && Array.isArray(item.Children)) {
-        return <Tree.TreeNode key={item.key} title={item.title} checkable {...rest} children={treeNodeRender(item.children)} />
+        return (
+          <Tree.TreeNode
+            key={item.key}
+            title={item.title}
+            checkable
+            {...rest}
+            children={treeNodeRender(item.children)}
+          />
+        );
       } else {
-        return <Tree.TreeNode key={item.key} title={item.title} checkable />
+        return <Tree.TreeNode key={item.key} title={item.title} checkable />;
       }
-    })
-  }
+    });
+  };
 
   const { data: mapPosition, run: downloadMapPositonRequest } = useRequest(downloadMapPositon, {
     manual: true,
@@ -458,47 +466,69 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    store.setStartDate(startDateValue ? moment(startDateValue).format('YYYY/MM/DD') : startDateValue);
-  }, [startDateValue])
+    store.setStartDate(
+      startDateValue ? moment(startDateValue).format('YYYY/MM/DD') : startDateValue,
+    );
+  }, [startDateValue]);
 
   useEffect(() => {
     store.setEndDate(endDateValue ? moment(endDateValue).format('YYYY/MM/DD') : endDateValue);
-  }, [endDateValue])
+  }, [endDateValue]);
 
   const renderStartDateButton = () => {
     return (
-      <Button type="link" style={{ width: "100%" }} onClick={() => {
-        if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
-          message.error('当前未选择项目');
-        } else {
-          setStartDateValue(moment(checkedProjectDateList[0]))
-        }
-        startDateRef && startDateRef.current?.blur();
-      }}>定位最早项目时间</Button>
+      <Button
+        type="link"
+        style={{ width: '100%' }}
+        onClick={() => {
+          if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
+            message.error('当前未选择项目');
+          } else {
+            setStartDateValue(moment(checkedProjectDateList[0]));
+          }
+          startDateRef && startDateRef.current?.blur();
+        }}
+      >
+        定位最早项目时间
+      </Button>
     );
-  }
+  };
 
   const renderEndDateButton = () => {
     return (
-      <Button type="link" style={{ width: "100%" }} onClick={() => {
-        if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
-          message.error('当前未选择项目');
-        } else {
-          setEndDateValue(moment(checkedProjectDateList[checkedProjectDateList.length - 1]))
-        }
-        endDateRef && endDateRef.current?.blur();
-      }}>定位最晚项目时间</Button>
+      <Button
+        type="link"
+        style={{ width: '100%' }}
+        onClick={() => {
+          if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
+            message.error('当前未选择项目');
+          } else {
+            setEndDateValue(moment(checkedProjectDateList[checkedProjectDateList.length - 1]));
+          }
+          endDateRef && endDateRef.current?.blur();
+        }}
+      >
+        定位最晚项目时间
+      </Button>
     );
-  }
+  };
 
   const onSelect = (e: any, g: any) => {
-    if (!(Array.isArray(g.node.children) && g.node.children.length > 0)) {
+    // 代表点击的是项目
+    if (g.node.levelCategory && g.node.levelCategory === 6) {
       setSelectedKeys([g.node.key]);
-      setProjectModalActiveId(g.node.id)
+      setProjectModalActiveId(g.node.id);
       setProjectModalVisible(true);
       setSelectArrayStuck(selectedKeys);
     }
-  }
+    // 代表点击的是工程
+    if (g.node.levelCategory && g.node.levelCategory === 5) {
+      setSelectedKeys([g.node.key]);
+      setEngineerModalVisible(true);
+      setEngineerModalActiveId(g.node.id);
+      setSelectArrayStuck(selectedKeys);
+    }
+  };
 
   const treeProps = {
     onExpand: onExpand,
@@ -506,7 +536,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     // treeData: treeData,
     className: classNames(styles.sideMenu),
     onSelect: onSelect,
-  }
+  };
 
   const handlerPositionClick = (flag: any) => {
     if(Array.isArray(flag) && flag.length > 0) {
@@ -527,10 +557,25 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }
 
   return (
-    <div ref={sideMenuRef} className={`${styles.wrap} ${projectModalVisible ? styles.wrapSelect : ""}`}>
+    <div
+      ref={sideMenuRef}
+      className={`${styles.wrap} ${projectModalVisible ? styles.wrapSelect : ''}`}
+    >
       <div className={styles.searchWrap}>
-        <Input prefix={<SearchOutlined />} placeholder="请输入" value={keyWord} onChange={(e) => {setkeyWord(e.target.value);setfilterCondition({...filterCondition, keyWord: e.target.value},)}} style={{ width: "78%" }} />
-        <Button type="text" onClick={() => setFilterModalVisibel(true)}><AlignLeftOutlined />筛选</Button>
+        <Input
+          prefix={<SearchOutlined />}
+          placeholder="请输入"
+          value={keyWord}
+          onChange={(e) => {
+            setkeyWord(e.target.value);
+            setfilterCondition({ ...filterCondition, keyWord: e.target.value });
+          }}
+          style={{ width: '78%' }}
+        />
+        <Button type="text" onClick={() => setFilterModalVisibel(true)}>
+          <AlignLeftOutlined />
+          筛选
+        </Button>
       </div>
       <div className={styles.menuTree}>
         <MenuTree
@@ -550,8 +595,24 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       </div>
 
       <div className={styles.timeLine}>
-        <DatePicker ref={startDateRef} style={{ width: "100%" }} placeholder='请选择日期起' value={startDateValue} showToday={false} renderExtraFooter={renderStartDateButton} onChange={(e) => compareData(e!, endDateValue) && setStartDateValue(e!)} />
-        <DatePicker ref={endDateRef} style={{ width: "100%" }} placeholder='请选择日期止' value={endDateValue} showToday={false} renderExtraFooter={renderEndDateButton} onChange={(e) => compareData(startDateValue, e!) && setEndDateValue(e!)} />
+        <DatePicker
+          ref={startDateRef}
+          style={{ width: '100%' }}
+          placeholder="请选择日期起"
+          value={startDateValue}
+          showToday={false}
+          renderExtraFooter={renderStartDateButton}
+          onChange={(e) => compareData(e!, endDateValue) && setStartDateValue(e!)}
+        />
+        <DatePicker
+          ref={endDateRef}
+          style={{ width: '100%' }}
+          placeholder="请选择日期止"
+          value={endDateValue}
+          showToday={false}
+          renderExtraFooter={renderEndDateButton}
+          onChange={(e) => compareData(startDateValue, e!) && setEndDateValue(e!)}
+        />
       </div>
       <div className={styles.functionButton}>
         <div className={styles.row}>
@@ -569,15 +630,29 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           </Button>
         </div>
         <div className={styles.row}>
-          <ToolTipButton buttonName="成果管理" onClick={() => setResultVisibel(true)} checkedKeys={checkedProjectIdList} svg={achievementSvg} />
-          <ToolTipButton buttonName="审阅消息" onClick={() => setCommentModalVisible(true)} checkedKeys={checkedProjectIdList} svg={messageSvg} />
+          <ToolTipButton
+            buttonName="成果管理"
+            onClick={() => setResultVisibel(true)}
+            checkedKeys={checkedProjectIdList}
+            svg={achievementSvg}
+          />
+          <ToolTipButton
+            buttonName="审阅消息"
+            onClick={() => setCommentModalVisible(true)}
+            checkedKeys={checkedProjectIdList}
+            svg={messageSvg}
+          />
         </div>
       </div>
       <div className={styles.controlLayers}>
         <ControlLayers {...props.controlLayersProps} />
       </div>
       <div className={styles.handlerSideBarVisibelButton} onClick={() => onChange()}>
-        {sideMenuVisibel ? <LeftOutlined style={{ fontSize: 10 }} /> : <RightOutlined style={{ fontSize: 10 }} />}
+        {sideMenuVisibel ? (
+          <LeftOutlined style={{ fontSize: 10 }} />
+        ) : (
+          <RightOutlined style={{ fontSize: 10 }} />
+        )}
       </div>
       <ExportMapPositionModal
         confirmLoading={exportMapPositionLoading}
@@ -592,19 +667,41 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         onOk={() => setMaterialModalVisible(false)}
       />
       <div>
-        {sidePopupHeight && <SidePopup {...props.sidePopupProps} height={sidePopupHeight}   />}
+        {sidePopupHeight && <SidePopup {...props.sidePopupProps} height={sidePopupHeight} />}
       </div>
-      {projectModalVisible && <ProjectDetailInfo
-        projectId={projectModalActiveId}
-        visible={projectModalVisible}
-        onChange={setProjectModalVisible}
-        isResult={false}
-      />}
-      <ResultModal projectId={checkedProjectIdList[0]?.id ?? ""} visible={resultVisibel} onChange={setResultVisibel} />
-      <CommentModal visible={commentModalVisible} onOk={() => setCommentModalVisible(false)} onCancel={() => setCommentModalVisible(false)} checkedProjectIdList={checkedProjectIdList} />
-      <FilterModal defaultData={filterCondition} visible={filterModalVisibel} onChange={setFilterModalVisibel} onSure={(values) => setfilterCondition(values)} />
+      {projectModalVisible && (
+        <ProjectDetailInfo
+          projectId={projectModalActiveId}
+          visible={projectModalVisible}
+          onChange={setProjectModalVisible}
+          isResult={false}
+        />
+      )}
+      {engineerModalVisible && (
+        <EngineerDetailInfo
+          engineerId={engineerModalActiveId}
+          visible={engineerModalVisible}
+          onChange={setEngineerModalVisible}
+        />
+      )}
+      <ResultModal
+        projectId={checkedProjectIdList[0]?.id ?? ''}
+        visible={resultVisibel}
+        onChange={setResultVisibel}
+      />
+      <CommentModal
+        visible={commentModalVisible}
+        onOk={() => setCommentModalVisible(false)}
+        onCancel={() => setCommentModalVisible(false)}
+        checkedProjectIdList={checkedProjectIdList}
+      />
+      <FilterModal
+        defaultData={filterCondition}
+        visible={filterModalVisibel}
+        onChange={setFilterModalVisibel}
+        onSure={(values) => setfilterCondition(values)}
+      />
     </div>
-
   );
 });
 
