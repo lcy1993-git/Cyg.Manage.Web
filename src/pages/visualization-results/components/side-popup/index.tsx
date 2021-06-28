@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Drawer, Table, Modal, Carousel, Input, message } from 'antd';
+import { Table, Modal, Carousel, Input, message } from 'antd';
 
 import { CloseOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 
@@ -379,8 +379,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
             key={record.id}
             className={styles.link}
             onClick={() => {
-              carouselRef.current?.goTo(index, true);
               setMediaVisiable(true);
+              setTimeout(() => {
+                carouselRef.current?.goTo(index, true);
+              }, 100)
             }}
           >
             查看
