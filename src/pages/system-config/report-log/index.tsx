@@ -120,8 +120,8 @@ const ManageUser: React.FC = () => {
         <TableSearch label="筛选" width="800px" marginLeft="15px">
           <div className={styles.filter}>
             <UrlSelect
-              titleKey="text"
-              valueKey="value"
+              titlekey="text"
+              valuekey="value"
               className={styles.appWidth}
               url="/FileLog/GetApplications"
               placeholder="应用"

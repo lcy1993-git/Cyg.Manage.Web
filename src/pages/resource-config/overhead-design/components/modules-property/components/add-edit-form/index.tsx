@@ -40,8 +40,8 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
             showSearch
             requestSource="resource"
             url="/PoleType/GetList"
-            titleKey="poleTypeCode"
-            valueKey="poleTypeName"
+            titlekey="poleTypeCode"
+            valuekey="poleTypeName"
             placeholder="请选择杆型简称"
             extraParams={{ libId: resourceLibId }}
           />
@@ -55,8 +55,8 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           showSearch
           requestSource="resource"
           url="/Chart/GetList"
-          titleKey="chartName"
-          valueKey="chartId"
+          titlekey="chartName"
+          valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
           libId={resourceLibId}

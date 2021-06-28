@@ -67,8 +67,8 @@ const Component: React.FC<libParams> = (props) => {
             showSearch
             requestSource="resource"
             url="/Component/GetDeviceCategory"
-            titleKey="key"
-            valueKey="value"
+            titlekey="key"
+            valuekey="value"
             placeholder="请选择"
             onChange={(value: any) => searchByCategory(value)}
           />

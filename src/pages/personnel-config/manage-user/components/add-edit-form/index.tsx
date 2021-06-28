@@ -71,8 +71,8 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
           <UrlSelect
             showSearch
             url="/Role/GetList"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择角色"
             requestType="post"
           />
@@ -94,8 +94,8 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
           <UrlSelect
             showSearch
             url="/Area/GetList?pId=-1"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择省份"
           />
         </CyFormItem>

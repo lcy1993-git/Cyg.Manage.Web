@@ -207,8 +207,8 @@ const FilterBar: FC = observer(() => {
           </TableSearch>
           <TableSearch className="mb10" width="111px">
             <UrlSelect
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               defaultData={projectCategory}
               className="widthAll"
               value={category}
@@ -220,8 +220,8 @@ const FilterBar: FC = observer(() => {
           </TableSearch>
           <TableSearch className="mr2" width="111px">
             <UrlSelect
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               defaultData={projectPType}
               value={pCategory}
               dropdownMatchSelectWidth={168}
@@ -234,8 +234,8 @@ const FilterBar: FC = observer(() => {
           </TableSearch>
           <TableSearch className="mr2" width="111px">
             <UrlSelect
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               defaultData={projectStage}
               value={stage}
               className="widthAll"
@@ -247,8 +247,8 @@ const FilterBar: FC = observer(() => {
           </TableSearch>
           <TableSearch className="mr2" width="111px">
             <UrlSelect
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               defaultData={projectConstructType}
               value={constructType}
               className="widthAll"
@@ -260,8 +260,8 @@ const FilterBar: FC = observer(() => {
           </TableSearch>
           <TableSearch className="mr2" width="111px">
             <UrlSelect
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               defaultData={projectKvLevel}
               value={kvLevel}
               onChange={(value) => setKvLevel(value as number)}
@@ -273,8 +273,8 @@ const FilterBar: FC = observer(() => {
           </TableSearch>
           <TableSearch className="mr2" width="111px">
             <UrlSelect
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               defaultData={projectNature}
               value={nature}
               dropdownMatchSelectWidth={168}

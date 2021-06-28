@@ -61,8 +61,8 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
           <UrlSelect
             requestSource="resource"
             url="/ModulesDetails/GetParts"
-            valueKey="value"
-            titleKey="key"
+            valuekey="value"
+            titlekey="key"
             allowClear
             onChange={(value: any) => searchByPart(value)}
             placeholder="--所属部件--"

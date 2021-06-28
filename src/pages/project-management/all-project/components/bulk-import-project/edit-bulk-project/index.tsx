@@ -137,8 +137,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectCategory}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -157,8 +157,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectPType}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -175,8 +175,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectKvLevel}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -200,8 +200,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 <UrlSelect
                   defaultData={projectNature}
                   mode="multiple"
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                   value={nature}
                   onChange={(value) => setNature(value as string)}
@@ -264,8 +264,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectAssetsNature}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -282,8 +282,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectMajorCategory}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -318,8 +318,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectReformCause}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -338,8 +338,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectReformAim}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -402,8 +402,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectRegionAttribute}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -433,8 +433,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectConstructType}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -451,8 +451,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectClassification}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -471,8 +471,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectStage}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -489,8 +489,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectBatch}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -509,8 +509,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectAttribute}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -527,8 +527,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={meteorologicLevel}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                 />
               </CyFormItem>
@@ -553,8 +553,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectDataSourceType}
-                  valueKey="value"
-                  titleKey="text"
+                  valuekey="value"
+                  titlekey="text"
                   placeholder="请选择"
                   onChange={(value: any) => {
                     if (value === 2) {
