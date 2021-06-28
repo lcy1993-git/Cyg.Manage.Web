@@ -23,8 +23,6 @@ const ToolTipButton: React.FC<Props> = ({
       }
       <Button
         style={Array.isArray(checkedKeys) && checkedKeys?.length !== 1 ? {color: '#d6d6d6'} : {}}
-        // type={Array.isArray(checkedKeys) && checkedKeys?.length !== 1 ? "default" : "text"}
-        // disabled={!(Array.isArray(checkedKeys) && checkedKeys?.length === 1)}
         onClick={() => {
           if(Array.isArray(checkedKeys) && checkedKeys?.length === 1) {
             onClick()

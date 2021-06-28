@@ -104,7 +104,19 @@ const MenuTree: React.FC<Props> = ({
               ) : null}
               <div style={{ height: "calc(100% - 36px)" }}>
 
-                { size.height && <Tree {...treeProps} height={operrationHeight} checkable={true} multiple={true} expandedKeys={expandedKeys} selectedKeys={selectedKeys} checkedKeys={checkedKeys} treeData={treeData}/>}
+                { size.height &&
+                  <Tree
+                    {...treeProps}
+                    height={operrationHeight}
+                    checkable={true}
+                    multiple={true}
+                    expandedKeys={expandedKeys}
+                    selectedKeys={selectedKeys}
+                    checkedKeys={checkedKeys}
+                    treeData={treeData}
+                    titleRender={
+                      (data: any) => <span className={data.levelCategory > 4 ? styles.linkAble : ""}>{data.title}</span>}/>
+                    }
               </div>
             </div>
           ) : null}

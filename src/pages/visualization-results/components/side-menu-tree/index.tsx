@@ -8,6 +8,7 @@ import {
   ProjectListByAreaType,
 } from '@/services/visualization-results/side-tree';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
+import { getEngineerInfo } from '@/services/project-management/all-project';
 
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { downloadMapPositon } from '@/services/visualization-results/list-menu';
@@ -108,7 +109,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 项目详情
   const [projectModalActiveId, setProjectModalActiveId] = useState<string>("");
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
-  const [keyWord, setkeyWord] = useState("")
+  const [keyWord, setkeyWord] = useState("");
+
   // 筛选
   const [filterModalVisibel, setFilterModalVisibel] = useState<boolean>(false);
   // 成果管理
@@ -506,6 +508,24 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     onSelect: onSelect,
   }
 
+  const handlerPositionClick = (flag: any) => {
+    if(Array.isArray(flag) && flag.length > 0) {
+      setexportMapPositionModalVisible(true)
+    }else {
+      message.error('当前未选择项目')
+    }
+
+  }
+
+  const handlerMaterialClick = (flag: any) => {
+    if(Array.isArray(flag) && flag.length > 0) {
+      setMaterialModalVisible(true)
+    }else {
+      message.error('当前未选择项目')
+    }
+
+  }
+
   return (
     <div ref={sideMenuRef} className={`${styles.wrap} ${projectModalVisible ? styles.wrapSelect : ""}`}>
       <div className={styles.searchWrap}>
@@ -535,8 +555,18 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       </div>
       <div className={styles.functionButton}>
         <div className={styles.row}>
-          <Button onClick={() => setexportMapPositionModalVisible(true)}><img className={styles.svg} src={exportSvg} />导出坐标</Button>
-          <Button onClick={() => setMaterialModalVisible(true)}><img className={styles.svg} src={materiaSvg} />材料统计</Button>
+          <Button
+            onClick={() => handlerPositionClick(checkedProjectIdList)}
+            style={Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? {color: '#d6d6d6'} : {}}
+          >
+            <img className={styles.svg} src={exportSvg} />导出坐标
+          </Button>
+          <Button
+            onClick={() => handlerMaterialClick(checkedProjectIdList)}
+            style={Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? {color: '#d6d6d6'} : {}}
+          >
+            <img className={styles.svg} src={materiaSvg} />材料统计
+          </Button>
         </div>
         <div className={styles.row}>
           <ToolTipButton buttonName="成果管理" onClick={() => setResultVisibel(true)} checkedKeys={checkedProjectIdList} svg={achievementSvg} />
