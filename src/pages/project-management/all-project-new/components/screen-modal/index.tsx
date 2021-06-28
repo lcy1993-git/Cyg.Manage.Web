@@ -117,7 +117,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setIdentityType([]);
     setDataSourceType([]);
     setSourceType([]);
-    setSourceType([]);
     setStartTime(null);
     setEndTime(null);
     resetRef();
@@ -262,7 +261,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                   <UrlSelect
                     {...selectStyle}
                     allowClear
-                    mode= 'multiple'
+                    mode="multiple"
                     defaultData={projectConstructType}
                     value={constructType}
                     className="widthAll"
@@ -278,7 +277,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                   <UrlSelect
                     {...selectStyle}
                     allowClear
-                    mode= 'multiple'
+                    mode="multiple"
                     defaultData={projectStage}
                     value={stage}
                     className="widthAll"
@@ -297,7 +296,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                   <UrlSelect
                     {...selectStyle}
                     allowClear
-                    mode= 'multiple'
+                    mode="multiple"
                     defaultData={projectMajorCategory}
                     value={majorCategory}
                     dropdownMatchSelectWidth={168}
@@ -316,7 +315,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     enumList={ProjectStatus}
                     {...selectStyle}
                     allowClear
-                    mode= 'multiple'
+                    mode="multiple"
                     value={status}
                     onChange={(value) => setStatus(value as number[])}
                     className="widthAll"
@@ -335,7 +334,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     enumList={ProjectSourceType}
                     {...selectStyle}
                     allowClear
-                    mode= 'multiple'
+                    mode="multiple"
                     value={sourceType}
                     onChange={(value) => setSourceType(value as number[])}
                     className="widthAll"
@@ -351,7 +350,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     enumList={ProjectIdentityType}
                     {...selectStyle}
                     allowClear
-                    mode= 'multiple'
+                    mode="multiple"
                     value={identityType}
                     onChange={(value) => setIdentityType(value as number[])}
                     className="widthAll"
@@ -379,7 +378,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                   <UrlSelect
                     {...selectStyle}
                     allowClear
-                    mode= 'multiple'
+                    mode="multiple"
                     defaultData={projectKvLevel}
                     value={kvLevel}
                     onChange={(value) => setKvLevel(value as number[])}
@@ -411,6 +410,13 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                   onClick={() => {
                     setShowMoreFlag(!showMoreFlag);
                     setIcon(showMoreFlag ? 'bottom' : 'up');
+                    setCategory([]);
+                    setProType([]);
+                    setNature([]);
+                    setReformAim([]);
+                    setClassification([]);
+                    setAttribute([]);
+                    setDataSourceType([]);
                   }}
                 >
                   收起条件
@@ -429,7 +435,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     <UrlSelect
                       {...selectStyle}
                       allowClear
-                      mode= 'multiple'
+                      mode="multiple"
                       defaultData={projectCategory}
                       className="widthAll"
                       value={category}
@@ -445,7 +451,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     <UrlSelect
                       {...selectStyle}
                       allowClear
-                      mode= 'multiple'
+                      mode="multiple"
                       defaultData={projectPType}
                       className="widthAll"
                       value={proType}
@@ -464,7 +470,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     <UrlSelect
                       {...selectStyle}
                       allowClear
-                      mode= 'multiple'
+                      mode="multiple"
                       defaultData={projectNature}
                       value={nature}
                       dropdownMatchSelectWidth={168}
@@ -481,7 +487,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     <UrlSelect
                       {...selectStyle}
                       allowClear
-                      mode= 'multiple'
+                      mode="multiple"
                       defaultData={projectReformAim}
                       className="widthAll"
                       value={reformAim}
@@ -500,7 +506,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     <UrlSelect
                       {...selectStyle}
                       allowClear
-                      mode= 'multiple'
+                      mode="multiple"
                       defaultData={projectClassification}
                       value={classification}
                       dropdownMatchSelectWidth={168}
@@ -517,7 +523,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     <UrlSelect
                       {...selectStyle}
                       allowClear
-                      mode= 'multiple'
+                      mode="multiple"
                       defaultData={projectAttribute}
                       className="widthAll"
                       value={attribute}
@@ -532,11 +538,11 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             <div className="flex">
               <div className="flex1">
                 <CyFormItem label="现场数据来源" align="right" labelWidth={111}>
-                  <div style={{ width: '100%' }}>
+                  <div style={{ width: '295px' }}>
                     <UrlSelect
                       {...selectStyle}
                       allowClear
-                      mode= 'multiple'
+                      mode="multiple"
                       defaultData={projectDataSourceType}
                       value={dataSourceType}
                       dropdownMatchSelectWidth={168}

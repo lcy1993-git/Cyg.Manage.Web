@@ -28,6 +28,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
     onSuccess: (res) => {
+      console.log(res);
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
@@ -35,6 +36,12 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
+        disclosureRange: projectInfo?.disclosureRange
+          ? projectInfo?.disclosureRange
+          : '“无需现场数据”项目，免设置此条目',
+        pileRange: projectInfo?.pileRange
+          ? projectInfo?.pileRange
+          : '“无需现场数据”项目，免设置此条目',
       });
     },
   });

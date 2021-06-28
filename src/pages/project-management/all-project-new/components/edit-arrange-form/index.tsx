@@ -8,10 +8,11 @@ import uuid from 'node-uuid';
 interface EditArrangeFormProps {
   allotCompanyId?: string | undefined;
   canEdit?: any;
+  dataSourceType?: number;
 }
 
 const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
-  const { allotCompanyId = '', canEdit } = props;
+  const { allotCompanyId = '', canEdit, dataSourceType } = props;
   const {
     canEditDesign,
     canEditSurvey,
@@ -63,7 +64,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
 
   return (
     <>
-      {canEditSurvey ? (
+      {canEditSurvey && dataSourceType != 2 ? (
         <CyFormItem label="勘察" name="surveyUser" required>
           <TreeSelect
             key="editSurveyUser"
@@ -72,6 +73,17 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             placeholder="请选择"
             treeDefaultExpandAll
             allowClear
+          />
+        </CyFormItem>
+      ) : dataSourceType === 2 ? (
+        <CyFormItem label="勘察" name="surveyUser" required>
+          <TreeSelect
+            key="surveyUser"
+            style={{ width: '100%' }}
+            treeData={surveyData.map(mapTreeData)}
+            placeholder="“无需现场数据”项目，免安排勘察人员"
+            treeDefaultExpandAll
+            disabled
           />
         </CyFormItem>
       ) : (

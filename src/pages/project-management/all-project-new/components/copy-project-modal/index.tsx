@@ -40,6 +40,12 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
         deadline: projectInfo?.startTime ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
+        disclosureRange: projectInfo?.disclosureRange
+          ? projectInfo?.disclosureRange
+          : '“无需现场数据”项目，免设置此条目',
+        pileRange: projectInfo?.pileRange
+          ? projectInfo?.pileRange
+          : '“无需现场数据”项目，免设置此条目',
       });
     },
   });
@@ -51,6 +57,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           copyProjectId: projectId,
           engineerId: engineerId,
           ...value,
+          totalInvest: value.totalInvest ? value.totalInvest : 0,
         });
         message.success('项目复制成功');
         setState(false);
@@ -68,7 +75,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     <Modal
       maskClosable={false}
       title="复制项目"
-      width={750}
+      width={780}
       visible={state as boolean}
       destroyOnClose
       footer={[

@@ -28,6 +28,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
         await addProject({
           engineerId,
           ...value,
+          totalInvest: value.totalInvest ? value.totalInvest : 0,
         });
         message.success('项目新增成功');
         setState(false);
@@ -72,7 +73,12 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
       onCancel={() => modalCloseEvent()}
     >
       <Form form={form} preserve={false}>
-        <CreateProjectForm companyName={companyName} areaId={areaId} company={company} />
+        <CreateProjectForm
+          companyName={companyName}
+          areaId={areaId}
+          company={company}
+          form={form}
+        />
       </Form>
     </Modal>
   );

@@ -263,6 +263,12 @@ const AllProject: React.FC = () => {
   const editArrangeEvent = async () => {
     const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
 
+    if (projectIds.length === 1) {
+      const thisProjectId = projectIds[0];
+      const projectInfo = await getProjectInfo(thisProjectId);
+      setDataSourceType(Number(projectInfo.dataSourceType));
+    }
+
     if (projectIds && projectIds.length === 0) {
       message.error('请选择修改安排的项目！');
       return;
@@ -701,6 +707,7 @@ const AllProject: React.FC = () => {
           onChange={setEditArrangeModalVisible}
           projectIds={selectProjectIds}
           canEdit={ifCanEdit}
+          dataSourceType={dataSourceType}
         />
       )}
 

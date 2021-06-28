@@ -357,7 +357,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'surveyUser',
       width: 120,
       render: (record: any) => {
-        return record.surveyUser ? record.surveyUser.value : '-';
+        return record.surveyUser ? record.surveyUser.value : '无需安排';
       },
     },
     {
@@ -365,7 +365,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'designUser',
       width: 120,
       render: (record: any) => {
-        return record.designUser.value;
+        return record.designUser ? record.designUser.value : '';
       },
     },
     {
