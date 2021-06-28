@@ -108,7 +108,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={projectPType}
               valuekey="value"
-                  titlekey="text"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -127,7 +127,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={projectKvLevel}
               valuekey="value"
-                  titlekey="text"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -252,7 +252,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={projectAssetsNature}
               valuekey="value"
-                  titlekey="text"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -352,7 +352,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               requestType="post"
               placeholder="请选择"
               valuekey="value"
-                  titlekey="text"
+              titlekey="text"
             />
           </CyFormItem>
         </div>
@@ -399,7 +399,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={projectRegionAttribute}
               valuekey="value"
-                  titlekey="text"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -432,7 +432,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={projectConstructType}
               valuekey="value"
-                  titlekey="text"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -579,7 +579,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 defaultData={projectDataSourceType}
                 disabled
                 valuekey="value"
-                  titlekey="text"
+                titlekey="text"
                 placeholder="请选择"
               />
             )}
