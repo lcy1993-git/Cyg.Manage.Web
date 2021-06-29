@@ -10,6 +10,7 @@ import DataSelect from '@/components/data-select';
 
 import city from '@/assets/local-data/area';
 import moment from 'moment';
+import { endsWith } from 'lodash';
 
 interface CreateEngineerForm {
   exportDataChange?: (exportData: any) => void;
@@ -17,10 +18,22 @@ interface CreateEngineerForm {
   libId?: string;
   form?: any;
   canChange?: boolean;
+  minStart?: number;
+  maxEnd?: number;
 }
 
 const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
-  const { exportDataChange, areaId: province, libId: inputLibId, form, canChange = true } = props;
+  const {
+    exportDataChange,
+    areaId: province,
+    libId: inputLibId,
+    form,
+    canChange = true,
+    minStart,
+    maxEnd,
+  } = props;
+
+  console.log(minStart, maxEnd, '1111111111');
 
   const [areaId, setAreaId] = useState<string>('');
   const [libId, setLibId] = useState<string>('');
@@ -262,7 +275,20 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={[{ required: true, message: '工程开始时间不能为空' }]}
+            rules={[
+              { required: true, message: '工程开始时间不能为空' },
+              () => ({
+                validator(_, value) {
+                  if (
+                    moment(new Date(value).getTime()).isBefore(moment(minStart)) ||
+                    moment(new Date(value).getTime()).isSame(moment(minStart))
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('"工程开始时间"不得晚于"项目开始时间"');
+                },
+              }),
+            ]}
           >
             <DatePicker disabledDate={disableDate} />
           </CyFormItem>
@@ -284,7 +310,13 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
                     !value ||
                     !getFieldValue('startTime')
                   ) {
-                    return Promise.resolve();
+                    if (
+                      moment(new Date(value).getTime()).isAfter(moment(maxEnd)) ||
+                      moment(new Date(value).getTime()).isSame(moment(maxEnd))
+                    ) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject('"工程结束时间"不得早于"项目结束时间"');
                   }
                   return Promise.reject('"工程结束时间"不得早于"工程开始时间"');
                 },

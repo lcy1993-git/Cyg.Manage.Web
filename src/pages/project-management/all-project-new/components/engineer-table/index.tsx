@@ -41,7 +41,7 @@ import AddProjectModal from '../add-project-modal';
 import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
 const colorMap = {
   立项: 'green',
@@ -107,6 +107,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [editEngineerVisible, setEditEngineerVisible] = useState<boolean>(false);
   const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
 
+  //项目时间阈值state
+  const [minStartTime, setMinStartTime] = useState<number>();
+  const [maxEndTime, setMaxEndTime] = useState<number>();
+
   const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false);
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
@@ -134,8 +138,27 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const editEngineerEvent = async (data: AddProjectValue) => {
-    console.log(tableData?.pagedData);
-    // const currentEditEngineer = tableData?.pagedData?.items.
+    //编辑工程前获取工程下项目日期阈值
+    const currentEditEngineer = tableData?.pagedData?.items
+      .map((item: any) => {
+        if (item.id === data.engineerId) {
+          return item;
+        }
+      })
+      .filter(Boolean);
+    const minStartTime = Math.min(
+      ...currentEditEngineer?.[0].projects.map((item: any) => {
+        return item.startTime;
+      }),
+    );
+    const maxEndTime = Math.max(
+      ...currentEditEngineer?.[0].projects.map((item: any) => {
+        return item.endTime;
+      }),
+    );
+
+    setMinStartTime(minStartTime);
+    setMaxEndTime(maxEndTime);
     setEditEngineerVisible(true);
     setCurrentEditEngineerId(data.engineerId);
   };
@@ -887,6 +910,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             visible={editEngineerVisible}
             onChange={setEditEngineerVisible}
             changeFinishEvent={refreshEvent}
+            minStart={minStartTime}
+            maxEnd={maxEndTime}
           />
         )}
         {editProjectVisible && (

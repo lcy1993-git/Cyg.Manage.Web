@@ -16,6 +16,8 @@ interface EditEngineerProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: () => void;
+  minStart?: number;
+  maxEnd?: number;
 }
 
 const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
@@ -27,7 +29,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
 
   const [form] = Form.useForm();
 
-  const { engineerId, changeFinishEvent } = props;
+  const { engineerId, changeFinishEvent, minStart, maxEnd } = props;
 
   const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
     manual: true,
@@ -112,7 +114,14 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <CreateEngineerForm form={form} canChange={canChange} areaId={areaId} libId={libId} />
+        <CreateEngineerForm
+          form={form}
+          canChange={canChange}
+          areaId={areaId}
+          libId={libId}
+          minStart={minStart}
+          maxEnd={maxEnd}
+        />
       </Form>
     </Modal>
   );
