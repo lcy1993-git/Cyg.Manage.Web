@@ -8,7 +8,7 @@ import { Button } from 'antd';
 import { Form, message, Modal } from 'antd';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useRequest } from 'ahooks';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import CreateProjectForm from '../create-project-form';
 
 interface CopyProjectModalProps {
@@ -20,6 +20,8 @@ interface CopyProjectModalProps {
   company: string;
   engineerId: string;
   companyName: string;
+  startTime?: Moment;
+  endTime?: Moment;
 }
 
 const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
@@ -27,7 +29,16 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { projectId, changeFinishEvent, areaId, company, engineerId, companyName } = props;
+  const {
+    projectId,
+    changeFinishEvent,
+    areaId,
+    company,
+    engineerId,
+    companyName,
+    startTime,
+    endTime,
+  } = props;
 
   const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
     ready: !!projectId,
@@ -96,6 +107,8 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           company={company}
           projectInfo={projectInfo}
           form={form}
+          engineerStart={startTime}
+          engineerEnd={endTime}
         />
       </Form>
     </Modal>

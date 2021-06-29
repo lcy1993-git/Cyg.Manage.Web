@@ -3,7 +3,7 @@ import UrlSelect from '@/components/url-select';
 import { useGetProjectEnum } from '@/utils/hooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
 import { isEmpty } from 'lodash';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import React, { memo, useEffect, useState } from 'react';
 
 import Rule from './project-form-rule';
@@ -16,11 +16,24 @@ interface CreateProjectFormProps {
   status?: number;
   projectInfo?: any;
   form?: any;
+  engineerStart?: Moment;
+  engineerEnd?: Moment;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
-  const { field = {}, areaId, company, companyName, status, projectInfo, form } = props;
-  const [startDate, setStartDate] = useState(moment(projectInfo?.startTime) ?? null);
+  const {
+    field = {},
+    areaId,
+    company,
+    companyName,
+    status,
+    projectInfo,
+    form,
+    engineerStart,
+    engineerEnd,
+  } = props;
+
+  const [startDate, setStartDate] = useState(projectInfo?.startTime ?? null);
   const [dataSourceType, setDataSourceType] = useState<number>();
   const [disRangeValue, setDisRangeValue] = useState<number>();
   const [pileRangeValue, setPileRangeValue] = useState<number>();
@@ -143,12 +156,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
             rules={Rule.total}
           >
-            <Input
-              type="number"
-              placeholder="请输入"
-              min={0}
-              defaultValue={0}
-            />
+            <Input type="number" placeholder="请输入" min={0} defaultValue={0} />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -185,9 +193,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               { required: true, message: '项目开始日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  console.log(value);
                   if (
-                    new Date(value).getTime() >= new Date(getFieldValue('startTime')).getTime() ||
+                    new Date(value).getTime() >=
+                      (engineerStart
+                        ? engineerStart
+                        : new Date(getFieldValue('startTime')).getTime()) ||
                     !value ||
                     !getFieldValue('startTime')
                   ) {
@@ -225,9 +235,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     !value ||
                     !getFieldValue('startTime')
                   ) {
-                    console.log(1);
-                    if (new Date(value).getTime() > new Date(getFieldValue('endTime')).getTime()) {
-                      console.log(2);
+                    if (
+                      new Date(value).getTime() >
+                      (engineerEnd ? engineerEnd : new Date(getFieldValue('endTime')).getTime())
+                    ) {
                       return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                     }
                     return Promise.resolve();

@@ -373,7 +373,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
       title: '操作',
       dataIndex: 'id',
       key: 'id',
-      render(value: any, record: any, index: any) {
+      render(value: any, record: any, index: number) {
         return (
           <span
             key={record.id}
