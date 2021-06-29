@@ -216,7 +216,8 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
               >
                 {
                   ite.ellipsis ?
-                  <Tooltip title={typeof item[ite.dataIndex] === 'string' ? item[ite.dataIndex] : ""}>
+                  // eslint-disable-next-line no-nested-ternary
+                  <Tooltip title={typeof item[ite.dataIndex] === 'string' ? item[ite.dataIndex] : (ite.render ? ite.render(item, projectInfo) : "")}>
                     {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
                   </Tooltip> :
                   <span>

@@ -343,7 +343,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       ellipsis: true,
     },
     {
-      title: '建设建造目的',
+      title: '建设改造目的',
       dataIndex: 'reformAimText',
       width: 120,
       ellipsis: true,
@@ -620,7 +620,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     const columnsWidth = showColumns.reduce((sum, item) => {
       return sum + (item.width ? item.width : 100);
     }, 0);
-    const isOverflow = (tableContentSize.width ?? 0) - 50 - columnsWidth < 0;
+    const isOverflow = (tableContentSize.width ?? 0) - 40 - columnsWidth < 0;
 
     if (scrollbar && scrollbar.current) {
       // @ts-ignore
@@ -794,7 +794,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const scrollEvent = (size) => {
     if (size) {
-      console.log(size.scrollLeft);
       setLeftNumber(size.scrollLeft);
     }
   };
