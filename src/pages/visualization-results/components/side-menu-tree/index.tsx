@@ -8,6 +8,7 @@ import {
   ProjectListByAreaType,
 } from '@/services/visualization-results/side-tree';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
+import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
 
 import ProjectDetailInfo from '@/pages/project-management/all-project-new/components/project-detail-info';
 import { downloadMapPositon } from '@/services/visualization-results/list-menu';
@@ -118,6 +119,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 成果管理
   const [resultVisibel, setResultVisibel] = useState<boolean>(false);
   // 审阅消息
+
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
   const [buttonActive, setButtonActive] = useState<number>(
     window.localStorage.getItem('selectCity') ? -1 : 2,
@@ -138,6 +140,24 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(['-1']);
     isFirstRequest = true;
   });
+
+  // 验证审阅消息是否含有数据
+  const { data: commentCountResponseData, run: fetchCommentCountRquest } = useRequest(
+    () => fetchCommentCountById(checkedProjectIdList[0].id),
+    {
+      manual: true,
+      onSuccess: () => {
+        if (!commentCountResponseData?.totalQty) {
+          message.warn('当前项目不存在审阅消息');
+        } else {
+          setCommentModalVisible(true);
+        }
+      },
+    },
+  );
+  const handlerCommentClick = () => {
+    fetchCommentCountRquest();
+  }
 
   useEffect(() => {
     if (!Array.isArray(treeData) || treeData.length === 0) return;
@@ -643,7 +663,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           />
           <ToolTipButton
             buttonName="审阅消息"
-            onClick={() => setCommentModalVisible(true)}
+            onClick={handlerCommentClick}
             checkedKeys={checkedProjectIdList}
             svg={messageSvg}
           />

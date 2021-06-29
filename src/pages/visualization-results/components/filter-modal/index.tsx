@@ -138,7 +138,7 @@ const FilterModal: React.FC<Props> = ({
             </Item>
             <Item
               name="constructType"
-              label="建设类别"
+              label="建设类型"
             >
               <UrlSelect
                 {...selectStyle}
