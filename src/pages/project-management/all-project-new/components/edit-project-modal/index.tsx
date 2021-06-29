@@ -47,12 +47,14 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
-        disclosureRange: projectInfo?.disclosureRange
-          ? projectInfo?.disclosureRange
-          : '“无需现场数据”项目，免设置此条目',
-        pileRange: projectInfo?.pileRange
-          ? projectInfo?.pileRange
-          : '“无需现场数据”项目，免设置此条目',
+        disclosureRange:
+          projectInfo?.disclosureRange === 0
+            ? '“无需现场数据”项目，免设置此条目'
+            : projectInfo?.disclosureRange,
+        pileRange:
+          projectInfo?.pileRange === 0
+            ? '“无需现场数据”项目，免设置此条目'
+            : projectInfo?.pileRange,
       });
     },
   });
@@ -71,6 +73,11 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
           id: projectId,
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
+          disclosureRange:
+            value.disclosureRange === '“无需现场数据”项目，免设置此条目'
+              ? 0
+              : value.disclosureRange,
+          pileRange: value.pileRange === '“无需现场数据”项目，免设置此条目' ? 0 : value.pileRange,
         });
         message.success('项目信息更新成功');
         setState(false);
@@ -88,7 +95,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     <Modal
       maskClosable={false}
       title="编辑项目信息"
-      width={750}
+      centered
+      width={800}
       visible={state as boolean}
       destroyOnClose
       footer={[

@@ -411,7 +411,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     setShowMoreFlag(!showMoreFlag);
                     setIcon(showMoreFlag ? 'bottom' : 'up');
                     setCategory([]);
-                    setProType([]);
+                    setPType([]);
                     setNature([]);
                     setReformAim([]);
                     setClassification([]);
