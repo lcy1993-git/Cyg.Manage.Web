@@ -103,7 +103,7 @@ const RolePermissions: React.FC = () => {
       title: '备注',
       dataIndex: 'remark',
       index: 'remark',
-      width: 150,
+      width: '30%',
     },
   ];
 

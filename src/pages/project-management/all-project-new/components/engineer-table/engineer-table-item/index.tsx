@@ -12,6 +12,7 @@ import uuid from 'node-uuid';
 import EmptyTip from '@/components/empty-tip';
 import { useContext } from 'react';
 import { useEffect } from 'react';
+import { isObject } from 'lodash';
 
 export interface AddProjectValue {
   engineerId: string;
@@ -159,7 +160,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
         className={`${styles.engineerTableTh} ${
           item.dataIndex === 'action' ? styles.actionTd : ''
         } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${item.dataIndex === 'name' ? styles.nameTd : ''}`}
-        key={uuid.v1()}
+        key={`${item.dataIndex}`}
         style={
           isOverflow
             ? {
@@ -183,7 +184,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   const tbodyElement = (projectInfo.projects ?? []).map((item: any) => {
     return (
-      <div key={uuid.v1()} className={styles.engineerTableTr}>
+      <div key={`${item.id}Td`} className={styles.engineerTableTr}>
         <div
           className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox}`}
           style={{ width: '38px', left: `${left}px` }}
@@ -215,7 +216,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             >
               {
                 ite.ellipsis ?
-                <Tooltip title={item[ite.dataIndex]}>
+                <Tooltip title={typeof item[ite.dataIndex] === 'string' ? item[ite.dataIndex] : ""}>
                   {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
                 </Tooltip> :
                 <span>

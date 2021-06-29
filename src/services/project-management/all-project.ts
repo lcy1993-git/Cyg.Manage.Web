@@ -393,8 +393,8 @@ interface ProjectInfoParams {
   pAttributeText: string;
   meteorologic: string;
   meteorologicText: string;
-  disclosureRange: string;
-  pileRange: string;
+  disclosureRange: number;
+  pileRange: number;
   deadline: string;
   dataSourceType: string;
   dataSourceTypeText: string;

@@ -499,11 +499,12 @@ const AllProject: React.FC = () => {
     if (allProjectSearchPerson) {
       setAllProjectSearchPerson?.('');
 
-      setDefaultPersonInfo({
-        survey: String(allProjectSearchPerson),
+      setSearchParams({
+        ...searchParams,
+        surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
-        design: String(allProjectSearchPerson),
-      });
+        designUser: String(allProjectSearchPerson),
+      })
 
       // TODO 有人的时候设置人
       searchByParams({
@@ -660,7 +661,6 @@ const AllProject: React.FC = () => {
               extractParams={{ keyWord, statisticalCategory, ...searchParams }}
               onSelect={tableSelectEvent}
               columnsConfig={chooseColumns}
-              finishEvent={refresh}
             />
           </div>
         </div>
@@ -670,7 +670,7 @@ const AllProject: React.FC = () => {
         visible={screenModalVisible}
         onChange={setScreenModalVisible}
         finishEvent={screenClickEvent}
-        defaultPersonInfo={defaultPersonInfo}
+        searchParams={searchParams}
       />
 
       {addEngineerModalVisible && (

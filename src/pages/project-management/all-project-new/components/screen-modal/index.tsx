@@ -20,7 +20,8 @@ interface ScreenModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   finishEvent?: (value: any) => void;
-  defaultPersonInfo: any;
+  defaultPersonInfo?: any;
+  searchParams: any;
 }
 
 const { RangePicker } = DatePicker;
@@ -28,7 +29,7 @@ const { RangePicker } = DatePicker;
 const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [icon, setIcon] = useState<string>('bottom');
-  const { finishEvent, defaultPersonInfo = { logicRelation: 2, design: '', survey: '' } } = props;
+  const { finishEvent, searchParams } = props;
 
   const [category, setCategory] = useState<number[]>([]); //项目分类
   const [stage, setStage] = useState<number[]>([]); //项目阶段
@@ -39,7 +40,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [majorCategory, setMajorCategory] = useState<number[]>([]); //专业类别
   const [pType, setPType] = useState<number[]>([]); //项目类型
   const [reformAim, setReformAim] = useState<number[]>([]); //建设改造目的
-  const [classification, setClassification] = useState<number[]>([]); //项目类别
+  const [pCategory, setPCategory] = useState<number[]>([]); //项目类别
   const [attribute, setAttribute] = useState<number[]>([]); //项目属性
   // const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
   // const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
@@ -53,6 +54,28 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const areaRef = useRef<HTMLDivElement>(null);
   const personRef = useRef<HTMLDivElement>(null);
 
+  const [lastSaveAreaInfo, setLastSaveAreaInfo] = useState({
+    provinceId: '',
+    cityId: '',
+    areaId: '',
+    cityData: [],
+    areaData: [],
+    provinceInfo: undefined,
+    cityInfo: undefined,
+    areaInfo: undefined,
+  });
+
+  const [storageAreaInfo, setStorageAreaInfo] = useState({
+    provinceId: '',
+    cityId: '',
+    areaId: '',
+    cityData: [],
+    areaData: [],
+    provinceInfo: undefined,
+    cityInfo: undefined,
+    areaInfo: undefined,
+  });
+
   // 更多条件
   const [showMoreFlag, setShowMoreFlag] = useState<boolean>(false);
 
@@ -65,6 +88,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const imgSrc = require('../../../../../assets/icon-image/' + icon + '.png');
 
   const searchEvent = () => {
+    setLastSaveAreaInfo(storageAreaInfo);
     finishEvent?.({
       category,
       stage,
@@ -75,7 +99,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       majorCategory,
       pType,
       reformAim,
-      classification,
+      pCategory,
       attribute,
       sourceType,
       identityType,
@@ -92,11 +116,11 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
   const resetRef = () => {
     if (areaRef && areaRef.current) {
-      //@ts-ignore
+      // @ts-ignore
       areaRef.current.reset();
     }
     if (personRef && personRef.current) {
-      //@ts-ignore
+      // @ts-ignore
       personRef.current.reset();
     }
   };
@@ -111,7 +135,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setMajorCategory([]);
     setPType([]);
     setReformAim([]);
-    setClassification([]);
+    setPCategory([]);
     setAttribute([]);
     setSourceType([]);
     setIdentityType([]);
@@ -120,6 +144,17 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setStartTime(null);
     setEndTime(null);
     resetRef();
+
+    setLastSaveAreaInfo({
+      provinceId: '',
+      cityId: '',
+      areaId: '',
+      cityData: [],
+      areaData: [],
+      provinceInfo: undefined,
+      cityInfo: undefined,
+      areaInfo: undefined,
+    });
 
     finishEvent?.({
       category: [],
@@ -131,7 +166,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       majorCategory: [],
       pType: [],
       reformAim: [],
-      classification: [],
+      pCategory: [],
       attribute: [],
       sourceType: [],
       identityType: [],
@@ -149,6 +184,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
   const areaChangeEvent = (params: any) => {
     const { provinceId, cityId, areaId } = params;
+    setStorageAreaInfo(params);
     if (areaId) {
       setAreaInfo({
         areaType: '3',
@@ -201,10 +237,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setEndTime(dateStrings[1]);
   };
 
-  useEffect(() => {
-    setSelectDefaultData(defaultPersonInfo);
-  }, [JSON.stringify(defaultPersonInfo)]);
-
   const selectStyle = {
     maxTagPlaceholder: (e: any[]) => `已选择${e.length}项`,
     maxTagCount: 0,
@@ -212,6 +244,111 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     valuekey: 'value',
     titlekey: 'text',
   };
+
+  useEffect(() => {
+    if (state && searchParams) {
+      if (searchParams.category) {
+        setCategory(searchParams.category);
+      } else {
+        setCategory([]);
+      }
+      if (searchParams.stage) {
+        setStage(searchParams.stage);
+      } else {
+        setStage([]);
+      }
+      if (searchParams.constructType) {
+        setConstructType(searchParams.constructType);
+      } else {
+        setConstructType([]);
+      }
+      if (searchParams.nature) {
+        setNature(searchParams.nature);
+      } else {
+        setNature([]);
+      }
+      if (searchParams.kvLevel) {
+        setKvLevel(searchParams.kvLevel);
+      } else {
+        setKvLevel([]);
+      }
+      if (searchParams.status) {
+        setStatus(searchParams.status);
+      } else {
+        setStatus([]);
+      }
+      if (searchParams.majorCategory) {
+        setMajorCategory(searchParams.majorCategory);
+      } else {
+        setMajorCategory([]);
+      }
+      if (searchParams.pType) {
+        setPType(searchParams.pType);
+      } else {
+        setPType([]);
+      }
+      if (searchParams.reformAim) {
+        setReformAim(searchParams.reformAim);
+      } else {
+        setReformAim([]);
+      }
+      if (searchParams.pCategory) {
+        setPCategory(searchParams.pCategory);
+      } else {
+        setPCategory([]);
+      }
+      if (searchParams.attribute) {
+        setAttribute(searchParams.attribute);
+      } else {
+        setAttribute([]);
+      }
+      if (searchParams.sourceType) {
+        setSourceType(searchParams.sourceType);
+      } else {
+        setSourceType([]);
+      }
+      if (searchParams.identityType) {
+        setIdentityType(searchParams.identityType);
+      } else {
+        setIdentityType([]);
+      }
+      if (searchParams.dataSourceType) {
+        setDataSourceType(searchParams.dataSourceType);
+      } else {
+        setDataSourceType([]);
+      }
+      if (searchParams.startTime) {
+        setStartTime(searchParams.startTime);
+      } else {
+        setStartTime(null);
+      }
+      if (searchParams.endTime) {
+        setEndTime(searchParams.endTime);
+      } else {
+        setEndTime(null);
+      }
+      if (searchParams.logicRelation) {
+        setSelectDefaultData({
+          logicRelation: searchParams.logicRelation,
+          design: searchParams.designUser,
+          survey: searchParams.surveyUser,
+        });
+      } else {
+        setSelectDefaultData({
+          logicRelation: 2,
+          design: '',
+          survey: '',
+        });
+      }
+      if (searchParams.areaType !== '-1') {
+        if (areaRef && areaRef.current) {
+          console.log(lastSaveAreaInfo);
+          // @ts-ignore
+          areaRef?.current?.initComponentData(lastSaveAreaInfo);
+        }
+      }
+    }
+  }, [state, JSON.stringify(searchParams)]);
 
   return (
     <Modal
@@ -411,10 +548,10 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     setShowMoreFlag(!showMoreFlag);
                     setIcon(showMoreFlag ? 'bottom' : 'up');
                     setCategory([]);
-                    setProType([]);
+                    setPType([]);
                     setNature([]);
                     setReformAim([]);
-                    setClassification([]);
+                    setPCategory([]);
                     setAttribute([]);
                     setDataSourceType([]);
                   }}
@@ -508,9 +645,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                       allowClear
                       mode="multiple"
                       defaultData={projectClassification}
-                      value={classification}
+                      value={pCategory}
                       dropdownMatchSelectWidth={168}
-                      onChange={(value) => setClassification(value as number[])}
+                      onChange={(value) => setPCategory(value as number[])}
                       className="widthAll"
                       placeholder="项目类别"
                     />

@@ -51,12 +51,14 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
         deadline: projectInfo?.startTime ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
-        disclosureRange: projectInfo?.disclosureRange
-          ? projectInfo?.disclosureRange
-          : '“无需现场数据”项目，免设置此条目',
-        pileRange: projectInfo?.pileRange
-          ? projectInfo?.pileRange
-          : '“无需现场数据”项目，免设置此条目',
+        disclosureRange:
+          projectInfo?.disclosureRange === 0
+            ? '“无需现场数据”项目，免设置此条目'
+            : projectInfo?.disclosureRange,
+        pileRange:
+          projectInfo?.pileRange === 0
+            ? '“无需现场数据”项目，免设置此条目'
+            : projectInfo?.pileRange,
       });
     },
   });
@@ -69,6 +71,11 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           engineerId: engineerId,
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
+          disclosureRange:
+            value.disclosureRange === '“无需现场数据”项目，免设置此条目'
+              ? 0
+              : value.disclosureRange,
+          pileRange: value.pileRange === '“无需现场数据”项目，免设置此条目' ? 0 : value.pileRange,
         });
         message.success('项目复制成功');
         setState(false);

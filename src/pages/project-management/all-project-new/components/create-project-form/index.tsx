@@ -2,6 +2,7 @@ import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
 import { useGetProjectEnum } from '@/utils/hooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
+import e from 'express';
 import { isEmpty } from 'lodash';
 import moment, { Moment } from 'moment';
 import React, { memo, useEffect, useState } from 'react';
@@ -68,6 +69,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     meteorologicLevel,
     projectDataSourceType,
   } = useGetProjectEnum();
+
+  const keyPressEvent = (e: any) => {
+    //只要输入的内容是'+-eE'  ，就阻止元素发生默认的行为
+    const invalidChars = ['-', '+', 'e', 'E'];
+    if (invalidChars.indexOf(e.key) !== -1) {
+      e.preventDefault();
+    }
+  };
 
   return (
     <>
@@ -156,7 +165,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
             rules={Rule.total}
           >
-            <Input type="number" placeholder="请输入" min={0} defaultValue={0} />
+            <Input
+              type="number"
+              placeholder="请输入"
+              min={0}
+              defaultValue={0}
+              onKeyPress={keyPressEvent}
+            />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -230,18 +245,20 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
+                  console.log(new Date(value).getTime(), engineerEnd, '11111111111111111');
+
                   if (
                     new Date(value).getTime() > new Date(startDate).getTime() ||
                     !value ||
                     !getFieldValue('startTime')
                   ) {
                     if (
-                      new Date(value).getTime() >
+                      new Date(value).getTime() <=
                       (engineerEnd ? engineerEnd : new Date(getFieldValue('endTime')).getTime())
                     ) {
-                      return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
+                      return Promise.resolve();
                     }
-                    return Promise.resolve();
+                    return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                   }
 
                   return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
@@ -658,6 +675,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 placeholder="请输入交底范围"
                 style={{ width: '100%' }}
                 value={disRangeValue}
+                onKeyPress={keyPressEvent}
               />
             </CyFormItem>
           )}
@@ -711,7 +729,12 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
               ]}
             >
-              <Input type="number" placeholder="请输入桩位范围" style={{ width: '100%' }} />
+              <Input
+                type="number"
+                placeholder="请输入桩位范围"
+                style={{ width: '100%' }}
+                onKeyPress={keyPressEvent}
+              />
             </CyFormItem>
           )}
         </div>
