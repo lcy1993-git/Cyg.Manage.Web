@@ -29,10 +29,7 @@ const { RangePicker } = DatePicker;
 const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [icon, setIcon] = useState<string>('bottom');
-  const {
-    finishEvent,
-    searchParams,
-  } = props;
+  const { finishEvent, searchParams } = props;
 
   const [category, setCategory] = useState<number[]>([]); //项目分类
   const [stage, setStage] = useState<number[]>([]); //项目阶段
@@ -57,6 +54,28 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const areaRef = useRef<HTMLDivElement>(null);
   const personRef = useRef<HTMLDivElement>(null);
 
+  const [lastSaveAreaInfo, setLastSaveAreaInfo] = useState({
+    provinceId: '',
+    cityId: '',
+    areaId: '',
+    cityData: [],
+    areaData: [],
+    provinceInfo: undefined,
+    cityInfo: undefined,
+    areaInfo: undefined,
+  });
+
+  const [storageAreaInfo, setStorageAreaInfo] = useState({
+    provinceId: '',
+    cityId: '',
+    areaId: '',
+    cityData: [],
+    areaData: [],
+    provinceInfo: undefined,
+    cityInfo: undefined,
+    areaInfo: undefined,
+  });
+
   // 更多条件
   const [showMoreFlag, setShowMoreFlag] = useState<boolean>(false);
 
@@ -69,6 +88,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const imgSrc = require('../../../../../assets/icon-image/' + icon + '.png');
 
   const searchEvent = () => {
+    setLastSaveAreaInfo(storageAreaInfo);
     finishEvent?.({
       category,
       stage,
@@ -96,11 +116,11 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
   const resetRef = () => {
     if (areaRef && areaRef.current) {
-      //@ts-ignore
+      // @ts-ignore
       areaRef.current.reset();
     }
     if (personRef && personRef.current) {
-      //@ts-ignore
+      // @ts-ignore
       personRef.current.reset();
     }
   };
@@ -124,6 +144,17 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setStartTime(null);
     setEndTime(null);
     resetRef();
+
+    setLastSaveAreaInfo({
+      provinceId: '',
+      cityId: '',
+      areaId: '',
+      cityData: [],
+      areaData: [],
+      provinceInfo: undefined,
+      cityInfo: undefined,
+      areaInfo: undefined,
+    });
 
     finishEvent?.({
       category: [],
@@ -153,6 +184,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
   const areaChangeEvent = (params: any) => {
     const { provinceId, cityId, areaId } = params;
+    setStorageAreaInfo(params);
     if (areaId) {
       setAreaInfo({
         areaType: '3',
@@ -304,9 +336,16 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       } else {
         setSelectDefaultData({
           logicRelation: 2,
-          design: "",
-          survey: "",
+          design: '',
+          survey: '',
         });
+      }
+      if (searchParams.areaType !== '-1') {
+        if (areaRef && areaRef.current) {
+          console.log(lastSaveAreaInfo);
+          // @ts-ignore
+          areaRef?.current?.initComponentData(lastSaveAreaInfo);
+        }
       }
     }
   }, [state, JSON.stringify(searchParams)]);
