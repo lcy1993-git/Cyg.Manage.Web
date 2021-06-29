@@ -127,7 +127,6 @@ const materiaColumns = [
 
 const mediaItem = (data: any) => {
   const authorization = window.localStorage.getItem('Authorization');
-
   return data?.map((item: any, index: any) => {
     if (item.type === 1) {
       return (
@@ -382,7 +381,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
               setMediaVisiable(true);
               setTimeout(() => {
                 carouselRef.current?.goTo(index, true);
-              }, 100)
+              }, 0)
             }}
           >
             查看
