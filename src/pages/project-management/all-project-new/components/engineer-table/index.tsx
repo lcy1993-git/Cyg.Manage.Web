@@ -63,10 +63,11 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   getStatisticsData?: (value: any) => void;
   columnsConfig: string[];
+  finishEvent: () => void
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, getStatisticsData, columnsConfig = [] } = props;
+  const { extractParams, onSelect, getStatisticsData, columnsConfig = [], finishEvent } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -147,6 +148,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       ...extractParams,
       pageIndex,
       pageSize,
+    });
+    setTableSelectData([]);
+    onSelect?.([]);
+  };
+
+  const refreshByParams = (params) => {
+    run({
+      ...params,
     });
     setTableSelectData([]);
     onSelect?.([]);
@@ -494,7 +503,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   <span className="canClick">
                     <Popconfirm
                       title="确认对该项目进行“申请结项”?"
-                      onConfirm={() => applyKnotEvent([record.id])}
+                      onConfirm={() =>
+                        applyKnotEvent([record.id])
+                      }
                       okText="确认"
                       cancelText="取消"
                     >
@@ -582,7 +593,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const applyKnotEvent = async (projectId: string[]) => {
     await applyKnot(projectId);
     message.success('申请结项成功');
-    refreshEvent();
+
+    finishEvent?.();
   };
 
   const chooseColumns = useMemo(() => {
@@ -673,7 +685,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
     if (pageSize === size) {
       setPageIndex(page === 0 ? 1 : page);
- 
+
       run({
         ...extractParams,
         pageIndex: page,
@@ -685,7 +697,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const addProjectEvent = (projectNeedValue: AddProjectValue) => {
-
     setAddProjectVisible(true);
     setProjectNeedInfo(projectNeedValue);
   };
@@ -782,8 +793,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   }));
 
   const scrollEvent = (size) => {
-    if(size) {
-      console.log(size.scrollLeft)
+    if (size) {
+      console.log(size.scrollLeft);
       setLeftNumber(size.scrollLeft);
     }
   };
@@ -798,8 +809,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     };
     return <div style={{ ...style, ...viewStyle }} {...rest} />;
   };
-
-
 
   return (
     <TableContext.Provider
