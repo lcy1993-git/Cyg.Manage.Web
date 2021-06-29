@@ -20,7 +20,8 @@ interface ScreenModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   finishEvent?: (value: any) => void;
-  defaultPersonInfo: any;
+  defaultPersonInfo?: any;
+  searchParams: any;
 }
 
 const { RangePicker } = DatePicker;
@@ -28,7 +29,10 @@ const { RangePicker } = DatePicker;
 const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [icon, setIcon] = useState<string>('bottom');
-  const { finishEvent, defaultPersonInfo = { logicRelation: 2, design: '', survey: '' } } = props;
+  const {
+    finishEvent,
+    searchParams,
+  } = props;
 
   const [category, setCategory] = useState<number[]>([]); //项目分类
   const [stage, setStage] = useState<number[]>([]); //项目阶段
@@ -39,7 +43,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [majorCategory, setMajorCategory] = useState<number[]>([]); //专业类别
   const [pType, setPType] = useState<number[]>([]); //项目类型
   const [reformAim, setReformAim] = useState<number[]>([]); //建设改造目的
-  const [classification, setClassification] = useState<number[]>([]); //项目类别
+  const [pCategory, setPCategory] = useState<number[]>([]); //项目类别
   const [attribute, setAttribute] = useState<number[]>([]); //项目属性
   // const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
   // const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
@@ -75,7 +79,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       majorCategory,
       pType,
       reformAim,
-      classification,
+      pCategory,
       attribute,
       sourceType,
       identityType,
@@ -111,7 +115,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setMajorCategory([]);
     setPType([]);
     setReformAim([]);
-    setClassification([]);
+    setPCategory([]);
     setAttribute([]);
     setSourceType([]);
     setIdentityType([]);
@@ -131,7 +135,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       majorCategory: [],
       pType: [],
       reformAim: [],
-      classification: [],
+      pCategory: [],
       attribute: [],
       sourceType: [],
       identityType: [],
@@ -201,10 +205,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setEndTime(dateStrings[1]);
   };
 
-  useEffect(() => {
-    setSelectDefaultData(defaultPersonInfo);
-  }, [JSON.stringify(defaultPersonInfo)]);
-
   const selectStyle = {
     maxTagPlaceholder: (e: any[]) => `已选择${e.length}项`,
     maxTagCount: 0,
@@ -212,6 +212,104 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     valuekey: 'value',
     titlekey: 'text',
   };
+
+  useEffect(() => {
+    if (state && searchParams) {
+      if (searchParams.category) {
+        setCategory(searchParams.category);
+      } else {
+        setCategory([]);
+      }
+      if (searchParams.stage) {
+        setStage(searchParams.stage);
+      } else {
+        setStage([]);
+      }
+      if (searchParams.constructType) {
+        setConstructType(searchParams.constructType);
+      } else {
+        setConstructType([]);
+      }
+      if (searchParams.nature) {
+        setNature(searchParams.nature);
+      } else {
+        setNature([]);
+      }
+      if (searchParams.kvLevel) {
+        setKvLevel(searchParams.kvLevel);
+      } else {
+        setKvLevel([]);
+      }
+      if (searchParams.status) {
+        setStatus(searchParams.status);
+      } else {
+        setStatus([]);
+      }
+      if (searchParams.majorCategory) {
+        setMajorCategory(searchParams.majorCategory);
+      } else {
+        setMajorCategory([]);
+      }
+      if (searchParams.pType) {
+        setPType(searchParams.pType);
+      } else {
+        setPType([]);
+      }
+      if (searchParams.reformAim) {
+        setReformAim(searchParams.reformAim);
+      } else {
+        setReformAim([]);
+      }
+      if (searchParams.pCategory) {
+        setPCategory(searchParams.pCategory);
+      } else {
+        setPCategory([]);
+      }
+      if (searchParams.attribute) {
+        setAttribute(searchParams.attribute);
+      } else {
+        setAttribute([]);
+      }
+      if (searchParams.sourceType) {
+        setSourceType(searchParams.sourceType);
+      } else {
+        setSourceType([]);
+      }
+      if (searchParams.identityType) {
+        setIdentityType(searchParams.identityType);
+      } else {
+        setIdentityType([]);
+      }
+      if (searchParams.dataSourceType) {
+        setDataSourceType(searchParams.dataSourceType);
+      } else {
+        setDataSourceType([]);
+      }
+      if (searchParams.startTime) {
+        setStartTime(searchParams.startTime);
+      } else {
+        setStartTime(null);
+      }
+      if (searchParams.endTime) {
+        setEndTime(searchParams.endTime);
+      } else {
+        setEndTime(null);
+      }
+      if (searchParams.logicRelation) {
+        setSelectDefaultData({
+          logicRelation: searchParams.logicRelation,
+          design: searchParams.designUser,
+          survey: searchParams.surveyUser,
+        });
+      } else {
+        setSelectDefaultData({
+          logicRelation: 2,
+          design: "",
+          survey: "",
+        });
+      }
+    }
+  }, [state, JSON.stringify(searchParams)]);
 
   return (
     <Modal
@@ -411,10 +509,10 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     setShowMoreFlag(!showMoreFlag);
                     setIcon(showMoreFlag ? 'bottom' : 'up');
                     setCategory([]);
-                    setProType([]);
+                    setPType([]);
                     setNature([]);
                     setReformAim([]);
-                    setClassification([]);
+                    setPCategory([]);
                     setAttribute([]);
                     setDataSourceType([]);
                   }}
@@ -508,9 +606,9 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                       allowClear
                       mode="multiple"
                       defaultData={projectClassification}
-                      value={classification}
+                      value={pCategory}
                       dropdownMatchSelectWidth={168}
-                      onChange={(value) => setClassification(value as number[])}
+                      onChange={(value) => setPCategory(value as number[])}
                       className="widthAll"
                       placeholder="项目类别"
                     />

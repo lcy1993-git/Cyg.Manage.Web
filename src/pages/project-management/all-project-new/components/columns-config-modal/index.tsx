@@ -93,7 +93,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
     },
     {
       title: '现场数据来源',
-      dataIndex: 'dataSourceType',
+      dataIndex: 'dataSourceTypeText',
     },
     {
       title: '导出坐标权限',
