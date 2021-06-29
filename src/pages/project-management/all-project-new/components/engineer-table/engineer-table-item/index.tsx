@@ -159,7 +159,9 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
       <div
         className={`${styles.engineerTableTh} ${
           item.dataIndex === 'action' ? styles.actionTd : ''
-        } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${item.dataIndex === 'name' ? styles.nameTd : ''}`}
+        } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${
+          item.dataIndex === 'name' ? styles.nameTd : ''
+        }`}
         key={`${item.dataIndex}`}
         style={
           isOverflow
@@ -167,9 +169,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                 width: `${item.width}px`,
                 left: `${item.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
                   item.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                } ${
-                  item.dataIndex === 'name' ? `${left + 38}px` : ''
-                }`,
+                } ${item.dataIndex === 'name' ? `${left + 38}px` : ''}`,
               }
             : {
                 width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
@@ -196,7 +196,9 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             <div
               className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
                 ite.dataIndex === 'action' ? styles.actionTd : ''
-              } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${ite.dataIndex === 'name' ? styles.nameTd : ''}`}
+              } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${
+                ite.dataIndex === 'name' ? styles.nameTd : ''
+              }`}
               key={uuid.v1()}
               style={
                 isOverflow
@@ -204,9 +206,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                       width: `${ite.width}px`,
                       left: `${ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
                         ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                      } ${
-                        ite.dataIndex === 'name' ? `${left + 38}px` : ''
-                      }`,
+                      } ${ite.dataIndex === 'name' ? `${left + 38}px` : ''}`,
                     }
                   : {
                       width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
@@ -214,15 +214,13 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                     }
               }
             >
-              {
-                ite.ellipsis ?
-                <Tooltip title={typeof item[ite.dataIndex] === 'string' ? item[ite.dataIndex] : ""}>
+              {ite.ellipsis ? (
+                <Tooltip title={typeof item[ite.dataIndex] === 'string' ? item[ite.dataIndex] : ''}>
                   {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
-                </Tooltip> :
-                <span>
-                  {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
-                </span>
-              }
+                </Tooltip>
+              ) : (
+                <span>{ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}</span>
+              )}
             </div>
           );
         })}

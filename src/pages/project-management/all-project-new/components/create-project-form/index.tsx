@@ -209,10 +209,17 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
-                    new Date(value).getTime() >=
-                      (engineerStart
+                    moment(new Date(value).getTime()).isAfter(
+                      engineerStart
                         ? engineerStart
-                        : new Date(getFieldValue('startTime')).getTime()) ||
+                        : new Date(getFieldValue('startTime')).getTime(),
+                    ) ||
+                    moment(new Date(value).getTime()).isSame(
+                      engineerStart
+                        ? engineerStart
+                        : new Date(getFieldValue('startTime')).getTime(),
+                      'day',
+                    ) ||
                     !value ||
                     !getFieldValue('startTime')
                   ) {
@@ -253,8 +260,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     !getFieldValue('startTime')
                   ) {
                     if (
-                      new Date(value).getTime() <=
-                      (engineerEnd ? engineerEnd : new Date(getFieldValue('endTime')).getTime())
+                      moment(new Date(value).getTime()).isBefore(
+                        engineerEnd ? engineerEnd : new Date(getFieldValue('endTime')).getTime(),
+                      ) ||
+                      moment(new Date(value).getTime()).isSame(
+                        engineerEnd ? engineerEnd : new Date(getFieldValue('endTime')).getTime(),
+                        'day',
+                      )
                     ) {
                       return Promise.resolve();
                     }
@@ -266,7 +278,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               }),
             ]}
           >
-            <DatePicker placeholder="请选择" disabledDate={disableDate} />
+            <DatePicker placeholder="请选择" disabledDate={disableDate} format={'yyyy-MM-DD'} />
           </CyFormItem>
         </div>
       </div>

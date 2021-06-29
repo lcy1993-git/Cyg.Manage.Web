@@ -7,6 +7,7 @@ import {
   getExternalArrangeStep,
   getProjectInfo,
   getProjectTableList,
+  getEngineerInfo,
 } from '@/services/project-management/all-project';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
@@ -132,7 +133,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setCurrentCopyProjectInfo(info);
   };
 
-  const editEngineerEvent = (data: AddProjectValue) => {
+  const editEngineerEvent = async (data: AddProjectValue) => {
+    console.log(tableData?.pagedData);
+    // const currentEditEngineer = tableData?.pagedData?.items.
     setEditEngineerVisible(true);
     setCurrentEditEngineerId(data.engineerId);
   };
@@ -673,7 +676,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
     if (pageSize === size) {
       setPageIndex(page === 0 ? 1 : page);
- 
+
       run({
         ...extractParams,
         pageIndex: page,
@@ -685,7 +688,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const addProjectEvent = (projectNeedValue: AddProjectValue) => {
-
     setAddProjectVisible(true);
     setProjectNeedInfo(projectNeedValue);
   };
@@ -782,8 +784,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   }));
 
   const scrollEvent = (size) => {
-    if(size) {
-      console.log(size.scrollLeft)
+    if (size) {
+      console.log(size.scrollLeft);
       setLeftNumber(size.scrollLeft);
     }
   };
@@ -798,8 +800,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     };
     return <div style={{ ...style, ...viewStyle }} {...rest} />;
   };
-
-
 
   return (
     <TableContext.Provider

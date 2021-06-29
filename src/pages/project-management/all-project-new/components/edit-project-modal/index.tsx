@@ -67,7 +67,6 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
 
   const edit = () => {
     form.validateFields().then(async (value) => {
-      console.log(value);
       try {
         await editProject({
           id: projectId,
