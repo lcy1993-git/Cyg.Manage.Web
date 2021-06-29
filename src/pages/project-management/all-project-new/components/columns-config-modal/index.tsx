@@ -56,7 +56,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       dataIndex: 'majorCategoryText',
     },
     {
-      title: '建设建造目的',
+      title: '建设改造目的',
       dataIndex: 'reformAimText',
     },
     {

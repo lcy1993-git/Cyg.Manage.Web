@@ -41,7 +41,7 @@ import AddProjectModal from '../add-project-modal';
 import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 
 const colorMap = {
   立项: 'green',
@@ -64,10 +64,11 @@ interface EngineerTableProps {
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   getStatisticsData?: (value: any) => void;
   columnsConfig: string[];
+  finishEvent: () => void;
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, getStatisticsData, columnsConfig = [] } = props;
+  const { extractParams, onSelect, getStatisticsData, columnsConfig = [], finishEvent } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -173,6 +174,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       ...extractParams,
       pageIndex,
       pageSize,
+    });
+    setTableSelectData([]);
+    onSelect?.([]);
+  };
+
+  const refreshByParams = (params: any) => {
+    run({
+      ...params,
     });
     setTableSelectData([]);
     onSelect?.([]);
@@ -360,7 +369,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       ellipsis: true,
     },
     {
-      title: '建设建造目的',
+      title: '建设改造目的',
       dataIndex: 'reformAimText',
       width: 120,
       ellipsis: true,
@@ -608,7 +617,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const applyKnotEvent = async (projectId: string[]) => {
     await applyKnot(projectId);
     message.success('申请结项成功');
-    refreshEvent();
+
+    finishEvent?.();
   };
 
   const chooseColumns = useMemo(() => {
@@ -634,7 +644,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     const columnsWidth = showColumns.reduce((sum, item) => {
       return sum + (item.width ? item.width : 100);
     }, 0);
-    const isOverflow = (tableContentSize.width ?? 0) - 50 - columnsWidth < 0;
+    const isOverflow = (tableContentSize.width ?? 0) - 40 - columnsWidth < 0;
 
     if (scrollbar && scrollbar.current) {
       // @ts-ignore
@@ -806,9 +816,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
   }));
 
-  const scrollEvent = (size) => {
+  const scrollEvent = (size: any) => {
     if (size) {
-      console.log(size.scrollLeft);
       setLeftNumber(size.scrollLeft);
     }
   };

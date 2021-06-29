@@ -8,12 +8,9 @@ import { TableContext } from '../table-store';
 import styles from './index.less';
 import moment from 'moment';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import uuid from 'node-uuid';
 import EmptyTip from '@/components/empty-tip';
 import { useContext } from 'react';
 import { useEffect } from 'react';
-import { isObject } from 'lodash';
-
 export interface AddProjectValue {
   engineerId: string;
   areaId: string;
@@ -154,79 +151,86 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     });
   };
 
-  const theadElement = columns.map((item) => {
-    return (
-      <div
-        className={`${styles.engineerTableTh} ${
-          item.dataIndex === 'action' ? styles.actionTd : ''
-        } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${
-          item.dataIndex === 'name' ? styles.nameTd : ''
-        }`}
-        key={`${item.dataIndex}`}
-        style={
-          isOverflow
-            ? {
-                width: `${item.width}px`,
-                left: `${item.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
-                  item.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                } ${item.dataIndex === 'name' ? `${left + 38}px` : ''}`,
-              }
-            : {
-                width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
-                flex: `${item.dataIndex === 'name' ? '1' : 'none'}`,
-              }
-        }
-      >
-        {item.title}
-      </div>
-    );
-  });
-
-  const tbodyElement = (projectInfo.projects ?? []).map((item: any) => {
-    return (
-      <div key={`${item.id}Td`} className={styles.engineerTableTr}>
+  const theadElement = useMemo(() => {
+    return columns.map((item) => {
+      return (
         <div
-          className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox}`}
-          style={{ width: '38px', left: `${left}px` }}
+          className={`${styles.engineerTableTh} ${
+            item.dataIndex === 'action' ? styles.actionTd : ''
+          } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${item.dataIndex === 'name' ? styles.nameTd : ''}`}
+          key={`${item.dataIndex}`}
+          style={
+            isOverflow
+              ? {
+                  width: `${item.width}px`,
+                  left: `${item.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
+                    item.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
+                  } ${
+                    item.dataIndex === 'name' ? `${left + 38}px` : ''
+                  }`,
+                }
+              : {
+                  width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
+                  flex: `${item.dataIndex === 'name' ? '1' : 'none'}`,
+                }
+          }
         >
-          <Checkbox style={{ marginLeft: '4px' }} value={item.id} />
+          {item.title}
         </div>
-        {columns.map((ite) => {
-          return (
-            <div
-              className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
-                ite.dataIndex === 'action' ? styles.actionTd : ''
-              } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${
-                ite.dataIndex === 'name' ? styles.nameTd : ''
-              }`}
-              key={uuid.v1()}
-              style={
-                isOverflow
-                  ? {
-                      width: `${ite.width}px`,
-                      left: `${ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
-                        ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                      } ${ite.dataIndex === 'name' ? `${left + 38}px` : ''}`,
-                    }
-                  : {
-                      width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
-                      flex: `${ite.dataIndex === 'name' ? '1' : 'none'}`,
-                    }
-              }
-            >
-              {ite.ellipsis ? (
-                <Tooltip title={typeof item[ite.dataIndex] === 'string' ? item[ite.dataIndex] : ''}>
-                  {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
-                </Tooltip>
-              ) : (
-                <span>{ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}</span>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
-  });
+      );
+    })
+  }, [JSON.stringify(projectInfo),left,contentWidth,isOverflow,JSON.stringify(columns),columnsWidth]);
+
+  const tbodyElement = useMemo(() => {
+    return (projectInfo.projects ?? []).map((item: any) => {
+      return (
+        <div key={`${item.id}Td`} className={styles.engineerTableTr}>
+          <div
+            className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox}`}
+            style={{ width: '38px', left: `${left}px` }}
+          >
+            <Checkbox style={{ marginLeft: '4px' }} value={item.id} />
+          </div>
+          {columns.map((ite) => {
+            return (
+              <div
+                className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
+                  ite.dataIndex === 'action' ? styles.actionTd : ''
+                } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${ite.dataIndex === 'name' ? styles.nameTd : ''}`}
+                key={`${item.id}Td${ite.dataIndex}`}
+                style={
+                  isOverflow
+                    ? {
+                        width: `${ite.width}px`,
+                        left: `${ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
+                          ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
+                        } ${
+                          ite.dataIndex === 'name' ? `${left + 38}px` : ''
+                        }`,
+                      }
+                    : {
+                        width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
+                        flex: `${ite.dataIndex === 'name' ? '1' : 'none'}`,
+                      }
+                }
+              >
+                {
+                  ite.ellipsis ?
+                  // eslint-disable-next-line no-nested-ternary
+                  <Tooltip title={typeof item[ite.dataIndex] === 'string' ? item[ite.dataIndex] : (ite.render ? ite.render(item, projectInfo) : "")}>
+                    {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
+                  </Tooltip> :
+                  <span>
+                    {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
+                  </span>
+                }
+              </div>
+            );
+          })}
+        </div>
+      );
+    })
+  },[JSON.stringify(projectInfo),left,contentWidth,isOverflow,JSON.stringify(columns),columnsWidth]);
 
   useEffect(() => {
     if (tableSelectData.length === 0) {

@@ -661,6 +661,7 @@ const AllProject: React.FC = () => {
               extractParams={{ keyWord, statisticalCategory, ...searchParams }}
               onSelect={tableSelectEvent}
               columnsConfig={chooseColumns}
+              finishEvent={refresh}
             />
           </div>
         </div>

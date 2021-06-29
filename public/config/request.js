@@ -12,7 +12,7 @@
 
 // 如果数组里面包含这个ip,那么就代表是IIS部署的，就直接用url + 端口去访问。  如果没包含，代表是nginx部署，那么就用代理
 
-export const ipArray = ["47.108.63.23","39.99.251.67"];
+export const ipArray = [];
 
 const thisHostName = window.location.hostname;
 
