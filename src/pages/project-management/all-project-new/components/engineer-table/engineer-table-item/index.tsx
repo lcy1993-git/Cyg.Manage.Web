@@ -197,7 +197,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
               className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
                 ite.dataIndex === 'action' ? styles.actionTd : ''
               } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${ite.dataIndex === 'name' ? styles.nameTd : ''}`}
-              key={uuid.v1()}
+              key={`${item.id}Td${ite.dataIndex}`}
               style={
                 isOverflow
                   ? {
