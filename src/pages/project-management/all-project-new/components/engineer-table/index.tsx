@@ -61,13 +61,12 @@ interface JurisdictionInfo {
 interface EngineerTableProps {
   extractParams: ExtractParams;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
-  finishEvent?: () => void;
   getStatisticsData?: (value: any) => void;
   columnsConfig: string[];
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, getStatisticsData, columnsConfig = [], finishEvent } = props;
+  const { extractParams, onSelect, getStatisticsData, columnsConfig = [] } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -141,6 +140,27 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const checkResult = (projectInfo: any) => {
     setCheckResultProjectInfo(projectInfo);
     setCheckResultVisible(true);
+  };
+
+  const refreshEvent = () => {
+    run({
+      ...extractParams,
+      pageIndex,
+      pageSize,
+    });
+    setTableSelectData([]);
+    onSelect?.([]);
+  };
+
+  const delayRefresh = async () => {
+    await delay(500);
+    run({
+      ...extractParams,
+      pageIndex,
+      pageSize,
+    });
+    setTableSelectData([]);
+    onSelect?.([]);
   };
 
   const [leftNumber, setLeftNumber] = useState<number>(0);
@@ -388,7 +408,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
       ellipsis: true,
       render: (record: any) => {
-        return record.surveyUser ? record.surveyUser.value : '无需安排';
+        return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
       },
     },
     {
@@ -397,7 +417,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
       ellipsis: true,
       render: (record: any) => {
-        return record.designUser ? record.designUser.value : '';
+        return record.designUser ? `${record.designUser.value}` : '';
       },
     },
     {
@@ -415,7 +435,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         return sources.map((item: any) => {
           return (
             <span key={uuid.v1()}>
-              <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
+              <CyTag color={colorMap[item] ? colorMap[item] : 'green'}>
                 <span>{item}</span>
               </CyTag>
             </span>
@@ -562,7 +582,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const applyKnotEvent = async (projectId: string[]) => {
     await applyKnot(projectId);
     message.success('申请结项成功');
-    finishEvent?.();
+    refreshEvent();
   };
 
   const chooseColumns = useMemo(() => {
@@ -653,7 +673,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
     if (pageSize === size) {
       setPageIndex(page === 0 ? 1 : page);
-
+ 
       run({
         ...extractParams,
         pageIndex: page,
@@ -665,7 +685,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const addProjectEvent = (projectNeedValue: AddProjectValue) => {
-    console.log(projectNeedValue);
 
     setAddProjectVisible(true);
     setProjectNeedInfo(projectNeedValue);
@@ -763,7 +782,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   }));
 
   const scrollEvent = (size) => {
-    setLeftNumber(size.scrollLeft);
+    if(size) {
+      console.log(size.scrollLeft)
+      setLeftNumber(size.scrollLeft);
+    }
   };
 
   const scrollBarRenderView = (params: any) => {
@@ -777,26 +799,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     return <div style={{ ...style, ...viewStyle }} {...rest} />;
   };
 
-  const refreshEvent = () => {
-    run({
-      ...extractParams,
-      pageIndex,
-      pageSize,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
 
-  const delayRefresh = async () => {
-    await delay(500);
-    run({
-      ...extractParams,
-      pageIndex,
-      pageSize,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
 
   return (
     <TableContext.Provider
@@ -951,7 +954,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             visible={auditKnotModalVisible}
             onChange={setAuditKnotModalVisible}
             projectIds={[currentClickProjectId]}
-            finishEvent={finishEvent}
+            finishEvent={refreshEvent}
           />
         )}
       </div>

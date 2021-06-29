@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table, Modal, Carousel, Input, message } from 'antd';
 
 import { CloseOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
@@ -16,7 +16,6 @@ import { formDataMateral } from '@/utils/utils';
 import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { CommentRequestType, addComment, fetchCommentList } from '@/services/visualization-results/side-popup';
 import styles from './index.less';
-import Index from '@/pages/index';
 
 export interface TableDataType {
   [propName: string]: any;
@@ -269,8 +268,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const mediaRef = useRef<HTMLSpanElement>(null);
   const materialRef = useRef<HTMLSpanElement>(null);
 
-  const [gotoNumber, setGotoNumber] = useState<undefined | number>(undefined);
-
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const carouselRef = useRef<any>(null);
@@ -345,15 +342,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   ];
 
-  useEffect(() => {
-    if(mediaVisiable) {
-      setTimeout(() => {
-        carouselRef.current?.goTo(gotoNumber, true);
-      }, 50)
-
-    }
-  }, [mediaVisiable])
-
   const mediaColumns = [
     {
       title: '类型、序号',
@@ -385,14 +373,16 @@ const SidePopup: React.FC<Props> = observer((props) => {
       title: '操作',
       dataIndex: 'id',
       key: 'id',
-      render(value: any, record: any, index: any) {
+      render(value: any, record: any, index: number) {
         return (
           <span
             key={record.id}
             className={styles.link}
             onClick={() => {
-              setGotoNumber(index)
               setMediaVisiable(true);
+              setTimeout(() => {
+                carouselRef.current?.goTo(index, true);
+              }, 100)
             }}
           >
             查看

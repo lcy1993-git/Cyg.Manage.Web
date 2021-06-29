@@ -211,8 +211,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       setEndDateValue(undefined);
     } else {
       const checkedProject = checkedProjectDateList || [undefined];
-      setStartDateValue(moment(checkedProject[0]));
-      setEndDateValue(moment(checkedProject[checkedProject.length - 1]));
+      let start = moment(checkedProject[0]);
+      let end = moment(checkedProject[checkedProject.length - 1]);
+      
+      setStartDateValue(start.isValid() ? start : undefined);
+      setEndDateValue(end.isValid() ? end : undefined);
     }
   }, [checkedProjectIdList.length]);
 
@@ -484,7 +487,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
             message.error('当前未选择项目');
           } else {
-            setStartDateValue(moment(checkedProjectDateList[0]));
+            let start = moment(checkedProjectDateList[0]);
+            setStartDateValue(start.isValid() ? start : message.error('项目中有项目开始时间未设置') && undefined);
           }
           startDateRef && startDateRef.current?.blur();
         }}
@@ -503,7 +507,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
             message.error('当前未选择项目');
           } else {
-            setEndDateValue(moment(checkedProjectDateList[checkedProjectDateList.length - 1]));
+            let end = moment(checkedProjectDateList[checkedProjectDateList.length - 1]);
+            setEndDateValue(end.isValid() ? end : message.error('项目中有项目开始截至未设置') && undefined);
           }
           endDateRef && endDateRef.current?.blur();
         }}

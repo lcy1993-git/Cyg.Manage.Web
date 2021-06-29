@@ -116,7 +116,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
             setCityInfo(undefined);
             setAreaSelectData([]);
             setAreaInfo(undefined)
-        },
+        }
     }));
 
     return (
