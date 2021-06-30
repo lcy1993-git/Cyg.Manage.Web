@@ -160,7 +160,7 @@ export const saveQuotaLibraryCatalogDescription= (data: SaveQuotaLibraryCatalogD
 // 行业类别枚举
 export const getIndustryTypeEnums = () => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/CommonEnum/GetIndustryTypeEnums`, { method: 'GET', params: {} })
+    request(`${baseUrl.tecEco}/CommonEnum/GetIndustryTypeEnums`, { method: 'GET' })
   );
 }
 
@@ -179,9 +179,11 @@ export const getQuotaScopeEnums = () => {
 }
 
 // 获取所有枚举值
-
 export const getTechnicalEconomyEnums= () => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/System/GetTechnicalEconomyEnums`, { method: 'POST', data: null })
   )
 }
+
+
+

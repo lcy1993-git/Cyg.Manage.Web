@@ -1,7 +1,16 @@
 import { getTechnicalEconomyEnums } from '@/services/technology-economic';
+export interface EnumsType {
+  value: number | string;
+  text: string;
+}
+interface ResData {
+  name: string;
+  code: string;
+  items: EnumsType[]
+}
 
-const findItems = (resData: any[], name: string, isChineseName=false) => {
-  return resData.find((item: any) => {
+const findItems = (resData: ResData[], name: string, isChineseName=false) => {
+  return resData.find((item: ResData) => {
     if(isChineseName) {
       return item.name === name;
     }
@@ -17,7 +26,7 @@ const findItems = (resData: any[], name: string, isChineseName=false) => {
  * @demo   (getEnums('地区类型', true));
  * @returns Map[]
  */
-export const getEnums = (name: string, isChineseName=false) => {
+export const getEnums  = (name: string, isChineseName?: boolean) => {
   const technologyEconomicEnums = localStorage.getItem('technologyEconomicEnums');
   if(technologyEconomicEnums) {
     const parse = JSON.parse(technologyEconomicEnums || "");
@@ -33,4 +42,5 @@ export const getEnums = (name: string, isChineseName=false) => {
     });
  
   }
+  return;
 }

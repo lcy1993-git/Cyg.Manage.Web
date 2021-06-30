@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { useRequest, useMount } from 'ahooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
-import {getEnums} from '../utils';
+import { getEnums, EnumsType } from '../utils';
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-// import ImfomationModal from './components/infomation-modal';
+
 import AddDictionaryForm from './components/add-edit-form';
 import { setRateTableStatus,
   deleteRateTable,
@@ -17,8 +18,10 @@ import { setRateTableStatus,
   addRateTable,
   EditRateTable,
   editRateTable
-} from '@/services/technology-economic/common-rate'; 
+} from '@/services/technology-economic/common-rate';
+import { getIndustryTypeEnums, getMajorTypeEnums } from '@/services/technology-economic';
 import styles from './index.less';
+import moment from 'moment';
 
 const { Search } = Input;
 
@@ -26,81 +29,15 @@ type DataSource = {
   id: string;
   [key: string]: string;
 }
-
-const columns = [
-  {
-    dataIndex: 'number',
-    key: 'number',
-    title: '序号',
-    width: 300,
-  },
-  {
-    dataIndex: 'rateTableType',
-    key: 'rateTableType',
-    title: '费率类型',
-    width: 160,
-  },
-  {
-    dataIndex: 'sourceFile',
-    key: 'sourceFile',
-    title: '来源文件',
-    width: 160
-  },
-  {
-    dataIndex: 'publishDate',
-    key: 'publishDate',
-    title: '发布时间',
-    width: 130
-  },
-  {
-    dataIndex: 'publishOrg',
-    key: 'publishOrg',
-    title: '发布机构',
-    width: 150
-  },
-  {
-    dataIndex: 'year',
-    key: 'year',
-    title: '费率年度',
-    width: 100
-  },
-  {
-    dataIndex: 'industryType',
-    key: 'industryType',
-    title: '行业类别',
-    width: 150
-  },
-  {
-    dataIndex: 'majorType',
-    key: 'majorType',
-    title: '适用专业',
-    width: 150
-  },
-  {
-    dataIndex: 'enabled',
-    key: 'enabled',
-    title: '状态',
-    width: 70,
-    render(value: boolean, record: DataSource) {
-      return (
-        <Switch
-          defaultChecked={value}
-          onClick={(checked) => {
-            setRateTableStatus(record.id, checked);
-          }}
-        />
-      );
-    }
-  },
-  {
-    dataIndex: 'remark',
-    index: 'remark',
-    title: '备注',
-    width: 220
-  },
-];
+const costRateType = getEnums('CostRateType');
 
 const ProjectList: React.FC = () => {
+
+  useMount(() => {
+    industryTypeRun();
+    majorTypeDataRun();
+  })
+
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -111,9 +48,109 @@ const ProjectList: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  console.log(getEnums('AreaType'));
-  console.log(getEnums('地区类型', true));
+  // 行业类别
+  const {data: industryTypeData = [], run: industryTypeRun} = useRequest<EnumsType[]>(getIndustryTypeEnums, { manual: true })
   
+  // 适用专业
+  const {data: majorTypeData = [], run: majorTypeDataRun} = useRequest<EnumsType[]>(getMajorTypeEnums, { manual: true })
+
+  const columns = useMemo(() => {
+    return [
+      {
+        dataIndex: 'number',
+        key: 'number',
+        title: '序号',
+        width: 300,
+      },
+      {
+        dataIndex: 'rateTableType',
+        key: 'rateTableType',
+        title: '费率类型',
+        width: 160,
+        render(v: number) {
+          return costRateType!.find((item: EnumsType) => {
+            return item.value === v;
+          })?.text
+        }
+      },
+      {
+        dataIndex: 'sourceFile',
+        key: 'sourceFile',
+        title: '来源文件',
+        width: 160
+      },
+      {
+        dataIndex: 'publishDate',
+        key: 'publishDate',
+        title: '发布时间',
+        width: 130,
+        render(v: string) {
+          return moment(v).format('YYYY-MM-DD')
+        }
+      },
+      {
+        dataIndex: 'publishOrg',
+        key: 'publishOrg',
+        title: '发布机构',
+        width: 150
+      },
+      {
+        dataIndex: 'year',
+        key: 'year',
+        title: '费率年度',
+        width: 100
+      },
+      {
+        dataIndex: 'industryType',
+        key: 'industryType',
+        title: '行业类别',
+        width: 150,
+        render(v: string){
+          return industryTypeData.find((item: EnumsType) => {
+            return item.value === v;
+          })?.text
+        }
+      },
+      {
+        dataIndex: 'majorType',
+        key: 'majorType',
+        title: '适用专业',
+        width: 150,
+        return(v: string) {
+          
+          console.log(majorTypeData.find((item: EnumsType) => {
+            return item.value == v;
+          }));
+          
+          return majorTypeData.find((item: EnumsType) => {
+            return item.value == v;
+          })?.text
+        }
+      },
+      {
+        dataIndex: 'enabled',
+        key: 'enabled',
+        title: '状态',
+        width: 70,
+        render(value: boolean, record: DataSource) {
+          return (
+            <Switch
+              defaultChecked={value}
+              onClick={(checked) => {
+                setRateTableStatus(record.id, checked);
+              }}
+            />
+          );
+        }
+      },
+      {
+        dataIndex: 'remark',
+        index: 'remark',
+        title: '备注',
+        width: 220
+      },
+    ];
+  }, [JSON.stringify(industryTypeData), JSON.stringify(majorTypeData)]) 
   
 
   const searchComponent = () => {
@@ -254,22 +291,25 @@ const ProjectList: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
-        needCommonButton={true}
-        columns={columns as (ColumnsType<object>)}
-        url="/RateTable/QueryRatePager"
-        // url="/QuotaLibrary/QueryQuotaLibraryPager"
-        tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
-        getSelectData={tableSelectEvent}
-        requestSource='tecEco1'
-        type="radio"
-        extractParams={{
-          keyWord: searchKeyWord,
-        }}
-      />
+      {
+        majorTypeData.length > 0 && industryTypeData.length > 0 &&
+        <GeneralTable
+          ref={tableRef}
+          buttonLeftContentSlot={searchComponent}
+          buttonRightContentSlot={tableElement}
+          needCommonButton={true}
+          columns={columns as (ColumnsType<object>)}
+          url="/RateTable/QueryRatePager"
+          // url="/QuotaLibrary/QueryQuotaLibraryPager"
+          tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
+          getSelectData={tableSelectEvent}
+          requestSource='tecEco1'
+          type="radio"
+          extractParams={{
+            keyWord: searchKeyWord,
+          }}
+        />
+      }
       <Modal
         maskClosable={false}
         title="添加-常用费率"
