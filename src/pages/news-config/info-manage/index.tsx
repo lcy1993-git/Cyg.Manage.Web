@@ -290,14 +290,15 @@ const InfoManage: React.FC = () => {
       const finallyUserIds = addPersonArray
         .filter((item) => userIds?.includes(item.value))
         .map((item) => item.chooseValue);
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-          title: editData.title,
-          content: content,
-        },
-        values,
-      );
+      const submitInfo = {
+        id: editData.id,
+        title: editData.title,
+        content: content,
+        ...values,
+        userIds: finallyUserIds,
+      };
+      console.log(submitInfo);
+
       await updateNewsItem(submitInfo);
       refresh();
       message.success('更新成功');
@@ -405,6 +406,7 @@ const InfoManage: React.FC = () => {
         destroyOnClose
       >
         <TextEditor
+          getPersonArray={(array) => setAddPersonArray(array)}
           htmlContent={editContent}
           type="edit"
           onChange={setContent}

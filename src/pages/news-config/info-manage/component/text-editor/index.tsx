@@ -17,13 +17,12 @@ import { getClientCategorys } from '@/services/personnel-config/company-user';
 import rule from '../../news-rule';
 import { flatten } from '@/utils/utils';
 
-
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
   titleForm: any;
   htmlContent?: string;
   type?: 'edit' | 'add';
-  getPersonArray?: (array: any) => void
+  getPersonArray?: (array: any) => void;
 }
 
 const { BtnMenu } = E;
@@ -116,7 +115,7 @@ class AlertMenu extends BtnMenu {
 // }
 
 const TextEditorModal = (props: EditorParams) => {
-  const { onChange, titleForm, htmlContent,getPersonArray } = props;
+  const { onChange, titleForm, htmlContent, getPersonArray } = props;
 
   const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
   const { data } = useRequest(() => getClientCategorys(), {});
@@ -184,7 +183,7 @@ const TextEditorModal = (props: EditorParams) => {
 
   useEffect(() => {
     getPersonArray?.(flatten(handleData));
-  },[JSON.stringify(handleData)])
+  }, [JSON.stringify(handleData)]);
 
   // useEffect(() => {
 
@@ -252,6 +251,16 @@ const TextEditorModal = (props: EditorParams) => {
             treeCheckable
             treeData={handleData}
             treeDefaultExpandAll
+            maxTagCount={0}
+            maxTagPlaceholder={(e) => {
+              return (
+                <>
+                  {e.map((item) => {
+                    return <span>{item.leab}</span>;
+                  })}
+                </>
+              );
+            }}
           />
         </CyFormItem>
         <CyFormItem label="端口" labelWidth={60} name="clientCategorys" required>
