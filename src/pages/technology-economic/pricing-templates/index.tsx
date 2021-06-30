@@ -18,23 +18,30 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import DictionaryForm from './components/add-edit-form';
 
 import {
-  createMaterialMachineLibrary,
-  deleteMaterialMachineLibrary,
-  setMaterialMachineLibraryStatus,
-} from '@/services/technology-economic';
-import {
   addPricingTemplate,
   editPricingTemplate,
+  setPricingTemplate,
+  deletePricingTemplate,
+  queryPricingTemplatePager,
 } from '@/services/technology-economic/pricing-template';
 import styles from './index.less';
-
+import { useEffect } from 'react';
+import moment from 'moment';
+import { getEnums } from '../utils';
+interface ResponseData {
+  items?: {
+    id?: string;
+    name?: string;
+    engineeringTemplateType: string;
+  }[];
+}
 type DataSource = {
   id: string;
   [key: string]: string;
 };
 
 const { Search } = Input;
-
+const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
 const columns = [
   {
     dataIndex: 'no',
@@ -46,11 +53,17 @@ const columns = [
     dataIndex: 'engineeringTemplateType',
     key: 'engineeringTemplateType',
     title: '模板类型',
+    render: (text: string, record: any) => {
+      return getTypeName(record.engineeringTemplateType);
+    },
   },
   {
     dataIndex: 'publishDate',
     key: 'publishDate',
     title: '发布时间',
+    render: (text: string, record: any) => {
+      return moment(record.expiryTime).format('YYYY-MM-DD HH:mm ');
+    },
   },
   {
     dataIndex: 'version',
@@ -71,14 +84,23 @@ const columns = [
         <Switch
           defaultChecked={value}
           onClick={(checked) => {
-            setMaterialMachineLibraryStatus(record.id, checked);
+            setPricingTemplate(record.id, checked);
           }}
         />
       );
     },
   },
 ];
-
+export const getTypeName = (no: number) => {
+  let str = '';
+  engineeringTemplateTypeList &&
+    engineeringTemplateTypeList.map((item: any) => {
+      if (no === item.value) {
+        str = item.text;
+      }
+    });
+  return str;
+};
 const PricingTemplates: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | Object>([]);
@@ -87,15 +109,30 @@ const PricingTemplates: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
+  const [selectList, setSelectList] = useState<number[]>([]);
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-
+  useEffect(() => {
+    getSelectList();
+  }, []);
+  const getSelectList = async () => {
+    const list: number[] = [];
+    const data: ResponseData = await queryPricingTemplatePager({ pageIndex: 1, pageSize: 3000 });
+    if (data) {
+      if (data.hasOwnProperty('items') && data.items?.length) {
+        data.items.map((item) => {
+          list.push(parseInt(item.engineeringTemplateType as string));
+        });
+      }
+    }
+    setSelectList(list);
+  };
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.refresh();
+      getSelectList();
     }
   };
 
@@ -115,8 +152,11 @@ const PricingTemplates: React.FC = () => {
   // 编辑确认按钮
   const sureEditAuthorization = () => {
     editForm.validateFields().then(async (values) => {
+      const id = tableSelectRows[0].id;
+      let value = values;
+      value.id = id;
       // TODO 编辑接口
-      await editPricingTemplate(values);
+      await editPricingTemplate(value);
       refresh();
       setEditFormVisible(false);
       editForm.resetFields();
@@ -129,7 +169,7 @@ const PricingTemplates: React.FC = () => {
       return;
     }
     const id = tableSelectRows[0].id;
-    await deleteMaterialMachineLibrary(id);
+    await deletePricingTemplate(id);
     refresh();
     message.success('删除成功');
   };
@@ -140,15 +180,19 @@ const PricingTemplates: React.FC = () => {
       message.error('请选择要操作的行');
       return;
     }
-    // const id = tableSelectRows[0].id;
-    // history.push(`/technology-economic/material-infomation?id=${id}`);
     setEditFormVisible(true);
     editForm.setFieldsValue({
       ...tableSelectRows[0],
     });
   };
+  // 跳转工程目录
   const engineeringCatalog = () => {
-    history.push(`/technology-economic/project-list`);
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    const id = tableSelectRows[0].id;
+    history.push(`/technology-economic/project-list?id=${id}`);
   };
   const commonRates = () => {
     history.push(`/technology-economic/common-rate`);
@@ -212,7 +256,7 @@ const PricingTemplates: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns as ColumnsType<DataSource | object>}
-        url="/EngineerTemplate/QueryEngineeringTemplatePager"
+        url="/EngineeringTemplate/QueryEngineeringTemplatePager"
         tableTitle="计价模板管理"
         getSelectData={tableSelectEvent}
         type="radio"
@@ -233,7 +277,7 @@ const PricingTemplates: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <DictionaryForm type="add" />
+          <DictionaryForm type="add" selectList={selectList} />
         </Form>
       </Modal>
       <Modal

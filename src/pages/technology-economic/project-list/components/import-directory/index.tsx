@@ -9,7 +9,7 @@ interface ResponsData {}
 const ImportDirectory: React.FC<ResponsData> = () => {
   return (
     <>
-      <CyFormItem label="版本" name="version">
+      {/* <CyFormItem label="版本" name="version">
         <Button
           className="mr7"
           type="primary"
@@ -19,7 +19,7 @@ const ImportDirectory: React.FC<ResponsData> = () => {
         >
           下载模板
         </Button>
-      </CyFormItem>
+      </CyFormItem> */}
       <CyFormItem label="上传文件" name="file" required>
         <FileUpload accept=".xls,.xlsx" maxCount={1} trigger={false} />
       </CyFormItem>
