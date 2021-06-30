@@ -50,6 +50,9 @@ const InfoManage: React.FC = () => {
   const [content, setContent] = useState<string>('');
   const [editContent, setEditContent] = useState<string>('');
   const [addPersonArray, setAddPersonArray] = useState([]);
+  const [editPersonArray, setEditPersonArray] = useState([]);
+  const [editPersonUserIds, setEditPersonUserIds] = useState<any []>([]);
+  
   // const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const editFormRef = useRef<HTMLDivElement>(null);
@@ -268,8 +271,8 @@ const InfoManage: React.FC = () => {
     const clientCategorys = checkContentData.clientCategorys.map((item) => item.value);
     setEditFormVisible(true);
     setEditContent(checkContentData.content);
+    setEditPersonUserIds(userIds);
     editForm.setFieldsValue({
-      userIds,
       title: checkContentData.title,
       isEnable: checkContentData.isEnable,
       clientCategorys,
@@ -284,12 +287,11 @@ const InfoManage: React.FC = () => {
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
-      console.log(addPersonArray);
-      console.log(values);
       const { userIds } = values;
-      const finallyUserIds = addPersonArray
+      const finallyUserIds = editPersonArray
         .filter((item) => userIds?.includes(item.value))
         .map((item) => item.chooseValue);
+        
       const submitInfo = Object.assign(
         {
           id: editData.id,
@@ -406,9 +408,11 @@ const InfoManage: React.FC = () => {
       >
         <TextEditor
           htmlContent={editContent}
+          getPersonArray={(array) => setEditPersonArray(array)}
           type="edit"
           onChange={setContent}
           titleForm={editForm}
+          personDefaultValue={editPersonUserIds}
         />
       </Modal>
       {checkInfoVisible && (

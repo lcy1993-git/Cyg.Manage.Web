@@ -17,13 +17,13 @@ import { getClientCategorys } from '@/services/personnel-config/company-user';
 import rule from '../../news-rule';
 import { flatten } from '@/utils/utils';
 
-
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
   titleForm: any;
   htmlContent?: string;
   type?: 'edit' | 'add';
-  getPersonArray?: (array: any) => void
+  getPersonArray?: (array: any) => void;
+  personDefaultValue?: any;
 }
 
 const { BtnMenu } = E;
@@ -116,7 +116,7 @@ class AlertMenu extends BtnMenu {
 // }
 
 const TextEditorModal = (props: EditorParams) => {
-  const { onChange, titleForm, htmlContent,getPersonArray } = props;
+  const { onChange, titleForm, htmlContent, getPersonArray, personDefaultValue } = props;
 
   const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
   const { data } = useRequest(() => getClientCategorys(), {});
@@ -184,7 +184,7 @@ const TextEditorModal = (props: EditorParams) => {
 
   useEffect(() => {
     getPersonArray?.(flatten(handleData));
-  },[JSON.stringify(handleData)])
+  }, [JSON.stringify(handleData)]);
 
   // useEffect(() => {
 
@@ -234,6 +234,16 @@ const TextEditorModal = (props: EditorParams) => {
       editor.destroy();
     };
   }, [htmlContent]);
+
+  useEffect(() => {
+    if (personDefaultValue) {
+      const flattenArray = flatten(handleData);
+      const handlePersonUserIds = flattenArray.filter((item) => personDefaultValue.includes(item.chooseValue)).map((item) => item.value);
+      titleForm.setFieldsValue({
+        userIds: handlePersonUserIds,
+      });
+    }
+  }, [JSON.stringify(personDefaultValue), JSON.stringify(handleData)]);
 
   return (
     <>
