@@ -1,7 +1,8 @@
-import { addProject } from '@/services/project-management/all-project';
-import { useControllableValue } from 'ahooks';
+import { addProject, getEngineerInfo } from '@/services/project-management/all-project';
+import { useControllableValue, useRequest } from 'ahooks';
 import { Button } from 'antd';
 import { Form, message, Modal } from 'antd';
+import moment from 'moment';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import CreateProjectForm from '../create-project-form';
 
@@ -21,6 +22,12 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
   const [form] = Form.useForm();
 
   const { engineerId, areaId, company, changeFinishEvent, companyName } = props;
+  const { data: engineerInfo } = useRequest(() => getEngineerInfo(engineerId), {
+    ready: !!engineerId,
+    refreshDeps: [engineerId],
+  });
+
+  console.log(engineerInfo);
 
   const addProjectEvent = () => {
     form.validateFields().then(async (value) => {
@@ -78,6 +85,8 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           areaId={areaId}
           company={company}
           form={form}
+          engineerStart={moment(engineerInfo?.startTime)}
+          engineerEnd={moment(engineerInfo?.endTime)}
         />
       </Form>
     </Modal>
