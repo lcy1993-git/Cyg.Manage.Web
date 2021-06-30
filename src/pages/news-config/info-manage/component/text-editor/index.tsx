@@ -23,6 +23,7 @@ interface EditorParams {
   htmlContent?: string;
   type?: 'edit' | 'add';
   getPersonArray?: (array: any) => void;
+  personDefaultValue?: any;
 }
 
 const { BtnMenu } = E;
@@ -115,7 +116,7 @@ class AlertMenu extends BtnMenu {
 // }
 
 const TextEditorModal = (props: EditorParams) => {
-  const { onChange, titleForm, htmlContent, getPersonArray } = props;
+  const { onChange, titleForm, htmlContent, getPersonArray, personDefaultValue } = props;
 
   const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
   const { data } = useRequest(() => getClientCategorys(), {});
@@ -234,6 +235,16 @@ const TextEditorModal = (props: EditorParams) => {
     };
   }, [htmlContent]);
 
+  useEffect(() => {
+    if (personDefaultValue) {
+      const flattenArray = flatten(handleData);
+      const handlePersonUserIds = flattenArray.filter((item) => personDefaultValue.includes(item.chooseValue)).map((item) => item.value);
+      titleForm.setFieldsValue({
+        userIds: handlePersonUserIds,
+      });
+    }
+  }, [JSON.stringify(personDefaultValue), JSON.stringify(handleData)]);
+
   return (
     <>
       <Form form={titleForm}>
@@ -251,16 +262,6 @@ const TextEditorModal = (props: EditorParams) => {
             treeCheckable
             treeData={handleData}
             treeDefaultExpandAll
-            maxTagCount={0}
-            maxTagPlaceholder={(e) => {
-              return (
-                <>
-                  {e.map((item) => {
-                    return <span>{item.leab}</span>;
-                  })}
-                </>
-              );
-            }}
           />
         </CyFormItem>
         <CyFormItem label="端口" labelWidth={60} name="clientCategorys" required>

@@ -50,6 +50,9 @@ const InfoManage: React.FC = () => {
   const [content, setContent] = useState<string>('');
   const [editContent, setEditContent] = useState<string>('');
   const [addPersonArray, setAddPersonArray] = useState([]);
+  const [editPersonArray, setEditPersonArray] = useState([]);
+  const [editPersonUserIds, setEditPersonUserIds] = useState<any[]>([]);
+
   // const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const editFormRef = useRef<HTMLDivElement>(null);
@@ -191,13 +194,13 @@ const InfoManage: React.FC = () => {
       dataIndex: 'createdByUser',
       index: 'createdByUser',
       title: '创建人',
-      width: 140,
+      width: 260,
     },
     {
       dataIndex: 'createdOn',
       index: 'createdOn',
       title: '创建时间',
-      width: 220,
+      width: 160,
       render: (text: any, record: any) => {
         return moment(record.createdOn).format('YYYY-MM-DD HH:mm');
       },
@@ -206,7 +209,7 @@ const InfoManage: React.FC = () => {
       dataIndex: 'updateOn',
       index: 'updateOn',
       title: '更新时间',
-      width: 220,
+      width: 160,
       render: (text: any, record: any) => {
         return moment(record.modifiedOn).format('YYYY-MM-DD HH:mm');
       },
@@ -268,8 +271,8 @@ const InfoManage: React.FC = () => {
     const clientCategorys = checkContentData.clientCategorys.map((item) => item.value);
     setEditFormVisible(true);
     setEditContent(checkContentData.content);
+    setEditPersonUserIds(userIds);
     editForm.setFieldsValue({
-      userIds,
       title: checkContentData.title,
       isEnable: checkContentData.isEnable,
       clientCategorys,
@@ -284,10 +287,8 @@ const InfoManage: React.FC = () => {
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
-      console.log(addPersonArray);
-      console.log(values);
       const { userIds } = values;
-      const finallyUserIds = addPersonArray
+      const finallyUserIds = editPersonArray
         .filter((item) => userIds?.includes(item.value))
         .map((item) => item.chooseValue);
       const submitInfo = {
@@ -406,11 +407,12 @@ const InfoManage: React.FC = () => {
         destroyOnClose
       >
         <TextEditor
-          getPersonArray={(array) => setAddPersonArray(array)}
           htmlContent={editContent}
+          getPersonArray={(array) => setEditPersonArray(array)}
           type="edit"
           onChange={setContent}
           titleForm={editForm}
+          personDefaultValue={editPersonUserIds}
         />
       </Modal>
       {checkInfoVisible && (

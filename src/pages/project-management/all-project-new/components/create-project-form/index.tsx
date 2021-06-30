@@ -2,7 +2,6 @@ import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
 import { useGetProjectEnum } from '@/utils/hooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
-import e from 'express';
 import { isEmpty } from 'lodash';
 import moment, { Moment } from 'moment';
 import React, { memo, useEffect, useState } from 'react';
@@ -273,7 +272,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                   }
 
-                  return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
+                  return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
                 },
               }),
             ]}

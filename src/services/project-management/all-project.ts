@@ -748,16 +748,16 @@ export const saveColumnsConfig = (params: any) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/SaveColumnConfig`, {
       method: 'POST',
-      data: {config: params},
+      data: { config: params },
     }),
   );
-}
+};
 
 // 获取表头配置
 export const getColumnsConfig = () => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/Porject/GetColumnConfig`, {
       method: 'GET',
-    })
+    }),
   );
-}
+};
