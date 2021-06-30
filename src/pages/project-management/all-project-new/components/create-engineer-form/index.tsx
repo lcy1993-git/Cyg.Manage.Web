@@ -10,7 +10,6 @@ import DataSelect from '@/components/data-select';
 
 import city from '@/assets/local-data/area';
 import moment from 'moment';
-import { endsWith } from 'lodash';
 
 interface CreateEngineerForm {
   exportDataChange?: (exportData: any) => void;
@@ -32,8 +31,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     minStart,
     maxEnd,
   } = props;
-
-  console.log(minStart, maxEnd, '1111111111');
 
   const [areaId, setAreaId] = useState<string>('');
   const [libId, setLibId] = useState<string>('');
@@ -311,8 +308,10 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
                     !getFieldValue('startTime')
                   ) {
                     if (
-                      moment(new Date(value).getTime()).isAfter(moment(maxEnd)) ||
-                      moment(new Date(value).getTime()).isSame(moment(maxEnd))
+                      maxEnd
+                        ? moment(new Date(value).getTime()).isAfter(moment(maxEnd)) ||
+                          moment(new Date(value).getTime()).isSame(moment(maxEnd))
+                        : true
                     ) {
                       return Promise.resolve();
                     }

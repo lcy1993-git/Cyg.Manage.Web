@@ -407,7 +407,7 @@ interface ProjectInfoParams {
 }
 
 // 获取项目详细信息接口
-export const getProjectInfo = (projectId: string) => {
+export const getProjectInfo = (projectId: string | undefined) => {
   return cyRequest<ProjectInfoParams>(() =>
     request(`${baseUrl.project}/Porject/GetById`, { method: 'GET', params: { id: projectId } }),
   );
