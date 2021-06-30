@@ -5,6 +5,7 @@ import { Button, Checkbox } from 'antd';
 import { flatten, toTreeData } from '@/utils/utils';
 
 import styles from './index.less';
+import CommonTitle from '../common-title';
 
 interface FunctionItem {
   id: string;
@@ -266,7 +267,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     return {
       ...data,
       hasPermission: false,
-      functions: data.functions.map((item:any) => ({...item, hasPermission: false})),
+      functions: data.functions.map((item: any) => ({ ...item, hasPermission: false })),
       children: data.children.map(mapDataAllFalse),
     };
   };
@@ -275,7 +276,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     return {
       ...data,
       hasPermission: true,
-      functions: data.functions.map((item:any) => ({...item, hasPermission: true})),
+      functions: data.functions.map((item: any) => ({ ...item, hasPermission: true })),
       children: data.children.map(mapAllDataTrue),
     };
   };
@@ -285,7 +286,6 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     const newData = copyData.map(mapAllDataTrue);
     setTableShowData(newData);
     getSelectIds(newData);
-
   };
 
   const allNoCheckEvent = () => {
@@ -298,10 +298,15 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
   const tableAllCheckedButton = () => {
     return (
       <div className={styles.buttonContent}>
-        <Button className="mr7" onClick={() => allCheckEvent()}>
-          全选
-        </Button>
-        <Button onClick={() => allNoCheckEvent()}>全不选</Button>
+        <div className={styles.moduleTitle}>
+          <CommonTitle>分配功能模块</CommonTitle>
+        </div>
+        <div>
+          <Button className="mr7" onClick={() => allCheckEvent()}>
+            全选
+          </Button>
+          <Button onClick={() => allNoCheckEvent()}>全不选</Button>
+        </div>
       </div>
     );
   };

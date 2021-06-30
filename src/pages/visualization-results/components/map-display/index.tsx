@@ -10,7 +10,6 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
   const { onSatelliteMapClick, onStreetMapClick } = props;
   const [isStreet, setIsStreet] = useState(false);
   const [active, setActive] = useState<boolean>(false);
-  console.log(active);
 
   const onChange = (value: string) => {
     if (value === 'street') {
@@ -29,7 +28,7 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
           <div className={styles.text}>卫星图</div>
         </div>
       </div>
-      <div className={`${styles.icon1} ${styles.icon1Active} ${isStreet ? styles.streetActive : ""}`}>
+      <div className={`${styles.icon1} ${active ? styles.icon1Active : ""} ${isStreet && active ? styles.streetActive : ""}`}>
         <div className={styles.list}>
           <img className={styles.img} src={require('@/assets/image/webgis/街道图.png')} alt='街道图' onClick={() => onChange('street')} />
           <div className={styles.text}>街道图</div>

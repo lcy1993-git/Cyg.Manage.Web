@@ -356,7 +356,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
 
   return (
     // <PageCommonWrap>
-    <>
+    <div className={styles.electrical}>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -457,7 +457,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         onChange={setImportElectricalVisible}
       />
       {/* </PageCommonWrap> */}
-    </>
+    </div>
   );
 };
 

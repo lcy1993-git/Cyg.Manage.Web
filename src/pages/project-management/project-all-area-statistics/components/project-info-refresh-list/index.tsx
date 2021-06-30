@@ -6,12 +6,12 @@ import { useRequest, useSize, useInViewport } from 'ahooks';
 import ProjectItem from './components/project-Item';
 import {
   AreaInfo,
-  fetchProjectOperationLog,
   projectOperationLogParams,
   RefreshDataType,
 } from '@/services/index';
 import moment from 'moment';
 import EmptyTip from '@/components/empty-tip';
+import { fetchProjectOperationLog } from '@/services/project-management/project-all-area-statistics';
 export interface ProjectInfoRefreshListProps {
   currentAreaInfo?: AreaInfo;
 }
@@ -100,8 +100,10 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
               name={item.projectName}
               key={`${item.date}${idx}`}
               id={item.projectId}
-              content={`${item.operator}${item.operationCategory}`}
-              date={moment(item.date).format('YYYY/MM/DD')}
+              //content={`${item.operator}${item.operationCategory}`}
+              operator={item.operator}
+              operationCategory={item.operationCategory}
+              date={moment(item.date).format('MM-DD HH:mm')}
             />
           ))}
         </div>

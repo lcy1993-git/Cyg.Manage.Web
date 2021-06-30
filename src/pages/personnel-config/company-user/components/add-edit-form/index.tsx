@@ -89,8 +89,8 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
           requestSource="project"
           showSearch
           url="/CompanyUser/GetClientCategorys"
-          titleKey="text"
-          valueKey="value"
+          titlekey="text"
+          valuekey="value"
           placeholder="请选择授权端口"
         />
       </CyFormItem>

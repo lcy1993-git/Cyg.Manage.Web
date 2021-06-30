@@ -13,8 +13,8 @@ const WareHouseForm: React.FC = () => {
           showSearch
           requestSource="resource"
           url="/WareHouse/GetAreaTreeNod"
-          titleKey="text"
-          valueKey="id"
+          titlekey="text"
+          valuekey="id"
           placeholder="请选择省份"
         />
       </CyFormItem>

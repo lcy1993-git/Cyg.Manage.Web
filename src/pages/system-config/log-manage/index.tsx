@@ -96,8 +96,8 @@ const LogManage: React.FC = () => {
         <TableSearch label="筛选" width="730px" marginLeft="15px">
           <div className={styles.filter}>
             <UrlSelect
-              titleKey="text"
-              valueKey="value"
+              titlekey="text"
+              valuekey="value"
               className={styles.appWidth}
               url="/Log/GetApplications"
               placeholder="应用"
@@ -106,8 +106,8 @@ const LogManage: React.FC = () => {
               style={{ width: 200 }}
             />
             <UrlSelect
-              titleKey="text"
-              valueKey="value"
+              titlekey="text"
+              valuekey="value"
               className={styles.levelWidth}
               url="/Log/GetLevels"
               placeholder="级别"

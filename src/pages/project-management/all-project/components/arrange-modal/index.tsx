@@ -14,6 +14,7 @@ interface ArrangeModalProps {
   finishEvent?: () => void;
   defaultSelectType?: string;
   allotCompanyId?: string;
+  dataSourceType?: number;
 }
 
 const { TabPane } = Tabs;
@@ -21,7 +22,13 @@ const { TabPane } = Tabs;
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyInfo, setCompanyInfo] = useState<any>();
-  const { projectIds, finishEvent, defaultSelectType = '2', allotCompanyId } = props;
+  const {
+    projectIds,
+    finishEvent,
+    defaultSelectType = '2',
+    allotCompanyId,
+    dataSourceType,
+  } = props;
   const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
   const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
@@ -138,6 +145,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
               allotCompanyId={allotCompanyId}
               getCompanyInfo={getCompanyInfo}
               onChange={(value) => setSelectType(value)}
+              dataSourceType={dataSourceType}
             />
           </TabPane>
           {/* {(selectType === '2' || selectType === '4') && (

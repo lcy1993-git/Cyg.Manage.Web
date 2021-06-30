@@ -48,7 +48,7 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
   const [indeterminate, setIndeterminate] = React.useState(false);
   const [checkAll, setCheckAll] = React.useState(false);
 
-  const {tableSelectData} = useContext(TableContext);
+  const { tableSelectData } = useContext(TableContext);
 
   const {
     projectInfo = {},
@@ -81,12 +81,11 @@ const ProjectTableItem: React.FC<ProjectTableItemProps> = (props) => {
   }, [JSON.stringify(projectInfo.projects)]);
 
   useEffect(() => {
-
-    if(tableSelectData.length === 0) {
-      setCheckedList([])
-      setCheckAll(false)
+    if (tableSelectData.length === 0) {
+      setCheckedList([]);
+      setCheckAll(false);
     }
-  },[JSON.stringify(tableSelectData),projectInfo])
+  }, [JSON.stringify(tableSelectData), projectInfo]);
 
   const checkboxChange = (list: CheckboxValueType[]) => {
     setCheckedList(list);

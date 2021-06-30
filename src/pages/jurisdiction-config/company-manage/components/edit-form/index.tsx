@@ -4,6 +4,8 @@ import CyFormItem from '@/components/cy-form-item';
 import styles from './index.less';
 import rules from '../../rule';
 import AddMinusComponent from '../add-minus-component';
+import FormSwitch from '@/components/form-switch';
+
 interface EditCompanyProps {
   accreditNumber: any[];
 }
@@ -215,6 +217,9 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
       </CyFormItem>
       <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
         <Input placeholder="请输入备注信息" />
+      </CyFormItem>
+      <CyFormItem label="状态" name="isEnabled" labelWidth={100} align="right">
+        <FormSwitch />
       </CyFormItem>
     </>
   );

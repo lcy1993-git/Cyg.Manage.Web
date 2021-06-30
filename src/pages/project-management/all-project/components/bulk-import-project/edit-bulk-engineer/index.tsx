@@ -6,11 +6,11 @@ import EnumSelect from '@/components/enum-select';
 import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project';
 import city from '@/assets/local-data/area';
 import moment from 'moment';
-import Rule from './engineer-form-rule';
 import { useControllableValue, useRequest } from 'ahooks';
 import { useState, useMemo } from 'react';
 import { useGetSelectData } from '@/utils/hooks';
 import { getCommonSelectData } from '@/services/common';
+import rule from '../../create-engineer-form/engineer-form-rule';
 interface EditBulkEngineerProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
@@ -32,9 +32,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
 
   const [provinceValue, setProvinceValue] = useState<any[]>([]);
   const [libId, setLibId] = useState<string>('');
-  const [inventoryOverviewId, setInventoryOverviewId] = useState<string>('');
-  const [warehouseId, setWarehouseId] = useState<string>('');
-  const [company, setCompany] = useState<string>('');
+  const [inventoryOverviewId, setInventoryOverviewId] = useState<string | undefined>('');
+  const [warehouseId, setWarehouseId] = useState<string | undefined>('');
+  const [company, setCompany] = useState<string | undefined>('');
 
   const [form] = Form.useForm();
   const { engineerInfo, finishEvent } = props;
@@ -172,7 +172,8 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         value: item.text,
       };
     });
-
+    setCompany(undefined);
+    setWarehouseId(undefined);
     setAreaChange(true);
     setWarehouseSelectData(handleWarehouseSelectData);
     setCompanySelectData(handleCompanySelectData);
@@ -186,13 +187,16 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       requestSource: 'resource',
     });
 
-    const handleInventoryOverviewSelectData = inventoryOverviewSelectResData?.map((item: any) => {
-      return {
-        label: item.text,
-        value: item.value,
-      };
-    });
+    const handleInventoryOverviewSelectData = inventoryOverviewSelectResData
+      ? inventoryOverviewSelectResData?.map((item: any) => {
+          return {
+            label: item.text,
+            value: item.value,
+          };
+        })
+      : [{ label: '无', value: 'none' }];
     setLibChange(true);
+    setInventoryOverviewId(undefined);
     setInventoryOverviewSelectData(handleInventoryOverviewSelectData);
   };
 
@@ -239,12 +243,26 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         <Form form={form}>
           <div className="flex">
             <div className="flex1 flowHidden">
-              <CyFormItem label="工程名称" name="name" labelWidth={120} align="right" required>
+              <CyFormItem
+                label="工程名称"
+                name="name"
+                labelWidth={120}
+                align="right"
+                required
+                rules={rule.name}
+              >
                 <Input placeholder="请输入" />
               </CyFormItem>
             </div>
             <div className="flex1 flowHidden">
-              <CyFormItem label="区域" name="province" labelWidth={120} align="right" required>
+              <CyFormItem
+                label="区域"
+                name="province"
+                labelWidth={120}
+                align="right"
+                required
+                rules={rule.required}
+              >
                 <div>
                   <Cascader
                     style={{ width: '100%' }}
@@ -259,7 +277,14 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
           </div>
           <div className="flex">
             <div className="flex1 flowHidden">
-              <CyFormItem label="资源库" name="libId" labelWidth={120} align="right" required>
+              <CyFormItem
+                label="资源库"
+                name="libId"
+                labelWidth={120}
+                align="right"
+                required
+                rules={rule.required}
+              >
                 <div>
                   <DataSelect
                     style={{ width: '100%' }}
@@ -278,6 +303,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
+                rules={rule.required}
               >
                 <div>
                   <DataSelect
@@ -303,6 +329,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
+                rules={rule.required}
               >
                 <div>
                   <DataSelect
@@ -326,7 +353,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-                rules={Rule.required}
+                rules={rule.compiler}
               >
                 <Input placeholder="请输入" />
               </CyFormItem>
@@ -341,7 +368,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-                rules={Rule.required}
+                rules={rule.required}
               >
                 <DatePicker />
               </CyFormItem>
@@ -353,7 +380,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-                rules={Rule.required}
+                rules={rule.organization}
               >
                 <Input placeholder="请输入" />
               </CyFormItem>
@@ -367,7 +394,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-                rules={Rule.required}
+                rules={[{ required: true, message: '工程开始时间不能为空' }]}
               >
                 <DatePicker />
               </CyFormItem>
@@ -379,7 +406,23 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-                rules={Rule.required}
+                dependencies={['startTime']}
+                rules={[
+                  { required: true, message: '工程结束时间不能为空' },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (
+                        new Date(value).getTime() >
+                          new Date(getFieldValue('startTime')).getTime() ||
+                        !value ||
+                        !getFieldValue('startTime')
+                      ) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject('"工程结束时间"不得早于"工程开始时间"');
+                    },
+                  }),
+                ]}
               >
                 <DatePicker />
               </CyFormItem>
@@ -393,7 +436,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
-                // rules={Rule.required}
+                rules={rule.required}
               >
                 <div>
                   <DataSelect
@@ -414,7 +457,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 align="right"
                 initialValue={'1'}
                 required
-                rules={Rule.required}
+                rules={rule.required}
               >
                 <EnumSelect placeholder="请选择" enumList={FormImportantLevel} />
               </CyFormItem>
@@ -429,7 +472,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 align="right"
                 initialValue={new Date().getFullYear()}
                 required
-                rules={Rule.required}
+                rules={rule.required}
               >
                 <Input type="number" placeholder="请输入" />
               </CyFormItem>
@@ -442,7 +485,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                 align="right"
                 initialValue={'1'}
                 required
-                rules={Rule.required}
+                rules={rule.required}
               >
                 <EnumSelect placeholder="请选择" enumList={ProjectLevel} />
               </CyFormItem>

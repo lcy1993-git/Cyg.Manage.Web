@@ -99,6 +99,12 @@ const RolePermissions: React.FC = () => {
           : null;
       },
     },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      index: 'remark',
+      width: '30%',
+    },
   ];
 
   const updateStatus = async (record: any) => {
@@ -153,32 +159,31 @@ const RolePermissions: React.FC = () => {
     setTableSelectRow([]);
   };
 
-  const distributeEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择角色模板');
-      return;
-    }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+  // const distributeEvent = async () => {
+  //   if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+  //     message.error('请选择角色模板');
+  //     return;
+  //   }
+  //   const editData = tableSelectRows[0];
+  //   const editDataId = editData.id;
 
-    setDistributeFormVisible(true);
+  //   setDistributeFormVisible(true);
 
-    const functionData = await getModuleTreeData(editDataId);
-    console.log(functionData);
-  };
+  //   await getModuleTreeData(editDataId);
+  // };
 
-  const sureDistribute = () => {
-    apportionForm.validateFields().then(async (values) => {
-      const templateId = tableSelectRows[0].id;
-      const { moduleIds } = values;
+  // const sureDistribute = () => {
+  //   apportionForm.validateFields().then(async (values) => {
+  //     const templateId = tableSelectRows[0].id;
+  //     const { moduleIds } = values;
 
-      await updateAuthorizationModules({ templateId, moduleIds });
-      setDistributeFormVisible(false);
-      tableFresh();
-      message.success('角色功能分配成功');
-      apportionForm.resetFields();
-    });
-  };
+  //     await updateAuthorizationModules({ templateId, moduleIds });
+  //     setDistributeFormVisible(false);
+  //     tableFresh();
+  //     message.success('角色功能分配成功');
+  //     apportionForm.resetFields();
+  //   });
+  // };
 
   //授权
   const authorizationEvent = async () => {
@@ -195,7 +200,8 @@ const RolePermissions: React.FC = () => {
   };
 
   //添加
-  const addEvent = () => {
+  const addEvent = async () => {
+    await getModuleTreeData();
     setAddFormVisible(true);
   };
 
@@ -225,11 +231,11 @@ const RolePermissions: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    setEditFormVisible(true);
     const AuthorizationData = await run(editDataId);
     console.log(AuthorizationData);
 
     editForm.setFieldsValue(AuthorizationData);
+    setEditFormVisible(true);
   };
 
   const sureEditRolePermissions = () => {
@@ -286,12 +292,12 @@ const RolePermissions: React.FC = () => {
             </Button>
           </Popconfirm>
         )}
-        {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
+        {/* {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
           <Button className="mr7" onClick={() => distributeEvent()}>
             <ApartmentOutlined />
             分配功能模块
           </Button>
-        )}
+        )} */}
         {buttonJurisdictionArray?.includes('role-permissions-authorization') && (
           <Button className="mr7" onClick={() => authorizationEvent()}>
             <i className="iconfont iconshouquan" />
@@ -319,7 +325,7 @@ const RolePermissions: React.FC = () => {
       <Modal
         maskClosable={false}
         title="添加-角色"
-        width="680px"
+        width="80%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddRolePermissions()}
@@ -329,12 +335,15 @@ const RolePermissions: React.FC = () => {
       >
         <Form form={addForm} preserve={false}>
           <RolePermissionsForm />
+          <Form.Item name="moduleIds">
+            <CheckboxTreeTable treeData={MoudleTreeData} />
+          </Form.Item>
         </Form>
       </Modal>
       <Modal
         maskClosable={false}
         title="编辑-角色"
-        width="680px"
+        width="80%"
         visible={editFormVisible}
         okText="确认"
         onOk={() => sureEditRolePermissions()}
@@ -344,9 +353,12 @@ const RolePermissions: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <RolePermissionsForm />
+          <Form.Item name="moduleIds">
+            <CheckboxTreeTable treeData={data?.modules} />
+          </Form.Item>
         </Form>
       </Modal>
-      <Modal
+      {/* <Modal
         maskClosable={false}
         title="分配功能模块"
         width="80%"
@@ -357,12 +369,8 @@ const RolePermissions: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={apportionForm} preserve={false}>
-          <Form.Item name="moduleIds">
-            <CheckboxTreeTable treeData={MoudleTreeData} />
-          </Form.Item>
-        </Form>
-      </Modal>
+        <Form form={apportionForm} preserve={false}></Form>
+      </Modal> */}
       <Modal
         maskClosable={false}
         footer=""

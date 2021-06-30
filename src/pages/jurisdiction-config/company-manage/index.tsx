@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Modal, Form, message } from 'antd';
+import { Button, Modal, Form, message, Switch } from 'antd';
 import TreeTable from '@/components/tree-table/index';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
@@ -9,12 +9,14 @@ import {
   addCompanyManageItem,
   getCompanyManageDetail,
   getTreeSelectData,
+  changeCompanyStatus,
 } from '@/services/jurisdiction-config/company-manage';
 import { isArray } from 'lodash';
 import CompanyManageForm from './components/add-form';
 import EditCompanyManageForm from './components/edit-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const mapColor = {
   无: 'gray',
@@ -31,6 +33,7 @@ const CompanyManage: React.FC = () => {
   const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -74,6 +77,32 @@ const CompanyManage: React.FC = () => {
         return <>{element}</>;
       },
     },
+    // onChange={() => updateStatus(record.id)}
+    {
+      title: '状态',
+      dataIndex: 'isEnabled',
+      index: 'isEnabled',
+      width: 120,
+      render: (text: any, record: any) => {
+        const isChecked = !record.isEnabled;
+        return (
+          <>
+            {record.isEnabled === true ? (
+              <>
+                <Switch checked={!isChecked} onChange={() => changeStateEvent(record.id, isChecked)} />
+                <span className="formSwitchOpenTip">启用</span>
+              </>
+            ) : (
+              <>
+                <Switch onChange={() => changeStateEvent(record.id, isChecked)} />
+                <span className="formSwitchCloseTip">禁用</span>
+              </>
+            )}
+          </>
+        );
+      },
+    },
+
     {
       title: '详细地址',
       dataIndex: 'address',
@@ -85,6 +114,12 @@ const CompanyManage: React.FC = () => {
       index: 'remark',
     },
   ];
+
+  const changeStateEvent = async (id: string, isChecked: boolean) => {
+    await changeCompanyStatus(id, isChecked);
+    tableFresh();
+    message.success('状态修改成功');
+  };
 
   const companyManageButton = () => {
     return (
@@ -119,6 +154,7 @@ const CompanyManage: React.FC = () => {
         name: value.name,
         parentId: value.parentId,
         address: value.address,
+        isEnabled: value.isEnabled,
         userSkuQtys,
         remark: value.remark,
       };
@@ -169,16 +205,17 @@ const CompanyManage: React.FC = () => {
           name: editData.name,
           address: editData.address,
           remark: editData.remark,
+          isEnabled: editData.isEnabled,
           userSkuQtys,
         },
         value,
       );
 
       await updateCompanyManageItem(submitInfo);
-      tableFresh();
       message.success('更新成功');
       editForm.resetFields();
       setEditFormVisible(false);
+      tableFresh();
     });
   };
 

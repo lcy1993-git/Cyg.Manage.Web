@@ -1,5 +1,6 @@
-import { Modal, Form, Select, Input } from 'antd';
-import { useRequest, useMo, useMount } from 'ahooks';
+import { Modal, Form, Select, Button } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons'
+import { useRequest, useMount } from 'ahooks';
 import UrlSelect from '@/components/url-select';
 import EnumSelect from '@/components/enum-select';
 // import { useGetProjectEnum } from '@/utils/hooks';
@@ -10,6 +11,7 @@ import {
 } from '@/services/project-management/all-project';
 import { getEngineerEnum } from '@/services/project-management/all-project';
 import styles from './index.less';
+import { useEffect } from 'react';
 
 const { Item } = Form;
 const { Option } = Select;
@@ -37,7 +39,8 @@ const FilterModal: React.FC<Props> = ({
   useMount(() => run());
   const [form] = Form.useForm();
   const sureEvent = () => {
-    form.validateFields().then(async (values) => {
+    form.validateFields().then((values) => {
+
       onSure?.(values)
     })
     onChange(false);
@@ -57,13 +60,46 @@ const FilterModal: React.FC<Props> = ({
     });
   };
 
+  const onReset= () => {
+    form.setFieldsValue({
+      statuss: undefined,
+      pCategory: undefined,
+      constructType: undefined,
+      nature: undefined,
+      identityType: undefined,
+      category: undefined,
+      stage: undefined,
+      kvLevel: undefined,
+      sourceType: undefined,
+      comment: undefined,
+      haveAnnotate: -1
+    })
+  }
+
+  const footer = [
+    <Button style={{width: 68}} onClick={onReset}><ReloadOutlined />重置</Button>,
+    <Button style={{width: 68}} onClick={sureEvent}type="primary">确定</Button>,
+  ]
+  const selectStyle = {
+    maxTagPlaceholder : (e: any[]) => `已选择${e.length}项`,
+    maxTagCount: 0,
+    maxTagTextLength: 2
+  }
+
+  useEffect(() => {
+    if(defaultData) {
+      form.setFieldsValue(defaultData)
+    }
+  }, [JSON.stringify(defaultData)])
+
   return (
     <Modal
       title="条件筛选"
-      onOk={sureEvent}
       visible={visible}
       onCancel={onCancel ?? (() => onChange(false))}
+      cancelText="重置"
       width={827}
+      footer={footer}
     >
       <Form form={form}>
         <div className={styles.filterModalWrap}>
@@ -73,8 +109,7 @@ const FilterModal: React.FC<Props> = ({
               label="项目状态"
             >
               <Select
-                maxTagCount={0}
-                maxTagTextLength={2}
+                {...selectStyle}
                 mode="multiple"
                 allowClear
                 style={{ width: 200 }}
@@ -88,12 +123,13 @@ const FilterModal: React.FC<Props> = ({
               label="项目类别"
             >
               <UrlSelect
-                defaultValue={defaultData.pCategory}
+                {...selectStyle}
+            
                 allowClear
                 mode="multiple"
-                valueKey="value"
-                titleKey="text"
-                defaultData={resData.projectPType}
+                valuekey="value"
+                titlekey="text"
+                defaultData={resData.projectClassification}
                 dropdownMatchSelectWidth={168}
                 className="widthAll"
                 placeholder="项目类别"
@@ -102,13 +138,14 @@ const FilterModal: React.FC<Props> = ({
             </Item>
             <Item
               name="constructType"
-              label="建设类别"
+              label="建设类型"
             >
               <UrlSelect
+                {...selectStyle}
                 allowClear
-                defaultValue={defaultData.constructType}
-                valueKey="value"
-                titleKey="text"
+              
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectConstructType}
                 className="widthAll"
                 mode="multiple"
@@ -121,14 +158,13 @@ const FilterModal: React.FC<Props> = ({
               label="项目性质"
             >
               <UrlSelect
-                valueKey="value"
-                titleKey="text"
+                {...selectStyle}
+                valuekey="value"
+                titlekey="text"
                 allowClear
-                defaultValue={defaultData.nature}
+
                 defaultData={resData.projectNature}
                 mode="multiple"
-                maxTagCount={0}
-                maxTagTextLength={3}
                 dropdownMatchSelectWidth={168}
                 className="widthAll"
                 placeholder="项目性质"
@@ -141,12 +177,11 @@ const FilterModal: React.FC<Props> = ({
             >
               <EnumSelect
                 enumList={ProjectIdentityType}
-                defaultValue={defaultData.identityType}
+         
                 className="widthAll"
                 mode="multiple"
                 allowClear
-                maxTagCount={0}
-                maxTagTextLength={3}
+                {...selectStyle}
                 placeholder="项目身份"
                 style={{ width: 200 }}
               />
@@ -158,11 +193,12 @@ const FilterModal: React.FC<Props> = ({
               label="项目分类"
             >
               <UrlSelect
+                {...selectStyle}
                 allowClear
-                defaultValue={defaultData.category}
+     
                 mode="multiple"
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectCategory}
                 className="widthAll"
                 placeholder="项目分类"
@@ -174,11 +210,12 @@ const FilterModal: React.FC<Props> = ({
               label="项目阶段"
             >
               <UrlSelect
+                {...selectStyle}
                 allowClear
-                defaultValue={defaultData.stage}
+        
                 mode="multiple"
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectStage}
                 className="widthAll"
                 placeholder="项目阶段"
@@ -190,11 +227,12 @@ const FilterModal: React.FC<Props> = ({
               label="电压等级"
             >
               <UrlSelect
+                {...selectStyle}
                 allowClear
-                defaultValue={defaultData.kvLevel}
+       
                 mode="multiple"
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 defaultData={resData.projectKvLevel}
                 className="widthAll"
                 placeholder="电压等级"
@@ -206,23 +244,22 @@ const FilterModal: React.FC<Props> = ({
               label="项目来源"
             >
               <EnumSelect
-                defaultValue={defaultData.sourceType}
+                {...selectStyle}
+           
                 enumList={ProjectSourceType}
                 className="widthAll"
                 mode="multiple"
                 allowClear
-                maxTagCount={0}
-                maxTagTextLength={3}
                 placeholder="项目来源"
                 style={{ width: 200 }}
               />
             </Item>
             <Item
-              name="comment"
+              name="haveAnnotate"
               label="存在审阅"
             >
               <Select
-                defaultValue={defaultData.comment}
+        
                 allowClear
                 style={{ width: 200 }}
                 placeholder="存在审阅"

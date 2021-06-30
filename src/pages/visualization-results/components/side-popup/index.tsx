@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Drawer, Table, Modal, Carousel, Input, message } from 'antd';
+import { Table, Modal, Carousel, Input, message } from 'antd';
 
 import { CloseOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 
@@ -25,6 +25,7 @@ export interface Props {
   data: TableDataType[];
   rightSidebarVisible: boolean;
   setRightSidebarVisiviabel: (arg0: boolean) => void;
+  height: number;
 }
 
 const loadEnumsData = window.localStorage.getItem('loadEnumsData');
@@ -126,7 +127,6 @@ const materiaColumns = [
 
 const mediaItem = (data: any) => {
   const authorization = window.localStorage.getItem('Authorization');
-
   return data?.map((item: any, index: any) => {
     if (item.type === 1) {
       return (
@@ -191,7 +191,7 @@ export interface CommentListItemDataType {
   datetime: React.ReactNode;
 }
 const SidePopup: React.FC<Props> = observer((props) => {
-  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel } = props;
+  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props;
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
 
@@ -372,14 +372,16 @@ const SidePopup: React.FC<Props> = observer((props) => {
       title: '操作',
       dataIndex: 'id',
       key: 'id',
-      render(value: any, record: any, index: any) {
+      render(value: any, record: any, index: number) {
         return (
           <span
             key={record.id}
             className={styles.link}
             onClick={() => {
-              carouselRef.current?.goTo(index, true);
               setMediaVisiable(true);
+              setTimeout(() => {
+                carouselRef.current?.goTo(index, true);
+              }, 0)
             }}
           >
             查看
@@ -542,6 +544,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           columns={columns}
           dataSource={data[0]}
           rowClassName={styles.row}
+          scroll={{ y: height - 160 }}
           rowKey={(r) => r.propertyName}
         />
       </div> : null

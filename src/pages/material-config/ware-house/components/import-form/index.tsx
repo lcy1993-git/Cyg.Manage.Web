@@ -102,8 +102,8 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
               <UrlSelect
                 style={{ width: '342px' }}
                 url="/ElectricityCompany/GetListByAreaId"
-                titleKey="text"
-                valueKey="text"
+                titlekey="text"
+                valuekey="text"
                 placeholder="请选择供电公司"
                 extraParams={{ areaId: province }}
                 allowClear
