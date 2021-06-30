@@ -1,10 +1,6 @@
-import React, { useEffect, useMemo } from 'react';
-
+import React from 'react';
 import { Select } from 'antd';
-import { useRequest } from 'ahooks';
-import { getDataByUrl } from '@/services/common';
-
-export interface UrlSelectProps {
+export interface DisableSelectProps {
   url?: string;
   titleKey?: string;
   valueKey?: string;
@@ -20,12 +16,12 @@ export interface UrlSelectProps {
   allValue?: string;
   manual?: boolean; //是否手动执行fetch数据
   trigger?: boolean; //用来触发fetch方法
-  selectList: any[];
+  selectList: any[]; // 已经选过的选项list
 }
 
-const withUrlSelect =
+const withDisableSelect =
   <P extends {}>(WrapperComponent: React.ComponentType<P>) =>
-  (props: P & UrlSelectProps) => {
+  (props: P & DisableSelectProps) => {
     const {
       url = '',
       titleKey = 'Title',
@@ -44,43 +40,13 @@ const withUrlSelect =
       ...rest
     } = props;
 
-    // URL 有数值
-    // defaultData 没有数值
-    // 必须传的参数不为空
-    const { data: resData } = useRequest(
-      () => getDataByUrl(url, extraParams, requestSource, requestType, postType, libId),
-      {
-        ready: !!(
-          url &&
-          !defaultData &&
-          !(paramsMust.filter((item) => !extraParams[item]).length > 0)
-        ),
-        refreshDeps: [url, JSON.stringify(extraParams)],
-      },
-    );
-
-    const afterHanldeData = useMemo(() => {
+    const afterHandleData = () => {
       if (defaultData) {
         const copyData = [...defaultData];
-        if (needAll) {
-          const newObject = {};
-          newObject[titleKey] = '全部';
-          newObject[valueKey] = allValue;
-          copyData.unshift(newObject);
-        }
         return copyData.map((item: any) => {
-          return { label: item[titleKey], value: item[valueKey] };
-        });
-      }
-      if (!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0))) {
-        return [];
-      }
-      console.log(resData);
-      if (resData) {
-        return resData.map((item: any) => {
           if (selectList.length > 0) {
             selectList.map((res: any, i: number) => {
-              if (item[valueKey] === res.value) {
+              if (item[valueKey] === res) {
                 item.disabled = true;
               }
             });
@@ -90,15 +56,18 @@ const withUrlSelect =
             value: item[valueKey],
             disabled: item.disabled ? item.disabled : false,
           };
+          // return { label: item[titleKey], value: item[valueKey] };
         });
       }
-      return [];
-    }, [JSON.stringify(resData), JSON.stringify(defaultData)]);
+      if (!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0))) {
+        return [];
+      }
+    };
 
     return (
       <WrapperComponent
         showSearch={needFilter}
-        options={afterHanldeData}
+        options={afterHandleData}
         {...(rest as unknown as P)}
         filterOption={(input: string, option: any) =>
           option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -107,4 +76,4 @@ const withUrlSelect =
     );
   };
 
-export default withUrlSelect(Select);
+export default withDisableSelect(Select);

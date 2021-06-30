@@ -1,0 +1,57 @@
+.treeTableData {
+  .treeTbaleButtonsContent {
+    display: flex;
+    padding: 20px 0 20px 0px;
+    .treeTableButtonsLeftContent {
+      flex: 1;
+    }
+    .treeTableButtonsRightContent {
+      display: flex;
+      .treeTableButtonCommon {
+        .foldButton {
+          margin-right: 7px;
+        }
+      }
+    }
+  }
+  .treeTableContent {
+    :global {
+      .ant-table {
+        .ant-table-container {
+          border-color: @table-line-color !important;
+          .ant-table-content {
+            td,
+            th {
+              border-color: @table-line-color !important;
+            }
+            thead {
+              th {
+                padding: 12px 4px 12px 10px;
+                color: @black-color;
+                font-weight: 500;
+                font-size: 13px;
+                line-height: 1;
+                background-color: @table-thead-color;
+              }
+            }
+            tbody {
+              td {
+                padding: 7px 4px 10px 7px;
+                color: @gray-color;
+                font-size: 13px;
+              }
+            }
+            .ant-table-row-selected {
+              td {
+                background-color: @table-select-color !important;
+              }
+            }
+          }
+        }
+      }
+      .ant-radio-inner {
+        border-radius: 0 !important;
+      }
+    }
+  }
+}
