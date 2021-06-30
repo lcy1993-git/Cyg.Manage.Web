@@ -49,6 +49,7 @@ const InfoManage: React.FC = () => {
   // 富文本框内容
   const [content, setContent] = useState<string>('');
   const [editContent, setEditContent] = useState<string>('');
+  const [addPersonArray, setAddPersonArray] = useState([]);
   // const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const editFormRef = useRef<HTMLDivElement>(null);
@@ -230,16 +231,19 @@ const InfoManage: React.FC = () => {
 
   const sureAddNews = () => {
     addForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          title: '',
-          content: content,
-          isEnable: true,
-          clientCategorys: '',
-          userIds: '',
-        },
-        values,
-      );
+      const { userIds } = values;
+
+      const finallyUserIds = addPersonArray
+        .filter((item) => userIds?.includes(item.value))
+        .map((item) => item.chooseValue);
+      const submitInfo = {
+        title: '',
+        content: content,
+        isEnable: true,
+        clientCategorys: '',
+        ...values,
+        userIds: finallyUserIds,
+      };
 
       await addNewsItem(submitInfo);
       refresh();
@@ -280,6 +284,12 @@ const InfoManage: React.FC = () => {
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
+      console.log(addPersonArray);
+      console.log(values);
+      const { userIds } = values;
+      const finallyUserIds = addPersonArray
+        .filter((item) => userIds?.includes(item.value))
+        .map((item) => item.chooseValue);
       const submitInfo = Object.assign(
         {
           id: editData.id,
@@ -367,11 +377,19 @@ const InfoManage: React.FC = () => {
           visible={addFormVisible}
           okText="保存"
           onOk={() => sureAddNews()}
-          onCancel={() => setAddFormVisible(false)}
+          onCancel={() => {
+            setAddFormVisible(false);
+            addForm.resetFields();
+          }}
           cancelText="取消"
           destroyOnClose
         >
-          <TextEditor onChange={setContent} titleForm={addForm} type="add" />
+          <TextEditor
+            getPersonArray={(array) => setAddPersonArray(array)}
+            onChange={setContent}
+            titleForm={addForm}
+            type="add"
+          />
         </Modal>
       )}
 
