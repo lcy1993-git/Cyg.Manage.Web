@@ -1,256 +1,188 @@
-import React, { useState } from 'react';
-import { history } from 'umi';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { isArray } from 'lodash';
-
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-// import DictionaryForm from './components/add-edit-form';
-import {
-  createQuotaLibrary,
-  CreateQuotaLibrary,
-  deleteQuotaLibrary,
-  setQuotaLibraryStatus
-} from '@/services/technology-economic';
-
+import React, { useEffect, useMemo, useState } from 'react';
+import { Tabs, Button, Modal, Form, Pagination } from 'antd';
 import styles from './index.less';
-
-const { Search } = Input;
-
+import CommonTitle from '@/components/common-title';
+import Construction from './construction';
+import { FileSearchOutlined } from '@ant-design/icons';
+import ImportDirectory from './components/import-directory';
+import qs from 'qs';
+import { getEnums } from '../utils';
+import {
+  getEngineeringTemplateTreeData,
+  importProject,
+} from '@/services/technology-economic/project-list';
+const { TabPane } = Tabs;
 type DataSource = {
   id: string;
   [key: string]: string;
-}
-
-const columns = [
-  {
-    dataIndex: 'name',
-    key: 'name',
-    title: '名称',
-    width: 300,
-  },
-  {
-    dataIndex: 'materialMachineLibraryName',
-    key: 'materialMachineLibraryName',
-    title: '使用材机库',
-    width: 160,
-  },
-  {
-    dataIndex: 'quotaScopeText',
-    key: 'quotaScopeText',
-    title: '定额类别',
-    width: 160
-  },
-  {
-    dataIndex: 'publishDate',
-    key: 'publishDate',
-    title: '发布时间',
-    width: 130
-  },
-  {
-    dataIndex: 'publishOrg',
-    key: 'publishOrg',
-    title: '发布机构',
-    width: 150
-  },
-  {
-    dataIndex: 'year',
-    key: 'year',
-    title: '价格年度',
-    width: 100
-  },
-  {
-    dataIndex: 'industryTypeText',
-    key: 'industryTypeText',
-    title: '行业类别',
-    width: 150
-  },
-  {
-    dataIndex: 'majorTypeText',
-    key: 'majorTypeText',
-    title: '适用专业',
-    width: 150
-  },
-  {
-    dataIndex: 'enabled',
-    key: 'enabled',
-    title: '状态',
-    width: 70,
-    render(value: boolean, record: DataSource) {
-      return (
-        <Switch
-          defaultChecked={value}
-          onClick={(checked) => {
-            setQuotaLibraryStatus(record.id, checked);
-          }}
-        />
-      );
-    }
-  },
-  {
-    dataIndex: 'remark',
-    index: 'remark',
-    title: '备注',
-    width: 220
-  },
-];
-
+};
+type Data = {
+  pageIndex: number;
+  total: number;
+  items: any;
+  pageSize: number;
+};
 const ProjectList: React.FC = () => {
+  const [importFormVisible, setImportFormVisible] = useState(false);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [engineeringTemplateId, setEngineeringTemplateId] = useState<string>(
+    (qs.parse(window.location.href.split('?')[1]).id as string) || '',
+  );
+  const ProjectTypeList = getEnums('ProjectType');
+  const [dataSource, setDataSource] = useState<DataSource[] | Object>([]);
+  const [data, setData] = useState<Data>();
+  const tableResultData = useMemo(() => {
+    if (data) {
+      const { items, pageIndex, pageSize, total } = data;
+      return {
+        items: items ?? [],
+        pageIndex,
+        pageSize,
+        total,
+        dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
+        dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
+      };
+    }
+    return {
+      items: [],
+      pageIndex: 1,
+      pageSize: 20,
+      total: 0,
+      dataStartIndex: 0,
+      dataEndIndex: 0,
+    };
+  }, [JSON.stringify(data)]);
+  const [projectType, setProjectType] = useState<number>(
+    ProjectTypeList.length ? ProjectTypeList[0].value : 1,
+  );
+  const [importForm] = Form.useForm();
+  // 切换tab
+  const callback = (key: any) => {
+    setProjectType(key as number);
+    console.log(key);
 
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
-  const [addForm] = Form.useForm();
-
-  const searchComponent = () => {
-    return (
-      <TableSearch label="关键词" width="203px">
-        <Search
-          value={searchKeyWord}
-          onChange={(e) => setSearchKeyWord(e.target.value)}
-          onSearch={() => tableSearchEvent()}
-          enterButton
-          placeholder="键名"
-        />
-      </TableSearch>
-    );
+    getList(key);
   };
-
-  const tableSearchEvent = () => {
-    search();
-  };
-
-  // 列表刷新
+  useEffect(() => {
+    getList(projectType);
+  }, []);
   const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh();
-    }
+    getList(projectType);
+  };
+  // 获取树状列表
+  const getList = async (projectType: number) => {
+    const value: DataSource[] = await getEngineeringTemplateTreeData(
+      engineeringTemplateId,
+      projectType,
+    );
+    console.log(value);
+
+    // TODO
+    // const { items, pageIndex, pageSize, total } = data;
+    const list = [];
+    list.push(value);
+    value ? setDataSource(list) : setDataSource([]);
   };
 
-  // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search();
-    }
-  };
+  // // 列显示处理
+  // const currentPageChange = (page: any, size: any) => {
+  //   // 判断当前page是否改变, 没有改变代表是change页面触发
+  //   if (pageSize === size) {
+  //     setCurrentPage(page === 0 ? 1 : page);
+  //   }
+  // };
 
-  //添加
-  const addEvent = () => {
-    setAddFormVisible(true);
-  };
+  // const pageSizeChange = (page: any, size: any) => {
+  //   setCurrentPage(1);
+  //   setPageSize(size);
+  // };
 
-  const sureAddAuthorization = () => {
-    addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
-      await createQuotaLibrary(values);
+  // 确认按钮
+  const sureImportAuthorization = () => {
+    importForm.validateFields().then(async (values: any) => {
+      // TODO 上传接口
+      let value = values;
+      value.engineeringTemplateId = engineeringTemplateId;
+      await importProject(value);
       refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
+      setImportFormVisible(false);
     });
   };
 
-  const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
-    }
-    const id = tableSelectRows[0].id;
-    await deleteQuotaLibrary(id);
-    refresh();
-    message.success('删除成功');
-  };
-
-  const gotoMoreInfo = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
-      return;
-    }
-    const id = tableSelectRows[0].id;
-    history.push(`/technology-economic/quota-infomation?id=${id}`)
-  };
-
-  const tableElement = () => {
-    return (
-      <div className={styles.buttonArea}>
-        {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
-          <Button type="primary" className="mr7" onClick={() => addEvent()}>
-            <PlusOutlined />
-            添加
-          </Button>
-        }
-        {
-          !buttonJurisdictionArray?.includes('quotaLib-del') &&
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
-        }
-        {
-          !buttonJurisdictionArray?.includes('quotaLib-info') &&
-          <Button className="mr7" onClick={() => gotoMoreInfo()}>
-            <EyeOutlined />
-            查看详情
-          </Button>
-        }
-
-      </div>
-    );
-  };
-
-  const tableSelectEvent = (data: DataSource[] | object) => {
-    setTableSelectRow(data);
-  };
-
   return (
-    <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
-        needCommonButton={true}
-        columns={columns as (ColumnsType<object>)}
-        url="/QuotaLibrary/QueryQuotaLibraryPager"
-        tableTitle="定额库管理"
-        getSelectData={tableSelectEvent}
-        requestSource='tecEco'
-        type="radio"
-        extractParams={{
-          keyWord: searchKeyWord,
-        }}
-      />
-      <Modal
-        maskClosable={false}
-        title="添加-定额库"
-        width="880px"
-        visible={addFormVisible}
-        okText="确认"
-        onOk={() => sureAddAuthorization()}
-        onCancel={() => setAddFormVisible(false)}
-        cancelText="取消"
-        destroyOnClose
-      >
-        <Form form={addForm} preserve={false}>
-          {/* <DictionaryForm type='add' /> */}
-        </Form>
-      </Modal>
-    </PageCommonWrap>
+    <div className={styles.resourceManage}>
+      <div className={styles.moduleTitle}>
+        <CommonTitle>定额计价（安装乙供设备计入设备购置费）-工程量目录</CommonTitle>
+        <Button
+          className="mr7"
+          type="primary"
+          onClick={() => {
+            setImportFormVisible(true);
+          }}
+        >
+          <FileSearchOutlined />
+          导入目录
+        </Button>
+      </div>
+
+      <div className={styles.moduleTabs}>
+        <Tabs onChange={callback} type="card">
+          {ProjectTypeList.map((item: any, index: number) => {
+            return (
+              <TabPane tab={item.text} key={item.value}>
+                <div className={styles.pannelTable}>
+                  <Construction
+                    // engineeringTemplateId={engineeringTemplateId}
+                    // projectType={item.value}
+                    dataSource={dataSource}
+                  />
+                </div>
+              </TabPane>
+            );
+          })}
+        </Tabs>
+        <Modal
+          maskClosable={false}
+          title="导入目录"
+          width="880px"
+          visible={importFormVisible}
+          okText="确认"
+          onOk={() => sureImportAuthorization()}
+          onCancel={() => setImportFormVisible(false)}
+          cancelText="取消"
+          destroyOnClose
+        >
+          <Form form={importForm} preserve={false}>
+            <ImportDirectory />
+          </Form>
+        </Modal>
+        {/* <div className={styles.cyGeneralTablePaging}>
+          <div className={styles.cyGeneralTablePagingLeft}>
+            <span>显示第</span>
+            <span className={styles.importantTip}>{dataSource.dataStartIndex}</span>
+            <span>到第</span>
+            <span className={styles.importantTip}>{dataSource.dataEndIndex}</span>
+            <span>条记录,总共</span>
+            <span className={styles.importantTip}>{dataSource.total}</span>
+            <span>条记录</span>
+          </div>
+          <div className={styles.cyGeneralTablePagingRight}>
+            <Pagination
+              pageSize={pageSize}
+              onChange={currentPageChange}
+              size="small"
+              total={tableResultData.total}
+              current={currentPage}
+              // hideOnSinglePage={true}
+              showSizeChanger
+              showQuickJumper
+              onShowSizeChange={pageSizeChange}
+            />
+          </div>
+        </div> */}
+      </div>
+    </div>
   );
 };
 

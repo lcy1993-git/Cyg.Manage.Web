@@ -4,7 +4,7 @@ import { withEnum } from '../enum-select';
 
 interface Props {
   value?: string;
-  onChange?: (arg0: string)=>void;
+  onChange?: (arg0: string) => void;
 }
 
 /**
@@ -12,16 +12,21 @@ interface Props {
  * @param  null, API同DatePicker
  * @returns JSX.Element
  */
-const DatePickerForm: React.FC<Props & DatePickerProps> = ({value, onChange, picker, ...rest}) => {
+const DatePickerForm: React.FC<Props & DatePickerProps> = ({
+  value,
+  onChange,
+  picker,
+  ...rest
+}) => {
   const momentValue = moment(value);
-  const format = picker === 'year' ? "YYYY" : "YYYY-MM-DD";
+  const format = picker === 'year' ? 'YYYY' : 'YYYY-MM-DD';
   const handleDate = (v: Moment | null, m: string) => {
-    console.log(window.a = moment(m));
-    
-    onChange!(moment(m).format(format))
+    console.log((window.a = moment(m)));
+
+    onChange!(moment(m).format(format));
   };
 
-  return <DatePicker  onChange={handleDate} picker={picker} {...rest}/>
-}
+  return <DatePicker onChange={handleDate} picker={picker} {...rest} />;
+};
 
 export default DatePickerForm;

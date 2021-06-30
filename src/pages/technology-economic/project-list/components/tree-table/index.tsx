@@ -7,8 +7,9 @@ import { treeTableCommonRequeset } from '@/services/table';
 import { MinusSquareOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { TableProps } from 'antd/lib/table';
 import { flatten } from '@/utils/utils';
-import CommonTitle from '../common-title';
+import CommonTitle from '@/components/common-title';
 import EmptyTip from '@/components/empty-tip';
+import { useEffect } from 'react';
 
 type TreeTableSelectType = 'radio' | 'checkbox';
 
@@ -67,7 +68,9 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
       run();
     },
   }));
-
+  useEffect(() => {
+    allOpenEvent();
+  }, []);
   const expandEvent = (expanded: boolean, record: T) => {
     //@ts-ignore
     const { id } = record;
@@ -82,8 +85,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   };
   // 全部展开
   const allOpenEvent = () => {
-    const flattenData = flatten(finalyDataSource)
-      .filter((item: any) => item.children && item.children.length > 0)
+    const flattenData = flatten(finalyDataSource, 'childs')
+      .filter((item: any) => item.childs && item.childs.length > 0)
       .map((item: any) => item.id);
     setExpandedRowKeys(flattenData);
   };
@@ -122,10 +125,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
               expandedRowKeys: expandedRowKeys,
               expandIcon: ({ expanded, onExpand, record }) => {
                 //@ts-ignore 因为传入T是有children 的，但是目前还没有想到解决办法
-
-                const { children } = record;
-                console.log(record);
-                if (!children || children.length === 0) {
+                const { childs } = record;
+                if (!childs || childs.length === 0) {
                   return <span style={{ marginRight: '6px' }}></span>;
                 }
                 return expanded ? (
@@ -144,9 +145,12 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
               },
               onExpand: expandEvent,
             }}
+            childrenColumnName={'childs'}
             locale={{
               emptyText: <EmptyTip />,
             }}
+            expandIconColumnIndex={1}
+            defaultExpandAllRows={true}
             size="small"
             rowKey="id"
             bordered={true}

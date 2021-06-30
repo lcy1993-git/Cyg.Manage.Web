@@ -3,32 +3,38 @@ import { useMount, useRequest } from 'ahooks';
 import { Button, Modal } from 'antd';
 import WrapperComponent from '@/components/page-common-wrap';
 import CommonTitle from '@/components/common-title';
+import { getRateTypeList } from '@/services/technology-economic/common-rate'
 import ConstomTable from './components/constom-table';
 import qs from 'qs';
 import styles from './index.less';
 
+interface ListData {
+  value: string;
+  text: string;
+}
+
 const CommonRateInfomation: React.FC = () => {
+  const [activeValue, setActiveValue] = useState<string>("");
 
-  const [id] = useState<string>(qs.parse(window.location.href.split("?")[1]).id as string || "")
-  const [activeState, setActiveSate] = useState<string>("");
-  const listData = [
-    {text: "1111111111"},
-    {text: "222222222222"},
-    {text: "3333333333"},
-    {text: "44444444444"},
-    {text: "555555555555"},
-  ]
+  const { data: listData = [], run: listDataRun } = useRequest<ListData[]>(getRateTypeList,
+    {
+      manual: true,
+      onSuccess: (res) => {
+        setActiveValue(res[0].value)
+      }
+    }
+  )
 
-  const onListItemClick = (index: any) => {
-    setActiveSate(index)
-  }
+  useMount(() => {
+    listDataRun()
+  })
 
   const listDataElement = listData.map((item, index) => {
     return (
     <div
-      className={`${styles.listElementItem} ${index + "" === activeState ? styles.listActive : ""}`}
-      key={item.text}
-      onClick={()=> onListItemClick(index)}
+      className={`${styles.listElementItem} ${item.value === activeValue ? styles.listActive : ""}`}
+      key={item.value}
+      onClick={()=> setActiveValue(item.value)}
     >
       {item.text}
     </div> 
@@ -58,7 +64,7 @@ const CommonRateInfomation: React.FC = () => {
           </div>
           <div className={styles.containerRight}>
             <div className={styles.body}>
-              <ConstomTable headTitle="test" type={activeState} />
+              {/* <ConstomTable headTitle="test" type={activeValue} /> */}
               </div>
             </div>
           </div>

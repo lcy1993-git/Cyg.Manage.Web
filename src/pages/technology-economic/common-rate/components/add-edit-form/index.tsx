@@ -4,6 +4,7 @@ import UrlSelect from '@/components/url-select';
 import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
+import { getEnums} from '../../../utils';
 
 const DictionaryForm: React.FC<{ type?: string }> = ({type}) => {
   return (
@@ -14,15 +15,17 @@ const DictionaryForm: React.FC<{ type?: string }> = ({type}) => {
             <Input placeholder="请输入名称" />
           </CyFormItem>
           <CyFormItem label="费率类型" name="rateTableType" required>
-            <Input />
+            <UrlSelect
+              defaultData={getEnums('RateTableType')}
+            />
           </CyFormItem>
           <CyFormItem label="适用专业" name="majorType">
             <UrlSelect
               url="/CommonEnum/GetMajorTypeEnums"
               requestType="get"
               requestSource="tecEco"
-              titleKey="text"
-              valueKey="value"
+              // titleKey="text"
+              // valueKey="value"
             />
           </CyFormItem>
           {/* <CyFormItem label="关联模板" name="industryType" required>
@@ -48,8 +51,8 @@ const DictionaryForm: React.FC<{ type?: string }> = ({type}) => {
               url="/CommonEnum/GetIndustryTypeEnums"
               requestType="get"
               requestSource="tecEco"
-              titleKey="text"
-              valueKey="value"
+              // titleKey="text"
+              // valueKey="value"
             />
           </CyFormItem>
           <CyFormItem label="发布时间" name="publishDate">

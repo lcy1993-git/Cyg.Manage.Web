@@ -1,38 +1,50 @@
 import React, { useEffect } from 'react';
 import { Input, Col, Row, Select } from 'antd';
-import UrlSelect from '../url-select';
+import DisableSelect from '../disable-select';
 import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
+import { getEnums } from '@/pages/technology-economic/utils';
+const { Option } = Select;
+const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
 interface IForm {
   type?: 'add' | 'edit';
-  selectList?: any[];
+  selectList?: number[];
 }
-
 const DictionaryForm: React.FC<IForm> = (props) => {
-  const { type, selectList = [{ value: 1 }] } = props;
+  const { type, selectList } = props;
+  console.log(selectList);
+
   useEffect(() => {}, []);
   return (
     <>
       <Row>
         <Col span={11}>
-          <CyFormItem label="编号" name="name" required>
+          <CyFormItem label="编号" name="no" required>
             <Input placeholder="请输入编号" />
           </CyFormItem>
           <CyFormItem label="版本" name="version">
             <Input />
           </CyFormItem>
-          <CyFormItem label="模板类型" name="templateType">
+          <CyFormItem label="模板类型" name="engineeringTemplateType">
             {type === 'edit' ? (
-              <Select disabled />
+              <Select disabled>
+                {engineeringTemplateTypeList.map((item: any, index: number) => {
+                  return (
+                    <Option value={item.value} key={index}>
+                      {item.text}
+                    </Option>
+                  );
+                })}
+              </Select>
             ) : (
-              <UrlSelect
-                url="/CommonEnum/GetMajorTypeEnums"
+              <DisableSelect
                 requestType="get"
                 requestSource="tecEco"
+                defaultData={getEnums('EngineeringTemplateType')}
                 titleKey="text"
                 valueKey="value"
-                selectList={selectList}
+                selectList={selectList!}
               />
             )}
           </CyFormItem>
