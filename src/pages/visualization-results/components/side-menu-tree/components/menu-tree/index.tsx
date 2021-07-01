@@ -4,7 +4,6 @@ import { useSize } from 'ahooks';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-const { TreeNode } = Tree;
 interface TreeDataProps {
   onExpand: any;
   onCheck: (checked: any, info: any) => void;
