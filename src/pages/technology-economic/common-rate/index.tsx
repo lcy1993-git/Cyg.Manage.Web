@@ -160,7 +160,7 @@ const ProjectList: React.FC = () => {
 
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values: AddRateTable) => {
-      await addRateTable({...values, number: "123456"});
+      await addRateTable({...values});
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -263,7 +263,7 @@ const ProjectList: React.FC = () => {
           buttonRightContentSlot={tableElement}
           needCommonButton={true}
           columns={columns as (ColumnsType<object>)}
-          url="/RateTable/QueryRatePager"
+          url="/RateTable/QueryRateTablePager"
           // url="/QuotaLibrary/QueryQuotaLibraryPager"
           tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
           getSelectData={tableSelectEvent}

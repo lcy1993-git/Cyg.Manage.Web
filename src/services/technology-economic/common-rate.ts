@@ -75,7 +75,7 @@ export const getWinterConstructionRate= (rateId: string) => {
   );
 }
 // 获取设计费费率详情
-export const GetDesignRate= (rateId: string) => {
+export const getDesignRate= (rateId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/RateTable/GetDesignRate`, { method: 'GET', params: { rateId } }),
   );

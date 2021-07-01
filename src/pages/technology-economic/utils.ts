@@ -44,3 +44,10 @@ export const getEnums  = (name: string, isChineseName?: boolean) => {
   }
   return;
 }
+
+export const getTypeByText = (text: string) => {
+  return Object(
+      Object(getEnums('RateTableType'))
+      ?.find((item: EnumsType) => item.text === text)
+    )?.value
+}
