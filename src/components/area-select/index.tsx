@@ -19,6 +19,11 @@ interface ValueType {
     provinceId?: string
     cityId?: string
     areaId?: string
+    cityData?: any
+    areaData?: any
+    provinceInfo?: any
+    cityInfo?: any
+    areaInfo?: any
 }
 
 interface AreaSelectProps {
@@ -81,7 +86,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
         setCitySelectData([{label: "-全部-", value: "", children: []},...newCityData])
         setCityInfo(undefined)
         setAreaInfo(undefined)
-        onChange?.({ provinceId: option.value, cityId: "", areaId: "" })
+        onChange?.({ provinceId: option.value, cityId: "", areaId: "", cityData: [], areaData: [], provinceInfo: option, cityInfo, areaInfo})
     }
     // 市级变化事件
     const cityChangeEvent = (value: string, option: any) => {
@@ -95,12 +100,12 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
         })
         setAreaSelectData([{label: "-全部-", value: "", children: []},...newAreaData])
         setAreaInfo(undefined)
-        onChange?.({ provinceId: provinceInfo?.value, cityId: option.value, areaId: "" })
+        onChange?.({ provinceId: provinceInfo?.value, cityId: option.value, areaId: "" , cityData: citySelectData, areaData: [], provinceInfo, cityInfo: option, areaInfo})
     }
     // 地区变化事件
     const areaChangeEvent = (value: string, option: any) => {
         setAreaInfo(option)
-        onChange?.({ provinceId: provinceInfo?.value, cityId: areaInfo?.value, areaId: option.value })
+        onChange?.({ provinceId: provinceInfo?.value, cityId: areaInfo?.value, areaId: option.value,cityData: citySelectData, areaData: areaSelectData,provinceInfo, cityInfo, areaInfo: option})
     }
 
     const hasSelectTipInfo = useMemo(() => {
@@ -117,6 +122,15 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
             setAreaSelectData([]);
             setAreaInfo(undefined)
         },
+        initComponentData: (params: any) => {
+            if(params) {
+                setProvinceInfo(params.provinceInfo);
+                setCitySelectData(params.cityData);
+                setCityInfo(params.cityInfo);
+                setAreaSelectData(params.areaData);
+                setAreaInfo(params.areaInfo)
+            }
+        }
     }));
 
     return (

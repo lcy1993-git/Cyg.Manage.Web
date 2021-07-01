@@ -67,8 +67,8 @@ const Component: React.FC<libParams> = (props) => {
             showSearch
             requestSource="resource"
             url="/Component/GetDeviceCategory"
-            titleKey="key"
-            valueKey="value"
+            titlekey="key"
+            valuekey="value"
             placeholder="请选择"
             onChange={(value: any) => searchByCategory(value)}
           />
@@ -378,7 +378,7 @@ const Component: React.FC<libParams> = (props) => {
 
   return (
     // <PageCommonWrap>
-    <>
+    <div className={styles.component}>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -481,7 +481,7 @@ const Component: React.FC<libParams> = (props) => {
         onChange={setImportComponentVisible}
       />
       {/* </PageCommonWrap> */}
-    </>
+    </div>
   );
 };
 

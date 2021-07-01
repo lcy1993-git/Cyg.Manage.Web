@@ -91,8 +91,8 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
       </Select>
       <UrlSelect
         defaultData={nameReponseData}
-        valueKey={key}
-        titleKey={speckey}
+        valuekey={key}
+        titlekey={speckey}
         allowClear
         value={id}
         placeholder={`${placeholder}型号`}

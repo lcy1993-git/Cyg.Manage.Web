@@ -46,8 +46,8 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         <CyFormItem label="文件类别" name="fileCategory" required rules={rules.fileCategory}>
           <UrlSelect
             onChange={(value: any) => setCategoryValue(value)}
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             url="/CompanyFile/GetCategorys"
             placeholder="请选择文件类别"
           />

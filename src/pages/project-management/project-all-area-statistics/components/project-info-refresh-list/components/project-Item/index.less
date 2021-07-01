@@ -5,9 +5,19 @@
   font-weight: 500;
   font-size: 12px;
   .content {
-    width: 300px;
+    width: 100px;
     margin-left: 8px;
     color: #505050;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
+    text-overflow: ellipsis;
+  }
+  .operationCategory {
+    width: 100px;
+    margin-left: 8px;
+    color: #505050;
+    overflow: hidden;
     white-space: nowrap;
     text-align: left;
     text-overflow: ellipsis;
@@ -18,17 +28,17 @@
     margin-right: 8px;
     margin-left: 13px;
     overflow: hidden;
-    color: #505050;
     white-space: nowrap;
     text-align: left;
     text-overflow: ellipsis;
+    color: @primary-color;
     .projectName:hover {
-      color: #2bb167;
+      color: @primary-color;
     }
   }
 
   .date {
-    width: 87px;
+    width: 120px;
 
     color: #8c8c8c;
   }

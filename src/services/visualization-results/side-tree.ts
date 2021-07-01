@@ -17,7 +17,7 @@ export interface EngineerProjetListFilterParams {
  * 获得的projectList的类型
  */
 export interface Properties {
-  deadline: Date;
+  endTime: Date;
   engineerId: string;
   isExecutor: boolean;
   status: number;

@@ -72,7 +72,12 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
       onCancel={() => modalCloseEvent()}
     >
       <Form form={form} preserve={false}>
-        <CreateProjectForm companyName={companyName} areaId={areaId} company={company} />
+        <CreateProjectForm
+          companyName={companyName}
+          areaId={areaId}
+          company={company}
+          form={form}
+        />
       </Form>
     </Modal>
   );

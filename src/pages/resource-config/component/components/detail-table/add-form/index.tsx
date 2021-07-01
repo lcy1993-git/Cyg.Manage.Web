@@ -23,8 +23,8 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
           <UrlSelect
             requestSource="resource"
             url="/Component/GetList"
-            valueKey="componentId"
-            titleKey="componentName"
+            valuekey="componentId"
+            titlekey="componentName"
             allowClear
             requestType="post"
             postType="query"

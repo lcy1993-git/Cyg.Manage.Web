@@ -42,8 +42,8 @@ const SourceCompare: React.FC = () => {
             showSearch
             requestSource="resource"
             url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
+            titlekey="libName"
+            valuekey="id"
             placeholder="请选择"
             onChange={(value: any) => setdb1(value)}
           />
@@ -54,8 +54,8 @@ const SourceCompare: React.FC = () => {
             showSearch
             requestSource="resource"
             url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
+            titlekey="libName"
+            valuekey="id"
             placeholder="请选择"
             onChange={(value: any) => setdb2(value)}
           />

@@ -3,6 +3,7 @@ import { Input, InputNumber, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import { TreeDataItem } from '@/services/jurisdiction-config/company-manage';
 import ClickInputNumber from '@/components/clickInput-number';
+import FormSwitch from '@/components/form-switch';
 
 import rules from '../../rule';
 
@@ -18,7 +19,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
     return {
       title: data.text,
       value: data.id,
-      children: data.children.map(mapTreeData),
+      children: data.children?.map(mapTreeData),
     };
   };
 
@@ -118,6 +119,9 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
 
       <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
         <Input placeholder="请输入备注信息" />
+      </CyFormItem>
+      <CyFormItem label="状态" name="isEnabled" labelWidth={100} initialValue={true} align="right">
+        <FormSwitch />
       </CyFormItem>
     </>
   );
