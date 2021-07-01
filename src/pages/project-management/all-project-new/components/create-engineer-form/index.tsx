@@ -280,8 +280,10 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
               () => ({
                 validator(_, value) {
                   if (
-                    moment(new Date(value).getTime()).isBefore(moment(minStart)) ||
-                    moment(new Date(value).getTime()).isSame(moment(minStart))
+                    minStart
+                      ? moment(new Date(value).getTime()).isBefore(moment(minStart)) ||
+                        moment(new Date(value).getTime()).isSame(moment(minStart))
+                      : true
                   ) {
                     return Promise.resolve();
                   }
@@ -311,8 +313,10 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
                     !getFieldValue('startTime')
                   ) {
                     if (
-                      moment(new Date(value).getTime()).isAfter(moment(maxEnd)) ||
-                      moment(new Date(value).getTime()).isSame(moment(maxEnd))
+                      maxEnd
+                        ? moment(new Date(value).getTime()).isAfter(moment(maxEnd)) ||
+                          moment(new Date(value).getTime()).isSame(moment(maxEnd))
+                        : true
                     ) {
                       return Promise.resolve();
                     }
