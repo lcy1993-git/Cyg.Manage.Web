@@ -33,10 +33,10 @@ const geoServerPortObject = {
   '171.223.214.154:21583': '21581',
 };
 
-const ipArray = ['47.108.63.23', '39.99.251.67'];
+const ipArray = [];
 
 const thisHost = `${window.location.hostname}:${window.location.port}`;
-const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21571';
+const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21523';
 
 const geoServerBaseUrl =
   window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
