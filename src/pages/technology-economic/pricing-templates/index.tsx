@@ -28,6 +28,7 @@ import styles from './index.less';
 import { useEffect } from 'react';
 import moment from 'moment';
 import { getEnums } from '../utils';
+import ImageIcon from '@/components/image-icon';
 interface ResponseData {
   items?: {
     id?: string;
@@ -208,8 +209,12 @@ const PricingTemplates: React.FC = () => {
         )}
         {!buttonJurisdictionArray?.includes('quotaLib-info') && (
           <Button className="mr7" onClick={() => editEvent()}>
-            <EditOutlined />
-            编辑
+            {/* <EditOutlined />
+            编辑 */}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <ImageIcon width={16} height={16} imgUrl="edit.png" />
+              <div style={{ marginLeft: '5px' }}>编辑</div>
+            </div>
           </Button>
         )}
         {!buttonJurisdictionArray?.includes('quotaLib-del') && (
@@ -220,26 +225,39 @@ const PricingTemplates: React.FC = () => {
             cancelText="取消"
           >
             <Button className="mr7">
-              <DeleteOutlined />
-              删除
+              {/* <DeleteOutlined />
+              删除 */}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <ImageIcon width={16} height={16} imgUrl="delete.png" />
+                <div style={{ marginLeft: '5px' }}>删除</div>
+              </div>
             </Button>
           </Popconfirm>
         )}
         <Button className="mr7" onClick={() => engineeringCatalog()}>
-          <FileSearchOutlined />
-          工程量目录
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="billOfQuantities.png" />
+            <div style={{ marginLeft: '5px' }}>工程量目录</div>
+          </div>
         </Button>
         <Button className="mr7" onClick={() => commonRates()}>
-          <FileSearchOutlined />
-          常用费率
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="woodMachineTemplate.png" />
+            <div style={{ marginLeft: '5px' }}>常用费率</div>
+          </div>
         </Button>
         <Button className="mr7" onClick={() => editEvent()}>
-          <FileSearchOutlined />
-          费用模板
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="feeTemplate.png" />
+            <div style={{ marginLeft: '5px' }}>费用模板</div>
+          </div>
         </Button>
         <Button className="mr7" onClick={() => editEvent()}>
-          <FileSearchOutlined />
-          报表模板
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="reportTemplate.png" />
+
+            <div style={{ marginLeft: '5px' }}>报表模板</div>
+          </div>
         </Button>
       </div>
     );

@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Tabs, Button, Modal, Form, Pagination } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Tabs, Button, Modal, Form, message } from 'antd';
 import styles from './index.less';
 import CommonTitle from '@/components/common-title';
 import Construction from './construction';
@@ -16,57 +16,25 @@ type DataSource = {
   id: string;
   [key: string]: string;
 };
-type Data = {
-  pageIndex: number;
-  total: number;
-  items: any;
-  pageSize: number;
-};
 const ProjectList: React.FC = () => {
   const [importFormVisible, setImportFormVisible] = useState(false);
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [engineeringTemplateId, setEngineeringTemplateId] = useState<string>(
-    (qs.parse(window.location.href.split('?')[1]).id as string) || '',
-  );
-  const ProjectTypeList = getEnums('ProjectType');
+  const engineeringTemplateId = (qs.parse(window.location.href.split('?')[1]).id as string) || '';
+  const ProjectTypeList = getEnums('ProjectType')!;
   const [dataSource, setDataSource] = useState<DataSource[] | Object>([]);
-  const [data, setData] = useState<Data>();
-  const tableResultData = useMemo(() => {
-    if (data) {
-      const { items, pageIndex, pageSize, total } = data;
-      return {
-        items: items ?? [],
-        pageIndex,
-        pageSize,
-        total,
-        dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
-        dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
-      };
-    }
-    return {
-      items: [],
-      pageIndex: 1,
-      pageSize: 20,
-      total: 0,
-      dataStartIndex: 0,
-      dataEndIndex: 0,
-    };
-  }, [JSON.stringify(data)]);
-  const [projectType, setProjectType] = useState<number>(
-    ProjectTypeList.length ? ProjectTypeList[0].value : 1,
-  );
+  const [projectType, setProjectType] = useState<number>(1);
+  // const [projectType, setProjectType] = useState<number>(
+  //   ProjectTypeList && ProjectTypeList.length ? ProjectTypeList[0].value : 1
+  // );
   const [importForm] = Form.useForm();
   // 切换tab
   const callback = (key: any) => {
     setProjectType(key as number);
-    console.log(key);
-
     getList(key);
   };
   useEffect(() => {
     getList(projectType);
   }, []);
+  // 刷新
   const refresh = () => {
     getList(projectType);
   };
@@ -76,35 +44,30 @@ const ProjectList: React.FC = () => {
       engineeringTemplateId,
       projectType,
     );
-    console.log(value);
-
-    // TODO
-    // const { items, pageIndex, pageSize, total } = data;
     const list = [];
     list.push(value);
     value ? setDataSource(list) : setDataSource([]);
   };
 
-  // // 列显示处理
-  // const currentPageChange = (page: any, size: any) => {
-  //   // 判断当前page是否改变, 没有改变代表是change页面触发
-  //   if (pageSize === size) {
-  //     setCurrentPage(page === 0 ? 1 : page);
-  //   }
-  // };
-
-  // const pageSizeChange = (page: any, size: any) => {
-  //   setCurrentPage(1);
-  //   setPageSize(size);
-  // };
-
   // 确认按钮
   const sureImportAuthorization = () => {
     importForm.validateFields().then(async (values: any) => {
-      // TODO 上传接口
-      let value = values;
-      value.engineeringTemplateId = engineeringTemplateId;
-      await importProject(value);
+      const { file } = values;
+      if (file == undefined) {
+        message.warning('您还未上传模板文件');
+        return;
+      }
+      const value: { file: File; engineeringTemplateId: string } = {
+        file,
+        engineeringTemplateId,
+      };
+      const res = await importProject(value);
+      console.log(res);
+      // if (res.code === 5000) {
+      //   message.error(res.message);
+      //   return;
+      // }
+      message.success('上传成功');
       refresh();
       setImportFormVisible(false);
     });
@@ -157,30 +120,6 @@ const ProjectList: React.FC = () => {
             <ImportDirectory />
           </Form>
         </Modal>
-        {/* <div className={styles.cyGeneralTablePaging}>
-          <div className={styles.cyGeneralTablePagingLeft}>
-            <span>显示第</span>
-            <span className={styles.importantTip}>{dataSource.dataStartIndex}</span>
-            <span>到第</span>
-            <span className={styles.importantTip}>{dataSource.dataEndIndex}</span>
-            <span>条记录,总共</span>
-            <span className={styles.importantTip}>{dataSource.total}</span>
-            <span>条记录</span>
-          </div>
-          <div className={styles.cyGeneralTablePagingRight}>
-            <Pagination
-              pageSize={pageSize}
-              onChange={currentPageChange}
-              size="small"
-              total={tableResultData.total}
-              current={currentPage}
-              // hideOnSinglePage={true}
-              showSizeChanger
-              showQuickJumper
-              onShowSizeChange={pageSizeChange}
-            />
-          </div>
-        </div> */}
       </div>
     </div>
   );

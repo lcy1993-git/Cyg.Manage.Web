@@ -2,7 +2,7 @@ import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
 interface ImportProject {
-  EngineeringTemplateId: string;
+  engineeringTemplateId: string;
   file: File;
 }
 /**
@@ -41,4 +41,12 @@ export const importProject = (data: ImportProject) => {
       data: formData(data),
     }),
   );
+};
+//下载模板
+export const downLoadTemplate = (params: any) => {
+  return request(`${baseUrl.tecEco1}/EngineeringTemplateCatalog/DownloadTemplate`, {
+    method: 'GET',
+    params,
+    responseType: 'blob',
+  });
 };
