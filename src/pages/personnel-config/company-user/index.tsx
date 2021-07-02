@@ -191,6 +191,9 @@ const CompanyUser: React.FC = () => {
     setEditFormVisible(true);
 
     const ManageUserData = await run(editDataId);
+
+    console.log(ManageUserData);
+
     editForm.setFieldsValue({
       ...ManageUserData,
       groupIds: (ManageUserData.comapnyGroups ?? []).map((item: any) => item.value),
@@ -263,7 +266,7 @@ const CompanyUser: React.FC = () => {
       title: '部组',
       dataIndex: 'comapnyGroups',
       index: 'comapnyGroups',
-      width:'8%',
+      width: '8%',
       render: (text: any, record: any) => {
         const { comapnyGroups } = record;
         return (comapnyGroups ?? []).map((item: any) => {
