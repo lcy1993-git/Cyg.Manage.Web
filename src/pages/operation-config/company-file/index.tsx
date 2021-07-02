@@ -346,7 +346,7 @@ const CompanyFile: React.FC = () => {
 
     const res = await downLoadFileItem({ fileId, securityKey });
 
-    const suffix = fileName.substring(fileName.lastIndexOf('.') + 1);
+    const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1);
     // console.log(suffix);
 
     let blob = new Blob([res], {
