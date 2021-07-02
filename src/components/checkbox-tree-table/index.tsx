@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 import React, { useState, useEffect, useMemo } from 'react';
 import { handleJurisdictionData } from '@/utils/utils';
 import TreeTable from '../tree-table';
@@ -77,7 +78,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
   /**
    *  左侧模块的check逻辑, check被选择了，那么他的上级所有的都需要被选中，他的下级和功能区都要被选中
    *  当他取消的时候，就自己取消，下级和功能区都要进行取消
-   **/
+   */
   const moduleCheckEvent = (checked: boolean, recordId: string) => {
     const copyData: TreeDataItem[] = JSON.parse(JSON.stringify(tableShowData));
     const flattenCopyData = flatten<TreeDataItem>(copyData);
@@ -149,7 +150,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
   /**
    *  右侧功能点击的时候，左侧的checkbox需要被勾选上
    *  右侧功能取消的时候，左侧的checkbox不需要动他
-   **/
+   */
   const functionCheckEvent = (checked: boolean, recordId: string, dataId: string) => {
     // 被勾选的时候，如果左侧模块没被勾选，那么左侧的模块以及他的父级都要被勾选, 但是父级的functions不用被勾选
     const copyData: TreeDataItem[] = JSON.parse(JSON.stringify(tableShowData));
@@ -188,7 +189,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
             hasThisIdParentData.push(item);
           }
         });
-
+        
         const newData = flattenCopyData.map((item) => {
           if (hasThisIdParentData.findIndex((ite: any) => item.id === ite.id) > -1) {
             return {
@@ -200,7 +201,12 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
             return {
               ...item,
               hasPermission: true,
-              functions: item.functions.map((item) => ({ ...item, hasPermission: true })),
+              functions: item.functions.map((ite) => {
+                if(ite.id === dataId) {
+                  return { ...ite, hasPermission: true }
+                }
+                return {...ite}
+              }),
             };
           }
           return item;
@@ -210,6 +216,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
         getSelectIds(toTreeData(newData));
       }
     } else {
+
       const newData = flattenCopyData.map((item) => {
         if (item.id === recordId) {
           return {
