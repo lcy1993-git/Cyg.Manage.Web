@@ -53,10 +53,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     projectId && run(projectId);
   });
 
-  // const { data: areaSelectData } = useGetSelectData(
-  //   { url: '/Area/GetList', extraParams: { pId: areaId } },
-  //   { ready: !!areaId, refreshDeps: [areaId] },
-  // );
   const disableDate = (current: any) => {
     return current < moment('2010-01-01') || current > moment('2051-01-01');
   };
