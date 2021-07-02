@@ -39,13 +39,13 @@ const LineStressSag: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="应力弧垂表" width="298px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="导线型号"
+            placeholder="请输入应力弧垂表信息"
           />
         </TableSearch>
       </div>

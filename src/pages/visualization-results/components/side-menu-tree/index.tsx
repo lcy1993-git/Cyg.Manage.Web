@@ -589,7 +589,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       <div className={styles.searchWrap}>
         <Input
           prefix={<SearchOutlined />}
-          placeholder="请输入"
+          placeholder="请输入工程/项目名称"
           value={keyWord}
           onChange={(e) => {
             setkeyWord(e.target.value);

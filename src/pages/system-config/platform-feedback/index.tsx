@@ -59,12 +59,12 @@ const PlatFormFeedBack: React.FC = () => {
   const leftSearchElement = () => {
     return (
       <div className={styles.searchGroup}>
-        <TableSearch label="搜索" width="208px">
+        <TableSearch label="反馈" width="208px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="输入标题搜索"
+            placeholder="请输入标题"
             enterButton
           />
         </TableSearch>

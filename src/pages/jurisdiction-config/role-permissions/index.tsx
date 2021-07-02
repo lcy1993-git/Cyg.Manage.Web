@@ -118,12 +118,12 @@ const RolePermissions: React.FC = () => {
   const searchElement = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="关键词" width="203px">
+        <TableSearch label="角色名称" width="248px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="角色名称"
+            placeholder="请输入角色名称"
             enterButton
           />
         </TableSearch>

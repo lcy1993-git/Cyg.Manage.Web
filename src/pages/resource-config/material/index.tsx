@@ -52,13 +52,13 @@ const Material: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="物料" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入物料信息"
           />
         </TableSearch>
       </div>
@@ -424,6 +424,7 @@ const Material: React.FC<libParams> = (props) => {
         requestSource="resource"
         url="/Material/GetPageList"
         // tableTitle="物料列表"
+        size="small"
         getSelectData={(data) => setTableSelectRow(data)}
         type="checkbox"
         extractParams={{

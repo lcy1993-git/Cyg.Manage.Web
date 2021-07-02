@@ -46,14 +46,14 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="电缆井明细" width="298px">
           <Search
             allowClear
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入电缆井明细信息"
           />
         </TableSearch>
       </div>

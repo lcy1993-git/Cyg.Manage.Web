@@ -27,7 +27,6 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
     refreshDeps: [engineerId],
   });
 
-  console.log(engineerInfo);
 
   const addProjectEvent = () => {
     form.validateFields().then(async (value) => {

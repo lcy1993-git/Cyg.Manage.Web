@@ -356,12 +356,12 @@ const CompanyUser: React.FC = () => {
   const leftSearch = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="关键词" width="208px">
+        <TableSearch label="用户信息" width="248px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="请输入关键词"
+            placeholder="请输入用户信息"
             enterButton
           />
         </TableSearch>

@@ -29,7 +29,6 @@ import FileGroupForm from './components/add-file-group';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { TableRequestResult } from '@/services/table';
-// import { UploadStatus } from '@/components/file-upload';
 
 const { Search } = Input;
 
@@ -82,13 +81,13 @@ const CompanyFile: React.FC = () => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="文件名称" width="230px">
+        <TableSearch label="文件名称" width="248px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入文件名搜索"
+            placeholder="请输入名称/类别"
           />
         </TableSearch>
       </div>
@@ -346,7 +345,7 @@ const CompanyFile: React.FC = () => {
 
     const res = await downLoadFileItem({ fileId, securityKey });
 
-    const suffix = fileName.substring(fileName.lastIndexOf('.') + 1);
+    const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1);
     // console.log(suffix);
 
     let blob = new Blob([res], {

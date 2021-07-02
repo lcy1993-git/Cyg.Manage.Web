@@ -39,13 +39,13 @@ const ElectricCompany: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="电力公司" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="区域/公司/供电所"
+            placeholder="请输入公司信息"
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="选择区域" width="260px">

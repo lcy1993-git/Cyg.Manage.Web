@@ -81,13 +81,13 @@ const InfoManage: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="宣贯" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入标题或内容"
+            placeholder="请输入标题/内容"
           />
         </TableSearch>
         <TableSearch label="状态" width="200px" marginLeft="20px">

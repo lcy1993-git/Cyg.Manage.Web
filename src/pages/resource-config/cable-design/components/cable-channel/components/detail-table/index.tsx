@@ -45,14 +45,14 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="电缆通道明细" width="318px">
           <Search
             allowClear
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="编号/名称"
+            placeholder="请输入电缆通道明细信息"
           />
         </TableSearch>
       </div>

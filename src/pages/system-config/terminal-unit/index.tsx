@@ -38,13 +38,13 @@ const MapField: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="终端设备" width="268px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => tableSearchEvent()}
             enterButton
-            placeholder="请输入关键词搜索"
+            placeholder="请输入终端设备信息"
           />
         </TableSearch>
       </div>

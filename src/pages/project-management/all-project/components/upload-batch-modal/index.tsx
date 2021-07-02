@@ -30,7 +30,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
   };
 
   //下载excel批量立项模板
-  const downloadModalFileEvent = () => { };
+  const downloadModalFileEvent = () => {};
 
   //传入上传后获取到的List
   const saveBatchAddListEvent = () => {
@@ -63,10 +63,10 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
   };
 
   useEffect(() => {
-    if(state) {
+    if (state) {
       form.resetFields();
     }
-  },[state])
+  }, [state]);
 
   return (
     <>
@@ -76,7 +76,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
         width={720}
         visible={state as boolean}
         bodyStyle={{
-          padding: 0
+          padding: 0,
         }}
         footer={[
           <Button
@@ -91,9 +91,11 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
         onCancel={() => closeModalEvent()}
       >
         <Form form={form}>
-          <CyTip>您可以通过下载excel模版，在模板中填写立项相关工程/项目信息，并且上传填写后的模板的形式进行批量创建项目</CyTip>
-          <div style={{ padding: "20px" }}>
-            <CyFormItem label="下载模板" labelWidth={100} required>
+          <CyTip>
+            您可以通过下载excel模版，在模板中填写立项相关工程/项目信息，并且上传填写后的模板的形式进行批量创建项目
+          </CyTip>
+          <div style={{ padding: '20px' }}>
+            <CyFormItem label="下载模板" labelWidth={100}>
               <Button
                 type="primary"
                 style={{ width: '100px' }}
@@ -101,7 +103,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
               >
                 <a href={'/template/proTemp.xlsx'} download="批量立项模板文件.xlsx">
                   点击下载
-              </a>
+                </a>
               </Button>
             </CyFormItem>
             <CyFormItem

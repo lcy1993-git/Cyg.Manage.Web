@@ -62,13 +62,13 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
   };
 
   const tableLeftSlot = (
-    <TableSearch label="关键词" width="230px">
+    <TableSearch label="物料" width="248px">
       <Search
         value={searchKeyWord}
         onChange={(e) => setSearchKeyWord(e.target.value)}
         onSearch={() => search()}
         enterButton
-        placeholder="物料编码/名称"
+        placeholder="请输入物料编码/名称"
         allowClear
       />
     </TableSearch>
