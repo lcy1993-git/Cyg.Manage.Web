@@ -39,7 +39,6 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
     onSuccess: (res) => {
-      console.log(res);
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
@@ -115,7 +114,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
           company={company}
           companyName={companyName}
           status={status}
-          projectInfo={projectInfo}
+          projectId={projectId}
           engineerStart={startTime}
           engineerEnd={endTime}
           form={form}
