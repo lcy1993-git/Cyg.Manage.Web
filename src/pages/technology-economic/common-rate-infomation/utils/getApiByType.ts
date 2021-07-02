@@ -4,6 +4,8 @@ import {
   getTemporaryFacilityRate,
   getBasicReserveRate,
   getDesignRate,
+  getSpecialAreaConstructionRate
+
 } from '@/services/technology-economic/common-rate';
 
 /**
@@ -49,13 +51,13 @@ export const getApiByType = (type: string) => {
      * 特殊地区施工增加费费率
      */
     case "54":
-      return getBasicReserveRate;
+      return getSpecialAreaConstructionRate;
     /**
      * 设计费费率
      */
     case "55":
       return getDesignRate;
     default:
-      return Promise.reject([])
+      return () => Promise.reject([])
   }
 }

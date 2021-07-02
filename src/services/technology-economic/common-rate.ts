@@ -87,3 +87,18 @@ export const getBasicReserveRate= (rateId: string) => {
     request(`${baseUrl.tecEco1}/RateTable/GetBasicReserveRate`, { method: 'GET', params: { rateId } }),
   );
 }
+
+
+// 导入费率表
+export const importRateTable = (file: File) => {
+  const data = new FormData();
+  data.append('file', file)
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/ImportRateTable`, { method: 'POST', data })
+  )
+}
+
+// 下载模板
+export const downloadTemplate= () => {
+  return request(`${baseUrl.tecEco1}/RateTable/DownloadTemplate`, { method: 'GET', responseType: "blob"});
+}

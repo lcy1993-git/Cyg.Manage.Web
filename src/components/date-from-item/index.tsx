@@ -1,4 +1,5 @@
 import { DatePicker, DatePickerProps } from 'antd';
+import { random } from 'lodash';
 import moment, { Moment } from 'moment';
 import { withEnum } from '../enum-select';
 
@@ -18,15 +19,13 @@ const DatePickerForm: React.FC<Props & DatePickerProps> = ({
   picker,
   ...rest
 }) => {
-  const momentValue = moment(value);
+  const momentValue = moment(value).isValid() ? moment(value) : undefined;
   const format = picker === 'year' ? 'YYYY' : 'YYYY-MM-DD';
   const handleDate = (v: Moment | null, m: string) => {
-    console.log((window.a = moment(m)));
 
     onChange!(moment(m).format(format));
   };
-
-  return <DatePicker onChange={handleDate} picker={picker} {...rest} />;
+  return <DatePicker value={momentValue} onChange={handleDate} picker={picker} {...rest} />;
 };
 
 export default DatePickerForm;
