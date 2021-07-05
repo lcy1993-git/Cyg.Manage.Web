@@ -13,7 +13,7 @@ const ImportDirectory: React.FC<ResponsData> = () => {
     let blob = new Blob([res], {
       type: `application/xlsx`,
     });
-    let finallyFileName = `模板`;
+    let finallyFileName = `模板.xlsx`;
     //for IE
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
       window.navigator.msSaveOrOpenBlob(blob, finallyFileName);
