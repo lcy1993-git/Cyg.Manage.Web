@@ -6,6 +6,7 @@ import CommonTitle from '@/components/common-title';
 import { getRateTypeList } from '@/services/technology-economic/common-rate'
 import CommonRateTable from './components/common-rate-table';
 import { downloadTemplate, importRateTable } from '@/services/technology-economic/common-rate';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { getTypeByText } from '../utils';
 import styles from './index.less';
 import FileUpload from '@/components/file-upload';
@@ -34,6 +35,8 @@ const CommonRateInfomation: React.FC = () => {
   useMount(() => {
     listDataRun()
   })
+
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const listDataElement = listData.map((item, index) => {
     return (
@@ -88,7 +91,10 @@ const CommonRateInfomation: React.FC = () => {
             <CommonTitle>费率详情</CommonTitle>
           </div>
           <div className={styles.importButton}>
-            <Button type="primary" onClick={() => setImportVisibel(true)}>导入费率</Button>
+            {
+              buttonJurisdictionArray?.includes('quotainfo-import') &&
+              <Button type="primary" onClick={() => setImportVisibel(true)}>导入费率</Button>
+            }
           </div>
         </div>
         <Spin spinning={preLoading}>

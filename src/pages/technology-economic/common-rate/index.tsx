@@ -200,21 +200,21 @@ const ProjectList: React.FC = () => {
       <div className={styles.buttonArea}>
 
         {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          buttonJurisdictionArray?.includes('commonrate-add') &&
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         }
         {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          buttonJurisdictionArray?.includes('commonrate-edit') &&
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         }
         {
-          !buttonJurisdictionArray?.includes('quotaLib-del') &&
+          buttonJurisdictionArray?.includes('commonrate-del') &&
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -228,7 +228,7 @@ const ProjectList: React.FC = () => {
           </Popconfirm>
         }
         {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          buttonJurisdictionArray?.includes('commonrate-info') &&
           <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             费率详情
