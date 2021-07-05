@@ -1,21 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input, Col, Row, Select } from 'antd';
 import DisableSelect from '../disable-select';
+import UrlSelect from '@/components/url-select';
 import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
 import { getEnums } from '@/pages/technology-economic/utils';
 const { Option } = Select;
-const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
+const engineeringTemplateTypeList = getEnums('EngineeringTemplateType')
+  ? getEnums('EngineeringTemplateType')
+  : [];
 interface IForm {
   type?: 'add' | 'edit';
   selectList?: number[];
 }
+type listType = {
+  value: string;
+  text: string;
+  disabled?: true;
+};
 const DictionaryForm: React.FC<IForm> = (props) => {
   const { type, selectList } = props;
-  console.log(selectList);
-
-  useEffect(() => {}, []);
   return (
     <>
       <Row>
@@ -29,23 +34,27 @@ const DictionaryForm: React.FC<IForm> = (props) => {
           <CyFormItem label="模板类型" name="engineeringTemplateType">
             {type === 'edit' ? (
               <Select disabled>
-                {engineeringTemplateTypeList.map((item: any, index: number) => {
-                  return (
-                    <Option value={item.value} key={index}>
-                      {item.text}
-                    </Option>
-                  );
-                })}
+                {engineeringTemplateTypeList &&
+                  engineeringTemplateTypeList.map((item: any, index: number) => {
+                    return (
+                      <Option value={item.value} key={index}>
+                        {item.text}
+                      </Option>
+                    );
+                  })}
               </Select>
             ) : (
               <DisableSelect
                 requestType="get"
                 requestSource="tecEco"
-                defaultData={getEnums('EngineeringTemplateType')}
-                titleKey="text"
-                valueKey="value"
+                defaultData={engineeringTemplateTypeList!}
                 selectList={selectList!}
               />
+              // <UrlSelect
+              //   requestType="get"
+              //   requestSource="tecEco"
+              //   defaultData={engineeringTemplateTypeList!}
+              // />
             )}
           </CyFormItem>
         </Col>

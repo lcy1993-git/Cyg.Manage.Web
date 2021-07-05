@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Select } from 'antd';
 export interface DisableSelectProps {
   url?: string;
@@ -24,8 +24,8 @@ const withDisableSelect =
   (props: P & DisableSelectProps) => {
     const {
       url = '',
-      titleKey = 'Title',
-      valueKey = 'ID',
+      titleKey = 'text',
+      valueKey = 'value',
       defaultData,
       extraParams = {},
       needFilter = true,
@@ -40,7 +40,7 @@ const withDisableSelect =
       ...rest
     } = props;
 
-    const afterHandleData = () => {
+    const afterHandleData = useMemo(() => {
       if (defaultData) {
         const copyData = [...defaultData];
         return copyData.map((item: any) => {
@@ -58,11 +58,10 @@ const withDisableSelect =
           };
           // return { label: item[titleKey], value: item[valueKey] };
         });
-      }
-      if (!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0))) {
+      } else {
         return [];
       }
-    };
+    }, [JSON.stringify(defaultData)]);
 
     return (
       <WrapperComponent
