@@ -6,40 +6,35 @@ import { api, formatData} from './utils';
 
 import styles from './index.less';
 
-interface nextTableData {
-  nextColumns: any[];
-  nextDataSource: any[];
-}
 
 interface Props extends TableProps<any> {
-  headTitle: string;
-  nextTable?: false | nextTableData;
-  type: string;
+  headTitle: React.ReactNode;
+  nextTable?: boolean;
+  columns?: any[],
+  dataSource?: any[];
+  nextColumns?: any[];
+  nextDataSource?: any[];
+  nextTableRest?: any;
 } 
 
 const ConstomTable: React.FC<Props> = (props) => {
   const {
     headTitle,
     nextTable=false,
-    type,
+    columns,
+    dataSource,
+    nextColumns=[],
+    nextDataSource=[],
+    nextTableRest,
     ...rest
   } = props;
-
-  const { data, run } = useRequest( api[type], {manual: true})
-
-  useEffect(() => {
-    run(type)
-  }, [type])
-
-  const {columns, dataSource} = useMemo(() => {
-    return formatData(data)
-  }, [JSON.stringify(data)])
 
   return (
     <div className={`${styles.constomTableWrap} ${nextTable ? styles.nextTable : ""}`}>
       <div className={styles.title}>{headTitle}</div>
       <Table
-        showHeader={false}
+        bordered
+        pagination={false}
         columns={columns}
         dataSource={dataSource}
         {...rest}
@@ -47,9 +42,12 @@ const ConstomTable: React.FC<Props> = (props) => {
       {
         nextTable ?
         <Table
+          bordered
+          pagination={false}
           showHeader={false}
-          columns={(nextTable as nextTableData).nextColumns}
-          dataSource={(nextTable as nextTableData).nextDataSource}
+          columns={nextColumns}
+          dataSource={nextDataSource}
+          {...nextTableRest}
         /> : null
       }
     </div>

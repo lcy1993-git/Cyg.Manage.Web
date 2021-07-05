@@ -1,25 +1,20 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { useRequest, useMount } from 'ahooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
-import { getEnums, EnumsType } from '../utils';
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-
 import AddDictionaryForm from './components/add-edit-form';
-import { setRateTableStatus,
+import {
+  setRateTableStatus,
   deleteRateTable,
-  AddRateTable,
   addRateTable,
-  EditRateTable,
   editRateTable
 } from '@/services/technology-economic/common-rate';
-import { getIndustryTypeEnums, getMajorTypeEnums } from '@/services/technology-economic';
 import styles from './index.less';
 import moment from 'moment';
 
@@ -29,129 +24,95 @@ type DataSource = {
   id: string;
   [key: string]: string;
 }
-const costRateType = getEnums('CostRateType');
+
 
 const ProjectList: React.FC = () => {
-
-  useMount(() => {
-    industryTypeRun();
-    majorTypeDataRun();
-  })
 
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [modalType, setModalType] = useState<string>("");
+  const [formVisible, setFormVisible] = useState<boolean>(false);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [form] = Form.useForm();
 
-  // 行业类别
-  const {data: industryTypeData = [], run: industryTypeRun} = useRequest<EnumsType[]>(getIndustryTypeEnums, { manual: true })
-  
-  // 适用专业
-  const {data: majorTypeData = [], run: majorTypeDataRun} = useRequest<EnumsType[]>(getMajorTypeEnums, { manual: true })
+  const columns = [
+    {
+      dataIndex: 'number',
+      key: 'number',
+      title: '序号',
+      width: 160,
+    },
+    {
+      dataIndex: 'rateTableTypeText',
+      key: 'rateTableTypeText',
+      title: '费率类型',
+      // width: 160,
+    },
+    {
+      dataIndex: 'sourceFile',
+      key: 'sourceFile',
+      title: '来源文件',
+      width: 300
+    },
+    {
+      dataIndex: 'publishDate',
+      key: 'publishDate',
+      title: '发布时间',
+      width: 130,
+      render(v: string) {
+        return moment(v).format('YYYY-MM-DD')
+      }
+    },
+    {
+      dataIndex: 'publishOrg',
+      key: 'publishOrg',
+      title: '发布机构',
+      width: 150
+    },
+    {
+      dataIndex: 'year',
+      key: 'year',
+      title: '费率年度',
+      width: 100
+    },
+    {
+      dataIndex: 'industryType',
+      key: 'industryType',
+      title: '行业类别',
+      width: 150,
+    },
+    {
+      dataIndex: 'majorTypeText',
+      key: 'majorTypeText',
+      title: '适用专业',
+      width: 150,
+    },
+    {
+      dataIndex: 'enabled',
+      key: 'enabled',
+      title: '状态',
+      width: 70,
+      render(value: boolean, record: DataSource) {
+        return (
+          <Switch
+            defaultChecked={value}
+            onClick={(checked) => {
+              setRateTableStatus(record.id, checked);
+            }}
+          />
+        );
+      }
+    },
+    {
+      dataIndex: 'remark',
+      index: 'remark',
+      title: '备注',
+      width: 220
+    },
+  ];
 
-  const columns = useMemo(() => {
-    return [
-      {
-        dataIndex: 'number',
-        key: 'number',
-        title: '序号',
-        width: 300,
-      },
-      {
-        dataIndex: 'rateTableType',
-        key: 'rateTableType',
-        title: '费率类型',
-        width: 160,
-        render(v: number) {
-          return costRateType!.find((item: EnumsType) => {
-            return item.value === v;
-          })?.text
-        }
-      },
-      {
-        dataIndex: 'sourceFile',
-        key: 'sourceFile',
-        title: '来源文件',
-        width: 160
-      },
-      {
-        dataIndex: 'publishDate',
-        key: 'publishDate',
-        title: '发布时间',
-        width: 130,
-        render(v: string) {
-          return moment(v).format('YYYY-MM-DD')
-        }
-      },
-      {
-        dataIndex: 'publishOrg',
-        key: 'publishOrg',
-        title: '发布机构',
-        width: 150
-      },
-      {
-        dataIndex: 'year',
-        key: 'year',
-        title: '费率年度',
-        width: 100
-      },
-      {
-        dataIndex: 'industryType',
-        key: 'industryType',
-        title: '行业类别',
-        width: 150,
-        render(v: string){
-          return industryTypeData.find((item: EnumsType) => {
-            return item.value === v;
-          })?.text
-        }
-      },
-      {
-        dataIndex: 'majorType',
-        key: 'majorType',
-        title: '适用专业',
-        width: 150,
-        return(v: string) {
-          
-          console.log(majorTypeData.find((item: EnumsType) => {
-            return item.value == v;
-          }));
-          
-          return majorTypeData.find((item: EnumsType) => {
-            return item.value == v;
-          })?.text
-        }
-      },
-      {
-        dataIndex: 'enabled',
-        key: 'enabled',
-        title: '状态',
-        width: 70,
-        render(value: boolean, record: DataSource) {
-          return (
-            <Switch
-              defaultChecked={value}
-              onClick={(checked) => {
-                setRateTableStatus(record.id, checked);
-              }}
-            />
-          );
-        }
-      },
-      {
-        dataIndex: 'remark',
-        index: 'remark',
-        title: '备注',
-        width: 220
-      },
-    ];
-  }, [JSON.stringify(industryTypeData), JSON.stringify(majorTypeData)]) 
-  
 
   const searchComponent = () => {
     return (
@@ -189,35 +150,33 @@ const ProjectList: React.FC = () => {
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
+    form.resetFields();
+    setModalType('add');
+    setFormVisible(true);
   };
 
-  const sureAddAuthorization = () => {
-    addForm.validateFields().then(async (values: AddRateTable) => {
-      await addRateTable({...values, number: "123456"});
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
-  
+  // const sureAddAuthorization = () => {
+  //   form.validateFields().then(async (values: AddRateTable) => {
+  //     await addRateTable({...values});
+  //     refresh();
+  //     setFormVisible(false);
+  //     form.resetFields();
+  //   });
+  // };
+
   // 编辑
   const editEvent = () => {
+
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
-      return;
+    } else {
+      console.log(tableSelectRows[0]);
+      const publishDate = moment(tableSelectRows[0].publishDate);
+      setModalType('edit');
+      setFormVisible(true);
+      form.setFieldsValue({ ...tableSelectRows[0], publishDate })
     }
 
-    editForm.setFieldsValue({...tableSelectRows[0]})
-    setEditFormVisible(true);
-  };
-  const sureEditAuthorization = () => {
-    editForm.validateFields().then(async (values: EditRateTable) => {
-      await editRateTable(values);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
   };
 
   // 查看详情
@@ -233,12 +192,7 @@ const ProjectList: React.FC = () => {
   };
 
   const gotoMoreInfo = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
-    }
-    const id = tableSelectRows[0].id;
-    history.push(`/technology-economic/common-rate-infomation?id=${id}`)
+    history.push('/technology-economic/common-rate-infomation')
   };
 
   const tableElement = () => {
@@ -246,21 +200,21 @@ const ProjectList: React.FC = () => {
       <div className={styles.buttonArea}>
 
         {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          buttonJurisdictionArray?.includes('commonrate-add') &&
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         }
         {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          buttonJurisdictionArray?.includes('commonrate-edit') &&
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         }
         {
-          !buttonJurisdictionArray?.includes('quotaLib-del') &&
+          buttonJurisdictionArray?.includes('commonrate-del') &&
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -274,10 +228,10 @@ const ProjectList: React.FC = () => {
           </Popconfirm>
         }
         {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          buttonJurisdictionArray?.includes('commonrate-info') &&
           <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
-            查看内容
+            费率详情
           </Button>
         }
 
@@ -289,55 +243,60 @@ const ProjectList: React.FC = () => {
     setTableSelectRow(data);
   };
 
+  const onModalOkClick = async () => {
+    const { id } = tableSelectRows[0];
+    const values = await form.validateFields();
+    
+    if (modalType === 'add') {
+      await addRateTable({ ...values, }).then(() => {
+        message.success('添加成功')
+        refresh();
+        setFormVisible(false);
+        form.resetFields();
+      });
+
+    } else if (modalType === 'edit') {
+      console.log(values);
+      
+      await editRateTable({ ...values, id }).then(() => {
+        message.success('编辑成功')
+        refresh();
+        setFormVisible(false);
+        form.resetFields();
+      });
+    }
+  }
+
   return (
     <PageCommonWrap>
-      {
-        majorTypeData.length > 0 && industryTypeData.length > 0 &&
-        <GeneralTable
-          ref={tableRef}
-          buttonLeftContentSlot={searchComponent}
-          buttonRightContentSlot={tableElement}
-          needCommonButton={true}
-          columns={columns as (ColumnsType<object>)}
-          url="/RateTable/QueryRatePager"
-          // url="/QuotaLibrary/QueryQuotaLibraryPager"
-          tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
-          getSelectData={tableSelectEvent}
-          requestSource='tecEco1'
-          type="radio"
-          extractParams={{
-            keyWord: searchKeyWord,
-          }}
-        />
-      }
+      <GeneralTable
+        ref={tableRef}
+        buttonLeftContentSlot={searchComponent}
+        buttonRightContentSlot={tableElement}
+        needCommonButton={true}
+        columns={columns as (ColumnsType<object>)}
+        url="/RateTable/QueryRateTablePager"
+        tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
+        getSelectData={tableSelectEvent}
+        requestSource='tecEco1'
+        type="radio"
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
+      />
       <Modal
         maskClosable={false}
-        title="添加-常用费率"
+        title={`${modalType === 'add' ? '添加' : '编辑'}-常用费率`}
         width="880px"
-        visible={addFormVisible}
+        visible={formVisible}
         okText="确认"
-        onOk={() => sureAddAuthorization()}
-        onCancel={() => setAddFormVisible(false)}
+        onOk={onModalOkClick}
+        onCancel={()=>setFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <AddDictionaryForm type='add' />
-        </Form>
-      </Modal>
-      <Modal
-        maskClosable={false}
-        title="编辑-常用费率"
-        width="880px"
-        visible={editFormVisible}
-        okText="确认"
-        onOk={() => sureEditAuthorization()}
-        onCancel={() => setEditFormVisible(false)}
-        cancelText="取消"
-        destroyOnClose
-      >
-        <Form form={editForm} preserve={false}>
-          <AddDictionaryForm type='edit' />
+        <Form form={form} preserve={false}>
+          <AddDictionaryForm />
         </Form>
       </Modal>
     </PageCommonWrap>

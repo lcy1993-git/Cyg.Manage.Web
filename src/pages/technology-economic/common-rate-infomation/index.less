@@ -56,3 +56,25 @@
 .nextTable {
   margin-bottom: 30px;
 }
+
+.modalWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  .row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .label {
+      flex-basis: 80px;
+    }
+    .file {
+      height: 32px;
+      width: 380px;
+    }
+  }
+  .row:first-of-type{
+    margin-bottom: 20px;
+  }
+}

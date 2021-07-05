@@ -75,7 +75,7 @@ export const getWinterConstructionRate= (rateId: string) => {
   );
 }
 // 获取设计费费率详情
-export const GetDesignRate= (rateId: string) => {
+export const getDesignRate= (rateId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/RateTable/GetDesignRate`, { method: 'GET', params: { rateId } }),
   );
@@ -86,4 +86,19 @@ export const getBasicReserveRate= (rateId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/RateTable/GetBasicReserveRate`, { method: 'GET', params: { rateId } }),
   );
+}
+
+
+// 导入费率表
+export const importRateTable = (file: File) => {
+  const data = new FormData();
+  data.append('file', file)
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/ImportRateTable`, { method: 'POST', data })
+  )
+}
+
+// 下载模板
+export const downloadTemplate= () => {
+  return request(`${baseUrl.tecEco1}/RateTable/DownloadTemplate`, { method: 'GET', responseType: "blob"});
 }
