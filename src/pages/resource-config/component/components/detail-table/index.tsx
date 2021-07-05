@@ -153,9 +153,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
 
     setEditFormVisible(true);
     const ComponentDetailData = await run(libId, editDataId);
-    
-   
-    
+
     const formData =
       ComponentDetailData?.isComponent == 1
         ? {
@@ -253,7 +251,10 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddComponentDetail()}
-        onCancel={() => setAddFormVisible(false)}
+        onCancel={() => {
+          setAddFormVisible(false);
+          addForm.resetFields();
+        }}
         cancelText="取消"
         centered
         destroyOnClose

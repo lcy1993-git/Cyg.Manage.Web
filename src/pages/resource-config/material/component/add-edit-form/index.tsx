@@ -12,16 +12,31 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
 
   return (
     <>
-      <CyFormItem label="编号" name="materialId" required>
+      <CyFormItem
+        label="编号"
+        name="materialId"
+        required
+        rules={[{ required: true, message: '编号不能为空' }]}
+      >
         <Input placeholder="请输入编号"></Input>
       </CyFormItem>
 
-      <CyFormItem label="类型" name="category" required>
+      <CyFormItem
+        label="类型"
+        name="category"
+        required
+        rules={[{ required: true, message: '类型不能为空' }]}
+      >
         <Input placeholder="请输入类型" />
       </CyFormItem>
 
-      <CyFormItem label="名称" name="materialName" required>
-        <Input placeholder="请输入资源库名称"></Input>
+      <CyFormItem
+        label="名称"
+        name="materialName"
+        required
+        rules={[{ required: true, message: '名称不能为空' }]}
+      >
+        <Input placeholder="请输入物料名称"></Input>
       </CyFormItem>
 
       <CyFormItem label="规格型号" name="spec">

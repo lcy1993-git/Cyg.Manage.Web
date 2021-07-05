@@ -15,23 +15,58 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
   return (
     <>
       {type == 'add' && (
-        <CyFormItem label="编号" name="channelId" labelWidth={111} align="right" required>
+        <CyFormItem
+          label="编号"
+          name="channelId"
+          labelWidth={111}
+          align="right"
+          required
+          rules={[{ required: true, message: '通道编号不能为空' }]}
+        >
           <Input placeholder="请输入编号" />
         </CyFormItem>
       )}
 
-      <CyFormItem label="名称" name="channelName" labelWidth={111} align="right" required>
+      <CyFormItem
+        label="名称"
+        name="channelName"
+        labelWidth={111}
+        align="right"
+        required
+        rules={[{ required: true, message: '名称不能为空' }]}
+      >
         <Input placeholder="请输入名称" />
       </CyFormItem>
 
-      <CyFormItem label="简称" name="shortName" labelWidth={111} align="right" required>
+      <CyFormItem
+        label="简称"
+        name="shortName"
+        labelWidth={111}
+        align="right"
+        required
+        rules={[{ required: true, message: '简称不能为空' }]}
+      >
         <Input placeholder="请输入简称" />
       </CyFormItem>
 
-      <CyFormItem label="典设编码" name="typicalCode" labelWidth={111} align="right" required>
+      <CyFormItem
+        label="典设编码"
+        name="typicalCode"
+        labelWidth={111}
+        align="right"
+        required
+        rules={[{ required: true, message: '典设编码不能为空' }]}
+      >
         <Input placeholder="请输入典设编码" />
       </CyFormItem>
-      <CyFormItem label="规格简号" name="channelCode" labelWidth={111} align="right" required>
+      <CyFormItem
+        label="规格简号"
+        name="channelCode"
+        labelWidth={111}
+        align="right"
+        required
+        rules={[{ required: true, message: '规格简号不能为空' }]}
+      >
         <Input placeholder="请输入规格简号" />
       </CyFormItem>
 

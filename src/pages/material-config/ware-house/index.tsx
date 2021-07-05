@@ -149,6 +149,13 @@ const WareHouse: React.FC = () => {
     });
   };
 
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset();
+    }
+  };
+
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -183,10 +190,11 @@ const WareHouse: React.FC = () => {
         values,
       );
       await updateWareHouseItem(submitInfo);
-      refresh();
       message.success('更新成功');
       editForm.resetFields();
       setEditFormVisible(false);
+      refresh();
+      reset();
     });
   };
 

@@ -14,14 +14,19 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
 
   const columns = [
     {
-      title: '电缆井编码',
+      title: (
+        <>
+          <span style={{ color: '#e56161' }}>* </span>
+          <span>电缆通道编码</span>
+        </>
+      ),
       dataIndex: 'cableChannelId',
       index: 'cableChannelId',
-      rules: [{ required: true, message: '该值必填' }],
+      rules: [{ required: true, message: '电缆通道编码不能为空' }],
 
       width: 180,
       render: () => {
-        return <Input />;
+        return <Input placeholder="请输入电缆井编码" />;
       },
     },
     {
@@ -39,13 +44,22 @@ const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
       render: () => <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />,
     },
     {
-      title: '数量',
+      title: (
+        <>
+          <span style={{ color: '#e56161' }}>* </span>
+          <span>数量</span>
+        </>
+      ),
       dataIndex: 'itemNumber',
       index: 'itemNumber',
       width: 160,
       render: () => {
-        return <InputNumber defaultValue={0} min={0} />;
+        return <Input type="number" min={1} placeholder="请输入数量（正整数）" />;
       },
+      rules: [
+        { required: true, message: '数量不能为空' },
+        { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+      ],
     },
   ];
 

@@ -12,37 +12,51 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
 
   const columns = [
     {
-      title: '电缆井编码',
+      title: (
+        <>
+          <span style={{ color: '#e56161' }}>* </span>
+          <span>电缆井编码</span>
+        </>
+      ),
       dataIndex: 'cableWellId',
       index: 'cableWellId',
-      rules: [{ required: true, message: '该值必填' }],
+      rules: [{ required: true, message: '电缆井编码不能为空' }],
       width: 180,
       render: () => {
-        return <Input />;
+        return <Input placeholder="请输入电缆井编码" />;
       },
     },
     {
-      title: '组件',
+      title: '组件(或物料选其一)',
       dataIndex: 'componentId',
       index: 'componentId',
       width: 400,
       render: () => <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />,
     },
     {
-      title: '物料',
+      title: '物料(或组件选其一)',
       dataIndex: 'materialId',
       index: 'materialId',
       width: 400,
       render: () => <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />,
     },
     {
-      title: '数量',
+      title: (
+        <>
+          <span style={{ color: '#e56161' }}>* </span>
+          <span>数量</span>
+        </>
+      ),
       dataIndex: 'itemNumber',
       index: 'itemNumber',
       width: 160,
       render: () => {
-        return <InputNumber defaultValue={0} min={0} />;
+        return <Input type="number" min={1} placeholder="请输入数量（正整数）" />;
       },
+      rules: [
+        { required: true, message: '数量不能为空' },
+        { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+      ],
     },
   ];
   return (

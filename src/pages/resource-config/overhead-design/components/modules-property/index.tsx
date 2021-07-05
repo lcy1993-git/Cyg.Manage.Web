@@ -302,7 +302,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   //详情
   const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据删除');
+      message.error('请选择一条数据查看详情');
       return;
     }
     setDetailVisible(true);
