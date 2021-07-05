@@ -1,8 +1,9 @@
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
+import { getProjectInfo } from '@/services/project-management/all-project';
 import { useGetProjectEnum } from '@/utils/hooks';
+import { useMount, useRequest } from 'ahooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
-import e from 'express';
 import { isEmpty } from 'lodash';
 import moment, { Moment } from 'moment';
 import React, { memo, useEffect, useState } from 'react';
@@ -15,7 +16,7 @@ interface CreateProjectFormProps {
   company?: string;
   companyName?: string;
   status?: number;
-  projectInfo?: any;
+  projectId?: string;
   form?: any;
   engineerStart?: Moment;
   engineerEnd?: Moment;
@@ -28,27 +29,36 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     company,
     companyName,
     status,
-    projectInfo,
+    projectId,
     form,
     engineerStart,
     engineerEnd,
   } = props;
 
-  const [startDate, setStartDate] = useState(projectInfo?.startTime ?? null);
+  const [startDate, setStartDate] = useState<Moment>();
+  const [endDate, setEndDate] = useState<Moment>();
   const [dataSourceType, setDataSourceType] = useState<number>();
   const [disRangeValue, setDisRangeValue] = useState<number>();
   const [pileRangeValue, setPileRangeValue] = useState<number>();
 
-  // const { data: areaSelectData } = useGetSelectData(
-  //   { url: '/Area/GetList', extraParams: { pId: areaId } },
-  //   { ready: !!areaId, refreshDeps: [areaId] },
-  // );
+  const { data: projectInfo, run } = useRequest(getProjectInfo, {
+    onSuccess: () => {
+      setStartDate(moment(projectInfo?.startTime));
+      setEndDate(moment(projectInfo?.endTime));
+    },
+    manual: true,
+  });
+
+  useMount(() => {
+    projectId && run(projectId);
+  });
+
   const disableDate = (current: any) => {
     return current < moment('2010-01-01') || current > moment('2051-01-01');
   };
 
   useEffect(() => {
-    setDataSourceType(projectInfo?.dataSourceType);
+    setDataSourceType(Number(projectInfo?.dataSourceType));
   }, [JSON.stringify(projectInfo)]);
 
   const {
@@ -203,29 +213,37 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             fieldKey={[field.fieldKey, 'startTime']}
             name={isEmpty(field) ? 'startTime' : [field.name, 'startTime']}
             required
-            dependencies={['startTime']}
+            dependencies={['startTime', 'endTime']}
             rules={[
               { required: true, message: '项目开始日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
-                    moment(new Date(value).getTime()).isAfter(
-                      engineerStart
-                        ? engineerStart
-                        : new Date(getFieldValue('startTime')).getTime(),
-                    ) ||
-                    moment(new Date(value).getTime()).isSame(
-                      engineerStart
-                        ? engineerStart
-                        : new Date(getFieldValue('startTime')).getTime(),
-                      'day',
-                    ) ||
+                    moment(new Date(value).getTime()).isBefore(moment(endDate)) ||
                     !value ||
-                    !getFieldValue('startTime')
+                    !getFieldValue('startTime') ||
+                    !endDate
                   ) {
-                    return Promise.resolve();
+                    if (
+                      getFieldValue('startTime')
+                        ? moment(new Date(value).getTime()).isAfter(
+                            engineerStart
+                              ? engineerStart
+                              : new Date(getFieldValue('startTime')).getTime(),
+                          ) ||
+                          moment(new Date(value).getTime()).isSame(
+                            engineerStart
+                              ? engineerStart
+                              : new Date(getFieldValue('startTime')).getTime(),
+                            'day',
+                          )
+                        : true
+                    ) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject('"项目开始日期"不得早于"工程开始日期"');
                   }
-                  return Promise.reject('"项目开始日期"不得早于"工程开始日期"');
+                  return Promise.reject('"项目开始日期"必须早于"项目结束日期"');
                 },
               }),
             ]}
@@ -246,39 +264,51 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'endTime']}
             name={isEmpty(field) ? 'endTime' : [field.name, 'endTime']}
-            dependencies={['endTime']}
+            dependencies={['endTime', 'startTime']}
             required
             rules={[
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  console.log(new Date(value).getTime(), engineerEnd, '11111111111111111');
-
                   if (
-                    new Date(value).getTime() > new Date(startDate).getTime() ||
+                    moment(new Date(value).getTime()).isAfter(moment(startDate)) ||
                     !value ||
-                    !getFieldValue('startTime')
+                    !getFieldValue('startTime') ||
+                    !startDate
                   ) {
                     if (
-                      moment(new Date(value).getTime()).isBefore(
-                        engineerEnd ? engineerEnd : new Date(getFieldValue('endTime')).getTime(),
-                      ) ||
-                      moment(new Date(value).getTime()).isSame(
-                        engineerEnd ? engineerEnd : new Date(getFieldValue('endTime')).getTime(),
-                        'day',
-                      )
+                      getFieldValue('endTime')
+                        ? moment(new Date(value).getTime()).isBefore(
+                            engineerEnd
+                              ? engineerEnd
+                              : new Date(getFieldValue('endTime')).getTime(),
+                          ) ||
+                          moment(new Date(value).getTime()).isSame(
+                            engineerEnd
+                              ? engineerEnd
+                              : new Date(getFieldValue('endTime')).getTime(),
+                            'day',
+                          )
+                        : true
                     ) {
                       return Promise.resolve();
                     }
                     return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                   }
 
-                  return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
+                  return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
                 },
               }),
             ]}
           >
-            <DatePicker placeholder="请选择" disabledDate={disableDate} format={'yyyy-MM-DD'} />
+            <DatePicker
+              placeholder="请选择"
+              disabledDate={disableDate}
+              format={'yyyy-MM-DD'}
+              onChange={(value: any) => {
+                setEndDate(value);
+              }}
+            />
           </CyFormItem>
         </div>
       </div>

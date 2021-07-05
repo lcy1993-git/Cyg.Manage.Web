@@ -15,12 +15,15 @@ import pdfjs from 'pdfjs-dist';
 import FormSwitch from '@/components/form-switch';
 import { getClientCategorys } from '@/services/personnel-config/company-user';
 import rule from '../../news-rule';
+import { flatten } from '@/utils/utils';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
   titleForm: any;
   htmlContent?: string;
   type?: 'edit' | 'add';
+  getPersonArray?: (array: any) => void;
+  personDefaultValue?: any;
 }
 
 const { BtnMenu } = E;
@@ -113,7 +116,7 @@ class AlertMenu extends BtnMenu {
 // }
 
 const TextEditorModal = (props: EditorParams) => {
-  const { onChange, titleForm, htmlContent } = props;
+  const { onChange, titleForm, htmlContent, getPersonArray, personDefaultValue } = props;
 
   const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
   const { data } = useRequest(() => getClientCategorys(), {});
@@ -136,10 +139,12 @@ const TextEditorModal = (props: EditorParams) => {
   }, [data]);
 
   const mapTreeData = (data: any) => {
+    const keyValue = uuid.v1();
     return {
       title: data.text,
-      value: data.id,
-      key: uuid.v1(),
+      value: keyValue,
+      key: keyValue,
+      chooseValue: data.id,
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };
@@ -176,6 +181,10 @@ const TextEditorModal = (props: EditorParams) => {
       })
       .slice(0, 1);
   }, [JSON.stringify(groupData)]);
+
+  useEffect(() => {
+    getPersonArray?.(flatten(handleData));
+  }, [JSON.stringify(handleData)]);
 
   // useEffect(() => {
 
@@ -225,6 +234,16 @@ const TextEditorModal = (props: EditorParams) => {
       editor.destroy();
     };
   }, [htmlContent]);
+
+  useEffect(() => {
+    if (personDefaultValue) {
+      const flattenArray = flatten(handleData);
+      const handlePersonUserIds = flattenArray.filter((item) => personDefaultValue.includes(item.chooseValue)).map((item) => item.value);
+      titleForm.setFieldsValue({
+        userIds: handlePersonUserIds,
+      });
+    }
+  }, [JSON.stringify(personDefaultValue), JSON.stringify(handleData)]);
 
   return (
     <>
