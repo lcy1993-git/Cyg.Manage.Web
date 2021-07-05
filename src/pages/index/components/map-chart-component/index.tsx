@@ -58,6 +58,8 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     manual: true,
   });
 
+  console.log(mapStatisticData);
+
   const projectTotalNumber = useMemo(() => {
     return mapStatisticData?.reduce((sum, item) => {
       return sum + item.projectQuantity;
@@ -89,16 +91,14 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           if (nameIndex > -1) {
             return `
                             <span style="color: #fff">${name}</span> <br />
-                            <span style="color: #2AFE97">项目数量</span>: <span style="color: #fff">${
-                              getMapStatisticData[nameIndex!].projectQuantity
-                            }</span>
-                            <div style="color: #2AFE97">可视化成果: <a onclick=setSelectCity("${
-                              cityCodeObject[name] ?? name
-                            }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</a></div>
+                            <span style="color: #2AFE97">项目数量</span>: <span style="color: #fff">${getMapStatisticData[nameIndex!].projectQuantity
+              }</span>
+                            <div style="color: #2AFE97">可视化成果: <a onclick=setSelectCity("${cityCodeObject[name] ?? name
+              }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</a></div>
                             
                         `;
           }
-            return `
+          return `
                         <span style="color: #fff">${name}</span>  <br />
                         <span style="color: #2AFE97">项目数量:</span> <span style="color: #fff">0</span>
                     `;
@@ -344,8 +344,42 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     <div className={styles.mapChartComponent}>
       <div className={styles.mapChartComponentTipInfo}>
         <div className={styles.mapChartComponentProjectNumber}>
-          <ChartBox tltleWidthLevel="big" title="当前项目数量" titleAlign="left">
-            <div className={styles.projectTotalNumber}>
+          <ChartBox tltleWidthLevel="big" title="" titleAlign="left">
+            <div className={styles.projectNumberWrap}>
+              <div className={styles.project1}>
+                <div className={styles.number}>
+                  <span>当前区域项目数量</span>
+                  <span>{projectTotalNumber}个</span>
+                </div>
+                <div>
+                  <Button
+                    loading={requestExportLoading}
+                    type="primary"
+                    onClick={exportHomeStatisticEvent}
+                    className={styles.exportButton}
+                  >导出项目</Button>
+                </div>
+              </div>
+
+              <div className={styles.project1}>
+                <div>包含未选择行政</div>
+                <div className={styles.number}>
+                  <span>
+                    级别区域的项目
+                  </span>
+                  <span>300个</span>
+                </div>
+                <div>
+                  <Button
+                    loading={false}
+                    type="primary"
+                    onClick={() => { }}
+                    style={{ width: "100%" }}
+                  >跳转可视化</Button>
+                </div>
+              </div>
+            </div>
+            {/* <div className={styles.projectTotalNumber}>
               <div className="flex1 flex">
                 <div className={styles.projectTotalNumberIcon}>
                   <img src={ProjectNumberIcon} />
@@ -362,10 +396,35 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   导出
                 </Button>
               </div>
-            </div>
+            </div> */}
           </ChartBox>
         </div>
-        <div className="flex1"></div>
+        <div className={styles.mapStatisticContent}>
+          <div className={styles.mapStatisticContentDataSplit}>
+            <div className={styles.dataSplitContent}>
+              <div className={styles.dataSplitContentHalo}></div>
+              <div className={styles.dataSplitMenu}>
+                <div className={styles.dataSplitMenuItem}>
+                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.orange}`}></span>
+                  <span className={styles.dataSplitMenuItemContent}>1000 - 1000+</span>
+                </div>
+                <div className={styles.dataSplitMenuItem}>
+                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.lightGreen}`}></span>
+                  <span className={styles.dataSplitMenuItemContent}>100 - 1000</span>
+                </div>
+                <div className={styles.dataSplitMenuItem}>
+                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.green}`}></span>
+                  <span className={styles.dataSplitMenuItemContent}>10 - 100</span>
+                </div>
+                <div className={styles.dataSplitMenuItem}>
+                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.blue}`}></span>
+                  <span className={styles.dataSplitMenuItemContent}>0 - 10</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
         <div className={styles.mapChartComponentProjectAreaTab}>
           <span className={`${styles.areaSpan} ${styles.hasChoose}`} onClick={provinceClickEvent}>
             省
@@ -391,29 +450,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         </div>
       </div>
       <div className={styles.mapStatisticContent}>
-        <div className={styles.mapStatisticContentDataSplit}>
-          <div className={styles.dataSplitContent}>
-            <div className={styles.dataSplitContentHalo}></div>
-            <div className={styles.dataSplitMenu}>
-              <div className={styles.dataSplitMenuItem}>
-                <span className={`${styles.dataSplitMenuItemIcon} ${styles.orange}`}></span>
-                <span className={styles.dataSplitMenuItemContent}>1000 - 1000+</span>
-              </div>
-              <div className={styles.dataSplitMenuItem}>
-                <span className={`${styles.dataSplitMenuItemIcon} ${styles.lightGreen}`}></span>
-                <span className={styles.dataSplitMenuItemContent}>100 - 1000</span>
-              </div>
-              <div className={styles.dataSplitMenuItem}>
-                <span className={`${styles.dataSplitMenuItemIcon} ${styles.green}`}></span>
-                <span className={styles.dataSplitMenuItemContent}>10 - 100</span>
-              </div>
-              <div className={styles.dataSplitMenuItem}>
-                <span className={`${styles.dataSplitMenuItemIcon} ${styles.blue}`}></span>
-                <span className={styles.dataSplitMenuItemContent}>0 - 10</span>
-              </div>
-            </div>
-          </div>
-        </div>
+
         <div className={styles.mapConent} ref={divRef} />
       </div>
     </div>
