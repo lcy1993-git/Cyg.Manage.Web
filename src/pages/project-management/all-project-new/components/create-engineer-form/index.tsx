@@ -32,8 +32,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     maxEnd,
   } = props;
 
-  console.log(minStart, maxEnd, '1111111111');
-
   const [areaId, setAreaId] = useState<string>('');
   const [libId, setLibId] = useState<string>('');
 
