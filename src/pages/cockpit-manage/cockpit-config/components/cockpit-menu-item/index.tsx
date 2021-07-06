@@ -1,0 +1,80 @@
+import React from "react";
+import { CockpitProps } from '../../index';
+import uuid from "node-uuid";
+import styles from './index.less';
+
+interface ChildrenData {
+  name: string;
+  componentProps: string[];
+  title: string;
+}
+
+interface CockpitMenuItemProps {
+  type: string;
+  name: string;
+  icon: string;
+  childrenData: ChildrenData[];
+  configArray: CockpitProps[];
+  addConfig: (a0: any) => void
+}
+
+const CockpitMenuItem: React.FC<CockpitMenuItemProps> = ({
+  type,
+  name,
+  icon,
+  childrenData,
+  configArray,
+  addConfig
+}) => {
+
+  const addConfigItem = (e: ChildrenData) => {
+    console.log(1);
+    
+    addConfig?.(
+      {
+        name: e.name,
+        componentProps: e.componentProps,
+        x: 0,
+        y: 0,
+        w: 3,
+        h: 11,
+        key: uuid.v1()
+      }
+    )
+  }
+
+  const childrenElement = () => {
+    return childrenData.map((item) => {
+      return (
+        <div className={styles.cockpitMenuItemItem}>
+          <div>
+            {item.title}
+          </div>
+          <div>
+            {
+              configArray.findIndex((e) => e.name === item.name) === -1 ?
+                <span className={styles.add} onClick={() => addConfigItem(item)}>+ 添加</span> :
+                <span className={styles.added}>已添加</span>
+            }
+          </div>
+        </div>
+      );
+    })
+  }
+
+  return (
+    <div className={styles.cockpitMenuItemWrap}>
+      <div className={styles.cockpitMenuItemTitle}>
+        <div>
+          <img src="" alt="" />
+        </div>
+        <div>
+          {name}
+        </div>
+      </div>
+      {childrenElement()}
+    </div>
+  );
+}
+
+export default CockpitMenuItem;
