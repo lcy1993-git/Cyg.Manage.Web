@@ -16,7 +16,6 @@ const { Search } = Input;
 
 const CheckMapping: React.FC<CheckMappingParams> = (props) => {
   const { inventoryOverviewId, invName, mappingId } = props;
-  console.log(inventoryOverviewId, invName, mappingId);
 
   const tableRef = useRef<HTMLDivElement>(null);
   const [createMethod, setCreateMethod] = useState<string>('');

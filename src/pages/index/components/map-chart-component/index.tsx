@@ -80,13 +80,12 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     return {
       tooltip: {
         trigger: 'item',
-        showDelay: 400,
+        showDelay: 10,
         backgroundColor: 'rgba(0,0,0,0.9)',
         borderColor: '#000',
         enterable: true, // 鼠标是否可以进入浮层
         position(pt: any, params: any) {
           if(params.name === mapStatus.name) {
-            console.log(1);
             
             return [mapStatus.pt[0] - 105, mapStatus.pt[1] - 65];
           }else{

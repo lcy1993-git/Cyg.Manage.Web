@@ -68,7 +68,6 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
             textFillColor = 'rgba(249, 149, 52, 1)';
         }
         iconFontText = '\ue884';
-        console.log(feature.getProperties().type)
         if(feature.getProperties().type === '1'){
             iconFontText = '\ue896';
         }

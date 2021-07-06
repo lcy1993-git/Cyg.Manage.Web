@@ -342,7 +342,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       }
       if (searchParams.areaType !== '-1') {
         if (areaRef && areaRef.current) {
-          console.log(lastSaveAreaInfo);
           // @ts-ignore
           areaRef?.current?.initComponentData(lastSaveAreaInfo);
         }

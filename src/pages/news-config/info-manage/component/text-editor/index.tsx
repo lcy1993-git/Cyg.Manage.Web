@@ -1,4 +1,4 @@
-import { Form, Input, TreeSelect } from 'antd';
+import { Form, Input, TreeSelect, message } from 'antd';
 import React, { useEffect, useMemo } from 'react';
 import E from 'wangeditor';
 import { Dispatch } from 'react';
@@ -64,10 +64,8 @@ class AlertMenu extends BtnMenu {
             .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
             .then((result: any) => {
               that.txt.append(result.value);
-              // console.log(that.txt.html());
             })
             .catch((a: any) => {
-              console.log('error', a);
             })
             .done();
 
@@ -98,13 +96,12 @@ class AlertMenu extends BtnMenu {
                   pdfHtml += `<image style="width:100%;height:auto" src="${canvas.toDataURL(
                     'image/png',
                   )}"></image>`;
-                  // console.log(that.txt.html());
                 });
                 that.txt.append(pdfHtml);
               }
             })
             .catch((err: any) => {
-              console.log('文件读取失败');
+              message.error('文件读取失败');
             });
         };
         event.target.value = '';

@@ -180,7 +180,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               { required: true, message: '项目开始日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  console.log(value);
                   if (
                     new Date(value).getTime() >= new Date(getFieldValue('startTime')).getTime() ||
                     !value ||
@@ -220,9 +219,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     !value ||
                     !getFieldValue('startTime')
                   ) {
-                    console.log(1);
                     if (new Date(value).getTime() > new Date(getFieldValue('endTime')).getTime()) {
-                      console.log(2);
                       return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                     }
                     return Promise.resolve();

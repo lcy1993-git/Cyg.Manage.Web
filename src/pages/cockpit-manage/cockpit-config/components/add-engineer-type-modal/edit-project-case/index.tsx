@@ -41,7 +41,6 @@ const EditProjectCaseModal: React.FC<EditProjectCaseStatistic> = (props) => {
       });
     });
   };
-  console.log(currentRecord.componentProps);
 
   useEffect(() => {
     if (currentRecord.componentProps && currentRecord.componentProps.length > 0) {

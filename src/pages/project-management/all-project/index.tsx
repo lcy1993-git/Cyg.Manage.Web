@@ -229,7 +229,6 @@ const ProjectManagement: React.FC = () => {
       const thisProjectId = projectIds[0];
       const projectInfo = await getProjectInfo(thisProjectId);
       setDataSourceType(Number(projectInfo.dataSourceType));
-      // console.log(projectInfo);
 
       const { allots = [] } = projectInfo ?? {};
       if (allots.length > 0) {

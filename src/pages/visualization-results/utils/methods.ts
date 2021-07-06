@@ -642,10 +642,8 @@ const CalcTowerAngle = (startLine: any, endLine: any, isLeft: boolean) => {
   endLine[0] = transform(endLine[0], 'EPSG:4326', 'EPSG:3857');
   endLine[1] = transform(endLine[1], 'EPSG:4326', 'EPSG:3857');
   let startLineAngle = computeAngle(startLine[0], startLine[1]);
-  console.log(startLineAngle, 1)
   let startLineSupAngle = startLineAngle > 180 ? startLineAngle - 180 : 180 + startLineAngle;
   let endLineAngle = computeAngle(endLine[0], endLine[1]);
-  console.log(endLineAngle, 2)
   let angle = Math.abs(endLineAngle - startLineAngle);
   if (angle >= 180) angle = 360 - angle; //即为补角
   if (startLineAngle <= 180) {

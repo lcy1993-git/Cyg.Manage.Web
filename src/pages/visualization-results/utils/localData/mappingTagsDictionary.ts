@@ -499,7 +499,7 @@ function getMappingTagsDictionary() {
 
     return JSON.stringify(mappingTagsDictionary);
   } else {
-    console.log("mappingTagsDictionary异常！！！请重新加载。。。'")
+    console.error("mappingTagsDictionary异常！！！请重新加载。。。'")
     return;
   }
 

@@ -124,8 +124,8 @@ const PersonnelLoad: React.FC<Props> = (props) => {
                     <div style="color: #2AFE97">所有项目列表：<span  style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;" onclick=toAllProject('${personId}')>跳转</span></div>
                     `;
           }
-          return borderStylesHTML + `${name.name}<br />
-                  项目数量:${name.value}`;
+          return borderStylesHTML + `<span style="color: #2AFE97">${name.name}</span><br />
+          <span style="color: #2AFE97">项目数量:</span><span style="color: #fff">${name.value}</span>`;
         },
       },
       xAxis: {

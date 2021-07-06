@@ -402,7 +402,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             //           continue;
             //         let line0attri = looplines[0];
             //         let line1attri = looplines[1];
-            //         console.log(111)
             //         if (line0attri.properties.loop_seq > line1attri.properties.loop_seq) {
             //           line0attri = looplines[1];
             //           line1attri = looplines[0];

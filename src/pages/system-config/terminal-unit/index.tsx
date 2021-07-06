@@ -180,7 +180,6 @@ const MapField: React.FC = () => {
     const TerminalUnitData = await run(editDataId);
 
     TerminalUnitData.expiryTime = moment(TerminalUnitData.expiryTime);
-    console.log(TerminalUnitData.expiryTime);
 
     editForm.setFieldsValue(TerminalUnitData);
   };

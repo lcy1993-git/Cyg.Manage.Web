@@ -1,6 +1,5 @@
 import { DatePicker, DatePickerProps } from 'antd';
 import moment, { Moment } from 'moment';
-import { withEnum } from '../enum-select';
 
 interface Props {
   value?: string;
@@ -13,10 +12,8 @@ interface Props {
  * @returns JSX.Element
  */
 const DatePickerForm: React.FC<Props & DatePickerProps> = ({value, onChange, picker, ...rest}) => {
-  const momentValue = moment(value);
   const format = picker === 'year' ? "YYYY" : "YYYY-MM-DD";
   const handleDate = (v: Moment | null, m: string) => {
-    console.log(window.a = moment(m));
     
     onChange!(moment(m).format(format))
   };

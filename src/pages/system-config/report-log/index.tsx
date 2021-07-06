@@ -214,7 +214,6 @@ const ManageUser: React.FC = () => {
     },
   ];
 
-  // console.log(data?.content ? JSON.parse(data?.content) : null);
 
   return (
     <PageCommonWrap>

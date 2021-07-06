@@ -156,10 +156,6 @@ export const getSelectKeyByKeyword = (data: TreeNodeType[], keyWord: string) => 
   let selectKey: string[] = [];
   const recursionFn = (data:TreeNodeType[] ) => {
     data.forEach((item) => {
-      console.log(item.levelCategory === 5, "=5");
-      console.log(item.levelCategory === 6, "=6");
-      console.log(item.title.includes(keyWord), "=keyWord");
-      
       if((item.levelCategory === 5 || item.levelCategory === 6) && item.title.includes(keyWord)) {
         selectKey.push(item.key)
       }

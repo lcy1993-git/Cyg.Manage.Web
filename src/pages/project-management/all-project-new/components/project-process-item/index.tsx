@@ -13,7 +13,6 @@ interface ProjectProcessItemProps {
 
 const ProjectProcessItem: React.FC<ProjectProcessItemProps> = (props) => {
   const { time, title, isArrangePerson = false, users } = props;
-  console.log(users);
 
   const usersElement = users?.map((item) => {
     return (

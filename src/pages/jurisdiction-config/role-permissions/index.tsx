@@ -232,7 +232,6 @@ const RolePermissions: React.FC = () => {
     const editDataId = editData.id;
 
     const AuthorizationData = await run(editDataId);
-    console.log(AuthorizationData);
 
     editForm.setFieldsValue(AuthorizationData);
     setEditFormVisible(true);

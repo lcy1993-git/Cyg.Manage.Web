@@ -102,7 +102,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           document.body.removeChild(link);
         }
       } catch (error) {
-        console.log(error);
+        message.error(error);
       } finally {
         setRequestLoading(false);
       }
@@ -140,7 +140,6 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           document.body.removeChild(link);
         }
       } catch (error) {
-        console.log(error);
       } finally {
         setRequestLoading(false);
       }
@@ -157,7 +156,6 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       getCompileTree(projectInfo.projectId);
     }
   }, [state, currentTab]);
-  // console.log(state, currentTab, '111111');
 
   return (
     <>

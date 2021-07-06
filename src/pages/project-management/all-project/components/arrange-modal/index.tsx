@@ -67,8 +67,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           outerAuditUsers,
         };
 
-        console.log(arrangeInfo);
-
         await saveArrange(arrangeInfo);
       }
       if (selectType === '1') {

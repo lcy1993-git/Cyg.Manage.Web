@@ -298,7 +298,6 @@ const InfoManage: React.FC = () => {
         ...values,
         userIds: finallyUserIds,
       };
-      console.log(submitInfo);
 
       await updateNewsItem(submitInfo);
       refresh();

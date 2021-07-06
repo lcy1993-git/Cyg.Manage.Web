@@ -213,7 +213,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const arrange = async (projectId: string, projectType?: number, allotCompanyId?: string) => {
     const projectInfo = await getProjectInfo(projectId);
-    console.log(projectInfo);
     setCurrentDataSourceType(Number(projectInfo?.dataSourceType));
     setCurrentArrageProjectId(projectId);
     setCurrentProjectArrageType(projectType ? String(projectType) : undefined);
@@ -323,8 +322,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           arrangeType = allot.allotType;
           allotCompanyId = allot.allotCompanyGroup;
         }
-        // console.log(stateInfo)
-        // console.log(stateInfo.status === 17 && stateInfo.auditStatus === 13)
         return (
           <>
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (

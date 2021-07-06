@@ -87,7 +87,6 @@ function generateProjectTree(projectList: ProjectListByAreaType[]): TreeNodeType
 }
 
 function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
-  console.log(item);
 
   return {
     id: item.id,
@@ -178,7 +177,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     } else if (!isFirstRequest && keyWord) {
       // 实时搜索定位
       setButtonActive(4);
-      console.log(getSelectKeyByKeyword(treeData, keyWord));
 
       setSelectedKeys(getSelectKeyByKeyword(treeData, keyWord));
       setExpandedKeys(flattenDeepToKey(treeData, 5, 'key', '-1'));
@@ -400,7 +398,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         setTreeData(data);
         initSideTree(data);
         // 修复初次请求默认到县级的bug
-        console.log(isFirstRequest);
       } else {
         message.warning('无数据');
       }

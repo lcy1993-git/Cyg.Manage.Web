@@ -383,7 +383,6 @@ const Material: React.FC<libParams> = (props) => {
       return;
     }
     const deleteIds = tableSelectRows?.map((item) => item.id);
-    console.log(deleteIds);
 
     await deleteMaterialItem({ libId: libId, ids: deleteIds });
     refresh();
