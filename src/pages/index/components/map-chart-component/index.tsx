@@ -6,7 +6,7 @@ import {
   MapStatisticsData,
 } from '@/services/index';
 import { useLocalStorageState, useMount, useMouse, useRequest, useSize } from 'ahooks';
-
+import borderStylesHTML from '../../utils/borderStylesHTML';
 import styles from './index.less';
 
 import * as echarts from 'echarts';
@@ -25,6 +25,11 @@ import { exportHomeStatisticData } from '@/services/operation-config/cockpit';
 interface MapChartComponentProps {
   currentAreaInfo: AreaInfo;
   setCurrentAreaInfo: (areaInfo: any) => void;
+}
+
+let mapStatus = {
+  pt: [0, 0],
+  name: ""
 }
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
@@ -58,8 +63,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     manual: true,
   });
 
-  console.log(mapStatisticData);
-
   const projectTotalNumber = useMemo(() => {
     return mapStatisticData?.reduce((sum, item) => {
       return sum + item.projectQuantity;
@@ -80,16 +83,29 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         showDelay: 400,
         backgroundColor: 'rgba(0,0,0,0.9)',
         borderColor: '#000',
-        position(pt: any) {
-          return [pt[0] - 95, pt[1] - 74];
+        enterable: true, // 鼠标是否可以进入浮层
+        position(pt: any, params: any) {
+          if(params.name === mapStatus.name) {
+            console.log(1);
+            
+            return [mapStatus.pt[0] - 105, mapStatus.pt[1] - 65];
+          }else{
+            mapStatus={
+              name: params.name,
+              pt
+            }
+            return [pt[0] - 110, pt[1] - 65];
+          }
+
         },
         confine: true,
         formatter(params: any) {
           const { name } = params;
 
           const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name);
+
           if (nameIndex > -1) {
-            return `
+            return borderStylesHTML + `
                             <span style="color: #fff">${name}</span> <br />
                             <span style="color: #2AFE97">项目数量</span>: <span style="color: #fff">${getMapStatisticData[nameIndex!].projectQuantity
               }</span>
@@ -98,7 +114,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                             
                         `;
           }
-          return `
+          return borderStylesHTML + `
                         <span style="color: #fff">${name}</span>  <br />
                         <span style="color: #2AFE97">项目数量:</span> <span style="color: #fff">0</span>
                     `;
@@ -179,7 +195,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     getMapStatisticData: MapStatisticsData[],
     currentAreaLevel: string,
   ) => {
-    //setAreaId(areaId);
     const option = getMapOption(currentAreaId, getMapStatisticData);
     const resData = await getMapData(currentAreaId);
 
@@ -223,11 +238,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         myChart.dispatchAction({
           type: 'downplay',
         });
-        // if (params.data && params.data.value != undefined) {
-        //     myChart.dispatchAction({
-        //         type: 'downplay'
-        //     });
-        // }
       });
     }
   };
@@ -379,24 +389,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                 </div>
               </div>
             </div>
-            {/* <div className={styles.projectTotalNumber}>
-              <div className="flex1 flex">
-                <div className={styles.projectTotalNumberIcon}>
-                  <img src={ProjectNumberIcon} />
-                </div>
-                <div className={styles.projectTotalNumberShow}>{projectTotalNumber}</div>
-                <div className={styles.projectTotalNumberUnit}>个</div>
-              </div>
-              <div className={styles.exportButton}>
-                <Button
-                  loading={requestExportLoading}
-                  type="primary"
-                  onClick={exportHomeStatisticEvent}
-                >
-                  导出
-                </Button>
-              </div>
-            </div> */}
           </ChartBox>
         </div>
         <div className={styles.mapStatisticContent}>
