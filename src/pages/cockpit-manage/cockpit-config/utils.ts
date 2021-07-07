@@ -1,3 +1,8 @@
+import projectControl from '@/assets/cockpit-assets/projectControl.png';
+import delivery from '@/assets/cockpit-assets/delivery.png';
+import other from '@/assets/cockpit-assets/other.png';
+import projectType from '@/assets/cockpit-assets/projectType.png';
+
 export interface CockpitProps {
     name: string;
     w: number;
@@ -19,7 +24,7 @@ export const cockpitMenuItemData = [
     {
       type: "projectControl",
       name: "项目管控",
-      icon: "projectControl",
+      icon: projectControl,
       childrenData: [
         {
           name: 'mapComponent',
@@ -46,7 +51,7 @@ export const cockpitMenuItemData = [
     {
         type: "projectType",
         name: "工程类型统计",
-        icon: "projectType",
+        icon: projectType,
         childrenData: [
             {
                 title: "项目类型",
@@ -63,7 +68,7 @@ export const cockpitMenuItemData = [
     {
         type: "delivery",
         name: "交付情况",
-        icon: "delivery",
+        icon: delivery,
         childrenData: [
             {
                 title: "项目交付数量/设计费",
@@ -75,7 +80,7 @@ export const cockpitMenuItemData = [
     {
         type: "other",
         name: "其他",
-        icon: "other",
+        icon: other,
         childrenData: [
             {
                 title: "通知栏",

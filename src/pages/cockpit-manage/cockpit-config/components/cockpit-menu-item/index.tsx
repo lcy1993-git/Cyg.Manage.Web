@@ -1,5 +1,6 @@
 import React from "react";
-import { CockpitProps } from '../../index';
+import { CockpitProps } from '../../utils';
+import addIcon from '@/assets/cockpit-assets/add.png'
 import uuid from "node-uuid";
 import styles from './index.less';
 
@@ -53,7 +54,9 @@ const CockpitMenuItem: React.FC<CockpitMenuItemProps> = ({
           <div>
             {
               configArray.findIndex((e) => e.name === item.name) === -1 ?
-                <span className={styles.add} onClick={() => addConfigItem(item)}>+ 添加</span> :
+                <span className={styles.add} onClick={() => addConfigItem(item)}>
+                  <img className={styles.addIcon} src={addIcon} />
+                  添加</span> :
                 <span className={styles.added}>已添加</span>
             }
           </div>
@@ -65,8 +68,8 @@ const CockpitMenuItem: React.FC<CockpitMenuItemProps> = ({
   return (
     <div className={styles.cockpitMenuItemWrap}>
       <div className={styles.cockpitMenuItemTitle}>
-        <div>
-          <img src="" alt="" />
+        <div className={styles.img}>
+          <img src={icon} alt="" />
         </div>
         <div>
           {name}
