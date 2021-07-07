@@ -557,7 +557,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   titlekey="text"
                   placeholder="请选择"
                   onChange={(value: any) => {
-                    if (value === 2) {
+                    if (value === 2 || value === 1) {
                       form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                     }
                     setDataSourceType(value);
@@ -581,6 +581,22 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   <InputNumber
                     disabled
                     placeholder="“无需现场数据”项目，免设置此条目"
+                    style={{ width: '100%' }}
+                    value={disRangeValue}
+                  />
+                </CyFormItem>
+              ) : dataSourceType === 1 ? (
+                <CyFormItem
+                  label="交底范围(米)"
+                  // initialValue={'50'}
+                  name="disclosureRange"
+                  labelWidth={120}
+                  required
+                  align="right"
+                >
+                  <InputNumber
+                    disabled
+                    placeholder="“点位导入”项目，免设置此条目"
                     style={{ width: '100%' }}
                     value={disRangeValue}
                   />
@@ -637,6 +653,22 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                     value={pileRangeValue}
                     disabled
                     placeholder="“无需现场数据”项目，免设置此条目"
+                    style={{ width: '100%' }}
+                  />
+                </CyFormItem>
+              ) : dataSourceType === 1 ? (
+                <CyFormItem
+                  label="桩位范围(米)"
+                  // initialValue={'50'}
+                  name="pileRange"
+                  labelWidth={120}
+                  required
+                  align="right"
+                >
+                  <InputNumber
+                    value={pileRangeValue}
+                    disabled
+                    placeholder="“点位导入”项目，免设置此条目"
                     style={{ width: '100%' }}
                   />
                 </CyFormItem>

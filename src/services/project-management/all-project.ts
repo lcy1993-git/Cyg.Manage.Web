@@ -396,7 +396,7 @@ interface ProjectInfoParams {
   disclosureRange: number;
   pileRange: number;
   deadline: string;
-  dataSourceType: string;
+  dataSourceType: number;
   dataSourceTypeText: string;
   createdOn: string;
   createdCompanyName: string;

@@ -51,7 +51,7 @@ const WareHouse: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="物料利库" width="230px">
+        <TableSearch label="物料利库" width="278px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}

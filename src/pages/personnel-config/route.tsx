@@ -20,6 +20,12 @@ const UserFeedBack = Loadable({
   delay: 150,
 });
 
+const WorkHandover = Loadable({
+  loader: () => import('@/pages/personnel-config/work-handover'),
+  loading: Loading,
+  delay: 150,
+});
+
 export default [
   {
     title: '管理用户',
@@ -36,4 +42,10 @@ export default [
     path: '/personnel-config/feedback',
     component: <UserFeedBack />,
   },
+  {
+    title: '工作交接',
+    path: '/personnel-config/work-handover',
+    component: <WorkHandover />,
+  },
+
 ];

@@ -1,8 +1,8 @@
 import CyFormItem from '@/components/cy-form-item';
-import FileUpload, { UploadStatus } from '@/components/file-upload';
+import FileUpload from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
 import { useBoolean, useControllableValue } from 'ahooks';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 import { Input, Form, message, Row, Col, Modal, Button } from 'antd';
@@ -57,6 +57,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
       })
       .then(
         () => {
+          message.success('导入成功');
           return Promise.resolve();
         },
         (res) => {
@@ -98,7 +99,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
             </CyFormItem>
           </Col>
           <Col>
-            <CyFormItem labelWidth={120} label="所属供电公司" name="companyId" required>
+            <CyFormItem labelWidth={120} label="所属供电公司" name="companyId">
               <UrlSelect
                 style={{ width: '342px' }}
                 url="/ElectricityCompany/GetListByAreaId"

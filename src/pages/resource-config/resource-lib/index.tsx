@@ -60,7 +60,6 @@ const ResourceLib: React.FC = () => {
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
   });
-  console.log(currentManageId);
 
   const { setResourceManageFlag: setResourceManageFlag, resourceManageFlag } = useLayoutStore();
 

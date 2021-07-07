@@ -1,6 +1,6 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
 import CompanyUserForm from './components/add-edit-form';
@@ -29,6 +29,8 @@ import CyTag from '@/components/cy-tag';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import CommonTitle from '@/components/common-title';
 import AccreditStatistic from './components/accredit-statistic';
+import { history } from 'umi';
+import { useLayoutStore } from '@/layouts/context';
 
 const { Search } = Input;
 
@@ -77,6 +79,9 @@ const CompanyUser: React.FC = () => {
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
+  const { setWorkHandoverFlag: setWorkHandoverFlag, workHandoverFlag } = useLayoutStore();
+  console.log(workHandoverFlag);
+
   const rightButton = () => {
     return (
       <div>
@@ -99,13 +104,36 @@ const CompanyUser: React.FC = () => {
           </Button>
         )}
         {buttonJurisdictionArray?.includes('company-user-reset-password') && (
-          <Button onClick={() => resetEvent()}>
+          <Button className="mr7" onClick={() => resetEvent()}>
             <ReloadOutlined />
             重置密码
           </Button>
         )}
+        {buttonJurisdictionArray?.includes('company-user-work-handover') && (
+          <Button
+            onClick={() => {
+              !workHandoverFlag
+                ? handoverEvent()
+                : message.error('当前已打开“工作交接”界面，请关闭后重试');
+            }}
+          >
+            <SwapOutlined />
+            工作交接
+          </Button>
+        )}
       </div>
     );
+  };
+
+  //工作交接跳转
+  const handoverEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择需要工作交接的用户');
+      return;
+    }
+    const userId = tableSelectRows[0].id;
+    const name = tableSelectRows[0].name;
+    history.push({ pathname: `/personnel-config/work-handover?id=${userId}&&name=${name}` });
   };
 
   //数据修改刷新
@@ -266,7 +294,7 @@ const CompanyUser: React.FC = () => {
       title: '部组',
       dataIndex: 'comapnyGroups',
       index: 'comapnyGroups',
-      width: '8%',
+      width: '10%',
       render: (text: any, record: any) => {
         const { comapnyGroups } = record;
         return (comapnyGroups ?? []).map((item: any) => {
@@ -313,7 +341,11 @@ const CompanyUser: React.FC = () => {
 
         const element = (authorizeClientTexts ?? []).map((item: string) => {
           return (
-            <TableStatus className="mr7" color={mapColor[item] ?? 'gray'} key={uuid.v1()}>
+            <TableStatus
+              className="mr7"
+              color={record.userStatus === 1 ? mapColor[item] ?? 'gray' : 'gray'}
+              key={uuid.v1()}
+            >
               {item}
             </TableStatus>
           );
