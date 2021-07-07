@@ -101,6 +101,7 @@ const LoginForm: React.FC = () => {
 
             <Form.Item className={styles.passwordInput} name="pwd" rules={formRules.password}>
               <Input
+                onPaste={(e) => e.preventDefault()} // 禁用粘贴
                 placeholder="密码"
                 className={styles.loginInput}
                 suffix={<ImageIcon imgUrl="lock.png" />}

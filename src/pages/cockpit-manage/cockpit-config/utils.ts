@@ -3,6 +3,13 @@ import delivery from '@/assets/cockpit-assets/delivery.png';
 import other from '@/assets/cockpit-assets/other.png';
 import projectType from '@/assets/cockpit-assets/projectType.png';
 
+export interface ChildrenData {
+  name: string;
+  componentProps: string[];
+  componentTitles?: string[];
+  title: string;
+}
+
 export interface CockpitProps {
     name: string;
     w: number;
@@ -34,6 +41,7 @@ export const cockpitMenuItemData = [
         {
           name: "personLoad",
           componentProps: ["person", "department", "company"],
+          componentTitles: ["生产负荷(员工)", "生产负荷(部组)", "生产负荷(公司)"],
           title: "生产负荷"
         },
         {
@@ -56,6 +64,7 @@ export const cockpitMenuItemData = [
             {
                 title: "项目类型",
                 componentProps: ["classify", "level", "category", "stage", "buildType"],
+                componentTitles: ["建设类型", "项目分类", "项目类别", "项目阶段", "电压等级"],
                 name: "projectType"
             },
             {
@@ -67,12 +76,13 @@ export const cockpitMenuItemData = [
     },
     {
         type: "delivery",
-        name: "交付情况",
+        name: "交付统计",
         icon: delivery,
         childrenData: [
             {
                 title: "项目交付数量/设计费",
                 componentProps: ["person", "department", "company"],
+                componentTitles: ["交付统计(员工)", "交付统计(部组)", "交付统计(公司)"],
                 name: "deliveryManage"
             }
         ]
@@ -85,6 +95,7 @@ export const cockpitMenuItemData = [
             {
                 title: "通知栏",
                 componentProps: ["wait", "arrange", "other"],
+                componentTitles: ["待结项", "待安排", "其他消息"],
                 name: "toDo"
             }
         ]

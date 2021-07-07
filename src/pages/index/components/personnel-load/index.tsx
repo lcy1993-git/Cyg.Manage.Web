@@ -39,7 +39,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
       id: 'person',
       name: '员工',
       value: '1',
-      title: '员工负荷',
+      title: '人员负荷',
     },
     {
       id: 'department',

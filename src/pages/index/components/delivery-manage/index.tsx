@@ -192,16 +192,6 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
             },
           },
         ],
-        // dataZoom: [//滑动条
-        //   {
-        //     yAxisIndex: [0],//这里是从X轴的0刻度开始
-        //     show: true,//是否显示滑动条，不影响使用
-        //     type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
-        //     start: 0, // 从头开始。
-        //     end: 100,
-        //     endValue: 2  // 一次性展示6个。
-        //   }
-        // ],
       };
     }
     return undefined;
@@ -217,7 +207,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   }, [JSON.stringify(startTime), JSON.stringify(endTime)]);
 
   return (
-    <ChartBox title="交付管理">
+    <ChartBox title="交付统计">
       <div className={styles.deliveryMange}>
         <div className={styles.deliveryManageStatisticCondition}>
           <div className={styles.deliverySelect}>

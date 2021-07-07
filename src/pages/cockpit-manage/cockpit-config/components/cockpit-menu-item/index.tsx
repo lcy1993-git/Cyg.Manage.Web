@@ -1,14 +1,10 @@
 import React from "react";
-import { CockpitProps } from '../../utils';
+import { CockpitProps, ChildrenData } from '../../utils';
 import addIcon from '@/assets/cockpit-assets/add.png'
 import uuid from "node-uuid";
 import styles from './index.less';
 
-interface ChildrenData {
-  name: string;
-  componentProps: string[];
-  title: string;
-}
+
 
 interface CockpitMenuItemProps {
   type: string;
