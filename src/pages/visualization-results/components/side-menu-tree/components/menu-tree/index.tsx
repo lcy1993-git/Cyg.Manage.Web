@@ -103,7 +103,8 @@ const MenuTree: React.FC<Props> = ({
               ) : null}
               <div style={{ height: "calc(100% - 36px)" }}>
 
-                { size.height &&
+                {
+                  size.height &&
                   <Tree
                     {...treeProps}
                     height={operrationHeight}
@@ -115,7 +116,7 @@ const MenuTree: React.FC<Props> = ({
                     treeData={treeData}
                     titleRender={
                       (data: any) => <span className={data.levelCategory > 4 ? styles.linkAble : ""}>{data.title}</span>}/>
-                    }
+                  }
               </div>
             </div>
           ) : null}

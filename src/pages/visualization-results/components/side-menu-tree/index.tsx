@@ -174,10 +174,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         // alert(-111111111111)
       }
       isFirstRequest = false;
-    } else if (!isFirstRequest && keyWord) {
+    } else {
       // 实时搜索定位
       setButtonActive(4);
-
       setSelectedKeys(getSelectKeyByKeyword(treeData, keyWord));
       setExpandedKeys(flattenDeepToKey(treeData, 5, 'key', '-1'));
     }
@@ -219,7 +218,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const store = useContainer();
   const { vState } = store;
   const { checkedProjectIdList, checkedProjectDateList } = vState;
-  const [filterCondition, setfilterCondition] = useState({ haveAnnotate: -1 });
+  const [filterCondition, setfilterCondition] = useState<any>({ haveAnnotate: -1 });
   /**
    * 根据用户实时选择的数据动态添加初始和截至时间
    */
@@ -393,12 +392,19 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     throttleInterval: 1000,
     refreshDeps: [filterCondition, tabActiveKey],
     onSuccess: () => {
+
+      // setTreeData([]);
+      // clearState();
+      // setSelectedKeys([]);
       if (treeListReponseData?.length) {
+
         const data = generateProjectTree(treeListReponseData);
+
         setTreeData(data);
         initSideTree(data);
         // 修复初次请求默认到县级的bug
       } else {
+        setTreeData([]);
         message.warning('无数据');
       }
     },
@@ -721,7 +727,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         defaultData={filterCondition}
         visible={filterModalVisibel}
         onChange={setFilterModalVisibel}
-        onSure={(values) => setfilterCondition(values)}
+        onSure={(values) => setfilterCondition({...values, keyWord})}
       />
     </div>
   );
