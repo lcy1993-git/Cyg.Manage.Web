@@ -74,11 +74,15 @@ export enum ProjectVoltageClasses {
 }
 
 export enum ProjectStatus {
-  '待安排' = 1,
-  '待勘察',
-  '待结项',
-  '待申请结项',
-  '已结项',
+  '未勘察' = 1,
+  '勘察中' = 2,
+  '已勘察' = 3,
+  '设计中' = 4,
+  '设计完成' = 7,
+  '待安排' = 14,
+  '结项中' = 15,
+  '已结项' = 16,
+  '已设计' = 19,
 }
 
 export enum ProjectSourceType {
