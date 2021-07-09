@@ -8,6 +8,7 @@ import CommonTitle from '@/components/common-title';
 import { useMount, useUnmount } from 'ahooks';
 import { useLayoutStore } from '@/layouts/context';
 import Description from './components/description';
+import EngineerTableList from './components/engineer-table-list';
 
 const { TabPane } = Tabs;
 
@@ -38,7 +39,7 @@ const WorkHandover: React.FC = () => {
           <div className={styles.moduleTabs}>
             <Tabs type="card" onChange={(key) => setClickTabKey(key)}>
               <TabPane tab="项目管理" key={'manage'}>
-                1
+              {/* <EngineerTableList /> */}
               </TabPane>
               <TabPane tab="作业任务" key={'mission'}>
                 2

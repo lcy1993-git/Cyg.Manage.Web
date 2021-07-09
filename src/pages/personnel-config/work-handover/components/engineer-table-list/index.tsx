@@ -7,11 +7,12 @@ import { TableContext } from '@/pages/project-management/all-project-new/compone
 
 import styles from './index.less';
 import moment from 'moment';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import EmptyTip from '@/components/empty-tip';
 import { useContext } from 'react';
 import { useEffect } from 'react';
 import { isNumber } from 'lodash';
+import uuid from 'node-uuid';
+import CyTag from '@/components/cy-tag';
 export interface AddProjectValue {
   engineerId: string;
   areaId: string;
@@ -19,13 +20,18 @@ export interface AddProjectValue {
   companyName: string;
 }
 
+const colorMap = {
+  立项: 'green',
+  委托: 'blue',
+  共享: 'yellow',
+  执行: 'yellow',
+};
+
 interface EngineerTableItemProps {
   projectInfo: any;
   columns: any[];
   onChange?: (checkedValue: TableItemCheckedInfo) => void;
   getClickProjectId: (clickProjectId: string) => void;
-  addProject?: (needValue: AddProjectValue) => void;
-  editEngineer?: (needValue: AddProjectValue) => void;
   left: number;
   isOverflow: boolean;
   columnsWidth: number;
@@ -44,7 +50,7 @@ export interface TableItemCheckedInfo {
   checkedArray: string[];
 }
 
-const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
+const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   const [isFold, { toggle: foldEvent }] = useBoolean(false);
 
   const [checkedList, setCheckedList] = React.useState<CheckboxValueType[]>([]);
@@ -53,15 +59,12 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   const { tableSelectData } = useContext(TableContext);
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
   const {
     projectInfo = {},
     columns = [],
     onChange,
     getClickProjectId,
-    addProject,
-    editEngineer,
+
     left,
     isOverflow = false,
     columnsWidth,
@@ -110,6 +113,121 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     });
   };
 
+  //列表字段
+  const listColumns = [
+    {
+      title: '项目名称',
+      dataIndex: 'name',
+      width: 300,
+      render: (record: any) => {
+        return (
+          <u
+            className="canClick"
+            // onClick={() => {
+            //   setCurrentClickProjectId(record.id);
+            //   setProjectModalVisible(true);
+            // }}
+          >
+            {record.name}
+          </u>
+        );
+      },
+      ellipsis: true,
+    },
+    {
+      title: '项目起止时间',
+      dataIndex: 'projectTime',
+      width: 190,
+      ellipsis: true,
+      render: (record: any) => {
+        const { startTime, endTime } = record;
+        if (startTime && endTime) {
+          return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
+            'YYYY-MM-DD',
+          )}`;
+        }
+        if (startTime && !endTime) {
+          return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+        }
+        if (!startTime && endTime) {
+          return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+        }
+        return '未设置起止时间';
+      },
+    },
+    {
+      title: '专业类别',
+      dataIndex: 'majorCategoryText',
+      width: 120,
+      ellipsis: true,
+    },
+    {
+      title: '项目阶段',
+      dataIndex: 'stageText',
+      width: 120,
+      ellipsis: true,
+    },
+    {
+      title: '勘察人',
+      dataIndex: 'surveyUser',
+      width: 120,
+      ellipsis: true,
+      render: (record: any) => {
+        return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+      },
+    },
+    {
+      title: '设计人',
+      dataIndex: 'designUser',
+      width: 120,
+      ellipsis: true,
+      render: (record: any) => {
+        return record.designUser ? `${record.designUser.value}` : '';
+      },
+    },
+    {
+      title: '项目来源',
+      dataIndex: 'sources',
+      width: 120,
+      render: (record: any) => {
+        const { sources = [] } = record;
+        return sources.map((item: any) => {
+          return (
+            <span key={uuid.v1()}>
+              <CyTag color={colorMap[item] ? colorMap[item] : 'green'}>
+                <span>{item}</span>
+              </CyTag>
+            </span>
+          );
+        });
+      },
+    },
+    {
+      title: '项目身份',
+      dataIndex: 'identitys',
+      width: 180,
+      render: (record: any) => {
+        const { identitys = [] } = record;
+        return identitys
+          .filter((item: any) => item.text)
+          .map((item: any) => {
+            return (
+              <span className="mr7" key={uuid.v1()}>
+                <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
+                  {item.text}
+                </CyTag>
+              </span>
+            );
+          });
+      },
+    },
+    {
+      title: '项目状态',
+      dataIndex: 'status',
+      width: 120,
+    },
+  ];
+
   const checkAllEvent = (e: any) => {
     setCheckedList(e.target.checked ? valueList : []);
     setIndeterminate(false);
@@ -147,24 +265,6 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   const projectNameClickEvent = (projectId: string) => {
     getClickProjectId?.(projectId);
-  };
-
-  const addProjectEvent = () => {
-    addProject?.({
-      engineerId: projectInfo.id,
-      areaId: projectInfo.province,
-      company: projectInfo.company,
-      companyName: projectInfo.company,
-    });
-  };
-
-  const editEngineerEvent = () => {
-    editEngineer?.({
-      engineerId: projectInfo.id,
-      areaId: projectInfo.province,
-      company: projectInfo.company,
-      companyName: projectInfo.company,
-    });
   };
 
   const theadElement = useMemo(() => {
@@ -270,12 +370,12 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     columnsWidth,
   ]);
 
-  useEffect(() => {
-    if (tableSelectData.length === 0) {
-      setCheckedList([]);
-      setCheckAll(false);
-    }
-  }, [JSON.stringify(tableSelectData), projectInfo]);
+  // useEffect(() => {
+  //   if (tableSelectData.length === 0) {
+  //     setCheckedList([]);
+  //     setCheckAll(false);
+  //   }
+  // }, [JSON.stringify(tableSelectData), projectInfo]);
 
   return (
     <div className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}>
@@ -318,18 +418,6 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             {projectInfo.compileTime ? moment(projectInfo.compileTime).format('YYYY/MM/DD') : ''}
           </span>
         </div>
-        <div className={styles.projectButtons}>
-          {projectInfo?.operationAuthority?.canAddProject &&
-            buttonJurisdictionArray?.includes('all-project-add-project') && (
-              <Button className="mr10" ghost type="primary" onClick={() => addProjectEvent()}>
-                新增项目
-              </Button>
-            )}
-          {projectInfo?.operationAuthority?.canEdit &&
-            buttonJurisdictionArray?.includes('all-project-edit-engineer') && (
-              <Button onClick={() => editEngineerEvent()}>编辑</Button>
-            )}
-        </div>
       </div>
       <div
         className={styles.engineerTableBody}
@@ -355,7 +443,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
           (!projectInfo.projects ||
             (projectInfo.projects && projectInfo.projects.length === 0)) && (
             <div className={styles.noEngineerData}>
-              <EmptyTip className="pt20 pb20" description="该工程下没有项目" />
+              <EmptyTip className="pt20 pb20" description="暂无交接的内容" />
             </div>
           )}
       </div>
@@ -363,4 +451,4 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   );
 };
 
-export default EngineerTableItem;
+export default EngineerTableList;
