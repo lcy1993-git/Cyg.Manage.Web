@@ -79,13 +79,13 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     {
       dataIndex: 'cableChannelId',
       index: 'cableChannelId',
-      title: '电缆井编号',
+      title: '电缆通道编号',
       width: 180,
     },
     {
       dataIndex: 'channelName',
       index: 'channelName',
-      title: '电缆井名称',
+      title: '电缆通道名称',
       width: 500,
     },
 
