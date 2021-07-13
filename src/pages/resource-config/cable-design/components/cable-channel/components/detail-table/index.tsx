@@ -45,7 +45,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="电缆通道明细" width="318px">
+        <TableSearch label="电缆通道明细" width="328px">
           <Search
             allowClear
             value={searchKeyWord}
@@ -154,13 +154,19 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     setEditFormVisible(true);
     const cableChannelDetailData = await run(libId, editDataId);
     const formData =
-    cableChannelDetailData?.isComponent == 1
+      cableChannelDetailData?.isComponent == 1
         ? {
-            componentId: { id: cableChannelDetailData.itemId, name: cableChannelDetailData.itemName },
+            componentId: {
+              id: cableChannelDetailData.itemId,
+              name: cableChannelDetailData.itemName,
+            },
             itemNumber: cableChannelDetailData.itemNumber,
           }
         : {
-            materialId: { id: cableChannelDetailData.itemId, name: cableChannelDetailData.itemName },
+            materialId: {
+              id: cableChannelDetailData.itemId,
+              name: cableChannelDetailData.itemName,
+            },
             itemNumber: cableChannelDetailData.itemNumber,
           };
 
@@ -247,7 +253,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-电缆通道明细"
-        width="100%"
+        width="88%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddcableChannelDetail()}

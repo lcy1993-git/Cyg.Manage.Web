@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import qs from 'qs';
-import { Button, Tabs } from 'antd';
+import { Button, Tabs, Modal, message } from 'antd';
 import styles from './index.less';
 import PageCommonWrap from '@/components/page-common-wrap';
 import CommonTitle from '@/components/common-title';
-
+import { handoverCompanyGroup } from '@/services/personnel-config/work-handover';
 import { useMount, useUnmount } from 'ahooks';
 import { useLayoutStore } from '@/layouts/context';
 import Description from './components/description';
 import EngineerTableList from './components/engineer-table-list';
-import Recevier from './components/recevier';
+import GroupIdentity from './components/identity';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
 
@@ -17,6 +18,11 @@ const WorkHandover: React.FC = () => {
   const userId = qs.parse(window.location.href.split('?')[1]).id as string;
   const name = qs.parse(window.location.href.split('?')[1]).name as string;
   const [clickTabKey, setClickTabKey] = useState<string>('manage');
+  //部组交接
+  const [receiverId, setReceiverId] = useState<string | undefined>(undefined);
+  const [receiverName, setReceiverName] = useState<string>('');
+  const [groupIds, setGroupIds] = useState<string[]>([]);
+  const [isFresh, setIsFresh] = useState<boolean>(false);
 
   const { setWorkHandoverFlag } = useLayoutStore();
 
@@ -28,6 +34,38 @@ const WorkHandover: React.FC = () => {
     setWorkHandoverFlag?.(false);
     //   window.localStorage.setItem('manageId', '');
   });
+
+  //部组交接
+  const identityConfirm = () => {
+    Modal.confirm({
+      title: '部组身份交接',
+      icon: <ExclamationCircleOutlined />,
+      content: `确定将选中部组管理员身份交接至"${receiverName}"吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: handIdentityEvent,
+    });
+  };
+
+  const handIdentityEvent = async () => {
+    if (!receiverId) {
+      message.warning('您还未选择接收人员');
+      return;
+    }
+    if (groupIds.length === 0) {
+      message.warning('请选择需要交接的条目');
+      return;
+    }
+
+    await handoverCompanyGroup({
+      companyGroupIds: groupIds,
+      userId: userId,
+      receiveUserId: receiverId,
+    });
+    setIsFresh(true);
+    setReceiverId(undefined);
+    message.success('操作成功');
+  };
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -46,7 +84,15 @@ const WorkHandover: React.FC = () => {
                 2
               </TabPane>
               <TabPane tab="部组身份" key={'identity'}>
-                
+                <GroupIdentity
+                  userId={userId}
+                  getReceiverId={setReceiverId}
+                  getGroupIds={setGroupIds}
+                  isFresh={isFresh}
+                  setIsFresh={setIsFresh}
+                  receiverId={receiverId}
+                  setReceiverName={setReceiverName}
+                />
               </TabPane>
               <TabPane tab="其他" key="others">
                 <Description />
@@ -61,7 +107,7 @@ const WorkHandover: React.FC = () => {
             ) : clickTabKey === 'mission' ? (
               <span>交接</span>
             ) : clickTabKey === 'identity' ? (
-              <span>交接</span>
+              <span onClick={identityConfirm}>交接</span>
             ) : (
               <span>交接完成</span>
             )}

@@ -24,7 +24,7 @@ const { Search } = Input;
 
 const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [status, setStatus] = useState<number>(0);
@@ -295,7 +295,7 @@ const ManageUser: React.FC = () => {
         ref={tableRef}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearch}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="管理用户"
         url="/ManageUser/GetPagedList"
         columns={columns}

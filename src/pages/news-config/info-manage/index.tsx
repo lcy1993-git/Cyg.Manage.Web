@@ -28,7 +28,7 @@ const { Search } = Input;
 
 const InfoManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -111,7 +111,7 @@ const InfoManage: React.FC = () => {
 
     await deleteNewsItem(editDataId);
     refresh();
-    setTableSelectRow([]);
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 
@@ -365,7 +365,7 @@ const InfoManage: React.FC = () => {
         columns={columns}
         url="/Article/GetPagedList"
         tableTitle="宣贯管理"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           state: status,
           keyWord: searchKeyWord,

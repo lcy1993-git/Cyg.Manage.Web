@@ -30,7 +30,7 @@ const { Search } = Input;
 
 const WareHouse: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -215,7 +215,7 @@ const WareHouse: React.FC = () => {
     await deleteWareHouseItem(editDataId);
     refresh();
     message.success('删除成功');
-    setTableSelectRow([]);
+    setTableSelectRows([]);
   };
 
   //查看详情
@@ -307,7 +307,7 @@ const WareHouse: React.FC = () => {
         requestSource="resource"
         url="/WareHouse/GetPageList"
         tableTitle="利库管理"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,

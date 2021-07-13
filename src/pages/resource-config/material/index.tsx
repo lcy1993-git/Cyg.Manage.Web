@@ -30,7 +30,7 @@ const Material: React.FC<libParams> = (props) => {
   const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -425,7 +425,7 @@ const Material: React.FC<libParams> = (props) => {
         url="/Material/GetPageList"
         // tableTitle="物料列表"
         size="small"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
           resourceLibId: libId,

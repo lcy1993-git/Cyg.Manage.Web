@@ -17,7 +17,7 @@ const { Search } = Input;
 
 const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
   const [beginDate, setBeginDate] = useState<Moment | null>();
   const [endDate, setEndDate] = useState<Moment | null>();
@@ -228,7 +228,7 @@ const ManageUser: React.FC = () => {
         }}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="上报日志"
         url="/FileLog/GetPagedList"
         columns={columns}

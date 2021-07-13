@@ -45,7 +45,7 @@ const mapColor = {
 
 const CompanyUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [status, setStatus] = useState<number>(0);
@@ -453,7 +453,7 @@ const CompanyUser: React.FC = () => {
             ref={tableRef}
             buttonRightContentSlot={rightButton}
             buttonLeftContentSlot={leftSearch}
-            getSelectData={(data) => setTableSelectRow(data)}
+            getSelectData={(data) => setTableSelectRows(data)}
             tableTitle="公司用户"
             url="/CompanyUser/GetPagedList"
             columns={columns}

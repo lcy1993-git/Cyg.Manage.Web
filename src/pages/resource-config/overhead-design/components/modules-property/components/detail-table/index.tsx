@@ -279,13 +279,14 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-模块明细"
-        width="100%"
+        width="88%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddModuleDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        centered
       >
         <Form form={addForm} preserve={false}>
           <AddModuleDetailTable addForm={addForm} resourceLibId={libId} />

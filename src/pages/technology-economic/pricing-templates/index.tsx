@@ -71,7 +71,7 @@ const columns = [
 
 const PricingTemplates: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | Object>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
 
@@ -180,7 +180,7 @@ const PricingTemplates: React.FC = () => {
   };
 
   const tableSelectEvent = (data: DataSource[] | Object) => {
-    setTableSelectRow(data);
+    setTableSelectRows(data);
   };
 
   return (

@@ -30,7 +30,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -366,7 +366,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         requestSource="resource"
         url="/ElectricalEquipment"
         // tableTitle="电气设备列表"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
           resourceLibId: libId,

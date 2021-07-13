@@ -28,7 +28,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
 
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -362,7 +362,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         columns={columns}
         requestSource="resource"
         url="/CableWell/GetPageList"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
           resourceLibId: libId,

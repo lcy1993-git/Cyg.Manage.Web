@@ -1,16 +1,26 @@
 import { Select } from 'antd';
-import React, { useMemo } from 'react';
+import React, { Dispatch, SetStateAction, useMemo } from 'react';
 import { useRequest } from 'ahooks';
 import { getReceiver } from '@/services/personnel-config/work-handover';
 
 interface RecevierParams {
   userId: string;
+  receiverId: string | undefined;
   clientCategory?: number;
   isCompanyGroupIdentity?: boolean;
+  setReceiverName?: Dispatch<SetStateAction<string>>;
+  changeVal?: Dispatch<SetStateAction<string | undefined>>;
 }
 
 const Recevier: React.FC<RecevierParams> = (props) => {
-  const { userId, clientCategory, isCompanyGroupIdentity } = props;
+  const {
+    userId,
+    clientCategory,
+    isCompanyGroupIdentity,
+    changeVal,
+    receiverId,
+    setReceiverName,
+  } = props;
   const { data: resData } = useRequest(
     () => getReceiver({ userId, clientCategory, isCompanyGroupIdentity }),
     {
@@ -37,6 +47,11 @@ const Recevier: React.FC<RecevierParams> = (props) => {
         options={handleData}
         style={{ width: '270px' }}
         placeholder="请选择接收人员"
+        onChange={(value: any, option: any) => {
+          setReceiverName?.(option.label);
+          changeVal?.(value);
+        }}
+        value={receiverId}
       />
     </>
   );

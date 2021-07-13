@@ -102,7 +102,7 @@ const columns = [
 const QuotaLibrary: React.FC = () => {
 
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
 
@@ -215,7 +215,7 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const tableSelectEvent = (data: DataSource[] | object) => {
-    setTableSelectRow(data);
+    setTableSelectRows(data);
   };
 
   return (

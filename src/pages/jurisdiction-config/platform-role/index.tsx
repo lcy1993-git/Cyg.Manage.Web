@@ -15,7 +15,7 @@ import TableStatus from '@/components/table-status';
 
 const PlatformRole: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -140,7 +140,7 @@ const PlatformRole: React.FC = () => {
       <GeneralTable
         ref={tableRef}
         buttonRightContentSlot={rightButton}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="角色管理"
         url="/Role/GetPagedList"
         columns={columns}

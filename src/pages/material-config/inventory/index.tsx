@@ -24,7 +24,7 @@ const Inventroy: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [inventoryId, setInventoryId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
 
   const [inventoryTableModalVisible, setInventoryTableModalVisible] = useState<boolean>(false);
@@ -383,7 +383,7 @@ const Inventroy: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/Inventory/GetInventoryOverviewPageList"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="协议库存列表"
         type="radio"
         extractParams={{

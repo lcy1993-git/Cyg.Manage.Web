@@ -89,7 +89,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         <Input placeholder="请输入单位" />
       </CyFormItem>
 
-      <CyFormItem label="预留宽度(mm)" name="reserveWidth" labelWidth={111} align="right">
+      <CyFormItem label="预留宽度(mm)" name="reservedWidth" labelWidth={111} align="right">
         <Input placeholder="请输入预留宽度" />
       </CyFormItem>
 

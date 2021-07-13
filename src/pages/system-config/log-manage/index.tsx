@@ -17,7 +17,7 @@ const { Search } = Input;
 
 const LogManage: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
   const [searchContentKeyWord, setSearchContentKeyWord] = useState<string>('');
 
@@ -236,7 +236,7 @@ const LogManage: React.FC = () => {
         }}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="日志管理"
         url="/Log/GetPagedList"
         columns={columns}
