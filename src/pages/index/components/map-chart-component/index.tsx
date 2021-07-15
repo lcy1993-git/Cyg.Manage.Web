@@ -69,6 +69,11 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     }, 0);
   }, [JSON.stringify(mapStatisticData)]);
 
+
+  const ohterProjectTotalNumber = useMemo(() => {
+    return mapStatisticData.find((item) => item.areaCode.includes("_other"))?.projectQuantity ?? 0;
+  }, [JSON.stringify(mapStatisticData)]);
+
   const getMapOption = (mapName: string, getMapStatisticData: MapStatisticsData[]) => {
     const mapShowData = getMapStatisticData?.map((item) => {
       return {
@@ -85,11 +90,11 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         borderColor: '#000',
         enterable: true, // 鼠标是否可以进入浮层
         position(pt: any, params: any) {
-          if(params.name === mapStatus.name) {
-            
+          if (params.name === mapStatus.name) {
+
             return [mapStatus.pt[0] - 105, mapStatus.pt[1] - 65];
-          }else{
-            mapStatus={
+          } else {
+            mapStatus = {
               name: params.name,
               pt
             }
@@ -349,6 +354,11 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     firstMapInitChartEvent();
   });
 
+  const handlerOtherClick = () => {
+    const id = mapStatisticData.find((item) => item.areaCode.includes('_other'))?.areaCode ?? ""
+    localStorage.setItem('selectCity', id);
+  }
+
   return (
     <div className={styles.mapChartComponent}>
       <div className={styles.mapChartComponentTipInfo}>
@@ -376,15 +386,25 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <span>
                     级别区域的项目
                   </span>
-                  <span>300个</span>
+                  <span>{ohterProjectTotalNumber}个</span>
                 </div>
                 <div>
-                  <Button
+                  {
+                    ohterProjectTotalNumber > 0 ?
+                    <a href='/visualization-results/result-page'><Button
                     loading={false}
                     type="primary"
-                    onClick={() => { }}
+                    onClick={handlerOtherClick}
                     style={{ width: "100%" }}
-                  >跳转可视化</Button>
+                  >跳转可视化</Button></a> : 
+                  <Button
+                  loading={false}
+                  type="primary"
+                  onClick={handlerOtherClick}
+                  style={{ width: "100%" }}
+                >跳转可视化</Button>
+                  }
+
                 </div>
               </div>
             </div>

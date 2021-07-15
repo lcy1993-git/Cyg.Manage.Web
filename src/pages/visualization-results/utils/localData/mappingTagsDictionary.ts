@@ -61,7 +61,7 @@ function getMappingTagsDictionary() {
         "segment": "分段方式",
         "sort": "排列方式",
         "state": "状态",
-        "azimuth": "方位角",
+        "loopangle": "方位角",
         "hcg": "呼称高",
         "depth": "埋深(m)",
         "mode": "型号",

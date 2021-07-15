@@ -359,9 +359,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             pJSON[mappingTag] = Number(feature.getProperties()[p])
               ? Number(feature.getProperties()[p])?.toFixed(2)
               : 0;
-              if (layerName === 'tower') {
-                pJSON[mappingTag] = feature.getProperties()[p];
-              }
+            if (layerName === 'tower') {
+              pJSON[mappingTag] = feature.getProperties()[p];
+            }
             // if (layerName === 'tower') {
             //   let angleString = '0';
             //   await loadLayer(
@@ -479,7 +479,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id;
         pJSON['材料表'] = {
           params: {
-            id: feature.getProperties().project_id,
+            holeId: feature.getProperties().project_id,
             rest: {
               objectID,
               forProject: 0,
@@ -509,14 +509,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         pJSON[p] = `${feature.getProperties().rod}*${feature.getProperties().height}`;
       }
       if (p === '呼称高') {
-        await getlibId_new({ projectId: feature.getProperties().project_id }).then(async (data)=> {      
-          if(data.isSuccess){
+        await getlibId_new({ projectId: feature.getProperties().project_id }).then(async (data) => {
+          if (data.isSuccess) {
             const resourceLibID = data?.content;
             await getModulesRequest({
               moduleIDs: [feature.getProperties().mode_id],
               resourceLibID
             }).then((res) => {
-              if(res.isSuccess && res?.content.length > 0){
+              if (res.isSuccess && res?.content.length > 0) {
                 pJSON[p] = res?.content[0].nominalHeight;
               }
             })
@@ -526,13 +526,30 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (p === '导线相数') {
         pJSON[p] = feature.getProperties().kv_level === 2 ? '三相' : '两相';
       }
+      if (p === '穿孔示意图') {
+        let channelId = feature.getProperties().channel_id;
+        let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
+        let l = getLayerByName(layerType + '_cable_channel', g.getLayers().getArray());
+        let f = l.getSource().getFeatures().find((f: any) => f.values_.id === channelId);
+
+        pJSON[p] = {
+          holeId: feature.getProperties().id,
+          layerType: layerType === 'design' ? 1 : 2,
+          title: f.values_.mode,
+          layMode: f.values_.lay_mode,
+          arrangement: f.values_.arrangement
+        };
+      }
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
+
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
     ops.setRightSidebarVisiviabel(true);
     ops.setRightSidebarData(resData);
+    console.log(resData);
+
     map.getTargetElement().style.cursor = 'default';
   });
 
