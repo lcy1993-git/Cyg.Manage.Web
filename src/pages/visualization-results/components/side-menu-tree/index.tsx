@@ -286,8 +286,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const selectCity = localStorage.getItem('selectCity');
 
     if (selectCity) {
+      
       const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
-
+      
       localStorage.removeItem('selectCity');
       const { expanded, checked } = key;
       setExpandedKeys([...expanded]);
@@ -357,8 +358,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         expanded.pop();
       }
     };
-
-    if (reg.test(selectCity)) {
+    
+    if (reg.test(selectCity) || selectCity.includes('_other')) {
       items.forEach((v) => {
         dfsById(v, false);
       });

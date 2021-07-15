@@ -59,7 +59,7 @@ export const getMaterialItemData = (params: any) => {
   const url = ['/LibraryDesign/GetModuleDetailView', '/LibraryComponent/GetComponentDetailView'];
   return request(
     `${baseUrl.resourceV1}` +
-      url[type],
+    url[type],
     // 'http://10.6.1.36:8015/api/LibraryDesign/GetModuleDetailView',
     { method: 'POST', data: { ...rest } },
   );
@@ -149,5 +149,23 @@ export const loadEnums = (params: any = {}) => {
   return request(
     `${baseUrl.common}/System/GetEnums`,
     { method: 'POST', data: { ...params } },
+  );
+};
+
+
+// 获取穿孔信息
+export interface CableSectionProps {
+  layerType: 1 | 2;
+  holeId: string;
+  arrangement: string | null;
+  layMode: number;
+  title: string;
+}
+export const findHoleDetails = (params: { layerType: 1 | 2; holeId: string; }) => {
+  console.log(params);
+  
+  return request(
+    `${baseUrl.design}/ProjectDesign/FindHoleDetails`,
+    { method: 'GET', params },
   );
 };

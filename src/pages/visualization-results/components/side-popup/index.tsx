@@ -16,6 +16,7 @@ import { formDataMateral } from '@/utils/utils';
 import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { CommentRequestType, addComment, fetchCommentList } from '@/services/visualization-results/side-popup';
 import styles from './index.less';
+import CableSection from '../cable-section';
 
 export interface TableDataType {
   [propName: string]: any;
@@ -293,13 +294,13 @@ const SidePopup: React.FC<Props> = observer((props) => {
     {
       title: '属性名',
       dataIndex: 'propertyName',
-      width: 55,
+      // width: 55,
       ellipsis: true,
     },
     {
       title: '属性值',
       dataIndex: 'data',
-      width: 65,
+      width: 164,
       ellipsis: true,
       render(value: any, record: any, index: any) {
         if (record.propertyName === 'title') return null;
@@ -335,6 +336,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
               </span>
             );
           }
+        } else if(record.propertyName === "穿孔示意图") {
+          return <CableSection {...value}/>
         }
         return <span key={index}></span>;
       },
@@ -538,6 +541,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           <CloseOutlined />
         </div>
         <Table
+          key= {JSON.stringify(dataResource)}
           bordered
           style={{ height: 30 }}
           pagination={false}
