@@ -47,10 +47,11 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
 
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
-  const { data = [], loading, run } = useRequest(
-    () => treeTableCommonRequeset<T>({ url }),
-    { ready: !!url },
-  );
+  const {
+    data = [],
+    loading,
+    run,
+  } = useRequest(() => treeTableCommonRequeset<T>({ url }), { ready: !!url });
 
   const finalyDataSource = url ? data : dataSource;
 
@@ -121,7 +122,9 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
               expandedRowKeys: expandedRowKeys,
               expandIcon: ({ expanded, onExpand, record }) => {
                 //@ts-ignore 因为传入T是有children 的，但是目前还没有想到解决办法
+
                 const { children } = record;
+                console.log(record);
                 if (!children || children.length === 0) {
                   return <span style={{ marginRight: '6px' }}></span>;
                 }

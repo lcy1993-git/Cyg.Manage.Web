@@ -53,7 +53,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
         !defaultData &&
         !(paramsMust.filter((item) => !extraParams[item]).length > 0)
       ),
-      refreshDeps: [url, JSON.stringify(extraParams)],
+      refreshDeps: [url, JSON.stringify(extraParams)]
     },
   );
 
