@@ -85,20 +85,26 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     return {
       tooltip: {
         trigger: 'item',
-        showDelay: 10,
+        showDelay: 20,
         backgroundColor: 'rgba(0,0,0,0.9)',
         borderColor: '#000',
         enterable: true, // 鼠标是否可以进入浮层
         position(pt: any, params: any) {
+          const nameIndex = getMapStatisticData?.findIndex((item) => item.area === params.name);
           if (params.name === mapStatus.name) {
+            if(nameIndex > -1) {
+              return [mapStatus.pt[0] - 150, mapStatus.pt[1] - 95];
+            }else {
+              return [pt[0] - 110, pt[1] - 65];
+            }
 
-            return [mapStatus.pt[0] - 105, mapStatus.pt[1] - 65];
           } else {
             mapStatus = {
               name: params.name,
               pt
             }
-            return [pt[0] - 110, pt[1] - 65];
+            return [mapStatus.pt[0] - 150, mapStatus.pt[1] - 95];
+            // return [pt[0] - 110, pt[1] - 65];
           }
 
         },
