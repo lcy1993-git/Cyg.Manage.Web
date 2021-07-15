@@ -114,7 +114,7 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
           receiverId={receiverId}
           userId={userId}
           clientCategory={2}
-          isCompanyGroupIdentity={false}
+          isCompanyGroupIdentity={true}
           changeVal={getReceiverId}
           setReceiverName={setReceiverName}
         />

@@ -11,6 +11,8 @@ import Description from './components/description';
 import EngineerTableList from './components/engineer-table-list';
 import GroupIdentity from './components/identity';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import ProjectManage from './components/manage';
+import MissionTab from './components/mission';
 
 const { TabPane } = Tabs;
 
@@ -76,12 +78,18 @@ const WorkHandover: React.FC = () => {
         <div className={styles.moduleHead}>
           <div className={styles.tabTitle}>待交接的方案</div>
           <div className={styles.moduleTabs}>
-            <Tabs type="card" onChange={(key) => setClickTabKey(key)}>
+            <Tabs
+              type="card"
+              onChange={(key) => {
+                setClickTabKey(key);
+                setReceiverId(undefined);
+              }}
+            >
               <TabPane tab="项目管理" key={'manage'}>
-                {/* <EngineerTableList /> */}
+                <ProjectManage userId={userId} recevierId={receiverId} />
               </TabPane>
               <TabPane tab="作业任务" key={'mission'}>
-                2
+                <MissionTab />
               </TabPane>
               <TabPane tab="部组身份" key={'identity'}>
                 <GroupIdentity

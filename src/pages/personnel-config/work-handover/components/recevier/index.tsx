@@ -1,5 +1,5 @@
 import { Select } from 'antd';
-import React, { Dispatch, SetStateAction, useMemo } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react';
 import { useRequest } from 'ahooks';
 import { getReceiver } from '@/services/personnel-config/work-handover';
 
@@ -21,7 +21,7 @@ const Recevier: React.FC<RecevierParams> = (props) => {
     receiverId,
     setReceiverName,
   } = props;
-  const { data: resData } = useRequest(
+  const { data: resData, run } = useRequest(
     () => getReceiver({ userId, clientCategory, isCompanyGroupIdentity }),
     {
       ready: !!userId,
@@ -37,8 +37,13 @@ const Recevier: React.FC<RecevierParams> = (props) => {
     return [];
   }, [JSON.stringify(resData)]);
 
+  useEffect(() => {
+    run();
+  }, [isCompanyGroupIdentity]);
+
   return (
     <>
+      <span style={{ marginRight: '15px' }}>接收人员</span>
       <Select
         showSearch
         filterOption={(input: string, option: any) =>

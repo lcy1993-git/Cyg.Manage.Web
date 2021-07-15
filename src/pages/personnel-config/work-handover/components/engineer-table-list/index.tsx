@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Tooltip } from 'antd';
-import { useBoolean } from 'ahooks';
+import { Button, Checkbox, Spin, Tooltip } from 'antd';
+import { useBoolean, useRequest } from 'ahooks';
 import { TableContext } from '@/pages/project-management/all-project-new/components/engineer-table/table-store';
 
 import styles from './index.less';
@@ -10,9 +10,12 @@ import moment from 'moment';
 import EmptyTip from '@/components/empty-tip';
 import { useContext } from 'react';
 import { useEffect } from 'react';
+import ScrollView from 'react-custom-scrollbars';
 import { isNumber } from 'lodash';
 import uuid from 'node-uuid';
 import CyTag from '@/components/cy-tag';
+import { getProjectsInfo } from '@/services/personnel-config/work-handover';
+
 export interface AddProjectValue {
   engineerId: string;
   areaId: string;
@@ -28,6 +31,8 @@ const colorMap = {
 };
 
 interface EngineerTableItemProps {
+  userId: string;
+  category: number;
   projectInfo: any;
   columns: any[];
   onChange?: (checkedValue: TableItemCheckedInfo) => void;
@@ -51,13 +56,23 @@ export interface TableItemCheckedInfo {
 }
 
 const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
-  const [isFold, { toggle: foldEvent }] = useBoolean(false);
+  const { userId, category } = props;
+  // const [isFold, { toggle: foldEvent }] = useBoolean(false);
 
   const [checkedList, setCheckedList] = React.useState<CheckboxValueType[]>([]);
   const [indeterminate, setIndeterminate] = React.useState(false);
+
+  const [engineerIds, setEngineerIds] = useState<string[]>([]);
   const [checkAll, setCheckAll] = React.useState(false);
 
   const { tableSelectData } = useContext(TableContext);
+
+  const { data: tableData, run, loading } = useRequest(
+    () => getProjectsInfo({ userId, category }),
+    {
+      ready: !!userId,
+    },
+  );
 
   const {
     projectInfo = {},
@@ -67,7 +82,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
 
     left,
     isOverflow = false,
-    columnsWidth,
+    // columnsWidth,
     contentWidth,
   } = props;
 
@@ -118,7 +133,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     {
       title: '项目名称',
       dataIndex: 'name',
-      width: 300,
+      width: 400,
       render: (record: any) => {
         return (
           <u
@@ -137,7 +152,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     {
       title: '项目起止时间',
       dataIndex: 'projectTime',
-      width: 190,
+      width: 200,
       ellipsis: true,
       render: (record: any) => {
         const { startTime, endTime } = record;
@@ -158,19 +173,25 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     {
       title: '专业类别',
       dataIndex: 'majorCategoryText',
-      width: 120,
+      width: 150,
       ellipsis: true,
+      render: (record: any) => {
+        return record.majorCategoryText;
+      },
     },
     {
       title: '项目阶段',
       dataIndex: 'stageText',
-      width: 120,
+      width: 150,
       ellipsis: true,
+      render: (record: any) => {
+        return record.stageText;
+      },
     },
     {
       title: '勘察人',
       dataIndex: 'surveyUser',
-      width: 120,
+      width: 150,
       ellipsis: true,
       render: (record: any) => {
         return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
@@ -179,7 +200,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     {
       title: '设计人',
       dataIndex: 'designUser',
-      width: 120,
+      width: 150,
       ellipsis: true,
       render: (record: any) => {
         return record.designUser ? `${record.designUser.value}` : '';
@@ -188,7 +209,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     {
       title: '项目来源',
       dataIndex: 'sources',
-      width: 120,
+      width: 140,
       render: (record: any) => {
         const { sources = [] } = record;
         return sources.map((item: any) => {
@@ -205,7 +226,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     {
       title: '项目身份',
       dataIndex: 'identitys',
-      width: 180,
+      width: 200,
       render: (record: any) => {
         const { identitys = [] } = record;
         return identitys
@@ -224,79 +245,92 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     {
       title: '项目状态',
       dataIndex: 'status',
-      width: 120,
+      width: 180,
+      render: (record: any) => {
+        const { stateInfo, allot, identitys } = record;
+        let arrangeType: any = null;
+        let allotCompanyId: any = null;
+
+        if (allot) {
+          arrangeType = allot.allotType;
+          allotCompanyId = allot.allotCompanyGroup;
+        }
+        return (
+          <>
+            <span>{stateInfo?.statusText}</span>
+          </>
+        );
+      },
     },
   ];
 
-  const checkAllEvent = (e: any) => {
-    setCheckedList(e.target.checked ? valueList : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
+  const columnsWidth = listColumns.reduce((sum, item) => {
+    return sum + (item.width ? item.width : 100);
+  }, 0);
 
-    onChange?.({
-      projectInfo: {
-        id: projectInfo.id,
-        isAllChecked: e.target.checked,
-        status: projectInfo.projects
-          .map((item: any) => {
-            if (valueList.includes(item.id)) {
-              return item.stateInfo;
-            }
-          })
-          .filter(Boolean),
-        name: projectInfo.projects
-          .map((item: any) => {
-            if (valueList.includes(item.id)) {
-              return item.name;
-            }
-          })
-          .filter(Boolean),
-        dataSourceType: projectInfo.projects
-          .map((item: any) => {
-            if (valueList.includes(item.id)) {
-              return item.dataSourceType;
-            }
-          })
-          .filter((item: any) => isNumber(item)),
-      },
-      checkedArray: e.target.checked ? valueList : [],
-    });
-  };
+  // const checkAllEvent = (e: any) => {
+  //   setCheckedList(e.target.checked ? valueList : []);
+  //   setIndeterminate(false);
+  //   setCheckAll(e.target.checked);
+
+  //   onChange?.({
+  //     projectInfo: {
+  //       id: projectInfo.id,
+  //       isAllChecked: e.target.checked,
+  //       status: projectInfo.projects
+  //         .map((item: any) => {
+  //           if (valueList.includes(item.id)) {
+  //             return item.stateInfo;
+  //           }
+  //         })
+  //         .filter(Boolean),
+  //       name: projectInfo.projects
+  //         .map((item: any) => {
+  //           if (valueList.includes(item.id)) {
+  //             return item.name;
+  //           }
+  //         })
+  //         .filter(Boolean),
+  //       dataSourceType: projectInfo.projects
+  //         .map((item: any) => {
+  //           if (valueList.includes(item.id)) {
+  //             return item.dataSourceType;
+  //           }
+  //         })
+  //         .filter((item: any) => isNumber(item)),
+  //     },
+  //     checkedArray: e.target.checked ? valueList : [],
+  //   });
+  // };
 
   const projectNameClickEvent = (projectId: string) => {
     getClickProjectId?.(projectId);
   };
 
+  // useEffect(() => {
+  //   if (tableData.length === 0) {
+  //     setCheckedList([]);
+  //     setCheckAll(false);
+  //   }
+  // }, [JSON.stringify(tableData)]);
+
   const theadElement = useMemo(() => {
-    return columns.map((item) => {
+    return listColumns.map((item) => {
       return (
         <div
-          className={`${styles.engineerTableTh} ${
-            item.dataIndex === 'action' ? styles.actionTd : ''
-          } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${
-            item.dataIndex === 'name' ? styles.nameTd : ''
-          }`}
+          className={styles.engineerTableTh}
           key={`${item.dataIndex}`}
-          style={
-            isOverflow
-              ? {
-                  width: `${item.width}px`,
-                  left: `${item.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
-                    item.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                  } ${item.dataIndex === 'name' ? `${left + 38}px` : ''}`,
-                }
-              : {
-                  width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
-                  flex: `${item.dataIndex === 'name' ? '1' : 'none'}`,
-                }
-          }
+          style={{
+            width: `${item.width}px`,
+            flex: `${item.dataIndex === 'name' ? '1' : 'none'}`,
+          }}
         >
           {item.title}
         </div>
       );
     });
   }, [
-    JSON.stringify(projectInfo),
+    JSON.stringify(tableData),
     left,
     contentWidth,
     isOverflow,
@@ -304,151 +338,176 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     columnsWidth,
   ]);
 
-  const tbodyElement = useMemo(() => {
-    return (projectInfo.projects ?? []).map((item: any) => {
-      return (
-        <div key={`${item.id}Td`} className={styles.engineerTableTr}>
-          <div
-            className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox}`}
-            style={{ width: '38px', left: `${left}px` }}
-          >
-            <Checkbox style={{ marginLeft: '4px' }} value={item.id} />
-          </div>
-          {columns.map((ite) => {
-            return (
-              <div
-                className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
-                  ite.dataIndex === 'action' ? styles.actionTd : ''
-                } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${
-                  ite.dataIndex === 'name' ? styles.nameTd : ''
-                }`}
-                key={`${item.id}Td${ite.dataIndex}`}
-                style={
-                  isOverflow
-                    ? {
-                        width: `${ite.width}px`,
-                        left: `${
-                          ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''
-                        } ${ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''} ${
-                          ite.dataIndex === 'name' ? `${left + 38}px` : ''
-                        }`,
-                      }
-                    : {
-                        width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
-                        flex: `${ite.dataIndex === 'name' ? '1' : 'none'}`,
-                      }
-                }
-              >
-                {ite.ellipsis ? (
-                  // eslint-disable-next-line no-nested-ternary
-                  <Tooltip
-                    title={
-                      typeof item[ite.dataIndex] === 'string'
-                        ? item[ite.dataIndex]
-                        : ite.render
-                        ? ite.render(item, projectInfo)
-                        : ''
-                    }
-                  >
-                    {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
-                  </Tooltip>
-                ) : (
-                  <span>{ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}</span>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      );
-    });
-  }, [
-    JSON.stringify(projectInfo),
-    left,
-    contentWidth,
-    isOverflow,
-    JSON.stringify(columns),
-    columnsWidth,
-  ]);
+  const handleTableData = tableData?.map((item: any) => {
+    return (item = { ...item, isChecked: false, isFold: false });
+  });
 
-  // useEffect(() => {
-  //   if (tableSelectData.length === 0) {
-  //     setCheckedList([]);
-  //     setCheckAll(false);
-  //   }
-  // }, [JSON.stringify(tableSelectData), projectInfo]);
+  // const tbodyElement = useMemo(() => {
+  //   return (projectInfo.projects ?? []).map((item: any) => {
+  //     return (
 
-  return (
-    <div className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}>
-      <div className={styles.engineerTableItemHeader} style={{ left: `${left}px` }}>
-        <div className={styles.foldButton} onClick={() => foldEvent()}>
-          <span>{isFold ? <CaretUpOutlined /> : <CaretDownOutlined />}</span>
-        </div>
-        <div className={styles.engineerName}>
-          <Checkbox
-            onChange={checkAllEvent}
-            style={{ marginRight: '7px' }}
-            indeterminate={indeterminate}
-            checked={checkAll}
-          />
-          <Tooltip title={projectInfo.name}>
-            <u
-              className={`canClick ${styles.engineerNameContent}`}
-              onClick={() => projectNameClickEvent(projectInfo.id)}
-            >
-              {projectInfo.name}
-            </u>
-          </Tooltip>
-        </div>
-        <div className={styles.projectAccount}>
-          <span className={styles.label}>共有项目:</span>
-          <span>{projectInfo.projects ? projectInfo.projects?.length : 0}个</span>
-        </div>
-        <div className={styles.projectTime}>
-          <span className={styles.label}>工程日期:</span>
-          <span>
-            {projectInfo.startTime ? moment(projectInfo.startTime).format('YYYY/MM/DD') : ''}
-          </span>
-          <span>
-            -{projectInfo.startTime ? moment(projectInfo.endTime).format('YYYY/MM/DD') : ''}
-          </span>
-        </div>
-        <div className={styles.createTime}>
-          <span className={styles.label}>编制日期:</span>
-          <span>
-            {projectInfo.compileTime ? moment(projectInfo.compileTime).format('YYYY/MM/DD') : ''}
-          </span>
-        </div>
-      </div>
+  //     );
+  //   });
+  // }, [
+  //   JSON.stringify(projectInfo),
+  //   left,
+  //   contentWidth,
+  //   isOverflow,
+  //   JSON.stringify(columns),
+  //   columnsWidth,
+  // ]);
+
+  const checkProjectEvent = (item: any) => {
+    console.log(item.isChecked);
+    item.isChecked = !item.isChecked;
+  };
+  // console.log(engineerIds);
+
+  const foldChangeEvent = (item: any) => {
+    // const index = handleTableData.findIndex((ite: any) => ite.id === item.id);
+    // handleTableData[index].isFold = !handleTableData[index].isFold;
+    console.log(item.isFold);
+    item.isFold = !item.isFold;
+  };
+
+  const projectTable = handleTableData?.map((item: any) => {
+    return (
       <div
-        className={styles.engineerTableBody}
-        style={{ width: isOverflow ? `${columnsWidth}px` : '100%' }}
+        className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}
+        key={item.id}
       >
-        {!isFold && projectInfo.projects && projectInfo.projects.length > 0 && (
-          <Checkbox.Group value={checkedList} onChange={checkboxChange}>
-            <div className={styles.engineerTable}>
-              <div className={styles.engineerTableContent}>
-                <div className={styles.engineerTableHeader}>
-                  <div
-                    className={`${styles.engineerTableTh} ${styles.engineerTableThCheckbox}`}
-                    style={{ width: '38px', left: `${left}px` }}
-                  ></div>
-                  {theadElement}
+        <div className={styles.engineerTableItemHeader} style={{ left: `${left}px` }}>
+          <div className={styles.foldButton} onClick={() => foldChangeEvent(item)}>
+            <span>{item.isFold ? <CaretUpOutlined /> : <CaretDownOutlined />}</span>
+          </div>
+          <div className={styles.engineerName}>
+            <Checkbox
+              onChange={() => checkProjectEvent(item)}
+              style={{ marginRight: '7px' }}
+              indeterminate={indeterminate}
+              checked={item.isChecked}
+            />
+            <Tooltip title={item.name}>
+              <u
+                className={`canClick ${styles.engineerNameContent}`}
+                onClick={() => projectNameClickEvent(item.id)}
+              >
+                {item.name}
+              </u>
+            </Tooltip>
+          </div>
+          <div className={styles.projectAccount}>
+            <span className={styles.label}>共有项目:</span>
+            <span>{item.projects ? item.projects?.length : 0}个</span>
+          </div>
+          <div className={styles.projectTime}>
+            <span className={styles.label}>工程日期:</span>
+            <span>{item.startTime ? moment(item.startTime).format('YYYY/MM/DD') : ''}</span>
+            <span>-{item.startTime ? moment(item.endTime).format('YYYY/MM/DD') : ''}</span>
+          </div>
+          <div className={styles.createTime}>
+            <span className={styles.label}>编制日期:</span>
+            <span>{item.compileTime ? moment(item.compileTime).format('YYYY/MM/DD') : ''}</span>
+          </div>
+        </div>
+        <div
+          className={styles.engineerTableBody}
+          style={{ width: isOverflow ? `${columnsWidth}px` : '100%' }}
+        >
+          {!item.isFold && item.projects && item.projects.length > 0 && (
+            <Checkbox.Group value={checkedList} onChange={checkboxChange}>
+              <div className={styles.engineerTable}>
+                <div className={styles.engineerTableContent}>
+                  <div className={styles.engineerTableHeader}>
+                    <div
+                      className={`${styles.engineerTableTh} ${styles.engineerTableThCheckbox}`}
+                      style={{ width: '38px', left: `${left}px` }}
+                    ></div>
+                    {theadElement}
+                  </div>
+                  <div className={styles.engineerTableBody}>
+                    {(item.projects ?? []).map((pro: any) => {
+                      return (
+                        <div key={`${pro.id}Td`} className={styles.engineerTableTr}>
+                          <div
+                            className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox}`}
+                            style={{ width: '38px', left: `${left}px` }}
+                          >
+                            {false && <Checkbox style={{ marginLeft: '4px' }} value={pro.id} />}
+                          </div>
+                          {listColumns.map((ite) => {
+                            return (
+                              <div
+                                className={styles.engineerTableTd}
+                                key={`${pro.id}Td${ite.dataIndex}`}
+                                style={{
+                                  width: `${ite.width}px`,
+                                  flex: `${ite.dataIndex === 'name' ? '1' : 'none'}`,
+                                }}
+                              >
+                                {ite.ellipsis ? (
+                                  // eslint-disable-next-line no-nested-ternary
+                                  <Tooltip
+                                    title={
+                                      typeof pro[ite.dataIndex] === 'string'
+                                        ? pro[ite.dataIndex]
+                                        : ite.render
+                                        ? ite.render(pro, item)
+                                        : ''
+                                    }
+                                  >
+                                    {ite.render ? ite.render(pro, item) : item[ite.dataIndex]}
+                                  </Tooltip>
+                                ) : (
+                                  <span>
+                                    {ite.render ? ite.render(pro, item) : item[ite.dataIndex]}
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className={styles.engineerTableBody}>{tbodyElement}</div>
               </div>
-            </div>
-          </Checkbox.Group>
-        )}
-        {!isFold &&
-          (!projectInfo.projects ||
-            (projectInfo.projects && projectInfo.projects.length === 0)) && (
+            </Checkbox.Group>
+          )}
+          {!item.isFold && (!item.projects || (item.projects && item.projects.length === 0)) && (
             <div className={styles.noEngineerData}>
               <EmptyTip className="pt20 pb20" description="暂无交接的内容" />
             </div>
           )}
+        </div>
+      </div>
+    );
+  });
+
+  return (
+    <div className={styles.engineerTable}>
+      <div className={styles.engineerTableContent}>
+        {/* <ScrollView
+          ref={scrollbar}
+          onUpdate={scrollEvent}
+          renderThumbHorizontal={scrollBarRenderView}
+          renderThumbVertical={scrollBarRenderView}
+        > */}
+        <Spin spinning={loading}>
+          {handleTableData?.length > 0 && projectTable}
+          {handleTableData?.length === 0 && <EmptyTip className="pt20" />}
+        </Spin>
+        {/* </ScrollView> */}
+      </div>
+      <div className={styles.engineerTablePaging}>
+        <div className={styles.engineerTablePagingLeft}>
+          <span>总共</span>
+          <span className={styles.importantTip}>{handleTableData?.length}</span>
+          <span>个工程，</span>
+          {/* <span className={styles.importantTip}>{tableData?.projectLen}</span>个项目 */}
+        </div>
       </div>
     </div>
   );
 };
-
 export default EngineerTableList;

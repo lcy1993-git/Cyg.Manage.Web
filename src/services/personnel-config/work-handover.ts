@@ -19,7 +19,7 @@ interface HandoverParamsItem {
 
 // 获取接受用户列表
 export const getReceiver = (params: RecevierParamsItem) => {
-  return cyRequest<object[]>(() =>
+  return cyRequest<object | object[]>(() =>
     request(`${baseUrl.project}/UserHandover/GetReceiveUsers`, { method: 'POST', data: params }),
   );
 };
@@ -36,7 +36,7 @@ export const getCompanyGroups = (userId: string) => {
 
 //获取交接项目列表（项目/勘察/设计）
 export const getProjectsInfo = (params: { userId: string; category: number }) => {
-  return cyRequest(() =>
+  return cyRequest<any>(() =>
     request(`${baseUrl.project}/UserHandover/GetProjects`, { method: 'POST', data: params }),
   );
 };
