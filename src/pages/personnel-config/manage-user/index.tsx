@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
 import {
@@ -105,7 +105,6 @@ const ManageUser: React.FC = () => {
           email: '',
           nickName: '',
           name: '',
-          userStatus: 0,
         },
         value,
       );
@@ -142,7 +141,6 @@ const ManageUser: React.FC = () => {
           email: editData.email,
           nickName: editData.nickName,
           name: editData.name,
-          userStatus: editData.userStatus,
         },
         values,
       );
@@ -305,7 +303,7 @@ const ManageUser: React.FC = () => {
         }}
       />
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="添加-管理用户"
         width="680px"
         visible={addFormVisible}

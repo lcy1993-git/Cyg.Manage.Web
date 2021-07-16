@@ -80,7 +80,6 @@ const CompanyUser: React.FC = () => {
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const { setWorkHandoverFlag: setWorkHandoverFlag, workHandoverFlag } = useLayoutStore();
-  console.log(workHandoverFlag);
 
   const rightButton = () => {
     return (
@@ -182,7 +181,6 @@ const CompanyUser: React.FC = () => {
           email: '',
           nickName: '',
           name: '',
-          userStatus: 1,
         },
         value,
       );
@@ -240,7 +238,6 @@ const CompanyUser: React.FC = () => {
           id: editData.id,
           email: editData.email,
           nickName: editData.nickName,
-          userStatus: editData.userStatus,
         },
         values,
       );
@@ -322,7 +319,12 @@ const CompanyUser: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <Switch onChange={() => updateStatus(record.id)} />
+                  <Switch
+                    onChange={() => {
+                      const res = updateStatus(record.id);
+                      console.log(res);
+                    }}
+                  />
                   <span className="formSwitchCloseTip">禁用</span>
                 </>
               ))}

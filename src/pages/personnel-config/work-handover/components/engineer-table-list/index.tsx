@@ -65,14 +65,24 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   const [engineerIds, setEngineerIds] = useState<string[]>([]);
   const [checkAll, setCheckAll] = React.useState(false);
 
-  const { tableSelectData } = useContext(TableContext);
-
-  const { data: tableData, run, loading } = useRequest(
-    () => getProjectsInfo({ userId, category }),
-    {
-      ready: !!userId,
+  const { data: tableData, loading } = useRequest(() => getProjectsInfo({ userId, category }), {
+    ready: !!userId,
+    onSuccess: () => {
+      setCopyTableData(tableData);
     },
-  );
+  });
+
+  const [copyTableData, setCopyTableData] = useState<any[]>([]);
+
+  const handleTableData = useMemo(() => {
+    if (tableData) {
+      return tableData?.map((item: any) => {
+        return (item = { ...item, isChecked: false, isFold: false });
+      });
+    }
+  }, [JSON.stringify(tableData)]);
+
+  console.log(handleTableData);
 
   const {
     projectInfo = {},
@@ -338,10 +348,6 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     columnsWidth,
   ]);
 
-  const handleTableData = tableData?.map((item: any) => {
-    return (item = { ...item, isChecked: false, isFold: false });
-  });
-
   // const tbodyElement = useMemo(() => {
   //   return (projectInfo.projects ?? []).map((item: any) => {
   //     return (
@@ -364,10 +370,13 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   // console.log(engineerIds);
 
   const foldChangeEvent = (item: any) => {
-    // const index = handleTableData.findIndex((ite: any) => ite.id === item.id);
-    // handleTableData[index].isFold = !handleTableData[index].isFold;
+    const copyData = handleTableData;
+    const index = copyData.findIndex((ite: any) => ite.id === item.id);
+
     console.log(item.isFold);
-    item.isFold = !item.isFold;
+
+    copyData[index].isFold = !copyData[index].isFold;
+    setCopyTableData(copyData);
   };
 
   const projectTable = handleTableData?.map((item: any) => {
