@@ -256,6 +256,8 @@ const CompanyUser: React.FC = () => {
     message.success('状态修改成功');
   };
 
+  console.log(accreditData);
+
   const columns = [
     {
       title: '用户名',
@@ -320,6 +322,9 @@ const CompanyUser: React.FC = () => {
               ) : (
                 <>
                   <Switch
+                    onClick={() => {
+                      console.log(1);
+                    }}
                     onChange={() => {
                       const res = updateStatus(record.id);
                       console.log(res);
