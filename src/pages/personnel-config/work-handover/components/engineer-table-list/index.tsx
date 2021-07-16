@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Spin, Tooltip } from 'antd';
@@ -8,10 +8,7 @@ import { TableContext } from '@/pages/project-management/all-project-new/compone
 import styles from './index.less';
 import moment from 'moment';
 import EmptyTip from '@/components/empty-tip';
-import { useContext } from 'react';
-import { useEffect } from 'react';
-import ScrollView from 'react-custom-scrollbars';
-import { isNumber } from 'lodash';
+
 import uuid from 'node-uuid';
 import CyTag from '@/components/cy-tag';
 import { getProjectsInfo } from '@/services/personnel-config/work-handover';
@@ -33,14 +30,15 @@ const colorMap = {
 interface EngineerTableItemProps {
   userId: string;
   category: number;
-  projectInfo: any;
-  columns: any[];
   onChange?: (checkedValue: TableItemCheckedInfo) => void;
-  getClickProjectId: (clickProjectId: string) => void;
-  left: number;
-  isOverflow: boolean;
-  columnsWidth: number;
-  contentWidth: number;
+  setEngineerIds?: Dispatch<SetStateAction<string[]>>;
+  getClickProjectId?: (clickProjectId: string) => void;
+  left?: number;
+  isOverflow?: boolean;
+  getEngineerData?: Dispatch<SetStateAction<any[]>>;
+
+  isFresh?: boolean;
+  setIsFresh?: Dispatch<SetStateAction<boolean>>;
 }
 interface TableCheckedItemProjectInfo {
   id: string;
@@ -56,97 +54,91 @@ export interface TableItemCheckedInfo {
 }
 
 const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
-  const { userId, category } = props;
+  const {
+    userId,
+    category,
+
+    onChange,
+    getClickProjectId,
+    setEngineerIds,
+    left,
+    isOverflow = false,
+    isFresh,
+    setIsFresh,
+    getEngineerData,
+  } = props;
   // const [isFold, { toggle: foldEvent }] = useBoolean(false);
 
   const [checkedList, setCheckedList] = React.useState<CheckboxValueType[]>([]);
   const [indeterminate, setIndeterminate] = React.useState(false);
 
-  const [engineerIds, setEngineerIds] = useState<string[]>([]);
   const [checkAll, setCheckAll] = React.useState(false);
-
-  const { data: tableData, loading } = useRequest(() => getProjectsInfo({ userId, category }), {
-    ready: !!userId,
-    onSuccess: () => {
-      // setCopyTableData(tableData);
-      // console.log(tableData);
-      
-      setHandleTableData(tableData?.map((item: any) => {
-        return (item = { ...item, isChecked: false, isFold: false });
-      }))
-    },
-  });
-
-  // const [copyTableData, setCopyTableData] = useState<any[]>([]);
+  const tableRef = useRef<HTMLDivElement>(null);
 
   const [handleTableData, setHandleTableData] = useState([]);
 
+  const { data: tableData, run, loading } = useRequest(
+    () => getProjectsInfo({ userId, category }),
+    {
+      ready: !!userId,
+      onSuccess: () => {
+        getEngineerData?.(tableData);
+        setHandleTableData(
+          tableData?.map((item: any) => {
+            return (item = { ...item, isChecked: false, isFold: false });
+          }) ?? [],
+        );
+      },
+    },
+  );
 
-
-  console.log(handleTableData);
-  
-  // const getTableData = () => {
-  //   if (tableData) {
-  //     return tableData?.map((item: any) => {
-  //       return (item = { ...item, isChecked: false, isFold: false });
-  //     });
-  //   }
-  // };
-
-  console.log(handleTableData);
-
-  const {
-    projectInfo = {},
-    columns = [],
-    onChange,
-    getClickProjectId,
-
-    left,
-    isOverflow = false,
-    // columnsWidth,
-    contentWidth,
-  } = props;
-
-  const valueList = useMemo(() => {
-    if (projectInfo.projects) {
-      return projectInfo.projects.map((item: any) => item.id);
+  useEffect(() => {
+    if (isFresh) {
+      run();
+      setEngineerIds?.([]);
+      setIsFresh?.(false);
     }
-    return [];
-  }, [JSON.stringify(projectInfo.projects)]);
+  }, [isFresh]);
+
+  // const valueList = useMemo(() => {
+  //   if (projectInfo.projects) {
+  //     return projectInfo.projects.map((item: any) => item.id);
+  //   }
+  //   return [];
+  // }, [JSON.stringify(projectInfo.projects)]);
 
   const checkboxChange = (list: CheckboxValueType[]) => {
-    setCheckedList(list);
-    setIndeterminate(!!list.length && list.length < valueList.length);
-    setCheckAll(list.length === valueList.length);
-
-    onChange?.({
-      projectInfo: {
-        id: projectInfo.id,
-        isAllChecked: list.length === valueList.length,
-        status: projectInfo.projects
-          .map((item: any) => {
-            if (list.includes(item.id)) {
-              return item.stateInfo;
-            }
-          })
-          .filter(Boolean),
-        name: projectInfo.projects
-          .map((item: any) => {
-            if (list.includes(item.id)) {
-              return item.name;
-            }
-          })
-          .filter(Boolean),
-        dataSourceType: projectInfo.projects
-          .map((item: any) => {
-            if (list.includes(item.id)) {
-              return item.dataSourceType;
-            }
-          })
-          .filter((item: any) => isNumber(item)),
-      },
-      checkedArray: list as string[],
-    });
+    // setCheckedList(list);
+    // setIndeterminate(!!list.length && list.length < valueList.length);
+    // setCheckAll(list.length === valueList.length);
+    // onChange?.({
+    //   projectInfo: {
+    //     id: projectInfo.id,
+    //     isAllChecked: list.length === valueList.length,
+    //     status: projectInfo.projects
+    //       .map((item: any) => {
+    //         if (list.includes(item.id)) {
+    //           return item.stateInfo;
+    //         }
+    //       })
+    //       .filter(Boolean),
+    //     name: projectInfo.projects
+    //       .map((item: any) => {
+    //         if (list.includes(item.id)) {
+    //           return item.name;
+    //         }
+    //       })
+    //       .filter(Boolean),
+    //     dataSourceType: projectInfo.projects
+    //       .map((item: any) => {
+    //         if (list.includes(item.id)) {
+    //           return item.dataSourceType;
+    //         }
+    //       })
+    //       .filter((item: any) => isNumber(item)),
+    //   },
+    //   checkedArray: list as string[],
+    // });
   };
 
   //列表字段
@@ -350,33 +342,23 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
         </div>
       );
     });
-  }, [
-    JSON.stringify(tableData),
-    left,
-    contentWidth,
-    isOverflow,
-    JSON.stringify(columns),
-    columnsWidth,
-  ]);
-
-  // const tbodyElement = useMemo(() => {
-  //   return (projectInfo.projects ?? []).map((item: any) => {
-  //     return (
-
-  //     );
-  //   });
-  // }, [
-  //   JSON.stringify(projectInfo),
-  //   left,
-  //   contentWidth,
-  //   isOverflow,
-  //   JSON.stringify(columns),
-  //   columnsWidth,
-  // ]);
+  }, [JSON.stringify(tableData)]);
 
   const checkProjectEvent = (item: any) => {
-    console.log(item.isChecked);
-    item.isChecked = !item.isChecked;
+    const copyData = JSON.parse(JSON.stringify(handleTableData));
+
+    const index = copyData.findIndex((ite: any) => ite.id === item.id);
+
+    copyData[index].isChecked = !copyData[index].isChecked;
+    const hasCheckedIds = copyData
+      .map((item: any) => {
+        if (item.isChecked) {
+          return item.id;
+        }
+      })
+      .filter(Boolean);
+    setEngineerIds?.(hasCheckedIds);
+    setHandleTableData(copyData);
   };
   // console.log(engineerIds);
 
@@ -387,10 +369,8 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
 
     console.log(item.isFold);
 
-
-
     copyData[index].isFold = !copyData[index].isFold;
-    setHandleTableData(copyData)
+    setHandleTableData(copyData);
     // setCopyTableData(copyData);
   };
 
@@ -508,8 +488,10 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     );
   });
 
+  console.log(handleTableData);
+
   return (
-    <div className={styles.engineerTable}>
+    <div className={styles.engineerTable} ref={tableRef}>
       <div className={styles.engineerTableContent}>
         {/* <ScrollView
           ref={scrollbar}
@@ -519,17 +501,13 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
         > */}
         <Spin spinning={loading}>
           {handleTableData?.length > 0 && projectTable}
-          {handleTableData?.length === 0 && <EmptyTip className="pt20" />}
+          {handleTableData?.length === 0 && (
+            <div style={{ marginTop: '100px', color: '#8C8C8C' }}>
+              <EmptyTip className="pt20" description="暂无交接的内容" />
+            </div>
+          )}
         </Spin>
         {/* </ScrollView> */}
-      </div>
-      <div className={styles.engineerTablePaging}>
-        <div className={styles.engineerTablePagingLeft}>
-          <span>总共</span>
-          <span className={styles.importantTip}>{handleTableData?.length}</span>
-          <span>个工程，</span>
-          {/* <span className={styles.importantTip}>{tableData?.projectLen}</span>个项目 */}
-        </div>
       </div>
     </div>
   );

@@ -132,7 +132,10 @@ const CompanyUser: React.FC = () => {
     }
     const userId = tableSelectRows[0].id;
     const name = tableSelectRows[0].name;
-    history.push({ pathname: `/personnel-config/work-handover?id=${userId}&&name=${name}` });
+    const userName = tableSelectRows[0].userName;
+    history.push({
+      pathname: `/personnel-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`,
+    });
   };
 
   //数据修改刷新
@@ -322,12 +325,8 @@ const CompanyUser: React.FC = () => {
               ) : (
                 <>
                   <Switch
-                    onClick={() => {
-                      console.log(1);
-                    }}
                     onChange={() => {
-                      const res = updateStatus(record.id);
-                      console.log(res);
+                      updateStatus(record.id);
                     }}
                   />
                   <span className="formSwitchCloseTip">禁用</span>
