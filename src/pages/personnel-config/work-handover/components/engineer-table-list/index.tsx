@@ -68,19 +68,30 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   const { data: tableData, loading } = useRequest(() => getProjectsInfo({ userId, category }), {
     ready: !!userId,
     onSuccess: () => {
-      setCopyTableData(tableData);
+      // setCopyTableData(tableData);
+      // console.log(tableData);
+      
+      setHandleTableData(tableData?.map((item: any) => {
+        return (item = { ...item, isChecked: false, isFold: false });
+      }))
     },
   });
 
-  const [copyTableData, setCopyTableData] = useState<any[]>([]);
+  // const [copyTableData, setCopyTableData] = useState<any[]>([]);
 
-  const handleTableData = useMemo(() => {
-    if (tableData) {
-      return tableData?.map((item: any) => {
-        return (item = { ...item, isChecked: false, isFold: false });
-      });
-    }
-  }, [JSON.stringify(tableData)]);
+  const [handleTableData, setHandleTableData] = useState([]);
+
+
+
+  console.log(handleTableData);
+  
+  // const getTableData = () => {
+  //   if (tableData) {
+  //     return tableData?.map((item: any) => {
+  //       return (item = { ...item, isChecked: false, isFold: false });
+  //     });
+  //   }
+  // };
 
   console.log(handleTableData);
 
@@ -370,13 +381,17 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   // console.log(engineerIds);
 
   const foldChangeEvent = (item: any) => {
-    const copyData = handleTableData;
+    const copyData = JSON.parse(JSON.stringify(handleTableData));
+
     const index = copyData.findIndex((ite: any) => ite.id === item.id);
 
     console.log(item.isFold);
 
+
+
     copyData[index].isFold = !copyData[index].isFold;
-    setCopyTableData(copyData);
+    setHandleTableData(copyData)
+    // setCopyTableData(copyData);
   };
 
   const projectTable = handleTableData?.map((item: any) => {
