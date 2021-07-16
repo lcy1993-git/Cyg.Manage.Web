@@ -1,5 +1,4 @@
 export default {
-  required: [{ required: true, message: '该值不能为空' }],
   title: [
     { required: true, message: '标题不能为空' },
     {
@@ -11,4 +10,6 @@ export default {
       message: '标题超出字符数限制，限制为12个字符',
     },
   ],
+  users: [{ required: true, message: '对象不能为空' }],
+  category: [{ required: true, message: '端口不能为空' }],
 };

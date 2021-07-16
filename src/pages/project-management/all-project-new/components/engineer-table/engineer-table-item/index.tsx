@@ -11,6 +11,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import EmptyTip from '@/components/empty-tip';
 import { useContext } from 'react';
 import { useEffect } from 'react';
+import { isNumber } from 'lodash';
 export interface AddProjectValue {
   engineerId: string;
   areaId: string;
@@ -35,6 +36,7 @@ interface TableCheckedItemProjectInfo {
   isAllChecked: boolean;
   status?: any;
   name?: any;
+  dataSourceType?: number[];
 }
 
 export interface TableItemCheckedInfo {
@@ -96,6 +98,13 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             }
           })
           .filter(Boolean),
+        dataSourceType: projectInfo.projects
+          .map((item: any) => {
+            if (list.includes(item.id)) {
+              return item.dataSourceType;
+            }
+          })
+          .filter((item: any) => isNumber(item)),
       },
       checkedArray: list as string[],
     });
@@ -124,6 +133,13 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             }
           })
           .filter(Boolean),
+        dataSourceType: projectInfo.projects
+          .map((item: any) => {
+            if (valueList.includes(item.id)) {
+              return item.dataSourceType;
+            }
+          })
+          .filter((item: any) => isNumber(item)),
       },
       checkedArray: e.target.checked ? valueList : [],
     });
@@ -157,7 +173,9 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
         <div
           className={`${styles.engineerTableTh} ${
             item.dataIndex === 'action' ? styles.actionTd : ''
-          } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${item.dataIndex === 'name' ? styles.nameTd : ''}`}
+          } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${
+            item.dataIndex === 'name' ? styles.nameTd : ''
+          }`}
           key={`${item.dataIndex}`}
           style={
             isOverflow
@@ -165,9 +183,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                   width: `${item.width}px`,
                   left: `${item.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
                     item.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                  } ${
-                    item.dataIndex === 'name' ? `${left + 38}px` : ''
-                  }`,
+                  } ${item.dataIndex === 'name' ? `${left + 38}px` : ''}`,
                 }
               : {
                   width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
@@ -178,8 +194,15 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
           {item.title}
         </div>
       );
-    })
-  }, [JSON.stringify(projectInfo),left,contentWidth,isOverflow,JSON.stringify(columns),columnsWidth]);
+    });
+  }, [
+    JSON.stringify(projectInfo),
+    left,
+    contentWidth,
+    isOverflow,
+    JSON.stringify(columns),
+    columnsWidth,
+  ]);
 
   const tbodyElement = useMemo(() => {
     return (projectInfo.projects ?? []).map((item: any) => {
@@ -196,15 +219,17 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
               <div
                 className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
                   ite.dataIndex === 'action' ? styles.actionTd : ''
-                } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${ite.dataIndex === 'name' ? styles.nameTd : ''}`}
+                } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${
+                  ite.dataIndex === 'name' ? styles.nameTd : ''
+                }`}
                 key={`${item.id}Td${ite.dataIndex}`}
                 style={
                   isOverflow
                     ? {
                         width: `${ite.width}px`,
-                        left: `${ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
-                          ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                        } ${
+                        left: `${
+                          ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''
+                        } ${ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''} ${
                           ite.dataIndex === 'name' ? `${left + 38}px` : ''
                         }`,
                       }
@@ -214,23 +239,36 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                       }
                 }
               >
-                {
-                  ite.ellipsis ?
+                {ite.ellipsis ? (
                   // eslint-disable-next-line no-nested-ternary
-                  <Tooltip title={typeof item[ite.dataIndex] === 'string' ? item[ite.dataIndex] : (ite.render ? ite.render(item, projectInfo) : "")}>
+                  <Tooltip
+                    title={
+                      typeof item[ite.dataIndex] === 'string'
+                        ? item[ite.dataIndex]
+                        : ite.render
+                        ? ite.render(item, projectInfo)
+                        : ''
+                    }
+                  >
                     {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
-                  </Tooltip> :
-                  <span>
-                    {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
-                  </span>
-                }
+                  </Tooltip>
+                ) : (
+                  <span>{ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}</span>
+                )}
               </div>
             );
           })}
         </div>
       );
-    })
-  },[JSON.stringify(projectInfo),left,contentWidth,isOverflow,JSON.stringify(columns),columnsWidth]);
+    });
+  }, [
+    JSON.stringify(projectInfo),
+    left,
+    contentWidth,
+    isOverflow,
+    JSON.stringify(columns),
+    columnsWidth,
+  ]);
 
   useEffect(() => {
     if (tableSelectData.length === 0) {

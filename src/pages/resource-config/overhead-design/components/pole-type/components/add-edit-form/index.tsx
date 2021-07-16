@@ -15,12 +15,22 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
   return (
     <>
       {type == 'add' && (
-        <CyFormItem label="简号编码" name="poleTypeCode" required>
+        <CyFormItem
+          label="简号编码"
+          name="poleTypeCode"
+          required
+          rules={[{ required: true, message: '简号编码不能为空' }]}
+        >
           <Input placeholder="请输入简号编码" />
         </CyFormItem>
       )}
 
-      <CyFormItem label="名称" name="poleTypeName" required>
+      <CyFormItem
+        label="名称"
+        name="poleTypeName"
+        required
+        rules={[{ required: true, message: '名称不能为空' }]}
+      >
         <Input placeholder="请输入名称" />
       </CyFormItem>
 

@@ -29,6 +29,8 @@ interface TreeTableProps<T> extends TableProps<T> {
   url?: string;
   // 是否需要勾选选项
   needCheck?: boolean;
+  params?: object;
+  showButtonContent?: boolean;
 }
 
 const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<any>) => {
@@ -39,19 +41,20 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
     otherSlot,
     tableTitle,
     leftButtonsSlot,
+    showButtonContent = true,
     url = '',
     type = 'radio',
     getSelectData,
+    params,
     ...rest
   } = props;
 
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
-  const {
-    data = [],
-    loading,
-    run,
-  } = useRequest(() => treeTableCommonRequeset<T>({ url }), { ready: !!url });
+  const { data = [], loading, run } = useRequest(
+    () => treeTableCommonRequeset<T>({ url, params }),
+    { ready: !!url },
+  );
 
   const finalyDataSource = url ? data : dataSource;
 
@@ -94,22 +97,25 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
 
   return (
     <div className={styles.treeTableData}>
-      <div className={styles.treeTbaleButtonsContent}>
-        <div className={styles.treeTableButtonsLeftContent}>{leftButtonsSlot?.()}</div>
-        <div className={styles.treeTableButtonsRightContent}>
-          <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
-          <div className={styles.treeTableButtonCommon}>
-            <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
-              <UpOutlined />
-              全部展开
-            </Button>
-            <Button onClick={() => allCloseEvent()}>
-              <DownOutlined />
-              全部折叠
-            </Button>
+      {showButtonContent && (
+        <div className={styles.treeTbaleButtonsContent}>
+          <div className={styles.treeTableButtonsLeftContent}>{leftButtonsSlot?.()}</div>
+          <div className={styles.treeTableButtonsRightContent}>
+            <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
+            <div className={styles.treeTableButtonCommon}>
+              <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
+                <UpOutlined />
+                全部展开
+              </Button>
+              <Button onClick={() => allCloseEvent()}>
+                <DownOutlined />
+                全部折叠
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       <div className={styles.treeTableOtherSlots}>{otherSlot?.()}</div>
       <div className={styles.treeTableTitleShowContent}>
         {tableTitle ? <CommonTitle>{tableTitle}</CommonTitle> : null}
@@ -122,9 +128,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
               expandedRowKeys: expandedRowKeys,
               expandIcon: ({ expanded, onExpand, record }) => {
                 //@ts-ignore 因为传入T是有children 的，但是目前还没有想到解决办法
-
                 const { children } = record;
-                console.log(record);
                 if (!children || children.length === 0) {
                   return <span style={{ marginRight: '6px' }}></span>;
                 }

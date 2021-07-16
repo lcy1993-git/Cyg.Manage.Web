@@ -30,7 +30,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -50,13 +50,13 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="电气设备" width="278px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入电气设备信息"
           />
         </TableSearch>
       </div>
@@ -366,7 +366,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         requestSource="resource"
         url="/ElectricalEquipment"
         // tableTitle="电气设备列表"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
           resourceLibId: libId,

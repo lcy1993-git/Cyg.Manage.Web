@@ -1,6 +1,6 @@
 import React from 'react';
 import EditFormTable from '@/components/edit-form-table';
-import { InputNumber, Form } from 'antd';
+import { Input } from 'antd';
 import UrlSelect from '@/components/url-select';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
 import Scrollbars from 'react-custom-scrollbars';
@@ -14,7 +14,12 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
 
   const columns = [
     {
-      title: '所属组件',
+      title: (
+        <>
+          <span style={{ color: '#e56161' }}>* </span>
+          <span>所属组件</span>
+        </>
+      ),
       dataIndex: 'belongComponentId',
       index: 'belongComponentId',
       width: 180,
@@ -33,6 +38,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
           />
         );
       },
+      rules: [{ required: true, message: '所属组件不能为空' }],
     },
     {
       title: '组件',
@@ -49,13 +55,22 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       render: () => <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />,
     },
     {
-      title: '数量',
+      title: (
+        <>
+          <span style={{ color: '#e56161' }}>* </span>
+          <span>数量</span>
+        </>
+      ),
       dataIndex: 'itemNumber',
       index: 'itemNumber',
       width: 160,
       render: () => {
-        return <InputNumber defaultValue={0} min={0} />;
+        return <Input type="number" min={1} placeholder="请输入数量（正整数）" />;
       },
+      rules: [
+        { required: true, message: '数量不能为空' },
+        { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+      ],
     },
   ];
 

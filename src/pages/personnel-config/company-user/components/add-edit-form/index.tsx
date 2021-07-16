@@ -104,9 +104,9 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
           />
         </CyFormItem>
 
-        <CyFormItem label="状态" name="userStatus" initialValue={'1'}>
+        {/* <CyFormItem label="状态" name="userStatus" initialValue={'1'}>
           <EnumRadio enumList={BelongStatusEnum} />
-        </CyFormItem>
+        </CyFormItem> */}
       </Spin>
     </>
   );

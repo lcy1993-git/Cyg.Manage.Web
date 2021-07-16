@@ -24,7 +24,7 @@ const Inventroy: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [inventoryId, setInventoryId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
 
   const [inventoryTableModalVisible, setInventoryTableModalVisible] = useState<boolean>(false);
@@ -53,13 +53,13 @@ const Inventroy: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="协议库存" width="278px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入协议库存信息"
           />
         </TableSearch>
       </div>
@@ -383,7 +383,7 @@ const Inventroy: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/Inventory/GetInventoryOverviewPageList"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="协议库存列表"
         type="radio"
         extractParams={{

@@ -15,7 +15,7 @@ import CreateMap from '../create-map';
 const HasMapModal: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   // const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   // const [companyWord, setCompanyWord] = useState<string>('');
   const [mapLibModalVisible, setMapLibModalVisible] = useState<boolean>(false);
   const [mappingListModalVisible, setMappingListModalVisible] = useState<boolean>(false);
@@ -64,7 +64,7 @@ const HasMapModal: React.FC = () => {
     }
     await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id });
     message.success('删除映射成功');
-    setTableSelectRow([]);
+    setTableSelectRows([]);
     refresh();
   };
 
@@ -140,7 +140,7 @@ const HasMapModal: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/Inventory/GetMappingInventoryOverviewPageList"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="已映射列表"
         type="radio"
         extractParams={

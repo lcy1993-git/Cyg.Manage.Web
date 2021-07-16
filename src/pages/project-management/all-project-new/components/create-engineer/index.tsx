@@ -19,9 +19,6 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
   const [company, setCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
 
-  //控制工程时间
-  const [engineerStartDate, setEngineerStartDate] = useState<Date>();
-
   const tabChangeEvent = (activeKey: string) => {
     setActiveProjectKey(activeKey);
   };

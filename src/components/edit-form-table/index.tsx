@@ -36,11 +36,11 @@ const EditFormTable: React.FC<EditFormTableProps> = (props) => {
               <tbody>
                 {fields.map((field, index) => {
                   return (
-                    <tr key={uuid.v1()}>
+                    <tr key={field.key}>
                       <td>{index + 1}</td>
                       {columns.map((ite) => {
                         return (
-                          <td key={uuid.v1()}>
+                          <td key={`${field.key}_${ite.dataIndex}`}>
                             <Form.Item
                               {...field}
                               rules={ite.rules}

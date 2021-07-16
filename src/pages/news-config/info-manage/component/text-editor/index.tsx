@@ -235,7 +235,9 @@ const TextEditorModal = (props: EditorParams) => {
   useEffect(() => {
     if (personDefaultValue) {
       const flattenArray = flatten(handleData);
-      const handlePersonUserIds = flattenArray.filter((item) => personDefaultValue.includes(item.chooseValue)).map((item) => item.value);
+      const handlePersonUserIds = flattenArray
+        .filter((item) => personDefaultValue.includes(item.chooseValue))
+        .map((item) => item.value);
       titleForm.setFieldsValue({
         userIds: handlePersonUserIds,
       });
@@ -253,7 +255,7 @@ const TextEditorModal = (props: EditorParams) => {
           {/* <Switch checked={isChecked} onChange={() => setIsChecked(!isChecked)} /> */}
           <FormSwitch />
         </CyFormItem>
-        <CyFormItem label="对象" name="userIds" required labelWidth={60}>
+        <CyFormItem label="对象" name="userIds" required labelWidth={60} rules={rule.users}>
           <TreeSelect
             placeholder="请选择对象"
             treeCheckable
@@ -261,7 +263,13 @@ const TextEditorModal = (props: EditorParams) => {
             treeDefaultExpandAll
           />
         </CyFormItem>
-        <CyFormItem label="端口" labelWidth={60} name="clientCategorys" required>
+        <CyFormItem
+          label="端口"
+          labelWidth={60}
+          name="clientCategorys"
+          required
+          rules={rule.category}
+        >
           <UrlSelect
             mode="multiple"
             requestSource="project"

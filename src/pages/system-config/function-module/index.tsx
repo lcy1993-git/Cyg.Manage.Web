@@ -22,7 +22,7 @@ import { useRequest } from 'ahooks';
 const FunctionModule: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
 
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -210,7 +210,7 @@ const FunctionModule: React.FC = () => {
         ref={tableRef}
         tableTitle="模块列表"
         rightButtonSlot={functionModuleButton}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         columns={functionTableColumns}
         url="/Module/GetTreeList"
       />

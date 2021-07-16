@@ -72,9 +72,9 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
   const tableButton = () => {
     return (
       <>
-        <TableSearch className="mr22" label="关键字" width="208px">
+        <TableSearch className="mr22" label="工程名称" width="248px">
           <Search
-            placeholder="工程名称"
+            placeholder="请输入工程名称"
             enterButton
             value={keyWord}
             onChange={(e) => setKeyWord(e.target.value)}

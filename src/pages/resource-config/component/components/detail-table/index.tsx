@@ -45,14 +45,14 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="组件明细" width="278px">
           <Search
             allowClear
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="编号/名称"
+            placeholder="请输入组件明细信息"
           />
         </TableSearch>
       </div>
@@ -153,9 +153,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
 
     setEditFormVisible(true);
     const ComponentDetailData = await run(libId, editDataId);
-    
-   
-    
+
     const formData =
       ComponentDetailData?.isComponent == 1
         ? {
@@ -249,11 +247,14 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-组件明细"
-        width="100%"
+        width="88%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddComponentDetail()}
-        onCancel={() => setAddFormVisible(false)}
+        onCancel={() => {
+          setAddFormVisible(false);
+          addForm.resetFields();
+        }}
         cancelText="取消"
         centered
         destroyOnClose

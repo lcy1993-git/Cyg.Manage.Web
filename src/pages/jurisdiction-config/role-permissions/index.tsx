@@ -28,7 +28,7 @@ const { Search } = Input;
 
 const RolePermissions: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [currentId, setCurrentId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
@@ -118,12 +118,12 @@ const RolePermissions: React.FC = () => {
   const searchElement = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="关键词" width="203px">
+        <TableSearch label="角色名称" width="248px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="角色名称"
+            placeholder="请输入角色名称"
             enterButton
           />
         </TableSearch>
@@ -156,7 +156,7 @@ const RolePermissions: React.FC = () => {
     await deleteAuthorizationItem(editDataId);
     tableFresh();
     message.success('删除成功');
-    setTableSelectRow([]);
+    setTableSelectRows([]);
   };
 
   // const distributeEvent = async () => {
@@ -313,7 +313,7 @@ const RolePermissions: React.FC = () => {
         ref={tableRef}
         buttonLeftContentSlot={searchElement}
         buttonRightContentSlot={buttonElement}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         url="/AuthTemplate/GetPagedList"
         columns={columns}
         tableTitle="角色权限管理"

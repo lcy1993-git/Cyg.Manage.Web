@@ -47,14 +47,14 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="模块明细" width="278px">
           <Search
             allowClear
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入模块明细信息"
           />
         </TableSearch>
         <TableSearch width="230px">
@@ -279,13 +279,14 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-模块明细"
-        width="100%"
+        width="88%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddModuleDetail()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        centered
       >
         <Form form={addForm} preserve={false}>
           <AddModuleDetailTable addForm={addForm} resourceLibId={libId} />

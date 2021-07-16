@@ -29,7 +29,7 @@ const mapColor = {
 
 const CompanyManage: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
   const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -225,7 +225,7 @@ const CompanyManage: React.FC = () => {
         ref={tableRef}
         tableTitle="公司管理"
         columns={companyTableColumns}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         rightButtonSlot={companyManageButton}
         url="/Company/GetTreeList"
       />

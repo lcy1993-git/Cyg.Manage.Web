@@ -38,7 +38,7 @@ const { Search } = Input;
 
 const ResourceLib: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -66,13 +66,13 @@ const ResourceLib: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="资源库" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入资源库"
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="资源库状态" width="300px">
@@ -477,7 +477,7 @@ const ResourceLib: React.FC = () => {
         requestSource="resource"
         url="/ResourceLib/GetPageList"
         tableTitle="资源库管理"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
