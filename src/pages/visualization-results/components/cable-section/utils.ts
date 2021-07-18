@@ -91,6 +91,7 @@ const mixInArray = (org: any[], sortData: any[], layMode: number, row: number) =
 }
 
 const drawCircular = (data: DataOptions[], ctx: CanvasRenderingContext2D, otherData: any[] | undefined = undefined) => {
+  
   if (!ctx) return;
   data.forEach((item) => {
     if(!item) return;
@@ -139,7 +140,6 @@ const drawCircular = (data: DataOptions[], ctx: CanvasRenderingContext2D, otherD
 };
 
 export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: number, arrangement: string | null, title: string) => {
-  console.log(layMode, "layMode");
   
   const sortData = sortDataByRowCol(data)
 
@@ -156,9 +156,9 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
       if (arrangement && typeof arrangement === 'string') {
         const getArray = getMatrixData(parseInt(arrangement[0]), parseInt(arrangement[2]), true);
 
-        const res = mixInArray(getArray, sortData, layMode, parseInt(arrangement[0])) ?? [];
+        // const res = mixInArray(getArray, sortData, layMode, parseInt(arrangement[0])) ?? [];
 
-        drawCircular(res, ctx);
+        drawCircular(simpleMixIn(getArray, sortData), ctx)
       }
       break;
     case 3:
@@ -175,7 +175,7 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
       } else if (title.includes("2600")) {
         [type3Org, type3Line] = pipeJacking.type2600();
       }
-
+      
       drawCircular(simpleMixIn(type3Org, sortData), ctx, type3Line)
       break;
     case 4:
@@ -195,16 +195,13 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
       switch (title) {
         case "1.65×2.1m单侧支架布置电缆隧道":
         case "1.65×2.3m单侧支架布置电缆隧道":
-          console.log(1);
           
           const res61 = getGrooveData(6, 4);
-          
           
           drawCircular(simpleMixIn(res61[0], sortData), ctx, res61[1])
           break;
         case "2.0×2.1m单侧支架布置电缆隧道":
         case "2.0×2.3m单侧支架布置电缆隧道":
-          console.log(2);
           
           const res62 = getGrooveData(6, 3, true);
           drawCircular(simpleMixIn(res62[0], sortData), ctx, res62[1])

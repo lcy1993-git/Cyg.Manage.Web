@@ -46,28 +46,56 @@ export const getMatrixData: (row: number, col: number, hasRedHole?: boolean, wid
     const unitY = width / (row);
     const r = Math.min(unitX / 5, unitY / 5)
     const opArray = [];
-    for (let i = row - 1; i >= 0; i --) {
-      for (let j = 0; j < col; j++) {
-        opArray.push({
-          x: unitX * (j + .5) + flag * 20,
-          y: unitY * (i + .5),
-          r
-        })
+    const sign = [];
+    let number = -1;
+    
+    for (let i = row - 1; i >= 0; i--) {
+      for (let j = 0; j < (flag ? col + 1 : col); j++) {
+        number++
+        if (flag && j === 0) {
+          sign.push(number)
+          opArray.push({
+            x: 0,
+            y: 0,
+            r: 0
+          })
+        } else {
+          opArray.push({
+            x: (flag ? unitX * (j - .5) : unitX * (j + .5))  + flag * 20,
+            y: unitY * (i + .5),
+            r,
+            stroke: "#000"
+          })
+        }
       }
     }
     if (hasRedHole) {
-      opArray.push({
+      opArray[sign[1]] = {
         x: 10,
         y: width / 2 - 20,
         r: Math.min(r * .7, 8),
         stroke: "#f00"
-      })
-      opArray.push({
+      }
+
+      opArray[sign[0]] = {
         x: 10,
         y: width / 2 + 20,
         r: Math.min(r * .7, 8),
         stroke: "#f00"
-      })
+      }
+
+      // opArray.push({
+      //   x: 10,
+      //   y: width / 2 - 20,
+      //   r: Math.min(r * .7, 8),
+      //   stroke: "#f00"
+      // })
+      // opArray.push({
+      //   x: 10,
+      //   y: width / 2 + 20,
+      //   r: Math.min(r * .7, 8),
+      //   stroke: "#f00"
+      // })
     }
     return opArray
 
@@ -89,7 +117,7 @@ export const getGrooveData: (row: number, col: number, isDouble?: boolean, width
     const lineArray = [];
     const maxWidth = isDouble ? (width - 10) / 2 : width * 2 / 3;
     const unit = Math.min(maxWidth / col, width / row);
-    for (let i = row -1; i >= 0; i --) {
+    for (let i = row - 1; i >= 0; i--) {
       for (let j = 0; j < colNum; j++) {
         if (j < col) {
           circleArray.push({
@@ -425,6 +453,11 @@ export const pipeJacking = {
       stroke: "red"
     },
     {
+      x: 0,
+      y: 0,
+      r: 0
+    },
+    {
       x: 75 - 5 - 7.5,
       y: 75 + 40,
       r: 9
@@ -460,7 +493,11 @@ export const pipeJacking = {
       y: 75 + 5 + 7.5,
       r: 9
     },
-
+    {
+      x: 0,
+      y: 0,
+      r: 0
+    },
     // row2
     {
       x: 75 - 40,
@@ -482,12 +519,22 @@ export const pipeJacking = {
       y: 75 - 5 - 7.5,
       r: 9
     },
+    {
+      x: 0,
+      y: 0,
+      r: 0
+    },
     //row1
     {
       x: 75 - 30,
       y: 75 - 30,
       r: 5,
       stroke: "red"
+    },
+    {
+      x: 0,
+      y: 0,
+      r: 0
     },
     {
       x: 75 - 5 - 7.5,

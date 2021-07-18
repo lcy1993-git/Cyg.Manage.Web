@@ -25,6 +25,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
   useEffect(() => {
     //@ts-ignore
     window.toAllProject = (personId: string) => {
+      //@ts-ignore
       setAllProjectSearchPerson(personId);
       history.push('/project-management/all-project');
     };
