@@ -99,13 +99,13 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
   };
 
   const tableLeftSlot = (
-    <TableSearch label="关键词" width="230px">
+    <TableSearch label="用户信息" width="248px">
       <Search
         value={searchKeyWord}
         onChange={(e) => setSearchKeyWord(e.target.value)}
         onSearch={() => search()}
         enterButton
-        placeholder="关键词"
+        placeholder="请输入用户信息"
       />
     </TableSearch>
   );

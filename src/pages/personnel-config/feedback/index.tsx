@@ -17,7 +17,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const UserFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [checkFormVisible, setCheckFormVisible] = useState<boolean>(false);
@@ -157,7 +157,7 @@ const UserFeedBack: React.FC = () => {
         ref={tableRef}
         tableTitle="用户反馈"
         columns={feedBackColumns}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         buttonRightContentSlot={userFeedBackButton}
         url="/Feedback/GetList"
       />

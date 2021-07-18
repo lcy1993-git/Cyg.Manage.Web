@@ -29,13 +29,12 @@ import FileGroupForm from './components/add-file-group';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { TableRequestResult } from '@/services/table';
-// import { UploadStatus } from '@/components/file-upload';
 
 const { Search } = Input;
 
 const CompanyFile: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -82,13 +81,13 @@ const CompanyFile: React.FC = () => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="文件名称" width="230px">
+        <TableSearch label="文件名称" width="248px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入文件名搜索"
+            placeholder="请输入名称/类别"
           />
         </TableSearch>
       </div>
@@ -104,7 +103,7 @@ const CompanyFile: React.FC = () => {
     const editDataId = editData.id;
     await deleteCompanyFileItem(editDataId);
     refresh();
-    setTableSelectRow([]);
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 
@@ -492,7 +491,7 @@ const CompanyFile: React.FC = () => {
               columns={columns}
               url="/CompanyFile/GetPagedList"
               tableTitle="公司文件"
-              getSelectData={(data) => setTableSelectRow(data)}
+              getSelectData={(data) => setTableSelectRows(data)}
               extractParams={{
                 keyWord: searchKeyWord,
                 groupId: fileGroupId,

@@ -16,7 +16,7 @@ import { Dropdown } from 'antd';
 import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { TableItemCheckedInfo } from './components/engineer-table-item';
+import { TableItemCheckedInfo } from './components/engineer-table/engineer-table-item';
 import { Popconfirm } from 'antd';
 import { message } from 'antd';
 import {
@@ -229,12 +229,13 @@ const AllProject: React.FC = () => {
 
     await checkCanArrange(projectIds);
 
+    console.log(tableSelectData?.[0].projectInfo);
+
     // 如果只有一个项目需要安排的时候，需要去检查他是不是被安排了部组
     if (projectIds.length === 1) {
       const thisProjectId = projectIds[0];
       const projectInfo = await getProjectInfo(thisProjectId);
       setDataSourceType(Number(projectInfo.dataSourceType));
-
       const { allots = [] } = projectInfo ?? {};
       if (allots.length > 0) {
         const latestAllot = allots[allots?.length - 1];
@@ -253,6 +254,18 @@ const AllProject: React.FC = () => {
         setCurrentArrangeProjectType('2');
         setCurrentArrangeProjectIsArrange('');
       }
+    }
+
+    //根据现场数据来源数组 判断点击安排进入后的提示信息
+    const typeArray = tableSelectData?.[0].projectInfo?.dataSourceType;
+    if (typeArray?.length != 1 && !typeArray?.includes(0)) {
+      setDataSourceType(-1);
+    }
+    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {
+      setDataSourceType(1);
+    }
+    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(2)) {
+      setDataSourceType(2);
     }
 
     setSelectProjectIds(projectIds);
@@ -503,7 +516,7 @@ const AllProject: React.FC = () => {
         surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
         designUser: String(allProjectSearchPerson),
-      })
+      });
 
       // TODO 有人的时候设置人
       searchByParams({
@@ -696,6 +709,7 @@ const AllProject: React.FC = () => {
           allotCompanyId={currentArrangeProjectIsArrange}
           projectIds={selectProjectIds}
           dataSourceType={dataSourceType}
+          setSourceTypeEvent={setDataSourceType}
         />
       )}
 

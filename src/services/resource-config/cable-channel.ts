@@ -9,7 +9,7 @@ interface CableChannelParams {
   typicalCode: string;
   channelCode: string;
   unit: string;
-  reserveWidth: number;
+  reservedWidth: number;
   digDepth: number;
   layingMode: string;
   cableNumber: number;

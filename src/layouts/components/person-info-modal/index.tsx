@@ -139,9 +139,11 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
           </div>
         </div>
         <div className={styles.personEditItem}>
-          <div className={styles.personEditItemLabel}>真实姓名</div>
+          <div className={styles.personEditItemLabel}>
+            <span style={{ color: '#e56161' }}>* </span>真实姓名
+          </div>
           <div className={styles.personEditItemContent}>
-            <Form.Item name="name" rules={Rule.name}>
+            <Form.Item name="name" rules={Rule.name} required>
               <Input />
             </Form.Item>
           </div>

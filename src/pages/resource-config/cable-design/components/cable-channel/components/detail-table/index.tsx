@@ -45,14 +45,14 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="电缆通道明细" width="328px">
           <Search
             allowClear
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="编号/名称"
+            placeholder="请输入电缆通道明细信息"
           />
         </TableSearch>
       </div>
@@ -79,13 +79,13 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     {
       dataIndex: 'cableChannelId',
       index: 'cableChannelId',
-      title: '电缆井编号',
+      title: '电缆通道编号',
       width: 180,
     },
     {
       dataIndex: 'channelName',
       index: 'channelName',
-      title: '电缆井名称',
+      title: '电缆通道名称',
       width: 500,
     },
 
@@ -154,13 +154,19 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     setEditFormVisible(true);
     const cableChannelDetailData = await run(libId, editDataId);
     const formData =
-    cableChannelDetailData?.isComponent == 1
+      cableChannelDetailData?.isComponent == 1
         ? {
-            componentId: { id: cableChannelDetailData.itemId, name: cableChannelDetailData.itemName },
+            componentId: {
+              id: cableChannelDetailData.itemId,
+              name: cableChannelDetailData.itemName,
+            },
             itemNumber: cableChannelDetailData.itemNumber,
           }
         : {
-            materialId: { id: cableChannelDetailData.itemId, name: cableChannelDetailData.itemName },
+            materialId: {
+              id: cableChannelDetailData.itemId,
+              name: cableChannelDetailData.itemName,
+            },
             itemNumber: cableChannelDetailData.itemNumber,
           };
 
@@ -247,7 +253,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       <Modal
         maskClosable={false}
         title="添加-电缆通道明细"
-        width="100%"
+        width="88%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddcableChannelDetail()}

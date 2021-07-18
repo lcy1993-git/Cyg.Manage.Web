@@ -30,7 +30,7 @@ const Material: React.FC<libParams> = (props) => {
   const { libId } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -52,13 +52,13 @@ const Material: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="物料" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入物料信息"
           />
         </TableSearch>
       </div>
@@ -423,7 +423,8 @@ const Material: React.FC<libParams> = (props) => {
         requestSource="resource"
         url="/Material/GetPageList"
         // tableTitle="物料列表"
-        getSelectData={(data) => setTableSelectRow(data)}
+        size="small"
+        getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
           resourceLibId: libId,

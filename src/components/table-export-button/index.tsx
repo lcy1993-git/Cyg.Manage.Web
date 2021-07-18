@@ -62,12 +62,11 @@ const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
     message.success('导出成功');
   };
 
-
   const importButoonMenu = (
     <Menu>
       <Menu.Item onClick={() => exportChoosedRow()}>导出所选</Menu.Item>
       <Menu.Item onClick={() => exportAllRow()}>导出所有</Menu.Item>
-      <Menu.Item>{selectSlot?.()}</Menu.Item>
+      {selectSlot ? <Menu.Item>{selectSlot?.()}</Menu.Item> : null}
     </Menu>
   );
 

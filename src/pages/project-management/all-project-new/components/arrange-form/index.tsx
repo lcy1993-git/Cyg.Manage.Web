@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TreeSelect, Divider, message } from 'antd';
+import { TreeSelect, message } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumSelect from '@/components/enum-select';
 import {
@@ -108,6 +108,28 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 style={{ width: '100%' }}
                 treeData={surveyData.map(mapTreeData)}
                 placeholder="“无需现场数据”项目，免安排勘察人员"
+                treeDefaultExpandAll
+                disabled
+              />
+            </CyFormItem>
+          ) : dataSourceType === 1 ? (
+            <CyFormItem label="勘察" name="surveyUser" required>
+              <TreeSelect
+                key="surveyUser"
+                style={{ width: '100%' }}
+                treeData={surveyData.map(mapTreeData)}
+                placeholder="“点位导入”项目，免安排勘察人员"
+                treeDefaultExpandAll
+                disabled
+              />
+            </CyFormItem>
+          ) : dataSourceType === -1 ? (
+            <CyFormItem label="勘察" name="surveyUser" required>
+              <TreeSelect
+                key="surveyUser"
+                style={{ width: '100%' }}
+                treeData={surveyData.map(mapTreeData)}
+                placeholder="免安排勘察人员"
                 treeDefaultExpandAll
                 disabled
               />

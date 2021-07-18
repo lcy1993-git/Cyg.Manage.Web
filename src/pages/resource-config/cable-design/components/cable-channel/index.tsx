@@ -27,7 +27,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
 
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -46,13 +46,13 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="电缆通道" width="258px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入电缆通道信息"
           />
         </TableSearch>
       </div>
@@ -64,6 +64,13 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.refresh();
+    }
+  };
+
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.reset();
     }
   };
 
@@ -216,7 +223,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
           typicalCode: '',
           channelCode: '',
           unit: '',
-          reserveWidth: 0,
+          reservedWidth: 0,
           digDepth: 0,
           layingMode: '',
           cableNumber: 0,
@@ -234,6 +241,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       );
       await addCableChannelItem(submitInfo);
       refresh();
+      reset();
       message.success('添加成功');
       setAddFormVisible(false);
       addForm.resetFields();
@@ -266,35 +274,37 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          libId: libId,
-          id: editData.id,
-          channelName: editData.channelName,
-          shortName: editData.shortName,
-          typicalCode: editData.typicalCode,
-          channelCode: editData.channelCode,
-          unit: editData.unit,
-          reserveWidth: editData.reserveWidth,
-          digDepth: editData.digDepth,
-          layingMode: editData.layingMode,
-          cableNumber: editData.cableNumber,
-          pavement: editData.pavement,
-          protectionMode: editData.protectionMode,
-          ductMaterialId: editData.ductMaterialId,
-          arrangement: editData.arrangement,
-          bracketNumber: editData.bracketNumber,
-          forProject: editData.forProject,
-          forDesign: editData.forDesign,
-          remark: editData.remark,
-          chartIds: editData.chartIds,
-        },
-        values,
-      );
+      console.log(values);
+
+      const submitInfo = {
+        libId: libId,
+        id: editData.id,
+        ...values,
+        channelName: values.channelName,
+        shortName: values.shortName,
+        typicalCode: values.typicalCode,
+        channelCode: values.channelCode,
+        unit: values.unit,
+        digDepth: values.digDepth,
+        layingMode: values.layingMode,
+        cableNumber: values.cableNumber,
+        pavement: values.pavement,
+        protectionMode: values.protectionMode,
+        ductMaterialId: values.ductMaterialId,
+        arrangement: values.arrangement,
+        bracketNumber: values.bracketNumber,
+        forProject: values.forProject,
+        forDesign: values.forDesign,
+        remark: values.remark,
+        chartIds: values.chartIds,
+        reservedWidth: values.reservedWidth ? values.reservedWidth : 0,
+      };
+
       await updateCableChannelItem(submitInfo);
-      refresh();
       message.success('更新成功');
       editForm.resetFields();
+      refresh();
+      reset();
       setEditFormVisible(false);
     });
   };
@@ -350,6 +360,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
 
     await deleteCableChannelItem({ libId, ids });
     refresh();
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 
@@ -372,7 +383,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
         columns={columns}
         requestSource="resource"
         url="/CableChannel"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
           libId: libId,

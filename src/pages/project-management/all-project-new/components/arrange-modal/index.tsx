@@ -16,6 +16,7 @@ interface ArrangeModalProps {
   defaultSelectType?: string;
   allotCompanyId?: string;
   dataSourceType?: number;
+  setSourceTypeEvent?: Dispatch<SetStateAction<number | undefined>>;
 }
 
 const { TabPane } = Tabs;
@@ -29,6 +30,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
     defaultSelectType = '2',
     allotCompanyId,
     dataSourceType,
+    setSourceTypeEvent,
   } = props;
   const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
   const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
@@ -135,7 +137,10 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       okText="提交"
       destroyOnClose
       onOk={() => saveInfo()}
-      onCancel={() => closeModalEvent()}
+      onCancel={() => {
+        closeModalEvent();
+        setSourceTypeEvent?.(undefined);
+      }}
     >
       <Form form={form} preserve={false}>
         <Tabs defaultActiveKey="1" onChange={(key) => setTabActiveKey(key)}>

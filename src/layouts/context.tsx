@@ -2,10 +2,12 @@ import { createContext, useContext } from 'react';
 
 interface LayoutContextValue {
   resourceManageFlag?: boolean;
+  workHandoverFlag?: boolean;
   clearAgainLogin?: () => void;
   allProjectSearchProjectId?: string;
   allProjectSearchPerson?: string;
   setResourceManageFlag?: (value: boolean) => void;
+  setWorkHandoverFlag?: (value: boolean) => void;
   setAllProjectSearchProjectId?: (value: string) => void;
   setAllProjectSearchPerson?: (value: string) => void;
 }

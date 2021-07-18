@@ -377,7 +377,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目起止时间" align="right" labelWidth={111}>
+              <CyFormItem label="项目起止日期" align="right" labelWidth={111}>
                 <div style={{ width: '100%' }}>
                   <RangePicker
                     value={

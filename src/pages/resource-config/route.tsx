@@ -37,11 +37,11 @@ const ResourceLib = Loadable({
 //   loading: Loading,
 //   delay: 150,
 // });
-// const SourceCompare = Loadable({
-//   loader: () => import('@/pages/resource-config/source-compare'),
-//   loading: Loading,
-//   delay: 150,
-// });
+const SourceCompare = Loadable({
+  loader: () => import('@/pages/resource-config/source-compare'),
+  loading: Loading,
+  delay: 150,
+});
 
 // const OverheadDesign = Loadable({
 //   loader: () => import('@/pages/resource-config/overhead-design'),
@@ -96,11 +96,11 @@ export default [
   //   path: '/resource-config/line-stress-sag',
   //   component: <LineStressSag />,
   // },
-  // {
-  //   title: '版本对比',
-  //   path: '/resource-config/source-compare',
-  //   component: <SourceCompare />,
-  // },
+  {
+    title: '版本对比',
+    path: '/resource-config/source-compare',
+    component: <SourceCompare />,
+  },
   {
     title: '资源库模块管理',
     path: '/resource-config/resource-manage',
