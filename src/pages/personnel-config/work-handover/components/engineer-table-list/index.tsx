@@ -225,7 +225,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
       width: 140,
       render: (record: any) => {
         const { sources = [] } = record;
-        return sources.map((item: any) => {
+        return sources?.map((item: any) => {
           return (
             <span key={uuid.v1()}>
               <CyTag color={colorMap[item] ? colorMap[item] : 'green'}>
@@ -243,7 +243,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
       render: (record: any) => {
         const { identitys = [] } = record;
         return identitys
-          .filter((item: any) => item.text)
+          ?.filter((item: any) => item.text)
           .map((item: any) => {
             return (
               <span className="mr7" key={uuid.v1()}>

@@ -142,7 +142,16 @@ const WorkHandover: React.FC = () => {
                 />
               </TabPane>
               <TabPane tab="作业任务" key={'mission'}>
-                <MissionTab />
+                <MissionTab
+                  userId={userId}
+                  recevierId={receiverId}
+                  isFresh={isFresh}
+                  setIsFresh={setIsFresh}
+                  getReceiverId={setReceiverId}
+                  setReceiverName={setReceiverName}
+                  setEngineerIds={setEngineerIds}
+                  getEngineerData={setEngineerData}
+                />
               </TabPane>
               <TabPane tab="部组身份" key={'identity'}>
                 <GroupIdentity
