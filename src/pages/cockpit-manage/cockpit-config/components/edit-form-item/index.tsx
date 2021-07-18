@@ -2,36 +2,30 @@ import { Fragment } from 'react';
 import CommonTitle from '@/components/common-title';
 import { Checkbox, Form } from 'antd';
 import { ChildrenData } from '../../utils';
-import { useCallback } from 'react';
 interface EditFormItemProps {
   childrenData: ChildrenData[];
   configArray: any[];
+  activeModal: string;
 }
 
-const EditFormItem: React.FC<EditFormItemProps> = ({ childrenData, configArray=[] }) => {
+const EditFormItem: React.FC<EditFormItemProps> = ({ childrenData, activeModal, configArray=[] }) => {
   
   const childrenDataDom = () => {
-    // const isCheck = (name, v, configArray) => {
-    //   console.log(configArray);
-      
-    //   return configArray.find((item) => item.name === name)?.componentProps.includes(v)
-    // }
-    return childrenData.map((item) => {
-      return (
-        <>
-          <CommonTitle key={item.title}>{item.title}</CommonTitle>
-          <Form.Item name={item.name} key={item.name}>
-            <Checkbox.Group>
-              {item.componentProps.map((v, i) => {
-                return (
-                  <Checkbox key={v} value={v}>{ item.componentTitles ? item.componentTitles[i] : item.title }</Checkbox>
-                );
-              })}
-            </Checkbox.Group>
-          </Form.Item>
-        </>
-      )
-    })
+    const item = childrenData.find((item) => item.name === activeModal) ?? {title: "", name: "", componentProps: []}
+    return (
+      <>
+        <CommonTitle key={item.title}>{item.title}</CommonTitle>
+        <Form.Item name={item.name} key={item.name}>
+          <Checkbox.Group>
+            {item.componentProps.map((v, i) => {              
+              return (
+                <Checkbox key={v} value={v}>{ item.componentTitles ? item.componentTitles[i] : item.title }</Checkbox>
+              );
+            })}
+          </Checkbox.Group>
+        </Form.Item>
+      </>
+    )
   }
 
   return (

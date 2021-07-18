@@ -25,7 +25,11 @@ const CockpitMenuItem: React.FC<CockpitMenuItemProps> = ({
 }) => {
 
   const addConfigItem = (e: ChildrenData) => {
-    console.log(1);
+
+    let w: number = 3;
+    if(e.name === "mapComponent" || e.name ===  'projectProgress'){
+      w = 6
+    }
     
     addConfig?.(
       {
@@ -33,7 +37,7 @@ const CockpitMenuItem: React.FC<CockpitMenuItemProps> = ({
         componentProps: e.componentProps,
         x: 0,
         y: 0,
-        w: 3,
+        w,
         h: 11,
         key: uuid.v1()
       }
