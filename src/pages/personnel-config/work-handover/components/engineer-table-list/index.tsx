@@ -72,13 +72,27 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   // const [isFold, { toggle: foldEvent }] = useBoolean(false);
 
   const [checkedList, setCheckedList] = React.useState<CheckboxValueType[]>([]);
+
   const [indeterminate, setIndeterminate] = React.useState(false);
 
   const [checkAll, setCheckAll] = React.useState(false);
   const tableRef = useRef<HTMLDivElement>(null);
 
   const [handleTableData, setHandleTableData] = useState([]);
+  
+  const [checkedNewList, setCheckedNewList] = React.useState<CheckboxValueType[]>([]);
+  
+  // 所有选中的Id数组
+  const allOptions = useMemo(() => {
+    return handleTableData.map((item) => {
+      const checkedList = item?.projects?.map((e) => {
+        return e?.id
+      })
+      return checkedList
+    })
+  }, [handleTableData])
 
+  
   const { data: tableData, run, loading } = useRequest(
     () => getProjectsInfo({ userId, category }),
     {
@@ -93,6 +107,13 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
             return (item = { ...item, isChecked: false, isFold: false, projects });
           }) ?? [],
         );
+        setCheckedNewList(tableData.map((item => {
+          return {
+            isChecked: false,
+            checkedList: [],
+            indeterminate: false
+          }
+        })))
       },
     },
   );
@@ -115,10 +136,54 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     }
     return [];
   }, [JSON.stringify(handleTableData)]);
-  console.log(valueList);
 
-  const checkboxChange = (list: CheckboxValueType[]) => {};
+  // 当工程组复选框改变时
+  const checkBigboxChange = (i: number, checked: boolean) => {
+    // setCheckedList(e.target.checked ? plainOptions : []);
+    
+    const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList));
+    cloneCheckedList[i].isChecked = !cloneCheckedList[i].isChecked;
+    cloneCheckedList[i].checkedList = checked ? allOptions[i] : [];
+    cloneCheckedList[i].indeterminate = false;
+    setCheckedNewList(cloneCheckedList);
+  };
 
+  // 当项目复选框点击时
+  const onCheckedChange = (i: number, id: string, checked: boolean) => {
+    
+    const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList));
+    const list =  [...cloneCheckedList[i].checkedList];
+    const allList = allOptions[i];
+    if(checked) {
+      list.push(id);
+      if(list.length === allList.length) {
+        cloneCheckedList[i].isChecked = true
+      }
+
+    }else{
+      const index = list.findIndex((e) => e === id);
+      index >= 0 && list.splice(index, 1);
+      if(list.length === 0) {
+        cloneCheckedList[i].isChecked = false
+      }
+    }
+    if(list.length > 0 && list.length < allList.length) {
+      cloneCheckedList[i].indeterminate = true;
+    }else{
+      cloneCheckedList[i].indeterminate = false;
+    }
+    
+    cloneCheckedList[i].checkedList = list;
+    setCheckedNewList(cloneCheckedList);
+  }
+
+  // 获取选中的id
+  const getCurrentCheckedIds = () => {
+    return checkedNewList.reduce((pre, val) => {
+      return [...pre, ...val?.checkedList];
+    }, [])
+  }
+  
   //列表字段
   const listColumns = fieldFlag
     ? [
@@ -447,7 +512,8 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     setHandleTableData(copyData);
   };
 
-  const projectTable = handleTableData?.map((item: any) => {
+  const projectTable = handleTableData?.map((item: any, bigIndex: number) => {
+    
     return (
       <div
         className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}
@@ -460,10 +526,10 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           <div className={styles.engineerName}>
             {checkboxSet ? (
               <Checkbox
-                onChange={checkAllEvent}
+                onChange={(e) => checkBigboxChange(bigIndex, e.target.checked)}
                 style={{ marginRight: '7px' }}
-                indeterminate={indeterminate}
-                checked={checkAll}
+                indeterminate={checkedNewList[bigIndex]?.indeterminate}
+                checked={!!checkedNewList[bigIndex]?.isChecked}
               />
             ) : (
               <Checkbox
@@ -501,7 +567,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           style={{ width: isOverflow ? `${columnsWidth}px` : '100%' }}
         >
           {!item.isFold && item.projects && item.projects.length > 0 && (
-            <Checkbox.Group value={checkedList} onChange={checkboxChange}>
+            <Checkbox.Group value={checkedNewList?.[bigIndex]?.checkedList ?? []}>
               <div className={styles.engineerTable}>
                 <div className={styles.engineerTableContent}>
                   <div className={styles.engineerTableHeader}>
@@ -512,7 +578,8 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                     {theadElement}
                   </div>
                   <div className={styles.engineerTableBody}>
-                    {(item.projects ?? []).map((pro: any) => {
+                    {(item.projects ?? []).map((pro: any, smallIndex: number) => {
+                      
                       return (
                         <div key={`${pro.id}Td`} className={styles.engineerTableTr}>
                           <div
@@ -520,7 +587,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                             style={{ width: '38px', left: `${left}px` }}
                           >
                             {checkboxSet && (
-                              <Checkbox style={{ marginLeft: '4px' }} value={pro.id} />
+                              <Checkbox style={{ marginLeft: '4px' }} checked={checkedNewList[bigIndex]?.checkedList.includes(pro.id)} value={pro.id} onChange={(e) => onCheckedChange(bigIndex, pro.id, e.target.checked)}/>
                             )}
                           </div>
                           {listColumns.map((ite) => {
