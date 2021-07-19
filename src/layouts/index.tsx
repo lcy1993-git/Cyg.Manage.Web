@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IRouteComponentProps } from 'umi';
+import { IRouteComponentProps, useRequest } from 'umi';
 import { Tabs, ConfigProvider } from 'antd';
 import LayoutHeader from './components/layout-header';
 import { getTabsComponent, RouteListItem } from '@/utils/tabs-config';
@@ -11,6 +11,7 @@ moment.locale('zh-cn');
 import styles from './index.less';
 import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons';
 import { LayoutProvider, useLayoutStore } from './context';
+import { pollingHealth } from '@/services/common';
 
 const { TabPane } = Tabs;
 
@@ -79,6 +80,14 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   const flodTheLayout = () => {
     setLayoutIsFold(!layoutIsFold);
   };
+
+  //轮询
+  const { data: pollData } = useRequest(() => pollingHealth(), {
+    pollingInterval: 3000,
+    onSuccess: () => {
+      console.log(pollData);
+    },
+  });
 
   const editTabsEvent = (
     key: string | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,

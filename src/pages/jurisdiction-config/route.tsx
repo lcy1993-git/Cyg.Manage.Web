@@ -45,7 +45,7 @@ export default [
     component: <PlatformAuthorization />,
   },
   {
-    title: '角色权限',
+    title: '功能权限',
     path: '/jurisdiction-config/role-permissions',
     component: <RolePermissions />,
   },
