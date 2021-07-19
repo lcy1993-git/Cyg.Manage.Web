@@ -36,9 +36,10 @@ interface EngineerTableItemProps {
   left?: number;
   isOverflow?: boolean;
   getEngineerData?: Dispatch<SetStateAction<any[]>>;
-
+  checkboxSet?: boolean;
   isFresh?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
+  fieldFlag?: boolean;
 }
 interface TableCheckedItemProjectInfo {
   id: string;
@@ -57,7 +58,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   const {
     userId,
     category,
-
+    checkboxSet,
     onChange,
     getClickProjectId,
     setEngineerIds,
@@ -66,6 +67,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     isFresh,
     setIsFresh,
     getEngineerData,
+    fieldFlag,
   } = props;
   // const [isFold, { toggle: foldEvent }] = useBoolean(false);
 
@@ -85,7 +87,10 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
         getEngineerData?.(tableData);
         setHandleTableData(
           tableData?.map((item: any) => {
-            return (item = { ...item, isChecked: false, isFold: false });
+            const projects = JSON.parse(JSON.stringify(item.projects))?.map((ite: any) => {
+              return { ...ite, isChecked: false };
+            });
+            return (item = { ...item, isChecked: false, isFold: false, projects });
           }) ?? [],
         );
       },
@@ -100,221 +105,293 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     }
   }, [isFresh]);
 
-  // const valueList = useMemo(() => {
-  //   if (projectInfo.projects) {
-  //     return projectInfo.projects.map((item: any) => item.id);
-  //   }
-  //   return [];
-  // }, [JSON.stringify(projectInfo.projects)]);
+  const valueList = useMemo(() => {
+    if (handleTableData) {
+      return handleTableData.map((item: any) => {
+        return item.projects.map((ite: any) => {
+          return ite.id;
+        });
+      });
+    }
+    return [];
+  }, [JSON.stringify(handleTableData)]);
+  console.log(valueList);
 
-  const checkboxChange = (list: CheckboxValueType[]) => {
-    // setCheckedList(list);
-    // setIndeterminate(!!list.length && list.length < valueList.length);
-    // setCheckAll(list.length === valueList.length);
+  const checkboxChange = (list: CheckboxValueType[]) => {};
+
+  //列表字段
+  const listColumns = fieldFlag
+    ? [
+        {
+          title: '项目名称',
+          dataIndex: 'name',
+          width: 400,
+          render: (record: any) => {
+            return (
+              <u
+                className="canClick"
+                // onClick={() => {
+                //   setCurrentClickProjectId(record.id);
+                //   setProjectModalVisible(true);
+                // }}
+              >
+                {record.name}
+              </u>
+            );
+          },
+          ellipsis: true,
+        },
+        {
+          title: '项目起止时间',
+          dataIndex: 'projectTime',
+          width: 200,
+          ellipsis: true,
+          render: (record: any) => {
+            const { startTime, endTime } = record;
+            if (startTime && endTime) {
+              return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
+                'YYYY-MM-DD',
+              )}`;
+            }
+            if (startTime && !endTime) {
+              return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+            }
+            if (!startTime && endTime) {
+              return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+            }
+            return '未设置起止时间';
+          },
+        },
+        {
+          title: '专业类别',
+          dataIndex: 'majorCategoryText',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.majorCategoryText;
+          },
+        },
+        {
+          title: '项目阶段',
+          dataIndex: 'stageText',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.stageText;
+          },
+        },
+        {
+          title: '勘察人',
+          dataIndex: 'surveyUser',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+          },
+        },
+        {
+          title: '设计人',
+          dataIndex: 'designUser',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.designUser ? `${record.designUser.value}` : '';
+          },
+        },
+        {
+          title: '项目来源',
+          dataIndex: 'sources',
+          width: 140,
+          render: (record: any) => {
+            const { sources = [] } = record;
+            return sources?.map((item: any) => {
+              return (
+                <span key={uuid.v1()}>
+                  <CyTag color={colorMap[item] ? colorMap[item] : 'green'}>
+                    <span>{item}</span>
+                  </CyTag>
+                </span>
+              );
+            });
+          },
+        },
+        {
+          title: '项目身份',
+          dataIndex: 'identitys',
+          width: 200,
+          render: (record: any) => {
+            const { identitys = [] } = record;
+            return identitys
+              ?.filter((item: any) => item.text)
+              .map((item: any) => {
+                return (
+                  <span className="mr7" key={uuid.v1()}>
+                    <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
+                      {item.text}
+                    </CyTag>
+                  </span>
+                );
+              });
+          },
+        },
+        {
+          title: '项目状态',
+          dataIndex: 'status',
+          width: 180,
+          render: (record: any) => {
+            const { stateInfo, allot, identitys } = record;
+            let arrangeType: any = null;
+            let allotCompanyId: any = null;
+
+            if (allot) {
+              arrangeType = allot.allotType;
+              allotCompanyId = allot.allotCompanyGroup;
+            }
+            return (
+              <>
+                <span>{stateInfo?.statusText}</span>
+              </>
+            );
+          },
+        },
+      ]
+    : [
+        {
+          title: '项目名称',
+          dataIndex: 'name',
+          width: 400,
+          render: (record: any) => {
+            return (
+              <u
+                className="canClick"
+                // onClick={() => {
+                //   setCurrentClickProjectId(record.id);
+                //   setProjectModalVisible(true);
+                // }}
+              >
+                {record.name}
+              </u>
+            );
+          },
+          ellipsis: true,
+        },
+        {
+          title: '项目起止时间',
+          dataIndex: 'projectTime',
+          width: 200,
+          ellipsis: true,
+          render: (record: any) => {
+            const { startTime, endTime } = record;
+            if (startTime && endTime) {
+              return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
+                'YYYY-MM-DD',
+              )}`;
+            }
+            if (startTime && !endTime) {
+              return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+            }
+            if (!startTime && endTime) {
+              return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+            }
+            return '未设置起止时间';
+          },
+        },
+        {
+          title: '专业类别',
+          dataIndex: 'majorCategoryText',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.majorCategoryText;
+          },
+        },
+        {
+          title: '项目阶段',
+          dataIndex: 'stageText',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.stageText;
+          },
+        },
+        {
+          title: '勘察人',
+          dataIndex: 'surveyUser',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+          },
+        },
+        {
+          title: '设计人',
+          dataIndex: 'designUser',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.designUser ? `${record.designUser.value}` : '';
+          },
+        },
+        {
+          title: '项目状态',
+          dataIndex: 'status',
+          width: 180,
+          render: (record: any) => {
+            const { stateInfo, allot, identitys } = record;
+            let arrangeType: any = null;
+            let allotCompanyId: any = null;
+
+            if (allot) {
+              arrangeType = allot.allotType;
+              allotCompanyId = allot.allotCompanyGroup;
+            }
+            return (
+              <>
+                <span>{stateInfo?.statusText}</span>
+              </>
+            );
+          },
+        },
+      ];
+
+  const columnsWidth = listColumns.reduce((sum, item) => {
+    return sum + (item.width ? item.width : 100);
+  }, 0);
+
+  const checkAllEvent = (e: any) => {
+    setCheckedList(e.target.checked ? valueList : []);
+    setIndeterminate(false);
+    setCheckAll(e.target.checked);
+
     // onChange?.({
     //   projectInfo: {
     //     id: projectInfo.id,
-    //     isAllChecked: list.length === valueList.length,
+    //     isAllChecked: e.target.checked,
     //     status: projectInfo.projects
     //       .map((item: any) => {
-    //         if (list.includes(item.id)) {
+    //         if (valueList.includes(item.id)) {
     //           return item.stateInfo;
     //         }
     //       })
     //       .filter(Boolean),
     //     name: projectInfo.projects
     //       .map((item: any) => {
-    //         if (list.includes(item.id)) {
+    //         if (valueList.includes(item.id)) {
     //           return item.name;
     //         }
     //       })
     //       .filter(Boolean),
     //     dataSourceType: projectInfo.projects
     //       .map((item: any) => {
-    //         if (list.includes(item.id)) {
+    //         if (valueList.includes(item.id)) {
     //           return item.dataSourceType;
     //         }
     //       })
     //       .filter((item: any) => isNumber(item)),
     //   },
-    //   checkedArray: list as string[],
+    //   checkedArray: e.target.checked ? valueList : [],
     // });
   };
-
-  //列表字段
-  const listColumns = [
-    {
-      title: '项目名称',
-      dataIndex: 'name',
-      width: 400,
-      render: (record: any) => {
-        return (
-          <u
-            className="canClick"
-            // onClick={() => {
-            //   setCurrentClickProjectId(record.id);
-            //   setProjectModalVisible(true);
-            // }}
-          >
-            {record.name}
-          </u>
-        );
-      },
-      ellipsis: true,
-    },
-    {
-      title: '项目起止时间',
-      dataIndex: 'projectTime',
-      width: 200,
-      ellipsis: true,
-      render: (record: any) => {
-        const { startTime, endTime } = record;
-        if (startTime && endTime) {
-          return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
-            'YYYY-MM-DD',
-          )}`;
-        }
-        if (startTime && !endTime) {
-          return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
-        }
-        if (!startTime && endTime) {
-          return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
-        }
-        return '未设置起止时间';
-      },
-    },
-    {
-      title: '专业类别',
-      dataIndex: 'majorCategoryText',
-      width: 150,
-      ellipsis: true,
-      render: (record: any) => {
-        return record.majorCategoryText;
-      },
-    },
-    {
-      title: '项目阶段',
-      dataIndex: 'stageText',
-      width: 150,
-      ellipsis: true,
-      render: (record: any) => {
-        return record.stageText;
-      },
-    },
-    {
-      title: '勘察人',
-      dataIndex: 'surveyUser',
-      width: 150,
-      ellipsis: true,
-      render: (record: any) => {
-        return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
-      },
-    },
-    {
-      title: '设计人',
-      dataIndex: 'designUser',
-      width: 150,
-      ellipsis: true,
-      render: (record: any) => {
-        return record.designUser ? `${record.designUser.value}` : '';
-      },
-    },
-    {
-      title: '项目来源',
-      dataIndex: 'sources',
-      width: 140,
-      render: (record: any) => {
-        const { sources = [] } = record;
-        return sources?.map((item: any) => {
-          return (
-            <span key={uuid.v1()}>
-              <CyTag color={colorMap[item] ? colorMap[item] : 'green'}>
-                <span>{item}</span>
-              </CyTag>
-            </span>
-          );
-        });
-      },
-    },
-    {
-      title: '项目身份',
-      dataIndex: 'identitys',
-      width: 200,
-      render: (record: any) => {
-        const { identitys = [] } = record;
-        return identitys
-          ?.filter((item: any) => item.text)
-          .map((item: any) => {
-            return (
-              <span className="mr7" key={uuid.v1()}>
-                <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
-                  {item.text}
-                </CyTag>
-              </span>
-            );
-          });
-      },
-    },
-    {
-      title: '项目状态',
-      dataIndex: 'status',
-      width: 180,
-      render: (record: any) => {
-        const { stateInfo, allot, identitys } = record;
-        let arrangeType: any = null;
-        let allotCompanyId: any = null;
-
-        if (allot) {
-          arrangeType = allot.allotType;
-          allotCompanyId = allot.allotCompanyGroup;
-        }
-        return (
-          <>
-            <span>{stateInfo?.statusText}</span>
-          </>
-        );
-      },
-    },
-  ];
-
-  const columnsWidth = listColumns.reduce((sum, item) => {
-    return sum + (item.width ? item.width : 100);
-  }, 0);
-
-  // const checkAllEvent = (e: any) => {
-  //   setCheckedList(e.target.checked ? valueList : []);
-  //   setIndeterminate(false);
-  //   setCheckAll(e.target.checked);
-
-  //   onChange?.({
-  //     projectInfo: {
-  //       id: projectInfo.id,
-  //       isAllChecked: e.target.checked,
-  //       status: projectInfo.projects
-  //         .map((item: any) => {
-  //           if (valueList.includes(item.id)) {
-  //             return item.stateInfo;
-  //           }
-  //         })
-  //         .filter(Boolean),
-  //       name: projectInfo.projects
-  //         .map((item: any) => {
-  //           if (valueList.includes(item.id)) {
-  //             return item.name;
-  //           }
-  //         })
-  //         .filter(Boolean),
-  //       dataSourceType: projectInfo.projects
-  //         .map((item: any) => {
-  //           if (valueList.includes(item.id)) {
-  //             return item.dataSourceType;
-  //           }
-  //         })
-  //         .filter((item: any) => isNumber(item)),
-  //     },
-  //     checkedArray: e.target.checked ? valueList : [],
-  //   });
-  // };
 
   const projectNameClickEvent = (projectId: string) => {
     getClickProjectId?.(projectId);
@@ -360,18 +437,14 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     setEngineerIds?.(hasCheckedIds);
     setHandleTableData(copyData);
   };
-  // console.log(engineerIds);
 
   const foldChangeEvent = (item: any) => {
     const copyData = JSON.parse(JSON.stringify(handleTableData));
 
     const index = copyData.findIndex((ite: any) => ite.id === item.id);
 
-    console.log(item.isFold);
-
     copyData[index].isFold = !copyData[index].isFold;
     setHandleTableData(copyData);
-    // setCopyTableData(copyData);
   };
 
   const projectTable = handleTableData?.map((item: any) => {
@@ -385,12 +458,21 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
             <span>{item.isFold ? <CaretUpOutlined /> : <CaretDownOutlined />}</span>
           </div>
           <div className={styles.engineerName}>
-            <Checkbox
-              onChange={() => checkProjectEvent(item)}
-              style={{ marginRight: '7px' }}
-              indeterminate={indeterminate}
-              checked={item.isChecked}
-            />
+            {checkboxSet ? (
+              <Checkbox
+                onChange={checkAllEvent}
+                style={{ marginRight: '7px' }}
+                indeterminate={indeterminate}
+                checked={checkAll}
+              />
+            ) : (
+              <Checkbox
+                onChange={() => checkProjectEvent(item)}
+                style={{ marginRight: '7px' }}
+                indeterminate={indeterminate}
+                checked={item.isChecked}
+              />
+            )}
             <Tooltip title={item.name}>
               <u
                 className={`canClick ${styles.engineerNameContent}`}
@@ -437,7 +519,9 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                             className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox}`}
                             style={{ width: '38px', left: `${left}px` }}
                           >
-                            {false && <Checkbox style={{ marginLeft: '4px' }} value={pro.id} />}
+                            {checkboxSet && (
+                              <Checkbox style={{ marginLeft: '4px' }} value={pro.id} />
+                            )}
                           </div>
                           {listColumns.map((ite) => {
                             return (
@@ -488,8 +572,6 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     );
   });
 
-  console.log(handleTableData);
-
   return (
     <div className={styles.engineerTable} ref={tableRef}>
       <div className={styles.engineerTableContent}>
@@ -502,7 +584,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
         <Spin spinning={loading}>
           {handleTableData?.length > 0 && projectTable}
           {handleTableData?.length === 0 && (
-            <div style={{ marginTop: '100px', color: '#8C8C8C' }}>
+            <div style={{ margin: '100px', color: '#8C8C8C' }}>
               <EmptyTip className="pt20" description="暂无交接的内容" />
             </div>
           )}

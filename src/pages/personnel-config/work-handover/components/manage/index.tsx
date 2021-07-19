@@ -42,6 +42,7 @@ const ProjectManage: React.FC<ProjectManageParams> = (props) => {
       </div>
       <div>
         <EngineerTableList
+          fieldFlag={true}
           getEngineerData={getEngineerData}
           userId={userId}
           category={1}

@@ -325,6 +325,7 @@ const CompanyUser: React.FC = () => {
               ) : (
                 <>
                   <Switch
+                    checked={false}
                     onChange={() => {
                       updateStatus(record.id);
                     }}

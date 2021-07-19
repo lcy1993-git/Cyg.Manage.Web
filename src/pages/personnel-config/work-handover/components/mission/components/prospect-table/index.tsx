@@ -1,6 +1,5 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import Recevier from '../../../recevier/index';
-import styles from './index.less';
 import EngineerTableList from '../../../engineer-table-list/index';
 
 interface ProsepectTableParams {
@@ -25,9 +24,10 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
     isFresh,
     setIsFresh,
   } = props;
+
   return (
     <>
-      <div className={styles.prospectReceive}>
+      <div style={{ padding: '20px' }}>
         <Recevier
           userId={userId}
           clientCategory={2}
@@ -38,14 +38,16 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
         />
       </div>
       {/* <div> */}
-        <EngineerTableList
-          getEngineerData={getEngineerData}
-          userId={userId}
-          category={2}
-          setEngineerIds={setEngineerIds}
-          isFresh={isFresh}
-          setIsFresh={setIsFresh}
-        />
+      <EngineerTableList
+        fieldFlag={false}
+        checkboxSet={true}
+        getEngineerData={getEngineerData}
+        userId={userId}
+        category={2}
+        setEngineerIds={setEngineerIds}
+        isFresh={isFresh}
+        setIsFresh={setIsFresh}
+      />
       {/* </div> */}
     </>
   );

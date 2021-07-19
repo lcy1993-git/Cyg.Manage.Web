@@ -170,14 +170,17 @@ const WorkHandover: React.FC = () => {
             </Tabs>
           </div>
         </div>
-        <div className={styles.account}>
-          <span>总共</span>
-          <span className={styles.numberAccount}>
-            {engineerData?.length ? engineerData.length : 0}
-          </span>
-          <span>个工程，</span>
-          <span className={styles.numberAccount}>{projectLen}</span>个项目
-        </div>
+        {clickTabKey === 'manage' && (
+          <div className={styles.account}>
+            <span>总共</span>
+            <span className={styles.numberAccount}>
+              {engineerData?.length ? engineerData.length : 0}
+            </span>
+            <span>个工程，</span>
+            <span className={styles.numberAccount}>{projectLen}</span>个项目
+          </div>
+        )}
+
         <div className={styles.actionBtn}>
           <Button type="primary">
             {clickTabKey === 'manage' ? (
