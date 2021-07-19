@@ -357,6 +357,15 @@ export const getEngineerInfo = (engineerId: string) => {
   );
 };
 
+export interface OperateLog {
+  category: number;
+  operationCategory: string;
+  content: string;
+  operator: string;
+  createdByName: string;
+  date: string;
+}
+
 interface ProjectInfoParams {
   id: string;
   name: string;
@@ -408,6 +417,7 @@ interface ProjectInfoParams {
   sources: string;
   identitys: string[];
   allots: any[];
+  operateLog: OperateLog[]
 }
 
 // 获取项目详细信息接口

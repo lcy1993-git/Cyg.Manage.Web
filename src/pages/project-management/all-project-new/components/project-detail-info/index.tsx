@@ -6,7 +6,7 @@ import { Modal, Tabs } from 'antd';
 import ProjectBaseInfo from '../project-base-info';
 
 import styles from './index.less';
-import ProjectProcessInfo from '../project-process-info';
+import ProjectProcessInfo from '../project-process-info/index';
 import ProjectSchedule from '../project-shcedule';
 import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal';
 const { TabPane } = Tabs;
@@ -53,7 +53,7 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
             <ProjectSchedule />
           </TabPane> */}
           <TabPane key="process" tab="项目过程">
-            <ProjectProcessInfo projectInfo={projectInfo} />
+            <ProjectProcessInfo operateLog={projectInfo?.operateLog ?? []} />
           </TabPane>
           {isResult && (
             <TabPane key="result" tab="查看成果">

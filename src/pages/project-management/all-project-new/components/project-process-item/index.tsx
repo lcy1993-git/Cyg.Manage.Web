@@ -1,45 +1,67 @@
-import CyTag from '@/components/cy-tag';
-import moment from 'moment';
-import uuid from 'node-uuid';
-import React from 'react';
-import styles from './index.less';
+import CyTag from "@/components/cy-tag";
+import moment from "moment";
+import uuid from "node-uuid";
+import React from "react"
+import { OperateLog } from '@/services/project-management/all-project';
+import styles from "./index.less"
 
-interface ProjectProcessItemProps {
-  time: string;
-  title: string;
-  isArrangePerson?: boolean;
-  users?: any[];
+interface JSONData {
+  Key: string;
+  Value: string | any[]
 }
 
-const ProjectProcessItem: React.FC<ProjectProcessItemProps> = (props) => {
-  const { time, title, isArrangePerson = false, users } = props;
+const getCompanyName = (data: JSONData[]) => {
+  return data?.find((item) => item.Key === 'company_name')?.Value ?? ""
+}
 
-  const usersElement = users?.map((item) => {
+const getAllotUsers = (data: JSONData[]) => {
+  return data?.find((item) => item.Key === 'allot_users')?.Value
+}
+
+const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCategory, createdByName, content, operator }) => {
+
+  const usersElement = (allotUsers: any[]) => allotUsers?.map(({ Value, Text }, index) => {
     return (
-      <div className={styles.userItem} key={uuid.v1()}>
-        <div className={styles.userItemLabel}>{item.key.text}</div>
-        <div className={styles.userItemContent}>
-          {item.value?.map((ite: any) => {
-            return (
-              <CyTag className="mr7" key={uuid.v1()}>
-                {ite.userNameText}
-              </CyTag>
-            );
-          })}
+      <>
+        {(index & 1) === 0 && <div className={styles.nextRow} />}
+        <div className={styles.userItem} key={uuid.v1()}>
+          <div className={styles.userItemLabel}>
+            {Value}
+          </div>
+          <div className={styles.userItemContent}>
+            <CyTag className="mr7" key={uuid.v1()}>
+              {Text}
+            </CyTag>
+          </div>
         </div>
-      </div>
+      </>
     );
-  });
+  })
+
+  const jsonData: JSONData[] = JSON.parse(content);
+  
+  const allotUsers = getAllotUsers(jsonData)
 
   return (
     <div className={styles.projectProcessItem}>
       <div className={styles.projectProcessItemTime}>
-        {time ? moment(time).format('YYYY-MM-DD HH:mm:ss') : ''}
-      </div>
-      <div className={styles.projectProcessItemTitle}>{title}</div>
-      {isArrangePerson && <div className={styles.usersInfo}>{usersElement}</div>}
-    </div>
-  );
-};
+        {date ? moment(date).format("YYYY-MM-DD HH:mm:ss") : ""}
+        <span className={styles.titleRightWrap}>{`${getCompanyName(jsonData)}-${operator}`}</span>
 
-export default ProjectProcessItem;
+      </div>
+      <div className={styles.projectProcessItemTitle}>
+        {operationCategory}
+      </div>
+      {
+        Array.isArray(allotUsers) &&
+        <div className={styles.usersInfo}>
+          {
+            usersElement(allotUsers)
+          }
+        </div>
+      }
+    </div>
+  )
+}
+
+export default ProjectProcessItem
