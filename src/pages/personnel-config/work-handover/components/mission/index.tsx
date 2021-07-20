@@ -11,29 +11,57 @@ interface MissionParams {
   userId: string;
   recevierId: string | undefined;
   setReceiverName?: Dispatch<SetStateAction<string>>;
-  setEngineerIds?: Dispatch<SetStateAction<string[]>>;
+  getProjectIds?: Dispatch<SetStateAction<string[]>>;
   getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
   isFresh?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
+  changeTabKey?: Dispatch<SetStateAction<string>>;
   getEngineerData?: Dispatch<SetStateAction<any[]>>;
 }
 
 const MissionTab: React.FC<MissionParams> = (props) => {
-  const { userId, recevierId, getReceiverId } = props;
+  const {
+    userId,
+    recevierId,
+    getReceiverId,
+    getProjectIds,
+    changeTabKey,
+    isFresh,
+    setIsFresh,
+    setReceiverName,
+  } = props;
 
   return (
     <div className={styles.missionTabs}>
       <Tabs
         className="normalTabs noMargin"
-        onChange={() => {
+        onChange={(key: string) => {
+          changeTabKey?.(key);
           getReceiverId?.(undefined);
+          setReceiverName?.('');
         }}
       >
         <TabPane tab="勘察任务" key="prospect">
-          <ProspectTable userId={userId} recevierId={recevierId} getReceiverId={getReceiverId} />
+          <ProspectTable
+            isFresh={isFresh}
+            setIsFresh={setIsFresh}
+            userId={userId}
+            setReceiverName={setReceiverName}
+            recevierId={recevierId}
+            getReceiverId={getReceiverId}
+            getProjectIds={getProjectIds}
+          />
         </TabPane>
         <TabPane tab="设计任务" key="design">
-          <DesignTable userId={userId} recevierId={recevierId} getReceiverId={getReceiverId} />
+          <DesignTable
+            isFresh={isFresh}
+            setIsFresh={setIsFresh}
+            userId={userId}
+            setReceiverName={setReceiverName}
+            recevierId={recevierId}
+            getReceiverId={getReceiverId}
+            getProjectIds={getProjectIds}
+          />
         </TabPane>
       </Tabs>
     </div>

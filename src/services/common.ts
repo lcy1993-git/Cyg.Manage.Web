@@ -231,8 +231,10 @@ export const getVersionUpdate = (params: VersionParams) => {
 
 //轮询验证授权
 export const pollingHealth = () => {
-  return tokenRequest(`${baseUrl.common}/Authorization/Health`, {
-    method: 'GET',
-    params: { client: 2 },
-  });
+  return cyRequest(() =>
+    request(`${baseUrl.common}/Authorization/Health`, {
+      method: 'GET',
+      params: { client: 2 },
+    }),
+  );
 };

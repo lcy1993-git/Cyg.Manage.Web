@@ -6,11 +6,11 @@ interface ProsepectTableParams {
   userId: string;
   recevierId: string | undefined;
   setReceiverName?: Dispatch<SetStateAction<string>>;
-  setEngineerIds?: Dispatch<SetStateAction<string[]>>;
   getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
   isFresh?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
   getEngineerData?: Dispatch<SetStateAction<any[]>>;
+  getProjectIds?: Dispatch<SetStateAction<string[]>>;
 }
 
 const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
@@ -20,9 +20,9 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
     getReceiverId,
     setReceiverName,
     getEngineerData,
-    setEngineerIds,
     isFresh,
     setIsFresh,
+    getProjectIds,
   } = props;
 
   return (
@@ -44,9 +44,9 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
         getEngineerData={getEngineerData}
         userId={userId}
         category={2}
-        setEngineerIds={setEngineerIds}
         isFresh={isFresh}
         setIsFresh={setIsFresh}
+        getProjectIds={getProjectIds}
       />
       {/* </div> */}
     </>

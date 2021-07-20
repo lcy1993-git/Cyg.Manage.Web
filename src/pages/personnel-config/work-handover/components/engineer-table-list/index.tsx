@@ -3,7 +3,6 @@ import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Spin, Tooltip } from 'antd';
 import { useBoolean, useRequest } from 'ahooks';
-import { TableContext } from '@/pages/project-management/all-project-new/components/engineer-table/table-store';
 
 import styles from './index.less';
 import moment from 'moment';
@@ -40,6 +39,7 @@ interface EngineerTableItemProps {
   isFresh?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
   fieldFlag?: boolean;
+  getProjectIds?: Dispatch<SetStateAction<string[]>>;
 }
 interface TableCheckedItemProjectInfo {
   id: string;
@@ -68,6 +68,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     setIsFresh,
     getEngineerData,
     fieldFlag,
+    getProjectIds,
   } = props;
   // const [isFold, { toggle: foldEvent }] = useBoolean(false);
 
@@ -79,20 +80,19 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   const tableRef = useRef<HTMLDivElement>(null);
 
   const [handleTableData, setHandleTableData] = useState([]);
-  
+
   const [checkedNewList, setCheckedNewList] = React.useState<CheckboxValueType[]>([]);
-  
+
   // 所有选中的Id数组
   const allOptions = useMemo(() => {
     return handleTableData.map((item) => {
-      const checkedList = item?.projects?.map((e) => {
-        return e?.id
-      })
-      return checkedList
-    })
-  }, [handleTableData])
+      const checkedList = item?.projects?.map((e: any) => {
+        return e?.id;
+      });
+      return checkedList;
+    });
+  }, [handleTableData]);
 
-  
   const { data: tableData, run, loading } = useRequest(
     () => getProjectsInfo({ userId, category }),
     {
@@ -107,13 +107,15 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
             return (item = { ...item, isChecked: false, isFold: false, projects });
           }) ?? [],
         );
-        setCheckedNewList(tableData.map((item => {
-          return {
-            isChecked: false,
-            checkedList: [],
-            indeterminate: false
-          }
-        })))
+        setCheckedNewList(
+          tableData.map((item: any) => {
+            return {
+              isChecked: false,
+              checkedList: [],
+              indeterminate: false,
+            };
+          }),
+        );
       },
     },
   );
@@ -126,21 +128,10 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     }
   }, [isFresh]);
 
-  const valueList = useMemo(() => {
-    if (handleTableData) {
-      return handleTableData.map((item: any) => {
-        return item.projects.map((ite: any) => {
-          return ite.id;
-        });
-      });
-    }
-    return [];
-  }, [JSON.stringify(handleTableData)]);
-
   // 当工程组复选框改变时
   const checkBigboxChange = (i: number, checked: boolean) => {
     // setCheckedList(e.target.checked ? plainOptions : []);
-    
+
     const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList));
     cloneCheckedList[i].isChecked = !cloneCheckedList[i].isChecked;
     cloneCheckedList[i].checkedList = checked ? allOptions[i] : [];
@@ -150,40 +141,42 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
 
   // 当项目复选框点击时
   const onCheckedChange = (i: number, id: string, checked: boolean) => {
-    
     const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList));
-    const list =  [...cloneCheckedList[i].checkedList];
+    const list = [...cloneCheckedList[i].checkedList];
     const allList = allOptions[i];
-    if(checked) {
+    if (checked) {
       list.push(id);
-      if(list.length === allList.length) {
-        cloneCheckedList[i].isChecked = true
+      if (list.length === allList.length) {
+        cloneCheckedList[i].isChecked = true;
       }
-
-    }else{
+    } else {
       const index = list.findIndex((e) => e === id);
       index >= 0 && list.splice(index, 1);
-      if(list.length === 0) {
-        cloneCheckedList[i].isChecked = false
+      if (list.length === 0) {
+        cloneCheckedList[i].isChecked = false;
       }
     }
-    if(list.length > 0 && list.length < allList.length) {
+    if (list.length > 0 && list.length < allList.length) {
       cloneCheckedList[i].indeterminate = true;
-    }else{
+    } else {
       cloneCheckedList[i].indeterminate = false;
     }
-    
+
     cloneCheckedList[i].checkedList = list;
     setCheckedNewList(cloneCheckedList);
-  }
+  };
 
   // 获取选中的id
   const getCurrentCheckedIds = () => {
-    return checkedNewList.reduce((pre, val) => {
+    return checkedNewList.reduce((pre: any, val: any) => {
       return [...pre, ...val?.checkedList];
-    }, [])
-  }
-  
+    }, []);
+  };
+
+  useEffect(() => {
+    getProjectIds?.(getCurrentCheckedIds());
+  }, [checkedNewList]);
+
   //列表字段
   const listColumns = fieldFlag
     ? [
@@ -423,51 +416,9 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     return sum + (item.width ? item.width : 100);
   }, 0);
 
-  const checkAllEvent = (e: any) => {
-    setCheckedList(e.target.checked ? valueList : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
-
-    // onChange?.({
-    //   projectInfo: {
-    //     id: projectInfo.id,
-    //     isAllChecked: e.target.checked,
-    //     status: projectInfo.projects
-    //       .map((item: any) => {
-    //         if (valueList.includes(item.id)) {
-    //           return item.stateInfo;
-    //         }
-    //       })
-    //       .filter(Boolean),
-    //     name: projectInfo.projects
-    //       .map((item: any) => {
-    //         if (valueList.includes(item.id)) {
-    //           return item.name;
-    //         }
-    //       })
-    //       .filter(Boolean),
-    //     dataSourceType: projectInfo.projects
-    //       .map((item: any) => {
-    //         if (valueList.includes(item.id)) {
-    //           return item.dataSourceType;
-    //         }
-    //       })
-    //       .filter((item: any) => isNumber(item)),
-    //   },
-    //   checkedArray: e.target.checked ? valueList : [],
-    // });
-  };
-
   const projectNameClickEvent = (projectId: string) => {
     getClickProjectId?.(projectId);
   };
-
-  // useEffect(() => {
-  //   if (tableData.length === 0) {
-  //     setCheckedList([]);
-  //     setCheckAll(false);
-  //   }
-  // }, [JSON.stringify(tableData)]);
 
   const theadElement = useMemo(() => {
     return listColumns.map((item) => {
@@ -513,7 +464,6 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   };
 
   const projectTable = handleTableData?.map((item: any, bigIndex: number) => {
-    
     return (
       <div
         className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}
@@ -579,7 +529,6 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                   </div>
                   <div className={styles.engineerTableBody}>
                     {(item.projects ?? []).map((pro: any, smallIndex: number) => {
-                      
                       return (
                         <div key={`${pro.id}Td`} className={styles.engineerTableTr}>
                           <div
@@ -587,7 +536,14 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                             style={{ width: '38px', left: `${left}px` }}
                           >
                             {checkboxSet && (
-                              <Checkbox style={{ marginLeft: '4px' }} checked={checkedNewList[bigIndex]?.checkedList.includes(pro.id)} value={pro.id} onChange={(e) => onCheckedChange(bigIndex, pro.id, e.target.checked)}/>
+                              <Checkbox
+                                style={{ marginLeft: '4px' }}
+                                checked={checkedNewList[bigIndex]?.checkedList.includes(pro.id)}
+                                value={pro.id}
+                                onChange={(e) =>
+                                  onCheckedChange(bigIndex, pro.id, e.target.checked)
+                                }
+                              />
                             )}
                           </div>
                           {listColumns.map((ite) => {
