@@ -67,7 +67,7 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="密码" name="pwd" required rules={rules.pwd} hasFeedback>
-        <Input type="password" placeholder="请输入密码" />
+        <Input type="password" placeholder="请输入密码" onPaste={(e) => e.preventDefault()}/>
       </CyFormItem>
 
       <CyFormItem
@@ -91,7 +91,7 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
           }),
         ]}
       >
-        <Input type="password" placeholder="请再次输入密码" />
+        <Input type="password" placeholder="请再次输入密码" onPaste={(e) => e.preventDefault()}/>
       </CyFormItem>
       <CyFormItem label="授权端口" name="clientCategorys">
         <UrlSelect

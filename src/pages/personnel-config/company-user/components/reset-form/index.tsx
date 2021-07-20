@@ -32,7 +32,7 @@ const ResetPasswordForm: React.FC = () => {
           }),
         ]}
       >
-        <Input type="password" placeholder="请再次输入密码" />
+        <Input type="password" placeholder="请再次输入密码" onPaste={(e) => e.preventDefault()}/>
       </CyFormItem>
     </>
   );
