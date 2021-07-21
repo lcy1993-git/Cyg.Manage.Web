@@ -18,6 +18,12 @@ const getAllotUsers = (data: JSONData[]) => {
   return data?.find((item) => item.Key === 'allot_users')?.Value
 }
 
+const getHandover = (data: JSONData[]) => {
+  
+  return data?.find((item) => item.Key === 'identitys')?.Value
+}
+
+
 const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCategory, createdByName, content, operator }) => {
 
   const usersElement = (allotUsers: any[]) => allotUsers?.map(({ Value, Text }, index) => {
@@ -38,10 +44,39 @@ const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCat
     );
   })
 
+  const handoverElement = (handover: any[]) => {
+    return handover.map((item) => {
+      return (
+        <>
+        <div className={styles.userItem} key={uuid.v1()}>
+        <div className={styles.userItemLabel}>
+          {item.Key}
+        </div>
+        <div className={styles.userItemContent}>
+          <CyTag className="mr7" key={uuid.v1()}>
+            {item?.Value?.Handover?.Text}
+          </CyTag>
+          <span className={styles.gtRight}>&gt;&gt;</span>
+
+          <CyTag className="mr7" key={uuid.v1()}>
+            {item?.Value?.Receive?.Text}
+          </CyTag>
+        </div>
+
+      </div>
+        <div />
+      </>
+      );
+    })
+
+  }
+
   const jsonData: JSONData[] = JSON.parse(content);
   
-  const allotUsers = getAllotUsers(jsonData)
+  const allotUsers = getAllotUsers(jsonData);
 
+  const handover = getHandover(jsonData);
+  
   return (
     <div className={styles.projectProcessItem}>
       <div className={styles.projectProcessItemTime}>
@@ -57,6 +92,14 @@ const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCat
         <div className={styles.usersInfo}>
           {
             usersElement(allotUsers)
+          }
+        </div>
+      }
+      {
+        Array.isArray(handover) &&
+        <div className={styles.usersInfo}>
+          {
+            handoverElement(handover)
           }
         </div>
       }

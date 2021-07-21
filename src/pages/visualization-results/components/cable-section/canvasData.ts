@@ -8,23 +8,23 @@ const pipeR6 = unit / (2 / Math.cos(30 * deg) + 1);
 const pipeR7 = unit / 3;
 
 export const grooveEnum = {
-  "3×350": {
+  "t3350": {
     row: 3,
     col: 2
   },
-  "3x500": {
+  "t3500": {
     row: 3,
     col: 3
   },
-  "4x350": {
+  "t4350": {
     row: 4,
     col: 2
   },
-  "4x500": {
+  "t4500": {
     row: 4,
     col: 3
   },
-  "5x500": {
+  "t5500": {
     row: 5,
     col: 3
   },
@@ -157,7 +157,7 @@ const type2200 = () => {
   const circleArray = [];
   const lineArray = [];
   const hUnit = (150 - 40) / 6
-  for (let i = -2; i < 3; i++) {
+  for (let i = 2; i >= -2; i--) {
 
     for (let j = -2; j < 3; j++) {
       const base = j > 0 ? -5 : 5;
@@ -192,7 +192,7 @@ const type2400 = () => {
   const circleArray = [];
   const lineArray = [];
   const hUnit = (150 - 40) / 6
-  for (let i = -2; i < 4; i++) {
+  for (let i = 3; i >= -2; i --) {
 
     for (let j = -2; j < 3; j++) {
       const base = j > 0 ? -5 : 5;
@@ -227,7 +227,7 @@ const type2600 = () => {
   const circleArray = [];
   const lineArray = [];
   const hUnit = (150 - 40) / 8
-  for (let i = -3; i < 4; i++) {
+  for (let i = 3; i >= -3; i --) {
 
     for (let j = -2; j < 3; j++) {
       const base = j > 0 ? -5 : 5;
@@ -259,7 +259,7 @@ const type2600 = () => {
   ]
 }
 
-// 拉管 (已经排序)
+// 拉管 (已经排序) 5孔 7孔待定
 export const pipeMode5 = {
   type2: [
     {
@@ -279,19 +279,20 @@ export const pipeMode5 = {
     }
   ],
   type3: [
-    {
-      x: unit,
-      y: pipeR3,
-      r: pipeR3
-    },
+
     {
       x: unit - pipeR3,
-      y: 3 * pipeR3,
+      y: 2 * pipeR3 * Math.cos(30 * deg) + pipeR3,
       r: pipeR3
     },
     {
       x: unit + pipeR3,
-      y: 3 * pipeR3,
+      y: 2 * pipeR3 * Math.cos(30 * deg) + pipeR3,
+      r: pipeR3
+    },
+    {
+      x: unit,
+      y: pipeR3,
       r: pipeR3
     },
     {
@@ -447,16 +448,12 @@ export const pipeJacking = {
   type1200: [
     // row4
     {
-      x: 75 - 30,
-      y: 75 + 30,
-      r: 5,
+      x: 75 - 40,
+      y: 75 + 40,
+      r: 6,
       stroke: "red"
     },
-    {
-      x: 0,
-      y: 0,
-      r: 0
-    },
+
     {
       x: 75 - 5 - 7.5,
       y: 75 + 40,
@@ -466,6 +463,11 @@ export const pipeJacking = {
       x: 75 + 5 + 7.5,
       y: 75 + 40,
       r: 9
+    },
+    {
+      x: 0,
+      y: 0,
+      r: 0
     },
     {
       x: 0,
@@ -526,9 +528,9 @@ export const pipeJacking = {
     },
     //row1
     {
-      x: 75 - 30,
-      y: 75 - 30,
-      r: 5,
+      x: 75 - 40,
+      y: 75 - 40,
+      r: 6,
       stroke: "red"
     },
     {
@@ -562,45 +564,41 @@ export const pipeJacking = {
 
   ],
   type1500: [
+
+
+    // row0
+    {
+      x: 75 - 55,
+      y: 75 + 30,
+      r: 5,
+      stroke: "red"
+    },
     {
       x: 9 + 75 - 37,
-      y: 75 - 37,
+      y: 75 + 37,
       r: 9
     },
     {
       x: 9 + 75 - 5 - 7.5,
-      y: 75 - 37,
+      y: 75 + 37,
       r: 9
     },
     {
       x: 9 + 75 + 5 + 7.5,
-      y: 75 - 37,
+      y: 75 + 37,
       r: 9
     },
     {
       x: 9 + 75 + 37,
-      y: 75 - 37,
+      y: 75 + 37,
       r: 9
     },
+    // row1
     {
-      x: 9 + 75 - 37,
-      y: 75 - 5 - 7.5,
-      r: 9
-    },
-    {
-      x: 9 + 75 - 5 - 7.5,
-      y: 75 - 5 - 7.5,
-      r: 9
-    },
-    {
-      x: 9 + 75 + 5 + 7.5,
-      y: 75 - 5 - 7.5,
-      r: 9
-    },
-    {
-      x: 9 + 75 + 37,
-      y: 75 - 5 - 7.5,
-      r: 9
+      x: 75 - 55,
+      y: 75 - 30,
+      r: 5,
+      stroke: "red"
     },
     {
       x: 9 + 75 - 37,
@@ -622,24 +620,58 @@ export const pipeJacking = {
       y: 75 + 5 + 7.5,
       r: 9
     },
+    // row2
+    {
+      x: 0,
+      y: 0,
+      r: 0,
+      stroke: "red"
+    },
     {
       x: 9 + 75 - 37,
-      y: 75 + 37,
+      y: 75 - 5 - 7.5,
       r: 9
     },
     {
       x: 9 + 75 - 5 - 7.5,
-      y: 75 + 37,
+      y: 75 - 5 - 7.5,
       r: 9
     },
     {
       x: 9 + 75 + 5 + 7.5,
-      y: 75 + 37,
+      y: 75 - 5 - 7.5,
       r: 9
     },
     {
       x: 9 + 75 + 37,
-      y: 75 + 37,
+      y: 75 - 5 - 7.5,
+      r: 9
+    },
+    // row3
+    {
+      x: 0,
+      y: 0,
+      r: 0,
+      stroke: "red"
+    },
+    {
+      x: 9 + 75 - 37,
+      y: 75 - 37,
+      r: 9
+    },
+    {
+      x: 9 + 75 - 5 - 7.5,
+      y: 75 - 37,
+      r: 9
+    },
+    {
+      x: 9 + 75 + 5 + 7.5,
+      y: 75 - 37,
+      r: 9
+    },
+    {
+      x: 9 + 75 + 37,
+      y: 75 - 37,
       r: 9
     },
     {
@@ -648,18 +680,8 @@ export const pipeJacking = {
       r: 75,
       stroke: "#000"
     },
-    {
-      x: 75 - 55,
-      y: 75 - 30,
-      r: 5,
-      stroke: "red"
-    },
-    {
-      x: 75 - 55,
-      y: 75 + 30,
-      r: 5,
-      stroke: "red"
-    },
+
+
   ],
   type2200,
   type2400,

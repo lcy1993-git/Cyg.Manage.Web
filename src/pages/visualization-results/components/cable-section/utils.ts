@@ -175,6 +175,7 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
       } else if (title.includes("2600")) {
         [type3Org, type3Line] = pipeJacking.type2600();
       }
+      console.log(simpleMixIn(type3Org, sortData));
       
       drawCircular(simpleMixIn(type3Org, sortData), ctx, type3Line)
       break;
@@ -185,7 +186,12 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
       break;
     case 5:
       const enumText = title.split("mm")[0];
-      const mode5RowCol = grooveEnum?.[enumText];
+      const [a, b] = enumText.split("×")
+      
+      const mode5RowCol = grooveEnum?.["t" + a + b];
+      console.log(enumText);
+      console.log(grooveEnum);
+      
       const type5Data = getGrooveData(mode5RowCol.row, mode5RowCol.col, title.includes("双"));
 
       drawCircular(simpleMixIn(type5Data[0], sortData), ctx, type5Data[1])
@@ -194,19 +200,21 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
 
       switch (title) {
         case "1.65×2.1m单侧支架布置电缆隧道":
-        case "1.65×2.3m单侧支架布置电缆隧道":
+        case "1.65×2.3m单侧支架布置暗挖电缆隧道":
           
           const res61 = getGrooveData(6, 4);
           
           drawCircular(simpleMixIn(res61[0], sortData), ctx, res61[1])
           break;
-        case "2.0×2.1m单侧支架布置电缆隧道":
-        case "2.0×2.3m单侧支架布置电缆隧道":
+        case "2.0×2.1m双侧支架布置电缆隧道":
+        case "2.0×2.3m双侧支架布置暗挖电缆隧道":
           
           const res62 = getGrooveData(6, 3, true);
           drawCircular(simpleMixIn(res62[0], sortData), ctx, res62[1])
           break;
         default:
+          console.log("out");
+          
           break;
       }
       break;

@@ -17,7 +17,6 @@ const CableSection: React.FC<CableSectionProps> = (params) => {
 
   useMount(async () => {
     const ctx = ref.current!.getContext('2d')!;
-    console.log(params);
     
     const data: any[] = await findHoleDetails({layerType, holeId}).then((res) => {
       console.log(res);
@@ -37,7 +36,6 @@ const CableSection: React.FC<CableSectionProps> = (params) => {
       return [];
     });
    
-    console.log(data);
     
     initCtx(ctx, data, layMode, arrangement, title)
   })
