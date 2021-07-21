@@ -5,8 +5,18 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import PermissionTypeModal from '../type-select-modal';
 
+export interface permissionItem {
+  category: string | undefined;
+  objectId: string | undefined;
+  projectTypes: number[] | undefined;
+}
+
 const CategoryTable: React.FC = () => {
   const [typeSelectModalVisible, setTypeSelectModalVisible] = useState<boolean>(false);
+  const [tableSelectData, setTableSelectData] = useState<permissionItem[]>([]);
+  const [currentTableData, setCurrentTableData] = useState<permissionItem[]>([]);
+
+  // const [currentTableData, setCurrentTableData] = useState<any[]>([]);
 
   const columns = [
     {
@@ -27,6 +37,15 @@ const CategoryTable: React.FC = () => {
       index: 'projectTypes',
     },
   ];
+
+  const rowSelection = {
+    onChange: (values: any[], selectedRows: any[]) => {
+      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      setTableSelectData(selectedRows);
+    },
+  };
+
+  console.log(tableSelectData);
 
   return (
     <>
@@ -49,12 +68,26 @@ const CategoryTable: React.FC = () => {
           </Button>
         </div>
       </div>
-      <Table columns={columns} bordered />
+      <Table
+        size="small"
+        rowKey="objectId"
+        rowSelection={{
+          type: 'radio',
+          columnWidth: '38px',
+          // selectedRowKeys: tableSelectData,
+          ...rowSelection,
+        }}
+        columns={columns}
+        dataSource={currentTableData}
+        bordered
+      />
 
       {typeSelectModalVisible && (
         <PermissionTypeModal
           visible={typeSelectModalVisible}
           onChange={setTypeSelectModalVisible}
+          changeTableEvent={setCurrentTableData}
+          hasAddData={currentTableData}
         />
       )}
     </>

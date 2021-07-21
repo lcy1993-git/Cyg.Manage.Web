@@ -25,9 +25,11 @@ interface FunctionItem {
 }
 
 //获取项目类型
-export const getProjectTypes = (id: string) => {
+export const getProjectTypes = () => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/ProjectAuthorityGroup/GetProjectTypes`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/ProjectAuthorityGroup/GetProjectTypes`, {
+      method: 'GET',
+    }),
   );
 };
 
