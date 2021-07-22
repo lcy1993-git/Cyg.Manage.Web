@@ -1,12 +1,8 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
-import { useRequest } from 'ahooks';
-import { getCompanyGroups, getReceiver } from '@/services/personnel-config/work-handover';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Checkbox } from 'antd';
 import Recevier from '../recevier/index';
 import styles from './index.less';
 import EngineerTableList from '../engineer-table-list/index';
-import { boolean } from 'umi/node_modules/@umijs/deps/compiled/yargs';
-import { number } from 'yargs';
 
 interface ProjectManageParams {
   userId: string;
@@ -41,19 +37,28 @@ const ProjectManage: React.FC<ProjectManageParams> = (props) => {
    *  1 表示取消全选
    *  2 表示全选
    */
-  const [emitAll, setEmitAll] = useState<{flag: boolean, state: number}>({flag: false, state: 0});
+  const [emitAll, setEmitAll] = useState<{ flag: boolean; state: number }>({
+    flag: false,
+    state: 0,
+  });
 
   const onAllChange = () => {
     setEmitAll({
       flag: !emitAll?.flag,
-      state: !checkAllisChecked || checkAllisIndeterminate ? 2 : 1
-    })
-  }
+      state: !checkAllisChecked || checkAllisIndeterminate ? 2 : 1,
+    });
+  };
 
   return (
     <>
       <div className={styles.manageReceive}>
-        <Checkbox checked={checkAllisChecked} indeterminate={checkAllisIndeterminate} onChange={() => onAllChange()}>全选</Checkbox>
+        <Checkbox
+          checked={checkAllisChecked}
+          indeterminate={checkAllisIndeterminate}
+          onChange={() => onAllChange()}
+        >
+          全选
+        </Checkbox>
         <Recevier
           userId={userId}
           clientCategory={2}

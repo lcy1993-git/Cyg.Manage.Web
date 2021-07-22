@@ -30,6 +30,8 @@ const WorkHandover: React.FC = () => {
   const [groupIds, setGroupIds] = useState<string[]>([]);
   const [isFresh, setIsFresh] = useState<boolean>(false);
   const [engineerIds, setEngineerIds] = useState<string[]>([]);
+  console.log(engineerIds);
+
   const [projectIds, setProjectIds] = useState<string[]>([]);
   const [currentMissionTabKey, setCurrentMissionTabKey] = useState<string>('prospect');
 

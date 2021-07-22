@@ -40,7 +40,7 @@ interface EngineerTableItemProps {
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
   fieldFlag?: boolean;
   getProjectIds?: Dispatch<SetStateAction<string[]>>;
-  emitAll: { flag: boolean, state: number }
+  emitAll: { flag: boolean; state: number };
   setCheckAllisChecked: any;
   setCheckAllisIndeterminate: any;
 }
@@ -50,7 +50,6 @@ interface TableCheckedItemProjectInfo {
   status?: any;
   name?: any;
   dataSourceType?: number[];
-
 }
 
 export interface TableItemCheckedInfo {
@@ -75,7 +74,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     getProjectIds,
     emitAll,
     setCheckAllisChecked,
-    setCheckAllisIndeterminate
+    setCheckAllisIndeterminate,
   } = props;
 
   const [checkedProjectList, setCheckedProjectList] = useState<any[]>([]);
@@ -84,13 +83,13 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
   const tableRef = useRef<HTMLDivElement>(null);
 
   const [handleTableData, setHandleTableData] = useState([]);
-  
+
   const [checkedNewList, setCheckedNewList] = React.useState<any[]>([]);
   // 选中所有项目id数组
 
   const allProjectList = useMemo(() => {
-    return handleTableData.map((item: any) => item.id)
-  }, [JSON.stringify(handleTableData)])
+    return handleTableData.map((item: any) => item.id);
+  }, [JSON.stringify(handleTableData)]);
 
   // 所有选中的Id数组
   const allOptions = useMemo(() => {
@@ -109,34 +108,31 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
 
       if (projectLen === 0) {
         setCheckAllisIndeterminate(false);
-        setCheckAllisChecked(false)
+        setCheckAllisChecked(false);
       } else if (projectLen < allProjectList.length) {
-        setCheckAllisChecked(false)
-        setCheckAllisIndeterminate(true)
+        setCheckAllisChecked(false);
+        setCheckAllisIndeterminate(true);
       } else if (projectLen === allProjectList.length) {
-        setCheckAllisChecked(true)
-        setCheckAllisIndeterminate(false)
+        setCheckAllisChecked(true);
+        setCheckAllisIndeterminate(false);
       }
     } else {
-
-      const len = checkedNewList.reduce((pre, val) => {
-        return pre + val?.checkedList?.length
+      const len = checkedNewList?.reduce((pre, val) => {
+        return pre + val?.checkedList?.length;
       }, 0);
 
       if (len === 0) {
         setCheckAllisIndeterminate(false);
-        setCheckAllisChecked(false)
+        setCheckAllisChecked(false);
       } else if (len < allNum) {
-        setCheckAllisChecked(false)
-        setCheckAllisIndeterminate(true)
+        setCheckAllisChecked(false);
+        setCheckAllisIndeterminate(true);
       } else if (len === allNum) {
-        setCheckAllisChecked(true)
-        setCheckAllisIndeterminate(false)
+        setCheckAllisChecked(true);
+        setCheckAllisIndeterminate(false);
       }
     }
-
-
-  }, [JSON.stringify(checkedNewList), JSON.stringify(checkedProjectList)])
+  }, [JSON.stringify(checkedNewList), JSON.stringify(checkedProjectList)]);
 
   const { data: tableData, run, loading } = useRequest(
     () => getProjectsInfo({ userId, category }),
@@ -161,9 +157,11 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
             };
           }),
         );
-        setAllNum(tableData.reduce((pre, val) => {
-          return pre + val.projects.length
-        }, 0))
+        setAllNum(
+          tableData.reduce((pre: any, val: any) => {
+            return pre + val.projects.length;
+          }, 0),
+        );
       },
     },
   );
@@ -178,7 +176,6 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
 
   // 当工程组复选框改变时
   const checkBigboxChange = (i: number, checked: boolean) => {
-
     const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList));
     cloneCheckedList[i].isChecked = checked;
     cloneCheckedList[i].checkedList = checked ? allOptions[i] : [];
@@ -216,7 +213,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
 
   // 获取选中的id
   const getCurrentCheckedIds = () => {
-    return checkedNewList.reduce((pre: any, val: any) => {
+    return checkedNewList?.reduce((pre: any, val: any) => {
       return [...pre, ...val?.checkedList];
     }, []);
   };
@@ -226,271 +223,274 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     const flag = category === 1;
 
     if (emitAll.state === 1) {
-      flag ? setCheckedProjectList([])
+      flag
+        ? setCheckedProjectList([])
         : setCheckedNewList(
-          tableData.map((item: any) => {
-            return {
-              isChecked: false,
-              checkedList: [],
-              indeterminate: false,
-            };
-          }),
-        );
+            tableData?.map((item: any) => {
+              return {
+                isChecked: false,
+                checkedList: [],
+                indeterminate: false,
+              };
+            }),
+          );
     } else if (emitAll.state === 2) {
-      flag ? setCheckedProjectList(allProjectList)
-        : setCheckedNewList(allOptions.map((item) => {
-          return {
-            isChecked: true,
-            checkedList: item,
-            indeterminate: false
-          }
-        }));
-        
+      flag
+        ? setCheckedProjectList(allProjectList)
+        : setCheckedNewList(
+            allOptions.map((item) => {
+              return {
+                isChecked: true,
+                checkedList: item,
+                indeterminate: false,
+              };
+            }),
+          );
     }
-  }, [JSON.stringify(emitAll)])
+  }, [JSON.stringify(emitAll)]);
 
   useEffect(() => {
     getProjectIds?.(getCurrentCheckedIds());
-  }, [checkedNewList]);
+  }, [JSON.stringify(checkedNewList)]);
 
   useEffect(() => {
-    setEngineerIds?.(checkedProjectList)
-  }, [])
+    setEngineerIds?.(checkedProjectList);
+  }, [JSON.stringify(checkedProjectList)]);
 
   //列表字段
   const listColumns = fieldFlag
     ? [
-      {
-        title: '项目名称',
-        dataIndex: 'name',
-        width: 400,
-        render: (record: any) => {
-          return (
-            <u
-              className="canClick"
-            // onClick={() => {
-            //   setCurrentClickProjectId(record.id);
-            //   setProjectModalVisible(true);
-            // }}
-            >
-              {record.name}
-            </u>
-          );
-        },
-        ellipsis: true,
-      },
-      {
-        title: '项目起止时间',
-        dataIndex: 'projectTime',
-        width: 200,
-        ellipsis: true,
-        render: (record: any) => {
-          const { startTime, endTime } = record;
-          if (startTime && endTime) {
-            return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
-              'YYYY-MM-DD',
-            )}`;
-          }
-          if (startTime && !endTime) {
-            return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
-          }
-          if (!startTime && endTime) {
-            return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
-          }
-          return '未设置起止时间';
-        },
-      },
-      {
-        title: '专业类别',
-        dataIndex: 'majorCategoryText',
-        width: 150,
-        ellipsis: true,
-        render: (record: any) => {
-          return record.majorCategoryText;
-        },
-      },
-      {
-        title: '项目阶段',
-        dataIndex: 'stageText',
-        width: 150,
-        ellipsis: true,
-        render: (record: any) => {
-          return record.stageText;
-        },
-      },
-      {
-        title: '勘察人',
-        dataIndex: 'surveyUser',
-        width: 150,
-        ellipsis: true,
-        render: (record: any) => {
-          return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
-        },
-      },
-      {
-        title: '设计人',
-        dataIndex: 'designUser',
-        width: 150,
-        ellipsis: true,
-        render: (record: any) => {
-          return record.designUser ? `${record.designUser.value}` : '';
-        },
-      },
-      {
-        title: '项目来源',
-        dataIndex: 'sources',
-        width: 140,
-        render: (record: any) => {
-          const { sources = [] } = record;
-          return sources?.map((item: any) => {
+        {
+          title: '项目名称',
+          dataIndex: 'name',
+          width: 400,
+          render: (record: any) => {
             return (
-              <span key={uuid.v1()}>
-                <CyTag color={colorMap[item] ? colorMap[item] : 'green'}>
-                  <span>{item}</span>
-                </CyTag>
-              </span>
+              <u
+                className="canClick"
+                // onClick={() => {
+                //   setCurrentClickProjectId(record.id);
+                //   setProjectModalVisible(true);
+                // }}
+              >
+                {record.name}
+              </u>
             );
-          });
+          },
+          ellipsis: true,
         },
-      },
-      {
-        title: '项目身份',
-        dataIndex: 'identitys',
-        width: 200,
-        render: (record: any) => {
-          const { identitys = [] } = record;
-          return identitys
-            ?.filter((item: any) => item.text)
-            .map((item: any) => {
+        {
+          title: '项目起止时间',
+          dataIndex: 'projectTime',
+          width: 200,
+          ellipsis: true,
+          render: (record: any) => {
+            const { startTime, endTime } = record;
+            if (startTime && endTime) {
+              return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
+                'YYYY-MM-DD',
+              )}`;
+            }
+            if (startTime && !endTime) {
+              return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+            }
+            if (!startTime && endTime) {
+              return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+            }
+            return '未设置起止时间';
+          },
+        },
+        {
+          title: '专业类别',
+          dataIndex: 'majorCategoryText',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.majorCategoryText;
+          },
+        },
+        {
+          title: '项目阶段',
+          dataIndex: 'stageText',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.stageText;
+          },
+        },
+        {
+          title: '勘察人',
+          dataIndex: 'surveyUser',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+          },
+        },
+        {
+          title: '设计人',
+          dataIndex: 'designUser',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.designUser ? `${record.designUser.value}` : '';
+          },
+        },
+        {
+          title: '项目来源',
+          dataIndex: 'sources',
+          width: 140,
+          render: (record: any) => {
+            const { sources = [] } = record;
+            return sources?.map((item: any) => {
               return (
-                <span className="mr7" key={uuid.v1()}>
-                  <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
-                    {item.text}
+                <span key={uuid.v1()}>
+                  <CyTag color={colorMap[item] ? colorMap[item] : 'green'}>
+                    <span>{item}</span>
                   </CyTag>
                 </span>
               );
             });
+          },
         },
-      },
-      {
-        title: '项目状态',
-        dataIndex: 'status',
-        width: 180,
-        render: (record: any) => {
-          const { stateInfo, allot, identitys } = record;
-          let arrangeType: any = null;
-          let allotCompanyId: any = null;
+        {
+          title: '项目身份',
+          dataIndex: 'identitys',
+          width: 200,
+          render: (record: any) => {
+            const { identitys = [] } = record;
+            return identitys
+              ?.filter((item: any) => item.text)
+              .map((item: any) => {
+                return (
+                  <span className="mr7" key={uuid.v1()}>
+                    <CyTag color={colorMap[item.text] ? colorMap[item.text] : 'green'}>
+                      {item.text}
+                    </CyTag>
+                  </span>
+                );
+              });
+          },
+        },
+        {
+          title: '项目状态',
+          dataIndex: 'status',
+          width: 180,
+          render: (record: any) => {
+            const { stateInfo, allot, identitys } = record;
+            let arrangeType: any = null;
+            let allotCompanyId: any = null;
 
-          if (allot) {
-            arrangeType = allot.allotType;
-            allotCompanyId = allot.allotCompanyGroup;
-          }
-          return (
-            <>
-              <span>{stateInfo?.statusText}</span>
-            </>
-          );
+            if (allot) {
+              arrangeType = allot.allotType;
+              allotCompanyId = allot.allotCompanyGroup;
+            }
+            return (
+              <>
+                <span>{stateInfo?.statusText}</span>
+              </>
+            );
+          },
         },
-      },
-    ]
+      ]
     : [
-      {
-        title: '项目名称',
-        dataIndex: 'name',
-        width: 400,
-        render: (record: any) => {
-          return (
-            <u
-              className="canClick"
-            // onClick={() => {
-            //   setCurrentClickProjectId(record.id);
-            //   setProjectModalVisible(true);
-            // }}
-            >
-              {record.name}
-            </u>
-          );
+        {
+          title: '项目名称',
+          dataIndex: 'name',
+          width: 400,
+          render: (record: any) => {
+            return (
+              <u
+                className="canClick"
+                // onClick={() => {
+                //   setCurrentClickProjectId(record.id);
+                //   setProjectModalVisible(true);
+                // }}
+              >
+                {record.name}
+              </u>
+            );
+          },
+          ellipsis: true,
         },
-        ellipsis: true,
-      },
-      {
-        title: '项目起止时间',
-        dataIndex: 'projectTime',
-        width: 200,
-        ellipsis: true,
-        render: (record: any) => {
-          const { startTime, endTime } = record;
-          if (startTime && endTime) {
-            return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
-              'YYYY-MM-DD',
-            )}`;
-          }
-          if (startTime && !endTime) {
-            return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
-          }
-          if (!startTime && endTime) {
-            return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
-          }
-          return '未设置起止时间';
+        {
+          title: '项目起止时间',
+          dataIndex: 'projectTime',
+          width: 200,
+          ellipsis: true,
+          render: (record: any) => {
+            const { startTime, endTime } = record;
+            if (startTime && endTime) {
+              return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
+                'YYYY-MM-DD',
+              )}`;
+            }
+            if (startTime && !endTime) {
+              return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+            }
+            if (!startTime && endTime) {
+              return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+            }
+            return '未设置起止时间';
+          },
         },
-      },
-      {
-        title: '专业类别',
-        dataIndex: 'majorCategoryText',
-        width: 150,
-        ellipsis: true,
-        render: (record: any) => {
-          return record.majorCategoryText;
+        {
+          title: '专业类别',
+          dataIndex: 'majorCategoryText',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.majorCategoryText;
+          },
         },
-      },
-      {
-        title: '项目阶段',
-        dataIndex: 'stageText',
-        width: 150,
-        ellipsis: true,
-        render: (record: any) => {
-          return record.stageText;
+        {
+          title: '项目阶段',
+          dataIndex: 'stageText',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.stageText;
+          },
         },
-      },
-      {
-        title: '勘察人',
-        dataIndex: 'surveyUser',
-        width: 150,
-        ellipsis: true,
-        render: (record: any) => {
-          return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+        {
+          title: '勘察人',
+          dataIndex: 'surveyUser',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+          },
         },
-      },
-      {
-        title: '设计人',
-        dataIndex: 'designUser',
-        width: 150,
-        ellipsis: true,
-        render: (record: any) => {
-          return record.designUser ? `${record.designUser.value}` : '';
+        {
+          title: '设计人',
+          dataIndex: 'designUser',
+          width: 150,
+          ellipsis: true,
+          render: (record: any) => {
+            return record.designUser ? `${record.designUser.value}` : '';
+          },
         },
-      },
-      {
-        title: '项目状态',
-        dataIndex: 'status',
-        width: 180,
-        render: (record: any) => {
-          const { stateInfo, allot, identitys } = record;
-          let arrangeType: any = null;
-          let allotCompanyId: any = null;
+        {
+          title: '项目状态',
+          dataIndex: 'status',
+          width: 180,
+          render: (record: any) => {
+            const { stateInfo, allot, identitys } = record;
+            let arrangeType: any = null;
+            let allotCompanyId: any = null;
 
-          if (allot) {
-            arrangeType = allot.allotType;
-            allotCompanyId = allot.allotCompanyGroup;
-          }
-          return (
-            <>
-              <span>{stateInfo?.statusText}</span>
-            </>
-          );
+            if (allot) {
+              arrangeType = allot.allotType;
+              allotCompanyId = allot.allotCompanyGroup;
+            }
+            return (
+              <>
+                <span>{stateInfo?.statusText}</span>
+              </>
+            );
+          },
         },
-      },
-    ];
+      ];
 
   const columnsWidth = listColumns.reduce((sum, item) => {
     return sum + (item.width ? item.width : 100);
@@ -522,10 +522,10 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     const cloneCheckedList = [...checkedProjectList];
 
     if (checked) {
-      cloneCheckedList.push(allProjectList?.[i])
+      cloneCheckedList.push(allProjectList?.[i]);
     } else {
       const index = cloneCheckedList.findIndex((item) => item === allProjectList?.[i]);
-      cloneCheckedList.splice(index, 1)
+      cloneCheckedList.splice(index, 1);
     }
     setCheckedProjectList(cloneCheckedList);
   };
@@ -638,8 +638,8 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                                       typeof pro[ite.dataIndex] === 'string'
                                         ? pro[ite.dataIndex]
                                         : ite.render
-                                          ? ite.render(pro, item)
-                                          : ''
+                                        ? ite.render(pro, item)
+                                        : ''
                                     }
                                   >
                                     {ite.render ? ite.render(pro, item) : item[ite.dataIndex]}
