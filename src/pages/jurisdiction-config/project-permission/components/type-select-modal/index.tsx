@@ -81,7 +81,7 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
       projectTypes: projectTypes,
     };
 
-    if
+    // if
     // copyHasAddData?.unshift({
     //   category: categorySelected === '1' ? '公司' : categorySelected === '2' ? '部组' : '公司用户',
     //   objectId:
@@ -93,8 +93,8 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
     //   projectTypes: projectTypes,
     // });
 
-    changeTableEvent?.(copyHasAddData);
-    setState(false);
+    // changeTableEvent?.(copyHasAddData);
+    // setState(false);
   };
 
   return (
