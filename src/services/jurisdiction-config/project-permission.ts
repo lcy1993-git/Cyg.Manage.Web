@@ -1,62 +1,66 @@
 import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
-interface AuthorizationItemParams {
-  //模板名
+interface ProjectPermissionItemParams {
+  id?: string;
   name: string;
-
-  //是否禁用
-  isDisable: number;
-
-  //备注
   remark: string;
-
-  modules: any[];
+  items: any[];
 }
 
-interface ItemDetailData extends AuthorizationItemParams {
-  id: string;
-}
-
-interface FunctionItem {
-  id: string;
-  name: string;
-  hasPermission: boolean;
-}
-
-//获取项目类型
-export const getProjectTypes = () => {
+//新增&编辑项目权限组
+export const addEditProPermissionItem = (params: ProjectPermissionItemParams) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/ProjectAuthorityGroup/GetProjectTypes`, {
+    request(`${baseUrl.project}/ProjectAuthorityGroup/Save`, { method: 'POST', data: params }),
+  );
+};
+
+//获取项目权限组
+export const getProPermissionItem = (id: string) => {
+  return cyRequest<ProjectPermissionItemParams>(() =>
+    request(`${baseUrl.project}/ProjectAuthorityGroup/GetDetailById`, {
       method: 'GET',
+      params: { id },
     }),
   );
 };
 
-//新增模板
-export const addAuthorizationItem = (params: AuthorizationItemParams) => {
+// 删除权限组
+export const deleteProPermissionItem = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/AuthTemplate/Create`, { method: 'POST', data: params }),
-  );
-};
-
-//编辑模板
-export const updateAuthorizationItem = (params: ItemDetailData) => {
-  return cyRequest(() =>
-    request(`${baseUrl.project}/AuthTemplate/Modify`, { method: 'POST', data: params }),
-  );
-};
-
-// 删除模板
-export const deleteAuthorizationItem = (id: string) => {
-  return cyRequest(() =>
-    request(`${baseUrl.project}/AuthTemplate/DeleteById`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/ProjectAuthorityGroup/DeleteById`, {
+      method: 'GET',
+      params: { id },
+    }),
   );
 };
 
 // 更改状态
-export const updateAuthorizationItemStatus = (id: string) => {
+export const updateProPermissionStatus = (params: { id: string; isDisable: boolean }) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/AuthTemplate/ChangeState`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.project}/ProjectAuthorityGroup/ModifyStatus`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+//添加授权
+export const addAuthorize = (params: { groupId: string; objectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/ProjectAuthorityGroup/AddAuthorize`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+//移除授权
+export const removeAuthorize = (params: { groupId: string; objectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/ProjectAuthorityGroup/RemoveAuthorize`, {
+      method: 'POST',
+      data: params,
+    }),
   );
 };

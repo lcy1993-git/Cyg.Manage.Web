@@ -12,14 +12,11 @@ import {
 import '@/assets/icon/iconfont.css';
 import { useRequest, useBoolean } from 'ahooks';
 import {
-  getAuthorizationDetail,
-  updateAuthorizationItem,
-  updateAuthorizationItemStatus,
-  deleteAuthorizationItem,
-  addAuthorizationItem,
-  getAuthorizationTreeList,
-  updateAuthorizationModules,
-} from '@/services/jurisdiction-config/platform-authorization';
+  addEditProPermissionItem,
+  getProPermissionItem,
+  updateProPermissionStatus,
+  deleteProPermissionItem,
+} from '@/services/jurisdiction-config/project-permission';
 import { isArray } from 'lodash';
 // import RolePermissionsForm from './components/add-edit-form';
 import CheckboxTreeTable from '@/components/checkbox-tree-table';
@@ -30,6 +27,7 @@ import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import ProjectPermissionForm from './components/add-edit-form';
 import CategoryTable from './components/category-table';
+import UserPermissionAccredit from './components/user-authorization';
 
 const { Search } = Input;
 
@@ -38,12 +36,11 @@ const ProjectPermission: React.FC = () => {
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [currentId, setCurrentId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-
+  const [permissionItem, setPermissionItem] = useState<any[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [distributeFormVisible, setDistributeFormVisible] = useState<boolean>(false);
   const [
-    authorizationFormVisible,
+    permissionFormVisible,
     { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
   ] = useBoolean(false);
 
@@ -53,14 +50,9 @@ const ProjectPermission: React.FC = () => {
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
-  const { data, run, loading } = useRequest(getAuthorizationDetail, {
+  const { data, run, loading } = useRequest(getProPermissionItem, {
     manual: true,
   });
-
-  const { data: MoudleTreeData = [], run: getModuleTreeData } = useRequest(
-    getAuthorizationTreeList,
-    { manual: true },
-  );
 
   const columns = [
     {
@@ -78,13 +70,20 @@ const ProjectPermission: React.FC = () => {
         const isChecked = !record.isDisable;
         return (
           <>
-            {buttonJurisdictionArray?.includes('role-permissions-start-using') && (
+            {buttonJurisdictionArray?.includes('project-permissions-start-using') && (
               <>
-                <Switch checked={isChecked} onChange={() => updateStatus(record)} />
+                <Switch
+                  checked={isChecked}
+                  onChange={() => {
+                    updateProPermissionStatus({ id: record.id, isDisable: isChecked });
+                    tableFresh();
+                    message.success('状态修改成功');
+                  }}
+                />
                 {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
               </>
             )}
-            {!buttonJurisdictionArray?.includes('role-permissions-start-using') &&
+            {!buttonJurisdictionArray?.includes('project-permissions-start-using') &&
               (isChecked ? <span>启用</span> : <span>禁用</span>)}
           </>
         );
@@ -113,14 +112,6 @@ const ProjectPermission: React.FC = () => {
       width: '30%',
     },
   ];
-
-  const updateStatus = async (record: any) => {
-    const { id } = record;
-
-    await updateAuthorizationItemStatus(id);
-    tableFresh();
-    message.success('状态修改成功');
-  };
 
   const searchElement = () => {
     return (
@@ -160,7 +151,7 @@ const ProjectPermission: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteAuthorizationItem(editDataId);
+    await deleteProPermissionItem(editDataId);
     tableFresh();
     message.success('删除成功');
     setTableSelectRows([]);
@@ -169,7 +160,7 @@ const ProjectPermission: React.FC = () => {
   //授权
   const authorizationEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择授权角色模板');
+      message.error('请选择项目权限组模板');
       return;
     }
     authorizationFormShow();
@@ -182,21 +173,21 @@ const ProjectPermission: React.FC = () => {
 
   //添加
   const addEvent = async () => {
-    await getModuleTreeData();
     setAddFormVisible(true);
   };
 
-  const sureAddRolePermissions = () => {
+  const sureAddProjectPermissions = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
           name: '',
-          isDisable: false,
           remark: '',
+          items: permissionItem,
         },
         value,
       );
-      await addAuthorizationItem(submitInfo);
+
+      await addEditProPermissionItem(submitInfo);
       tableFresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -223,30 +214,41 @@ const ProjectPermission: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    const AuthorizationData = await run(editDataId);
+    const PermissionData = await run(editDataId);
 
-    editForm.setFieldsValue(AuthorizationData);
+    setPermissionItem(PermissionData?.items);
+
+    editForm.setFieldsValue(PermissionData);
     setEditFormVisible(true);
   };
 
-  const sureEditRolePermissions = () => {
+  const sureEditProPermissions = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
     }
     const editData = data!;
+    console.log(editData);
 
     editForm.validateFields().then(async (values) => {
+      const editItemData = permissionItem.map((item) => {
+        return {
+          category: item.category,
+          objectId: item.objectId,
+          projectTypes: item.projectTypes.map((item: any) => item.value ?? item),
+        };
+      });
+
       const submitInfo = Object.assign(
         {
           id: editData.id,
           name: editData.name,
-          isDisable: editData.isDisable,
           remark: editData.remark,
+          items: editItemData,
         },
         values,
       );
-      await updateAuthorizationItem(submitInfo);
+      await addEditProPermissionItem(submitInfo);
       tableFresh();
       message.success('更新成功');
       editForm.resetFields();
@@ -316,70 +318,53 @@ const ProjectPermission: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        centered
-        title="添加-角色"
+        title="添加-项目权限组"
         width="60%"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddRolePermissions()}
+        onOk={() => sureAddProjectPermissions()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        centered
       >
         <Form form={addForm} preserve={false}>
           <ProjectPermissionForm />
-          <Form.Item name="moduleIds">
-            <CategoryTable />
-          </Form.Item>
+          <CategoryTable getItems={setPermissionItem} />
         </Form>
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-角色"
-        width="80%"
+        title="编辑-项目权限组"
+        width="60%"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditRolePermissions()}
+        onOk={() => sureEditProPermissions()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          {/* <RolePermissionsForm /> */}
-          <Form.Item name="moduleIds">
-            {/* <CheckboxTreeTable treeData={data?.modules} /> */}
-          </Form.Item>
+          <ProjectPermissionForm />
+          <CategoryTable getItems={setPermissionItem} editItems={permissionItem} />
         </Form>
       </Modal>
-      {/* <Modal
-        maskClosable={false}
-        title="分配功能模块"
-        width="80%"
-        visible={distributeFormVisible}
-        okText="确认"
-        onOk={() => sureDistribute()}
-        onCancel={() => setDistributeFormVisible(false)}
-        cancelText="取消"
-        destroyOnClose
-      >
-        <Form form={apportionForm} preserve={false}></Form>
-      </Modal> */}
       <Modal
         maskClosable={false}
         footer=""
         title="授权"
         width="90%"
-        visible={authorizationFormVisible}
+        visible={permissionFormVisible}
         okText="确认"
         onCancel={() => cancelAuthorization()}
         cancelText="取消"
         destroyOnClose
       >
         <Spin spinning={loading}>
-          <UserAuthorization
+          <UserPermissionAccredit
             onChange={tableFresh}
             extractParams={{
-              templateId: currentId,
+              groupId: currentId,
             }}
           />
         </Spin>
