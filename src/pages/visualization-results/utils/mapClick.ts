@@ -362,69 +362,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             if (layerName === 'tower') {
               pJSON[mappingTag] = feature.getProperties()[p];
             }
-            // if (layerName === 'tower') {
-            //   let angleString = '0';
-            //   await loadLayer(
-            //     getCustomXmlDataByWhere(
-            //       `<And><Or><PropertyIsEqualTo><PropertyName>start_id</PropertyName><Literal>${feature.getProperties().id}</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>end_id</PropertyName><Literal>${feature.getProperties().id}</Literal></PropertyIsEqualTo></Or><PropertyIsNotEqualTo><PropertyName>loop_name</PropertyName><Literal></Literal></PropertyIsNotEqualTo></And>`,
-            //     ),
-            //     `pdd:${layerType}_line`,
-            //   ).then((data: any) => {
-            //     if (data.features.length >= 2) {
-            //       let obj = {};
-            //       let loop_level_max;
-            //       for (let i = 0; i < data.features.length; i++) {
-            //         let ai = data.features[i];
-            //         if (!loop_level_max) {
-            //           loop_level_max = ai.properties.loop_level;
-            //         } else {
-            //           if (loop_level_max > ai.properties.loop_level)
-            //             loop_level_max = ai.properties.loop_level;
-            //         }
-            //         if (!obj[ai.properties.loop_name]) {
-            //           obj[ai.properties.loop_name] = [ai];
-            //         } else {
-            //           obj[ai.properties.loop_name].push(ai);
-            //         }
-            //       }
-
-            //       let angle,
-            //         angleMax = 0;
-            //       let isLeftOnMax = true,
-            //         isLeft = true;
-            //       for (let key in obj) {
-            //         let looplines = obj[key];
-            //         if (
-            //           looplines.length !== 2 ||
-            //           loop_level_max !== looplines[0].properties.loop_level ||
-            //           loop_level_max !== looplines[1].properties.loop_level
-            //         )
-            //           continue;
-            //         let line0attri = looplines[0];
-            //         let line1attri = looplines[1];
-            //         if (line0attri.properties.loop_seq > line1attri.properties.loop_seq) {
-            //           line0attri = looplines[1];
-            //           line1attri = looplines[0];
-            //         }
-            //         let res: any = CalcTowerAngle(
-            //           line0attri.geometry.coordinates,
-            //           line1attri.geometry.coordinates,
-            //           isLeft,
-            //         );
-            //         angle = res[0];
-            //         isLeft = res[1];
-            //         if (angle > angleMax) {
-            //           angleMax = angle;
-            //           isLeftOnMax = isLeft;
-            //         }
-            //       }
-            //       // 格式化反回转角字符串
-            //       if (isLeftOnMax) angleString = `左:${ToDegrees(Math.abs(angleMax))}`;
-            //       else angleString = `右:${ToDegrees(Math.abs(angleMax))}`;
-            //       pJSON[mappingTag] = angleString;
-            //     }
-            //   });
-            // }
             break;
           case 'capacity':
             if (feature.getProperties()[p].indexOf('kVA') >= 0)

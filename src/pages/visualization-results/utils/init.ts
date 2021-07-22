@@ -2,7 +2,10 @@ import TileLayer from 'ol/layer/Tile';
 import Group from 'ol/layer/Group';
 import XYZ from 'ol/source/XYZ';
 import View from 'ol/View';
+import sourceWmts from 'ol/source/WMTS';
+import * as extent from 'ol/extent';
 import * as proj from 'ol/proj';
+import tilegridWmts from 'ol/tilegrid/WMTS'
 import LayerGroup from 'ol/layer/Group';
 import Layer from 'ol/layer/Layer';
 import Control from 'ol/control/Control';
@@ -48,11 +51,38 @@ export const initLayers = (resData: any): Layer[] => {
 
   // 街道图
   // vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5';
+  //分辨率数组
+  var resolutions = [];
+  //瓦片大小
+  var tileSize = 256;
+  //坐标系信息
+  var projection = proj.get('EPSG:4326');
+  //获取当前坐标系的范围
+
+  var projectionExtent = projection.getExtent();
+  var size = extent.getWidth(projectionExtent) / 256;
+  var matrixIds = new Array(18);
+  //初始化分辨率数组
+  for (let i = 0; i < 18; i++) {
+    resolutions[i] = size / Math.pow(2, i);
+    matrixIds[i] = i;
+  }
   const vecLayer = new TileLayer({
-    source: new XYZ({
-      url: decodeURI(imgUrl),
-    }),
-    preload: 18,
+    source: new sourceWmts({
+      url: testUrl,
+      layer: 'vec',
+      matrixSet: 'c',
+      format: 'tiles',
+      style: 'default',
+      projection: projection,
+      tileGrid: new tilegridWmts({
+        origin: extent.getTopLeft(projectionExtent),
+        resolutions: resolutions,
+        matrixIds: matrixIds
+      }),
+      wrapX: false
+    })
   });
   vecLayer.setVisible(false);
   vecLayer.set('name', 'vecLayer');
