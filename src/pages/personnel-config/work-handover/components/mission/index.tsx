@@ -47,7 +47,6 @@ const MissionTab: React.FC<MissionParams> = (props) => {
             setIsFresh={setIsFresh}
             userId={userId}
             setReceiverName={setReceiverName}
-            recevierId={recevierId}
             getReceiverId={getReceiverId}
             getProjectIds={getProjectIds}
           />
