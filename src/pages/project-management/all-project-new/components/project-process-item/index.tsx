@@ -19,10 +19,13 @@ const getAllotUsers = (data: JSONData[]) => {
 }
 
 const getHandover = (data: JSONData[]) => {
-  
   return data?.find((item) => item.Key === 'identitys')?.Value
 }
 
+const getCompanyNameByShare = (data: JSONData[]) => {
+  
+  return data?.find((item) => item.Key === 'source_company_name')?.Value
+}
 
 const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCategory, createdByName, content, operator }) => {
 
@@ -76,7 +79,7 @@ const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCat
   const allotUsers = getAllotUsers(jsonData);
 
   const handover = getHandover(jsonData);
-  
+
   return (
     <div className={styles.projectProcessItem}>
       <div className={styles.projectProcessItemTime}>
@@ -85,7 +88,14 @@ const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCat
 
       </div>
       <div className={styles.projectProcessItemTitle}>
-        {operationCategory}
+        <span className={styles.title}>{operationCategory}</span>
+        {
+          getCompanyNameByShare(jsonData) &&
+          <span>
+            &nbsp;&gt;&gt;&nbsp;{getCompanyNameByShare(jsonData)}
+          </span>
+        }
+        
       </div>
       {
         Array.isArray(allotUsers) &&
