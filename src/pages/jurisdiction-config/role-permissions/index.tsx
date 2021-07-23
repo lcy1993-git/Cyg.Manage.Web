@@ -325,13 +325,14 @@ const RolePermissions: React.FC = () => {
       <Modal
         maskClosable={false}
         title="添加-角色"
-        width="80%"
+        width="60%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddRolePermissions()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Form form={addForm} preserve={false}>
           <RolePermissionsForm />
@@ -343,13 +344,14 @@ const RolePermissions: React.FC = () => {
       <Modal
         maskClosable={false}
         title="编辑-角色"
-        width="80%"
+        width="60%"
         visible={editFormVisible}
         okText="确认"
         onOk={() => sureEditRolePermissions()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Form form={editForm} preserve={false}>
           <RolePermissionsForm />

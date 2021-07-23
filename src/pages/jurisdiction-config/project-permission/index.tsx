@@ -338,6 +338,7 @@ const ProjectPermission: React.FC = () => {
         title="编辑-项目权限组"
         width="60%"
         visible={editFormVisible}
+        centered
         okText="确认"
         onOk={() => sureEditProPermissions()}
         onCancel={() => setEditFormVisible(false)}

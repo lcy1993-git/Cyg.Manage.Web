@@ -13,8 +13,8 @@ import { permissionItem } from '../category-table';
 interface TypeModalParams {
   visible?: boolean;
   onChange?: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: () => void;
-  // addItem?: Dispatch<SetStateAction<permissionItem[] | undefined>>;
+  finishEvent?: Dispatch<SetStateAction<any[]>>;
+  setEmpty?: Dispatch<SetStateAction<any[]>>;
   changeTableEvent: (value: permissionItem[]) => void;
   hasAddData: permissionItem[];
   editData?: permissionItem;
@@ -27,17 +27,17 @@ enum categoryEnum {
   '公司用户',
 }
 
-const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
-  const { changeTableEvent, hasAddData, editData, editForm } = props;
+const EditSelectModal: React.FC<TypeModalParams> = (props) => {
+  const { changeTableEvent, hasAddData, editData, editForm, finishEvent, setEmpty } = props;
 
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [categorySelected, setCategorySelected] = useState<string>();
-  const [projectTypes, setProjectTypes] = useState<number[]>([]);
+  const [projectTypes, setProjectTypes] = useState<number[]>(editData?.projectTypes ?? []);
   const [company, setCompany] = useState<any>();
   const [selectedCompany, setSelectedCompany] = useState<any>();
   const [selectedUser, setSelectedUser] = useState<any>();
   const [selectedGroup, setSelectedGroup] = useState<any>();
-  const [objectName, setObjectName] = useState<string>();
+  const [objectName, setObjectName] = useState<string>(editData?.objectName ?? '');
 
   const { data: companyData } = useRequest(() => getCompany(), {
     ready: categorySelected === '1',
@@ -70,24 +70,34 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
     return groupData.map(mapTreeData);
   }, [JSON.stringify(groupData)]);
 
-  const addProjectEntry = () => {
+  console.log(editData, '当前编辑');
+  const editProjectEntry = () => {
     const copyHasAddData = [...hasAddData];
-    const addData = {
+    const editIndex = copyHasAddData.findIndex((item: any) => item.objectId === editData?.objectId);
+
+    const currentItem = {
       category: categorySelected,
       objectId:
         categorySelected === '1'
-          ? selectedCompany
+          ? selectedCompany ?? editData?.objectId
           : categorySelected === '2'
-          ? selectedGroup
-          : selectedUser,
-      projectTypes: projectTypes,
-      objectName: objectName,
+          ? selectedGroup ?? editData?.objectId
+          : selectedUser ?? editData?.objectId,
+      projectTypes: projectTypes ?? editData?.projectTypes,
+      objectName: objectName ?? editData?.objectName,
     };
 
-    if (copyHasAddData.findIndex((item) => item.objectId === addData.objectId) === -1) {
-      copyHasAddData.unshift(addData);
+    console.log(currentItem, '修改数据');
+
+    if (
+      copyHasAddData.findIndex((item: any) => item.objectId === currentItem?.objectId) === -1 ||
+      currentItem.objectId === editData?.objectId
+    ) {
+      copyHasAddData.splice(editIndex, 1, currentItem);
       changeTableEvent?.(copyHasAddData);
-      message.success('添加成功');
+      finishEvent?.([]);
+      setEmpty?.([]);
+      message.success('修改成功');
       setState(false);
       return;
     }
@@ -95,12 +105,18 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
     message.error('所选对象已经存在，不可重复添加');
   };
 
+  useEffect(() => {
+    setCategorySelected(String(editData?.category));
+  }, [editData]);
+
+  console.log(projectTypes, '项目类型');
+
   return (
     <>
       <Modal
         maskClosable={false}
         width="58%"
-        title="添加-项目权限组"
+        title="编辑-项目权限组"
         visible={state as boolean}
         destroyOnClose
         okText="确定"
@@ -108,14 +124,21 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
         cancelText="取消"
         bodyStyle={{ padding: 0 }}
         onCancel={() => setState(false)}
-        onOk={() => addProjectEntry()}
+        onOk={() => editProjectEntry()}
       >
         <CyTip>选择某对象，即包含了该对象以及该对象下属部组，公司用户的全部相关类型项目。</CyTip>
         <div style={{ padding: '20px' }}>
           <Form form={editForm}>
             <Row gutter={24}>
               <Col>
-                <CyFormItem label="请选择对象类型" required align="right" labelWidth={111}>
+                <CyFormItem
+                  label="请选择对象类型"
+                  required
+                  align="right"
+                  labelWidth={111}
+                  name="category"
+                  rules={[{ required: true, message: '对象类型不能为空' }]}
+                >
                   <EnumSelect
                     style={{ width: '350px' }}
                     enumList={categoryEnum}
@@ -130,56 +153,85 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                 </CyFormItem>
               </Col>
               <Col span={12}>
-                <CyFormItem label="请选择对象" required align="right" labelWidth={111}>
-                  {categorySelected === '1' ? (
+                {categorySelected === '1' ? (
+                  <CyFormItem
+                    label="请选择对象"
+                    required
+                    align="right"
+                    labelWidth={111}
+                    name="companyId"
+                    rules={[{ required: true, message: '对象不能为空' }]}
+                  >
                     <UrlSelect
                       valuekey="value"
                       titlekey="text"
-                      labelInValue
                       defaultData={company}
-                      value={selectedCompany?.value}
-                      onChange={(value: any) => {
-                        setSelectedCompany(value?.value);
-                        setObjectName(value?.label);
+                      value={selectedCompany}
+                      onChange={(value: any, label: any) => {
+                        setSelectedCompany(value);
+                        setObjectName(label?.label);
                       }}
                       placeholder="请选择公司"
                       style={{ width: '350px' }}
                     />
-                  ) : categorySelected === '2' ? (
+                  </CyFormItem>
+                ) : categorySelected === '2' ? (
+                  <CyFormItem
+                    label="请选择对象"
+                    required
+                    align="right"
+                    labelWidth={111}
+                    name="groupId"
+                    rules={[{ required: true, message: '对象不能为空' }]}
+                  >
                     <TreeSelect
                       style={{ width: '350px' }}
                       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                       treeData={handleGroupData}
                       placeholder="请选择部组"
                       treeDefaultExpandAll
-                      labelInValue
-                      onChange={(value: any) => {
-                        setSelectedGroup(value?.value);
-                        setObjectName(value?.label);
+                      value={selectedGroup}
+                      onChange={(value: any, label: any) => {
+                        console.log(label);
+                        setSelectedGroup(value);
+                        setObjectName(label);
                       }}
                     />
-                  ) : categorySelected === '3' ? (
+                  </CyFormItem>
+                ) : categorySelected === '3' ? (
+                  <CyFormItem
+                    label="请选择对象"
+                    required
+                    align="right"
+                    labelWidth={111}
+                    name="userId"
+                  >
                     <UrlSelect
                       showSearch
-                      value={selectedUser?.value}
+                      value={selectedUser}
                       defaultData={userData}
                       titlekey="label"
                       valuekey="value"
-                      labelInValue
                       style={{ width: '350px' }}
-                      onChange={(value: any) => {
-                        setSelectedUser(value?.value);
-                        setObjectName(value?.label);
+                      onChange={(value: any, label: any) => {
+                        setSelectedUser(value);
+                        setObjectName(label?.label);
                       }}
                       placeholder="请选择公司用户"
                     />
-                  ) : (
-                    <UrlSelect style={{ width: '350px' }} placeholder="请先选择对象类型" />
-                  )}
-                </CyFormItem>
+                  </CyFormItem>
+                ) : (
+                  <UrlSelect style={{ width: '350px' }} placeholder="请先选择对象类型" />
+                )}
               </Col>
             </Row>
-            <CyFormItem label="请选择项目类型" required align="right" labelWidth={111}>
+            <CyFormItem
+              label="请选择项目类型"
+              required
+              align="right"
+              labelWidth={111}
+              name="projectTypes"
+            >
               <UrlSelect
                 style={{ width: '100%' }}
                 mode="multiple"
@@ -187,6 +239,7 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                 titlekey="text"
                 url="/ProjectAuthorityGroup/GetProjectTypes"
                 placeholder="请选择项目类型"
+                value={projectTypes}
                 onChange={(value) => setProjectTypes(value as number[])}
               />
             </CyFormItem>
@@ -197,4 +250,4 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
   );
 };
 
-export default PermissionTypeModal;
+export default EditSelectModal;

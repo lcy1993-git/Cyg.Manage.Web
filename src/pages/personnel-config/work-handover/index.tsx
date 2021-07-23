@@ -34,6 +34,7 @@ const WorkHandover: React.FC = () => {
 
   const [projectIds, setProjectIds] = useState<string[]>([]);
   const [currentMissionTabKey, setCurrentMissionTabKey] = useState<string>('prospect');
+  const { removeTab } = useLayoutStore();
 
   const [engineerData, setEngineerData] = useState<any[]>([]);
 
@@ -186,6 +187,10 @@ const WorkHandover: React.FC = () => {
     message.success('交接成功');
   };
 
+  const finishEvent = () => {
+    removeTab?.(`/personnel-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`);
+  };
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.handover}>
@@ -257,31 +262,51 @@ const WorkHandover: React.FC = () => {
         )}
 
         <div className={styles.actionBtn}>
-          <Button type="primary">
-            {clickTabKey === 'manage' ? (
-              <span
-                onClick={
-                  engineerData && engineerData.length > 0
-                    ? manageConfirm
-                    : () => {
-                        message.info('暂无可交接的条目');
-                      }
-                }
+          {clickTabKey === 'manage' ? (
+            <Button
+              disabled={receiverId && engineerIds ? false : true}
+              type="primary"
+              onClick={
+                engineerData && engineerData.length > 0
+                  ? manageConfirm
+                  : () => {
+                      message.info('暂无可交接的条目');
+                    }
+              }
+            >
+              <span>交接</span>
+            </Button>
+          ) : clickTabKey === 'mission' ? (
+            currentMissionTabKey === 'prospect' ? (
+              <Button
+                type="primary"
+                onClick={prospectConfirm}
+                disabled={receiverId && projectIds ? false : true}
               >
-                交接
-              </span>
-            ) : clickTabKey === 'mission' ? (
-              currentMissionTabKey === 'prospect' ? (
-                <span onClick={prospectConfirm}>交接</span>
-              ) : (
-                <span onClick={designConfirm}>交接</span>
-              )
-            ) : clickTabKey === 'identity' ? (
-              <span onClick={identityConfirm}>交接</span>
+                <span>交接</span>
+              </Button>
             ) : (
+              <Button
+                type="primary"
+                onClick={designConfirm}
+                disabled={receiverId && projectIds ? false : true}
+              >
+                <span>交接</span>
+              </Button>
+            )
+          ) : clickTabKey === 'identity' ? (
+            <Button
+              type="primary"
+              onClick={identityConfirm}
+              disabled={receiverId && projectIds ? false : true}
+            >
+              <span>交接</span>
+            </Button>
+          ) : (
+            <Button type="primary" onClick={() => finishEvent()}>
               <span>交接完成</span>
-            )}
-          </Button>
+            </Button>
+          )}
         </div>
       </div>
     </PageCommonWrap>

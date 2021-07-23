@@ -5,11 +5,13 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
 import PermissionTypeModal from '../type-select-modal';
 import CyTag from '@/components/cy-tag';
+import EditSelectModal from '../edit-select-modal';
 
 export interface permissionItem {
   category: string | undefined;
   objectId: string | undefined;
   projectTypes: number[] | undefined;
+  objectName: string | undefined;
 }
 
 interface TableParams {
@@ -29,11 +31,13 @@ const colorMap = {
 const CategoryTable: React.FC<TableParams> = (props) => {
   const { getItems, editItems } = props;
   const [typeSelectModalVisible, setTypeSelectModalVisible] = useState<boolean>(false);
-  const [tableSelectData, setTableSelectData] = useState<permissionItem[]>([]);
+  const [tableSelectData, setTableSelectData] = useState<any[]>([]);
   const [currentTableData, setCurrentTableData] = useState<permissionItem[]>(editItems ?? []);
   const [editTypeSelectModal, setEditTypeSelectModal] = useState<boolean>(false);
+  const [clickKey, setClickKey] = useState<any[]>([]);
 
   const [form] = Form.useForm();
+  // const tableRef = React.useRef<HTMLDivElement>(null);
 
   //table数据改变则重新获取
   useEffect(() => {
@@ -60,7 +64,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
       title: '对象',
       dataIndex: 'objectId',
       index: 'objectId',
-      width: 200,
+      width: 280,
       render: (text: any, record: any) => {
         return record.objectName;
       },
@@ -97,6 +101,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
+      setClickKey(selectedRows.map((item) => item['objectId']));
       setTableSelectData(selectedRows);
     },
   };
@@ -122,10 +127,22 @@ const CategoryTable: React.FC<TableParams> = (props) => {
       message.warning('请选择你要编辑的条目');
       return;
     }
-    console.log(tableSelectData);
-    form.setFieldsValue(tableSelectData);
-    setTypeSelectModalVisible(true);
+
+    const editItem = tableSelectData[0];
+    console.log(editItem.projectTypes);
+
+    form.setFieldsValue({
+      ...editItem,
+      category: String(editItem.category),
+      companyId: String(editItem?.category) === '1' ? String(editItem.objectId) : undefined,
+      groupId: String(editItem?.category) === '2' ? String(editItem.objectId) : undefined,
+      userId: String(editItem?.category) === '3' ? String(editItem.objectId) : undefined,
+      projectTypes: editItem.projectTypes?.map((item: any) => (item.value ? item.value : item)),
+    });
+    setEditTypeSelectModal(true);
   };
+
+  console.log(currentTableData, '111');
 
   return (
     <>
@@ -155,7 +172,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
           rowSelection={{
             type: 'radio',
             columnWidth: '38px',
-            // selectedRowKeys: tableSelectData,
+            selectedRowKeys: clickKey,
             ...rowSelection,
           }}
           columns={columns}
@@ -171,16 +188,17 @@ const CategoryTable: React.FC<TableParams> = (props) => {
           changeTableEvent={setCurrentTableData}
           hasAddData={currentTableData}
           editData={tableSelectData[0]}
-          editForm={form}
         />
       )}
       {editTypeSelectModal && (
-        <PermissionTypeModal
-          visible={typeSelectModalVisible}
-          onChange={setTypeSelectModalVisible}
+        <EditSelectModal
+          visible={editTypeSelectModal}
+          onChange={setEditTypeSelectModal}
           changeTableEvent={setCurrentTableData}
           hasAddData={currentTableData}
           editData={tableSelectData[0]}
+          finishEvent={setClickKey}
+          setEmpty={setTableSelectData}
           editForm={form}
         />
       )}
