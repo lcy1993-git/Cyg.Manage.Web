@@ -2,15 +2,13 @@ import React from 'react';
 import { Input } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 
-import FormSwitch from '@/components/form-switch';
-
 const { TextArea } = Input;
 
-const RolePermissionsForm: React.FC = () => {
+const ProjectPermissionForm: React.FC = () => {
   return (
     <>
       <CyFormItem
-        label="角色名称"
+        label="权限组名称"
         name="name"
         required
         rules={[
@@ -21,14 +19,14 @@ const RolePermissionsForm: React.FC = () => {
           },
         ]}
       >
-        <Input placeholder="请输入角色名称" style={{ width: '100%' }} />
+        <Input placeholder="请输入权限组名称" style={{ width: '1014px', marginRight: '30px' }} />
       </CyFormItem>
 
       <CyFormItem label="备注" name="remark">
-        <TextArea placeholder="请输入备注" showCount maxLength={100} style={{ width: '100%' }} />
+        <TextArea placeholder="请输入备注" showCount maxLength={100} style={{ width: '1014px' }} />
       </CyFormItem>
     </>
   );
 };
 
-export default RolePermissionsForm;
+export default ProjectPermissionForm;

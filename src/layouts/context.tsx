@@ -10,6 +10,7 @@ interface LayoutContextValue {
   setWorkHandoverFlag?: (value: boolean) => void;
   setAllProjectSearchProjectId?: (value: string) => void;
   setAllProjectSearchPerson?: (value: string) => void;
+  removeTab?: (value: string) => void;
 }
 
 const LayoutContext = createContext({} as LayoutContextValue);

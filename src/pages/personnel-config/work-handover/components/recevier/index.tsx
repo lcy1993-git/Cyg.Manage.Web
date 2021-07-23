@@ -43,14 +43,13 @@ const Recevier: React.FC<RecevierParams> = (props) => {
 
   return (
     <>
-      <span style={{ marginRight: '15px' }}>接收人员</span>
       <Select
         showSearch
         filterOption={(input: string, option: any) =>
           option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
         options={handleData}
-        style={{ width: '270px' }}
+        style={{ width: '270px', paddingLeft: '20px' }}
         placeholder="请选择接收人员"
         onChange={(value: any, option: any) => {
           setReceiverName?.(option.label);

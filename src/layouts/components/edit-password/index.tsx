@@ -22,9 +22,9 @@ const EditPassword = (props: EditPasswordProps) => {
       await editPassword({ pwd, newPwd });
 
       setState(false);
-      message.success('密码修改成功,请重新登录');
+      message.info('密码修改成功,请重新登录');
 
-      history.push('/login');
+      history.push('/again-login');
       localStorage.setItem('Authorization', '');
     });
   };
