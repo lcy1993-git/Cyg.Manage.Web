@@ -400,41 +400,47 @@ export const pipeMode5 = {
     },
   ],
   type7: [
-    {
-      x: unit - pipeR7,
-      y: unit - 2 * Math.sin(60 * deg) * pipeR7,
-      r: pipeR7
-    },
-    {
-      x: unit + pipeR7,
-      y: unit - 2 * Math.sin(60 * deg) * pipeR7,
-      r: pipeR7
-    },
-    {
-      x: pipeR7,
-      y: unit,
-      r: pipeR7
-    },
-    {
+    { //4
       x: unit,
       y: unit,
       r: pipeR7
     },
-    {
+    { //2
+      x: unit + pipeR7,
+      y: unit - 2 * Math.sin(60 * deg) * pipeR7,
+      r: pipeR7
+    },
+    { //5
       x: unit + 2 * pipeR7,
       y: unit,
       r: pipeR7
     },
-    {
-      x: unit - pipeR7,
-      y: unit + 2 * Math.sin(60 * deg) * pipeR7,
-      r: pipeR7
-    },
-    {
+    { //7
       x: unit + pipeR7,
       y: unit + 2 * Math.sin(60 * deg) * pipeR7,
       r: pipeR7
     },
+    {  //6
+      x: unit - pipeR7,
+      y: unit + 2 * Math.sin(60 * deg) * pipeR7,
+      r: pipeR7
+    },
+    { //3
+      x: pipeR7,
+      y: unit,
+      r: pipeR7
+    },
+    { //1
+      x: unit - pipeR7,
+      y: unit - 2 * Math.sin(60 * deg) * pipeR7,
+      r: pipeR7
+    },
+
+
+
+
+
+
     {
       x: unit,
       y: unit,
