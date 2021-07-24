@@ -19,6 +19,7 @@ import ResetPasswordForm from './components/reset-form';
 import moment from 'moment';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -39,21 +40,29 @@ const ManageUser: React.FC = () => {
     manual: true,
   });
 
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        <Button onClick={() => resetEvent()}>
-          <ReloadOutlined />
-          重置密码
-        </Button>
+        {buttonJurisdictionArray?.includes('manage-user-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('manage-user-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('reset-manage-password') && (
+          <Button onClick={() => resetEvent()}>
+            <ReloadOutlined />
+            重置密码
+          </Button>
+        )}
       </div>
     );
   };
