@@ -1,23 +1,30 @@
 .basicPage {
-    width: 100%;
-    height: 100%;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: @bg-primary-color;
+  .assestsUpload {
     display: flex;
-    background-color: @bg-primary-color;
-    .assestsUpload {
-        flex: 1;
-        margin-right: 16px;
-        padding-top: 16px;
-        background-color: @white-color;
-        padding-right: 16px;
+    flex: 1;
+    flex-direction: column;
+    margin-right: 16px;
+    padding-top: 16px;
+    padding-right: 16px;
+    background-color: @white-color;
+    .divider {
+      width: 102%;
+      height: 15px;
+      background-color: #f7f7f7;
     }
-    .jurisdictionUpload {
-        flex: 1;
-        padding-top: 16px;
-        padding-left: 16px;
-        background-color: @white-color;
-    }
-    .basicPageButtonContent {
-        text-align: right;
-        padding-top: 10px;
-    }
+  }
+  .jurisdictionUpload {
+    flex: 1;
+    padding-top: 16px;
+    padding-left: 16px;
+    background-color: @white-color;
+  }
+  .basicPageButtonContent {
+    padding-top: 10px;
+    text-align: right;
+  }
 }

@@ -7,13 +7,21 @@ interface TableExportButtonProps {
   exportUrl: string;
   extraParams?: object;
   fileName?: string;
+  labelName?: string;
+  type?: 'post' | 'get';
 }
 
 const ExportAuthorityButton: React.FC<TableExportButtonProps> = (props) => {
-  const { exportUrl = '', extraParams, fileName = '系统权限' } = props;
+  const {
+    exportUrl = '',
+    extraParams,
+    fileName = '系统权限',
+    labelName = '导出权限',
+    type = 'post',
+  } = props;
 
   const authorityExportEvent = async () => {
-    const res = await exportAuthority(exportUrl, extraParams);
+    const res = await exportAuthority(exportUrl, extraParams, type);
     let blob = new Blob([res], {
       type: 'application/vnd.ms-excel;charset=utf-8',
     });
@@ -37,7 +45,7 @@ const ExportAuthorityButton: React.FC<TableExportButtonProps> = (props) => {
   return (
     <Button className="mr7" onClick={() => authorityExportEvent()}>
       <ExportOutlined />
-      导出权限
+      {labelName}
     </Button>
   );
 };

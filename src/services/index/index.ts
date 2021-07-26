@@ -43,7 +43,7 @@ export const getToDoStatistics = (params: HomeStatisticCommonParams) => {
 };
 
 interface RequestResult {
-  id?:string,
+  id?: string;
   key: string;
   value: number;
 }
@@ -203,3 +203,5 @@ export const fetchProjectOperationLog = (params: projectOperationLogParams) => {
     }),
   );
 };
+
+

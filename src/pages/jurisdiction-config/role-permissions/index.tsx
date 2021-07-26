@@ -2,8 +2,8 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin } from 'antd';
-import React, { useState } from 'react';
-import { EditOutlined, PlusOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
 import { useRequest, useBoolean } from 'ahooks';
 import {
@@ -316,7 +316,7 @@ const RolePermissions: React.FC = () => {
         getSelectData={(data) => setTableSelectRows(data)}
         url="/AuthTemplate/GetPagedList"
         columns={columns}
-        tableTitle="角色权限管理"
+        tableTitle="功能权限管理"
         extractParams={{
           keyWord: searchKeyWord,
         }}
@@ -324,13 +324,14 @@ const RolePermissions: React.FC = () => {
       <Modal
         maskClosable={false}
         title="添加-角色"
-        width="80%"
+        width="60%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddRolePermissions()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Form form={addForm} preserve={false}>
           <RolePermissionsForm />
@@ -342,13 +343,14 @@ const RolePermissions: React.FC = () => {
       <Modal
         maskClosable={false}
         title="编辑-角色"
-        width="80%"
+        width="60%"
         visible={editFormVisible}
         okText="确认"
         onOk={() => sureEditRolePermissions()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Form form={editForm} preserve={false}>
           <RolePermissionsForm />

@@ -384,7 +384,7 @@ const Inventroy: React.FC = () => {
         requestSource="resource"
         url="/Inventory/GetInventoryOverviewPageList"
         getSelectData={(data) => setTableSelectRows(data)}
-        tableTitle="协议库存列表"
+        tableTitle="协议库存管理"
         type="radio"
         extractParams={{
           inventoryOverviewId: inventoryId,
