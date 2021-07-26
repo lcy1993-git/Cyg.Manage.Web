@@ -16,7 +16,7 @@ export interface AddRateTable {
 }
 export const addRateTable = (params: AddRateTable) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/RateTable/AddRateTable`, { method: 'POST', data: params })
+    request(`${baseUrl.tecEco1}/RateTable/AddRateFile`, { method: 'POST', data: params })
   )
 }
 
@@ -24,7 +24,7 @@ export const addRateTable = (params: AddRateTable) => {
 export type EditRateTable = AddRateTable & {id: string}
 export const editRateTable = (params: EditRateTable) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/RateTable/EditRateTable`, { method: 'POST', data: params })
+    request(`${baseUrl.tecEco1}/RateTable/EditRateFile`, { method: 'POST', data: params })
   )
 }
 
@@ -38,7 +38,7 @@ export const setRateTableStatus= (id: string, enabled: boolean) => {
 // 删除费率表
 export const deleteRateTable= (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/RateTable/DeleteRateTable`, { method: 'GET', params: { id } }),
+    request(`${baseUrl.tecEco1}/RateTable/DeleteRateFile`, { method: 'GET', params: { id } }),
   );
 }
 
