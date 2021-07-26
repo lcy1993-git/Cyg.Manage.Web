@@ -197,7 +197,11 @@ const ProjectList: React.FC = () => {
   };
 
   const gotoMoreInfo = () => {
-    history.push('/technology-economic/common-rate-infomation')
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行查看');
+      return;
+    }
+    history.push(`/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&isDemolition=${tableSelectRows[0].isDemolitionMajor ? 1 : ""}`)
   };
 
   const tableElement = () => {

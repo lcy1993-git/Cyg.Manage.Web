@@ -6,7 +6,6 @@
 // nextTableRest?: any;
 
 export const getPropsByType = (type: string, data: any) => {
-  console.log(String(type), typeof String(type));
   
   switch (String(type)) {
     /**

@@ -24,19 +24,17 @@ const CommonRateTable: React.FC<CommonRateTableProps> = ({
   id,
   type,
 }) => {
-  console.log(type);
   
-  const {data, run, loading} = useRequest<ResData>(getApiByType(type), {manual: true})
+  
+  const {data, run, loading} = useRequest<ResData>(getApiByType(type, window.location.search.slice(4)), {manual: true})
   const props = {
     head: data?.name ?? "",
     data: data?.items ?? [],
     type
   }
 
-  console.log(props);
   
   const tableDom = () => {
-    console.log(typeof type);
     
     switch (String(type)) {
       case "1":
@@ -61,10 +59,7 @@ const CommonRateTable: React.FC<CommonRateTableProps> = ({
   }
 
   useEffect(() => {
-    
     type && id && run(id);
-    console.log('run');
-    
   }, [type])
 
 

@@ -5,8 +5,10 @@ import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
 import { getEnums} from '../../../utils';
+getEnums('RateTableType')
+console.log(1111111111111111);
 
-const DictionaryForm: React.FC<never> = () => {
+const DictionaryForm: React.FC<any> = () => {
   return (
     <>
       <Row>
@@ -17,13 +19,15 @@ const DictionaryForm: React.FC<never> = () => {
           <CyFormItem label="所属文件" name="sourceFile" required>
           <Input placeholder="请输入所属文件" />
           </CyFormItem>
-
-          <CyFormItem label="是否拆除" name="isDemolitionMajor">
+          <CyFormItem label="是否拆除" name="isDemolitionMajor" required>
+            <FormSwitch />
+        </CyFormItem>
+          {/* <CyFormItem label="是否拆除" name="isDemolitionMajor">
             <Select>
               <Select.Option key={1} value={1}>是</Select.Option>
               <Select.Option key={0} value={0}>否</Select.Option>
             </Select>
-          </CyFormItem>
+          </CyFormItem> */}
 
           <CyFormItem label="发布机构" name="publishOrg">
             <Input />
@@ -61,7 +65,7 @@ const DictionaryForm: React.FC<never> = () => {
       </Row>
       <CyFormItem label="状态" name="enabled" required>
             <FormSwitch />
-          </CyFormItem>
+      </CyFormItem>
       <CyFormItem label="备注" name="remark">
         <Input.TextArea rows={3} />
       </CyFormItem>

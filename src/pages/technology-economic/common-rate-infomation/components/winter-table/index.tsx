@@ -10,7 +10,7 @@ const WinterTable: React.FC<WinterTableProps> = ({ head, data }) => {
   const constomDom = useCallback((type) => {
     const architectureData = data?.find(item => item.costRateType === type) ?? [];
     return Array(5).fill(1).map((e, i) => {
-      return <td>{architectureData['costRateLevel_' + (i + 1)]}</td>
+      return <td key={i}>{architectureData['costRateLevel_' + (i + 1)]}</td>
     })
   }, [head]);
 

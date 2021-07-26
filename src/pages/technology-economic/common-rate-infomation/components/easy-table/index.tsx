@@ -8,7 +8,8 @@ interface EasyTableProps {
 }
 
 const EasyTable: React.FC<EasyTableProps> = ({head, data, type}) => {
-  console.log(type, typeof type, "11111111");
+  console.log(data);
+  
   const foot = () => {
     if(type === 1) {
       return (
@@ -35,7 +36,7 @@ const EasyTable: React.FC<EasyTableProps> = ({head, data, type}) => {
         <tr>
           <td>费率(%)</td>
           <td>{data?.find((item) => item.costRateType === 1)?.costRate ?? ""}</td>
-          <td>{data?.find((item) => item.costRateType === 1)?.costRate ?? ""}</td>
+          <td>{data?.find((item) => item.costRateType === 2)?.costRate ?? ""}</td>
         </tr>
         {foot()}
       </tbody>

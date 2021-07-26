@@ -14,9 +14,9 @@ import {
  * @param type 费率表类型
  * @returns 费率表相关接口
  */
-export const getApiByType = (type: string) => {
+export const getApiByType = (rateTableType: string, rateFileId: string) => {
   
-  switch (String(type)) {
+  switch (String(rateTableType)) {
     /**
      * 夜间施工增加费率
      * 施工工具用具使用费率
@@ -29,34 +29,32 @@ export const getApiByType = (type: string) => {
     case "3":
     case "4":
     case "5":
-      return getEasyRate;
+      return () => getEasyRate(rateTableType, rateFileId);
     /**
     * 冬雨季施工增加费率
     */
     case "51":
-      console.log("冬雨");
-      
-      return getWinterConstructionRate;
+      return () =>getWinterConstructionRate(rateFileId);
     /**
      * 临时设施费费率
      */
     case "52":
-      return getTemporaryFacilityRate;
+      return () => getTemporaryFacilityRate(rateFileId);
     /**
      * 基本预备费费率
      */
     case "53":
-      return getBasicReserveRate;
+      return () => getBasicReserveRate(rateFileId);
     /**
      * 特殊地区施工增加费费率
      */
     case "54":
-      return getSpecialAreaConstructionRate;
+      return () => getSpecialAreaConstructionRate(rateFileId);
     /**
      * 设计费费率
      */
     case "55":
-      return getDesignRate;
+      return () => getDesignRate(rateFileId);
     default:
       return () => Promise.reject([])
   }
