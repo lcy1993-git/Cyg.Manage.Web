@@ -477,6 +477,19 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           arrangement: f.values_.arrangement
         };
       }
+
+      if(p === '方向') {
+        let azimuth = feature.getProperties().azimuth;
+        if(azimuth){
+          if(azimuth >= -90 && azimuth < 90){
+            pJSON[p] =  '→↑';
+          } else {
+            pJSON[p] =  '←↓';
+          }
+        } else {
+          pJSON[p] =  '';
+        }
+      }
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
