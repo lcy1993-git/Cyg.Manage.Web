@@ -12,10 +12,10 @@ const ProjectPermissionForm: React.FC = () => {
         name="name"
         required
         rules={[
-          { required: true, message: '角色名称不能为空' },
+          { required: true, message: '权限组名称不能为空' },
           {
             max: 12,
-            message: '角色名称超出字符数限制，限制为12个字符',
+            message: '权限组名称超出字符数限制，限制为12个字符',
           },
         ]}
       >

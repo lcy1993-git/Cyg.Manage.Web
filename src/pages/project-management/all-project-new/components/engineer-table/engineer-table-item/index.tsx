@@ -204,8 +204,6 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     columnsWidth,
   ]);
 
-  console.log(valueList);
-
   const tbodyElement = useMemo(() => {
     return (projectInfo.projects ?? []).map((item: any) => {
       return (

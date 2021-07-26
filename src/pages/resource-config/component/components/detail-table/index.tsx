@@ -38,9 +38,9 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
     manual: true,
   });
 
-  useEffect(() => {
-    search();
-  }, [componentId]);
+  // useEffect(() => {
+  //   search();
+  // }, [componentId]);
 
   const searchComponent = () => {
     return (

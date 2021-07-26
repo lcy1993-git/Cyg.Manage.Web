@@ -42,6 +42,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
     const formData = form.getFieldsValue();
 
     const { projects } = formData;
+
     const copyFormData = projects[activeProjectKey];
 
     form.setFieldsValue({ projects: [...projects, copyFormData] });

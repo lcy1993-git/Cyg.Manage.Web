@@ -50,7 +50,7 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
 
   //获取用户数据
   const { data: userData = [] } = useGetSelectData({
-    url: '/CompanyUser/GetList',
+    url: '/CompanyUser/GetList?clientCategory=2',
   });
 
   //获取并处理部组数据
@@ -115,7 +115,13 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
           <Form form={editForm}>
             <Row gutter={24}>
               <Col>
-                <CyFormItem label="请选择对象类型" required align="right" labelWidth={111}>
+                <CyFormItem
+                  label="请选择对象类型"
+                  required
+                  align="right"
+                  labelWidth={111}
+                  rules={[{ required: true, message: '对象类型不能为空' }]}
+                >
                   <EnumSelect
                     style={{ width: '350px' }}
                     enumList={categoryEnum}
@@ -130,7 +136,13 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                 </CyFormItem>
               </Col>
               <Col span={12}>
-                <CyFormItem label="请选择对象" required align="right" labelWidth={111}>
+                <CyFormItem
+                  label="请选择对象"
+                  required
+                  align="right"
+                  labelWidth={111}
+                  rules={[{ required: true, message: '对象不能为空' }]}
+                >
                   {categorySelected === '1' ? (
                     <UrlSelect
                       valuekey="value"
@@ -179,7 +191,13 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                 </CyFormItem>
               </Col>
             </Row>
-            <CyFormItem label="请选择项目类型" required align="right" labelWidth={111}>
+            <CyFormItem
+              label="请选择项目类型"
+              required
+              align="right"
+              labelWidth={111}
+              rules={[{ required: true, message: '项目类型不能为空' }]}
+            >
               <UrlSelect
                 style={{ width: '100%' }}
                 mode="multiple"

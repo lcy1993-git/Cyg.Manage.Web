@@ -50,7 +50,7 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
 
   //获取用户数据
   const { data: userData = [] } = useGetSelectData({
-    url: '/CompanyUser/GetList',
+    url: '/CompanyUser/GetList?clientCategory=2',
   });
 
   //获取并处理部组数据

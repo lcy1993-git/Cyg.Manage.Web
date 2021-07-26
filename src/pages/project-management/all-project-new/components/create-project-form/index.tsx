@@ -20,6 +20,8 @@ interface CreateProjectFormProps {
   form?: any;
   engineerStart?: Moment;
   engineerEnd?: Moment;
+  copyFlag?: number;
+  setCopyFlag?: (value: number) => void;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
@@ -33,6 +35,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     form,
     engineerStart,
     engineerEnd,
+    copyFlag,
+    setCopyFlag,
   } = props;
 
   const [startDate, setStartDate] = useState<Moment>();
@@ -87,6 +91,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
       e.preventDefault();
     }
   };
+
+  console.log(copyFlag, '当前dataSourType');
 
   return (
     <>
@@ -647,6 +653,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                   }
                   setDataSourceType(value);
+                  setCopyFlag?.(value);
                 }}
               />
             ) : (
@@ -664,7 +671,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
 
       <div className="flex">
         <div className="flex1 flowHidden">
-          {dataSourceType === 2 ? (
+          {dataSourceType === 2 || copyFlag === 2 ? (
             <CyFormItem
               label="交底范围(米)"
               // initialValue={'50'}
@@ -681,7 +688,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 value={disRangeValue}
               />
             </CyFormItem>
-          ) : dataSourceType === 1 ? (
+          ) : dataSourceType === 1 || copyFlag === 1 ? (
             <CyFormItem
               label="交底范围(米)"
               // initialValue={'50'}
@@ -740,7 +747,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           )}
         </div>
         <div className="flex1 flowHidden">
-          {dataSourceType === 2 ? (
+          {dataSourceType === 2 || copyFlag === 2 ? (
             <CyFormItem
               label="桩位范围(米)"
               // initialValue={'50'}
@@ -757,7 +764,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 style={{ width: '100%' }}
               />
             </CyFormItem>
-          ) : dataSourceType === 1 ? (
+          ) : dataSourceType === 1 || copyFlag === 1 ? (
             <CyFormItem
               label="桩位范围(米)"
               // initialValue={'50'}

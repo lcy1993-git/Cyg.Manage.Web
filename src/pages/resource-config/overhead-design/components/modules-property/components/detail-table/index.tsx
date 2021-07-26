@@ -40,9 +40,9 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
     manual: true,
   });
 
-  useEffect(() => {
-    search();
-  }, [moduleId]);
+  // useEffect(() => {
+  //   search();
+  // }, [moduleId]);
 
   const searchComponent = () => {
     return (

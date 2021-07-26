@@ -39,9 +39,9 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
     manual: true,
   });
 
-  useEffect(() => {
-    search();
-  }, [cableWellId]);
+  // useEffect(() => {
+  //   search();
+  // }, [cableWellId]);
 
   const searchComponent = () => {
     return (

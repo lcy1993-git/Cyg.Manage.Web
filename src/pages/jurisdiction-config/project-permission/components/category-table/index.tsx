@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, message, Table } from 'antd';
+import { Button, Form, message, Popconfirm, Table } from 'antd';
 import CommonTitle from '@/components/common-title';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import styles from './index.less';
@@ -159,10 +159,17 @@ const CategoryTable: React.FC<TableParams> = (props) => {
             <EditOutlined />
             编辑
           </Button>
-          <Button onClick={removeEvent}>
-            <DeleteOutlined />
-            删除
-          </Button>
+          <Popconfirm
+            title="您确定要删除该条数据?"
+            onConfirm={removeEvent}
+            okText="确认"
+            cancelText="取消"
+          >
+            <Button>
+              <DeleteOutlined />
+              删除
+            </Button>
+          </Popconfirm>
         </div>
       </div>
       <div className={styles.permissionTable}>

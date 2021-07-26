@@ -423,7 +423,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
             cableWellId={tableSelectRows.map((item) => {
               return item.id;
             })}
-          ></CableWellDetail>
+          />
         </Spin>
       </Modal>
     </>
