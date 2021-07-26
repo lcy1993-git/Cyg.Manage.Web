@@ -7,7 +7,7 @@ const AgainLogin:React.FC = () => {
     const {clearAgainLogin} = useLayoutStore();
 
     const finishEvent = () => {
-        clearAgainLogin();
+        clearAgainLogin?.();
     }
 
     return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { IRouteComponentProps } from 'umi';
+import { IRouteComponentProps, useRequest } from 'umi';
 import { Tabs, ConfigProvider } from 'antd';
 import LayoutHeader from './components/layout-header';
 import { getTabsComponent, RouteListItem } from '@/utils/tabs-config';
@@ -10,7 +10,8 @@ moment.locale('zh-cn');
 
 import styles from './index.less';
 import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons';
-import { LayoutProvider, useLayoutStore } from './context';
+import { LayoutProvider } from './context';
+import { pollingHealth } from '@/services/common';
 
 const { TabPane } = Tabs;
 
@@ -80,14 +81,18 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     setLayoutIsFold(!layoutIsFold);
   };
 
+  //轮询
+  useRequest(() => pollingHealth(), {
+    pollingInterval: 3000,
+  });
+
   const editTabsEvent = (
     key: string | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,
     action: 'add' | 'remove',
   ) => {
     const copyRouteList = routeList.map((item) => item);
     const keyIndex = copyRouteList.findIndex((item) => item.tabKey === key);
-
-    if (copyRouteList[keyIndex].title.indexOf('resource-manage') != -1) {
+    if (keyIndex !== -1 && copyRouteList[keyIndex].title.indexOf('resource-manage') != -1) {
       setResourceManageFlag(false);
     }
     // 判断他当前删除的是不是当前激活的tab,如果是，则需要激活这个tab的相邻的tab,如果不是，就直接删除
@@ -169,6 +174,10 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     ),
   };
 
+  const removeTab = (route: string) => {
+    editTabsEvent(route, 'remove');
+  };
+
   return (
     <ConfigProvider locale={zhCN}>
       <LayoutProvider
@@ -182,6 +191,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
           setResourceManageFlag,
           workHandoverFlag,
           setWorkHandoverFlag,
+          removeTab,
         }}
       >
         <div className={styles.layoutContent}>

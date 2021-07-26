@@ -64,3 +64,12 @@ export const changeCompanyStatus = (id: string, isEnable: boolean) => {
     }),
   );
 };
+
+//获取当前公司
+export const getCompany = () => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Company/Get`, {
+      method: 'Get',
+    }),
+  );
+};

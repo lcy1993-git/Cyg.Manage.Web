@@ -4,12 +4,14 @@ import CommonTitle from '@/components/common-title';
 import styles from './index.less';
 import FileUpLoad from '@/components/file-upload';
 import { Button, Form, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { commonUpload } from '@/services/common';
+import CyFormItem from '@/components/cy-form-item';
 import ExportAuthorityButton from '@/components/authortiy-export-button';
 const BasicData: React.FC = () => {
   const [assestsForm] = Form.useForm();
   const [jurisdictionForm] = Form.useForm();
+  const [areaForm] = Form.useForm();
   // const [assestsUploadLoading, setAssestsUploadLoading] = useState<boolean>(false);
 
   const uploadAssests = () => {
@@ -31,36 +33,90 @@ const BasicData: React.FC = () => {
     });
   };
 
+  //上传气象区文件
+  const uploadAreaFile = async () => {
+    areaForm.validateFields().then(async (values) => {
+      const { areaFile } = values;
+      await commonUpload('/Meteorological/Import', areaFile, 'file', 'project');
+      message.success('上传成功');
+      areaForm.resetFields();
+    });
+  };
+
   return (
-    <PageCommonWrap>
+    <PageCommonWrap noPadding>
       <div className={styles.basicPage}>
         <div className={styles.assestsUpload}>
-          <CommonTitle>静态文件</CommonTitle>
-          <Form form={assestsForm}>
-            <Form.Item
-              name="assestsFile"
-              rules={[{ required: true, message: '请至少上传一个文件' }]}
-            >
-              <FileUpLoad />
-            </Form.Item>
-          </Form>
-          <div className={styles.basicPageButtonContent}>
-            <Button type="primary" onClick={() => uploadAssests()}>
-              <UploadOutlined />
-              开始上传
-            </Button>
+          <div style={{ height: '45%', padding: '20px' }}>
+            <CommonTitle>静态文件</CommonTitle>
+            <Form form={assestsForm}>
+              <CyFormItem
+                labelWidth={111}
+                label="静态文件上传"
+                name="assestsFile"
+                rules={[{ required: true, message: '请至少上传一个文件' }]}
+              >
+                <FileUpLoad />
+              </CyFormItem>
+            </Form>
+            <div className={styles.basicPageButtonContent}>
+              <Button type="primary" onClick={() => uploadAssests()}>
+                <UploadOutlined />
+                开始上传
+              </Button>
+            </div>
+          </div>
+          <div className={styles.divider}></div>
+          {/* 气象数据 */}
+          <div style={{ height: '45%', padding: '20px' }}>
+            <CommonTitle>气象区文件模板</CommonTitle>
+            <Form form={areaForm}>
+              <CyFormItem label="气象区文件模板" labelAlign="right" labelWidth={111}>
+                <Button type="primary" style={{ width: '80px' }}>
+                  <a
+                    href="http://10.6.1.53:8026/气象区文件模板.xlsx"
+                    download="气象区文件模板.xlsx"
+                  >
+                    下载
+                  </a>
+                </Button>
+              </CyFormItem>
+              <CyFormItem
+                labelWidth={111}
+                labelAlign="right"
+                label="当前气象区文件"
+                name="areaFile"
+                rules={[{ required: true, message: '请至少上传一个文件' }]}
+              >
+                <FileUpLoad />
+              </CyFormItem>
+            </Form>
+            <div className={styles.basicPageButtonContent}>
+              <ExportAuthorityButton
+                exportUrl="/Meteorological/Export"
+                fileName="当前气象区文件"
+                labelName="导出文件"
+                type="get"
+              />
+              <Button type="primary" onClick={() => uploadAreaFile()}>
+                <UploadOutlined />
+                开始上传
+              </Button>
+            </div>
           </div>
         </div>
+
         <div className={styles.jurisdictionUpload}>
           <CommonTitle>权限</CommonTitle>
           <Form form={jurisdictionForm}>
-            <Form.Item
-              noStyle
+            <CyFormItem
               name="jurisdictionFile"
+              labelWidth={111}
+              label="权限文件上传"
               rules={[{ required: true, message: '请至少上传一个文件' }]}
             >
               <FileUpLoad maxCount={1} />
-            </Form.Item>
+            </CyFormItem>
           </Form>
           <div className={styles.basicPageButtonContent}>
             <ExportAuthorityButton exportUrl="/Manage/ExportAuthority" />

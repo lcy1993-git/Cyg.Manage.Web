@@ -262,7 +262,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
       columns={columns}
       requestSource="resource"
       url="/Inventory/GetPageList"
-      tableTitle="协议库存列表"
+      tableTitle="协议库存管理"
       type="radio"
       extractParams={{
         inventoryOverviewId: inventoryId,
