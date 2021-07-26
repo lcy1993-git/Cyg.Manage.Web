@@ -11,7 +11,7 @@ interface JSONData {
 }
 
 const getCompanyName = (data: JSONData[]) => {
-  return data?.find((item) => item.Key === 'company_name')?.Value ?? ""
+  return data?.find((item) => item.Key === 'company_name')?.Value || data?.find((item) => item.Key === 'source_company_name')?.Value || ""
 }
 
 const getAllotUsers = (data: JSONData[]) => {
@@ -24,7 +24,7 @@ const getHandover = (data: JSONData[]) => {
 
 const getCompanyNameByShare = (data: JSONData[]) => {
   
-  return data?.find((item) => item.Key === 'source_company_name')?.Value
+  return data?.find((item) => item.Key === 'target_company_name')?.Value
 }
 
 const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCategory, createdByName, content, operator }) => {
@@ -83,8 +83,9 @@ const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCat
   return (
     <div className={styles.projectProcessItem}>
       <div className={styles.projectProcessItemTime}>
-        {date ? moment(date).format("YYYY-MM-DD HH:mm:ss") : ""}
-        <span className={styles.titleRightWrap}>{`${getCompanyName(jsonData)}-${operator}`}</span>
+        <div className={styles.time}>{date ? moment(date).format("YYYY-MM-DD HH:mm:ss") : ""}</div>
+
+        <div className={styles.titleRightWrap}>{`${getCompanyName(jsonData)}-${operator}`}</div>
 
       </div>
       <div className={styles.projectProcessItemTitle}>
