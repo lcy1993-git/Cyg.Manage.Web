@@ -265,17 +265,17 @@ export const pipeMode5 = {
     {
       x: unit / 2,
       y: unit,
-      r: unit / 2
+      r: unit / 2 - 1
     },
     {
       x: unit + unit / 2,
       y: unit,
-      r: unit / 2
+      r: unit / 2 - 1
     },
     {
       x: unit,
       y: unit,
-      r: unit
+      r: unit -2
     }
   ],
   type3: [
@@ -283,164 +283,158 @@ export const pipeMode5 = {
     {
       x: unit - pipeR3,
       y: 2 * pipeR3 * Math.cos(30 * deg) + pipeR3,
-      r: pipeR3
+      r: pipeR3 - 1
     },
     {
       x: unit + pipeR3,
       y: 2 * pipeR3 * Math.cos(30 * deg) + pipeR3,
-      r: pipeR3
+      r: pipeR3 - 1
     },
     {
       x: unit,
       y: pipeR3,
-      r: pipeR3
+      r: pipeR3 - 1
     },
     {
       x: unit,
       y: unit,
-      r: unit
+      r: unit - 2
     },
   ],
   type4: [
     {
       x: unit - pipeR4,
       y: unit + pipeR4,
-      r: pipeR4
+      r: pipeR4 -1
     },
     {
       x: unit + pipeR4,
       y: unit + pipeR4,
-      r: pipeR4
+      r: pipeR4 - 1
     },
     {
       x: unit - pipeR4,
       y: unit - pipeR4,
-      r: pipeR4
+      r: pipeR4 - 1
     },
     {
       x: unit + pipeR4,
       y: unit - pipeR4,
-      r: pipeR4
+      r: pipeR4 - 1
     },
 
     {
       x: unit,
       y: unit,
-      r: unit
+      r: unit - 2
     }
   ],
   type5: [
     {
       x: unit,
       y: pipeR5,
-      r: pipeR5,
+      r: pipeR5 - 1,
     },
     {
       x: unit + (unit - pipeR5) * Math.cos(18 * deg),
       y: unit - (unit - pipeR5) * Math.sin(18 * deg),
-      r: pipeR5,
+      r: pipeR5 -1,
     },
     {
       x: unit + pipeR5,
       y: unit + (unit - pipeR5) * Math.cos(36 * deg),
-      r: pipeR5,
+      r: pipeR5- 1,
     },
     {
       x: unit - pipeR5,
       y: unit + (unit - pipeR5) * Math.cos(36 * deg),
-      r: pipeR5,
+      r: pipeR5 -1,
     },
     {
       x: unit - (unit - pipeR5) * Math.cos(18 * deg),
       y: unit - (unit - pipeR5) * Math.sin(18 * deg),
-      r: pipeR5,
+      r: pipeR5 - 1,
     },
     {
       x: unit,
       y: unit,
-      r: unit
+      r: unit - 2 
     }
   ],
   type6: [
     {
       x: unit - 2 * pipeR6,
       y: pipeR6 + 4 * pipeR6 * Math.cos(30 * deg),
-      r: pipeR6
+      r: pipeR6 -1
     },
     {
       x: unit,
       y: pipeR6 + 4 * pipeR6 * Math.cos(30 * deg),
-      r: pipeR6
+      r: pipeR6 -1
     },
     {
       x: unit + 2 * pipeR6,
       y: pipeR6 + 4 * pipeR6 * Math.cos(30 * deg),
-      r: pipeR6
+      r: pipeR6 -1
     },
 
     {
       x: unit - pipeR6,
       y: pipeR6 + 2 * pipeR6 * Math.cos(30 * deg),
-      r: pipeR6
+      r: pipeR6 -1
     },
     {
       x: unit + pipeR6,
       y: pipeR6 + 2 * pipeR6 * Math.cos(30 * deg),
-      r: pipeR6
+      r: pipeR6 -1
     },
     {
       x: unit,
       y: pipeR6,
-      r: pipeR6
+      r: pipeR6 -1
     },
     {
       x: unit,
       y: unit,
-      r: unit
+      r: unit - 2
     },
   ],
   type7: [
     { //4
       x: unit,
       y: unit,
-      r: pipeR7
+      r: pipeR7 -1
     },
     { //2
       x: unit + pipeR7,
       y: unit - 2 * Math.sin(60 * deg) * pipeR7,
-      r: pipeR7
+      r: pipeR7 -1
     },
     { //5
       x: unit + 2 * pipeR7,
       y: unit,
-      r: pipeR7
+      r: pipeR7 -1
     },
     { //7
       x: unit + pipeR7,
       y: unit + 2 * Math.sin(60 * deg) * pipeR7,
-      r: pipeR7
+      r: pipeR7 -1
     },
     {  //6
       x: unit - pipeR7,
       y: unit + 2 * Math.sin(60 * deg) * pipeR7,
-      r: pipeR7
+      r: pipeR7 -1
     },
     { //3
       x: pipeR7,
       y: unit,
-      r: pipeR7
+      r: pipeR7 -1
     },
     { //1
       x: unit - pipeR7,
       y: unit - 2 * Math.sin(60 * deg) * pipeR7,
-      r: pipeR7
+      r: pipeR7 -3
     },
-
-
-
-
-
-
     {
       x: unit,
       y: unit,

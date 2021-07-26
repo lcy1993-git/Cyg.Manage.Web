@@ -63,13 +63,14 @@ export const cockpitMenuItemData = [
         childrenData: [
             {
                 title: "项目类型",
-                componentProps: ["classify", "level", "category", "stage", "buildType"],
+                componentProps: ["buildType", "classify", "category", "stage", "level"],
                 componentTitles: ["建设类型", "项目分类", "项目类别", "项目阶段", "电压等级"],
                 name: "projectType"
             },
             {
                 title: "项目情况",
-                componentProps: ["status", "nature"],
+                componentProps: ["nature", "status"],
+                componentTitles: ["项目性质", "项目状态"],
                 name: "projectSchedule"
             }
         ]
