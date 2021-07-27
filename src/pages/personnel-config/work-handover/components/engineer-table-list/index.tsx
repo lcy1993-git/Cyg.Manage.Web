@@ -170,6 +170,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     if (isFresh) {
       run();
       setEngineerIds?.([]);
+      setCheckedProjectList([]);
       setIsFresh?.(false);
     }
   }, [isFresh]);

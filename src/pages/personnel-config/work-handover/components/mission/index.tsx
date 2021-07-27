@@ -43,6 +43,7 @@ const MissionTab: React.FC<MissionParams> = (props) => {
       >
         <TabPane tab="勘察任务" key="prospect">
           <ProspectTable
+            recevierId={recevierId}
             isFresh={isFresh}
             setIsFresh={setIsFresh}
             userId={userId}
