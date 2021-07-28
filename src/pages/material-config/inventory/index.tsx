@@ -333,7 +333,11 @@ const Inventroy: React.FC = () => {
           </Button>
         )}
         {buttonJurisdictionArray?.includes('inventory-check') && (
-          <Button className={styles.importBtn} onClick={() => checkInventoryEvent()}>
+          <Button
+            disabled={tableSelectRows && tableSelectRows.length > 0 ? false : true}
+            className={styles.importBtn}
+            onClick={() => checkInventoryEvent()}
+          >
             查看
           </Button>
         )}

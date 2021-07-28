@@ -21,6 +21,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
   const { libId = '', requestSource, changeFinishEvent } = props;
   const [falseData, setFalseData] = useState<string>('');
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false);
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [
     triggerUploadFile,
@@ -41,6 +42,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
             return Promise.resolve();
           } else if (res.code === 200) {
             message.success('导入成功');
+            setIsImportFlag(true);
             return Promise.resolve();
           }
           message.error(res.message);
@@ -57,6 +59,16 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
       });
   };
 
+  const onSave = () => {
+    form.validateFields().then((value) => {
+      if (isImportFlag) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
+  };
+
   return (
     <>
       <Modal
@@ -67,7 +79,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>,
-          <Button key="save" type="primary" onClick={() => setState(false)}>
+          <Button key="save" type="primary" onClick={onSave}>
             保存
           </Button>,
         ]}
@@ -75,7 +87,12 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
         destroyOnClose
       >
         <Form form={form} preserve={false}>
-          <CyFormItem label="导入" name="file" required>
+          <CyFormItem
+            label="导入"
+            name="file"
+            required
+            rules={[{ required: true, message: '请上传应力弧垂表文件' }]}
+          >
             <FileUpload
               accept=".xlsx"
               trigger={triggerUploadFile}

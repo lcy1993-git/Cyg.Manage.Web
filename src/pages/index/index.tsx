@@ -24,6 +24,7 @@ import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { useEffect } from 'react';
+import { pollingHealth } from '@/services/common';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -136,6 +137,11 @@ const Index: React.FC = () => {
       ]);
     }
   };
+
+  //轮询
+  useRequest(() => pollingHealth(), {
+    pollingInterval: 3000,
+  });
 
   const configComponentElement = configArray?.map((item: any) => {
     return (

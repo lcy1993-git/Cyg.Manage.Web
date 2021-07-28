@@ -11,6 +11,7 @@ interface ProjectManageParams {
   setEngineerIds?: Dispatch<SetStateAction<string[]>>;
   getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
   isFresh?: boolean;
+  doneFlag?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
   getEngineerData?: Dispatch<SetStateAction<any[]>>;
 }
@@ -23,6 +24,7 @@ const ProjectManage: React.FC<ProjectManageParams> = (props) => {
     setEngineerIds,
     getReceiverId,
     isFresh,
+    doneFlag,
     setIsFresh,
     getEngineerData,
   } = props;
@@ -69,6 +71,7 @@ const ProjectManage: React.FC<ProjectManageParams> = (props) => {
       </div>
       <div>
         <EngineerTableList
+          doneFlag={doneFlag}
           fieldFlag={true}
           getEngineerData={getEngineerData}
           userId={userId}

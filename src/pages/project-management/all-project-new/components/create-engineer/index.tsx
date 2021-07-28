@@ -40,7 +40,11 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
     const formData = form.getFieldsValue();
 
     const { projects } = formData;
+
     const copyFormData = projects[activeProjectKey];
+
+    console.log(projects, '项目');
+    console.log(copyFormData, '当前拷贝');
 
     if (copyFormData.dataSourceType === 1) {
       setCopyFlag(1);

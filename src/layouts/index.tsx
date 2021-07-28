@@ -11,7 +11,6 @@ moment.locale('zh-cn');
 import styles from './index.less';
 import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons';
 import { LayoutProvider } from './context';
-import { pollingHealth } from '@/services/common';
 
 const { TabPane } = Tabs;
 
@@ -80,11 +79,6 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   const flodTheLayout = () => {
     setLayoutIsFold(!layoutIsFold);
   };
-
-  //轮询
-  useRequest(() => pollingHealth(), {
-    pollingInterval: 3000,
-  });
 
   const editTabsEvent = (
     key: string | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,
