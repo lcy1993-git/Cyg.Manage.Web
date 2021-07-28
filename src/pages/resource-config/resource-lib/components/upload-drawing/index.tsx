@@ -49,7 +49,15 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
       });
   };
 
-  const onSave = () => {};
+  const onSave = () => {
+    form.validateFields().then((value) => {
+      if (requestLoading) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
+  };
 
   return (
     <Modal
@@ -60,7 +68,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => setState(false)} loading={requestLoading}>
+        <Button key="save" type="primary" onClick={onSave}>
           保存
         </Button>,
       ]}
@@ -68,7 +76,12 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
       destroyOnClose
     >
       <Form form={form} preserve={false}>
-        <CyFormItem label="导入" name="file" required>
+        <CyFormItem
+          label="导入"
+          name="file"
+          required
+          rules={[{ required: true, message: '请上传图纸文件' }]}
+        >
           <FileUpload
             accept=".zip"
             uploadFileBtn

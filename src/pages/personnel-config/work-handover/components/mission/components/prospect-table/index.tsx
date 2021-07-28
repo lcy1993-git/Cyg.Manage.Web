@@ -50,7 +50,7 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
       <Checkbox checked={checkAllisChecked} indeterminate={checkAllisIndeterminate} onChange={onAllChange}>全选</Checkbox>
         <Recevier
           userId={userId}
-          clientCategory={2}
+          clientCategory={4}
           isCompanyGroupIdentity={false}
           receiverId={recevierId}
           changeVal={getReceiverId}

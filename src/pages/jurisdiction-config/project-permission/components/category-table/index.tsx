@@ -36,7 +36,8 @@ const CategoryTable: React.FC<TableParams> = (props) => {
   const [editTypeSelectModal, setEditTypeSelectModal] = useState<boolean>(false);
   const [clickKey, setClickKey] = useState<any[]>([]);
 
-  const [form] = Form.useForm();
+  const [addForm] = Form.useForm();
+  const [editForm] = Form.useForm();
   // const tableRef = React.useRef<HTMLDivElement>(null);
 
   //table数据改变则重新获取
@@ -129,9 +130,8 @@ const CategoryTable: React.FC<TableParams> = (props) => {
     }
 
     const editItem = tableSelectData[0];
-    console.log(editItem.projectTypes);
 
-    form.setFieldsValue({
+    editForm.setFieldsValue({
       ...editItem,
       category: String(editItem.category),
       companyId: String(editItem?.category) === '1' ? String(editItem.objectId) : undefined,
@@ -195,6 +195,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
           changeTableEvent={setCurrentTableData}
           hasAddData={currentTableData}
           editData={tableSelectData[0]}
+          addForm={addForm}
         />
       )}
       {editTypeSelectModal && (
@@ -206,7 +207,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
           editData={tableSelectData[0]}
           finishEvent={setClickKey}
           setEmpty={setTableSelectData}
-          editForm={form}
+          editForm={editForm}
         />
       )}
     </>

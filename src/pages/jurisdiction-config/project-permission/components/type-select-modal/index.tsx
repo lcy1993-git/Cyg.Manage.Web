@@ -18,7 +18,7 @@ interface TypeModalParams {
   changeTableEvent: (value: permissionItem[]) => void;
   hasAddData: permissionItem[];
   editData?: permissionItem;
-  editForm?: any;
+  addForm?: any;
 }
 
 enum categoryEnum {
@@ -28,11 +28,11 @@ enum categoryEnum {
 }
 
 const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
-  const { changeTableEvent, hasAddData, editData, editForm } = props;
+  const { changeTableEvent, hasAddData, editData, addForm } = props;
 
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [categorySelected, setCategorySelected] = useState<string>();
-  const [projectTypes, setProjectTypes] = useState<number[]>([]);
+  const [projectTypes, setProjectTypes] = useState<number[] | undefined>([]);
   const [company, setCompany] = useState<any>();
   const [selectedCompany, setSelectedCompany] = useState<any>();
   const [selectedUser, setSelectedUser] = useState<any>();
@@ -53,6 +53,14 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
     url: '/CompanyUser/GetList?clientCategory=2',
   });
 
+  const { data: proTypeData = [] } = useGetSelectData({
+    url: '/ProjectAuthorityGroup/GetProjectTypes',
+  });
+
+  //处理不同对象的项目类型
+  const groupTypeData = proTypeData?.filter((item: any) => item.value != 32);
+  const userTypeData = proTypeData?.filter((item: any) => item.value != 32 && item.value != 16);
+
   //获取并处理部组数据
   const { data: groupData = [] } = useRequest(() => getTreeSelectData(), {
     ready: categorySelected === '2',
@@ -71,28 +79,31 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
   }, [JSON.stringify(groupData)]);
 
   const addProjectEntry = () => {
-    const copyHasAddData = [...hasAddData];
-    const addData = {
-      category: categorySelected,
-      objectId:
-        categorySelected === '1'
-          ? selectedCompany
-          : categorySelected === '2'
-          ? selectedGroup
-          : selectedUser,
-      projectTypes: projectTypes,
-      objectName: objectName,
-    };
+    addForm.validateFields().then((values: any) => {
+      const copyHasAddData = [...hasAddData];
+      const addData = {
+        category: categorySelected,
+        objectId:
+          categorySelected === '1'
+            ? selectedCompany
+            : categorySelected === '2'
+            ? selectedGroup
+            : selectedUser,
+        projectTypes: projectTypes,
+        objectName: objectName,
+      };
 
-    if (copyHasAddData.findIndex((item) => item.objectId === addData.objectId) === -1) {
-      copyHasAddData.unshift(addData);
-      changeTableEvent?.(copyHasAddData);
-      message.success('添加成功');
-      setState(false);
-      return;
-    }
+      if (copyHasAddData.findIndex((item) => item.objectId === addData.objectId) === -1) {
+        copyHasAddData.unshift(addData);
+        changeTableEvent?.(copyHasAddData);
+        message.success('添加成功');
+        setState(false);
+        addForm.resetFields();
+        return;
+      }
 
-    message.error('所选对象已经存在，不可重复添加');
+      message.error('所选对象已经存在，不可重复添加');
+    });
   };
 
   return (
@@ -100,7 +111,7 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
       <Modal
         maskClosable={false}
         width="58%"
-        title="添加-项目权限组"
+        title="添加-权限条目"
         visible={state as boolean}
         destroyOnClose
         okText="确定"
@@ -112,7 +123,7 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
       >
         <CyTip>选择某对象，即包含了该对象以及该对象下属部组，公司用户的全部相关类型项目。</CyTip>
         <div style={{ padding: '20px' }}>
-          <Form form={editForm}>
+          <Form form={addForm}>
             <Row gutter={24}>
               <Col>
                 <CyFormItem
@@ -121,11 +132,13 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                   align="right"
                   labelWidth={111}
                   rules={[{ required: true, message: '对象类型不能为空' }]}
+                  name="category"
                 >
                   <EnumSelect
                     style={{ width: '350px' }}
                     enumList={categoryEnum}
                     onChange={(value: any) => {
+                      setProjectTypes(undefined);
                       setSelectedCompany(undefined);
                       setSelectedUser(undefined);
                       setSelectedGroup(undefined);
@@ -142,6 +155,7 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                   align="right"
                   labelWidth={111}
                   rules={[{ required: true, message: '对象不能为空' }]}
+                  name="objectId"
                 >
                   {categorySelected === '1' ? (
                     <UrlSelect
@@ -197,16 +211,44 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
               align="right"
               labelWidth={111}
               rules={[{ required: true, message: '项目类型不能为空' }]}
+              name="projectTypes"
             >
-              <UrlSelect
-                style={{ width: '100%' }}
-                mode="multiple"
-                valuekey="value"
-                titlekey="text"
-                url="/ProjectAuthorityGroup/GetProjectTypes"
-                placeholder="请选择项目类型"
-                onChange={(value) => setProjectTypes(value as number[])}
-              />
+              {categorySelected === '1' ? (
+                <UrlSelect
+                  style={{ width: '100%' }}
+                  mode="multiple"
+                  valuekey="value"
+                  titlekey="label"
+                  value={projectTypes}
+                  defaultData={proTypeData}
+                  placeholder="请选择项目类型"
+                  onChange={(value) => setProjectTypes(value as number[])}
+                />
+              ) : categorySelected === '2' ? (
+                <UrlSelect
+                  style={{ width: '100%' }}
+                  mode="multiple"
+                  defaultData={groupTypeData}
+                  value={projectTypes}
+                  valuekey="value"
+                  titlekey="label"
+                  placeholder="请选择项目类型"
+                  onChange={(value) => setProjectTypes(value as number[])}
+                />
+              ) : categorySelected === '3' ? (
+                <UrlSelect
+                  style={{ width: '100%' }}
+                  mode="multiple"
+                  value={projectTypes}
+                  valuekey="value"
+                  titlekey="label"
+                  defaultData={userTypeData}
+                  placeholder="请选择项目类型"
+                  onChange={(value) => setProjectTypes(value as number[])}
+                />
+              ) : (
+                <UrlSelect style={{ width: '100%' }} placeholder="请选择项目类型" />
+              )}
             </CyFormItem>
           </Form>
         </div>
