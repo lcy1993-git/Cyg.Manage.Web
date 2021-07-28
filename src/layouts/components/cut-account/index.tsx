@@ -105,7 +105,7 @@ const CutAccount = (props: EditPasswordProps) => {
           rules={[
             {
               required: true,
-              message: '密码',
+              message: '请输入密码',
             },
           ]}
         >

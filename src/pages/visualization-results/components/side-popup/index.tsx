@@ -70,6 +70,9 @@ const materiaColumns = [
     dataIndex: 'itemNumber',
     key: 'itemNumber',
     ellipsis: true,
+    render(v: number){
+      return String(v)
+    }
   },
 
   {
@@ -78,6 +81,9 @@ const materiaColumns = [
     dataIndex: 'unitPrice',
     key: 'unitPrice',
     ellipsis: true,
+    render(v: number){
+      return String(v)
+    }
   },
   {
     title: '单量',
@@ -85,6 +91,9 @@ const materiaColumns = [
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',
     ellipsis: true,
+    render(v: number){
+      return String(v)
+    }
   },
   {
     title: '状态',
