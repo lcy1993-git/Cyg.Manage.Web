@@ -79,8 +79,7 @@ const ConstructionFees: React.FC<Props> = forwardRef((props,  ref: Ref<any>,) =>
   ];
   const getCostProjectData = async (projectId: string) => {
     const res = await getCostTableProject(projectId)
-    console.log(res)
-    setDateSource(res)
+    setDateSource(res as [])
   }
 
   useEffect(() => {
