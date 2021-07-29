@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { useRequest } from 'ahooks';
-import { getCompanyGroups, getReceiver } from '@/services/personnel-config/work-handover';
+// import { getCompanyGroups, getReceiver } from '@/services/personnel-config/work-handover';
 import Recevier from '../recevier/index';
 import { Checkbox } from 'antd';
 import TreeTable from '@/components/tree-table';
@@ -13,6 +13,7 @@ interface GroupIdentityParams {
   getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
   setReceiverName?: Dispatch<SetStateAction<string>>;
   isFresh?: boolean;
+  doneFlag?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
   getGroupIds?: Dispatch<SetStateAction<string[]>>;
 }
@@ -26,6 +27,7 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
     setIsFresh,
     receiverId,
     setReceiverName,
+    doneFlag,
   } = props;
   const [indeterminate, setIndeterminate] = React.useState(false);
   const [checkAll, setCheckAll] = React.useState(false);
@@ -128,6 +130,7 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
           url="/UserHandover/GetCompanyGroups"
           type="checkbox"
           params={{ userId: userId }}
+          emptyContent={doneFlag ? '交接完成' : '暂无可交接的内容'}
         />
       </div>
     </>

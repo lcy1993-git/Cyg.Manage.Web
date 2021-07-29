@@ -99,7 +99,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       >
         <Spin spinning={loading}>
           <div className={styles.versionItem}>
-            <div className={styles.versionNumber}>版本：{versionInfo?.data.versionNo}</div>
+            <div className={styles.versionNumber}>版本：{versionInfo?.data?.versionNo}</div>
             <div className={styles.versionItemTitle}>【更新说明】</div>
             <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>
           </div>

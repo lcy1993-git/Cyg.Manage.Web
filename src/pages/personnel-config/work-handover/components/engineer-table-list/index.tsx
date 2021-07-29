@@ -43,6 +43,7 @@ interface EngineerTableItemProps {
   emitAll: { flag: boolean; state: number };
   setCheckAllisChecked: any;
   setCheckAllisIndeterminate: any;
+  doneFlag?: boolean;
 }
 interface TableCheckedItemProjectInfo {
   id: string;
@@ -66,6 +67,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     getClickProjectId,
     setEngineerIds,
     left,
+    doneFlag,
     isOverflow = false,
     isFresh,
     setIsFresh,
@@ -165,6 +167,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
       },
     },
   );
+  console.log(isFresh, '1');
 
   useEffect(() => {
     if (isFresh) {
@@ -681,8 +684,13 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           renderThumbVertical={scrollBarRenderView}
         > */}
         <Spin spinning={loading}>
-          {handleTableData?.length > 0 && projectTable}
-          {handleTableData?.length === 0 && (
+          {handleTableData?.length > 0 ? (
+            projectTable
+          ) : handleTableData?.length === 0 && doneFlag ? (
+            <div style={{ margin: '100px', color: '#8C8C8C' }}>
+              <EmptyTip className="pt20" description="交接完成" />
+            </div>
+          ) : (
             <div style={{ margin: '100px', color: '#8C8C8C' }}>
               <EmptyTip className="pt20" description="暂无交接的内容" />
             </div>
