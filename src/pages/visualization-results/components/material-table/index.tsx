@@ -61,7 +61,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'itemNumber',
     key: 'itemNumber',
     render(v: number){
-      return String(v)
+      return v ? String(v) : ""
     }
   },
 
@@ -71,7 +71,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'unitPrice',
     key: 'unitPrice',
     render(v: number){
-      return String(v)
+      return v ? String(v) : ""
     }
   },
   {
@@ -80,7 +80,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',
     render(v: number){
-      return String(v)
+      return v ? String(v) : ""
     }
   },
   {
