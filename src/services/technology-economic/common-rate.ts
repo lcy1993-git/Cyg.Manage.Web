@@ -103,6 +103,27 @@ export const downloadTemplate= () => {
   return request(`${baseUrl.tecEco1}/RateTable/DownloadTemplate`, { method: 'GET', responseType: "blob"});
 }
 
+// 获取拆除工程简单费率详情
+export const getDemolitionEasyRate= (rateTableType: string, rateFileId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/GetDemolitionEasyRate`, { method: 'GET', params: { rateFileId, rateTableType } }),
+  );
+}
+
+// 获取拆除工程特殊地区施工增加费费率详情
+export const getDemolitionSpecialAreaConstructionRate= (rateFileId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/GetDemolitionSpecialAreaConstructionRate`, { method: 'GET', params: { rateFileId } }),
+  );
+}
+
+// 获取拆除工程冬雨季施工增加费费率详情
+export const getDemolitionWinterConstructionRate= ( rateFileId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/GetDemolitionWinterConstructionRate`, { method: 'GET', params: { rateFileId } }),
+  );
+}
+
 // 下载拆除模板
 export const downloadDemolitionTemplate= () => {
   return request(`${baseUrl.tecEco1}/RateTable/DownloadDemolitionTemplate`, { method: 'GET', responseType: "blob"});

@@ -23,7 +23,7 @@ interface Params {
 
 const CommonRateInfomation: React.FC = () => {
   const [activeValue, setActiveValue] = useState<ListData>({ value: "", text: "" });
-
+  
   const [importVisibel, setImportVisibel] = useState<boolean>(false);
 
   const [fileList, setFileList] = useState<File[]>([])
@@ -47,6 +47,7 @@ const CommonRateInfomation: React.FC = () => {
       }
     }
   )
+
   useMount(() => {
     if((params as Params).id){
       listDataRun((params as Params).id)
@@ -61,7 +62,7 @@ const CommonRateInfomation: React.FC = () => {
     return (
       <div
         className={`${styles.listElementItem} ${item.value === activeValue.value ? styles.listActive : ""}`}
-        key={item.value}
+        key={item.value + String((params as Params).isDemolition)}
         onClick={() => setActiveValue(item)}
       >
         {item.text}
@@ -135,7 +136,7 @@ const CommonRateInfomation: React.FC = () => {
           </div>
           <div className={styles.containerRight}>
             <div className={styles.body}>
-              <CommonRateTable id={activeValue.value} type={getTypeByText(activeValue.text)} />
+              <CommonRateTable rateFileId={(params as Params).id} id={activeValue.value} type={activeValue.value} demolition={(params as Params).isDemolition}/>
             </div>
           </div>
         </div>

@@ -1,12 +1,12 @@
 import commonLess from '../common.less'
 
-interface EasyTableProps {
+interface DeEasyTableProps {
   head: React.ReactNode;
   data: any[];
   type?: React.ReactNode;
 }
 
-const EasyTable: React.FC<EasyTableProps> = ({head, data, type}) => {
+const DeEasyTable: React.FC<DeEasyTableProps> = ({head, data, type}) => {
   
   const foot = () => {
     if(type === 1) {
@@ -42,4 +42,4 @@ const EasyTable: React.FC<EasyTableProps> = ({head, data, type}) => {
   );
 }
 
-export default EasyTable;
+export default DeEasyTable;
