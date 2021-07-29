@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
+import type { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
 import GeneralTable from '@/components/general-table';
@@ -148,7 +148,7 @@ const ProjectList: React.FC = () => {
     }
   };
 
-  //添加
+  // 添加
   const addEvent = () => {
     form.resetFields();
     setModalType('add');
@@ -185,7 +185,7 @@ const ProjectList: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const id = tableSelectRows[0].id;
+    const {id} = tableSelectRows[0];
     await deleteRateTable(id);
     refresh();
     message.success('删除成功');
@@ -246,7 +246,7 @@ const ProjectList: React.FC = () => {
   const onModalOkClick = async () => {
     const { id } = tableSelectRows[0];
     const values = await form.validateFields();
-    
+
     if (modalType === 'add') {
       await addRateTable({ ...values, }).then(() => {
         message.success('添加成功')
@@ -257,7 +257,7 @@ const ProjectList: React.FC = () => {
 
     } else if (modalType === 'edit') {
       console.log(values);
-      
+
       await editRateTable({ ...values, id }).then(() => {
         message.success('编辑成功')
         refresh();
