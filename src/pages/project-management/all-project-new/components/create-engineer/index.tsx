@@ -18,7 +18,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
   const [areaId, setAreaId] = useState<string>('');
   const [company, setCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
-  const [copyFlag, setCopyFlag] = useState<number>(0);
+  const [copyFlag, setCopyFlag] = useState<number[]>([0]);
 
   const tabChangeEvent = (activeKey: string) => {
     setActiveProjectKey(activeKey);
@@ -32,6 +32,9 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
     }
     if (currentIndex > 0) {
       setActiveProjectKey(String(currentIndex - 1));
+      const copyData = [...copyFlag];
+      copyData.splice(currentIndex, 1);
+      setCopyFlag(copyData);
       return;
     }
   };
@@ -43,14 +46,15 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
 
     const copyFormData = projects[activeProjectKey];
 
-    console.log(projects, '项目');
-    console.log(copyFormData, '当前拷贝');
+    if (copyFormData.dataSourceType === 0) {
+      setCopyFlag([...copyFlag, 0]);
+    }
 
     if (copyFormData.dataSourceType === 1) {
-      setCopyFlag(1);
+      setCopyFlag([...copyFlag, 1]);
     }
     if (copyFormData.dataSourceType === 2) {
-      setCopyFlag(2);
+      setCopyFlag([...copyFlag, 2]);
     }
 
     form.setFieldsValue({ projects: [...projects, copyFormData] });
@@ -87,6 +91,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                 className="mr7"
                 onClick={() => {
                   setActiveProjectKey(String(fields.length));
+                  setCopyFlag([...copyFlag, 0]);
                   add();
                 }}
               >
@@ -121,6 +126,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                     company={company}
                     field={field}
                     copyFlag={copyFlag}
+                    index={key}
                     setCopyFlag={setCopyFlag}
                     form={form}
                   />

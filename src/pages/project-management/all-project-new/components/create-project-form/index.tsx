@@ -4,7 +4,7 @@ import { getProjectInfo } from '@/services/project-management/all-project';
 import { useGetProjectEnum } from '@/utils/hooks';
 import { useMount, useRequest } from 'ahooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNumber } from 'lodash';
 import moment, { Moment } from 'moment';
 import React, { memo, useEffect, useState } from 'react';
 
@@ -20,8 +20,9 @@ interface CreateProjectFormProps {
   form?: any;
   engineerStart?: Moment;
   engineerEnd?: Moment;
-  copyFlag?: number;
-  setCopyFlag?: (value: number) => void;
+  copyFlag?: number[];
+  setCopyFlag?: (value: number[]) => void;
+  index?: number;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
@@ -36,6 +37,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     engineerStart,
     engineerEnd,
     copyFlag,
+    index,
     setCopyFlag,
   } = props;
 
@@ -653,7 +655,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                   }
                   setDataSourceType(value);
-                  setCopyFlag?.(value);
+                  if (isNumber(index)) {
+                    const copyData = [...copyFlag!];
+                    console.log(index)
+                    copyData.splice(index!, 1, value);
+                    console.log(copyData)
+                    setCopyFlag?.(copyData);
+                  }
                 }}
               />
             ) : (
@@ -671,7 +679,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
 
       <div className="flex">
         <div className="flex1 flowHidden">
-          {dataSourceType === 2 || copyFlag === 2 ? (
+          {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
               label="交底范围(米)"
               // initialValue={'50'}
@@ -688,7 +696,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 value={disRangeValue}
               />
             </CyFormItem>
-          ) : dataSourceType === 1 || copyFlag === 1 ? (
+          ) : dataSourceType === 1 || (copyFlag && copyFlag[index] && copyFlag[index] === 1) ? (
             <CyFormItem
               label="交底范围(米)"
               // initialValue={'50'}
@@ -747,7 +755,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           )}
         </div>
         <div className="flex1 flowHidden">
-          {dataSourceType === 2 || copyFlag === 2 ? (
+          {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
               label="桩位范围(米)"
               // initialValue={'50'}
@@ -764,7 +772,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 style={{ width: '100%' }}
               />
             </CyFormItem>
-          ) : dataSourceType === 1 || copyFlag === 1 ? (
+          ) : dataSourceType === 1 || (copyFlag && copyFlag[index] && copyFlag[index] === 1) ? (
             <CyFormItem
               label="桩位范围(米)"
               // initialValue={'50'}
