@@ -1,45 +1,59 @@
-import commonLess from '../common.less'
-
-interface DeEasyTableProps {
+import commonLess from '../common.less';
+import classNames from 'classnames';
+interface DeSpecialTableProps {
   head: React.ReactNode;
   data: any[];
-  type?: React.ReactNode;
 }
 
-const DeEasyTable: React.FC<DeEasyTableProps> = ({head, data, type}) => {
-  
-  const foot = () => {
-    if(type === 1) {
-      return (
-        <tr><td colSpan={3}><pre>
-          注：架空线路工程中仅大跨越工程可计取此项费用。
-        </pre></td></tr>
-      )
-    }
-    return null
-  }
+const DeSpecialTable: React.FC<DeSpecialTableProps> = ({head, data}) => {
+//   coldCostRate: 6.18
+// demolitionMajor: 6
+// demolitionMajorText: "通信线路拆除"
+// highCostRate: 8.64
+// hotCostRate: 5.48
+  // const getData = (type: number, key: string) => data.find((item) => item.costRateType === type)?.[key]
   return (
-    <table className={commonLess.table}>
-      <thead>
-        <tr>
-          <th colSpan={3}>{head}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>工程类别</td>
-          <td>建筑工程</td>
-          <td>安装工程</td>
-        </tr>
-        <tr>
-          <td>费率(%)</td>
-          <td>{data?.find((item) => item.costRateType === 1)?.costRate ?? ""}</td>
-          <td>{data?.find((item) => item.costRateType === 2)?.costRate ?? ""}</td>
-        </tr>
-        {foot()}
-      </tbody>
-    </table>
+    <>
+      <table className={classNames(commonLess.table)}>
+        <thead>
+          <tr>
+            <th colSpan={4}>{head}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>专业</td>
+            <td>高海拔地区</td>
+            <td>高纬度严寒地区</td>
+            <td>酷热地区</td>
+          </tr>
+          {
+            data.map((item) => {
+              return (
+                <tr key={item.demolitionMajorText}>
+                <td>{item?.demolitionMajorText}</td>
+                <td>{item?.highCostRate}</td>
+                <td>{item?.coldCostRate}</td>
+                <td>{item?.hotCostRate}</td>
+                </tr>
+              )
+            })
+          }
+          <tr>
+            <td colSpan={7}>
+            <pre>
+              注1：高海拔地区指平均海拔在3000m以上的地区。
+              <br />
+              注2：高纬度严寒地区指北纬45。以北地区。
+              <br />
+              注3：酷热地区指面积在1万平方公里以上的沙漠地区，以及新疆吐鲁番地区。
+            </pre>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </>
   );
 }
 
-export default DeEasyTable;
+export default DeSpecialTable;

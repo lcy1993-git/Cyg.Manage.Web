@@ -6,7 +6,8 @@ import {
   getDesignRate,
   getSpecialAreaConstructionRate,
   getDemolitionEasyRate,
-  getDemolitionWinterConstructionRate
+  getDemolitionWinterConstructionRate,
+  getDemolitionSpecialAreaConstructionRate
 
 } from '@/services/technology-economic/common-rate';
 
@@ -30,7 +31,7 @@ export const getApiByType = (rateTableType: string, rateFileId: string, demoliti
        * 拆除特殊地区施工
        */
       case "54":
-        return () => getDemolitionWinterConstructionRate(rateFileId)
+        return () => getDemolitionSpecialAreaConstructionRate(rateFileId)
         break;
       default:
         /**
