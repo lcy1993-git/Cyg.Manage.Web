@@ -1,6 +1,11 @@
 import Loadable from 'react-loadable';
+// @ts-ignore
 import React from 'react';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
+import CostTemplate from './cost-template';
+import TotalTable from './total-table';
+import UsualQuotaTable from './usual-quota-table';
+import UsualQuotaTableDetail from './usual-quota-table/components/detail';
 
 const QuotaLibrary = Loadable({
   loader: () => import('@/pages/technology-economic/quota-library'),
@@ -113,5 +118,25 @@ export default [
     title: '调整文件详情',
     path: '/technology-economic/adjustment-file-details',
     component: <AdjustmentFileDetails />,
+  },
+  {
+    title: '费用模板',
+    path: '/technology-economic/cost-template',
+    component: <CostTemplate />,
+  },
+  {
+    title: '总算表',
+    path: '/technology-economic/total-table',
+    component: <TotalTable />,
+  },
+  {
+    title: '定额常用表',
+    path: '/technology-economic/usual-quota-table',
+    component: <UsualQuotaTable />,
+  },
+  {
+    title: '定额常用表详情',
+    path: '/technology-economic/usual-quota-table/detail',
+    component: <UsualQuotaTableDetail />,
   },
 ];
