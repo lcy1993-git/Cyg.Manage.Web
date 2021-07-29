@@ -99,8 +99,9 @@ const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCat
     }else if(category === 2) {
       return getValueByName('company_name', jsonData)
     }else if(category === 51) {
-      console.dir(jsonData);
       return getValueByName('company_name', jsonData)?.Text
+    }else if(category === 4) {  // 安排部组成员这里应该为空
+      return false
     }
     return getCompanyNameByShare(jsonData) || getCompanyGroupName(jsonData)
   }, [content])

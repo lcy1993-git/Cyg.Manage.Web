@@ -6,7 +6,6 @@ interface TemporaryTableProps {
 }
 
 const TemporaryTable: React.FC<TemporaryTableProps> = ({head, data}) => {
-  console.log(data);
   const getDom = (type, city) => {
     const typeData = data.find((item) => item.costRateType === type);
     return typeData ? typeData?.[`level_${city}`] : ""

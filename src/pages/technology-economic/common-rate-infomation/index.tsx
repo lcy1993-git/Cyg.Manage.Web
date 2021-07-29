@@ -5,7 +5,7 @@ import WrapperComponent from '@/components/page-common-wrap';
 import CommonTitle from '@/components/common-title';
 import { getRateTypeList } from '@/services/technology-economic/common-rate'
 import CommonRateTable from './components/common-rate-table';
-import { downloadTemplate, importRateTable } from '@/services/technology-economic/common-rate';
+import { downloadTemplate, downloadDemolitionTemplate, importRateTable } from '@/services/technology-economic/common-rate';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { getTypeByText } from '../utils';
 import styles from './index.less';
@@ -16,13 +16,29 @@ interface ListData {
   text: string;
 }
 
+interface Params {
+  id: string;
+  isDemolition: boolean;
+}
+
 const CommonRateInfomation: React.FC = () => {
   const [activeValue, setActiveValue] = useState<ListData>({ value: "", text: "" });
-
+  
   const [importVisibel, setImportVisibel] = useState<boolean>(false);
 
   const [fileList, setFileList] = useState<File[]>([])
 
+  const params = window.location.search.split("?")[1].split("&").reduce((pre, val) => {
+    const unit = val.split("=");
+    if(unit[0] === "isDemolition") {
+      pre[unit[0]] = Boolean(unit[1]);
+    }else{
+      pre[unit[0]] = unit[1];
+    }
+
+    return pre;
+  }, {})
+  
   const { data: listData = [], run: listDataRun, loading: preLoading } = useRequest<ListData[]>(getRateTypeList,
     {
       manual: true,
@@ -33,7 +49,11 @@ const CommonRateInfomation: React.FC = () => {
   )
 
   useMount(() => {
-    listDataRun()
+    if((params as Params).id){
+      listDataRun((params as Params).id)
+    }else{
+      message.error("当前费率详情的rateFileId的值为空")
+    }
   })
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
@@ -42,7 +62,7 @@ const CommonRateInfomation: React.FC = () => {
     return (
       <div
         className={`${styles.listElementItem} ${item.value === activeValue.value ? styles.listActive : ""}`}
-        key={item.value}
+        key={item.value + String((params as Params).isDemolition)}
         onClick={() => setActiveValue(item)}
       >
         {item.text}
@@ -54,7 +74,7 @@ const CommonRateInfomation: React.FC = () => {
     if (fileList.length === 0) {
       message.error('当前未上传文件');
     }else{
-      importRateTable(fileList[0]).then(() => {
+      importRateTable((params as Params).id, fileList[0]).then(() => {
         message.success('上传成功');
         setImportVisibel(false);
       });
@@ -62,7 +82,14 @@ const CommonRateInfomation: React.FC = () => {
   }
 
   const downLoad = async () => {
-    const res = await downloadTemplate();
+    let res;
+    
+    if((params as Params).isDemolition) {
+      res = await downloadDemolitionTemplate()
+    }else{
+      res = await downloadTemplate() 
+
+    }
     let blob = new Blob([res], {
       type: 'application/xlsx',
     });
@@ -92,7 +119,7 @@ const CommonRateInfomation: React.FC = () => {
           </div>
           <div className={styles.importButton}>
             {
-              buttonJurisdictionArray?.includes('quotainfo-import') &&
+              !buttonJurisdictionArray?.includes('quotainfo-import') &&
               <Button type="primary" onClick={() => setImportVisibel(true)}>导入费率</Button>
             }
           </div>
@@ -109,7 +136,7 @@ const CommonRateInfomation: React.FC = () => {
           </div>
           <div className={styles.containerRight}>
             <div className={styles.body}>
-              <CommonRateTable id={activeValue.value} type={getTypeByText(activeValue.text)} />
+              <CommonRateTable rateFileId={(params as Params).id} id={activeValue.value} type={activeValue.value} demolition={(params as Params).isDemolition}/>
             </div>
           </div>
         </div>

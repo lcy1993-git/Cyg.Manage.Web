@@ -54,10 +54,11 @@ const CompanyUser: React.FC = () => {
   const [batchAddFormVisible, setBatchAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [resetFormVisible, setResetFormVisible] = useState<boolean>(false);
-
+  const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false);
   const [addForm] = Form.useForm();
   const [batchAddForm] = Form.useForm();
   const [editForm] = Form.useForm();
+
   const { data, run, loading } = useRequest(getCompanyUserDetail, {
     manual: true,
   });
@@ -78,6 +79,8 @@ const CompanyUser: React.FC = () => {
   }, [accreditData]);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  //@ts-ignore
+  const { id } = JSON.parse(window.localStorage.getItem('userInfo'));
 
   const { setWorkHandoverFlag: setWorkHandoverFlag, workHandoverFlag } = useLayoutStore();
 
@@ -97,13 +100,13 @@ const CompanyUser: React.FC = () => {
           </Button>
         )}
         {buttonJurisdictionArray?.includes('company-user-edit') && (
-          <Button className="mr7" onClick={() => editEvent()}>
+          <Button className="mr7" onClick={() => editEvent()} disabled={isCurrentUser}>
             <EditOutlined />
             编辑
           </Button>
         )}
         {buttonJurisdictionArray?.includes('company-user-reset-password') && (
-          <Button className="mr7" onClick={() => resetEvent()}>
+          <Button className="mr7" onClick={() => resetEvent()} disabled={isCurrentUser}>
             <ReloadOutlined />
             重置密码
           </Button>
@@ -150,6 +153,12 @@ const CompanyUser: React.FC = () => {
   const resetEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择需要重置密码的用户');
+      return;
+    }
+
+    const userId = tableSelectRows[0].id;
+    if (userId === id) {
+      setIsCurrentUser(true);
       return;
     }
     setResetFormVisible(true);
@@ -212,6 +221,12 @@ const CompanyUser: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
+    const selectId = tableSelectRows[0].id;
+
+    if (selectId === id) {
+      setIsCurrentUser(true);
+      return;
+    }
 
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
@@ -220,8 +235,6 @@ const CompanyUser: React.FC = () => {
     setEditFormVisible(true);
 
     const ManageUserData = await run(editDataId);
-
-    console.log(ManageUserData);
 
     editForm.setFieldsValue({
       ...ManageUserData,
@@ -315,7 +328,8 @@ const CompanyUser: React.FC = () => {
         return (
           <>
             {buttonJurisdictionArray?.includes('company-user-start-using') &&
-              (record.userStatus === 1 ? (
+            !record.isCurrentUser ? (
+              record.userStatus === 1 ? (
                 <>
                   <Switch key={status} defaultChecked onChange={() => updateStatus(record.id)} />
                   <span className="formSwitchOpenTip">启用</span>
@@ -330,7 +344,12 @@ const CompanyUser: React.FC = () => {
                   />
                   <span className="formSwitchCloseTip">禁用</span>
                 </>
-              ))}
+              )
+            ) : record.userStatus === 1 ? (
+              <span>启用</span>
+            ) : (
+              <span>禁用</span>
+            )}
             {!buttonJurisdictionArray?.includes('company-user-start-using') &&
               (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
           </>
@@ -458,7 +477,10 @@ const CompanyUser: React.FC = () => {
             ref={tableRef}
             buttonRightContentSlot={rightButton}
             buttonLeftContentSlot={leftSearch}
-            getSelectData={(data) => setTableSelectRows(data)}
+            getSelectData={(data) => {
+              setIsCurrentUser(false);
+              setTableSelectRows(data);
+            }}
             tableTitle="公司用户"
             url="/CompanyUser/GetPagedList"
             columns={columns}

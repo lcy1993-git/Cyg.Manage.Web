@@ -30,7 +30,8 @@ const WorkHandover: React.FC = () => {
   const [groupIds, setGroupIds] = useState<string[]>([]);
   const [isFresh, setIsFresh] = useState<boolean>(false);
   const [engineerIds, setEngineerIds] = useState<string[]>([]);
-  console.log(engineerIds);
+  //交接完成显示flag
+  const [doneFlag, setDoneFlag] = useState<boolean>(false);
 
   const [projectIds, setProjectIds] = useState<string[]>([]);
   const [currentMissionTabKey, setCurrentMissionTabKey] = useState<string>('prospect');
@@ -85,6 +86,7 @@ const WorkHandover: React.FC = () => {
       receiveUserId: receiverId,
     });
     setIsFresh(true);
+    setDoneFlag(true);
     setReceiverId(undefined);
     message.success('操作成功');
   };
@@ -118,6 +120,7 @@ const WorkHandover: React.FC = () => {
       receiveUserId: receiverId,
     });
     setIsFresh(true);
+    setDoneFlag(true);
     setReceiverId(undefined);
     message.success('交接成功');
   };
@@ -151,6 +154,7 @@ const WorkHandover: React.FC = () => {
       taskCategory: 1,
     });
     setIsFresh(true);
+    setDoneFlag(true);
     setReceiverId(undefined);
     message.success('交接成功');
   };
@@ -183,6 +187,7 @@ const WorkHandover: React.FC = () => {
       taskCategory: 2,
     });
     setIsFresh(true);
+    setDoneFlag(true);
     setReceiverId(undefined);
     message.success('交接成功');
   };
@@ -218,6 +223,7 @@ const WorkHandover: React.FC = () => {
                   setReceiverName={setReceiverName}
                   setEngineerIds={setEngineerIds}
                   getEngineerData={setEngineerData}
+                  doneFlag={doneFlag}
                 />
               </TabPane>
               <TabPane tab="作业任务" key={'mission'}>
@@ -231,6 +237,7 @@ const WorkHandover: React.FC = () => {
                   setReceiverName={setReceiverName}
                   getEngineerData={setEngineerData}
                   getProjectIds={setProjectIds}
+                  doneFlag={doneFlag}
                 />
               </TabPane>
               <TabPane tab="部组身份" key={'identity'}>
@@ -242,6 +249,7 @@ const WorkHandover: React.FC = () => {
                   setIsFresh={setIsFresh}
                   receiverId={receiverId}
                   setReceiverName={setReceiverName}
+                  doneFlag={doneFlag}
                 />
               </TabPane>
               <TabPane tab="其他" key="others">
@@ -266,13 +274,7 @@ const WorkHandover: React.FC = () => {
             <Button
               disabled={receiverId && engineerIds ? false : true}
               type="primary"
-              onClick={
-                engineerData && engineerData.length > 0
-                  ? manageConfirm
-                  : () => {
-                      message.info('暂无可交接的条目');
-                    }
-              }
+              onClick={manageConfirm}
             >
               <span>交接</span>
             </Button>

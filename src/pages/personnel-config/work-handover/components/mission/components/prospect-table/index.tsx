@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Checkbox } from 'antd'
+import { Checkbox } from 'antd';
 import Recevier from '../../../recevier/index';
 import EngineerTableList from '../../../engineer-table-list/index';
 
@@ -9,6 +9,7 @@ interface ProsepectTableParams {
   setReceiverName?: Dispatch<SetStateAction<string>>;
   getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
   isFresh?: boolean;
+  doneFlag?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
   getEngineerData?: Dispatch<SetStateAction<any[]>>;
   getProjectIds?: Dispatch<SetStateAction<string[]>>;
@@ -22,6 +23,7 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
     setReceiverName,
     getEngineerData,
     isFresh,
+    doneFlag,
     setIsFresh,
     getProjectIds,
   } = props;
@@ -35,19 +37,28 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
    *  1 表示取消全选
    *  2 表示全选
    */
-  const [emitAll, setEmitAll] = useState<{flag: boolean, state: number}>({flag: false, state: 0});
+  const [emitAll, setEmitAll] = useState<{ flag: boolean; state: number }>({
+    flag: false,
+    state: 0,
+  });
 
   const onAllChange = () => {
     setEmitAll({
       flag: !emitAll?.flag,
-      state: !checkAllisChecked || checkAllisIndeterminate ? 2 : 1
-    })
-  }
+      state: !checkAllisChecked || checkAllisIndeterminate ? 2 : 1,
+    });
+  };
 
   return (
     <>
       <div style={{ padding: '20px' }}>
-      <Checkbox checked={checkAllisChecked} indeterminate={checkAllisIndeterminate} onChange={onAllChange}>全选</Checkbox>
+        <Checkbox
+          checked={checkAllisChecked}
+          indeterminate={checkAllisIndeterminate}
+          onChange={onAllChange}
+        >
+          全选
+        </Checkbox>
         <Recevier
           userId={userId}
           clientCategory={4}
@@ -59,6 +70,7 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
       </div>
       {/* <div> */}
       <EngineerTableList
+        doneFlag={doneFlag}
         fieldFlag={false}
         checkboxSet={true}
         getEngineerData={getEngineerData}
