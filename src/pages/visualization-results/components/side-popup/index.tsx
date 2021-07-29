@@ -71,7 +71,7 @@ const materiaColumns = [
     key: 'itemNumber',
     ellipsis: true,
     render(v: number){
-      return String(v)
+      return v ? String(v) : ""
     }
   },
 
@@ -82,7 +82,7 @@ const materiaColumns = [
     key: 'unitPrice',
     ellipsis: true,
     render(v: number){
-      return String(v)
+      return v ? String(v) : ""
     }
   },
   {
@@ -92,7 +92,7 @@ const materiaColumns = [
     key: 'pieceWeight',
     ellipsis: true,
     render(v: number){
-      return String(v)
+      return v ? String(v) : ""
     }
   },
   {

@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { request, history } from 'umi';
 import tokenRequest from '@/utils/request';
 import { requestBaseUrl } from '../../public/config/request';
-import { RequestDataType, RequestDataCommonType } from './common.d';
+import type { RequestDataType, RequestDataCommonType } from './common.d';
 import { isArray } from 'lodash';
 
 const { NODE_ENV } = process.env;
@@ -181,6 +181,7 @@ export const commonUpload = (
   files: any[],
   name: string = 'file',
   requestSource: 'project' | 'resource' | 'upload',
+  extraParams?: Record<string, any>
   // postType: 'body' | 'query',
 ) => {
   const requestUrl = baseUrl[requestSource];
@@ -188,7 +189,11 @@ export const commonUpload = (
   files.forEach((item) => {
     formData.append(name, item);
   });
-
+  if (extraParams){
+    Object.keys(extraParams).map(key=>{
+    formData.append(key, extraParams?.[key]);
+    return null;
+  })}
   return cyRequest<any[]>(() =>
     tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',
@@ -230,7 +235,7 @@ export const getVersionUpdate = (params: VersionParams) => {
   return request(versionUrl, { method: 'POST', data: params });
 };
 
-//轮询验证授权
+// 轮询验证授权
 export const pollingHealth = () => {
   return cyRequest(() =>
     request(`${baseUrl.common}/Authorization/Health`, {

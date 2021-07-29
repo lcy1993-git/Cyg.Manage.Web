@@ -18,6 +18,8 @@ const getValueByName = (name: string, data: JSONData[]) => {
 const getCompanyName = (data: JSONData[], category: number) => {
   if (category === 2) { // 项目委托情况
     return getValueByName('user_company_name', data)
+  }else if(category === 51) { // 项目工作交接
+    return getValueByName('company', data)
   }
   return data?.find((item) => item.Key === 'company_name')?.Value || data?.find((item) => item.Key === 'source_company_name')?.Value || ""
 }
@@ -99,8 +101,9 @@ const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCat
     }else if(category === 2) {
       return getValueByName('company_name', jsonData)
     }else if(category === 51) {
-      console.dir(jsonData);
       return getValueByName('company_name', jsonData)?.Text
+    }else if(category === 4) {  // 安排部组成员这里应该为空
+      return false
     }
     return getCompanyNameByShare(jsonData) || getCompanyGroupName(jsonData)
   }, [content])
