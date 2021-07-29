@@ -18,6 +18,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
   const [areaId, setAreaId] = useState<string>('');
   const [company, setCompany] = useState<string>('');
   const [companyName, setCompanyName] = useState<string>('');
+  const [copyFlag, setCopyFlag] = useState<number>(0);
 
   const tabChangeEvent = (activeKey: string) => {
     setActiveProjectKey(activeKey);
@@ -40,6 +41,13 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
 
     const { projects } = formData;
     const copyFormData = projects[activeProjectKey];
+
+    if (copyFormData.dataSourceType === 1) {
+      setCopyFlag(1);
+    }
+    if (copyFormData.dataSourceType === 2) {
+      setCopyFlag(2);
+    }
 
     form.setFieldsValue({ projects: [...projects, copyFormData] });
   };
@@ -108,6 +116,8 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                     areaId={areaId}
                     company={company}
                     field={field}
+                    copyFlag={copyFlag}
+                    setCopyFlag={setCopyFlag}
                     form={form}
                   />
                 </TabPane>

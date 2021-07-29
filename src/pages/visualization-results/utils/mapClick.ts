@@ -44,7 +44,7 @@ const elementTypeEnum = {
   cable_channel: '电缆通道',
   electric_meter: '户表',
   cross_arm: '横担',
-  hole: '穿孔',
+  hole: '电缆剖面',
   user_line: '下户线',
   fault_indicator: '故障指示器',
   pull_line: '拉线',
@@ -476,6 +476,19 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           layMode: f.values_.lay_mode,
           arrangement: f.values_.arrangement
         };
+      }
+
+      if(p === '方向') {
+        let azimuth = feature.getProperties().azimuth;
+        if(azimuth){
+          if(azimuth >= -90 && azimuth < 90){
+            pJSON[p] =  '→↑';
+          } else {
+            pJSON[p] =  '←↓';
+          }
+        } else {
+          pJSON[p] =  '';
+        }
       }
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');

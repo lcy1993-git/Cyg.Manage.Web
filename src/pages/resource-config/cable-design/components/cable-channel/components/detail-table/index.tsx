@@ -38,9 +38,9 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     manual: true,
   });
 
-  useEffect(() => {
-    search();
-  }, [cableChannelId]);
+  // useEffect(() => {
+  //   search();
+  // }, [cableChannelId]);
 
   const searchComponent = () => {
     return (

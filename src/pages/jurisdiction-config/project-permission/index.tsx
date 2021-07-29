@@ -74,8 +74,8 @@ const ProjectPermission: React.FC = () => {
               <>
                 <Switch
                   checked={isChecked}
-                  onChange={() => {
-                    updateProPermissionStatus({ id: record.id, isDisable: isChecked });
+                  onChange={async () => {
+                    await updateProPermissionStatus({ id: record.id, isDisable: isChecked });
                     tableFresh();
                     message.success('状态修改成功');
                   }}

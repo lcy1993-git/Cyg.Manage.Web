@@ -88,7 +88,7 @@ const BasicData: React.FC = () => {
                 name="areaFile"
                 rules={[{ required: true, message: '请至少上传一个文件' }]}
               >
-                <FileUpLoad />
+                <FileUpLoad accept=".xlsx" />
               </CyFormItem>
             </Form>
             <div className={styles.basicPageButtonContent}>
