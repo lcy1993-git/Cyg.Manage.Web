@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin, Tooltip } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   EditOutlined,
   PlusOutlined,
@@ -18,10 +18,7 @@ import {
   deleteProPermissionItem,
 } from '@/services/jurisdiction-config/project-permission';
 import { isArray } from 'lodash';
-// import RolePermissionsForm from './components/add-edit-form';
-import CheckboxTreeTable from '@/components/checkbox-tree-table';
 import styles from './index.less';
-import UserAuthorization from '../platform-authorization/components/user-authorization';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
@@ -46,7 +43,6 @@ const ProjectPermission: React.FC = () => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-  const [apportionForm] = Form.useForm();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -228,7 +224,6 @@ const ProjectPermission: React.FC = () => {
       return;
     }
     const editData = data!;
-    console.log(editData);
 
     editForm.validateFields().then(async (values) => {
       const editItemData = permissionItem.map((item) => {
@@ -259,19 +254,19 @@ const ProjectPermission: React.FC = () => {
   const buttonElement = () => {
     return (
       <div>
-        {buttonJurisdictionArray?.includes('role-permissions-add') && (
+        {buttonJurisdictionArray?.includes('project-permissions-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         )}
-        {buttonJurisdictionArray?.includes('role-permissions-edit') && (
+        {buttonJurisdictionArray?.includes('project-permissions-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         )}
-        {buttonJurisdictionArray?.includes('role-permissions-delete') && (
+        {buttonJurisdictionArray?.includes('project-permissions-delete') && (
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -291,7 +286,7 @@ const ProjectPermission: React.FC = () => {
             分配功能模块
           </Button>
         )} */}
-        {buttonJurisdictionArray?.includes('role-permissions-authorization') && (
+        {buttonJurisdictionArray?.includes('project-permissions-authorization') && (
           <Button className="mr7" onClick={() => authorizationEvent()}>
             <i className="iconfont iconshouquan" />
             授权

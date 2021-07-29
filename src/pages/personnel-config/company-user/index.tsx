@@ -159,6 +159,7 @@ const CompanyUser: React.FC = () => {
     const userId = tableSelectRows[0].id;
     if (userId === id) {
       setIsCurrentUser(true);
+      message.error('没有对当前登录账号执行此操作的权限');
       return;
     }
     setResetFormVisible(true);
@@ -225,6 +226,7 @@ const CompanyUser: React.FC = () => {
 
     if (selectId === id) {
       setIsCurrentUser(true);
+      message.error('没有对当前登录账号执行此操作的权限');
       return;
     }
 
@@ -346,9 +348,9 @@ const CompanyUser: React.FC = () => {
                 </>
               )
             ) : record.userStatus === 1 ? (
-              <span>启用</span>
+              <span>已启用</span>
             ) : (
-              <span>禁用</span>
+              <span>已禁用</span>
             )}
             {!buttonJurisdictionArray?.includes('company-user-start-using') &&
               (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}

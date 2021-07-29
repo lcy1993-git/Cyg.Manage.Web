@@ -45,7 +45,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
       .finally(() => {
         changeFinishEvent?.();
         setUploadFileFalse();
-        setRequestLoading(false);
+        setRequestLoading(true);
       });
   };
 

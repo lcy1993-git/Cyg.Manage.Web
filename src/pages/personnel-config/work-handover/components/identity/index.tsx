@@ -130,7 +130,7 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
           url="/UserHandover/GetCompanyGroups"
           type="checkbox"
           params={{ userId: userId }}
-          emptyContent={doneFlag ? '交接完成' : '暂无可交接的内容'}
+          emptyContent={doneFlag ? '您已经交接完毕了~' : '暂无可交接的内容'}
         />
       </div>
     </>

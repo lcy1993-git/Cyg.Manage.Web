@@ -87,17 +87,23 @@ const CompanyManage: React.FC = () => {
         const isChecked = !record.isEnabled;
         return (
           <>
-            {record.isEnabled === true ? (
-              <>
-                <Switch checked={!isChecked} onChange={() => changeStateEvent(record.id, isChecked)} />
-                <span className="formSwitchOpenTip">启用</span>
-              </>
-            ) : (
-              <>
-                <Switch onChange={() => changeStateEvent(record.id, isChecked)} />
-                <span className="formSwitchCloseTip">禁用</span>
-              </>
-            )}
+            {buttonJurisdictionArray?.includes('company-manage-state') &&
+              (record.isEnabled === true ? (
+                <>
+                  <Switch
+                    checked={!isChecked}
+                    onChange={() => changeStateEvent(record.id, isChecked)}
+                  />
+                  <span className="formSwitchOpenTip">启用</span>
+                </>
+              ) : (
+                <>
+                  <Switch onChange={() => changeStateEvent(record.id, isChecked)} />
+                  <span className="formSwitchCloseTip">禁用</span>
+                </>
+              ))}
+            {!buttonJurisdictionArray?.includes('company-manage-state') &&
+              (isChecked ? <span>启用</span> : <span>禁用</span>)}
           </>
         );
       },
@@ -124,14 +130,18 @@ const CompanyManage: React.FC = () => {
   const companyManageButton = () => {
     return (
       <>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
+        {buttonJurisdictionArray?.includes('company-manage-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('company-manage-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
       </>
     );
   };
