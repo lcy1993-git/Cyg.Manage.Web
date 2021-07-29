@@ -29,7 +29,9 @@ const findItems = (resData: ResData[], name: string, isChineseName=false) => {
 export const getEnums  = (name: string, isChineseName?: boolean) => {
   const technologyEconomicEnums = localStorage.getItem('technologyEconomicEnums');
   if(technologyEconomicEnums) {
+    
     const parse = JSON.parse(technologyEconomicEnums || "");
+    
     if(typeof parse === 'object' && parse != null) {
       return findItems(parse, name, isChineseName)?.items;
     }

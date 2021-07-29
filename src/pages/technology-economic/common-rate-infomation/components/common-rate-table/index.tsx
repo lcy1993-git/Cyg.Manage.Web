@@ -10,9 +10,14 @@ import TemporaryTable from "../temporary-table";
 import BasicTable from "../basic-table";
 import DesignTable from "../design-table";
 import SpecialTable from "../special-table";
+import DeSpecialTable from "../de-special-table";
+import DeWinterTable from "../de-winter-table";
+import DeEasyTable from "../de-easy-table";
 interface CommonRateTableProps {
   id: string;
   type: string;
+  demolition: boolean;
+  rateFileId: string;
 }
 
 interface ResData {
@@ -23,48 +28,55 @@ interface ResData {
 const CommonRateTable: React.FC<CommonRateTableProps> = ({
   id,
   type,
+  demolition,
+  rateFileId
 }) => {
-  console.log(type);
   
-  const {data, run, loading} = useRequest<ResData>(getApiByType(type), {manual: true})
+  const {data, run, loading} = useRequest<ResData>(getApiByType(type, rateFileId, demolition), {manual: true})
   const props = {
     head: data?.name ?? "",
     data: data?.items ?? [],
     type
   }
-
-  console.log(props);
   
   const tableDom = () => {
-    console.log(typeof type);
-    
-    switch (String(type)) {
-      case "1":
-      case "2":
-      case "3":
-      case "4":
-      case "5":
-        return <EasyTable {...props}/>;
-      case "51":
-        return <WinterTable {...props} />
-      case "52":
-        return <TemporaryTable {...props} />
-      case "53":
-        return <BasicTable {...props} />
-      case "54":
-        return <SpecialTable {...props} />
-      case "55":
-        return <DesignTable {...props} />
-      default:
-        return <Empty />
+    if(demolition){
+      switch (String(type)) {
+        case "51":
+          return <DeWinterTable {...props}/>
+        
+        case "54":
+          return <DeSpecialTable {...props}/>
+        
+        default:
+          return <DeEasyTable {...props}/>
+      }
+    }else{
+
+      switch (String(type)) {
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+          return <EasyTable {...props}/>;
+        case "51":
+          return <WinterTable {...props} />
+        case "52":
+          return <TemporaryTable {...props} />
+        case "53":
+          return <BasicTable {...props} />
+        case "54":
+          return <SpecialTable {...props} />
+        case "55":
+          return <DesignTable {...props} />
+      }
     }
+    return <Empty />
   }
 
   useEffect(() => {
-    
     type && id && run(id);
-    console.log('run');
-    
   }, [type])
 
 
