@@ -7,7 +7,6 @@ interface DeEasyTableProps {
 }
 
 const DeWinterTable: React.FC<DeEasyTableProps> = ({head, data}) => {
-  
 
   return (
     <table className={commonLess.table}>
@@ -18,16 +17,27 @@ const DeWinterTable: React.FC<DeEasyTableProps> = ({head, data}) => {
       </thead>
       <tbody>
         <tr>
-          <td>工程类别</td>
-          <td>建筑工程</td>
-          <td>安装工程</td>
+          <td>专业</td>
+          <td>I</td>
+          <td>II</td>
+          <td>III</td>
+          <td>IV</td>
+          <td>V</td>
         </tr>
-        <tr>
-          <td>费率(%)</td>
-          <td>{data?.find((item) => item.costRateType === 1)?.costRate ?? ""}</td>
-          <td>{data?.find((item) => item.costRateType === 2)?.costRate ?? ""}</td>
-        </tr>
-
+        {
+          data.map((item) => {
+            return (
+              <tr key={item.demolitionMajor}>
+                <td>{item?.demolitionMajorText}</td>
+                <td>{item?.costRateLevel_1}</td>
+                <td>{item?.costRateLevel_2}</td>
+                <td>{item?.costRateLevel_3}</td>
+                <td>{item?.costRateLevel_4}</td>
+                <td>{item?.costRateLevel_5}</td>
+              </tr>
+            )
+          })
+        }
       </tbody>
     </table>
   );
