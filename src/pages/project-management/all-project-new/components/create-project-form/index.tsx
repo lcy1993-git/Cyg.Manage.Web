@@ -650,7 +650,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 placeholder="请选择"
                 onChange={(value: any) => {
                   if (value === 2 || value === 1) {
-                    if (!field) {
+                    if (!field.fieldKey) {
                       form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                     } else {
                       const projectsInfo = form.getFieldValue('projects');
