@@ -201,47 +201,39 @@ const PricingTemplates: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('pricing-tem-add') && (
-          <Button type="primary" className="mr7" onClick={() => addEvent()}>
-            <PlusOutlined />
-            添加
-          </Button>
-        )}
-        {buttonJurisdictionArray?.includes('pricing-tem-edit') && (
-          <Button className="mr7" onClick={() => editEvent()}>
-            {/* <EditOutlined />
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+        <Button className="mr7" onClick={() => editEvent()}>
+          {/* <EditOutlined />
             编辑 */}
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <ImageIcon width={16} height={16} imgUrl="edit.png" />
-              <div style={{ marginLeft: '5px' }}>编辑</div>
-            </div>
-          </Button>
-        )}
-        {buttonJurisdictionArray?.includes('pricing-tem-del') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              {/* <DeleteOutlined />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="edit.png" />
+            <div style={{ marginLeft: '5px' }}>编辑</div>
+          </div>
+        </Button>
+        <Popconfirm
+          title="您确定要删除该条数据?"
+          onConfirm={sureDeleteData}
+          okText="确认"
+          cancelText="取消"
+        >
+          <Button className="mr7">
+            {/* <DeleteOutlined />
               删除 */}
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <ImageIcon width={16} height={16} imgUrl="delete.png" />
-                <div style={{ marginLeft: '5px' }}>删除</div>
-              </div>
-            </Button>
-          </Popconfirm>
-        )}
-        {buttonJurisdictionArray?.includes('pricing-to-project') && (
-          <Button className="mr7" onClick={() => engineeringCatalog()}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <ImageIcon width={16} height={16} imgUrl="billOfQuantities.png" />
-              <div style={{ marginLeft: '5px' }}>工程量目录</div>
+              <ImageIcon width={16} height={16} imgUrl="delete.png" />
+              <div style={{ marginLeft: '5px' }}>删除</div>
             </div>
           </Button>
-        )}
+        </Popconfirm>
+        <Button className="mr7" onClick={() => engineeringCatalog()}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="billOfQuantities.png" />
+            <div style={{ marginLeft: '5px' }}>工程量目录</div>
+          </div>
+        </Button>
         <Button className="mr7" onClick={() => commonRates()}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <ImageIcon width={16} height={16} imgUrl="woodMachineTemplate.png" />

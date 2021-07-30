@@ -32,6 +32,7 @@ interface TreeTableProps<T> extends TableProps<T> {
   params?: object;
   showButtonContent?: boolean;
   emptyContent?: string;
+  imgSrc?: 'empty' | 'finish';
 }
 
 const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<any>) => {
@@ -48,6 +49,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
     type = 'radio',
     getSelectData,
     params,
+    imgSrc,
     ...rest
   } = props;
 
@@ -151,7 +153,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
               onExpand: expandEvent,
             }}
             locale={{
-              emptyText: <EmptyTip description={emptyContent} />,
+              emptyText: <EmptyTip description={emptyContent} imgSrc={imgSrc} />,
             }}
             size="small"
             rowKey="id"

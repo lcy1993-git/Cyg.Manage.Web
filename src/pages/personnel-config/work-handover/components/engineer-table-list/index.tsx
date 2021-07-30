@@ -167,7 +167,6 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
       },
     },
   );
-  console.log(isFresh, '1');
 
   useEffect(() => {
     if (isFresh) {
@@ -688,7 +687,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
             projectTable
           ) : handleTableData?.length === 0 && doneFlag ? (
             <div style={{ margin: '100px', color: '#8C8C8C' }}>
-              <EmptyTip className="pt20" description="您已经交接完毕了~" />
+              <EmptyTip className="pt20" description="您已经交接完毕了~" imgSrc="finish" />
             </div>
           ) : (
             <div style={{ margin: '100px', color: '#8C8C8C' }}>
