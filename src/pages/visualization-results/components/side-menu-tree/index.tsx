@@ -105,6 +105,7 @@ type KeyType =
     };
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
+  
   // 项目详情
   const [projectModalActiveId, setProjectModalActiveId] = useState<string>('');
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
@@ -414,6 +415,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     },
   });
 
+  const getLayerstype = () => {
+    if(props.controlLayersProps.designLayerVisible && !props.controlLayersProps.dismantleLayerVisible){
+      return 1
+    }else if(!props.controlLayersProps.designLayerVisible && props.controlLayersProps.dismantleLayerVisible){
+      return 2
+    }
+    return 0
+  }
+
   const handlerAreaButtonCheck = (index: number, buttonActive: number) => {
     if (index === buttonActive) {
       setButtonActive(-1);
@@ -694,6 +704,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         visible={materialModalVisible}
         onCancel={() => setMaterialModalVisible(false)}
         onOk={() => setMaterialModalVisible(false)}
+        layerstype={getLayerstype()}
       />
       <div>
         {sidePopupHeight && <SidePopup {...props.sidePopupProps} height={sidePopupHeight} />}
