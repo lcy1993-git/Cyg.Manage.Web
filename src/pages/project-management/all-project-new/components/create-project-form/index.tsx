@@ -94,8 +94,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     }
   };
 
-  console.log(copyFlag, '当前dataSourType');
-
   return (
     <>
       <div className="flex">
@@ -652,7 +650,18 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 placeholder="请选择"
                 onChange={(value: any) => {
                   if (value === 2 || value === 1) {
-                    form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
+                    if (!field) {
+                      form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
+                    } else {
+                      const projectsInfo = form.getFieldValue('projects');
+                      const newProjectsInfo = projectsInfo.map((item: any, ind: number) => {
+                        if (ind === index) {
+                          return { ...item, disclosureRange: undefined, pileRange: undefined };
+                        }
+                        return item;
+                      });
+                      form.setFieldsValue({ projects: newProjectsInfo });
+                    }
                   }
                   setDataSourceType(value);
                   if (isNumber(index)) {
