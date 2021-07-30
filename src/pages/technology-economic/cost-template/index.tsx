@@ -21,9 +21,12 @@ const CostTemplate: React.FC<Props> = () => {
   const [currentTabId,setCurrentTabId] = useState<string>('')
   const childRef = useRef<HTMLDivElement>(null);
   const getDirectory = async () => {
-    const res = await getCostTableDirectory('1408002043054866432')
+    const id = window.location.search.slice(4);
+    const res = await getCostTableDirectory(id);
     // @ts-ignore
-    setMenus(res)
+    setMenus(res);
+    console.log(res);
+    
   }
   const onChange = (key: string) => {
     setCurrentTabId(key)
@@ -38,7 +41,7 @@ const CostTemplate: React.FC<Props> = () => {
   }, [])
   useEffect(()=>{
     const parent = menus.filter(i=>{
-        return i.parentId === '0'
+        return i.parentId === null
     })
     if (parent.length !==0){
       setCurrentTabId(parent[0].id)
