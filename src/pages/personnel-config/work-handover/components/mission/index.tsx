@@ -14,7 +14,9 @@ interface MissionParams {
   getProjectIds?: Dispatch<SetStateAction<string[]>>;
   getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
   isFresh?: boolean;
+  doneFlag?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
+  setDoneFlag?: Dispatch<SetStateAction<boolean>>;
   changeTabKey?: Dispatch<SetStateAction<string>>;
   getEngineerData?: Dispatch<SetStateAction<any[]>>;
 }
@@ -27,7 +29,9 @@ const MissionTab: React.FC<MissionParams> = (props) => {
     getProjectIds,
     changeTabKey,
     isFresh,
+    doneFlag,
     setIsFresh,
+    setDoneFlag,
     setReceiverName,
   } = props;
 
@@ -39,11 +43,14 @@ const MissionTab: React.FC<MissionParams> = (props) => {
           changeTabKey?.(key);
           getReceiverId?.(undefined);
           setReceiverName?.('');
+          setDoneFlag?.(false);
         }}
       >
         <TabPane tab="勘察任务" key="prospect">
           <ProspectTable
+            recevierId={recevierId}
             isFresh={isFresh}
+            doneFlag={doneFlag}
             setIsFresh={setIsFresh}
             userId={userId}
             setReceiverName={setReceiverName}
@@ -56,6 +63,7 @@ const MissionTab: React.FC<MissionParams> = (props) => {
             isFresh={isFresh}
             setIsFresh={setIsFresh}
             userId={userId}
+            doneFlag={doneFlag}
             setReceiverName={setReceiverName}
             recevierId={recevierId}
             getReceiverId={getReceiverId}

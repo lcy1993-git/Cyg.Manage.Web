@@ -45,16 +45,21 @@ const ProjectList: React.FC = () => {
       width: 160,
     },
     {
-      dataIndex: 'rateTableTypeText',
-      key: 'rateTableTypeText',
-      title: '费率类型',
-      // width: 160,
-    },
-    {
       dataIndex: 'sourceFile',
       key: 'sourceFile',
-      title: '来源文件',
-      width: 300
+      title: '费率表类型显示名称',
+      width: 300,
+    },
+    {
+      dataIndex: 'isDemolitionMajor',
+      key: 'isDemolitionMajor',
+      title: '是否拆除',
+      width: 60,
+      render(v: boolean) {
+        console.log(v);
+        
+        return <span>{ v ? "是" : "否" }</span>
+      }
     },
     {
       dataIndex: 'publishDate',
@@ -192,7 +197,11 @@ const ProjectList: React.FC = () => {
   };
 
   const gotoMoreInfo = () => {
-    history.push('/technology-economic/common-rate-infomation')
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行查看');
+      return;
+    }
+    history.push(`/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&isDemolition=${tableSelectRows[0].isDemolitionMajor ? 1 : ""}`)
   };
 
   const tableElement = () => {
@@ -200,21 +209,21 @@ const ProjectList: React.FC = () => {
       <div className={styles.buttonArea}>
 
         {
-          buttonJurisdictionArray?.includes('commonrate-add') &&
+          !buttonJurisdictionArray?.includes('commonrate-add') &&
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         }
         {
-          buttonJurisdictionArray?.includes('commonrate-edit') &&
+          !buttonJurisdictionArray?.includes('commonrate-edit') &&
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         }
         {
-          buttonJurisdictionArray?.includes('commonrate-del') &&
+          !buttonJurisdictionArray?.includes('commonrate-del') &&
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -228,7 +237,7 @@ const ProjectList: React.FC = () => {
           </Popconfirm>
         }
         {
-          buttonJurisdictionArray?.includes('commonrate-info') &&
+          !buttonJurisdictionArray?.includes('commonrate-info') &&
           <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             费率详情
@@ -246,7 +255,7 @@ const ProjectList: React.FC = () => {
   const onModalOkClick = async () => {
     const { id } = tableSelectRows[0];
     const values = await form.validateFields();
-
+    
     if (modalType === 'add') {
       await addRateTable({ ...values, }).then(() => {
         message.success('添加成功')
@@ -257,7 +266,7 @@ const ProjectList: React.FC = () => {
 
     } else if (modalType === 'edit') {
       console.log(values);
-
+      
       await editRateTable({ ...values, id }).then(() => {
         message.success('编辑成功')
         refresh();
@@ -275,7 +284,7 @@ const ProjectList: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns as (ColumnsType<object>)}
-        url="/RateTable/QueryRateTablePager"
+        url="/RateTable/QueryRateFilePager"
         tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
         getSelectData={tableSelectEvent}
         requestSource='tecEco1'

@@ -48,6 +48,21 @@ const CommonRateInfomation = Loadable({
   loading: Loading,
   delay: 150,
 });
+const SpreadCoefficient = Loadable({
+  loader: () => import('@/pages/technology-economic/spread-coefficient'),
+  loading: Loading,
+  delay: 150,
+});
+const PriceDifferenceDetails = Loadable({
+  loader: () => import('@/pages/technology-economic/price-difference-details'),
+  loading: Loading,
+  delay: 150,
+});
+const AdjustmentFileDetails = Loadable({
+  loader: () => import('@/pages/technology-economic/adjustment-file-details'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -91,11 +106,25 @@ export default [
     component: <ProjectList />,
   },
   {
+    title: '价差系数',
+    path: '/technology-economic/spread-coefficient',
+    component: <SpreadCoefficient />,
+  },
+  {
+    title: '价差详情',
+    path: '/technology-economic/price-difference-details',
+    component: <PriceDifferenceDetails />,
+  },
+  {
+    title: '调整文件详情',
+    path: '/technology-economic/adjustment-file-details',
+    component: <AdjustmentFileDetails />,
+  },
+  {
     title: '费用模板',
     path: '/technology-economic/cost-template',
     component: <CostTemplate />,
   },
-
   {
     title: '总算表',
     path: '/technology-economic/total-table',

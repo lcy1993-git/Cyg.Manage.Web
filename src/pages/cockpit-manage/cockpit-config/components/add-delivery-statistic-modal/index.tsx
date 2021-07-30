@@ -26,8 +26,6 @@ const AddDeliveryStatisticModal: React.FC<AddDeliveryStatistic> = (props) => {
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
-      console.log(values);
-      
       const { type } = values;
       const componentProps = [...type];
       setState(false);

@@ -10,6 +10,7 @@ interface ProsepectTableParams {
   getProjectIds?: Dispatch<SetStateAction<string[]>>;
   getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
   isFresh?: boolean;
+  doneFlag?: boolean;
   setIsFresh?: Dispatch<SetStateAction<boolean>>;
   getEngineerData?: Dispatch<SetStateAction<any[]>>;
 }
@@ -22,10 +23,11 @@ const DesignTable: React.FC<ProsepectTableParams> = (props) => {
     setReceiverName,
     getEngineerData,
     isFresh,
+    doneFlag,
     setIsFresh,
     getProjectIds,
   } = props;
-  
+
   const [checkAllisChecked, setCheckAllisChecked] = useState<boolean>(false);
   const [checkAllisIndeterminate, setCheckAllisIndeterminate] = useState<boolean>(false);
   /**
@@ -36,24 +38,31 @@ const DesignTable: React.FC<ProsepectTableParams> = (props) => {
    *  1 表示取消全选
    *  2 表示全选
    */
-  const [emitAll, setEmitAll] = useState<{flag: boolean, state: number}>({flag: false, state: 0});
+  const [emitAll, setEmitAll] = useState<{ flag: boolean; state: number }>({
+    flag: false,
+    state: 0,
+  });
 
   const onAllChange = () => {
-
-    
     setEmitAll({
       flag: !emitAll?.flag,
-      state: !checkAllisChecked || checkAllisIndeterminate ? 2 : 1
-    })
-  }
-  
+      state: !checkAllisChecked || checkAllisIndeterminate ? 2 : 1,
+    });
+  };
+
   return (
     <>
       <div style={{ padding: '20px' }}>
-      <Checkbox checked={checkAllisChecked} indeterminate={checkAllisIndeterminate} onChange={() => onAllChange()}>全选</Checkbox>
+        <Checkbox
+          checked={checkAllisChecked}
+          indeterminate={checkAllisIndeterminate}
+          onChange={() => onAllChange()}
+        >
+          全选
+        </Checkbox>
         <Recevier
           userId={userId}
-          clientCategory={2}
+          clientCategory={8}
           isCompanyGroupIdentity={false}
           receiverId={recevierId}
           changeVal={getReceiverId}
@@ -62,6 +71,7 @@ const DesignTable: React.FC<ProsepectTableParams> = (props) => {
       </div>
       {/* <div> */}
       <EngineerTableList
+        doneFlag={doneFlag}
         fieldFlag={false}
         checkboxSet={true}
         getEngineerData={getEngineerData}
@@ -73,7 +83,6 @@ const DesignTable: React.FC<ProsepectTableParams> = (props) => {
         emitAll={emitAll}
         setCheckAllisChecked={setCheckAllisChecked}
         setCheckAllisIndeterminate={setCheckAllisIndeterminate}
-        
       />
       {/* </div> */}
     </>

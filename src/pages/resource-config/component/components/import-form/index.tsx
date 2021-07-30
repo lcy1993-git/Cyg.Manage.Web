@@ -19,6 +19,7 @@ interface SaveImportComponentProps {
 const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', requestSource, changeFinishEvent } = props;
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [
     triggerUploadFile,
@@ -34,7 +35,7 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
-
+          setIsImportFlag(true);
           return Promise.resolve();
         },
         (res) => {
@@ -51,6 +52,16 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
       });
   };
 
+  const onSave = () => {
+    form.validateFields().then((value) => {
+      if (isImportFlag) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
+  };
+
   return (
     <Modal
       maskClosable={false}
@@ -60,7 +71,7 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => setState(false)}>
+        <Button key="save" type="primary" onClick={onSave}>
           保存
         </Button>,
       ]}
@@ -68,7 +79,12 @@ const SaveImportComponent: React.FC<SaveImportComponentProps> = (props) => {
       destroyOnClose
     >
       <Form form={form} preserve={false}>
-        <CyFormItem label="导入" name="file" required>
+        <CyFormItem
+          label="导入"
+          name="file"
+          required
+          rules={[{ required: true, message: '请上传组件文件' }]}
+        >
           <FileUpload
             trigger={triggerUploadFile}
             maxCount={1}

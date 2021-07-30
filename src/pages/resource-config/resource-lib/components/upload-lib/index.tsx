@@ -22,6 +22,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [falseData, setFalseData] = useState<string>('');
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false);
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [
     triggerUploadFile,
@@ -46,6 +47,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
             setImportTipsVisible(true);
             return Promise.resolve();
           } else if (res.code === 200) {
+            setIsImportFlag(true);
             message.success('导入成功');
             return Promise.resolve();
           }
@@ -65,7 +67,13 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
   };
 
   const onSave = () => {
-    setUploadFileTrue();
+    form.validateFields().then((value) => {
+      if (isImportFlag) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
   };
 
   return (
@@ -78,12 +86,7 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>,
-          <Button
-            key="save"
-            type="primary"
-            loading={requestLoading}
-            onClick={() => setState(false)}
-          >
+          <Button key="save" type="primary" onClick={onSave}>
             保存
           </Button>,
         ]}
@@ -91,7 +94,12 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
         destroyOnClose
       >
         <Form form={form} preserve={false}>
-          <CyFormItem label="导入" name="file" required>
+          <CyFormItem
+            label="导入"
+            name="file"
+            required
+            rules={[{ required: true, message: '请上传资源库文件' }]}
+          >
             <FileUpload
               accept=".zip"
               trigger={triggerUploadFile}

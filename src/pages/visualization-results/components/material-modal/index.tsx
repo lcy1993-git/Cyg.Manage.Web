@@ -12,6 +12,7 @@ export interface MaterialModalProps {
   onOk: () => void;
   onCancel: () => void;
   checkedProjectIdList: string[];
+  layerstype: number;
 }
 
 const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDataType[] => {
@@ -44,7 +45,7 @@ const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDat
   return parentArr;
 };
 const MaterialModal: FC<MaterialModalProps> = (props) => {
-  const { checkedProjectIdList, visible = false, onOk, onCancel } = props;
+  const { checkedProjectIdList, visible = false, onOk, onCancel, layerstype = 0 } = props;
   const [materialList, setMaterialList] = useState<MaterialDataType[]>();
   const { data, loading, run } = useRequest(fetchMaterialListByProjectIdList, {
     manual: true,
@@ -67,7 +68,7 @@ const MaterialModal: FC<MaterialModalProps> = (props) => {
 
   useEffect(() => {
     if (visible) {
-      run(checkedProjectIdList);
+      run(checkedProjectIdList, layerstype);
     }
   }, [visible]);
   return (

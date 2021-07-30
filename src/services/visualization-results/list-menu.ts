@@ -52,7 +52,7 @@ export interface CommentListParams {
  *
  * */
 
-export const fetchMaterialListByProjectIdList = (projectIdList: string[]) => {
+export const fetchMaterialListByProjectIdList = (projectIdList: string[], designType: number) => {
   return cyRequest<MaterialDataType[]>(() =>
     request(
       `${baseUrl.manage}/WebGis/GetBatchProjectMaterials
@@ -60,7 +60,7 @@ export const fetchMaterialListByProjectIdList = (projectIdList: string[]) => {
       {
         method: 'POST',
         data: {
-          designType: 0,
+          designType,
           projectIds: projectIdList,
         },
       },

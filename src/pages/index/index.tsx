@@ -24,6 +24,8 @@ import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { useEffect } from 'react';
+import { pollingHealth } from '@/services/common';
+import HealthPolling from './components/health-polling';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -185,6 +187,9 @@ const Index: React.FC = () => {
             <Spin spinning={loading} tip="正在重绘中..."></Spin>
           </div>
         )}
+        <div style={{ display: 'none' }}>
+          <HealthPolling />
+        </div>
       </IndexContext.Provider>
     </PageCommonWrap>
   );

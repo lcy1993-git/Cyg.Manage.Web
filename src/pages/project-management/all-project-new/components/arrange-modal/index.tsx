@@ -33,7 +33,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
     setSourceTypeEvent,
   } = props;
   const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
-  const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
+  // const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [selectType, setSelectType] = useState<string>('');
 

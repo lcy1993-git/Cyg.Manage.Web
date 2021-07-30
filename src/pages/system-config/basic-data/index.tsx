@@ -115,12 +115,12 @@ const BasicData: React.FC = () => {
               label="权限文件上传"
               rules={[{ required: true, message: '请至少上传一个文件' }]}
             >
-              <FileUpLoad maxCount={1} />
+              <FileUpLoad maxCount={1} style={{ width: '99%' }} />
             </CyFormItem>
           </Form>
           <div className={styles.basicPageButtonContent}>
             <ExportAuthorityButton exportUrl="/Manage/ExportAuthority" />
-            <Button type="primary" onClick={() => uploadJurisdictionFile()}>
+            <Button type="primary" className="mr7" onClick={() => uploadJurisdictionFile()}>
               <UploadOutlined />
               开始上传
             </Button>

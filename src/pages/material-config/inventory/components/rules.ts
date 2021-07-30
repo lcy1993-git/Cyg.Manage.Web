@@ -3,8 +3,8 @@ export default {
   version: [
     { required: true, message: '协议库存版本不能为空' },
     {
-      message: '请输入英文或者数字(包含.和_)',
-      pattern: /^[0-9a-zA-Z_.]{1,}$/,
+      message: '请输入英文或者数字(包含.和_)(版本号不能为0)',
+      pattern: /^(?:(?!0$))[0-9a-zA-Z_.]{1,}$/,
     },
     {
       max: 16,

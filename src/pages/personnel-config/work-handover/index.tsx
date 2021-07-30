@@ -30,7 +30,8 @@ const WorkHandover: React.FC = () => {
   const [groupIds, setGroupIds] = useState<string[]>([]);
   const [isFresh, setIsFresh] = useState<boolean>(false);
   const [engineerIds, setEngineerIds] = useState<string[]>([]);
-  console.log(engineerIds);
+  //交接完成显示flag
+  const [doneFlag, setDoneFlag] = useState<boolean>(false);
 
   const [projectIds, setProjectIds] = useState<string[]>([]);
   const [currentMissionTabKey, setCurrentMissionTabKey] = useState<string>('prospect');
@@ -85,6 +86,7 @@ const WorkHandover: React.FC = () => {
       receiveUserId: receiverId,
     });
     setIsFresh(true);
+    setDoneFlag(true);
     setReceiverId(undefined);
     message.success('操作成功');
   };
@@ -118,6 +120,7 @@ const WorkHandover: React.FC = () => {
       receiveUserId: receiverId,
     });
     setIsFresh(true);
+    setDoneFlag(true);
     setReceiverId(undefined);
     message.success('交接成功');
   };
@@ -151,6 +154,7 @@ const WorkHandover: React.FC = () => {
       taskCategory: 1,
     });
     setIsFresh(true);
+    setDoneFlag(true);
     setReceiverId(undefined);
     message.success('交接成功');
   };
@@ -183,6 +187,7 @@ const WorkHandover: React.FC = () => {
       taskCategory: 2,
     });
     setIsFresh(true);
+    setDoneFlag(true);
     setReceiverId(undefined);
     message.success('交接成功');
   };
@@ -204,6 +209,7 @@ const WorkHandover: React.FC = () => {
               type="card"
               onChange={(key) => {
                 setClickTabKey(key);
+                setDoneFlag(false);
                 setReceiverId(undefined);
                 setReceiverName('');
               }}
@@ -218,6 +224,7 @@ const WorkHandover: React.FC = () => {
                   setReceiverName={setReceiverName}
                   setEngineerIds={setEngineerIds}
                   getEngineerData={setEngineerData}
+                  doneFlag={doneFlag}
                 />
               </TabPane>
               <TabPane tab="作业任务" key={'mission'}>
@@ -231,6 +238,8 @@ const WorkHandover: React.FC = () => {
                   setReceiverName={setReceiverName}
                   getEngineerData={setEngineerData}
                   getProjectIds={setProjectIds}
+                  doneFlag={doneFlag}
+                  setDoneFlag={setDoneFlag}
                 />
               </TabPane>
               <TabPane tab="部组身份" key={'identity'}>
@@ -242,6 +251,7 @@ const WorkHandover: React.FC = () => {
                   setIsFresh={setIsFresh}
                   receiverId={receiverId}
                   setReceiverName={setReceiverName}
+                  doneFlag={doneFlag}
                 />
               </TabPane>
               <TabPane tab="其他" key="others">
@@ -264,15 +274,18 @@ const WorkHandover: React.FC = () => {
         <div className={styles.actionBtn}>
           {clickTabKey === 'manage' ? (
             <Button
-              disabled={receiverId && engineerIds ? false : true}
               type="primary"
-              onClick={
-                engineerData && engineerData.length > 0
-                  ? manageConfirm
-                  : () => {
-                      message.info('暂无可交接的条目');
-                    }
-              }
+              onClick={() => {
+                if (engineerIds && engineerIds.length === 0) {
+                  message.info('请选择需要交接的条目');
+                  return;
+                }
+                if (!receiverId) {
+                  message.info('请选择接收人员');
+                  return;
+                }
+                manageConfirm();
+              }}
             >
               <span>交接</span>
             </Button>
@@ -280,16 +293,34 @@ const WorkHandover: React.FC = () => {
             currentMissionTabKey === 'prospect' ? (
               <Button
                 type="primary"
-                onClick={prospectConfirm}
-                disabled={receiverId && projectIds ? false : true}
+                onClick={() => {
+                  if (projectIds && projectIds.length === 0) {
+                    message.info('请选择需要交接的条目');
+                    return;
+                  }
+                  if (!receiverId) {
+                    message.info('请选择接收人员');
+                    return;
+                  }
+                  prospectConfirm();
+                }}
               >
                 <span>交接</span>
               </Button>
             ) : (
               <Button
                 type="primary"
-                onClick={designConfirm}
-                disabled={receiverId && projectIds ? false : true}
+                onClick={() => {
+                  if (projectIds && projectIds.length === 0) {
+                    message.info('请选择需要交接的条目');
+                    return;
+                  }
+                  if (!receiverId) {
+                    message.info('请选择接收人员');
+                    return;
+                  }
+                  designConfirm();
+                }}
               >
                 <span>交接</span>
               </Button>
@@ -297,8 +328,17 @@ const WorkHandover: React.FC = () => {
           ) : clickTabKey === 'identity' ? (
             <Button
               type="primary"
-              onClick={identityConfirm}
-              disabled={receiverId && projectIds ? false : true}
+              onClick={() => {
+                if (groupIds && groupIds.length === 0) {
+                  message.info('请选择需要交接的条目');
+                  return;
+                }
+                if (!receiverId) {
+                  message.info('请选择接收人员');
+                  return;
+                }
+                identityConfirm();
+              }}
             >
               <span>交接</span>
             </Button>

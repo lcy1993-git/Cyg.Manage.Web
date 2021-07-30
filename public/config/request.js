@@ -46,7 +46,7 @@ const arrayHasNotBaseUrlArray = {
     webGis: '/webgis/api',
     webGis2: '/webGis2/api',
     comment: '/project/api',
-    tecEco: '/quato/api',
+    tecEco: '/quota/api',
     tecEco1: '/technicalEconomy/api',
     review: "/review/api",
     component: '/Component/api',
@@ -77,5 +77,5 @@ export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:80
 
 export const serverCodeArray = {hostName:`${thisHostName}`}
 
-export const version = "1.0.85";
+export const version = "1.0.89";
 

@@ -1,6 +1,6 @@
 import { useControllableValue, useRequest } from 'ahooks';
 import { Col, Form, message, Modal, Row, TreeSelect } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
 import CyTip from '@/components/cy-tip';
@@ -18,7 +18,7 @@ interface TypeModalParams {
   changeTableEvent: (value: permissionItem[]) => void;
   hasAddData: permissionItem[];
   editData?: permissionItem;
-  editForm?: any;
+  addForm?: any;
 }
 
 enum categoryEnum {
@@ -28,11 +28,11 @@ enum categoryEnum {
 }
 
 const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
-  const { changeTableEvent, hasAddData, editData, editForm } = props;
+  const { changeTableEvent, hasAddData, editData, addForm } = props;
 
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [categorySelected, setCategorySelected] = useState<string>();
-  const [projectTypes, setProjectTypes] = useState<number[]>([]);
+  const [projectTypes, setProjectTypes] = useState<number[] | undefined>([]);
   const [company, setCompany] = useState<any>();
   const [selectedCompany, setSelectedCompany] = useState<any>();
   const [selectedUser, setSelectedUser] = useState<any>();
@@ -53,6 +53,14 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
     url: '/CompanyUser/GetList?clientCategory=2',
   });
 
+  const { data: proTypeData = [] } = useGetSelectData({
+    url: '/ProjectAuthorityGroup/GetProjectTypes',
+  });
+
+  //处理不同对象的项目类型
+  const groupTypeData = proTypeData?.filter((item: any) => item.value != 32);
+  const userTypeData = proTypeData?.filter((item: any) => item.value != 32 && item.value != 16);
+
   //获取并处理部组数据
   const { data: groupData = [] } = useRequest(() => getTreeSelectData(), {
     ready: categorySelected === '2',
@@ -71,28 +79,31 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
   }, [JSON.stringify(groupData)]);
 
   const addProjectEntry = () => {
-    const copyHasAddData = [...hasAddData];
-    const addData = {
-      category: categorySelected,
-      objectId:
-        categorySelected === '1'
-          ? selectedCompany
-          : categorySelected === '2'
-          ? selectedGroup
-          : selectedUser,
-      projectTypes: projectTypes,
-      objectName: objectName,
-    };
+    addForm.validateFields().then((values: any) => {
+      const copyHasAddData = [...hasAddData];
+      const addData = {
+        category: categorySelected,
+        objectId:
+          categorySelected === '1'
+            ? selectedCompany
+            : categorySelected === '2'
+            ? selectedGroup
+            : selectedUser,
+        projectTypes: projectTypes,
+        objectName: objectName,
+      };
 
-    if (copyHasAddData.findIndex((item) => item.objectId === addData.objectId) === -1) {
-      copyHasAddData.unshift(addData);
-      changeTableEvent?.(copyHasAddData);
-      message.success('添加成功');
-      setState(false);
-      return;
-    }
+      if (copyHasAddData.findIndex((item) => item.objectId === addData.objectId) === -1) {
+        copyHasAddData.unshift(addData);
+        changeTableEvent?.(copyHasAddData);
+        message.success('添加成功');
+        setState(false);
+        addForm.resetFields();
+        return;
+      }
 
-    message.error('所选对象已经存在，不可重复添加');
+      message.error('所选对象已经存在，不可重复添加');
+    });
   };
 
   return (
@@ -100,19 +111,22 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
       <Modal
         maskClosable={false}
         width="58%"
-        title="添加-项目权限组"
+        title="添加-权限条目"
         visible={state as boolean}
         destroyOnClose
         okText="确定"
         centered
         cancelText="取消"
         bodyStyle={{ padding: 0 }}
-        onCancel={() => setState(false)}
+        onCancel={() => {
+          addForm.resetFields();
+          setState(false);
+        }}
         onOk={() => addProjectEntry()}
       >
         <CyTip>选择某对象，即包含了该对象以及该对象下属部组，公司用户的全部相关类型项目。</CyTip>
         <div style={{ padding: '20px' }}>
-          <Form form={editForm}>
+          <Form form={addForm}>
             <Row gutter={24}>
               <Col>
                 <CyFormItem
@@ -121,14 +135,20 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                   align="right"
                   labelWidth={111}
                   rules={[{ required: true, message: '对象类型不能为空' }]}
+                  name="category"
                 >
                   <EnumSelect
                     style={{ width: '350px' }}
                     enumList={categoryEnum}
                     onChange={(value: any) => {
-                      setSelectedCompany(undefined);
-                      setSelectedUser(undefined);
-                      setSelectedGroup(undefined);
+                      addForm.resetFields([
+                        'proType',
+                        'groupType',
+                        'userType',
+                        'companyId',
+                        'groupId',
+                        'userId',
+                      ]);
                       setCategorySelected(value);
                     }}
                     placeholder="请选择对象类型"
@@ -136,78 +156,160 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                 </CyFormItem>
               </Col>
               <Col span={12}>
-                <CyFormItem
-                  label="请选择对象"
-                  required
-                  align="right"
-                  labelWidth={111}
-                  rules={[{ required: true, message: '对象不能为空' }]}
-                >
-                  {categorySelected === '1' ? (
+                {categorySelected === '1' ? (
+                  <CyFormItem
+                    label="请选择对象"
+                    required
+                    align="right"
+                    labelWidth={111}
+                    name="companyId"
+                    rules={[{ required: true, message: '对象不能为空' }]}
+                  >
                     <UrlSelect
                       valuekey="value"
                       titlekey="text"
-                      labelInValue
                       defaultData={company}
-                      value={selectedCompany?.value}
-                      onChange={(value: any) => {
-                        setSelectedCompany(value?.value);
-                        setObjectName(value?.label);
+                      value={selectedCompany}
+                      onChange={(value: any, label: any) => {
+                        setSelectedCompany(value);
+                        setObjectName(label?.label);
                       }}
                       placeholder="请选择公司"
                       style={{ width: '350px' }}
                     />
-                  ) : categorySelected === '2' ? (
+                  </CyFormItem>
+                ) : categorySelected === '2' ? (
+                  <CyFormItem
+                    label="请选择对象"
+                    required
+                    align="right"
+                    labelWidth={111}
+                    name="groupId"
+                    rules={[{ required: true, message: '对象不能为空' }]}
+                  >
                     <TreeSelect
                       style={{ width: '350px' }}
                       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                       treeData={handleGroupData}
                       placeholder="请选择部组"
                       treeDefaultExpandAll
-                      labelInValue
-                      onChange={(value: any) => {
-                        setSelectedGroup(value?.value);
-                        setObjectName(value?.label);
+                      value={selectedGroup}
+                      onChange={(value: any, label: any) => {
+                        setSelectedGroup(value);
+                        setObjectName(label);
                       }}
                     />
-                  ) : categorySelected === '3' ? (
+                  </CyFormItem>
+                ) : categorySelected === '3' ? (
+                  <CyFormItem
+                    label="请选择对象"
+                    required
+                    align="right"
+                    labelWidth={111}
+                    name="userId"
+                    rules={[{ required: true, message: '对象不能为空' }]}
+                  >
                     <UrlSelect
                       showSearch
-                      value={selectedUser?.value}
+                      value={selectedUser}
                       defaultData={userData}
                       titlekey="label"
                       valuekey="value"
-                      labelInValue
                       style={{ width: '350px' }}
-                      onChange={(value: any) => {
-                        setSelectedUser(value?.value);
-                        setObjectName(value?.label);
+                      onChange={(value: any, label: any) => {
+                        setSelectedUser(value);
+                        setObjectName(label?.label);
                       }}
                       placeholder="请选择公司用户"
                     />
-                  ) : (
+                  </CyFormItem>
+                ) : (
+                  <CyFormItem
+                    required
+                    label="请选择对象"
+                    align="right"
+                    labelWidth={111}
+                    rules={[{ required: true, message: '对象不能为空' }]}
+                    name="unselected"
+                  >
                     <UrlSelect style={{ width: '350px' }} placeholder="请先选择对象类型" />
-                  )}
-                </CyFormItem>
+                  </CyFormItem>
+                )}
               </Col>
             </Row>
-            <CyFormItem
-              label="请选择项目类型"
-              required
-              align="right"
-              labelWidth={111}
-              rules={[{ required: true, message: '项目类型不能为空' }]}
-            >
-              <UrlSelect
-                style={{ width: '100%' }}
-                mode="multiple"
-                valuekey="value"
-                titlekey="text"
-                url="/ProjectAuthorityGroup/GetProjectTypes"
-                placeholder="请选择项目类型"
-                onChange={(value) => setProjectTypes(value as number[])}
-              />
-            </CyFormItem>
+
+            {categorySelected === '1' ? (
+              <CyFormItem
+                label="请选择项目类型"
+                required
+                align="right"
+                labelWidth={111}
+                rules={[{ required: true, message: '项目类型不能为空' }]}
+                name="proType"
+              >
+                <UrlSelect
+                  style={{ width: '100%' }}
+                  mode="multiple"
+                  valuekey="value"
+                  titlekey="label"
+                  value={projectTypes}
+                  defaultData={proTypeData}
+                  placeholder="请选择项目类型"
+                  onChange={(value) => setProjectTypes(value as number[])}
+                />
+              </CyFormItem>
+            ) : categorySelected === '2' ? (
+              <CyFormItem
+                label="请选择项目类型"
+                required
+                align="right"
+                labelWidth={111}
+                rules={[{ required: true, message: '项目类型不能为空' }]}
+                name="groupType"
+              >
+                <UrlSelect
+                  style={{ width: '100%' }}
+                  mode="multiple"
+                  valuekey="value"
+                  titlekey="label"
+                  value={projectTypes}
+                  defaultData={groupTypeData}
+                  placeholder="请选择项目类型"
+                  onChange={(value) => setProjectTypes(value as number[])}
+                />
+              </CyFormItem>
+            ) : categorySelected === '3' ? (
+              <CyFormItem
+                label="请选择项目类型"
+                required
+                align="right"
+                labelWidth={111}
+                rules={[{ required: true, message: '项目类型不能为空' }]}
+                name="userType"
+              >
+                <UrlSelect
+                  style={{ width: '100%' }}
+                  mode="multiple"
+                  valuekey="value"
+                  titlekey="label"
+                  value={projectTypes}
+                  defaultData={userTypeData}
+                  placeholder="请选择项目类型"
+                  onChange={(value) => setProjectTypes(value as number[])}
+                />
+              </CyFormItem>
+            ) : (
+              <CyFormItem
+                required
+                label="请选择项目类型"
+                align="right"
+                labelWidth={111}
+                rules={[{ required: true, message: '项目类型不能为空' }]}
+                name="unselected"
+              >
+                <UrlSelect style={{ width: '100%' }} placeholder="请先选择对象类型" />
+              </CyFormItem>
+            )}
           </Form>
         </div>
       </Modal>

@@ -2,7 +2,7 @@ import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
 import { useBoolean, useControllableValue } from 'ahooks';
-import React from 'react';
+import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 import { Form, message, Modal, Button } from 'antd';
@@ -19,6 +19,7 @@ interface ImportChartProps {
 const ImportCableModal: React.FC<ImportChartProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId, requestSource, changeFinishEvent } = props;
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [
     triggerUploadFile,
@@ -33,6 +34,7 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
       })
       .then(
         (res) => {
+          setIsImportFlag(true);
           message.success('导入成功');
 
           return Promise.resolve();
@@ -51,6 +53,16 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
       });
   };
 
+  const onSave = () => {
+    form.validateFields().then((value) => {
+      if (isImportFlag) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
+  };
+
   return (
     <Modal
       maskClosable={false}
@@ -62,14 +74,20 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => setState(false)}>
+        <Button key="save" type="primary" onClick={onSave}>
           保存
         </Button>,
       ]}
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <CyFormItem labelWidth={80} label="导入" name="file" required>
+        <CyFormItem
+          labelWidth={80}
+          label="导入"
+          name="file"
+          required
+          rules={[{ required: true, message: '请上传电缆设计文件' }]}
+        >
           <FileUpload
             trigger={triggerUploadFile}
             maxCount={1}

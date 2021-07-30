@@ -22,15 +22,14 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
   const { libId = '', requestSource, changeFinishEvent } = props;
   const [falseData, setFalseData] = useState<string>('');
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false);
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
   // const [requestLoading, setRequestLoading] = useState(false);
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
   ] = useBoolean(false);
   const [form] = Form.useForm();
-  const onSave = () => {
-    setUploadFileTrue();
-  };
+
   const saveLineStreesSagEvent = () => {
     return form
       .validateFields()
@@ -44,26 +43,40 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
           '/ResourceLib/SaveImportLineStressSag',
         );
       })
-      .then((res) => {
-        if (res && res.code === 6000) {
-          setFalseData(res.message);
-          setState(false);
-          setImportTipsVisible(true);
-          return Promise.resolve();
-        } else if (res.code === 200) {
-          message.success('导入成功');
-          return Promise.resolve();
-        }
-        message.error(res.message);
-        return Promise.reject();
-      },(res) => {
-        message.error(res.message);
-        return Promise.reject();
-      })
+      .then(
+        (res) => {
+          if (res && res.code === 6000) {
+            setFalseData(res.message);
+            setState(false);
+            setImportTipsVisible(true);
+            return Promise.resolve();
+          } else if (res.code === 200) {
+            message.success('导入成功');
+            setIsImportFlag(true);
+            return Promise.resolve();
+          }
+          message.error(res.message);
+          return Promise.reject();
+        },
+        (res) => {
+          message.error(res.message);
+          return Promise.reject();
+        },
+      )
       .finally(() => {
         changeFinishEvent?.();
         setUploadFileFalse();
       });
+  };
+
+  const onSave = () => {
+    form.validateFields().then((value) => {
+      if (isImportFlag) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
   };
 
   return (
@@ -79,7 +92,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
           <Button
             key="save"
             type="primary"
-            onClick={() => setState(false)}
+            onClick={onSave}
             // loading={requestLoading}
           >
             保存
@@ -89,7 +102,12 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
         destroyOnClose
       >
         <Form form={form} preserve={false}>
-          <CyFormItem label="导入" name="file" required>
+          <CyFormItem
+            label="导入"
+            name="file"
+            required
+            rules={[{ required: true, message: '请上传应力弧垂表文件' }]}
+          >
             <FileUpload
               accept=".zip"
               uploadFileBtn

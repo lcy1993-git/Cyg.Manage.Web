@@ -194,6 +194,7 @@
 
     .engineerTableContent {
       width: 100%;
+
       .engineerTableHeader {
         display: flex;
         width: 100%;
@@ -250,5 +251,15 @@
     border-right: 1px solid @table-line-color;
     border-bottom: 1px solid @table-line-color;
     border-left: 1px solid @table-line-color;
+  }
+}
+
+.engineerTable {
+  .engineerTableContent {
+    :global {
+      .ant-spin-container {
+        height: 515px;
+      }
+    }
   }
 }

@@ -18,6 +18,9 @@ const getValueByName = (name: string, data: JSONData[]) => {
 const getCompanyName = (data: JSONData[], category: number) => {
   if (category === 2) { // 项目委托情况
     return getValueByName('user_company_name', data)
+  }else if(category === 51 || category === 50) { // 项目工作交接 作业任务 项目管理
+    
+    return getValueByName('company', data)?.Text
   }
   return data?.find((item) => item.Key === 'company_name')?.Value || data?.find((item) => item.Key === 'source_company_name')?.Value || ""
 }
@@ -98,22 +101,27 @@ const ProjectProcessItem: React.FC<OperateLog> = ({ date, category, operationCat
       return getValueByName('company_group_name', jsonData)
     }else if(category === 2) {
       return getValueByName('company_name', jsonData)
-    }else if(category === 51) {
-      console.dir(jsonData);
-      return getValueByName('company_name', jsonData)?.Text
+    }else if(category === 51 || category === 50) {
+      return false // 工作交接 作业任务 也应该为空
+    }else if(category === 4) {  // 安排部组成员这里应该为空
+      return false
     }
     return getCompanyNameByShare(jsonData) || getCompanyGroupName(jsonData)
   }, [content])
 
-  console.log(jsonData?.find((item) => item.Key === 'task')?.Value);
-  
+  const getOperator = (data: JSONData[], category: number) => {
+    // if(category === 50 || category === 51) {
+    //   return "123"
+    // }
+    return operator
+  }
 
   return (
     <div className={styles.projectProcessItem}>
       <div className={styles.projectProcessItemTime}>
         <div className={styles.time}>{date ? moment(date).format("YYYY-MM-DD HH:mm:ss") : ""}</div>
 
-        <div className={styles.titleRightWrap}>{`${getCompanyName(jsonData, category)}-${operator}`}</div>
+        <div className={styles.titleRightWrap}>{`${getCompanyName(jsonData, category)}-${getOperator(jsonData, category)}`}</div>
 
       </div>
       <div className={styles.projectProcessItemTitle}>

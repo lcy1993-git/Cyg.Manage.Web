@@ -2,13 +2,44 @@ import commonLess from '../common.less';
 import classNames from 'classnames';
 interface DesignTableProps {
   head: React.ReactNode;
-  data: any[];
+  data: {
+    engineeringType: number;
+    engineeringTypeText: string;
+    minCost: number;
+    maxCost: number;
+    minRate: number;
+    maxRate: number;
+  }[];
 }
 
 const DesignTable: React.FC<DesignTableProps> = ({ head, data }) => {
-
+  const resData: any[] = [];
+  data.forEach((item) => {
+    const index = resData.findIndex((e) => e?.maxCost === item.maxCost && e?.minCost === item.minCost);
+    if(index > -1) {
+      const current = {...resData[index]};
+      current['type' + item.engineeringType] = {...item}
+      resData.splice(index, 1, current)
+    }else{
+      let addObj = {};
+      addObj['type' + item.engineeringType] = {...item}
+      resData.push({maxCost: item.maxCost, minCost: item.minCost,engineeringType: item.engineeringType, ...addObj})
+    }
+  })
+  
   const domRow = () => {
-    
+    return resData.map(({maxCost, minCost, type2, type3}, index) => {
+      return (
+        <tr key={index}>
+          <td>{minCost}</td>
+          <td>{maxCost}</td>
+          <td>{type2?.minRate}</td>
+          <td>{type2?.maxRate}</td>
+          <td>{type3?.minRate}</td>
+          <td>{type3?.maxRate}</td>
+        </tr>
+      );
+    })
   };
 
   const empty = (num: number) => {
@@ -19,23 +50,29 @@ const DesignTable: React.FC<DesignTableProps> = ({ head, data }) => {
       <table className={classNames(commonLess.table)}>
         <thead>
           <tr>
-            <th colSpan={4}>{head}</th>
+            <th colSpan={6}>{head}</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colSpan={2}>工程设计费额(万元)</td>
-            <td colSpan={2}>设计费率(%)</td>
+            <td colSpan={2} rowSpan={2}>工程计费额(万元)</td>
+            <td colSpan={4}>设计费率(%)</td>
+          </tr>
+          <tr>
+            <td colSpan={2}>充配电工程</td>
+            <td colSpan={2}>线路工程</td>
           </tr>
           <tr>
             <td>上限值(X1)</td>
             <td>下限值(X2)(s)</td>
             <td>下限值(Y1)</td>
             <td>上限值(Y1)</td>
+            <td>下限值(Y1)</td>
+            <td>上限值(Y1)</td>
           </tr>
           {domRow()}
           <tr>
-            <td colSpan={4}>
+            <td colSpan={6}>
               <pre>
               注1：对于设计费低于1000元的，按1000元计列。
                 <br />

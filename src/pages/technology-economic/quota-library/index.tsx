@@ -182,14 +182,14 @@ const QuotaLibrary: React.FC = () => {
     return (
       <div className={styles.buttonArea}>
         {
-          buttonJurisdictionArray?.includes('quotalib-add') &&
+          // buttonJurisdictionArray?.includes('quotalib-add') &&
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         }
         {
-          buttonJurisdictionArray?.includes('quotalib-del') &&
+          // buttonJurisdictionArray?.includes('quotalib-del') &&
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -203,7 +203,7 @@ const QuotaLibrary: React.FC = () => {
           </Popconfirm>
         }
         {
-          buttonJurisdictionArray?.includes('quotalib-info') &&
+          // buttonJurisdictionArray?.includes('quotalib-info') &&
           <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             查看详情
