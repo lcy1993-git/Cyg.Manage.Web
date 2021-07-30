@@ -22,7 +22,6 @@ const UserPermissionAccredit: React.FC<UserAuthorizationProps> = (props) => {
   const tableRef = useRef<HTMLDivElement>(null);
 
   const { extractParams, onChange } = props;
-  console.log(extractParams);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [selectRows, setSelectRows] = useState<any[]>([]);

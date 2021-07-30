@@ -17,9 +17,8 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
-      console.log(values);
       // const { mapComponent, personLoad, projectRefreshData, projectProgress } = values;
-      for(let k in values) {
+      for (let k in values) {
         changeFinishEvent?.({
           name: 'mapComponent',
           key: currentRecord.key,
@@ -30,7 +29,7 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
           componentProps: values[k],
         });
       }
-      
+
       setState(false);
 
       // changeFinishEvent?.({

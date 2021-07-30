@@ -159,7 +159,6 @@ const SpreadCoefficient: React.FC = () => {
   const sureDeleteData = async () => {
     if (projectType === 1) {
       // 价差目录
-      console.log(tableSelectRows);
 
       if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
         message.error('请选择一条数据进行编辑');

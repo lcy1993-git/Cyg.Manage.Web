@@ -274,8 +274,6 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
-      console.log(values);
-
       const submitInfo = {
         libId: libId,
         id: editData.id,

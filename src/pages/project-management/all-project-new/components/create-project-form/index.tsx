@@ -657,9 +657,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                   setDataSourceType(value);
                   if (isNumber(index)) {
                     const copyData = [...copyFlag!];
-                    console.log(index)
+                    // console.log(index)
                     copyData.splice(index!, 1, value);
-                    console.log(copyData)
+                    // console.log(copyData)
                     setCopyFlag?.(copyData);
                   }
                 }}
