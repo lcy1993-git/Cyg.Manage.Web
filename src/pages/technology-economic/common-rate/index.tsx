@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
-import type { ColumnsType } from 'antd/lib/table';
+import { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
 import GeneralTable from '@/components/general-table';
@@ -148,7 +148,7 @@ const ProjectList: React.FC = () => {
     }
   };
 
-  // 添加
+  //添加
   const addEvent = () => {
     form.resetFields();
     setModalType('add');
@@ -185,7 +185,7 @@ const ProjectList: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const {id} = tableSelectRows[0];
+    const id = tableSelectRows[0].id;
     await deleteRateTable(id);
     refresh();
     message.success('删除成功');

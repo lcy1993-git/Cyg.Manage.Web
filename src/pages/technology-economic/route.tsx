@@ -6,6 +6,7 @@ import CostTemplate from './cost-template';
 import TotalTable from './total-table';
 import UsualQuotaTable from './usual-quota-table';
 import UsualQuotaTableDetail from './usual-quota-table/components/detail';
+import SuppliesLibrary from './supplies-library';
 
 const QuotaLibrary = Loadable({
   loader: () => import('@/pages/technology-economic/quota-library'),
@@ -109,5 +110,10 @@ export default [
     title: '定额常用表详情',
     path: '/technology-economic/usual-quota-table/detail',
     component: <UsualQuotaTableDetail />,
+  },
+  {
+    title: '物料库',
+    path: '/technology-economic/supplies-library',
+    component: <SuppliesLibrary />,
   },
 ];
