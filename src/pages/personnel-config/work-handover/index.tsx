@@ -193,6 +193,8 @@ const WorkHandover: React.FC = () => {
   };
 
   const finishEvent = () => {
+    console.log(1);
+
     removeTab?.(`/personnel-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`);
   };
 

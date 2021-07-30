@@ -131,6 +131,7 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
           type="checkbox"
           params={{ userId: userId }}
           emptyContent={doneFlag ? '您已经交接完毕了~' : '暂无可交接的内容'}
+          imgSrc={doneFlag ? 'finish' : 'empty'}
         />
       </div>
     </>
