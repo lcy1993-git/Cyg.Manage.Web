@@ -162,6 +162,7 @@ const  TotalTable: React.FC<Props>= () => {
       </div>
       <Table
         pagination={false}
+        size={'small'}
         scroll={{y:750}}
         dataSource={dataSource}
         columns={columns} />;

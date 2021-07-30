@@ -41,7 +41,7 @@ const CostTemplate: React.FC<Props> = () => {
   }, [])
   useEffect(()=>{
     const parent = menus.filter(i=>{
-        return i.parentId === null
+        return i.parentId == null
     })
     if (parent.length !==0){
       setCurrentTabId(parent[0].id)
@@ -55,7 +55,7 @@ const CostTemplate: React.FC<Props> = () => {
         </h3>
         <Tabs tabPosition={'left'} centered onChange={onChange}>
           {
-            menus.filter(i => i.parentId === '0').map(menu => {
+            menus.filter(i => i.parentId == null).map(menu => {
               return (
                 <TabPane tab={menu.name} key={menu.id}>
                   {currentTabId === menu.id && <ConstructionFees ref={childRef} menus={menus} id={currentTabId}/>}

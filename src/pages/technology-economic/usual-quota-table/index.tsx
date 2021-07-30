@@ -27,7 +27,7 @@ import {
 } from "@/services/technology-economic/usual-quota-table";
 import type {QueryData, CommonlyTableForm} from "@/services/technology-economic/usual-quota-table";
 import moment from "moment";
-import {ExclamationCircleOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 
 interface Props {
 }
@@ -86,14 +86,32 @@ const UsualQuotaTable: React.FC<Props> = () => {
   const [dataSource, setDataSource] = useState<CommonlyTable[]>([])
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
   const [commonlyTableType, setCommonlyTableType] = useState<{ value: string, text: string }[]>([])
-  const [queryData, setQueryData] = useState<QueryData>({} as QueryData)
+  const [queryData, setQueryData] = useState<QueryData>({
+    "pageIndex": 1,
+    "pageSize": 10,
+    "sort": {
+      "propertyName": '',
+      "isAsc": false
+    },
+    "keyWord": ''
+  } as QueryData)
   const [selectRow, setSelectRow] = useState<React.Key[]>([])
   const [isEdit, setIsEdit] = useState<boolean>(false)
+  const [pagination,setPagination] = useState({
+    total:0,
+    pageSize:10,
+  })
   const [form] = Form.useForm();
   const history = useHistory();
-
+  const pageDataChange = (page: number, pageSize: number)=>{
+    const data = {...queryData}
+    data.pageSize = pageSize
+    data.pageIndex = page
+    setQueryData(data)
+  }
   const getTableData = async () => {
     const res = await queryCommonlyTablePager(queryData)
+    setPagination(res.total)
     setDataSource(res?.items)
   }
   const setStatus = async (status: boolean,row: CommonlyTable)=>{
@@ -223,10 +241,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
     const res = await getCommonlyTableTypeList()
     setCommonlyTableType(res)
   }
-  const pageChange = (pagination: any)=>{
-    console.log(pagination)
-    getTableData()
-  }
+
   const tableOnSelect = (val: React.Key[]) => {
     setSelectRow(val)
   }
@@ -270,15 +285,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
     }
   }
   useEffect(() => {
-    setQueryData({
-      "pageIndex": 1,
-      "pageSize": 10,
-      "sort": {
-        "propertyName": '',
-        "isAsc": false
-      },
-      "keyWord": ''
-    })
     getTableData()
     getCommonlyTableType()
   }, [])
@@ -286,24 +292,37 @@ const UsualQuotaTable: React.FC<Props> = () => {
     <div className={styles.usualQuotaTable}>
       <div className={styles.topButtons}>
         <Space>
-          <Button type={'primary'} onClick={showDetail}>费率详情</Button>
-          <Button type={'primary'} onClick={addCommonly}>添加</Button>
-          <Button onClick={editRow}>编辑</Button>
-          <Button onClick={removeRow}>删除</Button>
+          <Button type={'primary'} onClick={showDetail}>
+            <EyeOutlined />
+            费率详情
+          </Button>
+          <Button type={'primary'} onClick={addCommonly}>
+            <PlusOutlined />
+            添加</Button>
+          <Button onClick={editRow}>
+            <EditOutlined/>
+            编辑</Button>
+          <Button onClick={removeRow}>
+            <DeleteOutlined />
+            删除</Button>
         </Space>
       </div>
 
       <Table
         dataSource={dataSource}
         rowKey={'id'}
-        onChange={pageChange}
+        size={'small'}
+        pagination={{
+          ...pagination,
+          onChange:(page, pageSize)=>pageDataChange(page, pageSize!)
+        }}
         rowSelection={{
           type: 'radio',
           onChange: (val) => {
             tableOnSelect(val)
           }
         }}
-        columns={columns}/>;
+        columns={columns}/>
 
       <Modal
         title="添加定额常用表"
@@ -452,7 +471,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
         </Form>
       </Modal>
     </div>
-  );
+  )
 }
 
 export default UsualQuotaTable;
