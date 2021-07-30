@@ -85,8 +85,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   };
   // 全部展开
   const allOpenEvent = () => {
-    const flattenData = flatten(finalyDataSource, 'childs')
-      .filter((item: any) => item.childs && item.childs.length > 0)
+    const flattenData = flatten(finalyDataSource, 'children')
+      .filter((item: any) => item.children && item.children.length > 0)
       .map((item: any) => item.id);
     setExpandedRowKeys(flattenData);
   };
@@ -125,8 +125,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
               expandedRowKeys: expandedRowKeys,
               expandIcon: ({ expanded, onExpand, record }) => {
                 //@ts-ignore 因为传入T是有children 的，但是目前还没有想到解决办法
-                const { childs } = record;
-                if (!childs || childs.length === 0) {
+                const { children } = record;
+                if (!children || children.length === 0) {
                   return <span style={{ marginRight: '6px' }}></span>;
                 }
                 return expanded ? (
@@ -145,7 +145,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
               },
               onExpand: expandEvent,
             }}
-            childrenColumnName={'childs'}
+            childrenColumnName={'children'}
             locale={{
               emptyText: <EmptyTip />,
             }}
