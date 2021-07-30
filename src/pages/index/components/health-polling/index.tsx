@@ -1,4 +1,4 @@
-import { pollingHealth } from '@/services/common';
+import { pollingHealth } from '@/services/index';
 import { useRequest } from 'ahooks';
 import React from 'react';
 
