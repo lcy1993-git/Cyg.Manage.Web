@@ -214,24 +214,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
     }
   }
 
-  const [mediaData, setMediaData] = useState([]);
-
-  const { run: mediaDataRun } = useRequest(getMedium, {
+  const { data: mediaData, run: mediaDataRun } = useRequest(getMedium, {
     manual: true,
     onSuccess(data) {
       if (data?.content?.length > 0) {
-        const resData = data?.content.filter((item) => item.mainType === minType);
-        if(resData.length > 0) {
-          setMediaData(resData)
-          mediaRef.current!.innerHTML = '查看';
-          mediaRef.current!.className = 'mapSideBarlinkBtn';
-        }else{
-          setMediaData([])
-          mediaRef.current!.innerHTML = '暂无数据';
-          mediaRef.current!.className = '';
-        }
-
-        
         mediaRef.current!.innerHTML = '查看';
         mediaRef.current!.className = 'mapSideBarlinkBtn';
       } else {
@@ -497,12 +483,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
     setRightSidebarVisiviabel(false);
   }, [JSON.stringify(checkedProjectIdList)]);
 
-  const minType = useMemo(() => {
-    const text = dataResource?.find((item: any) => item.propertyName === '元素类型')?.data;
-    const surveyDeviceType = surveyData.find((i: any) => i.key === 'SurveyDeviceType')?.value;
-    return surveyDeviceType?.find((item: any) => item.text === text)?.value
-  }, [JSON.stringify(dataResource)]);
-
   const materialDataRes = useMemo(() => {
     // const media = removeEmptChildren(
     //   data[0].find((item: any) => item.propertyName === '多媒体')?.data,
@@ -510,12 +490,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
     // const material = removeEmptChildren(
     //   data[0].find((item: any) => item.propertyName === '材料表')?.data,
     // );
-
-
-
-    
-    
-
     const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
     ?.params ?? {};
     
@@ -624,14 +598,14 @@ const SidePopup: React.FC<Props> = observer((props) => {
             />
           </div>
           <Carousel ref={carouselRef} dots={false}>
-            {mediaItem(mediaData)}
+            {mediaItem(mediaData?.content ?? [])}
           </Carousel>
         </Modal>
         {activeType === 'media' && (
           <Table
             key="media"
             columns={mediaColumns}
-            dataSource={mediaData}
+            dataSource={mediaData?.content ?? []}
             rowKey={(e) => e.id}
             pagination={false}
           ></Table>
