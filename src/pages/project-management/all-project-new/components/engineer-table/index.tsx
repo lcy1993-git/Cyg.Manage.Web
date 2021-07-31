@@ -546,39 +546,39 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.statusText === '设计评审中' ? (
-                  <span>设计中</span>
+                ) : // : stateInfo.statusText === '设计评审中' ? (
+                //   <span>设计中</span>
+                // ) : (
+                stateInfo.status === 4 &&
+                  stateInfo.auditStatus === 0 &&
+                  stateInfo.auditStatusText === null ? (
+                  <span>{stateInfo?.statusText}</span>
+                ) : stateInfo.status === 4 &&
+                  stateInfo.auditStatus === 0 &&
+                  stateInfo.auditStatusText != null ? (
+                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
+                  <span>{stateInfo?.statusText}</span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                  <span
+                    className="canClick"
+                    onClick={() => externalArrange(record.id, record.name)}
+                  >
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
                 ) : (
-                  // : stateInfo.status === 4 &&
-                  //   stateInfo.auditStatus === 0 &&
-                  //   stateInfo.auditStatusText === null ? (
-                  //   <span>{stateInfo?.statusText}</span>
-                  // ) : stateInfo.status === 4 &&
-                  //   stateInfo.auditStatus === 0 &&
-                  //   stateInfo.auditStatusText != null ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
-                  //   <span>{stateInfo?.statusText}</span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
-                  //   <span
-                  //     className="canClick"
-                  //     onClick={() => externalArrange(record.id, record.name)}
-                  //   >
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
-                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
-                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : (
                   <span>{stateInfo?.statusText}</span>
                 )}
               </span>
@@ -758,7 +758,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       />
     );
   });
-
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法

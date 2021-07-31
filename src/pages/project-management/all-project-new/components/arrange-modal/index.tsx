@@ -153,7 +153,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
               dataSourceType={dataSourceType}
             />
           </TabPane>
-          {/* {(selectType === '2' || selectType === '4') && (
+          {(selectType === '2' || selectType === '4') && (
             <TabPane tab="外审安排" key="2">
               {tabActiveKey === '2' ? (
                 <SelectAddListForm
@@ -165,7 +165,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           )}
           {(selectType === '1' || selectType === '3') && (
             <TabPane tab="外审安排" disabled key="2"></TabPane>
-          )} */}
+          )}
         </Tabs>
       </Form>
     </Modal>
