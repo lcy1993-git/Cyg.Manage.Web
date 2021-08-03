@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from 'antd';
+import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip, Tabs } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -21,18 +21,19 @@ import {
   deleteFileGroupItem,
   downLoadFileItem,
 } from '@/services/operation-config/company-file';
-import DefaultParams from './components/default-params';
+import DefaultSign from './components/default-sign';
 import { getUploadUrl } from '@/services/resource-config/drawing';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 // import UrlSelect from '@/components/url-select';
-import FileGroupForm from './components/add-file-group';
+import SignGroupForm from './components/add-sign-group';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { TableRequestResult } from '@/services/table';
 
 const { Search } = Input;
+const { TabPane } = Tabs;
 
-const CompanyFile: React.FC = () => {
+const SignManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -283,20 +284,20 @@ const CompanyFile: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('company-file-add') && (
-          <Button type="primary" className="mr7" onClick={() => addEvent()}>
-            <PlusOutlined />
-            添加
-          </Button>
-        )}
+        {/* {buttonJurisdictionArray?.includes('sign-file-add') && ( */}
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+        {/* )} */}
 
-        {buttonJurisdictionArray?.includes('company-file-edit') && (
-          <Button className="mr7" onClick={() => editEvent()}>
-            <EditOutlined />
-            编辑
-          </Button>
-        )}
-        {/* {buttonJurisdictionArray?.includes('company-file-edit') && ( */}
+        {/* {buttonJurisdictionArray?.includes('sign-file-edit') && ( */}
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
+        {/* )} */}
+        {/* {buttonJurisdictionArray?.includes('sign-file-download') && ( */}
         <Popconfirm
           title="您确定要下载该公司文件？"
           onConfirm={() => downLoadEvent()}
@@ -308,22 +309,21 @@ const CompanyFile: React.FC = () => {
             下载
           </Button>
         </Popconfirm>
-
         {/* )} */}
 
-        {buttonJurisdictionArray?.includes('company-file-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
-        )}
+        {/* {buttonJurisdictionArray?.includes('sign-file-delete') && ( */}
+        <Popconfirm
+          title="您确定要删除该条数据?"
+          onConfirm={sureDeleteData}
+          okText="确认"
+          cancelText="取消"
+        >
+          <Button className="mr7">
+            <DeleteOutlined />
+            删除
+          </Button>
+        </Popconfirm>
+        {/* )} */}
       </div>
     );
   };
@@ -443,23 +443,23 @@ const CompanyFile: React.FC = () => {
       <div className={styles.companyFile}>
         <div className={styles.fileGroupHead}>
           <div className="flex">
-            <TableSearch className={styles.fileGroupSelect} label="公司文件组" width="360px">
+            <TableSearch className={styles.fileGroupSelect} label="签批分组" width="360px">
               <DataSelect
                 showSearch
                 value={fileGroupId}
                 options={fileGroupData}
-                placeholder="请选择文件组别"
+                placeholder="请选择签批组别"
                 onChange={(value: any) => searchByFileGroup(value)}
                 style={{ width: '100%' }}
               />
             </TableSearch>
             <TableSearch width="400px">
-              {buttonJurisdictionArray?.includes('add-file-group') && (
-                <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
-                  <PlusOutlined />
-                  新建公司文件组
-                </Button>
-              )}
+              {/* {buttonJurisdictionArray?.includes('add-sign-group') && ( */}
+              <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
+                <PlusOutlined />
+                新建签批分组
+              </Button>
+              {/* )} */}
 
               <Popconfirm
                 title="确定要删除当前文件组吗?"
@@ -467,23 +467,38 @@ const CompanyFile: React.FC = () => {
                 okText="确认"
                 cancelText="取消"
               >
-                {buttonJurisdictionArray?.includes('delete-file-group') && (
-                  <Button className="mr7">删除当前组</Button>
-                )}
+                {/* {buttonJurisdictionArray?.includes('delete-sign-group') && ( */}
+                <Button className="mr7">删除当前分组</Button>
+                {/* )} */}
               </Popconfirm>
-              {buttonJurisdictionArray?.includes('company-file-defaultOptions') && (
-                <Tooltip title="成果默认参数和对应公司文件组关联" style={{ borderRadius: 15 }}>
-                  <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
-                    <i className="iconfont iconcanshu" />
-                    成果默认参数
-                  </Button>
-                </Tooltip>
-              )}
+              {/* {buttonJurisdictionArray?.includes('sign-manage-defaultOptions') && ( */}
+              <Tooltip title="默认参数和对应签批分组关联" style={{ borderRadius: 15 }}>
+                <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
+                  <i className="iconfont iconcanshu" />
+                  默认参数
+                </Button>
+              </Tooltip>
+              {/* )} */}
             </TableSearch>
           </div>
         </div>
+
         <div className={styles.fileTable}>
-          {fileGroupId && (
+          <Tabs>
+            <TabPane tab="批准" key="pz">
+              1
+            </TabPane>
+            <TabPane tab="审核" key="sh">
+              2
+            </TabPane>
+            <TabPane tab="校核" key="jh">
+              3
+            </TabPane>
+            <TabPane tab="设计/勘测" key="sjkc">
+              4
+            </TabPane>
+          </Tabs>
+          {/* {fileGroupId && (
             <GeneralTable
               titleSlot={titleSlotElement}
               getTableRequestData={setTableData}
@@ -500,7 +515,49 @@ const CompanyFile: React.FC = () => {
                 groupId: fileGroupId,
               }}
             />
-          )}
+          )} */}
+          <div className={styles.buttonArea}>
+            {/* {buttonJurisdictionArray?.includes('sign-file-add') && ( */}
+            <Button type="primary" className="mr7" onClick={() => addEvent()}>
+              <PlusOutlined />
+              添加
+            </Button>
+            {/* )} */}
+
+            {/* {buttonJurisdictionArray?.includes('sign-file-edit') && ( */}
+            <Button className="mr7" onClick={() => editEvent()}>
+              <EditOutlined />
+              编辑
+            </Button>
+            {/* )} */}
+            {/* {buttonJurisdictionArray?.includes('sign-file-download') && ( */}
+            <Popconfirm
+              title="您确定要下载该公司文件？"
+              onConfirm={() => downLoadEvent()}
+              okText="确认"
+              cancelText="取消"
+            >
+              <Button className="mr7">
+                <DownloadOutlined />
+                下载
+              </Button>
+            </Popconfirm>
+            {/* )} */}
+
+            {/* {buttonJurisdictionArray?.includes('sign-file-delete') && ( */}
+            <Popconfirm
+              title="您确定要删除该条数据?"
+              onConfirm={sureDeleteData}
+              okText="确认"
+              cancelText="取消"
+            >
+              <Button className="mr7">
+                <DeleteOutlined />
+                删除
+              </Button>
+            </Popconfirm>
+            {/* )} */}
+          </div>
         </div>
       </div>
       <Modal
@@ -555,7 +612,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={defaultForm} preserve={false}>
           <Spin spinning={loading}>
-            <DefaultParams />
+            <DefaultSign />
           </Spin>
         </Form>
       </Modal>
@@ -572,11 +629,11 @@ const CompanyFile: React.FC = () => {
         destroyOnClose
       >
         <Form form={addGroupForm} preserve={false}>
-          <FileGroupForm />
+          <SignGroupForm />
         </Form>
       </Modal>
     </PageCommonWrap>
   );
 };
 
-export default CompanyFile;
+export default SignManage;

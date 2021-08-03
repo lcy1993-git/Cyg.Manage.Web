@@ -84,7 +84,7 @@ const RolePermissions: React.FC = () => {
       },
     },
     {
-      title: '授权人员',
+      title: '授权对象',
       dataIndex: 'users',
       index: 'users',
       render: (text: any, record: any) => {

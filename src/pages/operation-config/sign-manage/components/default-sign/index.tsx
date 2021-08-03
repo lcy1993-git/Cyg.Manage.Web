@@ -1,10 +1,10 @@
 import CyFormItem from '@/components/cy-form-item';
 import React, { useMemo } from 'react';
 import { useRequest } from 'ahooks';
-import { Input, Row, Col, TreeSelect } from 'antd';
+import { Row, Col, TreeSelect } from 'antd';
 import { getCompanyFileTree } from '@/services/operation-config/company-file';
 
-const DefaultParams: React.FC = () => {
+const DefaultSign: React.FC = () => {
   const { data: categoryData } = useRequest(() => getCompanyFileTree());
 
   const mapTreeData = (data: any) => {
@@ -36,21 +36,9 @@ const DefaultParams: React.FC = () => {
     <>
       <Row gutter={18}>
         <Col>
-          <CyFormItem
-            labelWidth={120}
-            align="right"
-            label="设计单位"
-            name="designOrganize"
-            rules={[{ max: 12, message: '设计单位超出字符数限制，限制为12个字符' }]}
-          >
-            <Input style={{ width: '200px' }} placeholder="--请输入设计单位--" />
-          </CyFormItem>
-        </Col>
-
-        <Col>
-          <CyFormItem labelWidth={120} align="right" label="图框模板" name="frameTemplate">
+          <CyFormItem labelWidth={120} align="right" label="批准" name="approve">
             <TreeSelect
-              key="frameTemplate"
+              key="approve"
               style={{ width: '200px' }}
               treeData={
                 selectData?.map((item) => {
@@ -60,7 +48,29 @@ const DefaultParams: React.FC = () => {
                       value: item.value,
                     };
                   });
-                })[0]
+                })[1]
+              }
+              placeholder="请选择"
+              treeDefaultExpandAll
+              allowClear
+            />
+          </CyFormItem>
+        </Col>
+
+        <Col>
+          <CyFormItem labelWidth={120} align="right" label="审核" name="audit">
+            <TreeSelect
+              key="audit"
+              style={{ width: '200px' }}
+              treeData={
+                selectData?.map((item) => {
+                  return item.map((item: any) => {
+                    return {
+                      title: item.title,
+                      value: item.value,
+                    };
+                  });
+                })[1]
               }
               placeholder="请选择"
               treeDefaultExpandAll
@@ -69,11 +79,12 @@ const DefaultParams: React.FC = () => {
           </CyFormItem>
         </Col>
       </Row>
+
       <Row gutter={18}>
         <Col>
-          <CyFormItem labelWidth={120} align="right" label="目录模板" name="directoryTemplate">
+          <CyFormItem labelWidth={120} align="right" label="校核" name="calibration">
             <TreeSelect
-              key="directoryTemplate"
+              key="calibration"
               style={{ width: '200px' }}
               treeData={
                 selectData?.map((item) => {
@@ -83,7 +94,7 @@ const DefaultParams: React.FC = () => {
                       value: item.value,
                     };
                   });
-                })[2]
+                })[1]
               }
               placeholder="请选择"
               treeDefaultExpandAll
@@ -93,14 +104,9 @@ const DefaultParams: React.FC = () => {
         </Col>
 
         <Col>
-          <CyFormItem
-            labelWidth={120}
-            align="right"
-            label="设计总说明模板"
-            name="descriptionTemplate"
-          >
+          <CyFormItem labelWidth={120} align="right" label="设计/勘测" name="designSurvey">
             <TreeSelect
-              key="descriptionTemplate"
+              key="designSurvey"
               style={{ width: '200px' }}
               treeData={
                 selectData?.map((item) => {
@@ -110,7 +116,7 @@ const DefaultParams: React.FC = () => {
                       value: item.value,
                     };
                   });
-                })[3]
+                })[1]
               }
               placeholder="请选择"
               treeDefaultExpandAll
@@ -123,4 +129,4 @@ const DefaultParams: React.FC = () => {
   );
 };
 
-export default DefaultParams;
+export default DefaultSign;
