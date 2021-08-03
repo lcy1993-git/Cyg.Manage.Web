@@ -108,7 +108,15 @@ const CompanyManage: React.FC = () => {
         );
       },
     },
-
+    {
+      title: '授权期限',
+      dataIndex: 'address',
+      index: 'address',
+      width: 100,
+      render(){
+        return "2020-02-02"
+      }
+    },
     {
       title: '详细地址',
       dataIndex: 'address',
@@ -122,9 +130,17 @@ const CompanyManage: React.FC = () => {
   ];
 
   const changeStateEvent = async (id: string, isChecked: boolean) => {
-    await changeCompanyStatus(id, isChecked);
-    tableFresh();
-    message.success('状态修改成功');
+    // 这里判断一下时间是否过期
+    // 并且需要判断是否是从关闭到开启状态
+    if(false){
+      message.error('当前授权已超期，请修改授权期限');
+    }else{
+
+      await changeCompanyStatus(id, isChecked);
+      tableFresh();
+      message.success('状态修改成功');
+    }
+
   };
 
   const companyManageButton = () => {
