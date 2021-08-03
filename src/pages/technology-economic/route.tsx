@@ -63,6 +63,11 @@ const AdjustmentFileDetails = Loadable({
   loading: Loading,
   delay: 150,
 });
+const AreaTypeManage = Loadable({
+  loader: () => import('@/pages/technology-economic/area-type-manage'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -144,5 +149,10 @@ export default [
     title: '物料库',
     path: '/technology-economic/supplies-library',
     component: <SuppliesLibrary />,
+  },
+  {
+    title: '地区分类管理',
+    path: '/technology-economic/area-type-manage',
+    component: <AreaTypeManage />,
   },
 ];
