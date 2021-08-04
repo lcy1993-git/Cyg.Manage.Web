@@ -1,48 +1,88 @@
+.folderButton {
+  position: fixed;
+  bottom: 85px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 54px;
+  color: white;
+  background-color: #505050;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.2s;
+  img {
+    width: 16px;
+    height: 12px;
+  }
+}
+
+.folderButton:hover {
+  width: 38px;
+  opacity: 1;
+}
+
 .allProjectPage {
-  width: 100%;
-  height: 100%;
-  background-color: @bg-primary-color;
   box-sizing: border-box;
+  width: 100%;
+  height: 87%;
+  background-color: @bg-primary-color;
 
   .allProjectStatistics {
-    height: 90px;
+    display: flex;
     box-sizing: border-box;
+    height: 90px;
+    margin-bottom: 10px;
+    padding: 20px;
     background-color: #ffffff;
     border-radius: 2px;
-    margin-bottom: 10px;
-    display: flex;
-    padding: 20px;
 
     .projectManagementStatisticItem {
-      border-left: 1px solid @split-color;
-      padding-left: 10px;
       flex: 1;
+      padding-left: 10px;
+      border-left: 1px solid @split-color;
       cursor: pointer;
     }
   }
 
-  .allProjectTableContent {
-    width: 100%;
-    height: calc(100% - 100px);
-    background-color: #ffffff;
-    padding: 20px 20px 0px 20px;
-    box-sizing: border-box;
-
-    .allProjectSearch {
-      height: 32px;
-      display: flex;
-
-      .allProjectSearchContent {
-        display: flex;
-        flex: 1;
-      }
-      .allProjectFunctionButtonContent {
-        display: flex;
-      }
+  .projectsAndFavorite {
+    display: flex;
+    height: 100%;
+    .allProjectsFavorite {
+      box-sizing: border-box;
+      width: 25%;
+      height: 100%;
+      margin-right: 10px;
+      padding: 20px 20px 0px 20px;
+      background-color: #ffffff;
     }
+    .allProjectTableContent {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      padding: 20px 20px 0px 20px;
+      background-color: #ffffff;
 
-    .engineerTableContent {
-      height: calc(100% - 72px);
+      .allProjectSearch {
+        display: flex;
+        height: 32px;
+
+        .allProjectSearchContent {
+          display: flex;
+          flex: 1;
+        }
+        .allProjectFunctionButtonContent {
+          display: flex;
+        }
+      }
+
+      .engineerTableContent {
+        height: calc(100% - 72px);
+      }
     }
   }
 }
