@@ -22,6 +22,28 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
 
   return (
     <>
+      {/* {type === 'add' && ( */}
+        <CyFormItem label="文件类别" name="fileCategory" required rules={rules.fileCategory}>
+          <UrlSelect
+            onChange={(value: any) => setCategoryValue(value)}
+            titlekey="text"
+            valuekey="value"
+            url="/CompanyFile/GetCategorys"
+            placeholder="请选择文件类别"
+          />
+        </CyFormItem>
+      {/* )} */}
+
+      <CyFormItem label="人员" name="fileCategory" required rules={rules.signUser}>
+        <UrlSelect
+          onChange={(value: any) => setCategoryValue(value)}
+          titlekey="text"
+          valuekey="value"
+          url="/CompanyFile/GetCategorys"
+          placeholder="请选择签批人员"
+        />
+      </CyFormItem>
+
       <CyFormItem
         label="名称"
         name="name"
@@ -42,17 +64,7 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
       >
         <Input placeholder="请输入名称" />
       </CyFormItem>
-      {type === 'add' && (
-        <CyFormItem label="文件类别" name="fileCategory" required rules={rules.fileCategory}>
-          <UrlSelect
-            onChange={(value: any) => setCategoryValue(value)}
-            titlekey="text"
-            valuekey="value"
-            url="/CompanyFile/GetCategorys"
-            placeholder="请选择文件类别"
-          />
-        </CyFormItem>
-      )}
+
       {type === 'add' && (
         <CyFormItem label="上传文件" name="file" required rules={rules.fileld}>
           <FileUpload

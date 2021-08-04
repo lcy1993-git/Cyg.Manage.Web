@@ -474,7 +474,7 @@ const SignManage: React.FC = () => {
               {/* {buttonJurisdictionArray?.includes('sign-manage-defaultOptions') && ( */}
               <Tooltip title="默认参数和对应签批分组关联" style={{ borderRadius: 15 }}>
                 <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
-                  <i className="iconfont iconcanshu" />
+                  {/* <i className="iconfont iconcanshu" /> */}
                   默认参数
                 </Button>
               </Tooltip>
@@ -484,9 +484,24 @@ const SignManage: React.FC = () => {
         </div>
 
         <div className={styles.fileTable}>
-          <Tabs>
+          <Tabs type="card">
             <TabPane tab="批准" key="pz">
-              1
+              {fileGroupId && (
+                <GeneralTable
+                  titleSlot={titleSlotElement}
+                  getTableRequestData={setTableData}
+                  ref={tableRef}
+                  needCommonButton={true}
+                  columns={columns}
+                  url="/CompanyFile/GetPagedList"
+                  tableTitle="公司文件"
+                  getSelectData={(data) => setTableSelectRows(data)}
+                  extractParams={{
+                    keyWord: searchKeyWord,
+                    groupId: fileGroupId,
+                  }}
+                />
+              )}
             </TabPane>
             <TabPane tab="审核" key="sh">
               2
@@ -562,7 +577,7 @@ const SignManage: React.FC = () => {
       </div>
       <Modal
         maskClosable={false}
-        title="添加-文件"
+        title="添加-签批"
         width="720px"
         visible={addFormVisible}
         okText="确认"
@@ -579,7 +594,7 @@ const SignManage: React.FC = () => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-文件"
+        title="编辑-签批"
         width="680px"
         visible={editFormVisible}
         okText="确认"
