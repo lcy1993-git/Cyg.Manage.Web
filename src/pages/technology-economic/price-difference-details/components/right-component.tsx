@@ -8,13 +8,13 @@ const columns = [
     dataIndex: 'name',
     key: 'name',
     colSpan: 0,
+    width: 500,
   },
   {
     title: '人工系数调差(%)',
     dataIndex: 'number',
     key: 'number',
     colSpan: 2,
-    width: 1500,
   },
 ];
 const columnsTwo = [
