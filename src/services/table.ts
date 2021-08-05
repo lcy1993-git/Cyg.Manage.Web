@@ -22,7 +22,8 @@ export interface TableRequestResult {
 export const tableCommonRequest = (
   params: TableCommonRequestParams,
 ): Promise<TableRequestResult> => {
-  let requestBaseUrl = baseUrl[params.requestSource];
+  // let requestBaseUrl = baseUrl[params.requestSource];
+  let requestBaseUrl = baseUrl['tecEco1'];
   if (params.postType == 'body') {
     return cyRequest<TableRequestResult>(() =>
       request(`${requestBaseUrl}${params.url}`, {

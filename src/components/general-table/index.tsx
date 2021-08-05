@@ -146,7 +146,10 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
-      setSelectedRowKeys(selectedRows.map((item) => cruxKey ? item[cruxKey]["id"] : item[rowKey]));
+      setSelectedRowKeys(selectedRows.map((item) =>{
+        console.log(item,cruxKey)
+        return  cruxKey ? item[cruxKey]["id"] : item[rowKey]
+      }));
       getSelectData?.(selectedRows);
     },
   };

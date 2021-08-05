@@ -14,7 +14,7 @@ interface TableImportButtonProps extends ButtonProps {
   name?: string;
   labelTitle?: string;
   buttonTitle?: string;
-  requestSource?: 'project' | 'resource' | 'upload';
+  requestSource?: 'project' | 'resource' | 'upload' | 'tecEco1' | 'tecEco';
   postType?: 'body' | 'query';
 }
 
