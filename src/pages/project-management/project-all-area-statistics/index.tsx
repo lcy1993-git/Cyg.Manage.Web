@@ -1,20 +1,18 @@
+import DataSelect from '@/components/data-select';
 import PageCommonWrap from '@/components/page-common-wrap';
-import ProjectInfoRefreshList from './components/project-info-refresh-list';
-import React from 'react';
-import { useState } from 'react';
+import { useGetSelectData } from '@/utils/hooks';
+import React, { useState } from 'react';
+import ComprehensiveProcessComponent from './components/comprehensive-process-component';
+import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
 import OverdueComponent from './components/overdue-component';
+import ProjectInfoRefreshList from './components/project-info-refresh-list';
+import ProjectProcessComponent from './components/project-process-component';
+import ProjectProcessListComponent from './components/project-process-list-component';
 import ProjectStatisticsCompoent from './components/project-statistics-component';
 import SurveyRateComponent from './components/survey-rate-component';
 import TabsWindow from './components/tabs-window';
 import TitleWindow from './components/title-window';
 import styles from './index.less';
-import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
-import ComprehensiveProcessComponent from './components/comprehensive-process-component';
-import ProjectProcessComponent from './components/project-process-component';
-import { useGetSelectData } from '@/utils/hooks';
-import DataSelect from '@/components/data-select';
-import ProjectProcessListComponent from './components/project-process-list-component';
-
 
 const ProjectAllAreaStatistics: React.FC = () => {
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
@@ -44,7 +42,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
                         setCompanyId(value);
                       }}
                       placeholder="请选择设计院单位"
-                      options={[{label: "全部", value: ""},...companySelectData]}
+                      options={[{ label: '全部', value: '' }, ...companySelectData]}
                     />
                   </div>
                 )
@@ -54,7 +52,9 @@ const ProjectAllAreaStatistics: React.FC = () => {
                 { name: '综合进度', value: 'comprehensive' },
               ]}
             >
-              {processActiveTab === 'project' && <ProjectProcessComponent companyId={companyId} />}
+              {processActiveTab === 'project' && (
+                <ProjectProcessComponent companyId={companyId!!} />
+              )}
               {processActiveTab === 'comprehensive' && <ComprehensiveProcessComponent />}
             </TabsWindow>
           </div>
@@ -92,7 +92,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
               ]}
             >
               {processListActiveTab === 'comprehensive' && <ComprehensiveProcessListComponent />}
-              {processListActiveTab === 'project' && <ProjectProcessListComponent />} 
+              {processListActiveTab === 'project' && <ProjectProcessListComponent />}
             </TabsWindow>
           </div>
         </div>
