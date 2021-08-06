@@ -2,6 +2,7 @@ import DataSelect from '@/components/data-select';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { useGetSelectData } from '@/utils/hooks';
 import React, { useState } from 'react';
+import CompanyAndProjectTable from './components/company-and-project-table';
 import ComprehensiveProcessComponent from './components/comprehensive-process-component';
 import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
 import OverdueComponent from './components/overdue-component';
@@ -28,7 +29,8 @@ const ProjectAllAreaStatistics: React.FC = () => {
       <div className={styles.projectAllAreaStatistics}>
         <div className={styles.statisticsTop}>
           <div className={styles.processContent}>
-            <TabsWindow
+            <CompanyAndProjectTable />
+            {/* <TabsWindow
               value={processActiveTab}
               onChange={setProcessActiveTab}
               titleCustomSlot={() =>
@@ -56,7 +58,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
                 <ProjectProcessComponent companyId={companyId!!} />
               )}
               {processActiveTab === 'comprehensive' && <ComprehensiveProcessComponent />}
-            </TabsWindow>
+            </TabsWindow> */}
           </div>
           <div className={styles.topOtherContent}>
             <div className={styles.overdueContent}>
