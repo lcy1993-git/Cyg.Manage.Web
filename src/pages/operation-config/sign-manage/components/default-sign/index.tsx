@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks';
 import { Row, Col, TreeSelect } from 'antd';
 import { getCompanyFileTree } from '@/services/operation-config/company-file';
 import { useGetSelectData } from '@/utils/hooks';
+import DataSelect from '@/components/data-select';
 
 interface DefaultOptionsParams {
   groupId: string;
@@ -13,55 +14,53 @@ const DefaultSign: React.FC<DefaultOptionsParams> = (props) => {
   const { groupId } = props;
   const { data: approveData = [] } = useGetSelectData({
     url: '/CompanySign/GetList',
-    extraParams: { category: 0, groupId: groupId },
+    method: 'post',
+    titleKey: 'name',
+    valueKey: 'id',
+    extraParams: { category: 1, groupId: groupId },
   });
-
-  console.log(approveData);
+  const { data: auditData = [] } = useGetSelectData({
+    url: '/CompanySign/GetList',
+    method: 'post',
+    titleKey: 'name',
+    valueKey: 'id',
+    extraParams: { category: 2, groupId: groupId },
+  });
+  const { data: checkData = [] } = useGetSelectData({
+    url: '/CompanySign/GetList',
+    method: 'post',
+    titleKey: 'name',
+    valueKey: 'id',
+    extraParams: { category: 3, groupId: groupId },
+  });
+  const { data: designData = [] } = useGetSelectData({
+    url: '/CompanySign/GetList',
+    method: 'post',
+    titleKey: 'name',
+    valueKey: 'id',
+    extraParams: { category: 4, groupId: groupId },
+  });
 
   return (
     <>
       <Row gutter={18}>
         <Col>
           <CyFormItem labelWidth={120} align="right" label="批准" name="approve">
-            {/* <TreeSelect
-              key="approve"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[1]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            /> */}
+            <DataSelect
+              options={approveData}
+              style={{ width: '220px' }}
+              placeholder="请选择批准人员"
+            />
           </CyFormItem>
         </Col>
 
         <Col>
           <CyFormItem labelWidth={120} align="right" label="审核" name="audit">
-            {/* <TreeSelect
-              key="audit"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[1]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            /> */}
+            <DataSelect
+              options={auditData}
+              style={{ width: '220px' }}
+              placeholder="请选择审核人员"
+            />
           </CyFormItem>
         </Col>
       </Row>
@@ -69,44 +68,20 @@ const DefaultSign: React.FC<DefaultOptionsParams> = (props) => {
       <Row gutter={18}>
         <Col>
           <CyFormItem labelWidth={120} align="right" label="校核" name="calibration">
-            {/* <TreeSelect
-              key="calibration"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[1]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            /> */}
+            <DataSelect
+              options={checkData}
+              style={{ width: '220px' }}
+              placeholder="请选择校核人员"
+            />
           </CyFormItem>
         </Col>
 
         <Col>
           <CyFormItem labelWidth={120} align="right" label="设计/勘测" name="designSurvey">
-            <TreeSelect
-              key="designSurvey"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[1]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
+            <DataSelect
+              options={designData}
+              style={{ width: '220px' }}
+              placeholder="请选择设计/勘测人员"
             />
           </CyFormItem>
         </Col>

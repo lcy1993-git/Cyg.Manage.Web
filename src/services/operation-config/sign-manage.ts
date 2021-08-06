@@ -46,10 +46,7 @@ export const deleteSignFileItem = (id: string) => {
 };
 
 interface DefaultOptionsParams {
-  designOrganize: string;
-  frameTemplate: string;
-  directoryTemplate: string;
-  descriptionTemplate: string;
+  groupId: string;
   approve: string;
   audit: string;
   calibration: string;
@@ -73,9 +70,9 @@ export const getSignDefaultOptions = (groupId: string) => {
   );
 };
 
-export const updateCompanyDefaultOptions = (params: DefaultOptionsParams) => {
+export const updateSignGroupDefaultOptions = (params: DefaultOptionsParams) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/CompanyFile/ModifyCompanyDefaultOptions`, {
+    request(`${baseUrl.project}/CompanySignGroup/SaveDefaultOptions`, {
       method: 'POST',
       data: params,
     }),

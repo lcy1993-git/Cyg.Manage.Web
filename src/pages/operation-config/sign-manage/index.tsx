@@ -14,7 +14,7 @@ import {
   deleteSignFileItem,
   getSignFileDetail,
   getSignDefaultOptions,
-  updateCompanyDefaultOptions,
+  updateSignGroupDefaultOptions,
   uploadCompanyFile,
   addSignGroupItem,
   deleteSignGroupItem,
@@ -251,11 +251,9 @@ const SignManage: React.FC = () => {
   };
 
   const defaultParamsEvent = async () => {
-    setDefaultParamsVisible(true);
     const defaultOptions = await getDefaultOptions(signGroupId);
-    console.log(defaultOptions);
-
     defaultForm.setFieldsValue(defaultOptions);
+    setDefaultParamsVisible(true);
   };
 
   const saveDefaultOptionsEvent = () => {
@@ -263,10 +261,7 @@ const SignManage: React.FC = () => {
     defaultForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          designOrganize: defaultData.designOrganize,
-          frameTemplate: defaultData.frameTemplate,
-          directoryTemplate: defaultData.directoryTemplate,
-          descriptionTemplate: defaultData.descriptionTemplate,
+          groupId: signGroupId,
           approve: defaultData.approve,
           audit: defaultData.audit,
           calibration: defaultData.calibration,
@@ -274,7 +269,7 @@ const SignManage: React.FC = () => {
         },
         values,
       );
-      await updateCompanyDefaultOptions(submitInfo);
+      await updateSignGroupDefaultOptions(submitInfo);
       refresh();
       message.success('更新成功');
       setDefaultParamsVisible(false);
