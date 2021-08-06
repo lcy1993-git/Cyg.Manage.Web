@@ -3,24 +3,23 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip, Tabs } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
 import { isArray } from 'lodash';
 import '@/assets/icon/iconfont.css';
-import CompanyFileForm from './components/add-edit-form';
 import {
-  updateCompanyFileItem,
-  addCompanyFileItem,
-  deleteCompanyFileItem,
-  getCompanyFileDetail,
-  getCompanyDefaultOptions,
+  updateSignFileItem,
+  addSignFileItem,
+  deleteSignFileItem,
+  getSignFileDetail,
+  getSignDefaultOptions,
   updateCompanyDefaultOptions,
   uploadCompanyFile,
-  addFileGroupItem,
-  deleteFileGroupItem,
-  downLoadFileItem,
-} from '@/services/operation-config/company-file';
+  addSignGroupItem,
+  deleteSignGroupItem,
+  downLoadSignFileItem,
+} from '@/services/operation-config/sign-manage';
 import DefaultSign from './components/default-sign';
 import { getUploadUrl } from '@/services/resource-config/drawing';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
@@ -29,23 +28,28 @@ import SignGroupForm from './components/add-sign-group';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { TableRequestResult } from '@/services/table';
+import SignFileForm from './components/add-edit-form';
 
 const { Search } = Input;
 const { TabPane } = Tabs;
 
 const SignManage: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
+  const auditRef = React.useRef<HTMLDivElement>(null);
+  const approvalRef = React.useRef<HTMLDivElement>(null);
+  const checkRef = React.useRef<HTMLDivElement>(null);
+  const designRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
-  const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false);
-  const [fileGroupId, setFileGroupId] = useState<string>();
+  const [signGroupModalVisible, setSignGroupModalVisible] = useState<boolean>(false);
+  const [signGroupId, setSignGroupId] = useState<string>('');
   const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
   const [editingFileName, setEditingFileName] = useState<string>('');
   const [fileId, setFileId] = useState<string>();
-  const [fileCategory, setFileCategory] = useState<number>();
+  const [tabKey, setTabKey] = useState<string>('approval');
+  // const [fileCategory, setFileCategory] = useState<number>();
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [tableData, setTableData] = useState<TableRequestResult>();
@@ -59,41 +63,25 @@ const SignManage: React.FC = () => {
 
   const securityKey = keyData?.uploadCompanyFileApiSecurity;
 
-  const { data, run, loading } = useRequest(getCompanyFileDetail, {
+  const { data, run, loading } = useRequest(getSignFileDetail, {
     manual: true,
   });
 
-  const { data: defaultOptions, run: getDefaultOptions } = useRequest(getCompanyDefaultOptions, {
+  const { data: defaultOptions, run: getDefaultOptions } = useRequest(getSignDefaultOptions, {
     manual: true,
   });
-  const { data: fileGroupData = [], run: getfileGroup } = useGetSelectData(
+  const { data: signGroupData = [], run: getSignGroup } = useGetSelectData(
     {
-      url: '/CompanyFileGroup/GetList',
+      url: '/CompanySignGroup/GetList',
       method: 'post',
     },
     {
       onSuccess: () => {
-        setFileGroupId(fileGroupData[0]?.value);
-        setNowSelectGroup(fileGroupData[0]?.label);
+        setSignGroupId(signGroupData[0]?.value);
+        setNowSelectGroup(signGroupData[0]?.label);
       },
     },
   );
-
-  const searchComponent = () => {
-    return (
-      <div>
-        <TableSearch label="文件名称" width="248px">
-          <Search
-            value={searchKeyWord}
-            onChange={(e) => setSearchKeyWord(e.target.value)}
-            onSearch={() => search()}
-            enterButton
-            placeholder="请输入名称/类别"
-          />
-        </TableSearch>
-      </div>
-    );
-  };
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -102,7 +90,7 @@ const SignManage: React.FC = () => {
     }
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
-    await deleteCompanyFileItem(editDataId);
+    await deleteSignFileItem(editDataId);
     refresh();
     setTableSelectRows([]);
     message.success('删除成功');
@@ -110,47 +98,57 @@ const SignManage: React.FC = () => {
 
   // 列表刷新
   const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh();
+    if (tabKey === 'approval') {
+      if (approvalRef && approvalRef.current) {
+        // @ts-ignore
+        approvalRef.current.refresh();
+        return;
+      }
     }
-  };
-
-  // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search();
+    if (tabKey === 'audit') {
+      if (auditRef && auditRef.current) {
+        // @ts-ignore
+        auditRef.current.refresh();
+        return;
+      }
+    }
+    if (tabKey === 'check') {
+      if (checkRef && checkRef.current) {
+        // @ts-ignore
+        checkRef.current.refresh();
+        return;
+      }
+    }
+    if (tabKey === 'design') {
+      if (designRef && designRef.current) {
+        // @ts-ignore
+        designRef.current.refresh();
+        return;
+      }
     }
   };
 
   const columns = [
     {
-      dataIndex: 'fileCategory',
-      index: 'fileCategory',
-      title: '类别',
-      width: 150,
+      dataIndex: 'userId',
+      index: 'userId',
+      title: '人员',
+      width: 180,
       render: (text: any, record: any) => {
-        return record.fileCategoryText;
+        return record.userName;
       },
     },
     {
       dataIndex: 'name',
       index: 'name',
-      title: '名称',
-      width: 150,
+      title: '签批文件',
+      width: 180,
     },
-    {
-      dataIndex: 'id',
-      index: 'id',
-      title: '文件编号',
-      width: 200,
-    },
+
     {
       dataIndex: 'describe',
       index: 'describe',
-      title: '描述',
-      // width: 200,
+      title: '备注',
     },
   ];
 
@@ -192,14 +190,15 @@ const SignManage: React.FC = () => {
           {
             name: '',
             fileId: fileId,
-            fileCategory: 0,
+            category: 0,
             describe: '',
-            groupId: fileGroupId,
+            userId: '',
+            groupId: signGroupId,
           },
           values,
         );
 
-        await addCompanyFileItem(submitInfo);
+        await addSignFileItem(submitInfo);
         refresh();
         message.success('添加成功');
         setAddFormVisible(false);
@@ -219,7 +218,6 @@ const SignManage: React.FC = () => {
     const editData = tableSelectRows[0];
 
     const editDataId = editData.id;
-    setFileCategory(editData.fileCategory);
     setEditingFileName(editData.name);
 
     setEditFormVisible(true);
@@ -245,16 +243,18 @@ const SignManage: React.FC = () => {
         },
         values,
       );
-      await updateCompanyFileItem(submitInfo);
+      await updateSignFileItem(submitInfo);
       message.success('更新成功');
       setEditFormVisible(false);
-      search();
+      refresh();
     });
   };
 
   const defaultParamsEvent = async () => {
     setDefaultParamsVisible(true);
-    const defaultOptions = await getDefaultOptions();
+    const defaultOptions = await getDefaultOptions(signGroupId);
+    console.log(defaultOptions);
+
     defaultForm.setFieldsValue(defaultOptions);
   };
 
@@ -337,7 +337,7 @@ const SignManage: React.FC = () => {
     const fileId = tableSelectRows[0].fileId;
     const fileName = tableSelectRows[0].fileName;
 
-    const res = await downLoadFileItem({ fileId, securityKey });
+    const res = await downLoadSignFileItem({ fileId, securityKey });
 
     const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1);
 
@@ -361,16 +361,17 @@ const SignManage: React.FC = () => {
     }
     message.success('下载成功');
   };
+  console.log(signGroupId);
 
   //公司文件组操作
   const addFileGroupEvent = () => {
-    setFileGroupModalVisible(true);
+    setSignGroupModalVisible(true);
     refresh();
   };
 
   //选择文件组别获取对应公司文件
   const searchByFileGroup = (value?: any) => {
-    const currentTitle = fileGroupData.filter((item: any) => {
+    const currentTitle = signGroupData.filter((item: any) => {
       if (value === item.value) {
         return item.label;
       }
@@ -378,16 +379,58 @@ const SignManage: React.FC = () => {
 
     setNowSelectGroup(currentTitle[0]?.label);
 
-    setFileGroupId(value);
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.searchByParams({
-        groupId: value,
-      });
+    setSignGroupId(value);
+  };
+
+  const tabChangeEvent = (value: string) => {
+    setTabKey(value);
+    if (value === 'approval') {
+      if (approvalRef && approvalRef.current) {
+        // @ts-ignore
+        approvalRef.current.searchByParams({
+          groupId: signGroupId,
+          category: 1,
+        });
+        return;
+      }
+    }
+    if (value === 'audit') {
+      if (auditRef && auditRef.current) {
+        // @ts-ignore
+        auditRef.current.searchByParams({
+          groupId: signGroupId,
+          category: 2,
+        });
+        return;
+      }
+    }
+    if (value === 'check') {
+      if (checkRef && checkRef.current) {
+        // @ts-ignore
+        checkRef.current.searchByParams({
+          groupId: signGroupId,
+          category: 3,
+        });
+        return;
+      }
+    }
+    if (value === 'design') {
+      if (designRef && designRef.current) {
+        // @ts-ignore
+        designRef.current.searchByParams({
+          groupId: signGroupId,
+          category: 4,
+        });
+        return;
+      }
     }
   };
 
-  const saveFileGroupEvent = () => {
+  useEffect(() => {
+    refresh();
+  }, [signGroupId]);
+
+  const saveSignGroupEvent = () => {
     addGroupForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
@@ -397,10 +440,10 @@ const SignManage: React.FC = () => {
         values,
       );
 
-      await addFileGroupItem(submitInfo);
+      await addSignGroupItem(submitInfo);
       message.success('添加成功');
-      getfileGroup();
-      setFileGroupModalVisible(false);
+      getSignGroup();
+      setSignGroupModalVisible(false);
       addGroupForm.resetFields();
       refresh();
       searchByFileGroup();
@@ -408,17 +451,17 @@ const SignManage: React.FC = () => {
   };
 
   const deleteFileGroupEvent = async () => {
-    if (fileGroupId === undefined || fileGroupId === '') {
-      message.warning('未选择要删除公司文件组别');
+    if (signGroupId === undefined || signGroupId === '') {
+      message.warning('未选择要删除签批文件组别');
       return;
     }
     if (tableData && tableData?.items.length > 0) {
-      message.error('该分组包含公司文件,无法删除');
+      message.error('该分组包含签批文件,无法删除');
       return;
     }
-    await deleteFileGroupItem(fileGroupId);
+    await deleteSignGroupItem(signGroupId);
     message.success('已删除');
-    getfileGroup();
+    getSignGroup();
     searchByFileGroup();
   };
 
@@ -446,8 +489,8 @@ const SignManage: React.FC = () => {
             <TableSearch className={styles.fileGroupSelect} label="签批分组" width="360px">
               <DataSelect
                 showSearch
-                value={fileGroupId}
-                options={fileGroupData}
+                value={signGroupId}
+                options={signGroupData}
                 placeholder="请选择签批组别"
                 onChange={(value: any) => searchByFileGroup(value)}
                 style={{ width: '100%' }}
@@ -484,53 +527,85 @@ const SignManage: React.FC = () => {
         </div>
 
         <div className={styles.fileTable}>
-          <Tabs type="card">
-            <TabPane tab="批准" key="pz">
-              {fileGroupId && (
+          <Tabs type="card" onChange={(value) => tabChangeEvent(value)}>
+            <TabPane tab="批准" key="approval">
+              {signGroupId && (
                 <GeneralTable
                   titleSlot={titleSlotElement}
                   getTableRequestData={setTableData}
-                  ref={tableRef}
+                  ref={approvalRef}
                   needCommonButton={true}
                   columns={columns}
-                  url="/CompanyFile/GetPagedList"
-                  tableTitle="公司文件"
+                  url="/CompanySign/GetPagedList"
+                  tableTitle="批准"
                   getSelectData={(data) => setTableSelectRows(data)}
                   extractParams={{
                     keyWord: searchKeyWord,
-                    groupId: fileGroupId,
+                    groupId: signGroupId,
+                    category: 1,
                   }}
                 />
               )}
             </TabPane>
-            <TabPane tab="审核" key="sh">
-              2
+            <TabPane tab="审核" key="audit">
+              {signGroupId && (
+                <GeneralTable
+                  titleSlot={titleSlotElement}
+                  getTableRequestData={setTableData}
+                  ref={auditRef}
+                  needCommonButton={true}
+                  columns={columns}
+                  url="/CompanySign/GetPagedList"
+                  tableTitle="审核"
+                  getSelectData={(data) => setTableSelectRows(data)}
+                  extractParams={{
+                    keyWord: searchKeyWord,
+                    groupId: signGroupId,
+                    category: 2,
+                  }}
+                />
+              )}
             </TabPane>
-            <TabPane tab="校核" key="jh">
-              3
+            <TabPane tab="校核" key="check">
+              {signGroupId && (
+                <GeneralTable
+                  titleSlot={titleSlotElement}
+                  getTableRequestData={setTableData}
+                  ref={checkRef}
+                  needCommonButton={true}
+                  columns={columns}
+                  url="/CompanySign/GetPagedList"
+                  tableTitle="校核"
+                  getSelectData={(data) => setTableSelectRows(data)}
+                  extractParams={{
+                    keyWord: searchKeyWord,
+                    groupId: signGroupId,
+                    category: 3,
+                  }}
+                />
+              )}
             </TabPane>
-            <TabPane tab="设计/勘测" key="sjkc">
-              4
+            <TabPane tab="设计/勘测" key="design">
+              {signGroupId && (
+                <GeneralTable
+                  titleSlot={titleSlotElement}
+                  getTableRequestData={setTableData}
+                  ref={designRef}
+                  needCommonButton={true}
+                  columns={columns}
+                  url="/CompanySign/GetPagedList"
+                  tableTitle="设计/勘测"
+                  getSelectData={(data) => setTableSelectRows(data)}
+                  extractParams={{
+                    keyWord: searchKeyWord,
+                    groupId: signGroupId,
+                    category: 4,
+                  }}
+                />
+              )}
             </TabPane>
           </Tabs>
-          {/* {fileGroupId && (
-            <GeneralTable
-              titleSlot={titleSlotElement}
-              getTableRequestData={setTableData}
-              ref={tableRef}
-              buttonLeftContentSlot={searchComponent}
-              buttonRightContentSlot={tableElement}
-              needCommonButton={true}
-              columns={columns}
-              url="/CompanyFile/GetPagedList"
-              tableTitle="公司文件"
-              getSelectData={(data) => setTableSelectRows(data)}
-              extractParams={{
-                keyWord: searchKeyWord,
-                groupId: fileGroupId,
-              }}
-            />
-          )} */}
+
           <div className={styles.buttonArea}>
             {/* {buttonJurisdictionArray?.includes('sign-file-add') && ( */}
             <Button type="primary" className="mr7" onClick={() => addEvent()}>
@@ -588,7 +663,7 @@ const SignManage: React.FC = () => {
       >
         <Form onValuesChange={onAddFormChange} form={addForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm uploadFileFn={addUploadFile} type="add" groupData={tableData} />
+            <SignFileForm uploadFileFn={addUploadFile} type="add" groupData={tableData} />
           </Spin>
         </Form>
       </Modal>
@@ -605,18 +680,17 @@ const SignManage: React.FC = () => {
       >
         <Form form={editForm} onValuesChange={onEditFormChange} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm
+            <SignFileForm
               uploadFileFn={editUploadFile}
               groupData={tableData}
               editingName={editingFileName}
-              fileCategory={fileCategory}
             />
           </Spin>
         </Form>
       </Modal>
       <Modal
         maskClosable={false}
-        title="成果默认参数"
+        title="默认参数"
         width="780px"
         visible={defaultParamsVisible}
         okText="确认"
@@ -627,7 +701,7 @@ const SignManage: React.FC = () => {
       >
         <Form form={defaultForm} preserve={false}>
           <Spin spinning={loading}>
-            <DefaultSign />
+            <DefaultSign groupId={signGroupId} />
           </Spin>
         </Form>
       </Modal>
@@ -636,10 +710,10 @@ const SignManage: React.FC = () => {
         maskClosable={false}
         title="新建模板文件组"
         width="820px"
-        visible={fileGroupModalVisible}
+        visible={signGroupModalVisible}
         okText="确认"
-        onOk={() => saveFileGroupEvent()}
-        onCancel={() => setFileGroupModalVisible(false)}
+        onOk={() => saveSignGroupEvent()}
+        onCancel={() => setSignGroupModalVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
