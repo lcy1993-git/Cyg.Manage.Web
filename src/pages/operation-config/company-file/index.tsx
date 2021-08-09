@@ -6,7 +6,7 @@ import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from '
 import React, { useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
-import { isArray } from 'lodash';
+import { groupBy, isArray } from 'lodash';
 import '@/assets/icon/iconfont.css';
 import CompanyFileForm from './components/add-edit-form';
 import {
@@ -40,7 +40,7 @@ const CompanyFile: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
   const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false);
-  const [fileGroupId, setFileGroupId] = useState<string>();
+  const [fileGroupId, setFileGroupId] = useState<string>('');
   const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
   const [editingFileName, setEditingFileName] = useState<string>('');
   const [fileId, setFileId] = useState<string>();
@@ -65,6 +65,7 @@ const CompanyFile: React.FC = () => {
   const { data: defaultOptions, run: getDefaultOptions } = useRequest(getCompanyDefaultOptions, {
     manual: true,
   });
+
   const { data: fileGroupData = [], run: getfileGroup } = useGetSelectData(
     {
       url: '/CompanyFileGroup/GetList',
@@ -253,23 +254,23 @@ const CompanyFile: React.FC = () => {
 
   const defaultParamsEvent = async () => {
     setDefaultParamsVisible(true);
-    const defaultOptions = await getDefaultOptions();
+    const defaultOptions = await getDefaultOptions(fileGroupId);
+    console.log(defaultOptions);
+
     defaultForm.setFieldsValue(defaultOptions);
   };
 
   const saveDefaultOptionsEvent = () => {
     const defaultData = defaultOptions!;
+
     defaultForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
+          groupId: fileGroupId,
           designOrganize: defaultData.designOrganize,
           frameTemplate: defaultData.frameTemplate,
           directoryTemplate: defaultData.directoryTemplate,
           descriptionTemplate: defaultData.descriptionTemplate,
-          approve: defaultData.approve,
-          audit: defaultData.audit,
-          calibration: defaultData.calibration,
-          designSurvey: defaultData.designSurvey,
         },
         values,
       );
@@ -555,7 +556,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={defaultForm} preserve={false}>
           <Spin spinning={loading}>
-            <DefaultParams />
+            <DefaultParams groupId={fileGroupId} />
           </Spin>
         </Form>
       </Modal>

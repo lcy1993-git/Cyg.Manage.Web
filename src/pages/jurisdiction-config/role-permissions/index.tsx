@@ -1,8 +1,8 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin, Tabs } from 'antd';
+import React, { useState } from 'react';
 import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
 import { useRequest, useBoolean } from 'ahooks';
@@ -13,18 +13,19 @@ import {
   deleteAuthorizationItem,
   addAuthorizationItem,
   getAuthorizationTreeList,
-  updateAuthorizationModules,
-} from '@/services/jurisdiction-config/platform-authorization';
+} from '@/services/jurisdiction-config/role-permissions';
 import { isArray } from 'lodash';
 import RolePermissionsForm from './components/add-edit-form';
 import CheckboxTreeTable from '@/components/checkbox-tree-table';
 import styles from './index.less';
-import UserAuthorization from '../platform-authorization/components/user-authorization';
+import UserAuthorization from './components/user-authorization';
+import RoleAuthorization from './components/role-authorization';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
+const { TabPane } = Tabs;
 
 const RolePermissions: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -34,15 +35,16 @@ const RolePermissions: React.FC = () => {
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [distributeFormVisible, setDistributeFormVisible] = useState<boolean>(false);
   const [
     authorizationFormVisible,
     { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
   ] = useBoolean(false);
 
+  //@ts-ignore
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'));
+
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-  const [apportionForm] = Form.useForm();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -88,15 +90,25 @@ const RolePermissions: React.FC = () => {
       dataIndex: 'users',
       index: 'users',
       render: (text: any, record: any) => {
-        return record.users
-          ? record.users.map((item: any) => {
-              return (
+        const roles = record.roles?.map((item: any) => {
+          return (
+            <CyTag className="mr7" key={uuid.v1()}>
+              {item.text}
+            </CyTag>
+          );
+        });
+        roles.unshift(
+          record.users?.map((item: any) => {
+            return (
+              <>
                 <CyTag className="mr7" key={uuid.v1()}>
                   {item.text}
                 </CyTag>
-              );
-            })
-          : null;
+              </>
+            );
+          }),
+        );
+        return roles;
       },
     },
     {
@@ -307,6 +319,13 @@ const RolePermissions: React.FC = () => {
     );
   };
 
+  const tabsRightSlot = (
+    <div>
+      <span className="tipInfo mr7">权限优先级：</span>
+      <span className="tipInfo">用户 &gt; 角色</span>
+    </div>
+  );
+
   return (
     <PageCommonWrap>
       <GeneralTable
@@ -384,12 +403,29 @@ const RolePermissions: React.FC = () => {
         destroyOnClose
       >
         <Spin spinning={loading}>
-          <UserAuthorization
-            onChange={tableFresh}
-            extractParams={{
-              templateId: currentId,
-            }}
-          />
+          <Tabs
+            className="normalTabs noMargin"
+            tabBarExtraContent={userType === 4 ? tabsRightSlot : null}
+          >
+            <TabPane key="user" tab="用户授权">
+              <UserAuthorization
+                onChange={tableFresh}
+                extractParams={{
+                  templateId: currentId,
+                }}
+              />
+            </TabPane>
+            {userType === 4 && (
+              <TabPane key="role" tab="角色授权">
+                <RoleAuthorization
+                  onChange={tableFresh}
+                  extractParams={{
+                    templateId: currentId,
+                  }}
+                />
+              </TabPane>
+            )}
+          </Tabs>
         </Spin>
       </Modal>
     </PageCommonWrap>

@@ -81,13 +81,6 @@ export const getAuthorizationTreeList = (id?: string): Promise<TreeDataItem[]> =
   );
 };
 
-// 更新功能模块列表的数据
-export const updateAuthorizationModules = (params: any) => {
-  return cyRequest<TreeDataItem[]>(() =>
-    request(`${baseUrl.project}/AuthTemplate/UpdateModules`, { method: 'POST', data: params }),
-  );
-};
-
 interface BatchAddAuthorizationParams {
   templateId: string;
   authorizeType: 1 | 2;

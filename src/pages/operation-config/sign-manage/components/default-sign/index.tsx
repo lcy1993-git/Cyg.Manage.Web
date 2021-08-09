@@ -1,8 +1,6 @@
 import CyFormItem from '@/components/cy-form-item';
 import React, { useMemo } from 'react';
-import { useRequest } from 'ahooks';
-import { Row, Col, TreeSelect } from 'antd';
-import { getCompanyFileTree } from '@/services/operation-config/company-file';
+import { Row, Col } from 'antd';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 

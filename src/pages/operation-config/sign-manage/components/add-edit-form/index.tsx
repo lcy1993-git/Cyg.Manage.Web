@@ -40,17 +40,29 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
 
   return (
     <>
-      {/* {type === 'add' && ( */}
-      <CyFormItem label="文件类别" name="category" required rules={rules.fileCategory}>
-        <UrlSelect
-          // mode="multiple"
-          titlekey="text"
-          valuekey="value"
-          url="/CompanySign/GetCategorys"
-          placeholder="请选择文件类别"
-        />
-      </CyFormItem>
-      {/* )} */}
+      {type === 'add' && (
+        <CyFormItem label="文件类别" name="categorys" required rules={rules.fileCategory}>
+          <UrlSelect
+            mode="multiple"
+            titlekey="text"
+            valuekey="value"
+            url="/CompanySign/GetCategorys"
+            placeholder="请选择文件类别"
+          />
+        </CyFormItem>
+      )}
+      {type === 'edit' && (
+        <CyFormItem label="文件类别" name="category" required rules={rules.fileCategory}>
+          <UrlSelect
+            disabled
+            mode="multiple"
+            titlekey="text"
+            valuekey="value"
+            url="/CompanySign/GetCategorys"
+            placeholder="请选择文件类别"
+          />
+        </CyFormItem>
+      )}
 
       <CyFormItem label="人员" name="userId" required rules={rules.signUser}>
         <UrlSelect

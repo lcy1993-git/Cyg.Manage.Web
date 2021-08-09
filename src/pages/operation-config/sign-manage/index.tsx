@@ -135,7 +135,7 @@ const SignManage: React.FC = () => {
       title: '人员',
       width: 180,
       render: (text: any, record: any) => {
-        return record.userName;
+        return record.userName ? record.userName : '无';
       },
     },
     {
@@ -190,7 +190,7 @@ const SignManage: React.FC = () => {
           {
             name: '',
             fileId: fileId,
-            category: 0,
+            categorys: [],
             describe: '',
             userId: '',
             groupId: signGroupId,
@@ -676,6 +676,7 @@ const SignManage: React.FC = () => {
         <Form form={editForm} onValuesChange={onEditFormChange} preserve={false}>
           <Spin spinning={loading}>
             <SignFileForm
+              type="edit"
               uploadFileFn={editUploadFile}
               groupData={tableData}
               editingName={editingFileName}
