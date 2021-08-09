@@ -228,7 +228,7 @@ const CompanyTable: React.FC = () => {
   const finallyShowData = useMemo(() => {
     
     return {
-      data: handleTheShowData(dataSource.sort((a, b) => b.progressRate - a.progressRate)),
+      data: handleTheShowData(dataSource),
       isOverflow: dataSource && dataSource.length > currentPageSize,
       contentHeight: currentPageSize * 38,
     };

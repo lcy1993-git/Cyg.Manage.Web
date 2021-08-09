@@ -10,6 +10,7 @@ import { useRef } from 'react';
 import { useMemo } from 'react';
 import uuid from 'node-uuid';
 import { Table } from 'antd';
+import { isNumber } from 'lodash';
 
 const ProjectTable: React.FC = () => {
   const { companyInfo } = useProjectAllAreaStatisticsStore();
@@ -36,9 +37,7 @@ const ProjectTable: React.FC = () => {
       index: 'index',
       width: 60,
       ellipsis: true,
-      render: (text: string, record: any) => {
-        console.log(text);
-        
+      render: (text: string, record: any) => {      
         return <>{record.name && <span>{record.index + 1}</span>}</>;
       },
     },
@@ -82,13 +81,18 @@ const ProjectTable: React.FC = () => {
       ellipsis: true,
       width: 120,
       render: (text: string, record: any) => {
+        if(record.overdueDays && record.overdueDays > 0) {
+          return (
+            <span>已逾期{record.overdueDays}天</span>
+          )
+        }
+        if(isNumber(record.overdueDays) && record.overdueDays <= 0) {
+          return (
+            <span>-</span>
+          )
+        }
         return (
-          <>
-            {record.overdueDays && record.overdueDays > 0 ?
-              <span>已逾期{record.overdueDays}天</span> :
-              <span>-</span>
-            }
-          </>
+          <span></span>
         );
       },
     },
