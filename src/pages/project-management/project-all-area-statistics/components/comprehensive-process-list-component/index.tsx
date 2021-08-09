@@ -8,18 +8,18 @@ import uuid from 'node-uuid';
 import EmptyTip from '@/components/empty-tip';
 
 const ComprehensiveProcessListComponent: React.FC = () => {
-  const { data: comprehensiveData = [] } = useRequest(() => getComprehensiveProcessList());
+  const { data: comprehensiveData = [], loading } = useRequest(() => getComprehensiveProcessList());
   const listElement = comprehensiveData?.map((item: any, index: number) => {
     return <ProcessListItem key={uuid.v1()} num={index + 1} rate={item.value} name={item.key} />;
   });
   return (
     <div className={styles.comprehensiveProcessListContent}>
       <ScrollView>
-        {comprehensiveData && comprehensiveData.length > 0 && (
+        {comprehensiveData && comprehensiveData.length > 0 && !loading && (
           <div style={{ paddingRight: '14px', paddingTop: '20px' }}>{listElement}</div>
         )}
         {
-          (!comprehensiveData || (comprehensiveData && comprehensiveData.length === 0)) &&
+          (!comprehensiveData || (comprehensiveData && comprehensiveData.length === 0)) && !loading &&
           <EmptyTip className={'pt20'} />
         }
       </ScrollView>

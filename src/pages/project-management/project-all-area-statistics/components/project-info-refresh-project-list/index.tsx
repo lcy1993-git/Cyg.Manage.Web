@@ -1,18 +1,16 @@
 import ScrollListQuee from '@/components/scroll-list-quee';
-import type { AreaInfo, projectOperationLogParams, RefreshDataType } from '@/services/index';
-import { fetchProjectOperationLog } from '@/services/project-management/project-all-area-statistics';
+import type { RefreshDataType } from '@/services/index';
 import { useRequest } from 'ahooks';
 import moment from 'moment';
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ProjectItem from './components/project-Item';
+import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store';
+import { getProjectOperateLogs } from '@/services/project-management/project-statistics-v2';
 
-export interface ProjectInfoRefreshListProps {
-  currentAreaInfo?: AreaInfo;
-}
-
-const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaInfo }) => {
+const ProjectInfoRefreshList = () => {
   const [listData, setListData] = useState<RefreshDataType[]>([]);
+
+  const { companyInfo } = useProjectAllAreaStatisticsStore();
   // const [refreshData, setrefreshData] = useState<RefreshDataType[]>([]);
   // const ref = useRef<HTMLDivElement>(null);
   // const size = useSize(ref);
@@ -26,20 +24,14 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
   
   const allCount = 30;
 
-  const params: projectOperationLogParams = {
-    limit: allCount,
-    areaCode: currentAreaInfo?.areaId,
-    areaType: currentAreaInfo?.areaLevel ?? '1',
-  };
+  // useEffect(() => {
+  //   setListData([]);
+  //   // setrefreshData([]);
+  // }, [currentAreaInfo]);
 
-  useEffect(() => {
-    setListData([]);
-    // setrefreshData([]);
-  }, [currentAreaInfo]);
-
-  const { data, cancel } = useRequest(() => fetchProjectOperationLog(params), {
+  const { data, cancel } = useRequest<RefreshDataType[]>(() => getProjectOperateLogs(companyInfo?.companyId ?? "", allCount), {
     pollingInterval: 3000,
-    refreshDeps: [JSON.stringify(currentAreaInfo)],
+    refreshDeps: [],
     onSuccess: () => {
       // 最近的日期是从第一个开始的，所以要把最新放在最下面，使用reverse
       // if (data && refreshData.length === 0) {

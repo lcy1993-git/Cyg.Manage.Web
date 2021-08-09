@@ -1,103 +1,154 @@
+import DataSelect from '@/components/data-select';
 import PageCommonWrap from '@/components/page-common-wrap';
-import ProjectInfoRefreshList from './components/project-info-refresh-list';
-import React from 'react';
-import { useState } from 'react';
+import { useGetSelectData } from '@/utils/hooks';
+import { Tooltip } from 'antd';
+import React, { useState } from 'react';
+import CompanyAndProjectTable from './components/company-and-project-table';
+import ComprehensiveProcessComponent from './components/comprehensive-process-component';
+import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
+import DailyChangeStatistics from './components/daily-change-statistics';
+import DailyChangeProjectStatistics from './components/daily-change-project-statistics';
 import OverdueComponent from './components/overdue-component';
-import ProjectStatisticsCompoent from './components/project-statistics-component';
-import SurveyRateComponent from './components/survey-rate-component';
+import OverdueProjectComponent from './components/overdue-project-component';
+import ProjectInfoRefreshList from './components/project-info-refresh-list';
+import ProjectInfoRefreshProjectList from './components/project-info-refresh-project-list';
+import ProjectProcessComponent from './components/project-process-component';
+import ProjectProcessListComponent from './components/project-process-list-component';
+import ProjectStatisticsComponent from './components/project-statistics-component';
+import ProjectStatisticsProjectComponent from './components/project-statistics-project-component';
 import TabsWindow from './components/tabs-window';
 import TitleWindow from './components/title-window';
 import styles from './index.less';
-import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
-import ComprehensiveProcessComponent from './components/comprehensive-process-component';
-import ProjectProcessComponent from './components/project-process-component';
-import { useGetSelectData } from '@/utils/hooks';
-import DataSelect from '@/components/data-select';
-import ProjectProcessListComponent from './components/project-process-list-component';
-
+import type { CompanyInfo, DataType } from './store';
+import { ProjectAllAreaStatisticsProvider } from './store';
+import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 
 const ProjectAllAreaStatistics: React.FC = () => {
   const [processActiveTab, setProcessActiveTab] = useState<string>('project');
-  const [processListActiveTab, setProcessListActiveTab] = useState<string>('comprehensive');
   const [companyId, setCompanyId] = useState<string | undefined>(undefined);
+
+  const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
+    companyName: '',
+    companyId: '',
+  });
+
+  const [dataType, setDataType] = useState<DataType>('company');
 
   const { data: companySelectData = [] } = useGetSelectData({
     url: '/ProjectStatistics/GetCompanys',
   });
 
   return (
-    <PageCommonWrap noPadding={true}>
-      <div className={styles.projectAllAreaStatistics}>
-        <div className={styles.statisticsTop}>
-          <div className={styles.processContent}>
-            <TabsWindow
-              value={processActiveTab}
-              onChange={setProcessActiveTab}
-              titleCustomSlot={() =>
-                processActiveTab === 'project' && (
-                  <div style={{ paddingTop: '8px', paddingRight: '10px', width: '180px' }}>
-                    <DataSelect
-                      style={{ width: '100%' }}
-                      value={companyId}
-                      allowClear
-                      onChange={(value: any) => {
-                        setCompanyId(value);
-                      }}
-                      placeholder="请选择设计院单位"
-                      options={[{label: "全部", value: ""},...companySelectData]}
-                    />
-                  </div>
-                )
-              }
-              tabsArray={[
-                { name: '项目进度', value: 'project' },
-                { name: '综合进度', value: 'comprehensive' },
-              ]}
-            >
-              {processActiveTab === 'project' && <ProjectProcessComponent companyId={companyId} />}
-              {processActiveTab === 'comprehensive' && <ComprehensiveProcessComponent />}
-            </TabsWindow>
+    <ProjectAllAreaStatisticsProvider
+      value={{
+        companyInfo,
+        setCompanyInfo,
+        dataType,
+        setDataType,
+      }}
+    >
+      <PageCommonWrap noPadding={true}>
+        <div className={styles.projectAllAreaStatistics}>
+          <div className={styles.statisticsTop}>
+            <div className={styles.processContent}>
+              {/* <TabsWindow
+                value={processActiveTab}
+                onChange={setProcessActiveTab}
+                titleCustomSlot={() =>
+                  processActiveTab === 'project' && (
+                    <div style={{ paddingTop: '8px', paddingRight: '10px', width: '180px' }}>
+                      <DataSelect
+                        style={{ width: '100%' }}
+                        value={companyId}
+                        allowClear
+                        onChange={(value: any) => {
+                          setCompanyId(value);
+                        }}
+                        placeholder="请选择设计院单位"
+                        options={[{ label: '全部', value: '' }, ...companySelectData]}
+                      />
+                    </div>
+                  )
+                }
+                tabsArray={[
+                  { name: '项目进度', value: 'project' },
+                  { name: '综合进度', value: 'comprehensive' },
+                ]}
+              >
+                {processActiveTab === 'project' && (
+                  <ProjectProcessComponent companyId={companyId!!} />
+                )}
+                {processActiveTab === 'comprehensive' && <ComprehensiveProcessComponent />}
+              </TabsWindow> */}
+              <CompanyAndProjectTable />
+            </div>
+            <div className={styles.topOtherContent}>
+              <div className={styles.overdueContent}>
+                <TitleWindow
+                  title={() => {
+                    return (
+                      <div>
+                        即将逾期 &nbsp;
+                        <Tooltip title="项目结束时间距离当前时间不足3天 则进入即将逾期提醒状态">
+                          <QuestionCircleOutlined />
+                        </Tooltip>
+                      </div>
+                    );
+                  }}
+                >
+                  {
+                    dataType === 'company' ?
+                    <OverdueComponent /> :
+                    <OverdueProjectComponent />
+                  }
+                  
+                </TitleWindow>
+              </div>
+              <div className={styles.projectDataContent}>
+                <TitleWindow title="实时项目数据">
+                  {
+                    dataType === 'company' ?
+                    <ProjectInfoRefreshList/>:
+                    <ProjectInfoRefreshProjectList/>
+                  }
+                  
+                </TitleWindow>
+              </div>
+            </div>
           </div>
-          <div className={styles.topOtherContent}>
-            <div className={styles.overdueContent}>
-              <TitleWindow title="即将逾期">
-                <OverdueComponent />
+          <div className={styles.statisticsBottom}>
+            <div className={styles.surveyRateContent}>
+              <TitleWindow title="项目每日变化数">
+                {
+                  dataType === 'company' ?
+                  <DailyChangeStatistics /> :
+                  <DailyChangeProjectStatistics />
+                }
               </TitleWindow>
             </div>
-            <div className={styles.projectDataContent}>
-              <TitleWindow title="实时项目数据">
-                <ProjectInfoRefreshList />
+            <div className={styles.projectStatisticsContent}>
+              <TitleWindow title="项目统计">
+                {
+                  dataType === 'company' ?
+                  <ProjectStatisticsComponent /> :
+                  <ProjectStatisticsProjectComponent />
+                }
+               
+              </TitleWindow>
+            </div>
+            <div className={styles.projectProcessListContent}>
+              <TitleWindow title={dataType === 'company' ? '综合进度榜' : '项目进度榜'}>
+                {dataType === 'company' ? (
+                  <ComprehensiveProcessListComponent />
+                ) : (
+                  <ProjectProcessListComponent />
+                )}
               </TitleWindow>
             </div>
           </div>
         </div>
-        <div className={styles.statisticsBottom}>
-          <div className={styles.projectStatisticsContent}>
-            <TitleWindow title="项目统计">
-              <ProjectStatisticsCompoent />
-            </TitleWindow>
-          </div>
-          <div className={styles.surveyRateContent}>
-            <TitleWindow title="勘察率">
-              <SurveyRateComponent />
-            </TitleWindow>
-          </div>
-          <div className={styles.projectProcessListContent}>
-            <TabsWindow
-              value={processListActiveTab}
-              onChange={setProcessListActiveTab}
-              tabsArray={[
-                { name: '综合进度榜', value: 'comprehensive' },
-                { name: '项目进度榜', value: 'project' },
-              ]}
-            >
-              {processListActiveTab === 'comprehensive' && <ComprehensiveProcessListComponent />}
-              {processListActiveTab === 'project' && <ProjectProcessListComponent />} 
-            </TabsWindow>
-          </div>
-        </div>
-      </div>
-    </PageCommonWrap>
+      </PageCommonWrap>
+    </ProjectAllAreaStatisticsProvider>
   );
 };
 
