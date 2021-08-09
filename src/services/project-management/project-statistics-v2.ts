@@ -109,16 +109,16 @@ export const getProjectStatisticsOfPie = (companyId?: string) => {
 };
 
 /** 获取项目进度榜（单个公司级） */
-export const getCompanyProjectProgressRank = (params: WithCompany & WithLimit) => {
+export const getCompanyProjectProgressRank = (data: WithCompany & WithLimit) => {
   return cyRequest<Item[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetLeaderboardByProject`, { params }),
+    request(`${baseUrl.project}${prefix}/GetLeaderboardByProject`, { method: 'post', data }),
   );
 };
 
 /** 获取综合进度榜 */
-export const getProjectProgressRank = (limit: number) => {
+export const getProjectProgressRank = () => {
   return cyRequest<Item[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetLeaderboardByCompany`, { params: { limit } }),
+    request(`${baseUrl.project}${prefix}/GetLeaderboardByCompany`, { params: { limit: 9999 } }),
   );
 };
 
@@ -136,17 +136,17 @@ export interface CompanyOverdue {
   statusText?: string;
 }
 
-/** 获取逾期统计（所有公司） */
-export const getAllCompanyOverdue = (data?: WithCompany & WithLimit) => {
+/** 获取逾期统计（按项目） */
+export const getProjectOverdue = (data?: WithCompany & WithLimit) => {
   return cyRequest<CompanyOverdue[]>(() =>
     request(`${baseUrl.project}${prefix}/GetOverduesByProject`, { method: 'post', data }),
   );
 };
 
-/** 获取逾期统计（单个公司） */
-export const getCompanyOverdue = (limit: number) => {
+/** 获取逾期统计（按公司） */
+export const getCompanyOverdue = () => {
   return cyRequest<CompanyOverdue[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetOverduesByCompany`, { params: { limit } }),
+    request(`${baseUrl.project}${prefix}/GetOverduesByCompany`, { params: { limit: 9999 } }),
   );
 };
 
@@ -161,11 +161,11 @@ export const getStatisticsListByProject = (companyId: string) => {
 };
 
 // 项目实时数据
-export const getProjectOperateLogs = (companyId: string, limit: number) => {
+export const getProjectOperateLogs = (companyId: string) => {
   return cyRequest<CompanyOverdue[]>(() =>
     request(`${baseUrl.project}${prefix}/GetProjectOperateLogs`, {
       method: 'post',
-      data: { companyId, limit },
+      data: { companyId, limit: 9999 },
     }),
   );
 };

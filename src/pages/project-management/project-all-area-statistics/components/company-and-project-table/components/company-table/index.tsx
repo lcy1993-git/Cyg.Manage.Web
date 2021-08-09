@@ -221,13 +221,18 @@ const CompanyTable: React.FC = () => {
     return dataSource;
   };
 
+  // const sortData= (data: any[]) => {
+  //   return data.sort((a, b) =>  false)
+  // }
+
   const finallyShowData = useMemo(() => {
+    
     return {
-      data: handleTheShowData(dataSource),
+      data: handleTheShowData(dataSource.sort((a, b) => b.progressRate - a.progressRate)),
       isOverflow: dataSource && dataSource.length > currentPageSize,
       contentHeight: currentPageSize * 38,
     };
-  }, [dataSource, currentPageSize]);
+  }, [JSON.stringify(dataSource), currentPageSize]);
 
   return (
     <div className={styles.companyTable} ref={contentRef}>

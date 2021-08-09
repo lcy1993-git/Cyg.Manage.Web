@@ -1,4 +1,3 @@
-// import { getSurveyRate } from '@/services/project-management/project-all-area-statistics';
 import { getProjectQtyOfDay } from '@/services/project-management/project-statistics-v2';
 import { useRequest } from 'ahooks';
 import 'echarts/lib/chart/line';

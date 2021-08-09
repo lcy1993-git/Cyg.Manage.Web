@@ -118,7 +118,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
           </div>
           <div className={styles.statisticsBottom}>
             <div className={styles.surveyRateContent}>
-              <TitleWindow title="项目每日变化数">
+              <TitleWindow title="项目数">
                 {
                   dataType === 'company' ?
                   <DailyChangeStatistics /> :

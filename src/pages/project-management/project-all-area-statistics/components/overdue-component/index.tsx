@@ -1,5 +1,5 @@
 import EmptyTip from '@/components/empty-tip';
-import { getOverdues } from '@/services/project-management/project-all-area-statistics';
+import { getCompanyOverdue } from '@/services/project-management/project-statistics-v2';
 import { useRequest } from 'ahooks';
 import uuid from 'node-uuid';
 import React from 'react';
@@ -8,7 +8,8 @@ import styles from './index.less';
 import OverdueItem from './overdue-item';
 
 const OverdueComponent: React.FC = () => {
-  const { data, loading } = useRequest(() => getOverdues({ limit: 100 }));
+  const { data, loading } = useRequest(getCompanyOverdue);
+  
   return (
     <div className={styles.overdueComponent}>
       <ScrollView>
@@ -17,7 +18,7 @@ const OverdueComponent: React.FC = () => {
             data.map((item: any) => {
               return (
                 <OverdueItem key={uuid.v1()} overdueNumber={item.value}>
-                  {item.companyName}
+                  {item.key}
                 </OverdueItem>
               );
             })

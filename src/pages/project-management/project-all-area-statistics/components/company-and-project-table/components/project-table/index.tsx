@@ -37,7 +37,9 @@ const ProjectTable: React.FC = () => {
       width: 60,
       ellipsis: true,
       render: (text: string, record: any) => {
-        return <>{record.name && <span>{record.index}</span>}</>;
+        console.log(text);
+        
+        return <>{record.name && <span>{record.index + 1}</span>}</>;
       },
     },
     {
@@ -82,8 +84,10 @@ const ProjectTable: React.FC = () => {
       render: (text: string, record: any) => {
         return (
           <>
-            {record.overdueDays && record.overdueDays > 0 && <span>已逾期{record.overdueDays}天</span>}
-            {record.overdueDays && record.overdueDays <= 0 && <span>-</span>}
+            {record.overdueDays && record.overdueDays > 0 ?
+              <span>已逾期{record.overdueDays}天</span> :
+              <span>-</span>
+            }
           </>
         );
       },
@@ -108,9 +112,10 @@ const ProjectTable: React.FC = () => {
 
   // 拿到数据，如果不满当前高度，就设置很多空数据进去。
   const handleTheShowData = (data: any[]) => {
+    let handleDataSource = [...data];
     // 需要补充空数据
     if (data && data.length > 0 && data.length < currentPageSize) {
-      let handleDataSource = [...data];
+
 
       if (handleDataSource.length < currentPageSize) {
         const copyObject = { ...handleDataSource[0] };
@@ -124,17 +129,14 @@ const ProjectTable: React.FC = () => {
 
         handleDataSource = [...data, ...emptyObjectArray];
       }
-
-      const afterHanldeItems = handleDataSource.map((item, index) => {
-        return {
-          ...item,
-          key: uuid.v1(),
-          index,
-        };
-      });
-      return afterHanldeItems;
     }
-    return dataSource;
+    return handleDataSource.map((item, index) => {
+      return {
+        ...item,
+        key: uuid.v1(),
+        index,
+      };
+    });
   };
 
   const finallyShowData = useMemo(() => {

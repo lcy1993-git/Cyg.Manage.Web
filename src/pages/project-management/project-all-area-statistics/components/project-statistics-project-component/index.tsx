@@ -1,4 +1,3 @@
-import type { StatusParams } from '@/services/project-management/project-all-area-statistics';
 import { getProjectStatisticsOfPie } from '@/services/project-management/project-statistics-v2';
 import { handleRate } from '@/utils/utils';
 import { useRequest } from 'ahooks';
@@ -11,7 +10,7 @@ import StatisticsBieChart from './statistics-bie-chart';
 const ProjectStatisticsComponent: React.FC = () => {
   const { dataType, companyInfo } = useProjectAllAreaStatisticsStore();
 
-  const { data } = useRequest<StatusParams>(() => getProjectStatisticsOfPie(companyInfo.companyId), { refreshDeps: [dataType] });
+  const { data } = useRequest<any>(() => getProjectStatisticsOfPie(companyInfo.companyId), { refreshDeps: [dataType] });
 
   return (
     <div className={styles.projectStatisticsComponent}>

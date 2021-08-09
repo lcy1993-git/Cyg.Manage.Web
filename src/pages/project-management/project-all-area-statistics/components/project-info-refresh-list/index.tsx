@@ -1,6 +1,6 @@
 import ScrollListQuee from '@/components/scroll-list-quee';
 import type { AreaInfo, projectOperationLogParams, RefreshDataType } from '@/services/index';
-import { fetchProjectOperationLog } from '@/services/project-management/project-all-area-statistics';
+import { getProjectOperateLogs } from '@/services/project-management/project-statistics-v2';
 import { useRequest } from 'ahooks';
 import moment from 'moment';
 import type { FC } from 'react';
@@ -37,7 +37,7 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
     // setrefreshData([]);
   }, [currentAreaInfo]);
 
-  const { data, cancel } = useRequest(() => fetchProjectOperationLog(params), {
+  const { data, cancel } = useRequest(() => getProjectOperateLogs(""), {
     pollingInterval: 3000,
     refreshDeps: [JSON.stringify(currentAreaInfo)],
     onSuccess: () => {

@@ -1,5 +1,5 @@
 import EmptyTip from '@/components/empty-tip';
-import { getStatisticsListByProject } from '@/services/project-management/project-statistics-v2';
+import { getProjectOverdue } from '@/services/project-management/project-statistics-v2';
 import { useRequest } from 'ahooks';
 // import uuid from 'node-uuid';
 import React from 'react';
@@ -10,7 +10,7 @@ import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/pro
 
 const OverdueProjectComponent: React.FC = () => {
   const { companyInfo } = useProjectAllAreaStatisticsStore()
-  const { data, loading } = useRequest(() => getStatisticsListByProject(companyInfo.companyId!), {
+  const { data, loading } = useRequest(() => getProjectOverdue({companyId: companyInfo.companyId!, limit: 9999}), {
     ready: !!companyInfo.companyId
   });
   
@@ -21,7 +21,7 @@ const OverdueProjectComponent: React.FC = () => {
           {data && data.length > 0 && !loading && (
             data.map((item: any) => {
               return (
-                <OverdueProjectItem key={item.id} status={item.statusText} name={item.name} />
+                <OverdueProjectItem key={item.id} status={item.statusText} name={item.projectName} />
 
               );
             })

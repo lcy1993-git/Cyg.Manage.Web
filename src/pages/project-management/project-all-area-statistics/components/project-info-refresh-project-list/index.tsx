@@ -22,14 +22,13 @@ const ProjectInfoRefreshList = () => {
    */
   // const visebleCount = Math.floor(size.height ? size.height / 35 : 4);
   
-  const allCount = 30;
 
   // useEffect(() => {
   //   setListData([]);
   //   // setrefreshData([]);
   // }, [currentAreaInfo]);
 
-  const { data, cancel } = useRequest<RefreshDataType[]>(() => getProjectOperateLogs(companyInfo?.companyId ?? "", allCount), {
+  const { data, cancel } = useRequest<RefreshDataType[]>(() => getProjectOperateLogs(companyInfo.companyId!), {
     pollingInterval: 3000,
     refreshDeps: [],
     onSuccess: () => {

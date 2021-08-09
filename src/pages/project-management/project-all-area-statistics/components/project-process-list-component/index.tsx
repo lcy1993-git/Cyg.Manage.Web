@@ -1,16 +1,19 @@
 import EmptyTip from '@/components/empty-tip';
-import { getProjectProcessList } from '@/services/project-management/project-all-area-statistics';
+import { getCompanyProjectProgressRank } from '@/services/project-management/project-statistics-v2';
 import { useRequest } from 'ahooks';
 import uuid from 'node-uuid';
 import React from 'react';
 import ScrollView from 'react-custom-scrollbars';
 import ProcessListItem from '../process-list-item';
+import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store';
 import styles from './index.less';
 
 const ProjectProcessListComponent: React.FC = () => {
-  const { data: projectData = [], loading } = useRequest(() => getProjectProcessList());
+  const { companyInfo } = useProjectAllAreaStatisticsStore()
 
-  const listElement = projectData?.map((item: any, index: number) => {
+  const { data: projectData = [], loading } = useRequest(() =>getCompanyProjectProgressRank({companyId: companyInfo.companyId!, limit: 9999}));
+
+  const listElement = projectData?.sort((a, b) => b.value -a.value)?.map((item: any, index: number) => {
     return <ProcessListItem key={uuid.v1()} num={index + 1} rate={item.value} name={item.key} />;
   });
   return (

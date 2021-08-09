@@ -1,5 +1,4 @@
-import type { StatusParams } from '@/services/project-management/project-all-area-statistics';
-import { getStatus } from '@/services/project-management/project-all-area-statistics';
+import { getProjectStatisticsOfPie } from '@/services/project-management/project-statistics-v2';
 import { handleRate } from '@/utils/utils';
 import { useRequest } from 'ahooks';
 import React from 'react';
@@ -12,7 +11,7 @@ const ProjectStatisticsComponent: React.FC = () => {
   const { dataType } = useProjectAllAreaStatisticsStore();
 
   // ! 待接口完善
-  const { data } = useRequest<StatusParams>(getStatus, { refreshDeps: [dataType] });
+  const { data } = useRequest<StatusParams>(() => getProjectStatisticsOfPie(""), { refreshDeps: [dataType] });
 
   return (
     <div className={styles.projectStatisticsComponent}>
