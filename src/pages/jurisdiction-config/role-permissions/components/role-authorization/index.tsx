@@ -79,6 +79,13 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
     }
   };
 
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset();
+    }
+  };
+
   const tableLeftSlot = (
     <TableSearch label="关键词" width="230px">
       <Search
@@ -124,6 +131,7 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
       objectIds: batchObjectIds,
     });
     refresh();
+    reset();
     onChange?.();
     message.success('授权成功');
   };
@@ -143,6 +151,7 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
       objectIds: batchObjectIds,
     });
     refresh();
+    reset();
     onChange?.();
     message.success('授权移除成功');
   };
