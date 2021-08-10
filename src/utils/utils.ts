@@ -188,3 +188,19 @@ export const handleRate = (number: number) => {
   if(ret.test(String(number))) return number
   return number.toFixed(2);
 }
+
+export const BlobOrArrayBuffertoUnit8 = (data: Bolb | ArrayBuffer) => {
+  const res = [];
+  switch (Object.prototype.toString.call(b)) {
+    case "[object Blob]":
+      
+      break;
+  
+    case "[object ArrayBuffer]":
+      
+      break;
+  
+    default:
+      break;
+  }
+}

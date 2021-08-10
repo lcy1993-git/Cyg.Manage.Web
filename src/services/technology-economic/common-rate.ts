@@ -124,7 +124,9 @@ export const getDemolitionWinterConstructionRate= ( rateFileId: string) => {
   );
 }
 
+type ResponseType = "arrayBuffer" | "blob" | undefined
+
 // 下载拆除模板
-export const downloadDemolitionTemplate= () => {
-  return request(`${baseUrl.tecEco1}/RateTable/DownloadDemolitionTemplate`, { method: 'GET', responseType: "blob"});
+export const downloadDemolitionTemplate= (type: ResponseType) => {
+  return request(`${baseUrl.tecEco1}/RateTable/DownloadDemolitionTemplate`, { method: 'GET', responseType: type === "arrayBuffer" ? "arrayBuffer" : "blob"});
 }
