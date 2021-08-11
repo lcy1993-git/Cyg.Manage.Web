@@ -165,7 +165,7 @@ export const getProjectOperateLogs = (companyId: string) => {
   return cyRequest<CompanyOverdue[]>(() =>
     request(`${baseUrl.project}${prefix}/GetProjectOperateLogs`, {
       method: 'post',
-      data: { companyId, limit: 9999 },
+      data: { companyId, limit: 30 },
     }),
   );
 };

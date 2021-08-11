@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import styles from './index.less';
 // import { Link } from 'umi';
 import User from '@/assets/image/project-management/user.svg';
+import { Tooltip } from 'antd';
 // import { useLayoutStore } from '@/layouts/context';
 export interface ProjectItemProps {
   name: string;
@@ -18,7 +19,9 @@ const ProjectItem: FC<ProjectItemProps> = ({ operator, name, operationCategory, 
     <div className={styles.projectItem}>
       <div className={styles.content}>
         <img src={User} style={{ marginRight: 8, width: '16px' }} />
-        {operator}
+        <Tooltip title={operator}>
+          <span>{operator}</span>
+        </Tooltip>
       </div>
       <div className={styles.operationCategory}>
         {operationCategory}
