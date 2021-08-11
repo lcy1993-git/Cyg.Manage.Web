@@ -42,6 +42,7 @@ import ExportPowerModal from './components/export-power-modal';
 import AuditKnotModal from './components/audit-knot-modal';
 import ColumnsConfigModal from './components/columns-config-modal';
 import { useMount, useRequest } from 'ahooks';
+import AddFavoriteModal from './components/add-favorite-modal';
 
 const { Search } = Input;
 
@@ -110,6 +111,9 @@ const AllProject: React.FC = () => {
   // 被勾选中的数据
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
   const [chooseColumns, setChooseColumns] = useState<string[]>([]);
+
+  //添加收藏夹modal
+  const [addFavoriteModal, setAddFavoriteModal] = useState<boolean>(false);
 
   //收藏夹显示
   const [sideVisible, setSideVisible] = useState<boolean>(false);
@@ -460,6 +464,21 @@ const AllProject: React.FC = () => {
     </Menu>
   );
 
+  //收藏夹操作
+  const favoriteMenu = (
+    <Menu>
+      {/* {buttonJurisdictionArray?.includes('all-project-share') && ( */}
+      <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
+      {/* )} */}
+      {/* {buttonJurisdictionArray?.includes('all-project-share-recall') && ( */}
+      <Menu.Item onClick={() => removeFavEvent()}>移除当前收藏夹</Menu.Item>
+      {/* )} */}
+    </Menu>
+  );
+
+  const addFavEvent = () => {};
+  const removeFavEvent = () => {};
+
   const postProjectMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('all-project-apply-knot') && (
@@ -547,7 +566,11 @@ const AllProject: React.FC = () => {
 
   return (
     <>
-      <div className={styles.folderButton} onClick={() => setSideVisible(true)}>
+      <div
+        className={styles.folderButton}
+        onClick={() => setSideVisible(true)}
+        style={{ display: sideVisible ? 'none' : 'inblock' }}
+      >
         <img src={imgSrc} alt="" />
         <span>收藏</span>
       </div>
@@ -649,6 +672,12 @@ const AllProject: React.FC = () => {
                       </Button>
                     </Dropdown>
                   )}
+                  <Dropdown overlay={favoriteMenu}>
+                    <Button className="mr7">
+                      收藏 <DownOutlined />
+                    </Button>
+                  </Dropdown>
+
                   {buttonJurisdictionArray?.includes('all-project-export') && (
                     <div className="mr7">
                       <TableExportButton
@@ -808,6 +837,14 @@ const AllProject: React.FC = () => {
             visible={chooseColumnsModal}
             onChange={setChooseColumnsModal}
             finishEvent={configChangeEvent}
+          />
+        )}
+        {addFavoriteModal && (
+          <AddFavoriteModal
+            visible={exportPowerModalVisible}
+            onChange={setExportPowerModalVisible}
+            projectIds={selectProjectIds}
+            finishEvent={refresh}
           />
         )}
       </PageCommonWrap>
