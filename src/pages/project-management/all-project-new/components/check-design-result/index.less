@@ -2,5 +2,26 @@
   min-height: 130px;
   .treeTable {
     padding-top: 10px;
+
+    .treeTitle:hover {
+      color: #0e7b3b;
+      text-decoration: underline;
+    }
+    :global {
+      .ant-tree.ant-tree-directory .ant-tree-treenode-selected:hover::before,
+      .ant-tree.ant-tree-directory .ant-tree-treenode-selected::before {
+        background: none !important;
+      }
+      .ant-tree.ant-tree-directory
+        .ant-tree-treenode
+        .ant-tree-node-content-wrapper.ant-tree-node-selected {
+        color: white;
+        // background-color: #0e7b3b !important;
+      }
+      .ant-tree.ant-tree-directory .ant-tree-treenode-selected .ant-tree-switcher {
+        color: black;
+        background-color: transparent;
+      }
+    }
   }
 }
