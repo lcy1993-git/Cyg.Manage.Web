@@ -90,6 +90,8 @@ const TopographicIncreaseFactor: React.FC<Props> = (props) => {
     <div className={styles.topographicIncreaseFactor}>
       <div className={styles.topButton}>
         <TableImportButton buttonTitle={'导入费率'}
+                           requestSource={'tecEco1'}
+                           extraParams={{'EngineeringTemplateId':'1408002043054866432'}}
                            importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}/>
       </div>
       <Table
@@ -104,7 +106,7 @@ const TopographicIncreaseFactor: React.FC<Props> = (props) => {
           <p>  (1) 平地: 指地形比较平坦广阔,地面比较干燥的地带。</p>
           <p>  (2) 丘陵: 指陆地上起伏缓和、连绵不断的矮岗、土丘、水平距离1km以内,起伏在50m以下的地带。</p>
           <p>  (3) 一般山地: 指一般山岭或者沟谷等,水平距离250m以内,地形起伏在50m~150米的地带。</p>
-          <p>  (4) 泥沼地带: 指经常积水的田地或你睡淤积的地带。</p>
+          <p>  (4) 泥沼地带: 指经常积水的田地或泥水淤积的地带。</p>
           <p>  (5) 沙漠: 指沙漠边缘地带。</p>
           <p>  (5) 高山: 指人力、畜力攀登困难,水平距离250以内,地形起伏在150m~250m的地带。</p>
           <p>    2套用说明</p>

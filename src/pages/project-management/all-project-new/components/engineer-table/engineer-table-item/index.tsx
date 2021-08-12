@@ -26,6 +26,7 @@ interface EngineerTableItemProps {
   getClickProjectId: (clickProjectId: string) => void;
   addProject?: (needValue: AddProjectValue) => void;
   editEngineer?: (needValue: AddProjectValue) => void;
+  approvalEngineer?: (needValue: AddProjectValue) => void;
   left: number;
   isOverflow: boolean;
   columnsWidth: number;
@@ -62,6 +63,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     getClickProjectId,
     addProject,
     editEngineer,
+    approvalEngineer,
     left,
     isOverflow = false,
     columnsWidth,
@@ -160,6 +162,15 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   const editEngineerEvent = () => {
     editEngineer?.({
+      engineerId: projectInfo.id,
+      areaId: projectInfo.province,
+      company: projectInfo.company,
+      companyName: projectInfo.company,
+    });
+  };
+
+  const approvalFileEvent = () => {
+    approvalEngineer?.({
       engineerId: projectInfo.id,
       areaId: projectInfo.province,
       company: projectInfo.company,
@@ -327,8 +338,13 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             )}
           {projectInfo?.operationAuthority?.canEdit &&
             buttonJurisdictionArray?.includes('all-project-edit-engineer') && (
-              <Button onClick={() => editEngineerEvent()}>编辑</Button>
+              <Button className="mr10" onClick={() => editEngineerEvent()}>编辑</Button>
             )}
+          {projectInfo?.operationAuthority?.canEdit &&
+            buttonJurisdictionArray?.includes('all-project-file-engineer') && (
+              <Button onClick={() => approvalFileEvent()}>批复文件</Button>
+            )}
+            
         </div>
       </div>
       <div

@@ -8,6 +8,7 @@ import UsualQuotaTable from './usual-quota-table';
 import UsualQuotaTableDetail from './usual-quota-table/components/detail';
 import SuppliesLibrary from './supplies-library';
 import SocialSecurityFund from "@/pages/technology-economic/social-security-fund";
+import SupplieslInfomation from './suppliesl-infomation';
 
 const QuotaLibrary = Loadable({
   loader: () => import('@/pages/technology-economic/quota-library'),
@@ -160,5 +161,11 @@ export default [
     title: '社保公积金费率',
     path: '/technology-economic/social-security-fund',
     component: <SocialSecurityFund />,
+
+  },
+  {
+    title: '查看物料库',
+    path: '/technology-economic/suppliesl-infomation',
+    component: <SupplieslInfomation />,
   },
 ];

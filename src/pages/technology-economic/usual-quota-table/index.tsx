@@ -277,10 +277,9 @@ const UsualQuotaTable: React.FC<Props> = () => {
     }
     setIsEdit(true)
     const current = dataSource.find(i => i.id === selectRow[0])
-    // 此处后端测试数据不对,暂时使用模拟数据
     if (current) {
-      current.publishDate = moment('2021/07/01')
-      current.year = moment('2021')
+      current.publishDate = moment(moment(current.publishDate).format('YYYY-MM-DD'))
+      current.year = moment(current.year)
       setIsModalVisible(true)
       form.setFieldsValue(current)
     }
