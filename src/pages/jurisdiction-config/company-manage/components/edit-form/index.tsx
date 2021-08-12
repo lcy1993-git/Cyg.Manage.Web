@@ -1,18 +1,21 @@
 import React from 'react';
-import { Input } from 'antd';
+import { DatePicker, Input } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import styles from './index.less';
 import rules from '../../rule';
 import AddMinusComponent from '../add-minus-component';
-import FormSwitch from '@/components/form-switch';
-import DatePickerForm from '@/components/date-from-item';
 
 interface EditCompanyProps {
   accreditNumber: any[];
+  form: any;
 }
 
 const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
-  const { accreditNumber } = props;
+  const { accreditNumber, form } = props;
+
+  const reset = () => {
+    form.resetFields(['authorityExpireDate']);
+  };
 
   return (
     <>
@@ -216,14 +219,19 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
       >
         <Input placeholder="请输入地址" />
       </CyFormItem>
-      
-      <CyFormItem
-        labelWidth={100}
-        align="right"
-        label="授权期限"
-        name="date"
-      >
-        <DatePickerForm />
+
+      <CyFormItem labelWidth={100} align="right" label="授权期限" name="authorityExpireDate">
+        <DatePicker
+          allowClear={false}
+          dropdownClassName={styles.expireDate}
+          renderExtraFooter={() => [
+            <div key="clearDate" style={{ color: '#0f7b3c', textAlign: 'center' }}>
+              <span style={{ cursor: 'pointer' }} onClick={() => reset()}>
+                清除日期
+              </span>
+            </div>,
+          ]}
+        />
       </CyFormItem>
 
       <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
