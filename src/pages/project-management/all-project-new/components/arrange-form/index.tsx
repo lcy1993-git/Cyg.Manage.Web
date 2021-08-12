@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TreeSelect, message } from 'antd';
+import { TreeSelect, message, Divider } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import EnumSelect from '@/components/enum-select';
 import {
@@ -157,8 +157,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-          {/* <Divider>设计校审</Divider> */}
-          <div style={{ display: 'none' }}>
+          <Divider>设计校审</Divider>
+          <div>
             <CyFormItem label="校对" name="designAssessUser1">
               <TreeSelect
                 key="designAssessUser1"

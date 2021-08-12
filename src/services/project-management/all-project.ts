@@ -775,3 +775,52 @@ export const getColumnsConfig = () => {
     }),
   );
 };
+
+// 批复文件相关API
+type EngineerFile = {
+  engineerId: string
+  fileId: string;
+  category: number;
+}
+
+export const createEngineerFile= (params: EngineerFile) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/EngineerFile/Create`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+export const delEngineerFile= (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/EngineerFile/DeleteById`, {
+      method: 'GET',
+      params: {
+        id
+      },
+    }),
+  );
+};
+export const getEngineerFile= (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/EngineerFile/GetById`, {
+      method: 'GET',
+      params: {
+        id
+      },
+    }),
+  );
+};
+
+export const GetEngineerFileGetList = (engineerId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/EngineerFile/GetList`, {
+      method: 'POST',
+      data: {
+        engineerId,
+        category: 1
+      },
+    }),
+  );
+};

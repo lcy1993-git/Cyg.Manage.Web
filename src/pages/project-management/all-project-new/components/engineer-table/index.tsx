@@ -38,6 +38,7 @@ import EditEnigneerModal from '../edit-engineer-modal';
 import EditProjectModal from '../edit-project-modal';
 import CopyProjectModal from '../copy-project-modal';
 import AddProjectModal from '../add-project-modal';
+import ApprovalProjectModal from '../approval-project-modal';
 import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
@@ -86,6 +87,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [arrangeAllotCompanyId, setArrangeAllotCompanyId] = useState<string>();
   const [currentDataSourceType, setCurrentDataSourceType] = useState<number>();
   const [currentEditEngineerId, setCurrentEditEngineerId] = useState<string>('');
+  const [currentAppEngineerId, setCurrentAppEngineerId] = useState<string>('');
   const [currentEditProjectInfo, setCurrentEditProjectInfo] = useState<any>({});
   const [currentCopyProjectInfo, setCurrentCopyProjectInfo] = useState<any>({});
   const [projectNeedInfo, setProjectNeedInfo] = useState({
@@ -106,6 +108,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [addProjectVisible, setAddProjectVisible] = useState<boolean>(false);
   const [editProjectVisible, setEditProjectVisible] = useState<boolean>(false);
   const [editEngineerVisible, setEditEngineerVisible] = useState<boolean>(false);
+  const [approvalEngineerVisible, setApprovalEngineerVisible] = useState<boolean>(false);
   const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
 
   //项目时间阈值state
@@ -163,6 +166,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setEditEngineerVisible(true);
     setCurrentEditEngineerId(data.engineerId);
   };
+
+  const approvalEngineerEvent = (data: AddProjectValue) => {
+    setCurrentAppEngineerId(data.engineerId)
+    setApprovalEngineerVisible(true);
+  }
 
   const checkResult = (projectInfo: any) => {
     setCheckResultProjectInfo(projectInfo);
@@ -546,39 +554,39 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.statusText === '设计评审中' ? (
-                  <span>设计中</span>
+                ) : // : stateInfo.statusText === '设计评审中' ? (
+                //   <span>设计中</span>
+                // ) : (
+                stateInfo.status === 4 &&
+                  stateInfo.auditStatus === 0 &&
+                  stateInfo.auditStatusText === null ? (
+                  <span>{stateInfo?.statusText}</span>
+                ) : stateInfo.status === 4 &&
+                  stateInfo.auditStatus === 0 &&
+                  stateInfo.auditStatusText != null ? (
+                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
+                  <span>{stateInfo?.statusText}</span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                  <span
+                    className="canClick"
+                    onClick={() => externalArrange(record.id, record.name)}
+                  >
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.auditStatusText}
+                  </span>
+                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  <span>{stateInfo?.auditStatusText}</span>
                 ) : (
-                  // : stateInfo.status === 4 &&
-                  //   stateInfo.auditStatus === 0 &&
-                  //   stateInfo.auditStatusText === null ? (
-                  //   <span>{stateInfo?.statusText}</span>
-                  // ) : stateInfo.status === 4 &&
-                  //   stateInfo.auditStatus === 0 &&
-                  //   stateInfo.auditStatusText != null ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
-                  //   <span>{stateInfo?.statusText}</span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
-                  //   <span
-                  //     className="canClick"
-                  //     onClick={() => externalArrange(record.id, record.name)}
-                  //   >
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
-                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
-                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : (
                   <span>{stateInfo?.statusText}</span>
                 )}
               </span>
@@ -747,6 +755,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         left={leftNumber}
         editEngineer={editEngineerEvent}
         addProject={addProjectEvent}
+        approvalEngineer={approvalEngineerEvent}
         getClickProjectId={projectNameClickEvent}
         onChange={tableItemSelectEvent}
         columns={columnsInfo.columns}
@@ -758,7 +767,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       />
     );
   });
-
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
@@ -934,6 +942,21 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             endTime={currentEditProjectInfo.endTime}
             visible={editProjectVisible}
             onChange={setEditProjectVisible}
+            changeFinishEvent={refreshEvent}
+          />
+        )}
+        {approvalEngineerVisible && (
+          <ApprovalProjectModal
+            engineerId={currentAppEngineerId}
+            // companyName={currentEditProjectInfo.companyName}
+            // projectId={currentEditProjectInfo.projectId}
+            // company={currentEditProjectInfo.company}
+            // areaId={currentEditProjectInfo.areaId}
+            // status={currentEditProjectInfo.status}
+            // startTime={currentEditProjectInfo.startTime}
+            // endTime={currentEditProjectInfo.endTime}
+            visible={approvalEngineerVisible}
+            onChange={setApprovalEngineerVisible}
             changeFinishEvent={refreshEvent}
           />
         )}
