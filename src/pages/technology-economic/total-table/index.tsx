@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import styles from './index.less'
 import TableImportButton from "@/components/table-import-button";
 import {queryEngineeringInfoCostTotal} from "@/services/technology-economic/total-table";
+import WrapperComponent from "@/components/page-common-wrap";
 
 interface Props {
 }
@@ -158,21 +159,20 @@ const TotalTable: React.FC<Props> = () => {
     getTableData()
   }, [])
   return (
-    <div className={styles.totalTable}>
-      <div className={styles.topButton}>
-        <TableImportButton buttonTitle={'导入总算表'}
-                           requestSource={'tecEco1'}
-                           extraParams={{'EngineeringTemplateId':'1408002043054866432'}}
-                           importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}/>
+    <WrapperComponent>
+      <div className={styles.totalTable}>
+        <div className={styles.topButton}>
+          <TableImportButton buttonTitle={'导入总算表'}
+                             importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}/>
+        </div>
+        <Table
+          pagination={false}
+          size={'small'}
+          scroll={{y: 750}}
+          dataSource={dataSource}
+          columns={columns}/>
       </div>
-      <Table
-        pagination={false}
-        bordered
-        size={'small'}
-        scroll={{y: 750}}
-        dataSource={dataSource}
-        columns={columns}/>
-    </div>
+    </WrapperComponent>
   );
 }
 
