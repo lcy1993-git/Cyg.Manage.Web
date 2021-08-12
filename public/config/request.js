@@ -44,13 +44,13 @@ const arrayHasNotBaseUrlArray = {
     upload: "/storage/api",
     resource: "/resourcemanage/v2/api",
     webGis: '/webgis/api',
-    webGis2: '/webGis2/api',
+    webGis2: '/webgis2/api',
     comment: '/project/api',
     tecEco: '/quota/api',
-    tecEco1: '/technicalEconomy/api',
+    tecEco1: '/technicaleconomy/api',
     review: "/review/api",
-    component: '/Component/api',
-    material: '/Material/api/',
+    component: '/component/api',
+    material: '/material/api/',
     resourceV1: '/resource/api',
     manage: '/manage/api',
     geoserver: '/geoserver',
@@ -77,5 +77,5 @@ export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:80
 
 export const serverCodeArray = {hostName:`${thisHostName}`}
 
-export const version = "1.0.89";
+export const version = "1.0.95";
 

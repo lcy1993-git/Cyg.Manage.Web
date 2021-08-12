@@ -15,7 +15,7 @@ const ChangeNumberShowElement: React.FC<ChangeNumberShowElementProps> = (props) 
       {num > 0 && (
         <div className={styles.hasAddNumber}>
           <div>
-            {num}
+            {Math.abs(num)}
           </div>
           <div className={styles.hasAddIcon}>
             <SwapLeftOutlined />
@@ -24,7 +24,7 @@ const ChangeNumberShowElement: React.FC<ChangeNumberShowElementProps> = (props) 
       )}
       {num < 0 && (
         <span className={styles.hasReduceNumber}>
-          {num}
+          {Math.abs(num)}
           <span className={styles.hasReduceIcon}>
             <SwapRightOutlined />
           </span>

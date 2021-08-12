@@ -73,10 +73,7 @@ const BasicData: React.FC = () => {
             <Form form={areaForm}>
               <CyFormItem label="气象区文件模板" labelAlign="right" labelWidth={111}>
                 <Button type="primary" style={{ width: '80px' }}>
-                  <a
-                    href="http://10.6.1.53:8026/气象区文件模板.xlsx"
-                    download="气象区文件模板.xlsx"
-                  >
+                  <a href="/template/metareaTemp.xlsx" download="气象区文件模板.xlsx">
                     下载
                   </a>
                 </Button>

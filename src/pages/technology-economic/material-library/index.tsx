@@ -218,7 +218,7 @@ const QuotaLibrary: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        title="添加-定额库"
+        title="添加-材机库"
         width="880px"
         visible={addFormVisible}
         okText="确认"

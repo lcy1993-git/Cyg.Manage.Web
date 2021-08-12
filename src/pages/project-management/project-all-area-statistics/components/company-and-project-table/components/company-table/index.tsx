@@ -1,3 +1,5 @@
+import { useRequest } from 'ahooks';
+import { getStatisticsListByCompany } from '@/services/project-management/project-statistics-v2';
 import { useSize } from 'ahooks';
 import { Table } from 'antd';
 import uuid from 'node-uuid';
@@ -7,57 +9,37 @@ import { useRef } from 'react';
 import ShowChangeComponent from '../show-change-component';
 
 import styles from './index.less';
+import RateComponent from '../../../rate-component';
+import moment from 'moment';
+import { isNumber } from 'lodash';
+import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store';
+import { Tooltip } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons';
 
-interface CompanyTableProps {
-  dataSource?: any[];
-}
-
-const CompanyTable: React.FC<CompanyTableProps> = (props) => {
+const CompanyTable: React.FC = () => {
   //   const { dataSource = [] } = props;
-  const dataSource = [
-    {
-      name: '成都深瑞同华软件有限公司',
-      waitArrange: 10,
-      addArrange: 0,
-      waitSurvey: 12,
-      addSurvey: 5,
-      surveing: 10,
-      addSurveing: -5,
-      designing: 10,
-      addDesigning: 5,
-      hasDesigning: 5,
-      addHasDesigning: 10,
-      total: 100,
-      addTotal: 10,
-      rate: 60,
-      controlTime: '2021-07-30',
-    },
-    {
-      name: '成都深瑞同华软件有限公司',
-      waitArrange: 10,
-      addArrange: 5,
-      waitSurvey: 12,
-      addSurvey: 5,
-      surveing: 10,
-      addSurveing: -5,
-      designing: 10,
-      addDesigning: 5,
-      hasDesigning: 5,
-      addHasDesigning: 10,
-      total: 100,
-      addTotal: 10,
-      rate: 60,
-      controlTime: '2021-07-30',
-    },
-  ];
+  const { data: dataSource = [], loading } = useRequest(() => getStatisticsListByCompany());
+  const { setCompanyInfo, setDataType } = useProjectAllAreaStatisticsStore();
+  const companyNameClickEvent = (id: string, name: string) => {
+    setDataType('project');
+    setCompanyInfo({
+      companyId: id,
+      companyName: name,
+    });
+  };
   const tableColumns = [
     {
       title: '公司名称',
       dataIndex: 'name',
       index: 'name',
+      width: 160,
       ellipsis: true,
       render: (text: string, record: any) => {
-        return <span className="canClick">{record.name}</span>;
+        return (
+          <span className="canClick" onClick={() => companyNameClickEvent(record.id, record.name)}>
+            {record.name}
+          </span>
+        );
       },
     },
     {
@@ -67,8 +49,10 @@ const CompanyTable: React.FC<CompanyTableProps> = (props) => {
       ellipsis: true,
       render: (text: string, record: any) => {
         return (
-          <ShowChangeComponent changeNumber={record.addArrange}>
-            {record.waitArrange}
+          <ShowChangeComponent
+            changeNumber={record.statusQtyModel1.todayQty - record.statusQtyModel1.yesterdayQty}
+          >
+            {record.statusQtyModel1.todayQty}
           </ShowChangeComponent>
         );
       },
@@ -78,48 +62,125 @@ const CompanyTable: React.FC<CompanyTableProps> = (props) => {
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
+      render: (text: string, record: any) => {
+        return (
+          <ShowChangeComponent
+            changeNumber={record.statusQtyModel2.todayQty - record.statusQtyModel2.yesterdayQty}
+          >
+            {record.statusQtyModel2.todayQty}
+          </ShowChangeComponent>
+        );
+      },
     },
     {
       title: '勘察中(较昨日变化)',
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
+      render: (text: string, record: any) => {
+        return (
+          <ShowChangeComponent
+            changeNumber={record.statusQtyModel3.todayQty - record.statusQtyModel3.yesterdayQty}
+          >
+            {record.statusQtyModel3.todayQty}
+          </ShowChangeComponent>
+        );
+      },
     },
     {
       title: '已勘察(较昨日变化)',
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
+      render: (text: string, record: any) => {
+        return (
+          <ShowChangeComponent
+            changeNumber={record.statusQtyModel4.todayQty - record.statusQtyModel4.yesterdayQty}
+          >
+            {record.statusQtyModel4.todayQty}
+          </ShowChangeComponent>
+        );
+      },
     },
     {
       title: '设计中(较昨日变化)',
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
+      render: (text: string, record: any) => {
+        return (
+          <ShowChangeComponent
+            changeNumber={record.statusQtyModel5.todayQty - record.statusQtyModel5.yesterdayQty}
+          >
+            {record.statusQtyModel5.todayQty}
+          </ShowChangeComponent>
+        );
+      },
     },
     {
       title: '已设计(较昨日变化)',
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
+      render: (text: string, record: any) => {
+        return (
+          <ShowChangeComponent
+            changeNumber={record.statusQtyModel6.todayQty - record.statusQtyModel6.yesterdayQty}
+          >
+            {record.statusQtyModel6.todayQty}
+          </ShowChangeComponent>
+        );
+      },
     },
     {
       title: '合计(较昨日变化)',
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
+      render: (text: string, record: any) => {
+        return (
+          <ShowChangeComponent
+            changeNumber={record.statusQtyModel7.todayQty - record.statusQtyModel7.yesterdayQty}
+          >
+            {record.statusQtyModel7.todayQty}
+          </ShowChangeComponent>
+        );
+      },
     },
     {
-      title: '综合进度(较昨日变化)',
+      title: () => {
+        return (
+          <div>
+            综合进度 &nbsp;
+            <Tooltip title="综合进度代表该公司所有项目进度平均值">
+              <QuestionCircleOutlined />
+            </Tooltip>
+          </div>
+        );
+      },
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
+      width: 160,
+      render: (text: string, record: any) => {
+        return <>{record.progressRate && <RateComponent rate={record.progressRate} />}</>;
+      },
     },
     {
       title: '最近操作时间',
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
+      width: 100,
+      render: (text: string, record: any) => {
+        return (
+          <>
+            {record.lastOperationTime && (
+              <span>{moment(record.lastOperationTime).format('YYYY-MM-DD')}</span>
+            )}
+          </>
+        );
+      },
     },
   ];
   const contentRef = useRef<HTMLDivElement>(null);
@@ -160,13 +221,78 @@ const CompanyTable: React.FC<CompanyTableProps> = (props) => {
     return dataSource;
   };
 
+  // const sortData= (data: any[]) => {
+  //   return data.sort((a, b) =>  false)
+  // }
+
   const finallyShowData = useMemo(() => {
-    return handleTheShowData(dataSource)
-  },[dataSource,currentPageSize])
+    
+    return {
+      data: handleTheShowData(dataSource),
+      isOverflow: dataSource && dataSource.length > currentPageSize,
+      contentHeight: currentPageSize * 38,
+    };
+  }, [JSON.stringify(dataSource), currentPageSize]);
 
   return (
     <div className={styles.companyTable} ref={contentRef}>
-      <Table bordered={true} columns={tableColumns} pagination={false} dataSource={finallyShowData} />
+      <Table
+        bordered={true}
+        columns={tableColumns}
+        pagination={false}
+        loading={loading}
+        dataSource={finallyShowData.data}
+        scroll={finallyShowData.isOverflow ? { y: finallyShowData.contentHeight } : undefined}
+        summary={() => {
+          if (finallyShowData.data && finallyShowData.data.length > 0) {
+            const oneCellTotalData = finallyShowData.data
+              .filter((item) => isNumber(item.statusQtyModel1.todayQty))
+              .map((item) => item.statusQtyModel1.todayQty)
+              .reduce((sum, item) => sum + item);
+            const twoCellTotalData = finallyShowData.data
+              .filter((item) => isNumber(item.statusQtyModel2.todayQty))
+              .map((item) => item.statusQtyModel2.todayQty)
+              .reduce((sum, item) => sum + item);
+            const threeCellTotalData = finallyShowData.data
+              .filter((item) => isNumber(item.statusQtyModel3.todayQty))
+              .map((item) => item.statusQtyModel3.todayQty)
+              .reduce((sum, item) => sum + item);
+            const fourCellTotalData = finallyShowData.data
+              .filter((item) => isNumber(item.statusQtyModel4.todayQty))
+              .map((item) => item.statusQtyModel4.todayQty)
+              .reduce((sum, item) => sum + item);
+            const fiveCellTotalData = finallyShowData.data
+              .filter((item) => isNumber(item.statusQtyModel5.todayQty))
+              .map((item) => item.statusQtyModel5.todayQty)
+              .reduce((sum, item) => sum + item);
+            const sixCellTotalData = finallyShowData.data
+              .filter((item) => isNumber(item.statusQtyModel6.todayQty))
+              .map((item) => item.statusQtyModel6.todayQty)
+              .reduce((sum, item) => sum + item);
+            const sevenCellTotalData = finallyShowData.data
+              .filter((item) => isNumber(item.statusQtyModel7.todayQty))
+              .map((item) => item.statusQtyModel7.todayQty)
+              .reduce((sum, item) => sum + item);
+            return (
+              <Table.Summary fixed>
+                <Table.Summary.Row>
+                  <Table.Summary.Cell index={0}>合计：</Table.Summary.Cell>
+                  <Table.Summary.Cell index={1}>{oneCellTotalData}</Table.Summary.Cell>
+                  <Table.Summary.Cell index={2}>{twoCellTotalData}</Table.Summary.Cell>
+                  <Table.Summary.Cell index={3}>{threeCellTotalData}</Table.Summary.Cell>
+                  <Table.Summary.Cell index={4}>{fourCellTotalData}</Table.Summary.Cell>
+                  <Table.Summary.Cell index={5}>{fiveCellTotalData}</Table.Summary.Cell>
+                  <Table.Summary.Cell index={6}>{sixCellTotalData}</Table.Summary.Cell>
+                  <Table.Summary.Cell index={7}>{sevenCellTotalData}</Table.Summary.Cell>
+                  <Table.Summary.Cell index={8}>-</Table.Summary.Cell>
+                  <Table.Summary.Cell index={9}>-</Table.Summary.Cell>
+                </Table.Summary.Row>
+              </Table.Summary>
+            );
+          }
+          return undefined;
+        }}
+      />
     </div>
   );
 };

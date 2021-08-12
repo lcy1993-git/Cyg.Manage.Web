@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { useMount, useRequest } from 'ahooks';
-import { Button, Modal, message, Spin } from 'antd';
+import { Button, Modal, message, Spin, Space } from 'antd';
 import WrapperComponent from '@/components/page-common-wrap';
 import CommonTitle from '@/components/common-title';
 import { getRateTypeList } from '@/services/technology-economic/common-rate'
 import CommonRateTable from './components/common-rate-table';
 import { downloadTemplate, downloadDemolitionTemplate, importRateTable } from '@/services/technology-economic/common-rate';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { getTypeByText } from '../utils';
 import styles from './index.less';
 import FileUpload from '@/components/file-upload';
+import {history} from "@@/core/history";
 
 interface ListData {
-  value: string;
+  value: string | number;
   text: string;
 }
 
@@ -23,7 +23,7 @@ interface Params {
 
 const CommonRateInfomation: React.FC = () => {
   const [activeValue, setActiveValue] = useState<ListData>({ value: "", text: "" });
-  
+
   const [importVisibel, setImportVisibel] = useState<boolean>(false);
 
   const [fileList, setFileList] = useState<File[]>([])
@@ -38,7 +38,7 @@ const CommonRateInfomation: React.FC = () => {
 
     return pre;
   }, {})
-  
+
   const { data: listData = [], run: listDataRun, loading: preLoading } = useRequest<ListData[]>(getRateTypeList,
     {
       manual: true,
@@ -58,7 +58,7 @@ const CommonRateInfomation: React.FC = () => {
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
-  const listDataElement = listData.map((item, index) => {
+  const listDataElement = listData.map((item) => {
     return (
       <div
         className={`${styles.listElementItem} ${item.value === activeValue.value ? styles.listActive : ""}`}
@@ -83,24 +83,24 @@ const CommonRateInfomation: React.FC = () => {
 
   const downLoad = async () => {
     let res;
-    
+
     if((params as Params).isDemolition) {
       res = await downloadDemolitionTemplate()
     }else{
-      res = await downloadTemplate() 
+      res = await downloadTemplate()
 
     }
-    let blob = new Blob([res], {
+    const blob = new Blob([res], {
       type: 'application/xlsx',
     });
-    let finalyFileName = '费率表导入模版.xlsx';
+    const finalyFileName = '费率表导入模版.xlsx';
     // for IE
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
       window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
     } else {
       // for Non-IE
-      let objectUrl = URL.createObjectURL(blob);
-      let link = document.createElement('a');
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
       link.href = objectUrl;
       link.setAttribute('download', finalyFileName);
       document.body.appendChild(link);
@@ -109,7 +109,9 @@ const CommonRateInfomation: React.FC = () => {
     }
     message.success('导出成功');
   }
-
+  const linkToArea = ()=>{
+    history.push(`/technology-economic/area-type-manage`)
+  }
   return (
     <WrapperComponent>
       <div className={styles.imfomationModalWrap}>
@@ -118,10 +120,16 @@ const CommonRateInfomation: React.FC = () => {
             <CommonTitle>费率详情</CommonTitle>
           </div>
           <div className={styles.importButton}>
-            {
-              !buttonJurisdictionArray?.includes('quotainfo-import') &&
-              <Button type="primary" onClick={() => setImportVisibel(true)}>导入费率</Button>
-            }
+            <Space>
+              {
+                !buttonJurisdictionArray?.includes('quotainfo-import') &&
+                <Button type="primary" onClick={() => setImportVisibel(true)}>导入费率</Button>
+              }
+              {
+                activeValue.value === 51 &&
+                <Button type={'primary'} onClick={linkToArea}>地区分类</Button>
+              }
+            </Space>
           </div>
         </div>
         <Spin spinning={preLoading}>
