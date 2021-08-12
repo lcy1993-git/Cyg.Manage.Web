@@ -8,10 +8,9 @@ import NumberStatisticsComponent from './number-statistics-component';
 import StatisticsBieChart from './statistics-bie-chart';
 
 const ProjectStatisticsComponent: React.FC = () => {
-  const { dataType } = useProjectAllAreaStatisticsStore();
+  const { dataType, companyInfo } = useProjectAllAreaStatisticsStore();
 
-  // ! 待接口完善
-  const { data } = useRequest<StatusParams>(() => getProjectStatisticsOfPie(""), { refreshDeps: [dataType] });
+  const { data } = useRequest<any>(() => getProjectStatisticsOfPie(companyInfo.companyId), { refreshDeps: [dataType] });
 
   return (
     <div className={styles.projectStatisticsComponent}>

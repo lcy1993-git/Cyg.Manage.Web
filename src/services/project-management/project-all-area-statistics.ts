@@ -37,7 +37,7 @@ export const getComprehensiveProcessList = () => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/ProjectStatistics/GetLeaderboardByCompany`, {
       method: 'POST',
-      data: { limit: 5 },
+      data: { limit: 9999 },
     }),
   );
 };
@@ -46,7 +46,7 @@ export const getProjectProcessList = () => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/ProjectStatistics/GetLeaderboardByProject`, {
       method: 'POST',
-      data: { limit: 10 },
+      data: { limit: 9999 },
     }),
   );
 };

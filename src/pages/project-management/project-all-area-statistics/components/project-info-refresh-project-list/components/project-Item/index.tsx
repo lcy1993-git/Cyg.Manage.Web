@@ -14,7 +14,6 @@ export interface ProjectItemProps {
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ operator, name, operationCategory, date }) => {
-
   return (
     <div className={styles.projectItem}>
       <div className={styles.content}>
@@ -23,12 +22,8 @@ const ProjectItem: FC<ProjectItemProps> = ({ operator, name, operationCategory, 
           <span>{operator}</span>
         </Tooltip>
       </div>
-      <div className={styles.operationCategory}>
-        {operationCategory}
-      </div>
-      <div className={styles.projectName}>
-        {name}
-      </div>
+      <div className={styles.operationCategory}>{operationCategory}</div>
+      <div className={styles.projectName}>{name}</div>
       <div className={styles.date}>{date}</div>
     </div>
   );
