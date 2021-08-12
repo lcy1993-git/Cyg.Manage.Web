@@ -14,10 +14,10 @@ const devBaseUrl = {
   upload: '/api/storage/api',
   resource: '/api/resourcemanage/v2/api',
   webGis: '/api/webgis/api',
-  webGis2: '/api/webGis2/api',
+  webGis2: '/api/webgis2/api',
   comment: '/api/project/api',
   tecEco: '/api/quota/api',
-  tecEco1: '/api/technicalEconomy/api',
+  tecEco1: '/api/technicaleconomy/api',
   review: '/api/review/api',
 
   // webGis
