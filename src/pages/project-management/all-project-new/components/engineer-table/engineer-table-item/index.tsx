@@ -338,9 +338,13 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             )}
           {projectInfo?.operationAuthority?.canEdit &&
             buttonJurisdictionArray?.includes('all-project-edit-engineer') && (
-              <Button onClick={() => editEngineerEvent()}>编辑</Button>
+              <Button className="mr10" onClick={() => editEngineerEvent()}>编辑</Button>
             )}
-            <Button onClick={() => approvalFileEvent()}>批复文件</Button>
+          {projectInfo?.operationAuthority?.canEdit &&
+            buttonJurisdictionArray?.includes('all-project-file-engineer') && (
+              <Button onClick={() => approvalFileEvent()}>批复文件</Button>
+            )}
+            
         </div>
       </div>
       <div
