@@ -1,12 +1,15 @@
-import { Table } from "antd";
-import type { ColumnsType } from "antd/lib/table/Table";
+import {Table} from "antd";
+import type {ColumnsType} from "antd/lib/table/Table";
 import React, {useEffect, useState} from "react";
 import styles from './index.less'
 import TableImportButton from "@/components/table-import-button";
 import {queryEngineeringInfoCostTotal} from "@/services/technology-economic/total-table";
+import WrapperComponent from "@/components/page-common-wrap";
 
-interface Props {}
-interface TotalTableRow{
+interface Props {
+}
+
+interface TotalTableRow {
   "id": string
   "engineeringTemplateId": string;
   "no": string;
@@ -28,8 +31,9 @@ interface TotalTableRow{
   "isLeaf": boolean,
   "sort": number
 }
-const  TotalTable: React.FC<Props>= () => {
-  const [dataSource,setDataSource] = useState<TotalTableRow[]>([])
+
+const TotalTable: React.FC<Props> = () => {
+  const [dataSource, setDataSource] = useState<TotalTableRow[]>([])
   const columns: ColumnsType<any> = [
     {
       title: '序号',
@@ -146,27 +150,29 @@ const  TotalTable: React.FC<Props>= () => {
       align: 'center',
     },
   ];
-  const getTableData =async ()=>{
+  const getTableData = async () => {
     const res = await queryEngineeringInfoCostTotal('1408002043054866432')
     // @ts-ignore
     setDataSource(res)
   }
-  useEffect(()=>{
+  useEffect(() => {
     getTableData()
-  },[])
+  }, [])
   return (
-    <div className={styles.totalTable}>
-      <div className={styles.topButton}>
-        <TableImportButton buttonTitle={'导入总算表'}
-          importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}/>
+    <WrapperComponent>
+      <div className={styles.totalTable}>
+        <div className={styles.topButton}>
+          <TableImportButton buttonTitle={'导入总算表'}
+                             importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}/>
+        </div>
+        <Table
+          pagination={false}
+          size={'small'}
+          scroll={{y: 750}}
+          dataSource={dataSource}
+          columns={columns}/>
       </div>
-      <Table
-        pagination={false}
-        size={'small'}
-        scroll={{y:750}}
-        dataSource={dataSource}
-        columns={columns} />;
-    </div>
+    </WrapperComponent>
   );
 }
 
