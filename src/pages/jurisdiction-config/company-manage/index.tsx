@@ -17,7 +17,7 @@ import EditCompanyManageForm from './components/edit-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 
 const mapColor = {
   无: 'gray',
@@ -34,7 +34,6 @@ const CompanyManage: React.FC = () => {
   const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [currentDate, setCurrentDate] = useState<Moment>();
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
