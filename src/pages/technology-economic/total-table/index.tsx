@@ -164,6 +164,7 @@ const TotalTable: React.FC<Props> = () => {
       <div className={styles.totalTable}>
         <div className={styles.topButton}>
           <TableImportButton
+            extraParams={{EngineeringTemplateId:id}}
             buttonTitle={'导入总算表'}
             requestSource={'tecEco1'}
             importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}
@@ -172,7 +173,7 @@ const TotalTable: React.FC<Props> = () => {
         <Table
           pagination={false}
           size={'small'}
-          scroll={{ y: 750 }}
+          scroll={{ y: 720 }}
           dataSource={dataSource}
           columns={columns}
         />
