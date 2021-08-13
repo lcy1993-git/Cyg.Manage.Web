@@ -3,6 +3,7 @@ import styles from './index.less'
 import {getCommonlyTableLandRatio} from "@/services/technology-economic/usual-quota-table";
 import {Table} from "antd";
 import TableImportButton from "@/components/table-import-button";
+import { generateUUID } from "@/utils/utils";
 
 
 interface Props {
@@ -26,7 +27,12 @@ const TopographicIncreaseFactor: React.FC<Props> = (props) => {
   const [dataSource,setDataSource] = useState<TopographicIncreaseFactorRow[]>([])
   const getTableData = async () => {
     if (!id) return
-    const res = await getCommonlyTableLandRatio(id)
+    let res = await getCommonlyTableLandRatio(id)
+    res = res.map(item=>{
+      // eslint-disable-next-line no-param-reassign
+      item.id = generateUUID()
+      return item;
+    })
     setDataSource(res)
   }
 
@@ -97,6 +103,7 @@ const TopographicIncreaseFactor: React.FC<Props> = (props) => {
         pagination={false}
         bordered
         size={'small'}
+        rowKey={'id'}
         dataSource={dataSource}
         columns={columns}/>
         <br/>
