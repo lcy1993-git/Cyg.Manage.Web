@@ -29,9 +29,9 @@ const findItems = (resData: ResData[], name: string, isChineseName=false) => {
 export const getEnums  = (name: string, isChineseName?: boolean) => {
   const technologyEconomicEnums = localStorage.getItem('technologyEconomicEnums');
   if(technologyEconomicEnums) {
-    
+
     const parse = JSON.parse(technologyEconomicEnums || "");
-    
+
     if(typeof parse === 'object' && parse != null) {
       return findItems(parse, name, isChineseName)?.items;
     }
@@ -40,9 +40,9 @@ export const getEnums  = (name: string, isChineseName?: boolean) => {
         if(Array.isArray(resData)){
           localStorage.setItem('technologyEconomicEnums', JSON.stringify(resData));
           getEnums(name, isChineseName)
-        }   
+        }
     });
- 
+
   }
   return;
 }
@@ -53,3 +53,18 @@ export const getTypeByText = (text: string) => {
       ?.find((item: EnumsType) => item.text === text)
     )?.value
 }
+/**
+ * 创建唯一标识
+ * @param content
+ * @param getProperties
+ * @returns
+ */
+export const generateUUID = ()=> {
+  let d = new Date().getTime();
+  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = (d + Math.random()*16)%16 | 0;
+    d = Math.floor(d/16);
+    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+  });
+  return uuid;
+};

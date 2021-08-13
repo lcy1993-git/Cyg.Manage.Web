@@ -3,6 +3,7 @@ import styles from './index.less'
 import {getCommonlyTableLossRatio} from "@/services/technology-economic/usual-quota-table";
 import {Table} from "antd";
 import TableImportButton from "@/components/table-import-button";
+import {generateUUID} from "@/utils/utils";
 
 
 interface Props {
@@ -22,7 +23,12 @@ const AttritionRate: React.FC<Props> = (props) => {
   const [dataSource, setDataSource] = useState<AttritionRateRow[]>([])
   const getTableData = async () => {
     if (!id) return
-    const res = await getCommonlyTableLossRatio(id)
+    let res = await getCommonlyTableLossRatio(id)
+    res = res.map(item=>{
+      // eslint-disable-next-line no-param-reassign
+      item.id = generateUUID()
+      return item;
+    })
     setDataSource(res)
   }
 
@@ -64,7 +70,6 @@ const AttritionRate: React.FC<Props> = (props) => {
   }, [id])
   return (
     <div className={styles.topographicIncreaseFactor}>
-      {id}
       <div className={styles.topButton}>
         <TableImportButton buttonTitle={'导入费率'}
                            requestSource={'tecEco1'}
@@ -75,6 +80,7 @@ const AttritionRate: React.FC<Props> = (props) => {
         scroll={{y: 570}}
         bordered
         size={'small'}
+        rowKey={'id'}
         dataSource={dataSource}
         columns={columns}/>
       <br/>
