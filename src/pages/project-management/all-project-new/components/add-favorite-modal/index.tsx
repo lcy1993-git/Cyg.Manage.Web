@@ -34,7 +34,7 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
   return (
     <Modal
       maskClosable={false}
-      title="导出坐标权限设置"
+      title="添加至收藏夹"
       width={755}
       visible={state as boolean}
       destroyOnClose
@@ -42,12 +42,14 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
       onOk={() => modifyPowerStatus()}
       cancelText="取消"
       okText="确认"
-      bodyStyle={{ height: 120, padding: 0 }}
+      bodyStyle={{ height: 180, padding: 0 }}
     >
       <CyTip>您已选中{projectIds.length}个工程，将添加至所选收藏夹。</CyTip>
-      <CyFormItem required label="请选择收藏夹">
-        <TreeSelect></TreeSelect>
-      </CyFormItem>
+      <div style={{ padding: '30px' }}>
+        <CyFormItem required label="请选择收藏夹" labelWidth={98}>
+          <TreeSelect></TreeSelect>
+        </CyFormItem>
+      </div>
     </Modal>
   );
 };

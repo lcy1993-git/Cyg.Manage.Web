@@ -43,6 +43,7 @@ import AuditKnotModal from './components/audit-knot-modal';
 import ColumnsConfigModal from './components/columns-config-modal';
 import { useMount, useRequest } from 'ahooks';
 import AddFavoriteModal from './components/add-favorite-modal';
+import FavoriteList from './components/favorite-list';
 
 const { Search } = Input;
 
@@ -476,7 +477,10 @@ const AllProject: React.FC = () => {
     </Menu>
   );
 
-  const addFavEvent = () => {};
+  const addFavEvent = () => {
+    setAddFavoriteModal(true);
+  };
+
   const removeFavEvent = () => {};
 
   const postProjectMenu = (
@@ -614,9 +618,10 @@ const AllProject: React.FC = () => {
           <div className={styles.projectsAndFavorite}>
             <div
               className={styles.allProjectsFavorite}
-              style={{ display: sideVisible ? 'block' : 'none' }}
+              // sideVisible ? 'block' : 'none'
+              style={{ display: 'block' }}
             >
-              123
+              <FavoriteList />
             </div>
             <div className={styles.allProjectTableContent}>
               <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
@@ -841,8 +846,8 @@ const AllProject: React.FC = () => {
         )}
         {addFavoriteModal && (
           <AddFavoriteModal
-            visible={exportPowerModalVisible}
-            onChange={setExportPowerModalVisible}
+            visible={addFavoriteModal}
+            onChange={setAddFavoriteModal}
             projectIds={selectProjectIds}
             finishEvent={refresh}
           />
