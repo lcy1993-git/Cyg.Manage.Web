@@ -19,7 +19,6 @@ import {useHistory} from 'react-router-dom';
 import styles from './index.less'
 import {
   queryCommonlyTablePager,
-  getCommonlyTableTypeList,
   addCommonlyTable,
   deleteCommonlyTable,
   editCommonlyTable,
@@ -239,8 +238,10 @@ const UsualQuotaTable: React.FC<Props> = () => {
     console.log(err)
   }
   const getCommonlyTableType = async () => {
-    const res = await getCommonlyTableTypeList()
-    setCommonlyTableType(res)
+    const res = localStorage.getItem('technologyEconomicEnums')
+    if (res === null) return
+    const type = JSON.parse(res)?.find((item: { code: string; })=>item.code === "CommonlyTableType")?.items
+    setCommonlyTableType(type)
   }
 
   const tableOnSelect = (val: React.Key[]) => {
@@ -375,7 +376,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
                             <Option
                               value={item.value}
                               key={item.value}
-                              disabled={dataSource.some(i => i.id === item.value)}
+                              disabled={dataSource.some(i => i.commonlyTableTypeText === item.text)}
                             >{item.text}</Option>
                           )
                         }
