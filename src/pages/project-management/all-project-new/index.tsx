@@ -621,7 +621,7 @@ const AllProject: React.FC = () => {
               // sideVisible ? 'block' : 'none'
               style={{ display: 'block' }}
             >
-              <FavoriteList />
+              <FavoriteList visible/>
             </div>
             <div className={styles.allProjectTableContent}>
               <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
