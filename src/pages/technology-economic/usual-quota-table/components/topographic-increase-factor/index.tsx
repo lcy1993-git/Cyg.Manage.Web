@@ -91,8 +91,7 @@ const TopographicIncreaseFactor: React.FC<Props> = (props) => {
       <div className={styles.topButton}>
         <TableImportButton buttonTitle={'导入费率'}
                            requestSource={'tecEco1'}
-                           extraParams={{'EngineeringTemplateId':'1408002043054866432'}}
-                           importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}/>
+                           importUrl={'/CommonlyTable/ImportCommonlyTable'}/>
       </div>
       <Table
         pagination={false}
