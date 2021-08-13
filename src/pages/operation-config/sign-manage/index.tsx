@@ -704,7 +704,7 @@ const SignManage: React.FC = () => {
 
       <Modal
         maskClosable={false}
-        title="新建模板文件组"
+        title="新建签批分组"
         width="820px"
         visible={signGroupModalVisible}
         okText="确认"
