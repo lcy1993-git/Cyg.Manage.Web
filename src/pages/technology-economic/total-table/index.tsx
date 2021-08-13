@@ -165,6 +165,7 @@ const TotalTable: React.FC<Props> = () => {
         <div className={styles.topButton}>
           <TableImportButton
             buttonTitle={'导入总算表'}
+            requestSource={'tecEco1'}
             importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}
           />
         </div>
