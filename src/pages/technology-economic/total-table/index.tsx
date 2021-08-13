@@ -1,39 +1,40 @@
-import {Table} from "antd";
-import type {ColumnsType} from "antd/lib/table/Table";
-import React, {useEffect, useState} from "react";
-import styles from './index.less'
-import TableImportButton from "@/components/table-import-button";
-import {queryEngineeringInfoCostTotal} from "@/services/technology-economic/total-table";
-import WrapperComponent from "@/components/page-common-wrap";
+import { Table } from 'antd';
+import type { ColumnsType } from 'antd/lib/table/Table';
+import React, { useEffect, useState } from 'react';
+import styles from './index.less';
+import TableImportButton from '@/components/table-import-button';
+import { queryEngineeringInfoCostTotal } from '@/services/technology-economic/total-table';
+import WrapperComponent from '@/components/page-common-wrap';
+import qs from 'qs';
 
-interface Props {
-}
+interface Props {}
 
 interface TotalTableRow {
-  "id": string
-  "engineeringTemplateId": string;
-  "no": string;
-  "name": string;
-  "code": string;
-  "constructionCostFormula": null | string;
-  "deviceCostFormula": null | string;
-  "installCostFormula": null | string;
-  "otherCostFormula": null | string;
-  "basicReserveCostFormula": null | string;
-  "totalCostFormula": null | string;
-  "staticInvestmentRatio": null | string;
-  "unitInvestmentCountFormula": null | string;
-  "unit": null | string;
-  "unitInvestmentFormula": null | string;
-  "costNo": null | string;
-  "remark": null | string;
-  "parentId": null | string;
-  "isLeaf": boolean,
-  "sort": number
+  id: string;
+  engineeringTemplateId: string;
+  no: string;
+  name: string;
+  code: string;
+  constructionCostFormula: null | string;
+  deviceCostFormula: null | string;
+  installCostFormula: null | string;
+  otherCostFormula: null | string;
+  basicReserveCostFormula: null | string;
+  totalCostFormula: null | string;
+  staticInvestmentRatio: null | string;
+  unitInvestmentCountFormula: null | string;
+  unit: null | string;
+  unitInvestmentFormula: null | string;
+  costNo: null | string;
+  remark: null | string;
+  parentId: null | string;
+  isLeaf: boolean;
+  sort: number;
 }
 
 const TotalTable: React.FC<Props> = () => {
-  const [dataSource, setDataSource] = useState<TotalTableRow[]>([])
+  const [dataSource, setDataSource] = useState<TotalTableRow[]>([]);
+  const id = (qs.parse(window.location.href.split('?')[1]).id as string) || '';
   const columns: ColumnsType<any> = [
     {
       title: '序号',
@@ -151,29 +152,32 @@ const TotalTable: React.FC<Props> = () => {
     },
   ];
   const getTableData = async () => {
-    const res = await queryEngineeringInfoCostTotal('1408002043054866432')
+    const res = await queryEngineeringInfoCostTotal(id);
     // @ts-ignore
-    setDataSource(res)
-  }
+    setDataSource(res);
+  };
   useEffect(() => {
-    getTableData()
-  }, [])
+    getTableData();
+  }, []);
   return (
     <WrapperComponent>
       <div className={styles.totalTable}>
         <div className={styles.topButton}>
-          <TableImportButton buttonTitle={'导入总算表'}
-                             importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}/>
+          <TableImportButton
+            buttonTitle={'导入总算表'}
+            importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}
+          />
         </div>
         <Table
           pagination={false}
           size={'small'}
-          scroll={{y: 750}}
+          scroll={{ y: 750 }}
           dataSource={dataSource}
-          columns={columns}/>
+          columns={columns}
+        />
       </div>
     </WrapperComponent>
   );
-}
+};
 
 export default TotalTable;

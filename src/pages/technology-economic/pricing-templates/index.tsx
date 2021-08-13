@@ -198,13 +198,25 @@ const PricingTemplates: React.FC = () => {
   // const commonRates = () => {
   //   history.push(`/technology-economic/common-rate`);
   // };
+  // 跳转常用费率
   const gotoCostTemplate = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择要操作的行');
       return;
     }
     const id = tableSelectRows[0].id;
+    console.log(tableSelectRows);
+
     history.push(`/technology-economic/cost-template?id=${id}`);
+  };
+  // 跳转总算表
+  const gotoTotalTable = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    const id = tableSelectRows[0].id;
+    history.push(`/technology-economic/total-table?id=${id}`);
   };
   const tableElement = () => {
     return (
@@ -252,6 +264,12 @@ const PricingTemplates: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <ImageIcon width={16} height={16} imgUrl="feeTemplate.png" />
             <div style={{ marginLeft: '5px' }}>费用模板</div>
+          </div>
+        </Button>
+        <Button className="mr7" onClick={() => gotoTotalTable()}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="feeTemplate.png" />
+            <div style={{ marginLeft: '5px' }}>总算表</div>
           </div>
         </Button>
         {/* <Button className="mr7" onClick={() => commonRates()}>
