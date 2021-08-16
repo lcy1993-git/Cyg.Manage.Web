@@ -2,7 +2,7 @@ export interface LayerParams {
   layerName: string; // 下户线
   zIndex: number;
   declutter?: boolean;
-  type: 'line' | 'cable_channel' | 'mark' | 'point' | 'pullline';
+  type: 'line' | 'cable_channel' | 'mark' | 'point' | 'special_point';
 }
 
 export interface LayerDatas {
@@ -12,6 +12,12 @@ export interface LayerDatas {
 }
 
 export const layerParams: LayerParams[] = [
+  {
+    layerName: 'brace', // 撑杆
+    zIndex: 1,
+    declutter: false,
+    type: 'special_point',
+  },
   {
     layerName: 'user_line', // 下户线
     zIndex: 1,
