@@ -276,53 +276,6 @@ const SignManage: React.FC = () => {
     });
   };
 
-  const tableElement = () => {
-    return (
-      <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('sign-file-add') && ( */}
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        {/* )} */}
-
-        {/* {buttonJurisdictionArray?.includes('sign-file-edit') && ( */}
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        {/* )} */}
-        {/* {buttonJurisdictionArray?.includes('sign-file-download') && ( */}
-        <Popconfirm
-          title="您确定要下载该公司文件？"
-          onConfirm={() => downLoadEvent()}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DownloadOutlined />
-            下载
-          </Button>
-        </Popconfirm>
-        {/* )} */}
-
-        {/* {buttonJurisdictionArray?.includes('sign-file-delete') && ( */}
-        <Popconfirm
-          title="您确定要删除该条数据?"
-          onConfirm={sureDeleteData}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
-          </Button>
-        </Popconfirm>
-        {/* )} */}
-      </div>
-    );
-  };
-
   //下载公司文件
   const downLoadEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -492,12 +445,12 @@ const SignManage: React.FC = () => {
               />
             </TableSearch>
             <TableSearch width="400px">
-              {/* {buttonJurisdictionArray?.includes('add-sign-group') && ( */}
-              <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
-                <PlusOutlined />
-                新建签批分组
-              </Button>
-              {/* )} */}
+              {buttonJurisdictionArray?.includes('add-sign-group') && (
+                <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
+                  <PlusOutlined />
+                  新建签批分组
+                </Button>
+              )}
 
               <Popconfirm
                 title="确定要删除当前文件组吗?"
@@ -505,18 +458,18 @@ const SignManage: React.FC = () => {
                 okText="确认"
                 cancelText="取消"
               >
-                {/* {buttonJurisdictionArray?.includes('delete-sign-group') && ( */}
-                <Button className="mr7">删除当前分组</Button>
-                {/* )} */}
+                {buttonJurisdictionArray?.includes('delete-sign-group') && (
+                  <Button className="mr7">删除当前分组</Button>
+                )}
               </Popconfirm>
-              {/* {buttonJurisdictionArray?.includes('sign-manage-defaultOptions') && ( */}
-              <Tooltip title="默认参数和对应签批分组关联" style={{ borderRadius: 15 }}>
-                <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
-                  {/* <i className="iconfont iconcanshu" /> */}
-                  默认参数
-                </Button>
-              </Tooltip>
-              {/* )} */}
+              {buttonJurisdictionArray?.includes('sign-manage-defaultOptions') && (
+                <Tooltip title="默认参数和对应签批分组关联" style={{ borderRadius: 15 }}>
+                  <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
+                    {/* <i className="iconfont iconcanshu" /> */}
+                    默认参数
+                  </Button>
+                </Tooltip>
+              )}
             </TableSearch>
           </div>
         </div>
@@ -602,46 +555,46 @@ const SignManage: React.FC = () => {
           </Tabs>
 
           <div className={styles.buttonArea}>
-            {/* {buttonJurisdictionArray?.includes('sign-file-add') && ( */}
-            <Button type="primary" className="mr7" onClick={() => addEvent()}>
-              <PlusOutlined />
-              添加
-            </Button>
-            {/* )} */}
-
-            {/* {buttonJurisdictionArray?.includes('sign-file-edit') && ( */}
-            <Button className="mr7" onClick={() => editEvent()}>
-              <EditOutlined />
-              编辑
-            </Button>
-            {/* )} */}
-            {/* {buttonJurisdictionArray?.includes('sign-file-download') && ( */}
-            <Popconfirm
-              title="您确定要下载该公司文件？"
-              onConfirm={() => downLoadEvent()}
-              okText="确认"
-              cancelText="取消"
-            >
-              <Button className="mr7">
-                <DownloadOutlined />
-                下载
+            {buttonJurisdictionArray?.includes('sign-file-add') && (
+              <Button type="primary" className="mr7" onClick={() => addEvent()}>
+                <PlusOutlined />
+                添加
               </Button>
-            </Popconfirm>
-            {/* )} */}
+            )}
 
-            {/* {buttonJurisdictionArray?.includes('sign-file-delete') && ( */}
-            <Popconfirm
-              title="您确定要删除该条数据?"
-              onConfirm={sureDeleteData}
-              okText="确认"
-              cancelText="取消"
-            >
-              <Button className="mr7">
-                <DeleteOutlined />
-                删除
+            {buttonJurisdictionArray?.includes('sign-file-edit') && (
+              <Button className="mr7" onClick={() => editEvent()}>
+                <EditOutlined />
+                编辑
               </Button>
-            </Popconfirm>
-            {/* )} */}
+            )}
+            {buttonJurisdictionArray?.includes('sign-file-download') && (
+              <Popconfirm
+                title="您确定要下载该公司文件？"
+                onConfirm={() => downLoadEvent()}
+                okText="确认"
+                cancelText="取消"
+              >
+                <Button className="mr7">
+                  <DownloadOutlined />
+                  下载
+                </Button>
+              </Popconfirm>
+            )}
+
+            {buttonJurisdictionArray?.includes('sign-file-delete') && (
+              <Popconfirm
+                title="您确定要删除该条数据?"
+                onConfirm={sureDeleteData}
+                okText="确认"
+                cancelText="取消"
+              >
+                <Button className="mr7">
+                  <DeleteOutlined />
+                  删除
+                </Button>
+              </Popconfirm>
+            )}
           </div>
         </div>
       </div>
