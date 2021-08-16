@@ -4,16 +4,16 @@ import CommonTitle from '@/components/common-title';
 import styles from './index.less';
 import FileUpLoad from '@/components/file-upload';
 import { Button, Form, message } from 'antd';
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { commonUpload } from '@/services/common';
 import CyFormItem from '@/components/cy-form-item';
 import ExportAuthorityButton from '@/components/authortiy-export-button';
+
 const BasicData: React.FC = () => {
   const [assestsForm] = Form.useForm();
   const [jurisdictionForm] = Form.useForm();
   const [areaForm] = Form.useForm();
   // const [assestsUploadLoading, setAssestsUploadLoading] = useState<boolean>(false);
-
   const uploadAssests = () => {
     assestsForm.validateFields().then(async (values) => {
       const { assestsFile } = values;

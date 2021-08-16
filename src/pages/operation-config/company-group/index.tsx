@@ -50,7 +50,7 @@ const CompanyGroup: React.FC = () => {
       title: '部组',
       dataIndex: 'name',
       index: 'name',
-      width: 180,
+      width: 220,
     },
     {
       title: '部组管理员',
@@ -59,7 +59,7 @@ const CompanyGroup: React.FC = () => {
       render: (text: any, record: any) => {
         return record.adminUserId ? record.adminUserName : record.adminUserId;
       },
-      width: 200,
+      width: 240,
     },
     {
       title: '部组成员',

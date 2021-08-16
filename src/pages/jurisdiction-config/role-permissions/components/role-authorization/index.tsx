@@ -14,14 +14,14 @@ interface ExtractParams {
   templateId: string;
 }
 
-interface UserAuthorizationProps {
+interface RoleAuthorizationProps {
   extractParams: ExtractParams;
   onChange: () => void;
 }
 
 const { Search } = Input;
 
-const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
+const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
   const tableRef = useRef<HTMLDivElement>(null);
 
   const { extractParams, onChange } = props;
@@ -32,42 +32,23 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
   const columns = [
     {
       title: '用户名',
-      dataIndex: 'userName',
-      index: 'userName',
+      dataIndex: 'roleName',
+      index: 'roleName',
     },
     {
-      title: '手机号',
-      dataIndex: 'phone',
-      index: 'phone',
-      width: 160,
-    },
-    {
-      title: '昵称',
-      dataIndex: 'nickName',
-      index: 'nickName',
-      width: 220,
-    },
-    {
-      title: '姓名',
-      dataIndex: 'name',
-      index: 'namec',
-      width: 220,
-    },
-    {
-      title: '角色',
+      title: '授权类型',
       dataIndex: 'roleTypeText',
       index: 'roleTypeText',
       render: (text: string, record: any) => {
-        switch (record.userType) {
+        switch (record.roleType) {
           case 1:
-            return <TableStatus color="gray">{record.userTypeText}</TableStatus>;
+            return <TableStatus color="gray">{record.roleTypeText}</TableStatus>;
           case 2:
-            return <TableStatus color="orange">{record.userTypeText}</TableStatus>;
+            return <TableStatus color="orange">{record.roleTypeText}</TableStatus>;
           default:
-            return <TableStatus color="gray">{record.userTypeText}</TableStatus>;
+            return null;
         }
       },
-      width: 120,
     },
     {
       title: '授权状态',
@@ -98,14 +79,21 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
     }
   };
 
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset();
+    }
+  };
+
   const tableLeftSlot = (
-    <TableSearch label="用户信息" width="248px">
+    <TableSearch label="关键词" width="230px">
       <Search
         value={searchKeyWord}
         onChange={(e) => setSearchKeyWord(e.target.value)}
         onSearch={() => search()}
         enterButton
-        placeholder="请输入用户信息"
+        placeholder="关键词"
       />
     </TableSearch>
   );
@@ -128,15 +116,8 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
     </>
   );
 
-  const reset = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current.reset();
-    }
-  };
-
   const batchAddAuthorizationEvent = async () => {
-    if (selectRows && selectRows.length === 0) {
+    if (selectRows.length === 0) {
       message.error('请至少选中一条数据');
       return;
     }
@@ -146,13 +127,13 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
 
     await batchAddAuthorization({
       templateId,
-      authorizeType: 2,
+      authorizeType: 1,
       objectIds: batchObjectIds,
     });
-    message.success('授权成功');
-    reset();
     refresh();
+    reset();
     onChange?.();
+    message.success('授权成功');
   };
 
   const batchRemoveAuthorizationEvent = async () => {
@@ -160,24 +141,19 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
       message.error('请至少选中一条数据');
       return;
     }
+    const batchObjectIds = selectRows.map((item) => item.id);
 
-    if (selectRows.find((item) => item.isAuthorized === true)) {
-      const batchObjectIds = selectRows.map((item) => item.id);
-      const { templateId } = extractParams;
+    const { templateId } = extractParams;
 
-      await batchRemoveAuthorization({
-        templateId,
-        authorizeType: 2,
-        objectIds: batchObjectIds,
-      });
-      message.success('授权移除成功');
-      reset();
-      refresh();
-      onChange?.();
-    } else {
-      message.error('选中的用户尚未授权');
-      return;
-    }
+    await batchRemoveAuthorization({
+      templateId,
+      authorizeType: 1,
+      objectIds: batchObjectIds,
+    });
+    refresh();
+    reset();
+    onChange?.();
+    message.success('授权移除成功');
   };
 
   return (
@@ -186,7 +162,7 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
         buttonLeftContentSlot={() => tableLeftSlot}
         buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
-        url="/AuthTemplate/GetUsers"
+        url="/AuthTemplate/GetRoles"
         columns={columns}
         type="checkbox"
         getSelectData={(data) => setSelectRows(data)}
@@ -196,4 +172,4 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
   );
 };
 
-export default UserAuthorization;
+export default RoleAuthorization;
