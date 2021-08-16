@@ -12,6 +12,11 @@ const CompanyFile = Loadable({
   loading: Loading,
   delay: 150,
 });
+const SignManage = Loadable({
+  loader: () => import('@/pages/operation-config/sign-manage'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -23,5 +28,10 @@ export default [
     title: '公司文件',
     path: '/operation-config/company-file',
     component: <CompanyFile />,
+  },
+  {
+    title: '签批管理',
+    path: '/operation-config/sign-manage',
+    component: <SignManage />,
   },
 ];
