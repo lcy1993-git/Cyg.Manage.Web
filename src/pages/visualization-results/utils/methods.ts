@@ -159,6 +159,7 @@ const loadLayers = (
   // });
   // showData = [];
   layerParams.forEach((item: LayerParams) => {
+    console.log(item.layerName)
     // if (postData.length > 576) {
     let layerName = item.layerName;
     loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
