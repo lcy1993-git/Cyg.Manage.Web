@@ -12,6 +12,7 @@ import EmptyTip from '@/components/empty-tip';
 import { useContext } from 'react';
 import { useEffect } from 'react';
 import { isNumber } from 'lodash';
+
 export interface AddProjectValue {
   engineerId: string;
   areaId: string;
@@ -26,6 +27,7 @@ interface EngineerTableItemProps {
   getClickProjectId: (clickProjectId: string) => void;
   addProject?: (needValue: AddProjectValue) => void;
   editEngineer?: (needValue: AddProjectValue) => void;
+  approvalEngineer?: (needValue: AddProjectValue) => void;
   // left: number;
   isOverflow: boolean;
   columnsWidth: number;
@@ -62,6 +64,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     getClickProjectId,
     addProject,
     editEngineer,
+    approvalEngineer,
     isOverflow = false,
     columnsWidth,
     contentWidth,
@@ -337,7 +340,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             buttonJurisdictionArray?.includes('all-project-file-engineer') && (
               <Button onClick={() => approvalFileEvent()}>批复文件</Button>
             )}
-            
+            {/* <Button onClick={() => approvalFileEvent()}>批复文件</Button> */}
         </div>
       </div>
       <div
