@@ -6,6 +6,7 @@ import { useLocation } from 'umi';
 import TopographicIncreaseFactor from '../topographic-increase-factor';
 import AttritionRate from '../atrition-rate';
 import { getCommonlyTableTypeList } from '@/services/technology-economic/usual-quota-table';
+import TableImportButton from "@/components/table-import-button";
 
 const {TabPane} = Tabs;
 
@@ -34,6 +35,11 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
         <h3 className={styles.content}>
           目录
         </h3>
+        <div className={styles.topButton}>
+          <TableImportButton buttonTitle={'导入费率'}
+                             requestSource={'tecEco1'}
+                             importUrl={'/CommonlyTable/ImportCommonlyTable'}/>
+        </div>
         <Tabs tabPosition={'left'} centered >
           {
             tabs.some(item=>item.text === '地形增加系数') &&  <TabPane tab={'地形增加系数'} key={1}>
@@ -45,9 +51,6 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
               <AttritionRate id={id}/>
             </TabPane>
           }
-          {/*<TabPane tab={'未计价材料施工损耗率'} key={2}>*/}
-          {/*  <AttritionRate id={id}/>*/}
-          {/*</TabPane>*/}
         </Tabs>
       </div>
     </div>

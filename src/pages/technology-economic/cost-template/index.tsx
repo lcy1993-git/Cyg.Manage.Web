@@ -5,6 +5,7 @@ import styles from './index.less';
 import ConstructionFees from '@/pages/technology-economic/cost-template/components/construction-fees';
 import { getCostTableDirectory } from '@/services/technology-economic/cost-template';
 import qs from 'qs';
+import TableImportButton from "@/components/table-import-button";
 
 const { TabPane } = Tabs;
 
@@ -19,19 +20,20 @@ export interface CostMenus {
 const CostTemplate: React.FC<Props> = () => {
   const [menus, setMenus] = useState<CostMenus[]>([]);
   const [currentTabId, setCurrentTabId] = useState<string>('');
+  const [id, setId] = useState<string>('');
   const childRef = useRef<HTMLDivElement>(null);
-  const getDirectory = async () => {
-    const id = (qs.parse(window.location.href.split('?')[1]).id as string) || '';
-    const res = await getCostTableDirectory(id);
+  const getDirectory = async (fid: string) => {
+    const res = await getCostTableDirectory(fid);
     // @ts-ignore
     setMenus(res);
-    console.log(res);
   };
   const onChange = (key: string) => {
     setCurrentTabId(key);
   };
   useEffect(() => {
-    getDirectory();
+    const fid = (qs.parse(window.location.href.split('?')[1]).id as string) || '';
+    setId(fid)
+    getDirectory(fid);
   }, []);
   useEffect(() => {
     const parent = menus.filter((i) => {
@@ -44,7 +46,21 @@ const CostTemplate: React.FC<Props> = () => {
   return (
     <div className={styles.costTemplate}>
       <div className={styles.leftMenu}>
-        <h3 className={styles.content}>目录</h3>
+        <div className={styles.topBox}>
+          <h3 className={styles.content}>目录{currentTabId}</h3>
+          <div className={styles.importBtn}>
+          <TableImportButton
+            style={{
+              marginRight:'20px',
+              marginTop:'20px'
+            }}
+          requestSource={'tecEco1'}
+          extraParams={{ EngineeringTemplateId: id }}
+          importUrl={'/EngineeringTemplateCostTable/ImportEngineeringTemplateCostTable'}
+          />
+          </div>
+        </div>
+
         <Tabs tabPosition={'left'} centered onChange={onChange}>
           {menus
             .filter((i) => i.parentId == null)
