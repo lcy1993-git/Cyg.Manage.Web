@@ -71,9 +71,7 @@ const AttritionRate: React.FC<Props> = (props) => {
   return (
     <div className={styles.topographicIncreaseFactor}>
       <div className={styles.topButton}>
-        <TableImportButton buttonTitle={'导入费率'}
-                           requestSource={'tecEco1'}
-                           importUrl={'/CommonlyTable/ImportCommonlyTable'}/>
+
       </div>
       <Table
         pagination={false}
