@@ -205,7 +205,7 @@ const SuppliesLibrary: React.FC = () => {
         url="/MaterialLibrary/GetMaterialLibraryList"
         tableTitle="物料库管理"
         getSelectData={tableSelectEvent}
-        requestSource='tecEco'
+        requestSource='tecEco1'
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
