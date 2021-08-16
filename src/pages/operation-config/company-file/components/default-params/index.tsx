@@ -1,35 +1,37 @@
 import CyFormItem from '@/components/cy-form-item';
-import React, { useMemo } from 'react';
-import { useRequest } from 'ahooks';
-import { Input, Row, Col, TreeSelect } from 'antd';
-import { getCompanyFileTree } from '@/services/operation-config/company-file';
+import React from 'react';
+import { Input, Row, Col } from 'antd';
+import { useGetSelectData } from '@/utils/hooks';
+import DataSelect from '@/components/data-select';
 
-const DefaultParams: React.FC = () => {
-  const { data: categoryData } = useRequest(() => getCompanyFileTree());
+interface DefaultOptionsParams {
+  groupId: string;
+}
 
-  const mapTreeData = (data: any) => {
-    return {
-      title: data.text,
-      value: data.id,
-      children: data.children ? data.children.map(mapTreeData) : [],
-    };
-  };
+const DefaultParams: React.FC<DefaultOptionsParams> = (props) => {
+  const { groupId } = props;
 
-  const handleData = useMemo(() => {
-    return categoryData?.map(mapTreeData);
-  }, [JSON.stringify(categoryData)]);
-
-  const selectData = handleData?.map((item) => {
-    return item.children;
+  const { data: templateData = [] } = useGetSelectData({
+    url: '/CompanyFile/GetList',
+    method: 'post',
+    titleKey: 'name',
+    valueKey: 'id',
+    extraParams: { fileCategory: 1, groupId: groupId },
+  });
+  const { data: directoryData = [] } = useGetSelectData({
+    url: '/CompanyFile/GetList',
+    method: 'post',
+    titleKey: 'name',
+    valueKey: 'id',
+    extraParams: { fileCategory: 3, groupId: groupId },
   });
 
-  const treeData = selectData?.map((item) => {
-    return item.map((item: any) => {
-      return {
-        title: item.title,
-        value: item.value,
-      };
-    });
+  const { data: descriptionData = [] } = useGetSelectData({
+    url: '/CompanyFile/GetList',
+    method: 'post',
+    titleKey: 'name',
+    valueKey: 'id',
+    extraParams: { fileCategory: 4, groupId: groupId },
   });
 
   return (
@@ -43,28 +45,16 @@ const DefaultParams: React.FC = () => {
             name="designOrganize"
             rules={[{ max: 12, message: '设计单位超出字符数限制，限制为12个字符' }]}
           >
-            <Input style={{ width: '200px' }} placeholder="--请输入设计单位--" />
+            <Input style={{ width: '220px' }} placeholder="--请输入设计单位--" />
           </CyFormItem>
         </Col>
 
         <Col>
           <CyFormItem labelWidth={120} align="right" label="图框模板" name="frameTemplate">
-            <TreeSelect
-              key="frameTemplate"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[0]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
+            <DataSelect
+              options={templateData}
+              style={{ width: '220px' }}
+              placeholder="请选择图框模板"
             />
           </CyFormItem>
         </Col>
@@ -72,22 +62,10 @@ const DefaultParams: React.FC = () => {
       <Row gutter={18}>
         <Col>
           <CyFormItem labelWidth={120} align="right" label="目录模板" name="directoryTemplate">
-            <TreeSelect
-              key="directoryTemplate"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[2]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
+            <DataSelect
+              options={directoryData}
+              style={{ width: '220px' }}
+              placeholder="请选择目录模板"
             />
           </CyFormItem>
         </Col>
@@ -99,114 +77,10 @@ const DefaultParams: React.FC = () => {
             label="设计总说明模板"
             name="descriptionTemplate"
           >
-            <TreeSelect
-              key="descriptionTemplate"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[3]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        </Col>
-      </Row>
-
-      <Row gutter={18}>
-        <Col>
-          <CyFormItem labelWidth={120} align="right" label="批准" name="approve">
-            <TreeSelect
-              key="approve"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[1]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        </Col>
-
-        <Col>
-          <CyFormItem labelWidth={120} align="right" label="审核" name="audit">
-            <TreeSelect
-              key="audit"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[1]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        </Col>
-      </Row>
-
-      <Row gutter={18}>
-        <Col>
-          <CyFormItem labelWidth={120} align="right" label="校核" name="calibration">
-            <TreeSelect
-              key="calibration"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[1]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        </Col>
-
-        <Col>
-          <CyFormItem labelWidth={120} align="right" label="设计/勘测" name="designSurvey">
-            <TreeSelect
-              key="designSurvey"
-              style={{ width: '200px' }}
-              treeData={
-                selectData?.map((item) => {
-                  return item.map((item: any) => {
-                    return {
-                      title: item.title,
-                      value: item.value,
-                    };
-                  });
-                })[1]
-              }
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
+            <DataSelect
+              options={descriptionData}
+              style={{ width: '220px' }}
+              placeholder="请选择设计总说明模板"
             />
           </CyFormItem>
         </Col>

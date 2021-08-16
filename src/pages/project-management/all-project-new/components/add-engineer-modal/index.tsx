@@ -16,7 +16,7 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
 
-  const {finishEvent} = props;
+  const { finishEvent } = props;
 
   const [form] = Form.useForm();
 

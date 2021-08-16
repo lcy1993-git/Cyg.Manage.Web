@@ -55,6 +55,7 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
             titlekey="text"
             valuekey="value"
             placeholder="请选择部组管理员"
+            extraParams={{ clientCategory: 2 }}
           />
         </CyFormItem>
       )}
@@ -67,6 +68,7 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
             titlekey="text"
             valuekey="value"
             placeholder="请选择部组管理员"
+            extraParams={{ clientCategory: 2 }}
             disabled
           />
         </CyFormItem>
@@ -77,6 +79,7 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
           mode="multiple"
           showSearch
           url="/CompanyUser/GetList"
+          extraParams={{ clientCategory: 2 }}
           titlekey="text"
           valuekey="value"
           placeholder="请选择部组成员"

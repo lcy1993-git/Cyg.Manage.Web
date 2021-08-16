@@ -155,7 +155,7 @@ const ResourceLib: React.FC = () => {
                 禁用状态
                 <Tooltip
                   title="“已禁用”表示当前资源库不可被新立项工程调用，已立项并调用该资源库的工程不受影响。"
-                  placement="right"
+                  placement="top"
                 >
                   <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
                 </Tooltip>

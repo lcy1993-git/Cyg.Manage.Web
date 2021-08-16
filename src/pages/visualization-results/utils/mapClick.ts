@@ -48,6 +48,7 @@ const elementTypeEnum = {
   user_line: '下户线',
   fault_indicator: '故障指示器',
   pull_line: '拉线',
+  brace: '撑杆',
   Track: '轨迹点',
   TrackLine: '轨迹线',
 };
@@ -490,6 +491,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           pJSON[p] =  '';
         }
       }
+        if(p === '下户线型号'){
+          let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
+        let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
+        let fs = l.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
+        pJSON[p] = fs.getProperties().mode;
+        pJSON['下户线长度'] = fs.getProperties().length;
+        }
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }

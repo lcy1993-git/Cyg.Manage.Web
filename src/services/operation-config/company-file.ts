@@ -54,32 +54,25 @@ export const deleteCompanyFileItem = (id: string) => {
 // }
 
 interface DefaultOptionsParams {
+  groupId: string;
   designOrganize: string;
   frameTemplate: string;
   directoryTemplate: string;
   descriptionTemplate: string;
-  approve: string;
-  audit: string;
-  calibration: string;
-  designSurvey: string;
 }
 
-//获取文件类别Tree
-export const getCompanyFileTree = () => {
-  return cyRequest<any[]>(() =>
-    request(`${baseUrl.project}/CompanyFile/GetTreeByCategory`, { method: 'GET' }),
-  );
-};
-
-export const getCompanyDefaultOptions = () => {
+export const getCompanyDefaultOptions = (groupId: string) => {
   return cyRequest<DefaultOptionsParams>(() =>
-    request(`${baseUrl.project}/CompanyFile/GetCompanyDefaultOptions`, { method: 'GET' }),
+    request(`${baseUrl.project}/CompanyFileGroup/GetDefaultOptions`, {
+      method: 'GET',
+      params: { groupId },
+    }),
   );
 };
 
 export const updateCompanyDefaultOptions = (params: DefaultOptionsParams) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/CompanyFile/ModifyCompanyDefaultOptions`, {
+    request(`${baseUrl.project}/CompanyFileGroup/SaveDefaultOptions`, {
       method: 'POST',
       data: params,
     }),

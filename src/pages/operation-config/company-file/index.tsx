@@ -2,11 +2,11 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
+import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
-import { isArray } from 'lodash';
+import { groupBy, isArray } from 'lodash';
 import '@/assets/icon/iconfont.css';
 import CompanyFileForm from './components/add-edit-form';
 import {
@@ -40,7 +40,7 @@ const CompanyFile: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
   const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false);
-  const [fileGroupId, setFileGroupId] = useState<string>();
+  const [fileGroupId, setFileGroupId] = useState<string>('');
   const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
   const [editingFileName, setEditingFileName] = useState<string>('');
   const [fileId, setFileId] = useState<string>();
@@ -65,6 +65,7 @@ const CompanyFile: React.FC = () => {
   const { data: defaultOptions, run: getDefaultOptions } = useRequest(getCompanyDefaultOptions, {
     manual: true,
   });
+
   const { data: fileGroupData = [], run: getfileGroup } = useGetSelectData(
     {
       url: '/CompanyFileGroup/GetList',
@@ -253,23 +254,23 @@ const CompanyFile: React.FC = () => {
 
   const defaultParamsEvent = async () => {
     setDefaultParamsVisible(true);
-    const defaultOptions = await getDefaultOptions();
+    const defaultOptions = await getDefaultOptions(fileGroupId);
+    console.log(defaultOptions);
+
     defaultForm.setFieldsValue(defaultOptions);
   };
 
   const saveDefaultOptionsEvent = () => {
     const defaultData = defaultOptions!;
+
     defaultForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
+          groupId: fileGroupId,
           designOrganize: defaultData.designOrganize,
           frameTemplate: defaultData.frameTemplate,
           directoryTemplate: defaultData.directoryTemplate,
           descriptionTemplate: defaultData.descriptionTemplate,
-          approve: defaultData.approve,
-          audit: defaultData.audit,
-          calibration: defaultData.calibration,
-          designSurvey: defaultData.designSurvey,
         },
         values,
       );
@@ -323,12 +324,6 @@ const CompanyFile: React.FC = () => {
               删除
             </Button>
           </Popconfirm>
-        )}
-        {buttonJurisdictionArray?.includes('company-file-defaultOptions') && (
-          <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
-            <i className="iconfont iconcanshu" />
-            成果默认参数
-          </Button>
         )}
       </div>
     );
@@ -449,16 +444,17 @@ const CompanyFile: React.FC = () => {
       <div className={styles.companyFile}>
         <div className={styles.fileGroupHead}>
           <div className="flex">
-            <TableSearch className={styles.fileGroupSelect} label="公司文件组" width="280px">
+            <TableSearch className={styles.fileGroupSelect} label="公司文件组" width="360px">
               <DataSelect
                 showSearch
                 value={fileGroupId}
                 options={fileGroupData}
                 placeholder="请选择文件组别"
                 onChange={(value: any) => searchByFileGroup(value)}
+                style={{ width: '100%' }}
               />
             </TableSearch>
-            <TableSearch width="300px">
+            <TableSearch width="400px">
               {buttonJurisdictionArray?.includes('add-file-group') && (
                 <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
                   <PlusOutlined />
@@ -476,6 +472,14 @@ const CompanyFile: React.FC = () => {
                   <Button className="mr7">删除当前组</Button>
                 )}
               </Popconfirm>
+              {buttonJurisdictionArray?.includes('company-file-defaultOptions') && (
+                <Tooltip title="成果默认参数和对应公司文件组关联" style={{ borderRadius: 15 }}>
+                  <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
+                    <i className="iconfont iconcanshu" />
+                    成果默认参数
+                  </Button>
+                </Tooltip>
+              )}
             </TableSearch>
           </div>
         </div>
@@ -552,7 +556,7 @@ const CompanyFile: React.FC = () => {
       >
         <Form form={defaultForm} preserve={false}>
           <Spin spinning={loading}>
-            <DefaultParams />
+            <DefaultParams groupId={fileGroupId} />
           </Spin>
         </Form>
       </Modal>
