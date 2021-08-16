@@ -4,7 +4,7 @@ import TableSearch from "@/components/table-search"
 import { Input, Button, message } from "antd"
 import React, { useRef, useState} from "react"
 import { PlusOutlined } from "@ant-design/icons"
-import { batchAddAuthorization, batchRemoveAuthorization } from "@/services/jurisdiction-config/platform-authorization"
+import { batchAddAuthorization, batchRemoveAuthorization } from "@/services/jurisdiction-config/role-permissions"
 import { Popconfirm } from "antd"
 
 interface ExtractParams {

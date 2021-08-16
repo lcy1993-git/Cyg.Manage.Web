@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
-import { Input, InputNumber, TreeSelect } from 'antd';
+import { Input, DatePicker, TreeSelect } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import { TreeDataItem } from '@/services/jurisdiction-config/company-manage';
 import ClickInputNumber from '@/components/clickInput-number';
-import FormSwitch from '@/components/form-switch';
-
+import styles from './index.less';
 import rules from '../../rule';
 
 interface CompanyManageForm {}
 
 interface CompanyManageFormProps {
   treeData: TreeDataItem[];
+  form: any;
 }
 
 const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
-  const { treeData = [] } = props;
+  const { treeData = [], form } = props;
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
@@ -26,6 +26,10 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
   const handleData = useMemo(() => {
     return treeData.map(mapTreeData);
   }, [JSON.stringify(treeData)]);
+
+  const reset = () => {
+    form.resetFields(['authorityExpireDate']);
+  };
 
   return (
     <>
@@ -117,12 +121,26 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         <Input placeholder="请输入地址" />
       </CyFormItem>
 
+      <CyFormItem labelWidth={100} align="right" label="授权期限" name="authorityExpireDate">
+        <DatePicker
+          allowClear={false}
+          dropdownClassName={styles.expireDate}
+          renderExtraFooter={() => [
+            <div key="clearDate" style={{ color: '#0f7b3c', textAlign: 'center' }}>
+              <span style={{ cursor: 'pointer' }} onClick={() => reset()}>
+                清除日期
+              </span>
+            </div>,
+          ]}
+        />
+      </CyFormItem>
+
       <CyFormItem labelWidth={100} align="right" label="备注" name="remark">
         <Input placeholder="请输入备注信息" />
       </CyFormItem>
-      <CyFormItem label="状态" name="isEnabled" labelWidth={100} initialValue={true} align="right">
+      {/* <CyFormItem label="状态" name="isEnabled" labelWidth={100} initialValue={true} align="right">
         <FormSwitch />
-      </CyFormItem>
+      </CyFormItem> */}
     </>
   );
 };

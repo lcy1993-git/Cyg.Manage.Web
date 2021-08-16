@@ -102,13 +102,7 @@ const ConstructionFees: React.FC<Props> = forwardRef((props, ref: Ref<any>) => {
   return (
     <>
       <div className={styles.constructionFees}>
-        <div className={styles.importBtn}>
-          <TableImportButton
-            requestSource={'tecEco1'}
-            extraParams={{ EngineeringTemplateId: id }}
-            importUrl={'/EngineeringTemplateCostTable/ImportEngineeringTemplateCostTable'}
-          />
-        </div>
+
         {[0, 1].includes(tabs.length) ? (
           <Table
             dataSource={datasource}

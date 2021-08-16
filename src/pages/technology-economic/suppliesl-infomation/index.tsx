@@ -235,6 +235,7 @@ const SupplieslInfomation = () => {
                       url="/MaterialLibrary/GetMaterialLibraryItemList"
                       rowKey={'id'}
                       columns={columns}
+                      requestSource={'tecEco1'}
                       params={{
                         'materialLibraryTreeId':materialLibraryId
                       }}

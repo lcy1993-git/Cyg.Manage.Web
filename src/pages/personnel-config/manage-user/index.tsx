@@ -185,19 +185,19 @@ const ManageUser: React.FC = () => {
       title: '真实姓名',
       dataIndex: 'name',
       index: 'name',
-      width: 200,
+      width: 120,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       index: 'phone',
-      width: 160,
+      width: 120,
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       index: 'email',
-      width: 160,
+      width: 140,
     },
     {
       title: '所属公司',
@@ -209,13 +209,13 @@ const ManageUser: React.FC = () => {
       title: '区域',
       dataIndex: 'provinceName',
       index: 'provinceName',
-      width: 200,
+      // width: 160,
     },
     {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      width: 100,
+      width: 60,
       render: (text: any, record: any) => {
         return record.userStatus === 1 ? (
           <Switch defaultChecked onChange={() => updateStatus(record.id)} />
@@ -225,16 +225,22 @@ const ManageUser: React.FC = () => {
       },
     },
     {
+      title: '授权期限',
+      dataIndex: 'lastLoginDate',
+      index: 'lastLoginDate',
+      width: 100,
+    },
+    {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
       index: 'lastLoginIp',
-      width: 140,
+      width: 100,
     },
     {
       title: '最后登录日期',
       dataIndex: 'lastLoginDate',
       index: 'lastLoginDate',
-      width: 140,
+      width: 100,
       render: (text: any, record: any) => {
         return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
       },
