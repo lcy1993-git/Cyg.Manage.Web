@@ -13,6 +13,7 @@ interface CompanyManageItemParams {
   // 公司用户库存
   userSkuQtys: object[];
   isEnabled: boolean;
+  authorityExpireDate: Date;
 }
 
 interface ItemDetailData extends CompanyManageItemParams {
