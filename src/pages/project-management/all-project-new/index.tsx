@@ -573,10 +573,10 @@ const AllProject: React.FC = () => {
       <div
         className={styles.folderButton}
         onClick={() => setSideVisible(true)}
-        style={{ display: sideVisible ? 'none' : 'inblock' }}
+        style={{ display: sideVisible ? 'none' : 'block' }}
       >
         <img src={imgSrc} alt="" />
-        <span>收藏</span>
+        <div>收藏</div>
       </div>
       <PageCommonWrap noPadding={true}>
         <div className={styles.allProjectPage}>
@@ -619,9 +619,9 @@ const AllProject: React.FC = () => {
             <div
               className={styles.allProjectsFavorite}
               // sideVisible ? 'block' : 'none'
-              style={{ display: 'block' }}
+              style={{ display: sideVisible ? 'block' : 'none' }}
             >
-              <FavoriteList visible/>
+              <FavoriteList setVisible={setSideVisible} visible={sideVisible} />
             </div>
             <div className={styles.allProjectTableContent}>
               <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
