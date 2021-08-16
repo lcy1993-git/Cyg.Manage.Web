@@ -1,10 +1,10 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { useControllableValue } from 'ahooks';
 import UrlSelect from '@/components/url-select';
-import { Button, Modal, Form, DatePicker, Select } from 'antd';
+import { Button, Modal, Form, DatePicker, Tooltip } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import CyFormItem from '@/components/cy-form-item';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import AreaSelect from '@/components/area-select';
 import EnumSelect from '@/components/enum-select';
 import {
@@ -15,6 +15,7 @@ import {
 import ChooseDesignAndSurvey from '@/pages/project-management/all-project/components/choose-design-and-survey';
 import styles from './index.less';
 import { useEffect } from 'react';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 interface ScreenModalProps {
   visible: boolean;
@@ -232,7 +233,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     projectDataSourceType,
   } = useGetProjectEnum();
 
-  const timeChange = (dates, dateStrings) => {
+  const timeChange = (dates: any, dateStrings: any) => {
     setStartTime(dateStrings[0]);
     setEndTime(dateStrings[1]);
   };
@@ -370,15 +371,26 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
         <>
           <div className="flex">
             <div className="flex1">
-              <CyFormItem label="项目区域" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="项目区域" align="right" labelWidth={100}>
+                <div style={{ width: '275px' }}>
                   <AreaSelect ref={areaRef} onChange={areaChangeEvent} />
                 </div>
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目起止日期" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem
+                label={
+                  <>
+                    <span> 项目起止日期</span>
+                    <Tooltip title="筛选出项目起止日期包含在此时间段内的项目" placement="top">
+                      <QuestionCircleOutlined style={{ paddingLeft: 5, fontSize: 14 }} />
+                    </Tooltip>
+                  </>
+                }
+                align="right"
+                labelWidth={135}
+              >
+                <div style={{ width: '275px' }}>
                   <RangePicker
                     value={
                       startTime && endTime ? [moment(startTime), moment(endTime)] : [null, null]
@@ -392,8 +404,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
           <div className="flex">
             <div className="flex1">
-              <CyFormItem label="建设类型" name="constructType" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="建设类型" name="constructType" align="right" labelWidth={100}>
+                <div style={{ width: '275px' }}>
                   <UrlSelect
                     {...selectStyle}
                     allowClear
@@ -408,8 +420,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目阶段" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="项目阶段" align="right" labelWidth={135}>
+                <div style={{ width: '275px' }}>
                   <UrlSelect
                     {...selectStyle}
                     allowClear
@@ -427,8 +439,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
           <div className="flex">
             <div className="flex1">
-              <CyFormItem label="专业类别" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="专业类别" align="right" labelWidth={100}>
+                <div style={{ width: '275px' }}>
                   <UrlSelect
                     {...selectStyle}
                     allowClear
@@ -436,7 +448,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     defaultData={projectMajorCategory}
                     value={majorCategory}
                     dropdownMatchSelectWidth={168}
-                    onChange={(values: number[]) => setMajorCategory(values)}
+                    onChange={(values) => setMajorCategory(values as number[])}
                     className="widthAll"
                     placeholder="专业类别"
                     allValue="-1"
@@ -445,8 +457,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目状态" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="项目状态" align="right" labelWidth={135}>
+                <div style={{ width: '275px' }}>
                   <EnumSelect
                     enumList={ProjectStatus}
                     {...selectStyle}
@@ -464,8 +476,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
           <div className="flex">
             <div className="flex1">
-              <CyFormItem label="项目来源" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="项目来源" align="right" labelWidth={100}>
+                <div style={{ width: '275px' }}>
                   <EnumSelect
                     enumList={ProjectSourceType}
                     {...selectStyle}
@@ -480,8 +492,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目身份" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="项目身份" align="right" labelWidth={135}>
+                <div style={{ width: '275px' }}>
                   <EnumSelect
                     enumList={ProjectIdentityType}
                     {...selectStyle}
@@ -498,8 +510,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
           </div>
           <div className="flex">
             <div className="flex1">
-              <CyFormItem label="人员安排" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="人员安排" align="right" labelWidth={100}>
+                <div style={{ width: '275px' }}>
                   <ChooseDesignAndSurvey
                     ref={personRef}
                     defaultValue={selectDefaultData}
@@ -509,8 +521,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="电压等级" align="right" labelWidth={111}>
-                <div style={{ width: '100%' }}>
+              <CyFormItem label="电压等级" align="right" labelWidth={135}>
+                <div style={{ width: '275px' }}>
                   <UrlSelect
                     {...selectStyle}
                     allowClear
@@ -566,8 +578,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
           <div style={{ display: showMoreFlag ? 'block' : 'none' }}>
             <div className="flex">
               <div className="flex1">
-                <CyFormItem label="项目分类" align="right" labelWidth={111}>
-                  <div style={{ width: '100%' }}>
+                <CyFormItem label="项目分类" align="right" labelWidth={100}>
+                  <div style={{ width: '275px' }}>
                     <UrlSelect
                       {...selectStyle}
                       allowClear
@@ -582,8 +594,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 </CyFormItem>
               </div>
               <div className="flex1">
-                <CyFormItem label="项目类型" align="right" labelWidth={111}>
-                  <div style={{ width: '100%' }}>
+                <CyFormItem label="项目类型" align="right" labelWidth={135}>
+                  <div style={{ width: '275px' }}>
                     <UrlSelect
                       {...selectStyle}
                       allowClear
@@ -601,8 +613,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
             <div className="flex">
               <div className="flex1">
-                <CyFormItem label="项目性质" align="right" labelWidth={111}>
-                  <div style={{ width: '100%' }}>
+                <CyFormItem label="项目性质" align="right" labelWidth={100}>
+                  <div style={{ width: '275px' }}>
                     <UrlSelect
                       {...selectStyle}
                       allowClear
@@ -618,8 +630,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 </CyFormItem>
               </div>
               <div className="flex1">
-                <CyFormItem label="建设改造目的" align="right" labelWidth={111}>
-                  <div style={{ width: '100%' }}>
+                <CyFormItem label="建设改造目的" align="right" labelWidth={135}>
+                  <div style={{ width: '275px' }}>
                     <UrlSelect
                       {...selectStyle}
                       allowClear
@@ -637,8 +649,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
             <div className="flex">
               <div className="flex1">
-                <CyFormItem label="项目类别" align="right" labelWidth={111}>
-                  <div style={{ width: '100%' }}>
+                <CyFormItem label="项目类别" align="right" labelWidth={100}>
+                  <div style={{ width: '275px' }}>
                     <UrlSelect
                       {...selectStyle}
                       allowClear
@@ -654,8 +666,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                 </CyFormItem>
               </div>
               <div className="flex1">
-                <CyFormItem label="项目属性" align="right" labelWidth={111}>
-                  <div style={{ width: '100%' }}>
+                <CyFormItem label="项目属性" align="right" labelWidth={135}>
+                  <div style={{ width: '275px' }}>
                     <UrlSelect
                       {...selectStyle}
                       allowClear
@@ -673,8 +685,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
             <div className="flex">
               <div className="flex1">
-                <CyFormItem label="现场数据来源" align="right" labelWidth={111}>
-                  <div style={{ width: '295px' }}>
+                <CyFormItem label="现场数据来源" align="right" labelWidth={100}>
+                  <div style={{ width: '275px' }}>
                     <UrlSelect
                       {...selectStyle}
                       allowClear

@@ -42,6 +42,10 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         hasFeedback
         rules={[
           { max: 12, message: '名称超出字符数限制，限制为12个字符' },
+          {
+            pattern: /^[^\\\.^/:*?？！!@￥"<>《》#|;，。,；：'‘’“”、=\^\s]+$/,
+            message: '文件名不能包含/:*?"<>|空格等特殊字符',
+          },
           { required: true, message: '文件名不能为空' },
           () => ({
             validator(_, value) {
