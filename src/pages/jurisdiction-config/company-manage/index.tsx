@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Button, Modal, Form, message } from 'antd';
+import { Button, Modal, Form, message, Switch } from 'antd';
 import TreeTable from '@/components/tree-table/index';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
@@ -9,12 +9,15 @@ import {
   addCompanyManageItem,
   getCompanyManageDetail,
   getTreeSelectData,
+  changeCompanyStatus,
 } from '@/services/jurisdiction-config/company-manage';
 import { isArray } from 'lodash';
 import CompanyManageForm from './components/add-form';
 import EditCompanyManageForm from './components/edit-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import moment from 'moment';
 
 const mapColor = {
   无: 'gray',
@@ -27,10 +30,11 @@ const mapColor = {
 
 const CompanyManage: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
   const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -74,6 +78,46 @@ const CompanyManage: React.FC = () => {
         return <>{element}</>;
       },
     },
+    // onChange={() => updateStatus(record.id)}
+    {
+      title: '状态',
+      dataIndex: 'isEnabled',
+      index: 'isEnabled',
+      width: 120,
+      render: (text: any, record: any) => {
+        const isChecked = !record.isEnabled;
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('company-manage-state') &&
+              (record.isEnabled === true ? (
+                <>
+                  <Switch
+                    checked={!isChecked}
+                    onChange={() => changeStateEvent(record.id, isChecked)}
+                  />
+                  <span className="formSwitchOpenTip">启用</span>
+                </>
+              ) : (
+                <>
+                  <Switch onChange={() => changeStateEvent(record.id, isChecked)} checked={false} />
+                  <span className="formSwitchCloseTip">禁用</span>
+                </>
+              ))}
+            {!buttonJurisdictionArray?.includes('company-manage-state') &&
+              (isChecked ? <span>启用</span> : <span>禁用</span>)}
+          </>
+        );
+      },
+    },
+    {
+      title: '授权期限',
+      dataIndex: 'authorityExpireDate',
+      index: 'authorityExpireDate',
+      width: 100,
+      render: (text: any, record: any) => {
+        return text ? moment(text).format('YYYY-MM-DD') : '-';
+      },
+    },
     {
       title: '详细地址',
       dataIndex: 'address',
@@ -86,17 +130,36 @@ const CompanyManage: React.FC = () => {
     },
   ];
 
+  const changeStateEvent = async (id: string, isChecked: boolean) => {
+    // 这里判断一下时间是否过期
+    // 并且需要判断是否是从关闭到开启状态
+    const clickData = await run(id);
+    const nowDate = moment(new Date().getDate());
+
+    if (nowDate.isAfter(moment(clickData?.authorityExpireDate))) {
+      message.error('当前授权已超期，请修改授权期限');
+    } else {
+      await changeCompanyStatus(id, isChecked);
+      tableFresh();
+      message.success('状态修改成功');
+    }
+  };
+
   const companyManageButton = () => {
     return (
       <>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
+        {buttonJurisdictionArray?.includes('company-manage-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('company-manage-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
       </>
     );
   };
@@ -115,10 +178,13 @@ const CompanyManage: React.FC = () => {
         { key: 16, value: value.review },
         { key: 2, value: value.manage },
       ];
+
       const submitInfo = {
         name: value.name,
         parentId: value.parentId,
         address: value.address,
+        isEnabled: value.isEnabled,
+        authorityExpireDate: value.authorityExpireDate,
         userSkuQtys,
         remark: value.remark,
       };
@@ -145,6 +211,9 @@ const CompanyManage: React.FC = () => {
     setEditFormVisible(true);
     editForm.setFieldsValue({
       ...CompanyManageData,
+      authorityExpireDate: CompanyManageData?.authorityExpireDate
+        ? moment(CompanyManageData?.authorityExpireDate)
+        : null,
     });
   };
 
@@ -169,16 +238,18 @@ const CompanyManage: React.FC = () => {
           name: editData.name,
           address: editData.address,
           remark: editData.remark,
+          isEnabled: editData.isEnabled,
+          authorityExpireDate: editData.authorityExpireDate,
           userSkuQtys,
         },
         value,
       );
 
       await updateCompanyManageItem(submitInfo);
-      tableFresh();
       message.success('更新成功');
       editForm.resetFields();
       setEditFormVisible(false);
+      tableFresh();
     });
   };
 
@@ -188,7 +259,7 @@ const CompanyManage: React.FC = () => {
         ref={tableRef}
         tableTitle="公司管理"
         columns={companyTableColumns}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         rightButtonSlot={companyManageButton}
         url="/Company/GetTreeList"
       />
@@ -204,7 +275,7 @@ const CompanyManage: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <CompanyManageForm treeData={selectTreeData} />
+          <CompanyManageForm treeData={selectTreeData} form={addForm} />
         </Form>
       </Modal>
       <Modal
@@ -219,7 +290,7 @@ const CompanyManage: React.FC = () => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <EditCompanyManageForm accreditNumber={currentCompanyData} />
+          <EditCompanyManageForm accreditNumber={currentCompanyData} form={editForm} />
         </Form>
       </Modal>
     </PageCommonWrap>
