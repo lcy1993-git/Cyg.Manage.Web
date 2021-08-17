@@ -1,9 +1,9 @@
 import { getFavorites } from '@/services/project-management/favorite-list';
 import { PlusOutlined, UpOutlined, MenuFoldOutlined } from '@ant-design/icons';
-import { Dispatch, SetStateAction } from '@umijs/renderer-react/node_modules/@types/react';
 import { useRequest } from 'ahooks';
 import { Button, Tree } from 'antd';
-import React from 'react';
+import uuid from 'node-uuid';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 
 import styles from './index.less';
 
@@ -12,14 +12,27 @@ interface FavoriteListParams {
   setVisible: Dispatch<SetStateAction<boolean>>;
 }
 
+interface treeDataItems {
+  id: string;
+  text: string;
+  children: treeDataItems[];
+}
+
 const { DirectoryTree } = Tree;
 
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   const { setVisible, visible } = props;
+  const [treeData, setTreeData] = useState<treeDataItems[]>([]);
 
-  const { data: treeData = [] } = useRequest(getFavorites, {
+  const { data } = useRequest(getFavorites, {
+    manual: true,
     ready: visible,
+    onSuccess: () => {
+      setTreeData(data);
+    },
   });
+
+  console.log(treeData, '222');
 
   // function dig(path = '0', level = 3) {
   //   const list = [];
@@ -42,14 +55,19 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   // const treeData = dig();
   //新建一级收藏夹
   const createEvent = () => {
-    // const newTreeNode = {
-    //   name: '收藏夹1',
-    //   parentId: null,
-    // };
-    // treeData.push(newTreeNode);
+    const newTreeNode = {
+      id: uuid.v1(),
+      title: '收藏夹1',
+      children: [],
+    };
+    console.log(newTreeNode);
+    const copyList = JSON.parse(JSON.stringify(treeData));
+    console.log(copyList, '333');
+    copyList?.push(newTreeNode);
+    setTreeData(copyList);
   };
 
-  console.log(treeData);
+  console.log(treeData, '11');
 
   return (
     <div className={styles.engineerList}>
@@ -67,7 +85,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         </div>
       </div>
       <div className={styles.favContent}>
-        <DirectoryTree treeData={treeData} height={233} defaultExpandAll />
+        <DirectoryTree treeData={treeData} height={650} defaultExpandAll />
       </div>
       <div className={styles.favFooter}>
         <span
