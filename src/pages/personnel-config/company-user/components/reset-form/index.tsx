@@ -8,7 +8,7 @@ const ResetPasswordForm: React.FC = () => {
   return (
     <>
       <CyFormItem label="新密码" name="pwd" required rules={rules.pwd} hasFeedback>
-        <Input type="password" placeholder="请输入密码" />
+        <Input type="password" placeholder="请输入密码" onPaste={(e) => e.preventDefault()}/>
       </CyFormItem>
 
       <CyFormItem
@@ -32,7 +32,7 @@ const ResetPasswordForm: React.FC = () => {
           }),
         ]}
       >
-        <Input type="password" placeholder="请再次输入密码" />
+        <Input type="password" placeholder="请再次输入密码" onPaste={(e) => e.preventDefault()}/>
       </CyFormItem>
     </>
   );

@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { request, history } from 'umi';
 import tokenRequest from '@/utils/request';
 import { requestBaseUrl } from '../../public/config/request';
-import { RequestDataType, RequestDataCommonType } from './common.d';
+import type { RequestDataType, RequestDataCommonType } from './common.d';
 import { isArray } from 'lodash';
 
 const { NODE_ENV } = process.env;
@@ -14,9 +14,10 @@ const devBaseUrl = {
   upload: '/api/storage/api',
   resource: '/api/resourcemanage/v2/api',
   webGis: '/api/webgis/api',
-  webGis2: '/api/webGis2/api',
+  webGis2: '/api/webgis2/api',
   comment: '/api/project/api',
-  tecEco: '/api/quato/api',
+  tecEco: '/api/quota/api',
+  tecEco1: '/api/technicaleconomy/api',
   review: '/api/review/api',
 
   // webGis
@@ -33,14 +34,14 @@ const geoServerPortObject = {
   '171.223.214.154:21583': '21581',
 };
 
-const ipArray = ['47.108.63.23', '39.99.251.67'];
+const ipArray = [];
 
 const thisHost = `${window.location.hostname}:${window.location.port}`;
-const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21571';
+const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21523';
 
 const geoServerBaseUrl =
-  window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
-  // window.location.hostname === 'localhost' ? '10.6.1.53' : window.location.hostname;
+  // window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
+window.location.hostname === 'localhost' ? '10.6.1.53' : window.location.hostname;
 
 export const geoServeUrl = !ipArray.includes(`${window.location.hostname}`)
   ? `${document.location.protocol}//${geoServerBaseUrl}:${geoServerPort}/geoserver/pdd/ows`
@@ -123,7 +124,7 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco',
+  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'tecEco1',
   requestType = 'get',
   postType = 'body',
   libId: string,
@@ -180,6 +181,7 @@ export const commonUpload = (
   files: any[],
   name: string = 'file',
   requestSource: 'project' | 'resource' | 'upload',
+  extraParams?: Record<string, any>
   // postType: 'body' | 'query',
 ) => {
   const requestUrl = baseUrl[requestSource];
@@ -187,7 +189,11 @@ export const commonUpload = (
   files.forEach((item) => {
     formData.append(name, item);
   });
-
+  if (extraParams){
+    Object.keys(extraParams).map(key=>{
+    formData.append(key, extraParams?.[key]);
+    return null;
+  })}
   return cyRequest<any[]>(() =>
     tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',
@@ -206,9 +212,9 @@ export const commonExport = (url: string, params: any, selectIds: string[]) => {
 };
 
 // 导出权限
-export const exportAuthority = (url: string, params: any) => {
+export const exportAuthority = (url: string, params: any, type: string) => {
   return tokenRequest(`${baseUrl.project}${url}`, {
-    method: 'POST',
+    method: type,
     data: { ...params },
     responseType: 'blob',
   });
@@ -228,3 +234,5 @@ const versionUrl = 'http://service.sirenmap.com:8101/api/Version/Get';
 export const getVersionUpdate = (params: VersionParams) => {
   return request(versionUrl, { method: 'POST', data: params });
 };
+
+

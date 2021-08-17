@@ -102,7 +102,7 @@ const columns = [
 const QuotaLibrary: React.FC = () => {
 
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
 
@@ -182,14 +182,14 @@ const QuotaLibrary: React.FC = () => {
     return (
       <div className={styles.buttonArea}>
         {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+          // buttonJurisdictionArray?.includes('quotalib-add') &&
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         }
         {
-          !buttonJurisdictionArray?.includes('quotaLib-del') &&
+          // buttonJurisdictionArray?.includes('quotalib-del') &&
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -203,7 +203,7 @@ const QuotaLibrary: React.FC = () => {
           </Popconfirm>
         }
         {
-          !buttonJurisdictionArray?.includes('quotaLib-info') &&
+          // buttonJurisdictionArray?.includes('quotalib-info') &&
           <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             查看详情
@@ -215,7 +215,7 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const tableSelectEvent = (data: DataSource[] | object) => {
-    setTableSelectRow(data);
+    setTableSelectRows(data);
   };
 
   return (

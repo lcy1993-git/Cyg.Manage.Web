@@ -1,6 +1,6 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
 import CompanyUserForm from './components/add-edit-form';
@@ -29,6 +29,8 @@ import CyTag from '@/components/cy-tag';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import CommonTitle from '@/components/common-title';
 import AccreditStatistic from './components/accredit-statistic';
+import { history } from 'umi';
+import { useLayoutStore } from '@/layouts/context';
 
 const { Search } = Input;
 
@@ -43,7 +45,7 @@ const mapColor = {
 
 const CompanyUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [status, setStatus] = useState<number>(0);
@@ -52,10 +54,11 @@ const CompanyUser: React.FC = () => {
   const [batchAddFormVisible, setBatchAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [resetFormVisible, setResetFormVisible] = useState<boolean>(false);
-
+  const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false);
   const [addForm] = Form.useForm();
   const [batchAddForm] = Form.useForm();
   const [editForm] = Form.useForm();
+
   const { data, run, loading } = useRequest(getCompanyUserDetail, {
     manual: true,
   });
@@ -76,6 +79,10 @@ const CompanyUser: React.FC = () => {
   }, [accreditData]);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  //@ts-ignore
+  const { id } = JSON.parse(window.localStorage.getItem('userInfo'));
+
+  const { setWorkHandoverFlag: setWorkHandoverFlag, workHandoverFlag } = useLayoutStore();
 
   const rightButton = () => {
     return (
@@ -93,19 +100,45 @@ const CompanyUser: React.FC = () => {
           </Button>
         )}
         {buttonJurisdictionArray?.includes('company-user-edit') && (
-          <Button className="mr7" onClick={() => editEvent()}>
+          <Button className="mr7" onClick={() => editEvent()} disabled={isCurrentUser}>
             <EditOutlined />
             编辑
           </Button>
         )}
         {buttonJurisdictionArray?.includes('company-user-reset-password') && (
-          <Button onClick={() => resetEvent()}>
+          <Button className="mr7" onClick={() => resetEvent()} disabled={isCurrentUser}>
             <ReloadOutlined />
             重置密码
           </Button>
         )}
+        {buttonJurisdictionArray?.includes('company-user-work-handover') && (
+          <Button
+            onClick={() => {
+              !workHandoverFlag
+                ? handoverEvent()
+                : message.error('当前已打开“工作交接”界面，请关闭后重试');
+            }}
+          >
+            <SwapOutlined />
+            工作交接
+          </Button>
+        )}
       </div>
     );
+  };
+
+  //工作交接跳转
+  const handoverEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择需要工作交接的用户');
+      return;
+    }
+    const userId = tableSelectRows[0].id;
+    const name = tableSelectRows[0].name;
+    const userName = tableSelectRows[0].userName;
+    history.push({
+      pathname: `/personnel-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`,
+    });
   };
 
   //数据修改刷新
@@ -120,6 +153,13 @@ const CompanyUser: React.FC = () => {
   const resetEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择需要重置密码的用户');
+      return;
+    }
+
+    const userId = tableSelectRows[0].id;
+    if (userId === id) {
+      setIsCurrentUser(true);
+      message.error('没有对当前登录账号执行此操作的权限');
       return;
     }
     setResetFormVisible(true);
@@ -154,7 +194,6 @@ const CompanyUser: React.FC = () => {
           email: '',
           nickName: '',
           name: '',
-          userStatus: 1,
         },
         value,
       );
@@ -183,6 +222,13 @@ const CompanyUser: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
+    const selectId = tableSelectRows[0].id;
+
+    if (selectId === id) {
+      setIsCurrentUser(true);
+      message.error('没有对当前登录账号执行此操作的权限');
+      return;
+    }
 
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
@@ -191,6 +237,7 @@ const CompanyUser: React.FC = () => {
     setEditFormVisible(true);
 
     const ManageUserData = await run(editDataId);
+
     editForm.setFieldsValue({
       ...ManageUserData,
       groupIds: (ManageUserData.comapnyGroups ?? []).map((item: any) => item.value),
@@ -209,7 +256,6 @@ const CompanyUser: React.FC = () => {
           id: editData.id,
           email: editData.email,
           nickName: editData.nickName,
-          userStatus: editData.userStatus,
         },
         values,
       );
@@ -263,7 +309,7 @@ const CompanyUser: React.FC = () => {
       title: '部组',
       dataIndex: 'comapnyGroups',
       index: 'comapnyGroups',
-      width:'8%',
+      width: '10%',
       render: (text: any, record: any) => {
         const { comapnyGroups } = record;
         return (comapnyGroups ?? []).map((item: any) => {
@@ -284,17 +330,28 @@ const CompanyUser: React.FC = () => {
         return (
           <>
             {buttonJurisdictionArray?.includes('company-user-start-using') &&
-              (record.userStatus === 1 ? (
+            !record.isCurrentUser ? (
+              record.userStatus === 1 ? (
                 <>
                   <Switch key={status} defaultChecked onChange={() => updateStatus(record.id)} />
                   <span className="formSwitchOpenTip">启用</span>
                 </>
               ) : (
                 <>
-                  <Switch onChange={() => updateStatus(record.id)} />
+                  <Switch
+                    checked={false}
+                    onChange={() => {
+                      updateStatus(record.id);
+                    }}
+                  />
                   <span className="formSwitchCloseTip">禁用</span>
                 </>
-              ))}
+              )
+            ) : record.userStatus === 1 ? (
+              <span>已启用</span>
+            ) : (
+              <span>已禁用</span>
+            )}
             {!buttonJurisdictionArray?.includes('company-user-start-using') &&
               (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
           </>
@@ -310,7 +367,11 @@ const CompanyUser: React.FC = () => {
 
         const element = (authorizeClientTexts ?? []).map((item: string) => {
           return (
-            <TableStatus className="mr7" color={mapColor[item] ?? 'gray'} key={uuid.v1()}>
+            <TableStatus
+              className="mr7"
+              color={record.userStatus === 1 ? mapColor[item] ?? 'gray' : 'gray'}
+              key={uuid.v1()}
+            >
               {item}
             </TableStatus>
           );
@@ -356,12 +417,12 @@ const CompanyUser: React.FC = () => {
   const leftSearch = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="关键词" width="208px">
+        <TableSearch label="用户信息" width="248px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="请输入关键词"
+            placeholder="请输入用户信息"
             enterButton
           />
         </TableSearch>
@@ -418,7 +479,10 @@ const CompanyUser: React.FC = () => {
             ref={tableRef}
             buttonRightContentSlot={rightButton}
             buttonLeftContentSlot={leftSearch}
-            getSelectData={(data) => setTableSelectRow(data)}
+            getSelectData={(data) => {
+              setIsCurrentUser(false);
+              setTableSelectRows(data);
+            }}
             tableTitle="公司用户"
             url="/CompanyUser/GetPagedList"
             columns={columns}

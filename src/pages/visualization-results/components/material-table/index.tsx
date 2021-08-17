@@ -60,6 +60,9 @@ export const columns: ColumnsType<MaterialDataType> = [
     width: 80,
     dataIndex: 'itemNumber',
     key: 'itemNumber',
+    render(v: number){
+      return v ? String(v) : ""
+    }
   },
 
   {
@@ -67,12 +70,18 @@ export const columns: ColumnsType<MaterialDataType> = [
     width: 80,
     dataIndex: 'unitPrice',
     key: 'unitPrice',
+    render(v: number){
+      return v ? String(v) : ""
+    }
   },
   {
     title: '单重(kg)',
     width: 80,
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',
+    render(v: number){
+      return v ? String(v) : ""
+    }
   },
   {
     title: '状态',

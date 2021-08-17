@@ -15,33 +15,58 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
   return (
     <>
       {type == 'add' && (
-        <CyFormItem label="编号" name="moduleId" required>
+        <CyFormItem
+          label="编号"
+          name="moduleId"
+          required
+          rules={[{ required: true, message: '模块编号不能为空' }]}
+        >
           <Input placeholder="请输入编号" />
         </CyFormItem>
       )}
 
-      <CyFormItem label="名称" name="moduleName" required>
+      <CyFormItem
+        label="名称"
+        name="moduleName"
+        required
+        rules={[{ required: true, message: '名称不能为空' }]}
+      >
         <Input placeholder="请输入名称" />
       </CyFormItem>
 
-      <CyFormItem label="简称" name="shortName" required>
+      <CyFormItem
+        label="简称"
+        name="shortName"
+        required
+        rules={[{ required: true, message: '简称不能为空' }]}
+      >
         <Input placeholder="请输入简称" />
       </CyFormItem>
 
       {type == 'add' && (
-        <CyFormItem label="典设编码" name="typicalCode" required>
+        <CyFormItem
+          label="典设编码"
+          name="typicalCode"
+          required
+          rules={[{ required: true, message: '典设编码不能为空' }]}
+        >
           <Input placeholder="请输入典设编码" />
         </CyFormItem>
       )}
 
       {type == 'add' && (
-        <CyFormItem label="杆型简称" name="poleTypeCode" required>
+        <CyFormItem
+          label="杆型简称"
+          name="poleTypeCode"
+          required
+          rules={[{ required: true, message: '杆型简称不能为空' }]}
+        >
           <UrlSelect
             showSearch
             requestSource="resource"
             url="/PoleType/GetList"
-            titleKey="poleTypeCode"
-            valueKey="poleTypeName"
+            titlekey="poleTypeCode"
+            valuekey="poleTypeName"
             placeholder="请选择杆型简称"
             extraParams={{ libId: resourceLibId }}
           />
@@ -55,8 +80,8 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           showSearch
           requestSource="resource"
           url="/Chart/GetList"
-          titleKey="chartName"
-          valueKey="chartId"
+          titlekey="chartName"
+          valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
           libId={resourceLibId}

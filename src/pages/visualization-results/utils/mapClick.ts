@@ -44,10 +44,11 @@ const elementTypeEnum = {
   cable_channel: '电缆通道',
   electric_meter: '户表',
   cross_arm: '横担',
-  hole: '穿孔',
+  hole: '电缆剖面',
   user_line: '下户线',
   fault_indicator: '故障指示器',
   pull_line: '拉线',
+  brace: '撑杆',
   Track: '轨迹点',
   TrackLine: '轨迹线',
 };
@@ -359,73 +360,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             pJSON[mappingTag] = Number(feature.getProperties()[p])
               ? Number(feature.getProperties()[p])?.toFixed(2)
               : 0;
-              if (layerName === 'tower') {
-                pJSON[mappingTag] = feature.getProperties()[p];
-              }
-            // if (layerName === 'tower') {
-            //   let angleString = '0';
-            //   await loadLayer(
-            //     getCustomXmlDataByWhere(
-            //       `<And><Or><PropertyIsEqualTo><PropertyName>start_id</PropertyName><Literal>${feature.getProperties().id}</Literal></PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>end_id</PropertyName><Literal>${feature.getProperties().id}</Literal></PropertyIsEqualTo></Or><PropertyIsNotEqualTo><PropertyName>loop_name</PropertyName><Literal></Literal></PropertyIsNotEqualTo></And>`,
-            //     ),
-            //     `pdd:${layerType}_line`,
-            //   ).then((data: any) => {
-            //     if (data.features.length >= 2) {
-            //       let obj = {};
-            //       let loop_level_max;
-            //       for (let i = 0; i < data.features.length; i++) {
-            //         let ai = data.features[i];
-            //         if (!loop_level_max) {
-            //           loop_level_max = ai.properties.loop_level;
-            //         } else {
-            //           if (loop_level_max > ai.properties.loop_level)
-            //             loop_level_max = ai.properties.loop_level;
-            //         }
-            //         if (!obj[ai.properties.loop_name]) {
-            //           obj[ai.properties.loop_name] = [ai];
-            //         } else {
-            //           obj[ai.properties.loop_name].push(ai);
-            //         }
-            //       }
-
-            //       let angle,
-            //         angleMax = 0;
-            //       let isLeftOnMax = true,
-            //         isLeft = true;
-            //       for (let key in obj) {
-            //         let looplines = obj[key];
-            //         if (
-            //           looplines.length !== 2 ||
-            //           loop_level_max !== looplines[0].properties.loop_level ||
-            //           loop_level_max !== looplines[1].properties.loop_level
-            //         )
-            //           continue;
-            //         let line0attri = looplines[0];
-            //         let line1attri = looplines[1];
-            //         console.log(111)
-            //         if (line0attri.properties.loop_seq > line1attri.properties.loop_seq) {
-            //           line0attri = looplines[1];
-            //           line1attri = looplines[0];
-            //         }
-            //         let res: any = CalcTowerAngle(
-            //           line0attri.geometry.coordinates,
-            //           line1attri.geometry.coordinates,
-            //           isLeft,
-            //         );
-            //         angle = res[0];
-            //         isLeft = res[1];
-            //         if (angle > angleMax) {
-            //           angleMax = angle;
-            //           isLeftOnMax = isLeft;
-            //         }
-            //       }
-            //       // 格式化反回转角字符串
-            //       if (isLeftOnMax) angleString = `左:${ToDegrees(Math.abs(angleMax))}`;
-            //       else angleString = `右:${ToDegrees(Math.abs(angleMax))}`;
-            //       pJSON[mappingTag] = angleString;
-            //     }
-            //   });
-            // }
+            if (layerName === 'tower') {
+              pJSON[mappingTag] = feature.getProperties()[p];
+            }
             break;
           case 'capacity':
             if (feature.getProperties()[p].indexOf('kVA') >= 0)
@@ -480,7 +417,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id;
         pJSON['材料表'] = {
           params: {
-            id: feature.getProperties().project_id,
+            holeId: feature.getProperties().project_id,
             rest: {
               objectID,
               forProject: 0,
@@ -510,14 +447,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         pJSON[p] = `${feature.getProperties().rod}*${feature.getProperties().height}`;
       }
       if (p === '呼称高') {
-        await getlibId_new({ projectId: feature.getProperties().project_id }).then(async (data)=> {      
-          if(data.isSuccess){
+        await getlibId_new({ projectId: feature.getProperties().project_id }).then(async (data) => {
+          if (data.isSuccess) {
             const resourceLibID = data?.content;
             await getModulesRequest({
               moduleIDs: [feature.getProperties().mode_id],
               resourceLibID
             }).then((res) => {
-              if(res.isSuccess && res?.content.length > 0){
+              if (res.isSuccess && res?.content.length > 0) {
                 pJSON[p] = res?.content[0].nominalHeight;
               }
             })
@@ -527,13 +464,50 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (p === '导线相数') {
         pJSON[p] = feature.getProperties().kv_level === 2 ? '三相' : '两相';
       }
+      if (p === '穿孔示意图') {
+        let channelId = feature.getProperties().channel_id;
+        let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
+        let l = getLayerByName(layerType + '_cable_channel', g.getLayers().getArray());
+        let f = l.getSource().getFeatures().find((f: any) => f.values_.id === channelId);
+
+        pJSON[p] = {
+          holeId: feature.getProperties().id,
+          layerType: layerType === 'design' ? 1 : 2,
+          title: f.values_.mode,
+          layMode: f.values_.lay_mode,
+          arrangement: f.values_.arrangement
+        };
+      }
+
+      if(p === '方向') {
+        let azimuth = feature.getProperties().azimuth;
+        if(azimuth){
+          if(azimuth >= -90 && azimuth < 90){
+            pJSON[p] =  '→↑';
+          } else {
+            pJSON[p] =  '←↓';
+          }
+        } else {
+          pJSON[p] =  '';
+        }
+      }
+        if(p === '下户线型号'){
+          let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
+        let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
+        let fs = l.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
+        pJSON[p] = fs.getProperties().mode;
+        pJSON['下户线长度'] = fs.getProperties().length;
+        }
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
+
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
     ops.setRightSidebarVisiviabel(true);
     ops.setRightSidebarData(resData);
+    console.log(resData);
+
     map.getTargetElement().style.cursor = 'default';
   });
 

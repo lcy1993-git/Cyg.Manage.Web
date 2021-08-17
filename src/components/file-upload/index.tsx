@@ -15,13 +15,13 @@ import FileUploadProcess from '../file-upload-process';
 const { Dragger } = Upload;
 
 interface FileUploadProps extends UploadProps {
-  onChange?: (value: any) => {};
+  onChange?: (value: any) => void;
   maxSize?: number;
   maxCount?: number;
   uploadFileBtn?: boolean; //是否file和表单捆绑上传
   trigger?: boolean; //在file和表单捆绑上传的情况下，需要在提交表单的触发进度条,true就没有开始上传按钮
   process?: boolean; //是否需要进度条
-  uploadFileFn?: () => Promise<void>;
+  uploadFileFn?: () => Promise<void | {}>;
 }
 
 export type UploadStatus = 'hasNotStarted' | 'start' | 'success' | 'error' | 'delete';
@@ -49,7 +49,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
     // }
 
     // 如果maxCount 是1的时候，那么就要随时把上传的替换成最新的哪一个
-    //判断大小控制process的速度
+    // 判断大小控制process的速度
 
     if (maxCount && maxCount == 1) {
       const newArray: any[] = [];

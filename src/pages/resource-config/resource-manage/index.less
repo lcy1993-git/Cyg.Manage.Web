@@ -5,7 +5,10 @@
     padding: 20px;
   }
   .moduleTabs {
+    box-sizing: border-box;
     width: 100%;
+    height: calc(100% - 76px);
+    padding-bottom: 20px;
     :global {
       .ant-tabs .ant-tabs-nav {
         padding-left: 20px;
@@ -29,9 +32,18 @@
     }
     .pannelTable {
       width: 98%;
+      height: 96%;
       margin: 0 20px;
       padding: 10px 30px;
       background-color: #eaeaea;
+      :global {
+        .ant-empty {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 404px;
+        }
+      }
     }
   }
 }

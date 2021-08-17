@@ -3,7 +3,7 @@ import FileUpload from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
 import { useBoolean, useControllableValue } from 'ahooks';
 import { Button, Form, message, Modal } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
@@ -19,6 +19,7 @@ interface UploadLineStreeSagProps {
 const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const { libId = '', securityKey = '', requestSource = 'upload', changeFinishEvent } = props;
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [
     triggerUploadFile,
@@ -39,6 +40,7 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
       .then(
         () => {
           message.success('导入成功');
+          setIsImportFlag(true);
           return Promise.resolve();
         },
         (res) => {
@@ -52,6 +54,16 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
       });
   };
 
+  const onSave = () => {
+    form.validateFields().then((value) => {
+      if (isImportFlag) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
+  };
+
   return (
     <Modal
       maskClosable={false}
@@ -61,7 +73,7 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => setState(false)}>
+        <Button key="save" type="primary" onClick={onSave}>
           保存
         </Button>,
       ]}
@@ -69,8 +81,14 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
       destroyOnClose
     >
       <Form form={form} preserve={false}>
-        <CyFormItem label="导入" name="file" required>
+        <CyFormItem
+          label="导入"
+          name="file"
+          required
+          rules={[{ required: true, message: '请上传应力弧垂表图纸文件' }]}
+        >
           <FileUpload
+            accept=".zip"
             trigger={triggerUploadFile}
             maxCount={1}
             uploadFileBtn

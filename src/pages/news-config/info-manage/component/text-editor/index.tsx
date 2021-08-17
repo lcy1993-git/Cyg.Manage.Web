@@ -1,4 +1,4 @@
-import { Form, Input, TreeSelect } from 'antd';
+import { Form, Input, TreeSelect, message } from 'antd';
 import React, { useEffect, useMemo } from 'react';
 import E from 'wangeditor';
 import { Dispatch } from 'react';
@@ -14,12 +14,16 @@ import uuid from 'node-uuid';
 import pdfjs from 'pdfjs-dist';
 import FormSwitch from '@/components/form-switch';
 import { getClientCategorys } from '@/services/personnel-config/company-user';
+import rule from '../../news-rule';
+import { flatten } from '@/utils/utils';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
   titleForm: any;
   htmlContent?: string;
   type?: 'edit' | 'add';
+  getPersonArray?: (array: any) => void;
+  personDefaultValue?: any;
 }
 
 const { BtnMenu } = E;
@@ -60,10 +64,8 @@ class AlertMenu extends BtnMenu {
             .convertToHtml({ arrayBuffer: docEle }, { includeDefaultStyleMap: true })
             .then((result: any) => {
               that.txt.append(result.value);
-              // console.log(that.txt.html());
             })
             .catch((a: any) => {
-              console.log('error', a);
             })
             .done();
 
@@ -94,13 +96,12 @@ class AlertMenu extends BtnMenu {
                   pdfHtml += `<image style="width:100%;height:auto" src="${canvas.toDataURL(
                     'image/png',
                   )}"></image>`;
-                  // console.log(that.txt.html());
                 });
                 that.txt.append(pdfHtml);
               }
             })
             .catch((err: any) => {
-              console.log('文件读取失败');
+              message.error('文件读取失败');
             });
         };
         event.target.value = '';
@@ -112,7 +113,7 @@ class AlertMenu extends BtnMenu {
 // }
 
 const TextEditorModal = (props: EditorParams) => {
-  const { onChange, titleForm, htmlContent } = props;
+  const { onChange, titleForm, htmlContent, getPersonArray, personDefaultValue } = props;
 
   const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
   const { data } = useRequest(() => getClientCategorys(), {});
@@ -135,10 +136,12 @@ const TextEditorModal = (props: EditorParams) => {
   }, [data]);
 
   const mapTreeData = (data: any) => {
+    const keyValue = uuid.v1();
     return {
       title: data.text,
-      value: data.id,
-      key: uuid.v1(),
+      value: keyValue,
+      key: keyValue,
+      chooseValue: data.id,
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };
@@ -147,7 +150,7 @@ const TextEditorModal = (props: EditorParams) => {
   const getUserIds = (groupArray: any) => {
     let allIds: any[] = [];
     (function deep(groupArray) {
-      groupArray.forEach((item: any) => {
+      groupArray?.forEach((item: any) => {
         if (item.children) {
           if (item.children?.length > 0) {
             deep(item.children);
@@ -164,9 +167,9 @@ const TextEditorModal = (props: EditorParams) => {
 
   const handleData = useMemo(() => {
     const copyOptions = JSON.parse(JSON.stringify(groupData))?.map(mapTreeData);
-    copyOptions.unshift({ title: '所有人', value: allUserIds, children: groupData });
+    copyOptions?.unshift({ title: '所有人', value: allUserIds, children: groupData });
     return copyOptions
-      .map((item: any) => {
+      ?.map((item: any) => {
         return {
           title: item.title,
           value: item.value,
@@ -175,6 +178,10 @@ const TextEditorModal = (props: EditorParams) => {
       })
       .slice(0, 1);
   }, [JSON.stringify(groupData)]);
+
+  useEffect(() => {
+    getPersonArray?.(flatten(handleData));
+  }, [JSON.stringify(handleData)]);
 
   // useEffect(() => {
 
@@ -225,10 +232,22 @@ const TextEditorModal = (props: EditorParams) => {
     };
   }, [htmlContent]);
 
+  useEffect(() => {
+    if (personDefaultValue) {
+      const flattenArray = flatten(handleData);
+      const handlePersonUserIds = flattenArray
+        .filter((item) => personDefaultValue.includes(item.chooseValue))
+        .map((item) => item.value);
+      titleForm.setFieldsValue({
+        userIds: handlePersonUserIds,
+      });
+    }
+  }, [JSON.stringify(personDefaultValue), JSON.stringify(handleData)]);
+
   return (
     <>
       <Form form={titleForm}>
-        <CyFormItem label="标题" name="title" required labelWidth={60}>
+        <CyFormItem label="标题" name="title" required labelWidth={60} rules={rule.title}>
           <Input placeholder="标题" />
         </CyFormItem>
 
@@ -236,7 +255,7 @@ const TextEditorModal = (props: EditorParams) => {
           {/* <Switch checked={isChecked} onChange={() => setIsChecked(!isChecked)} /> */}
           <FormSwitch />
         </CyFormItem>
-        <CyFormItem label="对象" name="userIds" required labelWidth={60}>
+        <CyFormItem label="对象" name="userIds" required labelWidth={60} rules={rule.users}>
           <TreeSelect
             placeholder="请选择对象"
             treeCheckable
@@ -244,14 +263,20 @@ const TextEditorModal = (props: EditorParams) => {
             treeDefaultExpandAll
           />
         </CyFormItem>
-        <CyFormItem label="端口" labelWidth={60} name="clientCategorys" required>
+        <CyFormItem
+          label="端口"
+          labelWidth={60}
+          name="clientCategorys"
+          required
+          rules={rule.category}
+        >
           <UrlSelect
             mode="multiple"
             requestSource="project"
             showSearch
             defaultData={categoryData}
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择授权端口"
           />
         </CyFormItem>

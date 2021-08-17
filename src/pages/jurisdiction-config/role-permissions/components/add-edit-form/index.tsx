@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, message } from 'antd';
+import { Input } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 
 import FormSwitch from '@/components/form-switch';
@@ -21,16 +21,12 @@ const RolePermissionsForm: React.FC = () => {
           },
         ]}
       >
-        <Input placeholder="请输入角色名称" />
-      </CyFormItem>
-      <CyFormItem label="是否禁用" name="isDisable">
-        <FormSwitch />
+        <Input placeholder="请输入角色名称" style={{ width: '100%' }} />
       </CyFormItem>
 
       <CyFormItem label="备注" name="remark">
-        <TextArea placeholder="请输入备注" showCount maxLength={100} />
+        <TextArea placeholder="请输入备注" showCount maxLength={100} style={{ width: '100%' }} />
       </CyFormItem>
-      
     </>
   );
 };

@@ -134,9 +134,9 @@ const CompanyManage: React.FC = () => {
     // 这里判断一下时间是否过期
     // 并且需要判断是否是从关闭到开启状态
     const clickData = await run(id);
-    const nowDate = moment(new Date().getDate());
+    const nowDate = moment(new Date());
 
-    if (nowDate.isAfter(moment(clickData?.authorityExpireDate))) {
+    if (nowDate.isBefore(moment(clickData?.authorityExpireDate))) {
       message.error('当前授权已超期，请修改授权期限');
     } else {
       await changeCompanyStatus(id, isChecked);

@@ -17,19 +17,30 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
-      const { area } = values;
+      // const { mapComponent, personLoad, projectRefreshData, projectProgress } = values;
+      for (let k in values) {
+        changeFinishEvent?.({
+          name: 'mapComponent',
+          key: currentRecord.key,
+          x: 0,
+          y: 0,
+          w: 3,
+          h: 11,
+          componentProps: values[k],
+        });
+      }
 
       setState(false);
 
-      changeFinishEvent?.({
-        name: 'mapComponent',
-        key: currentRecord.key,
-        x: 0,
-        y: 0,
-        w: 3,
-        h: 11,
-        componentProps: area,
-      });
+      // changeFinishEvent?.({
+      //   name: 'mapComponent',
+      //   key: currentRecord.key,
+      //   x: 0,
+      //   y: 0,
+      //   w: 3,
+      //   h: 11,
+      //   componentProps: mapComponent,
+      // });
     });
   };
 
@@ -42,7 +53,7 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
   return (
     <Modal
       maskClosable={false}
-      title="配置-地图信息"
+      title="配置-项目管控"
       width={750}
       visible={state as boolean}
       destroyOnClose
@@ -51,9 +62,32 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
     >
       <Form form={form}>
         <CommonTitle>地图</CommonTitle>
-        <Form.Item name="area">
+        <Form.Item name="mapComponent">
           <Checkbox.Group>
             <Checkbox value="province">项目数量（地图）</Checkbox>
+            {/* <Checkbox value="city">市</Checkbox> */}
+          </Checkbox.Group>
+        </Form.Item>
+        <CommonTitle>生产负荷</CommonTitle>
+        <Form.Item name="personLoad">
+          <Checkbox.Group>
+            <Checkbox value="person">生产负荷(员工)</Checkbox>
+            <Checkbox value="department">生产负荷(部组)</Checkbox>
+            <Checkbox value="company">生产负荷(公司)</Checkbox>
+            {/* <Checkbox value="city">市</Checkbox> */}
+          </Checkbox.Group>
+        </Form.Item>
+        <CommonTitle>实时数据</CommonTitle>
+        <Form.Item name="projectRefreshData">
+          <Checkbox.Group>
+            <Checkbox value="projectRefreshData">实时数据</Checkbox>
+            {/* <Checkbox value="city">市</Checkbox> */}
+          </Checkbox.Group>
+        </Form.Item>
+        <CommonTitle>甘特图</CommonTitle>
+        <Form.Item name="projectProgress">
+          <Checkbox.Group>
+            <Checkbox value="gantt">甘特图</Checkbox>
             {/* <Checkbox value="city">市</Checkbox> */}
           </Checkbox.Group>
         </Form.Item>

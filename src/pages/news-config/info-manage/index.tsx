@@ -28,7 +28,7 @@ const { Search } = Input;
 
 const InfoManage: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -49,6 +49,10 @@ const InfoManage: React.FC = () => {
   // 富文本框内容
   const [content, setContent] = useState<string>('');
   const [editContent, setEditContent] = useState<string>('');
+  const [addPersonArray, setAddPersonArray] = useState([]);
+  const [editPersonArray, setEditPersonArray] = useState([]);
+  const [editPersonUserIds, setEditPersonUserIds] = useState<any[]>([]);
+
   // const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const editFormRef = useRef<HTMLDivElement>(null);
@@ -77,13 +81,13 @@ const InfoManage: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="宣贯" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入标题或内容"
+            placeholder="请输入标题/内容"
           />
         </TableSearch>
         <TableSearch label="状态" width="200px" marginLeft="20px">
@@ -107,7 +111,7 @@ const InfoManage: React.FC = () => {
 
     await deleteNewsItem(editDataId);
     refresh();
-    setTableSelectRow([]);
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 
@@ -190,13 +194,13 @@ const InfoManage: React.FC = () => {
       dataIndex: 'createdByUser',
       index: 'createdByUser',
       title: '创建人',
-      width: 140,
+      width: 260,
     },
     {
       dataIndex: 'createdOn',
       index: 'createdOn',
       title: '创建时间',
-      width: 220,
+      width: 160,
       render: (text: any, record: any) => {
         return moment(record.createdOn).format('YYYY-MM-DD HH:mm');
       },
@@ -205,7 +209,7 @@ const InfoManage: React.FC = () => {
       dataIndex: 'updateOn',
       index: 'updateOn',
       title: '更新时间',
-      width: 220,
+      width: 160,
       render: (text: any, record: any) => {
         return moment(record.modifiedOn).format('YYYY-MM-DD HH:mm');
       },
@@ -230,16 +234,19 @@ const InfoManage: React.FC = () => {
 
   const sureAddNews = () => {
     addForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          title: '',
-          content: content,
-          isEnable: true,
-          clientCategorys: '',
-          userIds: '',
-        },
-        values,
-      );
+      const { userIds } = values;
+
+      const finallyUserIds = addPersonArray
+        .filter((item) => userIds?.includes(item.value))
+        .map((item) => item.chooseValue);
+      const submitInfo = {
+        title: '',
+        content: content,
+        isEnable: true,
+        clientCategorys: '',
+        ...values,
+        userIds: finallyUserIds,
+      };
 
       await addNewsItem(submitInfo);
       refresh();
@@ -264,8 +271,8 @@ const InfoManage: React.FC = () => {
     const clientCategorys = checkContentData.clientCategorys.map((item) => item.value);
     setEditFormVisible(true);
     setEditContent(checkContentData.content);
+    setEditPersonUserIds(userIds);
     editForm.setFieldsValue({
-      userIds,
       title: checkContentData.title,
       isEnable: checkContentData.isEnable,
       clientCategorys,
@@ -280,14 +287,18 @@ const InfoManage: React.FC = () => {
     const editData = data!;
 
     editForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-          title: editData.title,
-          content: content,
-        },
-        values,
-      );
+      const { userIds } = values;
+      const finallyUserIds = editPersonArray
+        .filter((item) => userIds?.includes(item.value))
+        .map((item) => item.chooseValue);
+      const submitInfo = {
+        id: editData.id,
+        title: editData.title,
+        content: content,
+        ...values,
+        userIds: finallyUserIds,
+      };
+
       await updateNewsItem(submitInfo);
       refresh();
       message.success('更新成功');
@@ -353,7 +364,7 @@ const InfoManage: React.FC = () => {
         columns={columns}
         url="/Article/GetPagedList"
         tableTitle="宣贯管理"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           state: status,
           keyWord: searchKeyWord,
@@ -367,11 +378,19 @@ const InfoManage: React.FC = () => {
           visible={addFormVisible}
           okText="保存"
           onOk={() => sureAddNews()}
-          onCancel={() => setAddFormVisible(false)}
+          onCancel={() => {
+            setAddFormVisible(false);
+            addForm.resetFields();
+          }}
           cancelText="取消"
           destroyOnClose
         >
-          <TextEditor onChange={setContent} titleForm={addForm} type="add" />
+          <TextEditor
+            getPersonArray={(array) => setAddPersonArray(array)}
+            onChange={setContent}
+            titleForm={addForm}
+            type="add"
+          />
         </Modal>
       )}
 
@@ -388,9 +407,11 @@ const InfoManage: React.FC = () => {
       >
         <TextEditor
           htmlContent={editContent}
+          getPersonArray={(array) => setEditPersonArray(array)}
           type="edit"
           onChange={setContent}
           titleForm={editForm}
+          personDefaultValue={editPersonUserIds}
         />
       </Modal>
       {checkInfoVisible && (

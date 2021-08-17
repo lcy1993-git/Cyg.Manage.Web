@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { baseUrl, cyRequest } from '../common';
+import { projectOperationLogParams, RefreshDataType } from '../index';
 
 interface OverduesParams {
   companyId: string;
@@ -36,7 +37,7 @@ export const getComprehensiveProcessList = () => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/ProjectStatistics/GetLeaderboardByCompany`, {
       method: 'POST',
-      data: { limit: 10 },
+      data: { limit: 9999 },
     }),
   );
 };
@@ -45,7 +46,18 @@ export const getProjectProcessList = () => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/ProjectStatistics/GetLeaderboardByProject`, {
       method: 'POST',
-      data: { limit: 10 },
+      data: { limit: 9999 },
     }),
   );
 };
+
+// 获取项目操作log
+export const fetchProjectOperationLog = (params: projectOperationLogParams) => {
+  return cyRequest<RefreshDataType[]>(() =>
+    request(`${baseUrl.project}/ProjectStatistics/GetProjectOperateLog`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+

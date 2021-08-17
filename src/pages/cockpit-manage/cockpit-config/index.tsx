@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import bgSrc from '@/assets/image/index/bg.png';
 import CommonTitle from '@/components/common-title';
-import { Button, message, Spin } from 'antd';
+import { Form, Button, message, Spin, Modal } from 'antd';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -11,32 +11,19 @@ import styles from './index.less';
 import uuid from 'node-uuid';
 import { useRef } from 'react';
 import { useRequest, useSize } from 'ahooks';
-import lodash, { divide, multiply, subtract } from 'lodash';
+import { divide, multiply, subtract } from 'lodash';
 import {
   DeleteOutlined,
-  PlusOutlined,
   ReloadOutlined,
   SaveOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
-import CockpitMenuItem from './components/menu-item';
+import CockpitMenuItem from './components/cockpit-menu-item';
 
-import AddEngineerAndProjectModule from './components/add-engineer-project-modal';
-import AddEngineerTypeModal from './components/add-engineer-type-modal';
-import AddDeliveryStatisticModal from './components/add-delivery-statistic-modal';
-import AddOtherStatisticModal from './components/add-other-statistic-modal';
 import { getChartConfig, saveChartConfig } from '@/services/operation-config/cockpit';
 import EmptyTip from '@/components/empty-tip';
 
 import ConfigWindow from './components/config-window';
-import EditEngineerAndMapModal from './components/add-engineer-project-modal/edit-map-form';
-import EditEngineerAndProductionModal from './components/add-engineer-project-modal/edit-production-form';
-import EditProjectTypeModal from './components/add-engineer-type-modal/edit-project-type';
-import EditProjectCaseModal from './components/add-engineer-type-modal/edit-project-case';
-import EditDeliveryStatisticModal from './components/add-delivery-statistic-modal/edit-delivery-statistic';
-import EditOtherStatisticModal from './components/add-other-statistic-modal/edit-other-statistic';
-import AddEngineerProcessModal from './components/add-engineer-progress-modal';
-import EditEngineerProcessModal from './components/add-engineer-progress-modal/edit-process-form';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -50,21 +37,11 @@ import ProjectProgress from '../cockpit-config/components/cockpit-progress-compo
 
 import { CockpitConfigContext } from './context';
 import CockpitProjectInfoFreshList from './components/cockpit-project-info-refresh-list';
-import { copyProject } from '@/services/project-management/all-project';
-import EditRefreshDataModal from './components/add-engineer-project-modal/edit-refresh-data-form';
+import { cockpitMenuItemData, CockpitProps } from './utils';
+// import EditRefreshDataModal from './components/add-engineer-project-modal/edit-refresh-data-form';
+import EditFormItem from './components/edit-form-item';
 
-export interface CockpitProps {
-  name: string;
-  w: number;
-  key: string;
-  h: number;
-  x: number;
-  y: number;
-  edit?: boolean;
-  componentProps?: any;
-  // 是否需要固定宽度
-  fixHeight?: boolean;
-}
+
 
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
@@ -99,6 +76,7 @@ const getComponentByType = (type: string, componentProps: any) => {
 
 const CockpitManage: React.FC = () => {
   const [configArray, setConfigArray] = useState<CockpitProps[]>([]);
+
   // 1.默认配置开发
   // a. 根据useSize获取框框大小
   // b. 默认配置的宽度是可以写死的，高度根据目前已有高度需要做一个百分比适配
@@ -106,23 +84,14 @@ const CockpitManage: React.FC = () => {
   const configDivRef = useRef<HTMLDivElement>(null);
   const size = useSize(configDivRef);
 
-  const [addMapModuleVisible, setAddMapModuleVisible] = useState<boolean>(false);
-  const [addEngineerTypeVisible, setAddEngineerTypeVisible] = useState<boolean>(false);
-  const [addDeliveryStatisticVisible, setAddDeliveryStatisticVisible] = useState<boolean>(false);
-  const [addOtherStatisticVisible, setAddOtherStatisticVisible] = useState<boolean>(false);
-  const [addEngineerProcessVisible, setAddEngineerProcessVisible] = useState<boolean>(false);
+  const [activeModal, setActiveModal] = useState<string>("")
+  
+  const [projectControlVisible, setProjectControlVisible] = useState<boolean>(false);
+  const [projectTypeVisible, setProjectTypeVisible] = useState<boolean>(false);
+  const [deliveryVisible, setDeliveryVisible] = useState<boolean>(false);
+  const [otherVisible, setOtherVisible] = useState<boolean>(false);
 
-  const [editEngineerAndMapVisible, setEditEngineerAndMapVisible] = useState<boolean>(false);
-  const [editEngineerAndProductionVisible, setEditEngineerAndProductionVisible] = useState<boolean>(
-    false,
-  );
-
-  const [editProjectTypeVisible, setEditProjectTypeVisible] = useState<boolean>(false);
-  const [editProjectCaseVisible, setEditProjectCaseVisible] = useState<boolean>(false);
-  const [editDeliveryStatisticVisible, setEditDeliveryStatisticVisible] = useState<boolean>(false);
-  const [editOtherStatisticVisible, setEditOtherStatisticVisible] = useState<boolean>(false);
-  const [editEngineerProcessVisible, setEditEngineerProcessVisible] = useState<boolean>(false);
-  const [editRefreshDataVisible, setEditRefreshDataVisible] = useState<boolean>(false);
+  const [commonForm] = Form.useForm();
 
   const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
@@ -132,7 +101,6 @@ const CockpitManage: React.FC = () => {
     areaLevel: '1',
   });
 
-  const [currentRecord, setCurrentRecord] = useState<any>({});
   const dontNeedEditComponent = ['mapComponent', 'projectRefreshData'];
   const { data, loading } = useRequest(() => getChartConfig(), {
     onSuccess: () => {
@@ -158,22 +126,21 @@ const CockpitManage: React.FC = () => {
   const getEditConfig = (item: CockpitProps, actualHeight: number, actualY: number) =>
     dontNeedEditComponent.indexOf(item.name) !== -1
       ? {
-          ...item,
-          y: actualY,
-          edit: false,
-          h: actualHeight,
-        }
+        ...item,
+        y: actualY,
+        edit: false,
+        h: actualHeight,
+      }
       : {
-          ...item,
-          y: actualY,
-          edit: true,
-          h: actualHeight,
-        };
+        ...item,
+        y: actualY,
+        edit: true,
+        h: actualHeight,
+      };
 
   const initCockpit = () => {
     const thisBoxHeight = (size.height ?? 828) - 70;
     const totalHeight = divide(thisBoxHeight, 18);
-
     setConfigArray([
       {
         name: 'toDo',
@@ -256,6 +223,25 @@ const CockpitManage: React.FC = () => {
     setLayoutConfigData(currentLayout);
   };
 
+  const getFormValue = (type: string) => {
+    // projectControl
+
+    const nameArray = cockpitMenuItemData.find((item) => item.type === type)?.childrenData.map((item) => item.name);
+
+    let res = {};
+    nameArray?.forEach((name) => {
+      res[name] = []
+    })
+    configArray.forEach((item) => {
+      if (nameArray?.includes(item.name)) {
+        res[item.name] = item.componentProps ?? []
+      }
+
+    })
+
+    return res;
+  }
+
   // 删除事件
   const deleteEvent = (record: any) => {
     const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
@@ -266,57 +252,35 @@ const CockpitManage: React.FC = () => {
 
   //编辑弹出事件
   const editEvent = (record: any) => {
+
     switch (record.name) {
       case 'mapComponent':
-        setCurrentRecord(record);
-        setEditEngineerAndMapVisible(true);
-        break;
       case 'personLoad':
-        setCurrentRecord(record);
-        setEditEngineerAndProductionVisible(true);
+      case 'projectRefreshData':
+      case 'projectProgress':
+        setActiveModal(record.name)
+        commonForm.setFieldsValue(getFormValue('projectControl'));
+        setProjectControlVisible(true);
         break;
       case 'projectType':
-        setCurrentRecord(record);
-        setEditProjectTypeVisible(true);
-        break;
       case 'projectSchedule':
-        setCurrentRecord(record);
-        setEditProjectCaseVisible(true);
-        break;
-      case 'projectProgress':
-        setCurrentRecord(record);
-        setEditEngineerProcessVisible(true);
+        setActiveModal(record.name)
+        commonForm.setFieldsValue(getFormValue('projectType'))
+        setProjectTypeVisible(true);
         break;
       case 'deliveryManage':
-        setCurrentRecord(record);
-        setEditDeliveryStatisticVisible(true);
+        setActiveModal(record.name)
+
+        commonForm.setFieldsValue(getFormValue('delivery'))
+        setDeliveryVisible(true);
         break;
       case 'toDo':
-        setCurrentRecord(record);
-        setEditOtherStatisticVisible(true);
+        setActiveModal(record.name)
+        commonForm.setFieldsValue(getFormValue('other'))
+        setOtherVisible(true);
         break;
-      case 'projectRefreshData':
-        setCurrentRecord(record);
-        setEditRefreshDataVisible(true);
-        break;
+
     }
-  };
-
-  //编辑事件
-  const editComponentEvent = (componentProps: any) => {
-    const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
-
-    const dataIndex = copyConfigArray.findIndex((item) => item.key === currentRecord.key);
-
-    // 如果componentProps 为空，删除这个组件
-    if (componentProps?.componentProps.length === 0) {
-      copyConfigArray.splice(dataIndex, 1);
-      setConfigArray(copyConfigArray);
-      return;
-    }
-
-    copyConfigArray[dataIndex] = { ...componentProps };
-    setConfigArray([...copyConfigArray]);
   };
 
   const configComponentElement = configArray.map((item) => {
@@ -328,44 +292,6 @@ const CockpitManage: React.FC = () => {
       </div>
     );
   });
-
-  const engineerProjectArray = [
-    { name: '项目数量(地图)', value: 'province' },
-    { name: '生产负荷(员工)', value: 'person' },
-    { name: '生产负荷(部组)', value: 'department' },
-    { name: '生产负荷(公司)', value: 'company' },
-    { name: '实时数据', value: 'projectRefreshData' },
-  ];
-
-  const engineerTypeStatistic = [
-    { name: '项目分类', value: 'classify' },
-    { name: '项目类别', value: 'category' },
-    { name: '项目阶段', value: 'stage' },
-    { name: '建设类型', value: 'buildType' },
-    { name: '电压等级', value: 'level' },
-    { name: '项目状态', value: 'status' },
-    { name: '项目性质', value: 'nature' },
-  ];
-
-  const engineerProgressStatistic = [{ name: '甘特图', value: 'gantt' }];
-
-  const deliveryStatistic = [
-    { name: '项目交付数量(员工)', value: 'person' },
-    { name: '项目交付数量(部组)', value: 'department' },
-    { name: '项目交付数量(公司)', value: 'company' },
-  ];
-
-  const otherStatistic = [
-    { name: '通知栏/已结项', value: 'wait' },
-    { name: '通知栏/待安排', value: 'arrange' },
-    { name: '通知栏/其他消息', value: 'other' },
-  ];
-
-  const addComponentEvent = (componentProps: any) => {
-    const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
-
-    setConfigArray([...copyConfigArray, ...componentProps]);
-  };
 
   const saveConfig = async () => {
     try {
@@ -400,6 +326,47 @@ const CockpitManage: React.FC = () => {
     }
   };
 
+  const addConfig = (newItem: any) => {
+    setConfigArray([...configArray, newItem])
+  }
+  /**
+   * 根据现有Res修改当前ConfigArray
+   * 
+   * @data 现有表单数据
+   * @type 模态框类型
+   * @hide 隐藏模态框
+   */
+  const changeComponentByRes = (data: any, type: string, hide: { (value: React.SetStateAction<boolean>): void; (value: React.SetStateAction<boolean>): void; (value: React.SetStateAction<boolean>): void; (value: React.SetStateAction<boolean>): void; (arg0: boolean): void; }) => {
+
+    const copyConfigArray: CockpitProps[] = JSON.parse(JSON.stringify(configArray));
+    const index = copyConfigArray.findIndex((item: { name: string; }) => item.name === activeModal);
+    if (data.length === 0) {
+      // 当表单没有数据时，删除该组件
+      index >= 0 && copyConfigArray.splice(index, 1);
+      
+    } else {
+      if (index < 0) {
+        let w: number = 3;
+        if(activeModal === "mapComponent" || activeModal ===  'projectProgress'){
+          w = 6
+        }
+        copyConfigArray.push({
+          name: activeModal,
+          key: uuid.v1(),
+          x: 0,
+          y: 0,
+          w,
+          h: 11,
+          componentProps: data
+        })
+      } else {
+        copyConfigArray[index].componentProps = data;
+      }
+    }
+    setConfigArray(copyConfigArray);
+    hide(false)
+  }
+
   return (
     <CockpitConfigContext.Provider
       value={{
@@ -415,56 +382,11 @@ const CockpitManage: React.FC = () => {
               <span className="ml10">所有统计图表</span>
             </div>
             <div className={styles.cockpitConfigPageMenuContent}>
-              <CockpitMenuItem
-                childrenData={engineerProjectArray}
-                name="工程项目"
-                buttonSlot={
-                  <Button type="text" onClick={() => setAddMapModuleVisible(true)}>
-                    <PlusOutlined />
-                    添加
-                  </Button>
-                }
-              />
-              <CockpitMenuItem
-                childrenData={engineerTypeStatistic}
-                name="工程类型统计"
-                buttonSlot={
-                  <Button type="text" onClick={() => setAddEngineerTypeVisible(true)}>
-                    <PlusOutlined />
-                    添加
-                  </Button>
-                }
-              />
-              <CockpitMenuItem
-                childrenData={engineerProgressStatistic}
-                name="工程进度统计"
-                buttonSlot={
-                  <Button type="text" onClick={() => setAddEngineerProcessVisible(true)}>
-                    <PlusOutlined />
-                    添加
-                  </Button>
-                }
-              />
-              <CockpitMenuItem
-                childrenData={deliveryStatistic}
-                name="交付统计"
-                buttonSlot={
-                  <Button type="text" onClick={() => setAddDeliveryStatisticVisible(true)}>
-                    <PlusOutlined />
-                    添加
-                  </Button>
-                }
-              />
-              <CockpitMenuItem
-                childrenData={otherStatistic}
-                name="其他"
-                buttonSlot={
-                  <Button type="text" onClick={() => setAddOtherStatisticVisible(true)}>
-                    <PlusOutlined />
-                    添加
-                  </Button>
-                }
-              />
+              {
+                cockpitMenuItemData.map((itemProps) => {
+                  return <CockpitMenuItem configArray={configArray} addConfig={addConfig} {...itemProps} />
+                })
+              }
             </div>
           </div>
           <div className={styles.cockpitConfigPageContent}>
@@ -495,7 +417,7 @@ const CockpitManage: React.FC = () => {
             >
               {!loading && configArray.length > 0 && (
                 <ResponsiveReactGridLayout
-                  draggableCancel = ".noDraggable"
+                  draggableCancel=".noDraggable"
                   breakpoints={{ lg: 120 }}
                   cols={{ lg: 12 }}
                   rowHeight={9}
@@ -520,111 +442,69 @@ const CockpitManage: React.FC = () => {
             </div>
           </div>
         </div>
-        <AddEngineerAndProjectModule
-          visible={addMapModuleVisible}
-          configArray={configArray}
-          onChange={setAddMapModuleVisible}
-          changeFinishEvent={addComponentEvent}
-        />
-        <AddEngineerTypeModal
-          visible={addEngineerTypeVisible}
-          configArray={configArray}
-          onChange={setAddEngineerTypeVisible}
-          changeFinishEvent={addComponentEvent}
-        />
-        <AddDeliveryStatisticModal
-          visible={addDeliveryStatisticVisible}
-          configArray={configArray}
-          onChange={setAddDeliveryStatisticVisible}
-          changeFinishEvent={addComponentEvent}
-        />
-        <AddEngineerProcessModal
-          visible={addEngineerProcessVisible}
-          configArray={configArray}
-          onChange={setAddEngineerProcessVisible}
-          changeFinishEvent={addComponentEvent}
-        />
-
-        <AddOtherStatisticModal
-          visible={addOtherStatisticVisible}
-          configArray={configArray}
-          onChange={setAddOtherStatisticVisible}
-          changeFinishEvent={addComponentEvent}
-        />
-        {editDeliveryStatisticVisible && (
-          <EditDeliveryStatisticModal
-            visible={editDeliveryStatisticVisible}
-            onChange={setEditDeliveryStatisticVisible}
-            changeFinishEvent={editComponentEvent}
-            currentRecord={currentRecord}
-            configArray={configArray}
-          />
-        )}
-        {editEngineerProcessVisible && (
-          <EditEngineerProcessModal
-            visible={editEngineerProcessVisible}
-            onChange={setEditEngineerProcessVisible}
-            changeFinishEvent={editComponentEvent}
-            currentRecord={currentRecord}
-          />
-        )}
-        {editOtherStatisticVisible && (
-          <EditOtherStatisticModal
-            visible={editOtherStatisticVisible}
-            onChange={setEditOtherStatisticVisible}
-            changeFinishEvent={editComponentEvent}
-            currentRecord={currentRecord}
-            configArray={configArray}
-          />
-        )}
-
-        {editEngineerAndMapVisible && (
-          <EditEngineerAndMapModal
-            visible={editEngineerAndMapVisible}
-            onChange={setEditEngineerAndMapVisible}
-            changeFinishEvent={editComponentEvent}
-            currentRecord={currentRecord}
-          />
-        )}
-
-        {editEngineerAndProductionVisible && (
-          <EditEngineerAndProductionModal
-            visible={editEngineerAndProductionVisible}
-            onChange={setEditEngineerAndProductionVisible}
-            changeFinishEvent={editComponentEvent}
-            currentRecord={currentRecord}
-            configArray={configArray}
-          />
-        )}
-
-        {editProjectTypeVisible && (
-          <EditProjectTypeModal
-            visible={editProjectTypeVisible}
-            onChange={setEditProjectTypeVisible}
-            changeFinishEvent={editComponentEvent}
-            currentRecord={currentRecord}
-            configArray={configArray}
-          />
-        )}
-
-        {editProjectCaseVisible && (
-          <EditProjectCaseModal
-            visible={editProjectCaseVisible}
-            onChange={setEditProjectCaseVisible}
-            changeFinishEvent={editComponentEvent}
-            currentRecord={currentRecord}
-            configArray={configArray}
-          />
-        )}
-
-        {editRefreshDataVisible && (
-          <EditRefreshDataModal
-            visible={editRefreshDataVisible}
-            onChange={setEditRefreshDataVisible}
-            changeFinishEvent={editComponentEvent}
-            currentRecord={currentRecord}
-          />
-        )}
+        {
+          projectControlVisible && (
+            <Modal
+              destroyOnClose={true}
+              visible={projectControlVisible}
+              onCancel={() => setProjectControlVisible(false)}
+              onOk={() => commonForm.validateFields().then(d => changeComponentByRes(d[activeModal], 'projectControl', setProjectControlVisible))}
+              title="配置-项目管控"
+            >
+              <Form form={commonForm}>
+                <EditFormItem configArray={configArray} childrenData={cockpitMenuItemData[0].childrenData} activeModal={activeModal} />
+              </Form>
+            </Modal>
+          )
+        }
+        {
+          projectTypeVisible && (
+            <Modal
+              destroyOnClose={true}
+              visible={projectTypeVisible}
+              onCancel={() => setProjectTypeVisible(false)}
+              onOk={() => commonForm.validateFields().then(d => changeComponentByRes(d[activeModal], 'projectType', setProjectTypeVisible))}
+              title="配置-工程类型统计"
+            >
+              <Form form={commonForm}>
+                <EditFormItem configArray={configArray} childrenData={cockpitMenuItemData[1].childrenData} activeModal={activeModal} />
+              </Form>
+            </Modal>
+          )
+        }
+        {
+          deliveryVisible && (
+            <Modal
+              destroyOnClose={true}
+              visible={deliveryVisible}
+              onCancel={() => setDeliveryVisible(false)}
+              // onOk={() => projectControlForm.validateFields().then(d => changeComponentByRes(d, 'delivery', setDeliveryVisible))}
+              onOk={() => commonForm.validateFields().then(d => {
+                changeComponentByRes(d[activeModal], 'delivery', setDeliveryVisible)
+              })}
+              title="配置-交付统计"
+            >
+              <Form form={commonForm}>
+                <EditFormItem configArray={configArray} childrenData={cockpitMenuItemData[2].childrenData} activeModal={activeModal} />
+              </Form>
+            </Modal>
+          )
+        }
+        {
+          otherVisible && (
+            <Modal
+              destroyOnClose={true}
+              visible={otherVisible}
+              onCancel={() => setOtherVisible(false)}
+              onOk={() => commonForm.validateFields().then(d => changeComponentByRes(d[activeModal], 'other', setOtherVisible))}
+              title="配置-其他"
+            >
+              <Form form={commonForm}>
+                <EditFormItem configArray={configArray} childrenData={cockpitMenuItemData[3].childrenData} activeModal={activeModal} />
+              </Form>
+            </Modal>
+          )
+        }
       </PageCommonWrap>
     </CockpitConfigContext.Provider>
   );

@@ -4,6 +4,7 @@ import FileUpload, { UploadStatus } from '@/components/file-upload';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
 import rules from './rule';
+import { useMemo } from 'react';
 interface CompanyFileForm {
   type?: 'add' | 'edit';
   securityKey?: string;
@@ -16,9 +17,21 @@ interface CompanyFileForm {
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
   const { type = 'edit', groupData, editingName, uploadFileFn, fileCategory } = props;
   const [categoryValue, setCategoryValue] = useState<number>();
+  console.log({categoryValue});
+  
   const groupName = groupData.items?.map((item: any) => {
     return item.name;
   });
+
+  const acceptValue = useMemo(() => {
+    if(categoryValue === 9) {
+      return '.docx,.doc,.xls,.xlsx'
+    }
+    if([5,6,8].includes(categoryValue!)){
+      return '.docx,.doc'
+    }
+    return '.dwg' 
+  }, [categoryValue])
 
   return (
     <>
@@ -29,6 +42,10 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         hasFeedback
         rules={[
           { max: 12, message: '名称超出字符数限制，限制为12个字符' },
+          {
+            pattern: /^[^\\\.^/:*?？！!@￥"<>《》#|;，。,；：'‘’“”、=\^\s]+$/,
+            message: '文件名不能包含/:*?"<>|空格等特殊字符',
+          },
           { required: true, message: '文件名不能为空' },
           () => ({
             validator(_, value) {
@@ -46,8 +63,8 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         <CyFormItem label="文件类别" name="fileCategory" required rules={rules.fileCategory}>
           <UrlSelect
             onChange={(value: any) => setCategoryValue(value)}
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             url="/CompanyFile/GetCategorys"
             placeholder="请选择文件类别"
           />
@@ -59,14 +76,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
             uploadFileBtn
             uploadFileFn={uploadFileFn}
             maxCount={1}
-            accept={
-              categoryValue === 5 ||
-              categoryValue === 6 ||
-              categoryValue === 8 ||
-              categoryValue === 9
-                ? '.docx,.doc'
-                : '.dwg'
-            }
+            accept={acceptValue}
           />
         </CyFormItem>
       )}
@@ -77,11 +87,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
             uploadFileBtn
             uploadFileFn={uploadFileFn}
             maxCount={1}
-            accept={
-              fileCategory === 5 || fileCategory === 6 || fileCategory === 8 || fileCategory === 9
-                ? '.docx,.doc'
-                : '.dwg'
-            }
+            accept={acceptValue}
           />
         </CyFormItem>
       )}

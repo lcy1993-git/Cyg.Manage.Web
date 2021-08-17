@@ -71,8 +71,8 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
           <UrlSelect
             showSearch
             url="/Role/GetList"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择角色"
             requestType="post"
           />
@@ -94,8 +94,8 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
           <UrlSelect
             showSearch
             url="/Area/GetList?pId=-1"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择省份"
           />
         </CyFormItem>
@@ -113,9 +113,9 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
         <Input placeholder="请输入真实姓名" />
       </CyFormItem>
 
-      <CyFormItem label="状态" name="userStatus" initialValue={'1'} required>
+      {/* <CyFormItem label="状态" name="userStatus" initialValue={'1'} required>
         <EnumRadio enumList={BelongStatusEnum} />
-      </CyFormItem>
+      </CyFormItem> */}
     </>
   );
 };

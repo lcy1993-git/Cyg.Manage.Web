@@ -7,7 +7,7 @@ interface AttributeProps {
 
 const Attribute: React.FC<AttributeProps> = (props) => {
   const { info } = props;
-  let attribute = info.propertys;
+  let attribute = info?.propertys;
 
   return (
     <div>

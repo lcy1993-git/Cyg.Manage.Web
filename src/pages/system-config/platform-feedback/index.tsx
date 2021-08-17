@@ -18,7 +18,7 @@ const { Search } = Input;
 
 const PlatFormFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const [beginDate, setBeginDate] = useState<Moment | null>();
@@ -59,12 +59,12 @@ const PlatFormFeedBack: React.FC = () => {
   const leftSearchElement = () => {
     return (
       <div className={styles.searchGroup}>
-        <TableSearch label="搜索" width="208px">
+        <TableSearch label="反馈" width="208px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="输入标题搜索"
+            placeholder="请输入标题"
             enterButton
           />
         </TableSearch>
@@ -245,7 +245,7 @@ const PlatFormFeedBack: React.FC = () => {
         ref={tableRef}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="反馈列表"
         url="/Feedback/GetPagedList"
         columns={columns}

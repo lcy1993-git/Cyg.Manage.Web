@@ -1,6 +1,7 @@
+import type {
+  Ref} from 'react';
 import React, {
   forwardRef,
-  Ref,
   useMemo,
   useState,
   useImperativeHandle,
@@ -8,13 +9,14 @@ import React, {
   useEffect,
 } from 'react';
 import { useRequest } from 'ahooks';
-import { tableCommonRequest, TableRequestResult } from '@/services/table';
+import type { TableRequestResult } from '@/services/table';
+import { tableCommonRequest } from '@/services/table';
 import { Table, Pagination, message, Tooltip, Menu, Popover, Checkbox } from 'antd';
 import styles from './index.less';
 import CommonTitle from '../common-title';
 import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import EmptyTip from '../empty-tip';
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
+import type { CheckboxChangeEvent } from 'antd/lib/checkbox';
 
 
 interface GeneralTableProps {
@@ -43,7 +45,7 @@ interface GeneralTableProps {
 
   rowKey?: string;
 
-  requestSource?: 'project' | 'common' | 'resource' | 'tecEco';
+  requestSource?: 'project' | 'common' | 'resource' | 'tecEco' | 'tecEco1';
 
   noPaging?: boolean;
 
@@ -130,7 +132,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         dataStartIndex: 0,
         dataEndIndex: 0,
       };
-    } else {
+    }
       if (data) {
         return {
           items: data ?? [],
@@ -139,14 +141,17 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       return {
         items: [],
       };
-    }
+
   }, [JSON.stringify(data)]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
-      setSelectedRowKeys(selectedRows.map((item) => cruxKey ? item[cruxKey]["id"] : item[rowKey]));
+      setSelectedRowKeys(selectedRows.map((item) =>{
+        console.log(item,cruxKey)
+        return  cruxKey ? item[cruxKey].id : item[rowKey]
+      }));
       getSelectData?.(selectedRows);
     },
   };
@@ -179,7 +184,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   // 刷新列表
   const refreshTable = () => {
     run({
-      url: url,
+      url,
       extraParams: extractParams,
       pageIndex: currentPage,
       pageSize,
@@ -215,7 +220,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   useEffect(() => {
     requestConditions && run({
-      url: url,
+      url,
       extraParams: extractParams,
       pageIndex: currentPage,
       pageSize,
@@ -225,10 +230,13 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   }, [pageSize, currentPage, requestConditions]);
 
   useImperativeHandle(ref, () => ({
+    getCurrentPageLsit: ()=>{
+      return
+    },
     // changeVal 就是暴露给父组件的方法
     refresh: () => {
       run({
-        url: url,
+        url,
         extraParams: extractParams,
         pageIndex: currentPage,
         pageSize,
@@ -340,9 +348,9 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
             emptyText: <EmptyTip className="pt20 pb20" />,
           }}
           rowSelection={{
-            type: type,
+            type,
             columnWidth: '38px',
-            selectedRowKeys: selectedRowKeys,
+            selectedRowKeys,
             ...rowSelection,
           }}
           {...((rest as unknown) as P)}

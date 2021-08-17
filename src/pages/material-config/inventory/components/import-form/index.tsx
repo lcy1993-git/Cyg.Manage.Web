@@ -51,8 +51,6 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       .then(
         (res) => {
           message.success('导入成功');
-          setUploadFileFalse();
-          setState(false);
           return Promise.resolve();
         },
         (res) => {
@@ -66,13 +64,20 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       )
       .finally(() => {
         changeFinishEvent?.();
-
-        setRequestLoading(false);
+        setRequestLoading(true);
       });
   };
 
   const onSave = () => {
-    setUploadFileTrue();
+    form.validateFields().then((value) => {
+      console.log(value);
+
+      if (requestLoading) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
   };
 
   return (
@@ -86,7 +91,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => onSave()} loading={requestLoading}>
+        <Button key="save" type="primary" onClick={onSave}>
           保存
         </Button>,
       ]}
@@ -130,11 +135,10 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           rules={rule.province}
         >
           <UrlSelect
-            allowClear
             showSearch
             url="/Area/GetList?pId=-1"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择"
             onChange={(value: any) => setProvince(value)}
           />
@@ -149,7 +153,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           rules={rule.file}
         >
           <FileUpload
-            // uploadFileBtn={false}
+            uploadFileBtn
             trigger={triggerUploadFile}
             uploadFileFn={saveInventoryEvent}
             maxCount={1}

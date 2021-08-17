@@ -61,13 +61,13 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="模块" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入模块信息"
           />
         </TableSearch>
       </div>
@@ -302,7 +302,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   //详情
   const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据删除');
+      message.error('请选择一条数据查看详情');
       return;
     }
     setDetailVisible(true);

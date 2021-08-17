@@ -12,7 +12,7 @@
 
 // 如果数组里面包含这个ip,那么就代表是IIS部署的，就直接用url + 端口去访问。  如果没包含，代表是nginx部署，那么就用代理
 
-export const ipArray = ["47.108.63.23","39.99.251.67"];
+export const ipArray = [];
 
 const thisHostName = window.location.hostname;
 
@@ -25,6 +25,7 @@ const arrayHasIpBaseUrlArray = {
     resource: `${baseUrl}:8020/api`,
     comment: `${baseUrl}:8013/api`,
     tecEco: `${baseUrl}:8033/api`,
+    tecEco1: `${baseUrl}:8080/api`,
     review: `${baseUrl}:8041/api`,
 
     webGis: `${baseUrl}:8021/api`,
@@ -43,12 +44,13 @@ const arrayHasNotBaseUrlArray = {
     upload: "/storage/api",
     resource: "/resourcemanage/v2/api",
     webGis: '/webgis/api',
-    webGis2: '/webGis2/api',
+    webGis2: '/webgis2/api',
     comment: '/project/api',
-    tecEco: '/quato/api',
+    tecEco: '/quota/api',
+    tecEco1: '/technicaleconomy/api',
     review: "/review/api",
-    component: '/Component/api',
-    material: '/Material/api/',
+    component: '/component/api',
+    material: '/material/api/',
     resourceV1: '/resource/api',
     manage: '/manage/api',
     geoserver: '/geoserver',
@@ -75,5 +77,5 @@ export const areaStatisticsUrl = ipArray.includes(thisHostName) ? `${baseUrl}:80
 
 export const serverCodeArray = {hostName:`${thisHostName}`}
 
-export const version = "1.0.71";
+export const version = "1.0.97";
 

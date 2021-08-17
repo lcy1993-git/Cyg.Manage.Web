@@ -20,7 +20,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 const CompanyGroup: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
 
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -50,7 +50,7 @@ const CompanyGroup: React.FC = () => {
       title: '部组',
       dataIndex: 'name',
       index: 'name',
-      width: 180,
+      width: 220,
     },
     {
       title: '部组管理员',
@@ -59,7 +59,7 @@ const CompanyGroup: React.FC = () => {
       render: (text: any, record: any) => {
         return record.adminUserId ? record.adminUserName : record.adminUserId;
       },
-      width: 200,
+      width: 240,
     },
     {
       title: '部组成员',
@@ -88,7 +88,7 @@ const CompanyGroup: React.FC = () => {
     await deleteCompanyGroupItem(editDataId);
     tableFresh();
     message.success('删除成功');
-    setTableSelectRow([]);
+    setTableSelectRows([]);
   };
 
   const addEvent = async () => {
@@ -194,7 +194,7 @@ const CompanyGroup: React.FC = () => {
         ref={tableRef}
         tableTitle="公司部组"
         rightButtonSlot={functionModuleButton}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         columns={functionTableColumns}
         url="/CompanyGroup/GetTreeList"
       />

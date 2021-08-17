@@ -32,12 +32,13 @@ import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import { history } from 'umi';
 import { useLayoutStore } from '@/layouts/context';
+import { useMemo } from 'react';
 
 const { Search } = Input;
 
 const ResourceLib: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -49,7 +50,7 @@ const ResourceLib: React.FC = () => {
   const [status, setStatus] = useState<string>('0');
 
   const [libId, setLibId] = useState<string>('');
-  const [currentManageId, setCurrentManageId] = useState<string>(''); //当前管理 模块的资源库Id
+  const [currentManageId, setCurrentManageId] = useState<string>(window.localStorage.manageId); //当前管理 模块的资源库Id
 
   const { data: keyData } = useRequest(() => getUploadUrl());
 
@@ -65,13 +66,13 @@ const ResourceLib: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="资源库" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入资源库"
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="资源库状态" width="300px">
@@ -111,90 +112,154 @@ const ResourceLib: React.FC = () => {
     }
   };
 
-  const columns = [
-    {
-      dataIndex: 'id',
-      index: 'id',
-      title: '编号',
-      width: 180,
-    },
-    {
-      dataIndex: 'libName',
-      index: 'libName',
-      title: '名称',
-      width: 280,
-    },
-    {
-      dataIndex: 'dbName',
-      index: 'dbName',
-      title: '数据库',
-      width: 240,
-    },
-    {
-      dataIndex: 'version',
-      index: 'version',
-      title: '版本',
-      width: 140,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '备注',
-      //   width: 200,
-    },
-    {
-      dataIndex: 'isDisabled',
-      index: 'isDisabled',
-      title: () => {
-        return (
-          <span>
-            禁用状态
-            <Tooltip
-              title="“已禁用”表示当前资源库不可被新立项工程调用，已立项并调用该资源库的工程不受影响。"
-              placement="right"
+  const columns = useMemo(() => {
+    if (!resourceManageFlag) {
+      setCurrentManageId('');
+      return [
+        {
+          dataIndex: 'id',
+          index: 'id',
+          title: '编号',
+          width: 180,
+        },
+        {
+          dataIndex: 'libName',
+          index: 'libName',
+          title: '名称',
+          width: 280,
+        },
+        {
+          dataIndex: 'dbName',
+          index: 'dbName',
+          title: '数据库',
+          width: 240,
+        },
+        {
+          dataIndex: 'version',
+          index: 'version',
+          title: '版本',
+          width: 140,
+        },
+        {
+          dataIndex: 'remark',
+          index: 'remark',
+          title: '备注',
+          //   width: 200,
+        },
+        {
+          dataIndex: 'isDisabled',
+          index: 'isDisabled',
+          title: () => {
+            return (
+              <span>
+                禁用状态
+                <Tooltip
+                  title="“已禁用”表示当前资源库不可被新立项工程调用，已立项并调用该资源库的工程不受影响。"
+                  placement="top"
+                >
+                  <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
+                </Tooltip>
+              </span>
+            );
+          },
+          width: 180,
+          render: (text: any, record: any) => {
+            return record.isDisabled === true ? '已禁用' : '';
+          },
+        },
+        {
+          dataIndex: 'action',
+          title: '操作',
+          width: 100,
+          render: (text: any, record: any) => {
+            const storage = window.localStorage;
+            return (
+              <span
+                className="canClick"
+                onClick={() => {
+                  setCurrentManageId(record.id);
+                  storage.setItem('manageId', record.id);
+                  history.push({
+                    pathname: `/resource-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
+                  });
+                }}
+              >
+                <u>管理</u>
+              </span>
+            );
+          },
+        },
+      ];
+    }
+    return [
+      {
+        dataIndex: 'id',
+        index: 'id',
+        title: '编号',
+        width: 180,
+      },
+      {
+        dataIndex: 'libName',
+        index: 'libName',
+        title: '名称',
+        width: 280,
+      },
+      {
+        dataIndex: 'dbName',
+        index: 'dbName',
+        title: '数据库',
+        width: 240,
+      },
+      {
+        dataIndex: 'version',
+        index: 'version',
+        title: '版本',
+        width: 140,
+      },
+      {
+        dataIndex: 'remark',
+        index: 'remark',
+        title: '备注',
+        //   width: 200,
+      },
+      {
+        dataIndex: 'isDisabled',
+        index: 'isDisabled',
+        title: () => {
+          return (
+            <span>
+              禁用状态
+              <Tooltip
+                title="“已禁用”表示当前资源库不可被新立项工程调用，已立项并调用该资源库的工程不受影响。"
+                placement="right"
+              >
+                <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
+              </Tooltip>
+            </span>
+          );
+        },
+        width: 180,
+        render: (text: any, record: any) => {
+          return record.isDisabled === true ? '已禁用' : '';
+        },
+      },
+      {
+        dataIndex: '',
+        title: '操作',
+        width: 100,
+        render: (text: any, record: any) => {
+          return (
+            <span
+              className="canClick"
+              onClick={() => message.error('当前资源库已打开"模块管理"界面，请关闭后重试')}
             >
-              <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
-            </Tooltip>
-          </span>
-        );
+              <u>管理</u>
+            </span>
+          );
+        },
       },
-      width: 180,
-      render: (text: any, record: any) => {
-        return record.isDisabled === true ? '已禁用' : '';
-      },
-    },
-    {
-      dataIndex: 'action',
-      title: '操作',
-      width: 100,
-      render: (text: any, record: any) => {
-        return !resourceManageFlag ? (
-          <span
-            className="canClick"
-            onClick={() => {
-              setResourceManageFlag?.(true);
-
-              setCurrentManageId(record.id);
-              history.push({
-                pathname: `/resource-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
-              });
-              refresh();
-            }}
-          >
-            <u>管理</u>
-          </span>
-        ) : (
-          <span
-            // className="canClick"
-            onClick={() => message.error('当前资源库已打开"模块管理"界面，请关闭后重试')}
-          >
-            <u>管理</u>
-          </span>
-        );
-      },
-    },
-  ];
-  // console.log(resourceManageFlag);
+    ];
+  }, [resourceManageFlag]);
 
   //添加
   const addEvent = () => {
@@ -412,7 +477,7 @@ const ResourceLib: React.FC = () => {
         requestSource="resource"
         url="/ResourceLib/GetPageList"
         tableTitle="资源库管理"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,

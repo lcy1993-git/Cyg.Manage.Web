@@ -1,5 +1,5 @@
 import * as echarts from "echarts/lib/echarts";
-
+import borderStylesHTML from '../utils/borderStylesHTML';
 interface DataSource {
   key: string;
   value: unknown
@@ -22,6 +22,14 @@ export default (data: DataSource[], length = 4) => {
         trigger: 'axis',
         axisPointer: {
             type: 'shadow'
+        },
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        borderColor: '#000',
+        formatter(params: any) {
+            const { name, value } = params[0];
+
+            return borderStylesHTML + `<span style="color: #2AFE97">${name}</span><br />
+            <span style="color: #2AFE97">项目数量:</span><span style="color: #fff">${value}</span>`
         }
     },
     xAxis: {

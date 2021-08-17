@@ -74,11 +74,15 @@ export enum ProjectVoltageClasses {
 }
 
 export enum ProjectStatus {
-  '待安排' = 1,
-  '待勘察',
-  '待结项',
-  '待申请结项',
-  '已结项',
+  '未勘察' = 1,
+  '勘察中' = 2,
+  '已勘察' = 3,
+  '设计中' = 4,
+  '设计完成' = 7,
+  '待安排' = 14,
+  '结项中' = 15,
+  '已结项' = 16,
+  '已设计' = 19,
 }
 
 export enum ProjectSourceType {
@@ -353,6 +357,15 @@ export const getEngineerInfo = (engineerId: string) => {
   );
 };
 
+export interface OperateLog {
+  category: number;
+  operationCategory: string;
+  content: string;
+  operator: string;
+  createdByName: string;
+  date: string;
+}
+
 interface ProjectInfoParams {
   id: string;
   name: string;
@@ -393,10 +406,10 @@ interface ProjectInfoParams {
   pAttributeText: string;
   meteorologic: string;
   meteorologicText: string;
-  disclosureRange: string;
-  pileRange: string;
+  disclosureRange: number;
+  pileRange: number;
   deadline: string;
-  dataSourceType: string;
+  dataSourceType: number;
   dataSourceTypeText: string;
   createdOn: string;
   createdCompanyName: string;
@@ -404,10 +417,11 @@ interface ProjectInfoParams {
   sources: string;
   identitys: string[];
   allots: any[];
+  operateLog: OperateLog[]
 }
 
 // 获取项目详细信息接口
-export const getProjectInfo = (projectId: string) => {
+export const getProjectInfo = (projectId: string | undefined) => {
   return cyRequest<ProjectInfoParams>(() =>
     request(`${baseUrl.project}/Porject/GetById`, { method: 'GET', params: { id: projectId } }),
   );
@@ -461,20 +475,11 @@ export const revokeKnot = (projectIds: string[]) => {
 };
 
 // 结项通过
-export const auditKnot = (projectIds: string[]) => {
+export const auditKnot = (isPass: boolean, projectIds: string[]) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/AuditKnot`, {
       method: 'POST',
-      data: { isPass: 'true', projectIds },
-    }),
-  );
-};
-// 结项退回
-export const noAuditKnot = (projectIds: string[]) => {
-  return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/AuditKnot`, {
-      method: 'POST',
-      data: { isPass: 'false', projectIds },
+      data: { isPass, projectIds },
     }),
   );
 };
@@ -748,6 +753,74 @@ export const modifyExportPowerState = (params: { isEnable: boolean; projectIds: 
     request(`${baseUrl.project}/Porject/ModifyExportCoordinateState`, {
       method: 'POST',
       data: params,
+    }),
+  );
+};
+
+// 保存表头配置
+export const saveColumnsConfig = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/SaveColumnConfig`, {
+      method: 'POST',
+      data: { config: params },
+    }),
+  );
+};
+
+// 获取表头配置
+export const getColumnsConfig = () => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.project}/Porject/GetColumnConfig`, {
+      method: 'GET',
+    }),
+  );
+};
+
+// 批复文件相关API
+type EngineerFile = {
+  engineerId: string
+  fileId: string;
+  category: number;
+}
+
+export const createEngineerFile= (params: EngineerFile) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/EngineerFile/Create`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+export const delEngineerFile= (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/EngineerFile/DeleteById`, {
+      method: 'GET',
+      params: {
+        id
+      },
+    }),
+  );
+};
+export const getEngineerFile= (id: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/EngineerFile/GetById`, {
+      method: 'GET',
+      params: {
+        id
+      },
+    }),
+  );
+};
+
+export const GetEngineerFileGetList = (engineerId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/EngineerFile/GetList`, {
+      method: 'POST',
+      data: {
+        engineerId,
+        category: 1
+      },
     }),
   );
 };

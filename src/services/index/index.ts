@@ -43,7 +43,7 @@ export const getToDoStatistics = (params: HomeStatisticCommonParams) => {
 };
 
 interface RequestResult {
-  id?:string,
+  id?: string;
   key: string;
   value: number;
 }
@@ -203,3 +203,15 @@ export const fetchProjectOperationLog = (params: projectOperationLogParams) => {
     }),
   );
 };
+
+// 轮询验证授权
+export const pollingHealth = () => {
+  return cyRequest(() =>
+    request(`${baseUrl.common}/Authorization/Health`, {
+      method: 'GET',
+      params: { client: 2 },
+    }),
+  );
+};
+
+

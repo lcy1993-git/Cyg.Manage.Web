@@ -29,15 +29,15 @@ const ProjectProcessComponent: React.FC<ProjectProcessComponentProps> = (props) 
     },
     {
       title: '设计院',
-      dataIndex: 'planDays',
-      index: 'planDays',
+      dataIndex: 'companyName',
+      index: 'companyName',
       ellipsis: true
     },
     {
       title: '计划天数',
-      dataIndex: 'surveyRate',
-      index: 'surveyRate',
-      width: 80,
+      dataIndex: 'planDays',
+      index: 'planDays',
+      width: 100,
       render: (text: any, record: any) => {
         if(!record.empty) {
           return `${record.planDays}天`;

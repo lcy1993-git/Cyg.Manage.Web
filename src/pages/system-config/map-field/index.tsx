@@ -21,7 +21,7 @@ const { Search } = Input;
 
 const MapField: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -60,7 +60,7 @@ const MapField: React.FC = () => {
     await deleteMapFieldItem(editDataId);
     refresh();
     message.success('删除成功');
-    setTableSelectRow([]);
+    setTableSelectRows([]);
   };
 
   const tableSearchEvent = () => {
@@ -244,7 +244,7 @@ const MapField: React.FC = () => {
         columns={columns}
         url="/MapField/GetPagedList"
         tableTitle="数据映射"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
           keyWord: searchKeyWord,

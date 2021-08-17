@@ -3,53 +3,77 @@ import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  EyeOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  FileSearchOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import { isArray } from 'lodash';
 
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
+// import TableSearch from '@/components/table-search';
 import DictionaryForm from './components/add-edit-form';
 
 import {
-  createMaterialMachineLibrary,
-  deleteMaterialMachineLibrary,
-  setMaterialMachineLibraryStatus,
-} from '@/services/technology-economic';
+  addPricingTemplate,
+  editPricingTemplate,
+  setPricingTemplate,
+  deletePricingTemplate,
+  queryPricingTemplatePager,
+} from '@/services/technology-economic/pricing-template';
 import styles from './index.less';
-
+import { useEffect } from 'react';
+import moment from 'moment';
+import { getEnums } from '../utils';
+import ImageIcon from '@/components/image-icon';
+interface ResponseData {
+  items?: {
+    id?: string;
+    name?: string;
+    engineeringTemplateType: string;
+  }[];
+}
 type DataSource = {
   id: string;
   [key: string]: string;
 };
 
 const { Search } = Input;
-
+const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
 const columns = [
   {
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'no',
+    key: 'no',
     title: '编号',
     width: 300,
   },
   {
-    dataIndex: 'quotaLibrarys',
-    key: 'quotaLibrarys',
+    dataIndex: 'engineeringTemplateType',
+    key: 'engineeringTemplateType',
     title: '模板类型',
+    render: (text: string, record: any) => {
+      return getTypeName(record.engineeringTemplateType);
+    },
   },
   {
     dataIndex: 'publishDate',
     key: 'publishDate',
     title: '发布时间',
+    render: (text: string, record: any) => {
+      return moment(record.expiryTime).format('YYYY-MM-DD HH:mm ');
+    },
   },
   {
-    dataIndex: 'publishOrg',
-    key: 'publishOrg',
+    dataIndex: 'version',
+    key: 'version',
     title: '版本',
   },
   {
-    dataIndex: 'year',
-    key: 'year',
+    dataIndex: 'remark',
+    key: 'remark',
     title: '备注',
   },
   {
@@ -61,148 +85,227 @@ const columns = [
         <Switch
           defaultChecked={value}
           onClick={(checked) => {
-            setMaterialMachineLibraryStatus(record.id, checked);
+            setPricingTemplate(record.id, checked);
           }}
         />
       );
     },
   },
 ];
-
+export const getTypeName = (no: number) => {
+  let str = '';
+  engineeringTemplateTypeList &&
+    engineeringTemplateTypeList.map((item: any) => {
+      if (no === item.value) {
+        str = item.text;
+      }
+    });
+  return str;
+};
 const PricingTemplates: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | Object>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
+  const [selectList, setSelectList] = useState<number[]>([]);
   const [addForm] = Form.useForm();
-
-  const searchComponent = () => {
-    return (
-      <TableSearch label="关键词" width="203px">
-        <Search
-          value={searchKeyWord}
-          onChange={(e) => setSearchKeyWord(e.target.value)}
-          onSearch={() => tableSearchEvent()}
-          enterButton
-          placeholder="键名"
-        />
-      </TableSearch>
-    );
+  const [editForm] = Form.useForm();
+  useEffect(() => {
+    getSelectList();
+  }, []);
+  const getSelectList = async () => {
+    const list: number[] = [];
+    const data: ResponseData = await queryPricingTemplatePager({ pageIndex: 1, pageSize: 3000 });
+    if (data) {
+      if (data.hasOwnProperty('items') && data.items?.length) {
+        data.items.map((item) => {
+          list.push(parseInt(item.engineeringTemplateType as string));
+        });
+      }
+    }
+    setSelectList(list);
   };
-
-  const tableSearchEvent = () => {
-    search();
-  };
-
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.refresh();
+      getSelectList();
     }
   };
 
-  // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search();
-    }
-  };
-
-  //添加
+  // 创建按钮
   const addEvent = () => {
     setAddFormVisible(true);
   };
-
+  // 新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      await createMaterialMachineLibrary(values);
+      await addPricingTemplate(values);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
     });
   };
-
+  // 编辑确认按钮
+  const sureEditAuthorization = () => {
+    editForm.validateFields().then(async (values) => {
+      const id = tableSelectRows[0].id;
+      let value = values;
+      value.id = id;
+      // TODO 编辑接口
+      await editPricingTemplate(value);
+      refresh();
+      setEditFormVisible(false);
+      editForm.resetFields();
+    });
+  };
+  // 删除
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
       return;
     }
     const id = tableSelectRows[0].id;
-    await deleteMaterialMachineLibrary(id);
+    await deletePricingTemplate(id);
     refresh();
     message.success('删除成功');
   };
 
-  const gotoMoreInfo = () => {
+  // 编辑按钮
+  const editEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    setEditFormVisible(true);
+    editForm.setFieldsValue({
+      ...tableSelectRows[0],
+    });
+  };
+  // 跳转工程目录
+  const engineeringCatalog = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择要操作的行');
       return;
     }
     const id = tableSelectRows[0].id;
-    history.push(`/technology-economic/material-infomation?id=${id}`);
+    history.push(`/technology-economic/project-list?id=${id}`);
   };
+  // const commonRates = () => {
+  //   history.push(`/technology-economic/common-rate`);
+  // };
+  // 跳转常用费率
+  const gotoCostTemplate = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    const id = tableSelectRows[0].id;
+    console.log(tableSelectRows);
 
+    history.push(`/technology-economic/cost-template?id=${id}`);
+  };
+  // 跳转总算表
+  const gotoTotalTable = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择要操作的行');
+      return;
+    }
+    const id = tableSelectRows[0].id;
+    history.push(`/technology-economic/total-table?id=${id}`);
+  };
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {!buttonJurisdictionArray?.includes('quotaLib-add') && (
-          <Button type="primary" className="mr7" onClick={() => addEvent()}>
-            <PlusOutlined />
-            添加
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+        <Button className="mr7" onClick={() => editEvent()}>
+          {/* <EditOutlined />
+            编辑 */}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="edit.png" />
+            <div style={{ marginLeft: '5px' }}>编辑</div>
+          </div>
+        </Button>
+        <Popconfirm
+          title="您确定要删除该条数据?"
+          onConfirm={sureDeleteData}
+          okText="确认"
+          cancelText="取消"
+        >
+          <Button className="mr7">
+            {/* <DeleteOutlined />
+              删除 */}
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <ImageIcon width={16} height={16} imgUrl="delete.png" />
+              <div style={{ marginLeft: '5px' }}>删除</div>
+            </div>
           </Button>
-        )}
-        {!buttonJurisdictionArray?.includes('quotaLib-del') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
-        )}
-        {!buttonJurisdictionArray?.includes('quotaLib-info') && (
-          <Button className="mr7" onClick={() => gotoMoreInfo()}>
-            <EyeOutlined />
-            查看详情
-          </Button>
-        )}
+        </Popconfirm>
+        <Button className="mr7" onClick={() => engineeringCatalog()}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="billOfQuantities.png" />
+            <div style={{ marginLeft: '5px' }}>工程量目录</div>
+          </div>
+        </Button>
+        {/* <Button className="mr7" onClick={() => commonRates()}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="woodMachineTemplate.png" />
+            <div style={{ marginLeft: '5px' }}>材机模板</div>
+          </div>
+        </Button> */}
+        <Button className="mr7" onClick={() => gotoCostTemplate()}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="feeTemplate.png" />
+            <div style={{ marginLeft: '5px' }}>费用模板</div>
+          </div>
+        </Button>
+        <Button className="mr7" onClick={() => gotoTotalTable()}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="feeTemplate.png" />
+            <div style={{ marginLeft: '5px' }}>总算表</div>
+          </div>
+        </Button>
+        {/* <Button className="mr7" onClick={() => commonRates()}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ImageIcon width={16} height={16} imgUrl="reportTemplate.png" />
+
+            <div style={{ marginLeft: '5px' }}>报表模板</div>
+          </div>
+        </Button> */}
       </div>
     );
   };
 
   const tableSelectEvent = (data: DataSource[] | Object) => {
-    setTableSelectRow(data);
+    setTableSelectRows(data);
   };
 
   return (
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns as ColumnsType<DataSource | object>}
-        url="/MaterialMachineLibrary/QueryMaterialMachineLibraryPager"
-        tableTitle="材机库管理"
+        url="/EngineeringTemplate/QueryEngineeringTemplatePager"
+        tableTitle="计价模板管理"
         getSelectData={tableSelectEvent}
-        requestSource="tecEco"
         type="radio"
+        requestSource="tecEco1"
         extractParams={{
           keyWord: searchKeyWord,
         }}
       />
       <Modal
         maskClosable={false}
-        title="添加-定额库"
+        title="创建-计价模板"
         width="880px"
         visible={addFormVisible}
         okText="确认"
@@ -212,7 +315,22 @@ const PricingTemplates: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <DictionaryForm type="add" />
+          <DictionaryForm type="add" selectList={selectList} />
+        </Form>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        title="编辑-计价模板"
+        width="880px"
+        visible={editFormVisible}
+        okText="确认"
+        onOk={() => sureEditAuthorization()}
+        onCancel={() => setEditFormVisible(false)}
+        cancelText="取消"
+        destroyOnClose
+      >
+        <Form form={editForm} preserve={false}>
+          <DictionaryForm type="edit" />
         </Form>
       </Modal>
     </PageCommonWrap>

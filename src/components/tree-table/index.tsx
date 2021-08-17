@@ -29,6 +29,10 @@ interface TreeTableProps<T> extends TableProps<T> {
   url?: string;
   // 是否需要勾选选项
   needCheck?: boolean;
+  params?: object;
+  showButtonContent?: boolean;
+  emptyContent?: string;
+  imgSrc?: 'empty' | 'finish';
 }
 
 const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<any>) => {
@@ -39,16 +43,20 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
     otherSlot,
     tableTitle,
     leftButtonsSlot,
+    emptyContent,
+    showButtonContent = true,
     url = '',
     type = 'radio',
     getSelectData,
+    params,
+    imgSrc,
     ...rest
   } = props;
 
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
 
   const { data = [], loading, run } = useRequest(
-    () => treeTableCommonRequeset<T>({ url }),
+    () => treeTableCommonRequeset<T>({ url, params }),
     { ready: !!url },
   );
 
@@ -93,22 +101,25 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
 
   return (
     <div className={styles.treeTableData}>
-      <div className={styles.treeTbaleButtonsContent}>
-        <div className={styles.treeTableButtonsLeftContent}>{leftButtonsSlot?.()}</div>
-        <div className={styles.treeTableButtonsRightContent}>
-          <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
-          <div className={styles.treeTableButtonCommon}>
-            <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
-              <UpOutlined />
-              全部展开
-            </Button>
-            <Button onClick={() => allCloseEvent()}>
-              <DownOutlined />
-              全部折叠
-            </Button>
+      {showButtonContent && (
+        <div className={styles.treeTbaleButtonsContent}>
+          <div className={styles.treeTableButtonsLeftContent}>{leftButtonsSlot?.()}</div>
+          <div className={styles.treeTableButtonsRightContent}>
+            <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
+            <div className={styles.treeTableButtonCommon}>
+              <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
+                <UpOutlined />
+                全部展开
+              </Button>
+              <Button onClick={() => allCloseEvent()}>
+                <DownOutlined />
+                全部折叠
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       <div className={styles.treeTableOtherSlots}>{otherSlot?.()}</div>
       <div className={styles.treeTableTitleShowContent}>
         {tableTitle ? <CommonTitle>{tableTitle}</CommonTitle> : null}
@@ -142,7 +153,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
               onExpand: expandEvent,
             }}
             locale={{
-              emptyText: <EmptyTip />,
+              emptyText: <EmptyTip description={emptyContent} imgSrc={imgSrc} />,
             }}
             size="small"
             rowKey="id"

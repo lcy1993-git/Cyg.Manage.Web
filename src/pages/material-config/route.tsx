@@ -16,7 +16,7 @@ const Inventroy = Loadable({
 
 export default [
   {
-    title: '协议库存列表',
+    title: '协议库存管理',
     path: '/material-config/inventory',
     component: <Inventroy />,
   },

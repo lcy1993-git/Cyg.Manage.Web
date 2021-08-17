@@ -18,7 +18,6 @@ import {
   // getExternalArrangeStep,
   getProjectInfo,
   // getProjectTableStatistics,
-  noAuditKnot,
   ProjectIdentityType,
   ProjectSourceType,
   ProjectStatus,
@@ -54,6 +53,7 @@ import ExternalArrangeForm from './components/external-arrange-modal';
 import ChooseDesignAndSurvey from '@/pages/project-management/all-project/components/choose-design-and-survey';
 import { useLayoutStore } from '@/layouts/context';
 import ExportPowerModal from './components/export-power-modal';
+import AuditKnotModal from './components/audit-knot-modal';
 
 const { Search } = Input;
 
@@ -77,6 +77,7 @@ const ProjectManagement: React.FC = () => {
   const [sourceType, setSourceType] = useState<number[]>();
   const [identityType, setIdentityType] = useState<number[]>();
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
+  const [dataSourceType, setDataSourceType] = useState<number>();
 
   const [statisticsData, setStatisticsData] = useState({
     total: 0,
@@ -126,6 +127,8 @@ const ProjectManagement: React.FC = () => {
   const [recallModalVisible, setRecallModalVisible] = useState(false);
 
   const [exportPowerModalVisible, setExportPowerModalVisible] = useState<boolean>(false);
+
+  const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false);
 
   const [upLoadAddProjectModalVisible, setUploadAddProjectModalVisible] = useState<boolean>(false);
 
@@ -225,6 +228,7 @@ const ProjectManagement: React.FC = () => {
     if (projectIds.length === 1) {
       const thisProjectId = projectIds[0];
       const projectInfo = await getProjectInfo(thisProjectId);
+      setDataSourceType(Number(projectInfo.dataSourceType));
 
       const { allots = [] } = projectInfo ?? {};
       if (allots.length > 0) {
@@ -381,44 +385,60 @@ const ProjectManagement: React.FC = () => {
   };
 
   const auditKnotEvent = async () => {
-    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-    if (projectIds.length === 0) {
-      message.error('请至少选择一个项目');
+    if (tableSelectData && tableSelectData.length === 0) {
+      message.warning('请至少选择一条数据');
       return;
     }
-
-    await auditKnot(projectIds);
-    message.success('结项通过成功');
-    refresh();
+    const projectIds = tableSelectData?.map((item) => item.checkedArray).flat(1);
+    setSelectProjectIds(projectIds);
+    setProjectAuditKnotModal(true);
   };
 
-  const noAuditKnotEvent = async () => {
-    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
+  // const noAuditKnotEvent = async () => {
+  //   const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
 
-    if (projectIds.length === 0) {
-      message.error('请至少选择一个项目');
-      return;
-    }
+  //   if (projectIds.length === 0) {
+  //     message.error('请至少选择一个项目');
+  //     return;
+  //   }
 
-    await noAuditKnot(projectIds);
-    message.success('结项退回成功');
-    refresh();
-  };
+  //   await noAuditKnot(projectIds);
+  //   message.success('结项退回成功');
+  //   refresh();
+  // };
 
   const postProjectMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('all-project-apply-knot') && (
-        <Menu.Item onClick={() => applyKnotEvent()}>申请结项</Menu.Item>
+        <Menu.Item>
+          <Popconfirm
+            title="确认对该项目进行“申请结项”?"
+            onConfirm={applyKnotEvent}
+            okText="确认"
+            cancelText="取消"
+          >
+            申请结项
+          </Popconfirm>
+        </Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('all-project-recall-apply-knot') && (
-        <Menu.Item onClick={() => revokeKnotEvent()}>撤回结项</Menu.Item>
+        <Menu.Item>
+          <Popconfirm
+            title="确认对该项目进行“撤回结项”?"
+            onConfirm={revokeKnotEvent}
+            okText="确认"
+            cancelText="取消"
+          >
+            撤回结项
+          </Popconfirm>
+        </Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('all-project-kont-pass') && (
-        <Menu.Item onClick={() => auditKnotEvent()}>结项通过</Menu.Item>
+        <Menu.Item onClick={() => auditKnotEvent()}>结项审批</Menu.Item>
       )}
-      {buttonJurisdictionArray?.includes('all-project-kont-no-pass') && (
+      {/* {buttonJurisdictionArray?.includes('all-project-kont-no-pass') && (
         <Menu.Item onClick={() => noAuditKnotEvent()}>结项退回</Menu.Item>
-      )}
+      )} */}
     </Menu>
   );
 
@@ -687,7 +707,7 @@ const ProjectManagement: React.FC = () => {
 
   useEffect(() => {
     if (allProjectSearchProjectName) {
-      setAllProjectSearchProjectId('');
+      setAllProjectSearchProjectId?.('');
 
       searchByParams({
         projectId: allProjectSearchProjectName,
@@ -720,7 +740,7 @@ const ProjectManagement: React.FC = () => {
         design: String(allProjectSearchPerson),
       });
 
-      setAllProjectSearchPerson('');
+      setAllProjectSearchPerson?.('');
 
       searchByParams({
         keyWord,
@@ -771,8 +791,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="ml10 mb10" label="全部状态" width="178px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -786,8 +806,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -802,8 +822,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -818,8 +838,8 @@ const ProjectManagement: React.FC = () => {
 
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -833,8 +853,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -848,8 +868,8 @@ const ProjectManagement: React.FC = () => {
                 </TableSearch>
                 <TableSearch className="mr2" width="111px">
                   <UrlSelect
-                    valueKey="value"
-                    titleKey="text"
+                    valuekey="value"
+                    titlekey="text"
                     mode="multiple"
                     allowClear
                     maxTagCount={0}
@@ -1124,6 +1144,7 @@ const ProjectManagement: React.FC = () => {
           defaultSelectType={currentArrangeProjectType}
           allotCompanyId={currentArrangeProjectIsArrange}
           projectIds={selectProjectIds}
+          dataSourceType={dataSourceType}
         />
       )}
       {editArrangeModalVisible && (
@@ -1184,8 +1205,15 @@ const ProjectManagement: React.FC = () => {
           finishEvent={refresh}
         />
       )}
-      {/* 管理端新增按钮弹窗 */}
-      {/* <PositonExportMadal /> */}
+
+      {projectAuditKnotModal && (
+        <AuditKnotModal
+          visible={projectAuditKnotModal}
+          onChange={setProjectAuditKnotModal}
+          projectIds={selectProjectIds}
+          finishEvent={refresh}
+        />
+      )}
     </PageCommonWrap>
   );
 };

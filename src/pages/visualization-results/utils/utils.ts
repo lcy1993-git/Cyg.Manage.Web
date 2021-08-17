@@ -2,8 +2,10 @@ import Feature from "ol/Feature";
 
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 
+import { Properties } from '@/services/visualization-results/side-tree';
+
 export const getTime = (t: any) => {
-  return new Date(t.replaceAll('/','-')).getTime();
+  return new Date(t.replaceAll('/', '-')).getTime();
 }
 
 /**
@@ -15,19 +17,19 @@ export const getTime = (t: any) => {
 export const getXmlData = (projects: ProjectList[], startDate: string | undefined, endDate: string | undefined) => {
   const postData = '<Or>' + projects.reduce((pre, { id, time }) => {
     let value = "";
-    if(time){
-      if(!startDate && !endDate){
+    if (time) {
+      if (!startDate && !endDate) {
         value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
-      } else if(!startDate && endDate) {
-        if(getTime(endDate) >= getTime(time)){
+      } else if (!startDate && endDate) {
+        if (getTime(endDate) >= getTime(time)) {
           value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
         }
-      } else if(startDate && !endDate) {
-        if(getTime(startDate) <= getTime(time)){
+      } else if (startDate && !endDate) {
+        if (getTime(startDate) <= getTime(time)) {
           value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
         }
       } else {
-        if(getTime(startDate) <= getTime(time) && getTime(endDate) >= getTime(time)) {
+        if (getTime(startDate) <= getTime(time) && getTime(endDate) >= getTime(time)) {
           value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
         }
       }
@@ -40,7 +42,7 @@ export const getXmlData = (projects: ProjectList[], startDate: string | undefine
 }
 
 export const getCustomXmlData = (name: string, value: any) => {
-    const postData = `<PropertyIsEqualTo><PropertyName>${name}</PropertyName><Literal>${value}</Literal></PropertyIsEqualTo>`;
+  const postData = `<PropertyIsEqualTo><PropertyName>${name}</PropertyName><Literal>${value}</Literal></PropertyIsEqualTo>`;
   return getBaseXmlData(postData);
 }
 
@@ -61,7 +63,7 @@ const getBaseXmlData = (postData: string) => {
 
 // 时间排序 优化方案
 export const sortByTime = (arr: any[]) => {
-  if(arr.length < 5) {
+  if (arr.length < 5) {
     return arr.sort((a: any, b: any) => {
       // @ts-ignore
       return (new Date(a.properties.record_date)).getTime() - (new Date(b.properties.record_date)).getTime();
@@ -73,26 +75,37 @@ export const sortByTime = (arr: any[]) => {
         v: item
       }
     })
-    // @ts-ignore
-    .sort((a, b) => a.t - b.t).map((item) => item.v)
+      // @ts-ignore
+      .sort((a, b) => a.t - b.t).map((item) => item.v)
   }
 }
 
 // 格式化输出时间
 export const format = (fmt: string, date: Date) => { //author: meizz 
   var o = {
-      "M+": date.getMonth() + 1, //月份 
-      "d+": date.getDate(), //日 
-      "h+": date.getHours(), //小时 
-      "m+": date.getMinutes(), //分 
-      "s+": date.getSeconds(), //秒 
-      "q+": Math.floor((date.getMonth() + 3) / 3), //季度 
-      "S": date.getMilliseconds() //毫秒 
+    "M+": date.getMonth() + 1, //月份 
+    "d+": date.getDate(), //日 
+    "h+": date.getHours(), //小时 
+    "m+": date.getMinutes(), //分 
+    "s+": date.getSeconds(), //秒 
+    "q+": Math.floor((date.getMonth() + 3) / 3), //季度 
+    "S": date.getMilliseconds() //毫秒 
   };
   if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
   for (var k in o)
-      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
   return fmt;
+}
+
+export interface TreeNodeType {
+  title: string;
+  key: string;
+  id: string;
+  levelCategory: number;
+  engineerId?: string;
+  parentId?: string;
+  propertys?: Properties;
+  children?: TreeNodeType[];
 }
 
 /**
@@ -105,17 +118,52 @@ export const format = (fmt: string, date: Date) => { //author: meizz
  * @param root 根节点key
  * @returns key[]
  */
-export const flattenDeepToKey = (data: any[], deep: number, key: string, root: number | string) => {
+export const flattenDeepToKey = (data: TreeNodeType[], deep: number, key: string, root: number | string) => {
+
   let resData = root ? [root] : [];
-  if(deep === 0) return resData;
-  const recursionFn = (data: any, currentDeep: any) => {
-    data.forEach((item: any) => {
-      resData.push(item[key]);
-      if(currentDeep < deep && item.children && Array.isArray(item.children)){
-        recursionFn(item.children, currentDeep + 1)
+
+  if (deep === 0) return resData;
+  /**
+   * 深度优先遍历data,并且记忆每个层级的nodeKey
+   * @param stuckFlag key层级存储栈
+   */
+  const recursionFn = (data: TreeNodeType[], deep: any, stuckFlag: string[] | undefined = undefined) => {
+    data.forEach((item: TreeNodeType) => {
+      let stuckFlagArray = Array.isArray(stuckFlag) ? [...stuckFlag, item[key]] : [item[key]];
+      if (item.levelCategory === deep) {
+        resData = [...resData.concat(stuckFlagArray.slice(0, -1))];
+        stuckFlagArray = []
+      }
+      if (item.children && Array.isArray(item.children)) {
+        recursionFn(item.children, deep, stuckFlagArray)
       }
     })
   }
-  recursionFn(data, 1);
-  return resData;
+
+  recursionFn(data, deep + 1);
+
+  return Array.from(new Set(resData));
+}
+
+/**
+ * 可视化当搜索时，根据搜索框条件进行选中
+ * 
+ * @param data 
+ * @param keyWord 
+ * @returns key[]
+ */
+export const getSelectKeyByKeyword = (data: TreeNodeType[], keyWord: string) => {
+  let selectKey: string[] = [];
+  const recursionFn = (data:TreeNodeType[] ) => {
+    data.forEach((item) => {
+      if((item.levelCategory === 5 || item.levelCategory === 6) && item.title.includes(keyWord)) {
+        selectKey.push(item.key)
+      }
+      if (item.children && Array.isArray(item.children)) {
+        recursionFn(item.children)
+      }
+    })
+  }
+  recursionFn(data);
+  return Array.from(new Set(selectKey));
 }

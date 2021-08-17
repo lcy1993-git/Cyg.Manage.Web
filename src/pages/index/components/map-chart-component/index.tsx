@@ -6,7 +6,7 @@ import {
   MapStatisticsData,
 } from '@/services/index';
 import { useLocalStorageState, useMount, useMouse, useRequest, useSize } from 'ahooks';
-
+import borderStylesHTML from '../../utils/borderStylesHTML';
 import styles from './index.less';
 
 import * as echarts from 'echarts';
@@ -27,10 +27,15 @@ interface MapChartComponentProps {
   setCurrentAreaInfo: (areaInfo: any) => void;
 }
 
+let mapStatus = {
+  pt: [0, 0],
+  name: '',
+};
+
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const { setCurrentAreaInfo, currentAreaInfo } = props;
   const [activeCityCode, setActiveCityCode] = useState<string>();
-  
+
   const [activeAreaCode, setActiveAreaCide] = useState<string>();
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
@@ -64,6 +69,10 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     }, 0);
   }, [JSON.stringify(mapStatisticData)]);
 
+  const ohterProjectTotalNumber = useMemo(() => {
+    return mapStatisticData.find((item) => item.areaCode.includes('_other'))?.projectQuantity ?? 0;
+  }, [JSON.stringify(mapStatisticData)]);
+
   const getMapOption = (mapName: string, getMapStatisticData: MapStatisticsData[]) => {
     const mapShowData = getMapStatisticData?.map((item) => {
       return {
@@ -75,27 +84,55 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     return {
       tooltip: {
         trigger: 'item',
-        showDelay: 400,
-        position: function (pt: any) {
-          return [pt[0] - 95, pt[1] - 74];
+        showDelay: 20,
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        borderColor: '#000',
+        enterable: true, // 鼠标是否可以进入浮层
+        position(pt: any, params: any) {
+          const nameIndex = getMapStatisticData?.findIndex((item) => item.area === params.name);
+          if (params.name === mapStatus.name) {
+            if (nameIndex > -1) {
+              return [mapStatus.pt[0] - 150, mapStatus.pt[1] - 95];
+            } else {
+              return [pt[0] - 110, pt[1] - 65];
+            }
+          } else {
+            mapStatus = {
+              name: params.name,
+              pt,
+            };
+            return [mapStatus.pt[0] - 150, mapStatus.pt[1] - 95];
+            // return [pt[0] - 110, pt[1] - 65];
+          }
         },
         confine: true,
-        formatter: function (params: any) {
+        formatter(params: any) {
           const { name } = params;
 
           const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name);
+
           if (nameIndex > -1) {
-            return `
-                            ${name} <br />
-                            项目数量: ${getMapStatisticData[nameIndex!].projectQuantity}
-                            <div>可视化成果: <a onclick=setSelectCity("${cityCodeObject[name] ?? name}")  href='/visualization-results/result-page'>跳转</a></div>
+            return (
+              borderStylesHTML +
+              `
+                            <span style="color: #fff">${name}</span> <br />
+                            <span style="color: #2AFE97">项目数量</span>: <span style="color: #fff">${
+                              getMapStatisticData[nameIndex!].projectQuantity
+                            }</span>
+                            <div style="color: #2AFE97">可视化成果: <a onclick=setSelectCity("${
+                              cityCodeObject[name] ?? name
+                            }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</a></div>
                             
-                        `;
+                        `
+            );
           }
-          return `
-                        ${name} <br />
-                        项目数量: 0
-                    `;
+          return (
+            borderStylesHTML +
+            `
+                        <span style="color: #fff">${name}</span>  <br />
+                        <span style="color: #2AFE97">项目数量:</span> <span style="color: #fff">0</span>
+                    `
+          );
         },
       },
 
@@ -106,6 +143,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           tooltip: {
             show: true,
           },
+          zoom: mapName === '100000' ? 1.2 : 1,
           roam: false,
           //layoutCenter: ["50%", "50%"], //地图位置
           layoutSize: '100%',
@@ -173,7 +211,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     getMapStatisticData: MapStatisticsData[],
     currentAreaLevel: string,
   ) => {
-    //setAreaId(areaId);
     const option = getMapOption(currentAreaId, getMapStatisticData);
     const resData = await getMapData(currentAreaId);
 
@@ -217,11 +254,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         myChart.dispatchAction({
           type: 'downplay',
         });
-        // if (params.data && params.data.value != undefined) {
-        //     myChart.dispatchAction({
-        //         type: 'downplay'
-        //     });
-        // }
       });
     }
   };
@@ -334,32 +366,92 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     firstMapInitChartEvent();
   });
 
+  const handlerOtherClick = () => {
+    const id = mapStatisticData.find((item) => item.areaCode.includes('_other'))?.areaCode ?? '';
+    localStorage.setItem('selectCity', id);
+  };
+
   return (
     <div className={styles.mapChartComponent}>
       <div className={styles.mapChartComponentTipInfo}>
         <div className={styles.mapChartComponentProjectNumber}>
-          <ChartBox tltleWidthLevel="big" title="当前项目数量" titleAlign="left">
-            <div className={styles.projectTotalNumber}>
-              <div className="flex1 flex">
-                <div className={styles.projectTotalNumberIcon}>
-                  <img src={ProjectNumberIcon} />
+          <ChartBox tltleWidthLevel="big" title="" titleAlign="left">
+            <div className={styles.projectNumberWrap}>
+              <div className={styles.project1}>
+                <div className={styles.number}>
+                  <span>当前区域项目数量</span>
+                  <span>{projectTotalNumber}个</span>
                 </div>
-                <div className={styles.projectTotalNumberShow}>{projectTotalNumber}</div>
-                <div className={styles.projectTotalNumberUnit}>个</div>
+                <div>
+                  <Button
+                    loading={requestExportLoading}
+                    type="primary"
+                    onClick={exportHomeStatisticEvent}
+                    className={styles.exportButton}
+                  >
+                    导出项目
+                  </Button>
+                </div>
               </div>
-              <div className={styles.exportButton}>
-                <Button
-                  loading={requestExportLoading}
-                  type="primary"
-                  onClick={exportHomeStatisticEvent}
-                >
-                  导出
-                </Button>
+
+              <div className={styles.project1}>
+                <div>包含未选择行政</div>
+                <div className={styles.number}>
+                  <span>级别区域的项目</span>
+                  <span>{ohterProjectTotalNumber}个</span>
+                </div>
+                <div>
+                  {ohterProjectTotalNumber > 0 ? (
+                    <a href="/visualization-results/result-page">
+                      <Button
+                        loading={false}
+                        type="primary"
+                        onClick={handlerOtherClick}
+                        style={{ width: '100%' }}
+                      >
+                        跳转可视化
+                      </Button>
+                    </a>
+                  ) : (
+                    <Button
+                      loading={false}
+                      type="primary"
+                      onClick={handlerOtherClick}
+                      style={{ width: '100%' }}
+                    >
+                      跳转可视化
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </ChartBox>
         </div>
-        <div className="flex1"></div>
+        <div className={styles.mapStatisticContent}>
+          <div className={styles.mapStatisticContentDataSplit}>
+            <div className={styles.dataSplitContent}>
+              <div className={styles.dataSplitContentHalo}></div>
+              <div className={styles.dataSplitMenu}>
+                <div className={styles.dataSplitMenuItem}>
+                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.orange}`}></span>
+                  <span className={styles.dataSplitMenuItemContent}>1000 - 1000+</span>
+                </div>
+                <div className={styles.dataSplitMenuItem}>
+                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.lightGreen}`}></span>
+                  <span className={styles.dataSplitMenuItemContent}>100 - 1000</span>
+                </div>
+                <div className={styles.dataSplitMenuItem}>
+                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.green}`}></span>
+                  <span className={styles.dataSplitMenuItemContent}>10 - 100</span>
+                </div>
+                <div className={styles.dataSplitMenuItem}>
+                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.blue}`}></span>
+                  <span className={styles.dataSplitMenuItemContent}>0 - 10</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className={styles.mapChartComponentProjectAreaTab}>
           <span className={`${styles.areaSpan} ${styles.hasChoose}`} onClick={provinceClickEvent}>
             省
@@ -385,29 +477,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         </div>
       </div>
       <div className={styles.mapStatisticContent}>
-        <div className={styles.mapStatisticContentDataSplit}>
-          <div className={styles.dataSplitContent}>
-            <div className={styles.dataSplitContentHalo}></div>
-            <div className={styles.dataSplitMenu}>
-              <div className={styles.dataSplitMenuItem}>
-                <span className={`${styles.dataSplitMenuItemIcon} ${styles.orange}`}></span>
-                <span className={styles.dataSplitMenuItemContent}>1000 - 1000+</span>
-              </div>
-              <div className={styles.dataSplitMenuItem}>
-                <span className={`${styles.dataSplitMenuItemIcon} ${styles.lightGreen}`}></span>
-                <span className={styles.dataSplitMenuItemContent}>100 - 1000</span>
-              </div>
-              <div className={styles.dataSplitMenuItem}>
-                <span className={`${styles.dataSplitMenuItemIcon} ${styles.green}`}></span>
-                <span className={styles.dataSplitMenuItemContent}>10 - 100</span>
-              </div>
-              <div className={styles.dataSplitMenuItem}>
-                <span className={`${styles.dataSplitMenuItemIcon} ${styles.blue}`}></span>
-                <span className={styles.dataSplitMenuItemContent}>0 - 10</span>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className={styles.mapConent} ref={divRef} />
       </div>
     </div>

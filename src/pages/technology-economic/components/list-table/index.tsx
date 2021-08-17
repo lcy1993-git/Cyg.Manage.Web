@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import { Input } from 'antd';
@@ -13,10 +13,12 @@ interface Props {
   url: string;
   rowKey: any;
   columns: any[];
-  cruxKey?: string;
+  requestSource?: "project" | "common" | "resource" | "tecEco" | "tecEco1" | undefined;
+  cruxKey?: string | null;
+  params?: Record<string, any>
 }
 
-const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url, rowKey, columns, cruxKey="quotaItem"}) => {
+const ListTable: React.FC<Props> = ({catalogueId,requestSource = 'tecEco', scrolly, setResourceItem, url,params, rowKey, columns, cruxKey="quotaItem"}) => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
@@ -59,7 +61,7 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url,
         needCommonButton={false}
         columns={columns}
         noPaging={false}
-        requestSource="tecEco"
+        requestSource={requestSource}
         url={url}
         // tableTitle="定额库管理"
         getSelectData={tableSelectEvent}
@@ -67,9 +69,10 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url,
         scroll={{y: scrolly}}
         extractParams={{
           keyWord: searchKeyWord,
-          id: catalogueId
+          id: catalogueId,
+          ...params
         }}
-        cruxKey={cruxKey}
+        cruxKey={cruxKey === null ? '' : cruxKey}
         requestConditions={catalogueId}
         // onRow={record=> {
         //   return {

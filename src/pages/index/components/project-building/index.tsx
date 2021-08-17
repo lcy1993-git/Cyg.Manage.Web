@@ -77,7 +77,7 @@ const ProjectClassify: React.FC<Props> = ({ type = "pie", currentAreaInfo}) => {
                             }
                         ]
                     }
-                ]
+                ],
             }
         }
         if (type === "bar") {

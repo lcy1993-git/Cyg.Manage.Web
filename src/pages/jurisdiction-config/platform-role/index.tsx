@@ -12,14 +12,15 @@ import {
 } from '@/services/jurisdiction-config/role-manage';
 import { useRequest } from 'ahooks';
 import TableStatus from '@/components/table-status';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const PlatformRole: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const { data, run } = useRequest(getRoleManageDetail, {
@@ -29,14 +30,18 @@ const PlatformRole: React.FC = () => {
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
+        {buttonJurisdictionArray?.includes('platform-role-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('platform-role-edit') && (
+          <Button onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
       </div>
     );
   };
@@ -140,13 +145,13 @@ const PlatformRole: React.FC = () => {
       <GeneralTable
         ref={tableRef}
         buttonRightContentSlot={rightButton}
-        getSelectData={(data) => setTableSelectRow(data)}
-        tableTitle="角色管理"
+        getSelectData={(data) => setTableSelectRows(data)}
+        tableTitle="平台角色"
         url="/Role/GetPagedList"
         columns={columns}
       />
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="添加角色"
         width="680px"
         visible={addFormVisible}
@@ -161,7 +166,7 @@ const PlatformRole: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="编辑-角色"
         width="680px"
         visible={editFormVisible}

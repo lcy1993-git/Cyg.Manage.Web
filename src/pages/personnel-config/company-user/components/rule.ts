@@ -17,5 +17,8 @@ export default {
     },
   ],
   nickName: [{ max: 12, message: '昵称超出字符数限制，限制为12个字符' }],
-  realName: [{ max: 12, message: '真实姓名超出字符数限制，限制为12个字符' }],
+  realName: [
+    { required: true, message: '真实姓名不能为空' },
+    { max: 12, message: '真实姓名超出字符数限制，限制为12个字符' },
+  ],
 };

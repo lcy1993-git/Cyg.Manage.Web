@@ -32,13 +32,13 @@ const Drawing: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="搜索" width="230px">
+        <TableSearch label="图纸" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="关键词"
+            placeholder="请输入图纸信息"
           />
         </TableSearch>
         {/* <TableSearch marginLeft="20px" label="选择资源" width="300px">

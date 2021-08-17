@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ManageUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
 import {
@@ -19,12 +19,13 @@ import ResetPasswordForm from './components/reset-form';
 import moment from 'moment';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
 const ManageUser: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [status, setStatus] = useState<number>(0);
@@ -39,21 +40,29 @@ const ManageUser: React.FC = () => {
     manual: true,
   });
 
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-        <Button onClick={() => resetEvent()}>
-          <ReloadOutlined />
-          重置密码
-        </Button>
+        {buttonJurisdictionArray?.includes('manage-user-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('manage-user-edit') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('reset-manage-password') && (
+          <Button onClick={() => resetEvent()}>
+            <ReloadOutlined />
+            重置密码
+          </Button>
+        )}
       </div>
     );
   };
@@ -105,7 +114,6 @@ const ManageUser: React.FC = () => {
           email: '',
           nickName: '',
           name: '',
-          userStatus: 0,
         },
         value,
       );
@@ -142,7 +150,6 @@ const ManageUser: React.FC = () => {
           email: editData.email,
           nickName: editData.nickName,
           name: editData.name,
-          userStatus: editData.userStatus,
         },
         values,
       );
@@ -166,49 +173,49 @@ const ManageUser: React.FC = () => {
       title: '用户名',
       dataIndex: 'userName',
       index: 'userName',
-      width: 180,
+      width: 140,
     },
     {
       title: '昵称',
       dataIndex: 'nickName',
       index: 'nickName',
-      width: 180,
+      width: 200,
     },
     {
       title: '真实姓名',
       dataIndex: 'name',
       index: 'name',
-      width: 180,
+      width: 120,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       index: 'phone',
-      width: 200,
+      width: 120,
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       index: 'email',
-      width: 200,
+      width: 140,
     },
     {
       title: '所属公司',
       dataIndex: 'companyName',
       index: 'companyName',
-      width: 200,
+      width: 220,
     },
     {
       title: '区域',
       dataIndex: 'provinceName',
       index: 'provinceName',
-      width: 220,
+      // width: 160,
     },
     {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      width: 100,
+      width: 60,
       render: (text: any, record: any) => {
         return record.userStatus === 1 ? (
           <Switch defaultChecked onChange={() => updateStatus(record.id)} />
@@ -218,16 +225,22 @@ const ManageUser: React.FC = () => {
       },
     },
     {
+      title: '授权期限',
+      dataIndex: 'lastLoginDate',
+      index: 'lastLoginDate',
+      width: 100,
+    },
+    {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
       index: 'lastLoginIp',
-      width: 180,
+      width: 100,
     },
     {
       title: '最后登录日期',
       dataIndex: 'lastLoginDate',
       index: 'lastLoginDate',
-      width: 160,
+      width: 100,
       render: (text: any, record: any) => {
         return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
       },
@@ -295,7 +308,7 @@ const ManageUser: React.FC = () => {
         ref={tableRef}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearch}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="管理用户"
         url="/ManageUser/GetPagedList"
         columns={columns}
@@ -305,7 +318,7 @@ const ManageUser: React.FC = () => {
         }}
       />
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="添加-管理用户"
         width="680px"
         visible={addFormVisible}

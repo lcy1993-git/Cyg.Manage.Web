@@ -49,18 +49,19 @@ const LoginForm: React.FC = () => {
         const { accessToken, modules, user } = resData;
 
         const buttonModules = flatten(modules);
-        const buttonArray = buttonModules.filter((item: any) => item.category === 3).map((item: any) => item.authCode);
+        const buttonArray = buttonModules
+          .filter((item: any) => item.category === 3)
+          .map((item: any) => item.authCode);
 
         localStorage.setItem('Authorization', accessToken);
         localStorage.setItem('functionModules', JSON.stringify(modules));
         localStorage.setItem('userInfo', JSON.stringify(user));
         localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
 
-
-        message.success('登录成功');
+        message.success('登录成功', 1.5);
         history.push('/index');
       } catch (msg) {
-        console.error(msg)
+        console.error(msg);
       } finally {
         setRequestLoading(false);
       }
@@ -101,6 +102,7 @@ const LoginForm: React.FC = () => {
 
             <Form.Item className={styles.passwordInput} name="pwd" rules={formRules.password}>
               <Input
+                onPaste={(e) => e.preventDefault()} // 禁用粘贴
                 placeholder="密码"
                 className={styles.loginInput}
                 suffix={<ImageIcon imgUrl="lock.png" />}

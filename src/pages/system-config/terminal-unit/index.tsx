@@ -22,7 +22,7 @@ const { Search } = Input;
 
 const MapField: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [ids, setIds] = useState<string[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
@@ -38,13 +38,13 @@ const MapField: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="终端设备" width="268px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => tableSearchEvent()}
             enterButton
-            placeholder="请输入关键词搜索"
+            placeholder="请输入终端设备信息"
           />
         </TableSearch>
       </div>
@@ -262,7 +262,7 @@ const MapField: React.FC = () => {
         columns={columns}
         url="/TerminalUnit/GetPagedList"
         tableTitle="终端设备"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           keyWord: searchKeyWord,
         }}

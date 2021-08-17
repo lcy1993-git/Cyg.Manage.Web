@@ -19,7 +19,6 @@ const ChapterInfo: React.FC<Props> = ({data, id}) => {
   const [html, setHtml] = useState<string>(data);
 
   // useEffect(() => {
-  //   console.log(html);
   //   contentWrapRef.current!.innerHTML = "<p>12312312312</p>"
   // }, [html])
   return (

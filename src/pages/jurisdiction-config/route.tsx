@@ -22,6 +22,11 @@ const RolePermissions = Loadable({
   loading: Loading,
   delay: 150,
 });
+const ProjectPermission = Loadable({
+  loader: () => import('@/pages/jurisdiction-config/project-permission'),
+  loading: Loading,
+  delay: 150,
+});
 
 const SubordinateCompany = Loadable({
   loader: () => import('@/pages/jurisdiction-config/subordinate-company'),
@@ -45,9 +50,14 @@ export default [
     component: <PlatformAuthorization />,
   },
   {
-    title: '角色权限',
+    title: '功能权限',
     path: '/jurisdiction-config/role-permissions',
     component: <RolePermissions />,
+  },
+  {
+    title: '项目权限',
+    path: '/jurisdiction-config/project-permission',
+    component: <ProjectPermission />,
   },
   {
     title: '下辖公司',

@@ -17,7 +17,7 @@ const { Search } = Input;
 
 const LogManage: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
   const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
   const [searchContentKeyWord, setSearchContentKeyWord] = useState<string>('');
 
@@ -96,8 +96,8 @@ const LogManage: React.FC = () => {
         <TableSearch label="筛选" width="730px" marginLeft="15px">
           <div className={styles.filter}>
             <UrlSelect
-              titleKey="text"
-              valueKey="value"
+              titlekey="text"
+              valuekey="value"
               className={styles.appWidth}
               url="/Log/GetApplications"
               placeholder="应用"
@@ -106,8 +106,8 @@ const LogManage: React.FC = () => {
               style={{ width: 200 }}
             />
             <UrlSelect
-              titleKey="text"
-              valueKey="value"
+              titlekey="text"
+              valuekey="value"
               className={styles.levelWidth}
               url="/Log/GetLevels"
               placeholder="级别"
@@ -236,7 +236,7 @@ const LogManage: React.FC = () => {
         }}
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearchElement}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="日志管理"
         url="/Log/GetPagedList"
         columns={columns}

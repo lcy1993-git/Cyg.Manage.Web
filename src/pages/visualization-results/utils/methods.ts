@@ -159,6 +159,7 @@ const loadLayers = (
   // });
   // showData = [];
   layerParams.forEach((item: LayerParams) => {
+    console.log(item.layerName)
     // if (postData.length > 576) {
     let layerName = item.layerName;
     loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
@@ -197,9 +198,9 @@ const loadWFSData = (
         // }
         else if (item.type === 'cable_channel') {
           style = cable_channel_styles(pJSON[i]);
-        } else if (item.type === 'pullline') {
-          style = pointStyle('design_pull_line', pJSON[i], false);
-        }
+        } else if (item.type === 'special_point') {
+          style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
+        } 
         //  else if (item.type === 'subline') {
         //   style = fzx_styles();
         // }
@@ -549,6 +550,9 @@ const relocateMap = (
   if (features.length > 0) {
     source.addFeatures(features);
     extent = source.getExtent();
+    let dx = extent[2] - extent[0];
+    let dy = extent[3] - extent[1];
+    extent = [extent[0] * (1 - dx / extent[0] / 10), extent[1] * (1 - dy / extent[1] / 10), extent[2] * (1 + dx / extent[2] / 10), extent[3] * (1 + dy / extent[3] / 10)];
     view.fit(extent, map!.getSize());
     setView(view);
   }
@@ -639,10 +643,8 @@ const CalcTowerAngle = (startLine: any, endLine: any, isLeft: boolean) => {
   endLine[0] = transform(endLine[0], 'EPSG:4326', 'EPSG:3857');
   endLine[1] = transform(endLine[1], 'EPSG:4326', 'EPSG:3857');
   let startLineAngle = computeAngle(startLine[0], startLine[1]);
-  console.log(startLineAngle, 1)
   let startLineSupAngle = startLineAngle > 180 ? startLineAngle - 180 : 180 + startLineAngle;
   let endLineAngle = computeAngle(endLine[0], endLine[1]);
-  console.log(endLineAngle, 2)
   let angle = Math.abs(endLineAngle - startLineAngle);
   if (angle >= 180) angle = 360 - angle; //即为补角
   if (startLineAngle <= 180) {

@@ -15,20 +15,48 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
   return (
     <>
       {type == 'add' && (
-        <CyFormItem label="编号" name="cableWellId" labelWidth={98} align="right" required>
+        <CyFormItem
+          label="编号"
+          name="cableWellId"
+          labelWidth={98}
+          align="right"
+          required
+          rules={[{ required: true, message: '编号不能为空' }]}
+        >
           <Input placeholder="请输入编号" />
         </CyFormItem>
       )}
 
-      <CyFormItem label="名称" name="cableWellName" labelWidth={98} align="right" required>
+      <CyFormItem
+        label="名称"
+        name="cableWellName"
+        labelWidth={98}
+        align="right"
+        required
+        rules={[{ required: true, message: '名称不能为空' }]}
+      >
         <Input placeholder="请输入名称" />
       </CyFormItem>
 
-      <CyFormItem label="简称" name="shortName" labelWidth={98} align="right" required>
+      <CyFormItem
+        label="简称"
+        name="shortName"
+        labelWidth={98}
+        align="right"
+        required
+        rules={[{ required: true, message: '简称不能为空' }]}
+      >
         <Input placeholder="请输入简称" />
       </CyFormItem>
 
-      <CyFormItem label="典设编码" name="typicalCode" labelWidth={98} align="right" required>
+      <CyFormItem
+        label="典设编码"
+        name="typicalCode"
+        labelWidth={98}
+        align="right"
+        required
+        rules={[{ required: true, message: '典设编码不能为空' }]}
+      >
         <Input placeholder="请输入典设编码" />
       </CyFormItem>
 
@@ -39,8 +67,8 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
           showSearch
           requestSource="resource"
           url="/Chart/GetList"
-          titleKey="chartName"
-          valueKey="chartId"
+          titlekey="chartName"
+          valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
           libId={resourceLibId}

@@ -61,7 +61,7 @@ function getMappingTagsDictionary() {
         "segment": "分段方式",
         "sort": "排列方式",
         "state": "状态",
-        "azimuth": "方位角",
+        "loopangle": "方位角",
         "hcg": "呼称高",
         "depth": "埋深(m)",
         "mode": "型号",
@@ -96,6 +96,26 @@ function getMappingTagsDictionary() {
       mappingTagValues: {
       }
     };
+    enums.push({
+      key: 'PullLineType',
+      value: [{
+        value: 0,
+        text: '无'
+      },
+      {
+        value: 1,
+        text: 'V型拉线'
+      },
+      {
+        value: 2,
+        text: '普通拉线'
+      },
+      {
+        value: 2,
+        text: '低压普通拉线'
+      }
+      ]
+    });
     mappingTagsDictionary.pull_line = {
       mappingTags: {
         "id": "拉线ID",
@@ -103,11 +123,14 @@ function getMappingTagsDictionary() {
         "main_id": "所属杆塔",
         "azimuth": "方位角",
         "mode": "拉线型号",
+        "type": "拉线类型",
         "isupgraded": "是否改造",
         "remark": "备注",
         "project_id": "title"
       },
-      mappingTagValues: {}
+      mappingTagValues: {
+        "type": findenumsValue("PullLineType"),
+      }
     };
 
     enums.push({
@@ -335,9 +358,10 @@ function getMappingTagsDictionary() {
       mappingTags2: {
         "name": "名称",
         "kv_level": "电压等级",
-        "parent_id": "所属杆塔/设备",
         "entry_type": "下户方式",
         "entry_mode": "下户类型",
+        "user_line_mode" : "下户线型号",
+        "user_line_length" : "下户线长度",
         "type": "户表类型",
         "mode": "户表型号",
         "state": "户表状态",
@@ -474,9 +498,23 @@ function getMappingTagsDictionary() {
       }
     };
 
+    mappingTagsDictionary.brace = {
+      mappingTags: {
+        "mode": "撑杆型号",
+        "state": "状态",
+        "azimuth": "方位角",
+        "project_id": "所属项目",
+        "isupgraded": "是否改造",
+        "remark": "备注"
+      },
+      mappingTagValues: {
+        "state": findenumsValue("SurveyState") || ""
+      }
+    }
+
     return JSON.stringify(mappingTagsDictionary);
   } else {
-    console.log("mappingTagsDictionary异常！！！请重新加载。。。'")
+    console.error("mappingTagsDictionary异常！！！请重新加载。。。'")
     return;
   }
 

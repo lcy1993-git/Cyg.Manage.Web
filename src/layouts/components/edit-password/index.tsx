@@ -22,9 +22,9 @@ const EditPassword = (props: EditPasswordProps) => {
       await editPassword({ pwd, newPwd });
 
       setState(false);
-      message.success('密码修改成功,请重新登录');
+      message.info('密码已经修改,请重新登录');
 
-      history.push('/login');
+      history.push('/again-login');
       localStorage.setItem('Authorization', '');
     });
   };
@@ -54,7 +54,7 @@ const EditPassword = (props: EditPasswordProps) => {
             },
           ]}
         >
-          <Input type="password" placeholder="请输入" />
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
         </CyFormItem>
         <CyFormItem
           name="newPwd"
@@ -74,7 +74,7 @@ const EditPassword = (props: EditPasswordProps) => {
             { required: true, message: '密码不能为空' },
           ]}
         >
-          <Input type="password" placeholder="请输入" />
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
         </CyFormItem>
         <CyFormItem
           name="confirmPassword"
@@ -98,7 +98,7 @@ const EditPassword = (props: EditPasswordProps) => {
             }),
           ]}
         >
-          <Input type="password" placeholder="请输入" />
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
         </CyFormItem>
       </Form>
     </Modal>

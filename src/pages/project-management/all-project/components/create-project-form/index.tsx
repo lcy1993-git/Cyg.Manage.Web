@@ -4,7 +4,7 @@ import { useGetProjectEnum } from '@/utils/hooks';
 import { DatePicker, Input, InputNumber, Select } from 'antd';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import React, { memo, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import Rule from './project-form-rule';
 
@@ -14,12 +14,16 @@ interface CreateProjectFormProps {
   company?: string;
   companyName?: string;
   status?: number;
+  projectInfo?: any;
+  form?: any;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
-  const { field = {}, areaId, company, companyName, status } = props;
-  const [startDate, setStartDate] = useState<Date>();
+  const { field = {}, areaId, company, companyName, status, projectInfo, form } = props;
+  const [startDate, setStartDate] = useState(moment(projectInfo?.startTime) ?? null);
   const [dataSourceType, setDataSourceType] = useState<number>();
+  const [disRangeValue, setDisRangeValue] = useState<number>();
+  const [pileRangeValue, setPileRangeValue] = useState<number>();
 
   // const { data: areaSelectData } = useGetSelectData(
   //   { url: '/Area/GetList', extraParams: { pId: areaId } },
@@ -28,6 +32,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const disableDate = (current: any) => {
     return current < moment('2010-01-01') || current > moment('2051-01-01');
   };
+
+  useEffect(() => {
+    setDataSourceType(projectInfo?.dataSourceType);
+  }, [JSON.stringify(projectInfo)]);
 
   const {
     projectCategory,
@@ -78,8 +86,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectCategory}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -99,8 +107,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectPType}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -118,8 +126,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectKvLevel}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -151,8 +159,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={projectNature}
               mode="multiple"
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -167,7 +175,22 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             fieldKey={[field.fieldKey, 'startTime']}
             name={isEmpty(field) ? 'startTime' : [field.name, 'startTime']}
             required
-            rules={[{ required: true, message: '项目开始日期不能为空' }]}
+            dependencies={['startTime']}
+            rules={[
+              { required: true, message: '项目开始日期不能为空' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    new Date(value).getTime() >= new Date(getFieldValue('startTime')).getTime() ||
+                    !value ||
+                    !getFieldValue('startTime')
+                  ) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('"项目开始日期"不得早于"工程开始日期"');
+                },
+              }),
+            ]}
           >
             <DatePicker
               placeholder="请选择"
@@ -185,15 +208,23 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'endTime']}
             name={isEmpty(field) ? 'endTime' : [field.name, 'endTime']}
-            dependencies={['startTime']}
+            dependencies={['endTime']}
             required
             rules={[
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (new Date(value).getTime() > new Date(startDate).getTime() || !value) {
+                  if (
+                    new Date(value).getTime() > new Date(startDate).getTime() ||
+                    !value ||
+                    !getFieldValue('startTime')
+                  ) {
+                    if (new Date(value).getTime() > new Date(getFieldValue('endTime')).getTime()) {
+                      return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
+                    }
                     return Promise.resolve();
                   }
+
                   return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
                 },
               }),
@@ -217,8 +248,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectAssetsNature}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -236,8 +267,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectMajorCategory}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -274,8 +305,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectReformCause}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -295,8 +326,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectReformAim}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -317,8 +348,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               paramsMust={['areaId', 'company']}
               requestType="post"
               placeholder="请选择"
-              titleKey="text"
-              valueKey="value"
+              valuekey="value"
+              titlekey="text"
             />
           </CyFormItem>
         </div>
@@ -364,8 +395,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectRegionAttribute}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -397,8 +428,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectConstructType}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -416,8 +447,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectClassification}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -437,8 +468,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectStage}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -456,8 +487,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectBatch}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -477,8 +508,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectAttribute}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -496,8 +527,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={meteorologicLevel}
-              valueKey="value"
-              titleKey="text"
+              valuekey="value"
+              titlekey="text"
               placeholder="请选择"
             />
           </CyFormItem>
@@ -530,10 +561,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             {status == 1 || status == 14 || status == undefined ? (
               <UrlSelect
                 defaultData={projectDataSourceType}
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 placeholder="请选择"
                 onChange={(value: any) => {
+                  if (value === 2) {
+                    form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
+                  }
                   setDataSourceType(value);
                 }}
               />
@@ -541,8 +575,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <UrlSelect
                 defaultData={projectDataSourceType}
                 disabled
-                valueKey="value"
-                titleKey="text"
+                valuekey="value"
+                titlekey="text"
                 placeholder="请选择"
               />
             )}
@@ -552,80 +586,114 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
 
       <div className="flex">
         <div className="flex1 flowHidden">
-          <CyFormItem
-            label="交底范围(米)"
-            // initialValue={'50'}
-            fieldKey={[field.fieldKey, 'disclosureRange']}
-            name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={[
-              {
-                required: true,
-                message: '交底范围不能为空',
-              },
-              () => ({
-                validator(_, value) {
-                  if (value <= 99999 && value > 0) {
-                    return Promise.resolve();
-                  }
-                  if (value === 0 || value > 99999) {
-                    return Promise.reject('请填写1~99999以内的整数');
-                  }
-                  return Promise.resolve();
-                },
-              }),
-              {
-                pattern: /^[0-9]\d*$/,
-                message: '请输入正整数',
-              },
-            ]}
-          >
-            {dataSourceType === 1 ? (
+          {dataSourceType === 2 ? (
+            <CyFormItem
+              label="交底范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'disclosureRange']}
+              name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
+              labelWidth={120}
+              required
+              align="right"
+            >
               <InputNumber
                 disabled
                 placeholder="“无需现场数据”项目，免设置此条目"
                 style={{ width: '100%' }}
+                value={disRangeValue}
               />
-            ) : (
-              <InputNumber placeholder="请输入交底范围" style={{ width: '100%' }} />
-            )}
-          </CyFormItem>
+            </CyFormItem>
+          ) : (
+            <CyFormItem
+              label="交底范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'disclosureRange']}
+              name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
+              labelWidth={120}
+              required
+              align="right"
+              rules={[
+                {
+                  required: true,
+                  message: '交底范围不能为空',
+                },
+                () => ({
+                  validator(_, value) {
+                    if (value <= 99999 && value > -1) {
+                      return Promise.resolve();
+                    }
+                    if (value > 99999) {
+                      return Promise.reject('请填写0~99999以内的整数');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+                {
+                  pattern: /^[0-9]\d*$/,
+                  message: '请输入正整数',
+                },
+              ]}
+            >
+              <InputNumber
+                placeholder="请输入交底范围"
+                style={{ width: '100%' }}
+                value={disRangeValue}
+              />
+            </CyFormItem>
+          )}
         </div>
         <div className="flex1 flowHidden">
-          <CyFormItem
-            label="桩位范围(米)"
-            initialValue={'50'}
-            fieldKey={[field.fieldKey, 'pileRange']}
-            name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={[
-              {
-                required: true,
-                message: '桩位范围不能为空',
-              },
-              () => ({
-                validator(_, value) {
-                  if (value <= 99999 && value > 0) {
-                    return Promise.resolve();
-                  }
-                  if (value === 0 || value > 99999) {
-                    return Promise.reject('请填写1~99999以内的整数');
-                  }
-                  return Promise.resolve();
+          {dataSourceType === 2 ? (
+            <CyFormItem
+              label="桩位范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'pileRange']}
+              name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
+              labelWidth={120}
+              required
+              align="right"
+            >
+              <InputNumber
+                value={pileRangeValue}
+                disabled
+                placeholder="“无需现场数据”项目，免设置此条目"
+                style={{ width: '100%' }}
+              />
+            </CyFormItem>
+          ) : (
+            <CyFormItem
+              label="桩位范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'pileRange']}
+              name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
+              required
+              labelWidth={120}
+              align="right"
+              rules={[
+                {
+                  required: true,
+                  message: '桩位范围不能为空',
                 },
-              }),
-              {
-                pattern: /^[0-9]\d*$/,
-                message: '请输入正整数',
-              },
-            ]}
-          >
-            <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
-          </CyFormItem>
+                () => ({
+                  validator(_, value) {
+                    if (value <= 99999 && value > -1) {
+                      return Promise.resolve();
+                    }
+                    if (value > 99999) {
+                      return Promise.reject('请填写1~99999以内的整数');
+                    }
+                    return Promise.resolve();
+                  },
+                }),
+                {
+                  pattern: /^[0-9]\d*$/,
+                  message: '请输入正整数',
+                },
+              ]}
+            >
+              <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
+            </CyFormItem>
+          )}
         </div>
       </div>
     </>

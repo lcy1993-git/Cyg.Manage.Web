@@ -66,7 +66,6 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
           h: 11,
           componentProps: dynamicData,
         }));
-        console.log(temp);
 
         chooseComponent = _.union(chooseComponent, temp);
       }

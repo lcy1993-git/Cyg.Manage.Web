@@ -97,17 +97,17 @@ export interface TreeData {
   children?: TreeData[];
   key: string;
   [key: string]: unknown;
-} 
+}
 /**
  * 树形结构化
  * @param data 平铺的扁平数组
  * @returns 树形结构数组
  */
 export const formatDataTree = (data: TreeData[]) => {
-  
+
   // if(!Array.isArray(data)) return [];
-  let parents = data.filter(p => p.parentId === null);
-  let children = data.filter(p => p.parentId !== null);
+  const parents = data.filter(p => p.parentId === null);
+  const children = data.filter(p => p.parentId !== null);
   dataToTree(parents, children);
   function dataToTree(parents: TreeData[], children: TreeData[]) {
     parents.forEach(p => {
@@ -149,9 +149,9 @@ export const delay = (ms: number) => {
 
 /**
  * 可视化成果多媒体材料数据格式化
- * @param content 
- * @param getProperties 
- * @returns 
+ * @param content
+ * @param getProperties
+ * @returns
  */
 export const formDataMateral = (content: any, getProperties: any) => {
   const filterData = content.filter((item: any) => item.parentID !== -1);
@@ -181,4 +181,25 @@ export const formDataMateral = (content: any, getProperties: any) => {
     }
     return curr;
   }, []);
+}
+/**
+ * 创建唯一标识
+ * @param content
+ * @param getProperties
+ * @returns
+ */
+export const generateUUID = ()=> {
+  let d = new Date().getTime();
+  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = (d + Math.random()*16)%16 | 0;
+    d = Math.floor(d/16);
+    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+  });
+  return uuid;
+};
+
+export const handleRate = (number: number) => {
+  const ret = new RegExp(/^\d+(\.\d{1,2})?$/);
+  if(ret.test(String(number))) return number
+  return number.toFixed(2);
 }

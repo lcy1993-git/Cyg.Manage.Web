@@ -21,7 +21,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
   const { libId = '', requestSource, changeFinishEvent } = props;
   const [falseData, setFalseData] = useState<string>('');
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false);
-  // const [requestLoading, setRequestLoading] = useState(false);
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
@@ -39,11 +39,11 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
         (res) => {
           if (res && res.code === 6000) {
             setFalseData(res.message);
-
             setImportTipsVisible(true);
             return Promise.resolve();
           } else if (res.code === 200) {
             message.success('导入成功');
+            setIsImportFlag(true);
             return Promise.resolve();
           }
           message.error(res.message);
@@ -61,7 +61,13 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
   };
 
   const onSave = () => {
-    setUploadFileTrue();
+    form.validateFields().then((value) => {
+      if (isImportFlag) {
+        setState(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
   };
 
   return (
@@ -74,20 +80,20 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>,
-          <Button
-            key="save"
-            type="primary"
-            onClick={() => setState(false)}
-            // loading={requestLoading}
-          >
+          <Button key="save" type="primary" onClick={onSave}>
             保存
           </Button>,
         ]}
-        onCancel={() => setState(false)}
+        onCancel={onSave}
         destroyOnClose
       >
         <Form form={form} preserve={false}>
-          <CyFormItem label="导入" name="file" required>
+          <CyFormItem
+            label="导入"
+            name="file"
+            required
+            rules={[{ required: true, message: '请上传物料文件' }]}
+          >
             <FileUpload
               trigger={triggerUploadFile}
               maxCount={1}

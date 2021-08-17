@@ -8,17 +8,27 @@ const { TextArea } = Input;
 const WareHouseForm: React.FC = () => {
   return (
     <>
-      <CyFormItem label="区域" name="province" required>
+      <CyFormItem
+        label="区域"
+        name="province"
+        required
+        rules={[{ required: true, message: '区域不能为空' }]}
+      >
         <UrlSelect
           showSearch
           requestSource="resource"
           url="/WareHouse/GetAreaTreeNod"
-          titleKey="text"
-          valueKey="id"
+          titlekey="text"
+          valuekey="id"
           placeholder="请选择省份"
         />
       </CyFormItem>
-      <CyFormItem label="利库名称" name="name" required>
+      <CyFormItem
+        label="利库名称"
+        name="name"
+        required
+        rules={[{ required: true, message: '利库名称不能为空' }]}
+      >
         <Input placeholder="请输入利库名称" />
       </CyFormItem>
 

@@ -73,7 +73,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     try {
       setRequestLoading(true);
       await delay(1000)
-      console.log(1)
       const res = await getExternalStep(projectId);
       setNewStepData(res);
     } catch (msg) {

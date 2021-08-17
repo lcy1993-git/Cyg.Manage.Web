@@ -1,8 +1,8 @@
 import CyFormItem from '@/components/cy-form-item';
-import FileUpload, { UploadStatus } from '@/components/file-upload';
+import FileUpload from '@/components/file-upload';
 import { uploadLineStressSag } from '@/services/resource-config/drawing';
 import { useBoolean, useControllableValue } from 'ahooks';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 import { Input, Form, message, Row, Col, Modal, Button } from 'antd';
@@ -30,6 +30,7 @@ interface ImportWareHouseProps {
 const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [companyId, setCompanyId] = useState<string>('');
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
@@ -57,12 +58,16 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
       })
       .then(
         () => {
+          message.success('导入成功');
+          setIsImportFlag(true);
+
           return Promise.resolve();
         },
         (res) => {
           const { code, isSuccess, message: msg } = res;
           if (message) {
             message.warn(msg);
+            setIsImportFlag(false);
           }
           return Promise.reject('导入失败');
         },
@@ -71,6 +76,17 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         setUploadFileFalse();
         changeFinishEvent?.();
       });
+  };
+
+  const onSave = () => {
+    form.validateFields().then((value) => {
+      if (isImportFlag) {
+        setState(false);
+        setIsImportFlag(false);
+        return;
+      }
+      message.info('您还未上传文件，点击“开始上传”上传文件');
+    });
   };
 
   return (
@@ -84,7 +100,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => setState(false)}>
+        <Button key="save" type="primary" onClick={onSave}>
           保存
         </Button>,
       ]}
@@ -98,12 +114,12 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
             </CyFormItem>
           </Col>
           <Col>
-            <CyFormItem labelWidth={120} label="所属供电公司" name="companyId" required>
+            <CyFormItem labelWidth={120} label="所属供电公司" name="companyId">
               <UrlSelect
                 style={{ width: '342px' }}
                 url="/ElectricityCompany/GetListByAreaId"
-                titleKey="text"
-                valueKey="text"
+                titlekey="text"
+                valuekey="text"
                 placeholder="请选择供电公司"
                 extraParams={{ areaId: province }}
                 allowClear
@@ -113,7 +129,13 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
           </Col>
         </Row>
 
-        <CyFormItem labelWidth={80} label="导入" name="file" required>
+        <CyFormItem
+          labelWidth={80}
+          label="导入"
+          name="file"
+          required
+          rules={[{ required: true, message: '请上传利库文件' }]}
+        >
           <FileUpload
             accept=".xlsx"
             uploadFileBtn

@@ -42,6 +42,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
     const formData = form.getFieldsValue();
 
     const { projects } = formData;
+
     const copyFormData = projects[activeProjectKey];
 
     form.setFieldsValue({ projects: [...projects, copyFormData] });
@@ -111,6 +112,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                     areaId={areaId}
                     company={company}
                     field={field}
+                    form={form}
                   />
                 </TabPane>
               ))}

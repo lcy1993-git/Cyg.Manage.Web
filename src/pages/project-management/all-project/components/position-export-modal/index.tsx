@@ -45,9 +45,7 @@ const PositionExportModal: React.FC<Props> = ({
   }
   // 
   const onOK = async () => {
-    // console.log(form.getFieldsValue());
     form.validateFields().then(async (values) => {
-      console.log(values)
 
       // await 
       // setPositionExportVisible(false)

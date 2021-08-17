@@ -6,8 +6,8 @@ import { getDataByUrl } from '@/services/common';
 
 export interface UrlSelectProps {
   url?: string;
-  titleKey?: string;
-  valueKey?: string;
+  titlekey?: string;
+  valuekey?: string;
   extraParams?: object;
   defaultData?: any[];
   needFilter?: boolean;
@@ -27,8 +27,8 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
 ) => {
   const {
     url = '',
-    titleKey = 'Title',
-    valueKey = 'ID',
+    titlekey = 'text',
+    valuekey = 'value',
     defaultData,
     extraParams = {},
     needFilter = true,
@@ -53,7 +53,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
         !defaultData &&
         !(paramsMust.filter((item) => !extraParams[item]).length > 0)
       ),
-      refreshDeps: [url, JSON.stringify(extraParams)],
+      refreshDeps: [url, JSON.stringify(extraParams)]
     },
   );
 
@@ -62,12 +62,12 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
       const copyData = [...defaultData];
       if (needAll) {
         const newObject = {};
-        newObject[titleKey] = '全部';
-        newObject[valueKey] = allValue;
+        newObject[titlekey] = '全部';
+        newObject[valuekey] = allValue;
         copyData.unshift(newObject);
       }
       return copyData.map((item: any) => {
-        return { label: item[titleKey], value: item[valueKey] };
+        return { label: item[titlekey], value: item[valuekey] };
       });
     }
     if (!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0))) {
@@ -75,7 +75,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     }
     if (resData) {
       return resData.map((item: any) => {
-        return { label: item[titleKey], value: item[valueKey] };
+        return { label: item[titlekey], value: item[valuekey] };
       });
     }
     return [];

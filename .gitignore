@@ -19,8 +19,6 @@ yarn-error.log
 /coverage
 .idea
 .zip
-yarn.lock
-package-lock.json
 *bak
 .vscode
 

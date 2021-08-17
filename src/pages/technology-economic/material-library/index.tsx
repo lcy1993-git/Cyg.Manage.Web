@@ -82,7 +82,7 @@ const columns = [
 
 const QuotaLibrary: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | Object>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
 
@@ -196,7 +196,7 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const tableSelectEvent = (data: DataSource[] | Object) => {
-    setTableSelectRow(data);
+    setTableSelectRows(data);
   };
 
   return (
@@ -218,7 +218,7 @@ const QuotaLibrary: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        title="添加-定额库"
+        title="添加-材机库"
         width="880px"
         visible={addFormVisible}
         okText="确认"

@@ -23,7 +23,7 @@ const { Search } = Input;
 
 const ElectricCompany: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [ids, setIds] = useState<string[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
@@ -39,21 +39,21 @@ const ElectricCompany: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="关键词" width="230px">
+        <TableSearch label="电力公司" width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="区域/公司/供电所"
+            placeholder="请输入公司信息"
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="选择区域" width="260px">
           <UrlSelect
             showSearch
             url="/Area/GetList?pId=-1"
-            titleKey="text"
-            valueKey="value"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择"
             onChange={(value: any) => searchBySelectProvince(value)}
           />
@@ -77,7 +77,7 @@ const ElectricCompany: React.FC = () => {
 
     await deleteElectricityCompanyItem(editDataId);
     refresh();
-    setTableSelectRow([]);
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 
@@ -242,7 +242,7 @@ const ElectricCompany: React.FC = () => {
         columns={columns}
         url="/ElectricityCompany/GetPagedList"
         tableTitle="电力公司"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
           keyWord: searchKeyWord,

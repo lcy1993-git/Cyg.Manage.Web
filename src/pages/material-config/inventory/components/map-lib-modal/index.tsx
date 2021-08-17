@@ -191,7 +191,7 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
                 getSelectData={(data) => setInvTableSelectRow(data)}
                 url="/Inventory/GetInventoryOverviewPageList"
                 requestSource="resource"
-                tableTitle="协议库存列表"
+                tableTitle="协议库存管理"
               />
             </div>
           </div>

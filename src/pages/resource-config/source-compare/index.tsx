@@ -18,7 +18,7 @@ import DifferTable from './components/differ-table';
 
 const SourceCompare: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [db1, setdb1] = useState<string | null>('');
   const [db2, setdb2] = useState<string | null>('');
@@ -42,8 +42,8 @@ const SourceCompare: React.FC = () => {
             showSearch
             requestSource="resource"
             url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
+            titlekey="libName"
+            valuekey="id"
             placeholder="请选择"
             onChange={(value: any) => setdb1(value)}
           />
@@ -54,8 +54,8 @@ const SourceCompare: React.FC = () => {
             showSearch
             requestSource="resource"
             url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
+            titlekey="libName"
+            valuekey="id"
             placeholder="请选择"
             onChange={(value: any) => setdb2(value)}
           />
@@ -200,7 +200,7 @@ const SourceCompare: React.FC = () => {
         url="/SourceCompare/GetCompareCategoryPageList"
         tableTitle="版本对比"
         type="radio"
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           db1: db1,
           db2: db2,

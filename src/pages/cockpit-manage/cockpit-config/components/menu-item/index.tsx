@@ -1,7 +1,8 @@
 import { MinusSquareOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { useBoolean } from "ahooks";
 import uuid from "node-uuid";
-import React, { ReactNode } from "react"
+import React, { ReactNode } from "react";
+
 import styles from "./index.less"
 
 interface CockpitMenuItemChildrenItem {

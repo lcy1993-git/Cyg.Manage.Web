@@ -29,9 +29,13 @@ const ChartBox: React.FC<ChartBoxProps> = (props) => {
                 <ChartBoxHalo />
             </div>
             <div className={styles.chartBoxBgAboveContent}>
-                <div className={styles.chartBoxTitle}>
-                    {title}
-                </div>
+                {
+                    title &&
+                    <div className={styles.chartBoxTitle}>
+                        {title}
+                    </div>
+                }
+
                 <div className={styles.chartBoxContent}>
                     {props.children}
                 </div>

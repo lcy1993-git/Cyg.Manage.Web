@@ -1,9 +1,9 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin } from 'antd';
+import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin, Tabs } from 'antd';
 import React, { useState } from 'react';
-import { EditOutlined, PlusOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
 import { useRequest, useBoolean } from 'ahooks';
 import {
@@ -13,36 +13,38 @@ import {
   deleteAuthorizationItem,
   addAuthorizationItem,
   getAuthorizationTreeList,
-  updateAuthorizationModules,
-} from '@/services/jurisdiction-config/platform-authorization';
+} from '@/services/jurisdiction-config/role-permissions';
 import { isArray } from 'lodash';
 import RolePermissionsForm from './components/add-edit-form';
 import CheckboxTreeTable from '@/components/checkbox-tree-table';
 import styles from './index.less';
-import UserAuthorization from '../platform-authorization/components/user-authorization';
+import UserAuthorization from './components/user-authorization';
+import RoleAuthorization from './components/role-authorization';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
+const { TabPane } = Tabs;
 
 const RolePermissions: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [currentId, setCurrentId] = useState<string>('');
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [distributeFormVisible, setDistributeFormVisible] = useState<boolean>(false);
   const [
     authorizationFormVisible,
     { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
   ] = useBoolean(false);
 
+  //@ts-ignore
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'));
+
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-  const [apportionForm] = Form.useForm();
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -84,20 +86,36 @@ const RolePermissions: React.FC = () => {
       },
     },
     {
-      title: '授权人员',
+      title: '授权对象',
       dataIndex: 'users',
       index: 'users',
       render: (text: any, record: any) => {
-        return record.users
-          ? record.users.map((item: any) => {
-              return (
+        const roles = record.roles?.map((item: any) => {
+          return (
+            <CyTag className="mr7" key={uuid.v1()}>
+              {item.text}
+            </CyTag>
+          );
+        });
+        roles.unshift(
+          record.users?.map((item: any) => {
+            return (
+              <>
                 <CyTag className="mr7" key={uuid.v1()}>
                   {item.text}
                 </CyTag>
-              );
-            })
-          : null;
+              </>
+            );
+          }),
+        );
+        return roles;
       },
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      index: 'remark',
+      width: '30%',
     },
   ];
 
@@ -112,12 +130,12 @@ const RolePermissions: React.FC = () => {
   const searchElement = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="关键词" width="203px">
+        <TableSearch label="角色名称" width="248px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="角色名称"
+            placeholder="请输入角色名称"
             enterButton
           />
         </TableSearch>
@@ -150,35 +168,34 @@ const RolePermissions: React.FC = () => {
     await deleteAuthorizationItem(editDataId);
     tableFresh();
     message.success('删除成功');
-    setTableSelectRow([]);
+    setTableSelectRows([]);
   };
 
-  const distributeEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择角色模板');
-      return;
-    }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+  // const distributeEvent = async () => {
+  //   if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+  //     message.error('请选择角色模板');
+  //     return;
+  //   }
+  //   const editData = tableSelectRows[0];
+  //   const editDataId = editData.id;
 
-    setDistributeFormVisible(true);
+  //   setDistributeFormVisible(true);
 
-    const functionData = await getModuleTreeData(editDataId);
-    console.log(functionData);
-  };
+  //   await getModuleTreeData(editDataId);
+  // };
 
-  const sureDistribute = () => {
-    apportionForm.validateFields().then(async (values) => {
-      const templateId = tableSelectRows[0].id;
-      const { moduleIds } = values;
+  // const sureDistribute = () => {
+  //   apportionForm.validateFields().then(async (values) => {
+  //     const templateId = tableSelectRows[0].id;
+  //     const { moduleIds } = values;
 
-      await updateAuthorizationModules({ templateId, moduleIds });
-      setDistributeFormVisible(false);
-      tableFresh();
-      message.success('角色功能分配成功');
-      apportionForm.resetFields();
-    });
-  };
+  //     await updateAuthorizationModules({ templateId, moduleIds });
+  //     setDistributeFormVisible(false);
+  //     tableFresh();
+  //     message.success('角色功能分配成功');
+  //     apportionForm.resetFields();
+  //   });
+  // };
 
   //授权
   const authorizationEvent = async () => {
@@ -195,7 +212,8 @@ const RolePermissions: React.FC = () => {
   };
 
   //添加
-  const addEvent = () => {
+  const addEvent = async () => {
+    await getModuleTreeData();
     setAddFormVisible(true);
   };
 
@@ -225,11 +243,10 @@ const RolePermissions: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    setEditFormVisible(true);
     const AuthorizationData = await run(editDataId);
-    console.log(AuthorizationData);
 
     editForm.setFieldsValue(AuthorizationData);
+    setEditFormVisible(true);
   };
 
   const sureEditRolePermissions = () => {
@@ -286,12 +303,12 @@ const RolePermissions: React.FC = () => {
             </Button>
           </Popconfirm>
         )}
-        {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
+        {/* {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
           <Button className="mr7" onClick={() => distributeEvent()}>
             <ApartmentOutlined />
             分配功能模块
           </Button>
-        )}
+        )} */}
         {buttonJurisdictionArray?.includes('role-permissions-authorization') && (
           <Button className="mr7" onClick={() => authorizationEvent()}>
             <i className="iconfont iconshouquan" />
@@ -302,16 +319,23 @@ const RolePermissions: React.FC = () => {
     );
   };
 
+  const tabsRightSlot = (
+    <div>
+      <span className="tipInfo mr7">权限优先级：</span>
+      <span className="tipInfo">用户 &gt; 角色</span>
+    </div>
+  );
+
   return (
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchElement}
         buttonRightContentSlot={buttonElement}
-        getSelectData={(data) => setTableSelectRow(data)}
+        getSelectData={(data) => setTableSelectRows(data)}
         url="/AuthTemplate/GetPagedList"
         columns={columns}
-        tableTitle="角色权限管理"
+        tableTitle="功能权限管理"
         extractParams={{
           keyWord: searchKeyWord,
         }}
@@ -319,34 +343,42 @@ const RolePermissions: React.FC = () => {
       <Modal
         maskClosable={false}
         title="添加-角色"
-        width="680px"
+        width="60%"
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddRolePermissions()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Form form={addForm} preserve={false}>
           <RolePermissionsForm />
+          <Form.Item name="moduleIds">
+            <CheckboxTreeTable treeData={MoudleTreeData} />
+          </Form.Item>
         </Form>
       </Modal>
       <Modal
         maskClosable={false}
         title="编辑-角色"
-        width="680px"
+        width="60%"
         visible={editFormVisible}
         okText="确认"
         onOk={() => sureEditRolePermissions()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         destroyOnClose
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
         <Form form={editForm} preserve={false}>
           <RolePermissionsForm />
+          <Form.Item name="moduleIds">
+            <CheckboxTreeTable treeData={data?.modules} />
+          </Form.Item>
         </Form>
       </Modal>
-      <Modal
+      {/* <Modal
         maskClosable={false}
         title="分配功能模块"
         width="80%"
@@ -357,12 +389,8 @@ const RolePermissions: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={apportionForm} preserve={false}>
-          <Form.Item name="moduleIds">
-            <CheckboxTreeTable treeData={MoudleTreeData} />
-          </Form.Item>
-        </Form>
-      </Modal>
+        <Form form={apportionForm} preserve={false}></Form>
+      </Modal> */}
       <Modal
         maskClosable={false}
         footer=""
@@ -375,12 +403,29 @@ const RolePermissions: React.FC = () => {
         destroyOnClose
       >
         <Spin spinning={loading}>
-          <UserAuthorization
-            onChange={tableFresh}
-            extractParams={{
-              templateId: currentId,
-            }}
-          />
+          <Tabs
+            className="normalTabs noMargin"
+            tabBarExtraContent={userType === 4 ? tabsRightSlot : null}
+          >
+            <TabPane key="user" tab="用户授权">
+              <UserAuthorization
+                onChange={tableFresh}
+                extractParams={{
+                  templateId: currentId,
+                }}
+              />
+            </TabPane>
+            {userType === 4 && (
+              <TabPane key="role" tab="角色授权">
+                <RoleAuthorization
+                  onChange={tableFresh}
+                  extractParams={{
+                    templateId: currentId,
+                  }}
+                />
+              </TabPane>
+            )}
+          </Tabs>
         </Spin>
       </Modal>
     </PageCommonWrap>

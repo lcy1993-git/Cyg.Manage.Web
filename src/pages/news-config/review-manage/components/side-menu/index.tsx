@@ -89,7 +89,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       refreshDeps: [filterCondition],
       onSuccess: () => {
         if (allData?.length) {
-          console.log(allData);
 
           let listTree = generateProjectTree(allData);
 

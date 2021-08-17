@@ -13,6 +13,8 @@ import { getConsigns, AreaInfo } from '@/services/index';
 import { useMemo } from 'react';
 import { Moment } from 'moment';
 import moment from 'moment';
+import borderStylesHTML from '../../utils/borderStylesHTML';
+
 
 const { RangePicker } = DatePicker;
 
@@ -81,6 +83,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
     if (consignsData) {
       const dataArray = consignsData?.map((item) => item.key);
       const valueArray = consignsData?.map((item) => item.value);
+
       return {
         grid: {
           left: 60,
@@ -92,6 +95,16 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
           axisPointer: {
             type: 'shadow',
           },
+          backgroundColor: 'rgba(0,0,0,0.9)',
+          borderColor: '#000',
+          formatter(params: any){
+            const { name, value } = params[0];
+            
+            return borderStylesHTML + `<span style="color: #2AFE97">${name}</span><br />
+            <span style="color: #2AFE97">项目数量：</span><span style="color: #FFF">${value}</span>
+            `
+            
+          }
         },
         xAxis: {
           type: 'value',
@@ -151,6 +164,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
               } else {
                 newParamsName = params;
               }
+              
               return newParamsName;
             },
           },
@@ -178,16 +192,6 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
             },
           },
         ],
-        // dataZoom: [//滑动条
-        //   {
-        //     yAxisIndex: [0],//这里是从X轴的0刻度开始
-        //     show: true,//是否显示滑动条，不影响使用
-        //     type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
-        //     start: 0, // 从头开始。
-        //     end: 100,
-        //     endValue: 2  // 一次性展示6个。
-        //   }
-        // ],
       };
     }
     return undefined;
@@ -203,7 +207,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
   }, [JSON.stringify(startTime), JSON.stringify(endTime)]);
 
   return (
-    <ChartBox title="交付管理">
+    <ChartBox title="交付统计">
       <div className={styles.deliveryMange}>
         <div className={styles.deliveryManageStatisticCondition}>
           <div className={styles.deliverySelect}>
@@ -231,12 +235,8 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
               allowClear={false}
               value={[startTime ? moment(startTime) : null, endTime ? moment(endTime) : null]}
               onChange={(dates, dateStrings) => {
-                console.log(dates, dateStrings);
                 setStartTime(dateStrings[0]);
                 setEndTime(dateStrings[1]);
-                // setKeyValue(dates);
-                console.log(startTime, '1');
-                console.log(endTime, '1');
               }}
               bordered={false}
               renderExtraFooter={() => [

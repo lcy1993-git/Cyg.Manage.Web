@@ -56,7 +56,8 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
 
   const onNameChange = (v: string) => {
     if (v) {
-      setId('');
+      setId(undefined);
+      setName(v);
       fetchSpecRequest(v);
     } else {
       setName(undefined);
@@ -91,8 +92,8 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
       </Select>
       <UrlSelect
         defaultData={nameReponseData}
-        valueKey={key}
-        titleKey={speckey}
+        valuekey={key}
+        titlekey={speckey}
         allowClear
         value={id}
         placeholder={`${placeholder}型号`}
