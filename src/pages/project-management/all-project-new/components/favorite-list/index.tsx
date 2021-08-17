@@ -67,7 +67,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     setTreeData(copyList);
   };
 
-  console.log(treeData, '33311');
+  console.log(treeData, '3332211');
 
   return (
     <div className={styles.engineerList}>
