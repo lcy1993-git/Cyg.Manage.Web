@@ -1,4 +1,5 @@
 import { Dropdown, Menu } from 'antd';
+import SubMenu from 'antd/lib/menu/SubMenu';
 import React from 'react';
 import styles from './index.less';
 
@@ -8,6 +9,7 @@ interface MenuItemParams {
   icon?: string;
   url: string;
   category: number;
+  children: any[];
 }
 
 interface MenuProps {
@@ -24,9 +26,40 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
     onSelect(name, path);
   };
 
+  // const subMenuList = menuData.map((item) => {
+  //   item.children.map((ite: any, index: any) => {
+  //     if (ite.category === 2) {
+  //       console.log(ite);
+  //       return (
+  //         <SubMenu>
+  //           <Menu.Item
+  //             key={`headerMenuListItem_${index}`}
+  //             onClick={() => toPath(ite.name, ite.url)}
+  //           >
+  //             {icon ? <span>{ite.icon}</span> : null}
+  //             <span>{ite.name}</span>
+  //           </Menu.Item>
+  //         </SubMenu>
+  //       );
+  //     }
+  //     return;
+  //   });
+  // });
+
+  // console.log(subMenuList, '11');
+
   const menuElementList = menuData
     .filter((item) => item.category === 2)
     .map((item, index) => {
+      item.children
+        .map((ite: any) => {
+          return ite.authCode === 'company-group' || ite.authCode === 'subordinate-company'
+            ? ite
+            : '';
+        })
+        .map((item) => {
+          console.log(item);
+        });
       return (
         <Menu.Item key={`headerMenuListItem_${index}`} onClick={() => toPath(item.name, item.url)}>
           <div>
@@ -36,6 +69,7 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
         </Menu.Item>
       );
     });
+  // console.log(subMenuList, '三级');
 
   const menuElement = <Menu>{menuElementList}</Menu>;
 

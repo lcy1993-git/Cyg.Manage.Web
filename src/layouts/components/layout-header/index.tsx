@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import { Menu, Dropdown } from 'antd';
 import styles from './index.less';
 import LayoutHeaderMenu from '../layout-header-menu';
