@@ -10,6 +10,7 @@ interface MenuItemParams {
   url: string;
   category: number;
   children: any[];
+  authCode: string;
 }
 
 interface MenuProps {
@@ -48,19 +49,25 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
 
   // console.log(subMenuList, '11');
 
+  console.log(menuData);
+
   const menuElementList = menuData
     .filter((item) => item.category === 2)
     .map((item, index) => {
-      item.children
-        .map((ite: any) => {
-          return ite.authCode === 'company-group' || ite.authCode === 'subordinate-company'
-            ? ite
-            : '';
-        })
-        .map((item) => {
-          console.log(item);
-        });
-      return (
+      return item.authCode === 'organization-structure' ? (
+        <SubMenu key={`headerMenuListItem_${index}`} title={item.name}>
+          <Menu.Item>
+            {item.children.map((ite: any) => {
+              return (
+                <div>
+                  {icon ? <span>{item.icon}</span> : null}
+                  <span>{item.name}</span>
+                </div>
+              );
+            })}
+          </Menu.Item>
+        </SubMenu>
+      ) : (
         <Menu.Item key={`headerMenuListItem_${index}`} onClick={() => toPath(item.name, item.url)}>
           <div>
             {icon ? <span>{item.icon}</span> : null}
