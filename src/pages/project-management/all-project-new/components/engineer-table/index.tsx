@@ -43,6 +43,7 @@ import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
 import moment from 'moment';
+import ProjectInheritModal from '../project-inherit-modal';
 
 const colorMap = {
   立项: 'green',
@@ -111,7 +112,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [approvalEngineerVisible, setApprovalEngineerVisible] = useState<boolean>(false);
   const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
 
-  //项目时间阈值state
+  const [projectInheritVisible, setProjectInheritVisible] = useState<boolean>(false);
+  const [inheritProjectNeedParams, setInheritProjectNeedParams] = useState<any>({});
+
+  // 项目时间阈值state
   const [minStartTime, setMinStartTime] = useState<number>();
   const [maxEndTime, setMaxEndTime] = useState<number>();
 
@@ -142,7 +146,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const editEngineerEvent = async (data: AddProjectValue) => {
-    //编辑工程前获取工程下项目日期阈值
+    // 编辑工程前获取工程下项目日期阈值
     const currentEditEngineer = tableData?.pagedData?.items
       .map((item: any) => {
         if (item.id === data.engineerId) {
@@ -168,9 +172,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const approvalEngineerEvent = (data: AddProjectValue) => {
-    setCurrentAppEngineerId(data.engineerId)
+    setCurrentAppEngineerId(data.engineerId);
     setApprovalEngineerVisible(true);
-  }
+  };
 
   const checkResult = (projectInfo: any) => {
     setCheckResultProjectInfo(projectInfo);
@@ -206,11 +210,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     onSelect?.([]);
   };
 
-  const [leftNumber, setLeftNumber] = useState<number>(0);
-
   const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
     manual: true,
   });
+
+  const projectInherit = (projectInfo: any) => {
+    setProjectInheritVisible(true);
+    setInheritProjectNeedParams(projectInfo);
+  };
 
   const projectItemMenu = (
     jurisdictionInfo: JurisdictionInfo,
@@ -267,6 +274,24 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             查看成果
           </Menu.Item>
         )}
+        {buttonJurisdictionArray?.includes('all-project-check-result') && (
+          // all-project-inherit
+          <Menu.Item
+            onClick={() =>
+              projectInherit({
+                projectId: tableItemData.id,
+                areaId: engineerInfo.province,
+                company: engineerInfo.company,
+                engineerId: engineerInfo.id,
+                companyName: engineerInfo.company,
+                startTime: engineerInfo.startTime,
+                endTime: engineerInfo.endTime,
+              })
+            }
+          >
+            项目继承
+          </Menu.Item>
+        )}
       </Menu>
     );
   };
@@ -287,13 +312,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setExternalArrangeModalVisible(true);
   };
 
-    // 申请结项
-    const applyKnotEvent = async (projectId: string[]) => {
-      await applyKnot(projectId);
-      message.success('申请结项成功');
-  
-      finishEvent?.();
-    };
+  // 申请结项
+  const applyKnotEvent = async (projectId: string[]) => {
+    await applyKnot(projectId);
+    message.success('申请结项成功');
+
+    finishEvent?.();
+  };
 
   // 外审列表
   const externalEdit = async (projectId: string) => {
@@ -531,73 +556,73 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           <>
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
               <span>
-              {!stateInfo.isArrange &&
-              identitys.findIndex((item: any) => item.value === 4) > -1 ? (
-                <span
-                  className="canClick"
-                  onClick={() => arrange(record.id, arrangeType, allotCompanyId)}
-                >
-                  {stateInfo?.statusText}
-                </span>
-              ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
-                stateInfo.status === 7 ? (
-                <span className="canClick">
-                  <Popconfirm
-                    title="确认对该项目进行“申请结项”?"
-                    onConfirm={() => applyKnotEvent([record.id])}
-                    okText="确认"
-                    cancelText="取消"
+                {!stateInfo.isArrange &&
+                identitys.findIndex((item: any) => item.value === 4) > -1 ? (
+                  <span
+                    className="canClick"
+                    onClick={() => arrange(record.id, arrangeType, allotCompanyId)}
                   >
                     {stateInfo?.statusText}
-                  </Popconfirm>
-                </span>
-              ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
-                stateInfo.status === 15 ? (
-                <span
-                  className="canClick"
-                  onClick={() => {
-                    setCurrentClickProjectId(record.id);
-                    setAuditKnotModalVisible(true);
-                  }}
-                >
-                  {stateInfo?.statusText}
-                </span>
-              ) : stateInfo.statusText === '设计评审中' ? (
-                <span>设计中</span>
-              ) : (
-                // : stateInfo.status === 4 &&
-                //   stateInfo.auditStatus === 0 &&
-                //   stateInfo.auditStatusText === null ? (
-                //   <span>{stateInfo?.statusText}</span>
-                // ) : stateInfo.status === 4 &&
-                //   stateInfo.auditStatus === 0 &&
-                //   stateInfo.auditStatusText != null ? (
-                //   <span>{stateInfo?.auditStatusText}</span>
-                // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
-                //   <span>{stateInfo?.auditStatusText}</span>
-                // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
-                //   <span>{stateInfo?.statusText}</span>
-                // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
-                //   <span
-                //     className="canClick"
-                //     onClick={() => externalArrange(record.id, record.name)}
-                //   >
-                //     {stateInfo?.auditStatusText}
-                //   </span>
-                // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
-                //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                //     {stateInfo?.auditStatusText}
-                //   </span>
-                // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
-                //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                //     {stateInfo?.auditStatusText}
-                //   </span>
-                // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                //   <span>{stateInfo?.auditStatusText}</span>
-                // ) : (
-                <span>{stateInfo?.statusText}</span>
-              )}
-            </span>
+                  </span>
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 7 ? (
+                  <span className="canClick">
+                    <Popconfirm
+                      title="确认对该项目进行“申请结项”?"
+                      onConfirm={() => applyKnotEvent([record.id])}
+                      okText="确认"
+                      cancelText="取消"
+                    >
+                      {stateInfo?.statusText}
+                    </Popconfirm>
+                  </span>
+                ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
+                  stateInfo.status === 15 ? (
+                  <span
+                    className="canClick"
+                    onClick={() => {
+                      setCurrentClickProjectId(record.id);
+                      setAuditKnotModalVisible(true);
+                    }}
+                  >
+                    {stateInfo?.statusText}
+                  </span>
+                ) : stateInfo.statusText === '设计评审中' ? (
+                  <span>设计中</span>
+                ) : (
+                  // : stateInfo.status === 4 &&
+                  //   stateInfo.auditStatus === 0 &&
+                  //   stateInfo.auditStatusText === null ? (
+                  //   <span>{stateInfo?.statusText}</span>
+                  // ) : stateInfo.status === 4 &&
+                  //   stateInfo.auditStatus === 0 &&
+                  //   stateInfo.auditStatusText != null ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
+                  //   <span>{stateInfo?.statusText}</span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                  //   <span
+                  //     className="canClick"
+                  //     onClick={() => externalArrange(record.id, record.name)}
+                  //   >
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : (
+                  <span>{stateInfo?.statusText}</span>
+                )}
+              </span>
             )}
             {!buttonJurisdictionArray?.includes('all-project-copy-project') && (
               <span>{stateInfo?.statusText}</span>
@@ -752,7 +777,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const engineerTableElement = tableResultData?.items.map((item: any) => {
     return (
       <EngineerTableItem
-        // left={leftNumber}
         editEngineer={editEngineerEvent}
         addProject={addProjectEvent}
         approvalEngineer={approvalEngineerEvent}
@@ -1046,6 +1070,20 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             onChange={setAuditKnotModalVisible}
             projectIds={[currentClickProjectId]}
             finishEvent={refreshEvent}
+          />
+        )}
+        {projectInheritVisible && (
+          <ProjectInheritModal
+            companyName={inheritProjectNeedParams.companyName}
+            projectId={inheritProjectNeedParams.projectId}
+            company={inheritProjectNeedParams.company}
+            areaId={inheritProjectNeedParams.areaId}
+            status={inheritProjectNeedParams.status}
+            startTime={inheritProjectNeedParams.startTime}
+            endTime={inheritProjectNeedParams.endTime}
+            visible={inheritProjectNeedParams}
+            onChange={setProjectInheritVisible}
+            changeFinishEvent={refreshEvent}
           />
         )}
       </div>
