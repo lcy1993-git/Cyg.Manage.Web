@@ -401,57 +401,28 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <span>{ohterProjectTotalNumber}个</span>
                 </div>
                 <div>
-                  {ohterProjectTotalNumber > 0 ? (
-                    <a href="/visualization-results/result-page">
+                  {
+                    ohterProjectTotalNumber > 0 ?
+                      <a href='/visualization-results/result-page'><Button
+                        loading={false}
+                        type="primary"
+                        onClick={handlerOtherClick}
+                        style={{ width: "100%" }}
+                      >跳转可视化</Button></a> :
                       <Button
                         loading={false}
                         type="primary"
                         onClick={handlerOtherClick}
-                        style={{ width: '100%' }}
-                      >
-                        跳转可视化
-                      </Button>
-                    </a>
-                  ) : (
-                    <Button
-                      loading={false}
-                      type="primary"
-                      onClick={handlerOtherClick}
-                      style={{ width: '100%' }}
-                    >
-                      跳转可视化
-                    </Button>
-                  )}
+                        style={{ width: "100%" }}
+                      >跳转可视化</Button>
+                  }
+
                 </div>
               </div>
             </div>
           </ChartBox>
         </div>
-        <div className={styles.mapStatisticContent}>
-          <div className={styles.mapStatisticContentDataSplit}>
-            <div className={styles.dataSplitContent}>
-              <div className={styles.dataSplitContentHalo}></div>
-              <div className={styles.dataSplitMenu}>
-                <div className={styles.dataSplitMenuItem}>
-                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.orange}`}></span>
-                  <span className={styles.dataSplitMenuItemContent}>1000 - 1000+</span>
-                </div>
-                <div className={styles.dataSplitMenuItem}>
-                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.lightGreen}`}></span>
-                  <span className={styles.dataSplitMenuItemContent}>100 - 1000</span>
-                </div>
-                <div className={styles.dataSplitMenuItem}>
-                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.green}`}></span>
-                  <span className={styles.dataSplitMenuItemContent}>10 - 100</span>
-                </div>
-                <div className={styles.dataSplitMenuItem}>
-                  <span className={`${styles.dataSplitMenuItemIcon} ${styles.blue}`}></span>
-                  <span className={styles.dataSplitMenuItemContent}>0 - 10</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="flex1"></div>
         <div className={styles.mapChartComponentProjectAreaTab}>
           <span className={`${styles.areaSpan} ${styles.hasChoose}`} onClick={provinceClickEvent}>
             省
@@ -476,6 +447,29 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           </span>
         </div>
       </div>
+
+      <div className={styles.colorWrapInfo}>
+        <div className='flex1'></div>
+        <div className={styles.dataSplitMenu}>
+          <div className={styles.dataSplitMenuItem}>
+            <span className={`${styles.dataSplitMenuItemIcon} ${styles.orange}`}></span>
+            <span className={styles.dataSplitMenuItemContent}>1000+</span>
+          </div>
+          <div className={styles.dataSplitMenuItem}>
+            <span className={`${styles.dataSplitMenuItemIcon} ${styles.lightGreen}`}></span>
+            <span className={styles.dataSplitMenuItemContent}>100+</span>
+          </div>
+          <div className={styles.dataSplitMenuItem}>
+            <span className={`${styles.dataSplitMenuItemIcon} ${styles.green}`}></span>
+            <span className={styles.dataSplitMenuItemContent}>10+</span>
+          </div>
+          <div className={styles.dataSplitMenuItem}>
+            <span className={`${styles.dataSplitMenuItemIcon} ${styles.blue}`}></span>
+            <span className={styles.dataSplitMenuItemContent}>1+</span>
+          </div>
+        </div>
+      </div>
+
       <div className={styles.mapStatisticContent}>
         <div className={styles.mapConent} ref={divRef} />
       </div>
