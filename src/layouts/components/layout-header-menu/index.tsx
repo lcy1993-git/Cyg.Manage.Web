@@ -1,5 +1,4 @@
 import { Dropdown, Menu } from 'antd';
-import SubMenu from 'antd/lib/menu/SubMenu';
 import React from 'react';
 import styles from './index.less';
 
@@ -19,6 +18,8 @@ interface MenuProps {
   menuData: MenuItemParams[];
   onSelect: (name: string, path: string) => void;
 }
+
+const { SubMenu } = Menu;
 
 const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
   const { name, icon, menuData, onSelect } = props;
@@ -55,18 +56,26 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
     .filter((item) => item.category === 2)
     .map((item, index) => {
       return item.authCode === 'organization-structure' ? (
-        <SubMenu key={`headerMenuListItem_${index}`} title={item.name}>
-          <Menu.Item>
-            {item.children.map((ite: any) => {
-              return (
+        <Menu.SubMenu
+          key={`headerMenuListItem_${index}`}
+          className={styles.subMenu}
+          title={
+            <>
+              <span className={styles.subMenuItem}>{item.name}</span>
+            </>
+          }
+        >
+          {item.children.map((ite) => {
+            return (
+              <Menu.Item onClick={() => toPath(ite.name, ite.url)}>
                 <div>
-                  {icon ? <span>{item.icon}</span> : null}
-                  <span>{item.name}</span>
+                  {icon ? <span>{ite.icon}</span> : null}
+                  <span>{ite.name}</span>
                 </div>
-              );
-            })}
-          </Menu.Item>
-        </SubMenu>
+              </Menu.Item>
+            );
+          })}
+        </Menu.SubMenu>
       ) : (
         <Menu.Item key={`headerMenuListItem_${index}`} onClick={() => toPath(item.name, item.url)}>
           <div>
