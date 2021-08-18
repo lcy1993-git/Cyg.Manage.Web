@@ -229,8 +229,6 @@ const AllProject: React.FC = () => {
 
     await checkCanArrange(projectIds);
 
-    console.log(tableSelectData?.[0].projectInfo);
-
     // 如果只有一个项目需要安排的时候，需要去检查他是不是被安排了部组
     if (projectIds.length === 1) {
       const thisProjectId = projectIds[0];

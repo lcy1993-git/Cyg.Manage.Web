@@ -126,7 +126,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
       )}
 
       {/* <Divider>设计校审</Divider> */}
-      <div>
+      <div style={{display: "none"}}>
         {canEditInternalAudit1 ? (
           <CyFormItem label="校对" name="designAssessUser1">
             <TreeSelect
