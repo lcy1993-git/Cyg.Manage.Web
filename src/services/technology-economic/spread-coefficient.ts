@@ -1,4 +1,5 @@
 import request from '@/utils/request';
+import qs from 'qs';
 import { cyRequest, baseUrl } from '../common';
 
 interface ImportProject {
@@ -134,7 +135,8 @@ export const createAdjustmentFile = (params: catalogueParams) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.tecEco1}/PriceDifference/CreateAdjustmentFile`, {
       method: 'POST',
-      data: formData(params),
+      data: params,
+      // data: formData(params),
     }),
   );
 };
@@ -190,6 +192,15 @@ export const deleteTemplateItem = (params: any) => {
     request(`${baseUrl.tecEco1}/PriceDifference/DeleteTemplateItem`, {
       method: 'POST',
       data: params,
+    }),
+  );
+};
+// 上传技经文件
+export const technicalEconomyFile = (securityKey: string, data: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.upload}/Upload/TechnicalEconomyFile?securityKey=${securityKey}`, {
+      method: 'POST',
+      data: data,
     }),
   );
 };

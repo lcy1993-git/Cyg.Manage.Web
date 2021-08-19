@@ -158,7 +158,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             />
           </CyFormItem>
           {/* <Divider>设计校审</Divider> */}
-          <div style={{display: "none"}}>
+          <div style={{display: 'none'}}>
             <CyFormItem label="校对" name="designAssessUser1">
               <TreeSelect
                 key="designAssessUser1"

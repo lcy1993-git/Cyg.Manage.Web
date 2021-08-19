@@ -40,6 +40,7 @@ import {
   setDefaultTemplateStatus,
   updateAdjustmentFile,
   updateCatalogue,
+  technicalEconomyFile,
 } from '@/services/technology-economic/spread-coefficient';
 interface ResponseData {
   items?: {
@@ -80,6 +81,7 @@ const SpreadCoefficient: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [addADFormVisible, setAddADFormVisible] = useState<boolean>(false); // 调整文件
   const [editADFormVisible, setEditADFormVisible] = useState<boolean>(false);
+  const [fileId, setFileId] = useState<string>('');
   const [projectType, setProjectType] = useState<number>(1);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
@@ -246,24 +248,45 @@ const SpreadCoefficient: React.FC = () => {
   // 调整文件新增确认按钮
   const sureAddADAuthorization = () => {
     addADForm.validateFields().then(async (values) => {
-      await createAdjustmentFile(values); // TODO
-      refresh();
-      setAddADFormVisible(false);
-      addADForm.resetFields();
+      if (fileId) {
+        const submitInfo = Object.assign(
+          {
+            fileId: fileId,
+          },
+          values,
+        );
+        await createAdjustmentFile(submitInfo); // TODO
+        refresh();
+        setAddADFormVisible(false);
+        addADForm.resetFields();
+      } else {
+        message.warn('文件未上传或上传失败');
+      }
     });
   };
   // 调整文件编辑确认按钮
   const sureEditADAuthorization = () => {
     editADForm.validateFields().then(async (values) => {
-      const id = tableSelectRows[0].id;
+      const id = tableSelectADRows[0].id;
       let value = values;
       value.id = id;
+      if (fileId) {
+        value.fileId = value.fileId;
+      }
       // TODO 编辑接口
       await updateAdjustmentFile(value);
       refresh();
       setEditFormVisible(false);
       editForm.resetFields();
     });
+  };
+  const addUploadFile = async () => {
+    const obj = {
+      file: addADForm.getFieldValue('files'),
+    };
+    const securityKey = '1202531026526199123';
+    const id = await technicalEconomyFile(securityKey, obj);
+    setFileId(id as string);
   };
   const tableElement = () => {
     return (
@@ -414,7 +437,7 @@ const SpreadCoefficient: React.FC = () => {
         destroyOnClose
       >
         <Form form={addADForm} preserve={false}>
-          <AdjustmentFileForm type="add" />
+          <AdjustmentFileForm type="add" addUploadFile={addUploadFile} />
         </Form>
       </Modal>
       <Modal
@@ -429,7 +452,7 @@ const SpreadCoefficient: React.FC = () => {
         destroyOnClose
       >
         <Form form={editADForm} preserve={false}>
-          <AdjustmentFileForm type="edit" />
+          <AdjustmentFileForm type="edit" addUploadFile={addUploadFile} />
         </Form>
       </Modal>
     </PageCommonWrap>

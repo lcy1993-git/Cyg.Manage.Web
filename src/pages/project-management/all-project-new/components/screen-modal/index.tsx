@@ -143,6 +143,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setDataSourceType([]);
     setSourceType([]);
     setStartTime(null);
+    setAreaInfo({ areaType: '-1', areaId: '' });
     setEndTime(null);
     resetRef();
 
