@@ -526,7 +526,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
       if (elementTypeEnum[layerName] === '轨迹点') {
-        // resData.push({ propertyName: '所有勘察日期', data: trackRecordDateArray});
+        resData.push({ propertyName: '所有勘察日期', data: trackRecordDateArray});
         chooseCurDayTrack(feature.getProperties().record_date.substr(0, 10));
       }
     }
