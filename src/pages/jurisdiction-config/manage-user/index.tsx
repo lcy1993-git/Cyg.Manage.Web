@@ -215,7 +215,7 @@ const ManageUser: React.FC = () => {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      width: 60,
+      width: 80,
       render: (text: any, record: any) => {
         return record.userStatus === 1 ? (
           <Switch defaultChecked onChange={() => updateStatus(record.id)} />
@@ -224,12 +224,7 @@ const ManageUser: React.FC = () => {
         );
       },
     },
-    {
-      title: '授权期限',
-      dataIndex: 'lastLoginDate',
-      index: 'lastLoginDate',
-      width: 100,
-    },
+
     {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
@@ -309,7 +304,7 @@ const ManageUser: React.FC = () => {
         buttonRightContentSlot={rightButton}
         buttonLeftContentSlot={leftSearch}
         getSelectData={(data) => setTableSelectRows(data)}
-        tableTitle="管理用户"
+        tableTitle="管理员"
         url="/ManageUser/GetPagedList"
         columns={columns}
         extractParams={{

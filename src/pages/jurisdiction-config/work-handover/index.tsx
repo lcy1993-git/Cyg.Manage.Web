@@ -161,7 +161,7 @@ const WorkHandover: React.FC = () => {
   //设计任务交接
   const designConfirm = () => {
     Modal.confirm({
-      title: '勘察任务交接',
+      title: '设计任务交接',
       icon: <ExclamationCircleOutlined />,
       content: `确定将选中工程项目交接至"${receiverName}"吗？`,
       okText: '确认',

@@ -68,7 +68,7 @@ export default [
     component: <PlatformRole />,
   },
   {
-    title: '公司用户',
+    title: '账号管理',
     path: '/jurisdiction-config/company-user',
     component: <CompanyUser />,
   },

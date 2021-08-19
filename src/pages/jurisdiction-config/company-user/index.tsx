@@ -483,7 +483,7 @@ const CompanyUser: React.FC = () => {
               setIsCurrentUser(false);
               setTableSelectRows(data);
             }}
-            tableTitle="公司用户"
+            tableTitle="账号管理"
             url="/CompanyUser/GetPagedList"
             columns={columns}
             extractParams={{
