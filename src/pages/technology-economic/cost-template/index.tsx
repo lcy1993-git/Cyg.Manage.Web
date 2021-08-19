@@ -47,12 +47,12 @@ const CostTemplate: React.FC<Props> = () => {
     <div className={styles.costTemplate}>
       <div className={styles.leftMenu}>
         <div className={styles.topBox}>
-          <h3 className={styles.content}>目录{currentTabId}</h3>
+          <h3 className={styles.content}>目录</h3>
           <div className={styles.importBtn}>
           <TableImportButton
             style={{
-              marginRight:'20px',
-              marginTop:'20px'
+              marginRight:'10px',
+              marginTop:'10px'
             }}
           requestSource={'tecEco1'}
           extraParams={{ EngineeringTemplateId: id }}

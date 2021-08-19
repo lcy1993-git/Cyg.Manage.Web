@@ -217,6 +217,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   useEffect(() => {
+    if (url === '') return;
     requestConditions &&
       run({
         url,
