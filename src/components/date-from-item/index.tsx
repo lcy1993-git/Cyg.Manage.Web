@@ -1,7 +1,6 @@
-import { divide } from '@umijs/deps/compiled/lodash';
-import { Button, DatePicker, DatePickerProps } from 'antd';
+import { DatePicker, DatePickerProps } from 'antd';
 import moment, { Moment } from 'moment';
-import { useState } from 'react';
+
 interface Props {
   value?: string;
   onChange?: (arg0: string) => void;
@@ -13,39 +12,17 @@ interface Props {
  * @returns JSX.Element
  */
 const DatePickerForm: React.FC<Props & DatePickerProps> = ({
-  value = '',
+  value,
   onChange,
   picker,
   ...rest
 }) => {
   const momentValue = moment(value).isValid() ? moment(value) : undefined;
-  const [dateValue, setDateValue] = useState<any>(momentValue);
   const format = picker === 'year' ? 'YYYY' : 'YYYY-MM-DD';
   const handleDate = (v: Moment | null, m: string) => {
-    // onChange!(moment(m).format(format));
-    setDateValue(v);
+    onChange!(moment(m).format(format));
   };
-
-  const reset = () => {
-    setDateValue(undefined);
-  };
-
-  return (
-    <DatePicker
-      allowClear={false}
-      value={dateValue}
-      onChange={handleDate}
-      picker={picker}
-      {...rest}
-      renderExtraFooter={() => [
-        <div key="clearDate" style={{ color: '#0f7b3c', textAlign: 'center' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => reset()}>
-            清除日期
-          </span>
-        </div>,
-      ]}
-    />
-  );
+  return <DatePicker value={momentValue} onChange={handleDate} picker={picker} {...rest} />;
 };
 
 export default DatePickerForm;

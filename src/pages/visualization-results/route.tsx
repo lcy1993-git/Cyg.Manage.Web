@@ -10,7 +10,7 @@ const ResultPage = Loadable({
 
   export default [
     {
-      title: '可视化成果',
+      title: '网架可视化',
       path: '/visualization-results/result-page',
       component: <ResultPage />,
     },
