@@ -28,35 +28,11 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
     onSelect(name, path);
   };
 
-  // const subMenuList = menuData.map((item) => {
-  //   item.children.map((ite: any, index: any) => {
-  //     if (ite.category === 2) {
-  //       console.log(ite);
-  //       return (
-  //         <SubMenu>
-  //           <Menu.Item
-  //             key={`headerMenuListItem_${index}`}
-  //             onClick={() => toPath(ite.name, ite.url)}
-  //           >
-  //             {icon ? <span>{ite.icon}</span> : null}
-  //             <span>{ite.name}</span>
-  //           </Menu.Item>
-  //         </SubMenu>
-  //       );
-  //     }
-  //     return;
-  //   });
-  // });
-
-  // console.log(subMenuList, '11');
-
-  console.log(menuData);
-
   const menuElementList = menuData
     .filter((item) => item.category === 2)
     .map((item, index) => {
       return item.authCode === 'organization-structure' ? (
-        <Menu.SubMenu
+        <SubMenu
           key={`headerMenuListItem_${index}`}
           className={styles.subMenu}
           title={
@@ -75,7 +51,7 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
               </Menu.Item>
             );
           })}
-        </Menu.SubMenu>
+        </SubMenu>
       ) : (
         <Menu.Item key={`headerMenuListItem_${index}`} onClick={() => toPath(item.name, item.url)}>
           <div>
@@ -85,7 +61,6 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
         </Menu.Item>
       );
     });
-  // console.log(subMenuList, '三级');
 
   const menuElement = <Menu>{menuElementList}</Menu>;
 
