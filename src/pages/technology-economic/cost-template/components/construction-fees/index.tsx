@@ -102,16 +102,19 @@ const ConstructionFees: React.FC<Props> = forwardRef((props, ref: Ref<any>) => {
   return (
     <>
       <div className={styles.constructionFees}>
-
         {[0, 1].includes(tabs.length) ? (
-          <Table
-            dataSource={datasource}
-            columns={columns}
-            scroll={{ y: 750 }}
-            pagination={false}
-            bordered
-            size={'small'}
-          />
+          <div>
+            <div style={{height:'38px'}}/>
+            <Table
+              dataSource={datasource}
+              columns={columns}
+              scroll={{ y: 750 }}
+              pagination={false}
+              bordered
+              size={'small'}
+            />
+          </div>
+
         ) : (
           <Tabs onChange={getCostProjectData}>
             {tabs.map((item) => {
