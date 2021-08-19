@@ -192,7 +192,7 @@ const CompanyGroup: React.FC = () => {
     <PageCommonWrap>
       <TreeTable
         ref={tableRef}
-        tableTitle="公司部组"
+        tableTitle="部组管理"
         rightButtonSlot={functionModuleButton}
         getSelectData={(data) => setTableSelectRows(data)}
         columns={functionTableColumns}

@@ -60,7 +60,7 @@ export default [
     component: <ResourceManage />,
   },
   {
-    title: '签批管理',
+    title: '签批文件',
     path: '/standard-config/sign-manage',
     component: <SignManage />,
   },

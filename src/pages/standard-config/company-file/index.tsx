@@ -494,7 +494,7 @@ const CompanyFile: React.FC = () => {
               needCommonButton={true}
               columns={columns}
               url="/CompanyFile/GetPagedList"
-              tableTitle="公司文件"
+              tableTitle="成果模板"
               getSelectData={(data) => setTableSelectRows(data)}
               extractParams={{
                 keyWord: searchKeyWord,

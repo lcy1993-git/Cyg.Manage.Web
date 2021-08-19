@@ -79,21 +79,18 @@ const UserFeedBack: React.FC = () => {
   const userFeedBackButton = () => {
     return (
       <>
-        {
-          buttonJurisdictionArray?.includes("feedback-add") &&
+        {buttonJurisdictionArray?.includes('feedback-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             反馈
           </Button>
-        }
-        {
-          buttonJurisdictionArray?.includes("feedback-check-detail") &&
+        )}
+        {buttonJurisdictionArray?.includes('feedback-check-detail') && (
           <Button className="mr7" onClick={() => checkEvent()}>
             <EyeOutlined />
             查看
           </Button>
-        }
-
+        )}
       </>
     );
   };
@@ -155,14 +152,14 @@ const UserFeedBack: React.FC = () => {
         noPaging={true}
         requestSource="common"
         ref={tableRef}
-        tableTitle="用户反馈"
+        tableTitle="异常反馈"
         columns={feedBackColumns}
         getSelectData={(data) => setTableSelectRows(data)}
         buttonRightContentSlot={userFeedBackButton}
         url="/Feedback/GetList"
       />
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="添加-反馈"
         width="680px"
         visible={addFormVisible}
