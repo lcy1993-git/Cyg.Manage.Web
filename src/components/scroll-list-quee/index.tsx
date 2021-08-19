@@ -38,23 +38,24 @@ const ScrollListQuee: React.FC<ScrollListQueeProps> = ({
 
   const refRender = useRef<HTMLDivElement>(null);
 
-  useMount(() => {
 
+  
+
+  useEffect(() => {
+    const offsetHeight = data.length * height
+    setOffsetHeight(offsetHeight)
     if(ref.current && refRender.current) {
       // 当数量没有满足时不滚动
 
-      const scrollClock = ref.current?.offsetHeight / height < data.length;
+      const scrollClock = (ref.current?.offsetHeight / height) < data.length;
       setScrollClock(scrollClock)
       if(!scrollClock){
         refRender.current.style.top = '0px'
       }
     }
+  }, [data.length])
 
-    // 初始化top值
-    if(refRender.current?.style){
-      
-    }
-  })
+  console.log(scrollClock, auto);
 
   useEffect(() => {
     if(auto && scrollClock) {
@@ -77,7 +78,7 @@ const ScrollListQuee: React.FC<ScrollListQueeProps> = ({
   // 根据scrollClock初始化当前样式
   useEffect(() => {
     if(scrollClock && refRender.current) {
-      setAuto(scrollClock);
+      setAuto(true);
       refRender.current.style.top = -offsetHeight + 'px'
     }
   }, [scrollClock])
@@ -88,9 +89,6 @@ const ScrollListQuee: React.FC<ScrollListQueeProps> = ({
      */
      let top = parseInt(refRender.current!.style.top);
     if (auto === true) {
-
-      const offsetHeight = data.length * height
-      setOffsetHeight(offsetHeight)
       const newLen = data.length - preDataLength;
       top = top - newLen * height
       setPreDataLength(data.length)
@@ -98,6 +96,7 @@ const ScrollListQuee: React.FC<ScrollListQueeProps> = ({
   }, [JSON.stringify(data)])
 
   const handlerScroll = (e: { deltaY: number; }) => {
+
     if(!scrollClock) return;
     let top = parseInt(refRender.current!.style.top);
     /**

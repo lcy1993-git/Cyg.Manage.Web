@@ -3,7 +3,7 @@
   height: 100%;
 
   .mapChartComponentTipInfo {
-    height: 96px;
+    height: 50px;
     display: flex;
 
     .mapChartComponentProjectNumber {
@@ -39,39 +39,7 @@
           }
         }
       }
-      // .projectTotalNumber {
-      //   padding-left: 17px;
-      //   display: flex;
 
-      //   .projectTotalNumberIcon {
-      //     img {
-      //       width: 28px;
-      //     }
-      //   }
-
-      //   .projectTotalNumberShow {
-      //     line-height: 28px;
-      //     font-size: 32px;
-      //     padding-left: 16px;
-      //     display: inline-block;
-      //     color: @primary-color;
-      //     font-weight: 600;
-      //     background-image: -webkit-gradient(linear, 0 0, 0 bottom, from(rgb(255, 255, 255, 1)), to(rgba(3, 217, 135, 1)));
-      //     -webkit-background-clip: text;
-      //     -webkit-text-fill-color: transparent;
-      //   }
-
-      //   .projectTotalNumberUnit {
-      //     font-size: 18px;
-      //     color: @white-color;
-      //     padding-left: 9px;
-      //     line-height: 34px;
-      //   }
-
-      //   .exportButton {
-      //     padding-right: 14px;
-      //   }
-      // }
     }
 
     .mapChartComponentProjectAreaTab {
@@ -93,15 +61,57 @@
       color: #2AFE97;
     }
   }
+  .colorWrapInfo {
+    // margin-top: 50px;
+    height: 0;
+    display: flex;
+    .dataSplitMenu {
+      display: flex;
+      width: 78px;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 4px 6px;
+      background-color: #1d2f28;
+      border-radius: 2px;
+      height: 80px;
+      .dataSplitMenuItem {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
+        color: @white-color;
+        .dataSplitMenuItemIcon {
+          display: inline-block;
+          width: 16px;
+          height: 8px;
+          margin-right: 20px;
+          &.orange {
+            background-color: @map-chart-split-orange;
+          }
+          &.lightGreen {
+            background-color: @map-chart-split-light-green;
+          }
+          &.green {
+            background-color: @map-chart-split-green;
+          }
+          &.blue {
+            background-color: @map-chart-split-blue;
+          }
+        }
+        .dataSplitMenuItemContent {
+          font-size: 10px;
+          color: #74AC91;
+        }
+      }
+    }
+  }
   .mapStatisticContent {
     flex: 1;
     width: 100%;
-    height: calc(100% - 96px);
-    // height: 200px;
+    height: calc(100% - 76px);
+    // height: calc(100% - 96px);
     justify-content: center;
     position: relative;
-
     .mapStatisticContentDataSplit {
 
       width: 300px;
@@ -130,34 +140,7 @@
           filter: blur(15px);
         
         }
-        .dataSplitMenu {
-          display: flex;
-          justify-content: space-between;
-          .dataSplitMenuItem {
-            display: flex;
-            flex-direction: column;
 
-            color: @white-color;
-            .dataSplitMenuItemIcon {
-              display: inline-block;
-              width: 16px;
-              height: 8px;
-              margin-right: 20px;
-              &.orange {
-                background-color: @map-chart-split-orange;
-              }
-              &.lightGreen {
-                background-color: @map-chart-split-light-green;
-              }
-              &.green {
-                background-color: @map-chart-split-green;
-              }
-              &.blue {
-                background-color: @map-chart-split-blue;
-              }
-            }
-          }
-        }
       }
     }
 

@@ -358,9 +358,10 @@ function getMappingTagsDictionary() {
       mappingTags2: {
         "name": "名称",
         "kv_level": "电压等级",
-        "parent_id": "所属杆塔/设备",
         "entry_type": "下户方式",
         "entry_mode": "下户类型",
+        "user_line_mode" : "下户线型号",
+        "user_line_length" : "下户线长度",
         "type": "户表类型",
         "mode": "户表型号",
         "state": "户表状态",
@@ -496,6 +497,20 @@ function getMappingTagsDictionary() {
         "state": findenumsValue("SurveyState") || ""
       }
     };
+
+    mappingTagsDictionary.brace = {
+      mappingTags: {
+        "mode": "撑杆型号",
+        "state": "状态",
+        "azimuth": "方位角",
+        "project_id": "所属项目",
+        "isupgraded": "是否改造",
+        "remark": "备注"
+      },
+      mappingTagValues: {
+        "state": findenumsValue("SurveyState") || ""
+      }
+    }
 
     return JSON.stringify(mappingTagsDictionary);
   } else {

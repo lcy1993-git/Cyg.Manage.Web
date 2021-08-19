@@ -159,6 +159,7 @@ const loadLayers = (
   // });
   // showData = [];
   layerParams.forEach((item: LayerParams) => {
+    console.log(item.layerName)
     // if (postData.length > 576) {
     let layerName = item.layerName;
     loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
@@ -197,9 +198,9 @@ const loadWFSData = (
         // }
         else if (item.type === 'cable_channel') {
           style = cable_channel_styles(pJSON[i]);
-        } else if (item.type === 'pullline') {
-          style = pointStyle('design_pull_line', pJSON[i], false);
-        }
+        } else if (item.type === 'special_point') {
+          style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
+        } 
         //  else if (item.type === 'subline') {
         //   style = fzx_styles();
         // }
