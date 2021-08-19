@@ -183,6 +183,7 @@ const SpreadCoefficient: React.FC = () => {
 
   // 编辑
   const editEvent = () => {
+    console.log(tableSelectRows[0])
     if (projectType === 1) {
       // 价差目录
       if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
