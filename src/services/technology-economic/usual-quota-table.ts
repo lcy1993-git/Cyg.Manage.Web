@@ -32,7 +32,7 @@ export interface CommonlyTableForm{
   "enabled": boolean
 }
 // 查询定额常用表分页
-export const queryCommonlyTablePager = (data: QueryData) => {
+export const queryCommonlyTablePager = (data: Partial<QueryData>) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.tecEco1}/CommonlyTable/QueryCommonlyTablePager`,
       { method: 'POST', data}),
