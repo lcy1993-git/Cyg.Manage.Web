@@ -136,11 +136,11 @@ const SuppliesLibrary: React.FC = () => {
   }
 
   const gotoMoreInfo = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
-      return;
-    }
-    const {id} = tableSelectRows[0];
+    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+    //   message.error('请选择要操作的行');
+    //   return;
+    // }
+    const {id} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/suppliesl-infomation?id=${id}`)
   };
   const onFinish = async (val: SuppliesLibraryData) => {
