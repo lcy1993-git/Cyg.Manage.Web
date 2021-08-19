@@ -1,0 +1,43 @@
+.search {
+  display: flex;
+  :global {
+    .ant-select {
+      width: 100px;
+    }
+  }
+}
+
+.companyUser {
+  width: 100%;
+  height: 100%;
+  background-color: @bg-primary-color;
+  .accreditNumber {
+    box-sizing: border-box;
+    height: 150px;
+    margin-bottom: 13px;
+    padding: 20px;
+    background-color: @white-color;
+    .accreditStatisticItem {
+      position: relative;
+      flex: 1;
+      min-width: 15%;
+      height: 130px;
+      margin: 10px 0;
+    }
+    .accreditStatisticItem:not(:last-child):after {
+      position: absolute;
+      right: 1%;
+      bottom: 50%;
+      z-index: 1;
+      width: 1px;
+      height: 52px;
+      background-color: @split-color;
+      content: '';
+    }
+  }
+  .userTable {
+    height: calc(100% - 163px);
+    padding: 20px 20px 0px 20px;
+    background-color: @white-color;
+  }
+}

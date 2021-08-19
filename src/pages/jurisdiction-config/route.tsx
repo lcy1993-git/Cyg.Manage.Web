@@ -1,6 +1,11 @@
 import Loadable from 'react-loadable';
-import React from 'react';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
+
+const ManageUser = Loadable({
+  loader: () => import('@/pages/jurisdiction-config/manage-user'),
+  loading: Loading,
+  delay: 150,
+});
 
 const CompanyManage = Loadable({
   loader: () => import('@/pages/jurisdiction-config/company-manage'),
@@ -12,8 +17,8 @@ const PlatformRole = Loadable({
   loading: Loading,
   delay: 150,
 });
-const PlatformAuthorization = Loadable({
-  loader: () => import('@/pages/jurisdiction-config/platform-authorization'),
+const CompanyUser = Loadable({
+  loader: () => import('@/pages/jurisdiction-config/company-user'),
   loading: Loading,
   delay: 150,
 });
@@ -33,7 +38,25 @@ const SubordinateCompany = Loadable({
   loading: Loading,
   delay: 150,
 });
+
+const WorkHandover = Loadable({
+  loader: () => import('@/pages/jurisdiction-config/work-handover'),
+  loading: Loading,
+  delay: 150,
+});
+
+const CompanyGroup = Loadable({
+  loader: () => import('@/pages/jurisdiction-config/company-group'),
+  loading: Loading,
+  delay: 150,
+});
+
 export default [
+  {
+    title: '管理员',
+    path: '/jurisdiction-config/manage-user',
+    component: <ManageUser />,
+  },
   {
     title: '公司管理',
     path: '/jurisdiction-config/company-manage',
@@ -45,10 +68,11 @@ export default [
     component: <PlatformRole />,
   },
   {
-    title: '平台授权',
-    path: '/jurisdiction-config/platform-authorization',
-    component: <PlatformAuthorization />,
+    title: '账号管理',
+    path: '/jurisdiction-config/company-user',
+    component: <CompanyUser />,
   },
+
   {
     title: '功能权限',
     path: '/jurisdiction-config/role-permissions',
@@ -59,9 +83,22 @@ export default [
     path: '/jurisdiction-config/project-permission',
     component: <ProjectPermission />,
   },
+
   {
     title: '下辖公司',
     path: '/jurisdiction-config/subordinate-company',
     component: <SubordinateCompany />,
+  },
+
+  {
+    title: '部组管理',
+    path: '/jurisdiction-config/company-group',
+    component: <CompanyGroup />,
+  },
+
+  {
+    title: '工作交接',
+    path: '/jurisdiction-config/work-handover',
+    component: <WorkHandover />,
   },
 ];

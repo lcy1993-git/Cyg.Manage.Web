@@ -14,7 +14,6 @@ import {
   queryBasicAreaByLevel
 } from '@/services/technology-economic/common-rate';
 import {generateUUID} from '@/utils/utils';
-import _  from 'lodash'
 
 interface ListData {
   value: string | number;
@@ -121,7 +120,6 @@ const AreaTypeManage: React.FC = () => {
     }
   }
   const turnEditData = async ()=>{
-    console.log(selectValue)
   const {content} = await queryAreaInfoDetail(selectValue.areaType,selectValue.firstCode)
     if (content.secondCodes.length === 0){
       content.secondCodes = ['all']
@@ -137,7 +135,7 @@ const AreaTypeManage: React.FC = () => {
       ])
       setDisabledThirdLevel(true)
     }
-    await getLevelList(1,'-1',content.areaType,content.firstCode)
+    await getLevelList(1,['-1'],content.areaType,content.firstCode)
     await getLevelList(2,content.firstCode,content.areaType,content.firstCode)
     if (!content.secondCodes.includes('all') && content.secondCodes.length === 1){
       await getLevelList(3,content.secondCodes[0],content.areaType,content.secondCodes[0])

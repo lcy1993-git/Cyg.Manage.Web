@@ -1,5 +1,4 @@
 import Loadable from 'react-loadable';
-import React from 'react';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
 
 const CockpitConfig = Loadable({
@@ -14,4 +13,4 @@ export default [
     path: '/cockpit-manage/cockpit-config',
     component: <CockpitConfig />,
   },
-]                                                                                                                                                                                                                                      
+];
