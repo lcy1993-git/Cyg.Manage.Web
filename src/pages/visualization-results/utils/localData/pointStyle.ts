@@ -7,9 +7,12 @@ import Circle from 'ol/style/Circle';
 import { Color } from 'ol/color';
 import { ColorLike } from 'ol/colorlike';
 import Icon from 'ol/style/Icon';
+import Point from 'ol/geom/Point';
 
 import Styles from './Styles';
 import '@/assets/icon/webgisIconFont.css';
+import markerIconSrc from '@/assets/image/webgis/marker-icon.png';
+import arrowSrc from '@/assets/image/webgis/arrow.png';
 import markImageSrc1 from "@/assets/image/webgis/img_地物_道路.png";
 import markImageSrc2 from "@/assets/image/webgis/img_地物_河流.png";
 import markImageSrc3 from "@/assets/image/webgis/img_地物_湖塘.png";
@@ -41,7 +44,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
     let azimuth = feature.getProperties().azimuth || 0;
     let isDismantle;
 
-    if(type.indexOf('mark') >= 0){
+    if (type.indexOf('mark') >= 0) {
         style = mark_style(feature);
         if (selected) {
             imageStyle = new Circle({
@@ -68,7 +71,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
             textFillColor = 'rgba(249, 149, 52, 1)';
         }
         iconFontText = type.indexOf('pull_line') >= 0 ? '\ue884' : '\ue87f';
-        if(type.indexOf('pull_line') >= 0 && feature.getProperties().type === '1'){
+        if (type.indexOf('pull_line') >= 0 && feature.getProperties().type === '1') {
             iconFontText = '\ue896';
         }
         style = new ClassStyle({
@@ -468,7 +471,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 iconFontText = '\ue854';
             else if (feature.getProperties().state == 3) // 利旧
                 iconFontText = '\ue841';
-            else if (feature.getProperties().state == 4){ // 拆除
+            else if (feature.getProperties().state == 4) { // 拆除
                 iconFontText = '\ue854';
                 isDismantle = true;
             }
@@ -737,7 +740,7 @@ const line_style = function (feature: Feature, select: any, layerType: any) {
         strokeOpts.lineDash = style.lineDash;
     }
     let backgroundColor = Styles.line.default.backgroundColor;
-    let styleParams, selectColor,fontColor;
+    let styleParams, selectColor, fontColor;
     if (select) {
         selectColor = Styles.line.selected.color;
         strokeOpts.color = selectColor;
@@ -776,7 +779,7 @@ const line_style = function (feature: Feature, select: any, layerType: any) {
         stroke: new Stroke(strokeOpts)
     })
     let styles = [backgroundStyle, style_];
-    if(style.isDismantle){
+    if (style.isDismantle) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
                 font: 'Normal 22px webgisIconFont',
@@ -812,6 +815,24 @@ const line_style = function (feature: Feature, select: any, layerType: any) {
         );
     }
     return styles;
+}
+
+
+// 水平拉线样式
+const zero_guy_style = function (feature: Feature, select: any) {
+    console.log(feature.getProperties().symbol_id);
+    let styleColor = styleColor = Styles.line["zero_guy"];
+    let strokeOpts: Options = {
+        color: styleColor.color,
+        lineCap: 'butt',
+        lineJoin: 'miter',
+        lineDash: [12],
+        width: Styles.line.default.width,
+    };
+    let style = new ClassStyle({
+        stroke: new Stroke(strokeOpts)
+    });
+    return style;
 }
 
 // 电缆通道样式
@@ -906,10 +927,68 @@ const mark_style = function (feature: Feature) {
     });
     return style;
 }
+
+// 轨迹点样式
+const trackStyle = (isCurDay: boolean = true, isFocus: boolean = false, locked: boolean = false) => {
+    if (locked) {
+        isFocus = true;
+    }
+    return new ClassStyle({
+        image: new Icon({
+            src: markerIconSrc,
+            anchor: [0.5, 1],
+            scale: isCurDay ? (isFocus ? 1.2 : 1) : 1,
+            opacity: isCurDay ? 1 : 0,
+        }),
+    });
+};
+// 轨迹线样式
+const trackLineStyle = (feature: any, isCurDay: boolean = true, isFocus: boolean = false, locked: boolean = false) => {
+    if (locked) {
+        isFocus = true;
+    }
+    var geometry = feature.getGeometry();
+    var styles = [
+        new ClassStyle({
+            stroke: new Stroke({
+                color: isCurDay ? (isFocus ? [255, 204, 51, 1] : [255, 204, 51, 0.5]) : [255, 204, 51, 0],
+                width: 3,
+            }),
+        }),
+    ];
+    geometry.getLineStrings().forEach((lineString: any) => {
+        lineString.forEachSegment(function (start: any, end: any) {
+            var dx = end[0] - start[0];
+            var dy = end[1] - start[1];
+            if (dx === 0 && dy === 0) {
+                return;
+            }
+            var rotation = Math.atan2(dy, dx);
+            // arrows
+            styles.push(
+                new ClassStyle({
+                    geometry: new Point(end),
+                    image: new Icon({
+                        src: arrowSrc,
+                        opacity: isCurDay ? (isFocus ? 1 : 0.5) : 0,
+                        anchor: [0.75, 0.5],
+                        rotateWithView: true,
+                        rotation: -rotation,
+                    }),
+                }),
+            );
+        });
+    });
+    return styles;
+};
+
 export {
     pointStyle,
     line_style,
     cable_channel_styles,
     fzx_styles,
-    mark_style
+    mark_style,
+    zero_guy_style,
+    trackStyle,
+    trackLineStyle,
 }

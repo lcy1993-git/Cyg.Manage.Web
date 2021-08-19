@@ -6,7 +6,7 @@ import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import MultiLineString from 'ol/geom/MultiLineString';
-import { pointStyle, line_style, cable_channel_styles, fzx_styles } from './localData/pointStyle';
+import { pointStyle, line_style, cable_channel_styles, fzx_styles, trackStyle, trackLineStyle, zero_guy_style } from './localData/pointStyle';
 import Layer from 'ol/layer/Layer';
 import Point from 'ol/geom/Point';
 import { transform, getPointResolution } from 'ol/proj';
@@ -15,9 +15,8 @@ import Feature from 'ol/Feature';
 import ClassStyle from 'ol/style/Style';
 import Stroke from 'ol/style/Stroke';
 import Icon from 'ol/style/Icon';
-import markerIconSrc from '@/assets/image/webgis/marker-icon.png';
-import arrowSrc from '@/assets/image/webgis/arrow.png';
 import { getXmlData, sortByTime, getTime } from './utils';
+import { setTrackRecordDateArray } from './mapClick';
 
 var projects: any;
 // var showData: any = [];
@@ -192,6 +191,8 @@ const loadWFSData = (
         let style;
         if (item.type == 'line') {
           style = line_style(pJSON[i], false, layerType);
+          if(layerType === 'design')
+          console.log(pJSON, layerType, 'line');
         }
         // else if (item.type === 'point') {
         //   style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
@@ -201,6 +202,11 @@ const loadWFSData = (
         } else if (item.type === 'special_point') {
           style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
         } 
+        else if(item.type === 'zero_guy') {
+          // style = zero_guy_style(pJSON[i], false);
+          style = zero_guy_style(pJSON[i], false);
+          console.log(pJSON, layerType, 'zero_guy');
+        }
         //  else if (item.type === 'subline') {
         //   style = fzx_styles();
         // }
@@ -328,13 +334,19 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
   // }
   const promise = loadLayer(postData, 'pdd:' + trackType[type]);
   promise.then((data: any) => {
+    // 筛选轨迹记录日期
+    let recordSet = new Set();
+    data.features.forEach(feature => {
+      recordSet.add(feature.properties.record_date.substr(0, 10));
+    });
+    setTrackRecordDateArray(Array.from(recordSet));
     let surveyTrackLayer = getLayerByName(track[type], groupLayer.getLayers().getArray());
     let surveyTrackLineLayer = getLayerByName(trackLine[type], groupLayer.getLayers().getArray());
     if (!surveyTrackLayer) {
       let source = new VectorSource();
       surveyTrackLayer = new Vector({
         source,
-        zIndex: 5,
+        zIndex: 6,
       });
       surveyTrackLayer.set('name', track[type]);
       groupLayer.getLayers().push(surveyTrackLayer);
@@ -348,7 +360,6 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
       surveyTrackLineLayer.set('name', trackLine[type]);
       groupLayer.getLayers().push(surveyTrackLineLayer);
     }
-
     let obj = {};
     for (let i = 0; i < data.features.length; i++) {
       let ai = data.features[i];
@@ -389,7 +400,11 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
       let sortedFeatures = sortByTime(geojson.features);
       // let sortedFeatures = data.features.sort(sortFeaturesFunc);
 
-      sortedFeatures.forEach((feature: any) => {
+      let trackLineRecordDate = '';
+      sortedFeatures.forEach((feature: any, i) => {
+        if(i === 0) {
+          trackLineRecordDate = feature.properties.record_date;
+        }
         if (lineLatlngsSegement.length == 0)
           segementFirstDate = new Date(feature.properties.record_date);
 
@@ -413,9 +428,11 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
       var lineGeom = new MultiLineString(lineLatlngs);
       var lineFeature = new Feature({
         geometry: lineGeom,
+        record_date: trackLineRecordDate,
       });
       lineFeature.set('project_id', re.id);
-      lineFeature.setStyle(trackLineStyle(lineFeature, 'rgba(255,204,51,1)'));
+      lineFeature.setStyle(trackLineStyle(lineFeature));
+      console.log(lineFeature);
       surveyTrackLineLayer.getSource().addFeature(lineFeature);
     });
 
@@ -435,50 +452,6 @@ const clearTrackLayers = (trackLayers: any, type: number = 0) => {
       layer.getSource().clear();
     });
   return groupLayer;
-};
-// 轨迹点样式
-const trackStyle = () => {
-  return new ClassStyle({
-    image: new Icon({
-      src: markerIconSrc,
-      anchor: [0.5, 1],
-    }),
-  });
-};
-// 轨迹线样式
-const trackLineStyle = (feature: any, color: string) => {
-  var geometry = feature.getGeometry();
-  var styles = [
-    new ClassStyle({
-      stroke: new Stroke({
-        color,
-        width: 3,
-      }),
-    }),
-  ];
-  geometry.getLineStrings().forEach((lineString: any) => {
-    lineString.forEachSegment(function (start: any, end: any) {
-      var dx = end[0] - start[0];
-      var dy = end[1] - start[1];
-      if (dx === 0 && dy === 0) {
-        return;
-      }
-      var rotation = Math.atan2(dy, dx);
-      // arrows
-      styles.push(
-        new ClassStyle({
-          geometry: new Point(end),
-          image: new Icon({
-            src: arrowSrc,
-            anchor: [0.75, 0.5],
-            rotateWithView: true,
-            rotation: -rotation,
-          }),
-        }),
-      );
-    });
-  });
-  return styles;
 };
 
 // 按时间排序

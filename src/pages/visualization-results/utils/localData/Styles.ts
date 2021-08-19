@@ -219,6 +219,9 @@ const Styles = {
             backgroundColor: 'rgba(23, 34, 29, 0.6)',
             width: 6
         },
+        "zero_guy": {
+            color: 'rgba(188, 40, 184, 1)',
+        },
         "1011": { // 原有220V
             color: 'rgba(145, 145, 255, 1)',
             img: '../images_new/220V电压',
