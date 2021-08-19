@@ -6,6 +6,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useRequest } from 'ahooks';
 import moment, { Moment } from 'moment';
 import CreateProjectForm from '../create-project-form';
+import { isNumber } from 'lodash';
 
 interface ProjectInheritModalProps {
   projectId: string;
@@ -31,6 +32,10 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
     onSuccess: (res) => {
+      const { dataSourceType, disclosureRange, pileRange } = projectInfo!;
+      const handleDisclosureRange =
+        dataSourceType === 2 ? '无需现场数据”项目，免设置此条目' : disclosureRange;
+      const handlePileRange = dataSourceType === 2 ? '无需现场数据”项目，免设置此条目' : pileRange;
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
@@ -38,18 +43,10 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
         deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
-        disclosureRange:
-          projectInfo?.dataSourceType === 2
-            ? '“无需现场数据”项目，免设置此条目'
-            : projectInfo?.dataSourceType === 1
-            ? '“点位导入”项目，免设置此条目'
-            : projectInfo?.disclosureRange,
-        pileRange:
-          projectInfo?.dataSourceType === 2
-            ? '“无需现场数据”项目，免设置此条目'
-            : projectInfo?.dataSourceType === 1
-            ? '“点位导入”项目，免设置此条目'
-            : projectInfo?.pileRange,
+        disclosureRange: handleDisclosureRange,
+        pileRange: handlePileRange,
+        dataSourceType: projectInfo?.dataSourceType === 1 ? 0 : projectInfo?.dataSourceType,
+        stage: isNumber(projectInfo?.stage) ? projectInfo?.stage + 1 : 1,
       });
     },
   });
@@ -60,7 +57,8 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
     }
   }, [state]);
 
-  const edit = () => {
+  const sureProjectInheritEvent = () => {
+    // TODO 做保存接口
     form.validateFields().then(async (value) => {
       try {
         await editProject({
@@ -102,7 +100,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" loading={requestLoading} onClick={() => edit()}>
+        <Button key="save" type="primary" loading={requestLoading} onClick={() => sureProjectInheritEvent()}>
           保存
         </Button>,
       ]}
@@ -111,6 +109,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
     >
       <Form form={form} preserve={false}>
         <CreateProjectForm
+          isInherit={true}
           areaId={areaId}
           company={company}
           companyName={companyName}
