@@ -84,7 +84,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         </div>
       </div>
       <div className={styles.favContent}>
-        <TreeNodeInput />
+        <TreeNodeInput treeData={treeData} />
         <DirectoryTree treeData={treeData} height={535} defaultExpandAll />
       </div>
       <div className={styles.favFooter}>
