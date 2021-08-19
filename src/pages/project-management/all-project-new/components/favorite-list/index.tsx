@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks';
 import { Button, Tree } from 'antd';
 import uuid from 'node-uuid';
 import React, { Dispatch, SetStateAction, useState } from 'react';
+import TreeNodeInput from './components/tree-node-input';
 
 import styles from './index.less';
 
@@ -56,7 +57,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   //新建一级收藏夹
   const createEvent = () => {
     const newTreeNode = {
-      id: uuid.v1(),
+      key: uuid.v1(),
       title: '收藏夹1',
       children: [],
     };
@@ -66,8 +67,6 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     copyList?.push(newTreeNode);
     setTreeData(copyList);
   };
-
-  console.log(treeData, '3332211');
 
   return (
     <div className={styles.engineerList}>
@@ -85,7 +84,8 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         </div>
       </div>
       <div className={styles.favContent}>
-        <DirectoryTree treeData={treeData} height={650} defaultExpandAll />
+        <TreeNodeInput />
+        <DirectoryTree treeData={treeData} height={535} defaultExpandAll />
       </div>
       <div className={styles.favFooter}>
         <span
