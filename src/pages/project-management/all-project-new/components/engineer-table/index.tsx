@@ -44,6 +44,7 @@ import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
 import moment from 'moment';
 import ProjectInheritModal from '../project-inherit-modal';
+import InheritIcon from '../inherit-icon';
 
 const colorMap = {
   立项: 'green',
@@ -346,6 +347,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             {record.name}
           </u>
         );
+      },
+      iconSlot: (projectInfo: any) => {
+        return <InheritIcon />;
       },
       ellipsis: true,
     },

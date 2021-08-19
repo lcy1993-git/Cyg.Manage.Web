@@ -215,7 +215,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   ]);
 
   const tbodyElement = useMemo(() => {
-    return (projectInfo.projects ?? []).map((item: any) => {
+    return (projectInfo.projects ?? []).map((item: any,index) => {
       return (
         <div key={`${item.id}Td`} className={styles.engineerTableTr}>
           <div
@@ -227,7 +227,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
           {columns.map((ite) => {
             return (
               <div
-                className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
+                className={`${styles.engineerTableTd} ${
                   ite.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
                 } ${ite.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${
                   ite.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
@@ -247,22 +247,28 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                       }
                 }
               >
-                {ite.ellipsis ? (
-                  // eslint-disable-next-line no-nested-ternary
-                  <Tooltip
-                    title={
-                      typeof item[ite.dataIndex] === 'string'
-                        ? item[ite.dataIndex]
-                        : ite.render
-                        ? ite.render(item, projectInfo)
-                        : ''
-                    }
-                  >
-                    {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
-                  </Tooltip>
-                ) : (
-                  <span>{ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}</span>
-                )}
+                <div className={styles.iconSlot}>
+                  {index === 2 && ite.iconSlot?.()}
+                </div>
+                <div className={`${styles.engineerTableTdContent} ${ite.ellipsis ? styles.ellipsis : ''}`}>
+                  {ite.ellipsis ? (
+                    // eslint-disable-next-line no-nested-ternary
+                    <Tooltip
+                      title={
+                        // eslint-disable-next-line no-nested-ternary
+                        typeof item[ite.dataIndex] === 'string'
+                          ? item[ite.dataIndex]
+                          : ite.render
+                          ? ite.render(item, projectInfo)
+                          : ''
+                      }
+                    >
+                      {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
+                    </Tooltip>
+                  ) : (
+                    <span>{ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}</span>
+                  )}
+                </div>
               </div>
             );
           })}
