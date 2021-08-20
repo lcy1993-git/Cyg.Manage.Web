@@ -1,12 +1,15 @@
+import EmptyTip from '@/components/empty-tip';
 import { getFavorites } from '@/services/project-management/favorite-list';
 import { PlusOutlined, UpOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { Button, Tree } from 'antd';
 import uuid from 'node-uuid';
 import React, { Dispatch, SetStateAction, useState } from 'react';
+import arrowImg from '@/assets/image/project-management/arrow.png';
 import TreeNodeInput from './components/tree-node-input';
 
 import styles from './index.less';
+import { stubArray } from 'lodash';
 
 interface FavoriteListParams {
   visible: boolean;
@@ -60,8 +63,10 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       key: uuid.v1(),
       title: '收藏夹1',
       children: [],
+      isEdit: true,
     };
     console.log(newTreeNode);
+
     const copyList = JSON.parse(JSON.stringify(treeData));
     console.log(copyList, '333');
     copyList?.push(newTreeNode);
@@ -84,8 +89,18 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         </div>
       </div>
       <div className={styles.favContent}>
-        <TreeNodeInput treeData={treeData} />
-        <DirectoryTree treeData={treeData} height={535} defaultExpandAll />
+        {/* <TreeNodeInput treeData={treeData} /> */}
+        {treeData.length === 0 ? (
+          <>
+            <div className={styles.createTips}>
+              <span>点击此处新建文件夹</span>
+              <img src={arrowImg} style={{ verticalAlign: 'baseline' }} />
+            </div>
+            <EmptyTip description="暂无内容" />
+          </>
+        ) : (
+          <DirectoryTree treeData={treeData} height={535} defaultExpandAll />
+        )}
       </div>
       <div className={styles.favFooter}>
         <span
