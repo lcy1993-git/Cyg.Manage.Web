@@ -1,11 +1,14 @@
-import FileXlsxView from "@/components/file-xlsx-view";
+
+import type { FileType } from './getStrategyComponent';
+import getStrategyComponent from './getStrategyComponent'
+
 import { useMount } from "ahooks";
-import type { ReactElement, ReactNode } from "react";
+import type { ReactElement } from "react";
 import { useState } from "react";
 
-type FeatchFileViewProps = {
+export type FeatchFileViewProps = {
   api: () => Promise<any>;
-  type: string;
+  type: FileType;
   onError?: () => void;
   emptySlot?: () => ReactElement;
 } & Record<string, any>;
@@ -29,12 +32,8 @@ const FeatchFileView: React.FC<FeatchFileViewProps> = ({
   })
   if(!data) {
     return emptySlot ? emptySlot() : <></>;
-  }if(type === 'xlsx' || type === 'xls') {
-    return (
-      <FileXlsxView data={data} {...rest}/>
-    )
   }
-    return <></>
+    return getStrategyComponent(type)!(rest)
 }
 
 export default FeatchFileView;

@@ -48,7 +48,7 @@ const ApiFileView: React.FC<ApiFileViewProps> = ({
   if(!data) {
     return <Empty />
   }
-    return getComponent(data, ...rest)
+    return getComponent()(data, ...rest)
   
   // if(!data) {
   //   return emptySlot ? emptySlot() : <></>;

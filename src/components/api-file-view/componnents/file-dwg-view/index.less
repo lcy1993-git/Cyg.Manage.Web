@@ -1,0 +1,43 @@
+
+
+.dwgWrap {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: auto;
+  background: #000;
+  cursor: pointer;
+  .canvas {
+    position: absolute;
+    display: none;
+  }
+  .spare {
+    position: absolute;
+    display: none;
+    transform-origin: 0 0 0;
+  }
+  :global {
+    .ant-spin-nested-loading {
+      position: unset;
+    }
+    .ant-spin-blur:after {
+      display: none;
+    }
+    .ant-spin-nested-loading {
+      height: 100%;
+    }
+  }
+  .loading {
+    height: 100%;
+    width: 100%;
+    display: inline-block;
+    padding-top: 22%;
+  }
+}
+
+.wait {
+ cursor: wait;
+}
+.draw {
+  cursor: pointer;
+}
