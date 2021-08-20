@@ -2,7 +2,7 @@ import EmptyTip from '@/components/empty-tip';
 import { getFavorites } from '@/services/project-management/favorite-list';
 import { PlusOutlined, UpOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-import { Button, Tree } from 'antd';
+import { Button, Input, Tree } from 'antd';
 import uuid from 'node-uuid';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import arrowImg from '@/assets/image/project-management/arrow.png';
@@ -10,6 +10,7 @@ import TreeNodeInput from './components/tree-node-input';
 
 import styles from './index.less';
 import { stubArray } from 'lodash';
+import ImageIcon from '@/components/image-icon';
 
 interface FavoriteListParams {
   visible: boolean;
@@ -27,6 +28,7 @@ const { DirectoryTree } = Tree;
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   const { setVisible, visible } = props;
   const [treeData, setTreeData] = useState<treeDataItems[]>([]);
+  const [editName, setEditName] = useState<string>('一级收藏夹目录');
 
   const { data } = useRequest(getFavorites, {
     manual: true,
@@ -58,6 +60,11 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
 
   // const treeData = dig();
   //新建一级收藏夹
+  const sureAddEvent = () => {
+    console.log(editName);
+    // setIsEdit(false);
+  };
+
   const createEvent = () => {
     const newTreeNode = {
       key: uuid.v1(),
@@ -65,11 +72,30 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       children: [],
       isEdit: true,
     };
-    console.log(newTreeNode);
+    // console.log(newTreeNode);
 
     const copyList = JSON.parse(JSON.stringify(treeData));
     console.log(copyList, '333');
     copyList?.push(newTreeNode);
+    copyList.map((item: any) => {
+      if (item.isEdit) {
+        item.title = (
+          <div style={{ display: 'inline-block' }}>
+            <Input
+              value={editName}
+              style={{ height: '25px' }}
+              onBlur={() => sureAddEvent()}
+              onChange={(e: any) => setEditName(e.target.value)}
+            />
+            <div style={{ display: 'inline-block' }}>
+              <ImageIcon width={15} height={15} imgUrl="create-tree.png" />
+              <ImageIcon width={15} height={15} imgUrl="delete-tree.png" />
+              <ImageIcon width={15} height={15} imgUrl="edit-tree.png" />
+            </div>
+          </div>
+        );
+      }
+    });
     setTreeData(copyList);
   };
 
@@ -88,20 +114,20 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           </Button>
         </div>
       </div>
-      <div className={styles.favContent}>
-        {/* <TreeNodeInput treeData={treeData} /> */}
-        {treeData.length === 0 ? (
-          <>
-            <div className={styles.createTips}>
-              <span>点击此处新建文件夹</span>
-              <img src={arrowImg} style={{ verticalAlign: 'baseline' }} />
-            </div>
-            <EmptyTip description="暂无内容" />
-          </>
-        ) : (
+
+      {treeData.length === 0 ? (
+        <div className={styles.favEmpty}>
+          <div className={styles.createTips}>
+            <span>点击此处新建文件夹</span>
+            <img src={arrowImg} style={{ verticalAlign: 'baseline' }} />
+          </div>
+          <EmptyTip description="暂无内容" />
+        </div>
+      ) : (
+        <div className={styles.favTree}>
           <DirectoryTree treeData={treeData} height={535} defaultExpandAll />
-        )}
-      </div>
+        </div>
+      )}
       <div className={styles.favFooter}>
         <span
           style={{ cursor: 'pointer' }}
