@@ -2,7 +2,7 @@ import request from '@/utils/request';
 import { cyRequest, baseUrl } from '../common';
 
 export enum BelongModuleEnum {
-  '管理员' = 1,
+  '平台管理员' = 1,
   '超级管理员',
   '公司管理员',
 }

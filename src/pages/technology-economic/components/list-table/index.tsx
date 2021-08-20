@@ -13,11 +13,12 @@ interface Props {
   url: string;
   rowKey: any;
   columns: any[];
+  requestSource?: "project" | "common" | "resource" | "tecEco" | "tecEco1" | undefined;
   cruxKey?: string | null;
   params?: Record<string, any>
 }
 
-const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url,params, rowKey, columns, cruxKey="quotaItem"}) => {
+const ListTable: React.FC<Props> = ({catalogueId,requestSource = 'tecEco', scrolly, setResourceItem, url,params, rowKey, columns, cruxKey="quotaItem"}) => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
@@ -60,7 +61,7 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url,
         needCommonButton={false}
         columns={columns}
         noPaging={false}
-        requestSource="tecEco"
+        requestSource={requestSource}
         url={url}
         // tableTitle="定额库管理"
         getSelectData={tableSelectEvent}

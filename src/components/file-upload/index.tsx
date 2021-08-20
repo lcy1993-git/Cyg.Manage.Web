@@ -49,7 +49,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
     // }
 
     // 如果maxCount 是1的时候，那么就要随时把上传的替换成最新的哪一个
-    //判断大小控制process的速度
+    // 判断大小控制process的速度
 
     if (maxCount && maxCount == 1) {
       const newArray: any[] = [];

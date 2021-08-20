@@ -43,7 +43,7 @@ export const deleteMaterialLibraryById = (MaterialId: string) => {
 
 
 // 查询物料库列表
-export const getMaterialLibraryList = (data: QueryData) => {
+export const getMaterialLibraryList = (data: Partial<QueryData>) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryList`,
       { method: 'POST', data }),

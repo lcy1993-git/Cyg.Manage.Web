@@ -57,7 +57,7 @@ const ProjectList: React.FC = () => {
       width: 60,
       render(v: boolean) {
         console.log(v);
-        
+
         return <span>{ v ? "是" : "否" }</span>
       }
     },
@@ -207,7 +207,6 @@ const ProjectList: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-
         {
           !buttonJurisdictionArray?.includes('commonrate-add') &&
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
@@ -253,9 +252,7 @@ const ProjectList: React.FC = () => {
   };
 
   const onModalOkClick = async () => {
-    const { id } = tableSelectRows[0];
     const values = await form.validateFields();
-    
     if (modalType === 'add') {
       await addRateTable({ ...values, }).then(() => {
         message.success('添加成功')
@@ -263,10 +260,7 @@ const ProjectList: React.FC = () => {
         setFormVisible(false);
         form.resetFields();
       });
-
     } else if (modalType === 'edit') {
-      console.log(values);
-      
       await editRateTable({ ...values, id }).then(() => {
         message.success('编辑成功')
         refresh();

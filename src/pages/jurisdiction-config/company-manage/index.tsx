@@ -17,6 +17,7 @@ import EditCompanyManageForm from './components/edit-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import moment from 'moment';
 
 const mapColor = {
   无: 'gray',
@@ -98,7 +99,7 @@ const CompanyManage: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <Switch onChange={() => changeStateEvent(record.id, isChecked)} />
+                  <Switch onChange={() => changeStateEvent(record.id, isChecked)} checked={false} />
                   <span className="formSwitchCloseTip">禁用</span>
                 </>
               ))}
@@ -108,7 +109,15 @@ const CompanyManage: React.FC = () => {
         );
       },
     },
-
+    {
+      title: '授权期限',
+      dataIndex: 'authorityExpireDate',
+      index: 'authorityExpireDate',
+      width: 100,
+      render: (text: any, record: any) => {
+        return text ? moment(text).format('YYYY-MM-DD') : '-';
+      },
+    },
     {
       title: '详细地址',
       dataIndex: 'address',
@@ -122,9 +131,18 @@ const CompanyManage: React.FC = () => {
   ];
 
   const changeStateEvent = async (id: string, isChecked: boolean) => {
-    await changeCompanyStatus(id, isChecked);
-    tableFresh();
-    message.success('状态修改成功');
+    // 这里判断一下时间是否过期
+    // 并且需要判断是否是从关闭到开启状态
+    const clickData = await run(id);
+    const nowDate = moment(new Date().getDate());
+
+    if (nowDate.isAfter(moment(clickData?.authorityExpireDate))) {
+      message.error('当前授权已超期，请修改授权期限');
+    } else {
+      await changeCompanyStatus(id, isChecked);
+      tableFresh();
+      message.success('状态修改成功');
+    }
   };
 
   const companyManageButton = () => {
@@ -160,11 +178,13 @@ const CompanyManage: React.FC = () => {
         { key: 16, value: value.review },
         { key: 2, value: value.manage },
       ];
+
       const submitInfo = {
         name: value.name,
         parentId: value.parentId,
         address: value.address,
         isEnabled: value.isEnabled,
+        authorityExpireDate: value.authorityExpireDate,
         userSkuQtys,
         remark: value.remark,
       };
@@ -191,6 +211,9 @@ const CompanyManage: React.FC = () => {
     setEditFormVisible(true);
     editForm.setFieldsValue({
       ...CompanyManageData,
+      authorityExpireDate: CompanyManageData?.authorityExpireDate
+        ? moment(CompanyManageData?.authorityExpireDate)
+        : null,
     });
   };
 
@@ -216,6 +239,7 @@ const CompanyManage: React.FC = () => {
           address: editData.address,
           remark: editData.remark,
           isEnabled: editData.isEnabled,
+          authorityExpireDate: editData.authorityExpireDate,
           userSkuQtys,
         },
         value,
@@ -251,7 +275,7 @@ const CompanyManage: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <CompanyManageForm treeData={selectTreeData} />
+          <CompanyManageForm treeData={selectTreeData} form={addForm} />
         </Form>
       </Modal>
       <Modal
@@ -266,7 +290,7 @@ const CompanyManage: React.FC = () => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <EditCompanyManageForm accreditNumber={currentCompanyData} />
+          <EditCompanyManageForm accreditNumber={currentCompanyData} form={editForm} />
         </Form>
       </Modal>
     </PageCommonWrap>

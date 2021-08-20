@@ -60,15 +60,15 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
         }
         return style;
     }
-    if (type == 'design_pull_line') {
+    if (type.indexOf('pull_line') >= 0 || type.indexOf('brace') >= 0) {
         size = 26;
         let textFillColor = '#366871';
         if (selected) {
             size = 28;
             textFillColor = 'rgba(249, 149, 52, 1)';
         }
-        iconFontText = '\ue884';
-        if(feature.getProperties().type === '1'){
+        iconFontText = type.indexOf('pull_line') >= 0 ? '\ue884' : '\ue87f';
+        if(type.indexOf('pull_line') >= 0 && feature.getProperties().type === '1'){
             iconFontText = '\ue896';
         }
         style = new ClassStyle({

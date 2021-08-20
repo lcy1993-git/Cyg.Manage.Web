@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manageweb
+  namespace: kube-<NAMESPACES>
+spec:
+  
+  selector:
+    matchLabels:
+      app: manageweb
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: manageweb
+    spec:
+      containers:
+      - image: 10.6.1.45:10242/cyg/manageweb:<BUILD_TAG>
+        imagePullPolicy: IfNotPresent
+        name: manageweb
+        env:
+        - name: branch
+          value: <BRANCH_NAME>
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: manageweb
+  name: manageweb
+  namespace: kube-<NAMESPACES>
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    name: http
+  selector:
+    app: manageweb

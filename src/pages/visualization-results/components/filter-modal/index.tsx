@@ -105,7 +105,7 @@ const FilterModal: React.FC<Props> = ({
         <div className={styles.filterModalWrap}>
           <div className={styles.col}>
             <Item
-              name="statuss"
+              name="status"
               label="项目状态"
             >
               <Select

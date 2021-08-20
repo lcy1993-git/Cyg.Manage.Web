@@ -11,23 +11,23 @@ import {
   Select,
   Space,
   Switch,
-  Table
 } from "antd";
 import type {ColumnsType} from "antd/lib/table/Table";
-import React, {useEffect, useState} from "react";
-import { useHistory } from 'react-router-dom';
+import React, {useEffect, useRef, useState} from "react";
+import {useHistory} from 'react-router-dom';
 import styles from './index.less'
 import {
   queryCommonlyTablePager,
-  getCommonlyTableTypeList,
   addCommonlyTable,
   deleteCommonlyTable,
   editCommonlyTable,
   SetCommonlyTableStatus
 } from "@/services/technology-economic/usual-quota-table";
-import type {QueryData, CommonlyTableForm} from "@/services/technology-economic/usual-quota-table";
+import type { CommonlyTableForm} from "@/services/technology-economic/usual-quota-table";
 import moment from "moment";
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
+import WrapperComponent from "@/components/page-common-wrap";
+import GeneralTable from "@/components/general-table";
 
 interface Props {
 }
@@ -86,43 +86,23 @@ const UsualQuotaTable: React.FC<Props> = () => {
   const [dataSource, setDataSource] = useState<CommonlyTable[]>([])
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false)
   const [commonlyTableType, setCommonlyTableType] = useState<{ value: string, text: string }[]>([])
-  const [queryData, setQueryData] = useState<QueryData>({
-    "pageIndex": 1,
-    "pageSize": 10,
-    "sort": {
-      "propertyName": '',
-      "isAsc": false
-    },
-    "keyWord": ''
-  } as QueryData)
-  const [selectRow, setSelectRow] = useState<React.Key[]>([])
+  const [selectRow, setSelectRow] = useState<Record<string, any>[]>([])
   const [isEdit, setIsEdit] = useState<boolean>(false)
-  const [pagination,setPagination] = useState({
-    total:0,
-    pageSize:10,
-  })
+  const tableRef = useRef<any>(null);
   const [form] = Form.useForm();
   const history = useHistory();
-  const pageDataChange = (page: number, pageSize: number)=>{
-    const data = {...queryData}
-    data.pageSize = pageSize
-    data.pageIndex = page
-    setQueryData(data)
-  }
-  const getTableData = async () => {
-    const res = await queryCommonlyTablePager(queryData)
-    setPagination(res.total)
-    setDataSource(res?.items)
-  }
-  const setStatus = async (status: boolean,row: CommonlyTable)=>{
-    await SetCommonlyTableStatus(row.id,status)
-    getTableData()
+
+  const setStatus = async (status: boolean, row: CommonlyTable) => {
+    await SetCommonlyTableStatus(row.id, status)
+    if (tableRef?.current){
+      tableRef.current?.refresh()
+    }
   }
   const columns: ColumnsType<any> = [
     {
       title: '序号',
       width: 80,
-      dataIndex:'number'
+      dataIndex: 'number'
     },
     {
       dataIndex: 'name',
@@ -192,10 +172,10 @@ const UsualQuotaTable: React.FC<Props> = () => {
       title: '状态',
       width: 120,
       align: 'center',
-      render: (enable: boolean,record: any) => {
+      render: (enable: boolean, record: any) => {
         return (
           <Space>
-            <Switch checked={enable}  onChange={(status)=>setStatus(status,record)}/>
+            <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
             <span>{enable ? '启用' : '停用'}</span>
           </Space>
         )
@@ -219,10 +199,11 @@ const UsualQuotaTable: React.FC<Props> = () => {
     data.publishDate = moment(val.publishDate).format('YYYY/MM/DD')
     data.year = moment(val.year).format('YYYY')
     if (isEdit) {
-      data.id= selectRow[0] as string
+      data.id = selectRow[0].id
     }
-    if (isEdit){
+    if (isEdit) {
       await editCommonlyTable(data)
+      console.log(data?.enabled)
       message.success('修改成功')
       setIsModalVisible(false)
       setIsEdit(false)
@@ -232,17 +213,21 @@ const UsualQuotaTable: React.FC<Props> = () => {
       setIsModalVisible(false)
       setIsEdit(false)
     }
-    getTableData()
+    if (tableRef?.current){
+      tableRef.current?.refresh()
+    }
   }
   const onFinishFailed = (err: any) => {
     console.log(err)
   }
   const getCommonlyTableType = async () => {
-    const res = await getCommonlyTableTypeList()
-    setCommonlyTableType(res)
+    const res = localStorage.getItem('technologyEconomicEnums')
+    if (res === null) return
+    const type = JSON.parse(res)?.find((item: { code: string; })=>item.code === "CommonlyTableType")?.items
+    setCommonlyTableType(type)
   }
 
-  const tableOnSelect = (val: React.Key[]) => {
+  const tableOnSelect = (val: object[]) => {
     setSelectRow(val)
   }
   const removeRow = () => {
@@ -254,9 +239,11 @@ const UsualQuotaTable: React.FC<Props> = () => {
       title: '确定要删除该行数据吗?',
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await deleteCommonlyTable(selectRow[0] as string)
+        await deleteCommonlyTable(selectRow[0].id)
         message.success('删除成功!')
-        getTableData()
+        if (tableRef?.current){
+          tableRef.current?.refresh()
+        }
       }
     });
   }
@@ -265,8 +252,8 @@ const UsualQuotaTable: React.FC<Props> = () => {
       message.warn('请选择一行数据')
       return
     }
-    history.push('/technology-economic/usual-quota-table/detail',{
-      id:selectRow[0]
+    history.push('/technology-economic/usual-quota-table/detail', {
+      id: selectRow[0].id
     })
   }
   const editRow = () => {
@@ -275,202 +262,212 @@ const UsualQuotaTable: React.FC<Props> = () => {
       return
     }
     setIsEdit(true)
-    const current = dataSource.find(i => i.id === selectRow[0])
+    const current = selectRow[0]
     if (current) {
-      current.publishDate = moment(moment(current.publishDate).format('YYYY-MM-DD'))
-      current.year = moment(current.year)
+      current.publishDate = moment(moment(current?.publishDate).format('YYYY-MM-DD'))
+      current.year = moment(current?.year)
       setIsModalVisible(true)
+      console.log(current)
       form.setFieldsValue(current)
     }
   }
+  const getAllList = async ()=>{
+    const res = await queryCommonlyTablePager({
+      "pageIndex": 1,
+      "pageSize": 10000,
+      "sort": {
+        "propertyName": '',
+        "isAsc": false
+      },
+      "keyWord": ''
+    })
+    console.log(res)
+    setDataSource(res.items)
+  }
   useEffect(() => {
-    getTableData()
+    getAllList()
     getCommonlyTableType()
   }, [])
   return (
-    <div className={styles.usualQuotaTable}>
-      <div className={styles.topButtons}>
-        <Space>
-          <Button type={'primary'} onClick={showDetail}>
-            <EyeOutlined />
-            费率详情
-          </Button>
-          <Button type={'primary'} onClick={addCommonly}>
-            <PlusOutlined />
-            添加</Button>
-          <Button onClick={editRow}>
-            <EditOutlined/>
-            编辑</Button>
-          <Button onClick={removeRow}>
-            <DeleteOutlined />
-            删除</Button>
-        </Space>
+    <WrapperComponent>
+      <div className={styles.usualQuotaTable}>
+        <div className={styles.topButtons}>
+          <Space>
+            <Button type={'primary'} onClick={showDetail}>
+              <EyeOutlined/>
+              费率详情
+            </Button>
+            <Button type={'primary'} onClick={addCommonly}>
+              <PlusOutlined/>
+              添加</Button>
+            <Button onClick={editRow}>
+              <EditOutlined/>
+              编辑</Button>
+            <Button onClick={removeRow}>
+              <DeleteOutlined/>
+              删除</Button>
+          </Space>
+        </div>
+        <GeneralTable
+          ref={tableRef}
+          needCommonButton={true}
+          columns={columns as (ColumnsType<object>)}
+          url="/CommonlyTable/QueryCommonlyTablePager"
+          tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
+          getSelectData={tableOnSelect}
+          requestSource='tecEco1'
+          type="radio"
+        />
+
+        <Modal
+          title="添加定额常用表"
+          visible={isModalVisible}
+          destroyOnClose={true}
+          footer={null}
+          width={800}
+          onCancel={() => setIsModalVisible(false)}>
+          <Form
+            name="basic"
+            initialValues={{remember: true}}
+            form={form}
+            labelCol={{span: 8}}
+            wrapperCol={{span: 16}}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+          >
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="序号"
+                  name="number"
+                  rules={[{required: true, message: '请输入序号!'}]}
+                >
+                  <InputNumber min={0} step={1} precision={0} style={{width: '100% !important'}}/>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="费率年度"
+                  name="year"
+                >
+                  <DatePicker picker="year"/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="常用表类型"
+                  name="commonlyTableType"
+                  rules={[{required: true, message: '请选择常用表类型!'}]}
+                >
+                  <Select disabled={isEdit}>
+                    {
+                      commonlyTableType.map((item) => {
+                          return (
+                            <Option
+                              value={item.value}
+                              key={item.value}
+                              disabled={dataSource.some(i => i.commonlyTableTypeText === item.text)}
+                            >{item.text}</Option>
+                          )
+                        }
+                      )
+                    }
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="行业类别"
+                  name="industryType"
+                  rules={[{required: true, message: '请选择行业类别!'}]}
+                >
+                  <Select>
+                    {
+                      industryType.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>
+                      )
+                    }
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="来源文件"
+                  name="sourceFile"
+                  rules={[{required: true, message: '请输入来源文件!'}]}
+                >
+                  <Input/>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="适用专业"
+                  name="majorType"
+                  rules={[{required: true, message: '请选择适用专业!'}]}
+                >
+                  <Select>
+                    {
+                      majorType.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>
+                      )
+                    }
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="发布时间"
+                  name="publishDate"
+                >
+                  <DatePicker/>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="备注"
+                  name="remark"
+                >
+                  <Input/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="发布机构"
+                  name="publishOrg"
+                >
+                  <Input/>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="状态"
+                  name="enabled"
+                  valuePropName="checked"
+                >
+                  <Switch defaultChecked/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+              <Space>
+                <Button onClick={() => setIsModalVisible(false)}>
+                  取消
+                </Button>
+                <Button type="primary" htmlType="submit">
+                  确定
+                </Button>
+              </Space>
+            </div>
+          </Form>
+        </Modal>
       </div>
-
-      <Table
-        dataSource={dataSource}
-        rowKey={'id'}
-        size={'small'}
-        pagination={{
-          ...pagination,
-          onChange:(page, pageSize)=>pageDataChange(page, pageSize!)
-        }}
-        rowSelection={{
-          type: 'radio',
-          onChange: (val) => {
-            tableOnSelect(val)
-          }
-        }}
-        bordered
-        columns={columns}/>
-
-      <Modal
-        title="添加定额常用表"
-        visible={isModalVisible}
-        destroyOnClose={true}
-        footer={null}
-        width={800}
-        onCancel={() => setIsModalVisible(false)}>
-        <Form
-          name="basic"
-          initialValues={{remember: true}}
-          form={form}
-          labelCol={{span: 8}}
-          wrapperCol={{span: 16}}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-        >
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="序号"
-                name="number"
-                rules={[{required: true, message: '请输入序号!'}]}
-              >
-                <InputNumber min={0} step={1} precision={0} style={{width: '100% !important'}}/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="费率年度"
-                name="year"
-              >
-                <DatePicker picker="year"/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="常用表类型"
-                name="commonlyTableType"
-                rules={[{required: true, message: '请选择常用表类型!'}]}
-              >
-                <Select disabled={isEdit}>
-                  {
-                    commonlyTableType.map((item) => {
-                        return (
-                          <Option
-                            value={item.value}
-                            key={item.value}
-                            disabled={dataSource.some(i => i.id === item.value)}
-                          >{item.text}</Option>
-                        )
-                      }
-                    )
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="行业类别"
-                name="industryType"
-                rules={[{required: true, message: '请选择行业类别!'}]}
-              >
-                <Select>
-                  {
-                    industryType.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>
-                    )
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="来源文件"
-                name="sourceFile"
-                rules={[{required: true, message: '请输入来源文件!'}]}
-              >
-                <Input/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="适用专业"
-                name="majorType"
-                rules={[{required: true, message: '请选择适用专业!'}]}
-              >
-                <Select>
-                  {
-                    majorType.map(item => <Option value={item.value} key={item.value}>{item.text}</Option>
-                    )
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="发布时间"
-                name="publishDate"
-              >
-                <DatePicker/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="备注"
-                name="remark"
-              >
-                <Input/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="发布机构"
-                name="publishOrg"
-              >
-                <Input/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="状态"
-                name="enabled"
-              >
-                <Switch/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <div style={{display: 'flex', justifyContent: 'center'}}>
-            <Space>
-              <Button onClick={() => setIsModalVisible(false)}>
-                取消
-              </Button>
-              <Button type="primary" htmlType="submit">
-                确定
-              </Button>
-            </Space>
-          </div>
-        </Form>
-      </Modal>
-    </div>
+    </WrapperComponent>
   )
 }
 

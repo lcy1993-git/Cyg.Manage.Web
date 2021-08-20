@@ -12,6 +12,7 @@ import EmptyTip from '@/components/empty-tip';
 import { useContext } from 'react';
 import { useEffect } from 'react';
 import { isNumber } from 'lodash';
+
 export interface AddProjectValue {
   engineerId: string;
   areaId: string;
@@ -26,7 +27,8 @@ interface EngineerTableItemProps {
   getClickProjectId: (clickProjectId: string) => void;
   addProject?: (needValue: AddProjectValue) => void;
   editEngineer?: (needValue: AddProjectValue) => void;
-  left: number;
+  approvalEngineer?: (needValue: AddProjectValue) => void;
+  // left: number;
   isOverflow: boolean;
   columnsWidth: number;
   contentWidth: number;
@@ -62,7 +64,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     getClickProjectId,
     addProject,
     editEngineer,
-    left,
+    approvalEngineer,
     isOverflow = false,
     columnsWidth,
     contentWidth,
@@ -167,23 +169,32 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     });
   };
 
+  const approvalFileEvent = () => {
+    approvalEngineer?.({
+      engineerId: projectInfo.id,
+      areaId: projectInfo.province,
+      company: projectInfo.company,
+      companyName: projectInfo.company,
+    });
+  };
+
   const theadElement = useMemo(() => {
     return columns.map((item) => {
       return (
         <div
           className={`${styles.engineerTableTh} ${
-            item.dataIndex === 'action' ? styles.actionTd : ''
-          } ${item.dataIndex === 'status' ? styles.statusTd : ''} ${
-            item.dataIndex === 'name' ? styles.nameTd : ''
+            item.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
+          } ${item.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${
+            item.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
           }`}
           key={`${item.dataIndex}`}
           style={
             isOverflow
               ? {
                   width: `${item.width}px`,
-                  left: `${item.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''} ${
-                    item.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''
-                  } ${item.dataIndex === 'name' ? `${left + 38}px` : ''}`,
+                  left: `${item.dataIndex === 'action' ? `${contentWidth - 60}px` : ''} ${
+                    item.dataIndex === 'status' ? `${contentWidth - 180}px` : ''
+                  } ${item.dataIndex === 'name' ? `${38}px` : ''}`,
                 }
               : {
                   width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
@@ -197,7 +208,6 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     });
   }, [
     JSON.stringify(projectInfo),
-    left,
     contentWidth,
     isOverflow,
     JSON.stringify(columns),
@@ -209,8 +219,8 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
       return (
         <div key={`${item.id}Td`} className={styles.engineerTableTr}>
           <div
-            className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox}`}
-            style={{ width: '38px', left: `${left}px` }}
+            className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox} checkboxContent`}
+            style={{ width: '38px', left: `0px` }}
           >
             <Checkbox style={{ marginLeft: '4px' }} value={item.id} />
           </div>
@@ -218,20 +228,18 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             return (
               <div
                 className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
-                  ite.dataIndex === 'action' ? styles.actionTd : ''
-                } ${ite.dataIndex === 'status' ? styles.statusTd : ''} ${
-                  ite.dataIndex === 'name' ? styles.nameTd : ''
+                  ite.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
+                } ${ite.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${
+                  ite.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
                 }`}
                 key={`${item.id}Td${ite.dataIndex}`}
                 style={
                   isOverflow
                     ? {
                         width: `${ite.width}px`,
-                        left: `${
-                          ite.dataIndex === 'action' ? `${left + contentWidth - 60}px` : ''
-                        } ${ite.dataIndex === 'status' ? `${left + contentWidth - 180}px` : ''} ${
-                          ite.dataIndex === 'name' ? `${left + 38}px` : ''
-                        }`,
+                        left: `${ite.dataIndex === 'action' ? `${contentWidth - 60}px` : ''} ${
+                          ite.dataIndex === 'status' ? `${contentWidth - 180}px` : ''
+                        } ${ite.dataIndex === 'name' ? `${38}px` : ''}`,
                       }
                     : {
                         width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
@@ -263,7 +271,6 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     });
   }, [
     JSON.stringify(projectInfo),
-    left,
     contentWidth,
     isOverflow,
     JSON.stringify(columns),
@@ -279,7 +286,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   return (
     <div className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}>
-      <div className={styles.engineerTableItemHeader} style={{ left: `${left}px` }}>
+      <div className={`${styles.engineerTableItemHeader} tableTitleContent`} style={{ left: `0px` }}>
         <div className={styles.foldButton} onClick={() => foldEvent()}>
           <span>{isFold ? <CaretUpOutlined /> : <CaretDownOutlined />}</span>
         </div>
@@ -327,8 +334,13 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             )}
           {projectInfo?.operationAuthority?.canEdit &&
             buttonJurisdictionArray?.includes('all-project-edit-engineer') && (
-              <Button onClick={() => editEngineerEvent()}>编辑</Button>
+              <Button className="mr10" onClick={() => editEngineerEvent()}>编辑</Button>
             )}
+          {projectInfo?.operationAuthority?.canEdit &&
+            buttonJurisdictionArray?.includes('all-project-file-engineer') && (
+              <Button onClick={() => approvalFileEvent()}>批复文件</Button>
+            )}
+            {/* <Button onClick={() => approvalFileEvent()}>批复文件</Button> */}
         </div>
       </div>
       <div
@@ -341,8 +353,8 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
               <div className={styles.engineerTableContent}>
                 <div className={styles.engineerTableHeader}>
                   <div
-                    className={`${styles.engineerTableTh} ${styles.engineerTableThCheckbox}`}
-                    style={{ width: '38px', left: `${left}px` }}
+                    className={`${styles.engineerTableTh} ${styles.engineerTableThCheckbox} checkboxContent`}
+                    style={{ width: '38px', left: `0px` }}
                   ></div>
                   {theadElement}
                 </div>

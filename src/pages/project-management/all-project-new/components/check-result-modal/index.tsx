@@ -228,7 +228,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                   刷新
                 </Button>
                 <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
-                  生成
+                  导出
                 </Button>
               </div>
             </div>
