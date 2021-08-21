@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm, Tabs } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
+import { Button, Modal, Form, Switch, message, Popconfirm, Tabs } from 'antd';
+import type { ColumnsType } from 'antd/lib/table';
 import {
   EyeOutlined,
   PlusOutlined,
   DeleteOutlined,
-  FileSearchOutlined,
   EditOutlined,
 } from '@ant-design/icons';
 import { isArray } from 'lodash';
@@ -17,18 +16,10 @@ import PageCommonWrap from '@/components/page-common-wrap';
 // import TableSearch from '@/components/table-search';
 import DictionaryForm from './components/add-edit-form';
 
-import {
-  addPricingTemplate,
-  editPricingTemplate,
-  setPricingTemplate,
-  deletePricingTemplate,
-  queryPricingTemplatePager,
-} from '@/services/technology-economic/pricing-template';
+
 import styles from './index.less';
-import { useEffect } from 'react';
 import moment from 'moment';
 import { getEnums } from '../utils';
-import ImageIcon from '@/components/image-icon';
 import CommonTitle from '@/components/common-title';
 import AdjustmentFileForm from './components/adjustment-file-form/inex';
 import {
@@ -42,19 +33,13 @@ import {
   updateCatalogue,
   technicalEconomyFile,
 } from '@/services/technology-economic/spread-coefficient';
-interface ResponseData {
-  items?: {
-    id?: string;
-    name?: string;
-    engineeringTemplateType: string;
-  }[];
-}
+
+
 type DataSource = {
   id: string;
   [key: string]: string;
 };
 const { TabPane } = Tabs;
-const { Search } = Input;
 const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
 
 export const getTypeName = (no: number) => {
@@ -76,7 +61,6 @@ const SpreadCoefficient: React.FC = () => {
   const tableADRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | Object>([]); // 价差目录
   const [tableSelectADRows, setTableSelectADRow] = useState<DataSource[] | Object>([]); // 调整文件
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false); // 价差目录
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [addADFormVisible, setAddADFormVisible] = useState<boolean>(false); // 调整文件
@@ -176,7 +160,7 @@ const SpreadCoefficient: React.FC = () => {
         message.error('请选择一条数据进行编辑');
         return;
       }
-      const id = tableSelectADRows[0].id;
+      const {id} = tableSelectADRows[0];
       await deleteAdjustmentFile(id); // TODO
       refresh();
       message.success('删除成功');
@@ -214,8 +198,8 @@ const SpreadCoefficient: React.FC = () => {
         message.error('请选择要操作的行');
         return;
       }
-      const id = tableSelectRows[0].id;
-      const name = tableSelectRows[0].name;
+      const {id} = tableSelectRows[0];
+      const {name} = tableSelectRows[0];
       history.push(`/technology-economic/price-difference-details?id=${id}&name=${name}`);
     } else {
       history.push(`/technology-economic/adjustment-file-details`);
@@ -235,8 +219,8 @@ const SpreadCoefficient: React.FC = () => {
   // 价差目录编辑确认按钮
   const sureEditAuthorization = () => {
     editForm.validateFields().then(async (values) => {
-      const id = tableSelectRows[0].id;
-      let value = values;
+      const {id} = tableSelectRows[0];
+      const value = values;
       value.id = id;
       // TODO 编辑接口
       await updateCatalogue(value);
@@ -249,12 +233,10 @@ const SpreadCoefficient: React.FC = () => {
   const sureAddADAuthorization = () => {
     addADForm.validateFields().then(async (values) => {
       if (fileId) {
-        const submitInfo = Object.assign(
-          {
-            fileId: fileId,
-          },
-          values,
-        );
+        const submitInfo = {
+          fileId,
+          ...values,
+        };
         await createAdjustmentFile(submitInfo); // TODO
         refresh();
         setAddADFormVisible(false);
@@ -267,8 +249,8 @@ const SpreadCoefficient: React.FC = () => {
   // 调整文件编辑确认按钮
   const sureEditADAuthorization = () => {
     editADForm.validateFields().then(async (values) => {
-      const id = tableSelectADRows[0].id;
-      let value = values;
+      const {id} = tableSelectADRows[0];
+      const value = values;
       value.id = id;
       if (fileId) {
         value.fileId = value.fileId;

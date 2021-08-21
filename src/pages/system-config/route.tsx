@@ -9,7 +9,7 @@ const UserFeedBack = Loadable({
 
 export default [
   {
-    title: '用户反馈',
+    title: '异常反馈',
     path: '/system-config/feedback',
     component: <UserFeedBack />,
   },

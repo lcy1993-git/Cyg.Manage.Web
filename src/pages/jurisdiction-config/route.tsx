@@ -85,7 +85,7 @@ export default [
   },
 
   {
-    title: '下辖公司',
+    title: '协作单位',
     path: '/jurisdiction-config/subordinate-company',
     component: <SubordinateCompany />,
   },
