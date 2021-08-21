@@ -10,7 +10,11 @@ import TreeNodeInput from './components/tree-node-input';
 import { creatFavorite } from '@/services/project-management/favorite-list';
 import styles from './index.less';
 import { stubArray } from 'lodash';
+import TitleTreeNode from './components/title-tree-node';
 import ImageIcon from '@/components/image-icon';
+import findCurrentNode from './utils'
+
+import { json } from 'express';
 
 interface FavoriteListParams {
   visible: boolean;
@@ -30,8 +34,11 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   const [treeData, setTreeData] = useState<treeDataItems[]>([]);
   const [editName, setEditName] = useState<string>('一级收藏夹目录');
 
-  const [isEdit, setIsEdit] = useState<string>("");
+  console.log({treeData});
+  
 
+  const [isEdit, setIsEdit] = useState<string>("");
+  const [selectkey, setSelectkey] = useState<string>("")
   const { data, run } = useRequest(() => getFavorites(), {
     onSuccess: () => {
       setTreeData(data);
@@ -40,9 +47,24 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
 
   console.log(treeData, '222');
 
+  const createCildNode = (id) => {
+    const cloneData = JSON.parse(JSON.stringify(treeData))
+    let currentNode = findCurrentNode(cloneData, id)
+    console.log(currentNode);
+    currentNode.children.push({
+      id: uuid.v1(),
+      text: 'xxxx',
+      children: [],
+    })
+    
+    setTreeData(cloneData)
+  }
+
   const mapTreeData = (data: any) => {
+    console.log(data.key, isEdit);
+    
     return {
-      title: data.text,
+      title: <TitleTreeNode id={data.id} text={data.text} onSelect={data.id === selectkey} isEdit={data.id === isEdit} setIsEdit={setIsEdit} createCildNode={createCildNode}/> ,
       key: data.id,
       children: data.children?.map(mapTreeData),
       isEdit: false,
@@ -50,10 +72,10 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   };
 
   const handleData = useMemo(() => {
-    return treeData.map(mapTreeData);
-  }, [JSON.stringify(treeData)]);
+    return treeData?.map(mapTreeData);
+  }, [JSON.stringify(treeData), selectkey, isEdit]);
 
-  console.log(handleData);
+  // console.log(handleData);
 
   // function dig(path = '0', level = 3) {
   //   const list = [];
@@ -74,61 +96,80 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   // }
 
   // const treeData = dig();
-  //新建一级收藏夹
+  // 新建一级收藏夹
   const sureAddEvent = async () => {
-    console.log(editName);
     await creatFavorite({ name: editName });
     // setIsEdit(false);
   };
 
-  const createEvent = () => {
+  const createEvent1 = () => {
     const newTreeNode = {
       key: uuid.v1(),
-      title: '收藏夹1',
+      text: '收藏夹1',
       children: [],
-      isEdit: true,
       // icon: <ImageIcon width={18} height={14} marginRight={10} imgUrl="icon-file.png" />,
     };
     // console.log(newTreeNode);
-
-    const copyList = JSON.parse(JSON.stringify(handleData));
-    console.log(copyList, '333');
-    copyList?.push(newTreeNode);
-    copyList.map((item: any) => {
-      if (item.isEdit) {
-        item.title = (
-          <div style={{ display: 'inline-block' }}>
-            <Input
-              value={editName}
-              style={{ height: '25px', width: '10vw' }}
-              onBlur={() => sureAddEvent()}
-              onChange={(e: any) => setEditName(e.target.value)}
-            />
-            <div style={{ display: 'inline-block', marginLeft: '40px' }}>
-              <ImageIcon width={15} height={15} marginRight={5} imgUrl="create-tree.png" />
-              <ImageIcon width={15} height={15} marginRight={5} imgUrl="delete-tree.png" />
-              <ImageIcon width={15} height={15} imgUrl="edit-tree.png" />
-            </div>
-          </div>
-        );
-      } else {
-        item.title = (
-          <>
-            <div>{item.title}</div>
-            <div style={{ display: 'inline-block', marginLeft: '40px' }}>
-              <ImageIcon width={15} height={15} marginRight={5} imgUrl="create-tree.png" />
-              <ImageIcon width={15} height={15} marginRight={5} imgUrl="delete-tree.png" />
-              <ImageIcon width={15} height={15} imgUrl="edit-tree.png" />
-            </div>
-          </>
-        );
-      }
-    });
-    setTreeData(copyList);
+    setIsEdit(newTreeNode.key)
+    setTreeData({...JSON.parse(JSON.stringify(treeData)), newTreeNode})
+    // const copyList = JSON.parse(JSON.stringify(handleData));
+    // console.log(copyList, '333');
+    // copyList?.push(newTreeNode);
+    // copyList.map((item: any) => {
+    //   if (item.isEdit) {
+    //     item.title = (
+    //       <div style={{ display: 'inline-block' }}>
+    //         <Input
+    //           value={editName}
+    //           style={{ height: '25px', width: '10vw' }}
+    //           onBlur={() => sureAddEvent()}
+    //           onChange={(e: any) => setEditName(e.target.value)}
+    //         />
+    //         <div style={{ display: 'inline-block', marginLeft: '40px' }}>
+    //           <ImageIcon width={15} height={15} marginRight={5} imgUrl="create-tree.png" />
+    //           <ImageIcon width={15} height={15} marginRight={5} imgUrl="delete-tree.png" />
+    //           <ImageIcon width={15} height={15} imgUrl="edit-tree.png" />
+    //         </div>
+    //       </div>
+    //     );
+    //   } else {
+    //     item.title = (
+    //       <>
+    //         <div>{item.title}</div>
+    //         <div style={{ display: 'inline-block', marginLeft: '40px' }}>
+    //           <ImageIcon width={15} height={15} marginRight={5} imgUrl="create-tree.png" />
+    //           <ImageIcon width={15} height={15} marginRight={5} imgUrl="delete-tree.png" />
+    //           <ImageIcon width={15} height={15} imgUrl="edit-tree.png" />
+    //         </div>
+    //       </>
+    //     );
+    //   }
+    // });
+    // setTreeData(copyList);
   };
 
-  const selectEvent = () => {
-    console.log(1);
+
+
+
+  const createEvent = () => {
+    const newTreeNode = {
+      id: uuid.v1(),
+      text: '收藏夹1',
+      children: [],
+    };
+    setIsEdit(newTreeNode.id)
+    setSelectkey(newTreeNode.id)
+    setTreeData([...JSON.parse(JSON.stringify(treeData)), newTreeNode])
+
+  }
+
+  const selectEvent = (e,g,m) => {
+    
+    if(e[0] !== selectkey) {
+      setSelectkey(e[0])
+      setIsEdit("")
+    }
+
   };
 
   return (
@@ -162,6 +203,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
             height={535}
             defaultExpandAll
             onSelect={selectEvent}
+            selectedKeys={[selectkey]}
           />
         </div>
       )}
