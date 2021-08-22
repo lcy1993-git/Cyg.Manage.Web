@@ -42,6 +42,7 @@ import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
 import moment from 'moment';
+import FavoriteList from '../favorite-list';
 
 const colorMap = {
   立项: 'green',

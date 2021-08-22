@@ -4,6 +4,7 @@ import createSrc from '@/assets/icon-image/create-tree.png';
 import deleteSrc from '@/assets/icon-image/delete-tree.png';
 import editSrc from '@/assets/icon-image/edit-tree.png';
 import { creatFavorite } from '@/services/project-management/favorite-list';
+import styles from './index.less';
 
 interface TitleTreeNodeProps {
   id: string;
@@ -50,12 +51,12 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   }
 
   return (
-    <div style={{ display: 'inline-block' }}>
-      <div style={{ display: 'inline-block' }}>{text}</div>
+    <div className={styles.treeItem}>
+      <div>{text}</div>
       {onSelect ? (
-        <div style={{ display: 'inline-block', marginLeft: '40px' }}>
-          <img src={createSrc} onClick={() => createCildNode(id)} />
-          <img src={deleteSrc} />
+        <div>
+          <img src={createSrc} className="mr7" onClick={() => createCildNode(id)} />
+          <img src={deleteSrc} className="mr7" />
           <img src={editSrc} onClick={() => setIsEdit(id)} />
         </div>
       ) : null}

@@ -58,6 +58,7 @@ const statisticsObject = {
 const AllProject: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('');
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
+  const [selectedFavoriteId, setSelectedFavoriteId] = useState<string>('');
   // 从列表返回的数据中获取 TODO设置search的参数
   const [searchParams, setSearchParams] = useState({
     category: [],
@@ -206,6 +207,17 @@ const AllProject: React.FC = () => {
     searchByParams({
       ...searchParams,
       statisticalCategory: statisticsType,
+      keyWord,
+    });
+  };
+
+  const favoriteClickEvent = (collectionId: string) => {
+    console.log(collectionId, 111);
+
+    setSelectedFavoriteId(collectionId);
+    searchByParams({
+      ...searchParams,
+      engineerFavoritesId: selectedFavoriteId,
       keyWord,
     });
   };
@@ -426,6 +438,8 @@ const AllProject: React.FC = () => {
   };
 
   const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
+    console.log(checkedValue, '33');
+
     setTableSelectData(checkedValue);
   };
 
@@ -621,7 +635,11 @@ const AllProject: React.FC = () => {
               // sideVisible ? 'block' : 'none'
               style={{ display: sideVisible ? 'block' : 'none' }}
             >
-              <FavoriteList setVisible={setSideVisible} visible={sideVisible} />
+              <FavoriteList
+                setVisible={setSideVisible}
+                visible={sideVisible}
+                onSelect={favoriteClickEvent}
+              />
             </div>
             <div className={styles.allProjectTableContent}>
               <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
@@ -850,6 +868,7 @@ const AllProject: React.FC = () => {
             onChange={setAddFavoriteModal}
             projectIds={selectProjectIds}
             finishEvent={refresh}
+            checkedData={tableSelectData}
           />
         )}
       </PageCommonWrap>

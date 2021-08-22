@@ -4,16 +4,18 @@ import { PlusOutlined, UpOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { Button, Input, Tree } from 'antd';
 import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import arrowImg from '@/assets/image/project-management/arrow.png';
 import { creatFavorite } from '@/services/project-management/favorite-list';
 import styles from './index.less';
 import TitleTreeNode from './components/title-tree-node';
 import findCurrentNode from './utils';
+import { TableContext } from '@/pages/project-management/all-project/components/enigneer-table/table-store';
 
 interface FavoriteListParams {
-  visible: boolean;
-  setVisible: Dispatch<SetStateAction<boolean>>;
+  visible?: boolean;
+  setVisible?: Dispatch<SetStateAction<boolean>>;
+  onSelect?: (params: any) => void;
 }
 
 interface treeDataItems {
@@ -25,11 +27,8 @@ interface treeDataItems {
 const { DirectoryTree } = Tree;
 
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
-  const { setVisible, visible } = props;
+  const { setVisible, visible, onSelect } = props;
   const [treeData, setTreeData] = useState<treeDataItems[]>([]);
-  const [editName, setEditName] = useState<string>('一级收藏夹目录');
-
-  console.log({ treeData });
 
   const [isEdit, setIsEdit] = useState<string>('');
   const [selectkey, setSelectkey] = useState<string>('');
@@ -39,7 +38,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     },
   });
 
-  console.log(editName, '222');
+  const a = onSelect;
 
   const createCildNode = (id: string) => {
     const cloneData = JSON.parse(JSON.stringify(treeData));
@@ -55,8 +54,6 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   };
 
   const mapTreeData = (data: any) => {
-    console.log(data.key, isEdit);
-
     return {
       title: (
         <TitleTreeNode
@@ -140,6 +137,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       setSelectkey(e[0]);
       setIsEdit('');
     }
+    onSelect?.(selectkey);
   };
 
   return (
