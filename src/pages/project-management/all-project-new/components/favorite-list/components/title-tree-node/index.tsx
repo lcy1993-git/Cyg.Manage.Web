@@ -1,15 +1,20 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { Button, Input } from 'antd';
+import React, { useRef, useState } from 'react';
+import { Button, Input, message, Popconfirm } from 'antd';
 import createSrc from '@/assets/icon-image/create-tree.png';
 import deleteSrc from '@/assets/icon-image/delete-tree.png';
 import editSrc from '@/assets/icon-image/edit-tree.png';
-import { creatFavorite } from '@/services/project-management/favorite-list';
+import {
+  creatFavorite,
+  deleteFavorite,
+  modifyFavoriteName,
+} from '@/services/project-management/favorite-list';
 import styles from './index.less';
 
 interface TitleTreeNodeProps {
   id: string;
   text: string;
   isEdit: boolean;
+  refresh?: () => void;
   onSelect: boolean;
   setIsEdit: (id: string) => void;
   createCildNode: (id: string) => void;
@@ -19,21 +24,35 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   id,
   text,
   isEdit,
+  refresh,
   onSelect,
   setIsEdit,
   createCildNode,
 }) => {
   const editRef = useRef<HTMLDivElement>(null);
-  const [editName, setEditName] = useState<string>('111');
+  const [editName, setEditName] = useState<string>(text ? text : '收藏夹1');
 
-  const sureAddEvent = async () => {
-    await creatFavorite({ name: editName });
+  const addOrModifyEvent = async () => {
+    if (!text) {
+      await creatFavorite({ name: editName });
+      setIsEdit('');
+      refresh?.();
+      return;
+    }
+    await modifyFavoriteName({ id: id, name: editName });
     setIsEdit('');
+    refresh?.();
+  };
+
+  const deleteEvent = async () => {
+    await deleteFavorite(id);
+    message.success('已删除');
+    refresh?.();
   };
 
   if (isEdit) {
     return (
-      <>
+      <div className={styles.inputItem}>
         <div style={{ display: 'inline-block' }}>
           <Input
             value={editName}
@@ -45,8 +64,10 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
             onChange={(e: any) => setEditName(e.target.value)}
           />
         </div>
-        <Button onClick={() => sureAddEvent()}>确定</Button>
-      </>
+        <Button onClick={() => addOrModifyEvent()} style={{ height: '30px', marginTop: '9px' }}>
+          确定
+        </Button>
+      </div>
     );
   }
 
@@ -55,9 +76,17 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
       <div>{text}</div>
       {onSelect ? (
         <div>
-          <img src={createSrc} className="mr7" onClick={() => createCildNode(id)} />
-          <img src={deleteSrc} className="mr7" />
-          <img src={editSrc} onClick={() => setIsEdit(id)} />
+          <img src={createSrc} className={styles.iconItem} onClick={() => createCildNode(id)} />
+          <Popconfirm
+            title="您确定要删除当前收藏夹?"
+            onConfirm={deleteEvent}
+            okText="确认"
+            cancelText="取消"
+          >
+            <img src={deleteSrc} className={styles.iconItem} />
+          </Popconfirm>
+
+          <img src={editSrc} className={styles.iconItem} onClick={() => setIsEdit(id)} />
         </div>
       ) : null}
     </div>

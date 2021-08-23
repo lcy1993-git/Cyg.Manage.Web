@@ -32,6 +32,9 @@
     height: 66vh;
     margin-top: 35px;
     :global {
+      .ant-tree {
+        margin: -20px;
+      }
       .ant-tree.ant-tree-directory .ant-tree-treenode-selected:hover::before,
       .ant-tree.ant-tree-directory .ant-tree-treenode-selected::before {
         background: #e4f5eb;
@@ -41,6 +44,9 @@
         .ant-tree-node-content-wrapper.ant-tree-node-selected,
       .ant-tree.ant-tree-directory .ant-tree-treenode-selected .ant-tree-switcher {
         color: black;
+      }
+      .ant-tree .ant-tree-node-content-wrapper .ant-tree-iconEle {
+        line-height: 42px;
       }
     }
   }

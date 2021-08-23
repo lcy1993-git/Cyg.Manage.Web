@@ -511,7 +511,11 @@ const AllProject: React.FC = () => {
   );
 
   const addFavEvent = () => {
-    setAddFavoriteModal(true);
+    if (engineerIds && engineerIds.length > 0) {
+      setAddFavoriteModal(true);
+      return;
+    }
+    message.warning('您还未选择任何工程');
   };
 
   const removeFavEvent = async () => {

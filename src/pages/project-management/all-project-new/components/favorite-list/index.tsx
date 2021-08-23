@@ -6,7 +6,6 @@ import { Button, Input, Tree } from 'antd';
 import uuid from 'node-uuid';
 import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import arrowImg from '@/assets/image/project-management/arrow.png';
-import { creatFavorite } from '@/services/project-management/favorite-list';
 import styles from './index.less';
 import TitleTreeNode from './components/title-tree-node';
 import findCurrentNode from './utils';
@@ -44,7 +43,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     console.log(currentNode);
     currentNode.children.push({
       id: uuid.v1(),
-      text: 'xxxx',
+      text: '收藏夹1',
       children: [],
     });
 
@@ -60,6 +59,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           onSelect={data.id === selectkey}
           isEdit={data.id === isEdit}
           setIsEdit={setIsEdit}
+          refresh={run}
           createCildNode={createCildNode}
         />
       ),
@@ -167,7 +167,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         </div>
       ) : (
         <div className={styles.favTree}>
-          <DirectoryTree
+          <Tree.DirectoryTree
             treeData={handleData}
             height={535}
             defaultExpandAll
@@ -181,6 +181,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           style={{ cursor: 'pointer' }}
           onClick={() => {
             setVisible?.(false);
+            setIsEdit('');
             finishEvent?.();
             setSelectkey('');
             getFavId?.('');
