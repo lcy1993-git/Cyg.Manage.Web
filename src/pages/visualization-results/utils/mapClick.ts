@@ -11,6 +11,11 @@ import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
 import { useState } from 'react';
 
+/**
+ * ops.setSurveyModalData
+ * ops.setSurveyModalVisible
+ */
+
 // const mappingTagsData = getMappingTagsDictionary();
 // const mappingTagsDictionary: any =typeof mappingTagsData === 'string' ? JSON.parse(mappingTagsData) : {};
 const mediaLayers = ['tower', 'cable', 'cable_equipment', 'electric_meter'];

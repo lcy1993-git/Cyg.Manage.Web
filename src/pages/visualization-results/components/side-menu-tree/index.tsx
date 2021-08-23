@@ -119,11 +119,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 成果管理
   const [resultVisibel, setResultVisibel] = useState<boolean>(false);
   // 审阅消息
-
+  
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
   const [buttonActive, setButtonActive] = useState<number>(
     window.localStorage.getItem('selectCity') ? -1 : 2,
   );
+
+  // 勘察轨迹
+  const [surveyModalVisible, setSurveyModalVisible] = useState(false)
+  const [surveyModalData, setSurveyModalData] = useState(null)
 
   // Tree State
   const [selectArrayStuck, setSelectArrayStuck] = useState<string[]>([]);
@@ -709,6 +713,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       <div>
         {sidePopupHeight && <SidePopup {...props.sidePopupProps} height={sidePopupHeight} />}
       </div>
+
+      <div>
+        {surveyModalVisible && <SurveyModal data={surveyModalData} />}
+      </div>
+
       {projectModalVisible && (
         <ProjectDetailInfo
           projectId={projectModalActiveId}

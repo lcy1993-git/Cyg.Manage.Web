@@ -65,6 +65,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     setRightSidebarVisiviabelMap(state);
   };
   const [rightSidebarData, setRightSidebarData] = useState<TableDataType[]>([]);
+
+  // 勘察轨迹
+  const [surveyModalVisible, setSurveyModalVisible] = useState(false)
+  const [surveyModalData, setSurveyModalData] = useState(null)
   // 挂载
   useMount(() => {
     loadEnums().then((data) => {
@@ -89,7 +93,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
     // 地图点击事件
     initialMap.on('click', (e: Event) =>
-      mapClick(e, initialMap, { setRightSidebarVisiviabel, setRightSidebarData }),
+      mapClick(e, initialMap, { setRightSidebarVisiviabel, setRightSidebarData, setSurveyModalVisible, setSurveyModalData }),
     );
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
@@ -227,7 +231,10 @@ const BaseMap = observer((props: BaseMapProps) => {
   const sidePopupProps = {
     rightSidebarVisible: rightSidebarVisiviabel,
     data: rightSidebarData,
-    setRightSidebarVisiviabel: setRightSidebarVisiviabel,
+    surveyModalVisible,
+    surveyModalData,
+    setSurveyModalVisible,
+    setRightSidebarVisiviabel
   }
   return (
     <>
