@@ -219,9 +219,6 @@ const Styles = {
             backgroundColor: 'rgba(23, 34, 29, 0.6)',
             width: 6
         },
-        "zero_guy": {
-            color: 'rgba(188, 40, 184, 1)',
-        },
         "1011": { // 原有220V
             color: 'rgba(145, 145, 255, 1)',
             img: '../images_new/220V电压',
@@ -361,6 +358,15 @@ const Styles = {
         "1144": { // 拆除20V电缆
             color: 'rgba(255, 175, 110, 1)',
             isDismantle: true
+        },
+        "2010": { // 设计图层水平拉线
+            color: 'rgba(188, 40, 184, 1)',
+            lineDash: [12],
+        },
+        "2020": { // 拆除图层水平拉线
+            color: 'rgba(188, 40, 184, 1)',
+            img: '）    （',
+            isDismantle: true,
         },
     },
     fault_indicator: {

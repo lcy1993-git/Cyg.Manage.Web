@@ -512,6 +512,19 @@ function getMappingTagsDictionary() {
       }
     }
 
+    mappingTagsDictionary.zero_guy = {
+      mappingTags: {
+        "mode": "型号",
+        "length": "长度(m)",
+        "state": "状态",
+        "remark": "备注",
+        "project_id": "title",
+      },
+      mappingTagValues: {
+        "state": findenumsValue("SurveyState") || "",
+      }
+    }
+
     return JSON.stringify(mappingTagsDictionary);
   } else {
     console.error("mappingTagsDictionary异常！！！请重新加载。。。'")

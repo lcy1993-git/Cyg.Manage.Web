@@ -15,11 +15,22 @@ import Feature from 'ol/Feature';
 import ClassStyle from 'ol/style/Style';
 import Stroke from 'ol/style/Stroke';
 import Icon from 'ol/style/Icon';
-import { getXmlData, sortByTime, getTime } from './utils';
-import { setTrackRecordDateArray } from './mapClick';
+import { getXmlData, sortByTime, getTime, LineCluster } from './utils';
+import { values } from 'lodash';
 
 var projects: any;
 // var showData: any = [];
+/**
+ * 由普通线路和水平拉线形成的线簇数组列表
+ */
+var lineClusters: LineCluster[] = [];
+/**
+ * 当前选中项目的所有勘察轨迹日期
+ */
+let trackRecordDateArray = [];
+export const getTrackRecordDateArray = () => {
+  return trackRecordDateArray;
+}
 const refreshMap = async (
   ops: any,
   projects_: ProjectList[],
@@ -57,6 +68,17 @@ const refreshMap = async (
   await loadPlanLayers(postData, groupLayers);
   await loadDismantleLayers(postData, groupLayers);
   await loadDesignLayers(postData, groupLayers, view, setView, map);
+  // 验证线簇的合法性，剔除不合法的线簇
+  lineClusters = await lineClusters.filter(value => value.isValid());
+  // 为合法线簇设置特有的样式
+  await lineClusters.forEach((lineCluster) => {
+    // lineCluster.lines.forEach((line) => {
+    //   line_style(line, false, true);
+    // });
+    lineCluster.zero_guys.forEach((zero_guy) => {
+      zero_guy.setStyle(zero_guy_style(zero_guy, false, true, lineCluster));
+    });
+  });
 
   setLayerGroups(groupLayers);
 };
@@ -190,9 +212,20 @@ const loadWFSData = (
       if (item.type !== 'point') {
         let style;
         if (item.type == 'line') {
-          style = line_style(pJSON[i], false, layerType);
-          if(layerType === 'design')
-          console.log(pJSON, layerType, 'line');
+          pJSON[i].setProperties({ layer_name: 'line' });
+          style = line_style(pJSON[i], false);
+          // 为线簇数组添加线簇
+          let isAdded = false;
+          lineClusters.forEach((lineCluster) => {
+            if (lineCluster.isShouldContainLine(pJSON[i])) {
+              lineCluster.lines.push(pJSON[i]);
+              isAdded = true;
+            }
+          });
+          if (!isAdded) {
+            let props = pJSON[i].getProperties();
+            lineClusters.push(new LineCluster([pJSON[i]], [], [props.start_id, props.end_id]));
+          }
         }
         // else if (item.type === 'point') {
         //   style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
@@ -201,11 +234,34 @@ const loadWFSData = (
           style = cable_channel_styles(pJSON[i]);
         } else if (item.type === 'special_point') {
           style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
-        } 
-        else if(item.type === 'zero_guy') {
-          // style = zero_guy_style(pJSON[i], false);
+        }
+        else if (item.type === 'zero_guy') {
+          if (pJSON[i].getProperties().mode.startsWith('NULL')) {
+            let index = pJSON[i].getProperties().label?.indexOf(pJSON[i].getProperties().length);
+            pJSON[i].setProperties({ mode: pJSON[i].getProperties().label?.substr(0, index - 1) });
+          }
+          pJSON[i].setProperties({ layer_name: 'zero_guy' });
+          if (!pJSON[i].getProperties().symbol_id) {
+            if(layerType === 'design') {
+              pJSON[i].setProperties({ symbol_id: 2010 });
+            }
+            else if(layerType === 'dismantle') {
+              pJSON[i].setProperties({ symbol_id: 2020 });
+            }
+          }
           style = zero_guy_style(pJSON[i], false);
-          console.log(pJSON, layerType, 'zero_guy');
+          // 为线簇数组添加线簇
+          let isAdded = false;
+          lineClusters.forEach((lineCluster) => {
+            if (lineCluster.isShouldContainLine(pJSON[i])) {
+              lineCluster.zero_guys.push(pJSON[i]);
+              isAdded = true;
+            }
+          });
+          if (!isAdded) {
+            let props = pJSON[i].getProperties();
+            lineClusters.push(new LineCluster([], [pJSON[i]], [props.start_id, props.end_id]));
+          }
         }
         //  else if (item.type === 'subline') {
         //   style = fzx_styles();
@@ -339,7 +395,8 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
     data.features.forEach(feature => {
       recordSet.add(feature.properties.record_date.substr(0, 10));
     });
-    setTrackRecordDateArray(Array.from(recordSet));
+    console.log(Array.from(recordSet), 'Array.from(recordSet)');
+    trackRecordDateArray = Array.from(recordSet);
     let surveyTrackLayer = getLayerByName(track[type], groupLayer.getLayers().getArray());
     let surveyTrackLineLayer = getLayerByName(trackLine[type], groupLayer.getLayers().getArray());
     if (!surveyTrackLayer) {
@@ -402,7 +459,7 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
 
       let trackLineRecordDate = '';
       sortedFeatures.forEach((feature: any, i) => {
-        if(i === 0) {
+        if (i === 0) {
           trackLineRecordDate = feature.properties.record_date;
         }
         if (lineLatlngsSegement.length == 0)

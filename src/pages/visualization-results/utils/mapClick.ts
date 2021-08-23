@@ -1,14 +1,15 @@
 import getMappingTagsDictionary from './localData/mappingTagsDictionary';
-import { pointStyle, line_style } from './localData/pointStyle';
+import { pointStyle, line_style, zero_guy_style } from './localData/pointStyle';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
-import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees } from './methods';
+import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
 import { getGisDetail, loadLayer, getlibId_new, getModulesRequest } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
+import { useState } from 'react';
 
 // const mappingTagsData = getMappingTagsDictionary();
 // const mappingTagsDictionary: any =typeof mappingTagsData === 'string' ? JSON.parse(mappingTagsData) : {};
@@ -50,6 +51,7 @@ const elementTypeEnum = {
   user_line: '下户线',
   fault_indicator: '故障指示器',
   pull_line: '拉线',
+  zero_guy: '水平拉线',
   brace: '撑杆',
   Track: '轨迹点',
   TrackLine: '轨迹线',
@@ -85,11 +87,6 @@ let selectedFeature = null;
  */
 let trackRecordDate = '';
 let mapContent = null;
-let trackRecordDateArray = [];
-export const setTrackRecordDateArray = (trackRecordDateArray) => {
-  trackRecordDateArray = trackRecordDateArray;
-  console.log(trackRecordDateArray);
-}
 export const mapClick = (evt: any, map: any, ops: any) => {
   mapContent = map;
   // 解决本地存储mappingTagsData的bug
@@ -110,6 +107,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   // let setRightSidebarVisiviabelFlag = false;
   // 清除高亮
   clearHighlightLayer(map);
+  let layerName = '';
   // 遍历选中的数据
   map.forEachFeatureAtPixel(evt.pixel, async function (feature: any, layer: any) {
     // setRightSidebarVisiviabelFlag = true;
@@ -130,7 +128,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       feature = feature.get('features')[0];
     }
     map.getTargetElement().style.cursor = 'wait';
-    let layerName = layer.getProperties().name;
+    layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
 
     // 判断选中的图层类型
@@ -176,7 +174,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     let highlightFeatures = [];
     let totalLength = 0;
-    if (layerName == 'line' || layerName == 'user_line') {
+    if (layerName == 'line' || layerName == 'user_line' || layerName == 'zero_guy') {
       let layerTypeValue = feature.getProperties().layerType;
       if (feature.getProperties().polyline_id && feature.getProperties().is_cable) {
         map
@@ -227,10 +225,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         let featureClone = feature_.clone();
         let type = featureClone.getGeometry().getType().toLocaleLowerCase();
         let highlightStyle;
-        if (type.indexOf('point') >= 0) {
+        // 为选中的水平拉线图层添加高亮
+        if(layerName === 'zero_guy') {
+          highlightStyle = zero_guy_style(featureClone, true);
+        }
+        else if (type.indexOf('point') >= 0) {
           highlightStyle = pointStyle(layer.getProperties().name, featureClone, true);
         } else {
-          highlightStyle = line_style(featureClone, true, layerType);
+          highlightStyle = line_style(featureClone, true);
         }
 
         featureClone.setStyle(highlightStyle);
@@ -525,10 +527,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       }
 
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
-      if (elementTypeEnum[layerName] === '轨迹点') {
-        resData.push({ propertyName: '所有勘察日期', data: trackRecordDateArray});
-        chooseCurDayTrack(feature.getProperties().record_date.substr(0, 10));
-      }
+      
+    }
+
+    // 点击轨迹点时传输日期数组
+    if (elementTypeEnum[layerName] === '轨迹点') {
+      resData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray});
+      chooseCurDayTrack(feature.getProperties().record_date.substr(0, 10));
+      // console.log(getTrackRecordDateArray());
     }
 
     ops.setRightSidebarVisiviabel(true);
@@ -537,6 +543,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     map.getTargetElement().style.cursor = 'default';
   });
 
+  if(layerName === '') {
+    chooseCurDayTrack('');
+  }
   // if(!setRightSidebarVisiviabelFlag) {
   ops.setRightSidebarVisiviabel(false);
   // }
