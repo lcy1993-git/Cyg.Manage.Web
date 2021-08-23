@@ -4,7 +4,7 @@ import TableSearch from '@/components/table-search';
 import React, { useState } from 'react';
 import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
-import { Button, Input } from 'antd';
+import { Button, Input, Spin } from 'antd';
 import styles from './index.less';
 import EngineerTable from './components/engineer-table';
 import { useRef } from 'react';
@@ -150,7 +150,7 @@ const AllProject: React.FC = () => {
     allProjectSearchProjectId,
   } = useLayoutStore();
 
-  const { data: columnsData } = useRequest(() => getColumnsConfig(), {
+  const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
       setChooseColumns(
         columnsData
@@ -211,16 +211,6 @@ const AllProject: React.FC = () => {
       statisticalCategory: statisticsType,
       keyWord,
     });
-  };
-
-  const favoriteClickEvent = (collectionId: string) => {
-    // console.log(collectionId, 111);
-    // selectedFavId(collectionId);
-    // searchByParams({
-    //   ...searchParams,
-    //   engineerFavoritesId: selectedFavoriteId,
-    //   keyWord,
-    // });
   };
 
   useUpdateEffect(() => {
@@ -677,12 +667,14 @@ const AllProject: React.FC = () => {
               className={styles.allProjectsFavorite}
               style={{ display: sideVisible ? 'block' : 'none' }}
             >
-              <FavoriteList
-                getFavId={setSelectedFavId}
-                setVisible={setSideVisible}
-                finishEvent={refresh}
-                visible={sideVisible}
-              />
+              <Spin spinning={loading}>
+                <FavoriteList
+                  getFavId={setSelectedFavId}
+                  setVisible={setSideVisible}
+                  finishEvent={refresh}
+                  visible={sideVisible}
+                />
+              </Spin>
             </div>
             <div className={styles.allProjectTableContent}>
               <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>

@@ -2,9 +2,9 @@ import EmptyTip from '@/components/empty-tip';
 import { getFavorites } from '@/services/project-management/favorite-list';
 import { PlusOutlined, UpOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-import { Button, Input, Tree } from 'antd';
+import { Button, Tree } from 'antd';
 import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import arrowImg from '@/assets/image/project-management/arrow.png';
 import styles from './index.less';
 import TitleTreeNode from './components/title-tree-node';
@@ -37,17 +37,38 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     },
   });
 
-  const createCildNode = (id: string) => {
+  const createChildNode = (id: string) => {
+    console.log(id);
+
     const cloneData = JSON.parse(JSON.stringify(treeData));
+    console.log(cloneData);
+
     let currentNode = findCurrentNode(cloneData, id);
     console.log(currentNode);
-    currentNode.children.push({
+    const newChildNode = {
       id: uuid.v1(),
       text: '收藏夹1',
       children: [],
+    };
+    currentNode.children.push({
+      id: uuid.v1(),
+      text: '收藏夹1',
+      title: (
+        <TitleTreeNode
+          id={uuid.v1()}
+          text="收藏夹1"
+          // onSelect={data.id === selectkey}
+          isEdit={true}
+          setIsEdit={setIsEdit}
+          refresh={run}
+          createChildNode={createChildNode}
+        />
+      ),
+      children: [],
     });
-
-    setTreeData(cloneData);
+    // setIsEdit(newChildNode.id);
+    // setSelectkey(newChildNode.id);
+    setTreeData([...cloneData]);
   };
 
   const mapTreeData = (data: any) => {
@@ -60,7 +81,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           isEdit={data.id === isEdit}
           setIsEdit={setIsEdit}
           refresh={run}
-          createCildNode={createCildNode}
+          createChildNode={createChildNode}
         />
       ),
       key: data.id,
@@ -167,12 +188,13 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         </div>
       ) : (
         <div className={styles.favTree}>
-          <Tree.DirectoryTree
+          <DirectoryTree
             treeData={handleData}
             height={535}
             defaultExpandAll
             onSelect={selectEvent}
             selectedKeys={[selectkey]}
+            expandAction="doubleClick"
           />
         </div>
       )}
