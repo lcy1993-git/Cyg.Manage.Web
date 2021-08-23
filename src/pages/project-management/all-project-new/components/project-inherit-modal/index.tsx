@@ -1,4 +1,4 @@
-import { editProject, getProjectInfo } from '@/services/project-management/all-project';
+import { editProject, getProjectInfo, inheritProject } from '@/services/project-management/all-project';
 import { useControllableValue } from 'ahooks';
 import { Button } from 'antd';
 import { Form, message, Modal } from 'antd';
@@ -19,6 +19,7 @@ interface ProjectInheritModalProps {
   status: number;
   startTime?: Moment;
   endTime?: Moment;
+  engineerId: string;
 }
 
 const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
@@ -26,7 +27,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { projectId, changeFinishEvent, areaId, company, companyName, status, startTime, endTime } =
+  const { projectId, changeFinishEvent, areaId, company, companyName, status, startTime, endTime, engineerId} =
     props;
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
@@ -61,8 +62,9 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
     // TODO 做保存接口
     form.validateFields().then(async (value) => {
       try {
-        await editProject({
-          id: projectId,
+        await inheritProject({
+          inheritProjectId: projectId,
+          engineerId,
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
           disclosureRange:
@@ -76,7 +78,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
               ? 0
               : value.pileRange,
         });
-        message.success('项目信息更新成功');
+        message.success('项目已开始进行继承');
         setState(false);
         form.resetFields();
         changeFinishEvent?.();
@@ -104,7 +106,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
           保存
         </Button>,
       ]}
-      onOk={() => edit()}
+      onOk={() => sureProjectInheritEvent()}
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>

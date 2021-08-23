@@ -25,6 +25,7 @@ interface CreateProjectFormProps {
   setCopyFlag?: (value: number[]) => void;
   index?: number;
   isInherit?: boolean;
+  isEdit?: boolean;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
@@ -41,6 +42,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     copyFlag,
     index,
     isInherit = false,
+    isEdit = false,
     setCopyFlag,
   } = props;
 
@@ -577,6 +579,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={isInherit ? handleProjectStage : projectStage}
               valuekey="value"
+              disabled={isEdit}
               titlekey="text"
               placeholder="请选择"
             />

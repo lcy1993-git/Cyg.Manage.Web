@@ -8,11 +8,12 @@ import {
   getProjectInfo,
   getProjectTableList,
   getEngineerInfo,
+  againInherit,
 } from '@/services/project-management/all-project';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
 import { useRequest, useSize } from 'ahooks';
-import { Menu, message, Popconfirm } from 'antd';
+import { Menu, message, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
 import React from 'react';
@@ -28,7 +29,7 @@ import styles from './index.less';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { Dropdown } from 'antd';
-import { BarsOutlined } from '@ant-design/icons';
+import { BarsOutlined, LinkOutlined } from '@ant-design/icons';
 import { TableContext } from './table-store';
 import CheckResultModal from '../check-result-modal';
 import EngineerDetailInfo from '../engineer-detail-info';
@@ -60,6 +61,7 @@ interface ExtractParams extends AllProjectStatisticsParams {
 interface JurisdictionInfo {
   canEdit: boolean;
   canCopy: boolean;
+  canInherit: boolean;
 }
 
 interface EngineerTableProps {
@@ -275,24 +277,25 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             查看成果
           </Menu.Item>
         )}
-        {buttonJurisdictionArray?.includes('all-project-check-result') && (
-          // all-project-inherit
-          <Menu.Item
-            onClick={() =>
-              projectInherit({
-                projectId: tableItemData.id,
-                areaId: engineerInfo.province,
-                company: engineerInfo.company,
-                engineerId: engineerInfo.id,
-                companyName: engineerInfo.company,
-                startTime: engineerInfo.startTime,
-                endTime: engineerInfo.endTime,
-              })
-            }
-          >
-            项目继承
-          </Menu.Item>
-        )}
+        {jurisdictionInfo.canInherit &&
+          buttonJurisdictionArray?.includes('all-project-check-result') && (
+            // all-project-inherit
+            <Menu.Item
+              onClick={() =>
+                projectInherit({
+                  projectId: tableItemData.id,
+                  areaId: engineerInfo.province,
+                  company: engineerInfo.company,
+                  engineerId: engineerInfo.id,
+                  companyName: engineerInfo.company,
+                  startTime: engineerInfo.startTime,
+                  endTime: engineerInfo.endTime,
+                })
+              }
+            >
+              项目继承
+            </Menu.Item>
+          )}
       </Menu>
     );
   };
@@ -321,6 +324,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     finishEvent?.();
   };
 
+  // 重新继承
+  const againInheritEvent = async (projectId: string) => {
+    await againInherit(projectId);
+    message.success('重新继承申请成功');
+
+    finishEvent?.();
+  };
+
   // 外审列表
   const externalEdit = async (projectId: string) => {
     const res = await getExternalStep(projectId);
@@ -330,12 +341,27 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setExternalListModalVisible(true);
   };
 
-  const completeConfig = [
-    {
-      title: '项目名称',
-      dataIndex: 'name',
-      width: 300,
-      render: (record: any) => {
+  const projectNameRender = (record: any) => {
+    // 代表未继承
+    if (!record.stateInfo.inheritStatus) {
+      return (
+        <u
+          className="canClick"
+          onClick={() => {
+            setCurrentClickProjectId(record.id);
+            setProjectModalVisible(true);
+          }}
+        >
+          {record.name}
+        </u>
+      );
+    }
+
+    if (record.stateInfo.inheritStatus) {
+      if (record.stateInfo.inheritStatus === 1) {
+        return <span className={styles.disabled}>[继承中...]{record.name}</span>;
+      }
+      if (record.stateInfo.inheritStatus === 2) {
         return (
           <u
             className="canClick"
@@ -347,11 +373,43 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             {record.name}
           </u>
         );
-      },
-      iconSlot: (projectInfo: any) => {
-        return <InheritIcon />;
-      },
+      }
+      if (record.stateInfo.inheritStatus === 3) {
+        return (
+          <span>
+            <Popconfirm
+              title="项目继承失败，请重试"
+              onConfirm={() => againInheritEvent(record.id)}
+              okText="确认"
+              cancelText="取消"
+            >
+              <span className={styles.dangerColor}>[继承失败]</span>
+            </Popconfirm>
+            <span className={styles.disabled}>{record.name}</span>
+          </span>
+        );
+      }
+    }
+  };
+
+  const completeConfig = [
+    {
+      title: '项目名称',
+      dataIndex: 'name',
+      width: 300,
+      render: projectNameRender,
       ellipsis: true,
+      iconSlot: (record: any) => {
+        if (record.stateInfo.inheritStatus) {
+          return (
+            <Tooltip title={`继承自${record.inheritName}`}>
+              <span className={styles.inheritIcon}>
+                <LinkOutlined />
+              </span>
+            </Tooltip>
+          );
+        }
+      },
     },
     {
       title: '项目分类',
@@ -554,6 +612,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         if (allot) {
           arrangeType = allot.allotType;
           allotCompanyId = allot.allotCompanyGroup;
+        }
+
+        // 如果是继承失败 和 继承中，直接返回状态，不用做下面的判断了。
+        if (
+          record.stateInfo.inheritStatus &&
+          (record.stateInfo.inheritStatus === 1 || record.stateInfo.inheritStatus === 3)
+        ) {
+          return <span>{stateInfo?.statusText}</span>;
         }
 
         return (
@@ -1085,7 +1151,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             status={inheritProjectNeedParams.status}
             startTime={inheritProjectNeedParams.startTime}
             endTime={inheritProjectNeedParams.endTime}
-            visible={inheritProjectNeedParams}
+            engineerId={inheritProjectNeedParams.engineerId}
+            visible={projectInheritVisible}
             onChange={setProjectInheritVisible}
             changeFinishEvent={refreshEvent}
           />

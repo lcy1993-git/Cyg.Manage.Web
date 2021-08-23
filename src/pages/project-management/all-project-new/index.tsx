@@ -108,12 +108,6 @@ const AllProject: React.FC = () => {
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
   const [chooseColumns, setChooseColumns] = useState<string[]>([]);
 
-  const [defaultPersonInfo, setDefaultPersonInfo] = useState({
-    logicRelation: 2,
-    survey: '',
-    design: '',
-  });
-
   const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
   const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
   const [screenModalVisible, setScreenModalVisible] = useState(false);

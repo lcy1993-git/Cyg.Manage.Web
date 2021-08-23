@@ -125,6 +125,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
           status={status}
           projectId={projectId}
           engineerStart={startTime}
+          isEdit={true}
           engineerEnd={endTime}
           form={form}
         />

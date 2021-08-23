@@ -215,7 +215,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   ]);
 
   const tbodyElement = useMemo(() => {
-    return (projectInfo.projects ?? []).map((item: any,index) => {
+    return (projectInfo.projects ?? []).map((item: any) => {
       return (
         <div key={`${item.id}Td`} className={styles.engineerTableTr}>
           <div
@@ -248,7 +248,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                 }
               >
                 <div className={styles.iconSlot}>
-                  {index === 2 && ite.iconSlot?.()}
+                  {ite.iconSlot?.(item)}
                 </div>
                 <div className={`${styles.engineerTableTdContent} ${ite.ellipsis ? styles.ellipsis : ''}`}>
                   {ite.ellipsis ? (
