@@ -231,11 +231,9 @@ const MappingInfomation = () => {
         </div>
         <div className={styles.empty}/>
         <div className={styles.wrapRigntContent}>
-          <Tabs className="normalTabs noMargin">
-            <TabPane tab="&nbsp;&nbsp;资源列表" key="资源列表">
               <div className={styles.tabPaneBox}>
                 <div className={styles.listTable}>
-                  <Tabs defaultActiveKey="1" onChange={tableTabChange}>
+                  <Tabs defaultActiveKey="1" onChange={tableTabChange} className="normalTabs noMargin">
                     {
                       tabs.map(tab=>{
                         return <TabPane tab={tab.title} key={tab.key}>
@@ -262,8 +260,6 @@ const MappingInfomation = () => {
                   </Tabs>
                 </div>
               </div>
-            </TabPane>
-          </Tabs>
         </div>
       </div>
     </PageCommonWrap>
