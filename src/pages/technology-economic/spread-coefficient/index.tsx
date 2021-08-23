@@ -44,6 +44,7 @@ const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
 
 export const getTypeName = (no: number) => {
   let str = '';
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   engineeringTemplateTypeList &&
     engineeringTemplateTypeList.map((item: any) => {
       if (no === item.value) {
@@ -67,7 +68,7 @@ const SpreadCoefficient: React.FC = () => {
   const [editADFormVisible, setEditADFormVisible] = useState<boolean>(false);
   const [fileId, setFileId] = useState<string>('');
   const [projectType, setProjectType] = useState<number>(1);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  // const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const [addADForm] = Form.useForm();
