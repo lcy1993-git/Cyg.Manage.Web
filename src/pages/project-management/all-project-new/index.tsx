@@ -41,9 +41,10 @@ import ResourceLibraryManageModal from './components/resource-library-manage-mod
 import ExportPowerModal from './components/export-power-modal';
 import AuditKnotModal from './components/audit-knot-modal';
 import ColumnsConfigModal from './components/columns-config-modal';
-import { useMount, useRequest } from 'ahooks';
+import { useMount, useRequest, useUpdateEffect } from 'ahooks';
 import AddFavoriteModal from './components/add-favorite-modal';
 import FavoriteList from './components/favorite-list';
+import { removeCollectionEngineers } from '@/services/project-management/favorite-list';
 
 const { Search } = Input;
 
@@ -58,7 +59,6 @@ const statisticsObject = {
 const AllProject: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('');
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
-  const [selectedFavoriteId, setSelectedFavoriteId] = useState<string>('');
   // 从列表返回的数据中获取 TODO设置search的参数
   const [searchParams, setSearchParams] = useState({
     category: [],
@@ -119,6 +119,8 @@ const AllProject: React.FC = () => {
 
   //收藏夹显示
   const [sideVisible, setSideVisible] = useState<boolean>(false);
+  const [engineerIds, setEngineerIds] = useState<string[]>([]);
+  const [selectedFavId, setSelectedFavId] = useState<string>('');
 
   const [defaultPersonInfo, setDefaultPersonInfo] = useState({
     logicRelation: 2,
@@ -212,15 +214,23 @@ const AllProject: React.FC = () => {
   };
 
   const favoriteClickEvent = (collectionId: string) => {
-    console.log(collectionId, 111);
+    // console.log(collectionId, 111);
+    // selectedFavId(collectionId);
+    // searchByParams({
+    //   ...searchParams,
+    //   engineerFavoritesId: selectedFavoriteId,
+    //   keyWord,
+    // });
+  };
 
-    setSelectedFavoriteId(collectionId);
+  useUpdateEffect(() => {
+    setTableSelectData([]);
     searchByParams({
       ...searchParams,
-      engineerFavoritesId: selectedFavoriteId,
+      engineerFavoritesId: selectedFavId,
       keyWord,
     });
-  };
+  }, [selectedFavId]);
 
   const addEngineerEvent = () => {
     setAddEngineerModalVisible(true);
@@ -438,8 +448,17 @@ const AllProject: React.FC = () => {
   };
 
   const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
-    console.log(checkedValue, '33');
+    const selectData = checkedValue
+      .map((item: any) => {
+        if (item.checkedArray.length === 0) {
+          return null;
+        }
+        return item;
+      })
+      .filter(Boolean);
 
+    const engineerIds = selectData.map((item: any) => item.projectInfo.id);
+    setEngineerIds(engineerIds);
     setTableSelectData(checkedValue);
   };
 
@@ -495,7 +514,27 @@ const AllProject: React.FC = () => {
     setAddFavoriteModal(true);
   };
 
-  const removeFavEvent = () => {};
+  const removeFavEvent = async () => {
+    if (sideVisible) {
+      if (selectedFavId) {
+        if (engineerIds && engineerIds.length > 0) {
+          await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds });
+          message.success('已移除当前收藏夹');
+          searchByParams({
+            ...searchParams,
+            engineerFavoritesId: selectedFavId,
+            keyWord,
+          });
+          return;
+        }
+        message.warning('请选择要移除当前收藏夹的工程');
+        return;
+      }
+      message.warning('您还未选择收藏夹');
+      return;
+    }
+    message.warning('该功能仅能在收藏夹项目列表中使用');
+  };
 
   const postProjectMenu = (
     <Menu>
@@ -632,13 +671,13 @@ const AllProject: React.FC = () => {
           <div className={styles.projectsAndFavorite}>
             <div
               className={styles.allProjectsFavorite}
-              // sideVisible ? 'block' : 'none'
               style={{ display: sideVisible ? 'block' : 'none' }}
             >
               <FavoriteList
+                getFavId={setSelectedFavId}
                 setVisible={setSideVisible}
+                finishEvent={refresh}
                 visible={sideVisible}
-                onSelect={favoriteClickEvent}
               />
             </div>
             <div className={styles.allProjectTableContent}>
@@ -866,9 +905,8 @@ const AllProject: React.FC = () => {
           <AddFavoriteModal
             visible={addFavoriteModal}
             onChange={setAddFavoriteModal}
-            projectIds={selectProjectIds}
             finishEvent={refresh}
-            checkedData={tableSelectData}
+            engineerIds={engineerIds}
           />
         )}
       </PageCommonWrap>

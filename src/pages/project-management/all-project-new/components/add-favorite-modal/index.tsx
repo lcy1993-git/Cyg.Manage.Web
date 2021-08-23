@@ -9,7 +9,7 @@ import { addCollectionEngineers, getFavorites } from '@/services/project-managem
 // import styles from './index.less';
 
 interface ExportPowerModalParams {
-  checkedData: string[];
+  engineerIds: string[];
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
   finishEvent: () => void;
@@ -19,12 +19,7 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [favId, setFavId] = useState<string>('');
   const [treeData, setTreeData] = useState<any[]>([]);
-  const { checkedData, finishEvent } = props;
-
-  console.log(checkedData);
-
-  const engineerIds = checkedData.map((item: any) => item.projectInfo.id);
-  console.log(engineerIds);
+  const { engineerIds, finishEvent } = props;
 
   const { data = [], run } = useRequest(() => getFavorites(), {
     onSuccess: () => {

@@ -10,12 +10,12 @@ import { creatFavorite } from '@/services/project-management/favorite-list';
 import styles from './index.less';
 import TitleTreeNode from './components/title-tree-node';
 import findCurrentNode from './utils';
-import { TableContext } from '@/pages/project-management/all-project/components/enigneer-table/table-store';
-
+import ImageIcon from '@/components/image-icon';
 interface FavoriteListParams {
   visible?: boolean;
   setVisible?: Dispatch<SetStateAction<boolean>>;
-  onSelect?: (params: any) => void;
+  getFavId?: Dispatch<SetStateAction<string>>;
+  finishEvent: () => void;
 }
 
 interface treeDataItems {
@@ -27,7 +27,7 @@ interface treeDataItems {
 const { DirectoryTree } = Tree;
 
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
-  const { setVisible, visible, onSelect } = props;
+  const { setVisible, visible, getFavId, finishEvent } = props;
   const [treeData, setTreeData] = useState<treeDataItems[]>([]);
 
   const [isEdit, setIsEdit] = useState<string>('');
@@ -37,8 +37,6 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       setTreeData(data);
     },
   });
-
-  const a = onSelect;
 
   const createCildNode = (id: string) => {
     const cloneData = JSON.parse(JSON.stringify(treeData));
@@ -67,6 +65,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       ),
       key: data.id,
       children: data.children?.map(mapTreeData),
+      icon: <ImageIcon width={18} height={14} imgUrl="icon-file.png" />,
       isEdit: false,
     };
   };
@@ -137,7 +136,9 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       setSelectkey(e[0]);
       setIsEdit('');
     }
-    onSelect?.(selectkey);
+    // onSelect?.(selectkey);
+
+    getFavId?.(e[0]);
   };
 
   return (
@@ -180,6 +181,9 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           style={{ cursor: 'pointer' }}
           onClick={() => {
             setVisible?.(false);
+            finishEvent?.();
+            setSelectkey('');
+            getFavId?.('');
           }}
         >
           <MenuFoldOutlined />
