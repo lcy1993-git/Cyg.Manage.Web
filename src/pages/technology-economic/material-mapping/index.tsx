@@ -10,7 +10,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 
 import {
-  deleteMaterialLibraryById, getMaterialLibraryList
+  getMaterialLibraryList
 } from '@/services/technology-economic/supplies-library';
 import FileUpload from '@/components/file-upload';
 import useBoolean from 'ahooks/lib/useBoolean';
