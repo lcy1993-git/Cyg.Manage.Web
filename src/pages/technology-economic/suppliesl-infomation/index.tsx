@@ -268,17 +268,6 @@ const SupplieslInfomation = () => {
                       />
                     }
                   </div>
-                   {/* <TreeSelect */}
-                   {/*  showSearch */}
-                   {/*  style={{ width: '100%' }} */}
-                   {/*  dropdownStyle={{ maxHeight: 400, overflow: 'auto' }} */}
-                   {/*  placeholder="请选择物料库" */}
-                   {/*  allowClear */}
-                   {/*  labelInValue */}
-                   {/*  treeData={materialLibList} */}
-                   {/*  treeDefaultExpandAll */}
-                   {/*  onChange={treeOnChange} */}
-                   {/* /> */}
                  </div>
               </TabPane>
             </Tabs>

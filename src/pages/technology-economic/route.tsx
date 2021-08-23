@@ -9,6 +9,8 @@ import UsualQuotaTableDetail from './usual-quota-table/components/detail';
 import SuppliesLibrary from './supplies-library';
 import SocialSecurityFund from "@/pages/technology-economic/social-security-fund";
 import SupplieslInfomation from './suppliesl-infomation';
+import MaterialMapping from "@/pages/technology-economic/material-mapping";
+import MappingInfomation from "@/pages/technology-economic/mapping-infomation";
 
 const QuotaLibrary = Loadable({
   loader: () => import('@/pages/technology-economic/quota-library'),
@@ -167,5 +169,15 @@ export default [
     title: '查看物料库',
     path: '/technology-economic/suppliesl-infomation',
     component: <SupplieslInfomation />,
+  },
+  {
+    title: '物料映射',
+    path: '/technology-economic/material-mapping',
+    component: <MaterialMapping />,
+  },
+  {
+    title: '物料映射详情',
+    path: '/technology-economic/mapping-infomation',
+    component: <MappingInfomation />,
   },
 ];

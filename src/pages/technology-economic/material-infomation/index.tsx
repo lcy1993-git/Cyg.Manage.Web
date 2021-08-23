@@ -6,7 +6,8 @@ import PageCommonWrap from "@/components/page-common-wrap";
 import ListTable from '../components/list-table';
 import InfoTabs from './components/info-tabs';
 
-import {formatDataTree, fileTreeFormData, TreeData} from '@/utils/utils';
+import type { TreeData} from '@/utils/utils';
+import {formatDataTree, fileTreeFormData} from '@/utils/utils';
 import { queryMaterialMachineLibraryPager, queryMaterialMachineLibraryCatalogList } from '@/services/technology-economic';
 import qs from 'qs';
 
@@ -118,20 +119,21 @@ const QuotaProject = () => {
   const {data: catalogueList, run: catalogueListRun } = useRequest<TreeData[]>(queryMaterialMachineLibraryCatalogList, {
     manual: true
   })
-  
+
   const ref = useRef(null);
   const refWrap = useSize(ref)
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     materialLibraryId && catalogueListRun(materialLibraryId);
   }, [materialLibraryId])
 
   const treeData = useMemo(() => {
     if(catalogueList && catalogueList.length > 0) {
       return fileTreeFormData(formatDataTree(catalogueList))
-    }else{
-      return [];
     }
+      return [];
+
   }, [catalogueList]);
 
   const options = useMemo(() => {
@@ -143,14 +145,14 @@ const QuotaProject = () => {
           </Select.Option>
         );
       })
-    }else{
-      return null;
     }
+      return null;
+
 
   }, [materialLibList]);
 
   const onCheck = (kes: React.Key[], {node}: any) => {
-    
+
     setCatalogueId(node.key)
   }
   return (

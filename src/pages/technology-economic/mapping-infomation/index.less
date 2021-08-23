@@ -1,0 +1,63 @@
+.quotaProjectWrap {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: @bg-primary-color;
+  :global{
+    .ant-table-cell {
+      padding: 4.5px 4px 4.5px 7px;
+    }
+    .ant-table-row-selected > td {
+      background-color: #e4f5eb !important;
+    }
+  }
+  .wrap {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+
+    .wrapLeftMenu {
+      width: 300px;
+      height: 100%;
+      margin: 0 20px;
+      .selectWrap {
+        margin: 20px 0;
+        .treeBox{
+          height: 70vh;
+          overflow-y: auto;
+        }
+      }
+      .fileTree {
+        overflow-x: auto;
+      }
+    }
+    .wrapRigntContent {
+      width: 70%;
+      flex: 1;
+      height: 100%;
+      // margin: 0 20px;
+      .tabPaneBox {
+        // height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 0 20px;
+        .heightEmpty{
+
+          min-height: 10px;
+          background-color: #f5f5f5;
+        }
+        .listTable {
+          // flex: 1;
+          // overflow: hidden;
+          // max-height: calc(100% - 284px);
+        }
+      }
+    }
+    .empty {
+      display: flex;
+      flex-direction: column;
+      width: 15px;
+      background-color: @bg-primary-color;
+    }
+  }
+}
