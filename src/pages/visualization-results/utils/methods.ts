@@ -180,7 +180,6 @@ const loadLayers = (
   // });
   // showData = [];
   layerParams.forEach((item: LayerParams) => {
-    console.log(item.layerName)
     // if (postData.length > 576) {
     let layerName = item.layerName;
     loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
@@ -395,7 +394,6 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
     data.features.forEach(feature => {
       recordSet.add(feature.properties.record_date.substr(0, 10));
     });
-    console.log(Array.from(recordSet), 'Array.from(recordSet)');
     trackRecordDateArray = Array.from(recordSet);
     let surveyTrackLayer = getLayerByName(track[type], groupLayer.getLayers().getArray());
     let surveyTrackLineLayer = getLayerByName(trackLine[type], groupLayer.getLayers().getArray());
@@ -489,7 +487,6 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
       });
       lineFeature.set('project_id', re.id);
       lineFeature.setStyle(trackLineStyle(lineFeature));
-      console.log(lineFeature);
       surveyTrackLineLayer.getSource().addFeature(lineFeature);
     });
 

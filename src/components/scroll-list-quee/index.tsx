@@ -55,8 +55,6 @@ const ScrollListQuee: React.FC<ScrollListQueeProps> = ({
     }
   }, [data.length])
 
-  console.log(scrollClock, auto);
-
   useEffect(() => {
     if(auto && scrollClock) {
       setTimer(window.setInterval(() => {

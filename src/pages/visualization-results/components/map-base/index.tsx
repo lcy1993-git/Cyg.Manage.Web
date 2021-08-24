@@ -11,6 +11,8 @@ import SurveyTrack from '../survey-track';
 import Map from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
 import { transform } from 'ol/proj';
+import SurveyModal from '../survey-modal/'
+
 
 import {
   refreshMap,
@@ -101,6 +103,8 @@ const BaseMap = observer((props: BaseMapProps) => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel };
     refreshMap(ops, projects!);
     setMap(initialMap);
+
+    // 注册 点击事件
   });
 
   // 动态刷新refreshMap
@@ -231,11 +235,9 @@ const BaseMap = observer((props: BaseMapProps) => {
   const sidePopupProps = {
     rightSidebarVisible: rightSidebarVisiviabel,
     data: rightSidebarData,
-    surveyModalVisible,
-    surveyModalData,
-    setSurveyModalVisible,
     setRightSidebarVisiviabel
   }
+
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
@@ -253,7 +255,10 @@ const BaseMap = observer((props: BaseMapProps) => {
       <div className={styles.footer}>
         <Footer onlocationClick={onlocationClick} />
       </div>
-
+      {/* <div className={styles.surveyModal}>
+        {<SurveyModal resData={surveyModalData} hidden={() => setSurveyModalVisible(false)} /> }
+      </div> */}
+      {surveyModalVisible && <SurveyModal resData={surveyModalData} hidden={() => setSurveyModalVisible(false)} /> }
     </>
   );
 });

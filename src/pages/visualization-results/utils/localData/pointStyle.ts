@@ -909,7 +909,6 @@ const zero_guy_style = function (feature: Feature, select: any, isCluster: boole
         })
     }
     // if (isCluster || select) {
-    //     console.log(styleParams);
     // }
     let style = new ClassStyle(styleParams);
     strokeOpts.color = backgroundColor;

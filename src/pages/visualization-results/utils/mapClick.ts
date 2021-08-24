@@ -94,6 +94,7 @@ let trackRecordDate = '';
 let mapContent = null;
 export const mapClick = (evt: any, map: any, ops: any) => {
   mapContent = map;
+
   // 解决本地存储mappingTagsData的bug
   const mappingTagsData = getMappingTagsDictionary();
   let mappingTagsDictionary: any;
@@ -537,13 +538,22 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     // 点击轨迹点时传输日期数组
     if (elementTypeEnum[layerName] === '轨迹点') {
-      resData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray});
+      resData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray()});
       chooseCurDayTrack(feature.getProperties().record_date.substr(0, 10));
-      // console.log(getTrackRecordDateArray());
-    }
 
-    ops.setRightSidebarVisiviabel(true);
-    ops.setRightSidebarData(resData);
+      ops.setSurveyModalData({
+        resData,
+        select: getTrackRecordDateArray(),
+        evt: evt.pixel
+      });
+      ops.setSurveyModalVisible(true)
+      ops.setRightSidebarVisiviabel(false);
+    }
+    else {
+      ops.setRightSidebarData(resData);
+      ops.setRightSidebarVisiviabel(true);
+      ops.setSurveyModalVisible(false)
+    }
 
     map.getTargetElement().style.cursor = 'default';
   });
@@ -553,6 +563,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   }
   // if(!setRightSidebarVisiviabelFlag) {
   ops.setRightSidebarVisiviabel(false);
+  ops.setSurveyModalVisible(false);
   // }
 };
 
@@ -605,7 +616,6 @@ export const mapPointermove = (evt: any, map: any) => {
           // 为该点设置选中样式
           feature.setStyle(trackStyle(isCurDayTrack(feature), true, true));
           // 为整条轨迹线设置选中样式
-          // console.log(item.getLayers().item(0)?.getZIndex(), item.getLayers().item(1)?.getZIndex());
           item.getLayers().item(1)?.getSource().getFeatures().forEach((item) => {
             if (item.getProperties().record_date.substr(0, 10) === feature.getProperties().record_date.substr(0, 10)) {
               item.setStyle(trackLineStyle(item, isCurDayTrack(item), true, true));

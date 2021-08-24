@@ -126,8 +126,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   );
 
   // 勘察轨迹
-  const [surveyModalVisible, setSurveyModalVisible] = useState(false)
-  const [surveyModalData, setSurveyModalData] = useState(null)
+  // const [surveyModalVisible, setSurveyModalVisible] = useState(false)
+  // const [surveyModalData, setSurveyModalData] = useState(null)
 
   // Tree State
   const [selectArrayStuck, setSelectArrayStuck] = useState<string[]>([]);
@@ -712,10 +712,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       />
       <div>
         {sidePopupHeight && <SidePopup {...props.sidePopupProps} height={sidePopupHeight} />}
-      </div>
-
-      <div>
-        {surveyModalVisible && <SurveyModal data={surveyModalData} />}
       </div>
 
       {projectModalVisible && (
