@@ -356,7 +356,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         </u>
       );
     }
-
     if (record.stateInfo.inheritStatus) {
       if (record.stateInfo.inheritStatus === 1) {
         return <span className={styles.disabled}>[继承中...]{record.name}</span>;
@@ -706,8 +705,21 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'action',
       width: 60,
       render: (record: any, engineerInfo: any) => {
-        const { operationAuthority } = record;
-
+        const { operationAuthority, stateInfo } = record;
+        if(stateInfo.inheritStatus && stateInfo.inheritStatus === 1) {
+          return (
+            <Tooltip title="项目继承中，不能进行任何操作" placement="topRight">
+              <BarsOutlined />
+            </Tooltip>
+          )
+        }
+        if(stateInfo.inheritStatus && stateInfo.inheritStatus === 3) {
+          return (
+            <Tooltip title="项目继承失败，请尝试重新继承" placement="topRight">
+              <BarsOutlined />
+            </Tooltip>
+          )
+        }
         return (
           <Dropdown
             overlay={() =>
