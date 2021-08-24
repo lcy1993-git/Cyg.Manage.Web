@@ -496,6 +496,7 @@ const AllProject: React.FC = () => {
       {/* )} */}
       {/* {buttonJurisdictionArray?.includes('all-project-share-recall') && ( */}
       <Popconfirm
+        placement="top"
         title="确定要移除所选工程?"
         onConfirm={() => removeFavEvent()}
         okText="确认"

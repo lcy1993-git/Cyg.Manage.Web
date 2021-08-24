@@ -13,17 +13,18 @@ function deepLoop(data: any, id: string) {
   }
 }
 
-export function getDepth(data: any) {
-  let deep = 0;
-  console.log(deep, 'bianhua');
-
-  data?.forEach((ele: any) => {
-    if (ele.children && ele.children.length > 0) {
-      getDepth(ele.children);
-      deep++;
-    }
+/**
+ * 给数组每一项添加当前层级
+ *
+ * @param target 数据源
+ * @param currentDeep 当前层级
+ */
+export function mixinDeps(target: any, currentDeep: any) {
+  return target?.map((element: any) => {
+    element.deps = currentDeep;
+    mixinDeps(element.children, currentDeep + 1);
+    return { ...element };
   });
-  return deep;
 }
 
 export default (data: any, id: string) => {
