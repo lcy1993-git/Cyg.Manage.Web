@@ -706,16 +706,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 60,
       render: (record: any, engineerInfo: any) => {
         const { operationAuthority, stateInfo } = record;
-        if(stateInfo.inheritStatus && stateInfo.inheritStatus === 1) {
+
+        if(stateInfo.inheritStatus && (stateInfo.inheritStatus === 1 || stateInfo.inheritStatus === 3)) {
           return (
             <Tooltip title="项目继承中，不能进行任何操作" placement="topRight">
-              <BarsOutlined />
-            </Tooltip>
-          )
-        }
-        if(stateInfo.inheritStatus && stateInfo.inheritStatus === 3) {
-          return (
-            <Tooltip title="项目继承失败，请尝试重新继承" placement="topRight">
               <BarsOutlined />
             </Tooltip>
           )
