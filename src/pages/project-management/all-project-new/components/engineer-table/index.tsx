@@ -278,7 +278,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           </Menu.Item>
         )}
         {jurisdictionInfo.canInherit &&
-          buttonJurisdictionArray?.includes('all-project-check-result') && (
+          buttonJurisdictionArray?.includes('all-project-inherit') && (
             // all-project-inherit
             <Menu.Item
               onClick={() =>
