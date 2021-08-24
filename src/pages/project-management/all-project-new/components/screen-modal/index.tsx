@@ -12,7 +12,7 @@ import {
   ProjectSourceType,
   ProjectStatus,
 } from '@/services/project-management/all-project';
-import ChooseDesignAndSurvey from '@/pages/project-management/all-project/components/choose-design-and-survey';
+import ChooseDesignAndSurvey from '@/pages/project-management/all-project-new/components/choose-design-and-survey';
 import styles from './index.less';
 import { useEffect } from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons';

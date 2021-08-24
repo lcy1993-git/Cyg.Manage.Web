@@ -1,4 +1,4 @@
-import { editProject, getProjectInfo } from '@/services/project-management/all-project';
+import { editProject, getProjectInfo, inheritProject } from '@/services/project-management/all-project';
 import { useControllableValue } from 'ahooks';
 import { Button } from 'antd';
 import { Form, message, Modal } from 'antd';
@@ -6,8 +6,9 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useRequest } from 'ahooks';
 import moment, { Moment } from 'moment';
 import CreateProjectForm from '../create-project-form';
+import { isNumber } from 'lodash';
 
-interface EditProjectProps {
+interface ProjectInheritModalProps {
   projectId: string;
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
@@ -18,27 +19,24 @@ interface EditProjectProps {
   status: number;
   startTime?: Moment;
   endTime?: Moment;
+  engineerId: string;
 }
 
-const EditProjectModal: React.FC<EditProjectProps> = (props) => {
+const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const {
-    projectId,
-    changeFinishEvent,
-    areaId,
-    company,
-    companyName,
-    status,
-    startTime,
-    endTime,
-  } = props;
+  const { projectId, changeFinishEvent, areaId, company, companyName, status, startTime, endTime, engineerId} =
+    props;
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
     onSuccess: (res) => {
+      const { dataSourceType, disclosureRange, pileRange } = projectInfo!;
+      const handleDisclosureRange =
+        dataSourceType === 2 ? '无需现场数据”项目，免设置此条目' : disclosureRange;
+      const handlePileRange = dataSourceType === 2 ? '无需现场数据”项目，免设置此条目' : pileRange;
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
@@ -46,18 +44,10 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
-        disclosureRange:
-          projectInfo?.dataSourceType === 2
-            ? '“无需现场数据”项目，免设置此条目'
-            : projectInfo?.dataSourceType === 1
-            ? '“点位导入”项目，免设置此条目'
-            : projectInfo?.disclosureRange,
-        pileRange:
-          projectInfo?.dataSourceType === 2
-            ? '“无需现场数据”项目，免设置此条目'
-            : projectInfo?.dataSourceType === 1
-            ? '“点位导入”项目，免设置此条目'
-            : projectInfo?.pileRange,
+        disclosureRange: handleDisclosureRange,
+        pileRange: handlePileRange,
+        dataSourceType: projectInfo?.dataSourceType === 1 ? 0 : projectInfo?.dataSourceType,
+        stage: isNumber(projectInfo?.stage) ? projectInfo?.stage + 1 : 1,
       });
     },
   });
@@ -68,11 +58,13 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     }
   }, [state]);
 
-  const edit = () => {
+  const sureProjectInheritEvent = () => {
+    // TODO 做保存接口
     form.validateFields().then(async (value) => {
       try {
-        await editProject({
-          id: projectId,
+        await inheritProject({
+          inheritProjectId: projectId,
+          engineerId,
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
           disclosureRange:
@@ -86,7 +78,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
               ? 0
               : value.pileRange,
         });
-        message.success('项目信息更新成功');
+        message.success('项目已开始进行继承');
         setState(false);
         form.resetFields();
         changeFinishEvent?.();
@@ -101,7 +93,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   return (
     <Modal
       maskClosable={false}
-      title="编辑项目信息"
+      title="项目继承"
       centered
       width={800}
       visible={state as boolean}
@@ -110,22 +102,22 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" loading={requestLoading} onClick={() => edit()}>
+        <Button key="save" type="primary" loading={requestLoading} onClick={() => sureProjectInheritEvent()}>
           保存
         </Button>,
       ]}
-      onOk={() => edit()}
+      onOk={() => sureProjectInheritEvent()}
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
         <CreateProjectForm
+          isInherit={true}
           areaId={areaId}
           company={company}
           companyName={companyName}
           status={status}
           projectId={projectId}
           engineerStart={startTime}
-          isEdit={true}
           engineerEnd={endTime}
           form={form}
         />
@@ -134,4 +126,4 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   );
 };
 
-export default EditProjectModal;
+export default ProjectInheritModal;

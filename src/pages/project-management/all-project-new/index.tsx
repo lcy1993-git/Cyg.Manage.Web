@@ -108,12 +108,6 @@ const AllProject: React.FC = () => {
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
   const [chooseColumns, setChooseColumns] = useState<string[]>([]);
 
-  const [defaultPersonInfo, setDefaultPersonInfo] = useState({
-    logicRelation: 2,
-    survey: '',
-    design: '',
-  });
-
   const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
   const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
   const [screenModalVisible, setScreenModalVisible] = useState(false);
@@ -228,8 +222,6 @@ const AllProject: React.FC = () => {
     }
 
     await checkCanArrange(projectIds);
-
-    console.log(tableSelectData?.[0].projectInfo);
 
     // 如果只有一个项目需要安排的时候，需要去检查他是不是被安排了部组
     if (projectIds.length === 1) {
