@@ -539,8 +539,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     // 点击轨迹点时传输日期数组
     if (elementTypeEnum[layerName] === '轨迹点') {
       resData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray()});
-      chooseCurDayTrack(feature.getProperties().record_date.substr(0, 10));
-
       ops.setSurveyModalData({
         resData,
         select: getTrackRecordDateArray(),
@@ -558,9 +556,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     map.getTargetElement().style.cursor = 'default';
   });
 
-  if(layerName === '') {
-    chooseCurDayTrack('');
-  }
+  chooseCurDayTrack('');
+
   // if(!setRightSidebarVisiviabelFlag) {
   ops.setRightSidebarVisiviabel(false);
   ops.setSurveyModalVisible(false);

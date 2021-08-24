@@ -1,13 +1,27 @@
-import { useMemo, memo, useRef, useEffect } from 'react';
+import { useMemo, memo, useRef } from 'react';
+import type { FC } from 'react'
 import { Table, Select } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { chooseCurDayTrack } from '../../utils/mapClick'
 
 import styles from './index.less'
-// import { useLayoutEffect } from 'ahooks';
 import { useLayoutEffect } from 'react';
 
-const SurveyModal = (props) => {
+interface ResData {
+  evt: [number, number]
+  resData: {
+    propertyName: string;
+    data: string;
+  }[]
+  select: string[];
+}
+
+interface SurveyModalProps {
+  hidden: () => void
+  resData: ResData
+}
+
+const SurveyModal: FC<SurveyModalProps> = (props) => {
 
   const { hidden, resData } = props
 
@@ -30,8 +44,6 @@ const SurveyModal = (props) => {
     return [resData?.resData?.filter((o: any) => o.propertyName !== 'title' && o.propertyName !== '所有勘察日期'), title ? title : '', select ? [selectAll, ...select] : [selectAll]];
   }, [JSON.stringify(resData)]);
 
-
-
   const columns = [
     {
       title: "属性名",
@@ -47,9 +59,8 @@ const SurveyModal = (props) => {
   ]
 
   useLayoutEffect(() => {
-    
-    let x = pX + 10,
-      y = pY - 135;
+    let x = pX + 10;
+    let y = pY - 135;
     if (pX > 1000) {
       x = pX - 230
     }
@@ -61,8 +72,12 @@ const SurveyModal = (props) => {
     ref.current!.style.position = "absolute"
     ref.current!.style.top = y + "px";
     ref.current!.style.left = x + "px";
-
   }, [JSON.stringify(resData)])
+
+  const closeModal = () => {
+    hidden();
+    chooseCurDayTrack("")
+  }
 
   return (
     <div
@@ -83,14 +98,14 @@ const SurveyModal = (props) => {
             defaultValue=""
             className={styles.select}
             style={{ width: "100%" }}
-            options={data[2]}
+            options={(data[2] as any)}
             onSelect={(e: string) => chooseCurDayTrack(e)}
             placeholder='选择勘察日期' />
         </div>
 
       </div>
       <div className={styles.drawerClose}>
-        <CloseOutlined onClick={hidden} />
+        <CloseOutlined onClick={closeModal} />
       </div>
       <Table
         key={JSON.stringify(resData)}
