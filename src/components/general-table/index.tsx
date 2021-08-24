@@ -1,5 +1,4 @@
-import type {
-  Ref} from 'react';
+import type { Ref } from 'react';
 import React, {
   forwardRef,
   useMemo,
@@ -17,7 +16,6 @@ import CommonTitle from '../common-title';
 import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import EmptyTip from '../empty-tip';
 import type { CheckboxChangeEvent } from 'antd/lib/checkbox';
-
 
 interface GeneralTableProps {
   // 列表请求的url
@@ -92,7 +90,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     postType = 'body',
     getTableRequestData,
     hasFooter = true,
-    cruxKey = "",
+    cruxKey = '',
     requestConditions = true,
     ...rest
   } = props;
@@ -133,25 +131,25 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         dataEndIndex: 0,
       };
     }
-      if (data) {
-        return {
-          items: data ?? [],
-        };
-      }
+    if (data) {
       return {
-        items: [],
+        items: data ?? [],
       };
-
+    }
+    return {
+      items: [],
+    };
   }, [JSON.stringify(data)]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
-      setSelectedRowKeys(selectedRows.map((item) =>{
-        console.log(item,cruxKey)
-        return  cruxKey ? item[cruxKey].id : item[rowKey]
-      }));
+      setSelectedRowKeys(
+        selectedRows.map((item) => {
+          return cruxKey ? item[cruxKey].id : item[rowKey];
+        }),
+      );
       getSelectData?.(selectedRows);
     },
   };
@@ -219,19 +217,21 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   };
 
   useEffect(() => {
-    requestConditions && run({
-      url,
-      extraParams: extractParams,
-      pageIndex: currentPage,
-      pageSize,
-      requestSource,
-      postType,
-    });
+    if (url === '') return;
+    requestConditions &&
+      run({
+        url,
+        extraParams: extractParams,
+        pageIndex: currentPage,
+        pageSize,
+        requestSource,
+        postType,
+      });
   }, [pageSize, currentPage, requestConditions]);
 
   useImperativeHandle(ref, () => ({
-    getCurrentPageLsit: ()=>{
-      return
+    getCurrentPageLsit: () => {
+      return;
     },
     // changeVal 就是暴露给父组件的方法
     refresh: () => {

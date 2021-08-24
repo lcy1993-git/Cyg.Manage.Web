@@ -35,7 +35,7 @@ const CompanyManage: React.FC = () => {
     <PageCommonWrap>
       <TreeTable
         ref={tableRef}
-        tableTitle="下辖公司"
+        tableTitle="协作单位"
         columns={companyTableColumns}
         url="/Company/GetSubordinateTreeList"
       />
