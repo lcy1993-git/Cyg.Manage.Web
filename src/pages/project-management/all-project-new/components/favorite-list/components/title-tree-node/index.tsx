@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, Input, message, Popconfirm, Tooltip } from 'antd';
 import createSrc from '@/assets/icon-image/create-tree.png';
 import deleteSrc from '@/assets/icon-image/delete-tree.png';
@@ -15,6 +15,7 @@ interface TitleTreeNodeProps {
   id: string;
   text: string;
   isEdit: boolean;
+  parentId?: string;
   refresh?: () => void;
   onSelect?: boolean;
   setIsEdit?: (id: string) => void;
@@ -25,6 +26,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   id,
   text,
   isEdit,
+  parentId,
   refresh,
   onSelect,
   setIsEdit,
@@ -35,20 +37,17 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
   const addOrModifyEvent = () => {
-    console.log(editFlag);
     if (editFlag) {
       modifyFavoriteName({ id: id, name: editName });
-      setIsEdit('');
+      setIsEdit?.('');
       setEditFlag(false);
       message.success('修改成功');
       refresh?.();
       return;
     }
-    creatFavorite({ name: editName })
-      .then((res) => {
-        console.log(res);
-
-        setIsEdit('');
+    creatFavorite({ name: editName, parentId: parentId })
+      .then(() => {
+        setIsEdit?.('');
         message.success('创建成功');
         refresh?.();
       })
@@ -119,7 +118,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
               src={editSrc}
               className={styles.iconItem}
               onClick={() => {
-                setIsEdit(id);
+                setIsEdit?.(id);
                 setEditFlag(true);
                 editRef.current?.focus();
               }}

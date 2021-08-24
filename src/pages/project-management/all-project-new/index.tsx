@@ -495,7 +495,14 @@ const AllProject: React.FC = () => {
       <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
       {/* )} */}
       {/* {buttonJurisdictionArray?.includes('all-project-share-recall') && ( */}
-      <Menu.Item onClick={() => removeFavEvent()}>移除当前收藏夹</Menu.Item>
+      <Popconfirm
+        title="确定要移除所选工程?"
+        onConfirm={() => removeFavEvent()}
+        okText="确认"
+        cancelText="取消"
+      >
+        <Menu.Item>移除当前收藏夹</Menu.Item>
+      </Popconfirm>
       {/* )} */}
     </Menu>
   );

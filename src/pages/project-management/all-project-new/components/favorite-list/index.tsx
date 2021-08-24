@@ -9,6 +9,7 @@ import arrowImg from '@/assets/image/project-management/arrow.png';
 import styles from './index.less';
 import TitleTreeNode from './components/title-tree-node';
 import findCurrentNode from './utils';
+import { getDepth } from './utils';
 import ImageIcon from '@/components/image-icon';
 interface FavoriteListParams {
   visible?: boolean;
@@ -28,6 +29,7 @@ const { DirectoryTree } = Tree;
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   const { setVisible, visible, getFavId, finishEvent } = props;
   const [treeData, setTreeData] = useState<treeDataItems[]>([]);
+  const [parentId, setParentId] = useState<string>('');
 
   const [isEdit, setIsEdit] = useState<string>('');
   const [selectkey, setSelectkey] = useState<string>('');
@@ -38,40 +40,35 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   });
 
   const createChildNode = (id: string) => {
-    console.log(id);
-
     const cloneData = JSON.parse(JSON.stringify(treeData));
-    console.log(cloneData);
-
     let currentNode = findCurrentNode(cloneData, id);
-    console.log(currentNode);
     const newChildNode = {
       id: uuid.v1(),
       text: '收藏夹1',
       children: [],
     };
-    currentNode.children.push({
-      id: uuid.v1(),
-      text: '收藏夹1',
-      title: (
-        <TitleTreeNode
-          id={uuid.v1()}
-          text="收藏夹1"
-          // onSelect={data.id === selectkey}
-          isEdit={true}
-          setIsEdit={setIsEdit}
-          refresh={run}
-          createChildNode={createChildNode}
-        />
-      ),
-      children: [],
+    setParentId(id);
+    setIsEdit(newChildNode.id);
+    setSelectkey(newChildNode.id);
+    currentNode?.children.push(newChildNode);
+    setTreeData(cloneData);
+  };
+
+  const getDeep = (data: any) => {
+    let deep = 0;
+
+    data?.forEach((ele: any) => {
+      if (ele.children && ele.children.length > 0) {
+        deep++;
+      }
     });
-    // setIsEdit(newChildNode.id);
-    // setSelectkey(newChildNode.id);
-    setTreeData([...cloneData]);
+    return deep;
   };
 
   const mapTreeData = (data: any) => {
+    let deep = 0;
+    console.log(deep, 'bianhau');
+    
     return {
       title: (
         <TitleTreeNode
@@ -79,6 +76,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           text={data.text}
           onSelect={data.id === selectkey}
           isEdit={data.id === isEdit}
+          parentId={parentId}
           setIsEdit={setIsEdit}
           refresh={run}
           createChildNode={createChildNode}
@@ -87,13 +85,15 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       key: data.id,
       children: data.children?.map(mapTreeData),
       icon: <ImageIcon width={18} height={14} imgUrl="icon-file.png" />,
-      isEdit: false,
+      level: data.children.length > 0 ? deep++ : deep,
     };
   };
 
   const handleData = useMemo(() => {
     return treeData?.map(mapTreeData);
   }, [JSON.stringify(treeData), selectkey, isEdit]);
+
+  console.log(handleData);
 
   const createEvent1 = () => {
     const newTreeNode = {
@@ -157,8 +157,6 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       setSelectkey(e[0]);
       setIsEdit('');
     }
-    // onSelect?.(selectkey);
-
     getFavId?.(e[0]);
   };
 
@@ -171,7 +169,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
             <PlusOutlined />
             新建
           </Button>
-          <Button>
+          <Button onClick={()=>}>
             <UpOutlined />
             收起
           </Button>

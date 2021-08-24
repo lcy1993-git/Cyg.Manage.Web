@@ -21,7 +21,7 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
   const [treeData, setTreeData] = useState<any[]>([]);
   const { engineerIds, finishEvent } = props;
 
-  const { data = [], run } = useRequest(() => getFavorites(), {
+  const { data = [] } = useRequest(() => getFavorites(), {
     onSuccess: () => {
       setTreeData(data);
     },
@@ -48,8 +48,6 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
     setState(false);
     finishEvent?.();
   };
-
-  console.log(favId);
 
   return (
     <Modal
