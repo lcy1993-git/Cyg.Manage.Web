@@ -14,6 +14,7 @@ import { useUpdateEffect } from 'ahooks';
 interface TitleTreeNodeProps {
   id: string;
   text: string;
+  deep: number;
   isEdit: boolean;
   parentId?: string;
   refresh?: () => void;
@@ -24,6 +25,7 @@ interface TitleTreeNodeProps {
 
 const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   id,
+  deep,
   text,
   isEdit,
   parentId,
@@ -46,7 +48,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
       return;
     }
     creatFavorite({ name: editName, parentId: parentId })
-      .then(() => {
+      .then((res) => {
         setIsEdit?.('');
         message.success('创建成功');
         refresh?.();
@@ -96,13 +98,16 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
       <div>{text}</div>
       {onSelect ? (
         <div>
-          <Tooltip title="添加子级">
-            <img
-              src={createSrc}
-              className={styles.iconItem}
-              onClick={() => createChildNode?.(id)}
-            />
-          </Tooltip>
+          {deep !== 3 && (
+            <Tooltip title="添加子级">
+              <img
+                src={createSrc}
+                className={styles.iconItem}
+                onClick={() => createChildNode?.(id)}
+              />
+            </Tooltip>
+          )}
+
           <Tooltip title="删除">
             <Popconfirm
               title="您确定要删除当前收藏夹?"
