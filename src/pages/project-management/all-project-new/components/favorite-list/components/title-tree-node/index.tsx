@@ -48,7 +48,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
       return;
     }
     creatFavorite({ name: editName, parentId: parentId })
-      .then(() => {
+      .then((res) => {
         setIsEdit?.('');
         message.success('创建成功');
         refresh?.();

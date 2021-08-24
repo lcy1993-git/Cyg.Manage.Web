@@ -1,6 +1,6 @@
 import EmptyTip from '@/components/empty-tip';
 import { getFavorites } from '@/services/project-management/favorite-list';
-import { PlusOutlined, UpOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { PlusOutlined, UpOutlined, MenuFoldOutlined, DownOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { Button, Tree } from 'antd';
 import uuid from 'node-uuid';
@@ -80,8 +80,6 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     return treeData?.map(mapTreeData);
   }, [JSON.stringify(treeData), selectkey, isEdit]);
 
-  console.log(handleData);
-
   const createEvent = () => {
     const newTreeNode = {
       id: uuid.v1(),
@@ -90,7 +88,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     };
     setIsEdit(newTreeNode.id);
     setSelectkey(newTreeNode.id);
-    setTreeData([...JSON.parse(JSON.stringify(treeData)), newTreeNode]);
+    setTreeData([...JSON.parse(JSON.stringify(treeData ? treeData : '')), newTreeNode]);
   };
 
   const selectEvent = (e, g, m) => {
@@ -109,23 +107,31 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     setExpandedKeys(expandedKeysValue);
   };
 
+  console.log(allExpand);
   return (
     <div className={styles.engineerList}>
       <div className={styles.favHeader}>
-        <div className={styles.favTitle}>收藏夹一栏</div>
+        <div className={styles.favTitle}>收藏夹</div>
         <div className={styles.headBtn}>
           <Button className="mr7" onClick={createEvent}>
             <PlusOutlined />
             新建
           </Button>
-          <Button onClick={() => openCLoseEvent()}>
-            <UpOutlined />
-            收起
-          </Button>
+          {allExpand ? (
+            <Button onClick={() => openCLoseEvent()}>
+              <UpOutlined />
+              收起
+            </Button>
+          ) : (
+            <Button onClick={() => openCLoseEvent()}>
+              <DownOutlined />
+              展开
+            </Button>
+          )}
         </div>
       </div>
 
-      {treeData?.length === 0 ? (
+      {!treeData ? (
         <div className={styles.favEmpty}>
           <div className={styles.createTips}>
             <span>点击此处新建文件夹</span>
