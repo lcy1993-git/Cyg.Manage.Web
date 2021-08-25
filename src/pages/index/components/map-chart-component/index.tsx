@@ -389,7 +389,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     onClick={exportHomeStatisticEvent}
                     className={styles.exportButton}
                   >
-                    导出项目
+                    导出统计数据
                   </Button>
                 </div>
               </div>
@@ -401,22 +401,27 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <span>{ohterProjectTotalNumber}个</span>
                 </div>
                 <div>
-                  {
-                    ohterProjectTotalNumber > 0 ?
-                      <a href='/visualization-results/result-page'><Button
-                        loading={false}
-                        type="primary"
-                        onClick={handlerOtherClick}
-                        style={{ width: "100%" }}
-                      >跳转可视化</Button></a> :
+                  {ohterProjectTotalNumber > 0 ? (
+                    <a href="/visualization-results/result-page">
                       <Button
                         loading={false}
                         type="primary"
                         onClick={handlerOtherClick}
-                        style={{ width: "100%" }}
-                      >跳转可视化</Button>
-                  }
-
+                        style={{ width: '100%' }}
+                      >
+                        跳转可视化
+                      </Button>
+                    </a>
+                  ) : (
+                    <Button
+                      loading={false}
+                      type="primary"
+                      onClick={handlerOtherClick}
+                      style={{ width: '100%' }}
+                    >
+                      跳转可视化
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -449,7 +454,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
       </div>
 
       <div className={styles.colorWrapInfo}>
-        <div className='flex1'></div>
+        <div className="flex1"></div>
         <div className={styles.dataSplitMenu}>
           <div className={styles.dataSplitMenuItem}>
             <span className={`${styles.dataSplitMenuItemIcon} ${styles.orange}`}></span>

@@ -44,7 +44,7 @@ const ScrollListQuee: React.FC<ScrollListQueeProps> = ({ data, children, height,
         refRender.current.style.top = '0px';
       }
     }
-  }, [data.length]);
+  }, [data.length])
 
   useEffect(() => {
     if (auto && scrollClock) {

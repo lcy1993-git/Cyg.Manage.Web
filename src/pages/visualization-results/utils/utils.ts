@@ -4,6 +4,48 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 
 import { Properties } from '@/services/visualization-results/side-tree';
 
+/**
+ * 用于描述两个点位之间由多条线组成的线簇
+ */
+export class LineCluster {
+  constructor(lines: Feature[], zero_guys: Feature[], pointIds: string[]) {
+    this.lines = lines;
+    this.zero_guys = zero_guys;
+    this.pointIds = pointIds;
+  }
+  /**
+   * 普通线路
+   */
+  lines: Feature[];
+  /**
+   * 水平拉线
+   */
+  zero_guys: Feature[];
+  /**
+   * 线簇的两个端点id，pointIds[0]为起点，pointIds[1]为终点
+   */
+  pointIds: string[];
+  /**
+   * 根据线的总数量验证线簇是否有效
+   * @returns 线簇是否有效
+   */
+  isValid = () => {
+    return (this.lines.length && this.zero_guys.length && this.lines.length + this.zero_guys.length > 1) ? true : false;
+  }
+  /** 
+   * 判断该线是否应该包含该线段
+   * @param 线要素
+   * @returns 该线是否应该包含该线段
+  */
+  isShouldContainLine(feature: Feature) {
+    let props = feature.getProperties();
+    if(props.start_id === this.pointIds[0] && props.end_id === this.pointIds[1]) {
+      return true;
+    }
+    return false;
+  }
+}
+
 export const getTime = (t: any) => {
   return new Date(t.replaceAll('/', '-')).getTime();
 }
@@ -166,4 +208,14 @@ export const getSelectKeyByKeyword = (data: TreeNodeType[], keyWord: string) => 
   }
   recursionFn(data);
   return Array.from(new Set(selectKey));
+}
+
+/**
+ * 将同一线段上的非水平拉线的标注文本绘制到该段左侧，将水平拉线的标注文本绘制到该段右侧
+ * 
+ * @param feature 
+ * @returns 
+ */
+export const getTextPositionOfLine = (feature: Feature) => {
+
 }

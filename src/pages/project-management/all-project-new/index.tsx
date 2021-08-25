@@ -4,7 +4,7 @@ import TableSearch from '@/components/table-search';
 import React, { useState } from 'react';
 import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
-import { Button, Input, Tooltip } from 'antd';
+import { Button, Input, Spin } from 'antd';
 import styles from './index.less';
 import EngineerTable from './components/engineer-table';
 import { useRef } from 'react';
@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import ScreenModal from './components/screen-modal';
 import AddEngineerModal from './components/add-engineer-modal';
 import { Dropdown } from 'antd';
-import { DeleteOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { TableItemCheckedInfo } from './components/engineer-table/engineer-table-item';
@@ -41,7 +41,10 @@ import ResourceLibraryManageModal from './components/resource-library-manage-mod
 import ExportPowerModal from './components/export-power-modal';
 import AuditKnotModal from './components/audit-knot-modal';
 import ColumnsConfigModal from './components/columns-config-modal';
-import { useMount, useRequest } from 'ahooks';
+import { useMount, useRequest, useUpdateEffect } from 'ahooks';
+import AddFavoriteModal from './components/add-favorite-modal';
+import FavoriteList from './components/favorite-list';
+import { removeCollectionEngineers } from '@/services/project-management/favorite-list';
 
 const { Search } = Input;
 
@@ -88,6 +91,9 @@ const AllProject: React.FC = () => {
     delegation: 0,
     beShared: 0,
   });
+
+  const imgSrc = require('../../../assets/icon-image/favorite.png');
+
   // 外审安排的时候用到
   const [currentProjectId, setCurrentProjectId] = useState<string>('');
   const [projectName, setProjectName] = useState<string>('');
@@ -107,6 +113,14 @@ const AllProject: React.FC = () => {
   // 被勾选中的数据
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
   const [chooseColumns, setChooseColumns] = useState<string[]>([]);
+
+  //添加收藏夹modal
+  const [addFavoriteModal, setAddFavoriteModal] = useState<boolean>(false);
+
+  //收藏夹显示
+  const [sideVisible, setSideVisible] = useState<boolean>(false);
+  const [engineerIds, setEngineerIds] = useState<string[]>([]);
+  const [selectedFavId, setSelectedFavId] = useState<string>('');
 
   const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
   const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
@@ -130,7 +144,7 @@ const AllProject: React.FC = () => {
     allProjectSearchProjectId,
   } = useLayoutStore();
 
-  const { data: columnsData } = useRequest(() => getColumnsConfig(), {
+  const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
       setChooseColumns(
         columnsData
@@ -193,6 +207,15 @@ const AllProject: React.FC = () => {
     });
   };
 
+  useUpdateEffect(() => {
+    setTableSelectData([]);
+    searchByParams({
+      ...searchParams,
+      engineerFavoritesId: selectedFavId,
+      keyWord,
+    });
+  }, [selectedFavId]);
+
   const addEngineerEvent = () => {
     setAddEngineerModalVisible(true);
   };
@@ -222,6 +245,8 @@ const AllProject: React.FC = () => {
     }
 
     await checkCanArrange(projectIds);
+
+    console.log(tableSelectData?.[0].projectInfo);
 
     // 如果只有一个项目需要安排的时候，需要去检查他是不是被安排了部组
     if (projectIds.length === 1) {
@@ -407,6 +432,17 @@ const AllProject: React.FC = () => {
   };
 
   const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
+    const selectData = checkedValue
+      .map((item: any) => {
+        if (item.checkedArray.length === 0) {
+          return null;
+        }
+        return item;
+      })
+      .filter(Boolean);
+
+    const engineerIds = selectData.map((item: any) => item.projectInfo.id);
+    setEngineerIds(engineerIds);
     setTableSelectData(checkedValue);
   };
 
@@ -445,6 +481,56 @@ const AllProject: React.FC = () => {
       )}
     </Menu>
   );
+
+  //收藏夹操作
+  const favoriteMenu = (
+    <Menu>
+      {/* {buttonJurisdictionArray?.includes('all-project-share') && ( */}
+      <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
+      {/* )} */}
+      {/* {buttonJurisdictionArray?.includes('all-project-share-recall') && ( */}
+      <Popconfirm
+        placement="top"
+        title="确定要移除所选工程?"
+        onConfirm={() => removeFavEvent()}
+        okText="确认"
+        cancelText="取消"
+      >
+        <Menu.Item>移除当前收藏夹</Menu.Item>
+      </Popconfirm>
+      {/* )} */}
+    </Menu>
+  );
+
+  const addFavEvent = () => {
+    if (engineerIds && engineerIds.length > 0) {
+      setAddFavoriteModal(true);
+      return;
+    }
+    message.warning('您还未选择任何工程');
+  };
+
+  const removeFavEvent = async () => {
+    if (sideVisible) {
+      if (selectedFavId) {
+        if (engineerIds && engineerIds.length > 0) {
+          await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds });
+          message.success('已移除当前收藏夹');
+          searchByParams({
+            ...searchParams,
+            engineerFavoritesId: selectedFavId,
+            keyWord,
+          });
+          return;
+        }
+        message.warning('请选择要移除当前收藏夹的工程');
+        return;
+      }
+      message.warning('您还未选择收藏夹');
+      return;
+    }
+    message.warning('该功能仅能在收藏夹项目列表中使用');
+  };
 
   const postProjectMenu = (
     <Menu>
@@ -531,277 +617,298 @@ const AllProject: React.FC = () => {
     searchByParams({ ...params, keyWord, statisticalCategory });
   };
 
-  //待处理slot tips
-  const processedSlot = () => {
-    return (
-      <Tooltip title="需要您安排和结项的项目" placement="right">
-        <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
-      </Tooltip>
-    );
-  };
-
-  //进行中 slot
-  const progressSlot = () => {
-    return (
-      <Tooltip title="您是项目的执行身份且未结项的项目" placement="right">
-        <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
-      </Tooltip>
-    );
-  };
-
   return (
-    <PageCommonWrap noPadding={true}>
-      <div className={styles.allProjectPage}>
-        <div className={styles.allProjectStatistics}>
-          <div className="flex1">
-            <div onClick={() => statisticsClickEvent('-1')}>
-              <AllStatistics>{handleStatisticsData(statisticsData?.total)}</AllStatistics>
-            </div>
-          </div>
-          <div className={styles.projectManagementStatisticItem}>
-            <div onClick={() => statisticsClickEvent('1')}>
-              <SingleStatistics label="待处理" icon="awaitProcess" tipSlot={processedSlot}>
-                {handleStatisticsData(statisticsData?.awaitProcess)}
-              </SingleStatistics>
-            </div>
-          </div>
-          <div className={styles.projectManagementStatisticItem}>
-            <div onClick={() => statisticsClickEvent('2')}>
-              <SingleStatistics label="进行中" icon="inProgress" tipSlot={progressSlot}>
-                {handleStatisticsData(statisticsData?.inProgress)}
-              </SingleStatistics>
-            </div>
-          </div>
-          <div className={styles.projectManagementStatisticItem}>
-            <div onClick={() => statisticsClickEvent('3')}>
-              <SingleStatistics label="委托" icon="delegation">
-                {handleStatisticsData(statisticsData?.delegation)}
-              </SingleStatistics>
-            </div>
-          </div>
-          <div className={styles.projectManagementStatisticItem}>
-            <div onClick={() => statisticsClickEvent('4')}>
-              <SingleStatistics label="被共享" icon="beShared">
-                {handleStatisticsData(statisticsData?.beShared)}
-              </SingleStatistics>
-            </div>
-          </div>
-        </div>
-        <div className={styles.allProjectTableContent}>
-          <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
-          <div className={styles.allProjectSearch}>
-            <div className={styles.allProjectSearchContent}>
-              <TableSearch className="mr22" label="" width="300px">
-                <Search
-                  placeholder="请输入工程/项目名称"
-                  enterButton
-                  value={keyWord}
-                  onChange={(e) => setKeyWord(e.target.value)}
-                  onSearch={() => searchEvent()}
-                />
-              </TableSearch>
-              <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
-            </div>
-            <div className={styles.allProjectFunctionButtonContent}>
-              {(buttonJurisdictionArray?.includes('all-project-project-approval') ||
-                buttonJurisdictionArray?.includes('all-project-batch-project')) && (
-                <Dropdown overlay={addEngineerMenu}>
-                  <Button className="mr7" type="primary">
-                    立项 <DownOutlined />
-                  </Button>
-                </Dropdown>
-              )}
-              {buttonJurisdictionArray?.includes('all-project-delete-project') && (
-                <Popconfirm
-                  title="确认对勾选的项目进行删除吗?"
-                  okText="确认"
-                  cancelText="取消"
-                  onConfirm={sureDeleteProject}
-                >
-                  <Button className="mr7">
-                    <DeleteOutlined />
-                    删除
-                  </Button>
-                </Popconfirm>
-              )}
-              {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
-                buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
-                buttonJurisdictionArray?.includes('all-project-recall-project')) && (
-                <Dropdown overlay={arrangeMenu}>
-                  <Button className="mr7">
-                    安排 <DownOutlined />
-                  </Button>
-                </Dropdown>
-              )}
-              {(buttonJurisdictionArray?.includes('all-project-share') ||
-                buttonJurisdictionArray?.includes('all-project-share-recall')) && (
-                <Dropdown overlay={shareMenu}>
-                  <Button className="mr7">
-                    共享 <DownOutlined />
-                  </Button>
-                </Dropdown>
-              )}
-              {buttonJurisdictionArray?.includes('all-project-export') && (
-                <div className="mr7">
-                  <TableExportButton
-                    exportUrl="/Porject/Export"
-                    selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
-                    selectSlot={() => {
-                      return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
-                    }}
-                    // TODO 待添加参数
-                    extraParams={{
-                      ...searchParams,
-                      keyWord,
-                      statisticalCategory,
-                    }}
-                  />
-                </div>
-              )}
-              {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
-                buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
-                buttonJurisdictionArray?.includes('all-project-kont-pass') ||
-                buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
-                <Dropdown overlay={postProjectMenu}>
-                  <Button className="mr7">
-                    结项 <DownOutlined />
-                  </Button>
-                </Dropdown>
-              )}
-              {buttonJurisdictionArray?.includes('all-project-resource') && (
-                <Button className="mr7" onClick={() => setLibVisible(true)}>
-                  资源库迭代
-                </Button>
-              )}
-              <Button onClick={() => setChooseColumnsModal(true)}>自定义表头</Button>
-            </div>
-          </div>
-          <div className={styles.engineerTableContent}>
-            <EngineerTable
-              getStatisticsData={(value: any) => setStatisticsData(value)}
-              ref={tableRef}
-              extractParams={{ keyWord, statisticalCategory, ...searchParams }}
-              onSelect={tableSelectEvent}
-              columnsConfig={chooseColumns}
-              finishEvent={refresh}
-            />
-          </div>
-        </div>
+    <>
+      <div
+        className={styles.folderButton}
+        onClick={() => setSideVisible(true)}
+        style={{ display: sideVisible ? 'none' : 'block' }}
+      >
+        <img src={imgSrc} alt="" />
+        <div>收藏</div>
       </div>
+      <PageCommonWrap noPadding={true}>
+        <div className={styles.allProjectPage}>
+          <div className={styles.allProjectStatistics}>
+            <div className="flex1">
+              <div onClick={() => statisticsClickEvent('-1')}>
+                <AllStatistics>{handleStatisticsData(statisticsData?.total)}</AllStatistics>
+              </div>
+            </div>
+            <div className={styles.projectManagementStatisticItem}>
+              <div onClick={() => statisticsClickEvent('1')}>
+                <SingleStatistics label="待处理" icon="awaitProcess">
+                  {handleStatisticsData(statisticsData?.awaitProcess)}
+                </SingleStatistics>
+              </div>
+            </div>
+            <div className={styles.projectManagementStatisticItem}>
+              <div onClick={() => statisticsClickEvent('2')}>
+                <SingleStatistics label="进行中" icon="inProgress">
+                  {handleStatisticsData(statisticsData?.inProgress)}
+                </SingleStatistics>
+              </div>
+            </div>
+            <div className={styles.projectManagementStatisticItem}>
+              <div onClick={() => statisticsClickEvent('3')}>
+                <SingleStatistics label="委托" icon="delegation">
+                  {handleStatisticsData(statisticsData?.delegation)}
+                </SingleStatistics>
+              </div>
+            </div>
+            <div className={styles.projectManagementStatisticItem}>
+              <div onClick={() => statisticsClickEvent('4')}>
+                <SingleStatistics label="被共享" icon="beShared">
+                  {handleStatisticsData(statisticsData?.beShared)}
+                </SingleStatistics>
+              </div>
+            </div>
+          </div>
+          <div className={styles.projectsAndFavorite}>
+            <div
+              className={styles.allProjectsFavorite}
+              style={{ display: sideVisible ? 'block' : 'none' }}
+            >
+              <Spin spinning={loading}>
+                <FavoriteList
+                  getFavId={setSelectedFavId}
+                  setVisible={setSideVisible}
+                  finishEvent={refresh}
+                  visible={sideVisible}
+                />
+              </Spin>
+            </div>
+            <div className={styles.allProjectTableContent}>
+              <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
+              <div className={styles.allProjectSearch}>
+                <div className={styles.allProjectSearchContent}>
+                  <TableSearch className="mr22" label="" width="300px">
+                    <Search
+                      placeholder="请输入工程/项目名称"
+                      enterButton
+                      value={keyWord}
+                      onChange={(e) => setKeyWord(e.target.value)}
+                      onSearch={() => searchEvent()}
+                    />
+                  </TableSearch>
+                  <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
+                </div>
+                <div className={styles.allProjectFunctionButtonContent}>
+                  {(buttonJurisdictionArray?.includes('all-project-project-approval') ||
+                    buttonJurisdictionArray?.includes('all-project-batch-project')) && (
+                    <Dropdown overlay={addEngineerMenu}>
+                      <Button className="mr7" type="primary">
+                        立项 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
+                  {buttonJurisdictionArray?.includes('all-project-delete-project') && (
+                    <Popconfirm
+                      title="确认对勾选的项目进行删除吗?"
+                      okText="确认"
+                      cancelText="取消"
+                      onConfirm={sureDeleteProject}
+                    >
+                      <Button className="mr7">
+                        <DeleteOutlined />
+                        删除
+                      </Button>
+                    </Popconfirm>
+                  )}
+                  {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
+                    buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
+                    buttonJurisdictionArray?.includes('all-project-recall-project')) && (
+                    <Dropdown overlay={arrangeMenu}>
+                      <Button className="mr7">
+                        安排 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
+                  {(buttonJurisdictionArray?.includes('all-project-share') ||
+                    buttonJurisdictionArray?.includes('all-project-share-recall')) && (
+                    <Dropdown overlay={shareMenu}>
+                      <Button className="mr7">
+                        共享 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
+                  <Dropdown overlay={favoriteMenu}>
+                    <Button className="mr7">
+                      收藏 <DownOutlined />
+                    </Button>
+                  </Dropdown>
 
-      <ScreenModal
-        visible={screenModalVisible}
-        onChange={setScreenModalVisible}
-        finishEvent={screenClickEvent}
-        searchParams={searchParams}
-      />
+                  {buttonJurisdictionArray?.includes('all-project-export') && (
+                    <div className="mr7">
+                      <TableExportButton
+                        exportUrl="/Porject/Export"
+                        selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
+                        selectSlot={() => {
+                          return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
+                        }}
+                        // TODO 待添加参数
+                        extraParams={{
+                          ...searchParams,
+                          keyWord,
+                          statisticalCategory,
+                        }}
+                      />
+                    </div>
+                  )}
+                  {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
+                    buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
+                    buttonJurisdictionArray?.includes('all-project-kont-pass') ||
+                    buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
+                    <Dropdown overlay={postProjectMenu}>
+                      <Button className="mr7">
+                        结项 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+                  )}
+                  {buttonJurisdictionArray?.includes('all-project-resource') && (
+                    <Button className="mr7" onClick={() => setLibVisible(true)}>
+                      资源库迭代
+                    </Button>
+                  )}
+                  <Button onClick={() => setChooseColumnsModal(true)}>自定义表头</Button>
+                </div>
+              </div>
+              <div className={styles.engineerTableContent}>
+                <EngineerTable
+                  getStatisticsData={(value: any) => setStatisticsData(value)}
+                  ref={tableRef}
+                  extractParams={{ keyWord, statisticalCategory, ...searchParams }}
+                  onSelect={tableSelectEvent}
+                  columnsConfig={chooseColumns}
+                  finishEvent={refresh}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
 
-      {addEngineerModalVisible && (
-        <AddEngineerModal
-          finishEvent={searchEvent}
-          visible={addEngineerModalVisible}
-          onChange={setAddEngineerModalVisible}
+        <ScreenModal
+          visible={screenModalVisible}
+          onChange={setScreenModalVisible}
+          finishEvent={screenClickEvent}
+          searchParams={searchParams}
         />
-      )}
 
-      <UploadAddProjectModal
-        visible={batchAddEngineerModalVisible}
-        onChange={setBatchAddEngineerModalVisible}
-        refreshEvent={searchEvent}
-      />
+        {addEngineerModalVisible && (
+          <AddEngineerModal
+            finishEvent={searchEvent}
+            visible={addEngineerModalVisible}
+            onChange={setAddEngineerModalVisible}
+          />
+        )}
 
-      {arrangeModalVisible && (
-        <ArrangeModal
-          finishEvent={refresh}
-          visible={arrangeModalVisible}
-          onChange={setArrangeModalVisible}
-          defaultSelectType={currentArrangeProjectType}
-          allotCompanyId={currentArrangeProjectIsArrange}
-          projectIds={selectProjectIds}
-          dataSourceType={dataSourceType}
-          setSourceTypeEvent={setDataSourceType}
+        <UploadAddProjectModal
+          visible={batchAddEngineerModalVisible}
+          onChange={setBatchAddEngineerModalVisible}
+          refreshEvent={searchEvent}
         />
-      )}
 
-      {editArrangeModalVisible && (
-        <EditArrangeModal
-          allotCompanyId={editCurrentAllotCompanyId}
-          changeFinishEvent={refresh}
-          visible={editArrangeModalVisible}
-          onChange={setEditArrangeModalVisible}
-          projectIds={selectProjectIds}
-          canEdit={ifCanEdit}
-          dataSourceType={dataSourceType}
-        />
-      )}
+        {arrangeModalVisible && (
+          <ArrangeModal
+            finishEvent={refresh}
+            visible={arrangeModalVisible}
+            onChange={setArrangeModalVisible}
+            defaultSelectType={currentArrangeProjectType}
+            allotCompanyId={currentArrangeProjectIsArrange}
+            projectIds={selectProjectIds}
+            dataSourceType={dataSourceType}
+            setSourceTypeEvent={setDataSourceType}
+          />
+        )}
 
-      {editExternalArrangeModal && (
-        <EditExternalArrangeForm
-          projectId={currentProjectId}
-          visible={editExternalArrangeModal}
-          onChange={setEditExternalArrangeModal}
-          closeModalEvent={delayRefresh}
-        />
-      )}
+        {editArrangeModalVisible && (
+          <EditArrangeModal
+            allotCompanyId={editCurrentAllotCompanyId}
+            changeFinishEvent={refresh}
+            visible={editArrangeModalVisible}
+            onChange={setEditArrangeModalVisible}
+            projectIds={selectProjectIds}
+            canEdit={ifCanEdit}
+            dataSourceType={dataSourceType}
+          />
+        )}
 
-      {externalArrangeModal && (
-        <ExternalArrangeForm
-          visible={externalArrangeModal}
-          onChange={setExternalArrangeModal}
-          projectId={currentProjectId}
-          proName={projectName}
-          search={delayRefresh}
-        />
-      )}
+        {editExternalArrangeModal && (
+          <EditExternalArrangeForm
+            projectId={currentProjectId}
+            visible={editExternalArrangeModal}
+            onChange={setEditExternalArrangeModal}
+            closeModalEvent={delayRefresh}
+          />
+        )}
 
-      {shareModalVisible && (
-        <ShareModal
-          finishEvent={refresh}
-          visible={shareModalVisible}
-          onChange={setShareModalVisible}
-          projectIds={selectProjectIds}
-        />
-      )}
-      {recallModalVisible && (
-        <ProjectRecallModal
-          changeFinishEvent={refresh}
-          visible={recallModalVisible}
-          projectId={currentRecallProjectId}
-          onChange={setRecallModalVisible}
-        />
-      )}
-      {libVisible && (
-        <ResourceLibraryManageModal
-          visible={libVisible}
-          onChange={setLibVisible}
-          changeFinishEvent={refresh}
-        />
-      )}
-      {exportPowerModalVisible && (
-        <ExportPowerModal
-          visible={exportPowerModalVisible}
-          onChange={setExportPowerModalVisible}
-          projectIds={selectProjectIds}
-          finishEvent={refresh}
-        />
-      )}
-      {projectAuditKnotModal && (
-        <AuditKnotModal
-          visible={projectAuditKnotModal}
-          onChange={setProjectAuditKnotModal}
-          projectIds={selectProjectIds}
-          finishEvent={refresh}
-        />
-      )}
-      {chooseColumnsModal && (
-        <ColumnsConfigModal
-          hasCheckColumns={chooseColumns}
-          visible={chooseColumnsModal}
-          onChange={setChooseColumnsModal}
-          finishEvent={configChangeEvent}
-        />
-      )}
-    </PageCommonWrap>
+        {externalArrangeModal && (
+          <ExternalArrangeForm
+            visible={externalArrangeModal}
+            onChange={setExternalArrangeModal}
+            projectId={currentProjectId}
+            proName={projectName}
+            search={delayRefresh}
+          />
+        )}
+
+        {shareModalVisible && (
+          <ShareModal
+            finishEvent={refresh}
+            visible={shareModalVisible}
+            onChange={setShareModalVisible}
+            projectIds={selectProjectIds}
+          />
+        )}
+        {recallModalVisible && (
+          <ProjectRecallModal
+            changeFinishEvent={refresh}
+            visible={recallModalVisible}
+            projectId={currentRecallProjectId}
+            onChange={setRecallModalVisible}
+          />
+        )}
+        {libVisible && (
+          <ResourceLibraryManageModal
+            visible={libVisible}
+            onChange={setLibVisible}
+            changeFinishEvent={refresh}
+          />
+        )}
+        {exportPowerModalVisible && (
+          <ExportPowerModal
+            visible={exportPowerModalVisible}
+            onChange={setExportPowerModalVisible}
+            projectIds={selectProjectIds}
+            finishEvent={refresh}
+          />
+        )}
+        {projectAuditKnotModal && (
+          <AuditKnotModal
+            visible={projectAuditKnotModal}
+            onChange={setProjectAuditKnotModal}
+            projectIds={selectProjectIds}
+            finishEvent={refresh}
+          />
+        )}
+        {chooseColumnsModal && (
+          <ColumnsConfigModal
+            hasCheckColumns={chooseColumns}
+            visible={chooseColumnsModal}
+            onChange={setChooseColumnsModal}
+            finishEvent={configChangeEvent}
+          />
+        )}
+        {addFavoriteModal && (
+          <AddFavoriteModal
+            visible={addFavoriteModal}
+            onChange={setAddFavoriteModal}
+            finishEvent={refresh}
+            engineerIds={engineerIds}
+          />
+        )}
+      </PageCommonWrap>
+    </>
   );
 };
 

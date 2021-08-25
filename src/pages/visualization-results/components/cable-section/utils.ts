@@ -175,7 +175,6 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
       } else if (title.includes("2600")) {
         [type3Org, type3Line] = pipeJacking.type2600();
       }
-      console.log(simpleMixIn(type3Org, sortData));
       
       drawCircular(simpleMixIn(type3Org, sortData), ctx, type3Line)
       break;
@@ -189,8 +188,6 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
       const [a, b] = enumText.split("×")
       
       const mode5RowCol = grooveEnum?.["t" + a + b];
-      console.log(enumText);
-      console.log(grooveEnum);
       
       const type5Data = getGrooveData(mode5RowCol.row, mode5RowCol.col, title.includes("双"));
 
@@ -213,7 +210,6 @@ export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: numbe
           drawCircular(simpleMixIn(res62[0], sortData), ctx, res62[1])
           break;
         default:
-          console.log("out");
           
           break;
       }
