@@ -1,6 +1,6 @@
 import EmptyTip from '@/components/empty-tip';
 import { getFavorites } from '@/services/project-management/favorite-list';
-import { PlusOutlined, UpOutlined, MenuFoldOutlined, DownOutlined } from '@ant-design/icons';
+import { PlusOutlined, MenuFoldOutlined, PoweroffOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { Button, Tree } from 'antd';
 import uuid from 'node-uuid';
@@ -15,6 +15,8 @@ interface FavoriteListParams {
   visible?: boolean;
   setVisible?: Dispatch<SetStateAction<boolean>>;
   getFavId?: Dispatch<SetStateAction<string>>;
+  getFavName?: Dispatch<SetStateAction<string>>;
+  setStatisticalTitle?: Dispatch<SetStateAction<string>>;
   finishEvent: () => void;
 }
 
@@ -27,7 +29,7 @@ interface treeDataItems {
 const { DirectoryTree } = Tree;
 
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
-  const { setVisible, visible, getFavId, finishEvent } = props;
+  const { setVisible, visible, getFavId, finishEvent, getFavName, setStatisticalTitle } = props;
   const [treeData, setTreeData] = useState<treeDataItems[]>([]);
   const [parentId, setParentId] = useState<string>('');
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
@@ -64,6 +66,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           onSelect={data.id === selectkey}
           isEdit={data.id === isEdit}
           parentId={parentId}
+          setParentId={setParentId}
           setIsEdit={setIsEdit}
           refresh={run}
           deep={data.deps}
@@ -91,12 +94,13 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     setTreeData([...JSON.parse(JSON.stringify(treeData ? treeData : '')), newTreeNode]);
   };
 
-  const selectEvent = (e, g, m) => {
+  const selectEvent = (e: any, g: any, m: any) => {
     if (e[0] !== selectkey) {
       setSelectkey(e[0]);
       setIsEdit('');
     }
     getFavId?.(e[0]);
+    getFavName?.(g.node.title.props.text);
   };
 
   const openCLoseEvent = () => {
@@ -117,17 +121,21 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
             <PlusOutlined />
             新建
           </Button>
-          {allExpand ? (
-            <Button onClick={() => openCLoseEvent()}>
-              <UpOutlined />
-              收起
-            </Button>
-          ) : (
-            <Button onClick={() => openCLoseEvent()}>
-              <DownOutlined />
-              展开
-            </Button>
-          )}
+          <Button
+            onClick={() => {
+              setVisible?.(false);
+              setIsEdit('');
+              setSelectkey('');
+              setAllExpand(true);
+              getFavId?.('');
+              getFavName?.('');
+              setStatisticalTitle?.('-1');
+              finishEvent?.();
+            }}
+          >
+            <PoweroffOutlined />
+            退出
+          </Button>
         </div>
       </div>
 
@@ -140,32 +148,25 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           <EmptyTip description="暂无内容" />
         </div>
       ) : (
-        <div className={styles.favTree}>
-          <DirectoryTree
-            key={JSON.stringify(allExpand)}
-            treeData={handleData}
-            height={535}
-            defaultExpandAll={allExpand}
-            onSelect={selectEvent}
-            onExpand={onExpand}
-            selectedKeys={[selectkey]}
-            expandAction="doubleClick"
-          />
-        </div>
+        treeData.length > 0 && (
+          <div className={styles.favTree}>
+            <DirectoryTree
+              key={JSON.stringify(allExpand)}
+              treeData={handleData}
+              height={650}
+              defaultExpandAll={allExpand}
+              onSelect={selectEvent}
+              onExpand={onExpand}
+              selectedKeys={[selectkey]}
+              expandAction="doubleClick"
+            />
+          </div>
+        )
       )}
       <div className={styles.favFooter}>
-        <span
-          style={{ cursor: 'pointer' }}
-          onClick={() => {
-            setVisible?.(false);
-            setIsEdit('');
-            finishEvent?.();
-            setSelectkey('');
-            getFavId?.('');
-          }}
-        >
+        <span style={{ cursor: 'pointer' }} onClick={() => openCLoseEvent()}>
           <MenuFoldOutlined />
-          &nbsp; 收起
+          &nbsp; {allExpand ? '全部收起' : '全部展开'}
         </span>
       </div>
     </div>

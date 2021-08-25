@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
 import { useControllableValue } from 'ahooks';
 import UrlSelect from '@/components/url-select';
-import { Button, Modal, Form, DatePicker, Select } from 'antd';
+import { Button, Modal, Form, DatePicker } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
 import CyFormItem from '@/components/cy-form-item';
 import moment, { Moment } from 'moment';
@@ -232,7 +232,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     projectDataSourceType,
   } = useGetProjectEnum();
 
-  const timeChange = (dates, dateStrings) => {
+  const timeChange = (dates: any, dateStrings: any) => {
     setStartTime(dateStrings[0]);
     setEndTime(dateStrings[1]);
   };

@@ -4,7 +4,7 @@ import TableSearch from '@/components/table-search';
 import React, { useState } from 'react';
 import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
-import { Button, Input, Spin } from 'antd';
+import { Button, Input, Spin, Tooltip } from 'antd';
 import styles from './index.less';
 import EngineerTable from './components/engineer-table';
 import { useRef } from 'react';
@@ -116,17 +116,12 @@ const AllProject: React.FC = () => {
 
   //添加收藏夹modal
   const [addFavoriteModal, setAddFavoriteModal] = useState<boolean>(false);
+  const [favName, setFavName] = useState<string>('');
 
   //收藏夹显示
   const [sideVisible, setSideVisible] = useState<boolean>(false);
   const [engineerIds, setEngineerIds] = useState<string[]>([]);
   const [selectedFavId, setSelectedFavId] = useState<string>('');
-
-  const [defaultPersonInfo, setDefaultPersonInfo] = useState({
-    logicRelation: 2,
-    survey: '',
-    design: '',
-  });
 
   const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
   const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
@@ -205,9 +200,12 @@ const AllProject: React.FC = () => {
   };
 
   const statisticsClickEvent = (statisticsType: string) => {
+    console.log(selectedFavId, '11');
+
     setStatisticalCategory(statisticsType);
     searchByParams({
       ...searchParams,
+      engineerFavoritesId: selectedFavId,
       statisticalCategory: statisticsType,
       keyWord,
     });
@@ -421,6 +419,7 @@ const AllProject: React.FC = () => {
     // TODO
     searchByParams({
       ...searchParams,
+      engineerFavoritesId: selectedFavId,
       statisticalCategory,
       keyWord,
     });
@@ -620,56 +619,26 @@ const AllProject: React.FC = () => {
 
   const screenClickEvent = (params: any) => {
     setSearchParams({ ...params, keyWord, statisticalCategory });
-    searchByParams({ ...params, keyWord, statisticalCategory });
+    searchByParams({ ...params, engineerFavoritesId: selectedFavId, keyWord, statisticalCategory });
   };
 
   return (
     <>
-      <div
-        className={styles.folderButton}
-        onClick={() => setSideVisible(true)}
-        style={{ display: sideVisible ? 'none' : 'block' }}
-      >
-        <img src={imgSrc} alt="" />
-        <div>收藏</div>
-      </div>
+      <Tooltip title="工程收藏夹">
+        <div
+          className={styles.folderButton}
+          onClick={() => {
+            setSideVisible(true);
+            setKeyWord('');
+          }}
+          style={{ display: sideVisible ? 'none' : 'block' }}
+        >
+          <img src={imgSrc} alt="" />
+          <div>收藏</div>
+        </div>
+      </Tooltip>
       <PageCommonWrap noPadding={true}>
         <div className={styles.allProjectPage}>
-          <div className={styles.allProjectStatistics}>
-            <div className="flex1">
-              <div onClick={() => statisticsClickEvent('-1')}>
-                <AllStatistics>{handleStatisticsData(statisticsData?.total)}</AllStatistics>
-              </div>
-            </div>
-            <div className={styles.projectManagementStatisticItem}>
-              <div onClick={() => statisticsClickEvent('1')}>
-                <SingleStatistics label="待处理" icon="awaitProcess">
-                  {handleStatisticsData(statisticsData?.awaitProcess)}
-                </SingleStatistics>
-              </div>
-            </div>
-            <div className={styles.projectManagementStatisticItem}>
-              <div onClick={() => statisticsClickEvent('2')}>
-                <SingleStatistics label="进行中" icon="inProgress">
-                  {handleStatisticsData(statisticsData?.inProgress)}
-                </SingleStatistics>
-              </div>
-            </div>
-            <div className={styles.projectManagementStatisticItem}>
-              <div onClick={() => statisticsClickEvent('3')}>
-                <SingleStatistics label="委托" icon="delegation">
-                  {handleStatisticsData(statisticsData?.delegation)}
-                </SingleStatistics>
-              </div>
-            </div>
-            <div className={styles.projectManagementStatisticItem}>
-              <div onClick={() => statisticsClickEvent('4')}>
-                <SingleStatistics label="被共享" icon="beShared">
-                  {handleStatisticsData(statisticsData?.beShared)}
-                </SingleStatistics>
-              </div>
-            </div>
-          </div>
           <div className={styles.projectsAndFavorite}>
             <div
               className={styles.allProjectsFavorite}
@@ -679,115 +648,158 @@ const AllProject: React.FC = () => {
                 <FavoriteList
                   getFavId={setSelectedFavId}
                   setVisible={setSideVisible}
+                  setStatisticalTitle={setStatisticalCategory}
+                  getFavName={setFavName}
                   finishEvent={refresh}
                   visible={sideVisible}
                 />
               </Spin>
             </div>
-            <div className={styles.allProjectTableContent}>
-              <CommonTitle>{statisticsObject[statisticalCategory]}</CommonTitle>
-              <div className={styles.allProjectSearch}>
-                <div className={styles.allProjectSearchContent}>
-                  <TableSearch className="mr22" label="" width="300px">
-                    <Search
-                      placeholder="请输入工程/项目名称"
-                      enterButton
-                      value={keyWord}
-                      onChange={(e) => setKeyWord(e.target.value)}
-                      onSearch={() => searchEvent()}
-                    />
-                  </TableSearch>
-                  <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
+            <div className={styles.tableAndStatistics}>
+              <div className={styles.allProjectStatistics}>
+                <div className="flex1">
+                  <div onClick={() => statisticsClickEvent('-1')}>
+                    <AllStatistics>{handleStatisticsData(statisticsData?.total)}</AllStatistics>
+                  </div>
                 </div>
-                <div className={styles.allProjectFunctionButtonContent}>
-                  {(buttonJurisdictionArray?.includes('all-project-project-approval') ||
-                    buttonJurisdictionArray?.includes('all-project-batch-project')) && (
-                    <Dropdown overlay={addEngineerMenu}>
-                      <Button className="mr7" type="primary">
-                        立项 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
-                  {buttonJurisdictionArray?.includes('all-project-delete-project') && (
-                    <Popconfirm
-                      title="确认对勾选的项目进行删除吗?"
-                      okText="确认"
-                      cancelText="取消"
-                      onConfirm={sureDeleteProject}
-                    >
-                      <Button className="mr7">
-                        <DeleteOutlined />
-                        删除
-                      </Button>
-                    </Popconfirm>
-                  )}
-                  {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
-                    buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
-                    buttonJurisdictionArray?.includes('all-project-recall-project')) && (
-                    <Dropdown overlay={arrangeMenu}>
-                      <Button className="mr7">
-                        安排 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
-                  {(buttonJurisdictionArray?.includes('all-project-share') ||
-                    buttonJurisdictionArray?.includes('all-project-share-recall')) && (
-                    <Dropdown overlay={shareMenu}>
-                      <Button className="mr7">
-                        共享 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
-                  <Dropdown overlay={favoriteMenu}>
-                    <Button className="mr7">
-                      收藏 <DownOutlined />
-                    </Button>
-                  </Dropdown>
-
-                  {buttonJurisdictionArray?.includes('all-project-export') && (
-                    <div className="mr7">
-                      <TableExportButton
-                        exportUrl="/Porject/Export"
-                        selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
-                        selectSlot={() => {
-                          return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
-                        }}
-                        // TODO 待添加参数
-                        extraParams={{
-                          ...searchParams,
-                          keyWord,
-                          statisticalCategory,
-                        }}
-                      />
-                    </div>
-                  )}
-                  {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
-                    buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
-                    buttonJurisdictionArray?.includes('all-project-kont-pass') ||
-                    buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
-                    <Dropdown overlay={postProjectMenu}>
-                      <Button className="mr7">
-                        结项 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-                  )}
-                  {buttonJurisdictionArray?.includes('all-project-resource') && (
-                    <Button className="mr7" onClick={() => setLibVisible(true)}>
-                      资源库迭代
-                    </Button>
-                  )}
-                  <Button onClick={() => setChooseColumnsModal(true)}>自定义表头</Button>
+                <div className={styles.projectManagementStatisticItem}>
+                  <div onClick={() => statisticsClickEvent('1')}>
+                    <SingleStatistics label="待处理" icon="awaitProcess">
+                      {handleStatisticsData(statisticsData?.awaitProcess)}
+                    </SingleStatistics>
+                  </div>
+                </div>
+                <div className={styles.projectManagementStatisticItem}>
+                  <div onClick={() => statisticsClickEvent('2')}>
+                    <SingleStatistics label="进行中" icon="inProgress">
+                      {handleStatisticsData(statisticsData?.inProgress)}
+                    </SingleStatistics>
+                  </div>
+                </div>
+                <div className={styles.projectManagementStatisticItem}>
+                  <div onClick={() => statisticsClickEvent('3')}>
+                    <SingleStatistics label="委托" icon="delegation">
+                      {handleStatisticsData(statisticsData?.delegation)}
+                    </SingleStatistics>
+                  </div>
+                </div>
+                <div className={styles.projectManagementStatisticItem}>
+                  <div onClick={() => statisticsClickEvent('4')}>
+                    <SingleStatistics label="被共享" icon="beShared">
+                      {handleStatisticsData(statisticsData?.beShared)}
+                    </SingleStatistics>
+                  </div>
                 </div>
               </div>
-              <div className={styles.engineerTableContent}>
-                <EngineerTable
-                  getStatisticsData={(value: any) => setStatisticsData(value)}
-                  ref={tableRef}
-                  extractParams={{ keyWord, statisticalCategory, ...searchParams }}
-                  onSelect={tableSelectEvent}
-                  columnsConfig={chooseColumns}
-                  finishEvent={refresh}
-                />
+              <div className={styles.allProjectTableContent}>
+                <CommonTitle>
+                  {favName
+                    ? `${favName}-${statisticsObject[statisticalCategory]}`
+                    : statisticsObject[statisticalCategory]}
+                </CommonTitle>
+                <div className={styles.allProjectSearch}>
+                  <div className={styles.allProjectSearchContent}>
+                    <TableSearch className="mr22" label="" width="300px">
+                      <Search
+                        placeholder="请输入工程/项目名称"
+                        enterButton
+                        value={keyWord}
+                        onChange={(e) => setKeyWord(e.target.value)}
+                        onSearch={() => searchEvent()}
+                      />
+                    </TableSearch>
+                    <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
+                  </div>
+                  <div className={styles.allProjectFunctionButtonContent}>
+                    {(buttonJurisdictionArray?.includes('all-project-project-approval') ||
+                      buttonJurisdictionArray?.includes('all-project-batch-project')) && (
+                      <Dropdown overlay={addEngineerMenu}>
+                        <Button className="mr7" type="primary">
+                          立项 <DownOutlined />
+                        </Button>
+                      </Dropdown>
+                    )}
+                    {buttonJurisdictionArray?.includes('all-project-delete-project') && (
+                      <Popconfirm
+                        title="确认对勾选的项目进行删除吗?"
+                        okText="确认"
+                        cancelText="取消"
+                        onConfirm={sureDeleteProject}
+                      >
+                        <Button className="mr7">
+                          <DeleteOutlined />
+                          删除
+                        </Button>
+                      </Popconfirm>
+                    )}
+                    {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
+                      buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
+                      buttonJurisdictionArray?.includes('all-project-recall-project')) && (
+                      <Dropdown overlay={arrangeMenu}>
+                        <Button className="mr7">
+                          安排 <DownOutlined />
+                        </Button>
+                      </Dropdown>
+                    )}
+                    {(buttonJurisdictionArray?.includes('all-project-share') ||
+                      buttonJurisdictionArray?.includes('all-project-share-recall')) && (
+                      <Dropdown overlay={shareMenu}>
+                        <Button className="mr7">
+                          共享 <DownOutlined />
+                        </Button>
+                      </Dropdown>
+                    )}
+                    <Dropdown overlay={favoriteMenu}>
+                      <Button className="mr7">
+                        收藏 <DownOutlined />
+                      </Button>
+                    </Dropdown>
+
+                    {buttonJurisdictionArray?.includes('all-project-export') && (
+                      <div className="mr7">
+                        <TableExportButton
+                          exportUrl="/Porject/Export"
+                          selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
+                          selectSlot={() => {
+                            return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
+                          }}
+                          // TODO 待添加参数
+                          extraParams={{
+                            ...searchParams,
+                            keyWord,
+                            statisticalCategory,
+                          }}
+                        />
+                      </div>
+                    )}
+                    {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
+                      buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
+                      buttonJurisdictionArray?.includes('all-project-kont-pass') ||
+                      buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
+                      <Dropdown overlay={postProjectMenu}>
+                        <Button className="mr7">
+                          结项 <DownOutlined />
+                        </Button>
+                      </Dropdown>
+                    )}
+                    {buttonJurisdictionArray?.includes('all-project-resource') && (
+                      <Button className="mr7" onClick={() => setLibVisible(true)}>
+                        资源库迭代
+                      </Button>
+                    )}
+                    <Button onClick={() => setChooseColumnsModal(true)}>自定义表头</Button>
+                  </div>
+                </div>
+                <div className={styles.engineerTableContent}>
+                  <EngineerTable
+                    getStatisticsData={(value: any) => setStatisticsData(value)}
+                    ref={tableRef}
+                    extractParams={{ keyWord, statisticalCategory, ...searchParams }}
+                    onSelect={tableSelectEvent}
+                    columnsConfig={chooseColumns}
+                    finishEvent={refresh}
+                  />
+                </div>
               </div>
             </div>
           </div>
