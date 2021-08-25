@@ -20,6 +20,7 @@ interface TitleTreeNodeProps {
   refresh?: () => void;
   onSelect?: boolean;
   setIsEdit?: (id: string) => void;
+  setParentId?: (parentId: string) => void;
   createChildNode?: (id: string) => void;
 }
 
@@ -32,6 +33,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   refresh,
   onSelect,
   setIsEdit,
+  setParentId,
   createChildNode,
 }) => {
   const editRef = useRef<HTMLInputElement>(null);
@@ -50,6 +52,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
     creatFavorite({ name: editName, parentId: parentId })
       .then((res) => {
         setIsEdit?.('');
+        setParentId?.('');
         message.success('创建成功');
         refresh?.();
       })
