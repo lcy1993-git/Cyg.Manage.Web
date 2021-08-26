@@ -373,19 +373,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         );
       }
       if (record.stateInfo.inheritStatus === 3) {
-        return (
-          <span>
-            <Popconfirm
-              title="项目继承失败，请重试"
-              onConfirm={() => againInheritEvent(record.id)}
-              okText="确认"
-              cancelText="取消"
-            >
-              <span className={styles.dangerColor}>[继承失败]</span>
-            </Popconfirm>
-            <span className={styles.disabled}>{record.name}</span>
-          </span>
-        );
+        return <span className={styles.disabled}>{record.name}</span>;
       }
     }
   };
@@ -400,6 +388,27 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       iconSlot: (record: any, projects: any) => {
         const parentData = projects.filter((item: any) => item.id === record.inheritId);
         if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
+          if (record.stateInfo.inheritStatus === 3) {
+            return (
+              <>
+                <Tooltip title={`继承自${record.inheritName}`}>
+                  <span className={styles.inheritIcon}>
+                    <LinkOutlined />
+                  </span>
+                </Tooltip>
+                <span>
+                  <Popconfirm
+                    title="项目继承失败，请重试"
+                    onConfirm={() => againInheritEvent(record.id)}
+                    okText="确认"
+                    cancelText="取消"
+                  >
+                    <span className={styles.dangerColor}>[继承失败]</span>
+                  </Popconfirm>
+                </span>
+              </>
+            );
+          }
           return (
             <Tooltip title={`继承自${record.inheritName}`}>
               <span className={styles.inheritIcon}>
