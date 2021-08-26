@@ -123,6 +123,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false);
 
+  //项目继承状态判断
+  const [inheritState, setInheritState] = useState<boolean>(false);
+
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
   const scrollbar = useRef<any>(null);
@@ -138,6 +141,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const editProjectEvent = (info: any) => {
+    if (info.inheritState === 2) {
+      setInheritState(true);
+    }
     setEditProjectVisible(true);
     setCurrentEditProjectInfo(info);
   };
@@ -240,6 +246,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 startTime: engineerInfo.startTime,
                 endTime: engineerInfo.endTime,
                 status: tableItemData.stateInfo.status,
+                inheritState: tableItemData.stateInfo.inheritStatus,
               });
             }}
           >
@@ -277,25 +284,24 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             查看成果
           </Menu.Item>
         )}
-        {jurisdictionInfo.canInherit &&
-          buttonJurisdictionArray?.includes('all-project-inherit') && (
-            // all-project-inherit
-            <Menu.Item
-              onClick={() =>
-                projectInherit({
-                  projectId: tableItemData.id,
-                  areaId: engineerInfo.province,
-                  company: engineerInfo.company,
-                  engineerId: engineerInfo.id,
-                  companyName: engineerInfo.company,
-                  startTime: engineerInfo.startTime,
-                  endTime: engineerInfo.endTime,
-                })
-              }
-            >
-              项目继承
-            </Menu.Item>
-          )}
+        {jurisdictionInfo.canInherit && buttonJurisdictionArray?.includes('all-project-inherit') && (
+          // all-project-inherit
+          <Menu.Item
+            onClick={() =>
+              projectInherit({
+                projectId: tableItemData.id,
+                areaId: engineerInfo.province,
+                company: engineerInfo.company,
+                engineerId: engineerInfo.id,
+                companyName: engineerInfo.company,
+                startTime: engineerInfo.startTime,
+                endTime: engineerInfo.endTime,
+              })
+            }
+          >
+            项目继承
+          </Menu.Item>
+        )}
       </Menu>
     );
   };
@@ -707,12 +713,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       render: (record: any, engineerInfo: any) => {
         const { operationAuthority, stateInfo } = record;
 
-        if(stateInfo.inheritStatus && (stateInfo.inheritStatus === 1 || stateInfo.inheritStatus === 3)) {
+        if (
+          stateInfo.inheritStatus &&
+          (stateInfo.inheritStatus === 1 || stateInfo.inheritStatus === 3)
+        ) {
           return (
             <Tooltip title="项目继承中，不能进行任何操作" placement="topRight">
               <BarsOutlined />
             </Tooltip>
-          )
+          );
         }
         return (
           <Dropdown
@@ -1075,6 +1084,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             startTime={currentEditProjectInfo.startTime}
             endTime={currentEditProjectInfo.endTime}
             visible={editProjectVisible}
+            pointVisible={inheritState}
+            setInheritState={setInheritState}
             onChange={setEditProjectVisible}
             changeFinishEvent={refreshEvent}
           />

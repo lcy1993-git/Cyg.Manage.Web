@@ -28,7 +28,7 @@ const ProjectAllAreaStatistics = Loadable({
 
 export default [
   {
-    title: '所有项目',
+    title: '我的工作台',
     path: '/project-management/all-project',
     component: <AllProject />,
   },

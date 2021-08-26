@@ -3,7 +3,7 @@ import request from '@/utils/request';
 import { baseUrl, cyRequest } from '../common';
 
 // 创建收藏夹
-export const creatFavorite = (params: { name: string; parentId?: string }) => {
+export const creatFavorite = (params: { name: string | undefined; parentId?: string }) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/EngineerFavorites/Create`, { method: 'POST', data: params }),
   );

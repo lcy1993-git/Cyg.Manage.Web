@@ -314,7 +314,7 @@ const ManageUser: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        title="添加-管理用户"
+        title="添加-管理员"
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -329,7 +329,7 @@ const ManageUser: React.FC = () => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-管理用户"
+        title="编辑-管理员"
         width="680px"
         visible={editFormVisible}
         okText="确认"

@@ -483,7 +483,7 @@ const CompanyUser: React.FC = () => {
               setIsCurrentUser(false);
               setTableSelectRows(data);
             }}
-            tableTitle="账号管理"
+            tableTitle="用户账号"
             url="/CompanyUser/GetPagedList"
             columns={columns}
             extractParams={{
@@ -496,7 +496,7 @@ const CompanyUser: React.FC = () => {
 
       <Modal
         maskClosable={false}
-        title="添加-公司用户"
+        title="添加-用户账号"
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -511,7 +511,7 @@ const CompanyUser: React.FC = () => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="批量添加-公司用户"
+        title="批量添加-用户账号"
         width="680px"
         visible={batchAddFormVisible}
         okText="确认"
@@ -526,7 +526,7 @@ const CompanyUser: React.FC = () => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-公司用户"
+        title="编辑-用户账号"
         width="680px"
         visible={editFormVisible}
         okText="确认"
