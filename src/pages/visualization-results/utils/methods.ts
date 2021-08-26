@@ -242,7 +242,6 @@ const loadWFSData = (
           pJSON[i].setProperties({ layer_name: 'zero_guy' });
           if (!pJSON[i].getProperties().symbol_id) {
             if (layerType === 'design') {
-              console.log(pJSON[i]);
               switch (pJSON[i].getProperties().state) {
                 case 1:
                   pJSON[i].setProperties({ symbol_id: 2010 });
