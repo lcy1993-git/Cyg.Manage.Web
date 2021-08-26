@@ -86,7 +86,7 @@ const columns = [
     width: 70,
     ellipsis: true,
     render(v: any){
-      return <span>{['设备','主材'][v -1]}{v}</span>
+      return <span>{['甲供','乙供'][v -1]}</span>
     }
   },
   {
