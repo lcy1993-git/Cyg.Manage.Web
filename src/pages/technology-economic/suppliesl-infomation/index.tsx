@@ -1,4 +1,3 @@
-import type { Key} from 'react';
 import {useState, useRef, useEffect} from 'react';
 import {useMount} from 'ahooks';
 import { Tabs } from 'antd';
@@ -86,7 +85,7 @@ const columns = [
     width: 70,
     ellipsis: true,
     render(v: any){
-      return <span>{['设备','主材'][v -1]}{v}</span>
+      return <span>{['甲供','乙供'][v -1]}</span>
     }
   },
   {

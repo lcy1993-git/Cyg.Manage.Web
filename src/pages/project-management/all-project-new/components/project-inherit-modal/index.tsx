@@ -50,8 +50,8 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
     onSuccess: (res) => {
       const { dataSourceType, disclosureRange, pileRange } = projectInfo!;
       const handleDisclosureRange =
-        dataSourceType === 2 ? '无需现场数据”项目，免设置此条目' : disclosureRange;
-      const handlePileRange = dataSourceType === 2 ? '无需现场数据”项目，免设置此条目' : pileRange;
+        dataSourceType === 2 ? '“无需现场数据”项目，免设置此条目' : disclosureRange;
+      const handlePileRange = dataSourceType === 2 ? '“无需现场数据”项目，免设置此条目' : pileRange;
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,

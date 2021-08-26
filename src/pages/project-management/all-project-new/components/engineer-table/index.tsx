@@ -404,8 +404,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 300,
       render: projectNameRender,
       ellipsis: true,
-      iconSlot: (record: any) => {
-        if (record.stateInfo.inheritStatus) {
+      iconSlot: (record: any, projects: any) => {
+        const parentData = projects.filter((item: any) => item.id === record.inheritId);
+        if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
           return (
             <Tooltip title={`继承自${record.inheritName}`}>
               <span className={styles.inheritIcon}>

@@ -470,8 +470,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     // 相应数据到右侧边栏
     const resData = [];
-    resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
-    resData.push({ propertyName: '元素类型', data: elementTypeEnum[layerName] });
+    const propertiesData = [];
+    if(elementTypeEnum[layerName] !== '轨迹点') {
+      resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
+    }
+    resData.push({ propertyName: elementTypeEnum[layerName] === '水平拉线' ? '设备种类' : '元素类型', data: elementTypeEnum[layerName] });
     for (let p in pJSON) {
       if (p === '杆规格') {
         pJSON[p] = `${feature.getProperties().rod}*${feature.getProperties().height}`;
@@ -522,25 +525,39 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         }
       }
       if (p === '下户线型号') {
+        console.log(feature);
         let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
         let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
         let fs = l.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
-        pJSON[p] = fs.getProperties().mode;
-        pJSON['下户线长度'] = fs.getProperties().length;
+        if(!fs){
+          continue;
+        }
+        else {
+          pJSON[p] = fs.getProperties().mode;
+          pJSON['下户线长度'] = fs.getProperties().length;
+        } 
       }
+      
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
-
+      if(p === '下户线型号' && pJSON[p]) {
+        continue;
+      }
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
-      
     }
 
+    resData.forEach((item)=>{
+      if(item.propertyName === '下户线长度' && item.data === '') {}
+      else {
+        propertiesData.push(item);
+      }
+    });
     // 点击轨迹点时传输日期数组
     if (elementTypeEnum[layerName] === '轨迹点') {
-      resData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray()});
+      propertiesData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray()});
       ops.setSurveyModalData({
-        resData,
+        propertiesData,
         select: getTrackRecordDateArray(),
         evt: evt.pixel
       });
@@ -548,7 +565,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       ops.setRightSidebarVisiviabel(false);
     }
     else {
-      ops.setRightSidebarData(resData);
+      ops.setRightSidebarData(propertiesData);
       ops.setRightSidebarVisiviabel(true);
       ops.setSurveyModalVisible(false)
     }

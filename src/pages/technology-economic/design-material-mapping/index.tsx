@@ -9,13 +9,11 @@ import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 
-import {
-  getMaterialLibraryList
-} from '@/services/technology-economic/supplies-library';
-import FileUpload from '@/components/file-upload';
-import useBoolean from 'ahooks/lib/useBoolean';
 import moment from 'moment';
-import {addSourceMaterialMappingQuota, deleteMaterialMappingQuota, materialMappingQuotaModifyStatus } from '@/services/technology-economic/material';
+import {addMaterialMappingDesignLibrary,
+  DeleteMaterialMappingDesignLibrary,
+  getResourceLibList,
+  materialMappingDesignLibraryModifyStatus} from '@/services/technology-economic/material';
 
 export interface SuppliesLibraryData {
   "id"?: string
@@ -32,30 +30,18 @@ const {Search} = Input;
 const {confirm} = Modal;
 const {Option} = Select;
 
-const MaterialMapping: React.FC = () => {
+const DesignMaterialMapping: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [materialList,setMaterialList] = useState<{name: string,id: string}[]>([])
-  const [
-    triggerUploadFile,
-  ] = useBoolean(false);
+  const [materialList,setMaterialList] = useState<{libName: string,id: string}[]>([])
 
   const [form] = Form.useForm();
 
   const getMaterialData = async ()=>{
-    const res = await getMaterialLibraryList({
-      "pageIndex": 1,
-      "pageSize": 9999,
-      "keyWord": '',
-      "sort": {
-        "propertyName": '',
-        "isAsc": true
-      },
-    })
-    console.log(res)
-    setMaterialList(res.items)
+    const res = await getResourceLibList()
+    setMaterialList(res)
   }
   useEffect(()=>{
     getMaterialData()
@@ -79,10 +65,10 @@ const MaterialMapping: React.FC = () => {
     }
     },
     {
-      dataIndex: 'publishOrg',
-      key: 'publishOrg',
+      dataIndex: 'designResourceLibraryName',
+      key: 'designResourceLibraryName',
       ellipsis: true,
-      title: '发布机构',
+      title: '关联设计端资源库',
       align: 'center',
       width: 170,
     },
@@ -96,6 +82,7 @@ const MaterialMapping: React.FC = () => {
       render: (enable: boolean, record: any) => {
         return (
           <Space>
+            {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
             <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
             <span>{enable ? '启用' : '停用'}</span>
           </Space>
@@ -151,23 +138,24 @@ const MaterialMapping: React.FC = () => {
   };
 
   const setStatus = async (status: boolean, record: any) => {
-    await materialMappingQuotaModifyStatus(record.id)
+    await materialMappingDesignLibraryModifyStatus(record.id)
     refresh()
   }
 
   const gotoMoreInfo = () => {
-    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-    //   message.error('请选择要操作的行');
-    //   return;
-    // }
-    const {id,sourceMaterialLibraryId} = tableSelectRows?.[0] ?? '';
-    history.push(`/technology-economic/mapping-infomation?id=${id}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warn('请选择要操作的行');
+      return;
+    }
+    const {id} = tableSelectRows?.[0] ?? '';
+    history.push(`/technology-economic/design-mapping-info?id=${id}`)
   };
   const onFinish = async (val: SuppliesLibraryData) => {
     const data = {...val}
     data.enabled = !!data.enabled
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
-    await addSourceMaterialMappingQuota(data)
+    data.remark = data.remark === undefined ? '' : data.remark
+    await addMaterialMappingDesignLibrary(data)
     setAddFormVisible(false)
     refresh()
   }
@@ -180,7 +168,7 @@ const MaterialMapping: React.FC = () => {
       title: '确定要删除该物料映射吗?',
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await deleteMaterialMappingQuota(tableSelectRows[0].id)
+        await DeleteMaterialMappingDesignLibrary(tableSelectRows[0].id)
         refresh()
       },
       onCancel() {
@@ -210,6 +198,7 @@ const MaterialMapping: React.FC = () => {
   };
 
   const tableSelectEvent = (data: SuppliesLibraryData[] | Object) => {
+    console.log(data)
     setTableSelectRows(data);
   };
 
@@ -221,8 +210,8 @@ const MaterialMapping: React.FC = () => {
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
         columns={columns as ColumnsType<SuppliesLibraryData | object>}
-        url="/MaterialLibrary/GetSourceMaterialMappingLibraryList"
-        tableTitle="物料库映射管理"
+        url="/MaterialLibrary/GetSourceMaterialMappingDesignLibraryList"
+        tableTitle="设计端物料库映射管理"
         getSelectData={tableSelectEvent}
         requestSource='tecEco1'
         type="radio"
@@ -245,8 +234,8 @@ const MaterialMapping: React.FC = () => {
           name="basic"
           initialValues={{remember: true}}
           form={form}
-          labelCol={{span: 6}}
-          wrapperCol={{span: 18}}
+          labelCol={{span: 8}}
+          wrapperCol={{span: 16}}
           onFinish={onFinish}
         >
           <Row gutter={20}>
@@ -269,12 +258,19 @@ const MaterialMapping: React.FC = () => {
             </Col>
           </Row>
           <Row gutter={20}>
+
             <Col span={12}>
               <Form.Item
-                label="发布机构"
-                name="publishOrg"
+                label="关联设计端物料库"
+                name="designResourceLibraryId"
               >
-                <Input/>
+                <Select>
+                  {
+                    materialList.map(item=>{
+                      return <Option  key={item.id} value={item.id}>{item.libName}</Option>
+                    })
+                  }
+                </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -283,34 +279,6 @@ const MaterialMapping: React.FC = () => {
                 name="enabled"
               >
                 <Switch/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="关联物料库"
-                name="sourceMaterialLibraryId"
-              >
-                <Select>
-                  {
-                    materialList.map(item=>{
-                      return <Option  key={item.id} value={item.id}>{item.name}</Option>
-                    })
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="上传文件"
-                name="file"
-                rules={[{required: true, message: '请上传物料库文件!'}]}
-              >
-                <FileUpload
-                  trigger={triggerUploadFile}
-                  maxCount={1}
-                  accept=".xls,.xlsx"/>
               </Form.Item>
             </Col>
           </Row>
@@ -340,5 +308,5 @@ const MaterialMapping: React.FC = () => {
   );
 };
 
-export default MaterialMapping;
+export default DesignMaterialMapping;
 
