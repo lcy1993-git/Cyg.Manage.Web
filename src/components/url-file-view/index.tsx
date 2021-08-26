@@ -1,47 +1,46 @@
 import request from '@/utils/request';
-import { ReactNode } from 'react';
-import type { RequestOptionsInit } from 'umi-request';
-import FeatchFileView from './componnents/featch-file-view';
+import ApiFileView from '../api-file-view';
+import { cyRequest, baseUrl } from '@/services/common';
+import type { FileType } from '../api-file-view/getStrategyComponent';
 
-type UrlFileViewProps = {
+interface UrlFileViewProps {
   url: string;
-  type: string;
-  params?: any; 
-  method: "GET" | "POST";
-  onError?: () => void;
-  requestOptions: RequestOptionsInit;
-  emptySlot?: () => ReactNode;
-} & Record<string, any>;
+  fileType: FileType,
+  params?: any,
+  method?: "POST" | "GET",
+  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'tecEco1'
+}
 
-const UrlFileView: React.FC<UrlFileViewProps> = ({
+const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   url,
-  type,
+  fileType,
+  params = {},
   method = "GET",
-  params,
-  requestOptions ={},
-  emptySlot,
+  requestSource = 'project',
   ...rest
 }) => {
-
-  const api = () => {
-    let objParams: any = {};
-    if(params){
-      if(type === "GET") {
-        objParams = { params }
-      }else{
-        objParams = { data: params }
+  let api: any = null;
+  if(fileType === "dwg") {
+    api = {
+      url: `${baseUrl[requestSource]}${url}`,
+      httpHeaders: {
+        Authorization: window.localStorage.getItem("Authorization")
       }
     }
-
-    return request(url, { method, responseType: "arrayBuffer", ...objParams, ...requestOptions});
+  }else{
+    api = () => {
+      const paramsData = method === "GET" ? {params} : { data: params }
+      return cyRequest<any[]>(() =>
+        request(`${baseUrl[requestSource]}${url}`, {
+          method,
+          responseType: "arrayBuffer",
+          ...paramsData
+        }),
+      );
+    };
   }
 
-  return <FeatchFileView
-            api={api}
-            type={type}
-            emptySlot={emptySlot}
-            {...rest}
-          />
+  return <ApiFileView type={fileType} api={api} {...rest}/>
 }
 
 export default UrlFileView;

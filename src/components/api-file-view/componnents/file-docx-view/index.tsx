@@ -1,9 +1,9 @@
-import classNames from 'classnames';
-import mammoth from 'mammoth';
 import { useEffect, useRef } from 'react';
 import { message } from 'antd';
+import classNames from 'classnames';
+import mammoth from 'mammoth';
 
-interface FileDocxViewProps {
+export interface FileDocxViewProps {
   data: ArrayBuffer;
   className?: StyleSheet;
 }
@@ -18,9 +18,9 @@ const FileDocxView: React.FC<FileDocxViewProps> = ({
       mammoth.convertToHtml(
         { arrayBuffer: data },
         { includeDefaultStyleMap: true }
-      ).then((res) => {
-        let html = res.value;
-        let newHTML = html.replace(//g, '')
+      ).then((res: { value: any; }) => {
+        const html = res.value;
+        const newHTML = html.replace(//g, '')
         .replace('<h1>', '<h1 style="text-align: center;">')
         .replace(/<table>/g, '<table style="border-collapse: collapse;">')
         .replace(/<tr>/g, '<tr style="height: 30px;">')
@@ -34,9 +34,7 @@ const FileDocxView: React.FC<FileDocxViewProps> = ({
   }, [data])
   
   return (
-    <div ref={ref} className={classNames(className)}>
-
-    </div>
+    <div ref={ref} className={classNames(className)} />
   )
 }
 

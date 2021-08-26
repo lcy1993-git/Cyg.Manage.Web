@@ -1,6 +1,6 @@
 
-import type { FileType } from './getStrategyComponent';
-import getStrategyComponent from './getStrategyComponent'
+import type { FileType } from '../../getStrategyComponent';
+import getStrategyComponent from '../../getStrategyComponent'
 
 import { useMount } from "ahooks";
 import type { ReactElement } from "react";

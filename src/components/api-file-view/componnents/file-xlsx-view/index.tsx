@@ -8,7 +8,7 @@ import { csv2table, mergeTable } from './utils'
 import { useEffect } from 'react';
 import styles from './index.less';
 
-interface FileXlsxViewProps {
+export interface FileXlsxViewProps {
   data: ArrayBuffer,
   // 是否需要外边框刻度栏
   coordinateaxis?: boolean;
@@ -45,7 +45,7 @@ const FileXlsxView: React.FC<FileXlsxViewProps> = ({
       const endRef = keys[keys.length - 3];
       
       if(endRef.length === 2) {
-        currentWorksheet["!ref"] = "A1:" + endRef;
+        currentWorksheet["!ref"] = `A1:${  endRef}`;
       }
 
       const csv = XLSX.utils.sheet_to_csv(currentWorksheet);
