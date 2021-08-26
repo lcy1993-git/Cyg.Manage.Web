@@ -9,6 +9,10 @@ import UsualQuotaTableDetail from './usual-quota-table/components/detail';
 import SuppliesLibrary from './supplies-library';
 import SocialSecurityFund from "@/pages/technology-economic/social-security-fund";
 import SupplieslInfomation from './suppliesl-infomation';
+import MaterialMapping from "@/pages/technology-economic/material-mapping";
+import MappingInfomation from "@/pages/technology-economic/mapping-infomation";
+import DesignMaterialMapping from "@/pages/technology-economic/design-material-mapping";
+import DesignMappingInfo from './design-mapping-info';
 
 const QuotaLibrary = Loadable({
   loader: () => import('@/pages/technology-economic/quota-library'),
@@ -167,5 +171,25 @@ export default [
     title: '查看物料库',
     path: '/technology-economic/suppliesl-infomation',
     component: <SupplieslInfomation />,
+  },
+  {
+    title: '物料库映射',
+    path: '/technology-economic/material-mapping',
+    component: <MaterialMapping />,
+  },
+  {
+    title: '物料库映射详情',
+    path: '/technology-economic/mapping-infomation',
+    component: <MappingInfomation />,
+  },
+  {
+    title: '设计端物料库映射',
+    path: '/technology-economic/design-material-mapping',
+    component: <DesignMaterialMapping />,
+  },
+  {
+    title: '查看设计端物料库映射',
+    path: '/technology-economic/design-mapping-info',
+    component: <DesignMappingInfo />,
   },
 ];

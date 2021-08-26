@@ -180,7 +180,7 @@ const ResourceLib: React.FC = () => {
                   setCurrentManageId(record.id);
                   storage.setItem('manageId', record.id);
                   history.push({
-                    pathname: `/resource-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
+                    pathname: `/standard-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
                   });
                 }}
               >

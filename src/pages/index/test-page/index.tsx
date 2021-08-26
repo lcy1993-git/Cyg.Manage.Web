@@ -1,13 +1,8 @@
 
 import React, { useRef, useState } from 'react';
 
-import ChooseDesignAndSurvey, { ChooseDesignAndSurveyValue } from '@/pages/project-management/all-project/components/choose-design-and-survey';
-import XLSX from 'xlsx'
-import styles from './index.less';
-import { useMount } from 'ahooks';
 
 import FilePdfView from '@/components/api-file-view/componnents/file-pdf-view';
-
 const TestPage = () => {
 
   const [data, setData] = useState<ArrayBuffer| null>(null)
@@ -25,9 +20,6 @@ const TestPage = () => {
     }
     xhr.send();
   })
-
-  console.log(data);
-  
   
   return (
     <FilePdfView data={data}/>

@@ -417,7 +417,7 @@ interface ProjectInfoParams {
   sources: string;
   identitys: string[];
   allots: any[];
-  operateLog: OperateLog[]
+  operateLog: OperateLog[];
 }
 
 // 获取项目详细信息接口
@@ -431,6 +431,13 @@ export const getProjectInfo = (projectId: string | undefined) => {
 export const editProject = (params: any) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/Modify`, { method: 'POST', data: params }),
+  );
+};
+
+// 继承项目信息
+export const inheritProject = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/Inherit`, { method: 'POST', data: params }),
   );
 };
 
@@ -778,12 +785,12 @@ export const getColumnsConfig = () => {
 
 // 批复文件相关API
 type EngineerFile = {
-  engineerId: string
+  engineerId: string;
   fileId: string;
   category: number;
-}
+};
 
-export const createEngineerFile= (params: EngineerFile) => {
+export const createEngineerFile = (params: EngineerFile) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/EngineerFile/Create`, {
       method: 'POST',
@@ -792,22 +799,22 @@ export const createEngineerFile= (params: EngineerFile) => {
   );
 };
 
-export const delEngineerFile= (id: string) => {
+export const delEngineerFile = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/EngineerFile/DeleteById`, {
       method: 'GET',
       params: {
-        id
+        id,
       },
     }),
   );
 };
-export const getEngineerFile= (id: string) => {
+export const getEngineerFile = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/EngineerFile/GetById`, {
       method: 'GET',
       params: {
-        id
+        id,
       },
     }),
   );
@@ -819,8 +826,19 @@ export const GetEngineerFileGetList = (engineerId: string) => {
       method: 'POST',
       data: {
         engineerId,
-        category: 1
+        category: 1,
       },
     }),
+  );
+};
+
+// 继承失败重新继承
+// 撤回结项
+export const againInherit = (projectId: string) => {
+  return cyRequest(() =>
+    request(
+      `${baseUrl.project}/Porject/InheritTryAgain`,
+      { method: 'GET', params: { projectId } },
+    ),
   );
 };

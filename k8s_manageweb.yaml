@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: manageweb
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -24,6 +24,15 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+            ephemeral-storage: 100Mi
+          limits:
+            cpu: "0.2"
+            memory: "0.2Gi"
+            ephemeral-storage: 0.2Gi
         
 ---
 kind: Service

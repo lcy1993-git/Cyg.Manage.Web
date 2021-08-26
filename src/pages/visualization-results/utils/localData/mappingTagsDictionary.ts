@@ -489,9 +489,9 @@ function getMappingTagsDictionary() {
         "mode": "故障指示器型号",
         "state": "状态",
         "azimuth": "方位角",
-        "project_id": "所属项目",
         "isupgraded": "是否改造",
-        "remark": "备注"
+        "remark": "备注",
+        "project_id": "title",
       },
       mappingTagValues: {
         "state": findenumsValue("SurveyState") || ""
@@ -503,12 +503,28 @@ function getMappingTagsDictionary() {
         "mode": "撑杆型号",
         "state": "状态",
         "azimuth": "方位角",
-        "project_id": "所属项目",
         "isupgraded": "是否改造",
-        "remark": "备注"
+        "remark": "备注",
+        "project_id": "title",
       },
       mappingTagValues: {
         "state": findenumsValue("SurveyState") || ""
+      }
+    }
+
+    mappingTagsDictionary.zero_guy = {
+      mappingTags: {
+        "name": "名称",
+        "start_id": "主杆编号",
+        "end_id": "副杆编号",
+        "state": "状态",
+        "is_upgraded": "是否改造",
+        "mode": "型号",
+        "remark": "备注",
+        "project_id": "title",
+      },
+      mappingTagValues: {
+        "state": findenumsValue("SurveyState") || "",
       }
     }
 

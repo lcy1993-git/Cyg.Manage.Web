@@ -2,7 +2,7 @@ export interface LayerParams {
   layerName: string; // 下户线
   zIndex: number;
   declutter?: boolean;
-  type: 'line' | 'cable_channel' | 'mark' | 'point' | 'special_point';
+  type: 'line' | 'cable_channel' | 'mark' | 'point' | 'special_point' | 'zero_guy';
 }
 
 export interface LayerDatas {
@@ -107,6 +107,12 @@ export const layerParams: LayerParams[] = [
     declutter: false,
     type: 'point',
   },
+  {
+    layerName: 'zero_guy', // 水平拉线
+    zIndex: 1,
+    declutter: false,
+    type: 'zero_guy',
+  }
 ];
 
 export const layerDatas: LayerDatas[] = [];

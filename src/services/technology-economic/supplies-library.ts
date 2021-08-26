@@ -33,7 +33,7 @@ export const modifyMaterialLibraryStatus = (MaterialId: string) => {
       { method: 'GET', params: { MaterialId } }),
   );
 }
-// 修改物料库状态
+// 删除
 export const deleteMaterialLibraryById = (MaterialId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/MaterialLibrary/DeleteMaterialLibraryById`,
