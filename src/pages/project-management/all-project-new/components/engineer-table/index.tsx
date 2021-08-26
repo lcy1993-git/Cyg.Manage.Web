@@ -123,6 +123,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false);
 
+  //项目继承状态判断
+  const [inheritState, setInheritState] = useState<boolean>(false);
+
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
   const scrollbar = useRef<any>(null);
@@ -138,6 +141,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const editProjectEvent = (info: any) => {
+    if (info.inheritState === 2) {
+      setInheritState(true);
+    }
     setEditProjectVisible(true);
     setCurrentEditProjectInfo(info);
   };
@@ -240,6 +246,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 startTime: engineerInfo.startTime,
                 endTime: engineerInfo.endTime,
                 status: tableItemData.stateInfo.status,
+                inheritState: tableItemData.stateInfo.inheritStatus,
               });
             }}
           >
@@ -1087,6 +1094,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             startTime={currentEditProjectInfo.startTime}
             endTime={currentEditProjectInfo.endTime}
             visible={editProjectVisible}
+            pointVisible={inheritState}
+            setInheritState={setInheritState}
             onChange={setEditProjectVisible}
             changeFinishEvent={refreshEvent}
           />

@@ -10,7 +10,9 @@ import CreateProjectForm from '../create-project-form';
 interface EditProjectProps {
   projectId: string;
   visible: boolean;
+  pointVisible?: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
+  setInheritState?: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent: () => void;
   areaId: string;
   company: string;
@@ -34,6 +36,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     status,
     startTime,
     endTime,
+    pointVisible,
+    setInheritState,
   } = props;
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
@@ -107,7 +111,13 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
       visible={state as boolean}
       destroyOnClose
       footer={[
-        <Button key="cancle" onClick={() => setState(false)}>
+        <Button
+          key="cancle"
+          onClick={() => {
+            setInheritState?.(false);
+            setState(false);
+          }}
+        >
           取消
         </Button>,
         <Button key="save" type="primary" loading={requestLoading} onClick={() => edit()}>
@@ -115,10 +125,14 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         </Button>,
       ]}
       onOk={() => edit()}
-      onCancel={() => setState(false)}
+      onCancel={() => {
+        setInheritState?.(false);
+        setState(false);
+      }}
     >
       <Form form={form} preserve={false}>
         <CreateProjectForm
+          pointVisible={pointVisible}
           areaId={areaId}
           company={company}
           companyName={companyName}

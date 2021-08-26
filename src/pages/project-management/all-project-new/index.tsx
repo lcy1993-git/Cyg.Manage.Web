@@ -490,20 +490,20 @@ const AllProject: React.FC = () => {
   //收藏夹操作
   const favoriteMenu = (
     <Menu>
-      {/* {buttonJurisdictionArray?.includes('all-project-share') && ( */}
-      <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
-      {/* )} */}
-      {/* {buttonJurisdictionArray?.includes('all-project-share-recall') && ( */}
-      <Popconfirm
-        placement="top"
-        title="确定要移除所选工程?"
-        onConfirm={() => removeFavEvent()}
-        okText="确认"
-        cancelText="取消"
-      >
-        <Menu.Item>移除当前收藏夹</Menu.Item>
-      </Popconfirm>
-      {/* )} */}
+      {buttonJurisdictionArray?.includes('add-favorite-project') && (
+        <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
+      )}
+      {buttonJurisdictionArray?.includes('remove-favorite-project') && (
+        <Popconfirm
+          placement="top"
+          title="确定要移除所选工程?"
+          onConfirm={() => removeFavEvent()}
+          okText="确认"
+          cancelText="取消"
+        >
+          <Menu.Item>移除当前收藏夹</Menu.Item>
+        </Popconfirm>
+      )}
     </Menu>
   );
 
@@ -650,6 +650,7 @@ const AllProject: React.FC = () => {
                   setVisible={setSideVisible}
                   setStatisticalTitle={setStatisticalCategory}
                   getFavName={setFavName}
+                  favName={favName}
                   finishEvent={refresh}
                   visible={sideVisible}
                 />
@@ -749,12 +750,14 @@ const AllProject: React.FC = () => {
                         </Button>
                       </Dropdown>
                     )}
-                    <Dropdown overlay={favoriteMenu}>
-                      <Button className="mr7">
-                        收藏 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-
+                    {(buttonJurisdictionArray?.includes('add-favorite-project') ||
+                      buttonJurisdictionArray?.includes('remove-favorite-project')) && (
+                      <Dropdown overlay={favoriteMenu}>
+                        <Button className="mr7">
+                          收藏 <DownOutlined />
+                        </Button>
+                      </Dropdown>
+                    )}
                     {buttonJurisdictionArray?.includes('all-project-export') && (
                       <div className="mr7">
                         <TableExportButton

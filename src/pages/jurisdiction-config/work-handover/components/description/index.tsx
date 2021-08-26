@@ -32,7 +32,7 @@ const Description: React.FC = () => {
           选择对应的人员账号，点击【编辑】按钮， 调整对应的“授权端口”即可。
         </div>
         <div>
-          “角色权限”调整操作：登入管理【权限管理】 -
+          “功能权限”调整操作：登入管理【权限管理】 -
           {buttonJurisdictionArray?.includes('role-permissions-authorization') ? (
             <span
               className="canClick"
@@ -42,10 +42,10 @@ const Description: React.FC = () => {
                 });
               }}
             >
-              <u>【角色权限】</u>
+              <u>【功能权限】</u>
             </span>
           ) : (
-            <span>【角色权限】</span>
+            <span>【功能权限】</span>
           )}
           选择对应权限模板后点击【授权】按钮，将该 授权给对应的人员账号即可。
         </div>
