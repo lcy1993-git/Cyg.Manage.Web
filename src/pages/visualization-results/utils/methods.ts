@@ -241,10 +241,26 @@ const loadWFSData = (
           }
           pJSON[i].setProperties({ layer_name: 'zero_guy' });
           if (!pJSON[i].getProperties().symbol_id) {
-            if(layerType === 'design') {
-              pJSON[i].setProperties({ symbol_id: 2010 });
+            if (layerType === 'design') {
+              console.log(pJSON[i]);
+              switch (pJSON[i].getProperties().state) {
+                case 1:
+                  pJSON[i].setProperties({ symbol_id: 2010 });
+                  break;
+                case 2:
+                  pJSON[i].setProperties({ symbol_id: 2011 });
+                  break;
+                case 3:
+                  pJSON[i].setProperties({ symbol_id: 2012 });
+                  break;
+                case 4:
+                  pJSON[i].setProperties({ symbol_id: 2013 });
+                  break;
+                default:
+                  pJSON[i].setProperties({ symbol_id: 2011 });
+              }
             }
-            else if(layerType === 'dismantle') {
+            else if (layerType === 'dismantle') {
               pJSON[i].setProperties({ symbol_id: 2020 });
             }
           }
