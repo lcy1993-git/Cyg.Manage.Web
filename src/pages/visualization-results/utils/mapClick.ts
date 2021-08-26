@@ -470,7 +470,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     // 相应数据到右侧边栏
     const resData = [];
-    resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
+    if(elementTypeEnum[layerName] !== '轨迹点') {
+      resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
+    }
     resData.push({ propertyName: elementTypeEnum[layerName] === '水平拉线' ? '设备种类' : '元素类型', data: elementTypeEnum[layerName] });
     for (let p in pJSON) {
       if (p === '杆规格') {
