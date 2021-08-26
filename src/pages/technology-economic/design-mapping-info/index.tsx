@@ -62,14 +62,12 @@ const DesignMappingInfo: React.FC = () => {
         "isAsc": true
       },
     })
-    console.log(res)
     setMaterialList(res.items)
     const vals = await getSourceMaterialMappingDesignLibraryList({
       "pageIndex": 1,
       "pageSize": 9999,
       "keyWord": '',
     })
-    console.log(vals)
     setInheritanceArr(vals.items)
   }
   useEffect(() => {
@@ -79,7 +77,6 @@ const DesignMappingInfo: React.FC = () => {
     getMaterialData()
   }, [])
   const handlerEdit = (item: SuppliesLibraryData) => {
-    console.log(item)
     setAddFormVisible(true)
     setTableSelectRows(item)
   }

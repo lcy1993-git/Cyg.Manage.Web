@@ -1,4 +1,3 @@
-import type { Key} from 'react';
 import {useState, useRef, useEffect} from 'react';
 import {useMount} from 'ahooks';
 import { Tabs } from 'antd';

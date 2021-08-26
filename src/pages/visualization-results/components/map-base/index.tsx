@@ -11,6 +11,8 @@ import SurveyTrack from '../survey-track';
 import Map from 'ol/Map';
 import LayerGroup from 'ol/layer/Group';
 import { transform } from 'ol/proj';
+import SurveyModal from '../survey-modal/'
+
 
 import {
   refreshMap,
@@ -65,6 +67,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     setRightSidebarVisiviabelMap(state);
   };
   const [rightSidebarData, setRightSidebarData] = useState<TableDataType[]>([]);
+
+  // 勘察轨迹
+  const [surveyModalVisible, setSurveyModalVisible] = useState(false)
+  const [surveyModalData, setSurveyModalData] = useState(null)
   // 挂载
   useMount(() => {
     loadEnums().then((data) => {
@@ -89,7 +95,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
     // 地图点击事件
     initialMap.on('click', (e: Event) =>
-      mapClick(e, initialMap, { setRightSidebarVisiviabel, setRightSidebarData }),
+      mapClick(e, initialMap, { setRightSidebarVisiviabel, setRightSidebarData, setSurveyModalVisible, setSurveyModalData }),
     );
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
@@ -97,6 +103,8 @@ const BaseMap = observer((props: BaseMapProps) => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel };
     refreshMap(ops, projects!);
     setMap(initialMap);
+
+    // 注册 点击事件
   });
 
   // 动态刷新refreshMap
@@ -227,8 +235,9 @@ const BaseMap = observer((props: BaseMapProps) => {
   const sidePopupProps = {
     rightSidebarVisible: rightSidebarVisiviabel,
     data: rightSidebarData,
-    setRightSidebarVisiviabel: setRightSidebarVisiviabel,
+    setRightSidebarVisiviabel
   }
+
   return (
     <>
       <div ref={mapElement} className={styles.mapBox}></div>
@@ -246,7 +255,10 @@ const BaseMap = observer((props: BaseMapProps) => {
       <div className={styles.footer}>
         <Footer onlocationClick={onlocationClick} />
       </div>
-
+      {/* <div className={styles.surveyModal}>
+        {<SurveyModal resData={surveyModalData} hidden={() => setSurveyModalVisible(false)} /> }
+      </div> */}
+      {surveyModalVisible && <SurveyModal resData={surveyModalData} hidden={() => setSurveyModalVisible(false)} /> }
     </>
   );
 });

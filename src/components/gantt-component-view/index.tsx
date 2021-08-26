@@ -5,7 +5,7 @@ import uuid from 'node-uuid';
 import moment from "moment";
 
 import styles from './index.less';
-import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
+import ProjectDetailInfo from '@/pages/project-management/all-project-new/components/project-detail-info';
 
 interface GanttComponentViewProps {
   dayWidth?: number;

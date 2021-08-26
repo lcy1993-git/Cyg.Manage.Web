@@ -359,6 +359,15 @@ const Styles = {
             color: 'rgba(255, 175, 110, 1)',
             isDismantle: true
         },
+        "2010": { // 设计图层水平拉线
+            color: 'rgba(188, 40, 184, 1)',
+            lineDash: [12],
+        },
+        "2020": { // 拆除图层水平拉线
+            color: 'rgba(188, 40, 184, 1)',
+            img: '）    （',
+            isDismantle: true,
+        },
     },
     fault_indicator: {
         size: 18,
