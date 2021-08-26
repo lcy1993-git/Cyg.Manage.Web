@@ -64,9 +64,9 @@ const SurveyModal: FC<SurveyModalProps> = (props) => {
     if (pX > 1000) {
       x = pX - 230
     }
-    if (pY > 560) {
-      y = pY - 270
-    } else if (pY < 144) {
+    if (pY > 610) {
+      y = pY - 196
+    } else if (pY < 100) {
       y = pY
     }
     ref.current!.style.position = "absolute"
