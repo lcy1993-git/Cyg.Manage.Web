@@ -277,25 +277,24 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             查看成果
           </Menu.Item>
         )}
-        {jurisdictionInfo.canInherit &&
-          buttonJurisdictionArray?.includes('all-project-inherit') && (
-            // all-project-inherit
-            <Menu.Item
-              onClick={() =>
-                projectInherit({
-                  projectId: tableItemData.id,
-                  areaId: engineerInfo.province,
-                  company: engineerInfo.company,
-                  engineerId: engineerInfo.id,
-                  companyName: engineerInfo.company,
-                  startTime: engineerInfo.startTime,
-                  endTime: engineerInfo.endTime,
-                })
-              }
-            >
-              项目继承
-            </Menu.Item>
-          )}
+        {jurisdictionInfo.canInherit && buttonJurisdictionArray?.includes('all-project-inherit') && (
+          // all-project-inherit
+          <Menu.Item
+            onClick={() =>
+              projectInherit({
+                projectId: tableItemData.id,
+                areaId: engineerInfo.province,
+                company: engineerInfo.company,
+                engineerId: engineerInfo.id,
+                companyName: engineerInfo.company,
+                startTime: engineerInfo.startTime,
+                endTime: engineerInfo.endTime,
+              })
+            }
+          >
+            项目继承
+          </Menu.Item>
+        )}
       </Menu>
     );
   };
@@ -398,8 +397,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 300,
       render: projectNameRender,
       ellipsis: true,
-      iconSlot: (record: any) => {
-        if (record.stateInfo.inheritStatus) {
+      iconSlot: (record: any, projects: any) => {
+        const parentData = projects.filter((item: any) => item.id === record.inheritId);
+        if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
           return (
             <Tooltip title={`继承自${record.inheritName}`}>
               <span className={styles.inheritIcon}>
@@ -707,12 +707,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       render: (record: any, engineerInfo: any) => {
         const { operationAuthority, stateInfo } = record;
 
-        if(stateInfo.inheritStatus && (stateInfo.inheritStatus === 1 || stateInfo.inheritStatus === 3)) {
+        if (
+          stateInfo.inheritStatus &&
+          (stateInfo.inheritStatus === 1 || stateInfo.inheritStatus === 3)
+        ) {
           return (
             <Tooltip title="项目继承中，不能进行任何操作" placement="topRight">
               <BarsOutlined />
             </Tooltip>
-          )
+          );
         }
         return (
           <Dropdown
