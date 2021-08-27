@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Input, Button, Modal, Space, Select, message} from 'antd';
 import type {ColumnsType} from 'antd/lib/table';
 
@@ -13,7 +13,7 @@ import {
 } from '@/services/technology-economic/material';
 import qs from "qs";
 import styles from "@/pages/project-management/all-project-new/components/approval-project-modal/index.less";
-import {CaretDownOutlined, CaretUpOutlined, ExclamationCircleOutlined, RedoOutlined} from "@ant-design/icons";
+import {ExclamationCircleOutlined, RedoOutlined} from "@ant-design/icons";
 import imgSrc from "@/assets/image/relation.png"
 import MappingManage from "@/pages/technology-economic/design-mapping-info/components/manage";
 
@@ -39,15 +39,22 @@ const {Option} = Select;
 const DesignMappingInfo: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const rankRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData>({});
+  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData>({} as SuppliesLibraryData);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [inheritance, setInheritance] = useState<boolean>(false);
   const [inheritanceArr, setInheritanceArr] = useState<{ id: string, name: string }[]>([])
   const [id, setId] = useState<string>('')
-  const [inheritId, setInheritId] = useState<string>('')
-  const [rank, setRank] = useState<number>(3)
+  const [inheritId, setInheritId] = useState<string>('') // 继承id
+  const [rank, setRank] = useState<number>(3) // 控制按照关系排序
 
+  // 列表刷新
+  const refresh = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.refresh();
+    }
+  };
   const getMaterialData = async () => {
     const vals = await getSourceMaterialMappingDesignLibraryList({
       "pageIndex": 1,
@@ -92,13 +99,6 @@ const DesignMappingInfo: React.FC = () => {
     search();
   };
 
-  // 列表刷新
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh();
-    }
-  };
 
   // 列表搜索
   const search = () => {
@@ -123,7 +123,7 @@ const DesignMappingInfo: React.FC = () => {
     setAddFormVisible(false)
     refresh()
   }
-  const materialInherit = async () => {
+  const materialInherit = async () => { // 映射继承
     await MaterialMappingInherit({
       inheritId: id,
       byInheritId: inheritId
@@ -132,6 +132,7 @@ const DesignMappingInfo: React.FC = () => {
     setInheritance(false)
   }
   const sortTableData = () => {
+    // 关系排序
     if (rankRef.current === null) {
       rankRef.current = 2
     } else if (rankRef.current === 1) {
@@ -169,13 +170,13 @@ const DesignMappingInfo: React.FC = () => {
           关系
           <span style={{float: 'right',cursor:'pointer'}} onClick={sortTableData}>
             <RedoOutlined />
-              {/*{*/}
-              {/*  rank === 1*/}
-              {/*    ?*/}
-              {/*    <CaretDownOutlined/>*/}
-              {/*    :*/}
-              {/*    <CaretUpOutlined/>*/}
-              {/*}*/}
+              {/* { */}
+              {/*  rank === 1 */}
+              {/*    ? */}
+              {/*    <CaretDownOutlined/> */}
+              {/*    : */}
+              {/*    <CaretUpOutlined/> */}
+              {/* } */}
             </span>
         </div>
       },

@@ -119,12 +119,13 @@ const AreaTypeManage: React.FC = () => {
       setThirdLevelList(res)
     }
   }
+  // 获取编辑数据
   const turnEditData = async ()=>{
   const {content} = await queryAreaInfoDetail(selectValue.areaType,selectValue.firstCode)
-    if (content.secondCodes.length === 0){
+    if (content.secondCodes.length === 0){ // 处理选项['全部']
       content.secondCodes = ['all']
     }
-    if (content.thirdCodes.length === 0){
+    if (content.thirdCodes.length === 0){ // 处理选项['全部']
       content.thirdCodes = ['all']
       setThirdLevelList([
         {
@@ -157,7 +158,15 @@ const AreaTypeManage: React.FC = () => {
     setIsEdit(false)
     form.resetFields()
   }
-
+  const getAreaListByLevel = async (level: number) => {
+    const res = await queryAreaInfoList(level)
+    const arr = res.map((item: any) => {
+      // eslint-disable-next-line no-param-reassign
+      item.id = generateUUID() // 添加唯一标识,解决列表选中出错的问题
+      return item
+    })
+    setAreaList(arr)
+  }
   const onFinish = async (values: any) => {
     const data = {
       areaType: +activeValue.value,
@@ -170,19 +179,10 @@ const AreaTypeManage: React.FC = () => {
     await createOrEditAreaInfo(data)
     form.resetFields()
     setIsModalVisible(false)
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     getAreaListByLevel(Number(activeValue.value))
 
   }
-  const getAreaListByLevel = async (level: number) => {
-    const res = await queryAreaInfoList(level)
-    const arr = res.map(item => {
-      // eslint-disable-next-line no-param-reassign
-      item.id = generateUUID() // 添加唯一标识,解决列表选中出错的问题
-      return item
-    })
-    setAreaList(arr)
-  }
+
   const deleteArea = () => {
     if (!selectValue.firstCode) {
       message.warn('请选择一行数据')

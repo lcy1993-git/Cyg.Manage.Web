@@ -132,9 +132,11 @@ const QuotaLibrary: React.FC = () => {
 
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      values.publishDate = moment(values.publishDate).format('YYYY-MM-DD')
-      values.year = moment(values.year).format('YYYY')
-      await createMaterialMachineLibrary(values);
+      const data =  JSON.parse(JSON.stringify(values))
+      data.file = values.file
+      data.publishDate = moment(values.publishDate).format('YYYY-MM-DD')
+      data.year = moment(values.year).format('YYYY')
+      await createMaterialMachineLibrary(data);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
