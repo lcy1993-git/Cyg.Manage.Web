@@ -38,7 +38,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const { projectInfo, isResult = false } = props;
   const [requestLoading, setRequestLoading] = useState(false);
 
-  const { data: resultData, run } = useRequest(getResultTreeData, {
+  const { data: resultData, run, loading } = useRequest(getResultTreeData, {
     manual: true,
   });
 
@@ -258,18 +258,22 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                 type="card"
               >
                 <TabPane key="design" tab="设计成果">
-                  <DesignResultTab
-                    designData={resultData?.map(mapTreeData)}
-                    createEvent={setCheckedKeys}
-                    setTabEvent={setCurrentTab}
-                  />
+                  <Spin spinning={loading}>
+                    <DesignResultTab
+                      designData={resultData?.map(mapTreeData)}
+                      createEvent={setCheckedKeys}
+                      setTabEvent={setCurrentTab}
+                    />
+                  </Spin>
                 </TabPane>
                 <TabPane key="compile" tab="项目需求编制成果">
-                  <CompileResultTab
-                    compileResultData={compileResultData?.map(mapTreeData)}
-                    createEvent={setCompileKeys}
-                    setTabEvent={setCurrentTab}
-                  />
+                  <Spin spinning={loading}>
+                    <CompileResultTab
+                      compileResultData={compileResultData?.map(mapTreeData)}
+                      createEvent={setCompileKeys}
+                      setTabEvent={setCurrentTab}
+                    />
+                  </Spin>
                 </TabPane>
               </Tabs>
             </div>
