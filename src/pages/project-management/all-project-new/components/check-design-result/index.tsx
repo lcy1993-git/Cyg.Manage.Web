@@ -24,7 +24,11 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
   console.log(designData);
 
   const onSelect = (info: any) => {
-    console.log(info);
+    // console.log(info);
+  };
+
+  const previewEvent = () => {
+    console.log(111);
   };
 
   return (
@@ -33,8 +37,12 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
         <div className={styles.treeTable}>
           <DirectoryTree
             titleRender={(v) => {
+              console.log(v);
+
               return v.category === 2 ? (
-                <span className={styles.treeTitle}>{v.title}</span>
+                <span className={styles.treeTitle} onClick={() => previewEvent()}>
+                  {v.title}
+                </span>
               ) : (
                 <span>{v.title}</span>
               );
