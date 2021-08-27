@@ -10,6 +10,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 
 import {
+  getMaterialLibraryAllList,
   getMaterialLibraryList
 } from '@/services/technology-economic/supplies-library';
 import FileUpload from '@/components/file-upload';
@@ -45,16 +46,9 @@ const MaterialMapping: React.FC = () => {
   const [form] = Form.useForm();
 
   const getMaterialData = async ()=>{
-    const res = await getMaterialLibraryList({
-      "pageIndex": 1,
-      "pageSize": 9999,
-      "keyWord": '',
-      "sort": {
-        "propertyName": '',
-        "isAsc": true
-      },
-    })
-    setMaterialList(res.items)
+    const res = await getMaterialLibraryAllList()
+    // console.log(res)
+    setMaterialList(res)
   }
   useEffect(()=>{
     getMaterialData()

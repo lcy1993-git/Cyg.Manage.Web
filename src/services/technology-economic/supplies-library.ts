@@ -50,6 +50,14 @@ export const getMaterialLibraryList = (data: Partial<QueryData>) => {
   );
 }
 
+// 查询物料库列表(物料映射库用)
+export const getMaterialLibraryAllList = () => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryAllList`,
+      { method: 'GET' }),
+  );
+}
+
 
 // 新增物料库
 export const addMaterialLibrary = (data: SuppliesLibraryData) => {
