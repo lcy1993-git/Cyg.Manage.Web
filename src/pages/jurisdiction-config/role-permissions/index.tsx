@@ -97,7 +97,7 @@ const RolePermissions: React.FC = () => {
             </CyTag>
           );
         });
-        roles.unshift(
+        roles?.unshift(
           record.users?.map((item: any) => {
             return (
               <>
@@ -130,12 +130,12 @@ const RolePermissions: React.FC = () => {
   const searchElement = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="角色名称" width="248px">
+        <TableSearch label="模板名称" width="248px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="请输入角色名称"
+            placeholder="请输入模板名称"
             enterButton
           />
         </TableSearch>
@@ -342,7 +342,7 @@ const RolePermissions: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        title="添加-角色"
+        title="添加-模板"
         width="60%"
         visible={addFormVisible}
         okText="确认"
@@ -361,7 +361,7 @@ const RolePermissions: React.FC = () => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-角色"
+        title="编辑-模板"
         width="60%"
         visible={editFormVisible}
         okText="确认"

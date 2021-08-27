@@ -26,6 +26,7 @@ interface CreateProjectFormProps {
   index?: number;
   isInherit?: boolean;
   isEdit?: boolean;
+  pointVisible?: boolean;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
@@ -34,6 +35,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     areaId,
     company,
     companyName,
+    pointVisible,
     status,
     projectId,
     form,
@@ -99,11 +101,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
 
   // 如果是继承，那么筛掉value是1的选项
   const handleProjectDataSourceType = useMemo(() => {
-    if(projectDataSourceType && isInherit) {
+    if (projectDataSourceType && pointVisible) {
       return projectDataSourceType.filter((item: any) => item.value !== 1);
     }
-    return []
-  }, [projectDataSourceType, isInherit]);
+    return [];
+  }, [projectDataSourceType, pointVisible]);
 
   const handleProjectStage = useMemo(() => {
     if (isNumber(projectInfo?.stage) && projectStage && isInherit) {
@@ -671,7 +673,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             {status == 1 || status == 14 || status == undefined ? (
               <UrlSelect
-                defaultData={isInherit ? handleProjectDataSourceType : projectDataSourceType}
+                defaultData={pointVisible ? handleProjectDataSourceType : projectDataSourceType}
                 valuekey="value"
                 titlekey="text"
                 placeholder="请选择"

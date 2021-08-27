@@ -299,7 +299,7 @@ const CompanyFile: React.FC = () => {
         )}
         {/* {buttonJurisdictionArray?.includes('company-file-edit') && ( */}
         <Popconfirm
-          title="您确定要下载该公司文件？"
+          title="您确定要下载该文件？"
           onConfirm={() => downLoadEvent()}
           okText="确认"
           cancelText="取消"
@@ -314,7 +314,7 @@ const CompanyFile: React.FC = () => {
 
         {buttonJurisdictionArray?.includes('company-file-delete') && (
           <Popconfirm
-            title="您确定要删除该条数据?"
+            title="您确定要删除该文件?"
             onConfirm={sureDeleteData}
             okText="确认"
             cancelText="取消"
@@ -444,7 +444,7 @@ const CompanyFile: React.FC = () => {
       <div className={styles.companyFile}>
         <div className={styles.fileGroupHead}>
           <div className="flex">
-            <TableSearch className={styles.fileGroupSelect} label="公司文件组" width="360px">
+            <TableSearch className={styles.fileGroupSelect} label="文件组" width="360px">
               <DataSelect
                 showSearch
                 value={fileGroupId}
@@ -458,7 +458,7 @@ const CompanyFile: React.FC = () => {
               {buttonJurisdictionArray?.includes('add-file-group') && (
                 <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
                   <PlusOutlined />
-                  新建公司文件组
+                  新建文件组
                 </Button>
               )}
 

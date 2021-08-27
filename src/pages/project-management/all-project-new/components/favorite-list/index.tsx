@@ -4,18 +4,19 @@ import { PlusOutlined, MenuFoldOutlined, PoweroffOutlined } from '@ant-design/ic
 import { useRequest } from 'ahooks';
 import { Button, Tree } from 'antd';
 import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import arrowImg from '@/assets/image/project-management/arrow.png';
 import styles from './index.less';
 import TitleTreeNode from './components/title-tree-node';
 import findCurrentNode from './utils';
-import { mixinDeps } from './utils';
+import { mixinDeps, getParentIds } from './utils';
 import ImageIcon from '@/components/image-icon';
 interface FavoriteListParams {
   visible?: boolean;
   setVisible?: Dispatch<SetStateAction<boolean>>;
   getFavId?: Dispatch<SetStateAction<string>>;
   getFavName?: Dispatch<SetStateAction<string>>;
+  favName?: string;
   setStatisticalTitle?: Dispatch<SetStateAction<string>>;
   finishEvent: () => void;
 }
@@ -29,10 +30,18 @@ interface treeDataItems {
 const { DirectoryTree } = Tree;
 
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
-  const { setVisible, visible, getFavId, finishEvent, getFavName, setStatisticalTitle } = props;
+  const {
+    setVisible,
+    visible,
+    getFavId,
+    finishEvent,
+    getFavName,
+    setStatisticalTitle,
+    favName,
+  } = props;
   const [treeData, setTreeData] = useState<treeDataItems[]>([]);
   const [parentId, setParentId] = useState<string>('');
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
+
   const [allExpand, setAllExpand] = useState<boolean>(true);
   const [isEdit, setIsEdit] = useState<string>('');
   const [selectkey, setSelectkey] = useState<string>('');
@@ -41,8 +50,11 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       setTreeData(mixinDeps(data, 0));
     },
   });
+  const [arr, setArr] = useState<string[]>([]);
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(getParentIds(data, arr));
 
   const createChildNode = (id: string) => {
+    setExpandedKeys([...expandedKeys, id]);
     const cloneData = JSON.parse(JSON.stringify(treeData));
     let currentNode = findCurrentNode(cloneData, id);
     const newChildNode = {
@@ -69,6 +81,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           setParentId={setParentId}
           setIsEdit={setIsEdit}
           refresh={run}
+          favName={favName}
           deep={data.deps}
           createChildNode={createChildNode}
         />
@@ -105,13 +118,17 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
 
   const openCLoseEvent = () => {
     setAllExpand(!allExpand);
+    if (allExpand) {
+      setExpandedKeys([]);
+    } else {
+      setExpandedKeys(getParentIds(data, arr));
+    }
   };
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
   };
 
-  console.log(allExpand);
   return (
     <div className={styles.engineerList}>
       <div className={styles.favHeader}>
@@ -126,7 +143,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
               setVisible?.(false);
               setIsEdit('');
               setSelectkey('');
-              setAllExpand(true);
+              // setAllExpand(true);
               getFavId?.('');
               getFavName?.('');
               setStatisticalTitle?.('-1');
@@ -154,9 +171,10 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
               key={JSON.stringify(allExpand)}
               treeData={handleData}
               height={650}
-              defaultExpandAll={allExpand}
+              // defaultExpandAll={allExpand}
               onSelect={selectEvent}
               onExpand={onExpand}
+              expandedKeys={expandedKeys}
               selectedKeys={[selectkey]}
               expandAction="doubleClick"
             />
