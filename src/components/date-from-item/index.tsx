@@ -1,5 +1,6 @@
 import { DatePicker, DatePickerProps } from 'antd';
 import moment, { Moment } from 'moment';
+import {useEffect} from "react";
 
 interface Props {
   value?: string;
@@ -22,6 +23,9 @@ const DatePickerForm: React.FC<Props & DatePickerProps> = ({
   const handleDate = (v: Moment | null, m: string) => {
     onChange!(moment(m).format(format));
   };
+  useEffect(()=>{
+    onChange&&onChange(momentValue)
+  },[])
   return <DatePicker value={momentValue} onChange={handleDate} picker={picker} {...rest} />;
 };
 
