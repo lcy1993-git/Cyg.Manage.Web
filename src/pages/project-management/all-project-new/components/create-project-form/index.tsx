@@ -99,13 +99,15 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     projectDataSourceType,
   } = useGetProjectEnum();
 
+  console.log(isInherit, '5566');
+
   // 如果是继承，那么筛掉value是1的选项
   const handleProjectDataSourceType = useMemo(() => {
-    if (projectDataSourceType && pointVisible) {
+    if ((projectDataSourceType && pointVisible) || (isInherit && projectDataSourceType)) {
       return projectDataSourceType.filter((item: any) => item.value !== 1);
     }
     return [];
-  }, [projectDataSourceType, pointVisible]);
+  }, [projectDataSourceType, pointVisible, isInherit]);
 
   const handleProjectStage = useMemo(() => {
     if (isNumber(projectInfo?.stage) && projectStage && isInherit) {
@@ -673,7 +675,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             {status == 1 || status == 14 || status == undefined ? (
               <UrlSelect
-                defaultData={pointVisible ? handleProjectDataSourceType : projectDataSourceType}
+                defaultData={
+                  pointVisible || isInherit ? handleProjectDataSourceType : projectDataSourceType
+                }
                 valuekey="value"
                 titlekey="text"
                 placeholder="请选择"
