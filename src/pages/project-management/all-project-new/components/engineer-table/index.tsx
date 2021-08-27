@@ -9,6 +9,7 @@ import {
   getProjectTableList,
   getEngineerInfo,
   againInherit,
+  deleteProject,
 } from '@/services/project-management/all-project';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
@@ -385,6 +386,12 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }
   };
 
+  const deleteFailProject = async (projectId: string) => {
+    await deleteProject([projectId]);
+    message.success("已取消项目继承");
+    finishEvent?.();
+  }
+
   const completeConfig = [
     {
       title: '项目名称',
@@ -394,6 +401,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       ellipsis: true,
       iconSlot: (record: any, projects: any) => {
         const parentData = projects.filter((item: any) => item.id === record.inheritId);
+        
         if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
           if (record.stateInfo.inheritStatus === 3) {
             return (
@@ -407,6 +415,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   <Popconfirm
                     title="项目继承失败，请重试"
                     onConfirm={() => againInheritEvent(record.id)}
+                    onCancel={() => deleteFailProject(record.id)}
                     okText="确认"
                     cancelText="取消"
                   >
