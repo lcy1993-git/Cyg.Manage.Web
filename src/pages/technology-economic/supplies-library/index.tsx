@@ -144,8 +144,8 @@ const SuppliesLibrary: React.FC = () => {
     history.push(`/technology-economic/suppliesl-infomation?id=${id}`)
   };
   const onFinish = async (val: SuppliesLibraryData) => {
-    console.log(val)
-    const data = {...val}
+    const data = JSON.parse(JSON.stringify(val))
+    data.file = val.file
     data.enabled = !!data.enabled
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
     await addMaterialLibrary(data)

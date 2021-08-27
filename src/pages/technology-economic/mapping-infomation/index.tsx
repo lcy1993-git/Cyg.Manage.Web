@@ -96,6 +96,7 @@ const MappingInfomation = () => {
     })
   }
   useMount(async () => {
+    // 获取id
     let val = qs.parse(window.location.href.split("?")[1])?.id
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const materialLibraryId = qs.parse(window.location.href.split("?")[1])?.sourceMaterialLibraryId
@@ -143,13 +144,13 @@ const MappingInfomation = () => {
   const typeOnChange = (val: string) => {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const item = slectLsit.find(item=> item.id === val)
+    console.log(slectLsit,val,item)
     if (item){
       setId(item.id)
       setSourceMaterialLibraryId(item.sourceMaterialLibraryId)
     }
   }
   const treeOnChange = (val: any) => {
-    console.log(val)
     setMaterialLibraryId(val[0])
   }
   const getSelectList = async () => {
