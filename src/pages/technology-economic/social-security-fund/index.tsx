@@ -59,25 +59,25 @@ const SocialSecurityFund: React.FC = () => {
     setPreLoading(false)
   }
 
-  const findRowByKey = (key: string)=>{
-    const row = tableData.find(item=>item.id === key)
-    if (row === undefined){
-      let res = null;
-      tableData.filter(item=>{
-        if (item.children && item.children.length !== 0){
-          res = item.children.filter(child=>{
-            return child.id === key
-          })
-        }
-        return item;
-      })
-      return  res?.[0]
-    }
-    return row?.children?.[0]
+  const findRowByKey = (key: React.Key, arr: [])=>{
+    let val: any = null
+     arr.map((item: any)=>{
+       if (item.id === key){
+         val = item
+       }
+       if (item.children.length !== 0){
+         if (val) return null
+        val = item.children.find((child: { id: Key; })=>{
+           return child.id === key
+         })
+       }
+       return null;
+     })
+    return val
   }
   const treeOnSelect = (keys: Key[])=>{
-    const row = findRowByKey(keys[0] as string)
-    if (row !== undefined){
+    const row = findRowByKey(keys[0],tableData[0].children as [])
+    if (row ){
       setActiveKey([row.id])
       setDataSource([
         {
@@ -130,6 +130,7 @@ const SocialSecurityFund: React.FC = () => {
                     height={650}
                     selectedKeys={activeKey}
                     showLine
+                    key={'id'}
                     onSelect={treeOnSelect}
                     defaultExpandAll
                     switcherIcon={<DownOutlined />}
