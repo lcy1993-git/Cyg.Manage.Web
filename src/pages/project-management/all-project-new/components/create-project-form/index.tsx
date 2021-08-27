@@ -99,8 +99,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     projectDataSourceType,
   } = useGetProjectEnum();
 
-  console.log(isInherit, '5566');
-
   // 如果是继承，那么筛掉value是1的选项
   const handleProjectDataSourceType = useMemo(() => {
     if ((projectDataSourceType && pointVisible) || (isInherit && projectDataSourceType)) {
