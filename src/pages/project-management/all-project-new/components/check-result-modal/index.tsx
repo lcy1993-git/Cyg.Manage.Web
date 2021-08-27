@@ -12,6 +12,11 @@ import { Button, Modal, Spin, message, Tabs } from 'antd';
 import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import CompileResultTab from '../check-compile-result';
 import DesignResultTab from '../check-design-result';
+import pdfSvg from '@/assets/image/fileIcon/pdf.svg';
+import foldSvg from '@/assets/image/fileIcon/fold.svg';
+import wordSvg from '@/assets/image/fileIcon/word.svg';
+import excelSvg from '@/assets/image/fileIcon/excel.svg';
+import jpgSvg from '@/assets/image/fileIcon/jpg.svg';
 
 import styles from './index.less';
 
@@ -51,8 +56,22 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       title: data.name,
       value: data.path,
       key: data.path,
-      // category: data.category,
-      icon: data.category === 2 ? <FileOutlined /> : <FolderOpenOutlined />,
+      category: data.category,
+      icon:
+        data.category === 1 ? (
+          <img src={foldSvg} className={styles.svg} />
+        ) : data.name.endsWith('jpg') || data.name.endsWith('dwg') ? (
+          <img src={jpgSvg} className={styles.svg} />
+        ) : data.name.endsWith('docx') || data.name.endsWith('doc') ? (
+          <img src={wordSvg} className={styles.svg} />
+        ) : data.name.endsWith('pdf') ? (
+          <img src={pdfSvg} className={styles.svg} />
+        ) : data.name.endsWith('xlsx') ? (
+          <img src={excelSvg} className={styles.svg} />
+        ) : (
+          <FileOutlined />
+        ),
+
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };
@@ -102,7 +121,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           document.body.removeChild(link);
         }
       } catch (error) {
-        message.error(error);
+        message.error({ error });
       } finally {
         setRequestLoading(false);
       }

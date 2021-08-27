@@ -33,18 +33,15 @@ export const getMapList = (params: any) => {
 //   'pullLineId': feature.getId().split('.')[1]
 // }
 export const getGisDetail = (params: any) => {
-  return request(
-    `${baseUrl.common}/System/GetGisDetail`,
-    { method: 'POST', data: { ...params } },
-  );
+  return request(`${baseUrl.common}/System/GetGisDetail`, { method: 'POST', data: { ...params } });
 };
 
 // 消息推送
 export const publishMessage = (params: any) => {
-  return request(
-    `${baseUrl.design}/WebGis/PublishMessage`,
-    { method: 'POST', data: { ...params } },
-  );
+  return request(`${baseUrl.design}/WebGis/PublishMessage`, {
+    method: 'POST',
+    data: { ...params },
+  });
 };
 
 // 获取材料表数据
@@ -58,8 +55,7 @@ export const getMaterialItemData = (params: any) => {
   if (params.layerName !== 'tower') type = 1;
   const url = ['/LibraryDesign/GetModuleDetailView', '/LibraryComponent/GetComponentDetailView'];
   return request(
-    `${baseUrl.resourceV1}` +
-    url[type],
+    `${baseUrl.resourceV1}` + url[type],
     // 'http://10.6.1.36:8015/api/LibraryDesign/GetModuleDetailView',
     { method: 'POST', data: { ...rest } },
   );
@@ -67,33 +63,24 @@ export const getMaterialItemData = (params: any) => {
 
 // 获取多媒体数据
 export const getMedium = (params: any) => {
-  return request(
-    `${baseUrl.design}/WebGis/GetMedias`,
-    { method: 'POST', data: { ...params } },
-  );
+  return request(`${baseUrl.design}/WebGis/GetMedias`, { method: 'POST', data: { ...params } });
 };
 
 // 获取资源库id
 export const getlibId_new = (params: any) => {
-  return request(
-    `${baseUrl.project}/Porject/GetLibId`,
-    { method: 'GET', params },
-  );
+  return request(`${baseUrl.project}/Porject/GetLibId`, { method: 'GET', params });
 };
 
 export const getlibId = (params: any) => {
-  return request(
-    `${baseUrl.manage}/WebGis/GetProjectById`,
-    { method: 'GET', params },
-  );
+  return request(`${baseUrl.manage}/WebGis/GetProjectById`, { method: 'GET', params });
 };
 
 export const getModulesRequest = (params: any) => {
-  return request(
-    `${baseUrl.resourceV1}/LibraryDesign/GetTowerModuleList`,
-    { method: 'POST', data: { ...params } },
-  );
-}
+  return request(`${baseUrl.resourceV1}/LibraryDesign/GetTowerModuleList`, {
+    method: 'POST',
+    data: { ...params },
+  });
+};
 
 // 加载图层模板
 function format(that: any, ...args: any) {
@@ -120,10 +107,10 @@ export const loadLayer: any = (postData: any, layerName: any) => {
 
 // FindLineDetailInfo线条
 export const findLineDetailInfo = (params: any) => {
-  return request(
-    `${baseUrl.manage}/api/WebGis/FindLineDetailInfo`,
-    { method: 'POST', data: { ...params } },
-  );
+  return request(`${baseUrl.manage}/api/WebGis/FindLineDetailInfo`, {
+    method: 'POST',
+    data: { ...params },
+  });
 };
 
 // 定位当前用户位置；调用的是百度定位api
@@ -146,12 +133,8 @@ export const initIpLocation = () => {
 
 // 加载项目中所需的枚举
 export const loadEnums = (params: any = {}) => {
-  return request(
-    `${baseUrl.common}/System/GetEnums`,
-    { method: 'POST', data: { ...params } },
-  );
+  return request(`${baseUrl.common}/System/GetEnums`, { method: 'POST', data: { ...params } });
 };
-
 
 // 获取穿孔信息
 export interface CableSectionProps {
@@ -161,11 +144,6 @@ export interface CableSectionProps {
   layMode: number;
   title: string;
 }
-export const findHoleDetails = (params: { layerType: 1 | 2; holeId: string; }) => {
-  console.log(params);
-  
-  return request(
-    `${baseUrl.design}/ProjectDesign/FindHoleDetails`,
-    { method: 'GET', params },
-  );
+export const findHoleDetails = (params: { layerType: 1 | 2; holeId: string }) => {
+  return request(`${baseUrl.design}/ProjectDesign/FindHoleDetails`, { method: 'GET', params });
 };

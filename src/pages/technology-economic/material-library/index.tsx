@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
+import type { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
 
@@ -14,16 +14,15 @@ import DictionaryForm from './components/add-edit-form';
 import {
   createMaterialMachineLibrary,
   deleteMaterialMachineLibrary,
-  setMaterialMachineLibraryStatus
+  setMaterialMachineLibraryStatus,
 } from '@/services/technology-economic';
 import styles from './index.less';
-import value from "*.json";
 import moment from "moment";
 
 type DataSource = {
   id: string;
   [key: string]: string;
-}
+};
 
 const { Search } = Input;
 
@@ -72,13 +71,13 @@ const columns = [
           }}
         />
       );
-    }
+    },
   },
   {
     dataIndex: 'remark',
     key: 'remark',
     title: '备注',
-    width: 400
+    width: 400,
   },
 ];
 
@@ -126,7 +125,7 @@ const QuotaLibrary: React.FC = () => {
     }
   };
 
-  //添加
+  // 添加
   const addEvent = () => {
     setAddFormVisible(true);
   };
@@ -135,12 +134,11 @@ const QuotaLibrary: React.FC = () => {
     addForm.validateFields().then(async (values) => {
       values.publishDate = moment(values.publishDate).format('YYYY-MM-DD')
       values.year = moment(values.year).format('YYYY')
-      console.log(values)
       await createMaterialMachineLibrary(values);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
-    })
+    });
   };
 
   const sureDeleteData = async () => {
@@ -148,7 +146,7 @@ const QuotaLibrary: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const id = tableSelectRows[0].id;
+    const {id} = tableSelectRows[0];
     await deleteMaterialMachineLibrary(id);
     refresh();
     message.success('删除成功');
@@ -159,22 +157,20 @@ const QuotaLibrary: React.FC = () => {
       message.error('请选择要操作的行');
       return;
     }
-    const id = tableSelectRows[0].id;
+    const {id} = tableSelectRows[0];
     history.push(`/technology-economic/material-infomation?id=${id}`)
   };
 
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {
-          !buttonJurisdictionArray?.includes('quotaLib-add') &&
+        {!buttonJurisdictionArray?.includes('quotaLib-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
-        }
-        {
-          !buttonJurisdictionArray?.includes('quotaLib-del') &&
+        )}
+        {!buttonJurisdictionArray?.includes('quotaLib-del') && (
           <Popconfirm
             title="您确定要删除该条数据?"
             onConfirm={sureDeleteData}
@@ -186,15 +182,13 @@ const QuotaLibrary: React.FC = () => {
               删除
             </Button>
           </Popconfirm>
-        }
-        {
-          !buttonJurisdictionArray?.includes('quotaLib-info') &&
+        )}
+        {!buttonJurisdictionArray?.includes('quotaLib-info') && (
           <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             查看详情
           </Button>
-        }
-
+        )}
       </div>
     );
   };
@@ -214,7 +208,7 @@ const QuotaLibrary: React.FC = () => {
         url="/MaterialMachineLibrary/QueryMaterialMachineLibraryPager"
         tableTitle="材机库管理"
         getSelectData={tableSelectEvent}
-        requestSource='tecEco'
+        requestSource="tecEco"
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
@@ -232,7 +226,7 @@ const QuotaLibrary: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <DictionaryForm type='add' />
+          <DictionaryForm type="add" />
         </Form>
       </Modal>
     </PageCommonWrap>
