@@ -151,7 +151,13 @@ const QuotaLibrary: React.FC = () => {
 
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
-      await createQuotaLibrary(values);
+      const data = {}
+      for (let key:string in values){
+        if (values[key] !== undefined){
+          data[key] = values[key]
+        }
+      }
+      await createQuotaLibrary(data);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
