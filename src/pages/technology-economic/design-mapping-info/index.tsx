@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Input, Button, Modal, Space, Select, message} from 'antd';
 import type {ColumnsType} from 'antd/lib/table';
 
@@ -7,17 +7,13 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 
 import {
-  getMaterialLibraryList
-} from '@/services/technology-economic/supplies-library';
-import {
-  addSourceMaterialMappingQuota,
   getSourceMaterialMappingDesignLibraryList,
-  manageMaterialMappingDesignItem,
+  deleteMaterialMappingDesignLibrary,
   MaterialMappingInherit,
 } from '@/services/technology-economic/material';
 import qs from "qs";
 import styles from "@/pages/project-management/all-project-new/components/approval-project-modal/index.less";
-import {ExclamationCircleOutlined} from "@ant-design/icons";
+import {CaretDownOutlined, CaretUpOutlined, ExclamationCircleOutlined, RedoOutlined} from "@ant-design/icons";
 import imgSrc from "@/assets/image/relation.png"
 import MappingManage from "@/pages/technology-economic/design-mapping-info/components/manage";
 
@@ -42,27 +38,17 @@ const {Option} = Select;
 
 const DesignMappingInfo: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([]);
+  const rankRef = React.useRef<HTMLDivElement>(null);
+  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData>({});
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [inheritance, setInheritance] = useState<boolean>(false);
-  const [materialList, setMaterialList] = useState<{ name: string, id: string }[]>([])
   const [inheritanceArr, setInheritanceArr] = useState<{ id: string, name: string }[]>([])
   const [id, setId] = useState<string>('')
   const [inheritId, setInheritId] = useState<string>('')
-
+  const [rank, setRank] = useState<number>(3)
 
   const getMaterialData = async () => {
-    const res = await getMaterialLibraryList({
-      "pageIndex": 1,
-      "pageSize": 9999,
-      "keyWord": '',
-      "sort": {
-        "propertyName": '',
-        "isAsc": true
-      },
-    })
-    setMaterialList(res.items)
     const vals = await getSourceMaterialMappingDesignLibraryList({
       "pageIndex": 1,
       "pageSize": 9999,
@@ -70,12 +56,7 @@ const DesignMappingInfo: React.FC = () => {
     })
     setInheritanceArr(vals.items)
   }
-  useEffect(() => {
-    let val = qs.parse(window.location.href.split("?")[1])?.id
-    val = val === 'undefined' ? '' : val
-    setId(val as string);
-    getMaterialData()
-  }, [])
+
   const handlerEdit = (item: SuppliesLibraryData) => {
     setAddFormVisible(true)
     setTableSelectRows(item)
@@ -85,7 +66,7 @@ const DesignMappingInfo: React.FC = () => {
       title: '确定要删除该映射吗?',
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await manageMaterialMappingDesignItem(val)
+        await deleteMaterialMappingDesignLibrary(val)
         refresh()
       },
       onCancel() {
@@ -127,17 +108,6 @@ const DesignMappingInfo: React.FC = () => {
     }
   };
 
-  // 添加
-  const addEvent = () => {
-    setAddFormVisible(true);
-  };
-
-  const onFinish = async (val: SuppliesLibraryData) => {
-    const data = {...val}
-    await addSourceMaterialMappingQuota(data)
-    setAddFormVisible(false)
-    refresh()
-  }
 
   const tableElement = () => {
     return (
@@ -149,14 +119,29 @@ const DesignMappingInfo: React.FC = () => {
     );
   };
 
-
+  const closeModel = () => {
+    setAddFormVisible(false)
+    refresh()
+  }
   const materialInherit = async () => {
     await MaterialMappingInherit({
       inheritId: id,
       byInheritId: inheritId
     })
     message.success('继承成功')
+    setInheritance(false)
   }
+  const sortTableData = () => {
+    if (rankRef.current === null) {
+      rankRef.current = 2
+    } else if (rankRef.current === 1) {
+      rankRef.current = 2
+    } else {
+      rankRef.current = 1
+    }
+    setRank(rankRef.current)
+  }
+
   const columns: ColumnsType<any> = [
     {
       dataIndex: 'number',
@@ -177,16 +162,23 @@ const DesignMappingInfo: React.FC = () => {
       align: 'center',
     },
     {
-      dataIndex: 'publishOrg',
-      key: 'publishOrg',
-      ellipsis: true,
-      title: '关联设计端资源库',
-      align: 'center',
-    },
-    {
       dataIndex: 'sourceMaterialLibraryId',
       key: 'sourceMaterialLibraryId',
-      title: '关系',
+      title: () => {
+        return <div>
+          关系
+          <span style={{float: 'right',cursor:'pointer'}} onClick={sortTableData}>
+            <RedoOutlined />
+              {/*{*/}
+              {/*  rank === 1*/}
+              {/*    ?*/}
+              {/*    <CaretDownOutlined/>*/}
+              {/*    :*/}
+              {/*    <CaretUpOutlined/>*/}
+              {/*}*/}
+            </span>
+        </div>
+      },
       ellipsis: true,
       align: 'center',
       width: 110,
@@ -236,8 +228,16 @@ const DesignMappingInfo: React.FC = () => {
       },
       width: 120
     },
-  ];
-
+  ]
+  useEffect(() => {
+    let val = qs.parse(window.location.href.split("?")[1])?.id
+    val = val === 'undefined' ? '' : val
+    setId(val as string);
+    getMaterialData()
+  }, [])
+  useEffect(() => {
+    refresh()
+  }, [rank])
   return (
     <PageCommonWrap>
       {
@@ -252,6 +252,7 @@ const DesignMappingInfo: React.FC = () => {
           requestSource='tecEco1'
           type="radio"
           extractParams={{
+            rank,
             keyWord: searchKeyWord,
             materialMappingDesignLibraryId: id,
           }}
@@ -300,8 +301,8 @@ const DesignMappingInfo: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <div style={{height: '700px'}}>
-          <MappingManage/>
+        <div style={{height: '720px'}}>
+          <MappingManage materialMappingDesignItemId={tableSelectRows.id} close={closeModel}/>
         </div>
       </Modal>
     </PageCommonWrap>
