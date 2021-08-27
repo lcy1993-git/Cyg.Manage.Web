@@ -306,7 +306,7 @@ const WareHouse: React.FC = () => {
         columns={columns}
         requestSource="resource"
         url="/WareHouse/GetPageList"
-        tableTitle="利库管理"
+        tableTitle="物料利库管理"
         getSelectData={(data) => setTableSelectRows(data)}
         type="radio"
         extractParams={{

@@ -78,11 +78,10 @@ function getMappingTagsDictionary() {
     };
     mappingTagsDictionary.track = {
       mappingTags: {
-        "id": "ID",
+        // "type": "轨迹类型",
         "record_date": "记录日期",
         "recorder": "记录者",
         "company": "所属公司",
-        "type": "轨迹类型",
         "project_id": "title"
       },
       mappingTagValues: {

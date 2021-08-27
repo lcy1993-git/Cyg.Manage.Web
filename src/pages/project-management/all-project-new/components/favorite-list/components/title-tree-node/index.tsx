@@ -16,6 +16,7 @@ interface TitleTreeNodeProps {
   text: string;
   deep: number;
   isEdit: boolean;
+  favName: string | undefined;
   parentId?: string;
   refresh?: () => void;
   onSelect?: boolean;
@@ -29,6 +30,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   deep,
   text,
   isEdit,
+  favName,
   parentId,
   refresh,
   onSelect,
@@ -37,11 +39,15 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   createChildNode,
 }) => {
   const editRef = useRef<HTMLInputElement>(null);
-  const [editName, setEditName] = useState<string>(text);
+  const [editName, setEditName] = useState<string | undefined>(text);
   const [editFlag, setEditFlag] = useState<boolean>(false);
 
   const addOrModifyEvent = () => {
     if (editFlag) {
+      if (!editName) {
+        message.error('名称不能为空');
+        return;
+      }
       modifyFavoriteName({ id: id, name: editName });
       setIsEdit?.('');
       setEditFlag(false);
@@ -128,6 +134,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
               onClick={() => {
                 setIsEdit?.(id);
                 setEditFlag(true);
+                setEditName(favName);
                 editRef.current?.focus();
               }}
             />
