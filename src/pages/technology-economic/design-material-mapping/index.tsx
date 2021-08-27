@@ -11,7 +11,7 @@ import TableSearch from '@/components/table-search';
 
 import moment from 'moment';
 import {addMaterialMappingDesignLibrary,
-  DeleteMaterialMappingDesignLibrary,
+  deleteMaterialMappingDesignLibrary,
   getResourceLibList,
   materialMappingDesignLibraryModifyStatus} from '@/services/technology-economic/material';
 
@@ -168,7 +168,7 @@ const DesignMaterialMapping: React.FC = () => {
       title: '确定要删除该物料映射吗?',
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await DeleteMaterialMappingDesignLibrary(tableSelectRows[0].id)
+        await deleteMaterialMappingDesignLibrary(tableSelectRows[0].id)
         refresh()
       },
       onCancel() {
