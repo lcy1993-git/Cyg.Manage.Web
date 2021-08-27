@@ -547,6 +547,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
 
+
+    // 下户线长度字段为空时不显示
     resData.forEach((item)=>{
       if(item.propertyName === '下户线长度' && item.data === '') {}
       else {
@@ -557,7 +559,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (elementTypeEnum[layerName] === '轨迹点') {
       propertiesData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray()});
       ops.setSurveyModalData({
-        propertiesData,
+        resData,
         select: getTrackRecordDateArray(),
         evt: evt.pixel
       });
