@@ -501,7 +501,7 @@ const AllProject: React.FC = () => {
           okText="确认"
           cancelText="取消"
         >
-          <Menu.Item>移除当前收藏夹</Menu.Item>
+          <Menu.Item>移出当前收藏夹</Menu.Item>
         </Popconfirm>
       )}
     </Menu>
@@ -520,7 +520,7 @@ const AllProject: React.FC = () => {
       if (selectedFavId) {
         if (engineerIds && engineerIds.length > 0) {
           await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds });
-          message.success('已移除当前收藏夹');
+          message.success('已移出当前收藏夹');
           searchByParams({
             ...searchParams,
             engineerFavoritesId: selectedFavId,
@@ -528,7 +528,7 @@ const AllProject: React.FC = () => {
           });
           return;
         }
-        message.warning('请选择要移除当前收藏夹的工程');
+        message.warning('请选择要移出当前收藏夹的工程');
         return;
       }
       message.warning('您还未选择收藏夹');

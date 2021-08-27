@@ -17,6 +17,8 @@ import {
   setMaterialMachineLibraryStatus
 } from '@/services/technology-economic';
 import styles from './index.less';
+import value from "*.json";
+import moment from "moment";
 
 type DataSource = {
   id: string;
@@ -131,7 +133,9 @@ const QuotaLibrary: React.FC = () => {
 
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-
+      values.publishDate = moment(values.publishDate).format('YYYY-MM-DD')
+      values.year = moment(values.year).format('YYYY')
+      console.log(values)
       await createMaterialMachineLibrary(values);
       refresh();
       setAddFormVisible(false);
