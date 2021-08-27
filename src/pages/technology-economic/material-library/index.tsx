@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
+import type { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
 
@@ -17,7 +17,6 @@ import {
   setMaterialMachineLibraryStatus
 } from '@/services/technology-economic';
 import styles from './index.less';
-import value from "*.json";
 import moment from "moment";
 
 type DataSource = {
@@ -126,7 +125,7 @@ const QuotaLibrary: React.FC = () => {
     }
   };
 
-  //添加
+  // 添加
   const addEvent = () => {
     setAddFormVisible(true);
   };
@@ -135,7 +134,6 @@ const QuotaLibrary: React.FC = () => {
     addForm.validateFields().then(async (values) => {
       values.publishDate = moment(values.publishDate).format('YYYY-MM-DD')
       values.year = moment(values.year).format('YYYY')
-      console.log(values)
       await createMaterialMachineLibrary(values);
       refresh();
       setAddFormVisible(false);
@@ -148,7 +146,7 @@ const QuotaLibrary: React.FC = () => {
       message.error('请选择一条数据进行编辑');
       return;
     }
-    const id = tableSelectRows[0].id;
+    const {id} = tableSelectRows[0];
     await deleteMaterialMachineLibrary(id);
     refresh();
     message.success('删除成功');
@@ -159,7 +157,7 @@ const QuotaLibrary: React.FC = () => {
       message.error('请选择要操作的行');
       return;
     }
-    const id = tableSelectRows[0].id;
+    const {id} = tableSelectRows[0];
     history.push(`/technology-economic/material-infomation?id=${id}`)
   };
 
