@@ -482,7 +482,7 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
 
         var tempDate = new Date(feature.properties.record_date);
         if (
-          tempDate.getTime() - segementFirstDate.getTime() > 1800000 ||
+          // tempDate.getTime() - segementFirstDate.getTime() > 1800000 ||
           tempDate.getDay() != segementFirstDate.getDay()
         ) {
           lineLatlngs.push(lineLatlngsSegement);
