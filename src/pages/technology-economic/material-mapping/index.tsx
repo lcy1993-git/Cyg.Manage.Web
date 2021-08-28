@@ -10,6 +10,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 
 import {
+  getMaterialLibraryAllList,
   getMaterialLibraryList
 } from '@/services/technology-economic/supplies-library';
 import FileUpload from '@/components/file-upload';
@@ -45,17 +46,9 @@ const MaterialMapping: React.FC = () => {
   const [form] = Form.useForm();
 
   const getMaterialData = async ()=>{
-    const res = await getMaterialLibraryList({
-      "pageIndex": 1,
-      "pageSize": 9999,
-      "keyWord": '',
-      "sort": {
-        "propertyName": '',
-        "isAsc": true
-      },
-    })
-    console.log(res)
-    setMaterialList(res.items)
+    const res = await getMaterialLibraryAllList()
+    // console.log(res)
+    setMaterialList(res)
   }
   useEffect(()=>{
     getMaterialData()
@@ -156,16 +149,13 @@ const MaterialMapping: React.FC = () => {
   }
 
   const gotoMoreInfo = () => {
-    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-    //   message.error('请选择要操作的行');
-    //   return;
-    // }
     const {id,sourceMaterialLibraryId} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/mapping-infomation?id=${id}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
   };
   const onFinish = async (val: SuppliesLibraryData) => {
-    const data = {...val}
+    const data = JSON.parse(JSON.stringify(val))
     data.enabled = !!data.enabled
+    data.file = val.file
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
     await addSourceMaterialMappingQuota(data)
     setAddFormVisible(false)
@@ -182,10 +172,7 @@ const MaterialMapping: React.FC = () => {
       async onOk() {
         await deleteMaterialMappingQuota(tableSelectRows[0].id)
         refresh()
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
+      }
     });
   }
 
@@ -291,6 +278,7 @@ const MaterialMapping: React.FC = () => {
               <Form.Item
                 label="关联物料库"
                 name="sourceMaterialLibraryId"
+                rules={[{required: true, message: '请选择关联物料库!'}]}
               >
                 <Select>
                   {

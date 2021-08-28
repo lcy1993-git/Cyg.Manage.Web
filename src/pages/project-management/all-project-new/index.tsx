@@ -45,6 +45,7 @@ import { useMount, useRequest, useUpdateEffect } from 'ahooks';
 import AddFavoriteModal from './components/add-favorite-modal';
 import FavoriteList from './components/favorite-list';
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list';
+import { useMemo } from 'react';
 
 const { Search } = Input;
 
@@ -210,6 +211,13 @@ const AllProject: React.FC = () => {
       keyWord,
     });
   };
+
+  const canDelete = useMemo(() => {
+    return tableSelectData
+      .map((item) => item.projectInfo.status)
+      .flat()
+      .filter((item) => item.inheritStatus === 1 || item.inheritStatus === 3);
+  }, [JSON.stringify(tableSelectData)]);
 
   useUpdateEffect(() => {
     setTableSelectData([]);
@@ -721,17 +729,29 @@ const AllProject: React.FC = () => {
                       </Dropdown>
                     )}
                     {buttonJurisdictionArray?.includes('all-project-delete-project') && (
-                      <Popconfirm
-                        title="确认对勾选的项目进行删除吗?"
-                        okText="确认"
-                        cancelText="取消"
-                        onConfirm={sureDeleteProject}
-                      >
-                        <Button className="mr7">
-                          <DeleteOutlined />
-                          删除
-                        </Button>
-                      </Popconfirm>
+                      <>
+                        {canDelete.length > 0 && (
+                          <Tooltip title="您勾选的项目中含有继承中的项目，不能进行删除操作">
+                            <Button disabled={true} className="mr7">
+                              <DeleteOutlined />
+                              删除
+                            </Button>
+                          </Tooltip>
+                        )}
+                        {canDelete.length === 0 && (
+                          <Popconfirm
+                            title="确认对勾选的项目进行删除吗?"
+                            okText="确认"
+                            cancelText="取消"
+                            onConfirm={sureDeleteProject}
+                          >
+                            <Button className="mr7">
+                              <DeleteOutlined />
+                              删除
+                            </Button>
+                          </Popconfirm>
+                        )}
+                      </>
                     )}
                     {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
                       buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
