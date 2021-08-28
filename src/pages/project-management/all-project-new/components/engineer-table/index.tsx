@@ -124,7 +124,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false);
 
-  //项目继承状态判断
+  // 项目继承状态判断
   const [inheritState, setInheritState] = useState<boolean>(false);
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
