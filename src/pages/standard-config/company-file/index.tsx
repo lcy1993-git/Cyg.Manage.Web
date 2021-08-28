@@ -255,7 +255,6 @@ const CompanyFile: React.FC = () => {
   const defaultParamsEvent = async () => {
     setDefaultParamsVisible(true);
     const defaultOptions = await getDefaultOptions(fileGroupId);
-    console.log(defaultOptions);
 
     defaultForm.setFieldsValue(defaultOptions);
   };

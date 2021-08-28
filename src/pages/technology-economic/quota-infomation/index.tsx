@@ -7,7 +7,8 @@ import ListTable from '../components/list-table';
 import InfoTabs from './components/info-tabs';
 
 import qs from 'qs';
-import {formatDataTree, fileTreeFormData, TreeData} from '@/utils/utils';
+import type { TreeData} from '@/utils/utils';
+import {formatDataTree, fileTreeFormData} from '@/utils/utils';
 import { queryQuotaLibraryPager, queryQuotaLibraryCatalogList, getQuotaLibraryCatalogDescription } from '@/services/technology-economic';
 
 import styles from './index.less'
@@ -143,12 +144,12 @@ const QuotaProject = () => {
   })
 
   const treeData = useMemo(() => {
-    
+
     if(catalogueList && catalogueList.length > 0) {
       return fileTreeFormData(formatDataTree(catalogueList))
-    }else{
-      return [];
     }
+    return [];
+
   }, [catalogueList]);
 
   const options = useMemo(() => {
