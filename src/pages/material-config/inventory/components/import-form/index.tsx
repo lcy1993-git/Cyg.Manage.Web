@@ -63,17 +63,15 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         },
       )
       .finally(() => {
-        changeFinishEvent?.();
         setRequestLoading(true);
       });
   };
 
   const onSave = () => {
     form.validateFields().then((value) => {
-      console.log(value);
-
       if (requestLoading) {
         setState(false);
+        changeFinishEvent?.();
         return;
       }
       message.info('您还未上传文件，点击“开始上传”上传文件');

@@ -199,7 +199,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      tableRef.current.requestFullscreen();
+      document.documentElement.requestFullscreen();
     }
   };
 
