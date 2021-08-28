@@ -705,6 +705,32 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
             rotation: azimuth * (Math.PI / 180) * -1,
         })
     })
+    let style_ = null;
+    if (value === 'electric_meter') {
+        // 下户表的表数
+        let count = feature.getProperties().count;
+        console.log()
+        let styleParams = {
+            text: new Text({
+                // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
+                text: count ? "" + count : "",
+                textAlign: 'center',
+                font: 'bold 9px Source Han Sans SC', //字体与大小
+                placement: 'line',
+                offsetX: 6,
+                offsetY: 1,
+                fill: new Fill({ //文字填充色
+                    color: "white"
+                }),
+                stroke: new Stroke({ //文字边界宽度与颜色
+                    color: 'rgba(21, 32, 32, 1)',
+                    width: 2
+                })
+            }),
+        }
+        style_ = new ClassStyle(styleParams);
+    }
+
     if (type.split('_')[0] == 'dismantle' || isDismantle) {
         let dismantleColor = 'rgba(255, 0, 0, 1)';
         let dismantleStyle = new ClassStyle({
@@ -720,9 +746,10 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 })
             })
         });
-        return [style, dismantleStyle];
-    } else
-        return style;
+        return style_ ? [style, dismantleStyle, style_] : [style, dismantleStyle];
+    } else {
+        return style_ ? [style, style_] : [style];
+    }
 }
 // 线样式
 const line_style = function (feature: Feature, select: any, isCluster: boolean = false) {
@@ -862,11 +889,11 @@ const zero_guy_style = function (feature: Feature, select: any, isCluster: boole
     let text = feature.getProperties().label;
     let preStyle = feature.getStyle();
     let preStyleText = null;
-    if(preStyle) {
+    if (preStyle) {
         preStyleText = preStyle[1].getText();
     }
-    if(preStyleText) {
-        if(preStyleText.getOffsetY() === -offsetY) {
+    if (preStyleText) {
+        if (preStyleText.getOffsetY() === -offsetY) {
             offsetY = preStyleText.getOffsetY();
         }
         text = preStyleText.getText();
@@ -885,7 +912,7 @@ const zero_guy_style = function (feature: Feature, select: any, isCluster: boole
         }
         let index = lineCluster.zero_guys.indexOf(feature);
         // 仅显示第一条水平拉线的label
-        if(index !== lineCluster.zero_guys.length - 1) {
+        if (index !== lineCluster.zero_guys.length - 1) {
             text = '';
         }
     }
