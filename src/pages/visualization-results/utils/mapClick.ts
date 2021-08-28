@@ -6,7 +6,7 @@ import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
-import { getGisDetail, loadLayer, getlibId_new, getModulesRequest } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
 import { useState } from 'react';
@@ -528,21 +528,21 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         console.log(feature);
         let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
         let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
-        let fs = l.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
+        let fs = l?.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
         if(!fs){
-          continue;
+          // 无下户线下户的户表
+          // 此处读取无下户线户表的材料表，从中读取‘下户线型号’和‘下户线长度’
+          pJSON[p] = ""; // 材料表中的‘下户线型号’
+          pJSON['下户线长度'] = ""; // 材料表中的‘下户线长度’
         }
         else {
+          // 有下户线下户的户表没有‘下户线长度’字段
           pJSON[p] = fs.getProperties().mode;
-          pJSON['下户线长度'] = fs.getProperties().length;
         } 
       }
       
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
-      }
-      if(p === '下户线型号' && pJSON[p]) {
-        continue;
       }
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
@@ -550,7 +550,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     // 下户线长度字段为空时不显示
     resData.forEach((item)=>{
-      if(item.propertyName === '下户线长度' && item.data === '') {}
+      if((item.propertyName === '下户线长度' || item.propertyName === '所属节点') && item.data === '') {}
       else {
         propertiesData.push(item);
       }
