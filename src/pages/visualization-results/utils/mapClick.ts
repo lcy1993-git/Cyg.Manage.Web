@@ -6,7 +6,7 @@ import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
-import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
 import { useState } from 'react';
@@ -532,6 +532,19 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         if(!fs){
           // 无下户线下户的户表
           // 此处读取无下户线户表的材料表，从中读取‘下户线型号’和‘下户线长度’
+          const currentDetailView = await getModuleDetailView({
+            objectID: "",
+            deviceID: "string",
+            state: "string",
+            kvLevel: "string",
+            resourceLibID: "string",
+            forProject: 0,
+            forDesign: 0,
+            materialModifyList: [
+              {}
+            ]
+          })
+
           pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
           pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
         }
