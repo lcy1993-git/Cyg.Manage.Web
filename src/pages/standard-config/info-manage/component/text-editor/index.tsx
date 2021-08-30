@@ -1,5 +1,5 @@
 import { Form, Input, TreeSelect, message } from 'antd';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import E from 'wangeditor';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
@@ -65,8 +65,7 @@ class AlertMenu extends BtnMenu {
             .then((result: any) => {
               that.txt.append(result.value);
             })
-            .catch((a: any) => {
-            })
+            .catch((a: any) => {})
             .done();
 
           event.target.value = '';
@@ -114,7 +113,7 @@ class AlertMenu extends BtnMenu {
 
 const TextEditorModal = (props: EditorParams) => {
   const { onChange, titleForm, htmlContent, getPersonArray, personDefaultValue } = props;
-
+  const [stateTip, setStateTip] = useState<boolean>(false);
   const { data: groupData = [] } = useRequest(() => getGroupInfo('-1'));
   const { data } = useRequest(() => getClientCategorys(), {});
 
@@ -151,12 +150,10 @@ const TextEditorModal = (props: EditorParams) => {
     let allIds: any[] = [];
     (function deep(groupArray) {
       groupArray?.forEach((item: any) => {
-        if (item.children) {
-          if (item.children?.length > 0) {
-            deep(item.children);
-          } else {
-            allIds.push(item.id);
-          }
+        if (item.children && item.children.length > 0) {
+          deep(item.children);
+        } else {
+          allIds.push(item.id);
         }
       });
     })(groupArray);
@@ -236,13 +233,17 @@ const TextEditorModal = (props: EditorParams) => {
     if (personDefaultValue) {
       const flattenArray = flatten(handleData);
       const handlePersonUserIds = flattenArray
-        .filter((item) => personDefaultValue.includes(item.chooseValue))
-        .map((item) => item.value);
+        .filter((item: any) => personDefaultValue.includes(item.chooseValue))
+        .map((item: any) => item.value);
       titleForm.setFieldsValue({
         userIds: handlePersonUserIds,
       });
     }
   }, [JSON.stringify(personDefaultValue), JSON.stringify(handleData)]);
+
+  const switchEvent = (checked: boolean) => {
+    setStateTip(checked);
+  };
 
   return (
     <>
@@ -250,17 +251,28 @@ const TextEditorModal = (props: EditorParams) => {
         <CyFormItem label="标题" name="title" required labelWidth={60} rules={rule.title}>
           <Input placeholder="标题" />
         </CyFormItem>
+        <div style={{ display: 'inline-flex' }}>
+          <CyFormItem label="状态" name="isEnable" required labelWidth={60}>
+            <FormSwitch onChange={switchEvent} />
+          </CyFormItem>
+          {stateTip ? (
+            <span style={{ lineHeight: '25px' }} className="formSwitchOpenTip">
+              启用
+            </span>
+          ) : (
+            <span style={{ lineHeight: '25px' }} className="formSwitchCloseTip">
+              关闭
+            </span>
+          )}
+        </div>
 
-        <CyFormItem label="状态" name="isEnable" required labelWidth={60}>
-          {/* <Switch checked={isChecked} onChange={() => setIsChecked(!isChecked)} /> */}
-          <FormSwitch />
-        </CyFormItem>
         <CyFormItem label="对象" name="userIds" required labelWidth={60} rules={rule.users}>
           <TreeSelect
             placeholder="请选择对象"
             treeCheckable
             treeData={handleData}
             treeDefaultExpandAll
+            showCheckedStrategy="SHOW_PARENT"
           />
         </CyFormItem>
         <CyFormItem

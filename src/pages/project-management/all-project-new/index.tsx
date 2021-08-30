@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import ScreenModal from './components/screen-modal';
 import AddEngineerModal from './components/add-engineer-modal';
 import { Dropdown } from 'antd';
-import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { TableItemCheckedInfo } from './components/engineer-table/engineer-table-item';
@@ -630,6 +630,24 @@ const AllProject: React.FC = () => {
     searchByParams({ ...params, engineerFavoritesId: selectedFavId, keyWord, statisticalCategory });
   };
 
+  //待处理slot tips
+  const processedSlot = () => {
+    return (
+      <Tooltip title="需要您安排和结项的项目" placement="right">
+        <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+      </Tooltip>
+    );
+  };
+
+  //进行中 slot
+  const progressSlot = () => {
+    return (
+      <Tooltip title="您是项目的执行身份且未结项的项目" placement="right">
+        <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+      </Tooltip>
+    );
+  };
+
   return (
     <>
       <Tooltip title="工程收藏夹">
@@ -673,14 +691,14 @@ const AllProject: React.FC = () => {
                 </div>
                 <div className={styles.projectManagementStatisticItem}>
                   <div onClick={() => statisticsClickEvent('1')}>
-                    <SingleStatistics label="待处理" icon="awaitProcess">
+                    <SingleStatistics label="待处理" icon="awaitProcess" tipSlot={processedSlot}>
                       {handleStatisticsData(statisticsData?.awaitProcess)}
                     </SingleStatistics>
                   </div>
                 </div>
                 <div className={styles.projectManagementStatisticItem}>
                   <div onClick={() => statisticsClickEvent('2')}>
-                    <SingleStatistics label="进行中" icon="inProgress">
+                    <SingleStatistics label="进行中" icon="inProgress" tipSlot={progressSlot}>
                       {handleStatisticsData(statisticsData?.inProgress)}
                     </SingleStatistics>
                   </div>

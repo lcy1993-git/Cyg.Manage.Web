@@ -6,7 +6,7 @@ import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
-import { getGisDetail, loadLayer, getlibId_new, getModulesRequest } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
 import { useState } from 'react';
@@ -439,7 +439,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id;
+        const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
         pJSON['材料表'] = {
           params: {
             holeId: feature.getProperties().project_id,
@@ -528,11 +528,50 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         console.log(feature);
         let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
         let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
-        let fs = l.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
+        let fs = l?.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
         if(!fs){
-          continue;
+          // 无下户线下户的户表
+          // 此处读取无下户线户表的材料表，从中读取‘下户线型号’和‘下户线长度’
+          const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
+          const materiaParams = {
+            holeId: feature.getProperties().project_id,
+            rest: {
+              objectID,
+              forProject: 0,
+              forDesign: 0,
+              materialModifyList: [],
+              layerName,
+            },
+            getProperties: feature.getProperties(),
+        };
+        await getlibId_new({ projectId: materiaParams?.getProperties.project_id }).then((data)=> {
+          
+          if(data.isSuccess){
+            const resourceLibID = data?.content;
+            getMaterialItemData({resourceLibID, ...materiaParams.rest, layerName: "electric_meter"}).then((data) => {
+              const materialId = feature.getProperties().material_id;
+              
+              const currentItem = data?.content?.find((item) => {
+                return item.addFlagID && item.addFlagID === materialId
+              })
+              if(currentItem){
+                pJSON[p] = currentItem.spec || ""; // 材料表中的‘下户线型号’
+                const crlenth = currentItem.unit === "km" ? currentItem.itemNumber / 1000 : currentItem.itemNumber;
+                pJSON['下户线长度'] = isNaN(crlenth) ? "" : crlenth; // 材料表中的‘下户线长度’
+              }else{
+                pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
+                pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
+              }
+            })
+          }
+        });
+
+        
+          pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
+          pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
         }
         else {
+          // 有下户线下户的户表没有‘下户线长度’字段
           pJSON[p] = fs.getProperties().mode;
           pJSON['下户线长度'] = fs.getProperties().length;
         } 
@@ -541,16 +580,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
-      if(p === '下户线型号' && pJSON[p]) {
-        continue;
-      }
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
 
 
     // 下户线长度字段为空时不显示
     resData.forEach((item)=>{
-      if(item.propertyName === '下户线长度' && item.data === '') {}
+      if((item.propertyName === '下户线长度' || item.propertyName === '所属节点') && item.data === '') {}
       else {
         propertiesData.push(item);
       }
