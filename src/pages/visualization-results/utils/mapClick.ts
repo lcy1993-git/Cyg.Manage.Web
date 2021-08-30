@@ -493,10 +493,16 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       }
         if(p === '下户线型号'){
           let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
-        let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
-        let fs = l.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
-        pJSON[p] = fs.getProperties().mode;
-        pJSON['下户线长度'] = fs.getProperties().length;
+          let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
+          let fs = l.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
+          if(fs){
+            pJSON[p] = fs.getProperties().mode;
+            pJSON['下户线长度'] = fs.getProperties().length;
+          } else{
+            // 无下户线户表，从材料表里获取导线数据
+            // pJSON[p] = '';
+            // pJSON['下户线长度'] = '';
+          }
         }
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
