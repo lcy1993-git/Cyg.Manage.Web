@@ -167,3 +167,13 @@ export const queryAreaInfoDetail
   = (areaType: number, firstCode: string) => {
   return request(`${baseUrl.tecEco1}/Area/QueryAreaInfoDetail`, {method: 'GET', params: {areaType,firstCode}});
 }
+
+// 导入地区分类
+export const importAreaInfo = (file: File) => {
+  const data = new FormData();
+  data.append('file', file)
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/Area/ImportAreaInfo`, {method: 'POST', data})
+  )
+}
+
