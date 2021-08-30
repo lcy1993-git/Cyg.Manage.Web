@@ -32,13 +32,6 @@ export default (data: any, id: string) => {
 };
 
 export function getParentIds(data: any, keyArr: any) {
-  // return data?.map((item: any) => {
-  //   if (item.children && item.children.length > 0) {
-  //     console.log(item);
-  //     getParentIds(item.children);
-  //     return item.id;
-  //   }
-  // });
   for (let i = 0; i < data?.length; i++) {
     if (data[i].children && data[i].children?.length > 0) {
       keyArr.push(data[i].id);

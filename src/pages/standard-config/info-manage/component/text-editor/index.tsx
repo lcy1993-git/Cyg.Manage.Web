@@ -16,7 +16,6 @@ import FormSwitch from '@/components/form-switch';
 import { getClientCategorys } from '@/services/personnel-config/company-user';
 import rule from '../../news-rule';
 import { flatten } from '@/utils/utils';
-import { use } from 'echarts';
 
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
@@ -151,12 +150,10 @@ const TextEditorModal = (props: EditorParams) => {
     let allIds: any[] = [];
     (function deep(groupArray) {
       groupArray?.forEach((item: any) => {
-        if (item.children) {
-          if (item.children?.length > 0) {
-            deep(item.children);
-          } else {
-            allIds.push(item.id);
-          }
+        if (item.children && item.children.length > 0) {
+          deep(item.children);
+        } else {
+          allIds.push(item.id);
         }
       });
     })(groupArray);
@@ -236,8 +233,8 @@ const TextEditorModal = (props: EditorParams) => {
     if (personDefaultValue) {
       const flattenArray = flatten(handleData);
       const handlePersonUserIds = flattenArray
-        .filter((item) => personDefaultValue.includes(item.chooseValue))
-        .map((item) => item.value);
+        .filter((item: any) => personDefaultValue.includes(item.chooseValue))
+        .map((item: any) => item.value);
       titleForm.setFieldsValue({
         userIds: handlePersonUserIds,
       });
@@ -275,6 +272,7 @@ const TextEditorModal = (props: EditorParams) => {
             treeCheckable
             treeData={handleData}
             treeDefaultExpandAll
+            showCheckedStrategy="SHOW_PARENT"
           />
         </CyFormItem>
         <CyFormItem
