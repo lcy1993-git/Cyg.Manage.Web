@@ -49,7 +49,7 @@ const TotalTable: React.FC<Props> = () => {
       key: 'name',
       title: '名称',
       align: 'center',
-      width: 170,
+      width: 220,
     },
     {
       dataIndex: 'code',
@@ -64,7 +64,7 @@ const TotalTable: React.FC<Props> = () => {
       ellipsis: true,
       title: '建筑工程费(JZF)',
       align: 'center',
-      width: 170,
+      width: 270,
     },
     {
       dataIndex: 'deviceCostFormula',
@@ -72,7 +72,7 @@ const TotalTable: React.FC<Props> = () => {
       title: '设备购置费(SBF)',
       ellipsis: true,
       align: 'center',
-      width: 140,
+      width: 240,
     },
     {
       dataIndex: 'installCostFormula',
@@ -80,7 +80,7 @@ const TotalTable: React.FC<Props> = () => {
       title: '安装工程费(AZF)',
       align: 'center',
       ellipsis: true,
-      width: 150,
+      width: 250,
     },
     {
       dataIndex: 'otherCostFormula',
@@ -88,14 +88,14 @@ const TotalTable: React.FC<Props> = () => {
       title: '其他费用(QTF)',
       align: 'center',
       ellipsis: true,
-      width: 120,
+      width: 220,
     },
     {
       dataIndex: 'basicReserveCostFormula',
       key: 'basicReserveCostFormula',
       title: '基本预备费(JBYBF)',
       align: 'center',
-      width: 120,
+      width: 220,
       ellipsis: true,
     },
     {
@@ -104,13 +104,13 @@ const TotalTable: React.FC<Props> = () => {
       title: '合计费(HJF)',
       align: 'center',
       ellipsis: true,
-      width: 100,
+      width:200,
     },
     {
       dataIndex: 'staticInvestmentRatio',
       key: 'staticInvestmentRatio',
       title: '静态投资比例(ZZJ)',
-      width: 120,
+      width: 220,
       ellipsis: true,
       align: 'center',
     },
@@ -118,7 +118,7 @@ const TotalTable: React.FC<Props> = () => {
       dataIndex: 'unitInvestmentCountFormula',
       key: 'unitInvestmentCountFormula',
       title: '单位投资量',
-      width: 100,
+      width: 200,
       ellipsis: true,
       align: 'center',
     },
@@ -133,7 +133,7 @@ const TotalTable: React.FC<Props> = () => {
       dataIndex: 'unitInvestmentFormula',
       key: 'unitInvestmentFormula',
       title: '单位投资(DWTZ)',
-      width: 120,
+      width: 220,
       align: 'center',
       ellipsis: true,
     },
@@ -174,7 +174,7 @@ const TotalTable: React.FC<Props> = () => {
         <Table
           pagination={false}
           size={'small'}
-          scroll={{ y: 720 }}
+          scroll={{ y: 720,x:2200 }}
           bordered
           dataSource={dataSource}
           columns={columns}
