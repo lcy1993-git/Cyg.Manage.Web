@@ -346,7 +346,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
             );
           }
         } else if(record.propertyName === "穿孔示意图") {
-          return <CableSection {...value}/>
+          return <CableSection key={JSON.stringify({...value})} {...value}/>
         }
         return <span key={index}></span>;
       },
