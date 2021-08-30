@@ -538,6 +538,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         else {
           // 有下户线下户的户表没有‘下户线长度’字段
           pJSON[p] = fs.getProperties().mode;
+          pJSON['下户线长度'] = fs.getProperties().length;
         } 
       }
       

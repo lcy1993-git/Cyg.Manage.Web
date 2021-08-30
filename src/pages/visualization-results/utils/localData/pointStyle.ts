@@ -36,6 +36,7 @@ export interface Options {
 
 // 点样式
 const pointStyle = function (type: string, feature: Feature, selected: any) {
+    console.log(markImageSrc1)
     let iconFont = 'webgisIconFont';
     let iconFontText;
 
