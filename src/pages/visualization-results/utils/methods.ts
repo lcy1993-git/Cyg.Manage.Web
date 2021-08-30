@@ -235,7 +235,7 @@ const loadWFSData = (
           style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
         }
         else if (item.type === 'zero_guy') {
-          if (pJSON[i].getProperties().mode.startsWith('NULL')) {
+          if (!pJSON[i].getProperties().mode) {
             let index = pJSON[i].getProperties().label?.indexOf(pJSON[i].getProperties().length);
             pJSON[i].setProperties({ mode: pJSON[i].getProperties().label?.substr(0, index - 1) });
           }
