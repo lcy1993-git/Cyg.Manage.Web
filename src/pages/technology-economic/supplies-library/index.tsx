@@ -136,16 +136,16 @@ const SuppliesLibrary: React.FC = () => {
   }
 
   const gotoMoreInfo = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
-      return;
-    }
-    const {id} = tableSelectRows[0];
+    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+    //   message.error('请选择要操作的行');
+    //   return;
+    // }
+    const {id} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/suppliesl-infomation?id=${id}`)
   };
   const onFinish = async (val: SuppliesLibraryData) => {
-    console.log(val)
-    const data = {...val}
+    const data = JSON.parse(JSON.stringify(val))
+    data.file = val.file
     data.enabled = !!data.enabled
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
     await addMaterialLibrary(data)

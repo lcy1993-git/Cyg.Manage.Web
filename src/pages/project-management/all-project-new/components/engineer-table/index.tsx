@@ -8,11 +8,13 @@ import {
   getProjectInfo,
   getProjectTableList,
   getEngineerInfo,
+  againInherit,
+  deleteProject,
 } from '@/services/project-management/all-project';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
 import { useRequest, useSize } from 'ahooks';
-import { Menu, message, Popconfirm } from 'antd';
+import { Menu, message, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
 import React from 'react';
@@ -28,7 +30,7 @@ import styles from './index.less';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { Dropdown } from 'antd';
-import { BarsOutlined } from '@ant-design/icons';
+import { BarsOutlined, LinkOutlined } from '@ant-design/icons';
 import { TableContext } from './table-store';
 import CheckResultModal from '../check-result-modal';
 import EngineerDetailInfo from '../engineer-detail-info';
@@ -43,6 +45,7 @@ import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
 import moment from 'moment';
+import ProjectInheritModal from '../project-inherit-modal';
 
 const colorMap = {
   立项: 'green',
@@ -58,6 +61,7 @@ interface ExtractParams extends AllProjectStatisticsParams {
 interface JurisdictionInfo {
   canEdit: boolean;
   canCopy: boolean;
+  canInherit: boolean;
 }
 
 interface EngineerTableProps {
@@ -111,11 +115,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [approvalEngineerVisible, setApprovalEngineerVisible] = useState<boolean>(false);
   const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
 
-  //项目时间阈值state
+  const [projectInheritVisible, setProjectInheritVisible] = useState<boolean>(false);
+  const [inheritProjectNeedParams, setInheritProjectNeedParams] = useState<any>({});
+
+  // 项目时间阈值state
   const [minStartTime, setMinStartTime] = useState<number>();
   const [maxEndTime, setMaxEndTime] = useState<number>();
 
   const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false);
+
+  // 项目继承状态判断
+  const [inheritState, setInheritState] = useState<boolean>(false);
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
@@ -132,6 +142,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const editProjectEvent = (info: any) => {
+    if (info.inheritState === 2) {
+      setInheritState(true);
+    }
     setEditProjectVisible(true);
     setCurrentEditProjectInfo(info);
   };
@@ -142,7 +155,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const editEngineerEvent = async (data: AddProjectValue) => {
-    //编辑工程前获取工程下项目日期阈值
+    // 编辑工程前获取工程下项目日期阈值
     const currentEditEngineer = tableData?.pagedData?.items
       .map((item: any) => {
         if (item.id === data.engineerId) {
@@ -168,9 +181,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const approvalEngineerEvent = (data: AddProjectValue) => {
-    setCurrentAppEngineerId(data.engineerId)
+    setCurrentAppEngineerId(data.engineerId);
     setApprovalEngineerVisible(true);
-  }
+  };
 
   const checkResult = (projectInfo: any) => {
     setCheckResultProjectInfo(projectInfo);
@@ -206,16 +219,20 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     onSelect?.([]);
   };
 
-  const [leftNumber, setLeftNumber] = useState<number>(0);
-
   const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
     manual: true,
   });
+
+  const projectInherit = (projectInfo: any) => {
+    setProjectInheritVisible(true);
+    setInheritProjectNeedParams(projectInfo);
+  };
 
   const projectItemMenu = (
     jurisdictionInfo: JurisdictionInfo,
     tableItemData: any,
     engineerInfo: any,
+    status: any,
   ) => {
     return (
       <Menu>
@@ -230,6 +247,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 startTime: engineerInfo.startTime,
                 endTime: engineerInfo.endTime,
                 status: tableItemData.stateInfo.status,
+                inheritState: tableItemData.stateInfo.inheritStatus,
               });
             }}
           >
@@ -267,6 +285,24 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             查看成果
           </Menu.Item>
         )}
+        {jurisdictionInfo.canInherit && buttonJurisdictionArray?.includes('all-project-inherit') && (
+          // all-project-inherit
+          <Menu.Item
+            onClick={() =>
+              projectInherit({
+                projectId: tableItemData.id,
+                areaId: engineerInfo.province,
+                company: engineerInfo.company,
+                engineerId: engineerInfo.id,
+                companyName: engineerInfo.company,
+                startTime: engineerInfo.startTime,
+                endTime: engineerInfo.endTime,
+              })
+            }
+          >
+            项目继承
+          </Menu.Item>
+        )}
       </Menu>
     );
   };
@@ -287,6 +323,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setExternalArrangeModalVisible(true);
   };
 
+  // 申请结项
+  const applyKnotEvent = async (projectId: string[]) => {
+    await applyKnot(projectId);
+    message.success('申请结项成功');
+
+    finishEvent?.();
+  };
+
+  // 重新继承
+  const againInheritEvent = async (projectId: string) => {
+    await againInherit(projectId);
+    message.success('重新继承申请成功');
+
+    finishEvent?.();
+  };
+
   // 外审列表
   const externalEdit = async (projectId: string) => {
     const res = await getExternalStep(projectId);
@@ -296,12 +348,26 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     setExternalListModalVisible(true);
   };
 
-  const completeConfig = [
-    {
-      title: '项目名称',
-      dataIndex: 'name',
-      width: 300,
-      render: (record: any) => {
+  const projectNameRender = (record: any) => {
+    // 代表未继承
+    if (!record.stateInfo.inheritStatus) {
+      return (
+        <u
+          className="canClick"
+          onClick={() => {
+            setCurrentClickProjectId(record.id);
+            setProjectModalVisible(true);
+          }}
+        >
+          {record.name}
+        </u>
+      );
+    }
+    if (record.stateInfo.inheritStatus) {
+      if (record.stateInfo.inheritStatus === 1) {
+        return <span className={styles.disabled}>[继承中...]{record.name}</span>;
+      }
+      if (record.stateInfo.inheritStatus === 2) {
         return (
           <u
             className="canClick"
@@ -313,8 +379,61 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             {record.name}
           </u>
         );
-      },
+      }
+      if (record.stateInfo.inheritStatus === 3) {
+        return <span className={styles.disabled}>{record.name}</span>;
+      }
+    }
+  };
+
+  const deleteFailProject = async (projectId: string) => {
+    await deleteProject([projectId]);
+    message.success("已取消项目继承");
+    finishEvent?.();
+  }
+
+  const completeConfig = [
+    {
+      title: '项目名称',
+      dataIndex: 'name',
+      width: 300,
+      render: projectNameRender,
       ellipsis: true,
+      iconSlot: (record: any, projects: any) => {
+        const parentData = projects.filter((item: any) => item.id === record.inheritId);
+        
+        if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
+          if (record.stateInfo.inheritStatus === 3) {
+            return (
+              <>
+                <Tooltip title={`继承自${record.inheritName}`}>
+                  <span className={styles.inheritIcon}>
+                    <LinkOutlined />
+                  </span>
+                </Tooltip>
+                <span>
+                  <Popconfirm
+                    title="项目继承失败，请重试"
+                    onConfirm={() => againInheritEvent(record.id)}
+                    onCancel={() => deleteFailProject(record.id)}
+                    okText="确认"
+                    cancelText="取消"
+                  >
+                    <span className={styles.dangerColor}>[继承失败]</span>
+                  </Popconfirm>
+                </span>
+              </>
+            );
+          }
+          return (
+            <Tooltip title={`继承自${record.inheritName}`}>
+              <span className={styles.inheritIcon}>
+                <LinkOutlined />
+              </span>
+            </Tooltip>
+          );
+        }
+      },
     },
     {
       title: '项目分类',
@@ -519,6 +638,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           allotCompanyId = allot.allotCompanyGroup;
         }
 
+        // 如果是继承失败 和 继承中，直接返回状态，不用做下面的判断了。
+        if (
+          record.stateInfo.inheritStatus &&
+          (record.stateInfo.inheritStatus === 1 || record.stateInfo.inheritStatus === 3)
+        ) {
+          return <span>{stateInfo?.statusText}</span>;
+        }
+
         return (
           <>
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
@@ -554,39 +681,39 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
-                ) : // : stateInfo.statusText === '设计评审中' ? (
-                //   <span>设计中</span>
-                // ) : (
-                stateInfo.status === 4 &&
-                  stateInfo.auditStatus === 0 &&
-                  stateInfo.auditStatusText === null ? (
-                  <span>{stateInfo?.statusText}</span>
-                ) : stateInfo.status === 4 &&
-                  stateInfo.auditStatus === 0 &&
-                  stateInfo.auditStatusText != null ? (
-                  <span>{stateInfo?.auditStatusText}</span>
-                ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
-                  <span>{stateInfo?.statusText}</span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
-                  <span
-                    className="canClick"
-                    onClick={() => externalArrange(record.id, record.name)}
-                  >
-                    {stateInfo?.auditStatusText}
-                  </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
-                  <span className="canClick" onClick={() => externalEdit(record.id)}>
-                    {stateInfo?.auditStatusText}
-                  </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
-                  <span className="canClick" onClick={() => externalEdit(record.id)}>
-                    {stateInfo?.auditStatusText}
-                  </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
+                ) : stateInfo.statusText === '设计评审中' ? (
+                  <span>设计中</span>
                 ) : (
+                  // : stateInfo.status === 4 &&
+                  //   stateInfo.auditStatus === 0 &&
+                  //   stateInfo.auditStatusText === null ? (
+                  //   <span>{stateInfo?.statusText}</span>
+                  // ) : stateInfo.status === 4 &&
+                  //   stateInfo.auditStatus === 0 &&
+                  //   stateInfo.auditStatusText != null ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
+                  //   <span>{stateInfo?.statusText}</span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                  //   <span
+                  //     className="canClick"
+                  //     onClick={() => externalArrange(record.id, record.name)}
+                  //   >
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
+                  //     {stateInfo?.auditStatusText}
+                  //   </span>
+                  // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
+                  //   <span>{stateInfo?.auditStatusText}</span>
+                  // ) : (
                   <span>{stateInfo?.statusText}</span>
                 )}
               </span>
@@ -603,8 +730,18 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'action',
       width: 60,
       render: (record: any, engineerInfo: any) => {
-        const { operationAuthority } = record;
+        const { operationAuthority, stateInfo } = record;
 
+        if (
+          stateInfo.inheritStatus &&
+          (stateInfo.inheritStatus === 1 || stateInfo.inheritStatus === 3)
+        ) {
+          return (
+            <Tooltip title="项目继承中，不能进行任何操作" placement="topRight">
+              <BarsOutlined />
+            </Tooltip>
+          );
+        }
         return (
           <Dropdown
             overlay={() =>
@@ -619,14 +756,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       },
     },
   ];
-
-  // 申请结项
-  const applyKnotEvent = async (projectId: string[]) => {
-    await applyKnot(projectId);
-    message.success('申请结项成功');
-
-    finishEvent?.();
-  };
 
   const chooseColumns = useMemo(() => {
     if (columnsConfig) {
@@ -752,7 +881,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const engineerTableElement = tableResultData?.items.map((item: any) => {
     return (
       <EngineerTableItem
-        // left={leftNumber}
         editEngineer={editEngineerEvent}
         addProject={addProjectEvent}
         approvalEngineer={approvalEngineerEvent}
@@ -975,6 +1103,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             startTime={currentEditProjectInfo.startTime}
             endTime={currentEditProjectInfo.endTime}
             visible={editProjectVisible}
+            pointVisible={inheritState}
+            setInheritState={setInheritState}
             onChange={setEditProjectVisible}
             changeFinishEvent={refreshEvent}
           />
@@ -1046,6 +1176,21 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             onChange={setAuditKnotModalVisible}
             projectIds={[currentClickProjectId]}
             finishEvent={refreshEvent}
+          />
+        )}
+        {projectInheritVisible && (
+          <ProjectInheritModal
+            companyName={inheritProjectNeedParams.companyName}
+            projectId={inheritProjectNeedParams.projectId}
+            company={inheritProjectNeedParams.company}
+            areaId={inheritProjectNeedParams.areaId}
+            status={inheritProjectNeedParams.status}
+            startTime={inheritProjectNeedParams.startTime}
+            endTime={inheritProjectNeedParams.endTime}
+            engineerId={inheritProjectNeedParams.engineerId}
+            visible={projectInheritVisible}
+            onChange={setProjectInheritVisible}
+            changeFinishEvent={refreshEvent}
           />
         )}
       </div>

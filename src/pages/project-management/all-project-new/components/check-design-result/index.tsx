@@ -3,7 +3,6 @@ import EmptyTip from '@/components/empty-tip';
 
 import { Tree } from 'antd';
 import styles from './index.less';
-
 const { DirectoryTree } = Tree;
 
 interface DesignResultProps {
@@ -22,16 +21,38 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
     setTabEvent('design');
   };
 
+  console.log(designData);
+
+  const onSelect = (info: any) => {
+    // console.log(info);
+  };
+
+  const previewEvent = () => {
+    console.log(111);
+  };
+
   return (
     <div className={styles.treeTableContent}>
       {designData?.length > 0 && (
         <div className={styles.treeTable}>
           <DirectoryTree
+            titleRender={(v) => {
+              console.log(v);
+
+              return v.category === 2 ? (
+                <span className={styles.treeTitle} onClick={() => previewEvent()}>
+                  {v.title}
+                </span>
+              ) : (
+                <span>{v.title}</span>
+              );
+            }}
             checkable
             onCheck={onCheck}
             checkedKeys={checkedKeys}
             defaultExpandAll={true}
             treeData={designData}
+            onSelect={onSelect}
           />
         </div>
       )}

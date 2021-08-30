@@ -359,6 +359,30 @@ const Styles = {
             color: 'rgba(255, 175, 110, 1)',
             isDismantle: true
         },
+        "2010": { // 设计图层水平拉线（原有）
+            color: 'rgba(188, 40, 184, 1)',
+            img: '）    （',
+        },
+        "2011": { // 设计图层水平拉线（新建）
+            color: 'rgba(188, 40, 184, 1)',
+            img: '）    （',
+            lineDash: [12],
+        },
+        "2012": { // 设计图层水平拉线（利旧）
+            color: 'rgba(188, 40, 184, 1)',
+            img: '）    （',
+            lineDash: [4],
+        },
+        "2013": { // 设计图层水平拉线（拆除）
+            color: 'rgba(188, 40, 184, 1)',
+            img: '）    （',
+            isDismantle: true,
+        },
+        "2020": { // 拆除图层水平拉线
+            color: 'rgba(188, 40, 184, 1)',
+            img: '）    （',
+            isDismantle: true,
+        },
     },
     fault_indicator: {
         size: 18,

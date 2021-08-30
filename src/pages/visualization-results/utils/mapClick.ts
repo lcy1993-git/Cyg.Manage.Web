@@ -1,13 +1,21 @@
 import getMappingTagsDictionary from './localData/mappingTagsDictionary';
-import { pointStyle, line_style } from './localData/pointStyle';
+import { pointStyle, line_style, zero_guy_style } from './localData/pointStyle';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
-import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees } from './methods';
+import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
-import { getGisDetail, loadLayer, getlibId_new, getModulesRequest } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
+import { trackStyle, trackLineStyle } from './localData/pointStyle';
+import { useState } from 'react';
+
+/**
+ * ops.setSurveyModalData
+ * ops.setSurveyModalVisible
+ */
+
 // const mappingTagsData = getMappingTagsDictionary();
 // const mappingTagsDictionary: any =typeof mappingTagsData === 'string' ? JSON.parse(mappingTagsData) : {};
 const mediaLayers = ['tower', 'cable', 'cable_equipment', 'electric_meter'];
@@ -48,6 +56,7 @@ const elementTypeEnum = {
   user_line: '下户线',
   fault_indicator: '故障指示器',
   pull_line: '拉线',
+  zero_guy: '水平拉线',
   brace: '撑杆',
   Track: '轨迹点',
   TrackLine: '轨迹线',
@@ -74,7 +83,18 @@ const lineTowerType = [
     value: 'cross_arm',
   },
 ];
+/**
+ * 用于记录当前鼠标停留的要素
+ */
+let selectedFeature = null;
+/**
+ * 用于筛选展示的勘察、交底轨迹点位
+ */
+let trackRecordDate = '';
+let mapContent = null;
 export const mapClick = (evt: any, map: any, ops: any) => {
+  mapContent = map;
+
   // 解决本地存储mappingTagsData的bug
   const mappingTagsData = getMappingTagsDictionary();
   let mappingTagsDictionary: any;
@@ -93,6 +113,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   // let setRightSidebarVisiviabelFlag = false;
   // 清除高亮
   clearHighlightLayer(map);
+  let layerName = '';
   // 遍历选中的数据
   map.forEachFeatureAtPixel(evt.pixel, async function (feature: any, layer: any) {
     // setRightSidebarVisiviabelFlag = true;
@@ -113,7 +134,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       feature = feature.get('features')[0];
     }
     map.getTargetElement().style.cursor = 'wait';
-    let layerName = layer.getProperties().name;
+    layerName = layer.getProperties().name;
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
 
     // 判断选中的图层类型
@@ -159,7 +180,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     let highlightFeatures = [];
     let totalLength = 0;
-    if (layerName == 'line' || layerName == 'user_line') {
+    if (layerName == 'line' || layerName == 'user_line' || layerName == 'zero_guy') {
       let layerTypeValue = feature.getProperties().layerType;
       if (feature.getProperties().polyline_id && feature.getProperties().is_cable) {
         map
@@ -210,10 +231,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         let featureClone = feature_.clone();
         let type = featureClone.getGeometry().getType().toLocaleLowerCase();
         let highlightStyle;
-        if (type.indexOf('point') >= 0) {
+        // 为选中的水平拉线图层添加高亮
+        if(layerName === 'zero_guy') {
+          highlightStyle = zero_guy_style(featureClone, true);
+        }
+        else if (type.indexOf('point') >= 0) {
           highlightStyle = pointStyle(layer.getProperties().name, featureClone, true);
         } else {
-          highlightStyle = line_style(featureClone, true, layerType);
+          highlightStyle = line_style(featureClone, true);
         }
 
         featureClone.setStyle(highlightStyle);
@@ -438,10 +463,18 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     // }
 
+    // 轨迹线不弹出侧边栏
+    if (elementTypeEnum[layerName] === '轨迹线') {
+      map.getTargetElement().style.cursor = 'default';
+      return;
+    }
     // 相应数据到右侧边栏
     const resData = [];
-    resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
-    resData.push({ propertyName: '元素类型', data: elementTypeEnum[layerName] });
+    const propertiesData = [];
+    if(elementTypeEnum[layerName] !== '轨迹点') {
+      resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
+    }
+    resData.push({ propertyName: elementTypeEnum[layerName] === '水平拉线' ? '设备种类' : '元素类型', data: elementTypeEnum[layerName] });
     for (let p in pJSON) {
       if (p === '杆规格') {
         pJSON[p] = `${feature.getProperties().rod}*${feature.getProperties().height}`;
@@ -479,46 +512,75 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         };
       }
 
-      if(p === '方向') {
+      if (p === '方向') {
         let azimuth = feature.getProperties().azimuth;
-        if(azimuth){
-          if(azimuth >= -90 && azimuth < 90){
-            pJSON[p] =  '→↑';
+        if (azimuth) {
+          if (azimuth >= -90 && azimuth < 90) {
+            pJSON[p] = '→↑';
           } else {
-            pJSON[p] =  '←↓';
+            pJSON[p] = '←↓';
           }
         } else {
-          pJSON[p] =  '';
+          pJSON[p] = '';
         }
       }
-        if(p === '下户线型号'){
-          let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
-          let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
-          let fs = l.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
-          if(fs){
-            pJSON[p] = fs.getProperties().mode;
-            pJSON['下户线长度'] = fs.getProperties().length;
-          } else{
-            // 无下户线户表，从材料表里获取导线数据
-            // pJSON[p] = '';
-            // pJSON['下户线长度'] = '';
-          }
+      if (p === '下户线型号') {
+        console.log(feature);
+        let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
+        let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
+        let fs = l?.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
+        if(!fs){
+          // 无下户线下户的户表
+          // 此处读取无下户线户表的材料表，从中读取‘下户线型号’和‘下户线长度’
+          pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
+          pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
         }
+        else {
+          // 有下户线下户的户表没有‘下户线长度’字段
+          pJSON[p] = fs.getProperties().mode;
+          pJSON['下户线长度'] = fs.getProperties().length;
+        } 
+      }
+      
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
-
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' });
     }
-    ops.setRightSidebarVisiviabel(true);
-    ops.setRightSidebarData(resData);
-    console.log(resData);
+
+
+    // 下户线长度字段为空时不显示
+    resData.forEach((item)=>{
+      if((item.propertyName === '下户线长度' || item.propertyName === '所属节点') && item.data === '') {}
+      else {
+        propertiesData.push(item);
+      }
+    });
+    // 点击轨迹点时传输日期数组
+    if (elementTypeEnum[layerName] === '轨迹点') {
+      propertiesData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray()});
+      ops.setSurveyModalData({
+        resData,
+        select: getTrackRecordDateArray(),
+        evt: evt.pixel
+      });
+      ops.setSurveyModalVisible(true)
+      ops.setRightSidebarVisiviabel(false);
+    }
+    else {
+      ops.setRightSidebarData(propertiesData);
+      ops.setRightSidebarVisiviabel(true);
+      ops.setSurveyModalVisible(false)
+    }
 
     map.getTargetElement().style.cursor = 'default';
   });
 
+  chooseCurDayTrack('');
+
   // if(!setRightSidebarVisiviabelFlag) {
   ops.setRightSidebarVisiviabel(false);
+  ops.setSurveyModalVisible(false);
   // }
 };
 
@@ -546,6 +608,54 @@ export const mapPointermove = (evt: any, map: any) => {
     if (allowed) map.getTargetElement().style.cursor = 'pointer';
     else map.getTargetElement().style.cursor = 'not-allowed';
   });
+
+  if (selectedFeature) {
+    // 设置默认样式
+    setTrackLayerDefaultStyle(map);
+    selectedFeature = null;
+  }
+
+  let selected = false;
+  map.forEachFeatureAtPixel(evt.pixel, function (feature: any, layer: any) {
+    if (selected) {
+      return;
+    }
+    selected = true;
+    selectedFeature = feature;
+
+    // 获取当前图层名称
+    let layerName = layer?.get('name');
+    // 获取的图层时轨迹点图层
+    if (layerName === 'survey_Track' || layerName === 'disclosure_Track') {
+      // 获取全部地图图层
+      map.getLayers().forEach((item) => {
+        if (item.get('name') === 'surveyTrackLayers' || item.get('name') === 'disclosureTrackLayers') {
+          // 为该点设置选中样式
+          feature.setStyle(trackStyle(isCurDayTrack(feature), true, true));
+          // 为整条轨迹线设置选中样式
+          item.getLayers().item(1)?.getSource().getFeatures().forEach((item) => {
+            if (item.getProperties().record_date.substr(0, 10) === feature.getProperties().record_date.substr(0, 10)) {
+              item.setStyle(trackLineStyle(item, isCurDayTrack(item), true, true));
+            }
+          });
+        }
+      });
+    }
+    // 获取的图层时轨迹线图层
+    else if (layerName === 'survey_TrackLine' || layerName === 'disclosure_TrackLine') {
+      // 获取全部地图图层
+      map.getLayers().forEach((item) => {
+        if (item.get('name') === 'surveyTrackLayers' || item.get('name') === 'disclosureTrackLayers') {
+          // 为整条轨迹线设置选中样式
+          item.getLayers().item(1)?.getSource().getFeatures().forEach((item) => {
+            if (item.getProperties().record_date.substr(0, 10) === feature.getProperties().record_date.substr(0, 10)) {
+              item.setStyle(trackLineStyle(item, isCurDayTrack(item), true, true));
+            }
+          });
+        }
+      });
+    }
+  });
 };
 
 // 当前比例尺映射到HTML节点
@@ -553,3 +663,35 @@ export const mapMoveend = (evt: any, map: any) => {
   const scaleSize: HTMLSpanElement = document.getElementById('currentScaleSize') as HTMLSpanElement;
   if (scaleSize !== null) scaleSize.innerHTML = getScale(map) || '';
 };
+
+/**
+ * 按日期筛选勘察轨迹
+ * @param currentDate 进行筛选的日期
+ */
+export const chooseCurDayTrack = (currentDate: string) => {
+  trackRecordDate = currentDate;
+  setTrackLayerDefaultStyle(mapContent);
+};
+
+function setTrackLayerDefaultStyle(map: any, locked: boolean = false) {
+  map.getLayers().forEach((item) => {
+    if (item.get('name') === 'surveyTrackLayers' || item.get('name') === 'disclosureTrackLayers') {
+      item.getLayers().item(0)?.getSource().getFeatures().forEach((item) => {
+        // 为所有轨迹点设置默认样式
+        item.setStyle(trackStyle(isCurDayTrack(item), false, locked));
+      });
+      item.getLayers().item(1)?.getSource().getFeatures().forEach((item) => {
+        // 为整条轨迹线设置默认样式
+        item.setStyle(trackLineStyle(item, isCurDayTrack(item), false, locked));
+      });
+    }
+  });
+}
+function isCurDayTrack(feature: any) {
+  if (trackRecordDate?.length > 0) {
+    return feature.get("record_date")?.substr(0, 10) === trackRecordDate;
+  }
+  else {
+    return true;
+  }
+}

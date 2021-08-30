@@ -33,7 +33,7 @@ export const modifyMaterialLibraryStatus = (MaterialId: string) => {
       { method: 'GET', params: { MaterialId } }),
   );
 }
-// 修改物料库状态
+// 删除
 export const deleteMaterialLibraryById = (MaterialId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/MaterialLibrary/DeleteMaterialLibraryById`,
@@ -43,10 +43,18 @@ export const deleteMaterialLibraryById = (MaterialId: string) => {
 
 
 // 查询物料库列表
-export const getMaterialLibraryList = (data: QueryData) => {
+export const getMaterialLibraryList = (data: Partial<QueryData>) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryList`,
       { method: 'POST', data }),
+  );
+}
+
+// 查询物料库列表(物料映射库用)
+export const getMaterialLibraryAllList = () => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryAllList`,
+      { method: 'GET' }),
   );
 }
 

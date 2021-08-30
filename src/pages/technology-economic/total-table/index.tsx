@@ -38,7 +38,8 @@ const TotalTable: React.FC<Props> = () => {
   const columns: ColumnsType<any> = [
     {
       title: '序号',
-      width: 80,
+      width: 50,
+      align:'center',
       render: (text: string, record: any, index: number) => {
         return <span>{index + 1}</span>;
       },
@@ -174,6 +175,7 @@ const TotalTable: React.FC<Props> = () => {
           pagination={false}
           size={'small'}
           scroll={{ y: 720 }}
+          bordered
           dataSource={dataSource}
           columns={columns}
         />

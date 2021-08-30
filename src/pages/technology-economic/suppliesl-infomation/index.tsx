@@ -1,18 +1,22 @@
-import {useState, useRef} from 'react';
-import { useMount } from 'ahooks';
+import {useState, useRef, useEffect} from 'react';
+import {useMount} from 'ahooks';
 import { Tabs } from 'antd';
 
 import PageCommonWrap from "@/components/page-common-wrap";
 import ListTable from '../components/list-table';
 import InfoTabs from './components/info-tabs';
-import { TreeSelect } from 'antd';
 
+import { Select } from 'antd';
 import qs from 'qs';
 
 import styles from './index.less'
-import { getMaterialLibraryTreeById } from '@/services/technology-economic/supplies-library';
+import {getMaterialLibraryList, getMaterialLibraryTreeById } from '@/services/technology-economic/supplies-library';
 
+import { Tree } from 'antd';
 
+const { Option } = Select;
+
+const { DirectoryTree } = Tree;
 const { TabPane } = Tabs;
 const columns = [
   {
@@ -81,7 +85,7 @@ const columns = [
     width: 70,
     ellipsis: true,
     render(v: any){
-      return <span>{['设备','主材'][v -1]}{v}</span>
+      return <span>{['甲供','乙供'][v -1]}</span>
     }
   },
   {
@@ -170,11 +174,21 @@ const columns = [
   }
 ];
 
+interface SelectIten {
+  enabled: boolean
+  id: string
+  name: string
+  publishDate: moment.Moment
+  publishOrg: string
+  remark: string
+}
 const SupplieslInfomation = () => {
 
   const [materialLibraryId, setMaterialLibraryId] = useState<string>("");
   const [resourceItem, setResourceItem] = useState<any>({});
   const [materialLibList,setMaterialLibList] = useState([])
+  const [slectLsit,setSlectLsit] = useState<SelectIten[]>([])
+  const [id,setId] = useState<string>('')
 
   const getTree = (arr: any[])=>{
     return arr.map(item=>{
@@ -182,6 +196,8 @@ const SupplieslInfomation = () => {
       item.title = item.name;
       // eslint-disable-next-line no-param-reassign
       item.value = item.id;
+      // eslint-disable-next-line no-param-reassign
+      item.key = item.id;
       if (item.children && item.children.length !== 0){
         getTree(item.children)
       }
@@ -189,16 +205,39 @@ const SupplieslInfomation = () => {
     })
   }
   useMount(async () => {
-    const res = await getMaterialLibraryTreeById(qs.parse(window.location.href.split("?")[1]).id as string || '1422453838113542253')
-    setMaterialLibList(getTree(res) as [])
+    let val = qs.parse(window.location.href.split("?")[1])?.id
+    val = val === 'undefined' ? '' : val
+    console.log(val)
+    setId(val as string);
   })
-
+ const getTreeList = async ()=>{
+    if (id === '') return
+   const res = await getMaterialLibraryTreeById(id)
+   setMaterialLibList(getTree(res) as [])
+  }
+  useEffect(()=>{
+    getTreeList()
+  },[id])
   const ref = useRef(null);
-
+  const typeOnChange = (val: string)=>{
+    setId(val)
+  }
   const treeOnChange = (val: any)=>{
-    setMaterialLibraryId(val?.value)
+    setMaterialLibraryId(val[0])
+  }
+  const  getSelectList = async ()=> {
+    const data = {
+      "pageIndex": 1,
+      "pageSize": 1000,
+      "keyWord": ''
+    }
+    const res = await  getMaterialLibraryList(data)
+    setSlectLsit(res?.items)
   }
 
+  useEffect(()=>{
+    getSelectList()
+  },[])
   return (
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
       <div className={styles.wrap} ref={ref}>
@@ -206,18 +245,28 @@ const SupplieslInfomation = () => {
           <Tabs className="normalTabs noMargin" >
               <TabPane tab="物料库目录" key="物料库目录">
                  <div className={styles.selectWrap}>
-                   <TreeSelect
-                     showSearch
-                     style={{ width: '100%' }}
-                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                     placeholder="请选择物料库"
-                     allowClear
-                     labelInValue
-                     treeData={materialLibList}
-                     treeDefaultExpandAll
-                     onChange={treeOnChange}
-                   >
-                   </TreeSelect>
+                   <Select
+                     style={{ width: 270 }}
+                     value={id}
+                     onChange={typeOnChange}>
+                     {
+                       slectLsit.map(item=>{
+                         return <Option value={item.id} key={item.id}>{item.name}</Option>
+                       })
+                     }
+                   </Select>
+                   <br/>
+                   <br/>
+                  <div className={styles.treeBox}>
+                    {
+                      materialLibList.length !== 0 && <DirectoryTree
+                        defaultExpandAll={false}
+                        key={'id'}
+                        onSelect={treeOnChange}
+                        treeData={materialLibList}
+                      />
+                    }
+                  </div>
                  </div>
               </TabPane>
             </Tabs>

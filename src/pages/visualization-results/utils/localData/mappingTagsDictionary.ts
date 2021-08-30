@@ -78,11 +78,10 @@ function getMappingTagsDictionary() {
     };
     mappingTagsDictionary.track = {
       mappingTags: {
-        "id": "ID",
+        // "type": "轨迹类型",
         "record_date": "记录日期",
         "recorder": "记录者",
         "company": "所属公司",
-        "type": "轨迹类型",
         "project_id": "title"
       },
       mappingTagValues: {
@@ -357,14 +356,15 @@ function getMappingTagsDictionary() {
       },
       mappingTags2: {
         "name": "名称",
-        "kv_level": "电压等级",
-        "entry_type": "下户方式",
+        // "entry_type": "下户方式",
         "entry_mode": "下户类型",
         "user_line_mode" : "下户线型号",
         "user_line_length" : "下户线长度",
         "type": "户表类型",
-        "mode": "户表型号",
         "state": "户表状态",
+        "kv_level": "电压等级",
+        "mode": "户表型号",
+        "parent_id": "所属节点",
         "total_count": "户表位",
         "count": "户表数",
         "linePhase": "导线相数",
@@ -376,7 +376,7 @@ function getMappingTagsDictionary() {
         "type": findenumsValue("ElectricMeterType"),
         "kv_level": findenumsValue("KVLevel"),
         "state": findenumsValue("SurveyState"),
-        "entry_type": findenumsValue("EntryMode")
+        // "entry_type": findenumsValue("EntryMode")
       }
     };
     mappingTagsDictionary.cross_arm = {
@@ -386,7 +386,7 @@ function getMappingTagsDictionary() {
       mappingTags2: {
         "model": "型号",
         "voltage": "电压等级",
-        'parent_id': "所属杆塔",
+        "parent_id": "所属杆塔",
         "state": "状态",
         "isupgraded": "是否改造",
         "project_id": "title"
@@ -489,9 +489,9 @@ function getMappingTagsDictionary() {
         "mode": "故障指示器型号",
         "state": "状态",
         "azimuth": "方位角",
-        "project_id": "所属项目",
         "isupgraded": "是否改造",
-        "remark": "备注"
+        "remark": "备注",
+        "project_id": "title",
       },
       mappingTagValues: {
         "state": findenumsValue("SurveyState") || ""
@@ -503,12 +503,28 @@ function getMappingTagsDictionary() {
         "mode": "撑杆型号",
         "state": "状态",
         "azimuth": "方位角",
-        "project_id": "所属项目",
         "isupgraded": "是否改造",
-        "remark": "备注"
+        "remark": "备注",
+        "project_id": "title",
       },
       mappingTagValues: {
         "state": findenumsValue("SurveyState") || ""
+      }
+    }
+
+    mappingTagsDictionary.zero_guy = {
+      mappingTags: {
+        "name": "名称",
+        "start_id": "主杆编号",
+        "end_id": "副杆编号",
+        "state": "状态",
+        "is_upgraded": "是否改造",
+        "mode": "型号",
+        "remark": "备注",
+        "project_id": "title",
+      },
+      mappingTagValues: {
+        "state": findenumsValue("SurveyState") || "",
       }
     }
 

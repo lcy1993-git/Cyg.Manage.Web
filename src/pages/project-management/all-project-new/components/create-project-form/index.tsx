@@ -7,6 +7,7 @@ import { DatePicker, Input, InputNumber, Select } from 'antd';
 import { isEmpty, isNumber } from 'lodash';
 import moment, { Moment } from 'moment';
 import React, { memo, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 import Rule from './project-form-rule';
 
@@ -23,6 +24,9 @@ interface CreateProjectFormProps {
   copyFlag?: number[];
   setCopyFlag?: (value: number[]) => void;
   index?: number;
+  isInherit?: boolean;
+  isEdit?: boolean;
+  pointVisible?: boolean;
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
@@ -31,6 +35,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     areaId,
     company,
     companyName,
+    pointVisible,
     status,
     projectId,
     form,
@@ -38,6 +43,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     engineerEnd,
     copyFlag,
     index,
+    isInherit = false,
+    isEdit = false,
     setCopyFlag,
   } = props;
 
@@ -64,7 +71,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   };
 
   useEffect(() => {
-    setDataSourceType(Number(projectInfo?.dataSourceType));
+    if (!isInherit) {
+      setDataSourceType(Number(projectInfo?.dataSourceType));
+    } else {
+      setDataSourceType(
+        Number(projectInfo?.dataSourceType) === 1 ? 0 : Number(projectInfo?.dataSourceType),
+      );
+    }
   }, [JSON.stringify(projectInfo)]);
 
   const {
@@ -85,6 +98,21 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     meteorologicLevel,
     projectDataSourceType,
   } = useGetProjectEnum();
+
+  // 如果是继承，那么筛掉value是1的选项
+  const handleProjectDataSourceType = useMemo(() => {
+    if ((projectDataSourceType && pointVisible) || (isInherit && projectDataSourceType)) {
+      return projectDataSourceType.filter((item: any) => item.value !== 1);
+    }
+    return [];
+  }, [projectDataSourceType, pointVisible, isInherit]);
+
+  const handleProjectStage = useMemo(() => {
+    if (isNumber(projectInfo?.stage) && projectStage && isInherit) {
+      return projectStage.filter((item: any) => item.value > projectInfo?.stage);
+    }
+    return [];
+  }, [projectStage, isInherit, projectInfo]);
 
   const keyPressEvent = (e: any) => {
     //只要输入的内容是'+-eE'  ，就阻止元素发生默认的行为
@@ -551,8 +579,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             rules={Rule.required}
           >
             <UrlSelect
-              defaultData={projectStage}
+              defaultData={isInherit ? handleProjectStage : projectStage}
               valuekey="value"
+              disabled={isEdit}
               titlekey="text"
               placeholder="请选择"
             />
@@ -644,7 +673,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             {status == 1 || status == 14 || status == undefined ? (
               <UrlSelect
-                defaultData={projectDataSourceType}
+                defaultData={
+                  pointVisible || isInherit ? handleProjectDataSourceType : projectDataSourceType
+                }
                 valuekey="value"
                 titlekey="text"
                 placeholder="请选择"

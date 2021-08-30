@@ -227,7 +227,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
           {columns.map((ite) => {
             return (
               <div
-                className={`${styles.engineerTableTd} ${ite.ellipsis ? styles.ellipsis : ''} ${
+                className={`${styles.engineerTableTd} ${
                   ite.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
                 } ${ite.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${
                   ite.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
@@ -247,22 +247,28 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                       }
                 }
               >
-                {ite.ellipsis ? (
-                  // eslint-disable-next-line no-nested-ternary
-                  <Tooltip
-                    title={
-                      typeof item[ite.dataIndex] === 'string'
-                        ? item[ite.dataIndex]
-                        : ite.render
-                        ? ite.render(item, projectInfo)
-                        : ''
-                    }
-                  >
-                    {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
-                  </Tooltip>
-                ) : (
-                  <span>{ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}</span>
-                )}
+                <div className={styles.iconSlot}>
+                  {ite.iconSlot?.(item,projectInfo.projects)}
+                </div>
+                <div className={`${styles.engineerTableTdContent} ${ite.ellipsis ? styles.ellipsis : ''}`}>
+                  {ite.ellipsis ? (
+                    // eslint-disable-next-line no-nested-ternary
+                    <Tooltip
+                      title={
+                        // eslint-disable-next-line no-nested-ternary
+                        typeof item[ite.dataIndex] === 'string'
+                          ? item[ite.dataIndex]
+                          : ite.render
+                          ? ite.render(item, projectInfo)
+                          : ''
+                      }
+                    >
+                      {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
+                    </Tooltip>
+                  ) : (
+                    <span>{ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}</span>
+                  )}
+                </div>
               </div>
             );
           })}
@@ -286,7 +292,10 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   return (
     <div className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}>
-      <div className={`${styles.engineerTableItemHeader} tableTitleContent`} style={{ left: `0px` }}>
+      <div
+        className={`${styles.engineerTableItemHeader} tableTitleContent`}
+        style={{ left: `0px` }}
+      >
         <div className={styles.foldButton} onClick={() => foldEvent()}>
           <span>{isFold ? <CaretUpOutlined /> : <CaretDownOutlined />}</span>
         </div>
@@ -334,13 +343,15 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
             )}
           {projectInfo?.operationAuthority?.canEdit &&
             buttonJurisdictionArray?.includes('all-project-edit-engineer') && (
-              <Button className="mr10" onClick={() => editEngineerEvent()}>编辑</Button>
+              <Button className="mr10" onClick={() => editEngineerEvent()}>
+                编辑
+              </Button>
             )}
-          {projectInfo?.operationAuthority?.canEdit &&
+          {/* {projectInfo?.operationAuthority?.canEdit &&
             buttonJurisdictionArray?.includes('all-project-file-engineer') && (
               <Button onClick={() => approvalFileEvent()}>批复文件</Button>
-            )}
-            {/* <Button onClick={() => approvalFileEvent()}>批复文件</Button> */}
+            )} */}
+          {/* <Button onClick={() => approvalFileEvent()}>批复文件</Button> */}
         </div>
       </div>
       <div
