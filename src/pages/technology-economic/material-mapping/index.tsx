@@ -11,7 +11,6 @@ import TableSearch from '@/components/table-search';
 
 import {
   getMaterialLibraryAllList,
-  getMaterialLibraryList
 } from '@/services/technology-economic/supplies-library';
 import FileUpload from '@/components/file-upload';
 import useBoolean from 'ahooks/lib/useBoolean';
@@ -47,7 +46,6 @@ const MaterialMapping: React.FC = () => {
 
   const getMaterialData = async ()=>{
     const res = await getMaterialLibraryAllList()
-    // console.log(res)
     setMaterialList(res)
   }
   useEffect(()=>{
@@ -140,7 +138,9 @@ const MaterialMapping: React.FC = () => {
 
   // 添加
   const addEvent = () => {
+    getMaterialData()
     setAddFormVisible(true);
+    form.resetFields()
   };
 
   const setStatus = async (status: boolean, record: any) => {
