@@ -6,9 +6,12 @@ import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
+import { findenumsValue } from './localData/mappingTagsDictionary';
 import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView, getDesignMaterialModifyList } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
+
+const LevelEnmu = ["无", "220V", "380V", "10kV"]
 
 /**
  * ops.setSurveyModalData
@@ -446,6 +449,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         })
 
         const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
+        
         pJSON['材料表'] = {
           params: {
             holeId: feature.getProperties().project_id,
@@ -453,8 +457,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               objectID,
               forProject: 0,
               forDesign: 0,
+              state: findenumsValue('SurveyState')[feature.getProperties().state],
               materialModifyList:  materialModifyList?.content || [],
               layerName,
+              kvLevel: Number.isInteger(feature.getProperties().kv_level) ? LevelEnmu[feature.getProperties().kv_level] : null,
             },
             getProperties: feature.getProperties(),
           },
@@ -550,6 +556,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               objectID,
               forProject: 0,
               forDesign: 0,
+              state: findenumsValue('SurveyState')[feature.getProperties().state],
+              kvLevel: Number.isInteger(feature.getProperties().kv_level) ? LevelEnmu[feature.getProperties().kv_level] : null,
               materialModifyList: materialModifyList?.content || [],
               layerName,
             },
@@ -569,8 +577,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               
               if (currentItem) {
                 pJSON[p] = currentItem.spec || ""; // 材料表中的‘下户线型号’
-                const crlenth = currentItem.unit === "km" ? currentItem.itemNumber / 1000 : currentItem.itemNumber;
-                pJSON['下户线长度'] = isNaN(crlenth) ? "" : crlenth; // 材料表中的‘下户线长度’
+                // const crlenth = (currentItem.itemNumber ?? 0) + currentItem.unit;
+                const crlenth = currentItem.itemNumber == undefined ? "" : (currentItem.itemNumber + "m");
+                
+                pJSON['下户线长度'] = crlenth; // 材料表中的‘下户线长度’
               } else {
                 pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
                 pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
@@ -587,7 +597,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           }
         }
       }
-
+      
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
