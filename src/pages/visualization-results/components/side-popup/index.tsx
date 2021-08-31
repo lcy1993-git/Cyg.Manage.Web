@@ -86,7 +86,7 @@ const materiaColumns = [
     }
   },
   {
-    title: '单量',
+    title: '单重',
     width: 100,
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',

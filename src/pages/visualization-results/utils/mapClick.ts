@@ -6,10 +6,9 @@ import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
-import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView, getDesignMaterialModifyList } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
-import { useState } from 'react';
 
 /**
  * ops.setSurveyModalData
@@ -439,6 +438,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
+
+        const materialModifyList = await getDesignMaterialModifyList({
+          deviceId: featureId,
+          projectId: feature.getProperties().project_id,
+          // deviceType: "string"
+        })
+
         const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
         pJSON['材料表'] = {
           params: {
@@ -447,7 +453,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               objectID,
               forProject: 0,
               forDesign: 0,
-              materialModifyList: [],
+              materialModifyList:  materialModifyList?.content || [],
               layerName,
             },
             getProperties: feature.getProperties(),
@@ -525,7 +531,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         }
       }
       if (p === '下户线型号') {
-        console.log(feature);
         let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
         let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
         let fs = l?.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
@@ -533,13 +538,19 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           // 无下户线下户的户表
           // 此处读取无下户线户表的材料表，从中读取‘下户线型号’和‘下户线长度’
           const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
+          const materialModifyList = await getDesignMaterialModifyList({
+            deviceId: featureId,
+            projectId: feature.getProperties().project_id,
+            // deviceType: "string"
+          })
+
           const materiaParams = {
             holeId: feature.getProperties().project_id,
             rest: {
               objectID,
               forProject: 0,
               forDesign: 0,
-              materialModifyList: [],
+              materialModifyList: materialModifyList?.content || [],
               layerName,
             },
             getProperties: feature.getProperties(),
@@ -548,12 +559,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
           if (libIdData.isSuccess) {
             const resourceLibID = libIdData?.content;
+            
             let materialItemData = await getMaterialItemData({ resourceLibID, ...materiaParams.rest, layerName: "electric_meter" })
             if(materialItemData.isSuccess) {
               const materialId = feature.getProperties().material_id;
               const currentItem = materialItemData?.content?.find((item) => {
                 return item.addFlagID && item.addFlagID === materialId
               })
+              
               if (currentItem) {
                 pJSON[p] = currentItem.spec || ""; // 材料表中的‘下户线型号’
                 const crlenth = currentItem.unit === "km" ? currentItem.itemNumber / 1000 : currentItem.itemNumber;
@@ -610,7 +623,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     if (elementTypeEnum[layerName] === '水平拉线') {
       // 勿删，测试反馈的时候用
-      console.log(feature, '水平拉线要素');
     }
   });
 
