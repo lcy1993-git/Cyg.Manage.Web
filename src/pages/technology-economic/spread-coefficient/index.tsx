@@ -3,19 +3,13 @@ import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Button, Modal, Form, Switch, message, Popconfirm, Tabs } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
-import {
-  EyeOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
+import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
 
 import GeneralTable from './components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 // import TableSearch from '@/components/table-search';
 import DictionaryForm from './components/add-edit-form';
-
 
 import styles from './index.less';
 import moment from 'moment';
@@ -33,7 +27,6 @@ import {
   updateCatalogue,
   technicalEconomyFile,
 } from '@/services/technology-economic/spread-coefficient';
-
 
 type DataSource = {
   id: string;
@@ -161,7 +154,7 @@ const SpreadCoefficient: React.FC = () => {
         message.error('请选择一条数据进行编辑');
         return;
       }
-      const {id} = tableSelectADRows[0];
+      const { id } = tableSelectADRows[0];
       await deleteAdjustmentFile(id); // TODO
       refresh();
       message.success('删除成功');
@@ -199,8 +192,8 @@ const SpreadCoefficient: React.FC = () => {
         message.error('请选择要操作的行');
         return;
       }
-      const {id} = tableSelectRows[0];
-      const {name} = tableSelectRows[0];
+      const { id } = tableSelectRows[0];
+      const { name } = tableSelectRows[0];
       history.push(`/technology-economic/price-difference-details?id=${id}&name=${name}`);
     } else {
       history.push(`/technology-economic/adjustment-file-details`);
@@ -220,7 +213,7 @@ const SpreadCoefficient: React.FC = () => {
   // 价差目录编辑确认按钮
   const sureEditAuthorization = () => {
     editForm.validateFields().then(async (values) => {
-      const {id} = tableSelectRows[0];
+      const { id } = tableSelectRows[0];
       const value = values;
       value.id = id;
       // TODO 编辑接口
@@ -250,7 +243,7 @@ const SpreadCoefficient: React.FC = () => {
   // 调整文件编辑确认按钮
   const sureEditADAuthorization = () => {
     editADForm.validateFields().then(async (values) => {
-      const {id} = tableSelectADRows[0];
+      const { id } = tableSelectADRows[0];
       const value = values;
       value.id = id;
       if (fileId) {

@@ -200,7 +200,8 @@ export const technicalEconomyFile = (securityKey: string, data: any) => {
   return cyRequest(() =>
     request(`${baseUrl.upload}/Upload/TechnicalEconomyFile?securityKey=${securityKey}`, {
       method: 'POST',
-      data: data,
+      data: formData(data),
+      requestType: 'form',
     }),
   );
 };
