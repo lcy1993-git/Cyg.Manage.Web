@@ -82,6 +82,15 @@ export const getModulesRequest = (params: any) => {
   });
 };
 
+// 
+export const getModuleDetailView = () => {
+  return request(`${baseUrl.resourceV1}/LibraryDesign/GetModuleDetailView`, {
+    method: 'POST',
+    data: { ...params },
+  });
+}
+
+
 // 加载图层模板
 function format(that: any, ...args: any) {
   let result = that;
