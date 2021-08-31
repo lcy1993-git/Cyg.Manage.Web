@@ -572,7 +572,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               
               if (currentItem) {
                 pJSON[p] = currentItem.spec || ""; // 材料表中的‘下户线型号’
-                const crlenth = currentItem.unit === "km" ? currentItem.itemNumber / 1000 : currentItem.itemNumber;
+                const crlenth = (currentItem.itemNumber ?? 0) + currentItem.unit;
                 pJSON['下户线长度'] = isNaN(crlenth) ? "" : crlenth; // 材料表中的‘下户线长度’
               } else {
                 pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
