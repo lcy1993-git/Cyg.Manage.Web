@@ -6,7 +6,7 @@ import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
-import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
 import { useState } from 'react';
@@ -232,7 +232,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         let type = featureClone.getGeometry().getType().toLocaleLowerCase();
         let highlightStyle;
         // 为选中的水平拉线图层添加高亮
-        if(layerName === 'zero_guy') {
+        if (layerName === 'zero_guy') {
           highlightStyle = zero_guy_style(featureClone, true);
         }
         else if (type.indexOf('point') >= 0) {
@@ -439,7 +439,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (layerType === 'design' || layerType === 'dismantle') {
       // 查看材料表
       if (materiaLayers.indexOf(layerName) >= 0) {
-        const objectID = feature.getProperties().mode_id || feature.getProperties().equip_model_id;
+        const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
         pJSON['材料表'] = {
           params: {
             holeId: feature.getProperties().project_id,
@@ -471,7 +471,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     // 相应数据到右侧边栏
     const resData = [];
     const propertiesData = [];
-    if(elementTypeEnum[layerName] !== '轨迹点') {
+    if (elementTypeEnum[layerName] !== '轨迹点') {
       resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' });
     }
     resData.push({ propertyName: elementTypeEnum[layerName] === '水平拉线' ? '设备种类' : '元素类型', data: elementTypeEnum[layerName] });
@@ -529,18 +529,52 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
         let l = getLayerByName(layerType + '_user_line', g.getLayers().getArray());
         let fs = l?.getSource().getFeatures().find((item: any) => item.getProperties().end_id === feature.getProperties().id);
-        if(!fs){
+        if (!fs) {
           // 无下户线下户的户表
           // 此处读取无下户线户表的材料表，从中读取‘下户线型号’和‘下户线长度’
-          pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
-          pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
+          const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
+          const materiaParams = {
+            holeId: feature.getProperties().project_id,
+            rest: {
+              objectID,
+              forProject: 0,
+              forDesign: 0,
+              materialModifyList: [],
+              layerName,
+            },
+            getProperties: feature.getProperties(),
+          };
+          let libIdData = await getlibId_new({ projectId: materiaParams?.getProperties.project_id })
+
+          if (libIdData.isSuccess) {
+            const resourceLibID = libIdData?.content;
+            let materialItemData = await getMaterialItemData({ resourceLibID, ...materiaParams.rest, layerName: "electric_meter" })
+            if(materialItemData.isSuccess) {
+              const materialId = feature.getProperties().material_id;
+              const currentItem = materialItemData?.content?.find((item) => {
+                return item.addFlagID && item.addFlagID === materialId
+              })
+              if (currentItem) {
+                pJSON[p] = currentItem.spec || ""; // 材料表中的‘下户线型号’
+                const crlenth = currentItem.unit === "km" ? currentItem.itemNumber / 1000 : currentItem.itemNumber;
+                pJSON['下户线长度'] = isNaN(crlenth) ? "" : crlenth; // 材料表中的‘下户线长度’
+              } else {
+                pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
+                pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
+              }
+            }
+            else {
+              pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
+              pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
+            }
+          }
+          else {
+            pJSON[p] = "暂无"; // 材料表中的‘下户线型号’
+            pJSON['下户线长度'] = "暂无"; // 材料表中的‘下户线长度’
+          }
         }
-        else {
-          // 有下户线下户的户表没有‘下户线长度’字段
-          pJSON[p] = fs.getProperties().mode;
-        } 
       }
-      
+
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否');
       }
@@ -549,15 +583,15 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
 
     // 下户线长度字段为空时不显示
-    resData.forEach((item)=>{
-      if((item.propertyName === '下户线长度' || item.propertyName === '所属节点') && item.data === '') {}
+    resData.forEach((item) => {
+      if ((item.propertyName === '下户线型号' || item.propertyName === '下户线长度' || item.propertyName === '所属节点') && item.data === '') { }
       else {
         propertiesData.push(item);
       }
     });
     // 点击轨迹点时传输日期数组
     if (elementTypeEnum[layerName] === '轨迹点') {
-      propertiesData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray()});
+      propertiesData.push({ propertyName: '所有勘察日期', data: getTrackRecordDateArray() });
       ops.setSurveyModalData({
         resData,
         select: getTrackRecordDateArray(),
@@ -573,6 +607,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
 
     map.getTargetElement().style.cursor = 'default';
+
+    if (elementTypeEnum[layerName] === '水平拉线') {
+      // 勿删，测试反馈的时候用
+      console.log(feature, '水平拉线要素');
+    }
   });
 
   chooseCurDayTrack('');

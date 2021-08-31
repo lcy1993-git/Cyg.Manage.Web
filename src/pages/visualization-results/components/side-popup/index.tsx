@@ -243,10 +243,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
   // const [getProperties ,setProperties] = useState({});
 
   const returnlibId = async (materialParams: any) => {
-    await getlibId_new({ projectId: materialParams.id }).then((data)=> {      
+    await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data)=> {      
       if(data.isSuccess){
         const resourceLibID = data?.content;
-        materialDataRun({resourceLibID, ...materialParams.rest, layerName: "tower"});
+        materialDataRun({resourceLibID, ...materialParams.rest, layerName: materialParams.rest.layerName});
       }
     });
   };
@@ -266,7 +266,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
       // 材料表数据请求
       const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
         ?.params ?? {};
-      if (materialParams?.rest?.objectID && materialParams?.id) {
+      if (materialParams?.rest?.objectID && materialParams?.getProperties.project_id) {
         returnlibId(materialParams);
       }else{
         setMmaterialRefNone();

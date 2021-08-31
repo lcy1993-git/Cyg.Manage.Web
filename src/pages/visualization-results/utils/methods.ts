@@ -17,6 +17,7 @@ import Stroke from 'ol/style/Stroke';
 import Icon from 'ol/style/Icon';
 import { getXmlData, sortByTime, getTime, LineCluster } from './utils';
 import { values } from 'lodash';
+import LineString from 'ol/geom/LineString';
 
 var projects: any;
 // var showData: any = [];
@@ -235,9 +236,13 @@ const loadWFSData = (
           style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
         }
         else if (item.type === 'zero_guy') {
-          if (pJSON[i].getProperties().mode.startsWith('NULL')) {
+          if (!pJSON[i].getProperties().mode) {
             let index = pJSON[i].getProperties().label?.indexOf(pJSON[i].getProperties().length);
             pJSON[i].setProperties({ mode: pJSON[i].getProperties().label?.substr(0, index - 1) });
+          }
+          if (pJSON[i].getProperties().mode_id.startsWith('NULL')) {
+            let index = pJSON[i].getProperties().label?.indexOf(pJSON[i].getProperties().length);
+            pJSON[i].setProperties({ mode_id: pJSON[i].getProperties().label?.substr(0, index - 1) });
           }
           pJSON[i].setProperties({ layer_name: 'zero_guy' });
           if (!pJSON[i].getProperties().symbol_id) {
@@ -464,45 +469,55 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
       });
       surveyTrackLayer.getSource().addFeatures(pJSON);
 
-      let lineLatlngs: any = [];
+      let lineFeatures: any = [];
       let lineLatlngsSegement: any = [];
-      let segementFirstDate: Date;
+      let segementFirstDate: Date = new Date();
+      let segementFirstDateString: string = "";
       let sortedFeatures = sortByTime(geojson.features);
       // let sortedFeatures = data.features.sort(sortFeaturesFunc);
 
-      let trackLineRecordDate = '';
-      sortedFeatures.forEach((feature: any, i) => {
-        if (i === 0) {
-          trackLineRecordDate = feature.properties.record_date;
-        }
-        if (lineLatlngsSegement.length == 0)
+      for (let i = 0; i < sortedFeatures.length; i++) {
+        const feature = sortedFeatures[i];
+        if (lineLatlngsSegement.length == 0) {
           segementFirstDate = new Date(feature.properties.record_date);
-
-        lineLatlngsSegement.push(feature.geometry.coordinates);
-
-        var tempDate = new Date(feature.properties.record_date);
-        if (
-          // tempDate.getTime() - segementFirstDate.getTime() > 1800000 ||
-          tempDate.getDay() != segementFirstDate.getDay()
-        ) {
-          lineLatlngs.push(lineLatlngsSegement);
-          lineLatlngsSegement = [];
+          segementFirstDateString = feature.properties.record_date;
         }
-      });
 
-      if (lineLatlngsSegement!.length > 1) {
-        lineLatlngs.push(lineLatlngsSegement);
-        lineLatlngsSegement = [];
+        let tempDate = new Date(feature.properties.record_date);
+        // 记录属于同一日的勘察轨迹
+        if (tempDate.getDay() == segementFirstDate.getDay()) {
+          lineLatlngsSegement.push(feature.geometry.coordinates);
+        }
+        else {
+          // 完成本日期的勘察轨迹记录
+          let lineGeom = new MultiLineString([lineLatlngsSegement]);
+          let lineFeature = new Feature({
+            geometry: lineGeom,
+            record_date: segementFirstDateString,
+            project_id: re.id,
+          });
+          lineFeature.setStyle(trackLineStyle(lineFeature));
+          lineFeatures.push(lineFeature);
+          // 开始记录下一日期的勘察轨迹
+          lineLatlngsSegement = [];
+          lineLatlngsSegement.push(feature.geometry.coordinates);
+          segementFirstDate = new Date(feature.properties.record_date);
+          segementFirstDateString = feature.properties.record_date;
+        }
       }
 
-      var lineGeom = new MultiLineString(lineLatlngs);
-      var lineFeature = new Feature({
-        geometry: lineGeom,
-        record_date: trackLineRecordDate,
-      });
-      lineFeature.set('project_id', re.id);
-      lineFeature.setStyle(trackLineStyle(lineFeature));
-      surveyTrackLineLayer.getSource().addFeature(lineFeature);
+      if (lineLatlngsSegement!.length > 1) {
+        let lineGeom = new MultiLineString([lineLatlngsSegement]);
+        let lineFeature = new Feature({
+          geometry: lineGeom,
+          record_date: segementFirstDateString,
+          project_id: re.id,
+        });
+        lineFeature.setStyle(trackLineStyle(lineFeature));
+        lineFeatures.push(lineFeature);
+        lineLatlngsSegement = [];
+      }
+      surveyTrackLineLayer.getSource().addFeatures(lineFeatures);
     });
 
     if (surveyTrackLayer.getSource().getFeatures().length > 0)

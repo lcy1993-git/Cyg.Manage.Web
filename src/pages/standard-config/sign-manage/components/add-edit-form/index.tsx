@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Input } from 'antd';
+import { Input, Tooltip } from 'antd';
 import FileUpload, { UploadStatus } from '@/components/file-upload';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
@@ -7,6 +7,7 @@ import rules from './rule';
 import { getCompanyUserDetail } from '@/services/personnel-config/company-user';
 import { useRequest } from 'ahooks';
 import { useGetSelectData } from '@/utils/hooks';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 interface CompanyFileForm {
   type?: 'add' | 'edit';
   securityKey?: string;
@@ -38,6 +39,20 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
     });
   }, [allUsers]);
 
+  const personSlot = () => {
+    return (
+      <>
+        <span>人员</span>
+        <Tooltip
+          title="请保持签批和人员对应，如果该签批找不到对应人员，可选择“无”"
+          placement="left"
+        >
+          <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    );
+  };
+
   return (
     <>
       {type === 'add' && (
@@ -64,7 +79,7 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
         </CyFormItem>
       )}
 
-      <CyFormItem label="人员" name="userId" required rules={rules.signUser}>
+      <CyFormItem labelSlot={personSlot} name="userId" required rules={rules.signUser}>
         <UrlSelect
           titlekey="title"
           valuekey="value"
