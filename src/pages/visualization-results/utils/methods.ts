@@ -239,6 +239,10 @@ const loadWFSData = (
             let index = pJSON[i].getProperties().label?.indexOf(pJSON[i].getProperties().length);
             pJSON[i].setProperties({ mode: pJSON[i].getProperties().label?.substr(0, index - 1) });
           }
+          if (pJSON[i].getProperties().mode_id.startsWith('NULL')) {
+            let index = pJSON[i].getProperties().label?.indexOf(pJSON[i].getProperties().length);
+            pJSON[i].setProperties({ mode_id: pJSON[i].getProperties().label?.substr(0, index - 1) });
+          }
           pJSON[i].setProperties({ layer_name: 'zero_guy' });
           if (!pJSON[i].getProperties().symbol_id) {
             if (layerType === 'design') {

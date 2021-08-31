@@ -609,6 +609,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
 
     map.getTargetElement().style.cursor = 'default';
+
+    if (elementTypeEnum[layerName] === '水平拉线') {
+      // 勿删，测试反馈的时候用
+      console.log(feature, '水平拉线要素');
+    }
   });
 
   chooseCurDayTrack('');
