@@ -11,6 +11,8 @@ import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialIt
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
 
+const LevelEnmu = ["无", "220V", "380V", "10kV"]
+
 /**
  * ops.setSurveyModalData
  * ops.setSurveyModalVisible
@@ -447,6 +449,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         })
 
         const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
+        
         pJSON['材料表'] = {
           params: {
             holeId: feature.getProperties().project_id,
@@ -457,6 +460,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               state: findenumsValue('SurveyState')[feature.getProperties().state],
               materialModifyList:  materialModifyList?.content || [],
               layerName,
+              kvLevel: Number.isInteger(feature.getProperties().kv_level) ? LevelEnmu[feature.getProperties().kv_level] : null,
             },
             getProperties: feature.getProperties(),
           },
@@ -553,6 +557,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               forProject: 0,
               forDesign: 0,
               state: findenumsValue('SurveyState')[feature.getProperties().state],
+              kvLevel: Number.isInteger(feature.getProperties().kv_level) ? LevelEnmu[feature.getProperties().kv_level] : null,
               materialModifyList: materialModifyList?.content || [],
               layerName,
             },
