@@ -6,6 +6,7 @@ import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
+import { findenumsValue } from './localData/mappingTagsDictionary';
 import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView, getDesignMaterialModifyList } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
@@ -453,6 +454,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               objectID,
               forProject: 0,
               forDesign: 0,
+              state: findenumsValue('SurveyState')[feature.getProperties().state],
               materialModifyList:  materialModifyList?.content || [],
               layerName,
             },
@@ -550,6 +552,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               objectID,
               forProject: 0,
               forDesign: 0,
+              state: findenumsValue('SurveyState')[feature.getProperties().state],
               materialModifyList: materialModifyList?.content || [],
               layerName,
             },
