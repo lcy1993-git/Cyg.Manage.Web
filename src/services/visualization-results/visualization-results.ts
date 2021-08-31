@@ -156,3 +156,8 @@ export interface CableSectionProps {
 export const findHoleDetails = (params: { layerType: 1 | 2; holeId: string }) => {
   return request(`${baseUrl.design}/ProjectDesign/FindHoleDetails`, { method: 'GET', params });
 };
+
+
+export const getDesignMaterialModifyList = (params: any = {}) => {
+  return request(`${baseUrl.manage}/WebGis/GetDesignMaterialModifyList`, { method: 'POST', data: { ...params } });
+};
