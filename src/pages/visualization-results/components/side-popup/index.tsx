@@ -90,7 +90,7 @@ const materiaColumns = [
     }
   },
   {
-    title: '单重',
+    title: '单重(kg)',
     width: 100,
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',
@@ -236,6 +236,11 @@ const SidePopup: React.FC<Props> = observer((props) => {
     manual: true,
     onSuccess(data) {
       if (data?.content?.length > 0) {
+        data.content.forEach((item: any) => {
+          if(item.unit === 'km'){
+            item.itemNumber =  item.itemNumber / 1000;
+          }
+        })
         materialRef.current!.innerHTML = '查看';
         materialRef.current!.className = 'mapSideBarlinkBtn';
       } else {
