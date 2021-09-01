@@ -1,4 +1,4 @@
-import { CloudUploadOutlined, DeleteOutlined, LinkOutlined } from '@ant-design/icons';
+import { CloudUploadOutlined, DeleteOutlined,  LinkOutlined } from '@ant-design/icons';
 import React from 'react';
 import styles from './index.less';
 

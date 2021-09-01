@@ -50,7 +50,6 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
 
     // 如果maxCount 是1的时候，那么就要随时把上传的替换成最新的哪一个
     // 判断大小控制process的速度
-    console.log(file, 'wenjian');
 
     if (maxCount && maxCount == 1) {
       const newArray: any[] = [];
@@ -104,7 +103,6 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
   const deleteUploadItem = (uid: string) => {
     setUploadStatus('delete');
     const copyFileList = [...fileList];
-    console.log(copyFileList);
 
     const thisDataIndex = copyFileList.findIndex((item: any) => item.uid === uid);
     if (thisDataIndex > -1) {
