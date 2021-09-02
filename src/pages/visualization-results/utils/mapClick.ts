@@ -450,6 +450,15 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
         const objectID = layerName === 'electric_meter' ? feature.getProperties().entry_id : (feature.getProperties().mode_id || feature.getProperties().equip_model_id);
         
+
+        if(!feature.getProperties().kv_level){
+          let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
+          let l = getLayerByName(layerType + '_tower', g.getLayers().getArray());
+          let fs = l?.getSource().getFeatures().find((item: any) => item.getProperties().features[0].getProperties().id === feature.getProperties().main_id);
+          console.log(fs)
+          // feature.getProperties().kv_level = ;
+          feature.set('kv_level', fs.getProperties().features[0].getProperties().kv_level)
+        }
         pJSON['材料表'] = {
           params: {
             holeId: feature.getProperties().project_id,
@@ -550,6 +559,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             // deviceType: "string"
           })
 
+          
           const materiaParams = {
             holeId: feature.getProperties().project_id,
             rest: {

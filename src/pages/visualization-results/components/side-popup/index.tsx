@@ -17,6 +17,7 @@ import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visuali
 import { CommentRequestType, addComment, fetchCommentList } from '@/services/visualization-results/side-popup';
 import styles from './index.less';
 import CableSection from '../cable-section';
+import MediaModal from '../media-modal';
 
 export interface TableDataType {
   [propName: string]: any;
@@ -139,34 +140,34 @@ const materiaColumns = [
   },
 ];
 
-const mediaItem = (data: any) => {
-  const authorization = window.localStorage.getItem('Authorization');
-  return data?.map((item: any, index: any) => {
-    if (item.type === 1) {
-      return (
-        <div className={styles.mediaItem} key={item.id}>
-          <img
-            className={styles.img}
-            crossOrigin={''}
-            src={`${baseUrl.upload}/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
-          />
-        </div>
-      );
-    } else if (item.type !== 1) {
-      return (
-        <div className={styles.mediaItem} key={item.id}>
-          {/* <audio controls={true} /> */}
-          <audio
-            className={styles.audio}
-            src={`${baseUrl.upload}/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
-            controls={true}
-          />
-        </div>
-      );
-    }
-    return <div className={styles.mediaItem} key={item.id} />;
-  });
-};
+// const mediaItem = (data: any) => {
+//   const authorization = window.localStorage.getItem('Authorization');
+//   return data?.map((item: any, index: any) => {
+//     if (item.type === 1) {
+//       return (
+//         <div className={styles.mediaItem} key={item.id}>
+//           <img
+//             className={styles.img}
+//             crossOrigin={''}
+//             src={`${baseUrl.upload}/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
+//           />
+//         </div>
+//       );
+//     } else if (item.type !== 1) {
+//       return (
+//         <div className={styles.mediaItem} key={item.id}>
+//           {/* <audio controls={true} /> */}
+//           <audio
+//             className={styles.audio}
+//             src={`${baseUrl.upload}/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
+//             controls={true}
+//           />
+//         </div>
+//       );
+//     }
+//     return <div className={styles.mediaItem} key={item.id} />;
+//   });
+// };
 
 const modalTitle = {
   media: '查看多媒体文件',
@@ -591,7 +592,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
           onOk={() => setMediaVisiable(false)}
           destroyOnClose={true}
         >
-          <div className={styles.mediaIconWrapLeft}>
+          {/* <div className={styles.mediaIconWrapLeft}>
             <DoubleLeftOutlined
               style={{ fontSize: 50 }}
               className={styles.mediaIcon}
@@ -604,10 +605,11 @@ const SidePopup: React.FC<Props> = observer((props) => {
               className={styles.mediaIcon}
               onClick={() => carouselRef?.current?.next()}
             />
-          </div>
-          <Carousel ref={carouselRef} dots={false}>
+          </div> */}
+          {/* <Carousel ref={carouselRef} dots={false}>
             {mediaItem(mediaData?.content ?? [])}
-          </Carousel>
+          </Carousel> */}
+          <MediaModal data={mediaData?.content ?? []} />
         </Modal>
         {activeType === 'media' && (
           <Table
