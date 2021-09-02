@@ -67,13 +67,13 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
         </CyFormItem>
       )}
       {type === 'add' && (
-        <CyFormItem label="角色" name="roleId" required rules={rules.role}>
+        <CyFormItem label="账号类型" name="roleId" required rules={rules.role}>
           <UrlSelect
             showSearch
             url="/Role/GetList"
             titlekey="text"
             valuekey="value"
-            placeholder="请选择角色"
+            placeholder="请选择账号类型"
             requestType="post"
           />
         </CyFormItem>
