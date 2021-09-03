@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Table, Modal, Carousel, Input, message } from 'antd';
+import { Table, Modal, Input, message } from 'antd';
 
-import { CloseOutlined, DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
+import { CloseOutlined } from '@ant-design/icons';
 
 import { useContainer } from '../../result-page/mobx-store';
 import CommentList from './components/comment-list';
 
 import moment from 'moment';
 import { useRequest } from 'ahooks';
-import { baseUrl } from '@/services/common';
 import { observer } from 'mobx-react-lite';
 
 import { findEnumKeyByCN } from '../../utils/loadEnum';
@@ -288,7 +287,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
 
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
-  const carouselRef = useRef<any>(null);
+  const [mediaIndex, setMediaIndex] = useState<number>(0)
+  // const carouselRef = useRef<any>(null);
   const { checkedProjectIdList } = useContainer().vState;
 
   const data = useMemo(() => {
@@ -400,9 +400,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
             className={styles.link}
             onClick={() => {
               setMediaVisiable(true);
-              setTimeout(() => {
-                carouselRef.current?.goTo(index, true);
-              }, 0)
+              setMediaIndex(index)
+              // setTimeout(() => {
+              //   carouselRef.current?.goTo(index, true);
+              // }, 0)
             }}
           >
             查看
@@ -493,35 +494,15 @@ const SidePopup: React.FC<Props> = observer((props) => {
   }, [JSON.stringify(checkedProjectIdList)]);
 
   const materialDataRes = useMemo(() => {
-    // const media = removeEmptChildren(
-    //   data[0].find((item: any) => item.propertyName === '多媒体')?.data,
-    // );
-    // const material = removeEmptChildren(
-    //   data[0].find((item: any) => item.propertyName === '材料表')?.data,
-    // );
+
     const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
     ?.params ?? {};
     
     return materialData?.content && materialData?.content.length > 0
       ? formDataMateral(materialData?.content, materialParams.getProperties)
       : [];
-    // function removeEmptChildren(v: any): any[] {
-    //   if (Array.isArray(v)) {
-    //     return v.map((item) => {
-    //       if (item.children) {
-    //         if (item.children.length === 0) {
-    //           delete item.children;
-    //         } else {
-    //           item.children = removeEmptChildren(item.children);
-    //         }
-    //       }
-    //       return item;
-    //     });
-    //   }
-    //   return [];
-    // }
+
   }, [JSON.stringify(materialData)]);
-  // const [ modalData ] = useState<ModalData>({ type: "media", media: [] });
 
   /**
    * 当modal click确定的时候
@@ -579,6 +560,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         title={activeType ? modalTitle[activeType!] ?? '添加审阅' : ''}
         centered
         visible={!!activeType}
+        // visible={true}
         onOk={onOkClick}
         onCancel={() => setActiveType(undefined)}
         width={1200}
@@ -587,29 +569,14 @@ const SidePopup: React.FC<Props> = observer((props) => {
         <Modal
           title="多媒体查看"
           visible={mediaVisiable}
+          // visible={true}
           width="96%"
           onCancel={() => setMediaVisiable(false)}
           onOk={() => setMediaVisiable(false)}
           destroyOnClose={true}
+          className={styles.mediaModal}
         >
-          {/* <div className={styles.mediaIconWrapLeft}>
-            <DoubleLeftOutlined
-              style={{ fontSize: 50 }}
-              className={styles.mediaIcon}
-              onClick={() => carouselRef?.current?.prev()}
-            />
-          </div>
-          <div className={styles.mediaIconWrapRight}>
-            <DoubleRightOutlined
-              style={{ fontSize: 50 }}
-              className={styles.mediaIcon}
-              onClick={() => carouselRef?.current?.next()}
-            />
-          </div> */}
-          {/* <Carousel ref={carouselRef} dots={false}>
-            {mediaItem(mediaData?.content ?? [])}
-          </Carousel> */}
-          <MediaModal data={mediaData?.content ?? []} />
+          <MediaModal content={mediaData?.content ?? []} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex}/>
         </Modal>
         {activeType === 'media' && (
           <Table
@@ -639,7 +606,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
                 commentList={commentListResponseData}
                 loading={fetchCommentListloading}
               />
-
               <div className="flex">
                 <div style={{ width: '8%' }}>添加审阅</div>
                 <Input.TextArea

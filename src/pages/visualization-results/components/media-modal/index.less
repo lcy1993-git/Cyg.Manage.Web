@@ -1,0 +1,44 @@
+.mediaWrap {
+  position: relative;
+  font-size: 0;
+  .mediaIconWrapLeft,
+  .mediaIconWrapRight
+  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 70px;
+    cursor: pointer;
+    color: rgba(100,100,100);
+    background-color: rgba(200, 200, 200, 0.1);
+    z-index: 1000;
+    &:hover {
+      color: #0e7b3b;
+    }
+    .mediaIcon {
+      font-size: 50px;
+    }
+  }
+
+  .mediaIconWrapLeft {
+    position: absolute;
+    left: 4px;
+    top: 45%;
+    cursor: pointer;
+  }
+  .mediaIconWrapRight {
+    position: absolute;
+    right: 4px;
+    top: 45%;
+  }
+  .meadiaView {
+    height: 600px;
+    width: 100%;
+    font-size: 40px;
+    display: inline-flex !important;
+    justify-content: center;
+    align-items: center;
+  }
+}
