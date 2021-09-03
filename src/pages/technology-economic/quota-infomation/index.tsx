@@ -33,13 +33,13 @@ interface QuotaList{
 
 const columns = [
   {
-    dataIndex: 'id',
-    index: 'id',
+    dataIndex: 'no',
+    index: 'no',
     title: '定额编号',
     width: 180,
     ellipsis: true,
     render(v: string, record: DataSource){
-      return record?.quotaItem?.id
+      return record?.quotaItem?.no
     }
   },
   {
