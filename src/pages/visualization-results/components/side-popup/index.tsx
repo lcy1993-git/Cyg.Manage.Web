@@ -22,6 +22,8 @@ export interface TableDataType {
   [propName: string]: any;
 }
 
+// const surveyEnumData = ["无", "原有", "新建", "利旧", "拆除"]
+
 export interface Props {
   data: TableDataType[];
   rightSidebarVisible: boolean;
@@ -31,6 +33,8 @@ export interface Props {
 
 const loadEnumsData = window.localStorage.getItem('loadEnumsData');
 const surveyData = loadEnumsData && loadEnumsData !== 'undefined' ? JSON.parse(loadEnumsData) : [];
+
+
 const surveyEnum = surveyData.find((i: any) => i.key === 'SurveyState')?.value;
 
 const materiaColumns = [
@@ -86,7 +90,7 @@ const materiaColumns = [
     }
   },
   {
-    title: '单量',
+    title: '单重(kg)',
     width: 100,
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',
@@ -101,7 +105,7 @@ const materiaColumns = [
     dataIndex: 'state',
     key: 'state',
     render(r: string | number) {
-      return surveyEnum.find((i: any) => i.value == r)?.text;
+      return r || "";
     },
     ellipsis: true,
   },
@@ -201,6 +205,7 @@ export interface CommentListItemDataType {
   datetime: React.ReactNode;
 }
 const SidePopup: React.FC<Props> = observer((props) => {
+  
   const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props;
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
@@ -231,6 +236,11 @@ const SidePopup: React.FC<Props> = observer((props) => {
     manual: true,
     onSuccess(data) {
       if (data?.content?.length > 0) {
+        data.content.forEach((item: any) => {
+          if(item.unit === 'km'){
+            item.itemNumber =  item.itemNumber / 1000;
+          }
+        })
         materialRef.current!.innerHTML = '查看';
         materialRef.current!.className = 'mapSideBarlinkBtn';
       } else {
@@ -240,8 +250,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
     },
   });
   
-  // const [getProperties ,setProperties] = useState({});
-
   const returnlibId = async (materialParams: any) => {
     await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data)=> {      
       if(data.isSuccess){

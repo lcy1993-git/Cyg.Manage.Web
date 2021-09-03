@@ -11,7 +11,7 @@ const CockpitMapComponent: React.FC<CockpitConfigMapComponentProps> = (props) =>
 
   return (
     <>
-      <MapChartComponent currentAreaInfo={currentAreaInfo} setCurrentAreaInfo={setCurrentAreaInfo} {...props} />
+      <MapChartComponent isConfig={true} currentAreaInfo={currentAreaInfo} setCurrentAreaInfo={setCurrentAreaInfo} {...props} />
     </>
   );
 };

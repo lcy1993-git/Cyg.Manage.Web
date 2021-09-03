@@ -36,7 +36,6 @@ export interface Options {
 
 // 点样式
 const pointStyle = function (type: string, feature: Feature, selected: any) {
-    console.log(markImageSrc1)
     let iconFont = 'webgisIconFont';
     let iconFontText;
 
@@ -710,7 +709,6 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
     if (value === 'electric_meter') {
         // 下户表的表数
         let count = feature.getProperties().count;
-        console.log()
         let styleParams = {
             text: new Text({
                 // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
