@@ -217,10 +217,17 @@ const ManageUser: React.FC = () => {
       index: 'userStatus',
       width: 80,
       render: (text: any, record: any) => {
-        return record.userStatus === 1 ? (
-          <Switch defaultChecked onChange={() => updateStatus(record.id)} />
-        ) : (
-          <Switch onChange={() => updateStatus(record.id)} />
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('manage-user-state') &&
+              (record.userStatus === 1 ? (
+                <Switch defaultChecked onChange={() => updateStatus(record.id)} />
+              ) : (
+                <Switch onChange={() => updateStatus(record.id)} />
+              ))}
+            {!buttonJurisdictionArray?.includes('manage-user-state') &&
+              (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
+          </>
         );
       },
     },

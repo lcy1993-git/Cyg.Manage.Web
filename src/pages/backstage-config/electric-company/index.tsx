@@ -18,6 +18,7 @@ import { isArray } from 'lodash';
 import UrlSelect from '@/components/url-select';
 import TableImportButton from '@/components/table-import-button';
 import TableExportButton from '@/components/table-export-button';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -28,6 +29,7 @@ const ElectricCompany: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -201,14 +203,18 @@ const ElectricCompany: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
+        {buttonJurisdictionArray?.includes('add-electric-company') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('edit-electric-company') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
         <Popconfirm
           title="您确定要删除该条数据?"
           onConfirm={sureDeleteData}
@@ -216,13 +222,19 @@ const ElectricCompany: React.FC = () => {
           cancelText="取消"
           // disabled
         >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
-          </Button>
+          {buttonJurisdictionArray?.includes('delete-electric-company') && (
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          )}
         </Popconfirm>
-        <TableImportButton className={styles.importBtn} importUrl="/ElectricityCompany/Import" />
-        <TableExportButton selectIds={ids} exportUrl="/ElectricityCompany/Export" />
+        {buttonJurisdictionArray?.includes('import-electric-company') && (
+          <TableImportButton className={styles.importBtn} importUrl="/ElectricityCompany/Import" />
+        )}
+        {buttonJurisdictionArray?.includes('export-electric-company') && (
+          <TableExportButton selectIds={ids} exportUrl="/ElectricityCompany/Export" />
+        )}
       </div>
     );
   };
