@@ -1,7 +1,9 @@
-import React from 'react';
 import { Tooltip } from 'antd';
-import {NodeIndexOutlined, AimOutlined} from '@ant-design/icons';
+import { AimOutlined } from '@ant-design/icons';
+import surveyTrackPng from '@/assets/icon-image/survey-track.png';
+import surveyTrackLightPng from '@/assets/icon-image/survey-track-light.png';
 import { useContainer } from '../../result-page/mobx-store';
+import classNames from 'classnames';
 import styles from './index.less';
 
 const SurveyTrack = () => {
@@ -18,12 +20,13 @@ const SurveyTrack = () => {
   return (
     <div className={styles.surveyTrackWrap}>
       <Tooltip placement="left" title={observeTrack ? '关闭勘察轨迹' : '打开勘察轨迹'}>
-        <div className={`${styles.icon} ${observeTrack ? styles.active : ""}`} onClick={() => store.toggleObserveTrack(!observeTrack)}><NodeIndexOutlined /></div>
+        <div className={classNames(styles.icon, observeTrack ? styles.active : "")} onClick={() => store.toggleObserveTrack(!observeTrack)}>
+          <img className={styles.surveyTrackImg} src={ observeTrack ? surveyTrackLightPng : surveyTrackPng } alt="" />
+        </div>
       </Tooltip>
-      <Tooltip placement="left" title="项目定位">
+      <Tooltip placement="left" title="定位至已选项目">
         <div className={styles.icon} onClick={onCilickPositionMap}><AimOutlined /></div>
       </Tooltip>
-
     </div>
   );
 }
