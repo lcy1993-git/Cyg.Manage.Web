@@ -15,6 +15,7 @@ interface AddEngineerModalProps {
 const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
+  const [current, setCurrent] = useState<number>(0);
 
   const { finishEvent } = props;
 
@@ -82,19 +83,33 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
       maskClosable={false}
       centered
       visible={state}
-      bodyStyle={{ height: 800, overflowY: 'auto' }}
+      bodyStyle={{ height: current > 0 ? 800 : 450, overflowY: 'auto' }}
       footer={[
-        <Button key="cancle" onClick={() => setState(false)}>
-          取消
-        </Button>,
-        <Button
-          key="save"
-          type="primary"
-          loading={saveLoading}
-          onClick={() => sureAddEngineerEvent()}
-        >
-          保存
-        </Button>,
+        <>
+          <Button key="cancle" onClick={() => setState(false)}>
+            取消
+          </Button>
+          ,
+          {current > 0 ? (
+            <>
+              <Button key="pre" onClick={() => setCurrent(current - 1)}>
+                上一步
+              </Button>
+              <Button
+                key="save"
+                type="primary"
+                loading={saveLoading}
+                onClick={() => sureAddEngineerEvent()}
+              >
+                保存
+              </Button>
+            </>
+          ) : (
+            <Button key="next" type="primary" onClick={() => setCurrent(current + 1)}>
+              下一步
+            </Button>
+          )}
+        </>,
       ]}
       width={820}
       onCancel={() => setState(false)}
@@ -102,7 +117,7 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
       destroyOnClose
     >
       <Form form={form} preserve={false}>
-        <CreateEngineer form={form} />
+        <CreateEngineer form={form} setCurrent={setCurrent} current={current} />
       </Form>
     </Modal>
   );

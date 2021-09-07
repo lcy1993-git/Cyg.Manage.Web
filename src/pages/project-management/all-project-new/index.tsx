@@ -4,7 +4,7 @@ import TableSearch from '@/components/table-search';
 import React, { useState } from 'react';
 import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
-import { Button, Input, Spin, Tooltip } from 'antd';
+import { Button, Input, Spin, Tooltip, Popconfirm, message, Menu, Modal } from 'antd';
 import styles from './index.less';
 import EngineerTable from './components/engineer-table';
 import { useRef } from 'react';
@@ -13,12 +13,14 @@ import { useEffect } from 'react';
 import ScreenModal from './components/screen-modal';
 import AddEngineerModal from './components/add-engineer-modal';
 import { Dropdown } from 'antd';
-import { DeleteOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
+import {
+  DeleteOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+  QuestionCircleOutlined,
+} from '@ant-design/icons';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { TableItemCheckedInfo } from './components/engineer-table/engineer-table-item';
-import { Popconfirm } from 'antd';
-import { message } from 'antd';
 import {
   applyKnot,
   canEditArrange,
@@ -37,10 +39,8 @@ import EditExternalArrangeForm from './components/edit-external-modal';
 import ExternalArrangeForm from './components/external-arrange-modal';
 import ShareModal from './components/share-modal';
 import ProjectRecallModal from './components/project-recall-modal';
-import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 import ExportPowerModal from './components/export-power-modal';
 import AuditKnotModal from './components/audit-knot-modal';
-import ColumnsConfigModal from './components/columns-config-modal';
 import { useMount, useRequest, useUpdateEffect } from 'ahooks';
 import AddFavoriteModal from './components/add-favorite-modal';
 import FavoriteList from './components/favorite-list';
@@ -133,10 +133,9 @@ const AllProject: React.FC = () => {
   const [externalArrangeModal, setExternalArrangeModal] = useState<boolean>(false);
   const [shareModalVisible, setShareModalVisible] = useState<boolean>(false);
   const [recallModalVisible, setRecallModalVisible] = useState(false);
-  const [libVisible, setLibVisible] = useState(false);
+
   const [exportPowerModalVisible, setExportPowerModalVisible] = useState<boolean>(false);
   const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false);
-  const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const {
@@ -236,12 +235,23 @@ const AllProject: React.FC = () => {
     setBatchAddEngineerModalVisible(true);
   };
 
-  const sureDeleteProject = async () => {
-    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-    if (projectIds.length === 0) {
+  const deleteConfirm = () => {
+    if (tableSelectData && tableSelectData.length === 0) {
       message.error('请至少勾选一条数据');
       return;
     }
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '确定删除选中工程项目吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: sureDeleteProject,
+    });
+  };
+
+  const sureDeleteProject = async () => {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
     await deleteProject(projectIds);
     message.success('删除成功');
     // search();
@@ -389,25 +399,45 @@ const AllProject: React.FC = () => {
     setRecallModalVisible(true);
   };
 
-  const applyKnotEvent = async () => {
-    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-    if (projectIds.length === 0) {
+  const applyConfirm = () => {
+    if (tableSelectData && tableSelectData.length === 0) {
       message.error('请至少选择一个项目');
       return;
     }
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '确定申请结项吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: applyKnotEvent,
+    });
+  };
 
+  const applyKnotEvent = async () => {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
     await applyKnot(projectIds);
     message.success('申请结项成功');
     refresh();
   };
 
-  const revokeKnotEvent = async () => {
-    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
-    if (projectIds.length === 0) {
+  const revokeConfirm = () => {
+    if (tableSelectData && tableSelectData.length === 0) {
       message.error('请至少选择一个项目');
       return;
     }
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '确定撤回结项吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: revokeKnotEvent,
+    });
+  };
 
+  const revokeKnotEvent = async () => {
+    const projectIds = tableSelectData.map((item) => item.checkedArray).flat();
     await revokeKnot(projectIds);
     message.success('撤回结项成功');
     refresh();
@@ -502,15 +532,17 @@ const AllProject: React.FC = () => {
         <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('remove-favorite-project') && (
-        <Popconfirm
-          placement="top"
-          title="确定要移除所选工程?"
-          onConfirm={() => removeFavEvent()}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Menu.Item>移出当前收藏夹</Menu.Item>
-        </Popconfirm>
+        <Menu.Item>
+          <Popconfirm
+            placement="top"
+            title="确定要移除所选工程?"
+            onConfirm={() => removeFavEvent()}
+            okText="确认"
+            cancelText="取消"
+          >
+            移出当前收藏夹
+          </Popconfirm>
+        </Menu.Item>
       )}
     </Menu>
   );
@@ -548,28 +580,10 @@ const AllProject: React.FC = () => {
   const postProjectMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('all-project-apply-knot') && (
-        <Menu.Item>
-          <Popconfirm
-            title="确认对该项目进行“申请结项”?"
-            onConfirm={applyKnotEvent}
-            okText="确认"
-            cancelText="取消"
-          >
-            申请结项
-          </Popconfirm>
-        </Menu.Item>
+        <Menu.Item onClick={() => applyConfirm()}>申请结项</Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('all-project-recall-apply-knot') && (
-        <Menu.Item>
-          <Popconfirm
-            title="确认对该项目进行“撤回结项”?"
-            onConfirm={revokeKnotEvent}
-            okText="确认"
-            cancelText="取消"
-          >
-            撤回结项
-          </Popconfirm>
-        </Menu.Item>
+        <Menu.Item onClick={() => revokeConfirm()}>撤回结项</Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('all-project-kont-pass') && (
         <Menu.Item onClick={() => auditKnotEvent()}>结项审批</Menu.Item>
@@ -663,7 +677,7 @@ const AllProject: React.FC = () => {
           <div>收藏</div>
         </div>
       </Tooltip>
-      <PageCommonWrap noPadding={true}>
+      <PageCommonWrap noPadding={true} noColor={true}>
         <div className={styles.allProjectPage}>
           <div className={styles.projectsAndFavorite}>
             <div
@@ -757,17 +771,10 @@ const AllProject: React.FC = () => {
                           </Tooltip>
                         )}
                         {canDelete.length === 0 && (
-                          <Popconfirm
-                            title="确认对勾选的项目进行删除吗?"
-                            okText="确认"
-                            cancelText="取消"
-                            onConfirm={sureDeleteProject}
-                          >
-                            <Button className="mr7">
-                              <DeleteOutlined />
-                              删除
-                            </Button>
-                          </Popconfirm>
+                          <Button className="mr7" onClick={() => deleteConfirm()}>
+                            <DeleteOutlined />
+                            删除
+                          </Button>
                         )}
                       </>
                     )}
@@ -801,9 +808,9 @@ const AllProject: React.FC = () => {
                         <TableExportButton
                           exportUrl="/Porject/Export"
                           selectIds={tableSelectData.map((item) => item.checkedArray).flat(1)}
-                          selectSlot={() => {
-                            return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
-                          }}
+                          // selectSlot={() => {
+                          //   return <span onClick={() => exportPowerEvent()}>导出坐标权限设置</span>;
+                          // }}
                           // TODO 待添加参数
                           extraParams={{
                             ...searchParams,
@@ -823,12 +830,6 @@ const AllProject: React.FC = () => {
                         </Button>
                       </Dropdown>
                     )}
-                    {buttonJurisdictionArray?.includes('all-project-resource') && (
-                      <Button className="mr7" onClick={() => setLibVisible(true)}>
-                        资源库迭代
-                      </Button>
-                    )}
-                    <Button onClick={() => setChooseColumnsModal(true)}>自定义表头</Button>
                   </div>
                 </div>
                 <div className={styles.engineerTableContent}>
@@ -838,6 +839,7 @@ const AllProject: React.FC = () => {
                     extractParams={{ keyWord, statisticalCategory, ...searchParams }}
                     onSelect={tableSelectEvent}
                     columnsConfig={chooseColumns}
+                    configFinishEvent={configChangeEvent}
                     finishEvent={refresh}
                   />
                 </div>
@@ -927,13 +929,7 @@ const AllProject: React.FC = () => {
             onChange={setRecallModalVisible}
           />
         )}
-        {libVisible && (
-          <ResourceLibraryManageModal
-            visible={libVisible}
-            onChange={setLibVisible}
-            changeFinishEvent={refresh}
-          />
-        )}
+
         {exportPowerModalVisible && (
           <ExportPowerModal
             visible={exportPowerModalVisible}
@@ -950,14 +946,7 @@ const AllProject: React.FC = () => {
             finishEvent={refresh}
           />
         )}
-        {chooseColumnsModal && (
-          <ColumnsConfigModal
-            hasCheckColumns={chooseColumns}
-            visible={chooseColumnsModal}
-            onChange={setChooseColumnsModal}
-            finishEvent={configChangeEvent}
-          />
-        )}
+
         {addFavoriteModal && (
           <AddFavoriteModal
             visible={addFavoriteModal}

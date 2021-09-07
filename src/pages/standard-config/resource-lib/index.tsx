@@ -33,6 +33,7 @@ import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import { history } from 'umi';
 import { useLayoutStore } from '@/layouts/context';
 import { useMemo } from 'react';
+import ResourceLibraryManageModal from './components/resource-library-manage-modal';
 
 const { Search } = Input;
 
@@ -48,7 +49,7 @@ const ResourceLib: React.FC = () => {
   const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [status, setStatus] = useState<string>('0');
-
+  const [libVisible, setLibVisible] = useState(false);
   const [libId, setLibId] = useState<string>('');
   const [currentManageId, setCurrentManageId] = useState<string>(window.localStorage.manageId); //当前管理 模块的资源库Id
 
@@ -438,6 +439,11 @@ const ResourceLib: React.FC = () => {
             禁用
           </Button>
         )}
+        {buttonJurisdictionArray?.includes('all-project-resource') && (
+          <Button className="mr7" onClick={() => setLibVisible(true)}>
+            资源库迭代
+          </Button>
+        )}
       </div>
     );
   };
@@ -539,6 +545,13 @@ const ResourceLib: React.FC = () => {
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setUploadLineStressSagVisible}
       />
+      {libVisible && (
+        <ResourceLibraryManageModal
+          visible={libVisible}
+          onChange={setLibVisible}
+          changeFinishEvent={refresh}
+        />
+      )}
     </PageCommonWrap>
   );
 };

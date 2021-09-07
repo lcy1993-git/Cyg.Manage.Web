@@ -223,7 +223,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             label="项目性质"
             labelWidth={120}
             align="right"
-            rules={Rule.required}
+            rules={Rule.natures}
             fieldKey={[field.fieldKey, 'natures']}
             name={isEmpty(field) ? 'natures' : [field.name, 'natures']}
             required
@@ -447,7 +447,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         <div className="flex1 flowHidden">
           <CyFormItem
             label="供电所/班组"
-            rules={Rule.required}
+            rules={Rule.powerSupply}
             fieldKey={[field.fieldKey, 'powerSupply']}
             name={isEmpty(field) ? 'powerSupply' : [field.name, 'powerSupply']}
             labelWidth={120}

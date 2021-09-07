@@ -75,8 +75,24 @@ const RolePermissions: React.FC = () => {
           <>
             {buttonJurisdictionArray?.includes('role-permissions-start-using') && (
               <>
-                <Switch checked={isChecked} onChange={() => updateStatus(record)} />
-                {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
+                {/* <Switch checked={isChecked} onChange={() => updateStatus(record)} /> */}
+                {isChecked ? (
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    className="colorPrimary"
+                    onClick={() => updateStatus(record)}
+                  >
+                    启用
+                  </span>
+                ) : (
+                  <span
+                    onClick={() => updateStatus(record)}
+                    style={{ cursor: 'pointer' }}
+                    className="colorRed"
+                  >
+                    禁用
+                  </span>
+                )}
               </>
             )}
             {!buttonJurisdictionArray?.includes('role-permissions-start-using') &&

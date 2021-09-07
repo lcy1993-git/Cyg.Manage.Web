@@ -14,11 +14,12 @@ import moment from 'moment';
 import { Spin } from 'antd';
 import FeedbackDetail from './components/detail';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import styles from './index.less';
 
 const UserFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-
+  const [clickId, setClickId] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [checkFormVisible, setCheckFormVisible] = useState<boolean>(false);
 
@@ -51,6 +52,20 @@ const UserFeedBack: React.FC = () => {
       dataIndex: 'title',
       index: 'title',
       width: 140,
+      render: (text: any, record: any) => {
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('feedback-check-detail') && (
+              <span onClick={() => checkEvent(record.id)} className={styles.feedTitle}>
+                {record.title}
+              </span>
+            )}
+            {!buttonJurisdictionArray?.includes('feedback-check-detail') && (
+              <span>{record.title}</span>
+            )}
+          </>
+        );
+      },
     },
     {
       title: '处理日期',
@@ -85,40 +100,32 @@ const UserFeedBack: React.FC = () => {
             反馈
           </Button>
         )}
-        {buttonJurisdictionArray?.includes('feedback-check-detail') && (
+        {/* {buttonJurisdictionArray?.includes('feedback-check-detail') && (
           <Button className="mr7" onClick={() => checkEvent()}>
             <EyeOutlined />
             查看
           </Button>
-        )}
+        )} */}
       </>
     );
   };
 
-  const checkEvent = async () => {
-    if (tableSelectRows && tableSelectRows.length === 0) {
-      message.error('请至少选择一条数据');
-      return;
-    }
-    await getDetailData(tableSelectRows[0].id);
+  const checkEvent = async (id: string) => {
+    setClickId(id);
+    await getDetailData(id);
     setCheckFormVisible(true);
   };
 
   const sureCheckFeedBack = () => {
+    const feedbackId = clickId;
     replyForm.validateFields().then(async (values) => {
-      if (tableSelectRows && tableSelectRows.length === 0) {
-        message.error('请至少选择一条数据');
-        return;
-      }
-
       const { content } = values;
-
-      const feedbackId = tableSelectRows[0].id;
 
       await replyTheFeedback({ feedbackId, content });
 
       message.success('回复成功');
       setCheckFormVisible(false);
+      setClickId('');
       tableFresh();
     });
   };

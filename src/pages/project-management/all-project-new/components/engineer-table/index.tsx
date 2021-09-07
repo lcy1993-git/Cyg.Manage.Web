@@ -17,7 +17,6 @@ import { useRequest, useSize } from 'ahooks';
 import { Menu, message, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
-import React from 'react';
 import { forwardRef } from 'react';
 import { Ref } from 'react';
 import { useImperativeHandle } from 'react';
@@ -32,7 +31,6 @@ import uuid from 'node-uuid';
 import { Dropdown } from 'antd';
 import { BarsOutlined, LinkOutlined } from '@ant-design/icons';
 import { TableContext } from './table-store';
-import CheckResultModal from '../check-result-modal';
 import EngineerDetailInfo from '../engineer-detail-info';
 import ProjectDetailInfo from '../project-detail-info';
 import ArrangeModal from '../arrange-modal';
@@ -45,7 +43,10 @@ import ExternalArrangeModal from '../external-arrange-modal';
 import ExternalListModal from '../external-list-modal';
 import AuditKnotModal from '../audit-knot-modal';
 import moment from 'moment';
+import { modifyExportPowerState } from '@/services/project-management/all-project';
 import ProjectInheritModal from '../project-inherit-modal';
+import ImageIcon from '@/components/image-icon';
+import ColumnsConfigModal from '../columns-config-modal';
 
 const colorMap = {
   立项: 'green',
@@ -70,21 +71,24 @@ interface EngineerTableProps {
   getStatisticsData?: (value: any) => void;
   columnsConfig: string[];
   finishEvent: () => void;
+  configFinishEvent?: (checkedValue: any) => void;
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, getStatisticsData, columnsConfig = [], finishEvent } = props;
+  const {
+    extractParams,
+    onSelect,
+    getStatisticsData,
+    columnsConfig = [],
+    finishEvent,
+    configFinishEvent,
+  } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
 
   const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('');
-  const [checkResultPorjectInfo, setCheckResultProjectInfo] = useState({
-    projectId: '',
-    projectName: '',
-    projectStatus: '',
-    projectStage: '',
-  });
+
   const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('');
   const [currentArrageProjectId, setCurrentArrageProjectId] = useState<string>('');
   const [currentProjectArrangeType, setCurrentProjectArrageType] = useState<string>();
@@ -103,7 +107,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [currentProName, setCurrentProName] = useState<string | undefined>('');
   const [externalStepData, setExternalStepData] = useState<any>();
 
-  const [checkResultVisible, setCheckResultVisible] = useState<boolean>(false);
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
   const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false);
@@ -118,6 +121,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [projectInheritVisible, setProjectInheritVisible] = useState<boolean>(false);
   const [inheritProjectNeedParams, setInheritProjectNeedParams] = useState<any>({});
 
+  const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false);
   // 项目时间阈值state
   const [minStartTime, setMinStartTime] = useState<number>();
   const [maxEndTime, setMaxEndTime] = useState<number>();
@@ -183,11 +187,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const approvalEngineerEvent = (data: AddProjectValue) => {
     setCurrentAppEngineerId(data.engineerId);
     setApprovalEngineerVisible(true);
-  };
-
-  const checkResult = (projectInfo: any) => {
-    setCheckResultProjectInfo(projectInfo);
-    setCheckResultVisible(true);
   };
 
   const refreshEvent = () => {
@@ -271,7 +270,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             复制项目
           </Menu.Item>
         )}
-        {buttonJurisdictionArray?.includes('all-project-check-result') && (
+        {/* {buttonJurisdictionArray?.includes('all-project-check-result') && (
           <Menu.Item
             onClick={() =>
               checkResult({
@@ -284,7 +283,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           >
             查看成果
           </Menu.Item>
-        )}
+        )} */}
         {jurisdictionInfo.canInherit && buttonJurisdictionArray?.includes('all-project-inherit') && (
           // all-project-inherit
           <Menu.Item
@@ -388,9 +387,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const deleteFailProject = async (projectId: string) => {
     await deleteProject([projectId]);
-    message.success("已取消项目继承");
+    message.success('已取消项目继承');
     finishEvent?.();
-  }
+  };
 
   const completeConfig = [
     {
@@ -401,7 +400,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       ellipsis: true,
       iconSlot: (record: any, projects: any) => {
         const parentData = projects.filter((item: any) => item.id === record.inheritId);
-        
+
         if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
           if (record.stateInfo.inheritStatus === 3) {
             return (
@@ -557,10 +556,38 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'exportCoordinate',
       width: 120,
       render: (record: any) => {
+        const status = record.exportCoordinate;
         return record.exportCoordinate === true ? (
-          <span className="colorPrimary">启用</span>
+          <span
+            style={{ cursor: 'pointer' }}
+            className="colorRed"
+            onClick={() => {
+              console.log(record.id);
+
+              modifyExportPowerState({
+                isEnable: !status,
+                projectIds: [record.id],
+              });
+              finishEvent?.();
+            }}
+          >
+            启用
+          </span>
         ) : (
-          <span className="colorRed">禁用</span>
+          <span
+            style={{ cursor: 'pointer' }}
+            className="colorPrimary"
+            onClick={() => {
+              console.log(record.id);
+              modifyExportPowerState({
+                isEnable: !status,
+                projectIds: [record.id],
+              });
+              finishEvent?.();
+            }}
+          >
+            禁用
+          </span>
         );
       },
     },
@@ -1046,18 +1073,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               showSizeChanger
               showQuickJumper
               onShowSizeChange={pageSizeChange}
+              style={{ display: 'inline-flex', paddingRight: '25px' }}
             />
+            <span style={{ cursor: 'pointer' }} onClick={() => setChooseColumnsModal(true)}>
+              <ImageIcon width={18} height={18} imgUrl="setting.png" />
+            </span>
           </div>
         </div>
 
-        {checkResultVisible && (
-          <CheckResultModal
-            visible={checkResultVisible}
-            onChange={setCheckResultVisible}
-            changeFinishEvent={refreshEvent}
-            projectInfo={checkResultPorjectInfo}
-          />
-        )}
         {engineerModalVisible && (
           <EngineerDetailInfo
             engineerId={currentClickEngineerId}
@@ -1191,6 +1214,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             visible={projectInheritVisible}
             onChange={setProjectInheritVisible}
             changeFinishEvent={refreshEvent}
+          />
+        )}
+        {chooseColumnsModal && (
+          <ColumnsConfigModal
+            hasCheckColumns={chooseColumns}
+            visible={chooseColumnsModal}
+            onChange={setChooseColumnsModal}
+            finishEvent={configFinishEvent}
           />
         )}
       </div>

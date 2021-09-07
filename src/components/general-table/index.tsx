@@ -294,11 +294,6 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 
   return (
     <div className={styles.cyGeneralTable} ref={tableRef}>
-      <div className={styles.cyGeneralTableButtonContent}>
-        <div className={styles.cyGeneralTableButtonLeftContent}>{buttonLeftContentSlot?.()}</div>
-        <div className={styles.cyGeneralTableButtonRightContent}>{buttonRightContentSlot?.()}</div>
-      </div>
-      <div className={styles.cyGeneralTableOtherSlot}>{otherSlot?.()}</div>
       {needTitleLine && (
         <div className={styles.cyGeneralTableTitleContnet}>
           <div className={styles.cyGeneralTableTitleShowContent}>
@@ -335,6 +330,11 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           </div>
         </div>
       )}
+      <div className={styles.cyGeneralTableButtonContent}>
+        <div className={styles.cyGeneralTableButtonLeftContent}>{buttonLeftContentSlot?.()}</div>
+        <div className={styles.cyGeneralTableButtonRightContent}>{buttonRightContentSlot?.()}</div>
+      </div>
+      <div className={styles.cyGeneralTableOtherSlot}>{otherSlot?.()}</div>
 
       <div className={styles.cyGeneralTableConetnt}>
         <WrapperComponent
