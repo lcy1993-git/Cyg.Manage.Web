@@ -33,6 +33,8 @@ interface TreeTableProps<T> extends TableProps<T> {
   showButtonContent?: boolean;
   emptyContent?: string;
   imgSrc?: 'empty' | 'finish';
+  isFold?: boolean;
+  noSearch?: boolean;
 }
 
 const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<any>) => {
@@ -50,6 +52,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
     getSelectData,
     params,
     imgSrc,
+    isFold = true,
+    noSearch = false,
     ...rest
   } = props;
 
@@ -62,6 +66,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   );
 
   const finalyDataSource = url ? data : dataSource;
+
+  const noSearchClass = noSearch ? styles.noSearch : '';
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
@@ -105,21 +111,26 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   return (
     <div className={styles.treeTableData}>
       {showButtonContent && (
-        <div className={styles.treeTbaleButtonsContent}>
+        <div className={`${styles.treeTbaleButtonsContent} ${noSearchClass}`}>
           <div className={styles.treeTableButtonsLeftContent}>{leftButtonsSlot?.()}</div>
+
           <div className={styles.treeTableButtonsRightContent}>
             <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
             <div className={styles.treeTableButtonCommon}>
-              {isUnfold ? (
-                <Button onClick={() => allCloseEvent()}>
-                  <DownOutlined />
-                  全部折叠
-                </Button>
+              {isFold ? (
+                isUnfold ? (
+                  <Button onClick={() => allCloseEvent()}>
+                    <DownOutlined />
+                    全部折叠
+                  </Button>
+                ) : (
+                  <Button onClick={() => allOpenEvent()}>
+                    <UpOutlined />
+                    全部展开
+                  </Button>
+                )
               ) : (
-                <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
-                  <UpOutlined />
-                  全部展开
-                </Button>
+                ''
               )}
             </div>
           </div>
