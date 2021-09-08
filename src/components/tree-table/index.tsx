@@ -54,6 +54,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   } = props;
 
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+  const [isUnfold, setIsUnFold] = useState<boolean>(false);
 
   const { data = [], loading, run } = useRequest(
     () => treeTableCommonRequeset<T>({ url, params }),
@@ -89,6 +90,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   };
   // 全部展开
   const allOpenEvent = () => {
+    setIsUnFold(true);
     const flattenData = flatten(finalyDataSource)
       .filter((item: any) => item.children && item.children.length > 0)
       .map((item: any) => item.id);
@@ -96,6 +98,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   };
   // 全部折叠
   const allCloseEvent = () => {
+    setIsUnFold(false);
     setExpandedRowKeys([]);
   };
 
@@ -107,14 +110,17 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
           <div className={styles.treeTableButtonsRightContent}>
             <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
             <div className={styles.treeTableButtonCommon}>
-              <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
-                <UpOutlined />
-                全部展开
-              </Button>
-              <Button onClick={() => allCloseEvent()}>
-                <DownOutlined />
-                全部折叠
-              </Button>
+              {isUnfold ? (
+                <Button onClick={() => allCloseEvent()}>
+                  <DownOutlined />
+                  全部折叠
+                </Button>
+              ) : (
+                <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
+                  <UpOutlined />
+                  全部展开
+                </Button>
+              )}
             </div>
           </div>
         </div>

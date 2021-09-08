@@ -114,7 +114,7 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
     <>
       <Button className="mr7" type="primary" onClick={() => batchAddAuthorizationEvent()}>
         <PlusOutlined />
-        批量授权
+        授权
       </Button>
       <Popconfirm
         placement="top"
@@ -123,7 +123,7 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
         okText="确认"
         cancelText="取消"
       >
-        <Button className="mr7">批量移除</Button>
+        <Button className="mr7">移除</Button>
       </Popconfirm>
     </>
   );

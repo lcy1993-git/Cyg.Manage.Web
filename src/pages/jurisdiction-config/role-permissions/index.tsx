@@ -419,29 +419,12 @@ const RolePermissions: React.FC = () => {
         destroyOnClose
       >
         <Spin spinning={loading}>
-          <Tabs
-            className="normalTabs noMargin"
-            tabBarExtraContent={userType === 4 ? tabsRightSlot : null}
-          >
-            <TabPane key="user" tab="用户授权">
-              <UserAuthorization
-                onChange={tableFresh}
-                extractParams={{
-                  templateId: currentId,
-                }}
-              />
-            </TabPane>
-            {userType === 4 && (
-              <TabPane key="role" tab="角色授权">
-                <RoleAuthorization
-                  onChange={tableFresh}
-                  extractParams={{
-                    templateId: currentId,
-                  }}
-                />
-              </TabPane>
-            )}
-          </Tabs>
+          <UserAuthorization
+            onChange={tableFresh}
+            extractParams={{
+              templateId: currentId,
+            }}
+          />
         </Spin>
       </Modal>
     </PageCommonWrap>
