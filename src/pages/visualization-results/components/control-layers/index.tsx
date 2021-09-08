@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
-import { Checkbox, Divider } from 'antd';
-import { QuestionCircleOutlined }  from '@ant-design/icons';
-
+import classnames from 'classnames';
 import styles from './index.less';
-import { text } from 'express';
 
 const imgResourse = {
   kancha: {
@@ -44,7 +40,7 @@ interface Props {
 const ListItem = (props: ListProps) => {
   const { name, state, onChange, sign } = props;
   return (
-    <div className={styles.listItem } key={'listItem' + name} onClick={onChange}>
+    <div className={classnames(styles.listItem, state ? styles.activeBackground : "")} key={'listItem' + name} onClick={onChange}>
         <div className={state ? styles.active : null}><img src={state ? imgResourse[sign].light : imgResourse[sign].dark } /></div>
         <div className={state ? styles.active : null}><span className={styles.text}>{name}</span></div>
     </div>
@@ -73,21 +69,18 @@ const ControlLayers = (props: Props) => {
             state={surveyLayerVisible}
             onChange={() => setSurveyLayerVisible(!surveyLayerVisible)}
           />
-          <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="方案图层"
             sign="fangan"
             state={planLayerVisible}
             onChange={() => setPlanLayerVisible(!planLayerVisible)}
           />
-          <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="设计图层"
             sign="sheji"
             state={designLayerVisible}
             onChange={() => setDesignLayerVisible(!designLayerVisible)}
           />
-          <Divider style={{height: "30%", marginBottom: "6px"}} type="vertical" />
           <ListItem
             name="拆除图层"
             sign="chaichu"

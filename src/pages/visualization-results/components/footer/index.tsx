@@ -23,10 +23,10 @@ const Footer = observer((props: Props) => {
       </div>
       <div className={'flex1'}></div>
       <div className={styles.mapInfo}>
-        <span className={styles.link} onClick={onlocationClick}>
+        {/* <span className={styles.link} onClick={onlocationClick}>
           定位
         </span>
-        <Divider />
+        <Divider /> */}
         <span>
           经度:
           <span id={'currentPositionX'}></span>
