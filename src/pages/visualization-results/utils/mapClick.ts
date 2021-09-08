@@ -1,5 +1,5 @@
 import getMappingTagsDictionary from './localData/mappingTagsDictionary';
-import { pointStyle, line_style, zero_guy_style } from './localData/pointStyle';
+import { pointStyle, line_style, zero_guy_style, cable_channel_styles } from './localData/pointStyle';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
@@ -121,6 +121,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     // setRightSidebarVisiviabelFlag = true;
     if (selected) return;
     selected = true;
+    console.log(feature);
     if (layer.getProperties().name == 'highlightLayer') {
       clearHighlightLayer(map);
       return;
@@ -239,7 +240,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         }
         else if (type.indexOf('point') >= 0) {
           highlightStyle = pointStyle(layer.getProperties().name, featureClone, true);
-        } else {
+        }
+        else if(layerName === 'cable_channel') {
+          highlightStyle = cable_channel_styles(featureClone, true);
+        }
+        else {
           highlightStyle = line_style(featureClone, true);
         }
 

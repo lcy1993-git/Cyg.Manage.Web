@@ -198,10 +198,16 @@ const Styles = {
         }
     },
     line: {
-        cableChannel: {
+        "3010": { // 电缆通道
             color: 'rgba(58, 46, 70, 1)',
             backgroundColor: 'rgba(255, 255, 255, 0.4)',
             width: 8
+        },
+        "3020": { // 电缆通道——拆除
+            color: 'rgba(58, 46, 70, 1)',
+            backgroundColor: 'rgba(255, 255, 255, 0.4)',
+            width: 8,
+            isDismantle: true,
         },
         fzx: {
             color: 'rgba(0,191,255, 0.5)',

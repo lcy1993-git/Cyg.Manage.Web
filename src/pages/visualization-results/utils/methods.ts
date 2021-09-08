@@ -231,6 +231,15 @@ const loadWFSData = (
         //   style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
         // }
         else if (item.type === 'cable_channel') {
+          pJSON[i].setProperties({ layer_name: 'cable_channel' });
+          if (!pJSON[i].getProperties().symbol_id) {
+            if (layerType === 'dismantle' || pJSON[i].getProperties().state === 4) {
+              pJSON[i].setProperties({symbol_id: '3020'});
+            }
+            else {
+              pJSON[i].setProperties({symbol_id: '3010'});
+            }
+          }
           style = cable_channel_styles(pJSON[i]);
         } else if (item.type === 'special_point') {
           style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
