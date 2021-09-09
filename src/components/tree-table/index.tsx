@@ -113,7 +113,6 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
       {showButtonContent && (
         <div className={`${styles.treeTbaleButtonsContent} ${noSearchClass}`}>
           <div className={styles.treeTableButtonsLeftContent}>{leftButtonsSlot?.()}</div>
-
           <div className={styles.treeTableButtonsRightContent}>
             <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
             <div className={styles.treeTableButtonCommon}>
@@ -140,6 +139,28 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
       <div className={styles.treeTableOtherSlots}>{otherSlot?.()}</div>
       <div className={styles.treeTableTitleShowContent}>
         {tableTitle ? <CommonTitle>{tableTitle}</CommonTitle> : null}
+        {!showButtonContent && (
+          <div className={styles.treeTableButtonsRightContent}>
+            <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
+            <div className={styles.treeTableButtonCommon}>
+              {isFold ? (
+                isUnfold ? (
+                  <Button onClick={() => allCloseEvent()}>
+                    <DownOutlined />
+                    全部折叠
+                  </Button>
+                ) : (
+                  <Button onClick={() => allOpenEvent()}>
+                    <UpOutlined />
+                    全部展开
+                  </Button>
+                )
+              ) : (
+                ''
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <div className={styles.treeTableContent}>
         <Spin spinning={loading}>

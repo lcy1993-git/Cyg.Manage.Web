@@ -400,17 +400,22 @@ const CockpitManage: React.FC = () => {
                 <CommonTitle noPadding={true}>首页自定义配置窗口</CommonTitle>
               </div>
               <div className={styles.cockpitConfigPageTitleRight}>
+                <Button
+                  type="primary"
+                  loading={saveConfigLoading}
+                  className="mr7"
+                  onClick={saveConfig}
+                >
+                  <SaveOutlined />
+                  保存配置
+                </Button>
                 <Button className="mr7" onClick={initCockpit}>
                   <ReloadOutlined />
                   恢复默认配置
                 </Button>
-                <Button className="mr7" onClick={clearConfigEvent}>
+                <Button onClick={clearConfigEvent}>
                   <DeleteOutlined />
                   清空当前配置
-                </Button>
-                <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
-                  <SaveOutlined />
-                  保存配置
                 </Button>
               </div>
             </div>

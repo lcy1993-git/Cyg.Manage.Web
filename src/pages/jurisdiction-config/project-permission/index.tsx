@@ -220,7 +220,7 @@ const ProjectPermission: React.FC = () => {
         title="创建项目权限组模板并且授权给对应的管理端用户后，该用户可以查看对应权限范围内的所有项目。"
         placement="right"
       >
-        <QuestionCircleOutlined style={{ padding: 15 }} />
+        <QuestionCircleOutlined style={{ paddingLeft: 10 }} />
       </Tooltip>
     );
   };

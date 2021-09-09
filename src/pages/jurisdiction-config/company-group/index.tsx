@@ -194,6 +194,7 @@ const CompanyGroup: React.FC = () => {
         ref={tableRef}
         isFold={false}
         noSearch={true}
+        showButtonContent={false}
         tableTitle="部组管理"
         rightButtonSlot={functionModuleButton}
         getSelectData={(data) => setTableSelectRows(data)}

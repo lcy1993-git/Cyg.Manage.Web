@@ -6,7 +6,7 @@ import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from '
 import React, { useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
-import { groupBy, isArray } from 'lodash';
+import { isArray } from 'lodash';
 import '@/assets/icon/iconfont.css';
 import CompanyFileForm from './components/add-edit-form';
 import {
@@ -140,12 +140,12 @@ const CompanyFile: React.FC = () => {
       title: '名称',
       width: 150,
     },
-    {
-      dataIndex: 'id',
-      index: 'id',
-      title: '文件编号',
-      width: 200,
-    },
+    // {
+    //   dataIndex: 'id',
+    //   index: 'id',
+    //   title: '文件编号',
+    //   width: 200,
+    // },
     {
       dataIndex: 'describe',
       index: 'describe',
@@ -490,7 +490,7 @@ const CompanyFile: React.FC = () => {
               ref={tableRef}
               buttonLeftContentSlot={searchComponent}
               buttonRightContentSlot={tableElement}
-              needCommonButton={true}
+              needCommonButton={false}
               columns={columns}
               url="/CompanyFile/GetPagedList"
               tableTitle="成果模板"

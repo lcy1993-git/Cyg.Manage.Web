@@ -84,7 +84,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
             保存
           </Button>,
         ]}
-        onCancel={onSave}
+        onCancel={() => setState(false)}
         destroyOnClose
       >
         <Form form={form} preserve={false}>

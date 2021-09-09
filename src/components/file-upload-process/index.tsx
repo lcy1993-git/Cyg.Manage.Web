@@ -64,7 +64,7 @@ const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
     { immediate: true },
   );
 
-  return status === 'success' || status === 'start' ? (
+  return status === 'start' ? (
     <Progress
       strokeColor={{
         from: '#108ee9',
@@ -72,7 +72,7 @@ const FileUploadProcess: FC<FileUploadProcessProps> = (props) => {
       }}
       percent={percent}
       size="small"
-      status={status === 'success' ? 'success' : 'exception'}
+      // status={status === 'success' ? 'success' : 'exception'}
     />
   ) : null;
 };
