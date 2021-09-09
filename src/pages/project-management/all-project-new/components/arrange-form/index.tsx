@@ -13,6 +13,8 @@ import Search from 'antd/lib/input/Search';
 import ReadonlyItem from '@/components/readonly-item';
 import { getTreeSelectData } from '@/services/operation-config/company-group';
 import uuid from 'node-uuid';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import styles from './index.less';
 
 interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void;
@@ -36,6 +38,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   });
 
   const [checkedValue, setCheckedValue] = useState<string>('2');
+  const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false);
 
   const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId));
 
@@ -157,8 +160,21 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-          {/* <Divider>设计校审</Divider> */}
-          <div style={{display: 'none'}}>
+          <div className={styles.continueAudit}>
+            <div
+              className={styles.internalTitle}
+              onClick={() => setIsInternalAudit(!isInternalAudit)}
+            >
+              继续安排审核人员
+            </div>
+            <div>{isInternalAudit ? <UpOutlined /> : <DownOutlined />}</div>
+          </div>
+
+          <div style={{ display: isInternalAudit ? 'block' : 'none' }}>
+            {/* 设计内审 */}
+            <Divider>
+              <span className={styles.divider}>设计校审</span>
+            </Divider>
             <CyFormItem label="校对" name="designAssessUser1">
               <TreeSelect
                 key="designAssessUser1"
@@ -192,6 +208,41 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             <CyFormItem label="审定" name="designAssessUser4">
               <TreeSelect
                 key="designAssessUser4"
+                style={{ width: '100%' }}
+                treeData={auditData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+
+            {/* 造价内审 */}
+            <Divider>
+              <span className={styles.divider}>造价校审</span>
+            </Divider>
+            <CyFormItem label="校核" name="designAssessUser1">
+              <TreeSelect
+                key="designAssessUser1"
+                style={{ width: '100%' }}
+                treeData={auditData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+            <CyFormItem label="审核" name="designAssessUser2">
+              <TreeSelect
+                key="designAssessUser2"
+                style={{ width: '100%' }}
+                treeData={auditData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+            <CyFormItem label="批准" name="designAssessUser3">
+              <TreeSelect
+                key="designAssessUser3"
                 style={{ width: '100%' }}
                 treeData={auditData.map(mapTreeData)}
                 placeholder="请选择"

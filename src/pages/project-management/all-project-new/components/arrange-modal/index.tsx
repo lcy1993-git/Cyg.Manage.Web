@@ -134,6 +134,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       maskClosable={false}
       width={680}
       visible={state as boolean}
+      title="项目安排"
       okText="提交"
       destroyOnClose
       onOk={() => saveInfo()}
@@ -143,17 +144,17 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       }}
     >
       <Form form={form} preserve={false}>
-        <Tabs defaultActiveKey="1" onChange={(key) => setTabActiveKey(key)}>
-          <TabPane tab="项目安排" key="1">
-            <ArrangeForm
-              defaultType={defaultSelectType}
-              allotCompanyId={allotCompanyId}
-              getCompanyInfo={getCompanyInfo}
-              onChange={(value) => setSelectType(value)}
-              dataSourceType={dataSourceType}
-            />
-          </TabPane>
-          {/* {(selectType === '2' || selectType === '4') && (
+        {/* <Tabs defaultActiveKey="1" onChange={(key) => setTabActiveKey(key)}> */}
+        {/* <TabPane tab="项目安排" key="1"> */}
+        <ArrangeForm
+          defaultType={defaultSelectType}
+          allotCompanyId={allotCompanyId}
+          getCompanyInfo={getCompanyInfo}
+          onChange={(value) => setSelectType(value)}
+          dataSourceType={dataSourceType}
+        />
+        {/* </TabPane> */}
+        {/* {(selectType === '2' || selectType === '4') && (
             <TabPane tab="外审安排" key="2">
               {tabActiveKey === '2' ? (
                 <SelectAddListForm
@@ -166,7 +167,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           {(selectType === '1' || selectType === '3') && (
             <TabPane tab="外审安排" disabled key="2"></TabPane>
           )} */}
-        </Tabs>
+        {/* </Tabs> */}
       </Form>
     </Modal>
   );
