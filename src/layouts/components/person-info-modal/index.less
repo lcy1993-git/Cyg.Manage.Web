@@ -1,41 +1,29 @@
-.personInfoItem {
+.companyInfoWrap {
+  // padding: 10px 0;
   display: flex;
-  height: 52px;
-  font-size: 13px;
-  line-height: 52px;
-  border-bottom: 1px solid @border-gray-color;
-  .personInfoItemLabel {
-    width: 88px;
-    color: @gray-color;
-    text-align: left;
-  }
-  .personInfoItemContent {
-    flex: 1;
-    color: @black-color;
-  }
-  .personInfoItemButton {
-    padding: 0 6px;
-    cursor: pointer;
-    &:hover {
-      color: #0e7b3b;
+  flex-direction: column;
+  justify-content: space-between;
+  .companyInfoRow {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    .title {
+      flex-basis: 100px;
+      color: #c0c0c0;
+    }
+    .content {
+      flex: 1;
     }
   }
 }
-
-.personEditItem {
+.nodeWrap {
   display: flex;
-  height: 68px;
-  font-size: 13px;
-  line-height: 68px;
-  border-bottom: 1px solid @border-gray-color;
-  .personEditItemLabel {
-    width: 88px;
-    color: @gray-color;
-    text-align: left;
-  }
-  .personEditItemContent {
+  align-items: center;
+  min-height: 50px;
+  .input {
     flex: 1;
-    margin-top: 18px;
-    color: @black-color;
+  }
+  .buttom {
+    flex-basis: 80px;
   }
 }

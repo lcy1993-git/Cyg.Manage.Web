@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
+import { history } from 'umi';
+import React, { useRef, useState } from 'react';
 import { Button, Form, Input, message, Tabs } from 'antd';
-import styles from './index.less';
 import ImageIcon from '@/components/image-icon';
+import VerifycodeImage from '../verifycode-image';
 
 import { loginRules } from '@/pages/login/components/login-form/rule';
 import VerificationCode from '@/components/verification-code';
-
 import { phoneNumberRule } from '@/utils/common-rule';
-
-import { userLoginRequest, phoneLoginRequest } from '@/services/login';
-
-import { history } from 'umi';
 import { flatten } from '@/utils/utils';
+import { userLoginRequest, phoneLoginRequest, compareVerifyCode } from '@/services/login';
 
+import styles from './index.less';
 const { TabPane } = Tabs;
 
 type LoginType = 'account' | 'phone';
 
 const LoginForm: React.FC = () => {
+
+  const [needVerifycode, setNeedVerifycode] = useState<boolean>(false);
+  const [imageCode, setImageCode] = useState<string>("");
+  // 是否验证码错误
+  const [hasErr, setHasErr] = useState(false);
+  // 刷新验证码的hash值
+  const random = () => Math.random().toString(36).slice(2);
+  const [reloadSign, setReloadSign] = useState(random())
+  const refreshCode = () => setReloadSign(random());
+
   const [activeKey, setActiveKey] = useState<LoginType>('account');
   const [formRules, setFormRules] = useState(loginRules['account']);
 
@@ -27,12 +35,23 @@ const LoginForm: React.FC = () => {
   const [requestLoading, setRequestLoading] = useState<boolean>(false);
 
   const [form] = Form.useForm();
+  const userNameRef = useRef<Input>(null);
+  const phoneRef = useRef<Input>(null);
 
   const tabChangeEvent = (activeKey: string) => {
     setActiveKey(activeKey as LoginType);
     // 根据不同的type,设置不同的校验规则
     setFormRules(loginRules[activeKey]);
   };
+
+  const getkey = (activeKey: LoginType) => {
+    if(!userNameRef.current) return;
+    if(activeKey === "account") {
+      return userNameRef.current?.input.value
+    }else{
+      return phoneRef.current?.input.value
+    }
+  }
 
   const login = (type: LoginType) => {
     // TODO  校验通过之后进行保存
@@ -45,21 +64,27 @@ const LoginForm: React.FC = () => {
         } else {
           resData = await phoneLoginRequest(values);
         }
+        if(resData.code === 200 && resData.isSuccess) {
+          const { accessToken, modules, user } = resData.content;
 
-        const { accessToken, modules, user } = resData;
-
-        const buttonModules = flatten(modules);
-        const buttonArray = buttonModules
-          .filter((item: any) => item.category === 3)
-          .map((item: any) => item.authCode);
-
-        localStorage.setItem('Authorization', accessToken);
-        localStorage.setItem('functionModules', JSON.stringify(modules));
-        localStorage.setItem('userInfo', JSON.stringify(user));
-        localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
-
-        message.success('登录成功', 1.5);
-        history.push('/index');
+          const buttonModules = flatten(modules);
+          const buttonArray = buttonModules
+            .filter((item: any) => item.category === 3)
+            .map((item: any) => item.authCode);
+  
+          localStorage.setItem('Authorization', accessToken);
+          localStorage.setItem('functionModules', JSON.stringify(modules));
+          localStorage.setItem('userInfo', JSON.stringify(user));
+          localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
+          setNeedVerifycode(false)
+          message.success('登录成功', 1.5);
+          history.push('/index');
+        }else if(resData.code === 40100) {
+          setNeedVerifycode(true);
+          message.error(resData.message)
+        }else{
+          message.error(resData.message)
+        }
       } catch (msg) {
         console.error(msg);
       } finally {
@@ -67,6 +92,24 @@ const LoginForm: React.FC = () => {
       }
     });
   };
+
+  // 登录前的验证码校准，当needVerifycode存在先行判断验证码
+  const loginButtonClick = async () => {
+    if(needVerifycode) {
+      const fromData = await form.validateFields();
+      const key = activeKey === "account" ? fromData.userName : fromData.phone
+      const codeRes = await compareVerifyCode(key, imageCode);
+      if(codeRes.content === true) {
+        login(activeKey)
+      }else{
+        message.error("验证码校验错误");
+        refreshCode();
+        setHasErr(true);
+      }
+    }else{
+      login(activeKey)
+    }
+  }
 
   const formChangeEvent = (changedValues: object) => {
     if (changedValues.hasOwnProperty('phone')) {
@@ -97,6 +140,7 @@ const LoginForm: React.FC = () => {
                 className={styles.loginInput}
                 suffix={<ImageIcon imgUrl="user.png" />}
                 type="text"
+                ref={userNameRef}
               />
             </Form.Item>
 
@@ -109,11 +153,11 @@ const LoginForm: React.FC = () => {
                 type="password"
               />
             </Form.Item>
-
+            <VerifycodeImage userKey={getkey(activeKey)} needVerifycode={needVerifycode} onChange={setImageCode} hasErr={hasErr} setHasErr={setHasErr} reloadSign={reloadSign} refreshCode={refreshCode}/>
             <div>
               <Button
                 className={styles.loginButton}
-                onClick={() => login('account')}
+                onClick={loginButtonClick}
                 loading={requestLoading}
                 type="primary"
               >
@@ -133,6 +177,7 @@ const LoginForm: React.FC = () => {
                 placeholder="手机号"
                 className={styles.loginInput}
                 type="text"
+                ref={phoneRef}
               />
             </Form.Item>
 
@@ -143,9 +188,9 @@ const LoginForm: React.FC = () => {
             >
               <VerificationCode canSend={canSendCode} type={0} phoneNumber={phoneNumber} />
             </Form.Item>
-
+            <VerifycodeImage userKey={getkey(activeKey)} needVerifycode={needVerifycode} onChange={setImageCode} hasErr={hasErr} setHasErr={setHasErr} reloadSign={reloadSign} refreshCode={refreshCode}/>
             <div>
-              <Button className={styles.loginButton} onClick={() => login('phone')} type="primary">
+              <Button className={styles.loginButton} onClick={loginButtonClick} type="primary">
                 立即登录
               </Button>
             </div>

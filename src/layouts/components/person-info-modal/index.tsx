@@ -1,84 +1,42 @@
 import { editUserInfo, getUserInfo } from '@/services/user/user-info';
 import { useControllableValue, useRequest } from 'ahooks';
-import { Form, Input, message } from 'antd';
+import { Input, message } from 'antd';
 import { Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import styles from './index.less';
 import { useEffect } from 'react';
-import ChangePhoneModal from '../person-changephone-modal/inedx';
-import Rule from './person-info-rule';
+import PhoneInfo from './components/phone-info';
+import PersonInfoRow from './components/person-info-row';
+import { Button } from 'antd';
+// import EmailInfo from './components/email-info';
+import { useRef } from 'react';
 
 interface PersonInfoModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
 }
 
-/**
- * 判断用户是否已经为绑定手机状态
- * @绑定手机 type = 0
- * @修改手机 type = 1
- */
-type Type = 0 | 1 | undefined;
-interface typeObject {
-  title: string;
-  type: Type;
-}
-
 const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [changePhoneVisibel, setChangePhoneVisibel] = useState<boolean>(false);
 
-  const { data: userInfo, run: getUserInfoEvent } = useRequest(() => getUserInfo(), {
-    manual: true,
-    onSuccess: () => {
-      form.setFieldsValue({
-        ...userInfo,
-      });
-    },
+  const [closeState, setCloseState] = useState<boolean>(false);
+
+  const nickNameRef = useRef<Input>(null);
+  const nameRef = useRef<Input>(null);
+  const emailRef = useRef<Input>(null);
+  
+  const { data: userInfo, run: request } = useRequest(() => getUserInfo(), {
+    manual: true
   });
 
-  const [form] = Form.useForm();
-
-  // 修改手机或绑定手机类型
-  const typeObject: typeObject = useMemo(() => {
-    if (userInfo?.phone) {
-      return {
-        title: '换绑',
-        type: 1,
-      };
-    }
-    return {
-      title: '绑定',
-      type: 0,
-    };
-  }, [JSON.stringify(userInfo)]);
-
-  const closeModalEvent = () => {
-    setState(false);
-    form.resetFields();
-  };
-
-  const openModalEvent = () => {
-    form.validateFields().then(async (value) => {
-      await editUserInfo(value);
-      message.success('用户信息修改成功');
-      setState(false);
-    });
-  };
+  const run = () => {
+    request();
+    setCloseState(!closeState);
+  }
 
   useEffect(() => {
-    if (state) {
-      getUserInfoEvent();
-    }
-  }, [state]);
-
-  const handleChangePhone = () => {
-    setChangePhoneVisibel(true);
-  };
-
-  const closeChangePhoneModal = () => {
-    setChangePhoneVisibel(false);
-  };
+    request()
+  }, []);
 
   return (
     <Modal
@@ -88,67 +46,98 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
       destroyOnClose
       width={750}
       visible={state as boolean}
+      // visible={true}
       okText="确定"
       cancelText="取消"
-      onCancel={() => closeModalEvent()}
-      onOk={() => openModalEvent()}
+      onCancel={() => setState(false)}
+      footer={false}
     >
-      {changePhoneVisibel && (
-        <ChangePhoneModal
-          visble={changePhoneVisibel}
-          closeChangePhoneModal={closeChangePhoneModal}
-          reload={getUserInfoEvent}
-          type={typeObject.type}
-          typeTitle={typeObject.title}
-        />
-      )}
-      <Form form={form} preserve={false}>
-        <div className={styles.personInfoItem}>
-          <div className={styles.personInfoItemLabel}>用户名</div>
-          <div className={styles.personInfoItemContent}>{userInfo?.userName}</div>
+      <div className={styles.companyInfoWrap}>
+        <div className={styles.companyInfoRow}>
+          <div className={styles.title}>用户名</div>
+          <div className={styles.content}>{userInfo?.userName}</div>
         </div>
-        <div className={styles.personInfoItem}>
-          <div className={styles.personInfoItemLabel}>公司</div>
-          <div className={styles.personInfoItemContent}>{userInfo?.companyName}</div>
+        <div className={styles.companyInfoRow}>
+          <div className={styles.title}>公司</div>
+          <div className={styles.content}>{userInfo?.companyName}</div>
         </div>
-        <div className={styles.personInfoItem}>
-          <div className={styles.personInfoItemLabel}>角色</div>
-          <div className={styles.personInfoItemContent}>{userInfo?.roleName}</div>
+        <div className={styles.companyInfoRow}>
+          <div className={styles.title}>角色</div>
+          <div className={styles.content}>{userInfo?.roleName}</div>
         </div>
-        <div className={styles.personInfoItem}>
-          <div className={styles.personInfoItemLabel}>手机</div>
-          <div className={styles.personInfoItemContent}>{userInfo?.phone}</div>
-          <div className={styles.personInfoItemButton} onClick={handleChangePhone}>
-            {typeObject.title}
+      </div>
+      <PersonInfoRow name={userInfo?.phone} title="手机" expandState={closeState} editNode={<PhoneInfo phone={userInfo?.phone} refresh={run} />} />
+      <PersonInfoRow
+        name={userInfo?.email}
+        title="邮箱"
+        expandState={closeState}
+        editNode={
+          <div className={styles.nodeWrap}>
+            <div className={styles.input}>
+              <Input ref={emailRef} style={{ width: "90%" }} placeholder="请填写您的邮箱"></Input>
+            </div>
+            <div className={styles.button}>
+              <Button type="primary" onClick={() => {
+                const regEmail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+                if(!regEmail.test(emailRef.current!.input.value)){
+                  message.error("邮箱格式有误");
+                  return
+                }else if(emailRef.current!.input.value === userInfo?.email){
+                  message.error("更换的邮箱号不能与原邮箱号相同")
+                  return
+                }
+                editUserInfo({ ...userInfo, email: emailRef.current!.input.value })
+                .then(() => {
+                  run();
+                  message.success("邮箱更新成功")
+                })
+              }} >保存</Button>
+            </div>
           </div>
-        </div>
-        <div className={styles.personEditItem}>
-          <div className={styles.personEditItemLabel}>邮箱</div>
-          <div className={styles.personEditItemContent}>
-            <Form.Item name="email" rules={Rule.email}>
-              <Input />
-            </Form.Item>
+        }
+      ></PersonInfoRow>
+      <PersonInfoRow
+        name={userInfo?.nickName}
+        title="昵称"
+        expandState={closeState}
+        editNode={
+          <div className={styles.nodeWrap}>
+            <div className={styles.input}>
+              <Input style={{ width: "90%" }} ref={nickNameRef} placeholder="请填写您的昵称"></Input>
+            </div>
+            <div className={styles.button}>
+              <Button type="primary" onClick={() => {
+                editUserInfo({ ...userInfo, nickName: nickNameRef.current!.input.value })
+                .then(() => {
+                  run();
+                  message.success("昵称更新成功")
+                })
+              }} >保存</Button>
+            </div>
           </div>
-        </div>
-        <div className={styles.personEditItem}>
-          <div className={styles.personEditItemLabel}>昵称</div>
-          <div className={styles.personEditItemContent}>
-            <Form.Item name="nickName" rules={Rule.nickName}>
-              <Input />
-            </Form.Item>
+        }
+      ></PersonInfoRow>
+      <PersonInfoRow
+        name={userInfo?.name}
+        title="真实姓名"
+        expandState={closeState}
+        editNode={
+          <div className={styles.nodeWrap}>
+            <div className={styles.input}>
+              <Input ref={nameRef} style={{ width: "90%" }} placeholder="请填写您的真实姓名"></Input>
+            </div>
+            <div className={styles.button}>
+              <Button type="primary" onClick={() => {
+                editUserInfo({ ...userInfo, name: nameRef.current!.input.value })
+                .then(() => {
+                  run()
+                  message.success("真实姓名更新成功")
+                })
+              }} >保存</Button>
+            </div>
           </div>
-        </div>
-        <div className={styles.personEditItem}>
-          <div className={styles.personEditItemLabel}>
-            <span style={{ color: '#e56161' }}>* </span>真实姓名
-          </div>
-          <div className={styles.personEditItemContent}>
-            <Form.Item name="name" rules={Rule.name} required>
-              <Input />
-            </Form.Item>
-          </div>
-        </div>
-      </Form>
+        }
+      ></PersonInfoRow>
     </Modal>
   );
 };
