@@ -10,13 +10,14 @@ const { Search } = Input;
 export interface SelectAddListFormProps {
   initPeople?: UserInfo[] | undefined[];
   projectName?: string;
-  onChange: (userInfoList: UserInfo[]) => void;
+  onChange?: (userInfoList: UserInfo[]) => void;
   notArrangeShow?: boolean; //checkbox的标志用来是否显示不安排外审的内容
   onSetPassArrangeStatus?: (flag: boolean) => void; //获取外审通不通过状态的callback
+  isAdd?: boolean;
 }
 import styles from './index.less';
 import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useBoolean, useHover, useRequest } from 'ahooks';
+import { useBoolean, useRequest } from 'ahooks';
 
 const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const {
@@ -24,6 +25,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     notArrangeShow = false,
     onSetPassArrangeStatus,
     projectName,
+    isAdd,
     onChange,
   } = props;
 
@@ -133,7 +135,11 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
 
   return (
     <div className={styles.selectForm}>
-      <CyFormItem label="账号" className={styles.account} name="outerAuditUsers">
+      <CyFormItem
+        label={isAdd ? '添加人员' : '账号'}
+        className={styles.account}
+        name="outerAuditUsers"
+      >
         <Dropdown overlay={<OptionList />} visible={visible}>
           <Search
             id="hover-div"
@@ -146,10 +152,10 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
           />
         </Dropdown>
       </CyFormItem>
-      <div className={styles.title}>外审人员列表</div>
-      <AddPeople />
+      {/* <div className={styles.title}>外审人员列表</div>
+      <AddPeople /> */}
 
-      {notArrangeShow && projectName ? (
+      {/* {notArrangeShow && projectName ? (
         <>
           <Divider />
           <div className={styles.notArrange}>
@@ -163,7 +169,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
             </Radio.Group>
           </div>
         </>
-      ) : null}
+      ) : null} */}
     </div>
   );
 };

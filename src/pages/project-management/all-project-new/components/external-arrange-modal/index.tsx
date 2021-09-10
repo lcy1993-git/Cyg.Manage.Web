@@ -97,22 +97,6 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           {arrangePeople && arrangePeople.length > 0 ? (
             <span className={styles.needExternalTitle}>无需外审</span>
           ) : (
-            //   <Checkbox
-            //     disabled
-            //     onChange={() => {
-            //       setIsArrangePeople(!isArrangePeople);
-            //     }}
-            //   >
-            //     不安排外审
-            //   </Checkbox>
-            // ) : (
-            //   <Checkbox
-            //     onChange={() => {
-            //       setIsArrangePeople(!isArrangePeople);
-            //     }}
-            //   >
-            //     不安排外审
-            //   </Checkbox>
             <span className={styles.noExternalTitle} onClick={() => isExternalEvent()}>
               无需外审
             </span>
