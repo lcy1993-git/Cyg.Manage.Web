@@ -280,6 +280,17 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           </Spin>
         </Modal>
       )}
+      <Modal
+        maskClosable={false}
+        title="文件预览"
+        width={"99%"}
+        visible={true}
+        destroyOnClose
+        footer={null}
+        onCancel={() => closeEvent()}
+      >
+        
+      </Modal>
     </>
   );
 };
