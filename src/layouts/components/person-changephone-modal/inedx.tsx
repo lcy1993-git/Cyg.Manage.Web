@@ -34,7 +34,8 @@ const ChangePhoneModal = (props: Props) => {
 
   const [canSendCode, setCanSendCode] = useState<boolean>(false);
   const [phoneNumber, setPhoneNumber] = useState<string>('');
-  const [codeNumber, setCodeNumber] = useState('');
+  const [codeNumber, setCodeNumber] = useState<string>('');
+
 
   const [canOkClick, setCanOkClick] = useState<boolean>(false)
 

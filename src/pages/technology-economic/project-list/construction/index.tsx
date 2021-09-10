@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TreeTable from '../components/tree-table';
 import EmptyTip from '@/components/empty-tip';
@@ -21,8 +21,8 @@ const columns = [
     title: '项目代码',
   },
   {
-    dataIndex: 'professionalProperty',
-    key: 'professionalProperty',
+    dataIndex: 'professionalPropertyText',
+    key: 'professionalPropertyText',
     title: '专业属性',
   },
   {
@@ -38,18 +38,17 @@ const columns = [
 ];
 type IProps = { dataSource: any };
 const Construction: React.FC<IProps> = ({ dataSource }) => {
-  // const tableRef = React.useRef<HTMLDivElement>(null);
-  // // 列表刷新
-  // const refresh = () => {
-  //   if (tableRef && tableRef.current) {
-  //     // @ts-ignore
-  //     tableRef.current.refresh();
-  //   }
-  // };
+  const [update,setUpdate] = useState(true)
+  useEffect(()=>{
+    setUpdate(false)
+    setTimeout(()=>{
+      setUpdate(true)
+    },100)
+  },[dataSource])
   return (
     <PageCommonWrap>
-      {dataSource && dataSource.length ? (
-        <TreeTable dataSource={dataSource} columns={columns} needCheck={false} />
+      {(dataSource && update) && dataSource.length ? (
+        <TreeTable dataSource={dataSource} columns={columns} needCheck={false} defaultExpandAllRows />
       ) : (
         <EmptyTip className="pt20 pb20" />
       )}

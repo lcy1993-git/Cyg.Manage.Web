@@ -72,11 +72,15 @@ export const newUploadLineStressSag = (
     formData.append('file', item);
   });
 
+  // const controller = new AbortController();
+  // const { signal } = controller;
+
   const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`;
   return request(uploadUrl, {
     method: 'POST',
     data: formData,
     requestType: 'form',
+    // signal,
   }).then((res) => {
     const { code, isSuccess, message: msg } = res;
     if (code === 6000) {
@@ -88,4 +92,11 @@ export const newUploadLineStressSag = (
       return Promise.reject(res);
     }
   });
+  // .catch((err) => {
+  //   if (err.name === 'AbortError') {
+  //     console.log('aborted');
+  //   } else {
+  //     console.log('error');
+  //   }
+  // });
 };

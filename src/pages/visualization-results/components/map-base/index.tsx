@@ -129,7 +129,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 地图定位
   useEffect(() => {
-    map && relocateMap('', layerGroups, view, setView, map, false);
+    map && relocateMap('', [...layerGroups, ...trackLayers], view, setView, map, false);
   }, [JSON.stringify(positionMap)]);
 
   // 左侧菜单伸缩时刷新地图尺寸

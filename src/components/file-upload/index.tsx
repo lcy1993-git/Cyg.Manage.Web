@@ -82,7 +82,6 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
     // 文件大小检验
     setFileList(copyFileList);
     onChange?.(copyFileList);
-
     return false;
   };
 
@@ -104,6 +103,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
   const deleteUploadItem = (uid: string) => {
     setUploadStatus('delete');
     const copyFileList = [...fileList];
+
     const thisDataIndex = copyFileList.findIndex((item: any) => item.uid === uid);
     if (thisDataIndex > -1) {
       copyFileList.splice(thisDataIndex, 1);

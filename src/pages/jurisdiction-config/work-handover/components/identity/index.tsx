@@ -1,8 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
-import { useRequest } from 'ahooks';
 // import { getCompanyGroups, getReceiver } from '@/services/personnel-config/work-handover';
 import Recevier from '../recevier/index';
-import { Checkbox } from 'antd';
 import TreeTable from '@/components/tree-table';
 import CyTag from '@/components/cy-tag';
 import styles from './index.less';
@@ -29,8 +27,7 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
     setReceiverName,
     doneFlag,
   } = props;
-  const [indeterminate, setIndeterminate] = React.useState(false);
-  const [checkAll, setCheckAll] = React.useState(false);
+
   const [tableSelectRows, setTableSelectRows] = useState<any>([]);
 
   const tableRef = useRef<HTMLDivElement>(null);
@@ -95,23 +92,9 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
     getGroupIds?.(handleGroupIds);
   }, [tableSelectRows]);
 
-  //全选
-  const checkAllEvent = (e: any) => {
-    console.log(e);
-  };
-
   return (
     <>
       <div className={styles.identityHead}>
-        {/* <div className={styles.checkboxItem}>
-          <Checkbox
-            onChange={checkAllEvent}
-            style={{ marginRight: '7px' }}
-            indeterminate={indeterminate}
-            checked={checkAll}
-          />
-          全选&nbsp;
-        </div> */}
         <Recevier
           receiverId={receiverId}
           userId={userId}

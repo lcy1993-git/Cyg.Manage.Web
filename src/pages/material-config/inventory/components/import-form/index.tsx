@@ -26,6 +26,9 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [province, setProvince] = useState<string>('');
   const [remark, setRemark] = useState<string>('');
   const [versionName, setVersionName] = useState<string>('');
+  // const controller = new AbortController();
+  // const { signal } = controller;
+
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
