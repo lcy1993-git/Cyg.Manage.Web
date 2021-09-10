@@ -32,16 +32,20 @@ const geoServerPortObject = {
   '171.223.214.154:21563': '21561',
   '171.223.214.154:21573': '21571',
   '171.223.214.154:21583': '21581',
+  '171.223.214.154:21683': '21681',
+  '171.223.214.154:21693': '21691',
+  '171.223.214.154:21703': '21701',
 };
 
 const ipArray = [];
 
 const thisHost = `${window.location.hostname}:${window.location.port}`;
 const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21523';
+// const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21571';
 
 const geoServerBaseUrl =
   // window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
-window.location.hostname === 'localhost' ? '10.6.1.53' : window.location.hostname;
+  window.location.hostname === 'localhost' ? '10.6.1.53' : window.location.hostname;
 
 export const geoServeUrl = !ipArray.includes(`${window.location.hostname}`)
   ? `${document.location.protocol}//${geoServerBaseUrl}:${geoServerPort}/geoserver/pdd/ows`
@@ -90,7 +94,7 @@ export const cyCommonRequest = <T extends {}>(
 
     const { code, isSuccess } = res;
     if (isSuccess && code === 200) {
-      resolve((res as unknown) as T);
+      resolve(res as unknown as T);
     } else {
       message.error(res.message);
       reject(res.message);
@@ -181,7 +185,7 @@ export const commonUpload = (
   files: any[],
   name: string = 'file',
   requestSource: 'project' | 'resource' | 'upload',
-  extraParams?: Record<string, any>
+  extraParams?: Record<string, any>,
   // postType: 'body' | 'query',
 ) => {
   const requestUrl = baseUrl[requestSource];
@@ -189,11 +193,12 @@ export const commonUpload = (
   files.forEach((item) => {
     formData.append(name, item);
   });
-  if (extraParams){
-    Object.keys(extraParams).map(key=>{
-    formData.append(key, extraParams?.[key]);
-    return null;
-  })}
+  if (extraParams) {
+    Object.keys(extraParams).map((key) => {
+      formData.append(key, extraParams?.[key]);
+      return null;
+    });
+  }
   return cyRequest<any[]>(() =>
     tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',
@@ -234,5 +239,3 @@ const versionUrl = 'http://service.sirenmap.com:8101/api/Version/Get';
 export const getVersionUpdate = (params: VersionParams) => {
   return request(versionUrl, { method: 'POST', data: params });
 };
-
-

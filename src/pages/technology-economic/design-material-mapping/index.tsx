@@ -11,7 +11,7 @@ import TableSearch from '@/components/table-search';
 
 import moment from 'moment';
 import {addMaterialMappingDesignLibrary,
-  DeleteMaterialMappingDesignLibrary,
+  deleteMaterialMappingDesignLibrary,
   getResourceLibList,
   materialMappingDesignLibraryModifyStatus} from '@/services/technology-economic/material';
 
@@ -82,7 +82,6 @@ const DesignMaterialMapping: React.FC = () => {
       render: (enable: boolean, record: any) => {
         return (
           <Space>
-            {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
             <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
             <span>{enable ? '启用' : '停用'}</span>
           </Space>
@@ -141,7 +140,7 @@ const DesignMaterialMapping: React.FC = () => {
     await materialMappingDesignLibraryModifyStatus(record.id)
     refresh()
   }
-
+  // 查看详情
   const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warn('请选择要操作的行');
@@ -168,7 +167,7 @@ const DesignMaterialMapping: React.FC = () => {
       title: '确定要删除该物料映射吗?',
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await DeleteMaterialMappingDesignLibrary(tableSelectRows[0].id)
+        await deleteMaterialMappingDesignLibrary(tableSelectRows[0].id)
         refresh()
       },
       onCancel() {
@@ -198,7 +197,6 @@ const DesignMaterialMapping: React.FC = () => {
   };
 
   const tableSelectEvent = (data: SuppliesLibraryData[] | Object) => {
-    console.log(data)
     setTableSelectRows(data);
   };
 

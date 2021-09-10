@@ -118,7 +118,7 @@ export default [
   },
   {
     id: "110000",
-    text: "北京",
+    text: "北京市",
     children: [
         {
             id: "110100",

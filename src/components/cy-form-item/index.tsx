@@ -4,6 +4,7 @@ import { Form } from 'antd';
 
 interface CyFormItemProps {
   label?: string | React.ReactNode;
+  labelSlot?: () => React.ReactNode;
   required?: boolean;
   className?: string;
   align?: 'left' | 'right';
@@ -13,7 +14,15 @@ interface CyFormItemProps {
 const withCyFormItemProps = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
   props: P & CyFormItemProps & { children?: React.ReactNode },
 ) => {
-  const { className = '', labelWidth = 90, label = '', align = 'left', required, ...rest } = props;
+  const {
+    className = '',
+    labelWidth = 90,
+    label = '',
+    align = 'left',
+    required,
+    labelSlot,
+    ...rest
+  } = props;
 
   const isRequiredClassName = required ? styles.required : '';
   const lableAlign = align === 'right' ? styles.right : '';
@@ -24,7 +33,10 @@ const withCyFormItemProps = <P extends {}>(WrapperComponent: React.ComponentType
         className={`${styles.cyFormItemLabel} ${lableAlign}`}
         style={{ width: `${labelWidth}px` }}
       >
-        <span className={`${styles.cyFormItemLabelWord} ${isRequiredClassName}`}>{label}</span>
+        <span className={`${styles.cyFormItemLabelWord} ${isRequiredClassName}`}>
+          {label}
+          {labelSlot?.()}
+        </span>
       </div>
       <div className={styles.cyFormItemContent}>
         <WrapperComponent {...(rest as P)}>{props.children}</WrapperComponent>

@@ -1,5 +1,4 @@
-import { CloudUploadOutlined, DeleteOutlined, EditOutlined, LinkOutlined } from '@ant-design/icons';
-import { Progress } from 'antd';
+import { CloudUploadOutlined, DeleteOutlined,  LinkOutlined } from '@ant-design/icons';
 import React from 'react';
 import styles from './index.less';
 
@@ -66,13 +65,17 @@ const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
               <span>开始上传</span>
             </span>
           ) : null}
+          {uploadStatus === 'start' ? (
+            ''
+          ) : (
+            <span className={styles.deleteButton} onClick={() => deleteFunction()}>
+              <span className={styles.controlButtonIcon}>
+                <DeleteOutlined />
+              </span>
 
-          <span className={styles.deleteButton} onClick={() => deleteFunction()}>
-            <span className={styles.controlButtonIcon}>
-              <DeleteOutlined />
+              <span>删除</span>
             </span>
-            <span>删除</span>
-          </span>
+          )}
         </div>
       </div>
     </>

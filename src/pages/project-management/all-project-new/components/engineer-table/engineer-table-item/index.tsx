@@ -248,7 +248,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                 }
               >
                 <div className={styles.iconSlot}>
-                  {ite.iconSlot?.(item)}
+                  {ite.iconSlot?.(item,projectInfo.projects)}
                 </div>
                 <div className={`${styles.engineerTableTdContent} ${ite.ellipsis ? styles.ellipsis : ''}`}>
                   {ite.ellipsis ? (

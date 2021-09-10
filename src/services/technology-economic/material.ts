@@ -94,17 +94,17 @@ export const deleteMaterialMappingQuota = (materialId: string) => {
   );
 }
 // 删除
-export const DeleteMaterialMappingDesignLibrary  = (Id: string) => {
+export const deleteMaterialMappingDesignLibrary  = (Id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/MaterialLibrary/DeleteMaterialMappingDesignLibrary`,
       {method: 'GET', params: {Id}}),
   );
 }
 // 删除设计端物料映射库-物料项
-export const manageMaterialMappingDesignItem
+export const DeleteMaterialMappingDesignItem
   = (Id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/MaterialLibrary/ManageMaterialMappingDesignItem`,
+    request(`${baseUrl.tecEco1}/MaterialLibrary/DeleteMaterialMappingDesignItem`,
       {method: 'GET', params: {Id}}),
   );
 }
@@ -136,6 +136,18 @@ export const MaterialMappingInherit = (data: {
 }) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.tecEco1}/MaterialLibrary/Inherit`,
+      {method: 'POST', data}),
+  );
+}
+
+// 管理设计端物料映射库项
+export const manageMaterialMappingDesignItem = (data: {
+  "materialMappingDesignItemId": string,
+  "sourceMaterialLibraryId": string,
+  "sourceMaterialItemId": string
+}) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.tecEco1}/MaterialLibrary/ManageMaterialMappingDesignItem`,
       {method: 'POST', data}),
   );
 }

@@ -7,6 +7,7 @@ import styles from './index.less';
 import ReadonlyItem from '@/components/readonly-item';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
+import CyFormItem from '@/components/cy-form-item';
 
 interface CheckInfoModalProps {
   visible: boolean;
@@ -31,6 +32,8 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
     ready: !!newsId,
     refreshDeps: [newsId],
   });
+
+  console.log(newsInfo);
 
   useEffect(() => {
     if (state) {
@@ -90,11 +93,11 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
           {clientCategorysInfo}
         </ReadonlyItem>
         <div style={{ width: '100%' }}>
-          <ReadonlyItem labelWidth={40} align="left" label="内容">
+          <CyFormItem labelWidth={40} align="left" label="内容">
             {newsInfo?.content && (
               <div dangerouslySetInnerHTML={{ __html: newsInfo?.content! }}></div>
             )}
-          </ReadonlyItem>
+          </CyFormItem>
         </div>
       </Spin>
     </Modal>

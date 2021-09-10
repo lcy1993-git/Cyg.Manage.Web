@@ -156,9 +156,11 @@ export const delay = (ms: number) => {
 export const formDataMateral = (content: any, getProperties: any) => {
   const filterData = content.filter((item: any) => item.parentID !== -1);
   const data = filterData.map((item: any) => {
+    console.log();
+    
     return {
       ...item,
-      state: getProperties?.state,
+      // state: getProperties?.state,
       // children: [],
     };
   });

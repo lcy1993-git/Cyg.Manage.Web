@@ -9,6 +9,7 @@ import {
   getProjectTableList,
   getEngineerInfo,
   againInherit,
+  deleteProject,
 } from '@/services/project-management/all-project';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
@@ -123,6 +124,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false);
 
+  // 项目继承状态判断
+  const [inheritState, setInheritState] = useState<boolean>(false);
+
   const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
 
   const scrollbar = useRef<any>(null);
@@ -138,6 +142,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const editProjectEvent = (info: any) => {
+    if (info.inheritState === 2) {
+      setInheritState(true);
+    }
     setEditProjectVisible(true);
     setCurrentEditProjectInfo(info);
   };
@@ -240,6 +247,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 startTime: engineerInfo.startTime,
                 endTime: engineerInfo.endTime,
                 status: tableItemData.stateInfo.status,
+                inheritState: tableItemData.stateInfo.inheritStatus,
               });
             }}
           >
@@ -277,25 +285,24 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             查看成果
           </Menu.Item>
         )}
-        {jurisdictionInfo.canInherit &&
-          buttonJurisdictionArray?.includes('all-project-inherit') && (
-            // all-project-inherit
-            <Menu.Item
-              onClick={() =>
-                projectInherit({
-                  projectId: tableItemData.id,
-                  areaId: engineerInfo.province,
-                  company: engineerInfo.company,
-                  engineerId: engineerInfo.id,
-                  companyName: engineerInfo.company,
-                  startTime: engineerInfo.startTime,
-                  endTime: engineerInfo.endTime,
-                })
-              }
-            >
-              项目继承
-            </Menu.Item>
-          )}
+        {jurisdictionInfo.canInherit && buttonJurisdictionArray?.includes('all-project-inherit') && (
+          // all-project-inherit
+          <Menu.Item
+            onClick={() =>
+              projectInherit({
+                projectId: tableItemData.id,
+                areaId: engineerInfo.province,
+                company: engineerInfo.company,
+                engineerId: engineerInfo.id,
+                companyName: engineerInfo.company,
+                startTime: engineerInfo.startTime,
+                endTime: engineerInfo.endTime,
+              })
+            }
+          >
+            项目继承
+          </Menu.Item>
+        )}
       </Menu>
     );
   };
@@ -374,22 +381,16 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         );
       }
       if (record.stateInfo.inheritStatus === 3) {
-        return (
-          <span>
-            <Popconfirm
-              title="项目继承失败，请重试"
-              onConfirm={() => againInheritEvent(record.id)}
-              okText="确认"
-              cancelText="取消"
-            >
-              <span className={styles.dangerColor}>[继承失败]</span>
-            </Popconfirm>
-            <span className={styles.disabled}>{record.name}</span>
-          </span>
-        );
+        return <span className={styles.disabled}>{record.name}</span>;
       }
     }
   };
+
+  const deleteFailProject = async (projectId: string) => {
+    await deleteProject([projectId]);
+    message.success("已取消项目继承");
+    finishEvent?.();
+  }
 
   const completeConfig = [
     {
@@ -398,8 +399,32 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 300,
       render: projectNameRender,
       ellipsis: true,
-      iconSlot: (record: any) => {
-        if (record.stateInfo.inheritStatus) {
+      iconSlot: (record: any, projects: any) => {
+        const parentData = projects.filter((item: any) => item.id === record.inheritId);
+        
+        if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
+          if (record.stateInfo.inheritStatus === 3) {
+            return (
+              <>
+                <Tooltip title={`继承自${record.inheritName}`}>
+                  <span className={styles.inheritIcon}>
+                    <LinkOutlined />
+                  </span>
+                </Tooltip>
+                <span>
+                  <Popconfirm
+                    title="项目继承失败，请重试"
+                    onConfirm={() => againInheritEvent(record.id)}
+                    onCancel={() => deleteFailProject(record.id)}
+                    okText="确认"
+                    cancelText="取消"
+                  >
+                    <span className={styles.dangerColor}>[继承失败]</span>
+                  </Popconfirm>
+                </span>
+              </>
+            );
+          }
           return (
             <Tooltip title={`继承自${record.inheritName}`}>
               <span className={styles.inheritIcon}>
@@ -707,12 +732,15 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       render: (record: any, engineerInfo: any) => {
         const { operationAuthority, stateInfo } = record;
 
-        if(stateInfo.inheritStatus && (stateInfo.inheritStatus === 1 || stateInfo.inheritStatus === 3)) {
+        if (
+          stateInfo.inheritStatus &&
+          (stateInfo.inheritStatus === 1 || stateInfo.inheritStatus === 3)
+        ) {
           return (
             <Tooltip title="项目继承中，不能进行任何操作" placement="topRight">
               <BarsOutlined />
             </Tooltip>
-          )
+          );
         }
         return (
           <Dropdown
@@ -1075,6 +1103,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             startTime={currentEditProjectInfo.startTime}
             endTime={currentEditProjectInfo.endTime}
             visible={editProjectVisible}
+            pointVisible={inheritState}
+            setInheritState={setInheritState}
             onChange={setEditProjectVisible}
             changeFinishEvent={refreshEvent}
           />

@@ -1,0 +1,29 @@
+<svg id="图层_1" data-name="图层 1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 25 25">
+    <defs>
+        <style>.cls-1{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-3{fill:#fff;}.cls-4{fill:#707070;}.cls-5{fill:#0076ff;}.cls-6{isolation:isolate;}</style>
+        <clipPath id="clip-path">
+            <rect class="cls-1" x="-0.21" y="0.12" width="25" height="25"/>
+        </clipPath>
+    </defs>
+    <g class="cls-2">
+        <g id="word">
+            <g id="组_1102" data-name="组 1102">
+                <g id="路径_836" data-name="路径 836">
+                    <path class="cls-3" d="M19.79,21.8h-15V4.43H16.57l3.22,3.11Z"/>
+                    <path class="cls-4" d="M5.29,4.93V21.3h14V7.75L16.37,4.93H5.29m-1-1H16.78l3.51,3.4v15h-16Z"/>
+                </g>
+                <g id="矩形_1198" data-name="矩形 1198">
+                    <rect class="cls-5" x="4.29" y="9.61" width="16" height="8"/>
+                    <path class="cls-4" d="M20.29,17.61h-16v-8h16Zm-15-1h14v-6h-14Z"/>
+                </g>
+                <g id="W" class="cls-6">
+                    <g class="cls-6">
+                        <path class="cls-3" d="M9.92,11.2h.72l.41,2.3.24,1.41h0l.3-1.41.57-2.3h.61l.58,2.3q.15.69.3,1.41h0c.07-.48.15-.95.22-1.41l.42-2.3H15l-.87,4.41h-.86l-.59-2.45c-.08-.35-.15-.68-.21-1h0c-.06.33-.13.66-.2,1l-.58,2.45h-.84Z"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

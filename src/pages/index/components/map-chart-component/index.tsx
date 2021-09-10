@@ -25,6 +25,7 @@ import { exportHomeStatisticData } from '@/services/operation-config/cockpit';
 interface MapChartComponentProps {
   currentAreaInfo: AreaInfo;
   setCurrentAreaInfo: (areaInfo: any) => void;
+  isConfig?: boolean;
 }
 
 let mapStatus = {
@@ -33,7 +34,7 @@ let mapStatus = {
 };
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
-  const { setCurrentAreaInfo, currentAreaInfo } = props;
+  const { setCurrentAreaInfo, currentAreaInfo, isConfig} = props;
   const [activeCityCode, setActiveCityCode] = useState<string>();
 
   const [activeAreaCode, setActiveAreaCide] = useState<string>();
@@ -428,7 +429,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           </ChartBox>
         </div>
         <div className="flex1"></div>
-        <div className={styles.mapChartComponentProjectAreaTab}>
+        <div className={`${styles.mapChartComponentProjectAreaTab} ${isConfig ? styles.isConfig : ''}`}>
           <span className={`${styles.areaSpan} ${styles.hasChoose}`} onClick={provinceClickEvent}>
             省
           </span>

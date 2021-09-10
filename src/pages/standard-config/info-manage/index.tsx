@@ -23,6 +23,7 @@ import EnumSelect from '@/components/enum-select';
 import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import CyTag from '@/components/cy-tag';
 import CheckInfoModal from './check-info-modal';
+import { getUsersIds } from './utils';
 
 const { Search } = Input;
 
@@ -235,17 +236,16 @@ const InfoManage: React.FC = () => {
   const sureAddNews = () => {
     addForm.validateFields().then(async (values) => {
       const { userIds } = values;
+      const handleIds = addPersonArray.filter((item: any) => userIds?.includes(item.value));
+      const finallyIds = getUsersIds(handleIds);
 
-      const finallyUserIds = addPersonArray
-        .filter((item) => userIds?.includes(item.value))
-        .map((item) => item.chooseValue);
       const submitInfo = {
         title: '',
         content: content,
         isEnable: true,
         clientCategorys: '',
         ...values,
-        userIds: finallyUserIds,
+        userIds: finallyIds,
       };
 
       await addNewsItem(submitInfo);
@@ -267,7 +267,8 @@ const InfoManage: React.FC = () => {
 
     const checkContentData = await run(editDataId);
 
-    const userIds = checkContentData.users.map((item) => item.value);
+    const userIds = checkContentData.users?.map((item) => item.value);
+
     const clientCategorys = checkContentData.clientCategorys.map((item) => item.value);
     setEditFormVisible(true);
     setEditContent(checkContentData.content);
@@ -288,15 +289,16 @@ const InfoManage: React.FC = () => {
 
     editForm.validateFields().then(async (values) => {
       const { userIds } = values;
-      const finallyUserIds = editPersonArray
-        .filter((item) => userIds?.includes(item.value))
-        .map((item) => item.chooseValue);
+
+      const handleIds = editPersonArray.filter((item: any) => userIds?.includes(item.value));
+      const finallyIds = getUsersIds(handleIds);
+
       const submitInfo = {
         id: editData.id,
         title: editData.title,
         content: content,
         ...values,
-        userIds: finallyUserIds,
+        userIds: finallyIds,
       };
 
       await updateNewsItem(submitInfo);
@@ -363,7 +365,7 @@ const InfoManage: React.FC = () => {
         needCommonButton={true}
         columns={columns}
         url="/Article/GetPagedList"
-        tableTitle="宣贯管理"
+        tableTitle="宣贯"
         getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           state: status,

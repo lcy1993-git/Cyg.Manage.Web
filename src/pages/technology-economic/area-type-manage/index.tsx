@@ -1,19 +1,21 @@
-import {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {Button, Modal, Spin, Form, Select, Space, message} from 'antd';
 import WrapperComponent from '@/components/page-common-wrap';
 import CommonTitle from '@/components/common-title';
 import styles from './index.less';
 import GeneralTable from '@/components/general-table';
-import {PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+import {PlusOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined, ImportOutlined} from '@ant-design/icons';
 import {useForm} from 'antd/lib/form/Form';
 import {
   createOrEditAreaInfo,
   deleteAreaInfo,
+  importAreaInfo,
   queryAreaInfoDetail,
   queryAreaInfoList,
   queryBasicAreaByLevel
 } from '@/services/technology-economic/common-rate';
 import {generateUUID} from '@/utils/utils';
+import FileUpload from "@/components/file-upload";
 
 interface ListData {
   value: string | number;
@@ -47,6 +49,8 @@ const AreaTypeManage: React.FC = () => {
   const [thirdLevelList, setThirdLevelList] = useState<LevelItem[]>([]) // 三级地区
   const [disabledThirdLevel, setDisabledThirdLevel] = useState<boolean>(false) // 禁用第三级地区
   const [selectValue, setSelecrValue] = useState<AreaItem>({} as AreaItem) // 列表选中项
+  const [fileList, setFileList] = useState<File[]>([])
+  const [importVisibel, setImportVisibel] = useState<boolean>(false);
   const [form] = useForm();
 
   const columns = [
@@ -119,12 +123,24 @@ const AreaTypeManage: React.FC = () => {
       setThirdLevelList(res)
     }
   }
+  const onOK = () => {
+    if (fileList.length === 0) {
+      message.error('当前未上传文件');
+    }else{
+      importAreaInfo( fileList[0]).then(() => {
+        message.success('上传成功');
+        getAreaListByLevel(Number(activeValue.value))
+        setImportVisibel(false);
+      });
+    }
+  }
+  // 获取编辑数据
   const turnEditData = async ()=>{
   const {content} = await queryAreaInfoDetail(selectValue.areaType,selectValue.firstCode)
-    if (content.secondCodes.length === 0){
+    if (content.secondCodes.length === 0){ // 处理选项['全部']
       content.secondCodes = ['all']
     }
-    if (content.thirdCodes.length === 0){
+    if (content.thirdCodes.length === 0){ // 处理选项['全部']
       content.thirdCodes = ['all']
       setThirdLevelList([
         {
@@ -157,7 +173,15 @@ const AreaTypeManage: React.FC = () => {
     setIsEdit(false)
     form.resetFields()
   }
-
+  const getAreaListByLevel = async (level: number) => {
+    const res = await queryAreaInfoList(level)
+    const arr = res.map((item: any) => {
+      // eslint-disable-next-line no-param-reassign
+      item.id = generateUUID() // 添加唯一标识,解决列表选中出错的问题
+      return item
+    })
+    setAreaList(arr)
+  }
   const onFinish = async (values: any) => {
     const data = {
       areaType: +activeValue.value,
@@ -170,19 +194,10 @@ const AreaTypeManage: React.FC = () => {
     await createOrEditAreaInfo(data)
     form.resetFields()
     setIsModalVisible(false)
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     getAreaListByLevel(Number(activeValue.value))
 
   }
-  const getAreaListByLevel = async (level: number) => {
-    const res = await queryAreaInfoList(level)
-    const arr = res.map(item => {
-      // eslint-disable-next-line no-param-reassign
-      item.id = generateUUID() // 添加唯一标识,解决列表选中出错的问题
-      return item
-    })
-    setAreaList(arr)
-  }
+
   const deleteArea = () => {
     if (!selectValue.firstCode) {
       message.warn('请选择一行数据')
@@ -211,6 +226,10 @@ const AreaTypeManage: React.FC = () => {
       <Button className="mr7" onClick={deleteArea}>
         <DeleteOutlined/>
         删除
+      </Button>
+      <Button className="mr7" onClick={() => setImportVisibel(true)}>
+        <ImportOutlined />
+        导入
       </Button>
     </>
   );
@@ -302,6 +321,28 @@ const AreaTypeManage: React.FC = () => {
           </div>
         </Spin>
       </div>
+      <Modal
+        title="导入地区分类"
+        onOk={onOK}
+        onCancel={() => setImportVisibel(false)}
+        visible={importVisibel}
+      >
+        <div className={styles.modalWrap}>
+          <div className={styles.row}>
+            <span className={styles.label}>上传文件</span>
+            <FileUpload
+              uploadFileBtn
+              maxCount={1}
+              accept=".xlsx"
+              trigger={true}
+              process={true}
+              onChange={(e) => setFileList(e)}
+              className={styles.file}
+              uploadFileFn={async () => { }}
+            />
+          </div>
+        </div>
+      </Modal>
       <Modal
         title={isEdit ? "编辑-地区分类" : "添加-地区分类"}
         visible={isModalVisible}

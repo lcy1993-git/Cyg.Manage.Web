@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import ScreenModal from './components/screen-modal';
 import AddEngineerModal from './components/add-engineer-modal';
 import { Dropdown } from 'antd';
-import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { TableItemCheckedInfo } from './components/engineer-table/engineer-table-item';
@@ -45,6 +45,7 @@ import { useMount, useRequest, useUpdateEffect } from 'ahooks';
 import AddFavoriteModal from './components/add-favorite-modal';
 import FavoriteList from './components/favorite-list';
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list';
+import { useMemo } from 'react';
 
 const { Search } = Input;
 
@@ -210,6 +211,13 @@ const AllProject: React.FC = () => {
       keyWord,
     });
   };
+
+  const canDelete = useMemo(() => {
+    return tableSelectData
+      .map((item) => item.projectInfo.status)
+      .flat()
+      .filter((item) => item.inheritStatus === 1 || item.inheritStatus === 3);
+  }, [JSON.stringify(tableSelectData)]);
 
   useUpdateEffect(() => {
     setTableSelectData([]);
@@ -490,20 +498,20 @@ const AllProject: React.FC = () => {
   //收藏夹操作
   const favoriteMenu = (
     <Menu>
-      {/* {buttonJurisdictionArray?.includes('all-project-share') && ( */}
-      <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
-      {/* )} */}
-      {/* {buttonJurisdictionArray?.includes('all-project-share-recall') && ( */}
-      <Popconfirm
-        placement="top"
-        title="确定要移除所选工程?"
-        onConfirm={() => removeFavEvent()}
-        okText="确认"
-        cancelText="取消"
-      >
-        <Menu.Item>移除当前收藏夹</Menu.Item>
-      </Popconfirm>
-      {/* )} */}
+      {buttonJurisdictionArray?.includes('add-favorite-project') && (
+        <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
+      )}
+      {buttonJurisdictionArray?.includes('remove-favorite-project') && (
+        <Popconfirm
+          placement="top"
+          title="确定要移除所选工程?"
+          onConfirm={() => removeFavEvent()}
+          okText="确认"
+          cancelText="取消"
+        >
+          <Menu.Item>移出当前收藏夹</Menu.Item>
+        </Popconfirm>
+      )}
     </Menu>
   );
 
@@ -520,7 +528,7 @@ const AllProject: React.FC = () => {
       if (selectedFavId) {
         if (engineerIds && engineerIds.length > 0) {
           await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds });
-          message.success('已移除当前收藏夹');
+          message.success('已移出当前收藏夹');
           searchByParams({
             ...searchParams,
             engineerFavoritesId: selectedFavId,
@@ -528,7 +536,7 @@ const AllProject: React.FC = () => {
           });
           return;
         }
-        message.warning('请选择要移除当前收藏夹的工程');
+        message.warning('请选择要移出当前收藏夹的工程');
         return;
       }
       message.warning('您还未选择收藏夹');
@@ -622,6 +630,24 @@ const AllProject: React.FC = () => {
     searchByParams({ ...params, engineerFavoritesId: selectedFavId, keyWord, statisticalCategory });
   };
 
+  //待处理slot tips
+  const processedSlot = () => {
+    return (
+      <Tooltip title="需要您安排和结项的项目" placement="right">
+        <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+      </Tooltip>
+    );
+  };
+
+  //进行中 slot
+  const progressSlot = () => {
+    return (
+      <Tooltip title="您是项目的执行身份且未结项的项目" placement="right">
+        <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+      </Tooltip>
+    );
+  };
+
   return (
     <>
       <Tooltip title="工程收藏夹">
@@ -650,6 +676,7 @@ const AllProject: React.FC = () => {
                   setVisible={setSideVisible}
                   setStatisticalTitle={setStatisticalCategory}
                   getFavName={setFavName}
+                  favName={favName}
                   finishEvent={refresh}
                   visible={sideVisible}
                 />
@@ -664,14 +691,14 @@ const AllProject: React.FC = () => {
                 </div>
                 <div className={styles.projectManagementStatisticItem}>
                   <div onClick={() => statisticsClickEvent('1')}>
-                    <SingleStatistics label="待处理" icon="awaitProcess">
+                    <SingleStatistics label="待处理" icon="awaitProcess" tipSlot={processedSlot}>
                       {handleStatisticsData(statisticsData?.awaitProcess)}
                     </SingleStatistics>
                   </div>
                 </div>
                 <div className={styles.projectManagementStatisticItem}>
                   <div onClick={() => statisticsClickEvent('2')}>
-                    <SingleStatistics label="进行中" icon="inProgress">
+                    <SingleStatistics label="进行中" icon="inProgress" tipSlot={progressSlot}>
                       {handleStatisticsData(statisticsData?.inProgress)}
                     </SingleStatistics>
                   </div>
@@ -720,17 +747,29 @@ const AllProject: React.FC = () => {
                       </Dropdown>
                     )}
                     {buttonJurisdictionArray?.includes('all-project-delete-project') && (
-                      <Popconfirm
-                        title="确认对勾选的项目进行删除吗?"
-                        okText="确认"
-                        cancelText="取消"
-                        onConfirm={sureDeleteProject}
-                      >
-                        <Button className="mr7">
-                          <DeleteOutlined />
-                          删除
-                        </Button>
-                      </Popconfirm>
+                      <>
+                        {canDelete.length > 0 && (
+                          <Tooltip title="您勾选的项目中含有继承中的项目，不能进行删除操作">
+                            <Button disabled={true} className="mr7">
+                              <DeleteOutlined />
+                              删除
+                            </Button>
+                          </Tooltip>
+                        )}
+                        {canDelete.length === 0 && (
+                          <Popconfirm
+                            title="确认对勾选的项目进行删除吗?"
+                            okText="确认"
+                            cancelText="取消"
+                            onConfirm={sureDeleteProject}
+                          >
+                            <Button className="mr7">
+                              <DeleteOutlined />
+                              删除
+                            </Button>
+                          </Popconfirm>
+                        )}
+                      </>
                     )}
                     {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
                       buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
@@ -749,12 +788,14 @@ const AllProject: React.FC = () => {
                         </Button>
                       </Dropdown>
                     )}
-                    <Dropdown overlay={favoriteMenu}>
-                      <Button className="mr7">
-                        收藏 <DownOutlined />
-                      </Button>
-                    </Dropdown>
-
+                    {(buttonJurisdictionArray?.includes('add-favorite-project') ||
+                      buttonJurisdictionArray?.includes('remove-favorite-project')) && (
+                      <Dropdown overlay={favoriteMenu}>
+                        <Button className="mr7">
+                          收藏 <DownOutlined />
+                        </Button>
+                      </Dropdown>
+                    )}
                     {buttonJurisdictionArray?.includes('all-project-export') && (
                       <div className="mr7">
                         <TableExportButton

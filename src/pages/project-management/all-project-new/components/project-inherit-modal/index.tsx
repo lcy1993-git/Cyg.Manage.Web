@@ -1,4 +1,8 @@
-import { editProject, getProjectInfo, inheritProject } from '@/services/project-management/all-project';
+import {
+  editProject,
+  getProjectInfo,
+  inheritProject,
+} from '@/services/project-management/all-project';
 import { useControllableValue } from 'ahooks';
 import { Button } from 'antd';
 import { Form, message, Modal } from 'antd';
@@ -20,6 +24,7 @@ interface ProjectInheritModalProps {
   startTime?: Moment;
   endTime?: Moment;
   engineerId: string;
+  pointVisible?: boolean;
 }
 
 const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
@@ -27,8 +32,18 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const { projectId, changeFinishEvent, areaId, company, companyName, status, startTime, endTime, engineerId} =
-    props;
+  const {
+    projectId,
+    changeFinishEvent,
+    areaId,
+    company,
+    companyName,
+    status,
+    startTime,
+    endTime,
+    engineerId,
+    pointVisible,
+  } = props;
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
@@ -102,7 +117,12 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" loading={requestLoading} onClick={() => sureProjectInheritEvent()}>
+        <Button
+          key="save"
+          type="primary"
+          loading={requestLoading}
+          onClick={() => sureProjectInheritEvent()}
+        >
           保存
         </Button>,
       ]}
