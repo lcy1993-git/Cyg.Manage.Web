@@ -2,18 +2,9 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import React, { useState, useEffect, useRef } from 'react';
 import { Spin, message } from 'antd';
-import 'antd/dist/antd.min.css'
 import { useMount, useUpdateEffect } from 'ahooks';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
 import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry';
-
-console.log(pdfjsLib);
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker;
-
-console.log(PDFJSWorker);
-
-
 import styles from './index.less'
 // import type { PDFWorker } from 'pdfjs-dist';
 
