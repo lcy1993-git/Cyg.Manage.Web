@@ -54,9 +54,9 @@ export const mergeTable =(mergeInfo: any, hasTab = false, document: HTMLDivEleme
       for (let child = start_c; child <= end_c; child++) {
         if (child === start_c && i === start_r) {
           // 循环到就是第一个单元格，以这个单元格为开始进行合并
-          row?.children[child].classList.add("will_span");
-          row?.children[child].setAttribute("row", end_r - start_r + 1);
-          row?.children[child].setAttribute("col", end_c - start_c + 1);
+          row?.children[child]?.classList.add("will_span");
+          row?.children[child]?.setAttribute("row", end_r - start_r + 1);
+          row?.children[child]?.setAttribute("col", end_c - start_c + 1);
         } else {
           // 只做标记，不在这里删除
           row?.children[child]?.classList.add("remove");

@@ -282,6 +282,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                       compileResultData={compileResultData?.map(mapTreeData)}
                       createEvent={setCompileKeys}
                       setTabEvent={setCurrentTab}
+                      setCurrentFileInfo={setCurrentFileInfo}
                     />
                   </Spin>
                 </TabPane>

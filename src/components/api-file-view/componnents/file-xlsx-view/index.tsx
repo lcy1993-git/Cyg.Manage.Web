@@ -1,6 +1,6 @@
 /* eslint-disable no-plusplus */
 import { useState, useRef } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import XLSX from 'xlsx';
 import { useMount } from 'ahooks';
 import classnames from 'classnames';
@@ -50,9 +50,11 @@ const FileXlsxView: React.FC<FileXlsxViewProps> = ({
       const csv = XLSX.utils.sheet_to_csv(currentWorksheet);
       const html = csv2table(csv, coordinateaxis);
       ref.current!.innerHTML = html;
-      
-      mergeTable(currentWorksheet["!merges"], coordinateaxis, ref.current!)
-
+      try {
+        mergeTable(currentWorksheet["!merges"], coordinateaxis, ref.current!)
+      } catch (error) {
+        message.error(error)
+      }
     }
   }, [JSON.stringify(workBook), currentIndex])
   

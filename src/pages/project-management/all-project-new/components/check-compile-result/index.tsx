@@ -11,16 +11,27 @@ interface DesignResultProps {
   createEvent: Dispatch<SetStateAction<React.Key[]>>;
   setTabEvent: Dispatch<SetStateAction<string>>;
   compileResultData: any;
+  setCurrentFileInfo: (a: any) => void;
 }
 
 const CompileResultTab: React.FC<DesignResultProps> = (props) => {
-  const { createEvent, setTabEvent, compileResultData } = props;
+  const { createEvent, setTabEvent, compileResultData, setCurrentFileInfo } = props;
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
 
   const onCheck = (checkedKeysValue: React.Key[]) => {
     createEvent(checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
     setTabEvent('compile');
+  };
+
+  const onSelect = (info: string, e: any) => {
+    if(e.node.category === 2) {
+      const type = e.node.title.split(".").at(-1);
+      setCurrentFileInfo({
+        type,
+        path: info[0]
+      })
+    }
   };
 
   return (
@@ -33,6 +44,7 @@ const CompileResultTab: React.FC<DesignResultProps> = (props) => {
             checkedKeys={checkedKeys}
             defaultExpandAll={true}
             treeData={compileResultData}
+            onSelect={onSelect}
           />
         </div>
       )}
