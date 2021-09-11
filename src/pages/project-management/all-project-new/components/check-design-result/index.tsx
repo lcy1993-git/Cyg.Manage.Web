@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import EmptyTip from '@/components/empty-tip';
-
+import type { CurrentFileInfo } from '../check-result-modal';
 import { Tree } from 'antd';
 import styles from './index.less';
 const { DirectoryTree } = Tree;
@@ -9,10 +9,11 @@ interface DesignResultProps {
   createEvent: Dispatch<SetStateAction<React.Key[]>>;
   setTabEvent: Dispatch<SetStateAction<string>>;
   designData: any;
+  setCurrentFileInfo: (fileInfo: CurrentFileInfo) => void
 }
 
 const DesignResultTab: React.FC<DesignResultProps> = (props) => {
-  const { createEvent, setTabEvent, designData } = props;
+  const { createEvent, setTabEvent, designData, setCurrentFileInfo } = props;
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
 
   const onCheck = (checkedKeysValue: React.Key[]) => {
@@ -21,11 +22,13 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
     setTabEvent('design');
   };
 
-  console.log(designData);
-
-  const onSelect = (info: any, e, m) => {
+  const onSelect = (info: string, e: any) => {
     if(e.node.category === 2) {
-      
+      const type = e.node.title.split(".").at(-1);
+      setCurrentFileInfo({
+        type,
+        path: info[0]
+      })
     }
   };
 

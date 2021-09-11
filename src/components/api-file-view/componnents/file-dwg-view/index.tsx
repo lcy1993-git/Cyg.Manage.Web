@@ -5,10 +5,17 @@ import { Spin, message } from 'antd';
 import 'antd/dist/antd.min.css'
 import { useMount, useUpdateEffect } from 'ahooks';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
-import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry';
+import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry';
+
+console.log(pdfjsLib);
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker;
+
+console.log(PDFJSWorker);
+
 
 import styles from './index.less'
-import type { PDFPageProxy, PDFWorker } from 'pdfjs-dist';
+// import type { PDFWorker } from 'pdfjs-dist';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker;
 
@@ -118,7 +125,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
       viewport,
     };
 
-    page.render(renderContext);
+    page!.render(renderContext);
     ref.current.innerHTML = "";
     ref.current.append(canvas)
     setTimeout(() => {

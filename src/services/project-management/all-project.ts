@@ -645,6 +645,14 @@ export const downloadFile = (params: any) => {
   });
 };
 
+export const fileRead = (params: any) => {
+  return request(`${baseUrl.upload}/Download/GetProjectOutcomeFile`, {
+    method: 'GET',
+    params,
+    responseType: "arrayBuffer"
+  });
+};
+
 //下载--项目编制成果
 export const downloadFileComplie = (params: any) => {
   return request(`${baseUrl.upload}/Download/GetProjectCompilationResultFile`, {

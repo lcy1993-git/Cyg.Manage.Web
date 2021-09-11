@@ -28,10 +28,9 @@ export const csv2table = (csv: string, showTab = false) => {
 };
 
 // 合并单元格
-export const mergeTable =(mergeInfo, hasTab = false, document: HTMLDivElement) => {
+export const mergeTable =(mergeInfo: any, hasTab = false, document: HTMLDivElement) => {
   // let SheetNames = workbook.SheetNames[0];
   // let mergeInfo = workbook.Sheets[SheetNames]["!merges"];
-  console.log(mergeInfo);
 
   let result = document;
 

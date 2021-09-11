@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ReactElement } from "react";
 import { useMount } from "ahooks";
-import { Empty } from "antd";
+import { Empty, message } from "antd";
 import FileDwgView from "./componnents/file-dwg-view";
 import getStrategyComponent from './getStrategyComponent';
 import type { FileType } from './getStrategyComponent';
@@ -24,21 +24,18 @@ const ApiFileView: React.FC<ApiFileViewProps> = ({
 
   const [data, setData] = useState<ArrayBuffer | null>(null);
 
-  useMount(() => {
-    if (type !== "dwg") {
-      api().then((res) => {
+  useMount(async () => {
+    if (type !== "pdf") {
+      const res = await api()
+      if(Object.prototype.toString.call(res) === "[object ArrayBuffer]"){
         setData(res)
-      }).catch(() => {
-        onError?.()
-      })
-    }
-  })
+      }else{
+        message.error("文件读取失败")
+      }
+  }})
 
   if (!data) {
     return <Empty />
-  }
-  if (type === "dwg") {
-    return <FileDwgView params={api} hasAuthorization={true} {...rest}/>
   }
   const Component = getStrategyComponent(type)!;
   return <Component data={data} {...rest} />

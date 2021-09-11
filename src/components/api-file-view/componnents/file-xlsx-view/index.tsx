@@ -47,9 +47,7 @@ const FileXlsxView: React.FC<FileXlsxViewProps> = ({
       if(endRef.length === 2) {
         currentWorksheet["!ref"] = `A1:${  endRef}`;
       }
-
       const csv = XLSX.utils.sheet_to_csv(currentWorksheet);
-
       const html = csv2table(csv, coordinateaxis);
       ref.current!.innerHTML = html;
       
@@ -72,8 +70,8 @@ const FileXlsxView: React.FC<FileXlsxViewProps> = ({
       
       // eslint-disable-next-line react/no-array-index-key
       return (
-        <div className={styles.title}>
-          <Button key={index + item} onClick={() => setCurrentIndex(index)}>{ item }</Button>
+        <div className={styles.title} key={index + item}>
+          <Button onClick={() => setCurrentIndex(index)}>{ item }</Button>
         </div>
       )
     })
@@ -84,8 +82,7 @@ const FileXlsxView: React.FC<FileXlsxViewProps> = ({
       <div className={classnames(styles.titles, classname)}>
         {sheets.length > 1 && sheetTitles()}
       </div>
-      <div ref={ref}>
-      </div>
+      <div ref={ref} />
     </div>
   )
 };
