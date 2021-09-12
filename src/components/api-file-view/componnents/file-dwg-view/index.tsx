@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Spin, message } from 'antd';
 import { useMount, useUpdateEffect } from 'ahooks';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
-import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry';
+import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry';
 import styles from './index.less'
 // import type { PDFWorker } from 'pdfjs-dist';
 
@@ -24,9 +24,9 @@ interface FileDwgViewProps {
 type PointerState = "pointer" | "wait";
 
 const FileDwgView: React.FC<FileDwgViewProps> = ({
-  maxScale = 10,
-  zoom = 0.2,
-  loaddingTime = 2000,
+  maxScale = 20,
+  zoom = 0.5,
+  loaddingTime = 1000,
   hasAuthorization = false,
   params = {
     url: 'http://10.6.4.87:12333/output.pdf',
@@ -51,25 +51,26 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   const [scale, setScale] = useState(1);
   // transform缩放
   const [cssScale, setCssScale] = useState(1)
-  const [displacement, setDisplacement] = useState({x: 0, y: 0})
+  const [displacement, setDisplacement] = useState({ x: 0, y: 0 })
   const [page, setPage] = useState<PDFPageProxy | null>(null)
-  const [downPosition, setDownPositon] = useState({x: 0, y: 0})
-  const [downScroll, setDownScroll] = useState({x:0, y: 0})
+  const [downPosition, setDownPositon] = useState({ x: 0, y: 0 })
+  const [downScroll, setDownScroll] = useState({ x: 0, y: 0 })
 
   // 初始化缩放比
   const initkScale = (page: any) => {
-    return + Math.min(wrapRef.current!.clientWidth / page.view[2] , wrapRef.current!.clientHeight / page.view[3]).toFixed(2)
+    return + Math.min(wrapRef.current!.clientWidth / page.view[2], wrapRef.current!.clientHeight / page.view[3]).toFixed(2)
   }
 
   // 初始化page
   const initPdfPage = (pdfInfo: any) => {
     pdfInfo.getPage(1).then((page: any) => {
       // eslint-disable-next-line no-underscore-dangle
+      
       if (!page._pdfBug) {
         // 获取缩放比
         kScaleRef.current = initkScale(page)
         setPage(page);
-      }else{
+      } else {
         message.error("获取文件失败")
       }
     });
@@ -82,10 +83,11 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
     pdfjsLib.getDocument(
       Object.assign(params,
         token && ("httpHeaders" in params || !hasAuthorization)
-          ? {httpHeaders: {Authorization: token}}
+          ? { httpHeaders: { Authorization: token } }
           : {})
     )
       .promise.then((pdf: PDFWorker) => {
+        
         initPdfPage(pdf);
       })
       .finally(() => {
@@ -95,10 +97,10 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
 
   // 模式切换 为true时表示当前canvas 为false时表示替用状态的canvas
   const changeMode = (flag: boolean) => {
-    if(flag) {
+    if (flag) {
       canvasRef.current!.style.display = "block"
       spareRef.current!.style.display = "none"
-    }else{
+    } else {
       canvasRef.current!.style.display = "none"
       spareRef.current!.style.display = "block"
     }
@@ -137,9 +139,9 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   // 设置鼠标展示状态
   const setMouseState = (flag: PointerState) => {
     // 当等待状态时不可切换状态
-    if(flag === "wait") {
+    if (flag === "wait") {
       wrapRef.current!.style.cursor = "wait";
-    }else{
+    } else {
       setTimeout(() => {
         wrapRef.current!.style.cursor = "pointer"
       }, 1000)
@@ -154,12 +156,12 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   })
 
   useEffect(() => {
-    if(!spinning && wrapRef.current) {
+    if (!spinning && wrapRef.current) {
       wrapRef.current.addEventListener("wheel", (e) => {
         e.preventDefault()
       })
     }
-    if(canvasRef.current && spareRef.current){
+    if (canvasRef.current && spareRef.current) {
       canvasRef.current.style.display = "block"
     }
   }, [spinning])
@@ -169,12 +171,8 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
     if (page && wrapRef.current) {
       const viewport = page.getViewport({ scale: scale * kScaleRef.current });
       loadCanvas(canvasRef, viewport)
-      // setTimeout(() => {
-      //   // wrapRef.current.style.cursor = "pointer"
-      //   setMouseState
-      // }, 1000)
       setMouseState("pointer")
-      if(spareRef.current!.children.length === 0){
+      if (spareRef.current!.children.length === 0) {
         const viewport1 = page.getViewport({ scale });
         loadCanvas(spareRef, viewport1)
         spareScalc(scale)
@@ -223,13 +221,13 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
       wrapRef.current!.scrollLeft = downScroll.x - pX;
       wrapRef.current!.scrollTop = downScroll.y - pY;
       // wrapRef.current.scrollLeft = wrapRef.current.scrollLeft -  ()/20,
-      // wrapRef.current.scrollTop = wrapRef.current.scrollTop - (e.nativeEvent.clientY - downPosition.y)/20
+      // wrapRef.current.scrollTop = wrapRef.current.scrollTop - (e.nativeEvent.clientY - downPosition.y) / 20
     }
   }
 
   const onWheel = (e: { nativeEvent: { deltaY: number; offsetX: number; offsetY: number; }; }) => {
     // 等待状态不能进行缩放操作
-    if(wrapRef.current!.style.cursor === "wait") return;
+    if (wrapRef.current!.style.cursor === "wait") return;
     let currentscale;
     if (e.nativeEvent.deltaY < 0) {
       currentscale = cssScale + zoom;
@@ -241,7 +239,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
     changeMode(false)
     setCssScale(currentscale)
     setDisplacement({
-      x: e.nativeEvent.offsetX * (currentscale - cssScale ),
+      x: e.nativeEvent.offsetX * (currentscale - cssScale),
       y: e.nativeEvent.offsetY * (currentscale - cssScale),
     })
   }
@@ -263,7 +261,8 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   return (
     <div
       ref={wrapRef}
-      className={`${styles.dwgWrap}`}
+      style={{height: window.innerHeight-200}}
+      className={styles.dwgWrap}
       onWheel={onWheel}
       onMouseUp={onmouseUp}
       onMouseMove={onmouseMove}
@@ -271,7 +270,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
       onMouseLeave={onmouseUp}
     >
       <Spin spinning={spinning} className={styles.loading} size="large">
-      </Spin> 
+      </Spin>
       <>
         <div className={styles.canvas} ref={canvasRef} />
         <div className={styles.spare} ref={spareRef} />
