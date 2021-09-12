@@ -293,6 +293,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       )}
       <Modal
         maskClosable={false}
+        className={styles.fileRead}
         title="文件预览"
         width={"99%"}
         visible={!!currentFileInfo.type}
