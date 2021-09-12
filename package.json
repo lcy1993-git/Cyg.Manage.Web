@@ -119,6 +119,8 @@
     "express": "^4.17.1",
     "gh-pages": "^3.0.0",
     "husky": "^6.0.0",
+    "jquery": "^3.6.0",
+    "jquery-mousewheel": "^3.1.13",
     "jsdom-global": "^3.0.2",
     "jsonp": "^0.2.1",
     "lint-staged": "^10.0.0",
@@ -126,6 +128,7 @@
     "prettier": "^2.0.1",
     "pro-download": "1.0.1",
     "puppeteer-core": "^5.0.0",
+    "spectrum-colorpicker": "^1.8.1",
     "typescript": "^4.0.3"
   },
   "config": {

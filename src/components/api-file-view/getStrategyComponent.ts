@@ -1,5 +1,5 @@
 import FileDocxView from './componnents/file-docx-view';
-import FileXlsxView from './componnents/file-xlsx-view';
+import FileXlsxView from './componnents/file-excel-view';
 
 import type { FileDocxViewProps } from './componnents/file-docx-view';
 import type { FileXlsxViewProps } from './componnents/file-xlsx-view';
