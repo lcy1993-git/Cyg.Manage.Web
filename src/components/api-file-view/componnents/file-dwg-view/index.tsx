@@ -261,7 +261,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   return (
     <div
       ref={wrapRef}
-      style={{height: window.innerHeight-200}}
+      style={{height: window.innerHeight-100}}
       className={styles.dwgWrap}
       onWheel={onWheel}
       onMouseUp={onmouseUp}

@@ -1,6 +1,5 @@
-import { useEffect } from '@umijs/renderer-react/node_modules/@types/react';
-import { useMount, useUpdateEffect } from 'ahooks';
-import React, { forwardRef, Ref, useImperativeHandle } from 'react';
+import { useMount } from 'ahooks';
+import React from 'react';
 
 const jquery = require('jquery');
 // @ts-ignore
@@ -28,6 +27,8 @@ const onlyViewTableConfig = {
   showsheetbarConfig: {
     add: false, // 新增sheet
   },
+  enableAddRow: false,
+  enableAddBackTop: false,
   cellRightClickConfig: {
     copy: false, // 复制
     copyAs: false, // 复制为
@@ -63,14 +64,15 @@ const onlyViewTableConfig = {
 
 interface XlsxViewerProps {
   url: string;
-  name: string;
+  name?: string;
 }
 
 const XlsxViewer: React.FC<XlsxViewerProps> = (props) => {
   const { url, name = '' } = props;
   const initTableData = () => {
     luckyExcel.transformExcelToLuckyByUrl(
-      'http://localhost:8000/api/storage/api/Download/GetProjectOutcomeFile?path=%252fapp%252fFiles%252fProject%252fOutcomeDocument%252f1403621276340887553%255cUnZip%252f%25e6%25b5%258b%25e8%25af%2595%25e9%25a1%25b9%25e7%259b%25ae%25e6%2588%2590%25e6%259e%259c%25e9%25a1%25b9%25e7%259b%25ae%252f%25e8%25ae%25be%25e8%25ae%25a1%25e5%259b%25be%25e5%25b1%2582%25e6%2588%2590%25e6%259e%259c%252f%25e7%25bb%25bc%25e5%2590%2588%25e9%2583%25a8%25e5%2588%2586%252f%25e6%259d%2590%25e6%2596%2599%25e6%25b1%2587%25e6%2580%25bb%25e5%258f%258a%25e8%25af%25b4%25e6%2598%258e%252f%25e5%2588%2586%25e7%25b1%25bb%25e6%259d%2590%25e6%2596%2599%25e8%25a1%25a8.xlsx&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE0MDAzODgzNDIwNTIzOTcwNTYiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGh5ZiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkNvbXBhbnlBZG1pbiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvY29tcGFueSI6IjE0MDAzODc2MjYzNjU3MjI2MjQiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2lzc3VwZXJhZG1pbiI6IkZhbHNlIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlaWQiOiIxMjY4ODA2MzMwNzA4MTIzNjQ4IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9jbGllbnRpcCI6IjEwLjYuMS40MCIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvY2xpZW50Y2F0ZWdvcnkiOiIyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9leHBpcmF0aW9uIjoiMDkvMTMvMjAyMSAwNjo0Mjo0MyIsIm5iZiI6MTYzMTQyNzM0MywiZXhwIjoxNjMxNTE1MzYzLCJpc3MiOiJjeWdAMjAxOSIsImF1ZCI6ImN5Z0AyMDE5In0.s6bKgXXc35JbTaL3VoxeLJNZX5toKC8rKpKDi9SO-ek',
+      // 'http://localhost:8000/api/storage/api/Download/GetProjectOutcomeFile?path=%252fapp%252fFiles%252fProject%252fOutcomeDocument%252f1403621276340887553%255cUnZip%252f%25e6%25b5%258b%25e8%25af%2595%25e9%25a1%25b9%25e7%259b%25ae%25e6%2588%2590%25e6%259e%259c%25e9%25a1%25b9%25e7%259b%25ae%252f%25e8%25ae%25be%25e8%25ae%25a1%25e5%259b%25be%25e5%25b1%2582%25e6%2588%2590%25e6%259e%259c%252f%25e7%25bb%25bc%25e5%2590%2588%25e9%2583%25a8%25e5%2588%2586%252f%25e6%259d%2590%25e6%2596%2599%25e6%25b1%2587%25e6%2580%25bb%25e5%258f%258a%25e8%25af%25b4%25e6%2598%258e%252f%25e5%2588%2586%25e7%25b1%25bb%25e6%259d%2590%25e6%2596%2599%25e8%25a1%25a8.xlsx&token=',
+      url,
       name,
       function (exportJson: any) {
         if (exportJson.sheets == null || exportJson.sheets.length == 0) {
@@ -78,7 +80,7 @@ const XlsxViewer: React.FC<XlsxViewerProps> = (props) => {
             'Failed to read the content of the excel file, currently does not support xls files!',
           );
           return;
-        }        
+        }
         luckysheet.create({
           ...onlyViewTableConfig,
           data: exportJson.sheets,
