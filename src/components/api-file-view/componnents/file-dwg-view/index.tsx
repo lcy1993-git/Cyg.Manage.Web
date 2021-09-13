@@ -24,7 +24,7 @@ interface FileDwgViewProps {
 type PointerState = "pointer" | "wait";
 
 const FileDwgView: React.FC<FileDwgViewProps> = ({
-  maxScale = 6,
+  maxScale = 4,
   zoom = 0.5,
   loaddingTime = 2000,
   hasAuthorization = false,
