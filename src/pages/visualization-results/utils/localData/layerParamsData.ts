@@ -109,7 +109,7 @@ export const layerParams: LayerParams[] = [
   },
   {
     layerName: 'zero_guy', // 水平拉线
-    zIndex: 2,
+    zIndex: 1,
     declutter: false,
     type: 'zero_guy',
   }
