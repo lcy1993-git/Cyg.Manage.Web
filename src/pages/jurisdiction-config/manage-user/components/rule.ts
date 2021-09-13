@@ -12,10 +12,22 @@ export default {
     { required: true, message: '密码不能为空', max: 16 },
     {
       pattern: /^(?=.*[0-9])(?=.*[a-zA-Z])(?=([\x21-\x7e]+)[^a-zA-Z0-9])(.{6,16})$/,
-      // message:
+      message: '密码应由数字、字母、特殊字符组成',
     },
   ],
   userType: [{ required: true, message: '请选择账号类型' }],
   company: [{ required: true, message: '请选择公司' }],
-  email: [{ maxLength: 32, pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/ }],
+  email: [
+    {
+      maxLength: 32,
+      pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+      message: '请输入正确的邮箱格式',
+    },
+  ],
+  phone: [
+    {
+      pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+      message: '请输入正确的手机号码',
+    },
+  ],
 };

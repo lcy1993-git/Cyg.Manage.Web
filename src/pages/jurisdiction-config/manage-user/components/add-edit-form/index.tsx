@@ -109,7 +109,7 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       )} */}
       {type === 'edit' && (
         <>
-          <CyFormItem label="手机" name="phone">
+          <CyFormItem label="手机" name="phone" rules={rules.phone}>
             <Input placeholder="请填写邮箱" />
           </CyFormItem>
           <CyFormItem label="邮箱" name="email" rules={rules.email}>
