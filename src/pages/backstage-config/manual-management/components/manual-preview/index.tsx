@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DocxFileViewer from "@/components/docx-file-viewer"
 import { Spin } from "antd"
 import fileSrc from '@/assets/doc/design.docx'
+import './index.less'
 
 const ManualPreview: React.FC = () => {
   const [pageLoading, setPageLoading] = useState(true);
@@ -84,7 +85,6 @@ const ManualPreview: React.FC = () => {
     if(document.getElementById("pageShowFileContent") !== null) {
       document.getElementById("pageShowFileContent")!.scrollTop = thisElementTop!;
     }
-
   }
 
   const elementStr = catalogList.map((item: any) => {

@@ -66,6 +66,7 @@ const DesignMappingInfo: React.FC = () => {
 
   const handlerEdit = (item: SuppliesLibraryData) => {
     setAddFormVisible(true)
+    console.log(item)
     setTableSelectRows(item)
   }
   const handlerDel = (val: string) => {

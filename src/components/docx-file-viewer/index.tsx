@@ -4,6 +4,7 @@ import React from "react"
 import mammoth from 'mammoth';
 import { useMount } from "ahooks";
 
+
 interface DocxFileViewerProps {
     filePath: string,
     onSuccess?: () => void
@@ -47,7 +48,7 @@ const DocxFileViewer: React.FC<DocxFileViewerProps> = (props) => {
     })
 
     return (
-        <div id="docx">
+        <div id="docx" >
 
         </div>
     )
