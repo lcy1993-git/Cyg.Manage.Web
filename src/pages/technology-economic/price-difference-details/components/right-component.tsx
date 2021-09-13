@@ -164,14 +164,14 @@ const RightComponent = (props: any) => {
       number2: data?.imssWithMachine,
     },
     {
-      name: '电缆线路',
-      number1: data?.imolWithMaterial,
-      number2: data?.imolWithMachine,
-    },
-    {
       name: '架空线路',
       number1: data?.imclWithMaterial,
       number2: data?.imclWithMachine,
+    },
+    {
+      name: '电缆线路',
+      number1: data?.imolWithMaterial,
+      number2: data?.imolWithMachine,
     },
   ];
   // 建筑拆除材机系数调差
@@ -206,8 +206,8 @@ const RightComponent = (props: any) => {
     },
     {
       name: '通信线路',
-      number1: data?.materialCoefficient5,
-      number2: data?.mechanicalCoefficient5,
+      number1: data?.irmcmlWithMaterial,
+      number2: data?.irmcmlWithMachine,
     },
   ];
   return (

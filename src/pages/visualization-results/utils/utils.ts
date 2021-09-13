@@ -4,17 +4,52 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 
 import { Properties } from '@/services/visualization-results/side-tree';
 
+import { line_style, zero_guy_style } from './localData/pointStyle';
+import LineString from "ol/geom/LineString";
+
 /**
  * 用于描述两个点位之间由多条线组成的线簇
  */
 export class LineCluster {
-  constructor(lines: Feature[], zero_guys: Feature[], pointIds: string[]) {
+  constructor(id: number, start_id: string, end_id: string, lines: Feature[], zero_guys: Feature[]) {
+    this.id = id;
+    this.start_id = start_id;
+    this.end_id = end_id;
     this.lines = lines;
     this.zero_guys = zero_guys;
-    this.pointIds = pointIds;
+    this.targetTopLine = new Feature();
+    this.targetBottomLine = new Feature();
+
+    // 初始化要素的标注的显示控制量
+    if(lines.length > 0) {
+      lines[0].setProperties({
+        showLengthLabel: true,
+      });
+      this.targetTopLine = lines[0];
+      this.targetBottomLine = lines[0];
+    }
+    else if (zero_guys.length > 0) {
+      zero_guys[0].setProperties({
+        showLengthLabel: true,
+      });
+      this.targetTopLine = zero_guys[0];
+      this.targetBottomLine = zero_guys[0];
+    }
   }
   /**
-   * 普通线路
+   * 线簇id
+   */
+  id: number;
+  /**
+   * 起点id
+   */
+  start_id: string;
+  /**
+   * 终点id
+   */
+  end_id: string;
+  /**
+   * 架空线路
    */
   lines: Feature[];
   /**
@@ -22,27 +57,197 @@ export class LineCluster {
    */
   zero_guys: Feature[];
   /**
-   * 线簇的两个端点id，pointIds[0]为起点，pointIds[1]为终点
+   * 线簇最上面的要素，用于显示线簇长度标注
    */
-  pointIds: string[];
+  targetTopLine: Feature;
   /**
-   * 根据线的总数量验证线簇是否有效
-   * @returns 线簇是否有效
+   * 线簇最下面的要素，用于在小比例尺下显示线路型号
    */
-  isValid = () => {
-    return (this.lines.length && this.zero_guys.length && this.lines.length + this.zero_guys.length > 1) ? true : false;
-  }
+   targetBottomLine: Feature;
   /** 
    * 判断该线是否应该包含该线段
-   * @param 线要素
+   * @param feature 线要素
    * @returns 该线是否应该包含该线段
   */
   isShouldContainLine(feature: Feature) {
     let props = feature.getProperties();
-    if(props.start_id === this.pointIds[0] && props.end_id === this.pointIds[1]) {
+    if(props.start_id === this.start_id && props.end_id === this.end_id) {
       return true;
     }
     return false;
+  }
+  /**
+   * 向线簇添加线要素
+   * @param feature 线要素
+   * @param lineType 线要素类型(line、zero_guy、cable_channel)
+   */
+  insertLine(feature: Feature, lineType: string) {
+    if(this.isShouldContainLine(feature)) {
+      switch(lineType) {
+        case 'line': 
+          let isExsit = false;
+          for (let i = 0; i < this.lines.length; i++) {
+            let lineId = this.lines[i].getProperties().id;
+            let featureId = feature.getProperties().id;
+            if(lineId === featureId) {
+              isExsit = true;
+              // 覆盖已存在的线
+              this.lines[i] = feature;
+            }
+          }
+          if(!isExsit) {
+            this.lines.push(feature);
+          }
+          break;
+        case 'zero_guy':
+          isExsit = false;
+          for (let i = 0; i < this.zero_guys.length; i++) {
+            let lineId = this.zero_guys[i].getProperties().id;
+            let featureId = feature.getProperties().id;
+            if(lineId === featureId) {
+              isExsit = true;
+              // 覆盖已存在的线
+              this.zero_guys[i] = feature;
+            }
+          }
+          if(!isExsit) {
+            this.zero_guys.push(feature);
+          }
+          this.zero_guys.push(feature);
+          break;
+      }
+    }
+  }
+  /**
+   * 更新线簇中所有要素的标注的显示控制量
+   */
+  updateLabelControlValue(showAllLabel: boolean) {
+    // 线簇最上面的要素
+    let targetTopIndex = 0;
+    // 线簇最上面的要素类型
+    let targetTopType = 'line';
+    // 线簇最下面的要素
+    let targetBottomIndex = 0;
+    // 线簇最下面的要素类型
+    let targetBottomType = 'line';
+    if(this.lines.length > 0) {
+      this.targetTopLine = this.lines[0];
+      this.targetBottomLine = this.lines[0];
+      for (let index = 0; index < this.lines.length; index++) {
+        const line = this.lines[index];
+        let targetTopCoords = (this.targetTopLine.getGeometry() as LineString).getCoordinates();
+        let targetBottomCoords = (this.targetBottomLine.getGeometry() as LineString).getCoordinates();
+        let lineCoords = (line.getGeometry() as LineString).getCoordinates();
+        // 找到最顶部的线
+        if(targetTopCoords[0][1] < lineCoords[0][1]) {
+          targetTopIndex = index;
+          targetTopType = 'line';
+          this.targetTopLine = line;
+        }
+        
+        // 展示全部要素的型号label
+        if (showAllLabel) {
+          line.setProperties({showLabel: true});
+          line.setStyle(line_style(line));
+        }
+        // 找到最底部的线，仅显示该线的型号label
+        else if (targetBottomCoords[0][1] > lineCoords[0][1]) {
+          targetBottomIndex = index;
+          targetBottomType = 'line';
+          this.targetBottomLine = line;
+        }
+
+        // 不展示全部线路的型号label，则先关闭所有线路的型号label显示开关
+        if (!showAllLabel) {
+          line.setProperties({showLabel: false});
+          line.setStyle(line_style(line));
+        }
+      }
+    }
+
+    if(this.zero_guys.length > 0) {
+      this.targetTopLine = this.zero_guys[0];
+      this.targetBottomLine = this.zero_guys[0];
+      for (let index = 0; index < this.zero_guys.length; index++) {
+        const line = this.zero_guys[index];
+        let targetTopCoords = (this.targetTopLine.getGeometry() as LineString).getCoordinates();
+        let targetBottomCoords = (this.targetBottomLine.getGeometry() as LineString).getCoordinates();
+        let lineCoords = (line.getGeometry() as LineString).getCoordinates();
+        // 找到最顶部的线
+        if(targetTopCoords[0][1] < lineCoords[0][1]) {
+          targetTopIndex = index;
+          targetTopType = 'zero_guy';
+          this.targetTopLine = line;
+        }
+        // 展示全部要素的型号label
+        if (showAllLabel) {
+          line.setProperties({showLabel: true});
+          line.setStyle(zero_guy_style(line));
+        }
+        // 找到最底部的线，仅显示该线的型号label
+        else if (targetBottomCoords[0][1] > lineCoords[0][1]) {
+          targetBottomIndex = index;
+          targetBottomType = 'line';
+          this.targetBottomLine = line;
+        }
+
+        // 不展示全部线路的型号label，则先关闭所有线路的型号label显示开关
+        if (!showAllLabel) {
+          line.setProperties({showLabel: false});
+          line.setStyle(zero_guy_style(line));
+        }
+      }
+    }
+
+    // 设置线簇长度标识
+    if(targetTopType === 'line') {
+      if(!this.lines[targetTopIndex]) {
+        return;
+      }
+      this.lines[targetTopIndex].setProperties({
+        showLengthLabel: true,
+      });
+      // 设置样式
+      this.lines[targetTopIndex].setStyle(line_style(this.lines[targetTopIndex])); 
+    }
+    // 水平拉线
+    else {
+      if(!this.zero_guys[targetTopIndex]) {
+        return;
+      }
+      this.zero_guys[targetTopIndex].setProperties({
+        showLengthLabel: true,
+      });
+      // 设置样式
+      this.zero_guys[targetTopIndex].setStyle(zero_guy_style(this.zero_guys[targetTopIndex]));
+    }
+
+    // 仅显示最下面的型号label
+    if(!showAllLabel) {
+      // 设置线路型号标注
+      if(targetBottomType === 'line') {
+        if(!this.lines[targetBottomIndex]) {
+          return;
+        }
+        this.lines[targetBottomIndex].setProperties({
+          showLabel: true,
+        });
+        // 设置样式
+        this.lines[targetBottomIndex].setStyle(line_style(this.lines[targetBottomIndex])); 
+      }
+      // 水平拉线
+      else {
+        if(!this.zero_guys[targetBottomIndex]) {
+          return;
+        }
+        this.zero_guys[targetBottomIndex].setProperties({
+          showLabel: true,
+        });
+        // 设置样式
+        this.zero_guys[targetBottomIndex].setStyle(zero_guy_style(this.zero_guys[targetBottomIndex]));
+      }
+    }
+    
   }
 }
 

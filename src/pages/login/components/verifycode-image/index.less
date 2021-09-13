@@ -1,0 +1,31 @@
+.verifycodeImageWrap {
+  display: flex;
+  align-items: top;
+  height: 70px;
+  .reload {
+    flex: 1;
+    line-height: 30px;
+    margin-left: 10px;
+    font-size: 18px;
+    .icon {
+      cursor: pointer;
+      &:hover {
+        color: green;
+      }
+    }
+  }
+  .InputWrap {
+    position: relative;
+
+    .error {
+      position: absolute;
+      color: red;
+      font-size: 12px;
+      bottom: 20px;
+    }
+  }
+  .imgWrap {
+    flex-basis: 140px;
+    cursor: pointer;
+  }
+}

@@ -22,6 +22,7 @@ import {
   loadTrackLayers,
   clearTrackLayers,
   clearHighlightLayer,
+  checkZoom,
 } from '../../utils/methods';
 import { bd09Towgs84 } from '../../utils';
 import { mapClick, mapPointermove, mapMoveend } from '../../utils/mapClick';
@@ -99,6 +100,7 @@ const BaseMap = observer((props: BaseMapProps) => {
     );
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
+    initialMap.getView().on('change:resolution', (e: Event) => checkZoom(e, initialMap));
 
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel };
     refreshMap(ops, projects!);
@@ -129,7 +131,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 地图定位
   useEffect(() => {
-    map && relocateMap('', layerGroups, view, setView, map, false);
+    map && relocateMap('', [...layerGroups, ...trackLayers], view, setView, map, false);
   }, [JSON.stringify(positionMap)]);
 
   // 左侧菜单伸缩时刷新地图尺寸
