@@ -1,10 +1,10 @@
 import getMappingTagsDictionary from './localData/mappingTagsDictionary';
-import { pointStyle, line_style, zero_guy_style } from './localData/pointStyle';
+import { pointStyle, line_style, zero_guy_style, cable_channel_styles } from './localData/pointStyle';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
-import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray } from './methods';
+import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray, getLineClusters } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
 import { findenumsValue } from './localData/mappingTagsDictionary';
 import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView, getDesignMaterialModifyList } from '@/services/visualization-results/visualization-results';
@@ -121,6 +121,15 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     // setRightSidebarVisiviabelFlag = true;
     if (selected) return;
     selected = true;
+    
+    console.log(feature);
+
+    let line_cluster_id = feature.getProperties().line_cluster_id;
+    let lineClusters =  getLineClusters();
+    let lineCluster =  lineClusters.find(lineCluster => lineCluster.id === line_cluster_id);
+    console.log(lineCluster);
+
+
     if (layer.getProperties().name == 'highlightLayer') {
       clearHighlightLayer(map);
       return;
@@ -239,7 +248,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         }
         else if (type.indexOf('point') >= 0) {
           highlightStyle = pointStyle(layer.getProperties().name, featureClone, true);
-        } else {
+        }
+        else if(layerName === 'cable_channel') {
+          highlightStyle = cable_channel_styles(featureClone, true);
+        }
+        else {
           highlightStyle = line_style(featureClone, true);
         }
 
