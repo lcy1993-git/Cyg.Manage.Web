@@ -18,6 +18,7 @@ import {
 } from '@/services/technology-economic';
 
 import styles from './index.less';
+import moment from "moment";
 
 const { Search } = Input;
 
@@ -49,7 +50,10 @@ const columns = [
     dataIndex: 'publishDate',
     key: 'publishDate',
     title: '发布时间',
-    width: 130
+    width: 130,
+  render: (text: any) => {
+  return moment(text).format('YYYY/MM/DD')
+}
   },
   {
     dataIndex: 'publishOrg',
