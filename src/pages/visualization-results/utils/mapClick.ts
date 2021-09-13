@@ -124,10 +124,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     
     console.log(feature);
 
-    let line_cluster_id = feature.getProperties().line_cluster_id;
-    let lineClusters =  getLineClusters();
-    let lineCluster =  lineClusters.find(lineCluster => lineCluster.id === line_cluster_id);
-    console.log(lineCluster);
+    // let line_cluster_id = feature.getProperties().line_cluster_id;
+    // let lineClusters =  getLineClusters();
+    // let lineCluster =  lineClusters.find(lineCluster => lineCluster.id === line_cluster_id);
+    // console.log(lineCluster);
 
 
     if (layer.getProperties().name == 'highlightLayer') {

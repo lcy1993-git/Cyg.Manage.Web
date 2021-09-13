@@ -66,8 +66,6 @@ const checkZoom = (evt: any, map: any) => {
   let mapResolution = evt.target.getResolution();
   // 地图放大(经过临界点)
   if(mapResolution < 0.2 && oldValue > 0.2) {
-    console.log(mapResolution, oldValue);
-    console.log("地图放大(经过临界点)");
     for (let index = 0; index < lineClusters.length; index++) {
       const lineCluster = lineClusters[index];
       lineCluster.updateLabelControlValue(true);
@@ -75,8 +73,6 @@ const checkZoom = (evt: any, map: any) => {
   }
   // 地图缩小(经过临界点)
   else if(mapResolution > 0.2 && oldValue < 0.2) {
-    console.log(mapResolution, oldValue);
-    console.log("地图缩小(经过临界点)");
     for (let index = 0; index < lineClusters.length; index++) {
       const lineCluster = lineClusters[index];
       lineCluster.updateLabelControlValue(false);
@@ -238,7 +234,7 @@ const loadWFSData = (
             let index = props.label?.indexOf(props.length);
             pJSON[i].setProperties({ mode: props.label?.substr(0, index - 1) });
           }
-          if (props.mode_id.startsWith('NULL')) {
+          if (props.mode_id?.startsWith('NULL')) {
             let index = props.label?.indexOf(props.length);
             pJSON[i].setProperties({ mode_id: props.label?.substr(0, index - 1) });
           }
@@ -266,13 +262,14 @@ const loadWFSData = (
           
           // 为线簇数组添加线簇
           let isAdded = false;
-          lineClusters.forEach((lineCluster, i) => {
+          for (let index = 0; index < lineClusters.length; index++) {
+            const lineCluster = lineClusters[index];
             if (lineCluster.isShouldContainLine(pJSON[i])) {
               pJSON[i].setProperties({line_cluster_id: lineCluster.id});
               lineCluster.insertLine(pJSON[i], 'zero_guy');
               isAdded = true;
             }
-          });
+          }
           if (!isAdded) {
             pJSON[i].setProperties({line_cluster_id: lineClusters.length + 1});
             lineClusters.push(new LineCluster(lineClusters.length + 1, props.start_id, props.end_id, [], [pJSON[i]]));
