@@ -151,12 +151,16 @@ export class LineCluster {
           line.setStyle(line_style(line));
         }
         // 找到最底部的线，仅显示该线的型号label
-        else if (!showAllLabel && targetBottomCoords[0][1] > lineCoords[0][1]) {
-          line.setProperties({showLabel: false});
-          line.setStyle(line_style(line));
+        else if (targetBottomCoords[0][1] > lineCoords[0][1]) {
           targetBottomIndex = index;
           targetBottomType = 'line';
           this.targetBottomLine = line;
+        }
+
+        // 不展示全部线路的型号label，则先关闭所有线路的型号label显示开关
+        if (!showAllLabel) {
+          line.setProperties({showLabel: false});
+          line.setStyle(line_style(line));
         }
       }
     }
@@ -181,12 +185,16 @@ export class LineCluster {
           line.setStyle(zero_guy_style(line));
         }
         // 找到最底部的线，仅显示该线的型号label
-        else if (!showAllLabel && targetBottomCoords[0][1] > lineCoords[0][1]) {
-          line.setProperties({showLabel: false});
-          line.setStyle(zero_guy_style(line));
+        else if (targetBottomCoords[0][1] > lineCoords[0][1]) {
           targetBottomIndex = index;
           targetBottomType = 'line';
           this.targetBottomLine = line;
+        }
+
+        // 不展示全部线路的型号label，则先关闭所有线路的型号label显示开关
+        if (!showAllLabel) {
+          line.setProperties({showLabel: false});
+          line.setStyle(zero_guy_style(line));
         }
       }
     }
