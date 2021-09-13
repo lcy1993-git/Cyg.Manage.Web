@@ -22,7 +22,6 @@ import markImageSrc6 from "@/assets/image/webgis/img_地物_电力线.png";
 import markImageSrc7 from "@/assets/image/webgis/img_地物_通讯线.png";
 import markImageSrc8 from "@/assets/image/webgis/img_地物_其他.png";
 import { Feature } from 'ol';
-import { LineCluster } from '../utils';
 
 export interface Options {
     color?: Color | ColorLike;
@@ -751,7 +750,8 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
     }
 }
 // 线样式
-const line_style = function (feature: Feature, select: any, isCluster: boolean = false) {
+const line_style = function (feature: Feature, select: boolean = false) {
+    let {showLabel, showLengthLabel} = feature.getProperties();
     let style = Styles.line[feature.getProperties().symbol_id];
     if (!style)
         style = Styles.line["1013"];
@@ -780,47 +780,16 @@ const line_style = function (feature: Feature, select: any, isCluster: boolean =
         selectColor = style.color;
         fontColor = '#E8FCF8';
     }
-    // 将同一线段上的非水平拉线的标注文本绘制到该段左侧，将水平拉线的标注文本绘制到该段右侧
-    let offsetY = -13;
+    // 向下偏移
+    let offsetY = 15;
     let text = feature.getProperties().lable;
-    let coords = feature.getGeometry().getCoordinates();
-    if (coords[1][0] - coords[0][0] < 0) {
-        // 非水平拉线朝向第2、3象限的情况，文本向下平移
-        offsetY = -offsetY;
-    }
-    else if (coords[0][1] - coords[0][0] > 0) {
-        // 非水平拉线朝向第1、4象限的情况，文本向上平移
-        offsetY = offsetY;
-    }
     styleParams = {
         stroke: new Stroke(strokeOpts),
         text: new Text({
-            // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
-            text: text,
+            text: showLabel ? text : '',
             textAlign: 'center',
             font: 'bold 12px Source Han Sans SC', //字体与大小
             placement: 'line',
-            // offsetX: 30,      
-            offsetY: -offsetY,
-            fill: new Fill({ //文字填充色
-                color: fontColor
-            }),
-            stroke: new Stroke({ //文字边界宽度与颜色
-                color: 'rgba(21, 32, 32, 1)',
-                width: 2
-            })
-        })
-    }
-    let style_ = new ClassStyle(styleParams);
-    styleParams = {
-        stroke: new Stroke(strokeOpts),
-        text: new Text({
-            // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
-            text: feature.getProperties().length?.toFixed(2) + 'm',
-            textAlign: 'center',
-            font: 'bold 12px Source Han Sans SC', //字体与大小
-            placement: 'line',
-            // offsetX: 30,      
             offsetY: offsetY,
             fill: new Fill({ //文字填充色
                 color: fontColor
@@ -831,13 +800,34 @@ const line_style = function (feature: Feature, select: any, isCluster: boolean =
             })
         })
     }
+    // 型号标注样式
+    let style_mode = new ClassStyle(styleParams);
+    let lineLength = feature.getProperties().length;
+    styleParams = {
+        stroke: new Stroke(strokeOpts),
+        text: new Text({
+            text: showLengthLabel ? (lineLength ? lineLength.toFixed(2) + 'm' : '') : '',
+            textAlign: 'center',
+            font: 'bold 12px Source Han Sans SC', //字体与大小
+            placement: 'line',
+            offsetY: -offsetY,
+            fill: new Fill({ //文字填充色
+                color: fontColor
+            }),
+            stroke: new Stroke({ //文字边界宽度与颜色
+                color: 'rgba(21, 32, 32, 1)',
+                width: 2
+            })
+        })
+    }
+    // 线路长度标注
     let style_length = new ClassStyle(styleParams);
     strokeOpts.color = backgroundColor;
     strokeOpts.width = Styles.line.selected.width;
     let backgroundStyle = new ClassStyle({
         stroke: new Stroke(strokeOpts)
     })
-    let styles = [backgroundStyle, style_, style_length];
+    let styles = [backgroundStyle, style_mode, style_length];
     if (style.isDismantle) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
@@ -878,7 +868,8 @@ const line_style = function (feature: Feature, select: any, isCluster: boolean =
 
 
 // 水平拉线样式
-const zero_guy_style = function (feature: Feature, select: any, isCluster: boolean = false, lineCluster: LineCluster = null) {
+const zero_guy_style = function (feature: Feature, select: boolean = false) {
+    let {showLabel, showLengthLabel} = feature.getProperties();
     let guyStyle = Styles.line[feature.getProperties().symbol_id];
     if (!guyStyle) {
         guyStyle = Styles.line["2010"];
@@ -903,54 +894,16 @@ const zero_guy_style = function (feature: Feature, select: any, isCluster: boole
         selectColor = style_.color;
         fontColor = '#E8FCF8';
     }
-    // 将同一线段上的非水平拉线的标注文本绘制到该段左侧，将水平拉线的标注文本绘制到该段右侧
-    let offsetY = -13;
+    // 向下偏移
+    let offsetY = 15;
     let text = feature.getProperties().label;
-    let preStyle = feature.getStyle();
-    let preStyleText = null;
-    if (preStyle) {
-        preStyleText = preStyle[1].getText();
-    }
-    if (preStyleText) {
-        if (preStyleText.getOffsetY() === -offsetY) {
-            offsetY = preStyleText.getOffsetY();
-        }
-        else {
-            offsetY = -preStyleText.getOffsetY()
-        }
-        text = preStyleText.getText();
-    }
-    // 如果该水平拉线要素属于线簇，则设置将文字设置在水平拉线的右侧
-    if ((isCluster && lineCluster)) {
-        let feature_ = lineCluster.lines.length > 0 ? lineCluster.lines[0] : feature;
-        let coords = feature_.getGeometry().getCoordinates();
-        if (coords[1][0] - coords[0][0] < 0) {
-            // 非水平拉线朝向第2、3象限的情况，文本向下平移
-            offsetY = offsetY;
-        }
-        else if (coords[0][1] - coords[0][0] > 0) {
-            // 非水平拉线朝向第1、4象限的情况，文本向上平移
-            offsetY = -offsetY;
-        }
-        let index = lineCluster.zero_guys.indexOf(feature);
-        // 仅显示第一条水平拉线的label
-        if (index !== lineCluster.zero_guys.length - 1) {
-            text = '';
-        }
-    }
-    if(select) {
-        offsetY = preStyleText.getOffsetY();
-        text = preStyleText.getText();
-    }
     styleParams = {
         stroke: new Stroke(strokeOpts),
         text: new Text({
-            // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
-            text: text,
+            text: showLabel ? text : '',
             textAlign: 'center',
             font: 'bold 12px Source Han Sans SC', //字体与大小
             placement: 'line',
-            // offsetX: 30,
             offsetY: offsetY,
             fill: new Fill({ //文字填充色
                 color: fontColor
@@ -961,15 +914,34 @@ const zero_guy_style = function (feature: Feature, select: any, isCluster: boole
             })
         })
     }
-    // if (isCluster || select) {
-    // }
-    let style = new ClassStyle(styleParams);
+    // 线路型号标注
+    let style_mode = new ClassStyle(styleParams);
+    let lineLength = feature.getProperties().length;
+    styleParams = {
+        stroke: new Stroke(strokeOpts),
+        text: new Text({
+            text: showLengthLabel ? (lineLength ? lineLength.toFixed(2) + 'm' : '') : '',
+            textAlign: 'center',
+            font: 'bold 12px Source Han Sans SC', //字体与大小
+            placement: 'line',
+            offsetY: -offsetY,
+            fill: new Fill({ //文字填充色
+                color: fontColor
+            }),
+            stroke: new Stroke({ //文字边界宽度与颜色
+                color: 'rgba(21, 32, 32, 1)',
+                width: 2
+            })
+        })
+    }
+    // 线路长度标注
+    let style_length = new ClassStyle(styleParams);
     strokeOpts.color = backgroundColor;
     strokeOpts.width = Styles.line.selected.width;
     let backgroundStyle = new ClassStyle({
         stroke: new Stroke(strokeOpts)
     })
-    let styles = [backgroundStyle, style];
+    let styles = [backgroundStyle, style_mode, style_length];
     if (guyStyle.isDismantle) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
@@ -1006,6 +978,7 @@ const zero_guy_style = function (feature: Feature, select: any, isCluster: boole
 
 // 电缆通道样式
 const cable_channel_styles = function (feature: Feature, select: boolean = false) {
+    let {showLabel, showLengthLabel} = feature.getProperties();
     let obj = Styles.line[feature.getProperties().symbol_id];
     let strokeOpts: Options = {
         color: obj.color,
@@ -1021,15 +994,15 @@ const cable_channel_styles = function (feature: Feature, select: boolean = false
     } else {
         fontColor = '#E8FCF8';
     }
+    // 型号标注
     let style = new ClassStyle({
         stroke: new Stroke(strokeOpts),
         text: new Text({
-            text: feature.getProperties().lable,
+            text: showLabel ? feature.getProperties().lable : '',
             textAlign: 'center',
             font: 'bold 12px Source Han Sans SC', //字体与大小
             placement: 'line',
-            // offsetX: 30,
-            offsetY: 15,
+            offsetY: 15, // 向上偏移
             fill: new Fill({ //文字填充色
                 color: fontColor
             }),

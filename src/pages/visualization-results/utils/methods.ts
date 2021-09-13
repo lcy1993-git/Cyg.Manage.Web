@@ -24,14 +24,18 @@ var projects: any;
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
  */
-var lineClusters: LineCluster[] = [];
+let lineClusters: LineCluster[] = [];
+const getLineClusters = () => {
+  return lineClusters;
+}
 /**
  * 当前选中项目的所有勘察轨迹日期
  */
-let trackRecordDateArray = [];
-export const getTrackRecordDateArray = () => {
+let trackRecordDateArray : string[] = [];
+const getTrackRecordDateArray = () => {
   return trackRecordDateArray;
 }
+
 const refreshMap = async (
   ops: any,
   projects_: ProjectList[],
@@ -45,44 +49,40 @@ const refreshMap = async (
   clearHighlightLayer(map);
   if (projects.length === 0) return;
 
-  // showData = [];
-  // let p = projects.filter((project: any) => {
-  //   // 判断缓存里面有没有选择的项目
-  //   let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
-  //   if (ld) {
-  //     if (!time || !ld.time || getTime(time) > getTime(ld.time)) {
-  //       showData.push(ld.projectID);
-  //     }
-  //   } else {
-  //     let obj = {
-  //       projectID: project.id,
-  //       time: project.time,
-  //       data: [],
-  //     };
-  //     layerDatas.push(obj);
-  //   }
-  //   return ld ? false : true;
-  // });
-  // const postData = getXmlData(p, time);
   const postData = getXmlData(projects, startDate, endDate);
   await loadSurveyLayers(postData, groupLayers);
   await loadPlanLayers(postData, groupLayers);
   await loadDismantleLayers(postData, groupLayers);
   await loadDesignLayers(postData, groupLayers, view, setView, map);
-  // 验证线簇的合法性，剔除不合法的线簇
-  lineClusters = await lineClusters.filter(value => value.isValid());
-  // 为合法线簇设置特有的样式
-  await lineClusters.forEach((lineCluster) => {
-    // lineCluster.lines.forEach((line) => {
-    //   line_style(line, false, true);
-    // });
-    lineCluster.zero_guys.forEach((zero_guy) => {
-      zero_guy.setStyle(zero_guy_style(zero_guy, false, true, lineCluster));
-    });
-  });
-
+  for (let index = 0; index < lineClusters.length; index++) {
+    const lineCluster = lineClusters[index];
+    lineCluster.updateLabelControlValue(false);
+  }
   setLayerGroups(groupLayers);
 };
+
+const checkZoom = (evt: any, map: any) => {
+  let oldValue = evt.oldValue;
+  let mapResolution = evt.target.getResolution();
+  // 地图放大(经过临界点)
+  if(mapResolution < 0.2 && oldValue > 0.2) {
+    console.log(mapResolution, oldValue);
+    console.log("地图放大(经过临界点)");
+    for (let index = 0; index < lineClusters.length; index++) {
+      const lineCluster = lineClusters[index];
+      lineCluster.updateLabelControlValue(true);
+    }
+  }
+  // 地图缩小(经过临界点)
+  else if(mapResolution > 0.2 && oldValue < 0.2) {
+    console.log(mapResolution, oldValue);
+    console.log("地图缩小(经过临界点)");
+    for (let index = 0; index < lineClusters.length; index++) {
+      const lineCluster = lineClusters[index];
+      lineCluster.updateLabelControlValue(false);
+    }
+  }
+}
 
 const loadSurveyLayers = async (postData: string, groupLayers: LayerGroup[]) => {
   await loadLayers(
@@ -156,30 +156,6 @@ const loadLayers = (
   layerType: string,
   groupLayers: LayerGroup[],
 ) => {
-  // layerDatas.forEach((ld: LayerDatas) => {
-  //   ld.data.forEach((data: any) => {
-  //     let layerName = data.name.split(':')[1];
-  //     let layerType = layerName.split('_')[0];
-  //     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
-  //     let item: any = layerParams.find((item: LayerParams) => item.layerName === layerName);
-  //     if (data.name === 'pdd:design_pull_line') {
-  //       item = {
-  //         layerName: 'pull_line',
-  //         zIndex: 1,
-  //         type: 'pullline',
-  //       };
-  //     }
-  //     let d = data.data.features.filter((feature: any) => {
-  //       let idData = showData.find((id: any) => id === feature.properties.project_id);
-  //       return idData ? true : false;
-  //     });
-  //     if(d.length > 0){
-  //       data.data.features = d;
-  //       loadWFSData(data.data, layerType, layerName, group, groupLayers, item);
-  //     }
-  //   });
-  // });
-  // showData = [];
   layerParams.forEach((item: LayerParams) => {
     // if (postData.length > 576) {
     let layerName = item.layerName;
@@ -208,30 +184,110 @@ const loadWFSData = (
     pJSON = new GeoJSON().readFeatures(data);
     for (var i = 0; i < pJSON.length; i++) {
       pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
-      // pJSON[i].set('styleType', item.type);
       if (item.type !== 'point') {
         let style;
+        // 架空线路
         if (item.type == 'line') {
-          pJSON[i].setProperties({ layer_name: 'line' });
+          pJSON[i].setProperties({ 
+            layer_name: 'line',
+            showLabel: false,
+            showLengthLabel: false,
+          });
+          let props = pJSON[i].getProperties();
+          if(props.start_type === '线路') {} // 架空线路拐点处生成的短线
+          else if(props.start_node_type) {
+            // 判断线路型号label里是否包含距离label
+            let lengthLabel = props?.length?.toFixed(2) + 'm';
+            let lengthLabelIndex = props?.lable?.indexOf(lengthLabel);
+            if(lengthLabelIndex > 0) {
+              // 删除线路型号label中的距离label
+              pJSON[i].setProperties({ lable: props?.lable.substr(0, lengthLabelIndex) });
+            }
+
+            // 为线簇数组添加线簇
+            let isAdded = false;
+            for (let index = 0; index < lineClusters.length; index++) {
+              const lineCluster = lineClusters[index];
+              if (lineCluster.isShouldContainLine(pJSON[i])) {
+                pJSON[i].setProperties({line_cluster_id: lineCluster.id});
+                lineCluster.insertLine(pJSON[i], 'line');
+                isAdded = true;
+              }
+            }
+
+            if (!isAdded) {
+              if(lineClusters.length === 130) {
+                console.log(pJSON[i], props.start_id, props.end_id);
+              }
+              pJSON[i].setProperties({line_cluster_id: lineClusters.length + 1});
+              lineClusters.push(new LineCluster(lineClusters.length + 1, props.start_id, props.end_id, [pJSON[i]], []));
+            }
+          }
+
           style = line_style(pJSON[i], false);
+        }
+        // 水平拉线
+        else if (item.type === 'zero_guy') {
+          pJSON[i].setProperties({ 
+            layer_name: 'zero_guy',
+            showLabel: false,
+            showLengthLabel: false,
+          });
+          let props = pJSON[i].getProperties();
+          if (!props.mode) {
+            let index = props.label?.indexOf(props.length);
+            pJSON[i].setProperties({ mode: props.label?.substr(0, index - 1) });
+          }
+          if (props.mode_id.startsWith('NULL')) {
+            let index = props.label?.indexOf(props.length);
+            pJSON[i].setProperties({ mode_id: props.label?.substr(0, index - 1) });
+          }
+          if (layerType === 'design') {
+            switch (props.state) {
+              case 1:
+                pJSON[i].setProperties({ symbol_id: 2010 });
+                break;
+              case 2:
+                pJSON[i].setProperties({ symbol_id: 2011 });
+                break;
+              case 3:
+                pJSON[i].setProperties({ symbol_id: 2012 });
+                break;
+              case 4:
+                pJSON[i].setProperties({ symbol_id: 2013 });
+                break;
+              default:
+                pJSON[i].setProperties({ symbol_id: 2011 });
+            }
+          }
+          else if (layerType === 'dismantle') {
+            pJSON[i].setProperties({ symbol_id: 2020 });
+          }
+          
           // 为线簇数组添加线簇
           let isAdded = false;
-          lineClusters.forEach((lineCluster) => {
+          lineClusters.forEach((lineCluster, i) => {
             if (lineCluster.isShouldContainLine(pJSON[i])) {
-              lineCluster.lines.push(pJSON[i]);
+              pJSON[i].setProperties({line_cluster_id: lineCluster.id});
+              lineCluster.insertLine(pJSON[i], 'zero_guy');
               isAdded = true;
             }
           });
           if (!isAdded) {
-            let props = pJSON[i].getProperties();
-            lineClusters.push(new LineCluster([pJSON[i]], [], [props.start_id, props.end_id]));
+            pJSON[i].setProperties({line_cluster_id: lineClusters.length + 1});
+            lineClusters.push(new LineCluster(lineClusters.length + 1, props.start_id, props.end_id, [], [pJSON[i]]));
           }
+
+          style = zero_guy_style(pJSON[i], false);
         }
-        // else if (item.type === 'point') {
-        //   style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
-        // }
+        // 电缆线路
         else if (item.type === 'cable_channel') {
-          pJSON[i].setProperties({ layer_name: 'cable_channel' });
+          pJSON[i].setProperties({ 
+            layer_name: 'cable_channel',
+            showLabel: true,
+            showLengthLabel: false,
+          });
+          let props = pJSON[i].getProperties();
           if (!pJSON[i].getProperties().symbol_id) {
             if (layerType === 'dismantle' || pJSON[i].getProperties().state === 4) {
               pJSON[i].setProperties({symbol_id: '3020'});
@@ -240,56 +296,11 @@ const loadWFSData = (
               pJSON[i].setProperties({symbol_id: '3010'});
             }
           }
+
           style = cable_channel_styles(pJSON[i]);
-        } else if (item.type === 'special_point') {
-          style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
         }
-        else if (item.type === 'zero_guy') {
-          if (!pJSON[i].getProperties().mode) {
-            let index = pJSON[i].getProperties().label?.indexOf(pJSON[i].getProperties().length);
-            pJSON[i].setProperties({ mode: pJSON[i].getProperties().label?.substr(0, index - 1) });
-          }
-          if (pJSON[i].getProperties().mode_id.startsWith('NULL')) {
-            let index = pJSON[i].getProperties().label?.indexOf(pJSON[i].getProperties().length);
-            pJSON[i].setProperties({ mode_id: pJSON[i].getProperties().label?.substr(0, index - 1) });
-          }
-          pJSON[i].setProperties({ layer_name: 'zero_guy' });
-          if (!pJSON[i].getProperties().symbol_id) {
-            if (layerType === 'design') {
-              switch (pJSON[i].getProperties().state) {
-                case 1:
-                  pJSON[i].setProperties({ symbol_id: 2010 });
-                  break;
-                case 2:
-                  pJSON[i].setProperties({ symbol_id: 2011 });
-                  break;
-                case 3:
-                  pJSON[i].setProperties({ symbol_id: 2012 });
-                  break;
-                case 4:
-                  pJSON[i].setProperties({ symbol_id: 2013 });
-                  break;
-                default:
-                  pJSON[i].setProperties({ symbol_id: 2011 });
-              }
-            }
-            else if (layerType === 'dismantle') {
-              pJSON[i].setProperties({ symbol_id: 2020 });
-            }
-          }
-          style = zero_guy_style(pJSON[i], false);
-          // 为线簇数组添加线簇
-          let isAdded = false;
-          lineClusters.forEach((lineCluster) => {
-            if (lineCluster.isShouldContainLine(pJSON[i])) {
-              lineCluster.zero_guys.push(pJSON[i]);
-              isAdded = true;
-            }
-          });
-          if (!isAdded) {
-            let props = pJSON[i].getProperties();
-            lineClusters.push(new LineCluster([], [pJSON[i]], [props.start_id, props.end_id]));
-          }
+        else if (item.type === 'special_point') {
+          style = pointStyle(layerType + '_' + layerName, pJSON[i], false);
         }
         //  else if (item.type === 'subline') {
         //   style = fzx_styles();
@@ -748,5 +759,8 @@ export {
   relocateMap,
   getScale,
   CalcTowerAngle,
-  ToDegrees
+  ToDegrees,
+  checkZoom,
+  getLineClusters,
+  getTrackRecordDateArray
 };
