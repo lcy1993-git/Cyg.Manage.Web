@@ -99,6 +99,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
 
   // 模式切换 为true时表示当前canvas 为false时表示替用状态的canvas
   const changeMode = (flag: boolean) => {
+    if(!canvasRef.current) return
     if (flag) {
       canvasRef.current!.style.display = "block"
       spareRef.current!.style.display = "none"
@@ -141,13 +142,13 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   const setMouseState = (flag: PointerState) => {
     // 当等待状态时不可切换状态
     if (flag === "wait") {
-      wrapRef.current!.style.cursor = "wait";
+      wrapRef.current && (wrapRef.current!.style.cursor = "wait");
       setTimeout(() => {
         setMouseState("pointer")
       }, 800)
     } else {
       setTimeout(() => {
-        wrapRef.current!.style.cursor = "pointer"
+        wrapRef.current && (wrapRef.current!.style.cursor = "pointer")
       }, 800)
     }
   }
