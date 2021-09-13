@@ -994,32 +994,41 @@ const cable_channel_styles = function (feature: Feature, select: boolean = false
     } else {
         fontColor = '#E8FCF8';
     }
-    // 型号标注
-    let style = new ClassStyle({
-        stroke: new Stroke(strokeOpts),
-        text: new Text({
-            text: showLabel ? feature.getProperties().lable : '',
-            textAlign: 'center',
-            font: 'bold 12px Source Han Sans SC', //字体与大小
-            placement: 'line',
-            offsetY: 15, // 向上偏移
-            fill: new Fill({ //文字填充色
-                color: fontColor
-            }),
-            stroke: new Stroke({ //文字边界宽度与颜色
-                color: 'rgba(24, 24, 24, 0.85)',
-                // opacity: 0.85,
-                width: 2
-            })
-        })
-    });
-
     strokeOpts.color = backgroundColor;
     strokeOpts.width = obj.width + 2;
     let backgroundStyle = new ClassStyle({
         stroke: new Stroke(strokeOpts)
     })
-    let styles = [backgroundStyle, style];
+    let styles = [backgroundStyle];
+    let geometry = feature.getGeometry();
+    let i = 0;
+    if(geometry.getType() === 'MultiLineString'){
+        geometry.getLineStrings().forEach((lineString: any) => {
+            let style = new ClassStyle({
+                geometry: lineString,
+                stroke: new Stroke(strokeOpts),
+                text: new Text({
+                    text: (showLabel && i === 0) ? feature.getProperties().lable : '',
+                    textAlign: 'center',
+                    font: 'bold 12px Source Han Sans SC', //字体与大小
+                    placement: 'line',
+                    offsetY: 15, // 向上偏移
+                    fill: new Fill({ //文字填充色
+                        color: fontColor
+                    }),
+                    stroke: new Stroke({ //文字边界宽度与颜色
+                        color: 'rgba(24, 24, 24, 0.85)',
+                        // opacity: 0.85,
+                        width: 2
+                    })
+                })
+            });
+            styles.push(style);
+            i++;
+        });
+       
+    }
+    
     if (obj.isDismantle) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
