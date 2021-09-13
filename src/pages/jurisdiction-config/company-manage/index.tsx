@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button, Modal, Form, message, Switch } from 'antd';
 import TreeTable from '@/components/tree-table/index';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { ApartmentOutlined, EditOutlined, PlusOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import PageCommonWrap from '@/components/page-common-wrap';
 import {
@@ -18,6 +18,7 @@ import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
+import UnitConfig from './components/unit-config';
 
 const mapColor = {
   无: 'gray',
@@ -34,6 +35,8 @@ const CompanyManage: React.FC = () => {
   const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [unitConfigVisible, setUnitConfigVisible] = useState<boolean>(false);
+
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
@@ -61,6 +64,12 @@ const CompanyManage: React.FC = () => {
       dataIndex: 'name',
       index: 'name',
       width: 320,
+    },
+    {
+      title: '管理员账号',
+      dataIndex: 'root',
+      index: 'root',
+      width: 180,
     },
     {
       title: '授权账户数',
@@ -113,7 +122,7 @@ const CompanyManage: React.FC = () => {
       title: '授权期限',
       dataIndex: 'authorityExpireDate',
       index: 'authorityExpireDate',
-      width: 100,
+      width: 140,
       render: (text: any, record: any) => {
         return text ? moment(text).format('YYYY-MM-DD') : '-';
       },
@@ -160,9 +169,31 @@ const CompanyManage: React.FC = () => {
             编辑
           </Button>
         )}
+        {/* {buttonJurisdictionArray?.includes('company-manage-edit') && ( */}
+        <Button className="mr7" onClick={() => unitConfigEvent()}>
+          <ApartmentOutlined />
+          协作单位配置
+        </Button>
+        {/* )} */}
+        {/* {buttonJurisdictionArray?.includes('company-manage-edit') && ( */}
+        <Button className="mr7" onClick={() => shareEvent()}>
+          <ShareAltOutlined />
+          共享一览表
+        </Button>
+        {/* )} */}
       </>
     );
   };
+
+  const unitConfigEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择公司配置协作单位');
+      return;
+    }
+    setUnitConfigVisible(true);
+  };
+
+  const shareEvent = () => {};
 
   const addEvent = async () => {
     await getSelectTreeData();
@@ -293,6 +324,7 @@ const CompanyManage: React.FC = () => {
           <EditCompanyManageForm accreditNumber={currentCompanyData} form={editForm} />
         </Form>
       </Modal>
+      <UnitConfig visible={unitConfigVisible} />
     </PageCommonWrap>
   );
 };
