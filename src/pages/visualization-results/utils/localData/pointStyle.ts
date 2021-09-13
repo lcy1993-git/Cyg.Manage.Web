@@ -1012,7 +1012,7 @@ const cable_channel_styles = function (feature: Feature, select: boolean = false
                     textAlign: 'center',
                     font: 'bold 12px Source Han Sans SC', //字体与大小
                     placement: 'line',
-                    offsetY: 15, // 向上偏移
+                    offsetY: -15, // 向上偏移
                     fill: new Fill({ //文字填充色
                         color: fontColor
                     }),
