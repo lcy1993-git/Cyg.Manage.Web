@@ -3,6 +3,7 @@ import ApiFileView from '../api-file-view';
 import { cyRequest, baseUrl } from '@/services/common';
 import type { FileType } from '../api-file-view/getStrategyComponent';
 import FileDwgView from '../api-file-view/componnents/file-dwg-view';
+import XlsxViewer from '../api-file-view/componnents/file-excel-view';
 
 interface UrlFileViewProps {
   url?: string;
@@ -29,7 +30,11 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
       }
     }
     return <FileDwgView params={api} hasAuthorization={true} {...rest} />
-  } else {
+
+  } else if(fileType === "xlsx"){
+    api = `${baseUrl[requestSource]}${url}?path=${params.path}&token=${window.localStorage.getItem("Authorization")}`
+    return <XlsxViewer url={api}/>
+  }else {
     api = () => {
       const paramsData = method === "GET" ? {params} : { data: params }
       return request(`${baseUrl[requestSource]}${url}`, {

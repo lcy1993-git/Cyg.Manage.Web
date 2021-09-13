@@ -23,8 +23,10 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
   };
 
   const onSelect = (info: string, e: any) => {
-    if(e.node.category === 2) {
-      const type = e.node.title.split(".").at(-1);
+    if(e.node.category === 2 && e.node.title) {
+      const typeArray = e.node.title.split(".");
+      const type = typeArray[typeArray.length - 1];
+
       setCurrentFileInfo({
         type,
         path: info[0]
