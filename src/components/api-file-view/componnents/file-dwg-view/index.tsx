@@ -24,9 +24,9 @@ interface FileDwgViewProps {
 type PointerState = "pointer" | "wait";
 
 const FileDwgView: React.FC<FileDwgViewProps> = ({
-  maxScale = 20,
+  maxScale = 6,
   zoom = 0.5,
-  loaddingTime = 1000,
+  loaddingTime = 2000,
   hasAuthorization = false,
   params = {
     url: 'http://10.6.4.87:12333/output.pdf',
@@ -55,14 +55,17 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   const [page, setPage] = useState<PDFPageProxy | null>(null)
   const [downPosition, setDownPositon] = useState({ x: 0, y: 0 })
   const [downScroll, setDownScroll] = useState({ x: 0, y: 0 })
+  const [isMout, setIsMout] = useState<boolean>(true)
 
   // 初始化缩放比
   const initkScale = (page: any) => {
-    return + Math.min(wrapRef.current!.clientWidth / page.view[2], wrapRef.current!.clientHeight / page.view[3]).toFixed(2)
+    // setScale(wrapRef.current!.clientWidth / page.view[2])
+    return + (wrapRef.current!.clientWidth / page.view[2]).toFixed(2)
   }
 
   // 初始化page
   const initPdfPage = (pdfInfo: any) => {
+    
     pdfInfo.getPage(1).then((page: any) => {
       // eslint-disable-next-line no-underscore-dangle
       
@@ -75,6 +78,16 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
       }
     });
   }
+
+  useMount(() => {
+    const obz = new ResizeObserver(([dom]) => {
+        const parentNode = dom.target.parentNode! as HTMLDivElement;
+        parentNode.scrollTop = (parentNode.scrollHeight - parentNode.clientHeight) / 2;
+        obz.unobserve(canvasRef.current!)
+    })
+    obz.observe(canvasRef.current!)
+    return () => obz.unobserve(canvasRef.current!)
+  })
 
   // 请求数据
   const initPdfViewer = () => {
@@ -107,12 +120,11 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   }
 
   // 加载canvas到ref
-  const loadCanvas = (ref: any, viewport: any) => {
+  const loadCanvas = (ref: any, viewport: any, isMount=false) => {
     const canvas = document.createElement("canvas")
     const context = canvas.getContext('2d');
     canvas.height = viewport.height;
     canvas.width = viewport.width;
-
     const renderContext = {
       canvasContext: context!,
       viewport,
@@ -141,10 +153,13 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
     // 当等待状态时不可切换状态
     if (flag === "wait") {
       wrapRef.current!.style.cursor = "wait";
+      setTimeout(() => {
+        setMouseState("pointer")
+      }, 800)
     } else {
       setTimeout(() => {
         wrapRef.current!.style.cursor = "pointer"
-      }, 1000)
+      }, 800)
     }
   }
 
@@ -178,7 +193,20 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
         spareScalc(scale)
       }
     }
-  }, [page, scale])
+  }, [scale])
+  // page改变表示是第一次渲染 需要初始化滚动条
+  useEffect(() => {
+    if (page && wrapRef.current) {
+      const viewport = page.getViewport({ scale: scale * kScaleRef.current });
+      loadCanvas(canvasRef, viewport, true)
+      setMouseState("pointer")
+      if (spareRef.current!.children.length === 0) {
+        const viewport1 = page.getViewport({ scale });
+        loadCanvas(spareRef, viewport1, true)
+        spareScalc(scale)
+      }
+    }
+  }, [page])
 
   useUpdateEffect(() => {
     // 设置css缩放
@@ -191,7 +219,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
       // wrapRef.current.style.cursor = "wait"
       setMouseState("wait")
       setScale(cssScale)
-    }, 800)
+    }, 1000)
   }, [cssScale])
 
   /** Mouse Event */
@@ -281,4 +309,3 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
 }
 
 export default FileDwgView;
-

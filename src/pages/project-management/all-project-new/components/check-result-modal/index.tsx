@@ -26,7 +26,8 @@ const { TabPane } = Tabs;
 
 export interface CurrentFileInfo {
   path: string;
-  type: FileType | undefined
+  type: FileType | undefined;
+  title: string;
 }
 
 interface CheckResultModalProps {
@@ -45,7 +46,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const { projectInfo, isResult = false } = props;
   const [requestLoading, setRequestLoading] = useState(false);
 
-  const [currentFileInfo, setCurrentFileInfo] = useState<CurrentFileInfo>({path: "", type: undefined})
+  const [currentFileInfo, setCurrentFileInfo] = useState<CurrentFileInfo>({path: "", type: undefined, title: ""})
 
   const { data: resultData, run, loading } = useRequest(getResultTreeData, {
     manual: true,
@@ -294,7 +295,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       <Modal
         maskClosable={false}
         className={styles.fileRead}
-        title="文件预览"
+        title={`预览-${currentFileInfo.title}`}
         width={"99%"}
         style={{top: 20}}
         visible={!!currentFileInfo.type}
