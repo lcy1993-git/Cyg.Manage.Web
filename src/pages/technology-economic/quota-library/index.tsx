@@ -74,8 +74,8 @@ const columns = [
     width: 150
   },
   {
-    dataIndex: 'majorTypeText',
-    key: 'majorTypeText',
+    dataIndex: 'majorType',
+    key: 'majorType',
     title: '适用专业',
     width: 150
   },

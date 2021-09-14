@@ -21,4 +21,11 @@ export default {
     { required: true, message: '真实姓名不能为空' },
     { max: 12, message: '真实姓名超出字符数限制，限制为12个字符' },
   ],
+  idNumber: [
+    { required: true, message: '身份证号不能为空' },
+    {
+      pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+      message: '请输入正确的身份证格式',
+    },
+  ],
 };

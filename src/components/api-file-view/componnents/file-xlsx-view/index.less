@@ -1,0 +1,27 @@
+.xlsxWrap {
+  width: 100%;
+  :global {
+    table {
+      border-collapse: collapse;
+    }
+    th,
+    td {
+      border: solid 1px #6d6d6d;
+      padding: 5px 10px;
+      &:hover {
+        background-color: #fafafa;
+      }
+    }
+    .spanElement {
+      font-weight: 600;
+      text-align: center;
+    }
+  }
+  .titles {
+    display: flex;
+    margin: 20px 0;
+    .title {
+      margin-right: 5px;
+    }
+  }
+}

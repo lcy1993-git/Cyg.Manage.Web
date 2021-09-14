@@ -202,8 +202,6 @@ const SpreadCoefficient: React.FC = () => {
   // 价差目录新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      console.log(values);
-
       await createCatalogue(values); // TODO
       refresh();
       setAddFormVisible(false);
@@ -333,6 +331,7 @@ const SpreadCoefficient: React.FC = () => {
   return (
     <PageCommonWrap>
       {tableElement()}
+      {projectType}
       <div className={styles.moduleTabs}>
         <Tabs onChange={callback} type="card">
           {ProjectTypeList.map((item: any, index: number) => {

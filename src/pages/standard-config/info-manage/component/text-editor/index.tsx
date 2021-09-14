@@ -11,12 +11,15 @@ import { useRequest } from 'ahooks';
 import mammoth from 'mammoth';
 import { getGroupInfo } from '@/services/project-management/all-project';
 import uuid from 'node-uuid';
-import pdfjs from 'pdfjs-dist';
 import FormSwitch from '@/components/form-switch';
 import { getClientCategorys } from '@/services/personnel-config/company-user';
 import rule from '../../news-rule';
 import { flatten } from '@/utils/utils';
 
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
+import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker;
 interface EditorParams {
   onChange: Dispatch<SetStateAction<string>>;
   titleForm: any;
@@ -74,29 +77,30 @@ class AlertMenu extends BtnMenu {
         reader.readAsDataURL(selectedFile);
         reader.onload = function (e) {
           const res = e.target?.result;
-          pdfjs
+          pdfjsLib
             .getDocument(res as string)
             .promise.then(async function (pdf: any) {
               const numPages = pdf.numPages;
-              let pdfHtml = '';
               for (let i = 1; i <= numPages; i++) {
-                await pdf.getPage(i).then(async function getPageHelloWorld(page: any) {
-                  var scale = 2;
-                  var viewport = page.getViewport(scale);
+                await pdf.getPage(i).then(async (page: any) => {
+                  let pdfHtml = '';
+                  var scale = 1;
+                  const viewport = page.getViewport({ scale });
                   const canvas = document.createElement('canvas');
-                  var context = canvas.getContext('2d');
+                  const context = canvas.getContext('2d');
                   canvas.height = viewport.height;
                   canvas.width = viewport.width;
-                  var renderContext = {
-                    canvasContext: context,
+                  const renderContext = {
+                    canvasContext: context!,
                     viewport: viewport,
                   };
                   await page.render(renderContext);
-                  pdfHtml += `<image style="width:100%;height:auto" src="${canvas.toDataURL(
-                    'image/png',
-                  )}"></image>`;
+                  setTimeout(() => {
+                    pdfHtml += `<image style="width:100%;height:auto" src="${canvas.toDataURL('image/png')}"></image>`;
+                    that.txt.append(pdfHtml);
+                  },500)
                 });
-                that.txt.append(pdfHtml);
+                
               }
             })
             .catch((err: any) => {

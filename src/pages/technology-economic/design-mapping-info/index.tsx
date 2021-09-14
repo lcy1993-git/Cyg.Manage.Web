@@ -191,13 +191,13 @@ const DesignMappingInfo: React.FC = () => {
         )
       }
     },
-    {
-      dataIndex: 'sourceMaterialLibraryName',
-      key: 'sourceMaterialLibraryName',
-      title: '技经物料库',
-      align: 'center',
-      ellipsis: true,
-    },
+    // {
+    //   dataIndex: 'sourceMaterialLibraryName',
+    //   key: 'sourceMaterialLibraryName',
+    //   title: '技经物料库',
+    //   align: 'center',
+    //   ellipsis: true,
+    // },
     {
       dataIndex: 'sourceMaterialItemIdCode',
       key: 'sourceMaterialItemIdCode',

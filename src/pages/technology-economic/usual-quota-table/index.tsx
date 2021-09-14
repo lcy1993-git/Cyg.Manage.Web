@@ -66,19 +66,19 @@ const industryType = [
 ]
 const majorType = [
   {
-    value: 0,
+    value: '建筑',
     text: '建筑'
   }, {
-    value: 1,
+    value: '安装',
     text: '安装'
   }, {
-    value: 2,
+    value: '拆除',
     text: '拆除'
   }, {
-    value: 3,
+    value: '余物清理',
     text: '余物清理'
   }, {
-    value: 4,
+    value: '全部',
     text: '全部'
   },
 ]
@@ -160,8 +160,8 @@ const UsualQuotaTable: React.FC<Props> = () => {
       width: 120,
     },
     {
-      dataIndex: 'majorTypeText',
-      key: 'majorTypeText',
+      dataIndex: 'majorType',
+      key: 'majorType',
       title: '适用专业',
       align: 'center',
       width: 100,
@@ -203,15 +203,20 @@ const UsualQuotaTable: React.FC<Props> = () => {
     }
     if (isEdit) {
       await editCommonlyTable(data)
-      console.log(data?.enabled)
       message.success('修改成功')
+      form.resetFields();
       setIsModalVisible(false)
       setIsEdit(false)
+      tableRef.current?.reset()
+
     } else {
       await addCommonlyTable(data)
       message.success('添加成功')
+      form.resetFields();
       setIsModalVisible(false)
       setIsEdit(false)
+      tableRef.current?.reset()
+
     }
     if (tableRef?.current){
       tableRef.current?.refresh()
@@ -228,6 +233,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
   }
 
   const tableOnSelect = (val: object[]) => {
+    console.log(val)
     setSelectRow(val)
   }
   const removeRow = () => {
@@ -267,7 +273,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
       current.publishDate = moment(moment(current?.publishDate).format('YYYY-MM-DD'))
       current.year = moment(current?.year)
       setIsModalVisible(true)
-      console.log(current)
       form.setFieldsValue(current)
     }
   }
@@ -281,7 +286,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
       },
       "keyWord": ''
     })
-    console.log(res)
     setDataSource(res.items)
   }
   useEffect(() => {
@@ -406,7 +410,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
                 <Form.Item
                   label="适用专业"
                   name="majorType"
-                  rules={[{required: true, message: '请选择适用专业!'}]}
+                  // rules={[{required: true, message: '请选择适用专业!'}]}
                 >
                   <Select>
                     {

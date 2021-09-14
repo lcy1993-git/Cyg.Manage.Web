@@ -160,8 +160,9 @@ const DesignMaterialMapping: React.FC = () => {
       message.warn('请选择要操作的行');
       return;
     }
-    const {id} = tableSelectRows?.[0] ?? '';
-    history.push(`/technology-economic/design-mapping-info?id=${id}`)
+    console.log(tableSelectRows)
+    const {id,sourceMaterialLibraryId,sourceMaterialLibraryName} = tableSelectRows?.[0] ?? '';
+    history.push(`/technology-economic/design-mapping-info?id=${id}&sourceMaterialLibraryName=${sourceMaterialLibraryName}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
   };
   const onFinish = async (val: SuppliesLibraryData) => {
     const data = {...val}
@@ -273,7 +274,7 @@ const DesignMaterialMapping: React.FC = () => {
 
             <Col span={12}>
               <Form.Item
-                label="关联设计端物料库"
+                label="关联设计端资源库"
                 name="designResourceLibraryId"
                 rules={[{required: true, message: '请选择关联设计端物料库!'}]}
               >

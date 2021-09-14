@@ -89,7 +89,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
                 editUserInfo({ ...userInfo, email: emailRef.current!.input.value })
                 .then(() => {
                   run();
-                  message.success("邮箱更新成功")
+                  message.success("更新成功")
                 })
               }} >保存</Button>
             </div>
@@ -110,7 +110,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
                 editUserInfo({ ...userInfo, nickName: nickNameRef.current!.input.value })
                 .then(() => {
                   run();
-                  message.success("昵称更新成功")
+                  message.success("更新成功")
                 })
               }} >保存</Button>
             </div>
@@ -131,7 +131,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
                 editUserInfo({ ...userInfo, name: nameRef.current!.input.value })
                 .then(() => {
                   run()
-                  message.success("真实姓名更新成功")
+                  message.success("更新成功")
                 })
               }} >保存</Button>
             </div>

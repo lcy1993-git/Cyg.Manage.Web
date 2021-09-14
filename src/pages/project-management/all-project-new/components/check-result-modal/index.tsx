@@ -19,8 +19,16 @@ import excelSvg from '@/assets/image/fileIcon/excel.svg';
 import jpgSvg from '@/assets/image/fileIcon/jpg.svg';
 
 import styles from './index.less';
+import UrlFileView from '@/components/url-file-view';
+import { FileType } from '@/components/api-file-view/getStrategyComponent';
 
 const { TabPane } = Tabs;
+
+export interface CurrentFileInfo {
+  path: string;
+  type: FileType | undefined;
+  title: string;
+}
 
 interface CheckResultModalProps {
   visible?: boolean;
@@ -37,6 +45,8 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const [currentTab, setCurrentTab] = useState<string>('design');
   const { projectInfo, isResult = false } = props;
   const [requestLoading, setRequestLoading] = useState(false);
+
+  const [currentFileInfo, setCurrentFileInfo] = useState<CurrentFileInfo>({path: "", type: undefined, title: ""})
 
   const { data: resultData, run, loading } = useRequest(getResultTreeData, {
     manual: true,
@@ -263,6 +273,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                       designData={resultData?.map(mapTreeData)}
                       createEvent={setCheckedKeys}
                       setTabEvent={setCurrentTab}
+                      setCurrentFileInfo={setCurrentFileInfo}
                     />
                   </Spin>
                 </TabPane>
@@ -272,6 +283,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                       compileResultData={compileResultData?.map(mapTreeData)}
                       createEvent={setCompileKeys}
                       setTabEvent={setCurrentTab}
+                      setCurrentFileInfo={setCurrentFileInfo}
                     />
                   </Spin>
                 </TabPane>
@@ -280,6 +292,19 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           </Spin>
         </Modal>
       )}
+      <Modal
+        maskClosable={false}
+        className={styles.fileRead}
+        title={`预览-${currentFileInfo.title}`}
+        width={"99%"}
+        style={{top: 20}}
+        visible={!!currentFileInfo.type}
+        destroyOnClose
+        footer={null}
+        onCancel={() => setCurrentFileInfo({...currentFileInfo, type: undefined})}
+      >
+        { currentFileInfo.path && <UrlFileView params={{path: currentFileInfo.path}} fileType={currentFileInfo.type!} />}
+      </Modal>
     </>
   );
 };
