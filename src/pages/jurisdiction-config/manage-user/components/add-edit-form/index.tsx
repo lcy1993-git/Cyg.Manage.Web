@@ -107,11 +107,12 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
           <CyFormItem label="邮箱" name="email" rules={rules.email}>
             <Input placeholder="请填写邮箱信息" />
           </CyFormItem>
-          <CyFormItem label="姓名" name="name">
-            <Input placeholder="请输入真实姓名" />
-          </CyFormItem>
         </>
       )}
+
+      <CyFormItem label="姓名" name="name">
+        <Input placeholder="请输入姓名" />
+      </CyFormItem>
 
       {/* <CyFormItem label="状态" name="userStatus" initialValue={'1'} required>
         <EnumRadio enumList={BelongStatusEnum} />
