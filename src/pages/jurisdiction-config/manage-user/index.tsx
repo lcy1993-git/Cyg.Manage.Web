@@ -110,6 +110,7 @@ const ManageUser: React.FC = () => {
           pwd: '',
           userType: '',
           companyId: '',
+          name: '',
         },
         value,
       );
