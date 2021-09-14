@@ -4,6 +4,7 @@ import { cyRequest, baseUrl } from '@/services/common';
 import type { FileType } from '../api-file-view/getStrategyComponent';
 import FileDwgView from '../api-file-view/componnents/file-dwg-view';
 import XlsxViewer from '../api-file-view/componnents/file-excel-view';
+import { message } from 'antd';
 
 interface UrlFileViewProps {
   url?: string;
