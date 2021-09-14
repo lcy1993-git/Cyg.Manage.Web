@@ -33,17 +33,6 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
 
   return (
     <>
-      <CyFormItem labelWidth={100} align="right" label="所属公司" name="parentId">
-        <TreeSelect
-          style={{ width: '100%' }}
-          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-          treeData={handleData}
-          placeholder="请选择"
-          treeDefaultExpandAll
-          allowClear
-        />
-      </CyFormItem>
-
       <CyFormItem
         labelWidth={100}
         align="right"

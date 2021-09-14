@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import { Button, Modal, Form, message, Switch } from 'antd';
-import TreeTable from '@/components/tree-table/index';
 import { ApartmentOutlined, EditOutlined, PlusOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import PageCommonWrap from '@/components/page-common-wrap';
@@ -19,6 +18,7 @@ import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
 import UnitConfig from './components/unit-config';
+import GeneralTable from '@/components/general-table';
 
 const mapColor = {
   无: 'gray',
@@ -67,9 +67,12 @@ const CompanyManage: React.FC = () => {
     },
     {
       title: '管理员账号',
-      dataIndex: 'root',
-      index: 'root',
+      dataIndex: 'adminUserName',
+      index: 'adminUserName',
       width: 180,
+      render: (text: any, record: any) => {
+        return record.adminUserName ? record.adminUserName : '-';
+      },
     },
     {
       title: '授权账户数',
@@ -286,13 +289,13 @@ const CompanyManage: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <TreeTable
+      <GeneralTable
         ref={tableRef}
         tableTitle="公司管理"
         columns={companyTableColumns}
+        buttonRightContentSlot={companyManageButton}
         getSelectData={(data) => setTableSelectRows(data)}
-        rightButtonSlot={companyManageButton}
-        url="/Company/GetTreeList"
+        url="/Company/GetPagedList"
       />
       <Modal
         maskClosable={false}

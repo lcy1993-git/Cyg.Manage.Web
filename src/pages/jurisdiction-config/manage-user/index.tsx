@@ -108,17 +108,14 @@ const ManageUser: React.FC = () => {
         {
           userName: '',
           pwd: '',
-          roleId: '',
-          province: '',
+          userType: '',
           companyId: '',
-          email: '',
-          nickName: '',
-          name: '',
         },
         value,
       );
 
       await addManageUserItem(submitInfo);
+      message.success('添加成功');
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -148,8 +145,8 @@ const ManageUser: React.FC = () => {
         {
           id: editData.id,
           email: editData.email,
-          nickName: editData.nickName,
           name: editData.name,
+          phone: editData.phone,
         },
         values,
       );
@@ -176,13 +173,7 @@ const ManageUser: React.FC = () => {
       width: 140,
     },
     {
-      title: '昵称',
-      dataIndex: 'nickName',
-      index: 'nickName',
-      width: 200,
-    },
-    {
-      title: '真实姓名',
+      title: '姓名',
       dataIndex: 'name',
       index: 'name',
       width: 120,
@@ -191,26 +182,20 @@ const ManageUser: React.FC = () => {
       title: '手机号',
       dataIndex: 'phone',
       index: 'phone',
-      width: 120,
+      width: 160,
     },
     {
       title: '邮箱',
       dataIndex: 'email',
       index: 'email',
-      width: 140,
+      width: 160,
     },
     {
       title: '所属公司',
       dataIndex: 'companyName',
       index: 'companyName',
-      width: 220,
     },
-    {
-      title: '区域',
-      dataIndex: 'provinceName',
-      index: 'provinceName',
-      // width: 160,
-    },
+
     {
       title: '状态',
       dataIndex: 'userStatus',
@@ -229,31 +214,25 @@ const ManageUser: React.FC = () => {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
       index: 'lastLoginIp',
-      width: 100,
+      width: 140,
     },
     {
       title: '最后登录日期',
       dataIndex: 'lastLoginDate',
       index: 'lastLoginDate',
-      width: 100,
+      width: 140,
       render: (text: any, record: any) => {
         return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
       },
     },
     {
-      title: '角色类型',
-      dataIndex: 'roleType',
-      index: 'roleType',
-      width: 120,
+      title: '账号类型',
+      dataIndex: 'userType',
+      index: 'userType',
+      width: 140,
       render: (text: any, record: any) => {
-        return record.roleType ? record.roleTypeText : record.roleType;
+        return record.userType ? record.userTypeText : record.userType;
       },
-    },
-    {
-      title: '角色',
-      dataIndex: 'roleName',
-      index: 'roleName',
-      width: 120,
     },
   ];
 
