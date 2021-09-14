@@ -29,7 +29,8 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
 
       setCurrentFileInfo({
         type,
-        path: info[0]
+        path: info[0],
+        title: e.node.title
       })
     }
   };

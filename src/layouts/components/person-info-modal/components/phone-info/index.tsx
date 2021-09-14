@@ -30,7 +30,7 @@ const PhoneInfo: React.FC<PhoneInfoProps> = ({
   const bindPhoneHandler = () => {
     const phoneNumber = bindPhoneRef.current!.input.value;
     if (!regPhone.test(phoneNumber)) {
-      message.error("请输入11位有效手机号码")
+      message.error("手机格式有误，请输入有效的11位手机号码")
     } else if (bindPhoneRef.current!.input.value === phone) {
       message.error("更换的手机号不能与原手机号相同")
     } else {
@@ -49,7 +49,7 @@ const PhoneInfo: React.FC<PhoneInfoProps> = ({
       phone: currentPhone
     }).then((res) => {
       setStep(0)
-      message.success("手机号更新成功")
+      message.success("更新成功")
       refresh()
     })
   }
@@ -92,7 +92,7 @@ const PhoneInfo: React.FC<PhoneInfoProps> = ({
             <PersonInfoModalVerificationCode type={1} phoneNumber={currentPhone} canSend={true} onChange={setCurrentCode} setCanOkClick={setCanOkClick} />
           </div>
           <div className={classNames(styles.minHeight60, styles.flex, styles.ml60)}>
-            <Button disabled={!canOkClick} type="primary" onClick={filishClickHandler}>下一步</Button>
+            <Button disabled={!canOkClick} type="primary" onClick={filishClickHandler}>绑定</Button>
             <Button className={styles.ml12} onClick={() => setStep(phone ? 0 : 1)}>取消</Button>
           </div>
         </>

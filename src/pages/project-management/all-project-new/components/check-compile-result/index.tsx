@@ -29,7 +29,8 @@ const CompileResultTab: React.FC<DesignResultProps> = (props) => {
       const type = e.node.title.split(".").at(-1);
       setCurrentFileInfo({
         type,
-        path: info[0]
+        path: info[0],
+        title: e.node.title
       })
     }
   };
