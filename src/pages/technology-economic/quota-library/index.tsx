@@ -110,7 +110,7 @@ const QuotaLibrary: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  // const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
 

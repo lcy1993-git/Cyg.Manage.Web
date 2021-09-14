@@ -150,6 +150,7 @@ const DesignMappingInfo: React.FC = () => {
       key: 'number',
       title: '编号',
       align: 'center',
+      width:150
     },
     {
       dataIndex: 'name',
@@ -202,6 +203,7 @@ const DesignMappingInfo: React.FC = () => {
       key: 'sourceMaterialItemIdCode',
       title: '编号',
       align: 'center',
+      width:150,
       ellipsis: true,
     },
     {

@@ -57,6 +57,9 @@ const SuppliesLibrary: React.FC = () => {
       title: '发布时间',
       align: 'center',
       width: 80,
+      render(v: string) {
+        return moment(v).format('YYYY-MM-DD')
+      }
     },
     {
       dataIndex: 'publishOrg',
@@ -99,7 +102,7 @@ const SuppliesLibrary: React.FC = () => {
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="关键词"
         />
       </TableSearch>
     );
@@ -244,8 +247,9 @@ const SuppliesLibrary: React.FC = () => {
               <Form.Item
                 label="发布时间"
                 name="publishDate"
+                rules={[{required: true, message: '请选择发布时间!'}]}
               >
-                <DatePicker/>
+                <DatePicker defaultValue={undefined}/>
               </Form.Item>
             </Col>
           </Row>

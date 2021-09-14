@@ -45,7 +45,7 @@ const DesignMaterialMapping: React.FC = () => {
   const getMaterialData = async ()=>{
     const res = await getResourceLibList()
     const res1 = await getMaterialLibraryAllList()
-
+    console.log(res)
     setMaterialList(res)
     setCostMaterialList(res1)
   }

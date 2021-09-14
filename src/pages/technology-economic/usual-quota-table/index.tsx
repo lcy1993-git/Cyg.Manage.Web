@@ -104,13 +104,13 @@ const UsualQuotaTable: React.FC<Props> = () => {
       width: 80,
       dataIndex: 'number'
     },
-    {
-      dataIndex: 'name',
-      key: 'name',
-      title: '名称',
-      align: 'center',
-      width: 170,
-    },
+    // {
+    //   dataIndex: 'name',
+    //   key: 'name',
+    //   title: '名称',
+    //   align: 'center',
+    //   width: 170,
+    // },
     {
       dataIndex: 'commonlyTableTypeText',
       key: 'commonlyTableTypeText',

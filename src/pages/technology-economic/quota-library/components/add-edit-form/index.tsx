@@ -11,6 +11,7 @@ import UrlSelect from '@/components/url-select';
 const { Option } = Select;
 interface ResponsData {
   items: {
+    enabled: boolean;
     id: string;
     name: string
   }[]
@@ -19,9 +20,8 @@ interface ResponsData {
 const DictionaryForm: React.FC<null> = () => {
 
   const { data: MaterialMachineLibraryData, run } = useRequest<ResponsData>(queryMaterialMachineLibraryPager, { manual: true });
-  
-  const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
 
+  const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
   useMount(() => {
     run({ pageIndex: 1, pageSize: 3000 })
   })
@@ -29,7 +29,7 @@ const DictionaryForm: React.FC<null> = () => {
   const MaterialMachineLibraryListFn = () => {
     return MaterialMachineLibraryList.map((item) => {
       return (
-        <Option key={item.id} value={item.id}>{item.name}</Option>
+        <Option key={item.id} value={item.id} disabled={!item.enabled}>{item.name}</Option>
       );
     })
   }
@@ -81,12 +81,12 @@ const DictionaryForm: React.FC<null> = () => {
             </Select>
           </CyFormItem>
 
-          <CyFormItem label="发布时间" name="publishDate">
-            <DateFormItem />
+          <CyFormItem label="发布时间" name="publishDate" required>
+            <DateFormItem allowClear={false}/>
           </CyFormItem>
 
-          <CyFormItem label="价格年度" name="year">
-            <DateFormItem picker="year" />
+          <CyFormItem label="价格年度" name="year" required>
+            <DateFormItem picker="year" allowClear={false}/>
           </CyFormItem>
 
           <CyFormItem label="适用专业" name="majorType">
