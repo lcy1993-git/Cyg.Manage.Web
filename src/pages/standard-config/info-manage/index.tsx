@@ -365,7 +365,7 @@ const InfoManage: React.FC = () => {
         needCommonButton={true}
         columns={columns}
         url="/Article/GetPagedList"
-        tableTitle="宣贯管理"
+        tableTitle="宣贯"
         getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           state: status,

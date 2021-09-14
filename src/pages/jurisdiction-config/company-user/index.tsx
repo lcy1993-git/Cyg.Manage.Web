@@ -194,6 +194,7 @@ const CompanyUser: React.FC = () => {
           email: '',
           nickName: '',
           name: '',
+          idNumber: '',
         },
         value,
       );
@@ -256,6 +257,7 @@ const CompanyUser: React.FC = () => {
           id: editData.id,
           email: editData.email,
           nickName: editData.nickName,
+          idNumber: editData.idNumber,
         },
         values,
       );

@@ -112,7 +112,7 @@ export default [
     component: <CommonRateInfomation />,
   },
   {
-    title: '工程目录',
+    title: '工程量目录',
     path: '/technology-economic/project-list',
     component: <ProjectList />,
   },

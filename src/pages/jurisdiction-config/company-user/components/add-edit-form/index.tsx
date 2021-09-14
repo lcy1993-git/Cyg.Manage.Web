@@ -93,6 +93,9 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
         <CyFormItem label="真实姓名" name="name" rules={rules.realName} required>
           <Input placeholder="请输入真实姓名" />
         </CyFormItem>
+        <CyFormItem label="身份证号" name="idNumber" rules={rules.idNumber} required>
+          <Input placeholder="请输入身份证号" />
+        </CyFormItem>
 
         <CyFormItem label="授权端口" name="clientCategorys">
           <Select

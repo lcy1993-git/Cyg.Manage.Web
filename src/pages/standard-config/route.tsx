@@ -65,7 +65,7 @@ export default [
     component: <SignManage />,
   },
   {
-    title: '宣贯管理',
+    title: '宣贯',
     path: '/standard-config/info-manage',
     component: <InfoManage />,
   },
