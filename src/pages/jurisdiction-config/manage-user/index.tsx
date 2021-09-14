@@ -115,6 +115,7 @@ const ManageUser: React.FC = () => {
       );
 
       await addManageUserItem(submitInfo);
+      message.success('添加成功');
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();

@@ -90,24 +90,14 @@ const RolePermissions: React.FC = () => {
       dataIndex: 'users',
       index: 'users',
       render: (text: any, record: any) => {
-        const roles = record.roles?.map((item: any) => {
+        const roles = record.users?.map((item: any) => {
           return (
             <CyTag className="mr7" key={uuid.v1()}>
               {item.text}
             </CyTag>
           );
         });
-        roles?.unshift(
-          record.users?.map((item: any) => {
-            return (
-              <>
-                <CyTag className="mr7" key={uuid.v1()}>
-                  {item.text}
-                </CyTag>
-              </>
-            );
-          }),
-        );
+
         return roles;
       },
     },

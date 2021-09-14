@@ -20,23 +20,14 @@ export enum userTypes {
 const ManageUserForm: React.FC<ManageUserForm> = (props) => {
   const { type = 'edit' } = props;
   const [selectedUserType, setSelectedUserType] = useState<number>(0);
-  const { data: companyData = [] } = useRequest(() => getTreeSelectData(), {
-    ready: type === 'add' && Number(selectedUserType) === 3,
-  });
 
-  const mapTreeData = (data: any) => {
-    return {
-      title: data.text,
-      value: data.id,
-      children: data.children ? data.children.map(mapTreeData) : [],
-    };
-  };
-
-  const handleData = useMemo(() => {
-    return companyData?.map(mapTreeData);
-  }, [JSON.stringify(companyData)]);
-
-  console.log(selectedUserType);
+  // const mapTreeData = (data: any) => {
+  //   return {
+  //     title: data.text,
+  //     value: data.id,
+  //     children: data.children ? data.children.map(mapTreeData) : [],
+  //   };
+  // };
 
   return (
     <>
@@ -87,12 +78,13 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       )}
       {type === 'add' && Number(selectedUserType) === 3 && (
         <CyFormItem label="公司" name="companyId" required rules={rules.company}>
-          <TreeSelect
-            style={{ width: '100%' }}
-            treeData={handleData}
+          <UrlSelect
+            requestType="post"
+            showSearch
+            url="/Company/GetList"
+            titlekey="text"
+            valuekey="value"
             placeholder="请选择公司"
-            treeDefaultExpandAll
-            allowClear
           />
         </CyFormItem>
       )}
@@ -110,10 +102,10 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       {type === 'edit' && (
         <>
           <CyFormItem label="手机" name="phone" rules={rules.phone}>
-            <Input placeholder="请填写邮箱" />
+            <Input placeholder="请填写手机号码" />
           </CyFormItem>
           <CyFormItem label="邮箱" name="email" rules={rules.email}>
-            <Input placeholder="请设置昵称" />
+            <Input placeholder="请填写邮箱信息" />
           </CyFormItem>
           <CyFormItem label="姓名" name="name">
             <Input placeholder="请输入真实姓名" />
