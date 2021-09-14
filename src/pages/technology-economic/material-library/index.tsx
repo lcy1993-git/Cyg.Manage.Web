@@ -37,11 +37,17 @@ const columns = [
     dataIndex: 'quotaLibrarys',
     key: 'quotaLibrarys',
     title: '已关联定额库',
+    render:(val:any[])=>{
+      return val.join(' | ')
+    }
   },
   {
     dataIndex: 'publishDate',
     key: 'publishDate',
     title: '发布时间',
+    render: (text: any) => {
+      return moment(text).format('YYYY/MM/DD')
+    }
   },
   {
     dataIndex: 'publishOrg',

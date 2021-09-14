@@ -1,19 +1,15 @@
 import type {FC} from 'react';
 import {useState, useRef, useEffect} from 'react';
 import {Button, message} from 'antd';
-
 import PageCommonWrap from "@/components/page-common-wrap";
 import ListTable from '@/pages/technology-economic/components/list-table';
-
-import {Select} from 'antd';
-
 import styles from './index.less'
-import {getMaterialLibraryList, getMaterialLibraryTreeById} from '@/services/technology-economic/supplies-library';
-
+import { getMaterialLibraryTreeById} from '@/services/technology-economic/supplies-library';
 import {Tree} from 'antd';
 import {manageMaterialMappingDesignItem} from '@/services/technology-economic/material';
+import qs from "qs";
 
-const {Option} = Select;
+// const {Option} = Select;
 
 const {DirectoryTree} = Tree;
 const columns = [
@@ -165,14 +161,14 @@ const columns = [
   // }
 ];
 
-interface SelectIten {
-  enabled: boolean
-  id: string
-  name: string
-  publishDate: moment.Moment
-  publishOrg: string
-  remark: string
-}
+// interface SelectIten {
+//   enabled: boolean
+//   id: string
+//   name: string
+//   publishDate: moment.Moment
+//   publishOrg: string
+//   remark: string
+// }
 
 interface Props {
   materialMappingDesignItemId: string
@@ -184,7 +180,7 @@ const MappingManage: FC<Props> = (props) => {
   const [materialLibraryId, setMaterialLibraryId] = useState<string>("");
   const [resourceItem, setResourceItem] = useState<any>({});
   const [materialLibList, setMaterialLibList] = useState([])
-  const [slectLsit, setSlectLsit] = useState<SelectIten[]>([])
+  // const [slectLsit, setSlectLsit] = useState<SelectIten[]>([])
   const [id, setId] = useState<string>('')
 
   const getTree = (arr: any[]) => {
@@ -211,22 +207,14 @@ const MappingManage: FC<Props> = (props) => {
     getTreeList()
   }, [id])
   const ref = useRef(null);
-  const typeOnChange = (val: string) => {
-    setId(val)
-  }
+  // const typeOnChange = (val: string) => {
+  //   setId(val)
+  // }
   const treeOnChange = (val: any) => {
     console.log(val)
     setMaterialLibraryId(val[0])
   }
-  const getSelectList = async () => {
-    const data = {
-      "pageIndex": 1,
-      "pageSize": 1000,
-      "keyWord": ''
-    }
-    const res = await getMaterialLibraryList(data)
-    setSlectLsit(res?.items)
-  }
+
   const associated = async () => {
     await manageMaterialMappingDesignItem({
       materialMappingDesignItemId,
@@ -239,23 +227,14 @@ const MappingManage: FC<Props> = (props) => {
   }
 
   useEffect(() => {
-    getSelectList()
+    setId(qs.parse(window.location.href.split("?")[1])?.sourceMaterialLibraryId as string)
   }, [])
   return (
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
       <div className={styles.wrap} ref={ref}>
         <div className={styles.wrapLeftMenu}>
           <div className={styles.selectWrap}>
-            <Select
-              style={{width: 270}}
-              value={id}
-              onChange={typeOnChange}>
-              {
-                slectLsit.map(item => {
-                  return <Option value={item.id} key={item.id}>{item.name}</Option>
-                })
-              }
-            </Select>
+              {qs.parse(window.location.href.split("?")[1])?.sourceMaterialLibraryName}
             <br/>
             <br/>
             <div className={styles.treeBox}>

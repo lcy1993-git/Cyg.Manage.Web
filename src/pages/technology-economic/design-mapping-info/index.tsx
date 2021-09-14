@@ -66,6 +66,7 @@ const DesignMappingInfo: React.FC = () => {
 
   const handlerEdit = (item: SuppliesLibraryData) => {
     setAddFormVisible(true)
+    console.log(item)
     setTableSelectRows(item)
   }
   const handlerDel = (val: string) => {
@@ -149,6 +150,7 @@ const DesignMappingInfo: React.FC = () => {
       key: 'number',
       title: '编号',
       align: 'center',
+      width:150
     },
     {
       dataIndex: 'name',
@@ -189,18 +191,19 @@ const DesignMappingInfo: React.FC = () => {
         )
       }
     },
-    {
-      dataIndex: 'sourceMaterialLibraryName',
-      key: 'sourceMaterialLibraryName',
-      title: '技经物料库',
-      align: 'center',
-      ellipsis: true,
-    },
+    // {
+    //   dataIndex: 'sourceMaterialLibraryName',
+    //   key: 'sourceMaterialLibraryName',
+    //   title: '技经物料库',
+    //   align: 'center',
+    //   ellipsis: true,
+    // },
     {
       dataIndex: 'sourceMaterialItemIdCode',
       key: 'sourceMaterialItemIdCode',
       title: '编号',
       align: 'center',
+      width:150,
       ellipsis: true,
     },
     {

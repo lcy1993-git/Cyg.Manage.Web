@@ -18,6 +18,7 @@ import {
 } from '@/services/technology-economic';
 
 import styles from './index.less';
+import moment from "moment";
 
 const { Search } = Input;
 
@@ -49,7 +50,10 @@ const columns = [
     dataIndex: 'publishDate',
     key: 'publishDate',
     title: '发布时间',
-    width: 130
+    width: 130,
+  render: (text: any) => {
+  return moment(text).format('YYYY/MM/DD')
+}
   },
   {
     dataIndex: 'publishOrg',
@@ -70,8 +74,8 @@ const columns = [
     width: 150
   },
   {
-    dataIndex: 'majorTypeText',
-    key: 'majorTypeText',
+    dataIndex: 'majorType',
+    key: 'majorType',
     title: '适用专业',
     width: 150
   },
@@ -106,7 +110,7 @@ const QuotaLibrary: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  // const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
 

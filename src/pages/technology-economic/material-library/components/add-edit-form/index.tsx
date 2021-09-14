@@ -29,7 +29,7 @@ const DictionaryForm: React.FC<{ type?: string }> = () => {
         </Col>
         <Col span={2}></Col>
         <Col span={11}>
-          <CyFormItem label="发布时间" name="publishDate">
+          <CyFormItem label="发布时间" name="publishDate" required>
             <DateFormItem />
           </CyFormItem>
           <CyFormItem label="价格年度" name="year">
