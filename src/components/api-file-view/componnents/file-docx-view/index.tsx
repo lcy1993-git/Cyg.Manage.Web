@@ -34,7 +34,7 @@ const FileDocxView: React.FC<FileDocxViewProps> = ({
   }, [data])
   
   return (
-    <div ref={ref} style={{height: window.innerHeight - 100}} className={classNames(className)} />
+    <div ref={ref} style={{minHeight: window.innerHeight - 100}} className={classNames(className)} />
   )
 }
 

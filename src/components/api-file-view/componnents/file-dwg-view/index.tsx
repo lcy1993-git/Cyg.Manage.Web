@@ -253,7 +253,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
       currentscale = cssScale - zoom;
     }
     // 缩放边界限定,若缩放边界超出则不执行
-    if (currentscale < 1 || currentscale > maxScale) return;
+    if (currentscale < .4 || currentscale > maxScale) return;
     changeMode(false)
     setCssScale(currentscale)
     setDisplacement({
