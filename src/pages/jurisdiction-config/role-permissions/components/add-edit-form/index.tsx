@@ -2,26 +2,24 @@ import React from 'react';
 import { Input } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 
-import FormSwitch from '@/components/form-switch';
-
 const { TextArea } = Input;
 
 const RolePermissionsForm: React.FC = () => {
   return (
     <>
       <CyFormItem
-        label="角色名称"
+        label="模板名称"
         name="name"
         required
         rules={[
-          { required: true, message: '角色名称不能为空' },
+          { required: true, message: '模板名称不能为空' },
           {
             max: 12,
-            message: '角色名称超出字符数限制，限制为12个字符',
+            message: '模板名称超出字符数限制，限制为12个字符',
           },
         ]}
       >
-        <Input placeholder="请输入角色名称" style={{ width: '100%' }} />
+        <Input placeholder="请输入模板名称" style={{ width: '100%' }} />
       </CyFormItem>
 
       <CyFormItem label="备注" name="remark">

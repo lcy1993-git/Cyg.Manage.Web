@@ -192,7 +192,6 @@ const CompanyUser: React.FC = () => {
           pwd: '',
           groupIds: [],
           email: '',
-          nickName: '',
           name: '',
           idNumber: '',
         },
@@ -256,7 +255,6 @@ const CompanyUser: React.FC = () => {
         {
           id: editData.id,
           email: editData.email,
-          nickName: editData.nickName,
           idNumber: editData.idNumber,
         },
         values,
@@ -283,17 +281,19 @@ const CompanyUser: React.FC = () => {
       index: 'userName',
       width: '7%',
     },
+
     {
-      title: '昵称',
-      dataIndex: 'nickName',
-      index: 'nickName',
-      width: '7%',
-    },
-    {
-      title: '真实姓名',
+      title: '姓名',
       dataIndex: 'name',
       index: 'name',
-      width: '6%',
+      width: '10%',
+      onCell: () => {
+        return {
+          style: {
+            whiteSpace: 'nowrap' as 'nowrap',
+          },
+        };
+      },
     },
     {
       title: '手机号',
@@ -305,13 +305,12 @@ const CompanyUser: React.FC = () => {
       title: '邮箱',
       dataIndex: 'email',
       index: 'email',
-      width: '10%',
+      width: '9%',
     },
     {
       title: '部组',
       dataIndex: 'comapnyGroups',
       index: 'comapnyGroups',
-      width: '10%',
       render: (text: any, record: any) => {
         const { comapnyGroups } = record;
         return (comapnyGroups ?? []).map((item: any) => {
@@ -327,7 +326,7 @@ const CompanyUser: React.FC = () => {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      width: '8%',
+      width: '7%',
       render: (text: any, record: any) => {
         return (
           <>
@@ -364,6 +363,7 @@ const CompanyUser: React.FC = () => {
       title: '授权端口',
       dataIndex: 'authorizeClient',
       index: 'authorizeClient',
+      width: '18%',
       render: (text: any, record: any) => {
         const { authorizeClientTexts } = record;
 
@@ -385,13 +385,13 @@ const CompanyUser: React.FC = () => {
       title: '最后登录IP',
       dataIndex: 'lastLoginIp',
       index: 'lastLoginIp',
-      width: '8%',
+      width: '6%',
     },
     {
       title: '最后登录日期',
       dataIndex: 'lastLoginDate',
       index: 'lastLoginDate',
-      width: '7.66%',
+      width: '7%',
       render: (text: any, record: any) => {
         return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
       },
