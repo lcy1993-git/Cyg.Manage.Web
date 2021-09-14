@@ -190,7 +190,7 @@ const CompanyManage: React.FC = () => {
 
   const unitConfigEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择公司配置协作单位');
+      message.warning('请勾选需要配置的公司');
       return;
     }
     setUnitConfigVisible(true);
@@ -198,8 +198,7 @@ const CompanyManage: React.FC = () => {
 
   const shareEvent = () => {};
 
-  const addEvent = async () => {
-    await getSelectTreeData();
+  const addEvent = () => {
     setAddFormVisible(true);
   };
 
