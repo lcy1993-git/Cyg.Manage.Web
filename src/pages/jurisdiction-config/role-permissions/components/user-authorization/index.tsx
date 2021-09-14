@@ -41,12 +41,7 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
       index: 'phone',
       width: 200,
     },
-    // {
-    //   title: '昵称',
-    //   dataIndex: 'nickName',
-    //   index: 'nickName',
-    //   width: 220,
-    // },
+
     {
       title: '姓名',
       dataIndex: 'name',
