@@ -182,43 +182,54 @@ const loadWFSData = (
       pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'));
       if (item.type !== 'point') {
         let style;
-        // 架空线路
+        // 普通线路
         if (item.type == 'line') {
-          pJSON[i].setProperties({ 
-            layer_name: 'line',
-            showLabel: false,
-            showLengthLabel: false,
-          });
           let props = pJSON[i].getProperties();
-          if(props.start_type === '线路') {} // 架空线路拐点处生成的短线
-          else if(props.start_node_type) {
-            // 判断线路型号label里是否包含距离label
-            let lengthLabel = props?.length?.toFixed(2) + 'm';
-            let lengthLabelIndex = props?.lable?.indexOf(lengthLabel);
-            if(lengthLabelIndex > 0) {
-              // 删除线路型号label中的距离label
-              pJSON[i].setProperties({ lable: props?.lable.substr(0, lengthLabelIndex) });
-            }
-
-            // 为线簇数组添加线簇
-            let isAdded = false;
-            for (let index = 0; index < lineClusters.length; index++) {
-              const lineCluster = lineClusters[index];
-              if (lineCluster.isShouldContainLine(pJSON[i])) {
-                pJSON[i].setProperties({line_cluster_id: lineCluster.id});
-                lineCluster.insertLine(pJSON[i], 'line');
-                isAdded = true;
-              }
-            }
-
-            if (!isAdded) {
-              if(lineClusters.length === 130) {
-                console.log(pJSON[i], props.start_id, props.end_id);
-              }
-              pJSON[i].setProperties({line_cluster_id: lineClusters.length + 1});
-              lineClusters.push(new LineCluster(lineClusters.length + 1, props.start_id, props.end_id, [pJSON[i]], []));
-            }
+          // 电缆线
+          if (props?.is_cable) {
+            pJSON[i].setProperties({ 
+              layer_name: 'line',
+              showLabel: true,
+              showLengthLabel: false,
+            });
           }
+          // 架空线路
+          else {
+            pJSON[i].setProperties({ 
+              layer_name: 'line',
+              showLabel: false,
+              showLengthLabel: false,
+            });
+            if(props.start_type === '线路') {} // 架空线路拐点处生成的短线
+            else if(props.start_node_type) {
+              // 判断线路型号label里是否包含距离label
+              let lengthLabel = props?.length?.toFixed(2) + 'm';
+              let lengthLabelIndex = props?.lable?.indexOf(lengthLabel);
+              if(lengthLabelIndex > 0) {
+                // 删除线路型号label中的距离label
+                pJSON[i].setProperties({ lable: props?.lable.substr(0, lengthLabelIndex) });
+              }
+  
+              // 为线簇数组添加线簇
+              let isAdded = false;
+              for (let index = 0; index < lineClusters.length; index++) {
+                const lineCluster = lineClusters[index];
+                if (lineCluster.isShouldContainLine(pJSON[i])) {
+                  pJSON[i].setProperties({line_cluster_id: lineCluster.id});
+                  lineCluster.insertLine(pJSON[i], 'line');
+                  isAdded = true;
+                }
+              }
+  
+              if (!isAdded) {
+                if(lineClusters.length === 130) {
+                  console.log(pJSON[i], props.start_id, props.end_id);
+                }
+                pJSON[i].setProperties({line_cluster_id: lineClusters.length + 1});
+                lineClusters.push(new LineCluster(lineClusters.length + 1, props.start_id, props.end_id, [pJSON[i]], []));
+              }
+            }
+          }  
 
           style = line_style(pJSON[i], false);
         }
