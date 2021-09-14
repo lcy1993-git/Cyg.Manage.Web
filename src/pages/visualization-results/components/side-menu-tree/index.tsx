@@ -35,6 +35,33 @@ import exportSvg from '@/assets/image/webgis/svg/export.svg';
 import materiaSvg from '@/assets/image/webgis/svg/material.svg';
 import messageSvg from '@/assets/image/webgis/svg/message.svg';
 import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
+import SiderMenu from '@ant-design/pro-layout/lib/components/SiderMenu/SiderMenu';
+import SiderMenuAreaButtons from '../side-menu-area-buttons';
+
+const ButtonImageSourse = {
+  cg: {
+    dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
+    light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
+  },
+  cl: {
+    dart: require('@/assets/icon-image/menu-tree-icon/材料统计.png'),
+    light: require('@/assets/icon-image/menu-tree-icon/材料统计-light.png'),
+  },
+  sy: {
+    dart: require('@/assets/icon-image/menu-tree-icon/审阅消息.png'),
+    light: require('@/assets/icon-image/menu-tree-icon/审阅消息-light.png'),
+  },
+  dmt: {
+    dart: require('@/assets/icon-image/menu-tree-icon/导出多媒体.png'),
+    light: require('@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'),
+  },
+  zb: {
+    dart: require('@/assets/icon-image/menu-tree-icon/导出坐标.png'),
+    light: require('@/assets/icon-image/menu-tree-icon/导出坐标-light.png'),
+  },
+}
+
+
 
 export interface SideMenuProps {
   className?: string;
@@ -657,7 +684,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           onChange={(e) => compareData(startDateValue, e!) && setEndDateValue(e!)}
         />
       </div>
-      <div className={styles.functionButton}>
+      {/* <div className={styles.functionButton}>
         <div className={styles.row}>
           <Button
             onClick={() => handlerPositionClick(checkedProjectIdList)}
@@ -686,6 +713,77 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
             svg={messageSvg}
           />
         </div>
+      </div> */}
+      <div className={styles.buttonArea}>
+        <SiderMenuAreaButtons
+          buttonProps = {[
+            {
+              title: "成果管理",
+              dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
+              onClick: () => setResultVisibel(true)
+            },
+            {
+              title: "材料统计",
+              dart: require('@/assets/icon-image/menu-tree-icon/材料统计.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/材料统计-light.png'),
+              // @ts-ignore
+              onClick: () => Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? message.error("当前未选择项目") : handlerMaterialClick(checkedProjectIdList),
+              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? {opacity: .4} : {}
+            },
+            {
+              title: "审阅消息",
+              dart: require('@/assets/icon-image/menu-tree-icon/审阅消息.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/审阅消息-light.png'),
+              onClick: () => Array.isArray(checkedKeys) && checkedKeys?.length !== 1 ? message.error("") :handlerCommentClick(),
+              style: Array.isArray(checkedKeys) && checkedKeys?.length !== 1 ? {opacity: .4} : {}
+            },
+            {
+              title: "导出多媒体",
+              dart: require('@/assets/icon-image/menu-tree-icon/导出多媒体.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'),
+              onClick: () => null
+            },
+            {
+              title: "导出坐标",
+              dart: require('@/assets/icon-image/menu-tree-icon/导出坐标.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/导出坐标-light.png'),
+              onClick: () => handlerPositionClick(checkedProjectIdList),
+              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? {color: '#d6d6d6'} : {}
+            }
+          ]}
+        />
+        {/* <div className={styles.buttonItem} title="成果管理">
+          <Button>
+            <img className={styles.imgIcon} src={ButtonImageSourse.cg.dart} alt="" />
+          </Button>
+        </div>
+        <div className={styles.buttonItem} title="材料统计">
+          <Button
+            onClick={() => handlerMaterialClick(checkedProjectIdList)}
+            style={Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? {color: '#d6d6d6'} : {}}
+          >
+            <img className={styles.imgIcon} src={ButtonImageSourse.cl.dart} alt="" />
+          </Button>
+        </div>
+        <div className={styles.buttonItem} title="审阅消息">
+          <Button>
+            <img className={styles.imgIcon} src={ButtonImageSourse.sy.dart} alt="" />
+          </Button>
+        </div>
+        <div className={styles.buttonItem} title="导出多媒体">
+          <Button>
+            <img className={styles.imgIcon} src={ButtonImageSourse.dmt.dart} alt="" />
+          </Button>
+        </div>
+        <div className={styles.buttonItem} title="导出坐标">
+          <Button
+            onClick={() => handlerPositionClick(checkedProjectIdList)}
+            style={Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? {color: '#d6d6d6'} : {}}
+          >
+            <img className={styles.imgIcon} src={ButtonImageSourse.zb.dart} alt="" />
+          </Button>
+        </div> */}
       </div>
       <div className={styles.controlLayers}>
         <ControlLayers {...props.controlLayersProps} />
