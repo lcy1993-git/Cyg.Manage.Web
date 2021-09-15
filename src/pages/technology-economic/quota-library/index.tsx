@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
+import {Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space} from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
@@ -109,6 +109,7 @@ const QuotaLibrary: React.FC = () => {
   const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [spinning, setSpinning] = useState<boolean>(false);
 
   // const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -154,6 +155,7 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const sureAddAuthorization = () => {
+    setSpinning(true)
     addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
       const data = {}
       for (let key:string in values){
@@ -165,7 +167,11 @@ const QuotaLibrary: React.FC = () => {
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
+      setSpinning(false)
     });
+    setTimeout(()=>{
+      setSpinning(false);
+    },10000)
   };
 
   const sureDeleteData = async () => {
@@ -245,6 +251,7 @@ const QuotaLibrary: React.FC = () => {
           keyWord: searchKeyWord,
         }}
       />
+
       <Modal
         maskClosable={false}
         title="添加-定额库"
@@ -254,12 +261,24 @@ const QuotaLibrary: React.FC = () => {
         onOk={() => sureAddAuthorization()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        footer={false}
         destroyOnClose
       >
+        <Spin spinning={spinning}>
+
         <Form form={addForm} preserve={false}>
           <DictionaryForm type='add' />
         </Form>
+          <div style={{display:'flex',justifyContent:'right'}}>
+           <Space>
+             <Button onClick={() => setAddFormVisible(false)}>取消</Button>
+             <Button onClick={sureAddAuthorization} type={'primary'}>确定</Button>
+           </Space>
+          </div>
+        </Spin>
+
       </Modal>
+
     </PageCommonWrap>
   );
 };

@@ -201,15 +201,25 @@ const UsualQuotaTable: React.FC<Props> = () => {
     if (isEdit) {
       data.id = selectRow[0].id
     }
+    const exist = dataSource.find(item=>{
+      return item.number === data.number
+    })
     if (isEdit) {
+      if (data.id !== exist?.id){
+        message.warn('已存在相同的费率序号!')
+        return
+      }
       await editCommonlyTable(data)
       message.success('修改成功')
       form.resetFields();
       setIsModalVisible(false)
       setIsEdit(false)
       tableRef.current?.reset()
-
     } else {
+      if (exist !== undefined) {
+        message.warn('已存在相同的费率序号!')
+        return
+      }
       await addCommonlyTable(data)
       message.success('添加成功')
       form.resetFields();
@@ -322,7 +332,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
           requestSource='tecEco1'
           type="radio"
         />
-
         <Modal
           title="添加定额常用表"
           visible={isModalVisible}
