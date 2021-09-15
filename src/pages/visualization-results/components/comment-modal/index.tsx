@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Modal } from 'antd';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import CommentTable from '../comment-table';
+import t from '@/utils/lucky-sheet/plugins/js/plugin';
 export interface CommentModalProps {
   visible?: boolean;
   onOk: () => void;
@@ -24,8 +25,7 @@ const CommentModal: FC<CommentModalProps> = (props) => {
     >
       {checkedProjectIdList.length > 0 ? (
         <CommentTable
-          projectId={checkedProjectIdList[0].id}
-          engineerId={checkedProjectIdList[0].engineerId}
+          projectIds={checkedProjectIdList.map((t) => t.id)}
         />
       ) : null}
     </Modal>

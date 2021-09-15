@@ -648,8 +648,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               title: "审阅消息",
               dart: require('@/assets/icon-image/menu-tree-icon/审阅消息.png'),
               light: require('@/assets/icon-image/menu-tree-icon/审阅消息-light.png'),
-              onClick: () => isClickAble() && handlerCommentClick(),
-              style: Array.isArray(checkedKeys) && checkedKeys?.length !== 1 ? { opacity: .4 } : {}
+              onClick: () => Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? message.error("当前未选择项目") : handlerCommentClick(),
+              style: Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? { opacity: .4 } : {}
             },
             {
               title: "导出多媒体",
