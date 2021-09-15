@@ -1,4 +1,4 @@
-import { getHasMapData } from '@/services/material-config/inventory';
+import { createCompanyHierarchy } from '@/services/jurisdiction-config/company-manage';
 import { useControllableValue, useRequest } from 'ahooks';
 import { Modal, Input, Button, Select, Table, message, Spin, Tabs } from 'antd';
 import React, { useMemo, useRef, useState, SetStateAction, Dispatch } from 'react';
@@ -7,13 +7,12 @@ import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import CommonTitle from '@/components/common-title';
 import EmptyTip from '@/components/empty-tip';
-// import { Resizable } from 'react-resizable';
-// import { components, handleResize } from '@/components/resizable-table';
+import { PlusOutlined } from '@ant-design/icons';
 
 interface UnitConfigProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent?: () => void;
+  companyId: string;
 }
 
 const { Search } = Input;
@@ -23,24 +22,19 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [libTableSelectRow, setLibTableSelectRow] = useState<any[]>([]);
 
-  const [hasMapTableShowData, setHasMapTableShowData] = useState<any[]>([]);
-  const [mapTableSelectArray, setMapTableSelectArray] = useState<any[]>([]);
-
+  const [addTableSelectRows, setAddTableSelectRows] = useState<any[]>([]);
+  const [superiorTableSelectRows, setSuperiorTableSelectRows] = useState<any[]>([]);
+  const [subordinateTableSelectRows, setSubordinateTableSelectRows] = useState<any[]>([]);
+  const [currentTab, setCurrentTab] = useState<string>('superior');
   // const [resizableColumns, setResizableColumns] = useState<object[]>([]);
 
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
-  const resourceTableRef = useRef<HTMLDivElement>(null);
-  const {} = props;
+  const addTableRef = useRef<HTMLDivElement>(null);
+  const superiorRef = useRef<HTMLDivElement>(null);
+  const subordinateRef = useRef<HTMLDivElement>(null);
 
-  const { data: hasMapData = [], run: getMapData, loading } = useRequest(getHasMapData, {
-    manual: true,
-    // ready: !!inventoryOverviewId,
-    // refreshDeps: [inventoryOverviewId, activeMaterialId, activeHasMapAreaId],
-    onSuccess: () => {
-      setHasMapTableShowData(hasMapData);
-    },
-  });
+  const { companyId } = props;
 
   /**可伸缩配置 */
   // const tableComponents = components;
@@ -63,111 +57,113 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
   //   }),
   // }));
 
-  const resourceLibColumns = [
+  const addColumns = [
     {
-      dataIndex: 'materialCode',
-      index: 'materialCode',
+      dataIndex: 'name',
+      index: 'name',
       title: '公司名称',
-      width: 180,
+      width: 240,
     },
     {
-      dataIndex: 'materialName',
-      index: 'materialName',
+      dataIndex: 'adminUserName',
+      index: 'adminUserName',
       title: '管理员账号',
       width: 180,
     },
     {
-      dataIndex: 'orderPrice',
-      index: 'orderPrice',
+      dataIndex: 'address',
+      index: 'address',
       title: '详细地址',
-      width: 80,
     },
   ];
 
-  const hasMapTableColumns = [
-    {
-      dataIndex: 'materialCode',
-      index: 'materialCode',
-      title: '公司名称',
-      width: 180,
-    },
-    {
-      dataIndex: 'materialName',
-      index: 'materialName',
-      title: '管理员账号',
-      width: 180,
-    },
-    {
-      dataIndex: 'orderPrice',
-      index: 'orderPrice',
-      title: '详细地址',
-      width: 80,
-    },
-  ];
-
-  const resourceTableSearch = () => {
-    if (resourceTableRef && resourceTableRef.current) {
-      //@ts-ignore
-
-      resourceTableRef.current.search();
-    }
-  };
-
-  const resourceLibSearch = () => {
+  const tableSearch = () => {
     return (
-      <TableSearch width="208px">
+      <TableSearch width="278px">
         <Search
           value={searchKeyWord}
           placeholder="请输入公司名称/管理员账号"
           enterButton
-          onSearch={() => resourceTableSearch()}
+          onSearch={() => search()}
           onChange={(e) => setSearchKeyWord(e.target.value)}
         />
       </TableSearch>
     );
   };
 
+  const search = () => {
+    if (currentTab === 'superior') {
+      if (superiorRef && superiorRef.current) {
+        // @ts-ignore
+        superiorRef.current.search();
+      }
+    }
+    if (currentTab === 'subordinate') {
+      if (subordinateRef && subordinateRef.current) {
+        // @ts-ignore
+        subordinateRef.current.search();
+      }
+    }
+  };
+
   const resourceTableChangeEvent = async (data: any) => {
     setLibTableSelectRow(data);
 
-    if (data && data.length > 0) {
-      await getMapData({
-        materialId: data[0]?.id,
-        area: '-1',
-      });
-    }
+    // if (data && data.length > 0) {
+    //   await getMapData({
+    //     materialId: data[0]?.id,
+    //     area: '-1',
+    //   });
+    // }
   };
 
   const removeEvent = () => {
-    if (mapTableSelectArray && mapTableSelectArray.length === 0) {
-      message.warning('请先选择要移除的映射');
-      return;
+    // if (mapTableSelectArray && mapTableSelectArray.length === 0) {
+    //   message.warning('请先选择要移除的映射');
+    //   return;
+    // }
+    // const copyArrayIds = [...mapTableSelectArray];
+    // const copyHasData = [...hasMapTableShowData];
+    // const newArray = copyHasData.filter((item) => !copyArrayIds.includes(item.id));
+    // setHasMapTableShowData(newArray);
+    // message.success('已移除');
+    // setMapTableSelectArray([]);
+  };
+
+  //刷新
+
+  const superiorFresh = () => {
+    if (superiorRef && superiorRef.current) {
+      //@ts-ignore
+      superiorRef.current.refresh();
     }
-    const copyArrayIds = [...mapTableSelectArray];
-    const copyHasData = [...hasMapTableShowData];
-
-    const newArray = copyHasData.filter((item) => !copyArrayIds.includes(item.id));
-
-    setHasMapTableShowData(newArray);
-    message.success('已移除');
-    setMapTableSelectArray([]);
   };
 
-  //添加映射
-  const addMapEvent = () => {
-    if (libTableSelectRow && libTableSelectRow.length === 0) {
-      message.warning('请选择要添加映射的行');
-      return;
+  //添加协作公司
+  const addEvent = async () => {
+    if (currentTab === 'superior') {
+      if (addTableSelectRows && addTableSelectRows.length === 0) {
+        message.warning('请选择需要添加的上级公司');
+        return;
+      }
+
+      const preCompanyId = addTableSelectRows[0].id;
+      await createCompanyHierarchy({ preCompanyId: preCompanyId, companyId: companyId });
+      message.success('添加上级公司成功');
+      superiorFresh();
     }
   };
 
-  const hasMapSelection = {
-    onChange: (values: any[], selectedRows: any[]) => {
-      setMapTableSelectArray(selectedRows.map((item) => item['id']));
-    },
+  const tableElement = () => {
+    return (
+      <div className={styles.buttonArea}>
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+      </div>
+    );
   };
-
-  const saveEvent = async () => {};
 
   return (
     <>
@@ -189,88 +185,64 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
       >
         <div className={styles.mapForm}>
           <div className={styles.resourceTable}>
-            <Tabs defaultActiveKey="superior">
-              <TabPane tab="上级公司" key="superior">
+            <Tabs
+              defaultActiveKey="superior"
+              type="card"
+              onChange={(value) => setCurrentTab(value)}
+            >
+              <TabPane tab="上级公司" key="superior" style={{ height: '740px' }}>
                 <GeneralTable
-                  size="middle"
-                  ref={resourceTableRef}
+                  noPaging
+                  ref={superiorRef}
                   defaultPageSize={20}
-                  getSelectData={resourceTableChangeEvent}
-                  columns={resourceLibColumns}
+                  getSelectData={(data) => setSuperiorTableSelectRows(data)}
+                  columns={addColumns}
                   extractParams={{
+                    category: 1,
+                    companyId: companyId,
                     keyWord: searchKeyWord,
                   }}
-                  buttonLeftContentSlot={resourceLibSearch}
-                  url="/Material/GetPageList"
-                  requestSource="resource"
+                  buttonLeftContentSlot={tableSearch}
+                  url="/CompanyHierarchy/GetList"
                 />
               </TabPane>
-              <TabPane tab="下级公司" key="subordinate">
+              <TabPane tab="下级公司" key="subordinate" style={{ height: '740px' }}>
                 <GeneralTable
-                  size="middle"
-                  ref={resourceTableRef}
+                  noPaging
+                  ref={subordinateRef}
                   defaultPageSize={20}
-                  getSelectData={resourceTableChangeEvent}
-                  columns={resourceLibColumns}
+                  getSelectData={(data) => setSubordinateTableSelectRows(data)}
+                  columns={addColumns}
                   extractParams={{
+                    category: 2,
+                    companyId: companyId,
                     keyWord: searchKeyWord,
                   }}
-                  buttonLeftContentSlot={resourceLibSearch}
-                  url="/Material/GetPageList"
-                  requestSource="resource"
+                  buttonLeftContentSlot={tableSearch}
+                  url="/CompanyHierarchy/GetList"
                 />
               </TabPane>
             </Tabs>
           </div>
 
           <div className={styles.currentMapTable}>
-            <div className={styles.currentMapTableButtonContent}>
-              <div className={styles.currentMapTableTitle}>
-                <CommonTitle>添加公司</CommonTitle>
-              </div>
-              <div className={styles.addCompanySearch}>
-                <TableSearch width="308px">
-                  <Search
-                    placeholder="请输入公司名称/管理员账号"
-                    enterButton
-                    //   onSearch={(value: any) => hasMapSearch(value)}
-                  />
-                </TableSearch>
-                <div className={styles.buttonArea}>
-                  <Button className="mr7" onClick={() => removeEvent()}>
-                    移除
-                  </Button>
-                  <Button type="primary" onClick={() => addMapEvent()}>
-                    添加
-                  </Button>
-                </div>
-              </div>
-            </div>
-
             <div className={styles.currentMapTableContent}>
-              <Spin spinning={loading}>
-                <Table
-                  scroll={{ y: 547 }}
-                  size="middle"
-                  locale={{
-                    emptyText: <EmptyTip className="pt20 pb20" />,
-                  }}
-                  dataSource={hasMapTableShowData}
-                  bordered={true}
-                  rowKey={'id'}
-                  pagination={false}
-                  rowSelection={{
-                    type: 'checkbox',
-                    columnWidth: '38px',
-                    selectedRowKeys: mapTableSelectArray,
-                    ...hasMapSelection,
-                  }}
-                  columns={hasMapTableColumns}
-                />
-              </Spin>
-            </div>
-            <div className={styles.hasMapAccount}>
-              共<span className={styles.accountNumber}>{hasMapTableShowData.length}</span>条记录
+              <GeneralTable
+                noPaging
+                tableTitle="添加公司"
+                ref={addTableRef}
+                defaultPageSize={20}
+                getSelectData={(data) => setAddTableSelectRows(data)}
+                columns={addColumns}
+                extractParams={{
+                  category: 3,
+                  companyId: companyId,
+                  keyWord: searchKeyWord,
+                }}
+                buttonRightContentSlot={tableElement}
+                buttonLeftContentSlot={tableSearch}
+                url="/CompanyHierarchy/GetList"
+              />
             </div>
           </div>
         </div>

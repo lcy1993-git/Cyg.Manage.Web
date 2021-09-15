@@ -189,10 +189,11 @@ const CompanyManage: React.FC = () => {
   };
 
   const unitConfigEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请勾选需要配置的公司');
-      return;
-    }
+    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+    //   message.warning('请勾选需要配置的公司');
+    //   return;
+    // }
+
     setUnitConfigVisible(true);
   };
 
@@ -326,7 +327,11 @@ const CompanyManage: React.FC = () => {
           <EditCompanyManageForm accreditNumber={currentCompanyData} form={editForm} />
         </Form>
       </Modal>
-      <UnitConfig visible={unitConfigVisible} onChange={setUnitConfigVisible}/>
+      <UnitConfig
+        visible={unitConfigVisible}
+        onChange={setUnitConfigVisible}
+        companyId={tableSelectRows[0]?.id}
+      />
     </PageCommonWrap>
   );
 };
