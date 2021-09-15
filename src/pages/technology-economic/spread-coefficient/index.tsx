@@ -331,7 +331,6 @@ const SpreadCoefficient: React.FC = () => {
   return (
     <PageCommonWrap>
       {tableElement()}
-      {projectType}
       <div className={styles.moduleTabs}>
         <Tabs onChange={callback} type="card">
           {ProjectTypeList.map((item: any, index: number) => {

@@ -177,3 +177,10 @@ export const importAreaInfo = (file: File) => {
   )
 }
 
+// 查询费率文件分页
+export const queryRateFilePager = (data:{pageSize:number,pageIndex:number}) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/QueryRateFilePager`, {method: 'POST', data})
+  )
+}
+

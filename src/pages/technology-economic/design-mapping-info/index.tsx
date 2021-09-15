@@ -84,7 +84,7 @@ const DesignMappingInfo: React.FC = () => {
   }
   const searchComponent = () => {
     return (
-      <TableSearch label="关键词" width="203px">
+      <TableSearch label="关键词" width="300px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}

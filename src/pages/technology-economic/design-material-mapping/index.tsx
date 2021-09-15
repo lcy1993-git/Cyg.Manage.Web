@@ -4,7 +4,7 @@ import {Input, Button, Modal, Form, Switch, message, Space, Row, Col, DatePicker
 import type {ColumnsType} from 'antd/lib/table';
 import {EyeOutlined, PlusOutlined, DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import {isArray} from 'lodash';
-
+import styles from './index.less'
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
@@ -113,7 +113,7 @@ const DesignMaterialMapping: React.FC = () => {
   ];
   const searchComponent = () => {
     return (
-      <TableSearch label="关键词" width="203px">
+      <TableSearch label="关键词" width="300px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -217,21 +217,23 @@ const DesignMaterialMapping: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
-        needCommonButton={true}
-        columns={columns as ColumnsType<SuppliesLibraryData | object>}
-        url="/MaterialLibrary/GetSourceMaterialMappingDesignLibraryList"
-        tableTitle="设计端物料库映射管理"
-        getSelectData={tableSelectEvent}
-        requestSource='tecEco1'
-        type="radio"
-        extractParams={{
-          keyWord: searchKeyWord,
-        }}
-      />
+      <div className={styles.designBox}>
+        <GeneralTable
+          ref={tableRef}
+          buttonLeftContentSlot={searchComponent}
+          buttonRightContentSlot={tableElement}
+          needCommonButton={true}
+          columns={columns as ColumnsType<SuppliesLibraryData | object>}
+          url="/MaterialLibrary/GetSourceMaterialMappingDesignLibraryList"
+          tableTitle="设计端物料库映射管理"
+          getSelectData={tableSelectEvent}
+          requestSource='tecEco1'
+          type="radio"
+          extractParams={{
+            keyWord: searchKeyWord,
+          }}
+        />
+      </div>
       <Modal
         maskClosable={false}
         title="添加-物料库映射"

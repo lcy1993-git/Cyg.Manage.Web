@@ -31,7 +31,7 @@ const DictionaryForm: React.FC<IForm> = (props) => {
           <CyFormItem label="版本" name="version">
             <Input />
           </CyFormItem>
-          <CyFormItem label="模板类型" name="engineeringTemplateType">
+          <CyFormItem label="模板类型" name="engineeringTemplateType" required>
             {type === 'edit' ? (
               <Select disabled>
                 {engineeringTemplateTypeList &&
@@ -60,7 +60,7 @@ const DictionaryForm: React.FC<IForm> = (props) => {
         </Col>
         <Col span={2}></Col>
         <Col span={11}>
-          <CyFormItem label="发布时间" name="publishDate">
+          <CyFormItem label="发布时间" name="publishDate" required>
             <DateFormItem />
           </CyFormItem>
           <CyFormItem label="状态" name="enabled" required>

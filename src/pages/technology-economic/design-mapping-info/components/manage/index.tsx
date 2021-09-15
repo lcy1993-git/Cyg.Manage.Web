@@ -8,6 +8,7 @@ import { getMaterialLibraryTreeById} from '@/services/technology-economic/suppli
 import {Tree} from 'antd';
 import {manageMaterialMappingDesignItem} from '@/services/technology-economic/material';
 import qs from "qs";
+import {useMount} from "ahooks";
 
 // const {Option} = Select;
 
@@ -201,15 +202,13 @@ const MappingManage: FC<Props> = (props) => {
   const getTreeList = async () => {
     if (id === '') return
     const res = await getMaterialLibraryTreeById(id)
-    setMaterialLibList(getTree(res) as [])
+    const data = getTree(res)
+    setMaterialLibList(data as [])
   }
   useEffect(() => {
     getTreeList()
   }, [id])
   const ref = useRef(null);
-  // const typeOnChange = (val: string) => {
-  //   setId(val)
-  // }
   const treeOnChange = (val: any) => {
     console.log(val)
     setMaterialLibraryId(val[0])
@@ -218,14 +217,17 @@ const MappingManage: FC<Props> = (props) => {
   const associated = async () => {
     await manageMaterialMappingDesignItem({
       materialMappingDesignItemId,
-      // sourceMaterialLibraryId: materialLibraryId,
       sourceMaterialLibraryId: id,
       sourceMaterialItemId: resourceItem.id
     })
     close()
     message.success('关联成功!')
   }
-
+  useEffect(()=>{
+    if (materialLibList.length === 0) return
+    console.log('id',materialLibList[0].id)
+    setMaterialLibraryId(materialLibList[0].id)
+  },[materialLibList])
   useEffect(() => {
     setId(qs.parse(window.location.href.split("?")[1])?.sourceMaterialLibraryId as string)
   }, [])

@@ -50,3 +50,12 @@ export const downLoadTemplate = (params: any) => {
     responseType: 'blob',
   });
 };
+
+//下载模板
+export const commonlyTableTemplate = (params: any) => {
+  return request(`${baseUrl.tecEco1}/CommonlyTable/DownloadTemplate`, {
+    method: 'GET',
+    params,
+    responseType: 'blob',
+  });
+};

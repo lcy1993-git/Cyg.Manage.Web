@@ -299,7 +299,7 @@ const ProjectList: React.FC = () => {
         destroyOnClose
       >
         <Form form={form} preserve={false}>
-          <AddDictionaryForm />
+          <AddDictionaryForm/>
         </Form>
       </Modal>
     </PageCommonWrap>

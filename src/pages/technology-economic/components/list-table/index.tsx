@@ -2,7 +2,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import { Input } from 'antd';
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 const { Search } = Input;
 
@@ -24,13 +24,13 @@ const ListTable: React.FC<Props> = ({catalogueId,requestSource = 'tecEco', scrol
 
   const searchComponent = () => {
     return (
-      <TableSearch label="搜索" width="203px">
+      <TableSearch label="搜索" width="300px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="关键字"
         />
       </TableSearch>
     );
@@ -51,7 +51,11 @@ const ListTable: React.FC<Props> = ({catalogueId,requestSource = 'tecEco', scrol
   const tableSelectEvent = (data: any) => {
     setResourceItem(Array.isArray(data) ? data[0] : {});
   };
-
+  useEffect(()=>{
+    if (catalogueId){
+      search()
+    }
+  },[catalogueId])
   return (
     <>
       <GeneralTable

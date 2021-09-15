@@ -172,6 +172,7 @@ const PricingTemplates: React.FC = () => {
     const id = tableSelectRows[0].id;
     await deletePricingTemplate(id);
     refresh();
+    setTableSelectRows([])
     message.success('删除成功');
   };
 
