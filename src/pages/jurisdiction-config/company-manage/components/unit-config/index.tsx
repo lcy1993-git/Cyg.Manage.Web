@@ -10,16 +10,16 @@ import EmptyTip from '@/components/empty-tip';
 // import { Resizable } from 'react-resizable';
 // import { components, handleResize } from '@/components/resizable-table';
 
-interface CreateMapProps {
+interface UnitConfigProps {
   visible: boolean;
-  //   onChange: Dispatch<SetStateAction<boolean>>;
+  onChange: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent?: () => void;
 }
 
 const { Search } = Input;
 const { TabPane } = Tabs;
 
-const UnitConfig: React.FC<CreateMapProps> = (props) => {
+const UnitConfig: React.FC<UnitConfigProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [libTableSelectRow, setLibTableSelectRow] = useState<any[]>([]);
 
@@ -185,9 +185,7 @@ const UnitConfig: React.FC<CreateMapProps> = (props) => {
         footer={null}
         destroyOnClose
         centered
-        onCancel={() => {
-          setState(false);
-        }}
+        onCancel={() => setState(false)}
       >
         <div className={styles.mapForm}>
           <div className={styles.resourceTable}>

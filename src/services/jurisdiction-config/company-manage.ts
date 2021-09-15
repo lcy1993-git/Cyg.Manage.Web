@@ -74,3 +74,13 @@ export const getCompany = () => {
     }),
   );
 };
+
+//创建公司层级
+export const createCompanyHierarchy = (preCompanyId: string, companyId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/CompanyHierarchy/Create`, {
+      method: 'POST',
+      data: { preCompanyId, companyId },
+    }),
+  );
+};

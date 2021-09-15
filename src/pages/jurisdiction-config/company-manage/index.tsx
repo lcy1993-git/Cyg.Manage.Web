@@ -326,7 +326,7 @@ const CompanyManage: React.FC = () => {
           <EditCompanyManageForm accreditNumber={currentCompanyData} form={editForm} />
         </Form>
       </Modal>
-      <UnitConfig visible={unitConfigVisible} />
+      <UnitConfig visible={unitConfigVisible} onChange={setUnitConfigVisible}/>
     </PageCommonWrap>
   );
 };

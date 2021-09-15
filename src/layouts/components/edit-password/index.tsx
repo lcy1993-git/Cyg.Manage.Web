@@ -2,8 +2,7 @@ import CyFormItem from '@/components/cy-form-item';
 import { editPassword } from '@/services/user/user-info';
 import { useControllableValue } from 'ahooks';
 import { Form, Input, message, Modal } from 'antd';
-import React, { Dispatch } from 'react';
-import { SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { history } from 'umi';
 
 interface EditPasswordProps {
@@ -54,7 +53,7 @@ const EditPassword = (props: EditPasswordProps) => {
             },
           ]}
         >
-          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()} />
         </CyFormItem>
         <CyFormItem
           name="newPwd"
@@ -74,7 +73,7 @@ const EditPassword = (props: EditPasswordProps) => {
             { required: true, message: '密码不能为空' },
           ]}
         >
-          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()} />
         </CyFormItem>
         <CyFormItem
           name="confirmPassword"
@@ -98,7 +97,7 @@ const EditPassword = (props: EditPasswordProps) => {
             }),
           ]}
         >
-          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()} />
         </CyFormItem>
       </Form>
     </Modal>
