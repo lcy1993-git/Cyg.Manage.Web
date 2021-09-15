@@ -53,14 +53,18 @@ const BaseMap = observer((props: BaseMapProps) => {
     visibleLeftSidebar,
     positionMap,
     observeTrack,
-    startDate,
-    endDate
+    mediaSign, // 多媒体标记开关
+    rangeDate
   } = vState;
+  
+  const {startDate, endDate} = rangeDate;
   
   const { kvLevel } = filterCondition;
 
   const boxSize = useSize(mapElement);
 
+  console.log(mediaSign);
+  
   // 右侧边栏状态
   const [rightSidebarVisiviabel, setRightSidebarVisiviabelMap] = useState(false);
   const setRightSidebarVisiviabel = (state: boolean) => {
@@ -121,13 +125,17 @@ const BaseMap = observer((props: BaseMapProps) => {
     map && refreshMap(ops, projects!, true, startDate, endDate);
   }, [startDate, endDate]);
 
-  // 动态刷新轨迹
+
   useEffect(() => {
     // 加载勘察轨迹
-
     if (observeTrack) map && loadTrackLayers(map, trackLayers);
     else clearTrackLayers(trackLayers);
-  }, [JSON.stringify(observeTrack), JSON.stringify(projects)]);
+  }, [observeTrack, JSON.stringify(projects)]);
+
+  useEffect(() => {
+    // 加载多媒体标记
+
+  }, [mediaSign, JSON.stringify(projects)]);
 
   // 地图定位
   useEffect(() => {
@@ -260,7 +268,7 @@ const BaseMap = observer((props: BaseMapProps) => {
       {/* <div className={styles.surveyModal}>
         {<SurveyModal resData={surveyModalData} hidden={() => setSurveyModalVisible(false)} /> }
       </div> */}
-      {surveyModalVisible && <SurveyModal resData={surveyModalData} hidden={() => setSurveyModalVisible(false)} /> }
+      {surveyModalVisible && <SurveyModal resData={surveyModalData!} hidden={() => setSurveyModalVisible(false)} /> }
     </>
   );
 });

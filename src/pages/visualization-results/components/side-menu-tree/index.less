@@ -12,7 +12,8 @@
     display: inline-flex;
   }
   .menuTree {
-    height: calc(100% - 190px);
+    // height: calc(100% - 190px);
+    height: calc(100% - 125px);
     overflow: hidden;
     .sideTree {
       height: 100%;
@@ -20,57 +21,18 @@
   }
   .timeLine {
     width: 100%;
-    height: 74px;
+    height: 30px;
     display: inline-flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
+    margin: 5px 0;
   }
-  // .functionButton {
-  //   width: 100%;
-  //   height: 74px;
-  //   display: flex;
-  //   flex-direction: column;
-  //   justify-content: space-around;
-  //   .row {
-  //     display: inline-flex;
-  //     justify-content: space-around;
-  //     .buttonWrap {
-  //       position: relative;
-  //       .redTip {
-  //         position: absolute;
-  //         width: 10px;
-  //         height: 10px;
-  //         background-color: red;
-  //         right: 1px;
-  //         top: 1px;
-  //         border-radius: 5px;
-  //         font-size: 2px;
-  //         color: #fff;
-  //         line-height: 10px;
-  //         text-align: center;
-  //         z-index: 999;
-
-  //       }
-  //     }
-
-  //     .svg {
-  //       width: 16px;
-  //       height: 16px;
-  //       margin-right: 4px;
-  //     }
-  //   }
-  // }
 
   .buttonArea {
     width: 100%;
     display: flex;
+    margin: 5px 0;
     justify-content: space-between;
-    .buttonItem {
-      .imgIcon {
-        width: 18px;
-        height: 18px;
-      }
-    }
   }
   .handlerSideBarVisibelButton {
     width: 10px;
@@ -126,3 +88,12 @@
   }
 }
 
+.extraFooterWrap {
+  display: flex;
+  justify-content: space-around;
+  .buttonItem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

@@ -3,6 +3,12 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 import { makeAutoObservable } from 'mobx';
 import moment from 'moment';
 import { createContext, useContext } from 'react';
+
+interface RangeDate {
+  startDate: undefined | string;
+  endDate: undefined | string;
+}
+
 export interface VisualizationResultsStateType {
   filterCondition: EngineerProjetListFilterParams; //filter条件
   checkedProjectIdList: ProjectList[]; //选中的project id数组
@@ -16,12 +22,14 @@ export interface VisualizationResultsStateType {
   observeClickDate?: string; // 勘察轨迹timeline点击的日期
   positionMap: boolean; //地图定位
   observeTrack: boolean; //勘察轨迹
+  mediaSign: boolean; //多媒体标记
   confessionTrack: boolean; //交底轨迹
   onPositionClickState: boolean; // 当点击地图定位时候
   observeTrackTimeline?: string[]; //勘察轨迹tiemline
   isFilter?: boolean; //为了判断是不是通过filter来是刷新tree
-  startDate: string | undefined, // 开始日期
-  endDate: string | undefined // 终止日期
+  // startDate: string | undefined, // 开始日期
+  // endDate: string | undefined, // 终止日期
+  rangeDate: RangeDate
 }
 
 const initState = {
@@ -33,12 +41,15 @@ const initState = {
   sideRightActiveId: '',
   positionMap: false,
   observeTrack: false,
+  mediaSign: false,
   confessionTrack: false,
   onPositionClickState: false,
   checkedProjectIdList: [],
   isFilter: false,
+  rangeDate: {
   startDate: undefined,
-  endDate: undefined
+  endDate: undefined,
+  }
 };
 
 function Store(vState: VisualizationResultsStateType) {
@@ -72,13 +83,13 @@ function Store(vState: VisualizationResultsStateType) {
       this.vState.normalClickDate = clickDate;
     },
     // 设置开始日期
-    setStartDate(time: string | undefined) {
-      this.vState.startDate = time;
-    },
+    // setStartDate(time: string | undefined) {
+    //   this.vState.startDate = time;
+    // },
     // 设置结束日期
-    setEndDate(time: string | undefined) {
-      this.vState.endDate = time;
-    },
+    // setEndDate(time: string | undefined) {
+    //   this.vState.endDate = time;
+    // },
     setIsFilter(isFilter: boolean) {
       this.vState.isFilter = isFilter;
     },
@@ -89,6 +100,13 @@ function Store(vState: VisualizationResultsStateType) {
 
     toggleObserveTrack(flag: boolean) {
       this.vState.observeTrack = flag;
+    },
+    toggleMediaSign(flag: boolean) {
+      this.vState.mediaSign = flag;
+    },
+    // 设置日期范围
+    setDateRange(d: RangeDate) {
+      this.vState.rangeDate = d;
     },
     clear() {
       this.vState = initState;
