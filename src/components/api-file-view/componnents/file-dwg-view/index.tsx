@@ -152,13 +152,17 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   const setMouseState = (flag: PointerState) => {
     // 当等待状态时不可切换状态
     if (flag === "wait") {
-      wrapRef.current!.style.cursor = "wait";
+      if(wrapRef.current) {
+        wrapRef.current!.style.cursor = "wait";
+      }
       setTimeout(() => {
         setMouseState("pointer")
       }, 800)
     } else {
       setTimeout(() => {
-        wrapRef.current!.style.cursor = "pointer"
+        if(wrapRef.current) {
+          wrapRef.current!.style.cursor = "pointer"
+        }
       }, 800)
     }
   }
