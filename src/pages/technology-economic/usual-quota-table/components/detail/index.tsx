@@ -35,6 +35,7 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
         <h3 className={styles.content}>目录</h3>
         <div className={styles.topButton}>
           <TableImportButton
+            extraParams={{commonlyTableType:active}}
             modalTitle={'导入费率'}
             buttonTitle={'导入费率'}
             style={{zIndex:9999}}
