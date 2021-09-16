@@ -94,3 +94,22 @@ export const removeComoanyHierarchy = (hierarchyId: string) => {
     }),
   );
 };
+
+//创建/移除公司共享
+export const createCompanyShare = (params: { companyId: string; shareCompanyId: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/CompanyShare/Create`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+export const removeCompanyShare = (shareId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/CompanyShare/Remove`, {
+      method: 'GET',
+      params: { shareId },
+    }),
+  );
+};

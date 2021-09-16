@@ -19,6 +19,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
 import UnitConfig from './components/unit-config';
 import GeneralTable from '@/components/general-table';
+import CompanyShare from './components/company-share';
 
 const mapColor = {
   无: 'gray',
@@ -36,6 +37,7 @@ const CompanyManage: React.FC = () => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [unitConfigVisible, setUnitConfigVisible] = useState<boolean>(false);
+  const [companyShareVisible, setCompanyShareVisible] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -189,15 +191,22 @@ const CompanyManage: React.FC = () => {
   };
 
   const unitConfigEvent = () => {
-    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-    //   message.warning('请勾选需要配置的公司');
-    //   return;
-    // }
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请勾选需要配置的公司');
+      return;
+    }
 
     setUnitConfigVisible(true);
   };
 
-  const shareEvent = () => {};
+  const shareEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请勾选需要配置的公司');
+      return;
+    }
+
+    setCompanyShareVisible(true);
+  };
 
   const addEvent = () => {
     setAddFormVisible(true);
@@ -330,6 +339,11 @@ const CompanyManage: React.FC = () => {
       <UnitConfig
         visible={unitConfigVisible}
         onChange={setUnitConfigVisible}
+        companyId={tableSelectRows[0]?.id}
+      />
+      <CompanyShare
+        visible={companyShareVisible}
+        onChange={setCompanyShareVisible}
         companyId={tableSelectRows[0]?.id}
       />
     </PageCommonWrap>

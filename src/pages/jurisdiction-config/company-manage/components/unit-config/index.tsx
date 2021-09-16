@@ -26,6 +26,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
   const [superiorTableSelectRows, setSuperiorTableSelectRows] = useState<any[]>([]);
   const [subordinateTableSelectRows, setSubordinateTableSelectRows] = useState<any[]>([]);
   const [currentTab, setCurrentTab] = useState<string>('superior');
+  const [isAddSearch, setIsAddSearch] = useState<boolean>(false);
   // const [resizableColumns, setResizableColumns] = useState<object[]>([]);
 
   const [superiorKeyWord, setSuperiorKeyWord] = useState<string>('');
@@ -81,7 +82,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
 
   const tableSearch = () => {
     return (
-      <TableSearch width="278px">
+      <TableSearch width="268px">
         <Search
           value={currentTab === 'superior' ? superiorKeyWord : subordinateKeyWord}
           placeholder="请输入公司名称/管理员账号"
@@ -97,18 +98,43 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
     );
   };
 
+  const addTableSearch = () => {
+    return (
+      <TableSearch width="268px">
+        <Search
+          onFocus={() => setIsAddSearch(true)}
+          onBlur={() => setIsAddSearch(false)}
+          value={addKeyWord}
+          placeholder="请输入公司名称/管理员账号"
+          enterButton
+          onSearch={() => search()}
+          onChange={(e) => setAddKeyWord(e.target.value)}
+        />
+      </TableSearch>
+    );
+  };
+
   const search = () => {
+    if (isAddSearch) {
+      if (addTableRef && addTableRef.current) {
+        // @ts-ignore
+        addTableRef.current.search();
+      }
+      return;
+    }
     if (currentTab === 'superior') {
       if (superiorRef && superiorRef.current) {
         // @ts-ignore
         superiorRef.current.search();
       }
+      return;
     }
     if (currentTab === 'subordinate') {
       if (subordinateRef && subordinateRef.current) {
         // @ts-ignore
         subordinateRef.current.search();
       }
+      return;
     }
   };
 
@@ -229,53 +255,57 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         onCancel={() => setState(false)}
       >
         <div className={styles.unitConfigTable}>
-          <div className={styles.resourceTable}>
+          <div className={styles.hierarchyTable}>
             <Tabs
               defaultActiveKey="superior"
               type="card"
               onChange={(value) => setCurrentTab(value)}
             >
               <TabPane tab="上级公司" key="superior" style={{ height: '740px' }}>
-                <GeneralTable
-                  noPaging
-                  needTitleLine={false}
-                  ref={superiorRef}
-                  defaultPageSize={20}
-                  getSelectData={(data) => setSuperiorTableSelectRows(data)}
-                  columns={columns}
-                  extractParams={{
-                    category: 1,
-                    companyId: companyId,
-                    keyWord: superiorKeyWord,
-                  }}
-                  buttonRightContentSlot={leftTableButton}
-                  buttonLeftContentSlot={tableSearch}
-                  url="/CompanyHierarchy/GetList"
-                />
+                <div className={styles.leftTableContent}>
+                  <GeneralTable
+                    noPaging
+                    needTitleLine={false}
+                    ref={superiorRef}
+                    defaultPageSize={20}
+                    getSelectData={(data) => setSuperiorTableSelectRows(data)}
+                    columns={columns}
+                    extractParams={{
+                      category: 1,
+                      companyId: companyId,
+                      keyWord: superiorKeyWord,
+                    }}
+                    buttonRightContentSlot={leftTableButton}
+                    buttonLeftContentSlot={tableSearch}
+                    url="/CompanyHierarchy/GetList"
+                  />
+                </div>
               </TabPane>
               <TabPane tab="下级公司" key="subordinate" style={{ height: '740px' }}>
-                <GeneralTable
-                  noPaging
-                  needTitleLine={false}
-                  ref={subordinateRef}
-                  defaultPageSize={20}
-                  getSelectData={(data) => setSubordinateTableSelectRows(data)}
-                  columns={columns}
-                  extractParams={{
-                    category: 2,
-                    companyId: companyId,
-                    keyWord: subordinateKeyWord,
-                  }}
-                  buttonRightContentSlot={leftTableButton}
-                  buttonLeftContentSlot={tableSearch}
-                  url="/CompanyHierarchy/GetList"
-                />
+                <div className={styles.leftTableContent}>
+                  <GeneralTable
+                    noPaging
+                    needTitleLine={false}
+                    ref={subordinateRef}
+                    defaultPageSize={20}
+                    getSelectData={(data) => setSubordinateTableSelectRows(data)}
+                    columns={columns}
+                    extractParams={{
+                      category: 2,
+                      companyId: companyId,
+                      keyWord: subordinateKeyWord,
+                    }}
+                    buttonRightContentSlot={leftTableButton}
+                    buttonLeftContentSlot={tableSearch}
+                    url="/CompanyHierarchy/GetList"
+                  />
+                </div>
               </TabPane>
             </Tabs>
           </div>
 
-          <div className={styles.currentMapTable}>
-            <div className={styles.currentMapTableContent}>
+          <div className={styles.addTable}>
+            <div className={styles.addTableContent}>
               <GeneralTable
                 noPaging
                 tableTitle="添加公司"
@@ -286,10 +316,10 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
                 extractParams={{
                   category: 3,
                   companyId: companyId,
-                  // keyWord: searchKeyWord,
+                  keyWord: addKeyWord,
                 }}
                 buttonRightContentSlot={tableElement}
-                buttonLeftContentSlot={tableSearch}
+                buttonLeftContentSlot={addTableSearch}
                 url="/CompanyHierarchy/GetList"
               />
             </div>

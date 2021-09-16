@@ -4,47 +4,18 @@
     height: 100%;
     padding-top: 10px;
   
-    .hierarchyTable {
+    .shareTable {
       flex: 1;
       margin-right: 10px;
-      padding: 0 8px;
-      // background-color: @white-color;
+      padding: 0 12px;
+      background-color: @white-color;
       height:100%;
-      :global{
-        .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
-          padding:0 12px;
-          color:#1F1F1F;
-        }
-        .ant-tabs-tab-btn{
-          padding:0 12px;
-          color:#696969;
-        }
-        .ant-tabs-card .ant-tabs-content {
-          margin-top: -16px;
-        }
-        .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
-          padding: 0 12px;
-          background: #fff;
-        }
-        .ant-tabs-card > .ant-tabs-nav::before {
-          display: none;
-        }
-        .ant-tabs-card .ant-tabs-tab{
-     
-          background: transparent;
-          border-color: transparent;
-        }
-        .ant-tabs-card .ant-tabs-tab-active {
-          background: #fff;
-          border-color: #fff;
-        }
-      }
       .leftTableContent{
-        height: calc(100% + 45px);
+        height: calc(100% + 10px);
         overflow-y: auto;
         :global {
           .ant-empty {
-            height:558px;
+            height:563px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -52,6 +23,7 @@
           }
         }
       }
+   
     }
   
     .addTable {
@@ -74,7 +46,7 @@
         width:948px;
         :global {
           .ant-empty {
-            height:450px;
+            height:558px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -85,6 +57,5 @@
     }
   }
 
-  
   
   
