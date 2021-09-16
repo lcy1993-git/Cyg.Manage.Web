@@ -85,12 +85,12 @@ export const createCompanyHierarchy = (params: { preCompanyId: string; companyId
   );
 };
 
-//获取公司层级列表
-export const getCompanyHierarchyList = (preCompanyId: string, companyId: string) => {
+//移除公司层级
+export const removeComoanyHierarchy = (hierarchyId: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/CompanyHierarchy/Create`, {
-      method: 'POST',
-      data: { preCompanyId, companyId },
+    request(`${baseUrl.project}/CompanyHierarchy/Remove`, {
+      method: 'GET',
+      params: { hierarchyId },
     }),
   );
 };

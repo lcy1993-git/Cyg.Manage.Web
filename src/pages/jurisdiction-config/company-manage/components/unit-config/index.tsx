@@ -1,13 +1,14 @@
-import { createCompanyHierarchy } from '@/services/jurisdiction-config/company-manage';
-import { useControllableValue, useRequest } from 'ahooks';
-import { Modal, Input, Button, Select, Table, message, Spin, Tabs } from 'antd';
-import React, { useMemo, useRef, useState, SetStateAction, Dispatch } from 'react';
+import {
+  createCompanyHierarchy,
+  removeComoanyHierarchy,
+} from '@/services/jurisdiction-config/company-manage';
+import { useControllableValue } from 'ahooks';
+import { Modal, Input, Button, message, Tabs } from 'antd';
+import React, { useRef, useState, SetStateAction, Dispatch } from 'react';
 import styles from './index.less';
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
-import CommonTitle from '@/components/common-title';
-import EmptyTip from '@/components/empty-tip';
-import { PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 
 interface UnitConfigProps {
   visible: boolean;
@@ -20,7 +21,6 @@ const { TabPane } = Tabs;
 
 const UnitConfig: React.FC<UnitConfigProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [libTableSelectRow, setLibTableSelectRow] = useState<any[]>([]);
 
   const [addTableSelectRows, setAddTableSelectRows] = useState<any[]>([]);
   const [superiorTableSelectRows, setSuperiorTableSelectRows] = useState<any[]>([]);
@@ -28,7 +28,9 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
   const [currentTab, setCurrentTab] = useState<string>('superior');
   // const [resizableColumns, setResizableColumns] = useState<object[]>([]);
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [superiorKeyWord, setSuperiorKeyWord] = useState<string>('');
+  const [subordinateKeyWord, setSubordinateKeyWord] = useState<string>('');
+  const [addKeyWord, setAddKeyWord] = useState<string>('');
 
   const addTableRef = useRef<HTMLDivElement>(null);
   const superiorRef = useRef<HTMLDivElement>(null);
@@ -57,18 +59,18 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
   //   }),
   // }));
 
-  const addColumns = [
+  const columns = [
     {
       dataIndex: 'name',
       index: 'name',
       title: '公司名称',
-      width: 240,
+      width: 260,
     },
     {
       dataIndex: 'adminUserName',
       index: 'adminUserName',
       title: '管理员账号',
-      width: 180,
+      width: 160,
     },
     {
       dataIndex: 'address',
@@ -81,11 +83,15 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
     return (
       <TableSearch width="278px">
         <Search
-          value={searchKeyWord}
+          value={currentTab === 'superior' ? superiorKeyWord : subordinateKeyWord}
           placeholder="请输入公司名称/管理员账号"
           enterButton
           onSearch={() => search()}
-          onChange={(e) => setSearchKeyWord(e.target.value)}
+          onChange={(e) => {
+            currentTab === 'superior'
+              ? setSuperiorKeyWord(e.target.value)
+              : setSubordinateKeyWord(e.target.value);
+          }}
         />
       </TableSearch>
     );
@@ -106,36 +112,50 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
     }
   };
 
-  const resourceTableChangeEvent = async (data: any) => {
-    setLibTableSelectRow(data);
+  const removeEvent = async () => {
+    if (currentTab === 'superior') {
+      if (superiorTableSelectRows && superiorTableSelectRows.length === 0) {
+        message.warning('请选择需要移除的上级公司');
+        return;
+      }
 
-    // if (data && data.length > 0) {
-    //   await getMapData({
-    //     materialId: data[0]?.id,
-    //     area: '-1',
-    //   });
-    // }
-  };
+      const hierarchyId = superiorTableSelectRows[0].id;
+      await removeComoanyHierarchy(hierarchyId);
+      message.success('移除上级公司成功');
+      leftTableFresh();
+    }
 
-  const removeEvent = () => {
-    // if (mapTableSelectArray && mapTableSelectArray.length === 0) {
-    //   message.warning('请先选择要移除的映射');
-    //   return;
-    // }
-    // const copyArrayIds = [...mapTableSelectArray];
-    // const copyHasData = [...hasMapTableShowData];
-    // const newArray = copyHasData.filter((item) => !copyArrayIds.includes(item.id));
-    // setHasMapTableShowData(newArray);
-    // message.success('已移除');
-    // setMapTableSelectArray([]);
+    if (currentTab === 'subordinate') {
+      if (subordinateTableSelectRows && subordinateTableSelectRows.length === 0) {
+        message.warning('请选择需要移除的下级公司');
+        return;
+      }
+
+      const hierarchyId = subordinateTableSelectRows[0].id;
+      await removeComoanyHierarchy(hierarchyId);
+      message.success('移除下级公司成功');
+      leftTableFresh();
+    }
   };
 
   //刷新
+  const leftTableFresh = () => {
+    if (currentTab === 'superior') {
+      if (superiorRef && superiorRef.current) {
+        //@ts-ignore
+        superiorRef.current.refresh();
+      }
+    }
 
-  const superiorFresh = () => {
-    if (superiorRef && superiorRef.current) {
+    if (currentTab === 'subordinate') {
+      if (subordinateRef && subordinateRef.current) {
+        //@ts-ignore
+        subordinateRef.current.refresh();
+      }
+    }
+    if (addTableRef && addTableRef.current) {
       //@ts-ignore
-      superiorRef.current.refresh();
+      addTableRef.current.refresh();
     }
   };
 
@@ -150,16 +170,41 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
       const preCompanyId = addTableSelectRows[0].id;
       await createCompanyHierarchy({ preCompanyId: preCompanyId, companyId: companyId });
       message.success('添加上级公司成功');
-      superiorFresh();
+      leftTableFresh();
+    }
+
+    if (currentTab === 'subordinate') {
+      if (addTableSelectRows && addTableSelectRows.length === 0) {
+        message.warning('请选择需要添加的下级公司');
+        return;
+      }
+
+      const preCompanyId = addTableSelectRows[0].id;
+      await createCompanyHierarchy({ preCompanyId: companyId, companyId: preCompanyId });
+      message.success('添加下级公司成功');
+      leftTableFresh();
     }
   };
 
+  //添加
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
           <PlusOutlined />
           添加
+        </Button>
+      </div>
+    );
+  };
+
+  //移除
+  const leftTableButton = () => {
+    return (
+      <div className={styles.buttonArea}>
+        <Button className="mr7" onClick={() => removeEvent()}>
+          <DeleteOutlined />
+          移除
         </Button>
       </div>
     );
@@ -183,7 +228,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         centered
         onCancel={() => setState(false)}
       >
-        <div className={styles.mapForm}>
+        <div className={styles.unitConfigTable}>
           <div className={styles.resourceTable}>
             <Tabs
               defaultActiveKey="superior"
@@ -193,15 +238,17 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
               <TabPane tab="上级公司" key="superior" style={{ height: '740px' }}>
                 <GeneralTable
                   noPaging
+                  needTitleLine={false}
                   ref={superiorRef}
                   defaultPageSize={20}
                   getSelectData={(data) => setSuperiorTableSelectRows(data)}
-                  columns={addColumns}
+                  columns={columns}
                   extractParams={{
                     category: 1,
                     companyId: companyId,
-                    keyWord: searchKeyWord,
+                    keyWord: superiorKeyWord,
                   }}
+                  buttonRightContentSlot={leftTableButton}
                   buttonLeftContentSlot={tableSearch}
                   url="/CompanyHierarchy/GetList"
                 />
@@ -209,15 +256,17 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
               <TabPane tab="下级公司" key="subordinate" style={{ height: '740px' }}>
                 <GeneralTable
                   noPaging
+                  needTitleLine={false}
                   ref={subordinateRef}
                   defaultPageSize={20}
                   getSelectData={(data) => setSubordinateTableSelectRows(data)}
-                  columns={addColumns}
+                  columns={columns}
                   extractParams={{
                     category: 2,
                     companyId: companyId,
-                    keyWord: searchKeyWord,
+                    keyWord: subordinateKeyWord,
                   }}
+                  buttonRightContentSlot={leftTableButton}
                   buttonLeftContentSlot={tableSearch}
                   url="/CompanyHierarchy/GetList"
                 />
@@ -233,11 +282,11 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
                 ref={addTableRef}
                 defaultPageSize={20}
                 getSelectData={(data) => setAddTableSelectRows(data)}
-                columns={addColumns}
+                columns={columns}
                 extractParams={{
                   category: 3,
                   companyId: companyId,
-                  keyWord: searchKeyWord,
+                  // keyWord: searchKeyWord,
                 }}
                 buttonRightContentSlot={tableElement}
                 buttonLeftContentSlot={tableSearch}
