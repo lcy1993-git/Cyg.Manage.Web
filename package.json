@@ -55,6 +55,7 @@
     "echarts": "^5.1.1",
     "echarts-for-react": "^3.0.1",
     "echarts-gl": "^2.0.1",
+    "filter-loader": "^1.0.1",
     "lodash": "^4.17.11",
     "mammoth": "^1.4.16",
     "mobx": "^6.2.0",
