@@ -42,7 +42,7 @@ const columns = [
     dataIndex: 'standard',
     index: 'standard',
     title: '规格',
-    width: 140,
+    width: 300,
     ellipsis: true
   },
   {
@@ -210,7 +210,6 @@ const MappingManage: FC<Props> = (props) => {
   }, [id])
   const ref = useRef(null);
   const treeOnChange = (val: any) => {
-    console.log(val)
     setMaterialLibraryId(val[0])
   }
 

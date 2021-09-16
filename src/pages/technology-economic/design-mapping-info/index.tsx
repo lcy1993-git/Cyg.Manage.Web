@@ -12,7 +12,7 @@ import {
   MaterialMappingInherit,
 } from '@/services/technology-economic/material';
 import qs from "qs";
-import styles from "@/pages/project-management/all-project-new/components/approval-project-modal/index.less";
+import styles from "./index.less";
 import {ExclamationCircleOutlined, RedoOutlined} from "@ant-design/icons";
 import imgSrc from "@/assets/image/relation.png"
 import MappingManage from "@/pages/technology-economic/design-mapping-info/components/manage";
@@ -244,24 +244,26 @@ const DesignMappingInfo: React.FC = () => {
   }, [rank])
   return (
     <PageCommonWrap>
-      {
-        id && <GeneralTable
-          ref={tableRef}
-          buttonLeftContentSlot={searchComponent}
-          buttonRightContentSlot={tableElement}
-          needCommonButton={true}
-          columns={columns as ColumnsType<SuppliesLibraryData | object>}
-          url="/MaterialLibrary/GetMaterialMappingDesignItemList"
-          tableTitle="查看设计端物料库映射详情"
-          requestSource='tecEco1'
-          type="radio"
-          extractParams={{
-            rank,
-            keyWord: searchKeyWord,
-            materialMappingDesignLibraryId: id,
-          }}
-        />
-      }
+      <div className={styles.designTableBox}>
+        {
+          id && <GeneralTable
+            ref={tableRef}
+            buttonLeftContentSlot={searchComponent}
+            buttonRightContentSlot={tableElement}
+            needCommonButton={true}
+            columns={columns as ColumnsType<SuppliesLibraryData | object>}
+            url="/MaterialLibrary/GetMaterialMappingDesignItemList"
+            tableTitle="查看设计端物料库映射详情"
+            requestSource='tecEco1'
+            type="radio"
+            extractParams={{
+              rank,
+              keyWord: searchKeyWord,
+              materialMappingDesignLibraryId: id,
+            }}
+          />
+        }
+      </div>
       <Modal
         maskClosable={false}
         title="添加继承"
