@@ -125,8 +125,9 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
       return;
     }
 
-    const shareId = shareTableSelectRows.map((item) => item.id);
-    await removeCompanyShare(shareId);
+    const shareIds = shareTableSelectRows.map((item) => item.id);
+    await removeCompanyShare({ shareIds: shareIds });
+    setShareTableSelectRows([]);
     message.success('已移除');
     leftTableFresh();
   };
@@ -139,7 +140,7 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
     }
     if (addTableRef && addTableRef.current) {
       //@ts-ignore
-      addTableRef.current.refresh();
+      addTableRef.current.search();
     }
   };
 
@@ -151,7 +152,8 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
     }
 
     const shareCompanyId = addTableSelectRows.map((item) => item.id);
-    await createCompanyShare({ companyId: companyId, shareCompanyId: shareCompanyId });
+    await createCompanyShare({ companyId: companyId, shareCompanyIds: shareCompanyId });
+    setAddTableSelectRows([]);
     message.success('添加共享公司成功');
     leftTableFresh();
   };
@@ -206,7 +208,6 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
                 type="checkbox"
                 tableTitle="当前共享公司"
                 ref={shareTableRef}
-                defaultPageSize={20}
                 getSelectData={(data) => setShareTableSelectRows(data)}
                 columns={columns}
                 extractParams={{
@@ -228,7 +229,6 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
                 type="checkbox"
                 tableTitle="添加公司"
                 ref={addTableRef}
-                defaultPageSize={20}
                 getSelectData={(data) => setAddTableSelectRows(data)}
                 columns={columns}
                 extractParams={{

@@ -146,9 +146,8 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
       }
 
       const hierarchyIds = superiorTableSelectRows.map((item) => item.id);
-      console.log(hierarchyIds);
 
-      await removeComoanyHierarchy(hierarchyIds);
+      await removeComoanyHierarchy({ hierarchyIds: hierarchyIds });
       message.success('移除上级公司成功');
       leftTableFresh();
     }
@@ -160,7 +159,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
       }
 
       const hierarchyIds = subordinateTableSelectRows.map((item) => item.id);
-      await removeComoanyHierarchy(hierarchyIds);
+      await removeComoanyHierarchy({ hierarchyIds: hierarchyIds });
       message.success('移除下级公司成功');
       leftTableFresh();
     }
@@ -183,7 +182,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
     }
     if (addTableRef && addTableRef.current) {
       //@ts-ignore
-      addTableRef.current.refresh();
+      addTableRef.current.search();
     }
   };
 
@@ -196,7 +195,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
       }
 
       const preCompanyIds = addTableSelectRows.map((item) => item.id);
-      await createCompanyHierarchy({ preCompanyId: preCompanyIds, companyId: [companyId] });
+      await createCompanyHierarchy({ preCompanyIds: preCompanyIds, companyIds: [companyId] });
       message.success('添加上级公司成功');
       leftTableFresh();
     }
@@ -208,7 +207,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
       }
 
       const preCompanyIds = addTableSelectRows.map((item) => item.id);
-      await createCompanyHierarchy({ preCompanyId: [companyId], companyId: preCompanyIds });
+      await createCompanyHierarchy({ preCompanyIds: [companyId], companyIds: preCompanyIds });
       message.success('添加下级公司成功');
       leftTableFresh();
     }

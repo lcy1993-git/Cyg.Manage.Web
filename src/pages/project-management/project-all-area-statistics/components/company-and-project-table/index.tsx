@@ -44,7 +44,8 @@ const CompanyAndProjectTable: React.FC = () => {
           titlekey="text"
           valuekey="value"
           placeholder="请选择"
-          extraParams={{ companyId: companyId }}
+          requestType="post"
+          extraParams={{ category: 1, companyId: companyId }}
           // onChange={(value: any) => searchBySelectProvince(value)}
         />
       </TableSearch>

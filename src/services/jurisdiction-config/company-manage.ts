@@ -76,7 +76,10 @@ export const getCompany = () => {
 };
 
 //创建公司层级
-export const createCompanyHierarchy = (params: { preCompanyId: string[]; companyId: string[] }) => {
+export const createCompanyHierarchy = (params: {
+  preCompanyIds: string[];
+  companyIds: string[];
+}) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyHierarchy/Create`, {
       method: 'POST',
@@ -86,17 +89,17 @@ export const createCompanyHierarchy = (params: { preCompanyId: string[]; company
 };
 
 //移除公司层级
-export const removeComoanyHierarchy = (hierarchyId: string[]) => {
+export const removeComoanyHierarchy = (params: { hierarchyIds: string[] }) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyHierarchy/Remove`, {
       method: 'POST',
-      data: hierarchyId,
+      data: params,
     }),
   );
 };
 
 //创建/移除公司共享
-export const createCompanyShare = (params: { companyId: string; shareCompanyId: string[] }) => {
+export const createCompanyShare = (params: { companyId: string; shareCompanyIds: string[] }) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyShare/Create`, {
       method: 'POST',
@@ -105,11 +108,11 @@ export const createCompanyShare = (params: { companyId: string; shareCompanyId: 
   );
 };
 
-export const removeCompanyShare = (shareId: string[]) => {
+export const removeCompanyShare = (params: { shareIds: string[] }) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyShare/Remove`, {
       method: 'POST',
-      data: shareId,
+      data: params,
     }),
   );
 };
