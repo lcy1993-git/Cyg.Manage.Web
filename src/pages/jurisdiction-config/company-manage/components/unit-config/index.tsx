@@ -148,6 +148,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
       const hierarchyIds = superiorTableSelectRows.map((item) => item.id);
 
       await removeComoanyHierarchy({ hierarchyIds: hierarchyIds });
+      setSuperiorTableSelectRows([]);
       message.success('移除上级公司成功');
       leftTableFresh();
     }
@@ -160,6 +161,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
 
       const hierarchyIds = subordinateTableSelectRows.map((item) => item.id);
       await removeComoanyHierarchy({ hierarchyIds: hierarchyIds });
+      setSubordinateTableSelectRows([]);
       message.success('移除下级公司成功');
       leftTableFresh();
     }
@@ -196,6 +198,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
 
       const preCompanyIds = addTableSelectRows.map((item) => item.id);
       await createCompanyHierarchy({ preCompanyIds: preCompanyIds, companyIds: [companyId] });
+      setAddTableSelectRows([]);
       message.success('添加上级公司成功');
       leftTableFresh();
     }
@@ -208,6 +211,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
 
       const preCompanyIds = addTableSelectRows.map((item) => item.id);
       await createCompanyHierarchy({ preCompanyIds: [companyId], companyIds: preCompanyIds });
+      setAddTableSelectRows([]);
       message.success('添加下级公司成功');
       leftTableFresh();
     }
@@ -253,7 +257,10 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         footer={null}
         destroyOnClose
         centered
-        onCancel={() => setState(false)}
+        onCancel={() => {
+          setState(false);
+          setCurrentTab('superior');
+        }}
       >
         <div className={styles.unitConfigTable}>
           <div className={styles.hierarchyTable}>
