@@ -28,6 +28,7 @@ import moment from "moment";
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import WrapperComponent from "@/components/page-common-wrap";
 import GeneralTable from "@/components/general-table";
+import _ from "lodash";
 
 interface Props {
 }
@@ -66,19 +67,19 @@ const industryType = [
 ]
 const majorType = [
   {
-    value: 0,
+    value: '建筑',
     text: '建筑'
   }, {
-    value: 1,
+    value: '安装',
     text: '安装'
   }, {
-    value: 2,
+    value: '拆除',
     text: '拆除'
   }, {
-    value: 3,
+    value: '余物清理',
     text: '余物清理'
   }, {
-    value: 4,
+    value: '全部',
     text: '全部'
   },
 ]
@@ -104,13 +105,13 @@ const UsualQuotaTable: React.FC<Props> = () => {
       width: 80,
       dataIndex: 'number'
     },
-    {
-      dataIndex: 'name',
-      key: 'name',
-      title: '名称',
-      align: 'center',
-      width: 170,
-    },
+    // {
+    //   dataIndex: 'name',
+    //   key: 'name',
+    //   title: '名称',
+    //   align: 'center',
+    //   width: 170,
+    // },
     {
       dataIndex: 'commonlyTableTypeText',
       key: 'commonlyTableTypeText',
@@ -160,8 +161,8 @@ const UsualQuotaTable: React.FC<Props> = () => {
       width: 120,
     },
     {
-      dataIndex: 'majorTypeText',
-      key: 'majorTypeText',
+      dataIndex: 'majorType',
+      key: 'majorType',
       title: '适用专业',
       align: 'center',
       width: 100,
@@ -201,21 +202,38 @@ const UsualQuotaTable: React.FC<Props> = () => {
     if (isEdit) {
       data.id = selectRow[0].id
     }
+    const exist = dataSource.find(item=>{
+      console.log(item.number , data.number)
+      return item.number == data.number
+    })
+    console.log(exist,data,dataSource)
     if (isEdit) {
+      if (exist !==undefined){
+        message.warn('已存在相同的费率序号!')
+        return
+      }
       await editCommonlyTable(data)
-      console.log(data?.enabled)
       message.success('修改成功')
+      form.resetFields();
       setIsModalVisible(false)
       setIsEdit(false)
+      tableRef.current?.reset()
     } else {
+      if (exist !== undefined) {
+        message.warn('已存在相同的费率序号!')
+        return
+      }
       await addCommonlyTable(data)
       message.success('添加成功')
+      form.resetFields();
       setIsModalVisible(false)
       setIsEdit(false)
+      tableRef.current?.reset()
+
     }
-    if (tableRef?.current){
+    // if (tableRef?.current){
       tableRef.current?.refresh()
-    }
+    // }
   }
   const onFinishFailed = (err: any) => {
     console.log(err)
@@ -262,12 +280,11 @@ const UsualQuotaTable: React.FC<Props> = () => {
       return
     }
     setIsEdit(true)
-    const current = selectRow[0]
+    const current = _.cloneDeep(selectRow[0])
     if (current) {
       current.publishDate = moment(moment(current?.publishDate).format('YYYY-MM-DD'))
       current.year = moment(current?.year)
       setIsModalVisible(true)
-      console.log(current)
       form.setFieldsValue(current)
     }
   }
@@ -281,7 +298,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
       },
       "keyWord": ''
     })
-    console.log(res)
     setDataSource(res.items)
   }
   useEffect(() => {
@@ -318,7 +334,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
           requestSource='tecEco1'
           type="radio"
         />
-
         <Modal
           title="添加定额常用表"
           visible={isModalVisible}
@@ -406,7 +421,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
                 <Form.Item
                   label="适用专业"
                   name="majorType"
-                  rules={[{required: true, message: '请选择适用专业!'}]}
+                  // rules={[{required: true, message: '请选择适用专业!'}]}
                 >
                   <Select>
                     {

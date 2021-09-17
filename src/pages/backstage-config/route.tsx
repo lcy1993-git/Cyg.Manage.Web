@@ -1,5 +1,6 @@
 import Loadable from 'react-loadable';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
+import ManualManagement from "@/pages/backstage-config/manual-management";
 
 const FunctionModule = Loadable({
   loader: () => import('@/pages/backstage-config/function-module'),
@@ -90,10 +91,13 @@ export default [
     path: '/backstage-config/terminal-unit',
     component: <TerminalUnit />,
   },
-
   {
     title: '基础数据',
     path: '/backstage-config/basic-data',
     component: <BasicData />,
+  },  {
+    title: '说明书管理',
+    path: '/backstage-config/manual-management',
+    component: <ManualManagement />,
   },
 ];

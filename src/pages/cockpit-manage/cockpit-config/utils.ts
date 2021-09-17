@@ -53,6 +53,11 @@ export const cockpitMenuItemData = [
           name: "projectProgress",
           componentProps: ["gantt"],
           title: "甘特图"
+        },
+        {
+          name: "projectNumber",
+          componentProps: ["gantt"],
+          title: "项目数量"
         }
       ]
     },

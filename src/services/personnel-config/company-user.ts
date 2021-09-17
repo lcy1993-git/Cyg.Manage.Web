@@ -13,8 +13,8 @@ interface CompanyUserItemParams {
   userName: string;
   phone: string;
   email: string;
-  nickName: string;
   name: string;
+  idNumber: string;
   userStatus: number;
   lastLoginIp: string;
   lastLoginDate: Date;

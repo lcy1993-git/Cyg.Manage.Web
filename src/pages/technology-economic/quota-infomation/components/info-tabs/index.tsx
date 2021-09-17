@@ -45,8 +45,8 @@ const columns1 = [
   },
   {
     title: "数量",
-    dataIndex: "columns4",
-    key: "columns4",
+    dataIndex: "count",
+    key: "count",
   },
   {
     title: "预算价（元）",
@@ -167,7 +167,8 @@ const InfoTabs: React.FC<Props> = ({ data }) => {
             />
           </TabPane>
           <TabPane tab="工作内容" key="工作内容">
-            <div className={styles.workContent}>{dataSourceResult.workContent}</div>
+            {/*@ts-ignore*/}
+            <div className={styles.workContent}>{JSON.stringify(data?.quotaItem?.workContent)}</div>
           </TabPane>
         </Tabs>
       </div>

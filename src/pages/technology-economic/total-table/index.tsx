@@ -168,6 +168,7 @@ const TotalTable: React.FC<Props> = () => {
             extraParams={{EngineeringTemplateId:id}}
             buttonTitle={'导入总算表'}
             requestSource={'tecEco1'}
+            setSuccessful={getTableData}
             importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}
           />
         </div>

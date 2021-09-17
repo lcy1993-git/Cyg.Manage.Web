@@ -53,7 +53,7 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
         </CyFormItem>
         {type === 'add' && (
           <CyFormItem label="密码" name="pwd" required rules={rules.pwd} hasFeedback>
-            <Input type="password" placeholder="请输入密码" onPaste={(e) => e.preventDefault()}/>
+            <Input type="password" placeholder="请输入密码" onPaste={(e) => e.preventDefault()} />
           </CyFormItem>
         )}
         {type === 'add' && (
@@ -78,7 +78,11 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
               }),
             ]}
           >
-            <Input type="password" placeholder="请再次输入密码" onPaste={(e) => e.preventDefault()}/>
+            <Input
+              type="password"
+              placeholder="请再次输入密码"
+              onPaste={(e) => e.preventDefault()}
+            />
           </CyFormItem>
         )}
 
@@ -86,12 +90,11 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
           <Input placeholder="请填写邮箱" />
         </CyFormItem>
 
-        <CyFormItem label="昵称" name="nickName" rules={rules.nickName}>
-          <Input placeholder="请设置昵称" />
+        <CyFormItem label="姓名" name="name" rules={rules.realName} required>
+          <Input placeholder="请输入姓名" />
         </CyFormItem>
-
-        <CyFormItem label="真实姓名" name="name" rules={rules.realName} required>
-          <Input placeholder="请输入真实姓名" />
+        <CyFormItem label="身份证号" name="idNumber" rules={rules.idNumber} required>
+          <Input placeholder="请输入身份证号" />
         </CyFormItem>
 
         <CyFormItem label="授权端口" name="clientCategorys">

@@ -53,7 +53,7 @@ const ProjectTypeList = [
 const SpreadCoefficient: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
   const tableADRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | Object>([]); // 价差目录
+  const [tableSelectRows, setTableSelectRow] = useState<DataSource[]>([]); // 价差目录
   const [tableSelectADRows, setTableSelectADRow] = useState<DataSource[] | Object>([]); // 调整文件
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false); // 价差目录
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
@@ -144,10 +144,12 @@ const SpreadCoefficient: React.FC = () => {
         message.error('请选择一条数据进行编辑');
         return;
       }
-      const id = [tableSelectRows[0].id];
-      await deleteTemplate(id); // TODO
+      const ids = tableSelectRows?.map(item=>item.id);
+      console.log(ids)
+      await deleteTemplate(ids); // TODO
       refresh();
       message.success('删除成功');
+      setTableSelectRow([])
     } else {
       // 调整文件
       if (tableSelectADRows && isArray(tableSelectADRows) && tableSelectADRows.length === 0) {
@@ -158,6 +160,7 @@ const SpreadCoefficient: React.FC = () => {
       await deleteAdjustmentFile(id); // TODO
       refresh();
       message.success('删除成功');
+      setTableSelectADRow([])
     }
   };
 
@@ -202,8 +205,6 @@ const SpreadCoefficient: React.FC = () => {
   // 价差目录新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      console.log(values);
-
       await createCatalogue(values); // TODO
       refresh();
       setAddFormVisible(false);
@@ -285,7 +286,7 @@ const SpreadCoefficient: React.FC = () => {
               编辑
             </Button>
           )} */}
-          <Button className="mr7" onClick={() => editEvent()}>
+          <Button className="mr7" onClick={() => editEvent()} disabled={tableSelectRows?.length > 1}>
             <EditOutlined />
             编辑
           </Button>
@@ -303,7 +304,7 @@ const SpreadCoefficient: React.FC = () => {
             </Popconfirm>
           )} */}
           <Popconfirm
-            title="您确定要删除该条数据?"
+            title="您确定要删除已选择数据?"
             onConfirm={sureDeleteData}
             okText="确认"
             cancelText="取消"
@@ -347,7 +348,7 @@ const SpreadCoefficient: React.FC = () => {
                       columns={columns as ColumnsType<DataSource | object>}
                       url="/PriceDifference/GetAllDefaultPriceDifferenceTemplates"
                       getSelectData={tableSelectEvent}
-                      type="radio"
+                      type="checkbox"
                       requestSource="tecEco1"
                       extractParams={{}}
                     />

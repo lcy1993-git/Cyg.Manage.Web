@@ -52,8 +52,10 @@ const CostTemplate: React.FC<Props> = () => {
           <TableImportButton
             style={{
               marginRight:'10px',
+              zIndex:9999,
               marginTop:'10px'
             }}
+            setSuccessful={()=>getDirectory(id)}
           requestSource={'tecEco1'}
           extraParams={{ EngineeringTemplateId: id }}
           importUrl={'/EngineeringTemplateCostTable/ImportEngineeringTemplateCostTable'}

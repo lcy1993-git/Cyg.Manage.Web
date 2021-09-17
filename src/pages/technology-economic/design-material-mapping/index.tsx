@@ -4,7 +4,7 @@ import {Input, Button, Modal, Form, Switch, message, Space, Row, Col, DatePicker
 import type {ColumnsType} from 'antd/lib/table';
 import {EyeOutlined, PlusOutlined, DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import {isArray} from 'lodash';
-
+import styles from './index.less'
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
@@ -14,12 +14,14 @@ import {addMaterialMappingDesignLibrary,
   deleteMaterialMappingDesignLibrary,
   getResourceLibList,
   materialMappingDesignLibraryModifyStatus} from '@/services/technology-economic/material';
+import { getMaterialLibraryAllList } from '@/services/technology-economic/supplies-library';
 
 export interface SuppliesLibraryData {
   "id"?: string
   "name": string
   "publishOrg": string
   "publishDate": string | moment.Moment
+  "sourceMaterialLibraryId": string
   "remark": string
   "enabled": boolean
   'file': any
@@ -36,12 +38,16 @@ const DesignMaterialMapping: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [materialList,setMaterialList] = useState<{libName: string,id: string}[]>([])
+  const [costMaterialList,setCostMaterialList] = useState<{name: string,id: string}[]>([])
 
   const [form] = Form.useForm();
 
   const getMaterialData = async ()=>{
     const res = await getResourceLibList()
+    const res1 = await getMaterialLibraryAllList()
+    console.log(res)
     setMaterialList(res)
+    setCostMaterialList(res1)
   }
   useEffect(()=>{
     getMaterialData()
@@ -73,6 +79,14 @@ const DesignMaterialMapping: React.FC = () => {
       width: 170,
     },
     {
+      dataIndex: 'sourceMaterialLibraryName',
+      key: 'sourceMaterialLibraryName',
+      ellipsis: true,
+      title: '关联造价端物料库',
+      align: 'center',
+      width: 170,
+    },
+    {
       dataIndex: 'enabled',
       key: 'enabled',
       title: '状态',
@@ -99,7 +113,7 @@ const DesignMaterialMapping: React.FC = () => {
   ];
   const searchComponent = () => {
     return (
-      <TableSearch label="关键词" width="203px">
+      <TableSearch label="关键词" width="300px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -146,8 +160,9 @@ const DesignMaterialMapping: React.FC = () => {
       message.warn('请选择要操作的行');
       return;
     }
-    const {id} = tableSelectRows?.[0] ?? '';
-    history.push(`/technology-economic/design-mapping-info?id=${id}`)
+    console.log(tableSelectRows)
+    const {id,sourceMaterialLibraryId,sourceMaterialLibraryName} = tableSelectRows?.[0] ?? '';
+    history.push(`/technology-economic/design-mapping-info?id=${id}&sourceMaterialLibraryName=${sourceMaterialLibraryName}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
   };
   const onFinish = async (val: SuppliesLibraryData) => {
     const data = {...val}
@@ -202,21 +217,23 @@ const DesignMaterialMapping: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
-        needCommonButton={true}
-        columns={columns as ColumnsType<SuppliesLibraryData | object>}
-        url="/MaterialLibrary/GetSourceMaterialMappingDesignLibraryList"
-        tableTitle="设计端物料库映射管理"
-        getSelectData={tableSelectEvent}
-        requestSource='tecEco1'
-        type="radio"
-        extractParams={{
-          keyWord: searchKeyWord,
-        }}
-      />
+      <div className={styles.designBox}>
+        <GeneralTable
+          ref={tableRef}
+          buttonLeftContentSlot={searchComponent}
+          buttonRightContentSlot={tableElement}
+          needCommonButton={true}
+          columns={columns as ColumnsType<SuppliesLibraryData | object>}
+          url="/MaterialLibrary/GetSourceMaterialMappingDesignLibraryList"
+          tableTitle="设计端物料库映射管理"
+          getSelectData={tableSelectEvent}
+          requestSource='tecEco1'
+          type="radio"
+          extractParams={{
+            keyWord: searchKeyWord,
+          }}
+        />
+      </div>
       <Modal
         maskClosable={false}
         title="添加-物料库映射"
@@ -259,8 +276,9 @@ const DesignMaterialMapping: React.FC = () => {
 
             <Col span={12}>
               <Form.Item
-                label="关联设计端物料库"
+                label="关联设计端资源库"
                 name="designResourceLibraryId"
+                rules={[{required: true, message: '请选择关联设计端物料库!'}]}
               >
                 <Select>
                   {
@@ -273,14 +291,29 @@ const DesignMaterialMapping: React.FC = () => {
             </Col>
             <Col span={12}>
               <Form.Item
+                label="关联造价端物料库"
+                name="sourceMaterialLibraryId"
+                rules={[{required: true, message: '请选择关联造价端物料库!'}]}
+              >
+                <Select>
+                  {
+                    costMaterialList.map(item=>{
+                      return <Option  key={item.id} value={item.id}>{item.name}</Option>
+                    })
+                  }
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={20}>
+            <Col span={12}>
+              <Form.Item
                 label="状态"
                 name="enabled"
               >
                 <Switch/>
               </Form.Item>
             </Col>
-          </Row>
-          <Row gutter={20}>
             <Col span={12}>
               <Form.Item
                 label="说明"

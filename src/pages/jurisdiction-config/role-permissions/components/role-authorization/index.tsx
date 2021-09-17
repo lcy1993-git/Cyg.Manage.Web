@@ -102,7 +102,7 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
     <>
       <Button className="mr7" type="primary" onClick={() => batchAddAuthorizationEvent()}>
         <PlusOutlined />
-        批量授权
+        授权
       </Button>
       <Popconfirm
         placement="top"
@@ -111,7 +111,7 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
         okText="确认"
         cancelText="取消"
       >
-        <Button className="mr7">批量移除</Button>
+        <Button className="mr7">移除</Button>
       </Popconfirm>
     </>
   );

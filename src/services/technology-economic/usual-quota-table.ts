@@ -103,7 +103,7 @@ export const getCommonlyTableLossRatio = (commonlyTableId: string) => {
 // 获取所有的土方参数
 export const getAllEarthWorks = (commonlyTableId: string) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.tecEco1}/Earthwork/GetAllEarthWorks/${commonlyTableId}`,
+    request(`${baseUrl.tecEco1}/Earthwork/AllEarthWorks/${commonlyTableId}`,
       { method: 'get'}),
   );
 }
@@ -111,14 +111,14 @@ export const getAllEarthWorks = (commonlyTableId: string) => {
 // 获取所有的挖方裕度
 export const getAllEarthworkMargins = (commonlyTableId: string) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.tecEco1}/Earthwork/GetAllEarthworkMargins/${commonlyTableId}`,
+    request(`${baseUrl.tecEco1}/Earthwork/AllEarthworkMargins/${commonlyTableId}`,
       { method: 'get'}),
   );
 }
 // 获取所有的放坡系数
 export const GetAllEarthworkSlopeCoefficients = (commonlyTableId: string) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.tecEco1}/Earthwork/GetAllEarthworkSlopeCoefficients/${commonlyTableId}`,
+    request(`${baseUrl.tecEco1}/Earthwork/AllEarthworkSlopeCoefficients/${commonlyTableId}`,
       { method: 'get'}),
   );
 }

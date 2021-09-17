@@ -89,8 +89,8 @@ const ProjectList: React.FC = () => {
       width: 150,
     },
     {
-      dataIndex: 'majorTypeText',
-      key: 'majorTypeText',
+      dataIndex: 'majorType',
+      key: 'majorType',
       title: '适用专业',
       width: 150,
     },
@@ -127,7 +127,7 @@ const ProjectList: React.FC = () => {
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="关键词"
         />
       </TableSearch>
     );
@@ -175,7 +175,6 @@ const ProjectList: React.FC = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
     } else {
-      console.log(tableSelectRows[0]);
       const publishDate = moment(tableSelectRows[0].publishDate);
       setModalType('edit');
       setFormVisible(true);
@@ -256,18 +255,19 @@ const ProjectList: React.FC = () => {
     if (modalType === 'add') {
       await addRateTable({ ...values, }).then(() => {
         message.success('添加成功')
-        refresh();
         setFormVisible(false);
         form.resetFields();
       });
     } else if (modalType === 'edit') {
-      await editRateTable({ ...values, id }).then(() => {
+      await editRateTable({ ...values,id:tableSelectRows[0].id }).then(() => {
         message.success('编辑成功')
-        refresh();
+        tableRef.current.reset();
         setFormVisible(false);
+        setTableSelectRow([])
         form.resetFields();
       });
     }
+    refresh();
   }
 
   return (
@@ -299,7 +299,7 @@ const ProjectList: React.FC = () => {
         destroyOnClose
       >
         <Form form={form} preserve={false}>
-          <AddDictionaryForm />
+          <AddDictionaryForm/>
         </Form>
       </Modal>
     </PageCommonWrap>

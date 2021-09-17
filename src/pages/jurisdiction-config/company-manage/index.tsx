@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Button, Modal, Form, message, Switch } from 'antd';
 import TreeTable from '@/components/tree-table/index';
+import GeneralTable from '@/components/general-table';
 import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import PageCommonWrap from '@/components/page-common-wrap';
@@ -164,8 +165,7 @@ const CompanyManage: React.FC = () => {
     );
   };
 
-  const addEvent = async () => {
-    await getSelectTreeData();
+  const addEvent = () => {
     setAddFormVisible(true);
   };
 
@@ -255,13 +255,13 @@ const CompanyManage: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <TreeTable
+      <GeneralTable
         ref={tableRef}
         tableTitle="公司管理"
         columns={companyTableColumns}
+        buttonRightContentSlot={companyManageButton}
         getSelectData={(data) => setTableSelectRows(data)}
-        rightButtonSlot={companyManageButton}
-        url="/Company/GetTreeList"
+        url="/Company/GetPagedList"
       />
       <Modal
         maskClosable={false}

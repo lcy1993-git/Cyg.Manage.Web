@@ -12,7 +12,7 @@ import {
   MaterialMappingInherit,
 } from '@/services/technology-economic/material';
 import qs from "qs";
-import styles from "@/pages/project-management/all-project-new/components/approval-project-modal/index.less";
+import styles from "./index.less";
 import {ExclamationCircleOutlined, RedoOutlined} from "@ant-design/icons";
 import imgSrc from "@/assets/image/relation.png"
 import MappingManage from "@/pages/technology-economic/design-mapping-info/components/manage";
@@ -83,7 +83,7 @@ const DesignMappingInfo: React.FC = () => {
   }
   const searchComponent = () => {
     return (
-      <TableSearch label="关键词" width="203px">
+      <TableSearch label="关键词" width="300px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -149,6 +149,7 @@ const DesignMappingInfo: React.FC = () => {
       key: 'number',
       title: '编号',
       align: 'center',
+      width:150
     },
     {
       dataIndex: 'name',
@@ -163,8 +164,8 @@ const DesignMappingInfo: React.FC = () => {
       align: 'center',
     },
     {
-      dataIndex: 'sourceMaterialLibraryId',
-      key: 'sourceMaterialLibraryId',
+      dataIndex: 'sourceMaterialItemId',
+      key: 'sourceMaterialItemId',
       title: () => {
         return <div>
           关系
@@ -189,18 +190,19 @@ const DesignMappingInfo: React.FC = () => {
         )
       }
     },
-    {
-      dataIndex: 'sourceMaterialLibraryName',
-      key: 'sourceMaterialLibraryName',
-      title: '技经物料库',
-      align: 'center',
-      ellipsis: true,
-    },
+    // {
+    //   dataIndex: 'sourceMaterialLibraryName',
+    //   key: 'sourceMaterialLibraryName',
+    //   title: '技经物料库',
+    //   align: 'center',
+    //   ellipsis: true,
+    // },
     {
       dataIndex: 'sourceMaterialItemIdCode',
       key: 'sourceMaterialItemIdCode',
       title: '编号',
       align: 'center',
+      width:150,
       ellipsis: true,
     },
     {
@@ -230,6 +232,9 @@ const DesignMappingInfo: React.FC = () => {
       width: 120
     },
   ]
+  const getSelectData = (val:any[])=>{
+    setTableSelectRows(val[0])
+  }
   useEffect(() => {
     let val = qs.parse(window.location.href.split("?")[1])?.id
     val = val === 'undefined' ? '' : val
@@ -241,24 +246,27 @@ const DesignMappingInfo: React.FC = () => {
   }, [rank])
   return (
     <PageCommonWrap>
-      {
-        id && <GeneralTable
-          ref={tableRef}
-          buttonLeftContentSlot={searchComponent}
-          buttonRightContentSlot={tableElement}
-          needCommonButton={true}
-          columns={columns as ColumnsType<SuppliesLibraryData | object>}
-          url="/MaterialLibrary/GetMaterialMappingDesignItemList"
-          tableTitle="查看设计端物料库映射详情"
-          requestSource='tecEco1'
-          type="radio"
-          extractParams={{
-            rank,
-            keyWord: searchKeyWord,
-            materialMappingDesignLibraryId: id,
-          }}
-        />
-      }
+      <div className={styles.designTableBox}>
+        {
+          id && <GeneralTable
+            ref={tableRef}
+            getSelectData={getSelectData}
+            buttonLeftContentSlot={searchComponent}
+            buttonRightContentSlot={tableElement}
+            needCommonButton={true}
+            columns={columns as ColumnsType<SuppliesLibraryData | object>}
+            url="/MaterialLibrary/GetMaterialMappingDesignItemList"
+            tableTitle="查看设计端物料库映射详情"
+            requestSource='tecEco1'
+            type="radio"
+            extractParams={{
+              rank,
+              keyWord: searchKeyWord,
+              materialMappingDesignLibraryId: id,
+            }}
+          />
+        }
+      </div>
       <Modal
         maskClosable={false}
         title="添加继承"

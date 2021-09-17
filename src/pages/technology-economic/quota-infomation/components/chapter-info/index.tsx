@@ -7,9 +7,10 @@ import {saveQuotaLibraryCatalogDescription} from '@/services/technology-economic
 interface Props {
   data: string;
   id: string
+  update: ()=>void
 }
 
-const ChapterInfo: React.FC<Props> = ({data, id}) => {
+const ChapterInfo: React.FC<Props> = ({data, id,update}) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const contentWrapRef = useRef<HTMLDivElement>(null);
@@ -21,6 +22,12 @@ const ChapterInfo: React.FC<Props> = ({data, id}) => {
   // useEffect(() => {
   //   contentWrapRef.current!.innerHTML = "<p>12312312312</p>"
   // }, [html])
+  const saveData = ()=>{
+    saveQuotaLibraryCatalogDescription({id, chapterDescription: html})
+    setModalVisible(false)
+    setHtml('')
+    update()
+  }
   return (
     <div className={styles.chapterInfoWrap}>
       <div className={styles.buttonArea}>
@@ -35,8 +42,9 @@ const ChapterInfo: React.FC<Props> = ({data, id}) => {
         visible={modalVisible}
         title="编辑-章节说明"
         width="80%"
+        destroyOnClose={true}
         onCancel={() => setModalVisible(false)}
-        onOk={()=> saveQuotaLibraryCatalogDescription({id, chapterDescription: html})}
+        onOk={saveData}
       >
         <WangEditor getHtml={setHtml} />
       </Modal>
