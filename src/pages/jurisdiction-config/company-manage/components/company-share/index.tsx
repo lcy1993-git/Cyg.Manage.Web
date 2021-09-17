@@ -125,7 +125,7 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
       return;
     }
 
-    const shareId = shareTableSelectRows[0].id;
+    const shareId = shareTableSelectRows.map((item) => item.id);
     await removeCompanyShare(shareId);
     message.success('已移除');
     leftTableFresh();
@@ -150,7 +150,7 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
       return;
     }
 
-    const shareCompanyId = addTableSelectRows[0].id;
+    const shareCompanyId = addTableSelectRows.map((item) => item.id);
     await createCompanyShare({ companyId: companyId, shareCompanyId: shareCompanyId });
     message.success('添加共享公司成功');
     leftTableFresh();
@@ -203,6 +203,7 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
             <div className={styles.leftTableContent}>
               <GeneralTable
                 noPaging
+                type="checkbox"
                 tableTitle="当前共享公司"
                 ref={shareTableRef}
                 defaultPageSize={20}
@@ -224,6 +225,7 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
             <div className={styles.addTableContent}>
               <GeneralTable
                 noPaging
+                type="checkbox"
                 tableTitle="添加公司"
                 ref={addTableRef}
                 defaultPageSize={20}

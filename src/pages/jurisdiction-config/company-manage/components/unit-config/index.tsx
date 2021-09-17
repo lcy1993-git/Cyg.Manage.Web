@@ -145,8 +145,10 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         return;
       }
 
-      const hierarchyId = superiorTableSelectRows[0].id;
-      await removeComoanyHierarchy(hierarchyId);
+      const hierarchyIds = superiorTableSelectRows.map((item) => item.id);
+      console.log(hierarchyIds);
+
+      await removeComoanyHierarchy(hierarchyIds);
       message.success('移除上级公司成功');
       leftTableFresh();
     }
@@ -157,8 +159,8 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         return;
       }
 
-      const hierarchyId = subordinateTableSelectRows[0].id;
-      await removeComoanyHierarchy(hierarchyId);
+      const hierarchyIds = subordinateTableSelectRows.map((item) => item.id);
+      await removeComoanyHierarchy(hierarchyIds);
       message.success('移除下级公司成功');
       leftTableFresh();
     }
@@ -193,8 +195,8 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         return;
       }
 
-      const preCompanyId = addTableSelectRows[0].id;
-      await createCompanyHierarchy({ preCompanyId: preCompanyId, companyId: companyId });
+      const preCompanyIds = addTableSelectRows.map((item) => item.id);
+      await createCompanyHierarchy({ preCompanyId: preCompanyIds, companyId: [companyId] });
       message.success('添加上级公司成功');
       leftTableFresh();
     }
@@ -205,8 +207,8 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         return;
       }
 
-      const preCompanyId = addTableSelectRows[0].id;
-      await createCompanyHierarchy({ preCompanyId: companyId, companyId: preCompanyId });
+      const preCompanyIds = addTableSelectRows.map((item) => item.id);
+      await createCompanyHierarchy({ preCompanyId: [companyId], companyId: preCompanyIds });
       message.success('添加下级公司成功');
       leftTableFresh();
     }
@@ -265,6 +267,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
                 <div className={styles.leftTableContent}>
                   <GeneralTable
                     noPaging
+                    type="checkbox"
                     needTitleLine={false}
                     ref={superiorRef}
                     defaultPageSize={20}
@@ -285,6 +288,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
                 <div className={styles.leftTableContent}>
                   <GeneralTable
                     noPaging
+                    type="checkbox"
                     needTitleLine={false}
                     ref={subordinateRef}
                     defaultPageSize={20}
@@ -308,6 +312,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
             <div className={styles.addTableContent}>
               <GeneralTable
                 noPaging
+                type="checkbox"
                 tableTitle="添加公司"
                 ref={addTableRef}
                 defaultPageSize={20}

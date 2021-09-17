@@ -11,6 +11,7 @@ import styles from './index.less';
 
 const CompanyAndProjectTable: React.FC = () => {
   const { dataType, companyInfo, setDataType, setCompanyInfo } = useProjectAllAreaStatisticsStore();
+  const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
 
   const returnToCompanyType = () => {
     setCompanyInfo({
@@ -35,14 +36,15 @@ const CompanyAndProjectTable: React.FC = () => {
   };
   return (
     <div className={styles.companyAndProjectTable}>
-      <TableSearch width="320px" label="我的公司" marginLeft="20px">
+      <TableSearch width="320px" label="我的公司" paddingTop="20px" marginLeft="20px">
         <UrlSelect
           style={{ width: '240px', marginLeft: '15px' }}
           showSearch
-          url="/Area/GetList?pId=-1"
+          url="/CompanyShare/GetList"
           titlekey="text"
           valuekey="value"
           placeholder="请选择"
+          extraParams={{ companyId: companyId }}
           // onChange={(value: any) => searchBySelectProvince(value)}
         />
       </TableSearch>
