@@ -94,7 +94,6 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
                 }
               });
             });
-          console.log(costAuditPerson);
 
           form.setFieldsValue({
             ...personObj,
