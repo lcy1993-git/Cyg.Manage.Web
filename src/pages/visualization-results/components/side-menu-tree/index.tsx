@@ -19,7 +19,6 @@ import CommentModal from '../comment-modal';
 import MaterialModal from '../material-modal';
 import SidePopup from '../side-popup';
 import MenuTree from './components/menu-tree';
-import ToolTipButton from './components/TooltipButton';
 import ControlLayers from '../control-layers';
 
 import { observer } from 'mobx-react-lite';
@@ -30,10 +29,9 @@ import { flattenDeepToKey, TreeNodeType, getSelectKeyByKeyword } from '../../uti
 import classNames from 'classnames';
 import styles from './index.less';
 
-import achievementSvg from '@/assets/image/webgis/svg/achievements.svg';
-import exportSvg from '@/assets/image/webgis/svg/export.svg';
-import materiaSvg from '@/assets/image/webgis/svg/material.svg';
-import messageSvg from '@/assets/image/webgis/svg/message.svg';
+const { RangePicker } = DatePicker;
+
+import SiderMenuAreaButtons from '../side-menu-area-buttons';
 import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
 
 export interface SideMenuProps {
@@ -100,12 +98,12 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
 type KeyType =
   | React.Key[]
   | {
-      checked: React.Key[];
-      halfChecked: React.Key[];
-    };
+    checked: React.Key[];
+    halfChecked: React.Key[];
+  };
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
-  
+
   // 项目详情
   const [projectModalActiveId, setProjectModalActiveId] = useState<string>('');
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
@@ -119,7 +117,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 成果管理
   const [resultVisibel, setResultVisibel] = useState<boolean>(false);
   // 审阅消息
-  
+
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
   const [buttonActive, setButtonActive] = useState<number>(
     window.localStorage.getItem('selectCity') ? -1 : 2,
@@ -205,8 +203,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const sideMenuRef = useRef<HTMLDivElement>(null);
   const { height: sidePopupHeight } = useSize(sideMenuRef);
 
-  const [startDateValue, setStartDateValue] = useState<Moment>(undefined);
-  const [endDateValue, setEndDateValue] = useState<Moment>(undefined);
+  // const [startDateValue, setStartDateValue] = useState<Moment>(undefined);
+  // const [endDateValue, setEndDateValue] = useState<Moment>(undefined);
+
+  const [dateRange, setDateRange] = useState<[Moment, Moment]>([undefined, undefined])
 
   // 判断开始时间不能大于结束时间
   const compareData = (start: Moment, end: Moment) => {
@@ -229,15 +229,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    */
   useEffect(() => {
     if (checkedProjectIdList.length === 0) {
-      setStartDateValue(undefined);
-      setEndDateValue(undefined);
+      setDateRange([undefined, undefined])
+
     } else {
       const checkedProject = checkedProjectDateList || [undefined];
       let start = moment(checkedProject[0]);
       let end = moment(checkedProject[checkedProject.length - 1]);
-      
-      setStartDateValue(start.isValid() ? start : undefined);
-      setEndDateValue(end.isValid() ? end : undefined);
+      setDateRange([start.isValid() ? start : undefined, end.isValid() ? end : undefined])
     }
   }, [checkedProjectIdList.length]);
 
@@ -291,9 +289,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const selectCity = localStorage.getItem('selectCity');
 
     if (selectCity) {
-      
+
       const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
-      
+
       localStorage.removeItem('selectCity');
       const { expanded, checked } = key;
       setExpandedKeys([...expanded]);
@@ -363,7 +361,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         expanded.pop();
       }
     };
-    
+
     if (reg.test(selectCity) || selectCity.includes('_other')) {
       items.forEach((v) => {
         dfsById(v, false);
@@ -420,9 +418,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   });
 
   const getLayerstype = () => {
-    if(props.controlLayersProps.designLayerVisible && !props.controlLayersProps.dismantleLayerVisible){
+    if (props.controlLayersProps.designLayerVisible && !props.controlLayersProps.dismantleLayerVisible) {
       return 1
-    }else if(!props.controlLayersProps.designLayerVisible && props.controlLayersProps.dismantleLayerVisible){
+    } else if (!props.controlLayersProps.designLayerVisible && props.controlLayersProps.dismantleLayerVisible) {
       return 2
     }
     return 0
@@ -439,21 +437,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     if (index < 0) {
       setSelectedKeys(selecyKeyArray);
     } else {
-      // const deepKeyArray = (data: TreeNodeType[], flag1: boolean) => {
-      //   data.forEach((item: TreeNodeType) => {
-      //     /**
-      //      * 判断按钮区与tree数据层级的关系比较
-      //      */
-      //     const levelCategoryFlag = item.levelCategory < 4 ? item.levelCategory === index + 1 : item.levelCategory === index + 2;
-      //     const flag = flag1 || levelCategoryFlag;
-      //     if (flag) {
-      //       keyArray.push(item.key)
-      //     }
-      //     if (Array.isArray(item.children)) {
-      //       deepKeyArray(item.children, flag)
-      //     }
-      //   })
-      // }
       deepKeyArray(treeData, false, index, selecyKeyArray);
       setSelectedKeys(selecyKeyArray);
     }
@@ -507,54 +490,46 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    store.setStartDate(
-      startDateValue ? moment(startDateValue).format('YYYY/MM/DD') : startDateValue,
-    );
-  }, [startDateValue]);
+    store.setDateRange({
+      startDate: dateRange[0] ? moment(dateRange[0]).format('YYYY/MM/DD') : dateRange[0],
+      endDate: dateRange[1] ? moment(dateRange[1]).format('YYYY/MM/DD') : dateRange[1],
+    })
+  }, [dateRange])
 
-  useEffect(() => {
-    store.setEndDate(endDateValue ? moment(endDateValue).format('YYYY/MM/DD') : endDateValue);
-  }, [endDateValue]);
-
-  const renderStartDateButton = () => {
+  const renderExtraFooter = () => {
     return (
-      <Button
-        type="link"
-        style={{ width: '100%' }}
-        onClick={() => {
-          if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
-            message.error('当前未选择项目');
-          } else {
-            let start = moment(checkedProjectDateList[0]);
-            setStartDateValue(start.isValid() ? start : message.error('项目中有项目开始时间未设置') && undefined);
-          }
-          startDateRef && startDateRef.current?.blur();
-        }}
-      >
-        定位最早项目时间
-      </Button>
+      <div className={styles.extraFooterWrap}>
+        <div style={styles.buttomItem}>
+          <Button type="link"
+            onClick={() => {
+              if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
+                message.error('当前未选择项目');
+              } else {
+                let start = moment(checkedProjectDateList[0]);
+                // setStartDateValue(start.isValid() ? start : message.error('项目中有项目开始时间未设置') && undefined);
+                setDateRange([start.isValid() ? start : message.error('项目中有项目开始时间未设置') && undefined, dateRange[1]])
+              }
+              startDateRef && startDateRef.current?.blur();
+            }}
+          >定位最早项目时间</Button>
+        </div>
+        <div style={styles.buttomItem}>
+          <Button type="link"
+            onClick={() => {
+              if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
+                message.error('当前未选择项目');
+              } else {
+                let end = moment(checkedProjectDateList[checkedProjectDateList.length - 1]);
+                // setEndDateValue(end.isValid() ? end : message.error('项目中有项目开始截至未设置') && undefined);
+                setDateRange([dateRange[0], end.isValid() ? end : message.error('项目中有项目结束时间未设置') && undefined])
+              }
+              endDateRef && endDateRef.current?.blur();
+            }}
+          >定位最晚项目时间</Button>
+        </div>
+      </div>
     );
-  };
-
-  const renderEndDateButton = () => {
-    return (
-      <Button
-        type="link"
-        style={{ width: '100%' }}
-        onClick={() => {
-          if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
-            message.error('当前未选择项目');
-          } else {
-            let end = moment(checkedProjectDateList[checkedProjectDateList.length - 1]);
-            setEndDateValue(end.isValid() ? end : message.error('项目中有项目开始截至未设置') && undefined);
-          }
-          endDateRef && endDateRef.current?.blur();
-        }}
-      >
-        定位最晚项目时间
-      </Button>
-    );
-  };
+  }
 
   const onSelect = (e: any, g: any) => {
     // 代表点击的是项目
@@ -582,21 +557,32 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   const handlerPositionClick = (flag: any) => {
-    if(Array.isArray(flag) && flag.length > 0) {
+    if (Array.isArray(flag) && flag.length > 0) {
       setexportMapPositionModalVisible(true)
-    }else {
+    } else {
       message.error('当前未选择项目')
     }
 
   }
 
   const handlerMaterialClick = (flag: any) => {
-    if(Array.isArray(flag) && flag.length > 0) {
+    if (Array.isArray(flag) && flag.length > 0) {
       setMaterialModalVisible(true)
-    }else {
+    } else {
       message.error('当前未选择项目')
     }
 
+  }
+
+  const isClickAble = () => {
+    if (Array.isArray(checkedKeys) && checkedKeys?.length === 1) {
+      return true
+    } else if (Array.isArray(checkedKeys) && checkedKeys?.length === 0) {
+      message.error("当前未选择项目")
+    } else if (Array.isArray(checkedKeys) && checkedKeys?.length > 1) {
+      message.error("多选状态下不可操作")
+    }
+    return false
   }
 
   return (
@@ -636,56 +622,51 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           treeData={treeData}
         />
       </div>
-
       <div className={styles.timeLine}>
-        <DatePicker
-          ref={startDateRef}
-          style={{ width: '100%' }}
-          placeholder="请选择日期起"
-          value={startDateValue}
-          showToday={false}
-          renderExtraFooter={renderStartDateButton}
-          onChange={(e) => compareData(e!, endDateValue) && setStartDateValue(e!)}
-        />
-        <DatePicker
-          ref={endDateRef}
-          style={{ width: '100%' }}
-          placeholder="请选择日期止"
-          value={endDateValue}
-          showToday={false}
-          renderExtraFooter={renderEndDateButton}
-          onChange={(e) => compareData(startDateValue, e!) && setEndDateValue(e!)}
-        />
+        <RangePicker value={dateRange} onChange={(e) => setDateRange(e)} renderExtraFooter={renderExtraFooter} />
       </div>
-      <div className={styles.functionButton}>
-        <div className={styles.row}>
-          <Button
-            onClick={() => handlerPositionClick(checkedProjectIdList)}
-            style={Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? {color: '#d6d6d6'} : {}}
-          >
-            <img className={styles.svg} src={exportSvg} />导出坐标
-          </Button>
-          <Button
-            onClick={() => handlerMaterialClick(checkedProjectIdList)}
-            style={Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? {color: '#d6d6d6'} : {}}
-          >
-            <img className={styles.svg} src={materiaSvg} />材料统计
-          </Button>
-        </div>
-        <div className={styles.row}>
-          <ToolTipButton
-            buttonName="成果管理"
-            onClick={() => setResultVisibel(true)}
-            checkedKeys={checkedProjectIdList}
-            svg={achievementSvg}
-          />
-          <ToolTipButton
-            buttonName="审阅消息"
-            onClick={handlerCommentClick}
-            checkedKeys={checkedProjectIdList}
-            svg={messageSvg}
-          />
-        </div>
+
+      <div className={styles.buttonArea}>
+        <SiderMenuAreaButtons
+          buttonProps={[
+            {
+              title: "成果管理",
+              dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
+              onClick: () => isClickAble() && setResultVisibel(true),
+              style: Array.isArray(checkedKeys) && checkedKeys?.length !== 1 ? { opacity: .4 } : {}
+            },
+            {
+              title: "材料统计",
+              dart: require('@/assets/icon-image/menu-tree-icon/材料统计.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/材料统计-light.png'),
+              // @ts-ignore
+              onClick: () => Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? message.error("当前未选择项目") : handlerMaterialClick(checkedProjectIdList),
+              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? { opacity: .4 } : {}
+            },
+            {
+              title: "审阅消息",
+              dart: require('@/assets/icon-image/menu-tree-icon/审阅消息.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/审阅消息-light.png'),
+              onClick: () => Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? message.error("当前未选择项目") : handlerCommentClick(),
+              style: Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? { opacity: .4 } : {}
+            },
+            {
+              title: "导出多媒体",
+              dart: require('@/assets/icon-image/menu-tree-icon/导出多媒体.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'),
+              onClick: () => null,
+              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? { opacity: .4 } : {}
+            },
+            {
+              title: "导出坐标",
+              dart: require('@/assets/icon-image/menu-tree-icon/导出坐标.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/导出坐标-light.png'),
+              onClick: () => handlerPositionClick(checkedProjectIdList),
+              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? { opacity: .4 } : {}
+            }
+          ]}
+        />
       </div>
       <div className={styles.controlLayers}>
         <ControlLayers {...props.controlLayersProps} />
@@ -744,7 +725,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         defaultData={filterCondition}
         visible={filterModalVisibel}
         onChange={setFilterModalVisibel}
-        onSure={(values) => setfilterCondition({...values, keyWord})}
+        onSure={(values) => setfilterCondition({ ...values, keyWord })}
       />
     </div>
   );

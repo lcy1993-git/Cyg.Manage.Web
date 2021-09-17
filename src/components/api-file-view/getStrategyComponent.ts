@@ -4,7 +4,7 @@ import FileXlsxView from './componnents/file-excel-view';
 import type { FileDocxViewProps } from './componnents/file-docx-view';
 import type { FileXlsxViewProps } from './componnents/file-xlsx-view';
 
-export type FileType = 'xlsx' | 'docx' | 'dwg' | 'pdf' | 'png';
+export type FileType = 'xlsx' | 'docx' | 'dwg' | 'pdf' | 'png' | 'doc' | 'xls';
 
 const context = new Map<FileType, React.FC<FileDocxViewProps | FileXlsxViewProps>>();
 

@@ -24,12 +24,11 @@ const CommentModal: FC<CommentModalProps> = (props) => {
     >
       {checkedProjectIdList.length > 0 ? (
         <CommentTable
-          projectId={checkedProjectIdList[0].id}
-          engineerId={checkedProjectIdList[0].engineerId}
+          projectIds={checkedProjectIdList.map((t) => t.id)}
         />
       ) : null}
     </Modal>
   );
 };
-
+         
 export default CommentModal;
