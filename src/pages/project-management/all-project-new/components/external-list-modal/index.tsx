@@ -1,5 +1,5 @@
 import React, { SetStateAction, useState } from 'react';
-import { Button, Divider, Form, message, Modal, Radio, Spin } from 'antd';
+import { Button, Divider, Form, message, Modal, Radio, Spin, Steps, Tooltip } from 'antd';
 
 import { useControllableValue } from 'ahooks';
 // import uuid from 'node-uuid';
@@ -16,12 +16,14 @@ import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
+  DeleteOutlined,
   MinusCircleOutlined,
 } from '@ant-design/icons';
 
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { delay } from '@/utils/utils';
+import SelectAddListForm from '../select-add-list-form';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -34,10 +36,13 @@ interface GetGroupUserProps {
   refresh?: () => void;
 }
 
+const { Step } = Steps;
+
 const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
   const [isPassExternalArrange, setIsPassExternalArrange] = useState<string>('');
+  const [addPersonState, setAddPersonState] = useState<boolean>(false);
 
   const [requestLoading, setRequestLoading] = useState(false);
 
@@ -72,7 +77,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const finishEditEvent = async () => {
     try {
       setRequestLoading(true);
-      await delay(1000)
+      await delay(1000);
       const res = await getExternalStep(projectId);
       setNewStepData(res);
     } catch (msg) {
@@ -84,8 +89,9 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
 
   return (
     <>
+      {/* <Steps><Step key={item.title} title={item.title} /></Steps> */}
       <Modal
-        title="外审列表"
+        title="外审结果"
         visible={state as boolean}
         maskClosable={false}
         width={850}
@@ -110,9 +116,29 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                 </Button>,
               ]
             : [
-                <Button key="save" type="primary" onClick={() => setState(false)}>
-                  确认
-                </Button>,
+                <>
+                  {addPersonState ? (
+                    <>
+                      <Form style={{ width: '100%' }} form={form}>
+                        <SelectAddListForm
+                          isAdd={true}
+                          // initPeople={arrangePeople}
+                          // projectName={proName}
+                          // onChange={(people) => setArrangePeople(people)}
+                          // notArrangeShow={isArrangePeople}
+                          // onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
+                        />
+                      </Form>
+                    </>
+                  ) : (
+                    <span className={styles.addClickTitle} onClick={() => setAddPersonState(true)}>
+                      添加外审人员
+                    </span>
+                  )}
+                  <Button key="save" type="primary" onClick={() => setState(false)}>
+                    确认评审结果
+                  </Button>
+                </>,
               ]
         }
       >
@@ -124,7 +150,8 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                 <div>外审 {idx + 1}</div>
                 <div className={styles.exName}>{`${el.companyName}-${el.expectExecutorName}`}</div>
                 <div>
-                  {el.status === 1 ? (
+                  <Button>评审结果</Button>
+                  {/* {el.status === 1 ? (
                     <MinusCircleOutlined style={{ fontSize: '22px' }} />
                   ) : el.status === 10 ? (
                     <ClockCircleOutlined style={{ fontSize: '22px' }} />
@@ -132,15 +159,20 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                     <CloseCircleOutlined style={{ color: '#d81e06', fontSize: '22px' }} />
                   ) : (
                     <CheckCircleOutlined style={{ color: '#0e7b3b', fontSize: '22px' }} />
-                  )}
+                  )} */}
                 </div>
-                <div className={styles.status}>{el.statusDescription}</div>
+                {/* <div className={styles.status}>{el.statusDescription}</div> */}
+                <div style={{ marginRight: '12px' }}>
+                  <Tooltip title="删除">
+                    <DeleteOutlined className={styles.deleteIcon} />
+                  </Tooltip>
+                </div>
               </div>
             ))}
 
-            <Button type="primary" onClick={() => modifyEvent()}>
+            {/* <Button type="primary" onClick={() => modifyEvent()}>
               修改外审
-            </Button>
+            </Button> */}
           </div>
         </Spin>
 

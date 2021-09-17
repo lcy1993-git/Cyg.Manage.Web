@@ -37,11 +37,13 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const {
     canEditDesign,
     canEditSurvey,
-    canEditInternalAudit1,
-    canEditInternalAudit2,
-    canEditInternalAudit3,
-    canEditInternalAudit4,
-    canEditOuterAudit,
+    canEditDesignAssessUser1,
+    canEditDesignAssessUser2,
+    canEditDesignAssessUser3,
+    canEditDesignAssessUser4,
+    canEditCostAuditUser1,
+    canEditCostAuditUser2,
+    canEditCostAuditUser3,
   } = canEdit;
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
@@ -56,13 +58,18 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
         if (allotType === 2 || allotType === 4) {
           let personObj = {};
           users
-            .filter((item: any) => item.key.value === 1 || item.key.value === 2)
+            .filter(
+              (item: any) => item.key.value === 1 || item.key.value === 2 || item.key.value === 3,
+            )
             .forEach((item: any) => {
               if (item.key.value === 1) {
                 personObj['surveyUser'] = (item.value ?? [])[0].userId;
               }
               if (item.key.value === 2) {
                 personObj['designUser'] = (item.value ?? [])[0].userId;
+              }
+              if (item.key.value === 3) {
+                personObj['costUser'] = (item.value ?? [])[0].userId;
               }
             });
           let auditPersonObj = {};
@@ -76,9 +83,23 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
                 }
               });
             });
+          let costAuditPerson = {};
+          users
+            .filter((item: any) => item.key.value === 5)
+            .forEach((item: any) => {
+              const auditPersonArray = item.value ?? [];
+              auditPersonArray.forEach((ite: any) => {
+                if (ite.costAuditSubType !== 0) {
+                  costAuditPerson[`costAuditUser${ite.costAuditSubType}`] = ite.userId;
+                }
+              });
+            });
+          console.log(costAuditPerson);
+
           form.setFieldsValue({
             ...personObj,
             ...auditPersonObj,
+            ...costAuditPerson,
           });
         }
       }
@@ -107,17 +128,26 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
         if (!canEditSurvey) {
           value.surveyUser = '';
         }
-        if (!canEditInternalAudit1) {
+        if (!canEditDesignAssessUser1) {
           value.designAssessUser1 = '';
         }
-        if (!canEditInternalAudit2) {
+        if (!canEditDesignAssessUser2) {
           value.designAssessUser2 = '';
         }
-        if (!canEditInternalAudit3) {
+        if (!canEditDesignAssessUser3) {
           value.designAssessUser3 = '';
         }
-        if (!canEditInternalAudit4) {
+        if (!canEditDesignAssessUser4) {
           value.designAssessUser4 = '';
+        }
+        if (!canEditCostAuditUser1) {
+          value.costAuditUser1 = '';
+        }
+        if (!canEditCostAuditUser2) {
+          value.costAuditUser2 = '';
+        }
+        if (!canEditCostAuditUser3) {
+          value.costAuditUser3 = '';
         }
 
         const outerAuditUsers = arrangePeople?.map((item) => item.value);
@@ -127,19 +157,19 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
             projectIds: projectIds,
             surveyUser: '',
             designUser: '',
+            costUser: '',
             designAssessUser1: '',
             designAssessUser2: '',
             designAssessUser3: '',
             designAssessUser4: '',
+            costAuditUser1: '',
+            costAuditUser2: '',
+            costAuditUser3: '',
           },
           value,
         );
 
         arrangeInfo.outerAuditUsers = outerAuditUsers;
-
-        if (!canEditOuterAudit) {
-          arrangeInfo.outerAuditUsers = [];
-        }
 
         await editArrange(arrangeInfo);
         message.success('安排信息更新成功');
@@ -176,7 +206,7 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       visible={state as boolean}
       destroyOnClose
       bodyStyle={{
-        padding: `0 20px 20px 20px`,
+        padding: `20px`,
       }}
       footer={[
         <Button key="cancle" onClick={() => modalCloseEvent()}>
@@ -190,18 +220,11 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="项目安排" key="1">
-            <EditArrangeForm
-              allotCompanyId={allotCompanyId}
-              canEdit={canEdit}
-              dataSourceType={dataSourceType}
-            />
-          </TabPane>
-          {/* <TabPane tab="外审安排" key="2" disabled={!canEditOuterAudit}>
-            <SelectAddListForm initPeople={initPeople} onChange={(people) => setArrangePeople(people)} />
-          </TabPane> */}
-        </Tabs>
+        <EditArrangeForm
+          allotCompanyId={allotCompanyId}
+          canEdit={canEdit}
+          dataSourceType={dataSourceType}
+        />
       </Form>
     </Modal>
   );

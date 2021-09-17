@@ -17,7 +17,6 @@ import { useRequest, useSize } from 'ahooks';
 import { Menu, message, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
-import React from 'react';
 import { forwardRef } from 'react';
 import { Ref } from 'react';
 import { useImperativeHandle } from 'react';
@@ -388,9 +387,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const deleteFailProject = async (projectId: string) => {
     await deleteProject([projectId]);
-    message.success("已取消项目继承");
+    message.success('已取消项目继承');
     finishEvent?.();
-  }
+  };
 
   const completeConfig = [
     {
@@ -401,7 +400,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       ellipsis: true,
       iconSlot: (record: any, projects: any) => {
         const parentData = projects.filter((item: any) => item.id === record.inheritId);
-        
+
         if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
           if (record.stateInfo.inheritStatus === 3) {
             return (
@@ -681,45 +680,28 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.statusText === '设计评审中' ? (
-                  <span>设计中</span>
+                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
+                  <span
+                    className="canClick"
+                    onClick={() => externalArrange(record.id, record.name)}
+                  >
+                    {stateInfo?.outsideStatusText}
+                  </span>
+                ) : stateInfo.status === 8 && stateInfo.auditStatus === 100 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.outsideStatusText}
+                  </span>
+                ) : stateInfo.status === 8 && stateInfo.auditStatus === 105 ? (
+                  <span className="canClick" onClick={() => externalEdit(record.id)}>
+                    {stateInfo?.outsideStatusText}
+                  </span>
                 ) : (
-                  // : stateInfo.status === 4 &&
-                  //   stateInfo.auditStatus === 0 &&
-                  //   stateInfo.auditStatusText === null ? (
-                  //   <span>{stateInfo?.statusText}</span>
-                  // ) : stateInfo.status === 4 &&
-                  //   stateInfo.auditStatus === 0 &&
-                  //   stateInfo.auditStatusText != null ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
-                  //   <span>{stateInfo?.statusText}</span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
-                  //   <span
-                  //     className="canClick"
-                  //     onClick={() => externalArrange(record.id, record.name)}
-                  //   >
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
-                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
-                  //   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                  //     {stateInfo?.auditStatusText}
-                  //   </span>
-                  // ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                  //   <span>{stateInfo?.auditStatusText}</span>
-                  // ) : (
-                  <span>{stateInfo?.statusText}</span>
+                  <span>{stateInfo?.showStatusText}</span>
                 )}
               </span>
             )}
             {!buttonJurisdictionArray?.includes('all-project-copy-project') && (
-              <span>{stateInfo?.statusText}</span>
+              <span>{stateInfo?.showStatusText}</span>
             )}
           </>
         );

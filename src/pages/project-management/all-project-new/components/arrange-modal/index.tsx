@@ -1,13 +1,10 @@
 /* eslint-disable prefer-object-spread */
 import { useControllableValue } from 'ahooks';
-import { Form, message, Tabs } from 'antd';
+import { Form, message } from 'antd';
 import { Modal } from 'antd';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import ArrangeForm from '../arrange-form';
 import { saveArrange } from '@/services/project-management/all-project';
-import SelectAddListForm from '../select-add-list-form';
-import { UserInfo } from '@/services/project-management/select-add-list-form';
-import { useMemo } from 'react';
 interface ArrangeModalProps {
   projectIds: string[];
   visible: boolean;
@@ -18,8 +15,6 @@ interface ArrangeModalProps {
   dataSourceType?: number;
   setSourceTypeEvent?: Dispatch<SetStateAction<number | undefined>>;
 }
-
-const { TabPane } = Tabs;
 
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
@@ -32,9 +27,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
     dataSourceType,
     setSourceTypeEvent,
   } = props;
-  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
-  // const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
-  const [tabActiveKey, setTabActiveKey] = useState<string>('1');
   const [selectType, setSelectType] = useState<string>('');
 
   const [form] = Form.useForm();
@@ -43,31 +35,24 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
     setCompanyInfo(companyInfo);
   };
 
-  const handleExternalMen = useMemo(() => {
-    if (arrangePeople) {
-      return arrangePeople.map((item) => {
-        return item.value;
-      });
-    }
-    return [];
-  }, [arrangePeople]);
-
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
-      const outerAuditUsers = handleExternalMen;
       if (selectType === '2') {
         const arrangeInfo = {
           allotType: Number(selectType),
           projectIds,
           surveyUser: values.surveyUser,
           designUser: values.designUser,
+          costUser: values.costUser,
           designAssessUser1: values.designAssessUser1,
           designAssessUser2: values.designAssessUser2,
           designAssessUser3: values.designAssessUser3,
           designAssessUser4: values.designAssessUser4,
+          costAuditUser1: values.costAuditUser1,
+          costAuditUser2: values.costAuditUser2,
+          costAuditUser3: values.costAuditUser3,
           allotCompanyGroup: values.allotCompanyGroup,
           allotOrganizeUser: values.allotOrganizeUser,
-          outerAuditUsers,
         };
 
         await saveArrange(arrangeInfo);
@@ -111,7 +96,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
             designAssessUser2: '',
             designAssessUser3: '',
             designAssessUser4: '',
-            outerAuditUsers: arrangePeople,
           },
           values,
         );
@@ -134,7 +118,9 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       maskClosable={false}
       width={680}
       visible={state as boolean}
+      title="项目安排"
       okText="提交"
+      centered
       destroyOnClose
       onOk={() => saveInfo()}
       onCancel={() => {
@@ -143,17 +129,17 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       }}
     >
       <Form form={form} preserve={false}>
-        <Tabs defaultActiveKey="1" onChange={(key) => setTabActiveKey(key)}>
-          <TabPane tab="项目安排" key="1">
-            <ArrangeForm
-              defaultType={defaultSelectType}
-              allotCompanyId={allotCompanyId}
-              getCompanyInfo={getCompanyInfo}
-              onChange={(value) => setSelectType(value)}
-              dataSourceType={dataSourceType}
-            />
-          </TabPane>
-          {/* {(selectType === '2' || selectType === '4') && (
+        {/* <Tabs defaultActiveKey="1" onChange={(key) => setTabActiveKey(key)}> */}
+        {/* <TabPane tab="项目安排" key="1"> */}
+        <ArrangeForm
+          defaultType={defaultSelectType}
+          allotCompanyId={allotCompanyId}
+          getCompanyInfo={getCompanyInfo}
+          onChange={(value) => setSelectType(value)}
+          dataSourceType={dataSourceType}
+        />
+        {/* </TabPane> */}
+        {/* {(selectType === '2' || selectType === '4') && (
             <TabPane tab="外审安排" key="2">
               {tabActiveKey === '2' ? (
                 <SelectAddListForm
@@ -166,7 +152,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           {(selectType === '1' || selectType === '3') && (
             <TabPane tab="外审安排" disabled key="2"></TabPane>
           )} */}
-        </Tabs>
+        {/* </Tabs> */}
       </Form>
     </Modal>
   );
