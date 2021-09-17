@@ -226,7 +226,6 @@ const CompanyTable: React.FC = () => {
   // }
 
   const finallyShowData = useMemo(() => {
-    
     return {
       data: handleTheShowData(dataSource),
       isOverflow: dataSource && dataSource.length > currentPageSize,

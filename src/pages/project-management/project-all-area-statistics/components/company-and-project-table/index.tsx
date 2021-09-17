@@ -4,44 +4,51 @@ import { useProjectAllAreaStatisticsStore } from '../../store';
 import TitleWindow from '../title-window';
 import CompanyTable from './components/company-table';
 import ProjectTable from './components/project-table';
+import TableSearch from '@/components/table-search';
+import UrlSelect from '@/components/url-select';
 
 import styles from './index.less';
 
 const CompanyAndProjectTable: React.FC = () => {
-  const {dataType, companyInfo, setDataType, setCompanyInfo} = useProjectAllAreaStatisticsStore();
+  const { dataType, companyInfo, setDataType, setCompanyInfo } = useProjectAllAreaStatisticsStore();
 
   const returnToCompanyType = () => {
     setCompanyInfo({
-      companyId: "",
-      companyName: ""
-    })
-    setDataType("company");
-  }
+      companyId: '',
+      companyName: '',
+    });
+    setDataType('company');
+  };
 
   const getTitle = () => {
-    if(dataType === 'company') {
-      return (
-        <span>综合进度</span>
-      )
+    if (dataType === 'company') {
+      return <span>综合进度</span>;
     }
     return (
       <span>
-        <span className={styles.returnIcon} onClick={() => returnToCompanyType()}><LeftOutlined /></span>
+        <span className={styles.returnIcon} onClick={() => returnToCompanyType()}>
+          <LeftOutlined />
+        </span>
         <span>项目进度 - {companyInfo.companyName}</span>
       </span>
-    )
-  }
+    );
+  };
   return (
     <div className={styles.companyAndProjectTable}>
+      <TableSearch width="320px" label="我的公司" marginLeft="20px">
+        <UrlSelect
+          style={{ width: '240px', marginLeft: '15px' }}
+          showSearch
+          url="/Area/GetList?pId=-1"
+          titlekey="text"
+          valuekey="value"
+          placeholder="请选择"
+          // onChange={(value: any) => searchBySelectProvince(value)}
+        />
+      </TableSearch>
       <TitleWindow title={getTitle}>
-          {
-            dataType === 'company' &&
-            <CompanyTable />
-          }
-          {
-            dataType === 'project' &&
-            <ProjectTable />
-          }
+        {dataType === 'company' && <CompanyTable />}
+        {dataType === 'project' && <ProjectTable />}
       </TitleWindow>
     </div>
   );

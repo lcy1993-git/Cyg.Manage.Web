@@ -1,0 +1,57 @@
+.hierarchyTitle {
+  box-sizing: border-box;
+  width: calc(100% - 10px);
+  height: 9%;
+  margin-bottom: 5px;
+  padding: 25px;
+  background-color: @white-color;
+}
+.hierarchyTable {
+  flex: 1;
+  height: 90%;
+  margin-right: 10px;
+  background-color: @white-color;
+  :global {
+    .ant-tabs-tab {
+      padding: 18px !important;
+      background-color: #f7f7f7 !important;
+    }
+    .ant-tabs-tab .ant-tabs-tab-active .ant-tabs-tab-btn {
+      width: 105px;
+      padding: 0 12px;
+      color: #167f41;
+      text-align: center;
+    }
+    .ant-tabs-tab.ant-tabs-tab-active {
+      padding: 18px !important;
+      background-color: #fff !important;
+    }
+    .ant-tabs-tab-btn {
+      padding: 0 12px;
+      color: #696969;
+    }
+    .ant-tabs-card .ant-tabs-content {
+      margin-top: -16px;
+    }
+    .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
+      padding: 0 12px;
+      background: #fff;
+    }
+    .ant-tabs-card > .ant-tabs-nav::before {
+      display: none;
+    }
+    .ant-tabs .ant-tabs-nav .ant-tabs-nav-wrap .ant-tabs-tab::before {
+      width: 0 !important;
+    }
+    .ant-tabs-nav-wrap {
+      background-color: #f7f7f7;
+    }
+    .ant-tabs .ant-tabs-nav {
+      box-shadow: none !important;
+    }
+    .ant-tabs-card .ant-tabs-tab-active {
+      background: #fff;
+      border-color: #fff;
+    }
+  }
+}

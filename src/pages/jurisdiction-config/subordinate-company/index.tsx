@@ -3,6 +3,7 @@ import GeneralTable from '@/components/general-table';
 import styles from './index.less';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { Tabs } from 'antd';
+import CommonTitle from '@/components/common-title';
 
 const { TabPane } = Tabs;
 const CompanyHierarchy: React.FC = () => {
@@ -41,11 +42,14 @@ const CompanyHierarchy: React.FC = () => {
   ];
 
   return (
-    <PageCommonWrap>
-      <div className={styles.hierarchyTable}>
-        <Tabs defaultActiveKey="superior" type="card">
-          <TabPane tab="上级公司" key="superior" style={{ height: '740px' }}>
-            <div className={styles.leftTableContent}>
+    <>
+      <PageCommonWrap noPadding={true}>
+        <div className={styles.hierarchyTitle}>
+          <CommonTitle>协作单位</CommonTitle>
+        </div>
+        <div className={styles.hierarchyTable}>
+          <Tabs defaultActiveKey="superior" type="card">
+            <TabPane tab="上级公司" key="superior">
               <GeneralTable
                 noPaging
                 needTitleLine={false}
@@ -57,26 +61,26 @@ const CompanyHierarchy: React.FC = () => {
                 }}
                 url="/CompanyHierarchy/GetListByCurrent"
               />
-            </div>
-          </TabPane>
-          <TabPane tab="下级公司" key="subordinate" style={{ height: '740px' }}>
-            <div className={styles.leftTableContent}>
-              <GeneralTable
-                noPaging
-                needTitleLine={false}
-                ref={subordinateRef}
-                defaultPageSize={20}
-                columns={columns}
-                extractParams={{
-                  category: 2,
-                }}
-                url="/CompanyHierarchy/GetListByCurrent"
-              />
-            </div>
-          </TabPane>
-        </Tabs>
-      </div>
-    </PageCommonWrap>
+            </TabPane>
+            <TabPane tab="下级公司" key="subordinate">
+              <div className={styles.leftTableContent}>
+                <GeneralTable
+                  noPaging
+                  needTitleLine={false}
+                  ref={subordinateRef}
+                  defaultPageSize={20}
+                  columns={columns}
+                  extractParams={{
+                    category: 2,
+                  }}
+                  url="/CompanyHierarchy/GetListByCurrent"
+                />
+              </div>
+            </TabPane>
+          </Tabs>
+        </div>
+      </PageCommonWrap>
+    </>
   );
 };
 
