@@ -4,14 +4,12 @@ import React, {useState} from 'react';
 import styles from './index.less'
 import {uploadCompanyFile} from "@/services/operation-config/company-file";
 import {createEngineerFile} from "@/services/project-management/all-project";
-import Button from 'antd/lib/button';
 import Modal from 'antd/lib/modal';
 import ManualPreview from "@/pages/backstage-config/manual-management/components/manual-preview";
-import PageCommonWrap from "@/components/page-common-wrap";
 import GeneralTable from "@/components/general-table";
 
 interface Props {
-  id: string
+  id: number
 }
 
 const ManualUpload: React.FC<Props> = (props) => {

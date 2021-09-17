@@ -91,7 +91,6 @@ export default [
     path: '/backstage-config/terminal-unit',
     component: <TerminalUnit />,
   },
-
   {
     title: '基础数据',
     path: '/backstage-config/basic-data',
