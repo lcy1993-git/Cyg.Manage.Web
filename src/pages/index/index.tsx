@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from './index.less';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import bgSrc from '@/assets/image/index/bg.png';
-import { useRequest, useSize } from 'ahooks';
+import {useMount, useRequest, useSize} from 'ahooks';
 import { getChartConfig } from '@/services/operation-config/cockpit';
 import { useRef } from 'react';
 
@@ -26,6 +26,7 @@ import 'react-resizable/css/styles.css';
 import { useEffect } from 'react';
 import { pollingHealth } from '@/services/common';
 import HealthPolling from './components/health-polling';
+import {getEnums} from "@/pages/technology-economic/utils";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -154,7 +155,9 @@ const Index: React.FC = () => {
       setReloadLoading(false);
     }, 0);
   }, [height]);
-
+  useMount(()=>{
+    getEnums('EngineeringTemplateType')
+  })
   return (
     <PageCommonWrap noPadding={true} className={styles.indexWrap}>
       <IndexContext.Provider
