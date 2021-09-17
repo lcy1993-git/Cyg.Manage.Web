@@ -579,29 +579,34 @@ const relocateMap = (
   map: any,
   refresh: boolean = true,
 ) => {
-  if (extent && !refresh) {
-    view.fit(extent, map!.getSize());
-    setView(view);
-    return;
-  }
+  // if (extent && !refresh) {
+  //   view.fit(extent, map!.getSize());
+  //   setView(view);
+  //   return;
+  // }
   let features: any = [];
   let source = new VectorSource();
   layerGroups.forEach((layerGroup: LayerGroup) => {
-    layerGroup
-      .getLayers()
-      .getArray()
-      .forEach((layer: any) => {
-        let fs = layer.getSource().getFeatures();
-        if (fs.length > 0) {
-          if (!projectId) {
-            features = features.concat(fs);
-          } else {
-            fs.forEach((feature: any) => {
-              if (projectId === feature.getProperties().project_id) features.push(feature);
-            });
+    console.log(layerGroup.getProperties());
+    if(!layerGroup.getVisible()) {}
+    else {
+      console.log(layerGroup.getProperties());
+      layerGroup
+        .getLayers()
+        .getArray()
+        .forEach((layer: any) => {
+          let fs = layer.getSource().getFeatures();
+          if (fs.length > 0) {
+            if (!projectId) {
+              features = features.concat(fs);
+            } else {
+              fs.forEach((feature: any) => {
+                if (projectId === feature.getProperties().project_id) features.push(feature);
+              });
+            }
           }
-        }
-      });
+        });
+    }
   });
 
   if (features.length > 0) {

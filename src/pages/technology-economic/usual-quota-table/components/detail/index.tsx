@@ -1,12 +1,12 @@
-import { Tabs } from 'antd';
+ import { Tabs } from 'antd';
 
 import React, { useEffect, useState } from 'react';
 import styles from './index.less';
-import { useLocation } from 'umi';
 import TopographicIncreaseFactor from '../topographic-increase-factor';
 import AttritionRate from '../atrition-rate';
 import { getCommonlyTableTypeList } from '@/services/technology-economic/usual-quota-table';
 import TableImportButton from '@/components/table-import-button';
+ import EarthworkParameters from '../earthwork-parameters';
 
 const { TabPane } = Tabs;
 
@@ -48,6 +48,12 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
               return (
                 <TabPane tab={'未计价材料施工损耗率'} key={index}>
                   <AttritionRate id={item.value} />
+                </TabPane>
+              );
+            } else if (item.text === '土方参数') {
+              return (
+                <TabPane tab={'土方参数'} key={index}>
+                  <EarthworkParameters id={item.value} />
                 </TabPane>
               );
             } else {
