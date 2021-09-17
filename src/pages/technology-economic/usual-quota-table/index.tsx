@@ -28,6 +28,7 @@ import moment from "moment";
 import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import WrapperComponent from "@/components/page-common-wrap";
 import GeneralTable from "@/components/general-table";
+import _ from "lodash";
 
 interface Props {
 }
@@ -202,10 +203,12 @@ const UsualQuotaTable: React.FC<Props> = () => {
       data.id = selectRow[0].id
     }
     const exist = dataSource.find(item=>{
-      return item.number === data.number
+      console.log(item.number , data.number)
+      return item.number == data.number
     })
+    console.log(exist,data,dataSource)
     if (isEdit) {
-      if (data.id !== exist?.id){
+      if (exist !==undefined){
         message.warn('已存在相同的费率序号!')
         return
       }
@@ -228,9 +231,9 @@ const UsualQuotaTable: React.FC<Props> = () => {
       tableRef.current?.reset()
 
     }
-    if (tableRef?.current){
+    // if (tableRef?.current){
       tableRef.current?.refresh()
-    }
+    // }
   }
   const onFinishFailed = (err: any) => {
     console.log(err)
@@ -278,7 +281,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
       return
     }
     setIsEdit(true)
-    const current = selectRow[0]
+    const current = _.cloneDeep(selectRow[0])
     if (current) {
       current.publishDate = moment(moment(current?.publishDate).format('YYYY-MM-DD'))
       current.year = moment(current?.year)

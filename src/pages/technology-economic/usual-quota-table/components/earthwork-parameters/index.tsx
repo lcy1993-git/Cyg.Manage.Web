@@ -206,7 +206,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
                 dataIndex: 'diggingType',
                 key: 'diggingType',
               render: (type: number) => {
-              return [{val:11,name:'人工挖土'},{val:12,name:'v '},{val:13,name:'机械坑上挖土 '}].find(item=>item.val === type)?.name
+              return [{val:11,name:'人工挖土'},{val:12,name:'机械坑内挖土'},{val:13,name:'机械坑上挖土 '}].find(item=>item.val === type)?.name
             }
               },
               {
