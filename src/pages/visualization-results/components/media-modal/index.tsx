@@ -25,7 +25,7 @@ const MediaModal: React.FC<MediaModalProps> = ({
   // 下一页
   const nextPage = () => {
     let realIndex = currentIndex + 1;
-    if( realIndex >= content.length ) {
+    if (realIndex >= content.length) {
       realIndex = 0;
     }
     setCurrentIndex(realIndex);
@@ -34,9 +34,31 @@ const MediaModal: React.FC<MediaModalProps> = ({
   // 上一页
   const prePage = () => {
     let realIndex = currentIndex - 1;
-    if( realIndex < 0) {
+    if (realIndex < 0) {
       realIndex = content.length - 1;
     }
+    setCurrentIndex(realIndex);
+  }
+
+  const preFullClick = () => {
+    let realIndex = currentIndex;
+    do {
+      realIndex = currentIndex - 1;
+      if (realIndex < 0) {
+        realIndex = content.length - 1;
+      }
+    } while (content[realIndex].type === 1);
+    setCurrentIndex(realIndex);
+  }
+
+  const nextFullClick = () => {
+    let realIndex = currentIndex;
+    do {
+      realIndex = currentIndex + 1;
+      if (realIndex > content.length) {
+        realIndex = 0;
+      }
+    } while (content[realIndex].type === 1);
     setCurrentIndex(realIndex);
   }
 
@@ -57,9 +79,8 @@ const MediaModal: React.FC<MediaModalProps> = ({
         />
       </div>
       <div className={styles.meadiaView}>
-        { currentData && getComponentsByData(currentData, currentIndex) }
+        {currentData && getComponentsByData(currentData, currentIndex, preFullClick, nextFullClick, content)}
       </div>
-
     </div>
   );
 }

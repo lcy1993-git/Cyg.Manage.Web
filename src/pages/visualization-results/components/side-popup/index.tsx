@@ -569,6 +569,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         <Modal
           title="多媒体查看"
           visible={mediaVisiable}
+          // keyboard={false}
           // visible={true}
           width="96%"
           onCancel={() => setMediaVisiable(false)}

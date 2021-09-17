@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Modal } from 'antd';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import CommentTable from '../comment-table';
-import t from '@/utils/lucky-sheet/plugins/js/plugin';
 export interface CommentModalProps {
   visible?: boolean;
   onOk: () => void;
@@ -31,5 +30,5 @@ const CommentModal: FC<CommentModalProps> = (props) => {
     </Modal>
   );
 };
-
+         
 export default CommentModal;
