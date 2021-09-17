@@ -66,7 +66,6 @@ const DesignMappingInfo: React.FC = () => {
 
   const handlerEdit = (item: SuppliesLibraryData) => {
     setAddFormVisible(true)
-    console.log(item)
     setTableSelectRows(item)
   }
   const handlerDel = (val: string) => {
@@ -165,8 +164,8 @@ const DesignMappingInfo: React.FC = () => {
       align: 'center',
     },
     {
-      dataIndex: 'sourceMaterialLibraryId',
-      key: 'sourceMaterialLibraryId',
+      dataIndex: 'sourceMaterialItemId',
+      key: 'sourceMaterialItemId',
       title: () => {
         return <div>
           关系
@@ -233,6 +232,9 @@ const DesignMappingInfo: React.FC = () => {
       width: 120
     },
   ]
+  const getSelectData = (val:any[])=>{
+    setTableSelectRows(val[0])
+  }
   useEffect(() => {
     let val = qs.parse(window.location.href.split("?")[1])?.id
     val = val === 'undefined' ? '' : val
@@ -248,6 +250,7 @@ const DesignMappingInfo: React.FC = () => {
         {
           id && <GeneralTable
             ref={tableRef}
+            getSelectData={getSelectData}
             buttonLeftContentSlot={searchComponent}
             buttonRightContentSlot={tableElement}
             needCommonButton={true}

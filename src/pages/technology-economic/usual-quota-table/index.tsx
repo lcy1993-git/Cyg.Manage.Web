@@ -246,7 +246,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
   }
 
   const tableOnSelect = (val: object[]) => {
-    console.log(val)
     setSelectRow(val)
   }
   const removeRow = () => {

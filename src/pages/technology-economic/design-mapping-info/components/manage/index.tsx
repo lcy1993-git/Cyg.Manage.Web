@@ -8,9 +8,6 @@ import { getMaterialLibraryTreeById} from '@/services/technology-economic/suppli
 import {Tree} from 'antd';
 import {manageMaterialMappingDesignItem} from '@/services/technology-economic/material';
 import qs from "qs";
-import {useMount} from "ahooks";
-
-// const {Option} = Select;
 
 const {DirectoryTree} = Tree;
 const columns = [
@@ -162,14 +159,6 @@ const columns = [
   // }
 ];
 
-// interface SelectIten {
-//   enabled: boolean
-//   id: string
-//   name: string
-//   publishDate: moment.Moment
-//   publishOrg: string
-//   remark: string
-// }
 
 interface Props {
   materialMappingDesignItemId: string
@@ -214,6 +203,10 @@ const MappingManage: FC<Props> = (props) => {
   }
 
   const associated = async () => {
+    if (!resourceItem?.id){
+      message.warn('请选择关联对象')
+      return
+    }
     await manageMaterialMappingDesignItem({
       materialMappingDesignItemId,
       sourceMaterialLibraryId: id,
