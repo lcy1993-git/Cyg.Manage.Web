@@ -46,6 +46,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
   const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId));
 
+  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId));
+
   const { data: groupData = [] } = useRequest(() => getTreeSelectData());
 
   const mapTreeData = (data: any) => {
@@ -90,6 +92,17 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       onChange?.(defaultType);
     }
   }, [defaultType]);
+
+  const notChoose = (() => {
+    return [
+      {
+        value: '',
+        title: '无',
+        children: null ?? [],
+      },
+    ];
+  })();
+  console.log(notChoose);
 
   return (
     <>
@@ -149,7 +162,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               />
             </CyFormItem>
           )}
-
           <CyFormItem label="设计" name="designUser" required>
             <TreeSelect
               key="designUser"
@@ -160,6 +172,18 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               allowClear
             />
           </CyFormItem>
+          <CyFormItem label="造价" name="costUser">
+            <TreeSelect
+              key="costUser"
+              style={{ width: '100%' }}
+              treeData={costUserData.map(mapTreeData)}
+              placeholder="请选择"
+              treeDefaultExpandAll
+              allowClear
+            />
+          </CyFormItem>
+
+          {/* 继续安排审核 */}
           <div className={styles.continueAudit}>
             <div
               className={styles.internalTitle}
@@ -169,7 +193,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             </div>
             <div>{isInternalAudit ? <UpOutlined /> : <DownOutlined />}</div>
           </div>
-
           <div style={{ display: isInternalAudit ? 'block' : 'none' }}>
             {/* 设计内审 */}
             <Divider>
@@ -179,7 +202,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               <TreeSelect
                 key="designAssessUser1"
                 style={{ width: '100%' }}
-                treeData={auditData.map(mapTreeData)}
+                treeData={notChoose.concat(auditData.map(mapTreeData))}
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
@@ -189,7 +212,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               <TreeSelect
                 key="designAssessUser2"
                 style={{ width: '100%' }}
-                treeData={auditData.map(mapTreeData)}
+                treeData={notChoose.concat(auditData.map(mapTreeData))}
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
@@ -199,7 +222,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               <TreeSelect
                 key="designAssessUser3"
                 style={{ width: '100%' }}
-                treeData={auditData.map(mapTreeData)}
+                treeData={notChoose.concat(auditData.map(mapTreeData))}
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
@@ -209,7 +232,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               <TreeSelect
                 key="designAssessUser4"
                 style={{ width: '100%' }}
-                treeData={auditData.map(mapTreeData)}
+                treeData={notChoose.concat(auditData.map(mapTreeData))}
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
@@ -220,31 +243,31 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             <Divider>
               <span className={styles.divider}>造价校审</span>
             </Divider>
-            <CyFormItem label="校核" name="designAssessUser1">
+            <CyFormItem label="校核" name="costAuditUser1">
               <TreeSelect
-                key="designAssessUser1"
+                key="costAuditUser1"
                 style={{ width: '100%' }}
-                treeData={auditData.map(mapTreeData)}
+                treeData={notChoose.concat(auditData.map(mapTreeData))}
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
               />
             </CyFormItem>
-            <CyFormItem label="审核" name="designAssessUser2">
+            <CyFormItem label="审核" name="costAuditUser2">
               <TreeSelect
-                key="designAssessUser2"
+                key="costAuditUser2"
                 style={{ width: '100%' }}
-                treeData={auditData.map(mapTreeData)}
+                treeData={notChoose.concat(auditData.map(mapTreeData))}
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
               />
             </CyFormItem>
-            <CyFormItem label="批准" name="designAssessUser3">
+            <CyFormItem label="批准" name="costAuditUser3">
               <TreeSelect
-                key="designAssessUser3"
+                key="costAuditUser3"
                 style={{ width: '100%' }}
-                treeData={auditData.map(mapTreeData)}
+                treeData={notChoose.concat(auditData.map(mapTreeData))}
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear

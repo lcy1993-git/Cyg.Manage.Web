@@ -17,7 +17,6 @@ import { useRequest, useSize } from 'ahooks';
 import { Menu, message, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
-import React from 'react';
 import { forwardRef } from 'react';
 import { Ref } from 'react';
 import { useImperativeHandle } from 'react';
@@ -681,42 +680,28 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.status === 4 &&
-                  stateInfo.auditStatus === 0 &&
-                  stateInfo.auditStatusText === null ? (
-                  <span>{stateInfo?.statusText}</span>
-                ) : stateInfo.status === 4 &&
-                  stateInfo.auditStatus === 0 &&
-                  stateInfo.auditStatusText != null ? (
-                  <span>{stateInfo?.auditStatusText}</span>
-                ) : stateInfo.status === 4 && stateInfo.auditStatus != 0 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 0 ? (
-                  <span>{stateInfo?.statusText}</span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 10 ? (
+                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
                   <span
                     className="canClick"
                     onClick={() => externalArrange(record.id, record.name)}
                   >
-                    {stateInfo?.auditStatusText}
+                    {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 13 ? (
+                ) : stateInfo.status === 8 && stateInfo.auditStatus === 100 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                    {stateInfo?.auditStatusText}
+                    {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus === 15 ? (
+                ) : stateInfo.status === 8 && stateInfo.auditStatus === 105 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
-                    {stateInfo?.auditStatusText}
+                    {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 17 && stateInfo.auditStatus != 0 ? (
-                  <span>{stateInfo?.auditStatusText}</span>
                 ) : (
-                  <span>{stateInfo?.statusText}</span>
+                  <span>{stateInfo?.showStatusText}</span>
                 )}
               </span>
             )}
             {!buttonJurisdictionArray?.includes('all-project-copy-project') && (
-              <span>{stateInfo?.statusText}</span>
+              <span>{stateInfo?.showStatusText}</span>
             )}
           </>
         );

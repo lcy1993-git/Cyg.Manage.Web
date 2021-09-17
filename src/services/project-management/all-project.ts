@@ -556,11 +556,14 @@ interface AllotParams {
   allotOrganizeUser: string;
   surveyUser: string;
   designUser: string;
+  costUser: string;
   designAssessUser1: string;
   designAssessUser2: string;
   designAssessUser3: string;
   designAssessUser4: string;
-  outerAuditUsers: string[] | undefined;
+  costAuditUser1: string;
+  costAuditUser2: string;
+  costAuditUser3: string;
 }
 
 export const saveArrange = (params: AllotParams) => {
@@ -836,9 +839,6 @@ export const GetEngineerFileGetList = (engineerId: string) => {
 // 撤回结项
 export const againInherit = (projectId: string) => {
   return cyRequest(() =>
-    request(
-      `${baseUrl.project}/Porject/InheritTryAgain`,
-      { method: 'GET', params: { projectId } },
-    ),
+    request(`${baseUrl.project}/Porject/InheritTryAgain`, { method: 'GET', params: { projectId } }),
   );
 };
