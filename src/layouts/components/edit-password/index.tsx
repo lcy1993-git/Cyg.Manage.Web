@@ -54,7 +54,7 @@ const EditPassword = (props: EditPasswordProps) => {
             },
           ]}
         >
-          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()} />
         </CyFormItem>
         <CyFormItem
           name="newPwd"
@@ -63,18 +63,14 @@ const EditPassword = (props: EditPasswordProps) => {
           labelWidth={100}
           hasFeedback
           rules={[
-            {
-              min: 6,
-              message: '密码不能少于6个字符',
-            },
-            {
-              max: 20,
-              message: '密码不能多于20个字符',
-            },
             { required: true, message: '密码不能为空' },
+            {
+              pattern: /^(?=.*[0-9])(?=.*[a-zA-Z])(?=([\x21-\x7e]+)[^a-zA-Z0-9])(.{8,20})$/,
+              message: '密码应由数字、字母、特殊字符组成的长度为8-20位字符',
+            },
           ]}
         >
-          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()} />
         </CyFormItem>
         <CyFormItem
           name="confirmPassword"
@@ -98,7 +94,7 @@ const EditPassword = (props: EditPasswordProps) => {
             }),
           ]}
         >
-          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()}/>
+          <Input type="password" placeholder="请输入" onPaste={(e) => e.preventDefault()} />
         </CyFormItem>
       </Form>
     </Modal>
