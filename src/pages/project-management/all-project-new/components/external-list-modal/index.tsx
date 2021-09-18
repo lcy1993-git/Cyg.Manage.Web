@@ -183,7 +183,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                 <div style={{ marginRight: '12px' }}>
                   <Tooltip title="删除">
                     <Popconfirm
-                      title="确定删除该外审人员吗?"
+                      title="删除该人员后将不再保存该人员的评审结果记录，请确认?"
                       onConfirm={() => deleteAllotUser(el.id)}
                       okText="确认"
                       cancelText="取消"
@@ -200,7 +200,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
             </Button> */}
           </div>
         </Spin>
-
+        {/* 
         {!newStepData
           ?.map((item: any) => {
             if (item.status === 20) {
@@ -222,16 +222,16 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
               </Radio.Group>
             </div>
           </Form>
-        )}
+        )} */}
       </Modal>
-      {editExternalArrangeModal && (
+      {/* {editExternalArrangeModal && (
         <EditExternalArrangeForm
           projectId={projectId}
           visible={editExternalArrangeModal}
           onChange={setEditExternalArrangeModal}
           closeModalEvent={finishEditEvent}
         />
-      )}
+      )} */}
     </>
   );
 };
