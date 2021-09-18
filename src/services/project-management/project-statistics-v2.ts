@@ -128,16 +128,19 @@ export const getCompanyProjectProgressRank = (data: WithCompany & WithLimit) => 
 };
 
 /** 获取综合进度榜 */
-export const getProjectProgressRank = () => {
+export const getProjectProgressRank = (params?: WithCompany & WithLimit) => {
   return cyRequest<Item[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetLeaderboardByCompany`, { params: { limit: 9999 } }),
+    request(`${baseUrl.project}${prefix}/GetLeaderboardByCompany`, {
+      method: 'POST',
+      data: params,
+    }),
   );
 };
 
 /** 获取实时项目数据 */
-export const getCurrentProjectList = (params?: WithCompany & WithLimit) => {
+export const getCurrentProjectList = () => {
   return cyRequest<Item[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetLeaderboardByCompany`, { method: 'post', params }),
+    request(`${baseUrl.project}${prefix}/GetLeaderboardByCompany`, { method: 'post' }),
   );
 };
 

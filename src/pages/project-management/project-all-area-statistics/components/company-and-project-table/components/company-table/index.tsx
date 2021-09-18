@@ -16,9 +16,15 @@ import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/pro
 import { Tooltip } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons';
 
-const CompanyTable: React.FC = () => {
-  //   const { dataSource = [] } = props;
-  const { data: dataSource = [], loading } = useRequest(() => getStatisticsListByCompany());
+interface CompanyTableParams {
+  companyId: string;
+}
+
+const CompanyTable: React.FC<CompanyTableParams> = (props) => {
+  const { companyId } = props;
+  const { data: dataSource = [], loading } = useRequest(() =>
+    getStatisticsListByCompany({ companyId: companyId }),
+  );
   const {
     setCompanyInfo,
     setDataType,
@@ -30,7 +36,7 @@ const CompanyTable: React.FC = () => {
       companyId: id,
       companyName: name,
     });
-    // setProjectShareCompanyId()
+    setProjectShareCompanyId(companyId);
   };
   const tableColumns = [
     {

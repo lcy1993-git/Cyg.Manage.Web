@@ -12,7 +12,9 @@ import styles from './index.less';
 const CompanyAndProjectTable: React.FC = () => {
   const { dataType, companyInfo, setDataType, setCompanyInfo } = useProjectAllAreaStatisticsStore();
   const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string>('');
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>(companyId);
+
+  console.log();
 
   const returnToCompanyType = () => {
     setCompanyInfo({
@@ -38,7 +40,7 @@ const CompanyAndProjectTable: React.FC = () => {
 
   return (
     <div className={styles.companyAndProjectTable}>
-      <TableSearch width="320px" label="我的公司" paddingTop="20px" marginLeft="20px">
+      <TableSearch width="320px" paddingTop="20px">
         <UrlSelect
           style={{ width: '240px', marginLeft: '15px' }}
           showSearch
@@ -46,12 +48,13 @@ const CompanyAndProjectTable: React.FC = () => {
           titlekey="text"
           valuekey="value"
           placeholder="请选择"
+          defaultValue={companyId}
           onChange={(value: any) => setSelectedCompanyId(value)}
         />
       </TableSearch>
       <TitleWindow title={getTitle}>
-        {dataType === 'company' && <CompanyTable />}
-        {dataType === 'project' && <ProjectTable />}
+        {dataType === 'company' && <CompanyTable companyId={selectedCompanyId} />}
+        {dataType === 'project' && <ProjectTable companyId={selectedCompanyId} />}
       </TitleWindow>
     </div>
   );
