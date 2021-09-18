@@ -18,8 +18,8 @@ import { Dispatch } from 'react';
 // import { UserInfo } from '@/services/project-management/select-add-list-form';
 // import { Checkbox } from 'antd';
 import {
-  executeExternalArrange,
   getExternalArrangeStep,
+  confirmOuterAudit,
 } from '@/services/project-management/all-project';
 import styles from './index.less';
 import EditExternalArrangeForm from '../edit-external-modal';
@@ -68,14 +68,13 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   });
 
   const executeArrangeEvent = async () => {
-    await executeExternalArrange({
-      projectId: projectId,
-      parameter: { 是否结束: `${isPassExternalArrange === '1' ? true : false}` },
-    });
-
-    message.success('外审已通过');
-    setState(false);
-    refresh?.();
+    // await confirmOuterAudit({
+    //   projectId: projectId,
+    //   parameter: { 是否结束: `${isPassExternalArrange === '1' ? true : false}` },
+    // });
+    // message.success('外审已通过');
+    // setState(false);
+    // refresh?.();
   };
 
   useEffect(() => {
