@@ -31,7 +31,7 @@ const PersonInfoRow: React.FC<PersonInfoRowProps> = ({
           {
             editNode && (
               <div className={styles.expandIcon} onClick={() => setExpand(!expand)}>
-                <div>{ expand ? "取消" : "编辑" }</div>
+                <div>{ expand ? "收起" : "编辑" }</div>
                 <div className={styles.icon}>
                 {
                   expand ? <UpOutlined /> : <DownOutlined />

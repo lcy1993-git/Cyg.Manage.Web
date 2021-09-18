@@ -8,6 +8,7 @@ import { UserInfo } from '@/services/project-management/select-add-list-form';
 import { Checkbox } from 'antd';
 import { allotOuterAudit, getAllotUsers } from '@/services/project-management/all-project';
 import styles from './index.less';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -59,6 +60,29 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     search?.();
   };
 
+  const notNeedAuditEvent = async () => {
+    await allotOuterAudit({
+      projectId: projectId,
+      userIds: handleExternalMen,
+      notArrangeAudit: true,
+      auditResult: isPassArrangePeople,
+    });
+    message.success('该项目已无需外审');
+    setState(false);
+    search?.();
+  };
+
+  const isExternalEvent = () => {
+    Modal.confirm({
+      title: '无需外审',
+      icon: <ExclamationCircleOutlined />,
+      content: '请确认是否跳过外审，项目状态将变为[设计完成]',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: notNeedAuditEvent,
+    });
+  };
+
   return (
     <Modal
       title="外审安排"
@@ -69,24 +93,13 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       destroyOnClose
       // onCancel={() => modalCloseEvent()}
       footer={[
-        <div className={styles.externalModal} key="outSider">
+        <div key="outSider">
           {arrangePeople && arrangePeople.length > 0 ? (
-            <Checkbox
-              disabled
-              onChange={() => {
-                setIsArrangePeople(!isArrangePeople);
-              }}
-            >
-              不安排外审
-            </Checkbox>
+            <span className={styles.needExternalTitle}>无需外审</span>
           ) : (
-            <Checkbox
-              onChange={() => {
-                setIsArrangePeople(!isArrangePeople);
-              }}
-            >
-              不安排外审
-            </Checkbox>
+            <span className={styles.noExternalTitle} onClick={() => isExternalEvent()}>
+              无需外审
+            </span>
           )}
 
           <Button key="cancle" onClick={() => setState(false)}>

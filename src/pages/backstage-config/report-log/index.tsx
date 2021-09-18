@@ -12,6 +12,7 @@ import moment, { Moment } from 'moment';
 import UrlSelect from '@/components/url-select';
 import ReactJson from 'react-json-view';
 import { useMemo } from 'react';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -23,6 +24,7 @@ const ManageUser: React.FC = () => {
   const [endDate, setEndDate] = useState<Moment | null>();
   const [applications, setApplications] = useState<string | undefined>();
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const { data, run, loading } = useRequest(getFileLogDetail, {
     manual: true,
@@ -32,34 +34,38 @@ const ManageUser: React.FC = () => {
     let afterHandleData = {};
     try {
       const { content } = data!;
-      const handleContent = content.replace(/"\"/g, "");
+      const handleContent = content.replace(/"\"/g, '');
       afterHandleData = {
         ...data,
-        content: JSON.parse(JSON.parse(handleContent))
-      }
+        content: JSON.parse(JSON.parse(handleContent)),
+      };
     } catch (msg) {
       afterHandleData = data!;
     }
-    return afterHandleData
-  }, [JSON.stringify(data)])
+    return afterHandleData;
+  }, [JSON.stringify(data)]);
 
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" className="mr7" onClick={() => checkDetailEvent()}>
-          <EyeOutlined />
-          详情
-        </Button>
+        {buttonJurisdictionArray?.includes('check-report') && (
+          <Button type="primary" className="mr7" onClick={() => checkDetailEvent()}>
+            <EyeOutlined />
+            详情
+          </Button>
+        )}
         <Popconfirm
           title="您确定要删除该条数据?"
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
         >
-          <Button>
-            <DeleteOutlined />
-            删除
-          </Button>
+          {buttonJurisdictionArray?.includes('delete-report') && (
+            <Button>
+              <DeleteOutlined />
+              删除
+            </Button>
+          )}
         </Popconfirm>
       </div>
     );
@@ -213,7 +219,6 @@ const ManageUser: React.FC = () => {
       },
     },
   ];
-
 
   return (
     <PageCommonWrap>

@@ -1,11 +1,12 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { Tree, message, Input, Button, DatePicker } from 'antd';
+import { Tree, message, Input, Button, DatePicker, Modal } from 'antd';
 import { SearchOutlined, AlignLeftOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
 import { useMount, useRequest, useSize } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
   fetchCompanyEngineerProjectListByParams,
   ProjectListByAreaType,
+  downloadMediaZipFile
 } from '@/services/visualization-results/side-tree';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
@@ -33,6 +34,7 @@ const { RangePicker } = DatePicker;
 
 import SiderMenuAreaButtons from '../side-menu-area-buttons';
 import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 export interface SideMenuProps {
   className?: string;
@@ -85,7 +87,6 @@ function generateProjectTree(projectList: ProjectListByAreaType[]): TreeNodeType
 }
 
 function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
-
   return {
     id: item.id,
     time: moment(item.propertys?.endTime).format('YYYY-MM-DD'),
@@ -103,7 +104,6 @@ type KeyType =
   };
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
-
   // 项目详情
   const [projectModalActiveId, setProjectModalActiveId] = useState<string>('');
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
@@ -117,8 +117,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 成果管理
   const [resultVisibel, setResultVisibel] = useState<boolean>(false);
   // 审阅消息
-
   const [commentModalVisible, setCommentModalVisible] = useState<boolean>(false);
+  // 多媒体下载
+  const [mediaLoadVisibel, setMediaLoadVisibel] = useState<boolean>(false);
+  const [mediaLoading, setMediaLoading] = useState<boolean>(false);
   const [buttonActive, setButtonActive] = useState<number>(
     window.localStorage.getItem('selectCity') ? -1 : 2,
   );
@@ -133,9 +135,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [checkedKeys, setCheckedKeys] = useState<KeyType>([]);
   const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
-
   // 地区or公司状态
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
+
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   //  卸载清楚请求次数
   useMount(() => {
@@ -159,7 +162,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   );
   const handlerCommentClick = () => {
     fetchCommentCountRquest();
-  }
+  };
 
   useEffect(() => {
     if (!Array.isArray(treeData) || treeData.length === 0) return;
@@ -289,7 +292,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const selectCity = localStorage.getItem('selectCity');
 
     if (selectCity) {
-
       const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
 
       localStorage.removeItem('selectCity');
@@ -385,6 +387,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
 
     store.setProjectIdList(res);
+    
     setCheckedKeys(checked);
   };
 
@@ -395,13 +398,12 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(whichTabToFetch, {
     throttleInterval: 1000,
     refreshDeps: [filterCondition, tabActiveKey],
+    throwOnError: true,
     onSuccess: () => {
-
       // setTreeData([]);
       // clearState();
       // setSelectedKeys([]);
       if (treeListReponseData?.length) {
-
         const data = generateProjectTree(treeListReponseData);
 
         setTreeData(data);
@@ -423,8 +425,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     } else if (!props.controlLayersProps.designLayerVisible && props.controlLayersProps.dismantleLayerVisible) {
       return 2
     }
-    return 0
-  }
+    return 0;
+  };
 
   const handlerAreaButtonCheck = (index: number, buttonActive: number) => {
     if (index === buttonActive) {
@@ -481,12 +483,38 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     },
     onError: () => {
       message.warn('导出失败');
+      setexportMapPositionModalVisible(false);
+      setexportMapPositionLoading(false);
+    },
+  });
+
+  const { data: mediaData, run: downloadMediaRequest } = useRequest(downloadMediaZipFile, {
+    manual: true,
+    onSuccess: () => {
+      const a = document.createElement('a');
+      a.download = '多媒体文件.zip';
+      const blob = new Blob([mediaData], { type: 'application/zip;charset=utf-8' });
+      // text指需要下载的文本或字符串内容
+      a.href = window.URL.createObjectURL(blob);
+      // 会生成一个类似blob:http://localhost:8080/d3958f5c-0777-0845-9dcf-2cb28783acaf 这样的URL字符串
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setMediaLoading(false);
+      setMediaLoadVisibel(false);
+    },
+    onError: () => {
+      message.warn('导出失败');
     },
   });
 
   const onOkWithExportMapPosition = () => {
     downloadMapPositonRequest(checkedProjectIdList.map((item) => item.id));
     setexportMapPositionLoading(true);
+  };
+  const onOkMediaClick = () => {
+    downloadMediaRequest(checkedProjectIdList.map((item) => item.id));
+    setMediaLoading(true);
   };
 
   useEffect(() => {
@@ -562,7 +590,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     } else {
       message.error('当前未选择项目')
     }
+  }
 
+  const downLoadMedia = (list: any[]) => {
+    if(list.length > 0) {
+      setMediaLoadVisibel(true)
+    }else {
+      message.error('当前未选择项目')
+    }
   }
 
   const handlerMaterialClick = (flag: any) => {
@@ -571,15 +606,14 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     } else {
       message.error('当前未选择项目')
     }
-
-  }
+  };
 
   const isClickAble = () => {
-    if (Array.isArray(checkedKeys) && checkedKeys?.length === 1) {
+    if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 1) {
       return true
-    } else if (Array.isArray(checkedKeys) && checkedKeys?.length === 0) {
+    } else if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0) {
       message.error("当前未选择项目")
-    } else if (Array.isArray(checkedKeys) && checkedKeys?.length > 1) {
+    } else if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length > 1) {
       message.error("多选状态下不可操作")
     }
     return false
@@ -634,7 +668,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
               light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
               onClick: () => isClickAble() && setResultVisibel(true),
-              style: Array.isArray(checkedKeys) && checkedKeys?.length !== 1 ? { opacity: .4 } : {}
+              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length !== 1 ? { opacity: .4 } : {}
             },
             {
               title: "材料统计",
@@ -655,7 +689,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               title: "导出多媒体",
               dart: require('@/assets/icon-image/menu-tree-icon/导出多媒体.png'),
               light: require('@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'),
-              onClick: () => null,
+              onClick: () => downLoadMedia(checkedProjectIdList),
               style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? { opacity: .4 } : {}
             },
             {
@@ -684,6 +718,19 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         onCancel={() => setexportMapPositionModalVisible(false)}
         onOk={onOkWithExportMapPosition}
       />
+      <Modal
+        title="导出多媒体"
+        onOk={onOkMediaClick}
+        confirmLoading={mediaLoading}
+        visible={mediaLoadVisibel}
+        onCancel={() => {
+          setMediaLoading(false)
+          setMediaLoadVisibel(false)
+        }}
+        destroyOnClose={true}
+      >
+        确认导出所选项目的多媒体文件
+      </Modal>
       <MaterialModal
         checkedProjectIdList={checkedProjectIdList?.map((v: ProjectList) => v.id)}
         visible={materialModalVisible}

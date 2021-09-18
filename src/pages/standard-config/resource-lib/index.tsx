@@ -10,7 +10,7 @@ import {
   RedoOutlined,
   StopOutlined,
 } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Tooltip } from 'antd';
+import { Input, Button, Modal, Form, message, Spin, Tooltip, Dropdown, Menu } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -33,6 +33,7 @@ import { BelongManageEnum } from '@/services/personnel-config/manage-user';
 import { history } from 'umi';
 import { useLayoutStore } from '@/layouts/context';
 import { useMemo } from 'react';
+import UploadAll from './components/upload-all';
 
 const { Search } = Input;
 
@@ -45,6 +46,7 @@ const ResourceLib: React.FC = () => {
 
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false);
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false);
+  const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false);
   const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [status, setStatus] = useState<string>('0');
@@ -116,24 +118,24 @@ const ResourceLib: React.FC = () => {
     if (!resourceManageFlag) {
       setCurrentManageId('');
       return [
-        {
-          dataIndex: 'id',
-          index: 'id',
-          title: '编号',
-          width: 180,
-        },
+        // {
+        //   dataIndex: 'id',
+        //   index: 'id',
+        //   title: '编号',
+        //   width: 180,
+        // },
         {
           dataIndex: 'libName',
           index: 'libName',
           title: '名称',
           width: 280,
         },
-        {
-          dataIndex: 'dbName',
-          index: 'dbName',
-          title: '数据库',
-          width: 240,
-        },
+        // {
+        //   dataIndex: 'dbName',
+        //   index: 'dbName',
+        //   title: '数据库',
+        //   width: 240,
+        // },
         {
           dataIndex: 'version',
           index: 'version',
@@ -192,24 +194,24 @@ const ResourceLib: React.FC = () => {
       ];
     }
     return [
-      {
-        dataIndex: 'id',
-        index: 'id',
-        title: '编号',
-        width: 180,
-      },
+      // {
+      //   dataIndex: 'id',
+      //   index: 'id',
+      //   title: '编号',
+      //   width: 180,
+      // },
       {
         dataIndex: 'libName',
         index: 'libName',
         title: '名称',
         width: 280,
       },
-      {
-        dataIndex: 'dbName',
-        index: 'dbName',
-        title: '数据库',
-        width: 240,
-      },
+      // {
+      //   dataIndex: 'dbName',
+      //   index: 'dbName',
+      //   title: '数据库',
+      //   width: 240,
+      // },
       {
         dataIndex: 'version',
         index: 'version',
@@ -334,6 +336,22 @@ const ResourceLib: React.FC = () => {
     message.success('操作成功');
   };
 
+  const uploadAllEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择要操作的行');
+      return;
+    }
+    const editDataId = tableSelectRows[0].id;
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
+      return;
+    }
+    setLibId(tableSelectRows[0].id);
+    setUploadAllVisible(true);
+  };
+
   const importLibEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择要操作的行');
@@ -382,6 +400,20 @@ const ResourceLib: React.FC = () => {
     setUploadLineStressSagVisible(true);
   };
 
+  const importMenu = (
+    <Menu>
+      {buttonJurisdictionArray?.includes('lib-import-drawing') && (
+        <Menu.Item onClick={() => uploadDrawingEvent()}>导入图纸</Menu.Item>
+      )}
+      {buttonJurisdictionArray?.includes('lib-import-lib') && (
+        <Menu.Item onClick={() => importLibEvent()}>导入资源库</Menu.Item>
+      )}
+      {buttonJurisdictionArray?.includes('lib-import-linestresssag') && (
+        <Menu.Item onClick={() => importLineStreeSagEvent()}>导入应力弧垂表</Menu.Item>
+      )}
+    </Menu>
+  );
+
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -398,26 +430,20 @@ const ResourceLib: React.FC = () => {
             编辑
           </Button>
         )}
-
-        {buttonJurisdictionArray?.includes('lib-import-drawing') && (
-          <Button className="mr7" onClick={() => uploadDrawingEvent()}>
+        {buttonJurisdictionArray?.includes('lib-oneclick-import') && (
+          <Button className="mr7" onClick={() => uploadAllEvent()}>
             <ImportOutlined />
-            导入图纸
+            一键导入
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('lib-import-lib') && (
-          <Button className="mr7" onClick={() => importLibEvent()}>
-            <ImportOutlined />
-            导入资源库
-          </Button>
-        )}
-
-        {buttonJurisdictionArray?.includes('lib-import-linestresssag') && (
-          <Button className="mr7" onClick={() => importLineStreeSagEvent()}>
-            <ImportOutlined />
-            导入应力弧垂表
-          </Button>
+        {buttonJurisdictionArray?.includes('lib-import') && (
+          <Dropdown overlay={importMenu}>
+            <Button className="mr7">
+              <ImportOutlined />
+              导入
+            </Button>
+          </Dropdown>
         )}
 
         {buttonJurisdictionArray?.includes('lib-restart') && (
@@ -530,6 +556,13 @@ const ResourceLib: React.FC = () => {
         visible={uploadLibVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setUploadLibVisible}
+      />
+      <UploadAll
+        libId={libId}
+        requestSource="resource"
+        visible={uploadAllVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setUploadAllVisible}
       />
 
       <SaveImportLineStressSag
