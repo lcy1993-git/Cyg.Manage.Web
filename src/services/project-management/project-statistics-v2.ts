@@ -4,7 +4,7 @@ import { baseUrl, cyRequest } from '../common';
 /** 统一路由前缀
  * @see http://10.6.1.36:8026/help/index.html
  */
-const prefix = '/ProjectStatistics_v2';
+const prefix = '/ProjectStatistics';
 
 /** 统计状态 */
 export interface ProjectStatus {
@@ -59,9 +59,12 @@ export interface StatusQtyModel1 {
 }
 
 /** 获取所有公司的进度统计 */
-export const getAllCompanyProgressList = () => {
+export const getAllCompanyProgressList = (params: { companyId: string }) => {
   return cyRequest<CompanyProgress[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetStatisticsListByCompany`),
+    request(`${baseUrl.project}${prefix}/GetStatisticsListByCompany`, {
+      method: 'POST',
+      data: params,
+    }),
   );
 };
 
@@ -154,9 +157,15 @@ export const getStatisticsListByCompany = () => {
   return cyRequest<any[]>(() => request(`${baseUrl.project}${prefix}/GetStatisticsListByCompany`));
 };
 
-export const getStatisticsListByProject = (companyId: string) => {
+export const getStatisticsListByProject = (params: {
+  projectShareCompanyId: string;
+  companyId: string;
+}) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetStatisticsListByProject`, { params: { companyId } }),
+    request(`${baseUrl.project}${prefix}/GetStatisticsListByProject`, {
+      method: 'POST',
+      data: params,
+    }),
   );
 };
 
