@@ -1,8 +1,13 @@
 import React, {useEffect, useState} from "react";
 import styles from './index.less'
-import {getAllEarthworkMargins, getAllEarthWorks, GetAllEarthworkSlopeCoefficients} from "@/services/technology-economic/usual-quota-table";
-import {Table} from "antd";
-import {Tabs} from 'antd';
+import {
+  downloadFiles,
+  getAllEarthworkMargins,
+  getAllEarthWorks,
+  GetAllEarthworkSlopeCoefficients
+} from "@/services/technology-economic/usual-quota-table";
+import {Table, Tabs} from "antd";
+import { baseUrl } from "@/services/common";
 
 const {TabPane} = Tabs;
 
@@ -16,6 +21,7 @@ interface AttritionRateRow {
   "materialType": string
   "lossRateFormula": string
   "packageRate": number
+  "picPath": string
 }
 
 const EarthworkParameters: React.FC<Props> = (props) => {
@@ -28,104 +34,42 @@ const EarthworkParameters: React.FC<Props> = (props) => {
     let res = await getAllEarthWorks(id) //获取所有的土方参数
     let res1 = await getAllEarthworkMargins(id) //获取所有的挖方裕度
     let res2 = await GetAllEarthworkSlopeCoefficients(id) //获取所有的放坡系数
+
     setDataSource(res)
     setDataSource1(res1)
     setDataSource2(res2)
-  }
 
-  const columns = [
-    {
-      title: '序号',
-      width: 80,
-      dataIndex: 'no'
-    },
-    {
-      title: '图形',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '大类',
-      dataIndex: 'earthworkType',
-      key: 'earthworkType',
-    },
-    {
-      title: '是否沟槽施工',
-      dataIndex: 'isTrenchConstruction',
-      key: 'isTrenchConstruction',
-      render: (text: boolean) => {
-        return text ? '是' : '否'
-      }
-    },
-    {
-      title: '默认计算式',
-      dataIndex: 'formula',
-      key: 'formula',
-    },
-    {
-      title: '参数名称',
-      dataIndex: 'commonlyTableEarthworkParams',
-      key: 'commonlyTableEarthworkParams',
-      render: (text: string, record: any) => {
-        // @ts-ignore
-        return <table border="1" style={{borderColor: '#fafafa'}}>
-          <tbody>
-          {
-            record.commonlyTableEarthworkParams.map((item: any) => {
-              return <tr key={item.id}>
-                <td>
-                  {item.paramName}
-                </td>
-              </tr>
-            })
+  }
+  const downImage =  (row:AttritionRateRow)=>{
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', `${baseUrl.upload}/Download/GetFileById?fileId=${row.picPath}`, true,);    // 也可以使用POST方式，根据接口
+    xhr.responseType = "blob";  // 返回类型blob
+    xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string);
+    // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+    xhr.onload = function (e) {
+      // 请求完成
+      if (this.status === 200) {
+        // 返回200
+        var res = e.target.response;
+        let blob = new Blob([res], { type: "image/png" });
+        const newPic = dataSource.map(item=>{
+          if (item.id === row.id){
+            item.picPath = window.URL.createObjectURL(blob)
           }
-          </tbody>
-        </table>
+          return item
+        })
+        setDataSource(newPic)
+        return  window.URL.createObjectURL(blob)
+        }
       }
-    },
-    {
-      title: '参数值',
-      dataIndex: 'commonlyTableEarthworkParams',
-      key: 'commonlyTableEarthworkParams',
-      render: (text: string, record: any) => {
-        // @ts-ignore
-        return <table border="1" style={{borderColor: '#fafafa'}}>
-          <tbody>
-          {
-            record.commonlyTableEarthworkParams.map((item: any) => {
-              return <tr key={item.id}>
-                <td>
-                  {item.defaultValue}
-                </td>
-              </tr>
-            })
-          }
-          </tbody>
-        </table>
-      }
-    },
-    {
-      title: '说明',
-      dataIndex: 'commonlyTableEarthworkParams',
-      key: 'commonlyTableEarthworkParams',
-      render: (text: string, record: any) => {
-        // @ts-ignore
-        return <table border="1" style={{borderColor: '#fafafa'}}>
-          <tbody>
-          {
-            record.commonlyTableEarthworkParams.map((item: any) => {
-              return <tr key={item.id}>
-                <td>
-                  {item.remark}
-                </td>
-              </tr>
-            })
-          }
-          </tbody>
-        </table>
-      }
-    },
-  ];
+    xhr.send()
+  }
+  useEffect(()=>{
+    dataSource.map(item=>{
+      downImage(item)
+      return item
+    })
+  },[dataSource1])
   useEffect(() => {
     getTableData()
   }, [id])
@@ -135,12 +79,108 @@ const EarthworkParameters: React.FC<Props> = (props) => {
         <TabPane tab="土方参数" key="1">
           <Table
             pagination={false}
-            scroll={{y: 800}}
+            scroll={{y: 760}}
             bordered
             size={'small'}
             rowKey={'id'}
             dataSource={dataSource}
-            columns={columns}/>
+            columns={[
+              {
+                title: '序号',
+                width: 80,
+                dataIndex: 'no'
+              },
+              {
+                title: '图形',
+                dataIndex: 'name',
+                key: 'name',
+                width: 400,
+                render:(text:string,record:any)=>{
+                  return <img src={record.picPath} alt={text} width={350}/>
+                }
+              },
+              {
+                title: '大类',
+                dataIndex: 'earthworkType',
+                key: 'earthworkType',
+              },
+              {
+                title: '是否沟槽施工',
+                dataIndex: 'isTrenchConstruction',
+                key: 'isTrenchConstruction',
+                render: (text: boolean) => {
+                  return text ? '是' : '否'
+                }
+              },
+              {
+                title: '默认计算式',
+                dataIndex: 'formula',
+                key: 'formula',
+              },
+              {
+                title: '参数名称',
+                dataIndex: 'commonlyTableEarthworkParams',
+                key: 'commonlyTableEarthworkParams',
+                render: (text: string, record: any) => {
+                  // @ts-ignore
+                  return <table border="1" style={{borderColor: '#fafafa'}}>
+                    <tbody>
+                    {
+                      record.commonlyTableEarthworkParams.map((item: any) => {
+                        return <tr key={item.id}>
+                          <td>
+                            {item.paramName}
+                          </td>
+                        </tr>
+                      })
+                    }
+                    </tbody>
+                  </table>
+                }
+              },
+              {
+                title: '参数值',
+                dataIndex: 'commonlyTableEarthworkParams',
+                key: 'commonlyTableEarthworkParams',
+                render: (text: string, record: any) => {
+                  // @ts-ignore
+                  return <table border="1" style={{borderColor: '#fafafa'}}>
+                    <tbody>
+                    {
+                      record.commonlyTableEarthworkParams.map((item: any) => {
+                        return <tr key={item.id}>
+                          <td>
+                            {item.defaultValue}
+                          </td>
+                        </tr>
+                      })
+                    }
+                    </tbody>
+                  </table>
+                }
+              },
+              {
+                title: '说明',
+                dataIndex: 'commonlyTableEarthworkParams',
+                key: 'commonlyTableEarthworkParams',
+                render: (text: string, record: any) => {
+                  // @ts-ignore
+                  return <table border="1" style={{borderColor: '#fafafa'}}>
+                    <tbody>
+                    {
+                      record.commonlyTableEarthworkParams.map((item: any) => {
+                        return <tr key={item.id}>
+                          <td>
+                            {item.remark}
+                          </td>
+                        </tr>
+                      })
+                    }
+                    </tbody>
+                  </table>
+                }
+              },
+            ]}/>
           <br/>
         </TabPane>
         <TabPane tab="挖方裕度" key="2">
@@ -172,7 +212,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
         <TabPane tab="放坡系数" key="3">
           <Table
             pagination={false}
-            scroll={{y: 800}}
+            scroll={{y: 780}}
             bordered
             size={'small'}
             rowKey={'id'}
