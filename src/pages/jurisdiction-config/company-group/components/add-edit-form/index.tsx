@@ -79,7 +79,7 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
           mode="multiple"
           showSearch
           url="/CompanyUser/GetList"
-          extraParams={{ clientCategory: 2 }}
+          extraParams={{ clientCategory: 0 }}
           titlekey="text"
           valuekey="value"
           placeholder="请选择部组成员"
