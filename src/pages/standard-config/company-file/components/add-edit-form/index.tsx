@@ -25,10 +25,10 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
 
   const acceptValue = useMemo(() => {
     if (categoryValue === 9) {
-      return '.docx,.xlsx';
+      return '.docx,.doc,.xls,.xlsx';
     }
     if ([5, 6, 8].includes(categoryValue!)) {
-      return '.docx';
+      return '.docx,.doc';
     }
     return '.dwg';
   }, [categoryValue]);
