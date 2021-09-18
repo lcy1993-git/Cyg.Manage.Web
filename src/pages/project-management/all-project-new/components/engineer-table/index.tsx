@@ -687,11 +687,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   >
                     {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.auditStatus === 100 ? (
+                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 100 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.auditStatus === 105 ? (
+                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 105 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.outsideStatusText}
                   </span>

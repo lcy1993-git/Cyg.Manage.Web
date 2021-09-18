@@ -1,5 +1,16 @@
 import React, { SetStateAction, useState } from 'react';
-import { Button, Divider, Form, message, Modal, Radio, Spin, Steps, Tooltip } from 'antd';
+import {
+  Button,
+  Divider,
+  Form,
+  message,
+  Modal,
+  Popconfirm,
+  Radio,
+  Spin,
+  Steps,
+  Tooltip,
+} from 'antd';
 
 import { useControllableValue } from 'ahooks';
 // import uuid from 'node-uuid';
@@ -23,6 +34,7 @@ import {
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { delay } from '@/utils/utils';
+import { removeAllotUser } from '@/services/project-management/all-project';
 import SelectAddListForm from '../select-add-list-form';
 
 interface GetGroupUserProps {
@@ -87,6 +99,12 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     }
   };
 
+  const deleteAllotUser = async (userId: string) => {
+    await removeAllotUser({ projectId: projectId, userAllotId: userId });
+    message.success('已移除');
+    getExternalStep(projectId);
+  };
+
   return (
     <>
       {/* <Steps><Step key={item.title} title={item.title} /></Steps> */}
@@ -148,7 +166,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
             {newStepData?.map((el: any, idx: any) => (
               <div className={styles.single} key={el.id}>
                 <div>外审 {idx + 1}</div>
-                <div className={styles.exName}>{`${el.companyName}-${el.expectExecutorName}`}</div>
+                <div className={styles.exName}>{`${el.userNameText}`}</div>
                 <div>
                   <Button>评审结果</Button>
                   {/* {el.status === 1 ? (
@@ -164,7 +182,14 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                 {/* <div className={styles.status}>{el.statusDescription}</div> */}
                 <div style={{ marginRight: '12px' }}>
                   <Tooltip title="删除">
-                    <DeleteOutlined className={styles.deleteIcon} />
+                    <Popconfirm
+                      title="确定删除该外审人员吗?"
+                      onConfirm={() => deleteAllotUser(el.id)}
+                      okText="确认"
+                      cancelText="取消"
+                    >
+                      <DeleteOutlined className={styles.deleteIcon} />
+                    </Popconfirm>
                   </Tooltip>
                 </div>
               </div>

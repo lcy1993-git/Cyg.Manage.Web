@@ -729,9 +729,20 @@ export const allotOuterAudit = (params: AllotOuterAuditParams) => {
 //获取外审人员列表及当前步骤
 export const getExternalArrangeStep = (projectId: string) => {
   return cyRequest<any>(() =>
-    request(`${baseUrl.review}/ReviewProject/GetOutAuditSteps`, {
+    request(`${baseUrl.project}/Porject/GetOuterAuditUsers`, {
       method: 'GET',
       params: { projectId },
+    }),
+  );
+};
+
+//删除外审人员
+
+export const removeAllotUser = (params: { projectId: string; userAllotId: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/RemoveOuterAuditUser`, {
+      method: 'POST',
+      data: params,
     }),
   );
 };
