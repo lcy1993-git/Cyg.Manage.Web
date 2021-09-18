@@ -1,5 +1,5 @@
 import { LeftOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import { useProjectAllAreaStatisticsStore } from '../../store';
 import TitleWindow from '../title-window';
 import CompanyTable from './components/company-table';
@@ -12,6 +12,7 @@ import styles from './index.less';
 const CompanyAndProjectTable: React.FC = () => {
   const { dataType, companyInfo, setDataType, setCompanyInfo } = useProjectAllAreaStatisticsStore();
   const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
+  const [selectedCompanyId, setSelectedCompanyId] = useState<string>('');
 
   const returnToCompanyType = () => {
     setCompanyInfo({
@@ -34,19 +35,18 @@ const CompanyAndProjectTable: React.FC = () => {
       </span>
     );
   };
+
   return (
     <div className={styles.companyAndProjectTable}>
       <TableSearch width="320px" label="我的公司" paddingTop="20px" marginLeft="20px">
         <UrlSelect
           style={{ width: '240px', marginLeft: '15px' }}
           showSearch
-          url="/CompanyShare/GetList"
+          url="/ProjectStatistics/GetCompanyList"
           titlekey="text"
           valuekey="value"
           placeholder="请选择"
-          requestType="post"
-          extraParams={{ category: 1, companyId: companyId }}
-          // onChange={(value: any) => searchBySelectProvince(value)}
+          onChange={(value: any) => setSelectedCompanyId(value)}
         />
       </TableSearch>
       <TitleWindow title={getTitle}>

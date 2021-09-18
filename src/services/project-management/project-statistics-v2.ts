@@ -30,11 +30,19 @@ export interface ProjectProgress {
   overdueDays?: number;
   lastOperationTime?: string;
 }
+interface StatisParams {
+  companyId: string;
+  projectShareCompanyId: string;
+  status?: number;
+}
 
 /** 获取项目进度统计（单个公司） */
-export const getCompanyProjectProgressList = (companyId: string) => {
+export const getCompanyProjectProgressList = (params: StatisParams) => {
   return cyRequest<ProjectProgress[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetStatisticsListByProject`, { params: { companyId } }),
+    request(`${baseUrl.project}${prefix}/GetStatisticsListByProject`, {
+      method: 'POST',
+      data: params,
+    }),
   );
 };
 export interface CompanyProgress {
@@ -98,6 +106,7 @@ interface Item {
 
 interface WithCompany {
   companyId: string;
+  projectShareCompanyId?: string;
 }
 
 interface WithLimit {
@@ -105,9 +114,9 @@ interface WithLimit {
 }
 
 /** 统计项目状态（饼图） */
-export const getProjectStatisticsOfPie = (companyId?: string) => {
+export const getProjectStatisticsOfPie = (params: StatisParams) => {
   return cyRequest<Record<'content', ProjectStatisticsOfPie>>(() =>
-    request(`${baseUrl.project}${prefix}/GetProjectStatusQty`, { params: { companyId } }),
+    request(`${baseUrl.project}${prefix}/GetProjectStatusQty`, { data: params }),
   );
 };
 
@@ -147,14 +156,22 @@ export const getProjectOverdue = (data?: WithCompany & WithLimit) => {
 };
 
 /** 获取逾期统计（按公司） */
-export const getCompanyOverdue = () => {
+export const getCompanyOverdue = (params: WithCompany & WithLimit) => {
   return cyRequest<CompanyOverdue[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetOverduesByCompany`, { params: { limit: 9999 } }),
+    request(`${baseUrl.project}${prefix}/GetOverduesByCompany`, {
+      method: 'POST',
+      data: params,
+    }),
   );
 };
 
-export const getStatisticsListByCompany = () => {
-  return cyRequest<any[]>(() => request(`${baseUrl.project}${prefix}/GetStatisticsListByCompany`));
+export const getStatisticsListByCompany = (params: WithCompany) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}${prefix}/GetStatisticsListByCompany`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
 };
 
 export const getStatisticsListByProject = (params: {
@@ -170,11 +187,11 @@ export const getStatisticsListByProject = (params: {
 };
 
 // 项目实时数据
-export const getProjectOperateLogs = (companyId: string) => {
+export const getProjectOperateLogs = (params: StatisParams & WithLimit) => {
   return cyRequest<CompanyOverdue[]>(() =>
     request(`${baseUrl.project}${prefix}/GetProjectOperateLogs`, {
       method: 'post',
-      data: { companyId, limit: 30 },
+      data: params,
     }),
   );
 };
@@ -185,11 +202,11 @@ interface DayDataItem {
 }
 
 // 项目每日变化
-export const getProjectQtyOfDay = (companyId: string, status: number) => {
+export const getProjectQtyOfDay = (params: StatisParams) => {
   return cyRequest<DayDataItem[]>(() =>
     request(`${baseUrl.project}${prefix}/GetProjectQtyOfDay`, {
       method: 'post',
-      data: { companyId, status },
+      data: params,
     }),
   );
 };

@@ -19,13 +19,18 @@ import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons';
 const CompanyTable: React.FC = () => {
   //   const { dataSource = [] } = props;
   const { data: dataSource = [], loading } = useRequest(() => getStatisticsListByCompany());
-  const { setCompanyInfo, setDataType } = useProjectAllAreaStatisticsStore();
+  const {
+    setCompanyInfo,
+    setDataType,
+    setProjectShareCompanyId,
+  } = useProjectAllAreaStatisticsStore();
   const companyNameClickEvent = (id: string, name: string) => {
     setDataType('project');
     setCompanyInfo({
       companyId: id,
       companyName: name,
     });
+    // setProjectShareCompanyId()
   };
   const tableColumns = [
     {
