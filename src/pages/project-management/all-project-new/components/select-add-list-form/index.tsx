@@ -51,10 +51,10 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     },
   });
 
-  useEffect(() => {
-    setPeople(initPeople);
-    onChange?.(initPeople);
-  }, [JSON.stringify(initPeople)]);
+  // useEffect(() => {
+  //   setPeople(initPeople);
+  //   onChange?.(initPeople);
+  // }, [JSON.stringify(initPeople)]);
 
   const onPepleAdd = (p: UserInfo) => {
     setFalse();
@@ -152,8 +152,8 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
           />
         </Dropdown>
       </CyFormItem>
-      {/* <div className={styles.title}>外审人员列表</div>
-      <AddPeople /> */}
+      <div className={styles.title}>外审人员列表</div>
+      <AddPeople />
 
       {/* {notArrangeShow && projectName ? (
         <>

@@ -593,7 +593,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
       render: (record: any) => {
         const { sources = [] } = record;
-        return sources.map((item: any) => {
+        return sources?.map((item: any) => {
           return (
             <span key={uuid.v1()}>
               <CyTag color={colorMap[item] ? colorMap[item] : 'green'}>

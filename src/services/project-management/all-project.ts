@@ -652,7 +652,7 @@ export const fileRead = (params: any) => {
   return request(`${baseUrl.upload}/Download/GetProjectOutcomeFile`, {
     method: 'GET',
     params,
-    responseType: "arrayBuffer"
+    responseType: 'arrayBuffer',
   });
 };
 
@@ -712,9 +712,9 @@ export const getAllotUsers = (projectId: string, arrangeType: number) => {
 
 interface AllotOuterAuditParams {
   projectId: string;
-  userIds: string[];
-  notArrangeAudit?: boolean;
-  auditResult?: boolean;
+  userIds?: string[];
+  noNeedAudit?: boolean;
+  // auditResult?: boolean;
 }
 //安排外审
 export const allotOuterAudit = (params: AllotOuterAuditParams) => {
