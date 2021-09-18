@@ -747,14 +747,25 @@ export const removeAllotUser = (params: { projectId: string; userAllotId: string
   );
 };
 
-interface ExecuteExternalArrangeParams {
-  projectId: string;
-  parameter: {};
-}
-//外审通过执行
-export const executeExternalArrange = (params: ExecuteExternalArrangeParams) => {
+//添加外审人员
+export const addAllotUser = (params: { projectId: string; userId: string }) => {
   return cyRequest(() =>
-    request(`${baseUrl.review}/ReviewProject/OutAuditCheckExecute`, {
+    request(`${baseUrl.project}/Porject/AddOuterAuditUser`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+interface ConfirmOuterAuditParams {
+  projectId: string;
+  auditPass: boolean;
+  returnToState: number; // 4:设计中； 11：造价中
+}
+//确认外审
+export const confirmOuterAudit = (params: ConfirmOuterAuditParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ConfirmOuterAudit`, {
       method: 'POST',
       data: params,
     }),
