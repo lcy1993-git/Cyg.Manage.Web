@@ -48,8 +48,8 @@ const geoServerBaseUrl =
   window.location.hostname === 'localhost' ? '10.6.1.53' : window.location.hostname;
 
 export const geoServeUrl = !ipArray.includes(`${window.location.hostname}`)
-  ? `${document.location.protocol}//${geoServerBaseUrl}:${geoServerPort}/geoserver/pdd/ows`
-  : `${document.location.protocol}//${window.location.hostname}:8099/geoserver/pdd/ows`;
+  ? `${document.location.protocol}//${geoServerBaseUrl}:${geoServerPort}/geoserver/pdd/ows/`
+  : `${document.location.protocol}//${window.location.hostname}:8099/geoserver/pdd/ows/`;
 
 // interface UrlSelectParams {
 //   requestSource: 'project' | 'resource';
