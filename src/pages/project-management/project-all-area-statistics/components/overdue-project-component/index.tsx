@@ -9,26 +9,40 @@ import OverdueProjectItem from './overdue-project-item';
 import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store';
 
 const OverdueProjectComponent: React.FC = () => {
-  const { companyInfo } = useProjectAllAreaStatisticsStore()
-  const { data, loading } = useRequest(() => getProjectOverdue({companyId: companyInfo.companyId!, limit: 9999}), {
-    ready: !!companyInfo.companyId
-  });
-  
+  const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+
+  const { data, loading } = useRequest(
+    () =>
+      getProjectOverdue({
+        projectShareCompanyId: companyInfo.companyId!,
+        companyId: projectShareCompanyId,
+        limit: 9999,
+      }),
+    {
+      ready: !!companyInfo.companyId,
+      refreshDeps: [projectShareCompanyId, companyInfo],
+    },
+  );
+
   return (
     <div className={styles.overdueComponent}>
       <ScrollView>
         <div style={{ paddingRight: '20px' }}>
-          {data && data.length > 0 && !loading && (
+          {data &&
+            data.length > 0 &&
+            !loading &&
             data.map((item: any) => {
               return (
-                <OverdueProjectItem key={item.id} status={item.statusText} name={item.projectName} />
-
+                <OverdueProjectItem
+                  key={item.id}
+                  status={item.statusText}
+                  name={item.projectName}
+                />
               );
-            })
+            })}
+          {(!data || data.length === 0) && !loading && (
+            <EmptyTip description="当前暂无即将逾期或已逾期项目" />
           )}
-          {
-            (!data || data.length ===0) && !loading && <EmptyTip description="当前暂无即将逾期或已逾期项目" />
-          }
         </div>
       </ScrollView>
     </div>
