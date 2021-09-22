@@ -22,10 +22,13 @@ interface LoginSuccessInfo {
     traceId: string;
 }
 
+export const indexLoginRequest = (params: UserLoginParams) => {
+    return request<LoginSuccessInfo>(`${baseUrl.project}/Manage/SignIn`,{method: "POST", data: params});
+}
+
 // ---
 export const userLoginRequest = (params: UserLoginParams) => {
-    // return cyRequest<LoginSuccessInfo>(() => request(`${baseUrl.project}/Manage/SignIn`,{method: "POST", data: params}));
-    return request<LoginSuccessInfo>(`${baseUrl.project}/Manage/SignIn`,{method: "POST", data: params});
+    return cyRequest<LoginSuccessInfo>(() => request(`${baseUrl.project}/Manage/SignIn`,{method: "POST", data: params}));
 }
 
 export interface PhoneLoginParams {

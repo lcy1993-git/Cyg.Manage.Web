@@ -9,7 +9,7 @@ import { signOut } from '@/services/login';
 import EditPassword from '../edit-password';
 import CutAccount from '../cut-account';
 import PersonInfoModal from '../person-info-modal';
-import { useGetUserInfo } from '@/utils/hooks';
+import { useGetFunctionModules, useGetUserInfo } from '@/utils/hooks';
 import LogoComponent from '@/components/logo-component';
 import { BellOutlined } from '@ant-design/icons';
 import VersionInfoModal from '../version-info-modal';
@@ -28,7 +28,7 @@ const LayoutHeader: React.FC = () => {
     localStorage.setItem('Authorization', '');
   };
 
-  const menuData: any[] = JSON.parse(localStorage.getItem('functionModules') ?? '[]');
+  const menuData: any[] = useGetFunctionModules();
 
   const personInfoEditEvent = () => {
     setPersonInfoModalVisible(true);
