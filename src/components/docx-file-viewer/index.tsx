@@ -1,52 +1,51 @@
-import React from "react"
+import React, {useEffect, useState} from "react"
 
 // @ts-ignore
 import mammoth from 'mammoth';
 import { useMount } from "ahooks";
+import { message } from "antd";
 
 
 interface DocxFileViewerProps {
-    filePath: string,
-    onSuccess?: () => void
+    filePath: ArrayBuffer | null,
+    onSuccess?: (val:string) => void
 }
 
 const DocxFileViewer: React.FC<DocxFileViewerProps> = (props) => {
     const { filePath, onSuccess } = props;
-
     const loadFile = () => {
-        const jsonFile = new XMLHttpRequest();
-        jsonFile.open('GET', filePath, true);
-        jsonFile.send();
-        jsonFile.responseType = 'arraybuffer';
-        jsonFile.onreadystatechange = () => {
-            if (jsonFile.readyState === 4 && jsonFile.status === 200) {
-                mammoth.convertToHtml(
-                    { arrayBuffer: jsonFile.response },
-                    { includeDefaultStyleMap: true },
-                )
-                    .then((result: any) => {
+               try {
+                 mammoth.convertToHtml(
+                   { arrayBuffer: filePath },
+                   { includeDefaultStyleMap: true },
+                 )
+                   .then((result: any) => {
 
-                        const docEl = document.createElement('div');
-                        docEl.id = 'docxContainer';
-
-                        docEl.innerHTML = result.value;
-                        if (document.getElementById('docx') !== null) {
-                            document.getElementById('docx')!.innerHTML = docEl.outerHTML;
-                        }
-                        onSuccess?.();
-                    })
-                    .catch((a: any) => {
-                        console.log('alexei: something went wrong', a);
-                    })
-                    .done();
-            }
-        };
+                     const docEl = document.createElement('div');
+                     docEl.id = 'docxContainer';
+                     console.log(result.value)
+                     docEl.innerHTML = result.value;
+                     if (document.getElementById('docx') !== null) {
+                       document.getElementById('docx')!.innerHTML = docEl.outerHTML;
+                     }
+                     onSuccess?.(result.value);
+                   })
+                   .catch((a: any) => {
+                     console.log('alexei: something went wrong', a);
+                   })
+                   .done();
+               }
+               catch {
+                 message.warn('文件解析失败')
+               }
     }
 
     useMount(() => {
         loadFile();
     })
-
+    useEffect(()=>{
+      loadFile()
+    },[filePath])
     return (
         <div id="docx" >
 

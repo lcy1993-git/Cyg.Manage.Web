@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import DocxFileViewer from "@/components/docx-file-viewer"
 import { Spin } from "antd"
-import fileSrc from '@/assets/doc/design.docx'
-import './index.less'
+import styles from './index.less'
+import {useMount} from "ahooks";
 
-const ManualPreview: React.FC = () => {
+interface Props{
+  file:any[];
+  onSuccess?: (val:string) => void;
+  height?: string
+}
+const ManualPreview: React.FC<Props> = (props) => {
+  const {file,onSuccess,height='70vh'} = props
   const [pageLoading, setPageLoading] = useState(true);
   const [catalogList, setCatalogList] = useState<object[]>([]);
+  const [src,setSrc] = useState<ArrayBuffer | null>(null)
+
   // 给所有的h标签加上锚点，并且根据滚动条让锚点点亮
-  const loadSuccessEvent = () => {
+  const loadSuccessEvent = (text:string) => {
+    onSuccess?.(text)
     const h1Element = document.getElementsByTagName("h1") ?? [];
     const h2Element = document.getElementsByTagName("h2") ?? [];
     const h3Element = document.getElementsByTagName("h3") ?? [];
@@ -76,10 +85,21 @@ const ManualPreview: React.FC = () => {
     }
 
     setCatalogList(hasIdElement);
-
     setPageLoading(false)
   }
-
+  const turnFileToBlob = (file: any)=>{
+    let reader = new FileReader();
+    reader.onload = function(e){
+      // target.result 该属性表示目标对象的DataURL
+      // @ts-ignore
+      let res = e.target.result
+      if(Object.prototype.toString.call(res) === "[object ArrayBuffer]"){
+        // @ts-ignore
+        setSrc(res)
+      }
+    }
+    reader.readAsArrayBuffer(file[0]);
+  }
   const catalogClickEvent = (id: string) => {
     const thisElementTop = document.getElementById(id)?.offsetTop;
     if(document.getElementById("pageShowFileContent") !== null) {
@@ -94,28 +114,30 @@ const ManualPreview: React.FC = () => {
       </div>
     )
   })
-
+  useMount(()=>{
+    turnFileToBlob(file)
+  })
   return (
-    <div className="pageShowFile">
-      <div className="pageShowFileCatalog">
-        <div className="pageShowFileCatalogTitle">
+    <div className={styles.pageShowFile} style={{height:height}}>
+      <div className={styles.pageShowFileCatalog}>
+        <div className={styles.pageShowFileCatalogTitle}>
           <span>目录</span>
         </div>
         <div id="pageCatalogContainer">
           {elementStr}
         </div>
       </div>
-      <div className="pageShowFileContent" id="pageShowFileContent">
-        <div className="pageShowFileTitle">
+      <div className={styles.pageShowFileContent} id="pageShowFileContent">
+        <div className="styles.pageShowFileTitle">
           设计端说明书
         </div>
         <div id="fileContent">
-          <DocxFileViewer filePath={fileSrc} onSuccess={loadSuccessEvent} />
+          <DocxFileViewer filePath={src} onSuccess={loadSuccessEvent} />
         </div>
       </div>
       {
         pageLoading &&
-        <div className="pageLoading">
+        <div className={styles.pageLoading}>
           <Spin spinning={pageLoading} />
         </div>
       }
