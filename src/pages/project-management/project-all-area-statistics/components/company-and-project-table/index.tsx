@@ -1,5 +1,5 @@
 import { LeftOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useProjectAllAreaStatisticsStore } from '../../store';
 import TitleWindow from '../title-window';
 import CompanyTable from './components/company-table';
@@ -10,17 +10,26 @@ import UrlSelect from '@/components/url-select';
 import styles from './index.less';
 
 const CompanyAndProjectTable: React.FC = () => {
-  const { dataType, companyInfo, setDataType, setCompanyInfo } = useProjectAllAreaStatisticsStore();
+  const {
+    dataType,
+    companyInfo,
+    setDataType,
+    setCompanyInfo,
+    setProjectShareCompanyId,
+  } = useProjectAllAreaStatisticsStore();
   const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>(companyId);
 
-  console.log();
+  useEffect(() => {
+    setProjectShareCompanyId(companyId);
+  }, [selectedCompanyId]);
 
   const returnToCompanyType = () => {
     setCompanyInfo({
       companyId: '',
       companyName: '',
     });
+    setProjectShareCompanyId(selectedCompanyId);
     setDataType('company');
   };
 

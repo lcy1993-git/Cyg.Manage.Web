@@ -12,7 +12,11 @@ const ComprehensiveProcessListComponent: React.FC = () => {
   const { projectShareCompanyId } = useProjectAllAreaStatisticsStore();
 
   const { data: comprehensiveData = [], loading } = useRequest(
-    getProjectProgressRank({ companyId: projectShareCompanyId, limit: 9999 }),
+    () => getProjectProgressRank({ companyId: projectShareCompanyId, limit: 9999 }),
+    {
+      ready: !!projectShareCompanyId,
+      refreshDeps: [projectShareCompanyId],
+    },
   );
 
   const listElement = comprehensiveData

@@ -116,7 +116,7 @@ interface WithLimit {
 /** 统计项目状态（饼图） */
 export const getProjectStatisticsOfPie = (params: StatisParams) => {
   return cyRequest<Record<'content', ProjectStatisticsOfPie>>(() =>
-    request(`${baseUrl.project}${prefix}/GetProjectStatusQty`, { data: params }),
+    request(`${baseUrl.project}${prefix}/GetProjectStatusQty`, { method: 'POST', data: params }),
   );
 };
 
@@ -152,9 +152,9 @@ export interface CompanyOverdue {
 }
 
 /** 获取逾期统计（按项目） */
-export const getProjectOverdue = (data?: WithCompany & WithLimit) => {
+export const getProjectOverdue = (params?: WithCompany & WithLimit) => {
   return cyRequest<CompanyOverdue[]>(() =>
-    request(`${baseUrl.project}${prefix}/GetOverduesByProject`, { method: 'post', data }),
+    request(`${baseUrl.project}${prefix}/GetOverduesByProject`, { method: 'post', data: params }),
   );
 };
 

@@ -10,8 +10,13 @@ import OverdueItem from './overdue-item';
 
 const OverdueComponent: React.FC = () => {
   const { projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+
   const { data, loading } = useRequest(
-    getCompanyOverdue({ companyId: projectShareCompanyId, limit: 9999 }),
+    () => getCompanyOverdue({ companyId: projectShareCompanyId, limit: 9999 }),
+    {
+      ready: !!projectShareCompanyId,
+      refreshDeps: [projectShareCompanyId],
+    },
   );
 
   return (

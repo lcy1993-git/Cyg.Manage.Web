@@ -12,14 +12,19 @@ import uuid from 'node-uuid';
 import { Table } from 'antd';
 import { isNumber } from 'lodash';
 
-const ProjectTable: React.FC = () => {
+interface ProjectTableParams {
+  companyId: string;
+}
+
+const ProjectTable: React.FC<ProjectTableParams> = (props) => {
   const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+  const { companyId } = props;
 
   const { data: dataSource = [], loading } = useRequest(
     () =>
       getStatisticsListByProject({
         projectShareCompanyId: companyInfo.companyId!,
-        companyId: projectShareCompanyId,
+        companyId: companyId,
       }),
     {
       ready: !!companyInfo.companyId,

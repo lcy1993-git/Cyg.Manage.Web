@@ -1,11 +1,8 @@
 import { useRequest } from 'ahooks';
 import { getStatisticsListByCompany } from '@/services/project-management/project-statistics-v2';
 import { useSize } from 'ahooks';
-import { Table } from 'antd';
 import uuid from 'node-uuid';
-import React from 'react';
-import { useMemo } from 'react';
-import { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import ShowChangeComponent from '../show-change-component';
 
 import styles from './index.less';
@@ -13,7 +10,7 @@ import RateComponent from '../../../rate-component';
 import moment from 'moment';
 import { isNumber } from 'lodash';
 import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store';
-import { Tooltip } from 'antd';
+import { Tooltip, Table } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons';
 
 interface CompanyTableParams {
@@ -22,8 +19,10 @@ interface CompanyTableParams {
 
 const CompanyTable: React.FC<CompanyTableParams> = (props) => {
   const { companyId } = props;
-  const { data: dataSource = [], loading } = useRequest(() =>
-    getStatisticsListByCompany({ companyId: companyId }),
+
+  const { data: dataSource = [], loading } = useRequest(
+    () => getStatisticsListByCompany({ companyId: companyId }),
+    { refreshDeps: [companyId] },
   );
   const {
     setCompanyInfo,
@@ -38,6 +37,7 @@ const CompanyTable: React.FC<CompanyTableParams> = (props) => {
     });
     setProjectShareCompanyId(companyId);
   };
+
   const tableColumns = [
     {
       title: '公司名称',
@@ -244,6 +244,7 @@ const CompanyTable: React.FC<CompanyTableParams> = (props) => {
     };
   }, [JSON.stringify(dataSource), currentPageSize]);
 
+  console.log(finallyShowData, '0001');
   return (
     <div className={styles.companyTable} ref={contentRef}>
       <Table

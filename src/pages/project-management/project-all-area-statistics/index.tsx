@@ -35,9 +35,9 @@ const ProjectAllAreaStatistics: React.FC = () => {
   const [dataType, setDataType] = useState<DataType>('company');
   const [projectShareCompanyId, setProjectShareCompanyId] = useState<string>('');
 
-  const { data: companySelectData = [] } = useGetSelectData({
-    url: '/ProjectStatistics/GetCompanys',
-  });
+  // const { data: companySelectData = [] } = useGetSelectData({
+  //   url: '/ProjectStatistics/GetCompanys',
+  // });
 
   return (
     <ProjectAllAreaStatisticsProvider
