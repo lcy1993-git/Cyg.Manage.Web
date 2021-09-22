@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import styles from './index.less'
 import {
-  downloadFiles,
   getAllEarthworkMargins,
   getAllEarthWorks,
   GetAllEarthworkSlopeCoefficients
@@ -46,13 +45,16 @@ const EarthworkParameters: React.FC<Props> = (props) => {
     xhr.responseType = "blob";  // 返回类型blob
     xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string);
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
+    // @ts-ignore
     xhr.onload = function (e) {
       // 请求完成
       if (this.status === 200) {
         // 返回200
+        // @ts-ignore
         var res = e.target.response;
         let blob = new Blob([res], { type: "image/png" });
         const newPic = dataSource.map(item=>{
+          // @ts-ignore
           if (item.id === row.id){
             item.picPath = window.URL.createObjectURL(blob)
           }
