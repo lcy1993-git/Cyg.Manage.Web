@@ -52,8 +52,8 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     await allotOuterAudit({
       projectId: projectId,
       userIds: handleExternalMen,
-      notArrangeAudit: isArrangePeople,
-      auditResult: isPassArrangePeople,
+      noNeedAudit: false,
+      // auditResult: isPassArrangePeople,
     });
     message.success('外审安排成功');
     setState(false);
@@ -64,8 +64,8 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     await allotOuterAudit({
       projectId: projectId,
       userIds: handleExternalMen,
-      notArrangeAudit: true,
-      auditResult: isPassArrangePeople,
+      noNeedAudit: true,
+      // auditResult: isPassArrangePeople,
     });
     message.success('该项目已无需外审');
     setState(false);

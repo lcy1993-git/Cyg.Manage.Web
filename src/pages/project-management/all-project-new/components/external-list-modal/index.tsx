@@ -1,5 +1,16 @@
 import React, { SetStateAction, useState } from 'react';
-import { Button, Divider, Form, message, Modal, Radio, Spin, Steps, Tooltip } from 'antd';
+import {
+  Button,
+  Divider,
+  Form,
+  message,
+  Modal,
+  Popconfirm,
+  Radio,
+  Spin,
+  Steps,
+  Tooltip,
+} from 'antd';
 
 import { useControllableValue } from 'ahooks';
 // import uuid from 'node-uuid';
@@ -7,8 +18,8 @@ import { Dispatch } from 'react';
 // import { UserInfo } from '@/services/project-management/select-add-list-form';
 // import { Checkbox } from 'antd';
 import {
-  executeExternalArrange,
   getExternalArrangeStep,
+  confirmOuterAudit,
 } from '@/services/project-management/all-project';
 import styles from './index.less';
 import EditExternalArrangeForm from '../edit-external-modal';
@@ -23,6 +34,7 @@ import {
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { delay } from '@/utils/utils';
+import { removeAllotUser } from '@/services/project-management/all-project';
 import SelectAddListForm from '../select-add-list-form';
 
 interface GetGroupUserProps {
@@ -56,14 +68,13 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   });
 
   const executeArrangeEvent = async () => {
-    await executeExternalArrange({
-      projectId: projectId,
-      parameter: { 是否结束: `${isPassExternalArrange === '1' ? true : false}` },
-    });
-
-    message.success('外审已通过');
-    setState(false);
-    refresh?.();
+    // await confirmOuterAudit({
+    //   projectId: projectId,
+    //   parameter: { 是否结束: `${isPassExternalArrange === '1' ? true : false}` },
+    // });
+    // message.success('外审已通过');
+    // setState(false);
+    // refresh?.();
   };
 
   useEffect(() => {
@@ -85,6 +96,12 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     } finally {
       setRequestLoading(false);
     }
+  };
+
+  const deleteAllotUser = async (userId: string) => {
+    await removeAllotUser({ projectId: projectId, userAllotId: userId });
+    message.success('已移除');
+    getExternalStep(projectId);
   };
 
   return (
@@ -148,7 +165,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
             {newStepData?.map((el: any, idx: any) => (
               <div className={styles.single} key={el.id}>
                 <div>外审 {idx + 1}</div>
-                <div className={styles.exName}>{`${el.companyName}-${el.expectExecutorName}`}</div>
+                <div className={styles.exName}>{`${el.userNameText}`}</div>
                 <div>
                   <Button>评审结果</Button>
                   {/* {el.status === 1 ? (
@@ -164,7 +181,14 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                 {/* <div className={styles.status}>{el.statusDescription}</div> */}
                 <div style={{ marginRight: '12px' }}>
                   <Tooltip title="删除">
-                    <DeleteOutlined className={styles.deleteIcon} />
+                    <Popconfirm
+                      title="删除该人员后将不再保存该人员的评审结果记录，请确认?"
+                      onConfirm={() => deleteAllotUser(el.id)}
+                      okText="确认"
+                      cancelText="取消"
+                    >
+                      <DeleteOutlined className={styles.deleteIcon} />
+                    </Popconfirm>
                   </Tooltip>
                 </div>
               </div>
@@ -175,7 +199,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
             </Button> */}
           </div>
         </Spin>
-
+        {/* 
         {!newStepData
           ?.map((item: any) => {
             if (item.status === 20) {
@@ -197,16 +221,16 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
               </Radio.Group>
             </div>
           </Form>
-        )}
+        )} */}
       </Modal>
-      {editExternalArrangeModal && (
+      {/* {editExternalArrangeModal && (
         <EditExternalArrangeForm
           projectId={projectId}
           visible={editExternalArrangeModal}
           onChange={setEditExternalArrangeModal}
           closeModalEvent={finishEditEvent}
         />
-      )}
+      )} */}
     </>
   );
 };

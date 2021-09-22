@@ -14,7 +14,9 @@ export type CompanyInfo = {
 interface ProjectAllAreaStatisticsProps {
   dataType: DataType;
   companyInfo: CompanyInfo;
+  projectShareCompanyId: string;
   setDataType: Dispatch<SetStateAction<DataType>>;
+  setProjectShareCompanyId: Dispatch<SetStateAction<string>>;
   setCompanyInfo: Dispatch<SetStateAction<CompanyInfo>>;
 }
 

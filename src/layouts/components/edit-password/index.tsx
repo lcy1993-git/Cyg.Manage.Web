@@ -2,8 +2,7 @@ import CyFormItem from '@/components/cy-form-item';
 import { editPassword } from '@/services/user/user-info';
 import { useControllableValue } from 'ahooks';
 import { Form, Input, message, Modal } from 'antd';
-import React, { Dispatch } from 'react';
-import { SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { history } from 'umi';
 
 interface EditPasswordProps {
