@@ -59,11 +59,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
 
   // 初始化page
   const initPdfPage = (pdfInfo: any) => {
-<<<<<<< HEAD
-
-=======
     
->>>>>>> test-cherry
     pdfInfo.getPage(1).then((page: any) => {
       // eslint-disable-next-line no-underscore-dangle
 
@@ -79,15 +75,9 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
 
   useMount(() => {
     const obz = new ResizeObserver(([dom]) => {
-<<<<<<< HEAD
-      const parentNode = dom.target.parentNode! as HTMLDivElement;
-      parentNode.scrollTop = (parentNode.scrollHeight - parentNode.clientHeight) / 2;
-      obz.unobserve(canvasRef.current!)
-=======
         const parentNode = dom.target.parentNode! as HTMLDivElement;
         parentNode.scrollTop = (parentNode.scrollHeight - parentNode.clientHeight) / 2;
         obz.unobserve(canvasRef.current!)
->>>>>>> test-cherry
     })
     obz.observe(canvasRef.current!)
     return () => obz.unobserve(canvasRef.current!)
@@ -121,11 +111,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   }
 
   // 加载canvas到ref
-<<<<<<< HEAD
-  const loadCanvas = (ref: any, viewport: any, isMount = false) => {
-=======
   const loadCanvas = (ref: any, viewport: any, isMount=false) => {
->>>>>>> test-cherry
     const canvas = document.createElement("canvas")
     const context = canvas.getContext('2d');
     canvas.height = viewport.height;
