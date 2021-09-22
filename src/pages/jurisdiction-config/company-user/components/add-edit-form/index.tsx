@@ -103,7 +103,7 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
             showSearch
             options={category}
             placeholder="请选择授权端口"
-            loading
+            loading={categoryData ? false : true}
           />
         </CyFormItem>
 

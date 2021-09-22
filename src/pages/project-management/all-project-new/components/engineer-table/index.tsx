@@ -340,10 +340,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   // 外审列表
   const externalEdit = async (projectId: string) => {
-    const res = await getExternalStep(projectId);
+    // const res = await getExternalStep(projectId);
 
     setCurrentClickProjectId(projectId);
-    setExternalStepData(res);
+    // setExternalStepData(res);
     setExternalListModalVisible(true);
   };
 
