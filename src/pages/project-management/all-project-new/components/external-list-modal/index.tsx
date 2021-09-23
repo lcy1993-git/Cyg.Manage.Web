@@ -29,6 +29,7 @@ import {
   ClockCircleOutlined,
   CloseCircleOutlined,
   DeleteOutlined,
+  EnvironmentOutlined,
   ExclamationCircleOutlined,
   MinusCircleOutlined,
 } from '@ant-design/icons';
@@ -155,7 +156,16 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     setCurrent(current + 1);
   };
 
-  console.log(current, '33');
+  const reviewCheckEvent = () => {
+    console.log('word预览');
+  };
+
+  const backToEvent = async () => {
+    await confirmOuterAudit({ projectId: projectId, auditPass: false, returnToState: backTo });
+    setState(false);
+    message.success('外审已退回');
+    refresh?.();
+  };
 
   return (
     <>
@@ -168,7 +178,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         footer={
           !newStepData
             ?.map((item: any) => {
-              if (item.status === 1) {
+              if (item.status === 3) {
                 return true;
               }
               return false;
@@ -194,13 +204,24 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                   </Button>
                 </>,
               ]
-            : current > 0
+            : current === 1
             ? [
                 <>
                   <Button style={{ margin: '0 8px' }} onClick={() => prevEvent()}>
                     上一步
                   </Button>
                   <Button key="save" type="primary" onClick={() => confirmResultEvent()}>
+                    确认
+                  </Button>
+                </>,
+              ]
+            : current === 2
+            ? [
+                <>
+                  <Button style={{ margin: '0 8px' }} onClick={() => prevEvent()}>
+                    上一步
+                  </Button>
+                  <Button key="save" type="primary" onClick={() => backToEvent()}>
                     确认
                   </Button>
                 </>,
@@ -228,9 +249,9 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         }
       >
         <Steps current={current}>
-          <Step title="结果查看" />
-          <Step title="结果确认" />
-          <Step title="外审退回" />
+          <Step title="结果查看" icon={<EnvironmentOutlined />} />
+          {current > 0 && <Step title="结果确认" icon={<EnvironmentOutlined />} />}
+          {current > 1 && <Step title="外审退回" icon={<EnvironmentOutlined />} />}
         </Steps>
         {/* 当前外审人员列表 */}
         {current === 0 && (
@@ -241,16 +262,16 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                   <div>外审 {idx + 1}</div>
                   <div className={styles.exName}>{`${el.userNameText}`}</div>
                   <div>
-                    <Button>评审结果</Button>
-                    {/* {el.status === 1 ? (
-                    <MinusCircleOutlined style={{ fontSize: '22px' }} />
-                  ) : el.status === 10 ? (
-                    <ClockCircleOutlined style={{ fontSize: '22px' }} />
-                  ) : el.status === 20 && el.resultParameterDisplay[0] === '不通过' ? (
-                    <CloseCircleOutlined style={{ color: '#d81e06', fontSize: '22px' }} />
-                  ) : (
-                    <CheckCircleOutlined style={{ color: '#0e7b3b', fontSize: '22px' }} />
-                  )} */}
+                    {el.status === 3 ? (
+                      <Button
+                        style={{ backgroundColor: '#0e7b3b', color: '#fff' }}
+                        onClick={() => reviewCheckEvent()}
+                      >
+                        评审结果
+                      </Button>
+                    ) : (
+                      <Button disabled>评审结果</Button>
+                    )}
                   </div>
                   {/* <div className={styles.status}>{el.statusDescription}</div> */}
                   <div style={{ marginRight: '12px' }}>
@@ -273,7 +294,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         {current === 1 &&
           !newStepData
             ?.map((item: any) => {
-              if (item.status === 1) {
+              if (item.status === 3) {
                 return true;
               }
               return false;
