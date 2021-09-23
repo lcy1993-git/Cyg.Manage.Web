@@ -73,13 +73,15 @@ const LayoutHeader: React.FC = () => {
     ?.filter((item) => item.category === 1)
     .map((item, index) => {
       return (
-        <LayoutHeaderMenu
-          key={`headerMenu_${index}`}
-          onSelect={menuSelectEvent}
-          name={item.name}
-          icon={item.icon}
-          menuData={item.children}
-        />
+        <>
+          <LayoutHeaderMenu
+            key={`headerMenu_${index}`}
+            onSelect={menuSelectEvent}
+            name={item.name}
+            icon={item.icon}
+            menuData={item.children}
+          />
+        </>
       );
     });
 

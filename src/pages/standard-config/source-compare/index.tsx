@@ -15,6 +15,7 @@ import {
   addSourceCompareCategory,
 } from '@/services/resource-config/source-compare';
 import DifferTable from './components/differ-table';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const SourceCompare: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -24,7 +25,7 @@ const SourceCompare: React.FC = () => {
   const [db2, setdb2] = useState<string | null>('');
   const [detailTabVisible, setDetailTabVisible] = useState<boolean>(false);
   const [differTableVisible, setDifferTableVisible] = useState<boolean>(false);
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const { data, run, loading } = useRequest(getSourceCompareDetail, {
     manual: true,
   });
@@ -64,10 +65,12 @@ const SourceCompare: React.FC = () => {
           <SearchOutlined />
           搜索
         </Button>
-        <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => addCategoryEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
+        {buttonJurisdictionArray?.includes('add-source-compare') && (
+          <Button type="primary" style={{ marginLeft: '10px' }} onClick={() => addCategoryEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
       </div>
     );
   };
@@ -158,14 +161,18 @@ const SourceCompare: React.FC = () => {
   const tableElement = () => {
     return (
       <>
-        <Button className="mr7" onClick={() => checkDetailEvent()}>
-          <FileTextOutlined />
-          详情
-        </Button>
-        <Button className="mr7" onClick={() => checkDifferEvent()}>
-          <FileTextOutlined />
-          差异明细
-        </Button>
+        {buttonJurisdictionArray?.includes('source-compare-detail') && (
+          <Button className="mr7" onClick={() => checkDetailEvent()}>
+            <FileTextOutlined />
+            详情
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('source-compare-difference') && (
+          <Button className="mr7" onClick={() => checkDifferEvent()}>
+            <FileTextOutlined />
+            差异明细
+          </Button>
+        )}
       </>
     );
   };

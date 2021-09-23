@@ -13,10 +13,14 @@ const ToDo: React.FC<ToDoProps> = (props) => {
 
     const { componentProps = ["wait", "arrange", "other"],currentAreaInfo} = props;
 
-    const { data: toDoStatisticsInfo } = useRequest(() => getToDoStatistics({areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
-        refreshDeps: [currentAreaInfo],
-        pollingWhenHidden: false
-    })
+    // const { data: toDoStatisticsInfo } = useRequest(() => getToDoStatistics({areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
+    //     refreshDeps: [currentAreaInfo],
+    //     pollingWhenHidden: false
+    // })
+    const toDoStatisticsInfo = {
+        awaitKnot: 0,
+        awaitAllot: 0,
+    }
 
     return (
         <ChartBox title="待处理事务">

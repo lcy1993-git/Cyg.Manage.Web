@@ -124,3 +124,12 @@ export const GetAllEarthworkSlopeCoefficients = (commonlyTableId: string) => {
 }
 
 
+// 下载文件
+export const downloadFiles = (uploadFileId: string) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.upload}/Download/GetFileById?fileId=${uploadFileId}`,
+      { method: 'get','responseType':'blob'},)
+  );
+}
+
+

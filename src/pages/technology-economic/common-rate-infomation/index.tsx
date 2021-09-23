@@ -95,7 +95,9 @@ const CommonRateInfomation: React.FC = () => {
     });
     const finalyFileName = '费率表导入模版.xlsx';
     // for IE
+    // @ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      // @ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
     } else {
       // for Non-IE

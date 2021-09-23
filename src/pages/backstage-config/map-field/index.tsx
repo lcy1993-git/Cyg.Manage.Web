@@ -16,6 +16,7 @@ import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import TableExportButton from '@/components/table-export-button';
 import MapFieldForm from './components/add-edit-form';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -25,7 +26,7 @@ const MapField: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
@@ -199,32 +200,42 @@ const MapField: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
+        {buttonJurisdictionArray?.includes('add-map-field') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('edit-map-field') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
         <Popconfirm
           title="您确定要删除该条数据?"
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
         >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
-          </Button>
+          {buttonJurisdictionArray?.includes('delete-map-field') && (
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          )}
         </Popconfirm>
-        <TableImportButton className={styles.importBtn} importUrl="/MapField/Import" />
-        <TableExportButton
-          selectIds={tableSelectRows.map((item) => {
-            return item.id;
-          })}
-          exportUrl="/MapField/Export"
-        />
+        {buttonJurisdictionArray?.includes('import-map-field') && (
+          <TableImportButton className={styles.importBtn} importUrl="/MapField/Import" />
+        )}
+        {buttonJurisdictionArray?.includes('export-map-field') && (
+          <TableExportButton
+            selectIds={tableSelectRows.map((item) => {
+              return item.id;
+            })}
+            exportUrl="/MapField/Export"
+          />
+        )}
       </div>
     );
   };

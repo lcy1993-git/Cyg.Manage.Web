@@ -13,10 +13,14 @@ import { Table } from 'antd';
 import { isNumber } from 'lodash';
 
 const ProjectTable: React.FC = () => {
-  const { companyInfo } = useProjectAllAreaStatisticsStore();
+  const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
 
   const { data: dataSource = [], loading } = useRequest(
-    () => getStatisticsListByProject(companyInfo.companyId!),
+    () =>
+      getStatisticsListByProject({
+        projectShareCompanyId: companyInfo.companyId!,
+        companyId: projectShareCompanyId,
+      }),
     {
       ready: !!companyInfo.companyId,
     },
@@ -37,7 +41,7 @@ const ProjectTable: React.FC = () => {
       index: 'index',
       width: 60,
       ellipsis: true,
-      render: (text: string, record: any) => {      
+      render: (text: string, record: any) => {
         return <>{record.name && <span>{record.index + 1}</span>}</>;
       },
     },
@@ -81,19 +85,13 @@ const ProjectTable: React.FC = () => {
       ellipsis: true,
       width: 120,
       render: (text: string, record: any) => {
-        if(record.overdueDays && record.overdueDays > 0) {
-          return (
-            <span>已逾期{record.overdueDays}天</span>
-          )
+        if (record.overdueDays && record.overdueDays > 0) {
+          return <span>已逾期{record.overdueDays}天</span>;
         }
-        if(isNumber(record.overdueDays) && record.overdueDays <= 0) {
-          return (
-            <span>-</span>
-          )
+        if (isNumber(record.overdueDays) && record.overdueDays <= 0) {
+          return <span>-</span>;
         }
-        return (
-          <span></span>
-        );
+        return <span></span>;
       },
     },
     {
@@ -119,8 +117,6 @@ const ProjectTable: React.FC = () => {
     let handleDataSource = [...data];
     // 需要补充空数据
     if (data && data.length > 0 && data.length < currentPageSize) {
-
-
       if (handleDataSource.length < currentPageSize) {
         const copyObject = { ...handleDataSource[0] };
         const emptyObject = { empty: true };

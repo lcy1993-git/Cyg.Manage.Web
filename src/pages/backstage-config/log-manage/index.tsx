@@ -12,6 +12,7 @@ import UrlSelect from '@/components/url-select';
 import { useRequest } from 'ahooks';
 import { getLogManageDetail } from '@/services/system-config/log-manage';
 import { Spin } from 'antd';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -26,19 +27,21 @@ const LogManage: React.FC = () => {
   const [applications, setApplications] = useState<string | undefined>();
   const [level, setLevel] = useState<string | undefined>();
   const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const { loading, run: getDetailData, data: detailData = {} } = useRequest(getLogManageDetail, {
     manual: true,
   });
-  
 
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" onClick={() => checkDetailEvent()}>
-          <EyeOutlined />
-          详情
-        </Button>
+        {buttonJurisdictionArray?.includes('check-log-detail') && (
+          <Button type="primary" onClick={() => checkDetailEvent()}>
+            <EyeOutlined />
+            详情
+          </Button>
+        )}
       </div>
     );
   };

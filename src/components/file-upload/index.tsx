@@ -22,6 +22,7 @@ interface FileUploadProps extends UploadProps {
   trigger?: boolean; //在file和表单捆绑上传的情况下，需要在提交表单的触发进度条,true就没有开始上传按钮
   process?: boolean; //是否需要进度条
   uploadFileFn?: () => Promise<void | {}>;
+  hideFileList?:boolean;
 }
 
 export type UploadStatus = 'hasNotStarted' | 'start' | 'success' | 'error' | 'delete';
@@ -35,6 +36,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
     trigger = false,
     process = true,
     uploadFileBtn = false,
+    hideFileList = false,
     ...rest
   } = props;
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('hasNotStarted');
@@ -151,7 +153,7 @@ const FileUpload: React.FC<FileUploadProps> = (props) => {
         </div>
       </Dragger>
 
-      <div className={styles.uploadProcess}>
+      <div className={styles.uploadProcess} style={{display:hideFileList ? 'none' : 'block'}}>
         <div className={styles.hasUploadFile}>{hasUploadFileShow}</div>
         {process &&
         (uploadStatus === 'start' || uploadStatus === 'error' || uploadStatus === 'success') ? (

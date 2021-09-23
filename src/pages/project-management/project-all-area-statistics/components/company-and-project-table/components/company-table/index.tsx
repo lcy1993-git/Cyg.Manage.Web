@@ -1,11 +1,8 @@
 import { useRequest } from 'ahooks';
 import { getStatisticsListByCompany } from '@/services/project-management/project-statistics-v2';
 import { useSize } from 'ahooks';
-import { Table } from 'antd';
 import uuid from 'node-uuid';
-import React from 'react';
-import { useMemo } from 'react';
-import { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import ShowChangeComponent from '../show-change-component';
 
 import styles from './index.less';
@@ -13,12 +10,15 @@ import RateComponent from '../../../rate-component';
 import moment from 'moment';
 import { isNumber } from 'lodash';
 import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store';
-import { Tooltip } from 'antd';
+import { Tooltip, Table } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons';
 
 const CompanyTable: React.FC = () => {
-  //   const { dataSource = [] } = props;
-  const { data: dataSource = [], loading } = useRequest(() => getStatisticsListByCompany());
+  const { projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+  const { data: dataSource = [], loading } = useRequest(
+    () => getStatisticsListByCompany({ companyId: projectShareCompanyId }),
+    { ready: !!projectShareCompanyId, refreshDeps: [projectShareCompanyId] },
+  );
   const { setCompanyInfo, setDataType } = useProjectAllAreaStatisticsStore();
   const companyNameClickEvent = (id: string, name: string) => {
     setDataType('project');
@@ -27,6 +27,7 @@ const CompanyTable: React.FC = () => {
       companyName: name,
     });
   };
+
   const tableColumns = [
     {
       title: '公司名称',
@@ -226,7 +227,6 @@ const CompanyTable: React.FC = () => {
   // }
 
   const finallyShowData = useMemo(() => {
-    
     return {
       data: handleTheShowData(dataSource),
       isOverflow: dataSource && dataSource.length > currentPageSize,

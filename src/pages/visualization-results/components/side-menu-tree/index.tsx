@@ -34,6 +34,7 @@ const { RangePicker } = DatePicker;
 
 import SiderMenuAreaButtons from '../side-menu-area-buttons';
 import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 export interface SideMenuProps {
   className?: string;
@@ -86,7 +87,6 @@ function generateProjectTree(projectList: ProjectListByAreaType[]): TreeNodeType
 }
 
 function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
-
   return {
     id: item.id,
     time: moment(item.propertys?.endTime).format('YYYY-MM-DD'),
@@ -104,7 +104,6 @@ type KeyType =
   };
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
-
   // 项目详情
   const [projectModalActiveId, setProjectModalActiveId] = useState<string>('');
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
@@ -139,6 +138,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 地区or公司状态
   const [tabActiveKey, setTabActiveKey] = useState<string>('1');
 
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
   //  卸载清楚请求次数
   useMount(() => {
     setExpandedKeys(['-1']);
@@ -161,7 +162,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   );
   const handlerCommentClick = () => {
     fetchCommentCountRquest();
-  }
+  };
 
   useEffect(() => {
     if (!Array.isArray(treeData) || treeData.length === 0) return;
@@ -291,7 +292,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const selectCity = localStorage.getItem('selectCity');
 
     if (selectCity) {
-
       const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
 
       localStorage.removeItem('selectCity');
@@ -400,12 +400,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     refreshDeps: [filterCondition, tabActiveKey],
     throwOnError: true,
     onSuccess: () => {
-
       // setTreeData([]);
       // clearState();
       // setSelectedKeys([]);
       if (treeListReponseData?.length) {
-
         const data = generateProjectTree(treeListReponseData);
 
         setTreeData(data);
@@ -427,8 +425,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     } else if (!props.controlLayersProps.designLayerVisible && props.controlLayersProps.dismantleLayerVisible) {
       return 2
     }
-    return 0
-  }
+    return 0;
+  };
 
   const handlerAreaButtonCheck = (index: number, buttonActive: number) => {
     if (index === buttonActive) {
@@ -608,8 +606,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     } else {
       message.error('当前未选择项目')
     }
-
-  }
+  };
 
   const isClickAble = () => {
     if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 1) {

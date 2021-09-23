@@ -2,8 +2,8 @@ export default {
   pwd: [
     { required: true, message: '密码不能为空' },
     {
-      pattern: /^(?=.*[0-9])(?=.*[a-zA-Z])(?=([\x21-\x7e]+)[^a-zA-Z0-9])(.{8,15})$/,
-      message: '密码应由数字、字母、特殊字符组成的长度为8-15位字符',
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/,
+      message: '密码必须由(8-20)位数字+大小写字母组成',
     },
   ],
   email: [

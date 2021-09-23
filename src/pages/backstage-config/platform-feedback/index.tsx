@@ -13,6 +13,7 @@ import moment, { Moment } from 'moment';
 import EnumSelect from '@/components/enum-select';
 import { Spin } from 'antd';
 import { SourceType, Category, Status } from '@/services/system-config/platform-feedback';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -26,7 +27,7 @@ const PlatFormFeedBack: React.FC = () => {
   const [sourceType, setSourceType] = useState<string | undefined>();
   const [category, setCategory] = useState<string | undefined>();
   const [feedbackStatus, setFeedbackStatus] = useState<string | undefined>();
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [feedbackDetailVisible, setFeedBackDetailVisible] = useState<boolean>(false);
 
   const { data: detailData, loading, run: getDetailData } = useRequest(getFeedbackDetail, {
@@ -38,10 +39,12 @@ const PlatFormFeedBack: React.FC = () => {
   const rightButton = () => {
     return (
       <div>
-        <Button type="primary" onClick={() => dealEvent()}>
-          <FormOutlined />
-          处理
-        </Button>
+        {buttonJurisdictionArray?.includes('handle-feedback') && (
+          <Button type="primary" onClick={() => dealEvent()}>
+            <FormOutlined />
+            处理
+          </Button>
+        )}
       </div>
     );
   };
