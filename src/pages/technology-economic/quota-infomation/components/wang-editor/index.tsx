@@ -1,4 +1,4 @@
-  
+
 import { useMount, useUnmount } from 'ahooks';
 import React, { useRef } from 'react';
 import TEditot from 'wangeditor/dist/editor/index';
@@ -24,12 +24,11 @@ const WangEditor: React.FC<Props> = ({getHtml}) => {
     ]
 
     editor.config.onchange = (newHtml: string) => {
-
       getHtml(newHtml)
     }
     editor.create()
   })
- 
+
   useUnmount(() => {
     editor.destroy()
   })
