@@ -615,7 +615,6 @@ const relocateMap = (
   let features: any = [];
   let source = new VectorSource();
   layerGroups.forEach((layerGroup: LayerGroup) => {
-    console.log(layerGroup.getProperties());
     if(!layerGroup.getVisible()) {}
     else {
       console.log(layerGroup.getProperties());
