@@ -23,20 +23,7 @@ import {
   confirmOuterAudit,
 } from '@/services/project-management/all-project';
 import styles from './index.less';
-<<<<<<< HEAD
-import EditExternalArrangeForm from '../edit-external-modal';
-import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  DeleteOutlined,
-  EnvironmentOutlined,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
-} from '@ant-design/icons';
-=======
 import { DeleteOutlined, EnvironmentOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
->>>>>>> d3cfbc0231d07459f0ca5b196ba996aec3f6af4a
 
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
@@ -244,9 +231,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                       添加外审人员
                     </span>
                   )}
-<<<<<<< HEAD
-                  <Button disabled key="save" type="primary">
-=======
                   <Button
                     onClick={() => {
                       message.info('当前存在未提交评审结果的外审人员，无法执行此操作');
@@ -254,7 +238,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                     key="save"
                     type="default"
                   >
->>>>>>> d3cfbc0231d07459f0ca5b196ba996aec3f6af4a
                     确认评审结果
                   </Button>
                 </>,
@@ -286,10 +269,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                       <Button disabled>评审结果</Button>
                     )}
                   </div>
-<<<<<<< HEAD
-                  {/* <div className={styles.status}>{el.statusDescription}</div> */}
-=======
->>>>>>> d3cfbc0231d07459f0ca5b196ba996aec3f6af4a
                   <div style={{ marginRight: '12px' }}>
                     <Tooltip title="删除">
                       <DeleteOutlined
@@ -300,13 +279,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                   </div>
                 </div>
               ))}
-<<<<<<< HEAD
-
-              {/* <Button type="primary" onClick={() => modifyEvent()}>
-              修改外审
-            </Button> */}
-=======
->>>>>>> d3cfbc0231d07459f0ca5b196ba996aec3f6af4a
             </div>
           </Spin>
         )}
