@@ -73,9 +73,11 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     };
   };
 
+  console.log(canEditSurvey, dataSourceType, '类型');
+
   return (
     <>
-      {canEditSurvey && dataSourceType != 2 ? (
+      {canEditSurvey && dataSourceType === 0 ? (
         <CyFormItem label="勘察" name="surveyUser" required>
           <TreeSelect
             key="editSurveyUser"
@@ -89,12 +91,24 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
       ) : dataSourceType === 2 ? (
         <CyFormItem label="勘察" name="surveyUser" required>
           <TreeSelect
-            key="surveyUser"
+            key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
             placeholder="“无需现场数据”项目，免安排勘察人员"
             treeDefaultExpandAll
             disabled
+          />
+        </CyFormItem>
+      ) : dataSourceType === -1 ? (
+        <CyFormItem label="勘察" name="surveyUser" required>
+          <TreeSelect
+            disabled
+            key="editSurveyUser"
+            style={{ width: '100%' }}
+            treeData={surveyData.map(mapTreeData)}
+            placeholder="免安排勘察人员"
+            treeDefaultExpandAll
+            allowClear
           />
         </CyFormItem>
       ) : (
@@ -104,7 +118,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
-            placeholder="请选择"
+            placeholder="“点位导入”项目，免安排勘察人员"
             treeDefaultExpandAll
             allowClear
           />

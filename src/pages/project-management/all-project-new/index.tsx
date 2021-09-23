@@ -318,20 +318,20 @@ const AllProject: React.FC = () => {
       message.error('当前处于设计完成，不可修改安排！');
       return;
     }
-    if (
-      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
-      (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-        tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
-    ) {
-      setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
+    // if (
+    //   (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+    //     tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 13) ||
+    //   (tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
+    //     tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 15)
+    // ) {
+    //   setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
 
-      setEditExternalArrangeModal(true);
-      return;
-    }
+    //   setEditExternalArrangeModal(true);
+    //   return;
+    // }
     if (
-      tableSelectData[0]?.projectInfo?.status[0]?.status === 17 &&
-      tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 10
+      tableSelectData[0]?.projectInfo?.status[0]?.status === 8 &&
+      tableSelectData[0]?.projectInfo?.status[0]?.auditStatus === 95
     ) {
       setCurrentProjectId(tableSelectData[0]?.checkedArray[0]);
       setProjectName(tableSelectData[0]?.projectInfo?.name[0]);

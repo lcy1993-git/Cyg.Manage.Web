@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import CyFormItem from '@/components/cy-form-item';
-import { Button, Divider, Dropdown, Input, message, Radio } from 'antd';
+import { Button, Dropdown, Input, message } from 'antd';
 
 import {
   queryOuterAuditUserByPhoneAndUsername,
@@ -21,9 +21,9 @@ import { useBoolean, useRequest } from 'ahooks';
 
 const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const {
-    initPeople = [],
-    notArrangeShow = false,
-    onSetPassArrangeStatus,
+    // initPeople = [],
+    // notArrangeShow = false,
+    // onSetPassArrangeStatus,
     projectName,
     isAdd,
     onChange,
@@ -32,7 +32,6 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   // const debounceTimeout = 800;
   // const [fetching, setFetching] = useState<boolean>(false);
   const [keyword, setKeyword] = useState<string>();
-  const [notArrangePeopleStatus, setNotArrangePeopleStatus] = useState<boolean>(false);
   const [people, setPeople] = useState<UserInfo[]>([]);
   const [visible, { setTrue, setFalse }] = useBoolean(false);
 
@@ -128,10 +127,10 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     );
   };
 
-  const onSetNotArrangePeopleStatus = (notArrangeStatus: boolean) => {
-    onSetPassArrangeStatus?.(notArrangeStatus);
-    setNotArrangePeopleStatus(notArrangeStatus);
-  };
+  // const onSetNotArrangePeopleStatus = (notArrangeStatus: boolean) => {
+  //   onSetPassArrangeStatus?.(notArrangeStatus);
+  //   setNotArrangePeopleStatus(notArrangeStatus);
+  // };
 
   return (
     <div className={styles.selectForm}>

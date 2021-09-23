@@ -23,23 +23,12 @@ import {
   confirmOuterAudit,
 } from '@/services/project-management/all-project';
 import styles from './index.less';
-import EditExternalArrangeForm from '../edit-external-modal';
-import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  DeleteOutlined,
-  EnvironmentOutlined,
-  ExclamationCircleOutlined,
-  MinusCircleOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EnvironmentOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
-import { delay } from '@/utils/utils';
 import { removeAllotUser } from '@/services/project-management/all-project';
 import SelectAddListForm from '../select-add-list-form';
-import { divide } from 'lodash';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -241,7 +230,13 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                       添加外审人员
                     </span>
                   )}
-                  <Button disabled key="save" type="primary">
+                  <Button
+                    onClick={() => {
+                      message.info('当前存在未提交评审结果的外审人员，无法执行此操作');
+                    }}
+                    key="save"
+                    type="default"
+                  >
                     确认评审结果
                   </Button>
                 </>,
@@ -273,7 +268,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                       <Button disabled>评审结果</Button>
                     )}
                   </div>
-                  {/* <div className={styles.status}>{el.statusDescription}</div> */}
                   <div style={{ marginRight: '12px' }}>
                     <Tooltip title="删除">
                       <DeleteOutlined
@@ -284,10 +278,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                   </div>
                 </div>
               ))}
-
-              {/* <Button type="primary" onClick={() => modifyEvent()}>
-              修改外审
-            </Button> */}
             </div>
           </Spin>
         )}
@@ -328,14 +318,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
           </Form>
         )}
       </Modal>
-      {/* {editExternalArrangeModal && (
-        <EditExternalArrangeForm
-          projectId={projectId}
-          visible={editExternalArrangeModal}
-          onChange={setEditExternalArrangeModal}
-          closeModalEvent={finishEditEvent}
-        />
-      )} */}
     </>
   );
 };
