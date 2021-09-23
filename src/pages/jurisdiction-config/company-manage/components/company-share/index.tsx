@@ -153,6 +153,7 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
 
     const shareCompanyId = addTableSelectRows.map((item) => item.id);
     await createCompanyShare({ companyId: companyId, shareCompanyIds: shareCompanyId });
+
     setAddTableSelectRows([]);
     message.success('添加共享公司成功');
     leftTableFresh();

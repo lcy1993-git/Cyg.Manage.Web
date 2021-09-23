@@ -152,8 +152,14 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
           />
         </Dropdown>
       </CyFormItem>
-      <div className={styles.title}>外审人员列表</div>
-      <AddPeople />
+      {isAdd ? (
+        ''
+      ) : (
+        <>
+          <div className={styles.title}>外审人员列表</div>
+          <AddPeople />
+        </>
+      )}
 
       {/* {notArrangeShow && projectName ? (
         <>

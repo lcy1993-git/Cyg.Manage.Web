@@ -760,7 +760,7 @@ export const addAllotUser = (params: { projectId: string; userId: string }) => {
 interface ConfirmOuterAuditParams {
   projectId: string;
   auditPass: boolean;
-  returnToState: number; // 4:设计中； 11：造价中
+  returnToState?: number; // 4:设计中； 11：造价中
 }
 //确认外审
 export const confirmOuterAudit = (params: ConfirmOuterAuditParams) => {

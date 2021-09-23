@@ -203,10 +203,8 @@ const UsualQuotaTable: React.FC<Props> = () => {
       data.id = selectRow[0].id
     }
     const exist = dataSource.find(item=>{
-      console.log(item.number , data.number)
       return item.number == data.number
     })
-    console.log(exist,data,dataSource)
     if (isEdit) {
       if (exist !==undefined){
         message.warn('已存在相同的费率序号!')

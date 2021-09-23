@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
@@ -33,11 +33,11 @@ const ProjectList: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [modalType, setModalType] = useState<string>("");
   const [formVisible, setFormVisible] = useState<boolean>(false);
+  const [updateTable, setUpdateTable] = useState<boolean>(true);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
   const [form] = Form.useForm();
 
-  const columns = [
+  const initColumns = [
     {
       dataIndex: 'number',
       key: 'number',
@@ -56,8 +56,6 @@ const ProjectList: React.FC = () => {
       title: '是否拆除',
       width: 60,
       render(v: boolean) {
-        console.log(v);
-
         return <span>{ v ? "是" : "否" }</span>
       }
     },
@@ -116,7 +114,7 @@ const ProjectList: React.FC = () => {
       title: '备注',
       width: 220
     },
-  ];
+  ]
 
 
   const searchComponent = () => {
@@ -252,6 +250,7 @@ const ProjectList: React.FC = () => {
 
   const onModalOkClick = async () => {
     const values = await form.validateFields();
+    setUpdateTable(false)
     if (modalType === 'add') {
       await addRateTable({ ...values, }).then(() => {
         message.success('添加成功')
@@ -261,32 +260,36 @@ const ProjectList: React.FC = () => {
     } else if (modalType === 'edit') {
       await editRateTable({ ...values,id:tableSelectRows[0].id }).then(() => {
         message.success('编辑成功')
-        tableRef.current.reset();
+        // tableRef.current.reset();
         setFormVisible(false);
         setTableSelectRow([])
         form.resetFields();
       });
     }
+    setUpdateTable(true)
     refresh();
   }
 
   return (
     <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
-        needCommonButton={true}
-        columns={columns as (ColumnsType<object>)}
-        url="/RateTable/QueryRateFilePager"
-        tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
-        getSelectData={tableSelectEvent}
-        requestSource='tecEco1'
-        type="radio"
-        extractParams={{
-          keyWord: searchKeyWord,
-        }}
-      />
+      {
+        updateTable && <GeneralTable
+          ref={tableRef}
+          buttonLeftContentSlot={searchComponent}
+          buttonRightContentSlot={tableElement}
+          needCommonButton={true}
+          rowKey={'id'}
+          columns={initColumns as (ColumnsType<object>)}
+          url="/RateTable/QueryRateFilePager"
+          tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
+          getSelectData={tableSelectEvent}
+          requestSource='tecEco1'
+          type="radio"
+          extractParams={{
+            keyWord: searchKeyWord,
+          }}
+        />
+      }
       <Modal
         maskClosable={false}
         title={`${modalType === 'add' ? '添加' : '编辑'}-常用费率`}

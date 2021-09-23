@@ -1,5 +1,5 @@
 import { LeftOutlined } from '@ant-design/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useProjectAllAreaStatisticsStore } from '../../store';
 import TitleWindow from '../title-window';
 import CompanyTable from './components/company-table';
@@ -8,6 +8,7 @@ import TableSearch from '@/components/table-search';
 import UrlSelect from '@/components/url-select';
 
 import styles from './index.less';
+import { useGetSelectData } from '@/utils/hooks';
 
 const CompanyAndProjectTable: React.FC = () => {
   const {
@@ -19,6 +20,22 @@ const CompanyAndProjectTable: React.FC = () => {
     setProjectShareCompanyId,
   } = useProjectAllAreaStatisticsStore();
   const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
+  const { data: companyData = [] } = useGetSelectData({
+    url: '/ProjectStatistics/GetCompanyList',
+  });
+
+  const handleCompanyData = useMemo(() => {
+    if (companyData) {
+      return companyData.map((item: any) => {
+        if (item.value === companyId) {
+          return { label: '我的公司', value: item.value };
+        }
+        return item;
+      });
+    }
+    return;
+  }, [companyData]);
+
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>(companyId);
 
   useEffect(() => {
@@ -54,8 +71,8 @@ const CompanyAndProjectTable: React.FC = () => {
         <UrlSelect
           style={{ width: '240px', marginLeft: '15px' }}
           showSearch
-          url="/ProjectStatistics/GetCompanyList"
-          titlekey="text"
+          defaultData={handleCompanyData}
+          titlekey="label"
           valuekey="value"
           placeholder="请选择"
           defaultValue={companyId}
