@@ -26,7 +26,9 @@ const ChapterInfo: React.FC<Props> = ({data, id,update}) => {
     saveQuotaLibraryCatalogDescription({id, chapterDescription: html})
     setModalVisible(false)
     setHtml('')
-    update()
+    setTimeout(()=>{
+      update()
+    },500)
   }
   return (
     <div className={styles.chapterInfoWrap}>
