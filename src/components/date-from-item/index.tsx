@@ -26,8 +26,11 @@ const DatePickerForm: React.FC<Props & DatePickerProps> = ({
     onChange!(moment(m).format(format));
   };
   useMount(()=>{
-    onChange!(moment(moment(new Date()).format("YYYY-MM-DD")).format(format));
-    console.log(moment(moment(new Date()).format("YYYY-MM-DD")).format(format))
+    if (value){
+      onChange!(moment(moment(value).format("YYYY-MM-DD")).format(format));
+    } else {
+      onChange!(moment(moment(new Date()).format("YYYY-MM-DD")).format(format));
+    }
   })
   return <DatePicker value={momentValue} onChange={handleDate} picker={picker} {...rest} />;
 };
