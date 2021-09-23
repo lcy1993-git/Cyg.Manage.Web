@@ -257,6 +257,7 @@ const CompanyManage: React.FC = () => {
     <PageCommonWrap>
       <TreeTable
         ref={tableRef}
+        isFold={false}
         tableTitle="公司管理"
         columns={companyTableColumns}
         getSelectData={(data) => setTableSelectRows(data)}

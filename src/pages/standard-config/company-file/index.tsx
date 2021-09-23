@@ -129,7 +129,7 @@ const CompanyFile: React.FC = () => {
       dataIndex: 'fileCategory',
       index: 'fileCategory',
       title: '类别',
-      width: 150,
+      width: 180,
       render: (text: any, record: any) => {
         return record.fileCategoryText;
       },
@@ -138,7 +138,7 @@ const CompanyFile: React.FC = () => {
       dataIndex: 'name',
       index: 'name',
       title: '名称',
-      width: 150,
+      width: 240,
     },
     // {
     //   dataIndex: 'id',

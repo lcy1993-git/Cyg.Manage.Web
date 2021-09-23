@@ -44,7 +44,7 @@ const SourceCompare: React.FC = () => {
             url="/ResourceLib/GetList"
             titlekey="libName"
             valuekey="id"
-            placeholder="请选择"
+            placeholder="-请选择源资源库-"
             onChange={(value: any) => setdb1(value)}
           />
         </TableSearch>
@@ -56,7 +56,7 @@ const SourceCompare: React.FC = () => {
             url="/ResourceLib/GetList"
             titlekey="libName"
             valuekey="id"
-            placeholder="请选择"
+            placeholder="-请选择目标资源库-"
             onChange={(value: any) => setdb2(value)}
           />
         </TableSearch>
@@ -194,7 +194,6 @@ const SourceCompare: React.FC = () => {
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/SourceCompare/GetCompareCategoryPageList"

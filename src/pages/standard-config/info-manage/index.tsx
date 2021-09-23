@@ -36,13 +36,14 @@ const InfoManage: React.FC = () => {
   const [status, setStatus] = useState<number>(0);
 
   const [checkInfoVisible, setCheckInfoVisible] = useState<boolean>(false);
+  const [currentCheckNewsId, setCurrentCheckNewsId] = useState<string>('');
 
-  const currentCheckNewsId = useMemo(() => {
-    if (tableSelectRows && tableSelectRows.length > 0) {
-      return tableSelectRows[0].id;
-    }
-    return '';
-  }, [tableSelectRows]);
+  // const currentCheckNewsId = useMemo(() => {
+  //   if (tableSelectRows && tableSelectRows.length > 0) {
+  //     return tableSelectRows[0].id;
+  //   }
+  //   return '';
+  // }, [tableSelectRows]);
 
   // const [pushTreeVisible, setPushTreeVisible] = useState<boolean>(false);
   // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -82,7 +83,7 @@ const InfoManage: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="宣贯" width="230px">
+        <TableSearch width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -144,6 +145,18 @@ const InfoManage: React.FC = () => {
       index: 'title',
       title: '标题',
       width: 240,
+      render: (text: any, record: any) => {
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('check-info') && (
+              <span onClick={() => checkEvent(record.id)} className={styles.checkNewsInfo}>
+                {record.title}
+              </span>
+            )}
+            {!buttonJurisdictionArray?.includes('check-info') && <span>{record.title}</span>}
+          </>
+        );
+      },
     },
     {
       title: '状态',
@@ -155,25 +168,58 @@ const InfoManage: React.FC = () => {
         return (
           <>
             {buttonJurisdictionArray?.includes('start-forbid') &&
-              (record.isEnable === true ? (
-                <>
-                  <Switch
-                    key={status}
-                    defaultChecked
-                    onChange={() => updateStatus(record.id, isChecked)}
-                  />
-                  <span className="formSwitchOpenTip">启用</span>
-                </>
+              (isChecked ? (
+                <span
+                  style={{ cursor: 'pointer' }}
+                  className="colorPrimary"
+                  onClick={() => updateStatus(record.id, isChecked)}
+                >
+                  启用
+                </span>
               ) : (
-                <>
-                  <Switch onChange={() => updateStatus(record.id, isChecked)} />
-                  <span className="formSwitchCloseTip">禁用</span>
-                </>
+                <span
+                  onClick={() => updateStatus(record.id, isChecked)}
+                  style={{ cursor: 'pointer' }}
+                  className="colorRed"
+                >
+                  禁用
+                </span>
               ))}
             {!buttonJurisdictionArray?.includes('start-forbid') &&
-              (record.isEnable === true ? <span>启用</span> : <span>禁用</span>)}
+              (isChecked ? (
+                <span style={{ cursor: 'pointer' }} className="colorPrimary">
+                  启用
+                </span>
+              ) : (
+                <span style={{ cursor: 'pointer' }} className="colorRed">
+                  禁用
+                </span>
+              ))}
           </>
         );
+        // const isChecked = !record.isEnable;
+        // return (
+        //   <>
+        //     {buttonJurisdictionArray?.includes('start-forbid') &&
+        //       (record.isEnable === true ? (
+        //         <>
+        //           <Switch
+        //             key={status}
+        //             defaultChecked
+        //             onChange={() => updateStatus(record.id, isChecked)}
+        //           />
+        //           <span className="formSwitchOpenTip">启用</span>
+        //         </>
+        //       ) : (
+        //         <>
+        //           <Switch onChange={() => updateStatus(record.id, isChecked)} />
+        //           <span className="formSwitchCloseTip">禁用</span>
+        //         </>
+        //       ))}
+        //     {!buttonJurisdictionArray?.includes('start-forbid') &&
+        //       (record.isEnable === true ? <span>启用</span> : <span>禁用</span>)}
+        //   </>
+        // );
       },
     },
 
@@ -308,11 +354,8 @@ const InfoManage: React.FC = () => {
     });
   };
 
-  const checkEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请先选择一条宣贯进行查看');
-      return;
-    }
+  const checkEvent = (id: string) => {
+    setCurrentCheckNewsId(id);
     setCheckInfoVisible(true);
   };
 
@@ -330,12 +373,6 @@ const InfoManage: React.FC = () => {
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
-          </Button>
-        )}
-        {buttonJurisdictionArray?.includes('check-info') && (
-          <Button className="mr7" onClick={() => checkEvent()}>
-            <EditOutlined />
-            查看
           </Button>
         )}
 
@@ -362,7 +399,6 @@ const InfoManage: React.FC = () => {
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         url="/Article/GetPagedList"
         tableTitle="宣贯管理"

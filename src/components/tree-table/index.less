@@ -9,7 +9,6 @@
       flex: 1;
     }
     .treeTableButtonsRightContent {
-      display: flex;
       .treeTableButtonCommon {
         // .foldButton {
         //   margin-right: 7px;
@@ -21,11 +20,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 12px 0;
   }
   .treeTableContent {
     :global {
       .ant-table {
         .ant-table-container {
+          border-top: 1px solid #dbdbdb;
           border-color: @table-line-color !important;
           .ant-table-content {
             td,

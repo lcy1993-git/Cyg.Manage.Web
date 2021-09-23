@@ -298,8 +298,15 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         <div className={styles.cyGeneralTableTitleContnet}>
           <div className={styles.cyGeneralTableTitleShowContent}>
             {tableTitle && <CommonTitle>{tableTitle}</CommonTitle>}
+            <div className={styles.cyGeneralTableTitleSlot}>{titleSlot?.()}</div>
+            {!buttonLeftContentSlot && (
+              <div className={styles.cyGeneralTableButtonContent}>
+                <div className={styles.cyGeneralTableButtonRightContent}>
+                  {buttonRightContentSlot?.()}
+                </div>
+              </div>
+            )}
           </div>
-          <div className={styles.cyGeneralTableTitleSlot}>{titleSlot?.()}</div>
           <div className={styles.cyGeneralTableCommonButton}>
             {needCommonButton && (
               <div>
@@ -330,10 +337,14 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           </div>
         </div>
       )}
-      <div className={styles.cyGeneralTableButtonContent}>
-        <div className={styles.cyGeneralTableButtonLeftContent}>{buttonLeftContentSlot?.()}</div>
-        <div className={styles.cyGeneralTableButtonRightContent}>{buttonRightContentSlot?.()}</div>
-      </div>
+      {buttonLeftContentSlot && (
+        <div className={styles.cyGeneralTableButtonContent}>
+          <div className={styles.cyGeneralTableButtonLeftContent}>{buttonLeftContentSlot?.()}</div>
+          <div className={styles.cyGeneralTableButtonRightContent}>
+            {buttonRightContentSlot?.()}
+          </div>
+        </div>
+      )}
       <div className={styles.cyGeneralTableOtherSlot}>{otherSlot?.()}</div>
 
       <div className={styles.cyGeneralTableConetnt}>

@@ -371,6 +371,9 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
           </div>
 
           <div className={styles.currentMapTable}>
+            <div className={styles.currentMapTableTitle}>
+              <CommonTitle>当前映射关系</CommonTitle>
+            </div>
             <div className={styles.currentMapTableButtonContent}>
               <div className="flex1">
                 <div className={styles.currentMapTableSearch}>
@@ -400,9 +403,6 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
                   添加
                 </Button>
               </div>
-            </div>
-            <div className={styles.currentMapTableTitle}>
-              <CommonTitle>当前映射关系</CommonTitle>
             </div>
 
             <div className={styles.currentMapTableContent}>

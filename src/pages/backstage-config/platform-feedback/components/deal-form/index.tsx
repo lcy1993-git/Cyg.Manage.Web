@@ -55,9 +55,9 @@ const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
           </ReadonlyItem>
         </div>
         <div>
-          <ReadonlyItem label="内容" align="left">
-            {detailData.describe ?? ''}
-          </ReadonlyItem>
+          <CyFormItem label="内容" align="left">
+            <b>{detailData.describe ?? ''}</b>
+          </CyFormItem>
         </div>
       </div>
       {replys && <div className={styles.handleInfo}>{replyElement}</div>}

@@ -59,7 +59,7 @@ const PlatFormFeedBack: React.FC = () => {
   const leftSearchElement = () => {
     return (
       <div className={styles.searchGroup}>
-        <TableSearch label="反馈" width="208px">
+        <TableSearch width="208px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}

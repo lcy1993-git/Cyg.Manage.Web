@@ -67,7 +67,7 @@ const ResourceLib: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="资源库" width="230px">
+        <TableSearch width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -155,7 +155,7 @@ const ResourceLib: React.FC = () => {
               <span>
                 禁用状态
                 <Tooltip
-                  title="“已禁用”表示当前资源库不可被新立项工程调用，已立项并调用该资源库的工程不受影响。"
+                  title="“禁用”表示当前资源库不可被新立项工程调用，已立项并调用该资源库的工程不受影响。"
                   placement="top"
                 >
                   <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
@@ -163,9 +163,30 @@ const ResourceLib: React.FC = () => {
               </span>
             );
           },
-          width: 180,
+          width: 150,
           render: (text: any, record: any) => {
-            return record.isDisabled === true ? '已禁用' : '';
+            const isChecked = !record.isDisabled;
+            return (
+              <>
+                {isChecked ? (
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    className="colorPrimary"
+                    onClick={() => updateStatusEvent(record.id, 2)}
+                  >
+                    启用
+                  </span>
+                ) : (
+                  <span
+                    onClick={() => updateStatusEvent(record.id, 1)}
+                    style={{ cursor: 'pointer' }}
+                    className="colorRed"
+                  >
+                    禁用
+                  </span>
+                )}
+              </>
+            );
           },
         },
         {
@@ -239,11 +260,33 @@ const ResourceLib: React.FC = () => {
             </span>
           );
         },
-        width: 180,
+        width: 150,
         render: (text: any, record: any) => {
-          return record.isDisabled === true ? '已禁用' : '';
+          const isChecked = !record.isDisabled;
+          return (
+            <>
+              {isChecked ? (
+                <span
+                  style={{ cursor: 'pointer' }}
+                  className="colorPrimary"
+                  onClick={() => updateStatusEvent(record.id, 2)}
+                >
+                  启用
+                </span>
+              ) : (
+                <span
+                  onClick={() => updateStatusEvent(record.id, 1)}
+                  style={{ cursor: 'pointer' }}
+                  className="colorRed"
+                >
+                  禁用
+                </span>
+              )}
+            </>
+          );
         },
       },
+
       {
         dataIndex: '',
         title: '操作',
@@ -427,18 +470,7 @@ const ResourceLib: React.FC = () => {
             重启资源服务
           </Button>
         )}
-        {buttonJurisdictionArray?.includes('lib-restart') && (
-          <Button className="mr7" onClick={() => startLib()}>
-            <PoweroffOutlined />
-            启用
-          </Button>
-        )}
-        {buttonJurisdictionArray?.includes('lib-restart') && (
-          <Button className="mr7" onClick={() => forbidLib()}>
-            <StopOutlined />
-            禁用
-          </Button>
-        )}
+
         {buttonJurisdictionArray?.includes('all-project-resource') && (
           <Button className="mr7" onClick={() => setLibVisible(true)}>
             资源库迭代
@@ -448,23 +480,9 @@ const ResourceLib: React.FC = () => {
     );
   };
 
-  const startLib = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
-    }
-    await changeLibStatus({ id: tableSelectRows[0].id, status: 1 });
-    message.success('该资源库已启用');
-    refresh();
-  };
-
-  const forbidLib = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
-    }
-    await changeLibStatus({ id: tableSelectRows[0].id, status: 2 });
-    message.info('该资源库已禁用');
+  const updateStatusEvent = async (id: string, status: number) => {
+    await changeLibStatus({ id: id, status: status });
+    message.success('操作成功');
     refresh();
   };
 
@@ -478,7 +496,6 @@ const ResourceLib: React.FC = () => {
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/ResourceLib/GetPageList"

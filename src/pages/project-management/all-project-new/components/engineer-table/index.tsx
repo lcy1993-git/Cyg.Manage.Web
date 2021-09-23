@@ -562,8 +562,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             style={{ cursor: 'pointer' }}
             className="colorRed"
             onClick={() => {
-              console.log(record.id);
-
               modifyExportPowerState({
                 isEnable: !status,
                 projectIds: [record.id],
@@ -578,7 +576,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             style={{ cursor: 'pointer' }}
             className="colorPrimary"
             onClick={() => {
-              console.log(record.id);
               modifyExportPowerState({
                 isEnable: !status,
                 projectIds: [record.id],

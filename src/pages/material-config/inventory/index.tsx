@@ -44,7 +44,7 @@ const Inventroy: React.FC = () => {
   //       value: item.id,
   //       title:
   //         item.name === item.version
-  //           ? `${item.provinceName}_${item.resourceLibName}_${item.year}_${item.name}`
+  // ? `${item.provinceName}_${item.resourceLibName}_${item.year}_${item.name}`
   //           : `${item.name}_${item.version}`,
   //     };
   //   });
@@ -53,7 +53,7 @@ const Inventroy: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="协议库存" width="278px">
+        <TableSearch width="278px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -103,183 +103,13 @@ const Inventroy: React.FC = () => {
     }
   };
 
-  // const date =[
-  //   {
-  //     dataIndex: 'version',
-  //     index: 'version',
-  //     title: '版本号',
-  //     width: 180,
-  //   },
-  //   {
-  //     dataIndex: 'versionName',
-  //     index: 'versionName',
-  //     title: '版本名称',
-  //     width: 180,
-  //   },
-  //   {
-  //     dataIndex: 'supplier',
-  //     index: 'supplier',
-  //     title: '供应商',
-  //     width: 400,
-  //   },
-  //   {
-  //     dataIndex: 'isEnd0702',
-  //     index: 'isEnd0702',
-  //     title: '是否终止0702',
-  //     width: 220,
-  //   },
-  //   {
-  //     dataIndex: 'specialClass',
-  //     index: 'specialClass',
-  //     title: '特殊类',
-  //     width: 140,
-  //   },
-  //   {
-  //     dataIndex: 'presentation',
-  //     index: 'presentation',
-  //     title: '提报要求',
-  //     width: 180,
-  //   },
-  //   {
-  //     dataIndex: 'specificationsId',
-  //     index: 'specificationsId',
-  //     title: '技术规范ID',
-  //     width: 180,
-  //   },
-
-  //   {
-  //     dataIndex: 'materialCode',
-  //     index: 'materialCode',
-  //     title: '物料编号',
-  //     width: 180,
-  //   },
-  //   {
-  //     dataIndex: 'materialName',
-  //     index: 'materialName',
-  //     title: '物料描述',
-  //     width: 500,
-  //   },
-  //   {
-  //     dataIndex: 'orderPrice',
-  //     index: 'orderPrice',
-  //     title: '订单净价',
-  //     width: 180,
-  //   },
-  //   {
-  //     dataIndex: 'priceUnit',
-  //     index: 'priceUnit',
-  //     title: '价格单位',
-  //     width: 160,
-  //   },
-  //   {
-  //     dataIndex: 'area',
-  //     index: 'area',
-  //     title: '区域',
-  //     width: 160,
-  //   },
-  //   {
-  //     dataIndex: 'demandCompany',
-  //     index: 'demandCompany',
-  //     title: '需求公司',
-  //     width: 480,
-  //   },
-  //   {
-  //     dataIndex: 'targetNumber',
-  //     index: 'targetNumber',
-  //     title: '目标数量',
-  //     width: 120,
-  //   },
-  //   {
-  //     dataIndex: 'measurementUnit',
-  //     index: 'measurementUnit',
-  //     title: '计量单位',
-  //     width: 160,
-  //   },
-  //   {
-  //     dataIndex: 'taxCode',
-  //     index: 'taxCode',
-  //     title: '税码',
-  //     width: 120,
-  //   },
-  //   {
-  //     dataIndex: 'documentDateText',
-  //     index: 'documentDateText',
-  //     title: '凭证日期',
-  //     width: 260,
-  //   },
-  //   {
-  //     dataIndex: 'effectiveStartDateText',
-  //     index: 'effectiveStartDateText',
-  //     title: '有效起始日期',
-  //     width: 260,
-  //   },
-  //   {
-  //     dataIndex: 'effectiveEndDateText',
-  //     index: 'effectiveEndDateText',
-  //     title: '有效截止日期',
-  //     width: 260,
-  //   },
-  //   {
-  //     dataIndex: 'biddingBatchNum',
-  //     index: 'biddingBatchNum',
-  //     title: '招标采购批次编号',
-  //     width: 220,
-  //   },
-  //   {
-  //     dataIndex: 'gradeNum',
-  //     index: 'gradeNum',
-  //     title: '标号',
-  //     width: 160,
-  //   },
-  //   {
-  //     dataIndex: 'packageNum',
-  //     index: 'packageNum',
-  //     title: '包号',
-  //     width: 160,
-  //   },
-  //   {
-  //     dataIndex: 'lawContractNum',
-  //     index: 'lawContractNum',
-  //     title: '经法合同号',
-  //     width: 200,
-  //   },
-  //   {
-  //     dataIndex: 'contractIdentification',
-  //     index: 'contractIdentification',
-  //     title: '合同标识(电子商务)',
-  //     width: 260,
-  //   },
-  //   {
-  //     dataIndex: 'specialRemark',
-  //     index: 'specialRemark',
-  //     title: '特殊物料备注',
-  //     width: 200,
-  //   },
-  //   {
-  //     dataIndex: 'category',
-  //     index: 'category',
-  //     title: '大类描述',
-  //     width: 160,
-  //   },
-  //   {
-  //     dataIndex: 'division',
-  //     index: 'division',
-  //     title: '中类描述',
-  //     width: 160,
-  //   },
-  //   {
-  //     dataIndex: 'type',
-  //     index: 'type',
-  //     title: '小类描述',
-  //     width: 160,
-  //   },
-  //   {
-  //     dataIndex: 'group',
-  //     index: 'group',
-  //     title: '物料组',
-  //     width: 160,
-  //   },
-  // ]
+  //查看协议库存
+  const checkEvent = (id: string, version: string, name: string) => {
+    setVersionNo(version);
+    setInvName(name);
+    setInventoryId(id);
+    setInventoryTableModalVisible(true);
+  };
 
   const columns = [
     {
@@ -287,6 +117,21 @@ const Inventroy: React.FC = () => {
       index: 'name',
       title: '名称',
       width: 280,
+      render: (text: any, record: any) => {
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('inventory-check') && (
+              <span
+                onClick={() => checkEvent(record.id, record.version, record.name)}
+                className={styles.checkInventory}
+              >
+                {record.name}
+              </span>
+            )}
+            {!buttonJurisdictionArray?.includes('inventory-check') && <span>{record.name}</span>}
+          </>
+        );
+      },
     },
     {
       dataIndex: 'province',
@@ -332,7 +177,7 @@ const Inventroy: React.FC = () => {
             新建
           </Button>
         )}
-        {buttonJurisdictionArray?.includes('inventory-check') && (
+        {/* {buttonJurisdictionArray?.includes('inventory-check') && (
           <Button
             disabled={tableSelectRows && tableSelectRows.length > 0 ? false : true}
             className={styles.importBtn}
@@ -340,7 +185,7 @@ const Inventroy: React.FC = () => {
           >
             查看
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('inventory-mapping-manage') && (
           <Button className={styles.importBtn} onClick={() => openMapManageEvent()}>
@@ -383,7 +228,6 @@ const Inventroy: React.FC = () => {
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/Inventory/GetInventoryOverviewPageList"

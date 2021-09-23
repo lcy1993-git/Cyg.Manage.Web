@@ -51,7 +51,7 @@ const WareHouse: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="物料利库" width="278px">
+        <TableSearch width="278px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -83,29 +83,30 @@ const WareHouse: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'id',
-      index: 'id',
-      title: '编号',
-      width: 180,
-    },
-    {
       dataIndex: 'name',
       index: 'name',
       title: '名称',
-      width: 150,
+      width: 220,
+      render: (text: any, record: any) => {
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('ware-house-check') && (
+              <span onClick={() => checkDetail(record.id)} className={styles.checkWareHouse}>
+                {record.name}
+              </span>
+            )}
+            {!buttonJurisdictionArray?.includes('ware-house-check') && <span>{record.name}</span>}
+          </>
+        );
+      },
     },
     {
       dataIndex: 'provinceName',
       index: 'provinceName',
       title: '所在区域',
-      width: 180,
+      width: 200,
     },
-    {
-      dataIndex: 'tableName',
-      index: 'tableName',
-      title: '利库表名',
-      width: 280,
-    },
+
     {
       dataIndex: 'version',
       index: 'version',
@@ -219,13 +220,8 @@ const WareHouse: React.FC = () => {
   };
 
   //查看详情
-  const checkDetail = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据查看');
-      return;
-    }
-    const DetailId = tableSelectRows[0].id;
-    setCurrentSelectedId(DetailId);
+  const checkDetail = (id: string) => {
+    setCurrentSelectedId(id);
     setCheckDetailVisible(true);
   };
 
@@ -279,13 +275,6 @@ const WareHouse: React.FC = () => {
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('ware-house-check') && (
-          <Button className="mr7" onClick={() => checkDetail()}>
-            <EyeOutlined />
-            查看物料
-          </Button>
-        )}
-
         {buttonJurisdictionArray?.includes('ware-house-restart') && (
           <Button className="mr7" onClick={() => restartLib()}>
             <PoweroffOutlined />
@@ -302,7 +291,6 @@ const WareHouse: React.FC = () => {
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/WareHouse/GetPageList"
@@ -355,6 +343,7 @@ const WareHouse: React.FC = () => {
         okText="确认"
         onCancel={() => setCheckDetailVisible(false)}
         cancelText="取消"
+        bodyStyle={{ padding: '8px 24px 24px 24px' }}
       >
         <Spin spinning={loading}>
           <WareHouseDetail overviewId={currentSelectedId} />

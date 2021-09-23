@@ -59,7 +59,6 @@ const DifferTable: React.FC<DifferTableParams> = (props) => {
     <GeneralTable
       noPaging
       ref={tableRef}
-      needCommonButton={true}
       columns={columns}
       requestSource="resource"
       url="/SourceCompare/GetCompareList"
