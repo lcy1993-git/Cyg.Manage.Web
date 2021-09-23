@@ -58,7 +58,6 @@ const CommentTable: FC<CommentProps> = (props) => {
       key: 'type',
       fixed: 'left',
     },
-
     {
       title: '类型',
       width: 30,

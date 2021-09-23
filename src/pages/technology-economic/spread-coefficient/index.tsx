@@ -205,6 +205,7 @@ const SpreadCoefficient: React.FC = () => {
   // 价差目录新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
+      console.log(values)
       await createCatalogue(values); // TODO
       refresh();
       setAddFormVisible(false);
@@ -378,7 +379,7 @@ const SpreadCoefficient: React.FC = () => {
         width="880px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddAuthorization()}
+        onOk={sureAddAuthorization}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose

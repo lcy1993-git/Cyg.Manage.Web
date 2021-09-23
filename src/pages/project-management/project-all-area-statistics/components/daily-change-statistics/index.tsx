@@ -16,18 +16,28 @@ type TabsUnion = typeof tabs[number];
 const DailyChangeStatistics: React.FC = () => {
   const [tab, setTab] = useState<TabsUnion | string>('合计');
 
-  const { dataType } = useProjectAllAreaStatisticsStore();
+  const { dataType, companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
 
   const divRef = useRef<HTMLDivElement>(null);
 
   // ! 待完善
-  const { data = [] } = useRequest(() => getProjectQtyOfDay('', ProjectStatus[tab]), {
-    onSuccess: () => {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      initChart();
+  const { data = [] } = useRequest(
+    () =>
+      getProjectQtyOfDay({
+        projectShareCompanyId: companyInfo.companyId!,
+        status: ProjectStatus[tab],
+        companyId: projectShareCompanyId,
+      }),
+    {
+      ready: !!projectShareCompanyId,
+      onSuccess: () => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        initChart();
+      },
+
+      refreshDeps: [dataType, tab, projectShareCompanyId],
     },
-    refreshDeps: [dataType, tab],
-  });
+  );
 
   const dateData = [...data].reverse().map((item: any) => {
     return moment(item.key).format('M月D日');
@@ -102,7 +112,7 @@ const DailyChangeStatistics: React.FC = () => {
 
   const initChart = () => {
     if (divRef && divRef.current) {
-      myChart = echarts.init(divRef.current as unknown as HTMLDivElement);
+      myChart = echarts.init((divRef.current as unknown) as HTMLDivElement);
       myChart.setOption(options);
     }
   };

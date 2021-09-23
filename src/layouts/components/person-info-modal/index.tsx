@@ -65,7 +65,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
         </div>
         <div className={styles.companyInfoRow}>
           <div className={styles.title}>角色</div>
-          <div className={styles.content}>{userInfo?.roleName}</div>
+          <div className={styles.content}>{userInfo?.userTypeText}</div>
         </div>
       </div>
       <PersonInfoRow

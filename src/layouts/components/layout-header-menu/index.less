@@ -1,6 +1,10 @@
 .layoutHeaderMenuItemContent {
-  margin-right: 45px;
-
+  width: 135px;
+  height: 100%;
+  // margin-right: 25px;
+  &:hover {
+    background-color: #f2f2f2;
+  }
   &:last-child {
     margin-right: 0;
   }
@@ -19,7 +23,12 @@
     }
 
     .layoutHeaderMenuItemName {
+      padding-top: 7px;
       text-align: center;
+      &:hover {
+        color: #0e7b43;
+        font-weight: 500;
+      }
     }
   }
 }

@@ -10,7 +10,7 @@ import { getProjectOperateLogs } from '@/services/project-management/project-sta
 const ProjectInfoRefreshList = () => {
   const [listData, setListData] = useState<RefreshDataType[]>([]);
 
-  const { companyInfo } = useProjectAllAreaStatisticsStore();
+  const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
   // const [refreshData, setrefreshData] = useState<RefreshDataType[]>([]);
   // const ref = useRef<HTMLDivElement>(null);
   // const size = useSize(ref);
@@ -21,47 +21,55 @@ const ProjectInfoRefreshList = () => {
    *
    */
   // const visebleCount = Math.floor(size.height ? size.height / 35 : 4);
-  
 
   // useEffect(() => {
   //   setListData([]);
   //   // setrefreshData([]);
   // }, [currentAreaInfo]);
 
-  const { data, cancel } = useRequest<RefreshDataType[]>(() => getProjectOperateLogs(companyInfo.companyId!), {
-    pollingInterval: 3000,
-    refreshDeps: [],
-    onSuccess: () => {
-      // 最近的日期是从第一个开始的，所以要把最新放在最下面，使用reverse
-      // if (data && refreshData.length === 0) {
-      //   // 如果小于可视的条数的话就直接显示并且不滚动
-      //   setrefreshData(data);
-      //   if (data.length < visebleCount) {
-      //     setListData([...data]);
-      //   } else {
-      //     setListData([...data, ...data]);
-      //   }
-      // } else if (data && refreshData.length !== 0) {
-      //   const diff = _.differenceBy(data, refreshData, (item) => item.date);
-      //   if (data.length < visebleCount) {
-      //     setListData([...data]);
-      //   } else if (diff.length) {
-      //     setrefreshData(data);
-      //     setListData([...data, ...data]);
-      //   }
-      // }
-      if (data && Array.isArray(data)) {
-        if (data.length >= 30) {
-          setListData([...data.slice(-30)]);
-        } else {
-          setListData([...data]);
+  const { data, cancel } = useRequest<RefreshDataType[]>(
+    () =>
+      getProjectOperateLogs({
+        projectShareCompanyId: companyInfo.companyId!,
+        companyId: projectShareCompanyId,
+        limit: 9999,
+      }),
+    {
+      ready: !!projectShareCompanyId,
+      pollingInterval: 3000,
+      refreshDeps: [],
+      onSuccess: () => {
+        // 最近的日期是从第一个开始的，所以要把最新放在最下面，使用reverse
+        // if (data && refreshData.length === 0) {
+        //   // 如果小于可视的条数的话就直接显示并且不滚动
+        //   setrefreshData(data);
+        //   if (data.length < visebleCount) {
+        //     setListData([...data]);
+        //   } else {
+        //     setListData([...data, ...data]);
+        //   }
+        // } else if (data && refreshData.length !== 0) {
+        //   const diff = _.differenceBy(data, refreshData, (item) => item.date);
+        //   if (data.length < visebleCount) {
+        //     setListData([...data]);
+        //   } else if (diff.length) {
+        //     setrefreshData(data);
+        //     setListData([...data, ...data]);
+        //   }
+        // }
+        if (data && Array.isArray(data)) {
+          if (data.length >= 30) {
+            setListData([...data.slice(-30)]);
+          } else {
+            setListData([...data]);
+          }
         }
-      }
+      },
+      onError: () => {
+        cancel();
+      },
     },
-    onError: () => {
-      cancel();
-    },
-  });
+  );
 
   // useEffect(() => {
   //   run();

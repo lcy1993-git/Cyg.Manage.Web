@@ -12,13 +12,19 @@ interface ManageUserForm {
   type?: 'add' | 'edit';
 }
 
-export enum userTypes {
+export enum rootTypes {
   '公司管理员' = 3,
   '平台管理员' = 4,
 }
 
+export enum platformTypes {
+  '公司管理员' = 3,
+}
+
 const ManageUserForm: React.FC<ManageUserForm> = (props) => {
   const { type = 'edit' } = props;
+  const { isSuperAdmin = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
+
   const [selectedUserType, setSelectedUserType] = useState<number>(0);
 
   // const mapTreeData = (data: any) => {
@@ -70,7 +76,7 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
       {type === 'add' && (
         <CyFormItem label="账号类型" name="userType" required rules={rules.userType}>
           <EnumSelect
-            enumList={userTypes}
+            enumList={isSuperAdmin ? rootTypes : platformTypes}
             placeholder="请选择账号类型"
             onChange={(value: any) => setSelectedUserType(value)}
           />

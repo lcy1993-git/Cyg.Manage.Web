@@ -1,5 +1,4 @@
 import request from '@/utils/request';
-import qs from 'qs';
 import { cyRequest, baseUrl } from '../common';
 
 interface ImportProject {

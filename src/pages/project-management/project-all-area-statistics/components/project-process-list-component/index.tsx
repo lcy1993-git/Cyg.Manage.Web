@@ -9,13 +9,21 @@ import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/pro
 import styles from './index.less';
 
 const ProjectProcessListComponent: React.FC = () => {
-  const { companyInfo } = useProjectAllAreaStatisticsStore()
+  const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
 
-  const { data: projectData = [], loading } = useRequest(() =>getCompanyProjectProgressRank({companyId: companyInfo.companyId!, limit: 9999}));
+  const { data: projectData = [], loading } = useRequest(() =>
+    getCompanyProjectProgressRank({
+      projectShareCompanyId: companyInfo.companyId!,
+      companyId: projectShareCompanyId,
+      limit: 9999,
+    }),
+  );
 
-  const listElement = projectData?.sort((a, b) => b.value -a.value)?.map((item: any, index: number) => {
-    return <ProcessListItem key={uuid.v1()} num={index + 1} rate={item.value} name={item.key} />;
-  });
+  const listElement = projectData
+    ?.sort((a: any, b: any) => b.value - a.value)
+    ?.map((item: any, index: number) => {
+      return <ProcessListItem key={uuid.v1()} num={index + 1} rate={item.value} name={item.key} />;
+    });
   return (
     <div className={styles.projectProcessListContent}>
       <ScrollView>
