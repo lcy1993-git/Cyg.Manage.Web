@@ -10,6 +10,7 @@ import PersonInfoRow from './components/person-info-row';
 import { Button } from 'antd';
 // import EmailInfo from './components/email-info';
 import { useRef } from 'react';
+import { useGetUserInfo } from '@/utils/hooks';
 
 interface PersonInfoModalProps {
   visible: boolean;
@@ -17,7 +18,7 @@ interface PersonInfoModalProps {
 }
 
 const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
-  const { userType = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '');
+  const { userType = '' } = useGetUserInfo();
 
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
 
@@ -64,7 +65,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
         </div>
         <div className={styles.companyInfoRow}>
           <div className={styles.title}>角色</div>
-          <div className={styles.content}>{userInfo?.roleName}</div>
+          <div className={styles.content}>{userInfo?.userTypeText}</div>
         </div>
       </div>
       <PersonInfoRow

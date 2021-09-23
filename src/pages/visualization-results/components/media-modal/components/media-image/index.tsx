@@ -31,7 +31,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
   content,
   index,
   preFullClick,
-  nextFullClick
+  nextFullClick,
 }) => {
 
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
@@ -65,9 +65,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
       })
     }
   }
-
   
-
   const onmouseUp = () => {
     setIsDrag(false)
   }
@@ -101,7 +99,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
       if(index < 0){
         index = content.length - 1
       }
-    } while (content[index]?.type === 1)
+    } while (content[index]?.type === 2)
     setFsIndex(index)
   }
 
@@ -112,7 +110,8 @@ const MediaImage: React.FC<MediaImageProps> = ({
       if(index === content.length){
         index = 0
       }
-    } while (content[index]?.type === 1)
+    } while (content[index]?.type === 2)
+    console.log(content.map((item) => item.filePath))
     setFsIndex(index)
   }
 
@@ -132,7 +131,6 @@ const MediaImage: React.FC<MediaImageProps> = ({
             src={`${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
         </div>
-
         <div className={styles.AreaButtons}>
           <InputPercentNumber value={percent} onChange={setPercent} />
           <Button onClick={outoSizeHandler}><FullscreenExitOutlined />合适尺寸</Button>
