@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { MouseEvent } from 'react';
 import { useUpdateEffect } from 'ahooks';
 import type { MediaData } from '../../getComponentsByData';
@@ -50,6 +50,12 @@ const MediaImage: React.FC<MediaImageProps> = ({
     setPercent(100);
   }
 
+  useEffect(() => {
+    if(percent === 100) {
+      outoSizeHandler()
+    }
+  }, [percent])
+
   const downLoad = () => {
     const a = document.createElement("a");
     a.setAttribute("href", `${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`);
@@ -58,7 +64,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
   }
 
   const onmouseMove = (e: MouseEvent) => {
-    if (isDrag) {
+    if (isDrag && percent !== 100) {
       setPosition({
         x: (p.x + e.nativeEvent.offsetX - startPosition.x),
         y: (p.y + e.nativeEvent.offsetY - startPosition.y)

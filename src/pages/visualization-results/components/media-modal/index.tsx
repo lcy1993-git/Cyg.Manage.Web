@@ -3,6 +3,7 @@ import { DoubleRightOutlined, DoubleLeftOutlined } from '@ant-design/icons';
 import getComponentsByData from './getComponentsByData';
 import type { MediaData } from './getComponentsByData';
 import styles from './index.less';
+import _ from 'lodash';
 
 interface MediaModalProps {
   content: MediaData[];
@@ -61,6 +62,15 @@ const MediaModal: React.FC<MediaModalProps> = ({
     } while (content[realIndex].type === 1);
     setCurrentIndex(realIndex);
   }
+
+  // const onWheel = (e) => () => {
+  //   if(e.deltaY > 0) {
+  //     nextFullClick()
+  //   }else if(e.deltaY < 0){
+  //     preFullClick()
+  //   }
+  // }
+
 
   return (
     <div className={styles.mediaWrap}>
