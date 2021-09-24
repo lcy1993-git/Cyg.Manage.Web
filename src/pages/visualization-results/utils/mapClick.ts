@@ -468,9 +468,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()); // console.log(g.getLayers(),1);
           let l = getLayerByName(layerType + '_tower', g.getLayers().getArray());
           let fs = l?.getSource().getFeatures().find((item: any) => item.getProperties().features[0].getProperties().id === feature.getProperties().main_id);
-          console.log(fs)
           // feature.getProperties().kv_level = ;
-          feature.set('kv_level', fs.getProperties().features[0].getProperties().kv_level)
+          fs && feature.set('kv_level', fs.getProperties().features[0].getProperties().kv_level)
         }
         pJSON['材料表'] = {
           params: {
@@ -743,6 +742,8 @@ export const mapPointermove = (evt: any, map: any) => {
 
 // 当前比例尺映射到HTML节点
 export const mapMoveend = (evt: any, map: any) => {
+  console.log(111);
+  
   const scaleSize: HTMLSpanElement = document.getElementById('currentScaleSize') as HTMLSpanElement;
   if (scaleSize !== null) scaleSize.innerHTML = getScale(map) || '';
 };

@@ -1,25 +1,24 @@
 import LayerGroup from 'ol/layer/Group';
-import { ProjectList, loadLayer } from '@/services/visualization-results/visualization-results';
-import { layerParams, layerDatas, LayerParams, LayerDatas } from './localData/layerParamsData';
+import { ProjectList, loadLayer, getMediaSign } from '@/services/visualization-results/visualization-results';
+import { layerParams, LayerParams } from './localData/layerParamsData';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import MultiLineString from 'ol/geom/MultiLineString';
-import { pointStyle, line_style, cable_channel_styles, fzx_styles, trackStyle, trackLineStyle, zero_guy_style } from './localData/pointStyle';
+import { pointStyle, line_style, cable_channel_styles, trackStyle, trackLineStyle, zero_guy_style } from './localData/pointStyle';
 import Layer from 'ol/layer/Layer';
-import Point from 'ol/geom/Point';
 import { transform, getPointResolution } from 'ol/proj';
 import ProjUnits from 'ol/proj/Units';
 import Feature from 'ol/Feature';
 import ClassStyle from 'ol/style/Style';
+import Text from 'ol/style/Text';
 import Stroke from 'ol/style/Stroke';
-import Icon from 'ol/style/Icon';
-import { getXmlData, sortByTime, getTime, LineCluster } from './utils';
-import { values } from 'lodash';
-import LineString from 'ol/geom/LineString';
+import { getXmlData, sortByTime, LineCluster } from './utils';
 
 var projects: any;
+var layerGroups: LayerGroup[];
+var mediaSign: boolean;
 // var showData: any = [];
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
@@ -78,6 +77,8 @@ const checkZoom = (evt: any, map: any) => {
       lineCluster.updateLabelControlValue(false);
     }
   }
+  if(mediaSign)
+    loadMediaSign(layerGroups, true)
 }
 
 const loadSurveyLayers = async (postData: string, groupLayers: LayerGroup[]) => {
@@ -566,6 +567,44 @@ const clearTrackLayers = (trackLayers: any, type: number = 0) => {
   return groupLayer;
 };
 
+// 多媒体标记
+const loadMediaSign = (layerGroups_: LayerGroup[], mediaSign_: boolean) => {
+  layerGroups = layerGroups_;
+  mediaSign = mediaSign_;
+  let projectIds:any = [];
+  projects.forEach((item:ProjectList) =>{
+    projectIds.push(item.id);
+  })
+  let params:any = {
+    projectIds
+  }
+  const promise = getMediaSign(params);
+  promise.then((data: any) => {
+    console.log(data)
+    if(data.content && data.content.length > 0){
+      layerGroups.forEach((layerGroup:LayerGroup) => {
+        layerGroup.getLayers().getArray().forEach((layer:any) => {
+          layer.getSource().getFeatures().forEach((item:any) => {
+            if(item.getProperties().features){
+              let feature = item.getProperties().features[0];
+                data.content.forEach((d:any) => {
+                if(feature.getProperties().id === d.main_ID){
+                  let style  = pointStyle(layer.get('name'),feature, false, mediaSign)
+                  item.setStyle(style);
+                }
+               
+                // let style  = pointStyle(layer.get('name'),feature, true)
+                  // feature.setStyle(style);
+                  // feature.setGeometry(null);
+               })
+            }
+          })
+        })
+      })
+    }
+  })
+}
+
 // 按时间排序
 // function sortFeaturesFunc(a: any, b: any) {
 //   var aDate = new Date(a.properties.record_date);
@@ -769,6 +808,7 @@ export {
   clearHighlightLayer,
   loadTrackLayers,
   clearTrackLayers,
+  loadMediaSign,
   relocateMap,
   getScale,
   CalcTowerAngle,
