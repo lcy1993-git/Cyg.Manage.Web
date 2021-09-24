@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Input, Select, Col, Row } from 'antd';
 import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
@@ -7,10 +7,12 @@ import FileUpload from '@/components/file-upload';
 import { useRequest, useMount } from 'ahooks';
 import { queryMaterialMachineLibraryPager } from '@/services/technology-economic';
 import UrlSelect from '@/components/url-select';
+import {getMaterialLibraryAllList} from "@/services/technology-economic/supplies-library";
 
 const { Option } = Select;
 interface ResponsData {
   items: {
+    enabled: boolean;
     id: string;
     name: string
   }[]
@@ -19,17 +21,21 @@ interface ResponsData {
 const DictionaryForm: React.FC<null> = () => {
 
   const { data: MaterialMachineLibraryData, run } = useRequest<ResponsData>(queryMaterialMachineLibraryPager, { manual: true });
-  
-  const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
 
+  const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
+  const [materialList,setMaterialList] = useState<{name: string,id: string}[]>([])
   useMount(() => {
+    getMaterialData()
     run({ pageIndex: 1, pageSize: 3000 })
   })
-
+  const getMaterialData = async ()=>{
+    const res = await getMaterialLibraryAllList()
+    setMaterialList(res)
+  }
   const MaterialMachineLibraryListFn = () => {
     return MaterialMachineLibraryList.map((item) => {
       return (
-        <Option key={item.id} value={item.id}>{item.name}</Option>
+        <Option key={item.id} value={item.id} disabled={!item.enabled}>{item.name}</Option>
       );
     })
   }
@@ -72,6 +78,7 @@ const DictionaryForm: React.FC<null> = () => {
 
         </Col>
         <Col span={2}>
+
         </Col>
         <Col span={11}>
 
@@ -81,12 +88,12 @@ const DictionaryForm: React.FC<null> = () => {
             </Select>
           </CyFormItem>
 
-          <CyFormItem label="发布时间" name="publishDate">
-            <DateFormItem />
+          <CyFormItem label="发布时间" name="publishDate" required>
+            <DateFormItem allowClear={false}/>
           </CyFormItem>
 
-          <CyFormItem label="价格年度" name="year">
-            <DateFormItem picker="year" />
+          <CyFormItem label="价格年度" name="year" required>
+            <DateFormItem picker="year" allowClear={false}/>
           </CyFormItem>
 
           <CyFormItem label="适用专业" name="majorType">
@@ -98,7 +105,15 @@ const DictionaryForm: React.FC<null> = () => {
                 valuekey="value"
               />
           </CyFormItem>
-
+          <CyFormItem label="关联物料库" name="SourceMaterialLibraryId" required>
+            <Select>
+              {
+                materialList.map(item=>{
+                  return <Option  key={item.id} value={item.id}>{item.name}</Option>
+                })
+              }
+            </Select>
+          </CyFormItem>
         </Col>
       </Row>
 

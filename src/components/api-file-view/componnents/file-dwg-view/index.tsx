@@ -49,6 +49,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   const [page, setPage] = useState<PDFPageProxy | null>(null)
   const [downPosition, setDownPositon] = useState({ x: 0, y: 0 })
   const [downScroll, setDownScroll] = useState({ x: 0, y: 0 })
+  const [isMout, setIsMout] = useState<boolean>(true)
 
   // 初始化缩放比
   const initkScale = (page: any) => {
@@ -58,7 +59,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
 
   // 初始化page
   const initPdfPage = (pdfInfo: any) => {
-
+    
     pdfInfo.getPage(1).then((page: any) => {
       // eslint-disable-next-line no-underscore-dangle
 
@@ -74,9 +75,9 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
 
   useMount(() => {
     const obz = new ResizeObserver(([dom]) => {
-      const parentNode = dom.target.parentNode! as HTMLDivElement;
-      parentNode.scrollTop = (parentNode.scrollHeight - parentNode.clientHeight) / 2;
-      obz.unobserve(canvasRef.current!)
+        const parentNode = dom.target.parentNode! as HTMLDivElement;
+        parentNode.scrollTop = (parentNode.scrollHeight - parentNode.clientHeight) / 2;
+        obz.unobserve(canvasRef.current!)
     })
     obz.observe(canvasRef.current!)
     return () => obz.unobserve(canvasRef.current!)
@@ -110,7 +111,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   }
 
   // 加载canvas到ref
-  const loadCanvas = (ref: any, viewport: any, isMount = false) => {
+  const loadCanvas = (ref: any, viewport: any, isMount=false) => {
     const canvas = document.createElement("canvas")
     const context = canvas.getContext('2d');
     canvas.height = viewport.height;
@@ -142,13 +143,17 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   const setMouseState = (flag: PointerState) => {
     // 当等待状态时不可切换状态
     if (flag === "wait") {
-      wrapRef.current && (wrapRef.current!.style.cursor = "wait");
+      if(wrapRef.current) {
+        wrapRef.current!.style.cursor = "wait";
+      }
       setTimeout(() => {
         setMouseState("pointer")
       }, 800)
     } else {
       setTimeout(() => {
-        wrapRef.current && (wrapRef.current!.style.cursor = "pointer")
+        if(wrapRef.current) {
+          wrapRef.current!.style.cursor = "pointer"
+        }
       }, 800)
     }
   }

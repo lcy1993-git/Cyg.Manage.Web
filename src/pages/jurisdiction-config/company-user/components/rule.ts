@@ -2,12 +2,8 @@ export default {
   pwd: [
     { required: true, message: '密码不能为空' },
     {
-      min: 6,
-      message: '密码不能少于6个字符',
-    },
-    {
-      max: 20,
-      message: '密码不能多于20个字符',
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/,
+      message: '密码必须由(8-20)位数字+大小写字母组成',
     },
   ],
   email: [
@@ -18,7 +14,14 @@ export default {
   ],
   nickName: [{ max: 12, message: '昵称超出字符数限制，限制为12个字符' }],
   realName: [
-    { required: true, message: '真实姓名不能为空' },
-    { max: 12, message: '真实姓名超出字符数限制，限制为12个字符' },
+    { required: true, message: '姓名不能为空' },
+    { max: 12, message: '姓名超出字符数限制，限制为12个字符' },
+  ],
+  idNumber: [
+    { required: true, message: '身份证号不能为空' },
+    {
+      pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+      message: '请输入正确的身份证格式',
+    },
   ],
 };

@@ -62,7 +62,6 @@ const ProjectList: React.FC = () => {
         engineeringTemplateId,
       };
       const res = await importProject(value);
-      console.log(res);
       // if (res.code === 5000) {
       //   message.error(res.message);
       //   return;

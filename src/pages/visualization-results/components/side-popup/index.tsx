@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Table, Modal, Input, message } from 'antd';
-
-import { CloseOutlined } from '@ant-design/icons';
+import SidePopupMergeThreeHoc from './components/side-popup-hoc/index';
+import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons';
 
 import { useContainer } from '../../result-page/mobx-store';
 import CommentList from './components/comment-list';
@@ -17,25 +17,18 @@ import { CommentRequestType, addComment, fetchCommentList } from '@/services/vis
 import styles from './index.less';
 import CableSection from '../cable-section';
 import MediaModal from '../media-modal';
+import classnames from 'classnames';
 
 export interface TableDataType {
   [propName: string]: any;
 }
 
-// const surveyEnumData = ["无", "原有", "新建", "利旧", "拆除"]
-
-export interface Props {
+export interface SidePopupProps {
   data: TableDataType[];
   rightSidebarVisible: boolean;
   setRightSidebarVisiviabel: (arg0: boolean) => void;
   height: number;
 }
-
-const loadEnumsData = window.localStorage.getItem('loadEnumsData');
-const surveyData = loadEnumsData && loadEnumsData !== 'undefined' ? JSON.parse(loadEnumsData) : [];
-
-
-const surveyEnum = surveyData.find((i: any) => i.key === 'SurveyState')?.value;
 
 const materiaColumns = [
   {
@@ -53,7 +46,6 @@ const materiaColumns = [
     key: 'type',
     ellipsis: true,
   },
-
   {
     title: '物料编号',
     width: 160,
@@ -74,7 +66,7 @@ const materiaColumns = [
     dataIndex: 'itemNumber',
     key: 'itemNumber',
     ellipsis: true,
-    render(v: number){
+    render(v: number) {
       return v ? String(v) : ""
     }
   },
@@ -85,7 +77,7 @@ const materiaColumns = [
     dataIndex: 'unitPrice',
     key: 'unitPrice',
     ellipsis: true,
-    render(v: number){
+    render(v: number) {
       return v ? String(v) : ""
     }
   },
@@ -95,7 +87,7 @@ const materiaColumns = [
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',
     ellipsis: true,
-    render(v: number){
+    render(v: number) {
       return v ? String(v) : ""
     }
   },
@@ -139,35 +131,6 @@ const materiaColumns = [
   },
 ];
 
-// const mediaItem = (data: any) => {
-//   const authorization = window.localStorage.getItem('Authorization');
-//   return data?.map((item: any, index: any) => {
-//     if (item.type === 1) {
-//       return (
-//         <div className={styles.mediaItem} key={item.id}>
-//           <img
-//             className={styles.img}
-//             crossOrigin={''}
-//             src={`${baseUrl.upload}/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
-//           />
-//         </div>
-//       );
-//     } else if (item.type !== 1) {
-//       return (
-//         <div className={styles.mediaItem} key={item.id}>
-//           {/* <audio controls={true} /> */}
-//           <audio
-//             className={styles.audio}
-//             src={`${baseUrl.upload}/Download/GetFileById?fileId=${item.filePath}&securityKey=1201332565548359680&token=${authorization}`}
-//             controls={true}
-//           />
-//         </div>
-//       );
-//     }
-//     return <div className={styles.mediaItem} key={item.id} />;
-//   });
-// };
-
 const modalTitle = {
   media: '查看多媒体文件',
   material: '查看材料表',
@@ -204,16 +167,19 @@ export interface CommentListItemDataType {
   content: React.ReactNode;
   datetime: React.ReactNode;
 }
-const SidePopup: React.FC<Props> = observer((props) => {
-  
+const SidePopup: React.FC<SidePopupProps> = observer((props) => {
+
   const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props;
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
+  
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
-
+  const [threeModal, setThtreeModal] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState(dataResource);
 
+  const [threeRouter, setThreeRouter] = useState<string>("duanluqi");
+
   const setMmaterialRefNone = () => {
-    if(materialRef?.current?.innerHTML){
+    if (materialRef?.current?.innerHTML) {
       materialRef.current.innerHTML = '暂无数据';
       materialRef.current.className = '';
     }
@@ -237,8 +203,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
     onSuccess(data) {
       if (data?.content?.length > 0) {
         data.content.forEach((item: any) => {
-          if(item.unit === 'km'){
-            item.itemNumber =  item.itemNumber / 1000;
+          if (item.unit === 'km') {
+            item.itemNumber = item.itemNumber / 1000;
           }
         })
         materialRef.current!.innerHTML = '查看';
@@ -249,18 +215,18 @@ const SidePopup: React.FC<Props> = observer((props) => {
       }
     },
   });
-  
+
   const returnlibId = async (materialParams: any) => {
-    await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data)=> {      
-      if(data.isSuccess){
+    await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data) => {
+      if (data.isSuccess) {
         const resourceLibID = data?.content;
-        materialDataRun({resourceLibID, ...materialParams.rest, layerName: materialParams.rest.layerName});
+        materialDataRun({ resourceLibID, ...materialParams.rest, layerName: materialParams.rest.layerName });
       }
     });
   };
 
   useEffect(() => {
-    if(rightSidebarVisible) {
+    if (rightSidebarVisible) {
       setDataSource(dataResource);
       // 多媒体数据请求
       const mediaParams = dataResource?.find((item: any) => item.propertyName === '多媒体')?.data
@@ -276,7 +242,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
         ?.params ?? {};
       if (materialParams?.rest?.objectID && materialParams?.getProperties.project_id) {
         returnlibId(materialParams);
-      }else{
+      } else {
         setMmaterialRefNone();
       }
     }
@@ -287,8 +253,7 @@ const SidePopup: React.FC<Props> = observer((props) => {
 
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
-  const [mediaIndex, setMediaIndex] = useState<number>(0)
-  // const carouselRef = useRef<any>(null);
+  const [mediaIndex, setMediaIndex] = useState<number>(0);
   const { checkedProjectIdList } = useContainer().vState;
 
   const data = useMemo(() => {
@@ -312,7 +277,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
     {
       title: '属性名',
       dataIndex: 'propertyName',
-      // width: 55,
       ellipsis: true,
     },
     {
@@ -322,6 +286,16 @@ const SidePopup: React.FC<Props> = observer((props) => {
       ellipsis: true,
       render(value: any, record: any, index: any) {
         if (record.propertyName === 'title') return null;
+        if (record.propertyName === '三维模型') {
+          return <span
+            key={record.id}
+            className={styles.link}
+            onClick={() => {
+              setThreeRouter("duanluqi")
+              setThtreeModal(true)
+            }}
+          >查看</span>
+        }
         if (typeof value === 'string' || typeof value === 'number')
           return <span key={index}>{value}</span>;
         if (record.propertyName === '多媒体') {
@@ -354,8 +328,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
               </span>
             );
           }
-        } else if(record.propertyName === "穿孔示意图") {
-          return <CableSection key={JSON.stringify({...value})} {...value}/>
+        } else if (record.propertyName === "穿孔示意图") {
+          return <CableSection key={JSON.stringify({ ...value })} {...value} />
         }
         return <span key={index}></span>;
       },
@@ -401,9 +375,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
             onClick={() => {
               setMediaVisiable(true);
               setMediaIndex(index)
-              // setTimeout(() => {
-              //   carouselRef.current?.goTo(index, true);
-              // }, 0)
             }}
           >
             查看
@@ -463,7 +434,10 @@ const SidePopup: React.FC<Props> = observer((props) => {
        * survey_device_type.1386220338212147281
        */
       const split = id_.split('.');
-      const deviceId = split[1];
+      // deviceId在审阅获取数据时拿不到id名称，这里的id有误故修改id获取方式
+      // const deviceId = split[1];
+      const deviceId = feature.values_?.id;
+
       const deviceAndLayer = split[0].split('_');
 
       /**
@@ -496,8 +470,8 @@ const SidePopup: React.FC<Props> = observer((props) => {
   const materialDataRes = useMemo(() => {
 
     const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
-    ?.params ?? {};
-    
+      ?.params ?? {};
+
     return materialData?.content && materialData?.content.length > 0
       ? formDataMateral(materialData?.content, materialParams.getProperties)
       : [];
@@ -525,34 +499,33 @@ const SidePopup: React.FC<Props> = observer((props) => {
     }
   };
 
-  const DrawerWrap = useMemo(() => {
-    return (
-      rightSidebarVisible ? <div
-        title={'项目名称：' + data[1]}
-        className={styles.sidePopupWrap}
-        // style={{ position: 'absolute', width: 200, top: 100, left: 240,backgroundColor: "#fff" }}
-      >
-        <div className={styles.title}>
-          <span className={styles.head}>项目名称：</span>
-          <span className={styles.body}>{data[1]}</span>
-        </div>
-        <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
-          <CloseOutlined />
-        </div>
-        <Table
-          key= {JSON.stringify(dataResource)}
-          bordered
-          style={{ height: 30 }}
-          pagination={false}
-          columns={columns}
-          dataSource={data[0]}
-          rowClassName={styles.row}
-          scroll={{ y: height - 160 }}
-          rowKey={(r) => r.propertyName}
-        />
-      </div> : null
-    );
-  }, [rightSidebarVisible, JSON.stringify(data)]);
+  // const DrawerWrap = useMemo(() => {
+  //   return (
+  //     rightSidebarVisible ? <div
+  //       title={'项目名称：' + data[1]}
+  //       className={styles.sidePopupWrap}
+  //     >
+  //       <div className={styles.title}>
+  //         <span className={styles.head}>项目名称：</span>
+  //         <span className={styles.body}>{data[1]}</span>
+  //       </div>
+  //       <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
+  //         <CloseOutlined />
+  //       </div>
+  //       <Table
+  //         key={JSON.stringify(dataResource)}
+  //         bordered
+  //         style={{ height: 30 }}
+  //         pagination={false}
+  //         columns={columns}
+  //         dataSource={data[0]}
+  //         rowClassName={styles.row}
+  //         scroll={{ y: height - 160 }}
+  //         rowKey={(r) => r.propertyName}
+  //       />
+  //     </div> : null
+  //   );
+  // }, [rightSidebarVisible, JSON.stringify(data)]);
 
   return (
     <div className={styles.wrap}>
@@ -560,7 +533,6 @@ const SidePopup: React.FC<Props> = observer((props) => {
         title={activeType ? modalTitle[activeType!] ?? '添加审阅' : ''}
         centered
         visible={!!activeType}
-        // visible={true}
         onOk={onOkClick}
         onCancel={() => setActiveType(undefined)}
         width={1200}
@@ -569,14 +541,13 @@ const SidePopup: React.FC<Props> = observer((props) => {
         <Modal
           title="多媒体查看"
           visible={mediaVisiable}
-          // visible={true}
           width="96%"
           onCancel={() => setMediaVisiable(false)}
           onOk={() => setMediaVisiable(false)}
           destroyOnClose={true}
           className={styles.mediaModal}
         >
-          <MediaModal content={mediaData?.content ?? []} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex}/>
+          <MediaModal content={mediaData?.content ?? []} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex} />
         </Modal>
         {activeType === 'media' && (
           <Table
@@ -621,9 +592,50 @@ const SidePopup: React.FC<Props> = observer((props) => {
           </>
         )}
       </Modal>
-      {DrawerWrap}
+      {
+        rightSidebarVisible ? <div
+          title={'项目名称：' + data[1]}
+          className={styles.sidePopupWrap}
+        >
+          <div className={styles.title}>
+            <span className={styles.head}>项目名称：</span>
+            <span className={styles.body}>{data[1]}</span>
+          </div>
+          <div className={styles.drawerClose} onClick={() => {
+            setRightSidebarVisiviabel(false)
+            setThtreeModal(false)
+          }}>
+            <CloseOutlined />
+          </div>
+          <Table
+            key={JSON.stringify(dataResource)}
+            bordered
+            style={{ height: 30 }}
+            pagination={false}
+            columns={columns}
+            dataSource={data[0]}
+            rowClassName={styles.row}
+            scroll={{ y: height - 160 }}
+            rowKey={(r) => r.propertyName}
+          />
+        </div> : null
+      }
+      {
+        rightSidebarVisible && threeModal ? <div
+          className={styles.threeModalWrap}
+          style={{
+          width: window.innerWidth - 540,
+          height: window.innerHeight - 228,
+        }}>
+          <div
+            className={classnames(styles.closeButton, styles.link)}
+            onClick={() => setThtreeModal(false)}
+          ><StepBackwardOutlined />收起</div>
+          <iframe key={threeRouter} width="100%" height="100%" src={`http://10.6.1.53:8036/${threeRouter}`} style={{backgroundColor: "#fff"}}></iframe>
+        </div> : null
+      }
     </div>
   );
 });
 
-export default SidePopup;
+export default SidePopupMergeThreeHoc(SidePopup);

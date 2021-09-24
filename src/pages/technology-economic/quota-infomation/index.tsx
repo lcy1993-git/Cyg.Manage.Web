@@ -169,6 +169,11 @@ const QuotaProject = () => {
 
   const onCheck = (kes: React.Key[], {node}: {node: {key: number | string}}) => {
     catalogueId === node.key || setCatalogueId(node.key as string);
+    setResourceItem({})
+  }
+  const onSelect = (e:string)=>{
+    setActiveQuotaId(e)
+    setResourceItem({})
   }
   return (
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
@@ -177,7 +182,7 @@ const QuotaProject = () => {
           <Tabs className="normalTabs noMargin" >
               <TabPane tab="定额库目录" key="1">
                 <div className={styles.selectWrap}>
-                  <Select placeholder="请选择定额库" style={{width: '100%'}} children={options} onChange={(e)=>setActiveQuotaId(e)} defaultValue={activeQuotaId}/>
+                  <Select placeholder="请选择定额库" style={{width: '100%'}} children={options} onChange={(e)=>onSelect(e)} defaultValue={activeQuotaId}/>
                 </div>
                 <div className={styles.fileTree}>
                   <Tree.DirectoryTree
@@ -209,7 +214,7 @@ const QuotaProject = () => {
                 </div>
               </TabPane>
               <TabPane tab="章节说明" key="章节说明">
-                <ChapterInfo data={chapterData || ""} id={catalogueId}/>
+                <ChapterInfo data={chapterData || ""} id={catalogueId} update={()=>chapterRun(catalogueId)}/>
               </TabPane>
             </Tabs>
         </div>

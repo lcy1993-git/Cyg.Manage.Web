@@ -9,13 +9,25 @@ export default {
   ],
 
   pwd: [
-    { required: true, message: '密码不能为空', max: 16 },
+    { required: true, message: '密码不能为空' },
     {
-      min: 6,
-      message: '密码不能少于6个字符',
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/,
+      message: '密码必须由(8-20)位数字+大小写字母组成',
     },
   ],
-  role: [{ required: true, message: '请选择角色' }],
-  province: [{ required: true, message: '请选择省份' }],
-  email: [{ maxLength: 32, pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/ }],
+  userType: [{ required: true, message: '请选择账号类型' }],
+  company: [{ required: true, message: '请选择公司' }],
+  email: [
+    {
+      maxLength: 32,
+      pattern: /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/,
+      message: '请输入正确的邮箱格式',
+    },
+  ],
+  phone: [
+    {
+      pattern: /^1[23456789][0-9]{9}$/,
+      message: '请输入正确的手机号码',
+    },
+  ],
 };

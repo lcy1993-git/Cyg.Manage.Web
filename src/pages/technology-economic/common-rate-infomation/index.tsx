@@ -95,7 +95,9 @@ const CommonRateInfomation: React.FC = () => {
     });
     const finalyFileName = '费率表导入模版.xlsx';
     // for IE
+    // @ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      // @ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
     } else {
       // for Non-IE
@@ -164,10 +166,10 @@ const CommonRateInfomation: React.FC = () => {
           <div className={styles.row}>
             <span className={styles.label}>上传文件</span>
             <FileUpload
-              uploadFileBtn
+              uploadFileBtn={false}
               maxCount={1}
               accept=".xlsx"
-              trigger={true}
+              trigger={false}
               process={true}
               onChange={(e) => setFileList(e)}
               className={styles.file}

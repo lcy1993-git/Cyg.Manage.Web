@@ -40,6 +40,7 @@ import CockpitProjectInfoFreshList from './components/cockpit-project-info-refre
 import { cockpitMenuItemData, CockpitProps } from './utils';
 // import EditRefreshDataModal from './components/add-engineer-project-modal/edit-refresh-data-form';
 import EditFormItem from './components/edit-form-item';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
@@ -93,7 +94,7 @@ const CockpitManage: React.FC = () => {
 
   const [saveConfigLoading, setSaveConfigLoading] = useState<boolean>(false);
   const [layoutConfigData, setLayoutConfigData] = useState<any[]>([]);
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [currentAreaInfo, setCurrentAreaInfo] = useState({
     areaId: '',
     areaLevel: '1',
@@ -400,18 +401,24 @@ const CockpitManage: React.FC = () => {
                 <CommonTitle noPadding={true}>首页自定义配置窗口</CommonTitle>
               </div>
               <div className={styles.cockpitConfigPageTitleRight}>
-                <Button className="mr7" onClick={initCockpit}>
-                  <ReloadOutlined />
-                  恢复默认配置
-                </Button>
-                <Button className="mr7" onClick={clearConfigEvent}>
-                  <DeleteOutlined />
-                  清空当前配置
-                </Button>
-                <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
-                  <SaveOutlined />
-                  保存配置
-                </Button>
+                {buttonJurisdictionArray?.includes('default-cockpit-settings') && (
+                  <Button className="mr7" onClick={initCockpit}>
+                    <ReloadOutlined />
+                    恢复默认配置
+                  </Button>
+                )}
+                {buttonJurisdictionArray?.includes('clear-cockpit-settings') && (
+                  <Button className="mr7" onClick={clearConfigEvent}>
+                    <DeleteOutlined />
+                    清空当前配置
+                  </Button>
+                )}
+                {buttonJurisdictionArray?.includes('save-cockpit-settings') && (
+                  <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
+                    <SaveOutlined />
+                    保存配置
+                  </Button>
+                )}
               </div>
             </div>
 

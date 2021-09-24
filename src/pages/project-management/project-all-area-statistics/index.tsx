@@ -33,18 +33,21 @@ const ProjectAllAreaStatistics: React.FC = () => {
   });
 
   const [dataType, setDataType] = useState<DataType>('company');
+  const [projectShareCompanyId, setProjectShareCompanyId] = useState<string>('');
 
-  const { data: companySelectData = [] } = useGetSelectData({
-    url: '/ProjectStatistics/GetCompanys',
-  });
+  // const { data: companySelectData = [] } = useGetSelectData({
+  //   url: '/ProjectStatistics/GetCompanys',
+  // });
 
   return (
     <ProjectAllAreaStatisticsProvider
       value={{
         companyInfo,
+        projectShareCompanyId,
         setCompanyInfo,
         dataType,
         setDataType,
+        setProjectShareCompanyId,
       }}
     >
       <PageCommonWrap noPadding={true}>
@@ -96,22 +99,16 @@ const ProjectAllAreaStatistics: React.FC = () => {
                     );
                   }}
                 >
-                  {
-                    dataType === 'company' ?
-                    <OverdueComponent /> :
-                    <OverdueProjectComponent />
-                  }
-                  
+                  {dataType === 'company' ? <OverdueComponent /> : <OverdueProjectComponent />}
                 </TitleWindow>
               </div>
               <div className={styles.projectDataContent}>
                 <TitleWindow title="实时项目数据">
-                  {
-                    dataType === 'company' ?
-                    <ProjectInfoRefreshList/>:
-                    <ProjectInfoRefreshProjectList/>
-                  }
-                  
+                  {dataType === 'company' ? (
+                    <ProjectInfoRefreshList />
+                  ) : (
+                    <ProjectInfoRefreshProjectList />
+                  )}
                 </TitleWindow>
               </div>
             </div>
@@ -119,21 +116,20 @@ const ProjectAllAreaStatistics: React.FC = () => {
           <div className={styles.statisticsBottom}>
             <div className={styles.surveyRateContent}>
               <TitleWindow title="项目数">
-                {
-                  dataType === 'company' ?
-                  <DailyChangeStatistics /> :
+                {dataType === 'company' ? (
+                  <DailyChangeStatistics />
+                ) : (
                   <DailyChangeProjectStatistics />
-                }
+                )}
               </TitleWindow>
             </div>
             <div className={styles.projectStatisticsContent}>
               <TitleWindow title="项目统计">
-                {
-                  dataType === 'company' ?
-                  <ProjectStatisticsComponent /> :
+                {dataType === 'company' ? (
+                  <ProjectStatisticsComponent />
+                ) : (
                   <ProjectStatisticsProjectComponent />
-                }
-               
+                )}
               </TitleWindow>
             </div>
             <div className={styles.projectProcessListContent}>

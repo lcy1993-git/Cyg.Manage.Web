@@ -8,7 +8,7 @@ import { loginRules } from '@/pages/login/components/login-form/rule';
 import VerificationCode from '@/components/verification-code';
 import { phoneNumberRule } from '@/utils/common-rule';
 import { flatten } from '@/utils/utils';
-import { userLoginRequest, phoneLoginRequest, compareVerifyCode } from '@/services/login';
+import { phoneLoginRequest, compareVerifyCode, indexLoginRequest } from '@/services/login';
 
 import styles from './index.less';
 const { TabPane } = Tabs;
@@ -60,7 +60,7 @@ const LoginForm: React.FC = () => {
         setRequestLoading(true);
         let resData = null;
         if (type === 'account') {
-          resData = await userLoginRequest(values);
+          resData = await indexLoginRequest(values);
         } else {
           resData = await phoneLoginRequest(values);
         }

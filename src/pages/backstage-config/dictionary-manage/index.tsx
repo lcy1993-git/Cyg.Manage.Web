@@ -17,6 +17,7 @@ import {
 import { isArray } from 'lodash';
 import TableImportButton from '@/components/table-import-button';
 import TableExportButton from '@/components/table-export-button';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const { Search } = Input;
 
@@ -65,6 +66,7 @@ const DictionaryManage: React.FC = () => {
 
   const [selectIds, setSelectIds] = useState<string[]>([]);
 
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
@@ -269,15 +271,18 @@ const DictionaryManage: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-
+        {buttonJurisdictionArray?.includes('add-dictionary') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            添加
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('edit-dictionary') && (
+          <Button className="mr7" onClick={() => editEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
         <Popconfirm
           title="您确定要删除该条数据?"
           onConfirm={sureDeleteData}
@@ -285,13 +290,19 @@ const DictionaryManage: React.FC = () => {
           cancelText="取消"
           // disabled
         >
-          <Button className="mr7">
-            <DeleteOutlined />
-            删除
-          </Button>
+          {buttonJurisdictionArray?.includes('delete-dictionary') && (
+            <Button className="mr7">
+              <DeleteOutlined />
+              删除
+            </Button>
+          )}
         </Popconfirm>
-        <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
-        <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" />
+        {buttonJurisdictionArray?.includes('import-dictionary') && (
+          <TableImportButton className={styles.importBtn} importUrl="/Dictionary/Import" />
+        )}
+        {buttonJurisdictionArray?.includes('export-dictionary') && (
+          <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" />
+        )}
       </div>
     );
   };

@@ -17,21 +17,21 @@ interface CompanyFileForm {
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
   const { type = 'edit', groupData, editingName, uploadFileFn, fileCategory } = props;
   const [categoryValue, setCategoryValue] = useState<number>();
-  console.log({categoryValue});
-  
+  console.log({ categoryValue });
+
   const groupName = groupData.items?.map((item: any) => {
     return item.name;
   });
 
   const acceptValue = useMemo(() => {
-    if(categoryValue === 9) {
-      return '.docx,.doc,.xls,.xlsx'
+    if (categoryValue === 9) {
+      return '.docx,.doc,.xls,.xlsx';
     }
-    if([5,6,8].includes(categoryValue!)){
-      return '.docx,.doc'
+    if ([5, 6, 8].includes(categoryValue!)) {
+      return '.docx,.doc';
     }
-    return '.dwg' 
-  }, [categoryValue])
+    return '.dwg';
+  }, [categoryValue]);
 
   return (
     <>
@@ -72,23 +72,13 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
       )}
       {type === 'add' && (
         <CyFormItem label="上传文件" name="file" required rules={rules.fileld}>
-          <FileUpload
-            uploadFileBtn
-            uploadFileFn={uploadFileFn}
-            maxCount={1}
-            accept={acceptValue}
-          />
+          <FileUpload uploadFileBtn uploadFileFn={uploadFileFn} maxCount={1} accept={acceptValue} />
         </CyFormItem>
       )}
 
       {type === 'edit' && (
         <CyFormItem label="上传文件" name="file">
-          <FileUpload
-            uploadFileBtn
-            uploadFileFn={uploadFileFn}
-            maxCount={1}
-            accept={acceptValue}
-          />
+          <FileUpload uploadFileBtn uploadFileFn={uploadFileFn} maxCount={1} accept={acceptValue} />
         </CyFormItem>
       )}
 

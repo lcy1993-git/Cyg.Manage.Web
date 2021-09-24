@@ -148,6 +148,7 @@ const PricingTemplates: React.FC = () => {
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
+
     });
   };
   // 编辑确认按钮
@@ -161,6 +162,8 @@ const PricingTemplates: React.FC = () => {
       refresh();
       setEditFormVisible(false);
       editForm.resetFields();
+      setTableSelectRows([])
+      tableRef.current.reset()
     });
   };
   // 删除
@@ -172,6 +175,7 @@ const PricingTemplates: React.FC = () => {
     const id = tableSelectRows[0].id;
     await deletePricingTemplate(id);
     refresh();
+    setTableSelectRows([])
     message.success('删除成功');
   };
 

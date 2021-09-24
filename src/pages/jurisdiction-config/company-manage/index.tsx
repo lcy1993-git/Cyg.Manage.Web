@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Button, Modal, Form, message, Switch } from 'antd';
-import TreeTable from '@/components/tree-table/index';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { ApartmentOutlined, EditOutlined, PlusOutlined, ShareAltOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import PageCommonWrap from '@/components/page-common-wrap';
 import {
@@ -18,6 +17,9 @@ import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import moment from 'moment';
+import UnitConfig from './components/unit-config';
+import GeneralTable from '@/components/general-table';
+import CompanyShare from './components/company-share';
 
 const mapColor = {
   无: 'gray',
@@ -34,6 +36,9 @@ const CompanyManage: React.FC = () => {
   const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [unitConfigVisible, setUnitConfigVisible] = useState<boolean>(false);
+  const [companyShareVisible, setCompanyShareVisible] = useState<boolean>(false);
+
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const [addForm] = Form.useForm();
@@ -61,6 +66,15 @@ const CompanyManage: React.FC = () => {
       dataIndex: 'name',
       index: 'name',
       width: 320,
+    },
+    {
+      title: '管理员账号',
+      dataIndex: 'adminUserName',
+      index: 'adminUserName',
+      width: 180,
+      render: (text: any, record: any) => {
+        return record.adminUserName ? record.adminUserName : '-';
+      },
     },
     {
       title: '授权账户数',
@@ -113,7 +127,7 @@ const CompanyManage: React.FC = () => {
       title: '授权期限',
       dataIndex: 'authorityExpireDate',
       index: 'authorityExpireDate',
-      width: 100,
+      width: 140,
       render: (text: any, record: any) => {
         return text ? moment(text).format('YYYY-MM-DD') : '-';
       },
@@ -160,12 +174,41 @@ const CompanyManage: React.FC = () => {
             编辑
           </Button>
         )}
+        {/* {buttonJurisdictionArray?.includes('company-manage-edit') && ( */}
+        <Button className="mr7" onClick={() => unitConfigEvent()}>
+          <ApartmentOutlined />
+          协作单位配置
+        </Button>
+        {/* )} */}
+        {/* {buttonJurisdictionArray?.includes('company-manage-edit') && ( */}
+        <Button className="mr7" onClick={() => shareEvent()}>
+          <ShareAltOutlined />
+          共享一览表
+        </Button>
+        {/* )} */}
       </>
     );
   };
 
-  const addEvent = async () => {
-    await getSelectTreeData();
+  const unitConfigEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请勾选需要配置的公司');
+      return;
+    }
+
+    setUnitConfigVisible(true);
+  };
+
+  const shareEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请勾选需要配置的公司');
+      return;
+    }
+
+    setCompanyShareVisible(true);
+  };
+
+  const addEvent = () => {
     setAddFormVisible(true);
   };
 
@@ -255,13 +298,13 @@ const CompanyManage: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <TreeTable
+      <GeneralTable
         ref={tableRef}
         tableTitle="公司管理"
         columns={companyTableColumns}
+        buttonRightContentSlot={companyManageButton}
         getSelectData={(data) => setTableSelectRows(data)}
-        rightButtonSlot={companyManageButton}
-        url="/Company/GetTreeList"
+        url="/Company/GetPagedList"
       />
       <Modal
         maskClosable={false}
@@ -293,6 +336,16 @@ const CompanyManage: React.FC = () => {
           <EditCompanyManageForm accreditNumber={currentCompanyData} form={editForm} />
         </Form>
       </Modal>
+      <UnitConfig
+        visible={unitConfigVisible}
+        onChange={setUnitConfigVisible}
+        companyId={tableSelectRows[0]?.id}
+      />
+      <CompanyShare
+        visible={companyShareVisible}
+        onChange={setCompanyShareVisible}
+        companyId={tableSelectRows[0]?.id}
+      />
     </PageCommonWrap>
   );
 };

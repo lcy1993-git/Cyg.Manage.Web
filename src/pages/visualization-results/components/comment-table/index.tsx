@@ -17,14 +17,13 @@ import { fetchCommentList } from '@/services/visualization-results/side-popup';
 const { Option } = Select;
 
 interface CommentProps {
-  projectId: string;
-  engineerId: string;
+  projectIds: string[];
 }
 
 const { Search } = Input;
 
 const CommentTable: FC<CommentProps> = (props) => {
-  const { projectId, engineerId } = props;
+  const { projectIds } = props;
   const [keyword, setKeyword] = useState<string>();
   const [layerType, setLayerType] = useState<number>();
   const [deviceType, setDeviceType] = useState<number>();
@@ -46,13 +45,19 @@ const CommentTable: FC<CommentProps> = (props) => {
       render: (text, record, idx: number) => (currentPage - 1) * 10 + idx + 1,
     },
     {
+      title: '项目',
+      width: 50,
+      dataIndex: 'projectName',
+      key: 'projectName',
+      fixed: 'left',
+    },
+    {
       title: '名称',
       width: 50,
       dataIndex: 'deviceName',
       key: 'type',
       fixed: 'left',
     },
-
     {
       title: '类型',
       width: 30,
@@ -101,7 +106,7 @@ const CommentTable: FC<CommentProps> = (props) => {
         <Button
           type="primary"
           onClick={() =>
-            onClickViewCommentList(record.deviceId, record.layerType, record.status !== 1)
+            onClickViewCommentList(record.projectId, record.deviceId, record.layerType, record.status !== 1)
           }
         >
           查看
@@ -117,9 +122,9 @@ const CommentTable: FC<CommentProps> = (props) => {
    * @param deviceId
    * @param layerType
    */
-  const onClickViewCommentList = (deviceId: string, layerType: number, isDelete: boolean) => {
+  const onClickViewCommentList = (projectId: string, deviceId: string, layerType: number, isDelete: boolean) => {
     setIsItemDelete(isDelete);
-    fetchCommentListRequest({ projectId: projectId, layer: layerType, deviceId });
+    fetchCommentListRequest({ projectId, layer: layerType, deviceId });
     setCommentListModalVisible(true);
   };
 
@@ -161,15 +166,14 @@ const CommentTable: FC<CommentProps> = (props) => {
   } = useRequest(
     (keyword?: string) =>
       fetchCommentListByParams({
-        engineerId: engineerId,
-        projectIds: [projectId],
+        projectIds,
         layerTypes: layerType ? [layerType] : undefined,
         deviceType,
         deviceName: keyword,
       }),
 
     {
-      refreshDeps: [layerType, deviceType, engineerId, projectId],
+      refreshDeps: [layerType, deviceType, JSON.stringify(projectIds)],
       onSuccess: () => {
         if (projectCommentListResponseData) {
           setProjectCommentList(projectCommentListResponseData);

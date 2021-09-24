@@ -64,8 +64,6 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   const boxSize = useSize(mapElement);
 
-  console.log(mediaSign);
-  
   // 右侧边栏状态
   const [rightSidebarVisiviabel, setRightSidebarVisiviabelMap] = useState(false);
   const setRightSidebarVisiviabel = (state: boolean) => {
@@ -124,7 +122,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
     map && refreshMap(ops, projects!, true, startDate, endDate);
-  }, [startDate, endDate]);
+  }, [JSON.stringify(projects), startDate, endDate]);
 
 
   useEffect(() => {

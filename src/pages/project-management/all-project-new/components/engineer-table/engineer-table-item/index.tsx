@@ -347,10 +347,10 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                 编辑
               </Button>
             )}
-          {/* {projectInfo?.operationAuthority?.canEdit &&
+          {projectInfo?.operationAuthority?.canEdit &&
             buttonJurisdictionArray?.includes('all-project-file-engineer') && (
               <Button onClick={() => approvalFileEvent()}>批复文件</Button>
-            )} */}
+            )}
           {/* <Button onClick={() => approvalFileEvent()}>批复文件</Button> */}
         </div>
       </div>

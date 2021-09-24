@@ -225,6 +225,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                   designData={resultData?.map(mapTreeData)}
                   createEvent={setCheckedKeys}
                   setTabEvent={setCurrentTab}
+                  setCurrentFileInfo={setCurrentFileInfo}
                 />
               </TabPane>
               <TabPane key="compile" tab="项目需求编制成果">
@@ -232,6 +233,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                   compileResultData={compileResultData?.map(mapTreeData)}
                   createEvent={setCompileKeys}
                   setTabEvent={setCurrentTab}
+                  setCurrentFileInfo={setCurrentFileInfo}
                 />
               </TabPane>
             </Tabs>

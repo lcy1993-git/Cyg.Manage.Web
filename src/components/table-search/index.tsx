@@ -6,15 +6,16 @@ interface TableSearchProps {
   className?: string;
   width: string;
   marginLeft?: string;
+  paddingTop?: string;
 }
 
 const TableSearch: React.FC<TableSearchProps> = (props) => {
-  const { marginLeft, label, width,className, ...rest } = props;
+  const { marginLeft, paddingTop, label, width, className, ...rest } = props;
   return (
     <div
       {...rest}
       className={`${styles.tableSearchComponent} ${className}`}
-      style={{ width: width, marginLeft: marginLeft }}
+      style={{ width: width, marginLeft: marginLeft, paddingTop: paddingTop }}
     >
       <div className={styles.tableSearchLabel}>{label}</div>
       <div className={styles.tableSearchContent}>{props.children}</div>

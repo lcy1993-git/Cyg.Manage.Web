@@ -25,7 +25,7 @@ export interface CreateQuotaLibrary {
   quotaScope: 1 | 2;
   publishDate: string;
   publishOrg: string;
-  year: number;
+  year: number | string;
   industryType: 1 | 2 | 3;
   majorType: 1 | 2;
   remark: string;

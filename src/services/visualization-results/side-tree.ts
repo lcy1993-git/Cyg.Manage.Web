@@ -73,3 +73,14 @@ export const fetchCommentCountById = (projectId: string) => {
     ),
   );
 };
+
+// 下载多媒体文件
+export const downloadMediaZipFile = (projectIds: string[]) => {
+  return request(`${baseUrl.upload}/Download/DownloadMediaZipFile`, {
+    method: 'POST',
+    data: {
+      projectIds,
+    },
+    responseType: 'blob',
+  });
+};

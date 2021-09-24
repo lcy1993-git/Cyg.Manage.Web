@@ -1,3 +1,4 @@
+import { CaretDownOutlined } from '@ant-design/icons';
 import { Dropdown, Menu } from 'antd';
 import React from 'react';
 import styles from './index.less';
@@ -65,15 +66,18 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
   const menuElement = <Menu>{menuElementList}</Menu>;
 
   return (
-    <div className={styles.layoutHeaderMenuItemContent}>
-      <Dropdown overlay={menuElement} className="headerMenuItem">
+    <Dropdown overlay={menuElement} className="headerMenuItem">
+      <div className={styles.layoutHeaderMenuItemContent}>
         <div>
           <div className={styles.layoutHeaderMenuItem}>
-            <div className={styles.layoutHeaderMenuItemName}>{name}</div>
+            <div className={styles.layoutHeaderMenuItemName}>
+              {name}
+              <CaretDownOutlined style={{ fontSize: '11px', marginLeft: '8px' }} />
+            </div>
           </div>
         </div>
-      </Dropdown>
-    </div>
+      </div>
+    </Dropdown>
   );
 };
 

@@ -20,13 +20,11 @@ export enum BelongUserRoleEnum {
 
 interface ManageUserItemParams {
   companyName: string;
-  provinceName: string;
-  roleName: string;
-  roleType: number;
+  userType: number;
+  userTypeText: string;
   userName: string;
   phone: string;
   email: string;
-  nickName: string;
   name: string;
   userStatus: number;
   lastLoginIp: string;
@@ -35,8 +33,6 @@ interface ManageUserItemParams {
 }
 
 interface AddManageUserItem extends ManageUserItemParams {
-  roleId: string;
-  province: string;
   companyId: string;
 }
 
