@@ -56,7 +56,7 @@ const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
         </div>
         <div>
           <CyFormItem label="内容" align="left">
-            <b>{detailData.describe ?? ''}</b>
+            <span style={{ fontWeight: 'bold' }}>{detailData.describe ?? ''}</span>
           </CyFormItem>
         </div>
       </div>

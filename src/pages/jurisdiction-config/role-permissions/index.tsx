@@ -243,6 +243,7 @@ const RolePermissions: React.FC = () => {
         },
         value,
       );
+
       await addAuthorizationItem(submitInfo);
       tableFresh();
       setAddFormVisible(false);
@@ -282,6 +283,7 @@ const RolePermissions: React.FC = () => {
         },
         values,
       );
+
       await updateAuthorizationItem(submitInfo);
       tableFresh();
       message.success('更新成功');

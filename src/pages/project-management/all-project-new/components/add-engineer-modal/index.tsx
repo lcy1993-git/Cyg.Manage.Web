@@ -83,7 +83,11 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
       maskClosable={false}
       centered
       visible={state}
-      bodyStyle={{ height: current > 0 ? 800 : 450, overflowY: 'auto' }}
+      bodyStyle={{
+        height: current > 0 ? 800 : 450,
+        overflowY: 'auto',
+        padding: current > 0 ? '0 24px' : '',
+      }}
       footer={[
         <>
           <Button key="cancle" onClick={() => setState(false)}>

@@ -38,11 +38,11 @@ const MapField = Loadable({
   loading: Loading,
   delay: 150,
 });
-const TerminalUnit = Loadable({
-  loader: () => import('@/pages/backstage-config/terminal-unit'),
-  loading: Loading,
-  delay: 150,
-});
+// const TerminalUnit = Loadable({
+//   loader: () => import('@/pages/backstage-config/terminal-unit'),
+//   loading: Loading,
+//   delay: 150,
+// });
 const BasicData = Loadable({
   loader: () => import('@/pages/backstage-config/basic-data'),
   loading: Loading,
@@ -85,11 +85,11 @@ export default [
     path: '/backstage-config/map-field',
     component: <MapField />,
   },
-  {
-    title: '终端设备',
-    path: '/backstage-config/terminal-unit',
-    component: <TerminalUnit />,
-  },
+  // {
+  //   title: '终端设备',
+  //   path: '/backstage-config/terminal-unit',
+  //   component: <TerminalUnit />,
+  // },
 
   {
     title: '基础数据',
