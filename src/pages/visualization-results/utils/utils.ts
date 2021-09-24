@@ -264,7 +264,7 @@ export const getTime = (t: any) => {
 export const getXmlData = (projects: ProjectList[], startDate: string | undefined, endDate: string | undefined) => {
   const postData = '<Or>' + projects.reduce((pre, { id, time }) => {
     let value = "";
-    if (time) {
+    if (time && time !== 'Invalid date') {
       if (!startDate && !endDate) {
         value = "<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>" + id + "</Literal></PropertyIsEqualTo>"
       } else if (!startDate && endDate) {

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import ManualPreview from "@/pages/backstage-config/manual-management/components/manual-preview";
-import {Empty, Spin} from 'antd';
+import {Empty, message, Spin} from 'antd';
 import {useMount} from "ahooks";
 import { getLatestInstructions } from '@/services/system-config/manual-management';
 import {baseUrl} from "@/services/common";
@@ -30,7 +30,6 @@ const ManualUpload: React.FC<Props> = () => {
   const [current, setCurrent] = useState<number>(0)
   const [file, setFile] = useState([])
   const [isSpinning, setSpinning] = useState(true);
-
   const onTextSuccess = (text: string) => {
     setSpinning(false)
   }
@@ -44,11 +43,11 @@ const ManualUpload: React.FC<Props> = () => {
       setCurrent(num.category)
     }
   })
-  const downFile =  (id:string)=>{
+  const downFile =  (id:string,token:string)=>{
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', `${baseUrl.upload}/Download/GetFileById?fileId=${id}`, true,);    // 也可以使用POST方式，根据接口
+    xhr.open('GET', `${baseUrl.upload}/Download/GetFileById?fileId=${id}&token=${token}`, true,);    // 也可以使用POST方式，根据接口
     xhr.responseType = "blob";  // 返回类型blob
-    xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string);
+    xhr.setRequestHeader('Authorization', token as string);
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
     // @ts-ignore
     xhr.onload = function (e) {
@@ -64,12 +63,19 @@ const ManualUpload: React.FC<Props> = () => {
     xhr.send()
   }
   const getFile = async ()=>{
+    console.log(window.location.search.split('token='))
+    const str = window.location.search.split('token=')[1]
+    if (str === undefined){
+      message.warn('缺少请求token')
+      setSpinning(false)
+      return
+    }
     const newFile = await getLatestInstructions(current)
     if (!newFile) {
       setSpinning(false)
       return
     }
-    downFile(newFile.fileId)
+    downFile(newFile.fileId,str)
   }
   useEffect(()=>{
     if (current === 0) return

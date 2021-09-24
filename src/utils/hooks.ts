@@ -67,15 +67,27 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
 };
 
 export const useGetUserInfo = () => {
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
-  return userInfo;
+  try {
+    return JSON.parse(localStorage.getItem('userInfo') ?? '{}');
+  } catch (msg) {
+    return {};
+  }
 };
 
+export const useGetFunctionModules = () => {
+  try {
+    return JSON.parse(localStorage.getItem('functionModules') ?? '{}');
+  } catch (msg) {
+    return [];
+  }
+}
+
 export const useGetButtonJurisdictionArray = () => {
-  const buttonJurisdictionArray = JSON.parse(
-    localStorage.getItem('buttonJurisdictionArray') ?? '[]',
-  );
-  return buttonJurisdictionArray;
+  try {
+    return localStorage.getItem('buttonJurisdictionArray') ?? '[]';
+  } catch (msg) {
+    return {};
+  }
 };
 
 export const useGetProjectEnum = () => {

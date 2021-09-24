@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { MouseEvent } from 'react';
 import { useUpdateEffect } from 'ahooks';
 import type { MediaData } from '../../getComponentsByData';
@@ -31,7 +31,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
   content,
   index,
   preFullClick,
-  nextFullClick
+  nextFullClick,
 }) => {
 
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
@@ -50,6 +50,12 @@ const MediaImage: React.FC<MediaImageProps> = ({
     setPercent(100);
   }
 
+  useEffect(() => {
+    if(percent === 100) {
+      outoSizeHandler()
+    }
+  }, [percent])
+
   const downLoad = () => {
     const a = document.createElement("a");
     a.setAttribute("href", `${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`);
@@ -58,16 +64,14 @@ const MediaImage: React.FC<MediaImageProps> = ({
   }
 
   const onmouseMove = (e: MouseEvent) => {
-    if (isDrag) {
+    if (isDrag && percent !== 100) {
       setPosition({
         x: (p.x + e.nativeEvent.offsetX - startPosition.x),
         y: (p.y + e.nativeEvent.offsetY - startPosition.y)
       })
     }
   }
-
   
-
   const onmouseUp = () => {
     setIsDrag(false)
   }
@@ -101,7 +105,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
       if(index < 0){
         index = content.length - 1
       }
-    } while (content[index]?.type === 1)
+    } while (content[index]?.type === 2)
     setFsIndex(index)
   }
 
@@ -112,7 +116,8 @@ const MediaImage: React.FC<MediaImageProps> = ({
       if(index === content.length){
         index = 0
       }
-    } while (content[index]?.type === 1)
+    } while (content[index]?.type === 2)
+    console.log(content.map((item) => item.filePath))
     setFsIndex(index)
   }
 
@@ -132,7 +137,6 @@ const MediaImage: React.FC<MediaImageProps> = ({
             src={`${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
         </div>
-
         <div className={styles.AreaButtons}>
           <InputPercentNumber value={percent} onChange={setPercent} />
           <Button onClick={outoSizeHandler}><FullscreenExitOutlined />合适尺寸</Button>

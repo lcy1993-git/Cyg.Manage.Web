@@ -29,6 +29,7 @@ import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { removeAllotUser } from '@/services/project-management/all-project';
 import SelectAddListForm from '../select-add-list-form';
+import { divide } from 'lodash';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;

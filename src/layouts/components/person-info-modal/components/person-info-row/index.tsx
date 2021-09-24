@@ -1,6 +1,5 @@
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './index.less';
 
 interface PersonInfoRowProps {

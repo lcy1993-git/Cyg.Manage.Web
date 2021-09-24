@@ -116,7 +116,14 @@ export const loadLayer: any = (postData: any, layerName: any) => {
 
 // FindLineDetailInfo线条
 export const findLineDetailInfo = (params: any) => {
-  return request(`${baseUrl.manage}/api/WebGis/FindLineDetailInfo`, {
+  return request(`${baseUrl.manage}/WebGis/FindLineDetailInfo`, {
+    method: 'POST',
+    data: { ...params },
+  });
+};
+
+export const getMediaSign = (params: any) => {
+  return request(`${baseUrl.manage}/WebGis/GetProjectMediaTags`, {
     method: 'POST',
     data: { ...params },
   });
