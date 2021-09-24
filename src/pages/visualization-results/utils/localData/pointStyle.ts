@@ -34,7 +34,7 @@ export interface Options {
 }
 
 // 点样式
-const pointStyle = function (type: string, feature: Feature, selected: boolean, media: boolean) {
+const pointStyle = function (type: string, feature: Feature, selected: boolean, media?: boolean) {
     let iconFont = 'webgisIconFont';
     let iconFontText;
 

@@ -568,9 +568,11 @@ const clearTrackLayers = (trackLayers: any, type: number = 0) => {
 };
 
 // 多媒体标记
-const loadMediaSign = (layerGroups_: LayerGroup[], mediaSign_: boolean) => {
-  layerGroups = layerGroups_;
-  mediaSign = mediaSign_;
+const loadMediaSign = (layerGroups_?: LayerGroup[], mediaSign_?: boolean) => {
+  if(layerGroups_)
+    layerGroups = layerGroups_;
+  if(mediaSign_ != null)
+    mediaSign = mediaSign_;
   let projectIds:any = [];
   projects.forEach((item:ProjectList) =>{
     projectIds.push(item.id);
@@ -580,7 +582,6 @@ const loadMediaSign = (layerGroups_: LayerGroup[], mediaSign_: boolean) => {
   }
   const promise = getMediaSign(params);
   promise.then((data: any) => {
-    console.log(data)
     if(data.content && data.content.length > 0){
       layerGroups.forEach((layerGroup:LayerGroup) => {
         layerGroup.getLayers().getArray().forEach((layer:any) => {
@@ -656,7 +657,6 @@ const relocateMap = (
   layerGroups.forEach((layerGroup: LayerGroup) => {
     if(!layerGroup.getVisible()) {}
     else {
-      console.log(layerGroup.getProperties());
       layerGroup
         .getLayers()
         .getArray()

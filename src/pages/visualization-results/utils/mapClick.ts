@@ -4,7 +4,7 @@ import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import { transform } from 'ol/proj';
-import { getScale, clearHighlightLayer, getLayerByName, CalcTowerAngle, ToDegrees, getTrackRecordDateArray, getLineClusters } from './methods';
+import { getScale, clearHighlightLayer, getLayerByName, loadMediaSign, CalcTowerAngle, ToDegrees, getTrackRecordDateArray, getLineClusters } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
 import { findenumsValue } from './localData/mappingTagsDictionary';
 import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView, getDesignMaterialModifyList } from '@/services/visualization-results/visualization-results';
@@ -117,13 +117,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   clearHighlightLayer(map);
   let layerName = '';
   // 遍历选中的数据
-  map.forEachFeatureAtPixel(evt.pixel, async function (feature: any, layer: any) {
+  map.forEachFeatureAtPixel(evt.pixel, async function (feature_: any, layer: any) {
     // setRightSidebarVisiviabelFlag = true;
+    var feature:any;
+    console.log(feature_, 0);
     if (selected) return;
     selected = true;
     
-    console.log(feature);
-
     // let line_cluster_id = feature.getProperties().line_cluster_id;
     // let lineClusters =  getLineClusters();
     // let lineCluster =  lineClusters.find(lineCluster => lineCluster.id === line_cluster_id);
@@ -135,14 +135,16 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       return;
     }
     if (layer.getSource() instanceof Cluster) {
-      if (feature.get('features').length > 1) {
-        let lont = feature.get('features')[0].getGeometry().getCoordinates();
-        let item = feature
+      if (feature_.get('features').length > 1) {
+        let lont = feature_.get('features')[0].getGeometry().getCoordinates();
+        let item = feature_
           .get('features')
           .find((item: any) => item.getGeometry().getCoordinates().toString() !== lont.toString());
         if (item) return;
       }
-      feature = feature.get('features')[0];
+      feature = feature_.get('features')[0];
+    } else {
+      feature = feature_;
     }
     map.getTargetElement().style.cursor = 'wait';
     layerName = layer.getProperties().name;
@@ -235,6 +237,8 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     } else {
       highlightFeatures.push(feature);
     }
+    console.log(feature, 1);
+    
     // 轨迹图层也高亮
     if (layer.getProperties().name.indexOf('Track') < 0) {
       highlightFeatures.forEach(function (feature_) {
@@ -261,7 +265,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       });
       highlightLayer.setVisible(true);
     }
-
+    console.log(feature, 2);
     let featureId = feature.getProperties().id;
     // if (!featureId) featureId = feature.getId().split('.')[1];
     // 有些想要展示的字段需要通过接口进行查询
@@ -664,6 +668,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   ops.setRightSidebarVisiviabel(false);
   ops.setSurveyModalVisible(false);
   // }
+  loadMediaSign();
 };
 
 // 当前经纬度映射到HTML节点
@@ -742,8 +747,6 @@ export const mapPointermove = (evt: any, map: any) => {
 
 // 当前比例尺映射到HTML节点
 export const mapMoveend = (evt: any, map: any) => {
-  console.log(111);
-  
   const scaleSize: HTMLSpanElement = document.getElementById('currentScaleSize') as HTMLSpanElement;
   if (scaleSize !== null) scaleSize.innerHTML = getScale(map) || '';
 };
