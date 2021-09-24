@@ -21,6 +21,7 @@ import {
   relocateMap,
   loadTrackLayers,
   clearTrackLayers,
+  loadMediaSign,
   clearHighlightLayer,
   checkZoom,
 } from '../../utils/methods';
@@ -132,7 +133,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   useEffect(() => {
     // 加载多媒体标记
-
+    loadMediaSign(layerGroups,mediaSign);
   }, [mediaSign, JSON.stringify(projects)]);
 
   // 地图定位
