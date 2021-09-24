@@ -27,6 +27,12 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
   const nameRef = useRef<Input>(null);
   const emailRef = useRef<Input>(null);
 
+  const [refreshPhone, setRefreshPhone] = useState<boolean>(false)
+
+  const cancelPhone = () => {
+    setRefreshPhone(!refreshPhone)
+  }
+
   const { data: userInfo, run: request } = useRequest(() => getUserInfo(), {
     manual: true,
   });
@@ -65,14 +71,14 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
         </div>
         <div className={styles.companyInfoRow}>
           <div className={styles.title}>角色</div>
-          <div className={styles.content}>{userInfo?.userTypeText}</div>
+          <div className={styles.content}>{ userInfo?.isSuperAdmin ? "超级管理员" : userInfo?.userTypeText }</div>
         </div>
       </div>
       <PersonInfoRow
         name={userInfo?.phone}
         title="手机"
-        expandState={closeState}
-        editNode={<PhoneInfo phone={userInfo?.phone} refresh={run} />}
+        expandState={closeState || refreshPhone}
+        editNode={<PhoneInfo phone={userInfo?.phone} refresh={run} cancelPhone={cancelPhone}/>}
       />
       <PersonInfoRow
         name={userInfo?.email}
@@ -88,17 +94,20 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
                 type="primary"
                 onClick={() => {
                   const regEmail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-                  if (!regEmail.test(emailRef.current!.input.value)) {
+                  if(emailRef.current!.input.value.length > 20){
+                    message.error('邮箱字符过长');
+                  } else if (!(regEmail.test(emailRef.current!.input.value) || emailRef.current!.input.value === "")) {
                     message.error('邮箱格式有误');
                     return;
                   } else if (emailRef.current!.input.value === userInfo?.email) {
                     message.error('更换的邮箱号不能与原邮箱号相同');
                     return;
+                  } else {
+                    editUserInfo({ ...userInfo, email: emailRef.current!.input.value }).then(() => {
+                      run();
+                      message.success('更新成功');
+                    });
                   }
-                  editUserInfo({ ...userInfo, email: emailRef.current!.input.value }).then(() => {
-                    run();
-                    message.success('更新成功');
-                  });
                 }}
               >
                 保存
@@ -128,10 +137,15 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
                 <Button
                   type="primary"
                   onClick={() => {
-                    editUserInfo({ ...userInfo, name: nameRef.current!.input.value }).then(() => {
-                      run();
-                      message.success('更新成功');
-                    });
+                    if(nameRef.current!.input.value.length > 12){
+                      message.error("姓名长度不能超过12个字符")
+                    }else{
+                      editUserInfo({ ...userInfo, name: nameRef.current!.input.value }).then(() => {
+                        run();
+                        message.success('更新成功');
+                      });
+                    }
+
                   }}
                 >
                   保存

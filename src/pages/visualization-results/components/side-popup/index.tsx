@@ -499,34 +499,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     }
   };
 
-  // const DrawerWrap = useMemo(() => {
-  //   return (
-  //     rightSidebarVisible ? <div
-  //       title={'项目名称：' + data[1]}
-  //       className={styles.sidePopupWrap}
-  //     >
-  //       <div className={styles.title}>
-  //         <span className={styles.head}>项目名称：</span>
-  //         <span className={styles.body}>{data[1]}</span>
-  //       </div>
-  //       <div className={styles.drawerClose} onClick={() => setRightSidebarVisiviabel(false)}>
-  //         <CloseOutlined />
-  //       </div>
-  //       <Table
-  //         key={JSON.stringify(dataResource)}
-  //         bordered
-  //         style={{ height: 30 }}
-  //         pagination={false}
-  //         columns={columns}
-  //         dataSource={data[0]}
-  //         rowClassName={styles.row}
-  //         scroll={{ y: height - 160 }}
-  //         rowKey={(r) => r.propertyName}
-  //       />
-  //     </div> : null
-  //   );
-  // }, [rightSidebarVisible, JSON.stringify(data)]);
-
   return (
     <div className={styles.wrap}>
       <Modal
@@ -638,4 +610,4 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   );
 });
 
-export default SidePopupMergeThreeHoc(SidePopup);
+export default SidePopup;
