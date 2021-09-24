@@ -75,8 +75,24 @@ const RolePermissions: React.FC = () => {
           <>
             {buttonJurisdictionArray?.includes('role-permissions-start-using') && (
               <>
-                <Switch checked={isChecked} onChange={() => updateStatus(record)} />
-                {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
+                {/* <Switch checked={isChecked} onChange={() => updateStatus(record)} /> */}
+                {isChecked ? (
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    className="colorPrimary"
+                    onClick={() => updateStatus(record)}
+                  >
+                    启用
+                  </span>
+                ) : (
+                  <span
+                    onClick={() => updateStatus(record)}
+                    style={{ cursor: 'pointer' }}
+                    className="colorRed"
+                  >
+                    禁用
+                  </span>
+                )}
               </>
             )}
             {!buttonJurisdictionArray?.includes('role-permissions-start-using') &&
@@ -120,7 +136,7 @@ const RolePermissions: React.FC = () => {
   const searchElement = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="模板名称" width="248px">
+        <TableSearch width="248px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
@@ -217,6 +233,7 @@ const RolePermissions: React.FC = () => {
         },
         value,
       );
+
       await addAuthorizationItem(submitInfo);
       tableFresh();
       setAddFormVisible(false);
@@ -256,6 +273,7 @@ const RolePermissions: React.FC = () => {
         },
         values,
       );
+
       await updateAuthorizationItem(submitInfo);
       tableFresh();
       message.success('更新成功');

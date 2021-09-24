@@ -61,7 +61,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="模块" width="230px">
+        <TableSearch width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -400,7 +400,6 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         ref={tableRef}
         buttonRightContentSlot={tableElement}
         buttonLeftContentSlot={searchComponent}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/Modules/GetPageList"

@@ -98,7 +98,7 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
               options={libSelectData}
             />
           </TableSearch>
-          <Button onClick={() => sureReplace()} loading={requestLoading}>
+          <Button type="primary" onClick={() => sureReplace()} loading={requestLoading}>
             确认迭代
           </Button>
         </div>

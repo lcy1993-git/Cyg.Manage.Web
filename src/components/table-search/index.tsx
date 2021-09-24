@@ -17,7 +17,7 @@ const TableSearch: React.FC<TableSearchProps> = (props) => {
       className={`${styles.tableSearchComponent} ${className}`}
       style={{ width: width, marginLeft: marginLeft, paddingTop: paddingTop }}
     >
-      <div className={styles.tableSearchLabel}>{label}</div>
+      {label ? <div className={styles.tableSearchLabel}>{label}</div> : ''}
       <div className={styles.tableSearchContent}>{props.children}</div>
     </div>
   );

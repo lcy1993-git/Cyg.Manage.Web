@@ -46,7 +46,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="电缆通道" width="258px">
+        <TableSearch width="258px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -377,7 +377,6 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
         ref={tableRef}
         buttonRightContentSlot={tableElement}
         buttonLeftContentSlot={searchComponent}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/CableChannel"

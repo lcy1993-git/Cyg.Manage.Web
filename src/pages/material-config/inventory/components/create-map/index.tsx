@@ -353,7 +353,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
         <div className={styles.mapForm}>
           <div className={styles.resourceTable}>
             <GeneralTable
-              scroll={{ y: 547 }}
+              // scroll={{ y: 547 }}
               size="middle"
               ref={resourceTableRef}
               defaultPageSize={20}
@@ -371,6 +371,9 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
           </div>
 
           <div className={styles.currentMapTable}>
+            <div className={styles.currentMapTableTitle}>
+              <CommonTitle>当前映射关系</CommonTitle>
+            </div>
             <div className={styles.currentMapTableButtonContent}>
               <div className="flex1">
                 <div className={styles.currentMapTableSearch}>
@@ -381,7 +384,7 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
                       onSearch={(value: any) => hasMapSearch(value)}
                     />
                   </TableSearch>
-                  <TableSearch width="240px">
+                  <TableSearch width="240px" label="区域" marginLeft="20px">
                     <Select
                       options={areaOptions}
                       value={activeHasMapAreaId}
@@ -401,14 +404,11 @@ const CreateMap: React.FC<CreateMapProps> = (props) => {
                 </Button>
               </div>
             </div>
-            <div className={styles.currentMapTableTitle}>
-              <CommonTitle>当前映射关系</CommonTitle>
-            </div>
 
             <div className={styles.currentMapTableContent}>
               <Spin spinning={loading}>
                 <Table
-                  scroll={{ y: 547 }}
+                  // scroll={{ y: 547 }}
                   size="middle"
                   locale={{
                     emptyText: <EmptyTip className="pt20 pb20" />,

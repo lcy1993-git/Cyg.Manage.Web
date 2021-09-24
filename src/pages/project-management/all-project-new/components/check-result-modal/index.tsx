@@ -35,26 +35,29 @@ interface CheckResultModalProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
   changeFinishEvent?: () => void;
   projectInfo?: any;
-  isResult?: boolean;
 }
 
 const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  // const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [compileKeys, setCompileKeys] = useState<React.Key[]>([]);
   const [currentTab, setCurrentTab] = useState<string>('design');
-  const { projectInfo, isResult = false } = props;
+  const { projectInfo } = props;
   const [requestLoading, setRequestLoading] = useState(false);
 
-  const [currentFileInfo, setCurrentFileInfoErr] = useState<CurrentFileInfo>({path: "", type: undefined, title: ""})
+  const [currentFileInfo, setCurrentFileInfoErr] = useState<CurrentFileInfo>({
+    path: '',
+    type: undefined,
+    title: '',
+  });
 
   const setCurrentFileInfo = (info: CurrentFileInfo) => {
-    if(info.type === 'doc' || info.type === 'xls'){
+    if (info.type === 'doc' || info.type === 'xls') {
       message.error(`当前版本暂不支持${info.type}文件预览，请导出该文件再本地进行预览`);
-    }else{
-      setCurrentFileInfoErr(info)
+    } else {
+      setCurrentFileInfoErr(info);
     }
-  }
+  };
 
   const { data: resultData, run, loading } = useRequest(getResultTreeData, {
     manual: true,
@@ -64,10 +67,10 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     manual: true,
   });
 
-  const closeEvent = () => {
-    setState(false);
-    // changeFinishEvent?.();
-  };
+  // const closeEvent = () => {
+  //   setState(false);
+  //   // changeFinishEvent?.();
+  // };
 
   const mapTreeData = (data: any) => {
     return {
@@ -186,61 +189,60 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   };
 
   useEffect(() => {
-    if (state) {
-      if (currentTab === 'design') {
-        run(projectInfo.projectId);
-      }
+    if (currentTab === 'design') {
+      run(projectInfo.projectId);
+    }
+    if (currentTab === 'compile') {
       getCompileTree(projectInfo.projectId);
     }
-  }, [state, currentTab]);
+  }, [currentTab]);
 
   return (
     <>
-      {isResult && (
-        <Spin spinning={requestLoading} tip="正在生成...">
-          <div className={`${styles.resultButton} flex`}>
-            <div className="flex2" style={{ paddingLeft: '20px' }}>
-              <span className={styles.titleIcon}></span>
-              <span className={styles.helpTitle}>项目名称: </span>
-              <span className={styles.projectTitle}>{projectInfo?.name}</span>
-            </div>
-            <div className="flex1">
-              <span className={styles.titleIcon}></span>
-              <span className={styles.helpTitle}>当前阶段: </span>
-              <span>{projectInfo?.stageText}</span>
-            </div>
-            <div className={styles.resultButtonContent} style={{ paddingRight: '20px' }}>
-              <Button className="mr7" onClick={() => refresh()}>
-                刷新
-              </Button>
-              <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
-                生成
-              </Button>
-            </div>
+      <Spin spinning={requestLoading} tip="正在生成...">
+        <div className={`${styles.resultButton} flex`}>
+          <div className="flex2" style={{ paddingLeft: '20px' }}>
+            <span className={styles.titleIcon}></span>
+            <span className={styles.helpTitle}>项目名称: </span>
+            <span className={styles.projectTitle}>{projectInfo?.name}</span>
           </div>
-          <div className={styles.resultTable}>
-            <Tabs className="normalTabs" onChange={(key: string) => setCurrentTab(key)} type="card">
-              <TabPane key="design" tab="设计成果">
-                <DesignResultTab
-                  designData={resultData?.map(mapTreeData)}
-                  createEvent={setCheckedKeys}
-                  setTabEvent={setCurrentTab}
-                  setCurrentFileInfo={setCurrentFileInfo}
-                />
-              </TabPane>
-              <TabPane key="compile" tab="项目需求编制成果">
-                <CompileResultTab
-                  compileResultData={compileResultData?.map(mapTreeData)}
-                  createEvent={setCompileKeys}
-                  setTabEvent={setCurrentTab}
-                  setCurrentFileInfo={setCurrentFileInfo}
-                />
-              </TabPane>
-            </Tabs>
+          <div className="flex1">
+            <span className={styles.titleIcon}></span>
+            <span className={styles.helpTitle}>当前阶段: </span>
+            <span>{projectInfo?.stageText}</span>
           </div>
-        </Spin>
-      )}
-      {!isResult && (
+
+          <div className={styles.resultButtonContent} style={{ paddingRight: '20px' }}>
+            <Button className="mr7" onClick={() => refresh()}>
+              刷新
+            </Button>
+            <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
+              导出
+            </Button>
+          </div>
+        </div>
+        <div className={styles.resultTable}>
+          <Tabs className="normalTabs" onChange={(key: string) => setCurrentTab(key)} type="card">
+            <TabPane key="design" tab="设计成果">
+              <DesignResultTab
+                designData={resultData?.map(mapTreeData)}
+                createEvent={setCheckedKeys}
+                setTabEvent={setCurrentTab}
+                setCurrentFileInfo={setCurrentFileInfo}
+              />
+            </TabPane>
+            <TabPane key="compile" tab="项目需求编制成果">
+              <CompileResultTab
+                compileResultData={compileResultData?.map(mapTreeData)}
+                createEvent={setCompileKeys}
+                setTabEvent={setCurrentTab}
+                setCurrentFileInfo={setCurrentFileInfo}
+              />
+            </TabPane>
+          </Tabs>
+        </div>
+      </Spin>
+      {/* {!isResult && (
         <Modal
           maskClosable={false}
           title="查看成果"
@@ -301,19 +303,21 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
             </div>
           </Spin>
         </Modal>
-      )}
+      )} */}
       <Modal
         maskClosable={false}
         className={styles.fileRead}
         title={`预览-${currentFileInfo.title}`}
-        width={"99%"}
-        style={{top: 20}}
+        width={'99%'}
+        style={{ top: 20 }}
         visible={!!currentFileInfo.type}
         destroyOnClose
         footer={null}
-        onCancel={() => setCurrentFileInfo({...currentFileInfo, type: undefined})}
+        onCancel={() => setCurrentFileInfo({ ...currentFileInfo, type: undefined })}
       >
-        { currentFileInfo.path && <UrlFileView params={{path: currentFileInfo.path}} fileType={currentFileInfo.type!} />}
+        {currentFileInfo.path && (
+          <UrlFileView params={{ path: currentFileInfo.path }} fileType={currentFileInfo.type!} />
+        )}
       </Modal>
     </>
   );

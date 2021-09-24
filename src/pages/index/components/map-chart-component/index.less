@@ -8,7 +8,7 @@
 
     .mapChartComponentProjectNumber {
       width: 218px;
-      height: 204px;
+      height: 154px;
       z-index: 10001;
       margin-right: 50px;
       .projectNumberWrap {
@@ -24,17 +24,38 @@
           display: flex;
           flex-direction: column;
           justify-content: space-between;
+          .titleNumberFlex{
+            padding-top:10px;
+            display: flex;
+            justify-content: space-between;
+            .titleTips{
+              width:50%;
+            }
+          }
+          
           .number {
             display: flex;
             justify-content: space-between;
             margin-bottom: 8px;
           }
+          .toVisualBtn{
+            border-style: none;
+            background-color: transparent;
+            color:#4DA944;
+            transition: all .5s;
+            &:hover{
+              box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            }
+          }
           .exportButton {
-            background-color: #0076FF;
-            width: 100%;
+            color:#4DA944;
+            border:1px solid #4DA944;
+            background-color: transparent;
+            width: 60%;
             animation: all 1s linear;
+            transition: all .5s;
             &:hover {
-              background-color: #0d7eff;
+             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
             }
           }
         }

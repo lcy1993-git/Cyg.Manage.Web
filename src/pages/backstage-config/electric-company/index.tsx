@@ -41,7 +41,7 @@ const ElectricCompany: React.FC = () => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="电力公司" width="230px">
+        <TableSearch width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -250,7 +250,6 @@ const ElectricCompany: React.FC = () => {
         titleSlot={titleSlotElement}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         url="/ElectricityCompany/GetPagedList"
         tableTitle="电力公司"

@@ -168,7 +168,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
       >
         <GeneralTable
           size="middle"
-          scroll={{ y: 480 }}
+          // scroll={{ y: 480 }}
           ref={inventoryTableRef}
           getSelectData={(data) => setInventorySelectArray(data)}
           buttonRightContentSlot={inventoryTableAddButton}

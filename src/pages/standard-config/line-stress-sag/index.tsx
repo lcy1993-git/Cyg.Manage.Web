@@ -39,7 +39,7 @@ const LineStressSag: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="应力弧垂表" width="298px">
+        <TableSearch width="298px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -160,7 +160,6 @@ const LineStressSag: React.FC<libParams> = (props) => {
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/LineStressSag/GetPageList"

@@ -33,6 +33,8 @@ interface TreeTableProps<T> extends TableProps<T> {
   showButtonContent?: boolean;
   emptyContent?: string;
   imgSrc?: 'empty' | 'finish';
+  isFold?: boolean;
+  noSearch?: boolean;
 }
 
 const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<any>) => {
@@ -50,10 +52,13 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
     getSelectData,
     params,
     imgSrc,
+    isFold = true,
+    noSearch = false,
     ...rest
   } = props;
 
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([]);
+  const [isUnfold, setIsUnFold] = useState<boolean>(false);
 
   const { data = [], loading, run } = useRequest(
     () => treeTableCommonRequeset<T>({ url, params }),
@@ -61,6 +66,8 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   );
 
   const finalyDataSource = url ? data : dataSource;
+
+  const noSearchClass = noSearch ? styles.noSearch : '';
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
@@ -89,6 +96,7 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   };
   // 全部展开
   const allOpenEvent = () => {
+    setIsUnFold(true);
     const flattenData = flatten(finalyDataSource)
       .filter((item: any) => item.children && item.children.length > 0)
       .map((item: any) => item.id);
@@ -96,25 +104,35 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
   };
   // 全部折叠
   const allCloseEvent = () => {
+    setIsUnFold(false);
     setExpandedRowKeys([]);
   };
 
   return (
     <div className={styles.treeTableData}>
-      {showButtonContent && (
-        <div className={styles.treeTbaleButtonsContent}>
+      {leftButtonsSlot && (
+        <div className={`${styles.treeTbaleButtonsContent} ${noSearchClass}`}>
           <div className={styles.treeTableButtonsLeftContent}>{leftButtonsSlot?.()}</div>
           <div className={styles.treeTableButtonsRightContent}>
-            <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
-            <div className={styles.treeTableButtonCommon}>
-              <Button className={styles.foldButton} onClick={() => allOpenEvent()}>
-                <UpOutlined />
-                全部展开
-              </Button>
-              <Button onClick={() => allCloseEvent()}>
-                <DownOutlined />
-                全部折叠
-              </Button>
+            <div className={styles.treeTableButtonSlot}>
+              {rightButtonSlot?.()}
+              <div className={styles.treeTableButtonCommon}>
+                {isFold ? (
+                  isUnfold ? (
+                    <Button onClick={() => allCloseEvent()}>
+                      <DownOutlined />
+                      全部折叠
+                    </Button>
+                  ) : (
+                    <Button onClick={() => allOpenEvent()}>
+                      <UpOutlined />
+                      全部展开
+                    </Button>
+                  )
+                ) : (
+                  ''
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -123,6 +141,28 @@ const TreeTable = forwardRef(<T extends {}>(props: TreeTableProps<T>, ref?: Ref<
       <div className={styles.treeTableOtherSlots}>{otherSlot?.()}</div>
       <div className={styles.treeTableTitleShowContent}>
         {tableTitle ? <CommonTitle>{tableTitle}</CommonTitle> : null}
+        {!leftButtonsSlot && (
+          <div className={styles.treeTableButtonsRightContent} style={{ display: 'inline-flex' }}>
+            <div className={styles.treeTableButtonSlot}>{rightButtonSlot?.()}</div>
+            <div className={styles.treeTableButtonCommon}>
+              {isFold ? (
+                isUnfold ? (
+                  <Button onClick={() => allCloseEvent()}>
+                    <DownOutlined />
+                    全部折叠
+                  </Button>
+                ) : (
+                  <Button onClick={() => allOpenEvent()}>
+                    <UpOutlined />
+                    全部展开
+                  </Button>
+                )
+              ) : (
+                ''
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <div className={styles.treeTableContent}>
         <Spin spinning={loading}>

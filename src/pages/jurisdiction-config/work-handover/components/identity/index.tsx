@@ -108,6 +108,7 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
         <TreeTable
           showButtonContent={false}
           ref={tableRef}
+          isFold={false}
           getSelectData={(data) => setTableSelectRows(data)}
           columns={columns}
           url="/UserHandover/GetCompanyGroups"
