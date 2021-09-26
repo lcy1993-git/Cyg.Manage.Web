@@ -115,17 +115,17 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   };
 
   const deleteConfirm = (id: string) => {
-    Modal.confirm({
-      title: '删除外审人员',
-      icon: <ExclamationCircleOutlined />,
-      content:
-        stepData.length > 1
-          ? '删除该人员后将不再保存该人员的评审结果记录，请确认?'
-          : '删除最后一个审核人之后项目将退回至[待安排外审]阶段，确认删除该人员',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => deleteAllotUser(id),
-    });
+    if (stepData.length > 1) {
+      Modal.confirm({
+        title: '删除外审人员',
+        icon: <ExclamationCircleOutlined />,
+        content: '删除该人员后将不再保存该人员的评审结果记录，请确认?',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => deleteAllotUser(id),
+      });
+    }
+    message.error('至少保留一位外审人员');
   };
 
   const prevEvent = () => {

@@ -23,7 +23,7 @@ const Login: React.FC = () => {
       <div className={styles.loginPageFooter}>
         {/* <span>©2018- 四川长园工程勘察设计有限公司 版权所有 蜀ICP备18013772号</span> */}
         <span className={styles.copyRightTip}>版权所有</span>
-        <span>©工程设计平台版权所有</span>
+        <span>©配网云设计平台版权所有</span>
       </div>
     </div>
   );
