@@ -133,6 +133,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       clearHighlightLayer(map);
       return;
     }
+    if (layer.getProperties().name.includes('mediaSign')) {
+      console.log(feature_.getProperties().data);
+      return;
+    }
+
     if (layer.getSource() instanceof Cluster) {
       if (feature_.get('features').length > 1) {
         let lont = feature_.get('features')[0].getGeometry().getCoordinates();
@@ -236,7 +241,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     } else {
       highlightFeatures.push(feature);
     }
-    console.log(feature, 1);
     
     // 轨迹图层也高亮
     if (layer.getProperties().name.indexOf('Track') < 0) {
@@ -264,7 +268,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       });
       highlightLayer.setVisible(true);
     }
-    console.log(feature, 2);
     let featureId = feature.getProperties().id;
     // if (!featureId) featureId = feature.getId().split('.')[1];
     // 有些想要展示的字段需要通过接口进行查询
