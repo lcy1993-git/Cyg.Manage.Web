@@ -34,7 +34,7 @@ let mapStatus = {
 };
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
-  const { setCurrentAreaInfo, currentAreaInfo, isConfig} = props;
+  const { setCurrentAreaInfo, currentAreaInfo, isConfig } = props;
   const [activeCityCode, setActiveCityCode] = useState<string>();
 
   const [activeAreaCode, setActiveAreaCide] = useState<string>();
@@ -383,10 +383,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <span>当前区域项目数量</span>
                   <span>{projectTotalNumber}个</span>
                 </div>
-                <div>
+                <div style={{ textAlign: 'center' }}>
                   <Button
                     loading={requestExportLoading}
-                    type="primary"
                     onClick={exportHomeStatisticEvent}
                     className={styles.exportButton}
                   >
@@ -396,40 +395,33 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
               </div>
 
               <div className={styles.project1}>
-                <div>包含未选择行政</div>
-                <div className={styles.number}>
-                  <span>级别区域的项目</span>
-                  <span>{ohterProjectTotalNumber}个</span>
-                </div>
-                <div>
-                  {ohterProjectTotalNumber > 0 ? (
-                    <a href="/visualization-results/result-page">
-                      <Button
-                        loading={false}
-                        type="primary"
-                        onClick={handlerOtherClick}
-                        style={{ width: '100%' }}
-                      >
-                        跳转可视化
-                      </Button>
-                    </a>
-                  ) : (
-                    <Button
-                      loading={false}
-                      type="primary"
-                      onClick={handlerOtherClick}
-                      style={{ width: '100%' }}
-                    >
-                      跳转可视化
-                    </Button>
-                  )}
+                <div className={styles.titleNumberFlex}>
+                  <div className={styles.titleTips}>包含未选择行政级别区域的项目</div>
+                  <div>
+                    <div style={{ textAlign: 'right' }}>{ohterProjectTotalNumber}个</div>
+                    <div>
+                      {ohterProjectTotalNumber > 0 ? (
+                        <a href="/visualization-results/result-page">
+                          <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
+                            跳转可视化
+                          </span>
+                        </a>
+                      ) : (
+                        <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
+                          跳转可视化
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </ChartBox>
         </div>
         <div className="flex1"></div>
-        <div className={`${styles.mapChartComponentProjectAreaTab} ${isConfig ? styles.isConfig : ''}`}>
+        <div
+          className={`${styles.mapChartComponentProjectAreaTab} ${isConfig ? styles.isConfig : ''}`}
+        >
           <span className={`${styles.areaSpan} ${styles.hasChoose}`} onClick={provinceClickEvent}>
             省
           </span>

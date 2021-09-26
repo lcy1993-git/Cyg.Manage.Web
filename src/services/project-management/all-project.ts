@@ -872,3 +872,13 @@ export const againInherit = (projectId: string) => {
     request(`${baseUrl.project}/Porject/InheritTryAgain`, { method: 'GET', params: { projectId } }),
   );
 };
+
+//下载预览word&Excel文件
+export const checkReviewResult = (params: EngineerFile) => {
+  return cyRequest(() =>
+    request(`${baseUrl.review}/ReviewOpinionFile/query`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};

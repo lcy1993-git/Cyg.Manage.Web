@@ -126,7 +126,7 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
 
   const tableLeftSlot = (
     <div className={styles.searchArea}>
-      <TableSearch label="关键词" width="230px">
+      <TableSearch width="230px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}

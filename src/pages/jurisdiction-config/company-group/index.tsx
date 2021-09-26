@@ -192,6 +192,9 @@ const CompanyGroup: React.FC = () => {
     <PageCommonWrap>
       <TreeTable
         ref={tableRef}
+        isFold={false}
+        noSearch={true}
+        showButtonContent={false}
         tableTitle="部组管理"
         rightButtonSlot={functionModuleButton}
         getSelectData={(data) => setTableSelectRows(data)}
@@ -214,7 +217,7 @@ const CompanyGroup: React.FC = () => {
         </Form>
       </Modal>
       <Modal
-      maskClosable={false}
+        maskClosable={false}
         title="编辑-部组"
         width="680px"
         visible={editFormVisible}

@@ -11,6 +11,7 @@ import { ImportOutlined } from '@ant-design/icons';
 import MapLibModal from '../map-lib-modal';
 import CheckMapping from '../check-mapping-form';
 import CreateMap from '../create-map';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const HasMapModal: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -25,6 +26,7 @@ const HasMapModal: React.FC = () => {
   const [inventoryId, setInventoryId] = useState<string>('');
   const [libId, setLibId] = useState<string>('');
   const [inventoryName, setInventoryName] = useState<string>('');
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const tableElement = () => {
     return (
@@ -33,6 +35,11 @@ const HasMapModal: React.FC = () => {
           <ImportOutlined />
           新建映射
         </Button>
+
+        <Button className="mr7" onClick={() => editMapEvent()}>
+          编辑映射
+        </Button>
+
         <Popconfirm
           title="您确定要删除该映射?"
           onConfirm={deleteMapEvent}
@@ -41,13 +48,6 @@ const HasMapModal: React.FC = () => {
         >
           <Button className="mr7">删除映射</Button>
         </Popconfirm>
-
-        <Button className="mr7" onClick={() => editMapEvent()}>
-          编辑映射
-        </Button>
-        <Button className="mr7" onClick={() => checkMapEvent()}>
-          查看映射
-        </Button>
       </div>
     );
   };
@@ -79,14 +79,10 @@ const HasMapModal: React.FC = () => {
     setEditMapListModalVisible(true);
   };
 
-  const checkMapEvent = () => {
-    if (tableSelectRows && tableSelectRows.length === 0) {
-      message.warning('请选择要查看的映射');
-      return;
-    }
-    setInventoryId(tableSelectRows[0].inventoryOverviewId);
-    setInventoryName(tableSelectRows[0].name);
-    setMappingId(tableSelectRows[0].id);
+  const checkMapEvent = (inventoryOverviewId: string, name: string, mappingId: string) => {
+    setInventoryId(inventoryOverviewId);
+    setInventoryName(name);
+    setMappingId(mappingId);
     setMappingListModalVisible(true);
   };
 
@@ -111,6 +107,23 @@ const HasMapModal: React.FC = () => {
       index: 'resourceLibName',
       title: '资源库名称',
       width: 240,
+      render: (text: any, record: any) => {
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('inventory-check') && (
+              <span
+                onClick={() => checkMapEvent(record.inventoryOverviewId, record.name, record.id)}
+                className={styles.checkHasMap}
+              >
+                {record.resourceLibName}
+              </span>
+            )}
+            {!buttonJurisdictionArray?.includes('inventory-check') && (
+              <span>{record.resourceLibName}</span>
+            )}
+          </>
+        );
+      },
     },
     {
       dataIndex: 'name',
@@ -135,7 +148,6 @@ const HasMapModal: React.FC = () => {
     <>
       <GeneralTable
         ref={tableRef}
-        needCommonButton={true}
         buttonRightContentSlot={tableElement}
         columns={columns}
         requestSource="resource"
@@ -143,11 +155,6 @@ const HasMapModal: React.FC = () => {
         getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="已映射列表"
         type="radio"
-        extractParams={
-          {
-            // keyWord: searchKeyWord,
-          }
-        }
       />
 
       <MapLibModal

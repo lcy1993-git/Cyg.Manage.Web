@@ -32,7 +32,7 @@ const Drawing: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="图纸" width="230px">
+        <TableSearch width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -153,7 +153,6 @@ const Drawing: React.FC<libParams> = (props) => {
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/Chart/GetPageList"
