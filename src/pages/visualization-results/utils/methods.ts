@@ -19,6 +19,8 @@ import { getXmlData, sortByTime, LineCluster } from './utils';
 var projects: any;
 var layerGroups: LayerGroup[];
 var mediaSign: boolean;
+var mediaSignData: any;
+var timer: any;
 // var showData: any = [];
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
@@ -77,8 +79,14 @@ const checkZoom = (evt: any, map: any) => {
       lineCluster.updateLabelControlValue(false);
     }
   }
-  if(mediaSign)
-    loadMediaSign(layerGroups, true)
+  
+  timer && clearInterval(timer);
+  if(mediaSign){
+    loadMediaSign(map, layerGroups, true);
+    timer = setInterval(function() {
+      loadMediaSign(map, layerGroups, true);
+  }, 1000);
+  }
 }
 
 const loadSurveyLayers = async (postData: string, groupLayers: LayerGroup[]) => {
@@ -568,11 +576,69 @@ const clearTrackLayers = (trackLayers: any, type: number = 0) => {
 };
 
 // 多媒体标记
-const loadMediaSign = (layerGroups_?: LayerGroup[], mediaSign_?: boolean) => {
+const loadMediaSign = (map:any, layerGroups_?: LayerGroup[], mediaSign_?: boolean) => {
   if(layerGroups_)
     layerGroups = layerGroups_;
+
   if(mediaSign_ != null)
     mediaSign = mediaSign_;
+
+  
+  if(!mediaSignData)
+    loadMediaSignData();
+  if(!mediaSignData)
+    return;
+    mediaSignData.then((data: any) => {
+    if(data.content && data.content.length > 0){
+      layerGroups.forEach((layerGroup:any) => {
+        let l:any = layerGroup.getLayers().getArray().find((l:any) => l.getProperties().name.includes('mediaSign'));
+        if(l)
+          l.getSource().clear();
+        layerGroup.getLayers().getArray().forEach((layer:any) => {
+          let layerName = layer.getProperties().name;
+          let layerType = layerName.split('_')[0];
+          if(layerName !== layerType + '_mediaSign'){
+            layer.getSource().getFeatures().forEach((item:any) => {
+              if(item.getProperties().features){
+                for(let i=0; i<item.getProperties().features.length; i++){
+                 let feature = item.getProperties().features[i];
+                 data.content.forEach((d:any) => {
+                  if(feature.getProperties().id === d.main_ID){
+                    // layerName =  layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
+                    if (!layerGroups[layerType + '_mediaSign']) {
+                      var source = new VectorSource();
+                      layerGroups[layerType + '_mediaSign'] = new Vector({
+                        source,
+                        // declutter: true,
+                        zIndex: 100,
+                      });
+                      layerGroups[layerType + '_mediaSign'].set('name', layerType + '_mediaSign');
+                    }
+                    let itemClone = item.clone();
+                    let style  = pointStyle(layer.get('name'),feature, false, mediaSign)
+                    itemClone.setStyle(style);
+                    itemClone.set('data', d);
+                    layerGroups[layerType + '_mediaSign'].getSource().addFeature(itemClone);
+                    if(!getLayerByName(layerType + '_mediaSign', layerGroup.getLayers().getArray()))
+                      layerGroup.getLayers().push(layerGroups[layerType + '_mediaSign']);
+                    
+                  }
+                 })
+                }
+                  
+              }
+            })
+          }   
+        })
+      })
+    }
+  })
+}
+
+const loadMediaSignData = () => {
+  if(!mediaSign)
+    return;
+
   let projectIds:any = [];
   projects.forEach((item:ProjectList) =>{
     projectIds.push(item.id);
@@ -580,30 +646,7 @@ const loadMediaSign = (layerGroups_?: LayerGroup[], mediaSign_?: boolean) => {
   let params:any = {
     projectIds
   }
-  const promise = getMediaSign(params);
-  promise.then((data: any) => {
-    if(data.content && data.content.length > 0){
-      layerGroups.forEach((layerGroup:LayerGroup) => {
-        layerGroup.getLayers().getArray().forEach((layer:any) => {
-          layer.getSource().getFeatures().forEach((item:any) => {
-            if(item.getProperties().features){
-              let feature = item.getProperties().features[0];
-                data.content.forEach((d:any) => {
-                if(feature.getProperties().id === d.main_ID){
-                  let style  = pointStyle(layer.get('name'),feature, false, mediaSign)
-                  item.setStyle(style);
-                }
-               
-                // let style  = pointStyle(layer.get('name'),feature, true)
-                  // feature.setStyle(style);
-                  // feature.setGeometry(null);
-               })
-            }
-          })
-        })
-      })
-    }
-  })
+  mediaSignData = getMediaSign(params);
 }
 
 // 按时间排序
@@ -808,6 +851,7 @@ export {
   loadTrackLayers,
   clearTrackLayers,
   loadMediaSign,
+  loadMediaSignData,
   relocateMap,
   getScale,
   CalcTowerAngle,

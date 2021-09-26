@@ -22,6 +22,7 @@ import {
   loadTrackLayers,
   clearTrackLayers,
   loadMediaSign,
+  loadMediaSignData,
   clearHighlightLayer,
   checkZoom,
 } from '../../utils/methods';
@@ -123,6 +124,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
     map && refreshMap(ops, projects!);
+    loadMediaSignData();
   }, [JSON.stringify(projects)]);
 
   // 动态刷新图层
@@ -140,8 +142,11 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   useEffect(() => {
     // 加载多媒体标记
-    loadMediaSign(layerGroups,mediaSign);
-  }, [mediaSign, JSON.stringify(projects)]);
+    if(map){
+        loadMediaSign(map,layerGroups,mediaSign);    
+    }    
+     
+  }, [mediaSign]);
 
   // 地图定位
   useEffect(() => {
