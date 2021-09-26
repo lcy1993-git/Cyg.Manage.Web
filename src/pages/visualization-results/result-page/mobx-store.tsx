@@ -29,7 +29,9 @@ export interface VisualizationResultsStateType {
   isFilter?: boolean; //为了判断是不是通过filter来是刷新tree
   // startDate: string | undefined, // 开始日期
   // endDate: string | undefined, // 终止日期
-  rangeDate: RangeDate
+  rangeDate: RangeDate;
+  mediaListVisibel: boolean; // 查看多媒体文件
+  mediaListData: any[]; // 多媒体数据
 }
 
 const initState = {
@@ -49,7 +51,9 @@ const initState = {
   rangeDate: {
   startDate: undefined,
   endDate: undefined,
-  }
+  },
+  mediaListVisibel: true,
+  mediaListData: []
 };
 
 function Store(vState: VisualizationResultsStateType) {
@@ -67,6 +71,12 @@ function Store(vState: VisualizationResultsStateType) {
     },
     setOnPositionClickState() {
       this.vState.onPositionClickState = this.vState.onPositionClickState;
+    },
+    setMediaListVisibel(flag: boolean) {
+      this.vState.mediaListVisibel = flag;
+    },
+    setMediaListData(data: any[]){
+      this.vState.mediaListData = data
     },
     setProjectIdList(checkedProjectIdList: ProjectList[]) {
       this.vState.checkedProjectDateList = [

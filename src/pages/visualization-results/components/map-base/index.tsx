@@ -22,6 +22,7 @@ import {
   loadTrackLayers,
   clearTrackLayers,
   loadMediaSign,
+  loadMediaSignData,
   clearHighlightLayer,
   checkZoom,
 } from '../../utils/methods';
@@ -47,6 +48,13 @@ const BaseMap = observer((props: BaseMapProps) => {
   const [sideMenuVisibel, setSideMenuVisibel] = useState(true);
   // 从Vstate获取外部传入的数据
   const store = useContainer();
+
+  // 添加多媒体方法
+  const addMediaData = (listData: any) => {
+    store.setMediaListVisibel(true);
+    store.setMediaListData(listData)
+  }
+
   const { vState } = store;
   const {
     checkedProjectIdList: projects,
@@ -99,7 +107,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
     // 地图点击事件
     initialMap.on('click', (e: Event) =>
-      mapClick(e, initialMap, { setRightSidebarVisiviabel, setRightSidebarData, setSurveyModalVisible, setSurveyModalData }),
+      mapClick(e, initialMap, { setRightSidebarVisiviabel, setRightSidebarData, setSurveyModalVisible, setSurveyModalData, addMediaData }),
     );
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap));
     initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap));
@@ -116,6 +124,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel };
     map && refreshMap(ops, projects!);
+    loadMediaSignData();
   }, [JSON.stringify(projects)]);
 
   // 动态刷新图层
@@ -133,8 +142,11 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   useEffect(() => {
     // 加载多媒体标记
-    loadMediaSign(layerGroups,mediaSign);
-  }, [mediaSign, JSON.stringify(projects)]);
+    if(map){
+        loadMediaSign(map,layerGroups,mediaSign);    
+    }    
+     
+  }, [mediaSign]);
 
   // 地图定位
   useEffect(() => {
