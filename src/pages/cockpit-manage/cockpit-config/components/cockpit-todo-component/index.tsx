@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { CockpitConfigContext } from '../../context';
-import TodoComponent from '@/pages/index/components/to-do';
+import TodoComponent from '@/pages/index/components/to-do-second';
 
 interface CockpitConfigTodoComponentProps {
   componentProps?: string[];

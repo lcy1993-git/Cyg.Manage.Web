@@ -33,7 +33,7 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
     case 'toDo':
-      return <ToDo />;
+      return <ToDo componentProps={componentProps}/>;
       break;
     case 'mapComponent':
       return <MapComponent componentProps={componentProps} />;
@@ -54,6 +54,9 @@ const getComponentByType = (type: string, componentProps: any) => {
       return <ProjectProgress />;
       break;
     case 'projectRefreshData':
+      return <ProjectRefreshListWrapper componentProps={componentProps} />;
+      break;
+    case 'projectNumber':
       return <ProjectNumber componentProps={componentProps} />;
       break;
     default:
