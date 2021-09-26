@@ -171,7 +171,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props;
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
-  
+
   const [activeType, setActiveType] = useState<string | undefined>(undefined);
   const [threeModal, setThtreeModal] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState(dataResource);
@@ -254,7 +254,9 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const [mediaIndex, setMediaIndex] = useState<number>(0);
-  const { checkedProjectIdList } = useContainer().vState;
+  const store = useContainer();
+  const { vState, setMediaListVisibel } = useContainer();
+  const { checkedProjectIdList, mediaListVisibel, mediaListData } = store.vState;
 
   const data = useMemo(() => {
     const title = dataSource.find((o) => o.propertyName === 'title')?.data;
@@ -564,6 +566,34 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           </>
         )}
       </Modal>
+      <Modal
+        title="查看多媒体文件"
+        centered
+        visible={mediaListVisibel}
+        width="96%"
+        onOk={onOkClick}
+        onCancel={() => store.setMediaListVisibel(false)}
+        width={1200}
+        maskClosable={true}
+      >
+        <Table
+          columns={mediaColumns}
+          dataSource={mediaListData}
+          rowKey={(e) => e.id}
+          pagination={false}
+        ></Table>
+        <Modal
+          title="多媒体查看"
+          visible={mediaVisiable}
+          width="96%"
+          onCancel={() => setMediaVisiable(false)}
+          onOk={() => setMediaVisiable(false)}
+          destroyOnClose={true}
+          className={styles.mediaModal}
+        >
+          <MediaModal content={mediaData?.content ?? []} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex} />
+        </Modal>
+      </Modal>
       {
         rightSidebarVisible ? <div
           title={'项目名称：' + data[1]}
@@ -596,14 +626,14 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         rightSidebarVisible && threeModal ? <div
           className={styles.threeModalWrap}
           style={{
-          width: window.innerWidth - 540,
-          height: window.innerHeight - 228,
-        }}>
+            width: window.innerWidth - 540,
+            height: window.innerHeight - 228,
+          }}>
           <div
             className={classnames(styles.closeButton, styles.link)}
             onClick={() => setThtreeModal(false)}
           ><StepBackwardOutlined />收起</div>
-          <iframe key={threeRouter} width="100%" height="100%" src={`http://10.6.1.53:8036/${threeRouter}`} style={{backgroundColor: "#fff"}}></iframe>
+          <iframe key={threeRouter} width="100%" height="100%" src={`http://10.6.1.53:8036/${threeRouter}`} style={{ backgroundColor: "#fff" }}></iframe>
         </div> : null
       }
     </div>
