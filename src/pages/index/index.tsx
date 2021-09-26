@@ -13,6 +13,7 @@ import DeliveryManage from '@/pages/index/components/index-delivery-manage-compo
 import ProjectSituation from '@/pages/index/components/index-project-situation-component';
 import ProjectType from '@/pages/index/components/index-project-type-component';
 import ProjectProgress from '@/pages/index/components/index-project-progress-component';
+import ProjectNumber from './components/project-number-component';
 
 import { IndexContext } from './context';
 import { Spin } from 'antd';
@@ -53,7 +54,7 @@ const getComponentByType = (type: string, componentProps: any) => {
       return <ProjectProgress />;
       break;
     case 'projectRefreshData':
-      return <ProjectRefreshListWrapper componentProps={componentProps} />;
+      return <ProjectNumber componentProps={componentProps} />;
       break;
     default:
       return undefined;
