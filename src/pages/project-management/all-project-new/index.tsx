@@ -141,8 +141,10 @@ const AllProject: React.FC = () => {
   const {
     setAllProjectSearchProjectId,
     setAllProjectSearchPerson,
+    setAllProjectSearchType,
     allProjectSearchPerson,
     allProjectSearchProjectId,
+    allProjectSearchType
   } = useLayoutStore();
 
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
@@ -613,6 +615,15 @@ const AllProject: React.FC = () => {
       });
       setAllProjectSearchProjectId?.('');
     }
+    if (allProjectSearchType) {
+      // TODO 有projectName的时候设置projectName
+      searchByParams({
+        ...searchParams,
+        statisticalCategory: allProjectSearchType,
+      });
+      setStatisticalCategory(allProjectSearchType);
+      setAllProjectSearchType?.('');
+    }
     if (allProjectSearchPerson) {
       setAllProjectSearchPerson?.('');
 
@@ -633,7 +644,7 @@ const AllProject: React.FC = () => {
         designUser: String(allProjectSearchPerson),
       });
     }
-  }, [allProjectSearchPerson, allProjectSearchProjectId]);
+  }, [allProjectSearchPerson, allProjectSearchProjectId,allProjectSearchType]);
 
   const configChangeEvent = (config: any) => {
     setChooseColumns(config);

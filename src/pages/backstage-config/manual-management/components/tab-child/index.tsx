@@ -1,11 +1,11 @@
 import FileUpload from '@/components/file-upload';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import styles from './index.less';
 import Modal from 'antd/lib/modal';
 import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview';
 import GeneralTable from '@/components/general-table';
-import { message, Spin } from 'antd';
+import {Button, message, Space, Spin } from 'antd';
 import {
   getLatestInstructions,
   instructionsCreate,
@@ -13,25 +13,40 @@ import {
 } from '@/services/system-config/manual-management';
 import { useMount } from 'ahooks';
 import { baseUrl } from '@/services/common';
+import moment from "moment";
 
 interface Props {
   id: number;
+  tabList:{text:string,value:number}[]
 }
 
 const ManualUpload: React.FC<Props> = (props) => {
-  const { id } = props;
+  const { id,tabList } = props;
   const tableRef = React.useRef<HTMLDivElement>(null);
-  const childRef = useRef();
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState<any>([]);
   const [lastFile, setLastFile] = useState<{ fileName: string; fileId: string }>({
     fileId: '',
     fileName: '',
   });
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSpinning, setSpinning] = useState(false);
+  const [showFooter, setShowFooter] = useState(false);
   const upLoadFn = async () => {};
   const handleOk = async () => {
     setIsModalVisible(false);
+    setSpinning(true);
+    const res = await uploadCreate({
+      category: id,
+      file: file,
+    });
+    await instructionsCreate({
+      category: id,
+      fileId: res.value,
+      fileName: res.text,
+    });
+    setSpinning(false);
+    message.success('上传成功!');
+    getLastFile();
     // @ts-ignore
     tableRef.current.refresh();
   };
@@ -52,25 +67,16 @@ const ManualUpload: React.FC<Props> = (props) => {
       index: 'createdOn',
       title: '操作时间',
       width: 150,
+      render(v: string) {
+        return moment(v).format('YYYY-MM-DD HH:MM:SS')
+      }
     },
   ];
   const onChange = async (val: any) => {
     if (val.length !== 0) {
-      setSpinning(true);
       setFile(val);
-      const res = await uploadCreate({
-        category: id,
-        file: val,
-      });
-      await instructionsCreate({
-        category: id,
-        fileId: res.value,
-        fileName: res.text,
-      });
-      setSpinning(false);
-      message.success('上传成功!');
-      setIsModalVisible(true);
-      getLastFile();
+      setShowFooter(true)
+      setIsModalVisible(true)
     } else {
       setFile([]);
     }
@@ -106,6 +112,8 @@ const ManualUpload: React.FC<Props> = (props) => {
     }
   };
   const showLast = () => {
+    setFile([])
+    setShowFooter(false)
     setSpinning(true);
     downFile();
   };
@@ -113,7 +121,7 @@ const ManualUpload: React.FC<Props> = (props) => {
     getLastFile();
   });
   return (
-    <Spin tip="加载中... " spinning={isSpinning}>
+    <Spin tip="waiting... " spinning={isSpinning}>
       <div className={styles.content}>
         <div className={styles.title}>说明书管理</div>
         <h4 className={styles.current}>
@@ -140,24 +148,28 @@ const ManualUpload: React.FC<Props> = (props) => {
           extractParams={{
             category: id,
           }}
-          needCommonButton={true}
+          needCommonButton={false}
           requestSource={'project'}
           columns={columns}
           url="/Instructions/GetPagedList"
           tableTitle="历史记录"
-          type="radio"
+          notShowSelect
         />
         <Modal
           title="说明书预览"
           visible={isModalVisible}
-          okText={'确定'}
-          cancelText={'取消'}
-          onOk={handleOk}
           width={'90%'}
+          footer={null}
           destroyOnClose
           onCancel={() => setIsModalVisible(false)}
         >
-          <ManualPreview file={file} />
+          <ManualPreview file={file} fileTitle={`${tabList.find(item=>item.value==id)?.text ?? ''}说明书`}/>
+          <div style={{display:showFooter ? 'flex' : 'none',justifyContent:'right',marginTop:'15px'}}>
+            <Space>
+              <Button onClick={()=>setIsModalVisible(false)}>取消</Button>
+              <Button type={'primary'} onClick={handleOk}>确定</Button>
+            </Space>
+          </div>
         </Modal>
       </div>
     </Spin>

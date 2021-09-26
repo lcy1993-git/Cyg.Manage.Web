@@ -20,17 +20,17 @@ const DictionaryForm: React.FC<any> = () => {
     <>
       <Row>
         <Col span={11}>
-          <CyFormItem label="序号" name="number" required>
+          <CyFormItem label="序号" name="number" required rules={[{required:true,message:'序号为必填项'}]}>
             <Input placeholder="请输入名称" />
           </CyFormItem>
-          <CyFormItem label="所属文件" name="sourceFile" required>
+          <CyFormItem label="所属文件" name="sourceFile" required rules={[{required:true,message:'所属文件为必填项'}]}>
             <Select>
               <Select.Option value={'20kV及以下配电网工程建设预算编制与计算规定'} key={1} disabled={list.find(item=>item.sourceFile === '20kV及以下配电网工程建设预算编制与计算规定' ) !== undefined}>20kV及以下配电网工程建设预算编制与计算规定</Select.Option>
               <Select.Option value={'电网拆除工程预算定额估价表'} key={2} disabled={list.find(item=>item.sourceFile === '电网拆除工程预算定额估价表' ) !== undefined}>电网拆除工程预算定额估价表</Select.Option>
             </Select>
             {/*<Input placeholder="请输入所属文件" />*/}
           </CyFormItem>
-          <CyFormItem label="是否拆除" name="isDemolitionMajor" required>
+          <CyFormItem label="是否拆除" name="isDemolitionMajor" required rules={[{required:true,message:'是否拆除为必填项'}]}>
             <FormSwitch />
           </CyFormItem>
           <CyFormItem label="发布机构" name="publishOrg">
@@ -66,7 +66,7 @@ const DictionaryForm: React.FC<any> = () => {
           </CyFormItem>
         </Col>
       </Row>
-      <CyFormItem label="状态" name="enabled" required>
+      <CyFormItem label="状态" name="enabled" required rules={[{required:true,message:'状态为必填项'}]}>
         <FormSwitch />
       </CyFormItem>
       <CyFormItem label="备注" name="remark">

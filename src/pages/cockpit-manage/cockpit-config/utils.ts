@@ -56,7 +56,7 @@ export const cockpitMenuItemData = [
         },
         {
           name: "projectNumber",
-          componentProps: ["gantt"],
+          componentProps: ["projectNumber"],
           title: "项目数量"
         }
       ]
@@ -100,8 +100,8 @@ export const cockpitMenuItemData = [
         childrenData: [
             {
                 title: "通知栏",
-                componentProps: ["wait", "arrange", "other"],
-                componentTitles: ["待结项", "待安排", "其他消息"],
+                componentProps: ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
+                componentTitles: ["待处理", "进行中", "委托", "被共享"],
                 name: "toDo"
             }
         ]

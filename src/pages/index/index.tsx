@@ -13,6 +13,7 @@ import DeliveryManage from '@/pages/index/components/index-delivery-manage-compo
 import ProjectSituation from '@/pages/index/components/index-project-situation-component';
 import ProjectType from '@/pages/index/components/index-project-type-component';
 import ProjectProgress from '@/pages/index/components/index-project-progress-component';
+import ProjectNumber from './components/project-number-component';
 
 import { IndexContext } from './context';
 import { Spin } from 'antd';
@@ -24,7 +25,6 @@ import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { useEffect } from 'react';
-import { pollingHealth } from '@/services/common';
 import HealthPolling from './components/health-polling';
 import {getEnums} from "@/pages/technology-economic/utils";
 
@@ -33,7 +33,7 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
     case 'toDo':
-      return <ToDo componentProps={componentProps} />;
+      return <ToDo componentProps={componentProps}/>;
       break;
     case 'mapComponent':
       return <MapComponent componentProps={componentProps} />;
@@ -55,6 +55,9 @@ const getComponentByType = (type: string, componentProps: any) => {
       break;
     case 'projectRefreshData':
       return <ProjectRefreshListWrapper componentProps={componentProps} />;
+      break;
+    case 'projectNumber':
+      return <ProjectNumber componentProps={componentProps} />;
       break;
     default:
       return undefined;

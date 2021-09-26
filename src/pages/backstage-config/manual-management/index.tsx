@@ -29,7 +29,7 @@ const ManualManagement: React.FC = () => {
             {
               tabList.map(item => {
                 return <TabPane tab={item.text} key={item.value}>
-                  <ManualUpload id={item.value}/>
+                  <ManualUpload id={item.value} tabList={tabList}/>
                 </TabPane>
               })
             }
