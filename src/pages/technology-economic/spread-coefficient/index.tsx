@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Button, Modal, Form, Switch, message, Popconfirm, Tabs } from 'antd';
+import {Button, Modal, Form, Switch, message, Popconfirm, Tabs, Spin, Space} from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
@@ -27,6 +27,7 @@ import {
   updateCatalogue,
   technicalEconomyFile,
 } from '@/services/technology-economic/spread-coefficient';
+import AddDictionaryForm from "@/pages/technology-economic/common-rate/components/add-edit-form";
 
 type DataSource = {
   id: string;
@@ -61,6 +62,7 @@ const SpreadCoefficient: React.FC = () => {
   const [editADFormVisible, setEditADFormVisible] = useState<boolean>(false);
   const [fileId, setFileId] = useState<string>('');
   const [projectType, setProjectType] = useState<number>(1);
+  const [spinning, setSpinning] = useState<boolean>(false);
   // const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -244,7 +246,8 @@ const SpreadCoefficient: React.FC = () => {
   };
   // 调整文件编辑确认按钮
   const sureEditADAuthorization = () => {
-    editADForm.validateFields().then(async (values) => {
+    editADForm.validateFields().then((values) => {
+      setSpinning(true)
       const { id } = tableSelectADRows[0];
       const value = values;
       value.id = id;
@@ -252,10 +255,14 @@ const SpreadCoefficient: React.FC = () => {
         value.fileId = value.fileId;
       }
       // TODO 编辑接口
-      await updateAdjustmentFile(value);
-      refresh();
-      setEditFormVisible(false);
-      editForm.resetFields();
+      updateAdjustmentFile(value).then(()=>{
+        refresh();
+        setEditFormVisible(false);
+        editForm.resetFields();
+      }).finally(()=>{
+        setSpinning(false)
+      });
+
     });
   };
   const addUploadFile = async () => {
@@ -380,13 +387,27 @@ const SpreadCoefficient: React.FC = () => {
         visible={addFormVisible}
         okText="确认"
         onOk={sureAddAuthorization}
+        footer={null}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <DictionaryForm type="add" />
-        </Form>
+        <Spin spinning={spinning}>
+          <Form form={addForm} preserve={false}>
+            <DictionaryForm type="add" />
+          </Form>
+          <div style={{display : 'flex',justifyContent:'right'}}>
+            <Space>
+              <Button onClick={()=>setAddFormVisible(false)}>
+                取消
+              </Button>
+              <Button onClick={sureAddAuthorization} type={'primary'}>
+                确定
+              </Button>
+            </Space>
+          </div>
+        </Spin>
+
       </Modal>
       <Modal
         maskClosable={false}
@@ -394,14 +415,26 @@ const SpreadCoefficient: React.FC = () => {
         width="880px"
         visible={editFormVisible}
         okText="确认"
-        onOk={() => sureEditAuthorization()}
+        footer={null}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editForm} preserve={false}>
-          <DictionaryForm type="edit" />
-        </Form>
+        <Spin spinning={spinning}>
+          <Form form={editForm} preserve={false}>
+            <DictionaryForm type="edit" />
+          </Form>
+          <div style={{display : 'flex',justifyContent:'right'}}>
+            <Space>
+              <Button onClick={()=>setEditFormVisible(false)}>
+                取消
+              </Button>
+              <Button onClick={sureEditAuthorization} type={'primary'}>
+                确定
+              </Button>
+            </Space>
+          </div>
+        </Spin>
       </Modal>
       <Modal
         maskClosable={false}
@@ -409,14 +442,26 @@ const SpreadCoefficient: React.FC = () => {
         width="880px"
         visible={addADFormVisible}
         okText="确认"
-        onOk={() => sureAddADAuthorization()}
+        footer={null}
         onCancel={() => setAddADFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addADForm} preserve={false}>
-          <AdjustmentFileForm type="add" addUploadFile={addUploadFile} />
-        </Form>
+        <Spin spinning={spinning}>
+          <Form form={addADForm} preserve={false}>
+            <AdjustmentFileForm type="add" addUploadFile={addUploadFile} />
+          </Form>
+          <div style={{display : 'flex',justifyContent:'right'}}>
+            <Space>
+              <Button onClick={()=>setAddADFormVisible(false)}>
+                取消
+              </Button>
+              <Button onClick={sureAddADAuthorization} type={'primary'}>
+                确定
+              </Button>
+            </Space>
+          </div>
+        </Spin>
       </Modal>
       <Modal
         maskClosable={false}
@@ -424,14 +469,27 @@ const SpreadCoefficient: React.FC = () => {
         width="880px"
         visible={editADFormVisible}
         okText="确认"
-        onOk={() => sureEditADAuthorization()}
+        footer={null}
         onCancel={() => setEditADFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editADForm} preserve={false}>
-          <AdjustmentFileForm type="edit" addUploadFile={addUploadFile} />
-        </Form>
+        <Spin spinning={spinning}>
+          <Form form={editADForm} preserve={false}>
+            <AdjustmentFileForm type="edit" addUploadFile={addUploadFile} />
+          </Form>
+          <div style={{display : 'flex',justifyContent:'right'}}>
+            <Space>
+              <Button onClick={()=>setEditADFormVisible(false)}>
+                取消
+              </Button>
+              <Button onClick={sureEditADAuthorization} type={'primary'}>
+                确定
+              </Button>
+            </Space>
+          </div>
+        </Spin>
+
       </Modal>
     </PageCommonWrap>
   );

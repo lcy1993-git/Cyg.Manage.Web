@@ -155,19 +155,23 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const sureAddAuthorization = () => {
-    setSpinning(true)
-    addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
+    addForm.validateFields().then((values: CreateQuotaLibrary) => {
+      setSpinning(true)
       const data = {}
       for (let key:string in values){
         if (values[key] !== undefined){
           data[key] = values[key]
         }
       }
-      await createQuotaLibrary(data);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-      setSpinning(false)
+      createQuotaLibrary(data).then(()=>{
+        refresh();
+        setAddFormVisible(false);
+        addForm.resetFields();
+        setSpinning(false)
+      }).catch(()=>{
+        setSpinning(false)
+      });
+
     });
     setTimeout(()=>{
       setSpinning(false);

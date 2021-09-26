@@ -8,9 +8,10 @@ interface Props{
   file:any[];
   onSuccess?: (val:string) => void;
   height?: string
+  fileTitle?: string
 }
 const ManualPreview: React.FC<Props> = (props) => {
-  const {file,onSuccess,height='70vh'} = props
+  const {file,onSuccess,height='70vh',fileTitle} = props
   const [pageLoading, setPageLoading] = useState(true);
   const [catalogList, setCatalogList] = useState<object[]>([]);
   const [src,setSrc] = useState<ArrayBuffer | null>(null)
@@ -128,8 +129,8 @@ const ManualPreview: React.FC<Props> = (props) => {
         </div>
       </div>
       <div className={styles.pageShowFileContent} id="pageShowFileContent">
-        <div className="styles.pageShowFileTitle">
-          设计端说明书
+        <div className={styles.pageShowFileTitle}>
+          {fileTitle}
         </div>
         <div id="fileContent">
           <DocxFileViewer filePath={src} onSuccess={loadSuccessEvent} />

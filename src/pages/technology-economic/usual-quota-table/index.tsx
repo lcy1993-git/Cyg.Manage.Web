@@ -9,7 +9,7 @@ import {
   Modal,
   Row,
   Select,
-  Space,
+  Space, Spin,
   Switch,
 } from "antd";
 import type {ColumnsType} from "antd/lib/table/Table";
@@ -89,6 +89,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
   const [commonlyTableType, setCommonlyTableType] = useState<{ value: string, text: string }[]>([])
   const [selectRow, setSelectRow] = useState<Record<string, any>[]>([])
   const [isEdit, setIsEdit] = useState<boolean>(false)
+  const [spinning, setSpinning] = useState<boolean>(false);
   const tableRef = useRef<any>(null);
   const [form] = Form.useForm();
   const history = useHistory();
@@ -195,7 +196,8 @@ const UsualQuotaTable: React.FC<Props> = () => {
     form.resetFields()
     setIsModalVisible(true)
   }
-  const onFinish = async (val: CommonlyTableForm) => {
+  const onFinish =  (val: CommonlyTableForm) => {
+    setSpinning(true)
     const data = {...val}
     data.publishDate = moment(val.publishDate).format('YYYY/MM/DD')
     data.year = moment(val.year).format('YYYY')
@@ -210,24 +212,29 @@ const UsualQuotaTable: React.FC<Props> = () => {
         message.warn('已存在相同的费率序号!')
         return
       }
-      await editCommonlyTable(data)
-      message.success('修改成功')
-      form.resetFields();
-      setIsModalVisible(false)
-      setIsEdit(false)
-      tableRef.current?.reset()
+      editCommonlyTable(data).then(()=>{
+        message.success('修改成功')
+        form.resetFields();
+        setIsModalVisible(false)
+        setIsEdit(false)
+        tableRef.current?.reset()
+      }).finally(()=>{
+        setSpinning(false)
+      })
     } else {
       if (exist !== undefined) {
         message.warn('已存在相同的费率序号!')
         return
       }
-      await addCommonlyTable(data)
-      message.success('添加成功')
-      form.resetFields();
-      setIsModalVisible(false)
-      setIsEdit(false)
-      tableRef.current?.reset()
-
+       addCommonlyTable(data).then(()=>{
+         message.success('添加成功')
+         form.resetFields();
+         setIsModalVisible(false)
+         setIsEdit(false)
+         tableRef.current?.reset()
+       }).finally(()=>{
+         setSpinning(false)
+       })
     }
     // if (tableRef?.current){
       tableRef.current?.refresh()
@@ -339,6 +346,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
           footer={null}
           width={800}
           onCancel={() => setIsModalVisible(false)}>
+          <Spin spinning={spinning}>
           <Form
             name="basic"
             initialValues={{remember: true}}
@@ -467,7 +475,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
                 </Form.Item>
               </Col>
             </Row>
-            <div style={{display: 'flex', justifyContent: 'center'}}>
+            <div style={{display: 'flex', justifyContent: 'right'}}>
               <Space>
                 <Button onClick={() => setIsModalVisible(false)}>
                   取消
@@ -478,6 +486,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
               </Space>
             </div>
           </Form>
+          </Spin>
         </Modal>
       </div>
     </WrapperComponent>
