@@ -23,7 +23,8 @@ interface ProjectNumberProps {
 const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
   const [searchType, setSearchType] = useState<string>('0');
   const divRef = useRef<HTMLDivElement>(null);
-  const { currentAreaInfo, componentProps = ['14', '1', '2', '3', '4', '19'] } = props;
+  const { currentAreaInfo } = props;
+  const componentProps = ['14', '1', '2', '3', '4', '19']
   const { data = [] } = useRequest(
     () =>
       getProjectNumberData({
@@ -31,75 +32,84 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
         areaType: currentAreaInfo.areaLevel,
         category: searchType,
       }),
-    { refreshDeps: [searchType, currentAreaInfo], onSuccess: () => {
+    {
+      refreshDeps: [searchType, currentAreaInfo],
+      onSuccess: () => {
         initChart();
-    } },
+      },
+    },
   );
 
   let myChart: any = null;
-  
+
   const getOptions = () => {
-      const dateData = data.map((item) => moment(item.key).format("MM月DD日")).reverse();
-      const currentDateData = data.map((item) => item.value.qty).reverse();
-      console.log(currentDateData)
-      const changeDateData = data.map((item) => item.value.qty - item.value.yesterdayQty).reverse();
-      return {
-        grid: {
-            top: 20,
-            bottom: 40,
-            right: 30,
-            left: 60,
-          },
-          tooltip: {
-            trigger: 'axis',
-            formatter: (params: any) => {
-              const { dataIndex } = params[0];
-   
-              const thisTime = dateData[dataIndex];
-              const currentData = currentDateData[dataIndex] ?? 0;
-              const currentChangeData = changeDateData[dataIndex] ?? 0;
-      
-              return `
-                <span style="font-size: 14px; font-weight: 600; color: #505050">${thisTime}</span><br />
-                <span style="display: inline-block; width: 6px;height: 6px;border-radius: 50%; background: #4DA944;vertical-align: middle; margin-right: 6px;"></span><span style="color: #505050">当前项目数：${currentData}</span><br />
-                <span style="display: inline-block; width: 6px;height: 6px;border-radius: 50%; background: #0076FF;vertical-align: middle; margin-right: 6px;"></span><span style="color: #505050">较昨日变化: ${currentChangeData}</span>
+    const dateData = data.map((item) => moment(item.key).format('MM月DD日')).reverse();
+    const currentDateData = data.map((item) => item.value.qty).reverse();
+    console.log(currentDateData);
+    const changeDateData = data.map((item) => item.value.qty - item.value.yesterdayQty).reverse();
+    return {
+      grid: {
+        top: 20,
+        bottom: 40,
+        right: 30,
+        left: 60,
+      },
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        borderColor: '#000',
+        axisPointer: {
+          type: 'shadow',
+        },
+        formatter: (params: any) => {
+          const { dataIndex } = params[0];
+
+          const thisTime = dateData[dataIndex];
+          const currentData = currentDateData[dataIndex] ?? 0;
+          const currentChangeData = changeDateData[dataIndex] ?? 0;
+
+          return `
+                <span style="font-size: 14px; font-weight: 600; color: #fff">${thisTime}</span><br />
+                <span style="color: #fff">当前项目数：${currentData}</span><br />
+                <span style="color: #fff">较昨日变化: ${currentChangeData}</span>
               `;
-            },
+        },
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        axisLabel: {
+          color: '#74AC91',
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#74AC91',
           },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            axisLabel: {
-              lineStyle: {
-                color: '#74AC91',
-              },
-            },
-            data: dateData,
+        },
+        data: dateData,
+      },
+      yAxis: {
+        type: 'value',
+        splitNumber: 5,
+        axisLabel: {
+          color: '#74AC91',
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#74AC91',
+            type: 'dashed',
           },
-          yAxis: {
-            type: 'value',
-            splitNumber: 5,
-            axisLabel: {
-              lineStyle: {
-                color: '#74AC91',
-              },
-            },
-            splitLine: {
-              lineStyle: {
-                color: '#355345',
-                type: 'dashed',
-              },
-            },
-          },
-          series: [
-            {
-              data: currentDateData,
-              type: 'line',
-              color: '#4DA944',
-            },
-          ],
-      }
-  }
+        },
+      },
+      series: [
+        {
+          data: currentDateData,
+          type: 'line',
+          color: '#2AFE97',
+        },
+      ],
+    };
+  };
 
   const initChart = () => {
     if (divRef && divRef.current) {
