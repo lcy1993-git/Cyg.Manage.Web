@@ -94,7 +94,7 @@ export const cyCommonRequest = <T extends {}>(
 
     const { code, isSuccess } = res;
     if (isSuccess && code === 200) {
-      resolve(res as unknown as T);
+      resolve((res as unknown) as T);
     } else {
       message.error(res.message);
       reject(res.message);
@@ -128,7 +128,14 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'tecEco1',
+  requestSource:
+    | 'common'
+    | 'project'
+    | 'resource'
+    | 'tecEco'
+    | 'tecEco1'
+    | 'material'
+    | 'component',
   requestType = 'get',
   postType = 'body',
   libId: string,

@@ -300,7 +300,6 @@ const CompanyManage: React.FC = () => {
     <PageCommonWrap>
       <GeneralTable
         ref={tableRef}
-        isFold={false}
         tableTitle="公司管理"
         columns={companyTableColumns}
         buttonRightContentSlot={companyManageButton}

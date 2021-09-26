@@ -92,7 +92,6 @@ const WorkHandover: React.FC = () => {
   };
 
   //项目管理交接
-
   const manageConfirm = () => {
     Modal.confirm({
       title: '项目管理交接',
@@ -207,83 +206,6 @@ const WorkHandover: React.FC = () => {
         <div className={styles.moduleHead}>
           <div className={styles.tabTitle}>待交接的方案</div>
           <div className={styles.moduleTabs}>
-            <div className={styles.actionBtn}>
-              {clickTabKey === 'manage' ? (
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    if (engineerIds && engineerIds.length === 0) {
-                      message.info('请选择需要交接的条目');
-                      return;
-                    }
-                    if (!receiverId) {
-                      message.info('请选择接收人员');
-                      return;
-                    }
-                    manageConfirm();
-                  }}
-                >
-                  <span>交接</span>
-                </Button>
-              ) : clickTabKey === 'mission' ? (
-                currentMissionTabKey === 'prospect' ? (
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      if (projectIds && projectIds.length === 0) {
-                        message.info('请选择需要交接的条目');
-                        return;
-                      }
-                      if (!receiverId) {
-                        message.info('请选择接收人员');
-                        return;
-                      }
-                      prospectConfirm();
-                    }}
-                  >
-                    <span>交接</span>
-                  </Button>
-                ) : (
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      if (projectIds && projectIds.length === 0) {
-                        message.info('请选择需要交接的条目');
-                        return;
-                      }
-                      if (!receiverId) {
-                        message.info('请选择接收人员');
-                        return;
-                      }
-                      designConfirm();
-                    }}
-                  >
-                    <span>交接</span>
-                  </Button>
-                )
-              ) : clickTabKey === 'identity' ? (
-                <Button
-                  type="primary"
-                  onClick={() => {
-                    if (groupIds && groupIds.length === 0) {
-                      message.info('请选择需要交接的条目');
-                      return;
-                    }
-                    if (!receiverId) {
-                      message.info('请选择接收人员');
-                      return;
-                    }
-                    identityConfirm();
-                  }}
-                >
-                  <span>交接</span>
-                </Button>
-              ) : (
-                <Button type="primary" onClick={() => finishEvent()}>
-                  <span>交接完成</span>
-                </Button>
-              )}
-            </div>
             <Tabs
               type="card"
               onChange={(key) => {
@@ -349,6 +271,84 @@ const WorkHandover: React.FC = () => {
             <span className={styles.numberAccount}>{projectLen}</span>个项目
           </div>
         )}
+
+        <div className={styles.actionBtn}>
+          {clickTabKey === 'manage' ? (
+            <Button
+              type="primary"
+              onClick={() => {
+                if (engineerIds && engineerIds.length === 0) {
+                  message.info('请选择需要交接的条目');
+                  return;
+                }
+                if (!receiverId) {
+                  message.info('请选择接收人员');
+                  return;
+                }
+                manageConfirm();
+              }}
+            >
+              <span>交接</span>
+            </Button>
+          ) : clickTabKey === 'mission' ? (
+            currentMissionTabKey === 'prospect' ? (
+              <Button
+                type="primary"
+                onClick={() => {
+                  if (projectIds && projectIds.length === 0) {
+                    message.info('请选择需要交接的条目');
+                    return;
+                  }
+                  if (!receiverId) {
+                    message.info('请选择接收人员');
+                    return;
+                  }
+                  prospectConfirm();
+                }}
+              >
+                <span>交接</span>
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                onClick={() => {
+                  if (projectIds && projectIds.length === 0) {
+                    message.info('请选择需要交接的条目');
+                    return;
+                  }
+                  if (!receiverId) {
+                    message.info('请选择接收人员');
+                    return;
+                  }
+                  designConfirm();
+                }}
+              >
+                <span>交接</span>
+              </Button>
+            )
+          ) : clickTabKey === 'identity' ? (
+            <Button
+              type="primary"
+              onClick={() => {
+                if (groupIds && groupIds.length === 0) {
+                  message.info('请选择需要交接的条目');
+                  return;
+                }
+                if (!receiverId) {
+                  message.info('请选择接收人员');
+                  return;
+                }
+                identityConfirm();
+              }}
+            >
+              <span>交接</span>
+            </Button>
+          ) : (
+            <Button type="primary" onClick={() => finishEvent()}>
+              <span>交接完成</span>
+            </Button>
+          )}
+        </div>
       </div>
     </PageCommonWrap>
   );

@@ -402,7 +402,12 @@ const CockpitManage: React.FC = () => {
               </div>
               <div className={styles.cockpitConfigPageTitleRight}>
                 {buttonJurisdictionArray?.includes('save-cockpit-settings') && (
-                  <Button type="primary" loading={saveConfigLoading} onClick={saveConfig}>
+                  <Button
+                    className="mr7"
+                    type="primary"
+                    loading={saveConfigLoading}
+                    onClick={saveConfig}
+                  >
                     <SaveOutlined />
                     保存配置
                   </Button>
@@ -414,7 +419,7 @@ const CockpitManage: React.FC = () => {
                   </Button>
                 )}
                 {buttonJurisdictionArray?.includes('clear-cockpit-settings') && (
-                  <Button className="mr7" onClick={clearConfigEvent}>
+                  <Button onClick={clearConfigEvent}>
                     <DeleteOutlined />
                     清空当前配置
                   </Button>

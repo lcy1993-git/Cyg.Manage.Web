@@ -54,7 +54,6 @@ const CompanyHierarchy: React.FC = () => {
                 noPaging
                 needTitleLine={false}
                 ref={superiorRef}
-                defaultPageSize={20}
                 columns={columns}
                 extractParams={{
                   category: 1,
@@ -68,7 +67,6 @@ const CompanyHierarchy: React.FC = () => {
                   noPaging
                   needTitleLine={false}
                   ref={subordinateRef}
-                  defaultPageSize={20}
                   columns={columns}
                   extractParams={{
                     category: 2,

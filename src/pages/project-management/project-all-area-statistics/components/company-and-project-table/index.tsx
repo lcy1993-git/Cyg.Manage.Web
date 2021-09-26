@@ -9,6 +9,7 @@ import UrlSelect from '@/components/url-select';
 
 import styles from './index.less';
 import { useGetSelectData } from '@/utils/hooks';
+import { Spin } from 'antd';
 
 const CompanyAndProjectTable: React.FC = () => {
   const {
@@ -20,7 +21,7 @@ const CompanyAndProjectTable: React.FC = () => {
     setProjectShareCompanyId,
   } = useProjectAllAreaStatisticsStore();
   const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
-  const { data: companyData = [] } = useGetSelectData({
+  const { data: companyData = [], loading } = useGetSelectData({
     url: '/ProjectStatistics/GetCompanyList',
   });
 
@@ -68,20 +69,22 @@ const CompanyAndProjectTable: React.FC = () => {
   return (
     <div className={styles.companyAndProjectTable}>
       <TableSearch width="320px" paddingTop="20px">
-        <UrlSelect
-          style={{ width: '240px', marginLeft: '15px' }}
-          showSearch
-          defaultData={handleCompanyData}
-          titlekey="label"
-          valuekey="value"
-          placeholder="请选择"
-          defaultValue={companyId}
-          onChange={(value: any) => {
-            dataType === 'project' ? returnToCompanyType() : '';
-            // setSelectedCompanyId(value);
-            setProjectShareCompanyId(value);
-          }}
-        />
+        <Spin spinning={loading}>
+          <UrlSelect
+            style={{ width: '240px', marginLeft: '15px' }}
+            showSearch
+            defaultData={handleCompanyData}
+            titlekey="label"
+            valuekey="value"
+            placeholder="请选择"
+            defaultValue={companyId}
+            onChange={(value: any) => {
+              dataType === 'project' ? returnToCompanyType() : '';
+              // setSelectedCompanyId(value);
+              setProjectShareCompanyId(value);
+            }}
+          />
+        </Spin>
       </TableSearch>
       <TitleWindow title={getTitle}>
         {dataType === 'company' && <CompanyTable />}

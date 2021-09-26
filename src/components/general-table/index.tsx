@@ -369,7 +369,11 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       </div>
 
       {!noPaging && (
-        <div className={styles.cyGeneralTablePaging}>
+        <div
+          className={`${styles.cyGeneralTablePaging} ${
+            !buttonLeftContentSlot ? styles.paddingClass : ''
+          }`}
+        >
           <div className={styles.cyGeneralTablePagingLeft}>
             <span>显示第</span>
             <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>

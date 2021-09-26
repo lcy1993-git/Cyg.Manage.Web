@@ -452,7 +452,7 @@ const CompanyFile: React.FC = () => {
                 style={{ width: '100%' }}
               />
             </TableSearch>
-            <TableSearch width="400px">
+            <TableSearch width="400px" marginLeft="20px">
               {buttonJurisdictionArray?.includes('add-file-group') && (
                 <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
                   <PlusOutlined />
