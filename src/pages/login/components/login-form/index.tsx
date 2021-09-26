@@ -13,7 +13,7 @@ import { phoneLoginRequest, compareVerifyCode, indexLoginRequest } from '@/servi
 import styles from './index.less';
 const { TabPane } = Tabs;
 
-type LoginType = 'account' | 'phone';
+export type LoginType = 'account' | 'phone';
 
 const LoginForm: React.FC = () => {
 
@@ -153,7 +153,7 @@ const LoginForm: React.FC = () => {
                 type="password"
               />
             </Form.Item>
-            <VerifycodeImage userKey={getkey(activeKey)} needVerifycode={needVerifycode} onChange={setImageCode} hasErr={hasErr} setHasErr={setHasErr} reloadSign={reloadSign} refreshCode={refreshCode}/>
+            <VerifycodeImage userKey={getkey(activeKey)} activeKey={activeKey} needVerifycode={needVerifycode} onChange={setImageCode} hasErr={hasErr} setHasErr={setHasErr} reloadSign={reloadSign} refreshCode={refreshCode}/>
             <div>
               <Button
                 className={styles.loginButton}
