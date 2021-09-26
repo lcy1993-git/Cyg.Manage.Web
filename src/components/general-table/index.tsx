@@ -62,6 +62,8 @@ interface GeneralTableProps {
 
   // 当表格需要id传参时，判断当前id是否为空，若为空则限制请求
   requestConditions?: string;
+  // 不显示左侧选择列
+  notShowSelect?:boolean
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -72,6 +74,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
 ) => {
   const {
     url,
+    notShowSelect = false,
     columns = [],
     tableTitle,
     needCommonButton = false,
@@ -99,7 +102,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const [finallyColumns, setFinalyColumns] = useState<any[]>([]);
-
+  const [onRequest, setOnRequest] = useState<boolean>(false);
   const tableRef = useRef<HTMLDivElement>(null);
 
   const { data, run, loading } = useRequest(tableCommonRequest, {
@@ -347,12 +350,12 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           locale={{
             emptyText: <EmptyTip className="pt20 pb20" />,
           }}
-          rowSelection={{
-            type,
+          rowSelection={ !notShowSelect ? {
+            type : type,
             columnWidth: '38px',
             selectedRowKeys,
             ...rowSelection,
-          }}
+          } : null}
           {...((rest as unknown) as P)}
         />
       </div>
