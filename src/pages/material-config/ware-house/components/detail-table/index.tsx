@@ -94,7 +94,7 @@ const WareHouseDetail: React.FC<WareHouseDetailParams> = (props) => {
   };
 
   const tableLeftSlot = (
-    <TableSearch label="关键词" width="230px">
+    <TableSearch width="230px">
       <Search
         value={searchKeyWord}
         onChange={(e) => setSearchKeyWord(e.target.value)}

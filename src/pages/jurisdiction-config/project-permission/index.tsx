@@ -68,15 +68,39 @@ const ProjectPermission: React.FC = () => {
           <>
             {buttonJurisdictionArray?.includes('project-permissions-start-using') && (
               <>
-                <Switch
+                {/* <Switch
                   checked={isChecked}
                   onChange={async () => {
                     await updateProPermissionStatus({ id: record.id, isDisable: isChecked });
                     tableFresh();
                     message.success('状态修改成功');
                   }}
-                />
-                {isChecked ? <span className="ml7">启用</span> : <span className="ml7">禁用</span>}
+                /> */}
+                {isChecked ? (
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    className="colorPrimary"
+                    onClick={async () => {
+                      await updateProPermissionStatus({ id: record.id, isDisable: isChecked });
+                      tableFresh();
+                      message.success('状态修改成功');
+                    }}
+                  >
+                    启用
+                  </span>
+                ) : (
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    className="colorRed"
+                    onClick={async () => {
+                      await updateProPermissionStatus({ id: record.id, isDisable: isChecked });
+                      tableFresh();
+                      message.success('状态修改成功');
+                    }}
+                  >
+                    禁用
+                  </span>
+                )}
               </>
             )}
             {!buttonJurisdictionArray?.includes('project-permissions-start-using') &&
@@ -112,7 +136,7 @@ const ProjectPermission: React.FC = () => {
   const searchElement = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="权限组名称" width="278px">
+        <TableSearch width="278px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
@@ -196,7 +220,7 @@ const ProjectPermission: React.FC = () => {
         title="创建项目权限组模板并且授权给对应的管理端用户后，该用户可以查看对应权限范围内的所有项目。"
         placement="right"
       >
-        <QuestionCircleOutlined style={{ paddingLeft: 8 }} />
+        <QuestionCircleOutlined style={{ paddingLeft: 10 }} />
       </Tooltip>
     );
   };

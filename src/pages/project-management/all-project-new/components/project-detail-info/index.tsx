@@ -20,11 +20,13 @@ interface ProjectDetailInfoProps {
 const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
 
-  const { projectId, isResult = false } = props;
+  const { projectId } = props;
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
   });
+
+  console.log(projectInfo);
 
   useEffect(() => {
     if (state) {
@@ -54,14 +56,9 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           <TabPane key="process" tab="项目过程">
             <ProjectProcessInfo operateLog={projectInfo?.operateLog ?? []} />
           </TabPane>
-          {isResult && (
-            <TabPane key="result" tab="查看成果">
-              <CheckResultModal
-                visible={state}
-                onChange={setState}
-                projectInfo={{ ...projectInfo, projectId: projectInfo?.id }}
-                isResult={isResult}
-              />
+          {projectInfo && (projectInfo.stateInfo.status > 4 || projectInfo.stateInfo.status === 4) && (
+            <TabPane key="result" tab="项目成果">
+              <CheckResultModal projectInfo={{ ...projectInfo, projectId: projectInfo?.id }} />
             </TabPane>
           )}
         </Tabs>

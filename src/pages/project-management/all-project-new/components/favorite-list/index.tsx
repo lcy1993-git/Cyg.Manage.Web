@@ -135,7 +135,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         <div className={styles.favTitle}>收藏夹</div>
         <div className={styles.headBtn}>
           <Button className="mr7" onClick={createEvent}>
-            <PlusOutlined />
+            <PlusOutlined style={{ color: '#aeaeae' }} />
             新建
           </Button>
           <Button
@@ -149,8 +149,9 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
               setStatisticalTitle?.('-1');
               finishEvent?.();
             }}
+            style={{ display: 'flex', alignItems: 'center' }}
           >
-            <PoweroffOutlined />
+            <ImageIcon width={18} height={18} imgUrl="exit.png" marginRight={8} />
             退出
           </Button>
         </div>

@@ -53,14 +53,14 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [addPeople, setAddPeople] = useState<any[]>([]);
   const [current, setCurrent] = useState<number>(0);
 
-  const [requestLoading, setRequestLoading] = useState(false);
+  // const [requestLoading, setRequestLoading] = useState(false);
 
   const [newStepData, setNewStepData] = useState<any[]>([]);
 
   const [form] = Form.useForm();
   const { projectId, refresh } = props;
 
-  const { data: stepData, run } = useRequest(() => getExternalArrangeStep(projectId));
+  const { data: stepData, run, loading } = useRequest(() => getExternalArrangeStep(projectId));
   const { run: addUser } = useRequest(
     () => addAllotUser({ projectId: projectId, userId: addPeople[0]?.value }),
     {
@@ -90,10 +90,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     addUser();
   }, [addPeople]);
 
-  const modifyEvent = () => {
-    setEditExternalArrangeModal(true);
-  };
-
   // const finishEditEvent = async () => {
   //   try {
   //     setRequestLoading(true);
@@ -110,10 +106,11 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const deleteAllotUser = async (userId: string) => {
     await removeAllotUser({ projectId: projectId, userAllotId: userId });
     message.success('已移除');
-    run();
-    refresh?.();
-    if (!stepData) {
+    const res = await run();
+
+    if (res && res.length === 0) {
       setState(false);
+      refresh?.();
     }
   };
 
@@ -251,7 +248,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         </Steps>
         {/* 当前外审人员列表 */}
         {current === 0 && (
-          <Spin spinning={requestLoading} tip="数据重新请求中...">
+          <Spin spinning={loading} tip="数据重新请求中...">
             <div className={styles.peopleList}>
               {newStepData?.map((el: any, idx: any) => (
                 <div className={styles.single} key={el.id}>

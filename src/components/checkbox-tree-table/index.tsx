@@ -30,11 +30,26 @@ interface CheckboxTreeTableProps {
 const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
   const { treeData = [], onChange } = props;
 
+  const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
+
   const [tableShowData, setTableShowData] = useState<TreeDataItem[]>([]);
 
   const columns = [
     {
-      title: '模块',
+      title: (text: any, record: any) => {
+        return (
+          <>
+            <span style={{ paddingLeft: '18px' }}>
+              <Checkbox
+                checked={isAllChecked}
+                onChange={isAllChecked ? allNoCheckEvent : allCheckEvent}
+              >
+                模块
+              </Checkbox>
+            </span>
+          </>
+        );
+      },
       dataIndex: 'name',
       index: 'name',
       width: 360,
@@ -189,7 +204,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
             hasThisIdParentData.push(item);
           }
         });
-        
+
         const newData = flattenCopyData.map((item) => {
           if (hasThisIdParentData.findIndex((ite: any) => item.id === ite.id) > -1) {
             return {
@@ -202,10 +217,10 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
               ...item,
               hasPermission: true,
               functions: item.functions.map((ite) => {
-                if(ite.id === dataId) {
-                  return { ...ite, hasPermission: true }
+                if (ite.id === dataId) {
+                  return { ...ite, hasPermission: true };
                 }
-                return {...ite}
+                return { ...ite };
               }),
             };
           }
@@ -216,7 +231,6 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
         getSelectIds(toTreeData(newData));
       }
     } else {
-
       const newData = flattenCopyData.map((item) => {
         if (item.id === recordId) {
           return {
@@ -293,6 +307,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     const newData = copyData.map(mapAllDataTrue);
     setTableShowData(newData);
     getSelectIds(newData);
+    setIsAllChecked(true);
   };
 
   const allNoCheckEvent = () => {
@@ -300,28 +315,30 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
     const newData = copyData.map(mapDataAllFalse);
     setTableShowData(newData);
     getSelectIds(newData);
+    setIsAllChecked(false);
   };
 
-  const tableAllCheckedButton = () => {
-    return (
-      <div className={styles.buttonContent}>
-        <div className={styles.moduleTitle}>
-          <CommonTitle>分配功能模块</CommonTitle>
-        </div>
-        <div>
-          <Button className="mr7" onClick={() => allCheckEvent()}>
-            全选
-          </Button>
-          <Button onClick={() => allNoCheckEvent()}>全不选</Button>
-        </div>
-      </div>
-    );
-  };
+  // const tableAllCheckedButton = () => {
+  //   return (
+  //     <div className={styles.buttonContent}>
+  //       <div className={styles.moduleTitle}>
+  //         <CommonTitle>分配功能模块</CommonTitle>
+  //       </div>
+  //       <div>
+  //         <Button className="mr7" onClick={() => allCheckEvent()}>
+  //           全选
+  //         </Button>
+  //         <Button onClick={() => allNoCheckEvent()}>全不选</Button>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
   return (
     <div>
       <TreeTable
-        leftButtonsSlot={tableAllCheckedButton}
+        tableTitle="分配功能模块"
+        // leftButtonsSlot={tableAllCheckedButton}
         dataSource={tableShowData}
         columns={columns}
         needCheck={false}

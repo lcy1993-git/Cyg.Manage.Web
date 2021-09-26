@@ -16,18 +16,18 @@ interface CompanyFileForm {
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
   const { type = 'edit', groupData, editingName, uploadFileFn, fileCategory } = props;
+
   const [categoryValue, setCategoryValue] = useState<number>();
-  console.log({ categoryValue });
 
   const groupName = groupData.items?.map((item: any) => {
     return item.name;
   });
 
   const acceptValue = useMemo(() => {
-    if (categoryValue === 9) {
+    if (categoryValue === 9 || fileCategory === 9) {
       return '.docx,.doc,.xls,.xlsx';
     }
-    if ([5, 6, 8].includes(categoryValue!)) {
+    if ([5, 6, 8].includes(categoryValue!) || [5, 6, 8].includes(fileCategory!)) {
       return '.docx,.doc';
     }
     return '.dwg';

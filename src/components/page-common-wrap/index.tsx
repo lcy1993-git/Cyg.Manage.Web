@@ -5,20 +5,24 @@ import { explainUrl } from '../../../public/config/request';
 
 interface PageCommonWrapProps {
   noPadding?: boolean;
+  noColor?: boolean;
   className?: string;
 }
 
 const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
-  const { noPadding = false, className } = props;
-  
+  const { noPadding = false, className, noColor = false } = props;
+
   const noPaddingClass = noPadding ? styles.noPadding : '';
+  const noColorClass = noColor ? styles.noColor : '';
 
   const toExplain = () => {
     window.open(explainUrl);
   };
   return (
     <div className={`${styles.pageCommonWrap} ${className}`}>
-      <div className={`${styles.pageCommonWrapContent} ${noPaddingClass}`}>{props.children}</div>
+      <div className={`${styles.pageCommonWrapContent} ${noPaddingClass} ${noColorClass}`}>
+        {props.children}
+      </div>
       <div className={styles.explainContent}>
         <span className={styles.explainContentImportant}>工程设计平台</span>
         <span className={styles.explainContentCopyTip}>版权所有</span>
