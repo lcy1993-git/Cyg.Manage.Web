@@ -25,13 +25,23 @@ const DictionaryForm: React.FC<IForm> = (props) => {
     <>
       <Row>
         <Col span={11}>
-          <CyFormItem label="编号" name="no" required>
+          <CyFormItem
+            label="编号"
+            name="no"
+            required
+            rules={[{ required: true, message: '编号为必填项' }]}
+          >
             <Input placeholder="请输入编号" />
           </CyFormItem>
           <CyFormItem label="版本" name="version">
             <Input />
           </CyFormItem>
-          <CyFormItem label="模板类型" name="engineeringTemplateType" required>
+          <CyFormItem
+            label="模板类型"
+            name="engineeringTemplateType"
+            required
+            rules={[{ required: true, message: '模板类型为必填项' }]}
+          >
             {type === 'edit' ? (
               <Select disabled>
                 {engineeringTemplateTypeList &&
@@ -60,10 +70,20 @@ const DictionaryForm: React.FC<IForm> = (props) => {
         </Col>
         <Col span={2}></Col>
         <Col span={11}>
-          <CyFormItem label="发布时间" name="publishDate" required>
+          <CyFormItem
+            label="发布时间"
+            name="publishDate"
+            required
+            rules={[{ required: true, message: '发布时间为必填项' }]}
+          >
             <DateFormItem />
           </CyFormItem>
-          <CyFormItem label="状态" name="enabled" required>
+          <CyFormItem
+            label="状态"
+            name="enabled"
+            required
+            rules={[{ required: true, message: '状态为必填项' }]}
+          >
             <FormSwitch />
           </CyFormItem>
         </Col>

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {history} from 'umi';
-import {Input, Button, Modal, Form, Switch, message, Space, Row, Col, DatePicker, Select} from 'antd';
+import {Input, Button, Modal, Form, Switch, message, Space, Row, Col, DatePicker, Select, Spin} from 'antd';
 import type {ColumnsType} from 'antd/lib/table';
 import {EyeOutlined, PlusOutlined, DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import {isArray} from 'lodash';
@@ -37,6 +37,7 @@ const DesignMaterialMapping: React.FC = () => {
   const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [spinning, setSpinning] = useState<boolean>(false);
   const [materialList,setMaterialList] = useState<{libName: string,id: string}[]>([])
   const [costMaterialList,setCostMaterialList] = useState<{name: string,id: string}[]>([])
 
@@ -164,14 +165,18 @@ const DesignMaterialMapping: React.FC = () => {
     const {id,sourceMaterialLibraryId,sourceMaterialLibraryName} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/design-mapping-info?id=${id}&sourceMaterialLibraryName=${sourceMaterialLibraryName}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
   };
-  const onFinish = async (val: SuppliesLibraryData) => {
+  const onFinish = (val: SuppliesLibraryData) => {
+    setSpinning(true)
     const data = {...val}
     data.enabled = !!data.enabled
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
     data.remark = data.remark === undefined ? '' : data.remark
-    await addMaterialMappingDesignLibrary(data)
-    setAddFormVisible(false)
-    refresh()
+     addMaterialMappingDesignLibrary(data).then(()=>{
+       setAddFormVisible(false)
+       refresh()
+     }).finally(()=>{
+       setSpinning(false)
+     })
   }
   const onRemoveRow = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -240,11 +245,12 @@ const DesignMaterialMapping: React.FC = () => {
         width="880px"
         visible={addFormVisible}
         okText="确认"
-        footer={false}
+        footer={null}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
+        <Spin spinning={spinning}>
         <Form
           name="basic"
           initialValues={{remember: true}}
@@ -334,6 +340,7 @@ const DesignMaterialMapping: React.FC = () => {
             </Space>
           </div>
         </Form>
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

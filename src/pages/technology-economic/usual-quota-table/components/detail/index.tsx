@@ -47,7 +47,7 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
              setSuccessful={setSuccessful}
            />
            <TableImportButton
-             extraParams={{commonlyTableType:active}}
+             // extraParams={{commonlyTableType:active}}
              modalTitle={'导入土方参数图形'}
              buttonTitle={'导入土方参数图形'}
              style={{zIndex:99,display:active === 3 ? 'block' : 'none'}}

@@ -1,22 +1,16 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
+import { Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import {
-  EyeOutlined,
   PlusOutlined,
-  DeleteOutlined,
-  FileSearchOutlined,
-  EditOutlined,
 } from '@ant-design/icons';
 import { isArray } from 'lodash';
 
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-// import TableSearch from '@/components/table-search';
 import DictionaryForm from './components/add-edit-form';
-
 import {
   addPricingTemplate,
   editPricingTemplate,
@@ -41,7 +35,6 @@ type DataSource = {
   [key: string]: string;
 };
 
-const { Search } = Input;
 const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
 const columns = [
   {
@@ -108,7 +101,7 @@ const PricingTemplates: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
+  const [spinning, setSpinning] = useState<boolean>(false);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [selectList, setSelectList] = useState<number[]>([]);
   const [addForm] = Form.useForm();
@@ -143,27 +136,43 @@ const PricingTemplates: React.FC = () => {
   };
   // 新增确认按钮
   const sureAddAuthorization = () => {
-    addForm.validateFields().then(async (values) => {
-      await addPricingTemplate(values);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-
+    addForm.validateFields().then((values) => {
+      setSpinning(true);
+      addPricingTemplate(values)
+        .then(() => {
+          refresh();
+          setAddFormVisible(false);
+          addForm.resetFields();
+        })
+        .finally(() => {
+          setSpinning(false);
+        });
     });
   };
   // 编辑确认按钮
   const sureEditAuthorization = () => {
-    editForm.validateFields().then(async (values) => {
+    editForm.validateFields().then((values) => {
+      setSpinning(true);
+      if (values.publishDate === 'Invalid date') {
+        message.warn('发布时间为必填项!');
+        setSpinning(false);
+        return;
+      }
       const id = tableSelectRows[0].id;
       let value = values;
       value.id = id;
       // TODO 编辑接口
-      await editPricingTemplate(value);
-      refresh();
-      setEditFormVisible(false);
-      editForm.resetFields();
-      setTableSelectRows([])
-      tableRef.current.reset()
+      editPricingTemplate(value)
+        .then(() => {
+          refresh();
+          setEditFormVisible(false);
+          editForm.resetFields();
+          setTableSelectRows([]);
+          tableRef.current.reset();
+        })
+        .finally(() => {
+          setSpinning(false);
+        });
     });
   };
   // 删除
@@ -175,7 +184,7 @@ const PricingTemplates: React.FC = () => {
     const id = tableSelectRows[0].id;
     await deletePricingTemplate(id);
     refresh();
-    setTableSelectRows([])
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 
@@ -314,14 +323,25 @@ const PricingTemplates: React.FC = () => {
         width="880px"
         visible={addFormVisible}
         okText="确认"
+        footer={null}
         onOk={() => sureAddAuthorization()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <DictionaryForm type="add" selectList={selectList} />
-        </Form>
+        <Spin spinning={spinning}>
+          <Form form={addForm} preserve={false}>
+            <DictionaryForm type="add" selectList={selectList} />
+          </Form>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
+            <Space>
+              <Button onClick={() => setAddFormVisible(false)}>取消</Button>
+              <Button onClick={sureAddAuthorization} type={'primary'}>
+                确定
+              </Button>
+            </Space>
+          </div>
+        </Spin>
       </Modal>
       <Modal
         maskClosable={false}
@@ -329,14 +349,25 @@ const PricingTemplates: React.FC = () => {
         width="880px"
         visible={editFormVisible}
         okText="确认"
+        footer={null}
         onOk={() => sureEditAuthorization()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={editForm} preserve={false}>
-          <DictionaryForm type="edit" />
-        </Form>
+        <Spin spinning={spinning}>
+          <Form form={editForm} preserve={false}>
+            <DictionaryForm type="edit" />
+          </Form>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
+            <Space>
+              <Button onClick={() => setEditFormVisible(false)}>取消</Button>
+              <Button onClick={sureEditAuthorization} type={'primary'}>
+                确定
+              </Button>
+            </Space>
+          </div>
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );
