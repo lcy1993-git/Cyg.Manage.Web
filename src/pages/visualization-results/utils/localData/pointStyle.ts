@@ -44,6 +44,24 @@ const pointStyle = function (type: string, feature: Feature, selected: boolean, 
     let azimuth = feature.getProperties().azimuth || 0;
     let isDismantle;
 
+    if(media) {
+        return new ClassStyle({
+              text: new Text({
+                  font: 'Normal 15px webgisIconFont',
+                  text: '\ue8f7',
+                  offsetX: 10,
+                  offsetY: -10,
+                  fill: new Fill({
+                    color: 'rgba(156, 254, 237, 1)',
+                }),
+                stroke: new Stroke({
+                    color: 'rgba(82, 45, 85, 1)',
+                    width: 1
+                })
+              })
+            })
+    }
+
     if (type.indexOf('mark') >= 0) {
         style = mark_style(feature);
         if (selected) {
@@ -748,26 +766,6 @@ const pointStyle = function (type: string, feature: Feature, selected: boolean, 
         style_ ? pointStyles = [style, dismantleStyle, style_] : pointStyles = [style, dismantleStyle];
     } else {
         style_ ? pointStyles = [style, style_] : pointStyles = [style];
-    }
-
-    if(media) {
-        pointStyles.push(
-            new ClassStyle({
-              text: new Text({
-                  font: 'Normal 15px webgisIconFont',
-                  text: '\ue8f7',
-                  offsetX: 10,
-                  offsetY: -10,
-                  fill: new Fill({
-                    color: 'rgba(156, 254, 237, 1)',
-                }),
-                stroke: new Stroke({
-                    color: 'rgba(82, 45, 85, 1)',
-                    width: 1
-                })
-              })
-            })
-          )
     }
     return pointStyles;
 }

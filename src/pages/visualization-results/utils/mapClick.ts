@@ -120,7 +120,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   map.forEachFeatureAtPixel(evt.pixel, async function (feature_: any, layer: any) {
     // setRightSidebarVisiviabelFlag = true;
     var feature:any;
-    console.log(feature_, 0);
     if (selected) return;
     selected = true;
     
@@ -668,7 +667,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   ops.setRightSidebarVisiviabel(false);
   ops.setSurveyModalVisible(false);
   // }
-  loadMediaSign();
+  loadMediaSign(map);
 };
 
 // 当前经纬度映射到HTML节点
