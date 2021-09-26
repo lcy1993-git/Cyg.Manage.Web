@@ -7,9 +7,10 @@ import { transform } from 'ol/proj';
 import { getScale, clearHighlightLayer, getLayerByName, loadMediaSign, CalcTowerAngle, ToDegrees, getTrackRecordDateArray, getLineClusters } from './methods';
 import { getCustomXmlData, getCustomXmlDataByWhere } from './utils';
 import { findenumsValue } from './localData/mappingTagsDictionary';
-import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView, getDesignMaterialModifyList } from '@/services/visualization-results/visualization-results';
+import { getGisDetail, loadLayer, getlibId_new, getModulesRequest, getMaterialItemData, getModuleDetailView, getDesignMaterialModifyList, getMedium } from '@/services/visualization-results/visualization-results';
 import { format } from './utils';
 import { trackStyle, trackLineStyle } from './localData/pointStyle';
+import { message } from 'antd';
 
 const LevelEnmu = ["无", "220V", "380V", "10kV"]
 
@@ -133,10 +134,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       clearHighlightLayer(map);
       return;
     }
-    if (layer.getProperties().name.includes('mediaSign')) {
-      console.log(feature_.getProperties().data);
-      return;
-    }
+ 
 
     if (layer.getSource() instanceof Cluster) {
       if (feature_.get('features').length > 1) {
@@ -157,6 +155,47 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     // 判断选中的图层类型
     let layerType = layer.getProperties().name.split('_')[0];
     feature.set('layerType', layerTypeIDEnum[layerType]);
+
+
+    if (layer.getProperties().name.includes('mediaSign')) {
+      let params = {
+        projectId: feature.getProperties().features[0].getProperties().project_id,
+        devices: [
+          {
+            category: 1, // 1为勘察，2为预设
+            deviceId: feature.getProperties().features[0].getProperties().id,
+          },
+        ],
+      };
+      if (layerType) {
+        switch (layerType) {
+          case 'survey':
+            params.devices[0].category = 1;
+            break;
+          case 'plan':
+            params.devices[0].category = 4;
+            break;
+          // case 'design':
+          //   params.devices[0].category = 2;
+          //   break;
+          // case 'dismantle':
+          //   params.devices[0].category = 3;
+          //   break;
+        }
+      }
+        getMedium(params).then((data: any) => {
+          if(data.code === 200 && data.isSuccess === true) {
+            ops.addMediaData(data.content)
+          }else{
+            message.error(data.message)
+          }
+        }).catch(e => {
+          message.error(e)
+        });
+
+      return;
+    }
+
     switch (layerType) {
       case 'survey':
       case 'plan':
