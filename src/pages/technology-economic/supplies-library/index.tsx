@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {history} from 'umi';
-import {Input, Button, Modal, Form, Switch, message, Space, Row, Col, DatePicker} from 'antd';
+import {Input, Button, Modal, Form, Switch, message, Space, Spin, DatePicker, Row, Col} from 'antd';
 import type {ColumnsType} from 'antd/lib/table';
 import {EyeOutlined, PlusOutlined, DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import {isArray} from 'lodash';
@@ -14,9 +14,9 @@ import {
   addMaterialLibrary,
   deleteMaterialLibraryById
 } from '@/services/technology-economic/supplies-library';
-import FileUpload from '@/components/file-upload';
 import useBoolean from 'ahooks/lib/useBoolean';
 import moment from 'moment';
+import FileUpload from '@/components/file-upload';
 
 export interface SuppliesLibraryData {
   "id"?: string
@@ -37,6 +37,7 @@ const SuppliesLibrary: React.FC = () => {
   const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [spinning, setSpinning] = useState<boolean>(false);
   const [
     triggerUploadFile,
   ] = useBoolean(false);
@@ -146,13 +147,18 @@ const SuppliesLibrary: React.FC = () => {
     const {id} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/suppliesl-infomation?id=${id}`)
   };
-  const onFinish = async (val: SuppliesLibraryData) => {
+  const onFinish = (val: SuppliesLibraryData) => {
+    setSpinning(true)
     const data = JSON.parse(JSON.stringify(val))
     data.file = val.file
     data.enabled = !!data.enabled
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
-    await addMaterialLibrary(data)
-    setAddFormVisible(false)
+     addMaterialLibrary(data).then(()=>{
+       setSpinning(false)
+       setAddFormVisible(false)
+     }).finally(()=>{
+       setSpinning(false)
+     })
     refresh()
   }
   const onRemoveRow = () => {
@@ -225,6 +231,7 @@ const SuppliesLibrary: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
+        <Spin tip={'loading...'} spinning={spinning}>
         <Form
           name="basic"
           initialValues={{remember: true}}
@@ -304,6 +311,7 @@ const SuppliesLibrary: React.FC = () => {
             </Space>
           </div>
         </Form>
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

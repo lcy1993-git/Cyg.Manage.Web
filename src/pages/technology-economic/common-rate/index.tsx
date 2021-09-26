@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
+import { Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
@@ -34,6 +34,7 @@ const ProjectList: React.FC = () => {
   const [modalType, setModalType] = useState<string>("");
   const [formVisible, setFormVisible] = useState<boolean>(false);
   const [updateTable, setUpdateTable] = useState<boolean>(true);
+  const [spinning, setSpinning] = useState<boolean>(false);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [form] = Form.useForm();
 
@@ -100,6 +101,7 @@ const ProjectList: React.FC = () => {
       render(value: boolean, record: DataSource) {
         return (
           <Switch
+            disabled
             defaultChecked={value}
             onClick={(checked) => {
               setRateTableStatus(record.id, checked);
@@ -250,20 +252,27 @@ const ProjectList: React.FC = () => {
 
   const onModalOkClick = async () => {
     const values = await form.validateFields();
+    setSpinning(true)
     setUpdateTable(false)
     if (modalType === 'add') {
-      await addRateTable({ ...values, }).then(() => {
+      addRateTable({ ...values, }).then(() => {
         message.success('添加成功')
         setFormVisible(false);
+        setSpinning(false)
         form.resetFields();
+      }).finally(()=>{
+        setSpinning(false)
       });
     } else if (modalType === 'edit') {
-      await editRateTable({ ...values,id:tableSelectRows[0].id }).then(() => {
+      editRateTable({ ...values,id:tableSelectRows[0].id }).then(() => {
         message.success('编辑成功')
         // tableRef.current.reset();
         setFormVisible(false);
         setTableSelectRow([])
+        setSpinning(false)
         form.resetFields();
+      }).finally(()=>{
+        setSpinning(false)
       });
     }
     setUpdateTable(true)
@@ -296,14 +305,26 @@ const ProjectList: React.FC = () => {
         width="880px"
         visible={formVisible}
         okText="确认"
-        onOk={onModalOkClick}
+        footer={null}
         onCancel={()=>setFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={form} preserve={false}>
-          <AddDictionaryForm/>
-        </Form>
+        <Spin spinning={spinning}>
+          <Form form={form} preserve={false}>
+            <AddDictionaryForm/>
+          </Form>
+          <div style={{display : 'flex',justifyContent:'right'}}>
+              <Space>
+                <Button onClick={()=>setFormVisible(false)}>
+                  取消
+                </Button>
+                <Button onClick={onModalOkClick} type={'primary'}>
+                  确定
+                </Button>
+              </Space>
+          </div>
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

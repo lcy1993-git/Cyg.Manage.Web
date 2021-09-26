@@ -182,6 +182,12 @@ const EarthworkParameters: React.FC<Props> = (props) => {
                   </table>
                 }
               },
+              {
+                title: '图片',
+                dataIndex: 'name',
+                key: 'name',
+                width: 200,
+              },
             ]}/>
           <br/>
         </TabPane>

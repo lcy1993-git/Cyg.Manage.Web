@@ -31,7 +31,7 @@ const columns = [
   {
     dataIndex: 'no',
     index: 'no',
-    title: '定额编号',
+    title: '材机库编号',
     width: 100,
     ellipsis: true,
     render(v: any, record: any){

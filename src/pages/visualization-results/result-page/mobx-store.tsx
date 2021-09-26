@@ -52,7 +52,7 @@ const initState = {
   startDate: undefined,
   endDate: undefined,
   },
-  mediaListVisibel: true,
+  mediaListVisibel: false,
   mediaListData: []
 };
 

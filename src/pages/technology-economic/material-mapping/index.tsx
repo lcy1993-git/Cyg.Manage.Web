@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {history} from 'umi';
-import {Input, Button, Modal, Form, Switch, message, Space, Row, Col, DatePicker, Select} from 'antd';
+import {Input, Button, Modal, Form, Switch, message, Space, Row, Col, DatePicker, Select, Spin} from 'antd';
 import type {ColumnsType} from 'antd/lib/table';
 import {EyeOutlined, PlusOutlined, DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import {isArray} from 'lodash';
@@ -16,6 +16,7 @@ import FileUpload from '@/components/file-upload';
 import useBoolean from 'ahooks/lib/useBoolean';
 import moment from 'moment';
 import {addSourceMaterialMappingQuota, deleteMaterialMappingQuota, materialMappingQuotaModifyStatus } from '@/services/technology-economic/material';
+import AdjustmentFileForm from "@/pages/technology-economic/spread-coefficient/components/adjustment-file-form/inex";
 
 export interface SuppliesLibraryData {
   "id"?: string
@@ -37,6 +38,8 @@ const MaterialMapping: React.FC = () => {
   const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [spinning, setSpinning] = useState<boolean>(false);
+
   const [materialList,setMaterialList] = useState<{name: string,id: string}[]>([])
   const [
     triggerUploadFile,
@@ -152,14 +155,20 @@ const MaterialMapping: React.FC = () => {
     const {id,sourceMaterialLibraryId} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/mapping-infomation?id=${id}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
   };
-  const onFinish = async (val: SuppliesLibraryData) => {
+  const onFinish = (val: SuppliesLibraryData) => {
+    setSpinning(true)
+
     const data = JSON.parse(JSON.stringify(val))
     data.enabled = !!data.enabled
     data.file = val.file
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
-    await addSourceMaterialMappingQuota(data)
-    setAddFormVisible(false)
-    refresh()
+    addSourceMaterialMappingQuota(data).then(()=>{
+      setAddFormVisible(false)
+      refresh()
+    }).finally(()=>{
+      setSpinning(false)
+    })
+
   }
   const onRemoveRow = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -228,101 +237,103 @@ const MaterialMapping: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Form
-          name="basic"
-          initialValues={{remember: true}}
-          form={form}
-          labelCol={{span: 6}}
-          wrapperCol={{span: 18}}
-          onFinish={onFinish}
-        >
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="名称"
-                name="name"
-                rules={[{required: true, message: '请输入名称!'}]}
-              >
-                <Input placeholder={'请输入名称'}/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="发布时间"
-                name="publishDate"
-              >
-                <DatePicker/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="发布机构"
-                name="publishOrg"
-              >
-                <Input/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="状态"
-                name="enabled"
-              >
-                <Switch/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="关联物料库"
-                name="sourceMaterialLibraryId"
-                rules={[{required: true, message: '请选择关联物料库!'}]}
-              >
-                <Select>
-                  {
-                    materialList.map(item=>{
-                      return <Option  key={item.id} value={item.id}>{item.name}</Option>
-                    })
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="上传文件"
-                name="file"
-                rules={[{required: true, message: '请上传物料库文件!'}]}
-              >
-                <FileUpload
-                  trigger={triggerUploadFile}
-                  maxCount={1}
-                  accept=".xls,.xlsx"/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="说明"
-                name="remark"
-              >
-                <Input.TextArea rows={3}/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <div style={{display: 'flex', justifyContent: 'center'}}>
-            <Space>
-              <Button onClick={() => setAddFormVisible(false)}>
-                取消
-              </Button>
-              <Button type="primary" htmlType="submit">
-                确定
-              </Button>
-            </Space>
-          </div>
-        </Form>
+        <Spin spinning={spinning}>
+          <Form
+            name="basic"
+            initialValues={{remember: true}}
+            form={form}
+            labelCol={{span: 6}}
+            wrapperCol={{span: 18}}
+            onFinish={onFinish}
+          >
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="名称"
+                  name="name"
+                  rules={[{required: true, message: '请输入名称!'}]}
+                >
+                  <Input placeholder={'请输入名称'}/>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="发布时间"
+                  name="publishDate"
+                >
+                  <DatePicker/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="发布机构"
+                  name="publishOrg"
+                >
+                  <Input/>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="状态"
+                  name="enabled"
+                >
+                  <Switch/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="关联物料库"
+                  name="sourceMaterialLibraryId"
+                  rules={[{required: true, message: '请选择关联物料库!'}]}
+                >
+                  <Select>
+                    {
+                      materialList.map(item=>{
+                        return <Option  key={item.id} value={item.id}>{item.name}</Option>
+                      })
+                    }
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="上传文件"
+                  name="file"
+                  rules={[{required: true, message: '请上传物料库文件!'}]}
+                >
+                  <FileUpload
+                    trigger={triggerUploadFile}
+                    maxCount={1}
+                    accept=".xls,.xlsx"/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="说明"
+                  name="remark"
+                >
+                  <Input.TextArea rows={3}/>
+                </Form.Item>
+              </Col>
+            </Row>
+            <div style={{display: 'flex', justifyContent: 'right'}}>
+              <Space>
+                <Button onClick={() => setAddFormVisible(false)}>
+                  取消
+                </Button>
+                <Button type="primary" htmlType="submit">
+                  确定
+                </Button>
+              </Space>
+            </div>
+          </Form>
+        </Spin>
       </Modal>
     </PageCommonWrap>
   );

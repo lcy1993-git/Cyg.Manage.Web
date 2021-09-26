@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm } from 'antd';
+import {Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space} from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
@@ -18,6 +18,7 @@ import {
 } from '@/services/technology-economic';
 import styles from './index.less';
 import moment from "moment";
+import AddDictionaryForm from "@/pages/technology-economic/common-rate/components/add-edit-form";
 
 type DataSource = {
   id: string;
@@ -92,6 +93,7 @@ const QuotaLibrary: React.FC = () => {
   const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | Object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
+  const [spinning, setSpinning] = useState<boolean>(false);
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -137,15 +139,20 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const sureAddAuthorization = () => {
-    addForm.validateFields().then(async (values) => {
+    addForm.validateFields().then((values) => {
+      setSpinning(true)
       const data =  JSON.parse(JSON.stringify(values))
       data.file = values.file
       data.publishDate = moment(values.publishDate).format('YYYY-MM-DD')
       data.year = moment(values.year).format('YYYY')
-      await createMaterialMachineLibrary(data);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
+      createMaterialMachineLibrary(data).then(()=>{
+        refresh();
+        setAddFormVisible(false);
+        addForm.resetFields();
+      }).finally(()=>{
+        setSpinning(false)
+      });
+
     });
   };
 
@@ -229,13 +236,27 @@ const QuotaLibrary: React.FC = () => {
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddAuthorization()}
+        footer={null}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <DictionaryForm type="add" />
-        </Form>
+        <Spin spinning={spinning}>
+          <Form form={addForm} preserve={false}>
+            <DictionaryForm type="add" />
+          </Form>
+          <div style={{display : 'flex',justifyContent:'right'}}>
+            <Space>
+              <Button onClick={()=>setAddFormVisible(false)}>
+                取消
+              </Button>
+              <Button onClick={sureAddAuthorization} type={'primary'}>
+                确定
+              </Button>
+            </Space>
+          </div>
+        </Spin>
+
       </Modal>
     </PageCommonWrap>
   );
