@@ -25,6 +25,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [requestLoading, setRequestLoading] = useState<boolean>(false);
   const [province, setProvince] = useState<string>('');
   const [remark, setRemark] = useState<string>('');
+  const [msgState, setMsgState] = useState<boolean>(false);
   const [versionName, setVersionName] = useState<string>('');
   // const controller = new AbortController();
   // const { signal } = controller;
@@ -38,6 +39,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [form] = Form.useForm();
 
   const saveInventoryEvent = () => {
+    setMsgState(false);
     return form
       .validateFields()
       .then((values) => {
@@ -54,19 +56,23 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       .then(
         (res) => {
           message.success('导入成功');
+          setRequestLoading(true);
           return Promise.resolve();
         },
         (res) => {
-          const { message: msg } = res;
-          if (msg) {
-            message.error('上传失败,' + msg);
+          if (res.code === 5000) {
+            const { message: msg } = res;
+            setRequestLoading(false);
+            setMsgState(true);
+            message.error('上传失败，' + msg);
           }
+
           setUploadFileFalse();
           return Promise.reject('导入失败');
         },
       )
       .finally(() => {
-        setRequestLoading(true);
+        // setRequestLoading(true);
       });
   };
 
@@ -75,6 +81,10 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
       if (requestLoading) {
         setState(false);
         changeFinishEvent?.();
+        return;
+      }
+      if (msgState) {
+        message.info('请重新上传完整的文件');
         return;
       }
       message.info('您还未上传文件，点击“开始上传”上传文件');

@@ -2,17 +2,50 @@
 
 const mapRouter = new Map<string, string>();
 
-mapRouter.set('户表箱', 'electric-meter');
-mapRouter.set('环网箱', 'cable-device-hwx');
-mapRouter.set('电缆沟(电缆通道)', 'cable-channel');
-mapRouter.set('排管', 'hole');
-mapRouter.set('直线电缆井', 'cable-zx');
-mapRouter.set('直线水泥杆塔', 'Tower-zxsn');
-mapRouter.set('NJ1转角杆', 'tower-nj1');
-mapRouter.set('终端杆', 'tower-zd');
-mapRouter.set('单杆设备', 'over-head-device-dg');
-mapRouter.set('柱上变压器', 'over-head-device-zsbyq');
-mapRouter.set('故障指示器', 'fault-indicator');
+// 故障指示器,
+mapRouter.set("1", 
+  "electricmeter"
+);
+// 终端杆,
+mapRouter.set("2", 
+  "cabledevice-hwx"
+);
+// 直线杆,
+mapRouter.set("3", 
+  "cablechannel-gcps"
+);
+// 变压器,
+mapRouter.set("4", 
+  "cablechannel-pgps"
+);
+// 户表,
+mapRouter.set("5", 
+  "cable-zx"
+);
+// NJ1转角杆,
+mapRouter.set("6", 
+  "tower-zxsn"
+);
+// 杆上设备,
+mapRouter.set("7", 
+  "Tower-nj1"
+);
+// 电缆通道, 排管4*5混凝土包封
+mapRouter.set("8", 
+  "tower-zd"
+);
+// 电缆井,
+mapRouter.set("9", 
+  "overheaddevice-dg"
+);
+// 电缆通道, 3*350mm单侧支架砖砌电缆沟
+mapRouter.set("10", 
+  "transformer"
+);
+// 环网箱,
+mapRouter.set("11", 
+  "faultindicator-overhead "
+);
 
 const getThreeModeRouter = (e: string) => {
   return mapRouter.get(e)

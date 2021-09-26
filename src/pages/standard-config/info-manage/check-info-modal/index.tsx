@@ -61,9 +61,8 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
     <Modal
       maskClosable={false}
       title="查看消息"
-      centered
-      width="80%"
-      bodyStyle={{ height: 750, overflowY: 'auto' }}
+      width="50%"
+      bodyStyle={{ height: 515, overflowY: 'auto' }}
       visible={state as boolean}
       destroyOnClose
       footer={null}

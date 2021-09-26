@@ -34,7 +34,7 @@ const FeedbackDetail: React.FC<FeedbackDetailProps> = (props) => {
       <div className={styles.feedbackDetailInfo}>
         <div className="flex">
           <div className="flex1">
-            <ReadonlyItem labelWidth={60} label="反馈标题">
+            <ReadonlyItem labelWidth={52} label="反馈标题">
               {detailInfo.title}
             </ReadonlyItem>
           </div>
@@ -47,9 +47,9 @@ const FeedbackDetail: React.FC<FeedbackDetailProps> = (props) => {
           </div>
         </div>
 
-        <ReadonlyItem labelWidth={60} label="反馈描述">
-          {detailInfo.describe}
-        </ReadonlyItem>
+        <CyFormItem labelWidth={72} label="反馈描述">
+          <span style={{ fontWeight: 'bold' }}>{detailInfo.describe ?? ''}</span>
+        </CyFormItem>
       </div>
       {replys.length > 0 && <div className={styles.feedbackDetailReplyInfo}>{replyElement}</div>}
 

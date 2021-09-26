@@ -34,7 +34,7 @@ export interface Options {
 }
 
 // 点样式
-const pointStyle = function (type: string, feature: Feature, selected: any) {
+const pointStyle = function (type: string, feature: Feature, selected: boolean, media?: boolean) {
     let iconFont = 'webgisIconFont';
     let iconFontText;
 
@@ -43,6 +43,24 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
     let backgroundColor: string | undefined = undefined;
     let azimuth = feature.getProperties().azimuth || 0;
     let isDismantle;
+
+    if(media) {
+        return new ClassStyle({
+              text: new Text({
+                  font: 'Normal 15px webgisIconFont',
+                  text: '\ue8f7',
+                  offsetX: 10,
+                  offsetY: -10,
+                  fill: new Fill({
+                    color: 'rgba(156, 254, 237, 1)',
+                }),
+                stroke: new Stroke({
+                    color: 'rgba(82, 45, 85, 1)',
+                    width: 1
+                })
+              })
+            })
+    }
 
     if (type.indexOf('mark') >= 0) {
         style = mark_style(feature);
@@ -729,6 +747,7 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
         style_ = new ClassStyle(styleParams);
     }
 
+    let pointStyles = [];
     if (type.split('_')[0] == 'dismantle' || isDismantle) {
         let dismantleColor = 'rgba(255, 0, 0, 1)';
         let dismantleStyle = new ClassStyle({
@@ -744,10 +763,11 @@ const pointStyle = function (type: string, feature: Feature, selected: any) {
                 })
             })
         });
-        return style_ ? [style, dismantleStyle, style_] : [style, dismantleStyle];
+        style_ ? pointStyles = [style, dismantleStyle, style_] : pointStyles = [style, dismantleStyle];
     } else {
-        return style_ ? [style, style_] : [style];
+        style_ ? pointStyles = [style, style_] : pointStyles = [style];
     }
+    return pointStyles;
 }
 // 线样式
 const line_style = function (feature: Feature, select: boolean = false) {
@@ -1002,9 +1022,10 @@ const cable_channel_styles = function (feature: Feature, select: boolean = false
     let styles = [backgroundStyle];
     let geometry = feature.getGeometry();
     let i = 0;
+    let style;
     if(geometry.getType() === 'MultiLineString'){
         geometry.getLineStrings().forEach((lineString: any) => {
-            let style = new ClassStyle({
+            style = new ClassStyle({
                 geometry: lineString,
                 stroke: new Stroke(strokeOpts),
                 text: new Text({
@@ -1026,7 +1047,26 @@ const cable_channel_styles = function (feature: Feature, select: boolean = false
             styles.push(style);
             i++;
         });
-       
+    } else {
+        style = new ClassStyle({
+            stroke: new Stroke(strokeOpts),
+            text: new Text({
+                text: (showLabel && i === 0) ? feature.getProperties().lable : '',
+                textAlign: 'center',
+                font: 'bold 12px Source Han Sans SC', //字体与大小
+                placement: 'line',
+                offsetY: -15, // 向上偏移
+                fill: new Fill({ //文字填充色
+                    color: fontColor
+                }),
+                stroke: new Stroke({ //文字边界宽度与颜色
+                    color: 'rgba(24, 24, 24, 0.85)',
+                    // opacity: 0.85,
+                    width: 2
+                })
+            })
+        });
+        styles.push(style);
     }
     
     if (obj.isDismantle) {

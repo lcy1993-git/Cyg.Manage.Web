@@ -16,16 +16,31 @@
   }
   .InputWrap {
     position: relative;
-
+    flex: 1;
     .error {
       position: absolute;
       color: red;
       font-size: 12px;
       bottom: 20px;
     }
+    :global{
+      .ant-input {
+        line-height: 30px;
+      }
+    }
   }
   .imgWrap {
     flex-basis: 140px;
     cursor: pointer;
+  }
+  .img {
+    height: 40px;
+  }
+  .changeText {
+    float: right;
+    margin-right: 10px;
+    color: #4199FF;
+    cursor: pointer;
+    user-select: none;
   }
 }

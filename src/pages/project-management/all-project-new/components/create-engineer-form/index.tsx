@@ -164,7 +164,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.area}
           >
             <Cascader options={afterHandleData} />
           </CyFormItem>
@@ -178,7 +178,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.lib}
           >
             <DataSelect placeholder="请选择" options={libSelectData} />
           </CyFormItem>
@@ -190,7 +190,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.inventory}
           >
             <DataSelect
               options={
@@ -211,7 +211,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.warehouse}
           >
             <DataSelect
               options={
@@ -246,7 +246,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.complieTime}
           >
             <DatePicker />
           </CyFormItem>
@@ -336,7 +336,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             labelWidth={120}
             align="right"
             required
-            rules={Rule.required}
+            rules={Rule.company}
           >
             <DataSelect options={companySelectData} placeholder="请先选择区域" />
           </CyFormItem>
@@ -349,7 +349,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             align="right"
             initialValue={'1'}
             required
-            rules={Rule.required}
+            rules={Rule.importance}
           >
             <EnumSelect placeholder="请选择" enumList={FormImportantLevel} />
           </CyFormItem>
@@ -377,7 +377,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             align="right"
             initialValue={'1'}
             required
-            rules={Rule.required}
+            rules={Rule.grade}
           >
             <EnumSelect placeholder="请选择" enumList={ProjectLevel} />
           </CyFormItem>

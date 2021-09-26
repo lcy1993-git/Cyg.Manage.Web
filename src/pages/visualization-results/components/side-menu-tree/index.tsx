@@ -6,7 +6,7 @@ import {
   fetchAreaEngineerProjectListByParams,
   fetchCompanyEngineerProjectListByParams,
   ProjectListByAreaType,
-  downloadMediaZipFile
+  downloadMediaZipFile,
 } from '@/services/visualization-results/side-tree';
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
@@ -99,9 +99,9 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
 type KeyType =
   | React.Key[]
   | {
-    checked: React.Key[];
-    halfChecked: React.Key[];
-  };
+      checked: React.Key[];
+      halfChecked: React.Key[];
+    };
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 项目详情
@@ -209,7 +209,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // const [startDateValue, setStartDateValue] = useState<Moment>(undefined);
   // const [endDateValue, setEndDateValue] = useState<Moment>(undefined);
 
-  const [dateRange, setDateRange] = useState<[Moment, Moment]>([undefined, undefined])
+  const [dateRange, setDateRange] = useState<[Moment, Moment]>([undefined, undefined]);
 
   // 判断开始时间不能大于结束时间
   const compareData = (start: Moment, end: Moment) => {
@@ -232,13 +232,12 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
    */
   useEffect(() => {
     if (checkedProjectIdList.length === 0) {
-      setDateRange([undefined, undefined])
-
+      setDateRange([undefined, undefined]);
     } else {
       const checkedProject = checkedProjectDateList || [undefined];
       let start = moment(checkedProject[0]);
       let end = moment(checkedProject[checkedProject.length - 1]);
-      setDateRange([start.isValid() ? start : undefined, end.isValid() ? end : undefined])
+      setDateRange([start.isValid() ? start : undefined, end.isValid() ? end : undefined]);
     }
   }, [checkedProjectIdList.length]);
 
@@ -387,7 +386,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     let res = _.unionBy(generatorProjectInfoList(temp), (item: ProjectList) => item.id);
 
     store.setProjectIdList(res);
-    
+
     setCheckedKeys(checked);
   };
 
@@ -420,10 +419,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   });
 
   const getLayerstype = () => {
-    if (props.controlLayersProps.designLayerVisible && !props.controlLayersProps.dismantleLayerVisible) {
-      return 1
-    } else if (!props.controlLayersProps.designLayerVisible && props.controlLayersProps.dismantleLayerVisible) {
-      return 2
+    if (
+      props.controlLayersProps.designLayerVisible &&
+      !props.controlLayersProps.dismantleLayerVisible
+    ) {
+      return 1;
+    } else if (
+      !props.controlLayersProps.designLayerVisible &&
+      props.controlLayersProps.dismantleLayerVisible
+    ) {
+      return 2;
     }
     return 0;
   };
@@ -519,8 +524,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   useEffect(() => {
     store.setDateRange({
-      startDate: dateRange[0] ? moment(dateRange[0]).format('YYYY/MM/DD') : dateRange[0],
-      endDate: dateRange[1] ? moment(dateRange[1]).format('YYYY/MM/DD') : dateRange[1],
+      startDate: dateRange[0] ? moment(dateRange[0]).format('YYYY/MM/DD') : dateRange?.[0],
+      endDate: dateRange[1] ? moment(dateRange[1]).format('YYYY/MM/DD') : dateRange?.[1],
     })
   }, [dateRange])
 
@@ -528,36 +533,50 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     return (
       <div className={styles.extraFooterWrap}>
         <div style={styles.buttomItem}>
-          <Button type="link"
+          <Button
+            type="link"
             onClick={() => {
               if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
                 message.error('当前未选择项目');
               } else {
                 let start = moment(checkedProjectDateList[0]);
                 // setStartDateValue(start.isValid() ? start : message.error('项目中有项目开始时间未设置') && undefined);
-                setDateRange([start.isValid() ? start : message.error('项目中有项目开始时间未设置') && undefined, dateRange[1]])
+                setDateRange([
+                  start.isValid()
+                    ? start
+                    : message.error('项目中有项目开始时间未设置') && undefined,
+                  dateRange[1],
+                ]);
               }
               startDateRef && startDateRef.current?.blur();
             }}
-          >定位最早项目时间</Button>
+          >
+            定位最早项目时间
+          </Button>
         </div>
         <div style={styles.buttomItem}>
-          <Button type="link"
+          <Button
+            type="link"
             onClick={() => {
               if (!checkedProjectDateList || checkedProjectDateList.length === 0) {
                 message.error('当前未选择项目');
               } else {
                 let end = moment(checkedProjectDateList[checkedProjectDateList.length - 1]);
                 // setEndDateValue(end.isValid() ? end : message.error('项目中有项目开始截至未设置') && undefined);
-                setDateRange([dateRange[0], end.isValid() ? end : message.error('项目中有项目结束时间未设置') && undefined])
+                setDateRange([
+                  dateRange[0],
+                  end.isValid() ? end : message.error('项目中有项目结束时间未设置') && undefined,
+                ]);
               }
               endDateRef && endDateRef.current?.blur();
             }}
-          >定位最晚项目时间</Button>
+          >
+            定位最晚项目时间
+          </Button>
         </div>
       </div>
     );
-  }
+  };
 
   const onSelect = (e: any, g: any) => {
     // 代表点击的是项目
@@ -586,38 +605,38 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const handlerPositionClick = (flag: any) => {
     if (Array.isArray(flag) && flag.length > 0) {
-      setexportMapPositionModalVisible(true)
+      setexportMapPositionModalVisible(true);
     } else {
-      message.error('当前未选择项目')
+      message.error('当前未选择项目');
     }
-  }
+  };
 
   const downLoadMedia = (list: any[]) => {
-    if(list.length > 0) {
-      setMediaLoadVisibel(true)
-    }else {
-      message.error('当前未选择项目')
+    if (list.length > 0) {
+      setMediaLoadVisibel(true);
+    } else {
+      message.error('当前未选择项目');
     }
-  }
+  };
 
   const handlerMaterialClick = (flag: any) => {
     if (Array.isArray(flag) && flag.length > 0) {
-      setMaterialModalVisible(true)
+      setMaterialModalVisible(true);
     } else {
-      message.error('当前未选择项目')
+      message.error('当前未选择项目');
     }
   };
 
   const isClickAble = () => {
     if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 1) {
-      return true
+      return true;
     } else if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0) {
-      message.error("当前未选择项目")
+      message.error('当前未选择项目');
     } else if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length > 1) {
-      message.error("多选状态下不可操作")
+      message.error('多选状态下不可操作');
     }
-    return false
-  }
+    return false;
+  };
 
   return (
     <div
@@ -657,48 +676,71 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         />
       </div>
       <div className={styles.timeLine}>
-        <RangePicker value={dateRange} onChange={(e) => setDateRange(e)} renderExtraFooter={renderExtraFooter} />
+        <RangePicker
+          value={dateRange}
+          onChange={(e) => setDateRange(e)}
+          renderExtraFooter={renderExtraFooter}
+        />
       </div>
 
       <div className={styles.buttonArea}>
         <SiderMenuAreaButtons
           buttonProps={[
             {
-              title: "成果管理",
+              title: '成果管理',
               dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
               light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
               onClick: () => isClickAble() && setResultVisibel(true),
-              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length !== 1 ? { opacity: .4 } : {}
+              style:
+                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length !== 1
+                  ? { opacity: 0.4 }
+                  : {},
             },
             {
-              title: "材料统计",
+              title: '材料统计',
               dart: require('@/assets/icon-image/menu-tree-icon/材料统计.png'),
               light: require('@/assets/icon-image/menu-tree-icon/材料统计-light.png'),
               // @ts-ignore
-              onClick: () => Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? message.error("当前未选择项目") : handlerMaterialClick(checkedProjectIdList),
-              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? { opacity: .4 } : {}
+              onClick: () =>
+                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0
+                  ? message.error('当前未选择项目')
+                  : handlerMaterialClick(checkedProjectIdList),
+              style:
+                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0
+                  ? { opacity: 0.4 }
+                  : {},
             },
             {
-              title: "审阅消息",
+              title: '审阅消息',
               dart: require('@/assets/icon-image/menu-tree-icon/审阅消息.png'),
               light: require('@/assets/icon-image/menu-tree-icon/审阅消息-light.png'),
-              onClick: () => Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? message.error("当前未选择项目") : handlerCommentClick(),
-              style: Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? { opacity: .4 } : {}
+              onClick: () =>
+                Array.isArray(checkedKeys) && checkedKeys?.length === 0
+                  ? message.error('当前未选择项目')
+                  : handlerCommentClick(),
+              style:
+                Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? { opacity: 0.4 } : {},
             },
             {
-              title: "导出多媒体",
+              title: '导出多媒体',
               dart: require('@/assets/icon-image/menu-tree-icon/导出多媒体.png'),
               light: require('@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'),
               onClick: () => downLoadMedia(checkedProjectIdList),
-              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? { opacity: .4 } : {}
+              style:
+                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0
+                  ? { opacity: 0.4 }
+                  : {},
             },
             {
-              title: "导出坐标",
+              title: '导出坐标',
               dart: require('@/assets/icon-image/menu-tree-icon/导出坐标.png'),
               light: require('@/assets/icon-image/menu-tree-icon/导出坐标-light.png'),
               onClick: () => handlerPositionClick(checkedProjectIdList),
-              style: Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0 ? { opacity: .4 } : {}
-            }
+              style:
+                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0
+                  ? { opacity: 0.4 }
+                  : {},
+            },
           ]}
         />
       </div>
@@ -724,8 +766,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         confirmLoading={mediaLoading}
         visible={mediaLoadVisibel}
         onCancel={() => {
-          setMediaLoading(false)
-          setMediaLoadVisibel(false)
+          setMediaLoading(false);
+          setMediaLoadVisibel(false);
         }}
         destroyOnClose={true}
       >
@@ -747,7 +789,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           projectId={projectModalActiveId}
           visible={projectModalVisible}
           onChange={setProjectModalVisible}
-          isResult={false}
         />
       )}
       {engineerModalVisible && (

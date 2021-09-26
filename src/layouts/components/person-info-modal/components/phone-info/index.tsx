@@ -8,6 +8,7 @@ import styles from './index.less';
 interface PhoneInfoProps {
   phone: undefined | string;
   refresh: () => void;
+  cancelPhone: () => void;
 }
 type Step = 0 | 1 | 2;
 
@@ -15,7 +16,8 @@ const regPhone = /^[1][3,4,5,7,8,9][0-9]{9}$/;
 
 const PhoneInfo: React.FC<PhoneInfoProps> = ({
   phone,
-  refresh
+  refresh,
+  cancelPhone
 }) => {
 
   const [step, setStep] = useState<Step>(phone ? 0 : 1)
@@ -77,7 +79,7 @@ const PhoneInfo: React.FC<PhoneInfoProps> = ({
           </div>
           <div className={classNames(styles.minHeight60, styles.ml60)}>
             <Button type="primary" onClick={bindPhoneHandler}>下一步</Button>
-            <Button className={styles.ml12} onClick={() => setStep(phone ? 0 : 1)}>取消</Button>
+            <Button className={styles.ml12} onClick={() => phone ? setStep(0) : cancelPhone()}>取消</Button>
           </div>
         </>
       );

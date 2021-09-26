@@ -92,7 +92,6 @@ const WorkHandover: React.FC = () => {
   };
 
   //项目管理交接
-
   const manageConfirm = () => {
     Modal.confirm({
       title: '项目管理交接',
@@ -193,7 +192,9 @@ const WorkHandover: React.FC = () => {
   };
 
   const finishEvent = () => {
-    removeTab?.(`/personnel-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`);
+    removeTab?.(
+      `/jurisdiction-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`,
+    );
   };
 
   return (

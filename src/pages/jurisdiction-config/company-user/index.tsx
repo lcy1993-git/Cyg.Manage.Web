@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import { EditOutlined, PlusOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
+import { Button, Modal, Form, message, Input, Spin } from 'antd';
 import React, { useMemo, useRef, useState } from 'react';
 import CompanyUserForm from './components/add-edit-form';
 import { isArray } from 'lodash';
@@ -11,7 +11,7 @@ import {
   updateCompanyUserItem,
   updateItemStatus,
   resetItemPwd,
-  batchAddCompanyUserItem,
+  // batchAddCompanyUserItem,
   getCurrentCompanyInfo,
 } from '@/services/personnel-config/company-user';
 import { getTreeSelectData } from '@/services/operation-config/company-group';
@@ -22,7 +22,7 @@ import ResetPasswordForm from './components/reset-form';
 import moment from 'moment';
 import TableSearch from '@/components/table-search';
 import styles from './index.less';
-import BatchAddCompanyUser from './components/batch-add-form';
+// import BatchAddCompanyUser from './components/batch-add-form';
 import TableStatus from '@/components/table-status';
 import uuid from 'node-uuid';
 import CyTag from '@/components/cy-tag';
@@ -87,12 +87,12 @@ const CompanyUser: React.FC = () => {
   const rightButton = () => {
     return (
       <div>
-        {buttonJurisdictionArray?.includes('company-user-batch-add') && (
+        {/* {buttonJurisdictionArray?.includes('company-user-batch-add') && (
           <Button type="primary" className="mr7" onClick={() => batchAddEvent()}>
             <PlusOutlined />
             批量添加
           </Button>
-        )}
+        )} */}
         {buttonJurisdictionArray?.includes('company-user-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
@@ -116,7 +116,7 @@ const CompanyUser: React.FC = () => {
             onClick={() => {
               !workHandoverFlag
                 ? handoverEvent()
-                : message.error('当前已打开“工作交接”界面，请关闭后重试');
+                : message.error('当前已打开“工作交接”界面，是否关闭并打开新的工作交接界面');
             }}
           >
             <SwapOutlined />
@@ -204,19 +204,19 @@ const CompanyUser: React.FC = () => {
     });
   };
 
-  const batchAddEvent = async () => {
-    await getSelectTreeData();
-    setBatchAddFormVisible(true);
-  };
+  // const batchAddEvent = async () => {
+  //   await getSelectTreeData();
+  //   setBatchAddFormVisible(true);
+  // };
 
-  const sureBatchAddCompanyUser = () => {
-    batchAddForm.validateFields().then(async (values) => {
-      await batchAddCompanyUserItem({ ...values });
-      message.success('批量增加成功');
-      refresh();
-      setBatchAddFormVisible(false);
-    });
-  };
+  // const sureBatchAddCompanyUser = () => {
+  //   batchAddForm.validateFields().then(async (values) => {
+  //     await batchAddCompanyUserItem({ ...values });
+  //     message.success('批量增加成功');
+  //     refresh();
+  //     setBatchAddFormVisible(false);
+  //   });
+  // };
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
@@ -326,7 +326,8 @@ const CompanyUser: React.FC = () => {
       title: '状态',
       dataIndex: 'userStatus',
       index: 'userStatus',
-      width: '7%',
+      width: '6%',
+      // align: 'center',
       render: (text: any, record: any) => {
         return (
           <>
@@ -334,18 +335,30 @@ const CompanyUser: React.FC = () => {
             !record.isCurrentUser ? (
               record.userStatus === 1 ? (
                 <>
-                  <Switch key={status} defaultChecked onChange={() => updateStatus(record.id)} />
-                  <span className="formSwitchOpenTip">启用</span>
+                  {/* <Switch key={status} defaultChecked onChange={() => updateStatus(record.id)} /> */}
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    className="colorPrimary"
+                    onClick={() => updateStatus(record.id)}
+                  >
+                    启用
+                  </span>
                 </>
               ) : (
                 <>
-                  <Switch
+                  {/* <Switch
                     checked={false}
                     onChange={() => {
                       updateStatus(record.id);
                     }}
-                  />
-                  <span className="formSwitchCloseTip">禁用</span>
+                  /> */}
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => updateStatus(record.id)}
+                    className="colorRed"
+                  >
+                    禁用
+                  </span>
                 </>
               )
             ) : record.userStatus === 1 ? (
@@ -419,7 +432,7 @@ const CompanyUser: React.FC = () => {
   const leftSearch = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="用户信息" width="248px">
+        <TableSearch width="248px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
@@ -511,7 +524,7 @@ const CompanyUser: React.FC = () => {
           <CompanyUserForm treeData={selectTreeData} type="add" />
         </Form>
       </Modal>
-      <Modal
+      {/* <Modal
         maskClosable={false}
         title="批量添加-用户账号"
         width="680px"
@@ -525,7 +538,7 @@ const CompanyUser: React.FC = () => {
         <Form form={batchAddForm} preserve={false}>
           <BatchAddCompanyUser treeData={selectTreeData} />
         </Form>
-      </Modal>
+      </Modal> */}
       <Modal
         maskClosable={false}
         title="编辑-用户账号"

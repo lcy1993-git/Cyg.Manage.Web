@@ -1,15 +1,15 @@
 .hierarchyTitle {
+  display: flex;
+  align-items: center;
   box-sizing: border-box;
   width: calc(100% - 10px);
-  height: 9%;
-  margin-bottom: 5px;
+  height: 8%;
   padding: 25px;
   background-color: @white-color;
 }
 .hierarchyTable {
   flex: 1;
-  height: 90%;
-  margin-right: 10px;
+  height: 92%;
   background-color: @white-color;
   :global {
     .ant-tabs-tab {
@@ -27,14 +27,14 @@
       background-color: #fff !important;
     }
     .ant-tabs-tab-btn {
-      padding: 0 12px;
+      padding: 0px 12px;
       color: #696969;
     }
     .ant-tabs-card .ant-tabs-content {
       margin-top: -16px;
     }
     .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
-      padding: 0 12px;
+      padding: 45px 12px;
       background: #fff;
     }
     .ant-tabs-card > .ant-tabs-nav::before {
@@ -44,7 +44,11 @@
       width: 0 !important;
     }
     .ant-tabs-nav-wrap {
+      height: 40px;
       background-color: #f7f7f7;
+      .ant-tabs-nav-list {
+        padding-top: 5px;
+      }
     }
     .ant-tabs .ant-tabs-nav {
       box-shadow: none !important;

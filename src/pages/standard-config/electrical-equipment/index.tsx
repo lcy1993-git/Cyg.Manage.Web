@@ -50,7 +50,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="电气设备" width="278px">
+        <TableSearch width="278px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -361,7 +361,6 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
-        needCommonButton={true}
         columns={columns}
         requestSource="resource"
         url="/ElectricalEquipment"

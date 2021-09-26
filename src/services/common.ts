@@ -40,16 +40,16 @@ const geoServerPortObject = {
 const ipArray = [];
 
 const thisHost = `${window.location.hostname}:${window.location.port}`;
-// const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21523';
-const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21571';
+const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21525';
+// const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21571';
 
 const geoServerBaseUrl =
-  window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
-  // window.location.hostname === 'localhost' ? '10.6.1.53' : window.location.hostname;
+  // window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
+  window.location.hostname === 'localhost' ? '10.6.1.53' : window.location.hostname;
 
 export const geoServeUrl = !ipArray.includes(`${window.location.hostname}`)
-  ? `${document.location.protocol}//${geoServerBaseUrl}:${geoServerPort}/geoserver/pdd/ows`
-  : `${document.location.protocol}//${window.location.hostname}:8099/geoserver/pdd/ows`;
+  ? `${document.location.protocol}//${geoServerBaseUrl}:${geoServerPort}/geoserver/pdd/ows/`
+  : `${document.location.protocol}//${window.location.hostname}:8099/geoserver/pdd/ows/`;
 
 // interface UrlSelectParams {
 //   requestSource: 'project' | 'resource';
@@ -94,7 +94,7 @@ export const cyCommonRequest = <T extends {}>(
 
     const { code, isSuccess } = res;
     if (isSuccess && code === 200) {
-      resolve(res as unknown as T);
+      resolve((res as unknown) as T);
     } else {
       message.error(res.message);
       reject(res.message);
@@ -128,7 +128,14 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'tecEco1',
+  requestSource:
+    | 'common'
+    | 'project'
+    | 'resource'
+    | 'tecEco'
+    | 'tecEco1'
+    | 'material'
+    | 'component',
   requestType = 'get',
   postType = 'body',
   libId: string,

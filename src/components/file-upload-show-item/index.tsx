@@ -1,4 +1,9 @@
-import { CloudUploadOutlined, DeleteOutlined,  LinkOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  CloudUploadOutlined,
+  DeleteOutlined,
+  LinkOutlined,
+} from '@ant-design/icons';
 import React from 'react';
 import styles from './index.less';
 
@@ -25,6 +30,8 @@ const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
     uploadStatus,
   } = props;
 
+  console.log(uploadStatus, '11');
+
   const deleteFunction = () => {
     deleteEvent?.(uid);
   };
@@ -42,9 +49,6 @@ const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
           <LinkOutlined className={styles.hasUploadFileShowItemNameIcon} />
           <span className={styles.hasUploadFileShowItemName}>{name}</span>
           &nbsp;
-          {uploadStatus === 'success' ? (
-            <span className={styles.hasUploadFileShowItemName}>上传完成</span>
-          ) : null}
         </div>
         <div className={styles.hasUploadFileShowItemControl}>
           {/* TODO 重命名功能 */}
@@ -56,7 +60,14 @@ const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
                         重命名
                     </span>
                 </span> */}
-
+          {uploadStatus === 'success' ? (
+            <span className={styles.hasUploadFileSuccess}>
+              <span className={styles.controlButtonIcon}>
+                <CheckCircleOutlined />
+              </span>
+              <span>上传完成</span>
+            </span>
+          ) : null}
           {uploadFileBtn ? (
             <span className={styles.uploadButton} onClick={() => uploadFunction()}>
               <span className={styles.controlButtonIcon}>

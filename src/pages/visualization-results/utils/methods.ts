@@ -1,25 +1,26 @@
 import LayerGroup from 'ol/layer/Group';
-import { ProjectList, loadLayer } from '@/services/visualization-results/visualization-results';
-import { layerParams, layerDatas, LayerParams, LayerDatas } from './localData/layerParamsData';
+import { ProjectList, loadLayer, getMediaSign } from '@/services/visualization-results/visualization-results';
+import { layerParams, LayerParams } from './localData/layerParamsData';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import MultiLineString from 'ol/geom/MultiLineString';
-import { pointStyle, line_style, cable_channel_styles, fzx_styles, trackStyle, trackLineStyle, zero_guy_style } from './localData/pointStyle';
+import { pointStyle, line_style, cable_channel_styles, trackStyle, trackLineStyle, zero_guy_style } from './localData/pointStyle';
 import Layer from 'ol/layer/Layer';
-import Point from 'ol/geom/Point';
 import { transform, getPointResolution } from 'ol/proj';
 import ProjUnits from 'ol/proj/Units';
 import Feature from 'ol/Feature';
 import ClassStyle from 'ol/style/Style';
+import Text from 'ol/style/Text';
 import Stroke from 'ol/style/Stroke';
-import Icon from 'ol/style/Icon';
-import { getXmlData, sortByTime, getTime, LineCluster } from './utils';
-import { values } from 'lodash';
-import LineString from 'ol/geom/LineString';
+import { getXmlData, sortByTime, LineCluster } from './utils';
 
 var projects: any;
+var layerGroups: LayerGroup[];
+var mediaSign: boolean;
+var mediaSignData: any;
+var timer: any;
 // var showData: any = [];
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
@@ -77,6 +78,14 @@ const checkZoom = (evt: any, map: any) => {
       const lineCluster = lineClusters[index];
       lineCluster.updateLabelControlValue(false);
     }
+  }
+  
+  timer && clearInterval(timer);
+  if(mediaSign){
+    loadMediaSign(map, layerGroups, true);
+    timer = setInterval(function() {
+      loadMediaSign(map, layerGroups, true);
+  }, 1000);
   }
 }
 
@@ -566,6 +575,80 @@ const clearTrackLayers = (trackLayers: any, type: number = 0) => {
   return groupLayer;
 };
 
+// 多媒体标记
+const loadMediaSign = (map:any, layerGroups_?: LayerGroup[], mediaSign_?: boolean) => {
+  if(layerGroups_)
+    layerGroups = layerGroups_;
+
+  if(mediaSign_ != null)
+    mediaSign = mediaSign_;
+
+  
+  if(!mediaSignData)
+    loadMediaSignData();
+  if(!mediaSignData)
+    return;
+    mediaSignData.then((data: any) => {
+    if(data.content && data.content.length > 0){
+      layerGroups.forEach((layerGroup:any) => {
+        let l:any = layerGroup.getLayers().getArray().find((l:any) => l.getProperties().name.includes('mediaSign'));
+        if(l)
+          l.getSource().clear();
+        layerGroup.getLayers().getArray().forEach((layer:any) => {
+          let layerName = layer.getProperties().name;
+          let layerType = layerName.split('_')[0];
+          if(layerName !== layerType + '_mediaSign'){
+            layer.getSource().getFeatures().forEach((item:any) => {
+              if(item.getProperties().features){
+                for(let i=0; i<item.getProperties().features.length; i++){
+                 let feature = item.getProperties().features[i];
+                 data.content.forEach((d:any) => {
+                  if(feature.getProperties().id === d.main_ID){
+                    // layerName =  layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
+                    if (!layerGroups[layerType + '_mediaSign']) {
+                      var source = new VectorSource();
+                      layerGroups[layerType + '_mediaSign'] = new Vector({
+                        source,
+                        // declutter: true,
+                        zIndex: 100,
+                      });
+                      layerGroups[layerType + '_mediaSign'].set('name', layerType + '_mediaSign');
+                    }
+                    let itemClone = item.clone();
+                    let style  = pointStyle(layer.get('name'),feature, false, mediaSign)
+                    itemClone.setStyle(style);
+                    itemClone.set('data', d);
+                    layerGroups[layerType + '_mediaSign'].getSource().addFeature(itemClone);
+                    if(!getLayerByName(layerType + '_mediaSign', layerGroup.getLayers().getArray()))
+                      layerGroup.getLayers().push(layerGroups[layerType + '_mediaSign']);
+                    
+                  }
+                 })
+                }
+                  
+              }
+            })
+          }   
+        })
+      })
+    }
+  })
+}
+
+const loadMediaSignData = () => {
+  if(!mediaSign)
+    return;
+
+  let projectIds:any = [];
+  projects.forEach((item:ProjectList) =>{
+    projectIds.push(item.id);
+  })
+  let params:any = {
+    projectIds
+  }
+  mediaSignData = getMediaSign(params);
+}
+
 // 按时间排序
 // function sortFeaturesFunc(a: any, b: any) {
 //   var aDate = new Date(a.properties.record_date);
@@ -615,10 +698,8 @@ const relocateMap = (
   let features: any = [];
   let source = new VectorSource();
   layerGroups.forEach((layerGroup: LayerGroup) => {
-    console.log(layerGroup.getProperties());
     if(!layerGroup.getVisible()) {}
     else {
-      console.log(layerGroup.getProperties());
       layerGroup
         .getLayers()
         .getArray()
@@ -769,6 +850,8 @@ export {
   clearHighlightLayer,
   loadTrackLayers,
   clearTrackLayers,
+  loadMediaSign,
+  loadMediaSignData,
   relocateMap,
   getScale,
   CalcTowerAngle,
