@@ -5,18 +5,27 @@ import React, { useMemo } from 'react';
 import ChartBox from '../chart-box';
 import ToDoItem from '../to-do-item-second';
 import styles from './index.less';
+import { history } from 'umi';
 import ScrollView from 'react-custom-scrollbars';
+import { useLayoutStore } from '@/layouts/context';
 
 interface ToDoProps {
   componentProps?: string[];
   currentAreaInfo: AreaInfo;
 }
-
+const typeEnmu = {
+  awaitProcess: '1',
+  inProgress: '2',
+  delegation: '3',
+  beShared: '4',
+};
 const ToDo: React.FC<ToDoProps> = (props) => {
   const {
     componentProps = ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
     currentAreaInfo,
   } = props;
+
+  const { setAllProjectSearchType } = useLayoutStore();
 
   const { data: toDoStatisticsInfo } = useRequest(
     () =>
@@ -45,19 +54,24 @@ const ToDo: React.FC<ToDoProps> = (props) => {
     }, []);
   }, [componentProps]);
 
+  const toAllProjectListPage = (type: string) => {
+    console.log(typeEnmu[type]);
+    setAllProjectSearchType?.(typeEnmu[type]);
+    history.push('/project-management/all-project');
+  };
+
   const componentShowElement = useMemo(() => {
-    console.log(toDoStatisticsInfo)
-    if(toDoStatisticsInfo) {
+    if (toDoStatisticsInfo) {
       return afterHandleComponentProps.map((item, index) => {
         return (
           <div key={uuid.v1()} className={styles.projectManageRow}>
             {item[0] && (
-              <div className="flex1">
+              <div className="flex1" onClick={() => toAllProjectListPage(item[0])}>
                 <ToDoItem type={item[0]} number={toDoStatisticsInfo![item[0]]} />
               </div>
             )}
             {item[1] && (
-              <div className="flex1">
+              <div className="flex1" onClick={() => toAllProjectListPage(item[1])}>
                 <ToDoItem type={item[1]} number={toDoStatisticsInfo![item[1]]} />
               </div>
             )}
@@ -66,7 +80,7 @@ const ToDo: React.FC<ToDoProps> = (props) => {
         );
       });
     }
-    return []
+    return [];
   }, [afterHandleComponentProps, toDoStatisticsInfo]);
 
   const scrollBarRenderView = (params: any) => {
@@ -81,7 +95,7 @@ const ToDo: React.FC<ToDoProps> = (props) => {
 
   return (
     <ChartBox title="项目管理">
-      <div className={styles.projectManageContent} style={{minHeight: `${afterHandleComponentProps.length * 54}px`}}>
+      <div className={styles.projectManageContent}>
         <ScrollView renderThumbVertical={scrollBarRenderView}>{componentShowElement}</ScrollView>
       </div>
     </ChartBox>
