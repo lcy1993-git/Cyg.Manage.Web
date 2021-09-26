@@ -8,7 +8,7 @@ import { useState, useMemo } from 'react';
 import { useRequest } from 'ahooks';
 import { getBurdens, AreaInfo } from '@/services/index';
 import { useLayoutStore } from '@/layouts/context';
-import borderStylesHTML from '../../utils/borderStylesHTML'
+import borderStylesHTML from '../../utils/borderStylesHTML';
 import { history } from 'umi';
 
 interface Props {
@@ -111,22 +111,28 @@ const PersonnelLoad: React.FC<Props> = (props) => {
         axisPointer: {
           type: 'shadow',
         },
-        position (pt: any) {
+        position(pt: any) {
           return [pt[0] + 0, pt[1] - 92];
         },
-        formatter (params: any) {
+        formatter(params: any) {
           const [name] = params;
 
           const personId = burdensData[name.dataIndex]?.id;
 
           if (type === '1') {
-            return borderStylesHTML + `<span style="color: #fff">${name.name}</span><br />
+            return (
+              borderStylesHTML +
+              `<span style="color: #fff">${name.name}</span><br />
             <span style="color: #2AFE97">项目数量：</span>:<span style="color: #fff">${name.value}</span>
                     <div style="color: #2AFE97">所有项目列表：<span  style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;" onclick=toAllProject('${personId}')>跳转</span></div>
-                    `;
+                    `
+            );
           }
-          return borderStylesHTML + `<span style="color: #2AFE97">${name.name}</span><br />
-          <span style="color: #2AFE97">项目数量:</span><span style="color: #fff">${name.value}</span>`;
+          return (
+            borderStylesHTML +
+            `<span style="color: #2AFE97">${name.name}</span><br />
+          <span style="color: #2AFE97">项目数量:</span><span style="color: #fff">${name.value}</span>`
+          );
         },
       },
       xAxis: {
@@ -164,7 +170,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
           },
           fontSize: 10,
           align: 'right',
-          formatter (params: any) {
+          formatter(params: any) {
             let newParamsName = '';
             let paramsNameNumber = params.length;
             if (params.length > 12) {
@@ -197,7 +203,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
           type: 'bar',
           itemStyle: {
             normal: {
-              color () {
+              color() {
                 return new echarts.graphic.LinearGradient(0, 0, 1, 0, [
                   {
                     offset: 0,

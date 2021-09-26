@@ -1,0 +1,39 @@
+.toDoItem {
+  min-width: 154px;
+  height: 80px;
+  background: transparent;
+  display: flex;
+  border-radius: 4px;
+  padding: 8px 0px 0px 12px;
+  cursor: pointer;
+  margin-right: 16px;
+  margin-left: 16px;
+  .toDoItemIcon {
+    width: 62px;
+    margin-right: 16px;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .toDoItemContent {
+    .toDoItemNumber {
+      font-size: 31px;
+      color: #fff;
+      line-height: 1;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .toDoItemStatus {
+      font-size: 14px;
+      line-height: 1;
+      color: #29FC97;
+    }
+  }
+
+  &:hover {
+    background: #003A3C;
+  }
+}
