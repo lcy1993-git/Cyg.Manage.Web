@@ -250,6 +250,7 @@ const MappingInfomation = () => {
                               tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
                               requestSource='tecEco1'
                               type="radio"
+                              childrenColumnName={'materialMappingQuota'}
                               extractParams={{
                                 keyWord: searchKeyWord,
                               }}
