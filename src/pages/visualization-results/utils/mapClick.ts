@@ -160,11 +160,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     if (layer.getProperties().name.includes('mediaSign')) {
       let params = {
-        projectId: feature.getProperties().features[0].getProperties().project_id,
+        projectId: feature.getProperties().data.project_id,
         devices: [
           {
             category: 1, // 1为勘察，2为预设
-            deviceId: feature.getProperties().features[0].getProperties().id,
+            deviceId: feature.getProperties().data.id,
           },
         ],
       };
@@ -193,7 +193,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         }).catch(e => {
           message.error(e)
         });
-
+      map.getTargetElement().style.cursor = 'default';
       return;
     }
 
