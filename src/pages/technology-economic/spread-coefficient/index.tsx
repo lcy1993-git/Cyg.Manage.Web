@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import {Button, Modal, Form, Switch, message, Popconfirm, Tabs, Spin, Space} from 'antd';
@@ -63,6 +63,7 @@ const SpreadCoefficient: React.FC = () => {
   const [fileId, setFileId] = useState<string>('');
   const [projectType, setProjectType] = useState<number>(1);
   const [spinning, setSpinning] = useState<boolean>(false);
+  const [update, setUpdate] = useState<boolean>(true);
   // const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -207,7 +208,6 @@ const SpreadCoefficient: React.FC = () => {
   // 价差目录新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      console.log(values)
       await createCatalogue(values); // TODO
       refresh();
       setAddFormVisible(false);
@@ -216,15 +216,20 @@ const SpreadCoefficient: React.FC = () => {
   };
   // 价差目录编辑确认按钮
   const sureEditAuthorization = () => {
-    editForm.validateFields().then(async (values) => {
+    editForm.validateFields().then((values) => {
+      setSpinning(true)
       const { id } = tableSelectRows[0];
       const value = values;
       value.id = id;
       // TODO 编辑接口
-      await updateCatalogue(value);
-      refresh();
-      setEditFormVisible(false);
-      editForm.resetFields();
+       updateCatalogue(value).then(()=>{
+         refresh();
+         setEditFormVisible(false);
+         editForm.resetFields();
+       }).finally(()=>{
+         setSpinning(false)
+       });
+
     });
   };
   // 调整文件新增确认按钮
@@ -338,7 +343,13 @@ const SpreadCoefficient: React.FC = () => {
   const tableSelectADEvent = (data: DataSource[] | Object) => {
     setTableSelectADRow(data);
   };
-
+  useEffect(()=>{
+    if (spinning) return
+    setUpdate(false)
+    setTimeout(()=>{
+      setUpdate(true)
+    },0)
+  },[spinning])
   return (
     <PageCommonWrap>
       {tableElement()}
@@ -347,33 +358,36 @@ const SpreadCoefficient: React.FC = () => {
           {ProjectTypeList.map((item: any, index: number) => {
             return (
               <TabPane tab={item.text} key={item.value}>
-                <div className={styles.pannelTable}>
-                  {projectType === 1 ? (
-                    // 价差目录
-                    <GeneralTable
-                      ref={tableRef}
-                      needCommonButton={false}
-                      columns={columns as ColumnsType<DataSource | object>}
-                      url="/PriceDifference/GetAllDefaultPriceDifferenceTemplates"
-                      getSelectData={tableSelectEvent}
-                      type="checkbox"
-                      requestSource="tecEco1"
-                      extractParams={{}}
-                    />
-                  ) : (
-                    // 调整文件
-                    <GeneralTable
-                      ref={tableADRef}
-                      needCommonButton={false}
-                      columns={columns as ColumnsType<DataSource | object>}
-                      url="/PriceDifference/GetAllAdjustmentFiles"
-                      getSelectData={tableSelectADEvent}
-                      type="radio"
-                      requestSource="tecEco1"
-                      extractParams={{}}
-                    />
-                  )}
-                </div>
+                {
+                  update &&
+                  <div className={styles.pannelTable}>
+                    {projectType === 1 ? (
+                      // 价差目录
+                      <GeneralTable
+                        ref={tableRef}
+                        needCommonButton={false}
+                        columns={columns as ColumnsType<DataSource | object>}
+                        url="/PriceDifference/GetAllDefaultPriceDifferenceTemplates"
+                        getSelectData={tableSelectEvent}
+                        type="checkbox"
+                        requestSource="tecEco1"
+                        extractParams={{}}
+                      />
+                    ) : (
+                      // 调整文件
+                      <GeneralTable
+                        ref={tableADRef}
+                        needCommonButton={false}
+                        columns={columns as ColumnsType<DataSource | object>}
+                        url="/PriceDifference/GetAllAdjustmentFiles"
+                        getSelectData={tableSelectADEvent}
+                        type="radio"
+                        requestSource="tecEco1"
+                        extractParams={{}}
+                      />
+                    )}
+                  </div>
+                }
               </TabPane>
             );
           })}
