@@ -18,7 +18,6 @@ import {
 } from '@/services/system-config/function-module';
 import { isArray } from 'lodash';
 import { useRequest } from 'ahooks';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const FunctionModule: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -30,7 +29,6 @@ const FunctionModule: React.FC = () => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
   const { data, run, loading: editDataLoading } = useRequest(getFunctionModuleDetail, {
     manual: true,
@@ -160,30 +158,24 @@ const FunctionModule: React.FC = () => {
   const functionModuleButton = () => {
     return (
       <>
-        {buttonJurisdictionArray?.includes('add-function-module') && (
-          <Button type="primary" className="mr7" onClick={() => addEvent()}>
-            <PlusOutlined />
-            添加
-          </Button>
-        )}
-        {buttonJurisdictionArray?.includes('edit-function-module') && (
-          <Button className="mr7" onClick={() => editEvent()}>
-            <EditOutlined />
-            编辑
-          </Button>
-        )}
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
         <Popconfirm
           title="您确定要删除该条数据?"
           onConfirm={sureDeleteData}
           okText="确认"
           cancelText="取消"
         >
-          {buttonJurisdictionArray?.includes('delete-function-module') && (
-            <Button className="mr33">
-              <DeleteOutlined />
-              删除
-            </Button>
-          )}
+          <Button className="mr33">
+            <DeleteOutlined />
+            删除
+          </Button>
         </Popconfirm>
       </>
     );

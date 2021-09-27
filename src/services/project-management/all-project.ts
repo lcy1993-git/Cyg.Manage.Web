@@ -772,6 +772,25 @@ export const confirmOuterAudit = (params: ConfirmOuterAuditParams) => {
   );
 };
 
+//获取评审结果Url
+export const getReviewFileUrl = (params: { projectId: string; userId: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.review}/ReviewOpinionFile/GetListByProjectId`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+//返回评审文件流
+export const getFileStream = (params: { url: string; extension: string }) => {
+  return request(`${baseUrl.review}/ReviewOpinionFile/fileStream`, {
+    method: 'GET',
+    params: params,
+    responseType: 'arrayBuffer',
+  });
+};
+
 interface ModifyOuterAuditParams {
   projectId: string;
   addUserIds: any;

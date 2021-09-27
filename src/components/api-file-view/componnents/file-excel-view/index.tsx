@@ -69,6 +69,8 @@ interface XlsxViewerProps {
 
 const XlsxViewer: React.FC<XlsxViewerProps> = (props) => {
   const { url, name = '' } = props;
+  console.log(url);
+
   const initTableData = () => {
     luckyExcel.transformExcelToLuckyByUrl(
       // 'http://localhost:8000/api/storage/api/Download/GetProjectOutcomeFile?path=%252fapp%252fFiles%252fProject%252fOutcomeDocument%252f1403621276340887553%255cUnZip%252f%25e6%25b5%258b%25e8%25af%2595%25e9%25a1%25b9%25e7%259b%25ae%25e6%2588%2590%25e6%259e%259c%25e9%25a1%25b9%25e7%259b%25ae%252f%25e8%25ae%25be%25e8%25ae%25a1%25e5%259b%25be%25e5%25b1%2582%25e6%2588%2590%25e6%259e%259c%252f%25e7%25bb%25bc%25e5%2590%2588%25e9%2583%25a8%25e5%2588%2586%252f%25e6%259d%2590%25e6%2596%2599%25e6%25b1%2587%25e6%2580%25bb%25e5%258f%258a%25e8%25af%25b4%25e6%2598%258e%252f%25e5%2588%2586%25e7%25b1%25bb%25e6%259d%2590%25e6%2596%2599%25e8%25a1%25a8.xlsx&token=',

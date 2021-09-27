@@ -14,7 +14,7 @@ const Description: React.FC = () => {
           相关操作。
         </p>
         <div>
-          “授权端口”调整操作：登入管理【人员管理】 -
+          “授权端口”调整操作：登入管理【权限管理】 -
           {buttonJurisdictionArray?.includes('company-user-work-handover') ? (
             <span
               className="canClick"
@@ -24,10 +24,10 @@ const Description: React.FC = () => {
                 });
               }}
             >
-              <u>【公司用户】</u>
+              <u>【账号管理】</u>
             </span>
           ) : (
-            <span>【公司用户】</span>
+            <span>【账号管理】</span>
           )}
           选择对应的人员账号，点击【编辑】按钮， 调整对应的“授权端口”即可。
         </div>

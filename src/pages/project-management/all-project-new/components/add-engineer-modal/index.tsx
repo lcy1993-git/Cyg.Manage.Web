@@ -93,7 +93,6 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>
-          ,
           {current > 0 ? (
             <>
               <Button key="pre" onClick={() => setCurrent(current - 1)}>
