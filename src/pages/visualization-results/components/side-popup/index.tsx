@@ -468,6 +468,13 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     }
   };
 
+  // 解决意外关闭弹窗时，三维模型框没有响应关闭的bug
+  useEffect(() => {
+    if(!rightSidebarVisible){
+      setThtreeModal(false);
+    }
+  }, [rightSidebarVisible])
+
   useEffect(() => {
     setRightSidebarVisiviabel(false);
   }, [JSON.stringify(checkedProjectIdList)]);
