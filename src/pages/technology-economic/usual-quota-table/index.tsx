@@ -204,14 +204,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
     if (isEdit) {
       data.id = selectRow[0].id
     }
-    const exist = dataSource.find(item=>{
-      return item.number == data.number
-    })
     if (isEdit) {
-      if (exist !==undefined){
-        message.warn('已存在相同的费率序号!')
-        return
-      }
       editCommonlyTable(data).then(()=>{
         message.success('修改成功')
         form.resetFields();
@@ -222,10 +215,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
         setSpinning(false)
       })
     } else {
-      if (exist !== undefined) {
-        message.warn('已存在相同的费率序号!')
-        return
-      }
        addCommonlyTable(data).then(()=>{
          message.success('添加成功')
          form.resetFields();
@@ -340,7 +329,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
           type="radio"
         />
         <Modal
-          title="添加定额常用表"
+          title={`${isEdit ? '编辑' : '添加'}定额常用表`}
           visible={isModalVisible}
           destroyOnClose={true}
           footer={null}

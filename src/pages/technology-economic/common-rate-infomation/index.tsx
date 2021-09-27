@@ -77,6 +77,7 @@ const CommonRateInfomation: React.FC = () => {
       importRateTable((params as Params).id, fileList[0]).then(() => {
         message.success('上传成功');
         setImportVisibel(false);
+        listDataRun((params as Params).id)
       });
     }
   }

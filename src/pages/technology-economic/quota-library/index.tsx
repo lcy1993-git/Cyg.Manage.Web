@@ -168,14 +168,11 @@ const QuotaLibrary: React.FC = () => {
         setAddFormVisible(false);
         addForm.resetFields();
         setSpinning(false)
-      }).catch(()=>{
+      }).finally(()=>{
         setSpinning(false)
       });
 
     });
-    setTimeout(()=>{
-      setSpinning(false);
-    },10000)
   };
 
   const sureDeleteData = async () => {

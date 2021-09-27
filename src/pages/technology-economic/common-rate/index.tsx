@@ -100,13 +100,14 @@ const ProjectList: React.FC = () => {
       width: 70,
       render(value: boolean, record: DataSource) {
         return (
-          <Switch
-            disabled
-            defaultChecked={value}
-            onClick={(checked) => {
-              setRateTableStatus(record.id, checked);
-            }}
-          />
+          value ? '启用' : '停用'
+          // <Switch
+          //   disabled
+          //   defaultChecked={value}
+          //   onClick={(checked) => {
+          //     setRateTableStatus(record.id, checked);
+          //   }}
+          // />
         );
       }
     },
@@ -281,8 +282,7 @@ const ProjectList: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      {
-        updateTable && <GeneralTable
+      <GeneralTable
           ref={tableRef}
           buttonLeftContentSlot={searchComponent}
           buttonRightContentSlot={tableElement}
@@ -298,7 +298,7 @@ const ProjectList: React.FC = () => {
             keyWord: searchKeyWord,
           }}
         />
-      }
+
       <Modal
         maskClosable={false}
         title={`${modalType === 'add' ? '添加' : '编辑'}-常用费率`}

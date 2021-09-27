@@ -56,7 +56,7 @@ const columns = [
     key: 'publishDate',
     title: '发布时间',
     render: (text: string, record: any) => {
-      return moment(record.expiryTime).format('YYYY-MM-DD HH:mm ');
+      return moment(record.publishDate).format('YYYY-MM-DD HH:mm ');
     },
   },
   {
@@ -102,6 +102,7 @@ const PricingTemplates: React.FC = () => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [spinning, setSpinning] = useState<boolean>(false);
+  const [update, setUpdate] = useState<boolean>(true);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [selectList, setSelectList] = useState<number[]>([]);
   const [addForm] = Form.useForm();
@@ -231,6 +232,12 @@ const PricingTemplates: React.FC = () => {
     const id = tableSelectRows[0].id;
     history.push(`/technology-economic/total-table?id=${id}`);
   };
+  useEffect(()=>{
+    setUpdate(false)
+    setTimeout(()=>{
+      setUpdate(true)
+    },0)
+  },[spinning])
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -303,23 +310,25 @@ const PricingTemplates: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonRightContentSlot={tableElement}
-        needCommonButton={true}
-        columns={columns as ColumnsType<DataSource | object>}
-        url="/EngineeringTemplate/QueryEngineeringTemplatePager"
-        tableTitle="计价模板管理"
-        getSelectData={tableSelectEvent}
-        type="radio"
-        requestSource="tecEco1"
-        extractParams={{
-          keyWord: searchKeyWord,
-        }}
-      />
+      {
+        update &&  <GeneralTable
+          ref={tableRef}
+          buttonRightContentSlot={tableElement}
+          needCommonButton={true}
+          columns={columns as ColumnsType<DataSource | object>}
+          url="/EngineeringTemplate/QueryEngineeringTemplatePager"
+          tableTitle="计价模板管理"
+          getSelectData={tableSelectEvent}
+          type="radio"
+          requestSource="tecEco1"
+          extractParams={{
+            keyWord: searchKeyWord,
+          }}
+        />
+      }
       <Modal
         maskClosable={false}
-        title="创建-计价模板"
+        title="添加-计价模板"
         width="880px"
         visible={addFormVisible}
         okText="确认"
