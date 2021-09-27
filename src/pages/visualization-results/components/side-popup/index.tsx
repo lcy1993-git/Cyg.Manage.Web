@@ -287,16 +287,19 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       width: 164,
       ellipsis: true,
       render(value: any, record: any, index: any) {
+        console.log(value, record)
         if (record.propertyName === 'title') return null;
         if (record.propertyName === '三维模型') {
-          return <span
+          if(record.data){
+            return <span
             key={record.id}
             className={styles.link}
             onClick={() => {
-              setThreeRouter("duanluqi")
+              setThreeRouter(value)
               setThtreeModal(true)
             }}
           >查看</span>
+          }
         }
         if (typeof value === 'string' || typeof value === 'number')
           return <span key={index}>{value}</span>;
@@ -633,7 +636,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             className={classnames(styles.closeButton, styles.link)}
             onClick={() => setThtreeModal(false)}
           ><StepBackwardOutlined />收起</div>
-          <iframe key={threeRouter} width="100%" height="100%" src={`http://10.6.1.53:8036/${threeRouter}`} style={{ backgroundColor: "#fff" }}></iframe>
+          <iframe key={threeRouter} width="100%" height="100%" src={`${'http://10.6.1.40:21528/'}/visiual3d/?type=${threeRouter}`} style={{ backgroundColor: "#fff" }}></iframe>
         </div> : null
       }
     </div>
