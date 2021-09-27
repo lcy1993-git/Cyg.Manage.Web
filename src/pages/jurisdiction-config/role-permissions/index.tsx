@@ -306,19 +306,13 @@ const RolePermissions: React.FC = () => {
           //   // disabled
           // >
 
-          <Button
-            className="mr7"
-            onClick={() => {
-              if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-                message.error('请选择一条数据进行删除');
-                return;
-              }
-              setIsConfirm(true);
-            }}
-          >
-            <DeleteOutlined />
-            删除
-          </Button>
+          <ModalConfirm
+            title="提示"
+            content="确定删除选中项吗？"
+            // setState={setIsConfirm}
+            changeEvent={sureDeleteData}
+            selectData={tableSelectRows}
+          />
         )}
         {/* {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
           <Button className="mr7" onClick={() => distributeEvent()}>
@@ -428,13 +422,6 @@ const RolePermissions: React.FC = () => {
           />
         </Spin>
       </Modal>
-      <ModalConfirm
-        title="提示"
-        content="确定删除选中项吗？"
-        isConfirm={isConfirm}
-        setState={setIsConfirm}
-        changeEvent={sureDeleteData}
-      />
     </PageCommonWrap>
   );
 };
