@@ -542,8 +542,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     // }
 
-    pJSON['三维模型'] = getMode(layerName, feature.getProperties());
-    console.log(pJSON)
+    let threeMode = getMode(layerName, feature.getProperties());
+    if(threeMode && threeMode !== '')
+      pJSON['三维模型'] = threeMode;
 
     // 轨迹线不弹出侧边栏
     if (elementTypeEnum[layerName] === '轨迹线') {
