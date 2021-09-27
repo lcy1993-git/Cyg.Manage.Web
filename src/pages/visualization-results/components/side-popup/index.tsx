@@ -643,7 +643,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             className={classnames(styles.closeButton, styles.link)}
             onClick={() => setThtreeModal(false)}
           ><StepBackwardOutlined />收起</div>
-          <iframe key={threeRouter} width="100%" height="100%" src={`${'http://10.6.1.40:21528/'}/visiual3d/?type=${threeRouter}`} style={{ backgroundColor: "#fff" }}></iframe>
+          <iframe key={threeRouter} width="100%" height="100%" src={`${window.location.origin}/visiual3d/?type=${threeRouter}`} style={{ backgroundColor: "#fff" }}></iframe>
         </div> : null
       }
     </div>
