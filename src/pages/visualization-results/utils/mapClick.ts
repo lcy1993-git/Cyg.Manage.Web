@@ -1,5 +1,6 @@
 import getMappingTagsDictionary from './localData/mappingTagsDictionary';
 import { pointStyle, line_style, zero_guy_style, cable_channel_styles } from './localData/pointStyle';
+import {getMode} from './threeMode';
 import VectorSource from 'ol/source/Vector';
 import Cluster from 'ol/source/Cluster';
 import Vector from 'ol/layer/Vector';
@@ -540,6 +541,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       pJSON['审阅'] = { id: feature.getProperties().project_id, feature };
     }
     // }
+
+    pJSON['三维模型'] = getMode(layerName, feature.getProperties());
+    console.log(pJSON)
 
     // 轨迹线不弹出侧边栏
     if (elementTypeEnum[layerName] === '轨迹线') {
