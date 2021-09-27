@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import {IndexContext} from "../../context"; 
-import ToDo from "../to-do";
+import ToDo from "../to-do-second";
 
 interface IndexToDoComponentProps {
     componentProps?: string[]

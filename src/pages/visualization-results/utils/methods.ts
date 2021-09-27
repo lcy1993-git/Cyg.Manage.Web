@@ -617,7 +617,7 @@ const loadMediaSign = (map:any, layerGroups_?: LayerGroup[], mediaSign_?: boolea
                     let itemClone = item.clone();
                     let style  = pointStyle(layer.get('name'),feature, false, mediaSign)
                     itemClone.setStyle(style);
-                    itemClone.set('data', d);
+                    itemClone.set('data', feature.getProperties());
                     layerGroups[layerType + '_mediaSign'].getSource().addFeature(itemClone);
                     if(!getLayerByName(layerType + '_mediaSign', layerGroup.getLayers().getArray()))
                       layerGroup.getLayers().push(layerGroups[layerType + '_mediaSign']);

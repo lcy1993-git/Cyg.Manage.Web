@@ -41,8 +41,9 @@ import { cockpitMenuItemData, CockpitProps } from './utils';
 // import EditRefreshDataModal from './components/add-engineer-project-modal/edit-refresh-data-form';
 import EditFormItem from './components/edit-form-item';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ProjectNumber from '@/pages/index/components/project-number';
 
-const getComponentByType = (type: string, componentProps: any) => {
+const getComponentByType = (type: string, componentProps: any, currentAreaInfo) => {
   switch (type) {
     case 'toDo':
       return <ToDo componentProps={componentProps} />;
@@ -68,6 +69,10 @@ const getComponentByType = (type: string, componentProps: any) => {
     case 'projectRefreshData':
       return <CockpitProjectInfoFreshList componentProps={componentProps} />;
       break;
+    case 'projectNumber':
+      return <ProjectNumber componentProps={componentProps} currentAreaInfo={currentAreaInfo} />;
+      break;
+    
     default:
       return undefined;
   }
@@ -149,7 +154,7 @@ const CockpitManage: React.FC = () => {
         h: 11,
         edit: true,
         key: uuid.v1(),
-        componentProps: ['wait', 'arrange', 'other'],
+        componentProps: ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
       },
       {
         name: 'mapComponent',
@@ -182,13 +187,13 @@ const CockpitManage: React.FC = () => {
         componentProps: ['person', 'department', 'company'],
       },
       {
-        name: 'projectRefreshData',
+        name: 'projectNumber',
         x: 0,
         y: 10,
         w: 3,
         h: divide(totalHeight - 11, 2),
         key: uuid.v1(),
-        componentProps: ['projectRefreshData'],
+        componentProps: ['projectNumber'],
       },
       {
         name: 'personLoad',
@@ -257,6 +262,7 @@ const CockpitManage: React.FC = () => {
       case 'personLoad':
       case 'projectRefreshData':
       case 'projectProgress':
+      case 'projectNumber':
         setActiveModal(record.name);
         commonForm.setFieldsValue(getFormValue('projectControl'));
         setProjectControlVisible(true);
@@ -285,7 +291,7 @@ const CockpitManage: React.FC = () => {
     return (
       <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h }}>
         <ConfigWindow deleteEvent={deleteEvent} editEvent={editEvent} record={item}>
-          {getComponentByType(item.name, item.componentProps)}
+          {getComponentByType(item.name, item.componentProps, currentAreaInfo)}
         </ConfigWindow>
       </div>
     );

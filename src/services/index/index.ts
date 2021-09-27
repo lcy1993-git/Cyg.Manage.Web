@@ -214,4 +214,42 @@ export const pollingHealth = () => {
   );
 };
 
+interface ProjectManageResult {
+  awaitProcess: number;
+  inProgress: number;
+  delegation: number;
+  beShared: number;
+}
 
+// 获取首页项目管理统计栏
+export const getProjectManageData = (params: HomeStatisticCommonParams) => {
+  return cyRequest<ProjectManageResult>(() =>
+    request(`${baseUrl.project}/HomeStatistic/GetProjectQty`, {
+      method: 'POST',
+      data: { ...params },
+    }),
+  );
+};
+
+interface ProjectParams extends HomeStatisticCommonParams {
+  category: string;
+}
+
+interface ProjectResultDataValue {
+  qty: number;
+  yesterdayQty: number;
+}
+interface ProjectResultData {
+  key: string;
+  value: ProjectResultDataValue;
+}
+
+// 获取首页项目数量
+export const getProjectNumberData = (params: ProjectParams) => {
+  return cyRequest<ProjectResultData[]>(() =>
+    request(`${baseUrl.project}/HomeStatistic/GetProjectStatusQty`, {
+      method: 'POST',
+      data: { ...params },
+    }),
+  );
+};
