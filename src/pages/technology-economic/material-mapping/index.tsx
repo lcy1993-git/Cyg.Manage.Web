@@ -16,7 +16,7 @@ import FileUpload from '@/components/file-upload';
 import useBoolean from 'ahooks/lib/useBoolean';
 import moment from 'moment';
 import {addSourceMaterialMappingQuota, deleteMaterialMappingQuota, materialMappingQuotaModifyStatus } from '@/services/technology-economic/material';
-import AdjustmentFileForm from "@/pages/technology-economic/spread-coefficient/components/adjustment-file-form/inex";
+import AdjustmentFileForm from "@/pages/technology-economic/spread-coefficient/components/adjustment-file-form";
 
 export interface SuppliesLibraryData {
   "id"?: string

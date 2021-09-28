@@ -156,6 +156,7 @@ const SuppliesLibrary: React.FC = () => {
      addMaterialLibrary(data).then(()=>{
        setSpinning(false)
        setAddFormVisible(false)
+       form.resetFields()
      }).finally(()=>{
        setSpinning(false)
      })
@@ -231,7 +232,7 @@ const SuppliesLibrary: React.FC = () => {
         cancelText="取消"
         destroyOnClose
       >
-        <Spin tip={'loading...'} spinning={spinning}>
+        <Spin tip={'上传中...'} spinning={spinning}>
         <Form
           name="basic"
           initialValues={{remember: true}}
