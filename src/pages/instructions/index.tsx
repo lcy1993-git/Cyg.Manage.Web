@@ -82,10 +82,11 @@ const ManualUpload: React.FC<Props> = () => {
     getFile()
   },[current])
   return (
-    <Spin tip="加载中... " spinning={isSpinning}>
+    // <Spin tip="加载中... " spinning={isSpinning}>
+    <div>
       {
         file.length === 0
-        ?
+          ?
           <div style={{margin:'100px auto'}}>
             <Empty description={'这里什么也没有哦...'}/>
           </div>
@@ -93,7 +94,9 @@ const ManualUpload: React.FC<Props> = () => {
           <ManualPreview file={file} onSuccess={onTextSuccess} height={'96vh'}/>
 
       }
-    </Spin>
+    </div>
+
+    // </Spin>
   );
 };
 

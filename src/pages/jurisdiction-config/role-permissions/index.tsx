@@ -23,6 +23,7 @@ import RoleAuthorization from './components/role-authorization';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 const { TabPane } = Tabs;
@@ -39,6 +40,7 @@ const RolePermissions: React.FC = () => {
     authorizationFormVisible,
     { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
   ] = useBoolean(false);
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
   //@ts-ignore
   const { userType } = JSON.parse(localStorage.getItem('userInfo'));
@@ -164,15 +166,13 @@ const RolePermissions: React.FC = () => {
   };
 
   const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
-    }
+    setIsConfirm(false);
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
     await deleteAuthorizationItem(editDataId);
     tableFresh();
+
     message.success('删除成功');
     setTableSelectRows([]);
   };
@@ -298,18 +298,21 @@ const RolePermissions: React.FC = () => {
           </Button>
         )}
         {buttonJurisdictionArray?.includes('role-permissions-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-            // disabled
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          // <Popconfirm
+          //   title="您确定要删除该条数据?"
+          //   onConfirm={sureDeleteData}
+          //   okText="确认"
+          //   cancelText="取消"
+          //   // disabled
+          // >
+
+          <ModalConfirm
+            title="提示"
+            content="确定删除选中项吗？"
+            // setState={setIsConfirm}
+            changeEvent={sureDeleteData}
+            selectData={tableSelectRows}
+          />
         )}
         {/* {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
           <Button className="mr7" onClick={() => distributeEvent()}>

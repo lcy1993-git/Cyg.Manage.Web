@@ -144,7 +144,7 @@ const AllProject: React.FC = () => {
     setAllProjectSearchType,
     allProjectSearchPerson,
     allProjectSearchProjectId,
-    allProjectSearchType
+    allProjectSearchType,
   } = useLayoutStore();
 
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
@@ -278,7 +278,7 @@ const AllProject: React.FC = () => {
       const projectInfo = await getProjectInfo(thisProjectId);
       setDataSourceType(Number(projectInfo.dataSourceType));
       const { allots = [] } = projectInfo ?? {};
-      if (allots.length > 0) {
+      if (allots?.length > 0) {
         const latestAllot = allots[allots?.length - 1];
         const { allotType, allotCompanyGroup } = latestAllot;
         if (allotType) {
@@ -644,7 +644,7 @@ const AllProject: React.FC = () => {
         designUser: String(allProjectSearchPerson),
       });
     }
-  }, [allProjectSearchPerson, allProjectSearchProjectId,allProjectSearchType]);
+  }, [allProjectSearchPerson, allProjectSearchProjectId, allProjectSearchType]);
 
   const configChangeEvent = (config: any) => {
     setChooseColumns(config);

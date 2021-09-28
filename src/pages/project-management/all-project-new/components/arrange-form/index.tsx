@@ -172,7 +172,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-          <CyFormItem label="造价" name="costUser">
+          {/* <CyFormItem label="造价" name="costUser">
             <TreeSelect
               key="costUser"
               style={{ width: '100%' }}
@@ -181,7 +181,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               treeDefaultExpandAll
               allowClear
             />
-          </CyFormItem>
+          </CyFormItem> */}
 
           {/* 继续安排审核 */}
           <div className={styles.continueAudit}>
@@ -240,7 +240,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             </CyFormItem>
 
             {/* 造价内审 */}
-            <Divider>
+            {/* <Divider>
               <span className={styles.divider}>造价校审</span>
             </Divider>
             <CyFormItem label="校核" name="costAuditUser1">
@@ -272,7 +272,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 treeDefaultExpandAll
                 allowClear
               />
-            </CyFormItem>
+            </CyFormItem> */}
           </div>
         </>
       )}
