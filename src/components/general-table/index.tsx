@@ -63,7 +63,7 @@ interface GeneralTableProps {
   // 当表格需要id传参时，判断当前id是否为空，若为空则限制请求
   requestConditions?: string;
   // 不显示左侧选择列
-  notShowSelect?:boolean
+  notShowSelect?: boolean;
 }
 
 type TableSelectType = 'radio' | 'checkbox';
@@ -310,7 +310,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
               </div>
             )}
           </div>
-          <div className={styles.cyGeneralTableCommonButton}>
+          <div className={needCommonButton ? styles.cyGeneralTableCommonButton : ''}>
             {needCommonButton && (
               <div>
                 <Tooltip title="全屏">
@@ -361,12 +361,16 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           locale={{
             emptyText: <EmptyTip className="pt20 pb20" />,
           }}
-          rowSelection={ !notShowSelect ? {
-            type : type,
-            columnWidth: '38px',
-            selectedRowKeys,
-            ...rowSelection,
-          } : null}
+          rowSelection={
+            !notShowSelect
+              ? {
+                  type: type,
+                  columnWidth: '38px',
+                  selectedRowKeys,
+                  ...rowSelection,
+                }
+              : null
+          }
           {...((rest as unknown) as P)}
         />
       </div>

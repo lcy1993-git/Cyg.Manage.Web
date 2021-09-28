@@ -26,7 +26,6 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
-const { TabPane } = Tabs;
 
 const RolePermissions: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -40,7 +39,6 @@ const RolePermissions: React.FC = () => {
     authorizationFormVisible,
     { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
   ] = useBoolean(false);
-  const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
   //@ts-ignore
   const { userType } = JSON.parse(localStorage.getItem('userInfo'));
@@ -50,14 +48,15 @@ const RolePermissions: React.FC = () => {
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
-  const { data, run, loading } = useRequest(getAuthorizationDetail, {
+  const { data, run } = useRequest(getAuthorizationDetail, {
     manual: true,
   });
 
-  const { data: MoudleTreeData = [], run: getModuleTreeData } = useRequest(
-    getAuthorizationTreeList,
-    { manual: true },
-  );
+  const {
+    data: MoudleTreeData = [],
+    run: getModuleTreeData,
+    loading,
+  } = useRequest(getAuthorizationTreeList, { manual: true });
 
   const columns = [
     {
@@ -166,7 +165,6 @@ const RolePermissions: React.FC = () => {
   };
 
   const sureDeleteData = async () => {
-    setIsConfirm(false);
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
@@ -219,8 +217,8 @@ const RolePermissions: React.FC = () => {
 
   //添加
   const addEvent = async () => {
-    await getModuleTreeData();
     setAddFormVisible(true);
+    await getModuleTreeData();
   };
 
   const sureAddRolePermissions = () => {
@@ -306,13 +304,7 @@ const RolePermissions: React.FC = () => {
           //   // disabled
           // >
 
-          <ModalConfirm
-            title="提示"
-            content="确定删除选中项吗？"
-            // setState={setIsConfirm}
-            changeEvent={sureDeleteData}
-            selectData={tableSelectRows}
-          />
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
         {/* {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
           <Button className="mr7" onClick={() => distributeEvent()}>
@@ -363,12 +355,14 @@ const RolePermissions: React.FC = () => {
         destroyOnClose
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
       >
-        <Form form={addForm} preserve={false}>
-          <RolePermissionsForm />
-          <Form.Item name="moduleIds">
-            <CheckboxTreeTable treeData={MoudleTreeData} />
-          </Form.Item>
-        </Form>
+        <Spin spinning={loading}>
+          <Form form={addForm} preserve={false}>
+            <RolePermissionsForm />
+            <Form.Item name="moduleIds">
+              <CheckboxTreeTable treeData={MoudleTreeData} />
+            </Form.Item>
+          </Form>
+        </Spin>
       </Modal>
       <Modal
         maskClosable={false}

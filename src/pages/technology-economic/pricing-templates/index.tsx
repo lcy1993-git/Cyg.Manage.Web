@@ -3,9 +3,7 @@ import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import {
-  PlusOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
 
 import GeneralTable from '@/components/general-table';
@@ -137,17 +135,11 @@ const PricingTemplates: React.FC = () => {
   };
   // 新增确认按钮
   const sureAddAuthorization = () => {
-    addForm.validateFields().then((values) => {
-      setSpinning(true);
-      addPricingTemplate(values)
-        .then(() => {
-          refresh();
-          setAddFormVisible(false);
-          addForm.resetFields();
-        })
-        .finally(() => {
-          setSpinning(false);
-        });
+    addForm.validateFields().then(async (values) => {
+      await addPricingTemplate(values);
+      refresh();
+      setAddFormVisible(false);
+      addForm.resetFields();
     });
   };
   // 编辑确认按钮
@@ -163,18 +155,16 @@ const PricingTemplates: React.FC = () => {
       let value = values;
       value.id = id;
       // TODO 编辑接口
-      editPricingTemplate(value)
-        .then(() => {
-          refresh();
-          setEditFormVisible(false);
-          editForm.resetFields();
-          setTableSelectRows([]);
-          tableRef.current.reset();
-        })
-        .finally(() => {
-          setSpinning(false);
-        });
+      toUpdate(value);
     });
+  };
+  const toUpdate = async (value: any) => {
+    await editPricingTemplate(value);
+    refresh();
+    setEditFormVisible(false);
+    editForm.resetFields();
+    setTableSelectRows([]);
+    tableRef.current.reset();
   };
   // 删除
   const sureDeleteData = async () => {
@@ -232,12 +222,12 @@ const PricingTemplates: React.FC = () => {
     const id = tableSelectRows[0].id;
     history.push(`/technology-economic/total-table?id=${id}`);
   };
-  useEffect(()=>{
-    setUpdate(false)
-    setTimeout(()=>{
-      setUpdate(true)
-    },0)
-  },[spinning])
+  useEffect(() => {
+    setUpdate(false);
+    setTimeout(() => {
+      setUpdate(true);
+    }, 0);
+  }, [spinning]);
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -310,8 +300,8 @@ const PricingTemplates: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      {
-        update &&  <GeneralTable
+      {update && (
+        <GeneralTable
           ref={tableRef}
           buttonRightContentSlot={tableElement}
           needCommonButton={true}
@@ -325,7 +315,7 @@ const PricingTemplates: React.FC = () => {
             keyWord: searchKeyWord,
           }}
         />
-      }
+      )}
       <Modal
         maskClosable={false}
         title="添加-计价模板"

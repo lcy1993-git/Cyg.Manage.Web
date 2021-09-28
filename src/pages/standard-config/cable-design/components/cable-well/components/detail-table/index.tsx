@@ -1,9 +1,8 @@
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import { Input, Button, message, Form, Modal } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Popconfirm } from 'antd';
+import React, { useState } from 'react';
+import { PlusOutlined, EditOutlined } from '@ant-design/icons';
 // import styles from './index.less';
 import { isArray } from 'lodash';
 import {
@@ -16,6 +15,7 @@ import { useRequest } from 'ahooks';
 // import UrlSelect from '@/components/url-select';
 import AddCableWellDetail from './add-form';
 import EditCableWellDetail from './edit-form';
+import ModalConfirm from '@/components/modal-confirm';
 interface ModuleDetailParams {
   libId: string;
   cableWellId: string[];
@@ -46,7 +46,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="电缆井明细" width="298px">
+        <TableSearch width="298px">
           <Search
             allowClear
             value={searchKeyWord}
@@ -214,17 +214,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
         <EditOutlined />
         编辑
       </Button>
-      <Popconfirm
-        title="您确定要删除该条数据?"
-        onConfirm={sureDeleteData}
-        okText="确认"
-        cancelText="取消"
-      >
-        <Button className="mr7">
-          <DeleteOutlined />
-          删除
-        </Button>
-      </Popconfirm>
+      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
     </>
   );
 

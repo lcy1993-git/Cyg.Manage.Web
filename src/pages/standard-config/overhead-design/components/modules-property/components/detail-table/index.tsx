@@ -16,6 +16,7 @@ import { useRequest } from 'ahooks';
 import UrlSelect from '@/components/url-select';
 import AddModuleDetailTable from './add-form';
 import EditModuleDetail from './edit-form';
+import ModalConfirm from '@/components/modal-confirm';
 interface ModuleDetailParams {
   libId: string;
   moduleId: string[];
@@ -47,7 +48,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch label="模块明细" width="278px">
+        <TableSearch width="278px">
           <Search
             allowClear
             value={searchKeyWord}
@@ -57,7 +58,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
             placeholder="请输入模块明细信息"
           />
         </TableSearch>
-        <TableSearch width="230px">
+        <TableSearch width="230px" marginLeft="12px">
           <UrlSelect
             requestSource="resource"
             url="/ModulesDetails/GetParts"
@@ -244,17 +245,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
         <EditOutlined />
         编辑
       </Button>
-      <Popconfirm
-        title="您确定要删除该条数据?"
-        onConfirm={sureDeleteData}
-        okText="确认"
-        cancelText="取消"
-      >
-        <Button className="mr7">
-          <DeleteOutlined />
-          删除
-        </Button>
-      </Popconfirm>
+      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
     </>
   );
 
