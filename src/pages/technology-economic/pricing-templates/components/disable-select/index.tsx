@@ -48,8 +48,12 @@ const withDisableSelect =
             selectList.map((res: any, i: number) => {
               if (item[valueKey] === res) {
                 item.disabled = true;
+              } else {
+                item.disabled = false;
               }
             });
+          } else {
+            item.disabled = false;
           }
           return {
             label: item[titleKey],
@@ -61,7 +65,7 @@ const withDisableSelect =
       } else {
         return [];
       }
-    }, [JSON.stringify(defaultData)]);
+    }, []);
 
     return (
       <WrapperComponent

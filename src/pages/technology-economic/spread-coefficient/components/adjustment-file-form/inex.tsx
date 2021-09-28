@@ -4,7 +4,7 @@ import FormSwitch from '@/components/form-switch';
 import CyFormItem from '@/components/cy-form-item';
 import DateFormItem from '@/components/date-from-item';
 import FileUpload from '@/components/file-upload';
-import CompanyFileForm from '@/pages/operation-config/company-file/components/add-edit-form';
+// import CompanyFileForm from '@/pages/operation-config/company-file/components/add-edit-form';
 interface IForm {
   type?: 'add' | 'edit';
   selectList?: number[];

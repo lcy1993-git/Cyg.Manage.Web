@@ -165,6 +165,7 @@ const PricingTemplates: React.FC = () => {
     editForm.resetFields();
     setTableSelectRows([]);
     tableRef.current.reset();
+    getSelectList();
   };
   // 删除
   const sureDeleteData = async () => {
@@ -177,6 +178,7 @@ const PricingTemplates: React.FC = () => {
     refresh();
     setTableSelectRows([]);
     message.success('删除成功');
+    getSelectList();
   };
 
   // 编辑按钮
