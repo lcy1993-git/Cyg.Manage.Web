@@ -7,7 +7,7 @@ import FileUpload from '@/components/file-upload';
 import { useRequest, useMount } from 'ahooks';
 import { queryMaterialMachineLibraryPager } from '@/services/technology-economic';
 import UrlSelect from '@/components/url-select';
-import { getMaterialLibraryAllList } from '@/services/technology-economic/supplies-library';
+import { getMaterialLibraryAllList, getMaterialLibraryList } from '@/services/technology-economic/supplies-library';
 
 const { Option } = Select;
 interface ResponsData {
@@ -31,8 +31,11 @@ const DictionaryForm: React.FC<null> = () => {
     run({ pageIndex: 1, pageSize: 3000 });
   });
   const getMaterialData = async () => {
-    const res = await getMaterialLibraryAllList();
-    setMaterialList(res);
+    const res = await getMaterialLibraryList({
+      "pageIndex": 1,
+      "pageSize": 10000,
+    });
+    setMaterialList(res.items);
   };
   const MaterialMachineLibraryListFn = () => {
     return MaterialMachineLibraryList.map((item) => {
@@ -125,7 +128,6 @@ const DictionaryForm: React.FC<null> = () => {
       <CyFormItem label="备注" name="remark">
         <Input.TextArea rows={3} defaultValue="" />
       </CyFormItem>
-
       <CyFormItem label="上传文件" name="file" required rules={[{ required: true, message: '请上传文件' }]}>
         <FileUpload accept=".xls,.xlsx" maxCount={1} trigger={false} />
       </CyFormItem>
