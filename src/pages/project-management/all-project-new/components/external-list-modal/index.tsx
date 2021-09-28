@@ -153,16 +153,12 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   };
 
   const reviewCheckEvent = async (id: string) => {
-    console.log('word预览');
-
     const res = await getReviewFileUrl({ projectId: projectId, userId: id });
-    console.log(res);
 
-    const url = res[0].extend.file.url;
-    const extension = res[0].extend.file.extension;
-    const name = res[0].name;
+    const url = res[0]?.extend.file.url;
+    const extension = res[0]?.extend.file.extension;
+    const name = res[0]?.name;
     setCurrentFileInfo({ url: url, extension: extension, title: name });
-    console.log(url, extension);
   };
 
   const backToEvent = async () => {

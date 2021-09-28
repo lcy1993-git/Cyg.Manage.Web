@@ -4,11 +4,10 @@ import { isArray } from 'lodash';
 import React from 'react';
 
 interface ModalConfirmProps {
-  title: string;
-  content: string;
-  // setState: Dispatch<SetStateAction<boolean>>;
+  title?: string;
+  content?: string;
   changeEvent: () => void;
-  selectData?: any[];
+  selectData?: any[] | object;
 }
 
 const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
@@ -20,7 +19,7 @@ const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
       return;
     }
     Modal.confirm({
-      title: title,
+      title: '提示',
       icon: <ExclamationCircleOutlined />,
       content: content,
       okText: '确认',
@@ -33,7 +32,7 @@ const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
     <>
       <Button className="mr7" onClick={() => confirmEvent()}>
         <DeleteOutlined />
-        删除
+        {title}
       </Button>
     </>
   );

@@ -66,23 +66,23 @@ const MediaModal: React.FC<MediaModalProps> = ({
     setCurrentIndex(realIndex);
   }
 
-  // const onWheel = (e) => {
-  //   if(flag){
-  //     flag = false
-  //     setTimeout(() => {
-  //       flag = true
-  //     }, 1000)
-  //     if(e.deltaY > 0) {
-  //       nextFullClick()
-  //     }else if(e.deltaY < 0){
-  //       preFullClick()
-  //     }
-  //   }
-  // }
+  const onWheel = (e) => {
+    if(flag){
+      flag = false
+      setTimeout(() => {
+        flag = true
+      }, 300)
+      if(e.deltaY > 0) {
+        nextPage()
+      }else if(e.deltaY < 0){
+        prePage()
+      }
+    }
+  }
 
 
   return (
-    <div className={styles.mediaWrap}>
+    <div className={styles.mediaWrap} onWheel={onWheel}>
       <div className={styles.mediaIconWrapLeft}>
         <DoubleLeftOutlined
           style={{ fontSize: 50 }}

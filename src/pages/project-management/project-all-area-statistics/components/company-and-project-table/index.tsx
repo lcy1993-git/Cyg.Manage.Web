@@ -6,7 +6,6 @@ import CompanyTable from './components/company-table';
 import ProjectTable from './components/project-table';
 import TableSearch from '@/components/table-search';
 import UrlSelect from '@/components/url-select';
-
 import styles from './index.less';
 import { useGetSelectData } from '@/utils/hooks';
 import { Spin } from 'antd';
@@ -20,10 +19,18 @@ const CompanyAndProjectTable: React.FC = () => {
     setCompanyInfo,
     setProjectShareCompanyId,
   } = useProjectAllAreaStatisticsStore();
+  const [nowCompanyId, setNowCompanyId] = useState<string>('');
   const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
-  const { data: companyData = [], loading } = useGetSelectData({
-    url: '/ProjectStatistics/GetCompanyList',
-  });
+  const { data: companyData = [], loading } = useGetSelectData(
+    {
+      url: '/ProjectStatistics/GetCompanyList',
+    },
+    {
+      onSuccess: () => {
+        setNowCompanyId(companyData[0]?.value);
+      },
+    },
+  );
 
   const handleCompanyData = useMemo(() => {
     if (companyData) {
@@ -37,7 +44,7 @@ const CompanyAndProjectTable: React.FC = () => {
     return;
   }, [companyData]);
 
-  const [selectedCompanyId, setSelectedCompanyId] = useState<string>(companyId);
+  const [selectedCompanyId] = useState<string>(companyId);
 
   useEffect(() => {
     setProjectShareCompanyId(companyId);
@@ -76,9 +83,9 @@ const CompanyAndProjectTable: React.FC = () => {
             defaultData={handleCompanyData}
             titlekey="label"
             valuekey="value"
-            placeholder="请选择"
-            defaultValue={companyId}
+            value={nowCompanyId}
             onChange={(value: any) => {
+              setNowCompanyId(value);
               dataType === 'project' ? returnToCompanyType() : '';
               // setSelectedCompanyId(value);
               setProjectShareCompanyId(value);

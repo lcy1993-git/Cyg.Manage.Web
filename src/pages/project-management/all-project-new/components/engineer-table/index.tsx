@@ -14,22 +14,18 @@ import {
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
 import { useRequest, useSize } from 'ahooks';
-import { Menu, message, Popconfirm, Tooltip } from 'antd';
+import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
-import { forwardRef } from 'react';
-import { Ref } from 'react';
-import { useImperativeHandle } from 'react';
-import { useRef } from 'react';
-import { useMemo } from 'react';
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
+
 import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item';
 import ScrollView from 'react-custom-scrollbars';
 import styles from './index.less';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { Dropdown } from 'antd';
-import { BarsOutlined, LinkOutlined } from '@ant-design/icons';
+import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons';
 import { TableContext } from './table-store';
 import EngineerDetailInfo from '../engineer-detail-info';
 import ProjectDetailInfo from '../project-detail-info';
@@ -681,15 +677,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   </span>
                 ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
                   stateInfo.status === 7 ? (
-                  <span className="canClick">
-                    <Popconfirm
-                      title="确认对该项目进行“申请结项”?"
-                      onConfirm={() => applyKnotEvent([record.id])}
-                      okText="确认"
-                      cancelText="取消"
-                    >
-                      {stateInfo?.statusText}
-                    </Popconfirm>
+                  <span className="canClick" onClick={() => applyConfirm([record.id])}>
+                    {stateInfo?.statusText}
                   </span>
                 ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
                   stateInfo.status === 15 ? (
@@ -760,6 +749,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       },
     },
   ];
+
+  const applyConfirm = (id: string[]) => {
+    Modal.confirm({
+      title: '申请结项',
+      icon: <ExclamationCircleOutlined />,
+      content: ' 确定对该项目进行“申请结项”?',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => applyKnotEvent(id),
+    });
+  };
 
   const chooseColumns = useMemo(() => {
     if (columnsConfig) {
