@@ -287,7 +287,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       width: 164,
       ellipsis: true,
       render(value: any, record: any, index: any) {
-        console.log(value, record)
+        // console.log(value, record)
         if (record.propertyName === 'title') return null;
         if (record.propertyName === '三维模型') {
           if(record.data){
