@@ -9,7 +9,10 @@ import {useMount} from "ahooks";
 import { queryRateFilePager } from '@/services/technology-economic/common-rate';
 getEnums('RateTableType');
 
-const DictionaryForm: React.FC<any> = () => {
+interface Props{
+  modalType :string
+}
+const DictionaryForm: React.FC<Props> = ({modalType}) => {
   const [list,setLsit ] = useState<{sourceFile:string}[]>([])
   useMount( async ()=>{
     const res = await queryRateFilePager({pageSize:1000,pageIndex:1})
@@ -67,7 +70,7 @@ const DictionaryForm: React.FC<any> = () => {
         </Col>
       </Row>
       <CyFormItem label="状态" name="enabled" required rules={[{required:true,message:'状态为必填项'}]}>
-        <FormSwitch />
+        <FormSwitch disabled={modalType === 'edit'}/>
       </CyFormItem>
       <CyFormItem label="备注" name="remark">
         <Input.TextArea rows={3} />

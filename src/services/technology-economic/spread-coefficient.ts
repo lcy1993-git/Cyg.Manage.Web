@@ -153,7 +153,7 @@ export const updateArea = (params: catalogueParams) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.tecEco1}/PriceDifference/UpdateArea`, {
       method: 'POST',
-      data: params,
+      data: formData(params),
     }),
   );
 };
