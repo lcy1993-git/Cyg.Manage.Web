@@ -343,7 +343,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   const mediaColumns = [
     {
-      title: '类型、序号',
+      title: '类型/序号',
       dataIndex: 'type',
       key: 'type',
       render(t: any, r: any) {
