@@ -261,6 +261,7 @@ const ProjectList: React.FC = () => {
         setFormVisible(false);
         setSpinning(false)
         form.resetFields();
+        tableRef.current.reset();
       }).finally(()=>{
         setSpinning(false)
       });
@@ -271,6 +272,8 @@ const ProjectList: React.FC = () => {
         setFormVisible(false);
         setTableSelectRow([])
         setSpinning(false)
+
+        tableRef.current.reset();
         form.resetFields();
       }).finally(()=>{
         setSpinning(false)
@@ -312,7 +315,7 @@ const ProjectList: React.FC = () => {
       >
         <Spin spinning={spinning}>
           <Form form={form} preserve={false}>
-            <AddDictionaryForm/>
+            <AddDictionaryForm modalType={modalType}/>
           </Form>
           <div style={{display : 'flex',justifyContent:'right'}}>
               <Space>
