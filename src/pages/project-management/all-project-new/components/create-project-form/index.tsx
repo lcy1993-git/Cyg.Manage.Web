@@ -51,8 +51,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const [startDate, setStartDate] = useState<Moment>();
   const [endDate, setEndDate] = useState<Moment>();
   const [dataSourceType, setDataSourceType] = useState<number>();
-  const [disRangeValue, setDisRangeValue] = useState<number>();
-  const [pileRangeValue, setPileRangeValue] = useState<number>();
+  const [disRangeValue] = useState<number>();
+  const [pileRangeValue] = useState<number>();
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
     onSuccess: () => {
@@ -683,7 +683,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                   if (value === 2 || value === 1) {
                     if (!field.fieldKey) {
                       form.resetFields(['disclosureRange', 'pileRange']);
-                      // form.setFieldsValue({ disclosureRange: 1, pileRange: 2 });
+                      // form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                     } else {
                       const projectsInfo = form.getFieldValue('projects');
                       const newProjectsInfo = projectsInfo.map((item: any, ind: number) => {
