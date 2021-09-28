@@ -29,6 +29,7 @@ import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { TableRequestResult } from '@/services/table';
 import SignFileForm from './components/add-edit-form';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 const { TabPane } = Tabs;
@@ -444,7 +445,7 @@ const SignManage: React.FC = () => {
                 style={{ width: '100%' }}
               />
             </TableSearch>
-            <TableSearch width="400px">
+            <TableSearch width="400px" marginLeft="20px">
               {buttonJurisdictionArray?.includes('add-sign-group') && (
                 <Button className="mr7" type="primary" onClick={() => addFileGroupEvent()}>
                   <PlusOutlined />
@@ -452,16 +453,14 @@ const SignManage: React.FC = () => {
                 </Button>
               )}
 
-              <Popconfirm
-                title="确定要删除当前文件组吗?"
-                onConfirm={deleteFileGroupEvent}
-                okText="确认"
-                cancelText="取消"
-              >
-                {buttonJurisdictionArray?.includes('delete-sign-group') && (
-                  <Button className="mr7">删除当前分组</Button>
-                )}
-              </Popconfirm>
+              {buttonJurisdictionArray?.includes('delete-sign-group') && (
+                <ModalConfirm
+                  changeEvent={deleteFileGroupEvent}
+                  title="删除当前分组"
+                  content="确定要删除当前签批分组吗？"
+                />
+              )}
+
               {buttonJurisdictionArray?.includes('sign-manage-defaultOptions') && (
                 <Tooltip title="默认参数和对应签批分组关联" style={{ borderRadius: 15 }}>
                   <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>
@@ -482,7 +481,6 @@ const SignManage: React.FC = () => {
                   titleSlot={titleSlotElement}
                   getTableRequestData={setTableData}
                   ref={approvalRef}
-                  needCommonButton={true}
                   columns={columns}
                   url="/CompanySign/GetPagedList"
                   tableTitle="批准"
@@ -501,7 +499,6 @@ const SignManage: React.FC = () => {
                   titleSlot={titleSlotElement}
                   getTableRequestData={setTableData}
                   ref={auditRef}
-                  needCommonButton={true}
                   columns={columns}
                   url="/CompanySign/GetPagedList"
                   tableTitle="审核"
@@ -520,7 +517,6 @@ const SignManage: React.FC = () => {
                   titleSlot={titleSlotElement}
                   getTableRequestData={setTableData}
                   ref={checkRef}
-                  needCommonButton={true}
                   columns={columns}
                   url="/CompanySign/GetPagedList"
                   tableTitle="校核"
@@ -539,7 +535,6 @@ const SignManage: React.FC = () => {
                   titleSlot={titleSlotElement}
                   getTableRequestData={setTableData}
                   ref={designRef}
-                  needCommonButton={true}
                   columns={columns}
                   url="/CompanySign/GetPagedList"
                   tableTitle="设计/勘测"
@@ -583,17 +578,7 @@ const SignManage: React.FC = () => {
             )}
 
             {buttonJurisdictionArray?.includes('sign-file-delete') && (
-              <Popconfirm
-                title="您确定要删除该条数据?"
-                onConfirm={sureDeleteData}
-                okText="确认"
-                cancelText="取消"
-              >
-                <Button className="mr7">
-                  <DeleteOutlined />
-                  删除
-                </Button>
-              </Popconfirm>
+              <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
             )}
           </div>
         </div>

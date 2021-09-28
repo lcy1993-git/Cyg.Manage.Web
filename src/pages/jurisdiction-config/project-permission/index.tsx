@@ -1,14 +1,9 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin, Tooltip } from 'antd';
+import { Button, Input, Modal, Form, message, Spin, Tooltip } from 'antd';
 import React, { useState } from 'react';
-import {
-  EditOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  QuestionCircleOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
 import { useRequest, useBoolean } from 'ahooks';
 import {
@@ -25,6 +20,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import ProjectPermissionForm from './components/add-edit-form';
 import CategoryTable from './components/category-table';
 import UserPermissionAccredit from './components/user-authorization';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -291,18 +287,7 @@ const ProjectPermission: React.FC = () => {
           </Button>
         )}
         {buttonJurisdictionArray?.includes('project-permissions-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-            // disabled
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
         {/* {buttonJurisdictionArray?.includes('role-permissions-allocation-function') && (
           <Button className="mr7" onClick={() => distributeEvent()}>
@@ -345,7 +330,6 @@ const ProjectPermission: React.FC = () => {
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
-        centered
       >
         <Form form={addForm} preserve={false}>
           <ProjectPermissionForm />

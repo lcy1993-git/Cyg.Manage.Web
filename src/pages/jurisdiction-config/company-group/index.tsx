@@ -1,6 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap';
 import React, { useRef, useState } from 'react';
-import { Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
+import { Button, Modal, Form, message, Spin } from 'antd';
 import TreeTable from '@/components/tree-table/index';
 import {
   addCompanyGroupItem,
@@ -16,6 +16,7 @@ import { isArray } from 'lodash';
 import { useRequest } from 'ahooks';
 import CyTag from '@/components/cy-tag';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const CompanyGroup: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
@@ -172,17 +173,7 @@ const CompanyGroup: React.FC = () => {
           </Button>
         )}
         {buttonJurisdictionArray?.includes('group-manage-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr33">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </>
     );

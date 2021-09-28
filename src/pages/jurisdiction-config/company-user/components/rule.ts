@@ -20,7 +20,7 @@ export default {
   idNumber: [
     { required: true, message: '身份证号不能为空' },
     {
-      pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+      pattern: /(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
       message: '请输入正确的身份证格式',
     },
   ],

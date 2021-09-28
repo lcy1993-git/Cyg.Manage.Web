@@ -25,6 +25,7 @@ import ModuleAttributeForm from './components/attribute-form';
 import ModuleDetailTab from './components/detail-tabs';
 import ModuleDetailTable from './components/detail-table';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -269,17 +270,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         )}
 
         {buttonJurisdictionArray?.includes('modules-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
         {buttonJurisdictionArray?.includes('modules-check') && (
@@ -319,6 +310,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
 
     await deleteModulesPropertyItem(libId, editDataId);
     refresh();
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 

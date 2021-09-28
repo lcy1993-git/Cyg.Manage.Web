@@ -49,7 +49,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
             onChange={(e) => setInventoryKeyWord(e.target.value)}
           />
         </TableSearch>
-        <TableSearch width="240px">
+        <TableSearch width="240px" marginLeft="16px">
           <Select
             options={areaOptions}
             placeholder="区域"
@@ -164,7 +164,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
         visible={state as boolean}
         width="72%"
         destroyOnClose
-        bodyStyle={{ height: '738px', overflowY: 'auto' }}
+        bodyStyle={{ height: '700px', overflowY: 'auto' }}
       >
         <GeneralTable
           size="middle"

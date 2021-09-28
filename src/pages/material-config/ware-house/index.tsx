@@ -25,6 +25,7 @@ import WareHouseForm from './components/add-edit-form';
 import WareHouseDetail from './components/detail-table';
 import ImportWareHouse from './components/import-form';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -255,17 +256,7 @@ const WareHouse: React.FC = () => {
         )}
 
         {buttonJurisdictionArray?.includes('ware-house-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
         {buttonJurisdictionArray?.includes('ware-house-import') && (
