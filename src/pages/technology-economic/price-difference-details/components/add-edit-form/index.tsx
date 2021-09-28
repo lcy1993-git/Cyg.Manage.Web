@@ -3,11 +3,13 @@ import { Input, Col, Row, Select, Button, message } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import FileUpload from '@/components/file-upload';
 import { downLoadTemplateExcel } from '@/services/technology-economic/spread-coefficient';
+import rules from '../../rule';
 interface IForm {
   type?: 'add' | 'edit';
   selectList?: number[];
 }
 const AddOrEditForm: React.FC<IForm> = (props) => {
+  const { type } = props;
   const downLoad = async () => {
     const res = await downLoadTemplateExcel({});
     let blob = new Blob([res], {
@@ -43,10 +45,15 @@ const AddOrEditForm: React.FC<IForm> = (props) => {
           下载模板
         </Button>
       </CyFormItem>
-      <CyFormItem label="地区名称" name="item1" required>
+      <CyFormItem label="地区名称" name="item1" required rules={rules.name}>
         <Input placeholder="请输入地区名称" />
       </CyFormItem>
-      <CyFormItem label="上传文件" name="file" required>
+      <CyFormItem
+        label="上传文件"
+        name="file"
+        required={type === 'add' ? true : false}
+        rules={type === 'add' ? rules.file : []}
+      >
         <FileUpload accept=".xls,.xlsx" maxCount={1} trigger={false} />
       </CyFormItem>
     </>

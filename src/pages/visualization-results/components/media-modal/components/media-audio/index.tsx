@@ -15,6 +15,7 @@ const MediaAudio: React.FC<MediaAudioProps> = ({
         className={styles.audio}
         src={`${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
         controls={true}
+        controlsList="noremoteplayback"
       />
     </div>
   );

@@ -1,6 +1,6 @@
 import BarChart from '@/components/bar-chart';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Select, DatePicker, Button } from 'antd';
+import { Select, DatePicker, Button, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ChartBox from '../chart-box';
 import ChartTab from '../chart-tab';
@@ -64,7 +64,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
     return undefined;
   }, [activeKey]);
 
-  const { data: consignsData, run } = useRequest(
+  const { data: consignsData, run, loading } = useRequest(
     () =>
       getConsigns({
         type: type!,
@@ -208,6 +208,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
 
   return (
     <ChartBox title="交付统计">
+      <Spin delay={300} spinning={loading}>
       <div className={styles.deliveryMange}>
         <div className={styles.deliveryManageStatisticCondition}>
           <div className={styles.deliverySelect}>
@@ -248,6 +249,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
           </div>
         </div>
       </div>
+      </Spin>
     </ChartBox>
   );
 };

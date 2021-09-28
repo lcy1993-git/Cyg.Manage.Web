@@ -86,7 +86,7 @@ const SpreadCoefficient: React.FC = () => {
       key: 'publishDate',
       title: '发布时间',
       render: (text: string, record: any) => {
-        return moment(record.expiryTime).format('YYYY-MM-DD HH:mm ');
+        return moment(record.publishDate).format('YYYY-MM-DD HH:mm ');
       },
     },
     {
@@ -267,7 +267,6 @@ const SpreadCoefficient: React.FC = () => {
       }).finally(()=>{
         setSpinning(false)
       });
-
     });
   };
   const addUploadFile = async () => {

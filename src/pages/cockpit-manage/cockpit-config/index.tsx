@@ -80,7 +80,6 @@ const getComponentByType = (type: string, componentProps: any, currentAreaInfo) 
 
 const CockpitManage: React.FC = () => {
   const [configArray, setConfigArray] = useState<CockpitProps[]>([]);
-
   // 1.默认配置开发
   // a. 根据useSize获取框框大小
   // b. 默认配置的宽度是可以写死的，高度根据目前已有高度需要做一个百分比适配
@@ -154,7 +153,7 @@ const CockpitManage: React.FC = () => {
         h: 11,
         edit: true,
         key: uuid.v1(),
-        componentProps: ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
+        componentProps: ['awaitProcess', 'inProgress', 'delegation'],
       },
       {
         name: 'mapComponent',

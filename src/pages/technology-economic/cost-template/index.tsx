@@ -5,7 +5,7 @@ import styles from './index.less';
 import ConstructionFees from '@/pages/technology-economic/cost-template/components/construction-fees';
 import { getCostTableDirectory } from '@/services/technology-economic/cost-template';
 import qs from 'qs';
-import TableImportButton from "@/components/table-import-button";
+import TableImportButton from '@/components/table-import-button';
 
 const { TabPane } = Tabs;
 
@@ -32,7 +32,7 @@ const CostTemplate: React.FC<Props> = () => {
   };
   useEffect(() => {
     const fid = (qs.parse(window.location.href.split('?')[1]).id as string) || '';
-    setId(fid)
+    setId(fid);
     getDirectory(fid);
   }, []);
   useEffect(() => {
@@ -49,17 +49,17 @@ const CostTemplate: React.FC<Props> = () => {
         <div className={styles.topBox}>
           <h3 className={styles.content}>目录</h3>
           <div className={styles.importBtn}>
-          <TableImportButton
-            style={{
-              marginRight:'10px',
-              zIndex:9999,
-              marginTop:'10px'
-            }}
-            setSuccessful={()=>getDirectory(id)}
-          requestSource={'tecEco1'}
-          extraParams={{ EngineeringTemplateId: id }}
-          importUrl={'/EngineeringTemplateCostTable/ImportEngineeringTemplateCostTable'}
-          />
+            <TableImportButton
+              style={{
+                marginRight: '10px',
+                zIndex: 99,
+                marginTop: '10px',
+              }}
+              setSuccessful={() => getDirectory(id)}
+              requestSource={'tecEco1'}
+              extraParams={{ EngineeringTemplateId: id }}
+              importUrl={'/EngineeringTemplateCostTable/ImportEngineeringTemplateCostTable'}
+            />
           </div>
         </div>
 

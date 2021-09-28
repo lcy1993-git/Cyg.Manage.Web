@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Select } from 'antd';
+import { Select, Spin } from 'antd';
 import ChartBox from '../chart-box';
+import borderStylesHTML from '../../utils/borderStylesHTML';
 
 import * as echarts from 'echarts/lib/echarts';
 import 'echarts/lib/chart/line';
@@ -12,6 +13,7 @@ import styles from './index.less';
 import useRequest from '@ahooksjs/use-request';
 import { AreaInfo, getProjectNumberData } from '@/services/index';
 import moment from 'moment';
+import { useSize } from 'ahooks';
 
 const { Option } = Select;
 
@@ -23,9 +25,10 @@ interface ProjectNumberProps {
 const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
   const [searchType, setSearchType] = useState<string>('0');
   const divRef = useRef<HTMLDivElement>(null);
+  const size = useSize(divRef);
   const { currentAreaInfo } = props;
   const componentProps = ['14', '1', '2', '3', '4', '19']
-  const { data = [] } = useRequest(
+  const { data = [], loading } = useRequest(
     () =>
       getProjectNumberData({
         areaCode: currentAreaInfo.areaId,
@@ -67,11 +70,13 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
           const thisTime = dateData[dataIndex];
           const currentData = currentDateData[dataIndex] ?? 0;
           const currentChangeData = changeDateData[dataIndex] ?? 0;
+          const arrow = currentChangeData === 0 ? "" : (currentChangeData > 0 ? "↑" : "↓") 
+          // 删掉时间
+          // <span style="font-size: 14px; font-weight: 600; color: #fff">${thisTime}</span><br />
+          return `${borderStylesHTML}
 
-          return `
-                <span style="font-size: 14px; font-weight: 600; color: #fff">${thisTime}</span><br />
-                <span style="color: #fff">当前项目数：${currentData}</span><br />
-                <span style="color: #fff">较昨日变化: ${currentChangeData}</span>
+                <span style="color: #fff"><span style="color: #2AFE97">当前项目数：</span>${currentData}</span><br />
+                <span style="color: #fff"><span style="color: #2AFE97">较昨日变化：</span>${arrow}${currentChangeData}</span>
               `;
         },
       },
@@ -128,6 +133,13 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
   };
 
   useEffect(() => {
+    if(size.width || size.height) {
+        const myEvent = new Event("resize");
+        window.dispatchEvent(myEvent)
+    }
+}, [JSON.stringify(size)])
+
+  useEffect(() => {
     window.addEventListener('resize', () => {
       if (!divRef.current) {
         // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
@@ -145,6 +157,7 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
 
   return (
     <ChartBox title="项目数量">
+      <Spin delay={300} spinning={loading}>
       <div className={styles.typeSelect}>
         <Select
           bordered={false}
@@ -154,16 +167,17 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
         >
           <Option value="0">全部</Option>
           {componentProps.includes('14') && <Option value="14">待安排</Option>}
-          {componentProps.includes('1') && <Option value="1">未来勘察</Option>}
+          {componentProps.includes('1') && <Option value="1">未勘察</Option>}
           {componentProps.includes('2') && <Option value="2">勘察中</Option>}
           {componentProps.includes('3') && <Option value="3">已勘察</Option>}
           {componentProps.includes('4') && <Option value="4">设计中</Option>}
           {componentProps.includes('19') && <Option value="19">已设计</Option>}
         </Select>
       </div>
-      <div className={styles.chartContent}>
+      <div className={styles.chartContent} >
         <div style={{ width: '100%', height: '100%' }} ref={divRef}></div>
       </div>
+      </Spin>
     </ChartBox>
   );
 };

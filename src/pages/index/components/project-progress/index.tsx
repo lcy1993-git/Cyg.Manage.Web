@@ -5,6 +5,7 @@ import GanttView from "@/components/gantt-component-view-small";
 import { getProjectGanttData, AreaInfo } from "@/services/index";
 import styles from "./index.less";
 import { useMemo } from "react";
+import { Spin } from "antd";
 
 interface Props {
   componentProps?: string[];
@@ -13,7 +14,7 @@ interface Props {
 
 const ProjectProgress:React.FC<Props> = (props) => {
   const { currentAreaInfo } = props;
-  const { data: requestData } = useRequest(() => getProjectGanttData({ areaCode: currentAreaInfo.areaId, areaType: currentAreaInfo.areaLevel }), {refreshDeps: [currentAreaInfo]});
+  const { data: requestData, loading } = useRequest(() => getProjectGanttData({ areaCode: currentAreaInfo.areaId, areaType: currentAreaInfo.areaLevel }), {refreshDeps: [currentAreaInfo]});
   
   const handleRequestData = useMemo(() => {
     if(requestData) {
@@ -24,9 +25,11 @@ const ProjectProgress:React.FC<Props> = (props) => {
 
   return (
       <ChartBox title="项目进度" titleAlign="left">
+        <Spin delay={300} spinning={loading}>
         <div className={styles.container}>
           <GanttView ganttData={handleRequestData}/>
         </div>
+        </Spin>
       </ChartBox>
   )
 }
