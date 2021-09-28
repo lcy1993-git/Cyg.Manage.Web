@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import {Button, Modal, Form, Switch, message, Popconfirm, Tabs, Spin, Space} from 'antd';
+import { Button, Modal, Form, Switch, message, Popconfirm, Tabs, Spin, Space } from 'antd';
 import type { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
@@ -15,7 +15,7 @@ import styles from './index.less';
 import moment from 'moment';
 import { getEnums } from '../utils';
 import CommonTitle from '@/components/common-title';
-import AdjustmentFileForm from './components/adjustment-file-form/inex';
+import AdjustmentFileForm from './components/adjustment-file-form';
 import {
   createAdjustmentFile,
   createCatalogue,
@@ -27,7 +27,7 @@ import {
   updateCatalogue,
   technicalEconomyFile,
 } from '@/services/technology-economic/spread-coefficient';
-import AddDictionaryForm from "@/pages/technology-economic/common-rate/components/add-edit-form";
+import AddDictionaryForm from '@/pages/technology-economic/common-rate/components/add-edit-form';
 
 type DataSource = {
   id: string;
@@ -147,12 +147,12 @@ const SpreadCoefficient: React.FC = () => {
         message.error('请选择一条数据进行编辑');
         return;
       }
-      const ids = tableSelectRows?.map(item=>item.id);
-      console.log(ids)
+      const ids = tableSelectRows?.map((item) => item.id);
+      console.log(ids);
       await deleteTemplate(ids); // TODO
       refresh();
       message.success('删除成功');
-      setTableSelectRow([])
+      setTableSelectRow([]);
     } else {
       // 调整文件
       if (tableSelectADRows && isArray(tableSelectADRows) && tableSelectADRows.length === 0) {
@@ -163,7 +163,7 @@ const SpreadCoefficient: React.FC = () => {
       await deleteAdjustmentFile(id); // TODO
       refresh();
       message.success('删除成功');
-      setTableSelectADRow([])
+      setTableSelectADRow([]);
     }
   };
 
@@ -217,19 +217,20 @@ const SpreadCoefficient: React.FC = () => {
   // 价差目录编辑确认按钮
   const sureEditAuthorization = () => {
     editForm.validateFields().then((values) => {
-      setSpinning(true)
+      setSpinning(true);
       const { id } = tableSelectRows[0];
       const value = values;
       value.id = id;
       // TODO 编辑接口
-       updateCatalogue(value).then(()=>{
-         refresh();
-         setEditFormVisible(false);
-         editForm.resetFields();
-       }).finally(()=>{
-         setSpinning(false)
-       });
-
+      updateCatalogue(value)
+        .then(() => {
+          refresh();
+          setEditFormVisible(false);
+          editForm.resetFields();
+        })
+        .finally(() => {
+          setSpinning(false);
+        });
     });
   };
   // 调整文件新增确认按钮
@@ -244,6 +245,7 @@ const SpreadCoefficient: React.FC = () => {
         refresh();
         setAddADFormVisible(false);
         addADForm.resetFields();
+        setFileId('');
       } else {
         message.warn('文件未上传或上传失败');
       }
@@ -252,26 +254,41 @@ const SpreadCoefficient: React.FC = () => {
   // 调整文件编辑确认按钮
   const sureEditADAuthorization = () => {
     editADForm.validateFields().then((values) => {
-      setSpinning(true)
+      setSpinning(true);
       const { id } = tableSelectADRows[0];
-      const value = values;
+      const value: any = {};
       value.id = id;
+      value.publishedBy = values.publishedBy;
+      value.remark = values.remark;
+      value.publishDate = values.publishDate;
+      value.enabled = values.enabled;
+      value.name = values.name;
       if (fileId) {
         value.fileId = value.fileId;
       }
       // TODO 编辑接口
-      updateAdjustmentFile(value).then(()=>{
-        refresh();
-        setEditFormVisible(false);
-        editForm.resetFields();
-      }).finally(()=>{
-        setSpinning(false)
-      });
+      updateAdjustmentFile(value)
+        .then(() => {
+          refresh();
+          setEditADFormVisible(false);
+          editForm.resetFields();
+        })
+        .finally(() => {
+          setSpinning(false);
+        });
     });
   };
   const addUploadFile = async () => {
     const obj = {
       file: addADForm.getFieldValue('files'),
+    };
+    const securityKey = '1202531026526199123';
+    const id = await technicalEconomyFile(securityKey, obj);
+    setFileId(id as string);
+  };
+  const editUploadFile = async () => {
+    const obj = {
+      file: editADForm.getFieldValue('files'),
     };
     const securityKey = '1202531026526199123';
     const id = await technicalEconomyFile(securityKey, obj);
@@ -298,7 +315,11 @@ const SpreadCoefficient: React.FC = () => {
               编辑
             </Button>
           )} */}
-          <Button className="mr7" onClick={() => editEvent()} disabled={tableSelectRows?.length > 1}>
+          <Button
+            className="mr7"
+            onClick={() => editEvent()}
+            disabled={tableSelectRows?.length > 1}
+          >
             <EditOutlined />
             编辑
           </Button>
@@ -342,13 +363,13 @@ const SpreadCoefficient: React.FC = () => {
   const tableSelectADEvent = (data: DataSource[] | Object) => {
     setTableSelectADRow(data);
   };
-  useEffect(()=>{
-    if (spinning) return
-    setUpdate(false)
-    setTimeout(()=>{
-      setUpdate(true)
-    },0)
-  },[spinning])
+  useEffect(() => {
+    if (spinning) return;
+    setUpdate(false);
+    setTimeout(() => {
+      setUpdate(true);
+    }, 0);
+  }, [spinning]);
   return (
     <PageCommonWrap>
       {tableElement()}
@@ -357,8 +378,7 @@ const SpreadCoefficient: React.FC = () => {
           {ProjectTypeList.map((item: any, index: number) => {
             return (
               <TabPane tab={item.text} key={item.value}>
-                {
-                  update &&
+                {update && (
                   <div className={styles.pannelTable}>
                     {projectType === 1 ? (
                       // 价差目录
@@ -386,7 +406,7 @@ const SpreadCoefficient: React.FC = () => {
                       />
                     )}
                   </div>
-                }
+                )}
               </TabPane>
             );
           })}
@@ -409,18 +429,15 @@ const SpreadCoefficient: React.FC = () => {
           <Form form={addForm} preserve={false}>
             <DictionaryForm type="add" />
           </Form>
-          <div style={{display : 'flex',justifyContent:'right'}}>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
             <Space>
-              <Button onClick={()=>setAddFormVisible(false)}>
-                取消
-              </Button>
+              <Button onClick={() => setAddFormVisible(false)}>取消</Button>
               <Button onClick={sureAddAuthorization} type={'primary'}>
                 确定
               </Button>
             </Space>
           </div>
         </Spin>
-
       </Modal>
       <Modal
         maskClosable={false}
@@ -437,11 +454,9 @@ const SpreadCoefficient: React.FC = () => {
           <Form form={editForm} preserve={false}>
             <DictionaryForm type="edit" />
           </Form>
-          <div style={{display : 'flex',justifyContent:'right'}}>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
             <Space>
-              <Button onClick={()=>setEditFormVisible(false)}>
-                取消
-              </Button>
+              <Button onClick={() => setEditFormVisible(false)}>取消</Button>
               <Button onClick={sureEditAuthorization} type={'primary'}>
                 确定
               </Button>
@@ -464,11 +479,9 @@ const SpreadCoefficient: React.FC = () => {
           <Form form={addADForm} preserve={false}>
             <AdjustmentFileForm type="add" addUploadFile={addUploadFile} />
           </Form>
-          <div style={{display : 'flex',justifyContent:'right'}}>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
             <Space>
-              <Button onClick={()=>setAddADFormVisible(false)}>
-                取消
-              </Button>
+              <Button onClick={() => setAddADFormVisible(false)}>取消</Button>
               <Button onClick={sureAddADAuthorization} type={'primary'}>
                 确定
               </Button>
@@ -489,20 +502,17 @@ const SpreadCoefficient: React.FC = () => {
       >
         <Spin spinning={spinning}>
           <Form form={editADForm} preserve={false}>
-            <AdjustmentFileForm type="edit" addUploadFile={addUploadFile} />
+            <AdjustmentFileForm type="edit" addUploadFile={editUploadFile} />
           </Form>
-          <div style={{display : 'flex',justifyContent:'right'}}>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
             <Space>
-              <Button onClick={()=>setEditADFormVisible(false)}>
-                取消
-              </Button>
+              <Button onClick={() => setEditADFormVisible(false)}>取消</Button>
               <Button onClick={sureEditADAuthorization} type={'primary'}>
                 确定
               </Button>
             </Space>
           </div>
         </Spin>
-
       </Modal>
     </PageCommonWrap>
   );

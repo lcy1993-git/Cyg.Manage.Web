@@ -124,12 +124,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     var feature:any;
     if (selected) return;
     selected = true;
-    
-    // let line_cluster_id = feature.getProperties().line_cluster_id;
-    // let lineClusters =  getLineClusters();
-    // let lineCluster =  lineClusters.find(lineCluster => lineCluster.id === line_cluster_id);
-    // console.log(lineCluster);
-
 
     if (layer.getProperties().name == 'highlightLayer') {
       clearHighlightLayer(map);
@@ -410,12 +404,23 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             });
             break;
           case 'parent_id':
+            let parentLayer = 'tower';
+            let parentName = feature.getProperties()['parent_name'];
+            if (parentName?.startsWith('ElectricMeter')) {
+              parentLayer = 'electric_meter';
+            }
+            else if(parentName?.startsWith('CableDevice')) {
+              parentLayer = 'cable_equipment';
+            }
             await loadLayer(
               getCustomXmlData('id', feature.getProperties()['parent_id']),
-              `pdd:${layerType}_tower`,
+              `pdd:${layerType}_${parentLayer}`,
             ).then((data: any) => {
               if (data.features && data.features.length === 1) {
-                pJSON[mappingTag] = data.features[0].properties.code;
+                parentLayer === 'electric_meter' ?
+                  pJSON[mappingTag] = data.features[0].properties.name
+                :
+                  pJSON[mappingTag] = data.features[0].properties.code;
               } else {
                 pJSON[mappingTag] = '';
               }
