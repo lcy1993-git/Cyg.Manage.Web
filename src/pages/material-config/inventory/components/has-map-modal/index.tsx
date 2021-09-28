@@ -12,6 +12,7 @@ import MapLibModal from '../map-lib-modal';
 import CheckMapping from '../check-mapping-form';
 import CreateMap from '../create-map';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const HasMapModal: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -40,14 +41,7 @@ const HasMapModal: React.FC = () => {
           编辑映射
         </Button>
 
-        <Popconfirm
-          title="您确定要删除该映射?"
-          onConfirm={deleteMapEvent}
-          okText="确认"
-          cancelText="取消"
-        >
-          <Button className="mr7">删除映射</Button>
-        </Popconfirm>
+        <ModalConfirm changeEvent={deleteMapEvent} selectData={tableSelectRows} />
       </div>
     );
   };

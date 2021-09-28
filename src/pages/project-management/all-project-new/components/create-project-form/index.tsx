@@ -682,7 +682,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 onChange={(value: any) => {
                   if (value === 2 || value === 1) {
                     if (!field.fieldKey) {
-                      form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
+                      form.resetFields(['disclosureRange', 'pileRange']);
+                      // form.setFieldsValue({ disclosureRange: 1, pileRange: 2 });
                     } else {
                       const projectsInfo = form.getFieldValue('projects');
                       const newProjectsInfo = projectsInfo.map((item: any, ind: number) => {

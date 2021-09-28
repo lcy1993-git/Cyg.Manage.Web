@@ -15,7 +15,7 @@ import styles from './index.less';
 import moment from 'moment';
 import { getEnums } from '../utils';
 import CommonTitle from '@/components/common-title';
-import AdjustmentFileForm from './components/adjustment-file-form/inex';
+import AdjustmentFileForm from './components/adjustment-file-form';
 import {
   createAdjustmentFile,
   createCatalogue,

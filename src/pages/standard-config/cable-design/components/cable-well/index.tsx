@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
+import { EditOutlined, PlusOutlined, } from '@ant-design/icons';
+import { Input, Button, Modal, Form, message, Spin, } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -16,6 +16,7 @@ import { isArray } from 'lodash';
 import CableWellForm from './components/add-edit-form';
 import CableWellDetail from './components/detail-table/index';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -307,17 +308,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         )}
 
         {buttonJurisdictionArray?.includes('cable-well-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
         {buttonJurisdictionArray?.includes('cable-well-detail') && (
