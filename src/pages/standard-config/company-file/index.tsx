@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import styles from './index.less';
@@ -29,6 +29,7 @@ import FileGroupForm from './components/add-file-group';
 import { useGetSelectData } from '@/utils/hooks';
 import DataSelect from '@/components/data-select';
 import { TableRequestResult } from '@/services/table';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -311,17 +312,7 @@ const CompanyFile: React.FC = () => {
         )}
 
         {buttonJurisdictionArray?.includes('company-file-delete') && (
-          <Popconfirm
-            title="您确定要删除该文件?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </div>
     );
@@ -460,16 +451,14 @@ const CompanyFile: React.FC = () => {
                 </Button>
               )}
 
-              <Popconfirm
-                title="确定要删除当前文件组吗?"
-                onConfirm={deleteFileGroupEvent}
-                okText="确认"
-                cancelText="取消"
-              >
-                {buttonJurisdictionArray?.includes('delete-file-group') && (
-                  <Button className="mr7">删除当前组</Button>
-                )}
-              </Popconfirm>
+              {buttonJurisdictionArray?.includes('delete-file-group') && (
+                <ModalConfirm
+                  changeEvent={deleteFileGroupEvent}
+                  content="确定删除当前文件组吗？"
+                  title="删除文件组"
+                />
+              )}
+
               {buttonJurisdictionArray?.includes('company-file-defaultOptions') && (
                 <Tooltip title="成果默认参数和对应公司文件组关联" style={{ borderRadius: 15 }}>
                   <Button className={styles.iconParams} onClick={() => defaultParamsEvent()}>

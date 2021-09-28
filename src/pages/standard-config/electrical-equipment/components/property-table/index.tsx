@@ -14,6 +14,7 @@ import {
 import { useRequest } from 'ahooks';
 import AddComponentProperty from './add-form';
 import EditComponentProperty from './edit-form';
+import ModalConfirm from '@/components/modal-confirm';
 interface ModuleDetailParams {
   libId: string;
   componentId: string[];
@@ -137,17 +138,7 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
         <EditOutlined />
         编辑
       </Button>
-      <Popconfirm
-        title="您确定要删除该条数据?"
-        onConfirm={sureDeleteData}
-        okText="确认"
-        cancelText="取消"
-      >
-        <Button className="mr7">
-          <DeleteOutlined />
-          删除
-        </Button>
-      </Popconfirm>
+      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
     </>
   );
 

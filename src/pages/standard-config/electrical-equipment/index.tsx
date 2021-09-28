@@ -1,8 +1,7 @@
 import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined, ImportOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
+import { EditOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons';
+import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -13,12 +12,12 @@ import {
   deleteElectricalEquipmentItem,
 } from '@/services/resource-config/electrical-equipment';
 import { isArray } from 'lodash';
-import UrlSelect from '@/components/url-select';
 import ElectricalEquipmentForm from './components/add-edit-form';
 import ElectricProperty from './components/property-table';
 import ElectricDetail from './components/detail-table';
 import SaveImportElectrical from './components/import-form';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -267,17 +266,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         )}
 
         {buttonJurisdictionArray?.includes('electrical-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
         {buttonJurisdictionArray?.includes('electrical-import') && (

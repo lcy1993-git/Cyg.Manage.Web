@@ -6,6 +6,7 @@ import styles from './index.less';
 import PermissionTypeModal from '../type-select-modal';
 import CyTag from '@/components/cy-tag';
 import EditSelectModal from '../edit-select-modal';
+import ModalConfirm from '@/components/modal-confirm';
 
 export interface permissionItem {
   category: string | undefined;
@@ -169,17 +170,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
             <EditOutlined />
             编辑
           </Button>
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={removeEvent}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button>
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={removeEvent} selectData={tableSelectData} />
         </div>
       </div>
       <div className={styles.permissionTable}>

@@ -19,6 +19,7 @@ import ComponentDetail from './components/detail-table';
 import ComponentProperty from './components/property-table';
 import SaveImportComponent from './components/import-form';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -290,17 +291,7 @@ const Component: React.FC<libParams> = (props) => {
         )}
 
         {buttonJurisdictionArray?.includes('component-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
         {buttonJurisdictionArray?.includes('component-import') && (

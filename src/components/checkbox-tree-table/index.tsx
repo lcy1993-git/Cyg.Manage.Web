@@ -39,7 +39,7 @@ const CheckboxTreeTable: React.FC<CheckboxTreeTableProps> = (props) => {
       title: (text: any, record: any) => {
         return (
           <>
-            <span style={{ paddingLeft: '18px' }}>
+            <span style={{ paddingLeft: '19px' }}>
               <Checkbox
                 checked={isAllChecked}
                 onChange={isAllChecked ? allNoCheckEvent : allCheckEvent}
