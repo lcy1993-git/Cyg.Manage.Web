@@ -106,10 +106,13 @@ const PriceDifferenceDetails: React.FC = () => {
 
   // 编辑
   const editEvent = () => {
-    setEditFormVisible(true);
-    editForm.setFieldsValue({
-      ...activeValue,
-    });
+    console.log(activeValue);
+    if (activeValue && activeValue.item2) {
+      setEditFormVisible(true);
+      editForm.setFieldsValue({
+        item1: activeValue.item1,
+      });
+    }
   };
   // 导入模板modal
   const importTemplate = () => {
@@ -119,9 +122,8 @@ const PriceDifferenceDetails: React.FC = () => {
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
       console.log(values);
-
       let value: any = {};
-      value.Area = values.item1;
+      value.area = values.item1 ? values.item1 : '';
       value.files = values.file;
       value.templateId = id;
       await addArea(value);
@@ -134,6 +136,7 @@ const PriceDifferenceDetails: React.FC = () => {
   const sureEditAuthorization = () => {
     editForm.validateFields().then(async (values) => {
       let value = values;
+      value.area = values.item1 ? values.item1 : '';
       value.templateId = id;
       value.templateItemId = activeValue.item2;
       // TODO 编辑接口
@@ -146,7 +149,6 @@ const PriceDifferenceDetails: React.FC = () => {
   // 导入模板确认
   const sureImportTemplate = () => {
     importForm.validateFields().then(async (values) => {
-      console.log(values);
       values.templateId = id;
       await importDefaultTemplateData(values); // TODO
       refresh();
