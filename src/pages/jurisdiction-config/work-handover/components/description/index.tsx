@@ -20,7 +20,7 @@ const Description: React.FC = () => {
               className="canClick"
               onClick={() => {
                 history.push({
-                  pathname: '/personnel-config/company-user',
+                  pathname: '/jurisdiction-config/company-user',
                 });
               }}
             >

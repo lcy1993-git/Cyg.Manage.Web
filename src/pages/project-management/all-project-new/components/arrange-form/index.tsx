@@ -190,8 +190,10 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               onClick={() => setIsInternalAudit(!isInternalAudit)}
             >
               继续安排审核人员
+              <div style={{ textAlign: 'center' }}>
+                {isInternalAudit ? <UpOutlined /> : <DownOutlined />}
+              </div>
             </div>
-            <div>{isInternalAudit ? <UpOutlined /> : <DownOutlined />}</div>
           </div>
           <div style={{ display: isInternalAudit ? 'block' : 'none' }}>
             {/* 设计内审 */}

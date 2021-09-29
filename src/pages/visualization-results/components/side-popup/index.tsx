@@ -287,7 +287,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       width: 164,
       ellipsis: true,
       render(value: any, record: any, index: any) {
-        console.log(value, record)
+        // console.log(value, record)
         if (record.propertyName === 'title') return null;
         if (record.propertyName === '三维模型') {
           if(record.data){
@@ -601,7 +601,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           destroyOnClose={true}
           className={styles.mediaModal}
         >
-          <MediaModal content={mediaData?.content ?? []} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex} />
+          <MediaModal content={mediaListData} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex} />
         </Modal>
       </Modal>
       {
