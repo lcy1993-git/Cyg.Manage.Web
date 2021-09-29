@@ -60,7 +60,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
           return Promise.resolve();
         },
         (res) => {
-          if (res.code === 5000) {
+          if (res.code === 500 || res.code === 5000) {
             const { message: msg } = res;
             setRequestLoading(false);
             setMsgState(true);
