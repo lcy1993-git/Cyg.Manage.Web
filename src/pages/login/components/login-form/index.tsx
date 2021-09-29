@@ -80,7 +80,8 @@ const LoginForm: React.FC = () => {
           message.success('登录成功', 1.5);
           history.push('/index');
         }else if(resData.code === 40100) {
-          setNeedVerifycode(true);
+          // 临时关闭验证码，开启时，打开下行代码
+          // setNeedVerifycode(true);
           message.error(resData.message)
         }else{
           message.error(resData.message)

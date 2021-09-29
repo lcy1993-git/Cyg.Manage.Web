@@ -29,6 +29,7 @@ import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, EyeOutlined, Pl
 import WrapperComponent from "@/components/page-common-wrap";
 import GeneralTable from "@/components/general-table";
 import _ from "lodash";
+import TableSearch from "@/components/table-search";
 
 interface Props {
 }
@@ -204,34 +205,25 @@ const UsualQuotaTable: React.FC<Props> = () => {
     if (isEdit) {
       data.id = selectRow[0].id
     }
-    const exist = dataSource.find(item=>{
-      return item.number == data.number
-    })
     if (isEdit) {
-      if (exist !==undefined){
-        message.warn('已存在相同的费率序号!')
-        return
-      }
       editCommonlyTable(data).then(()=>{
         message.success('修改成功')
         form.resetFields();
         setIsModalVisible(false)
         setIsEdit(false)
         tableRef.current?.reset()
+        tableRef.current?.refresh()
       }).finally(()=>{
         setSpinning(false)
       })
     } else {
-      if (exist !== undefined) {
-        message.warn('已存在相同的费率序号!')
-        return
-      }
        addCommonlyTable(data).then(()=>{
          message.success('添加成功')
          form.resetFields();
          setIsModalVisible(false)
          setIsEdit(false)
          tableRef.current?.reset()
+         tableRef.current?.refresh()
        }).finally(()=>{
          setSpinning(false)
        })
@@ -305,13 +297,9 @@ const UsualQuotaTable: React.FC<Props> = () => {
     })
     setDataSource(res.items)
   }
-  useEffect(() => {
-    getAllList()
-    getCommonlyTableType()
-  }, [])
-  return (
-    <WrapperComponent>
-      <div className={styles.usualQuotaTable}>
+  const tableElement = () => {
+    return (
+      <div className={styles.usualQuotaTable} >
         <div className={styles.topButtons}>
           <Space>
             <Button type={'primary'} onClick={showDetail}>
@@ -329,9 +317,26 @@ const UsualQuotaTable: React.FC<Props> = () => {
               删除</Button>
           </Space>
         </div>
+      </div>
+    )
+  }
+  const searchComponent = () => {
+    return (
+      <div></div>
+    );
+  };
+  useEffect(() => {
+    getAllList()
+    getCommonlyTableType()
+  }, [])
+  return (
+    <WrapperComponent>
+     <div>
         <GeneralTable
           ref={tableRef}
           needCommonButton={true}
+          buttonRightContentSlot={tableElement}
+          buttonLeftContentSlot={searchComponent}
           columns={columns as (ColumnsType<object>)}
           url="/CommonlyTable/QueryCommonlyTablePager"
           tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
@@ -340,7 +345,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
           type="radio"
         />
         <Modal
-          title="添加定额常用表"
+          title={`${isEdit ? '编辑' : '添加'}定额常用表`}
           visible={isModalVisible}
           destroyOnClose={true}
           footer={null}

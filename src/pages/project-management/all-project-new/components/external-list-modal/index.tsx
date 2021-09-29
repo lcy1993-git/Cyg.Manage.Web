@@ -21,6 +21,7 @@ import {
   getExternalArrangeStep,
   addAllotUser,
   confirmOuterAudit,
+  getReviewFileUrl,
 } from '@/services/project-management/all-project';
 import styles from './index.less';
 import { DeleteOutlined, EnvironmentOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
@@ -29,7 +30,7 @@ import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { removeAllotUser } from '@/services/project-management/all-project';
 import SelectAddListForm from '../select-add-list-form';
-import { divide } from 'lodash';
+import ViewAuditFile from './components/viewFile';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -40,6 +41,12 @@ interface GetGroupUserProps {
   projectId: string;
   stepData?: any;
   refresh?: () => void;
+}
+
+export interface CurrentFileInfo {
+  url: string;
+  extension: string | undefined;
+  title: string;
 }
 
 const { Step } = Steps;
@@ -59,6 +66,20 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
 
   const [form] = Form.useForm();
   const { projectId, refresh } = props;
+
+  const [currentFileInfo, setCurrentFileInfoErr] = useState<CurrentFileInfo>({
+    url: '',
+    extension: undefined,
+    title: '',
+  });
+
+  const setCurrentFileInfo = (info: CurrentFileInfo) => {
+    if (info.extension === '.doc' || info.extension === '.xls') {
+      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件再本地进行预览`);
+    } else {
+      setCurrentFileInfoErr(info);
+    }
+  };
 
   const { data: stepData, run, loading } = useRequest(() => getExternalArrangeStep(projectId));
   const { run: addUser } = useRequest(
@@ -90,19 +111,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     addUser();
   }, [addPeople]);
 
-  // const finishEditEvent = async () => {
-  //   try {
-  //     setRequestLoading(true);
-  //     await delay(1000);
-  //     const res = await getExternalStep(projectId);
-  //     setNewStepData(res);
-  //   } catch (msg) {
-  //     console.error(msg);
-  //   } finally {
-  //     setRequestLoading(false);
-  //   }
-  // };
-
   const deleteAllotUser = async (userId: string) => {
     await removeAllotUser({ projectId: projectId, userAllotId: userId });
     message.success('已移除');
@@ -124,6 +132,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         cancelText: '取消',
         onOk: () => deleteAllotUser(id),
       });
+      return;
     }
     message.error('至少保留一位外审人员');
   };
@@ -143,8 +152,13 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     setCurrent(current + 1);
   };
 
-  const reviewCheckEvent = () => {
-    console.log('word预览');
+  const reviewCheckEvent = async (id: string) => {
+    const res = await getReviewFileUrl({ projectId: projectId, userId: id });
+
+    const url = res[0]?.extend.file.url;
+    const extension = res[0]?.extend.file.extension;
+    const name = res[0]?.name;
+    setCurrentFileInfo({ url: url, extension: extension, title: name });
   };
 
   const backToEvent = async () => {
@@ -258,7 +272,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                     {el.status === 3 ? (
                       <Button
                         style={{ backgroundColor: '#0e7b3b', color: '#fff' }}
-                        onClick={() => reviewCheckEvent()}
+                        onClick={() => reviewCheckEvent(el.userId)}
                       >
                         评审结果
                       </Button>
@@ -310,11 +324,25 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
               <p style={{ textAlign: 'center' }}>外审退回</p>
               <Radio.Group onChange={(e) => setBackTo(e.target.value)} value={backTo}>
                 <Radio value={4}>设计中</Radio>
-                <Radio value={11}>造价中</Radio>
+                {/* <Radio value={11}>造价中</Radio> */}
               </Radio.Group>
             </div>
           </Form>
         )}
+      </Modal>
+      <Modal
+        maskClosable={false}
+        className={styles.fileRead}
+        title={`预览-${currentFileInfo.title}`}
+        width={'80%'}
+        centered
+        visible={!!currentFileInfo.extension}
+        destroyOnClose
+        bodyStyle={{ height: '820px', overflowY: 'auto' }}
+        footer={null}
+        onCancel={() => setCurrentFileInfo({ ...currentFileInfo, extension: undefined })}
+      >
+        {currentFileInfo.url && <ViewAuditFile params={currentFileInfo} />}
       </Modal>
     </>
   );

@@ -729,7 +729,7 @@ const pointStyle = function (type: string, feature: Feature, selected: boolean, 
         let styleParams = {
             text: new Text({
                 // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
-                text: count ? "" + count : "",
+                text: count >= 0 ? "" + count : "",
                 textAlign: 'center',
                 font: 'bold 9px Source Han Sans SC', //字体与大小
                 placement: 'line',
@@ -741,7 +741,8 @@ const pointStyle = function (type: string, feature: Feature, selected: boolean, 
                 stroke: new Stroke({ //文字边界宽度与颜色
                     color: 'rgba(21, 32, 32, 1)',
                     width: 2
-                })
+                }),
+                rotation: azimuth * (Math.PI / 180) * -1
             }),
         }
         style_ = new ClassStyle(styleParams);

@@ -340,7 +340,7 @@ function getMappingTagsDictionary() {
     mappingTagsDictionary.electric_meter = {
       mappingTags1: {
         "kv_level": "电压等级",
-        "parent_id": "所属杆塔",
+        "parent_id": "所属节点",
         "entry_type": "下户方式",
         "entry_mode": "下户类型",
         "type": "户表类型",

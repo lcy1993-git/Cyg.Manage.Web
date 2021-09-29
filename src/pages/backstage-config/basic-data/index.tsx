@@ -8,7 +8,6 @@ import { UploadOutlined } from '@ant-design/icons';
 import { commonUpload } from '@/services/common';
 import CyFormItem from '@/components/cy-form-item';
 import ExportAuthorityButton from '@/components/authortiy-export-button';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 const BasicData: React.FC = () => {
   const [assestsForm] = Form.useForm();
@@ -44,8 +43,6 @@ const BasicData: React.FC = () => {
     });
   };
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
   return (
     <PageCommonWrap noPadding>
       <div className={styles.basicPage}>
@@ -63,12 +60,10 @@ const BasicData: React.FC = () => {
               </CyFormItem>
             </Form>
             <div className={styles.basicPageButtonContent}>
-              {buttonJurisdictionArray?.includes('upload-static-file') && (
-                <Button type="primary" onClick={() => uploadAssests()}>
-                  <UploadOutlined />
-                  开始上传
-                </Button>
-              )}
+              <Button type="primary" onClick={() => uploadAssests()}>
+                <UploadOutlined />
+                开始上传
+              </Button>
             </div>
           </div>
           <div className={styles.divider}></div>
@@ -77,13 +72,11 @@ const BasicData: React.FC = () => {
             <CommonTitle>气象区文件模板</CommonTitle>
             <Form form={areaForm}>
               <CyFormItem label="气象区文件模板" labelAlign="right" labelWidth={111}>
-                {buttonJurisdictionArray?.includes('download-metarea-temp') && (
-                  <Button type="primary" style={{ width: '80px' }}>
-                    <a href="/template/metareaTemp.xlsx" download="气象区文件模板.xlsx">
-                      下载
-                    </a>
-                  </Button>
-                )}
+                <Button type="primary" style={{ width: '80px' }}>
+                  <a href="/template/metareaTemp.xlsx" download="气象区文件模板.xlsx">
+                    下载
+                  </a>
+                </Button>
               </CyFormItem>
               <CyFormItem
                 labelWidth={111}
@@ -96,20 +89,16 @@ const BasicData: React.FC = () => {
               </CyFormItem>
             </Form>
             <div className={styles.basicPageButtonContent}>
-              {buttonJurisdictionArray?.includes('export-metarea-file') && (
-                <ExportAuthorityButton
-                  exportUrl="/Meteorological/Export"
-                  fileName="当前气象区文件"
-                  labelName="导出文件"
-                  type="get"
-                />
-              )}
-              {buttonJurisdictionArray?.includes('upload-metarea-file') && (
-                <Button type="primary" onClick={() => uploadAreaFile()}>
-                  <UploadOutlined />
-                  开始上传
-                </Button>
-              )}
+              <ExportAuthorityButton
+                exportUrl="/Meteorological/Export"
+                fileName="当前气象区文件"
+                labelName="导出文件"
+                type="get"
+              />
+              <Button type="primary" onClick={() => uploadAreaFile()}>
+                <UploadOutlined />
+                开始上传
+              </Button>
             </div>
           </div>
         </div>
@@ -127,15 +116,11 @@ const BasicData: React.FC = () => {
             </CyFormItem>
           </Form>
           <div className={styles.basicPageButtonContent}>
-            {buttonJurisdictionArray?.includes('export-power-file') && (
-              <ExportAuthorityButton exportUrl="/Manage/ExportAuthority" />
-            )}
-            {buttonJurisdictionArray?.includes('upload-power-file') && (
-              <Button type="primary" className="mr7" onClick={() => uploadJurisdictionFile()}>
-                <UploadOutlined />
-                开始上传
-              </Button>
-            )}
+            <ExportAuthorityButton exportUrl="/Manage/ExportAuthority" />
+            <Button type="primary" className="mr7" onClick={() => uploadJurisdictionFile()}>
+              <UploadOutlined />
+              开始上传
+            </Button>
           </div>
         </div>
       </div>

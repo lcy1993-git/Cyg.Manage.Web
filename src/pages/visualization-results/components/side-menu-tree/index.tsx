@@ -523,10 +523,17 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    store.setDateRange({
-      startDate: dateRange[0] ? moment(dateRange[0]).format('YYYY/MM/DD') : dateRange?.[0],
-      endDate: dateRange[1] ? moment(dateRange[1]).format('YYYY/MM/DD') : dateRange?.[1],
-    })
+    if(Array.isArray(dateRange)) {
+      store.setDateRange({
+        startDate: dateRange[0] ? moment(dateRange[0]).format('YYYY/MM/DD') : dateRange?.[0],
+        endDate: dateRange[1] ? moment(dateRange[1]).format('YYYY/MM/DD') : dateRange?.[1],
+      })
+    }else{
+      store.setDateRange({
+        startDate: undefined,
+        endDate: undefined
+      })
+    }
   }, [dateRange])
 
   const renderExtraFooter = () => {

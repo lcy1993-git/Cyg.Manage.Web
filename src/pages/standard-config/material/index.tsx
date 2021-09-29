@@ -19,6 +19,7 @@ import LineProperty from './component/line-property';
 import CableMapping from './component/cable-mapping';
 import SaveImportMaterial from './component/import-form';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -329,17 +330,7 @@ const Material: React.FC<libParams> = (props) => {
         )}
 
         {buttonJurisdictionArray?.includes('material-delete') && (
-          <Popconfirm
-            title="您确定要删除该条数据?"
-            onConfirm={sureDeleteData}
-            okText="确认"
-            cancelText="取消"
-          >
-            <Button className="mr7">
-              <DeleteOutlined />
-              删除
-            </Button>
-          </Popconfirm>
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
         {buttonJurisdictionArray?.includes('material-import') && (

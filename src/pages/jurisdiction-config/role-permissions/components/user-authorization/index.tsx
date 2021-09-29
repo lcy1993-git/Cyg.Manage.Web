@@ -8,7 +8,7 @@ import {
   batchAddAuthorization,
   batchRemoveAuthorization,
 } from '@/services/jurisdiction-config/role-permissions';
-import { Popconfirm } from 'antd';
+import ModalConfirm from '@/components/modal-confirm';
 
 interface ExtractParams {
   templateId: string;
@@ -105,21 +105,44 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
     </TableSearch>
   );
 
+  const batchRemoveAuthorizationEvent = async () => {
+    if (selectRows.length === 0) {
+      message.error('请至少选中一条数据');
+      return;
+    }
+
+    if (selectRows.find((item) => item.isAuthorized === true)) {
+      const batchObjectIds = selectRows.map((item) => item.id);
+      const { templateId } = extractParams;
+
+      await batchRemoveAuthorization({
+        templateId,
+        authorizeType: 2,
+        objectIds: batchObjectIds,
+      });
+      message.success('授权移除成功');
+      reset();
+      refresh();
+      onChange?.();
+    } else {
+      message.error('选中的用户尚未授权');
+      return;
+    }
+  };
+
   const tableRightSlot = (
     <>
       <Button className="mr7" type="primary" onClick={() => batchAddAuthorizationEvent()}>
         <PlusOutlined />
         授权
       </Button>
-      <Popconfirm
-        placement="top"
-        title={'确认进行批量移除授权吗'}
-        onConfirm={() => batchRemoveAuthorizationEvent()}
-        okText="确认"
-        cancelText="取消"
-      >
-        <Button className="mr7">移除</Button>
-      </Popconfirm>
+
+      <ModalConfirm
+        changeEvent={batchRemoveAuthorizationEvent}
+        selectData={selectRows}
+        title="移除"
+        content="请选择要移除授权的数据"
+      />
     </>
   );
 
@@ -148,31 +171,6 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
     reset();
     refresh();
     onChange?.();
-  };
-
-  const batchRemoveAuthorizationEvent = async () => {
-    if (selectRows.length === 0) {
-      message.error('请至少选中一条数据');
-      return;
-    }
-
-    if (selectRows.find((item) => item.isAuthorized === true)) {
-      const batchObjectIds = selectRows.map((item) => item.id);
-      const { templateId } = extractParams;
-
-      await batchRemoveAuthorization({
-        templateId,
-        authorizeType: 2,
-        objectIds: batchObjectIds,
-      });
-      message.success('授权移除成功');
-      reset();
-      refresh();
-      onChange?.();
-    } else {
-      message.error('选中的用户尚未授权');
-      return;
-    }
   };
 
   return (

@@ -8,6 +8,7 @@ import styles from './index.less';
 import { history } from 'umi';
 import ScrollView from 'react-custom-scrollbars';
 import { useLayoutStore } from '@/layouts/context';
+import { Spin } from 'antd';
 
 interface ToDoProps {
   componentProps?: string[];
@@ -27,7 +28,7 @@ const ToDo: React.FC<ToDoProps> = (props) => {
 
   const { setAllProjectSearchType } = useLayoutStore();
 
-  const { data: toDoStatisticsInfo } = useRequest(
+  const { data: toDoStatisticsInfo, loading } = useRequest(
     () =>
       getProjectManageData({
         areaCode: currentAreaInfo.areaId,
@@ -94,11 +95,15 @@ const ToDo: React.FC<ToDoProps> = (props) => {
   };
 
   return (
+
     <ChartBox title="项目管理">
-      <div className={styles.projectManageContent}>
-        <ScrollView renderThumbVertical={scrollBarRenderView}>{componentShowElement}</ScrollView>
-      </div>
+      <Spin spinning={loading} delay={300}>
+        <div className={styles.projectManageContent}>
+          <ScrollView renderThumbVertical={scrollBarRenderView}>{componentShowElement}</ScrollView>
+        </div>
+      </Spin>
     </ChartBox>
+
   );
 };
 

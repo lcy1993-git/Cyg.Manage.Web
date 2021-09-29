@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import {Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space} from 'antd';
+import { Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
@@ -14,18 +14,18 @@ import {
   createQuotaLibrary,
   CreateQuotaLibrary,
   deleteQuotaLibrary,
-  setQuotaLibraryStatus
+  setQuotaLibraryStatus,
 } from '@/services/technology-economic';
 
 import styles from './index.less';
-import moment from "moment";
+import moment from 'moment';
 
 const { Search } = Input;
 
 type DataSource = {
   id: string;
   [key: string]: string;
-}
+};
 
 const columns = [
   {
@@ -44,40 +44,40 @@ const columns = [
     dataIndex: 'quotaScopeText',
     key: 'quotaScopeText',
     title: '定额类别',
-    width: 160
+    width: 160,
   },
   {
     dataIndex: 'publishDate',
     key: 'publishDate',
     title: '发布时间',
     width: 130,
-  render: (text: any) => {
-  return moment(text).format('YYYY/MM/DD')
-}
+    render: (text: any) => {
+      return moment(text).format('YYYY/MM/DD');
+    },
   },
   {
     dataIndex: 'publishOrg',
     key: 'publishOrg',
     title: '发布机构',
-    width: 150
+    width: 150,
   },
   {
     dataIndex: 'year',
     key: 'year',
     title: '价格年度',
-    width: 100
+    width: 100,
   },
   {
     dataIndex: 'industryTypeText',
     key: 'industryTypeText',
     title: '行业类别',
-    width: 150
+    width: 150,
   },
   {
     dataIndex: 'majorType',
     key: 'majorType',
     title: '适用专业',
-    width: 150
+    width: 150,
   },
   {
     dataIndex: 'enabled',
@@ -93,18 +93,17 @@ const columns = [
           }}
         />
       );
-    }
+    },
   },
   {
     dataIndex: 'remark',
     index: 'remark',
     title: '备注',
-    width: 220
+    width: 220,
   },
 ];
 
 const QuotaLibrary: React.FC = () => {
-
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
@@ -155,27 +154,29 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const sureAddAuthorization = () => {
-    addForm.validateFields().then((values: CreateQuotaLibrary) => {
-      setSpinning(true)
-      const data = {}
-      for (let key:string in values){
-        if (values[key] !== undefined){
-          data[key] = values[key]
+    setSpinning(true);
+    addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
+      const data = {};
+      for (let key: string in values) {
+        if (values[key] !== undefined) {
+          data[key] = values[key];
         }
       }
-      createQuotaLibrary(data).then(()=>{
-        refresh();
-        setAddFormVisible(false);
-        addForm.resetFields();
-        setSpinning(false)
-      }).catch(()=>{
-        setSpinning(false)
-      });
-
+      createQuotaLibrary(data)
+        .then(() => {
+          refresh();
+          setAddFormVisible(false);
+          addForm.resetFields();
+          setSpinning(false);
+        })
+        .catch(() => {
+          message.error('上传失败');
+          setSpinning(false);
+        });
     });
-    setTimeout(()=>{
-      setSpinning(false);
-    },10000)
+    // setTimeout(()=>{
+    //   setSpinning(false);
+    // },10000)
   };
 
   const sureDeleteData = async () => {
@@ -195,7 +196,7 @@ const QuotaLibrary: React.FC = () => {
       return;
     }
     const id = tableSelectRows[0].id;
-    history.push(`/technology-economic/quota-infomation?id=${id}`)
+    history.push(`/technology-economic/quota-infomation?id=${id}`);
   };
 
   const tableElement = () => {
@@ -229,7 +230,6 @@ const QuotaLibrary: React.FC = () => {
             查看详情
           </Button>
         }
-
       </div>
     );
   };
@@ -245,11 +245,11 @@ const QuotaLibrary: React.FC = () => {
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
-        columns={columns as (ColumnsType<object>)}
+        columns={columns as ColumnsType<object>}
         url="/QuotaLibrary/QueryQuotaLibraryPager"
         tableTitle="定额库管理"
         getSelectData={tableSelectEvent}
-        requestSource='tecEco'
+        requestSource="tecEco"
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
@@ -269,20 +269,19 @@ const QuotaLibrary: React.FC = () => {
         destroyOnClose
       >
         <Spin spinning={spinning}>
-
-        <Form form={addForm} preserve={false}>
-          <DictionaryForm type='add' />
-        </Form>
-          <div style={{display:'flex',justifyContent:'right'}}>
-           <Space>
-             <Button onClick={() => setAddFormVisible(false)}>取消</Button>
-             <Button onClick={sureAddAuthorization} type={'primary'}>确定</Button>
-           </Space>
+          <Form form={addForm} preserve={false}>
+            <DictionaryForm type="add" />
+          </Form>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
+            <Space>
+              <Button onClick={() => setAddFormVisible(false)}>取消</Button>
+              <Button onClick={sureAddAuthorization} type={'primary'}>
+                确定
+              </Button>
+            </Space>
           </div>
         </Spin>
-
       </Modal>
-
     </PageCommonWrap>
   );
 };

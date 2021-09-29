@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd';
+import {Button, Modal, Form, Switch, message, Popconfirm, Spin, Space, Input} from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import {
-  PlusOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
 
 import GeneralTable from '@/components/general-table';
@@ -23,6 +21,8 @@ import { useEffect } from 'react';
 import moment from 'moment';
 import { getEnums } from '../utils';
 import ImageIcon from '@/components/image-icon';
+import TableSearch from "@/components/table-search";
+const { Search } = Input;
 interface ResponseData {
   items?: {
     id?: string;
@@ -36,55 +36,7 @@ type DataSource = {
 };
 
 const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
-const columns = [
-  {
-    dataIndex: 'no',
-    key: 'no',
-    title: '编号',
-    width: 300,
-  },
-  {
-    dataIndex: 'engineeringTemplateType',
-    key: 'engineeringTemplateType',
-    title: '模板类型',
-    render: (text: string, record: any) => {
-      return getTypeName(record.engineeringTemplateType);
-    },
-  },
-  {
-    dataIndex: 'publishDate',
-    key: 'publishDate',
-    title: '发布时间',
-    render: (text: string, record: any) => {
-      return moment(record.expiryTime).format('YYYY-MM-DD HH:mm ');
-    },
-  },
-  {
-    dataIndex: 'version',
-    key: 'version',
-    title: '版本',
-  },
-  {
-    dataIndex: 'remark',
-    key: 'remark',
-    title: '备注',
-  },
-  {
-    dataIndex: 'enabled',
-    key: 'enabled',
-    title: '状态',
-    render(value: boolean, record: DataSource) {
-      return (
-        <Switch
-          defaultChecked={value}
-          onClick={(checked) => {
-            setPricingTemplate(record.id, checked);
-          }}
-        />
-      );
-    },
-  },
-];
+
 export const getTypeName = (no: number) => {
   let str = '';
   engineeringTemplateTypeList &&
@@ -102,6 +54,7 @@ const PricingTemplates: React.FC = () => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
   const [spinning, setSpinning] = useState<boolean>(false);
+  const [update, setUpdate] = useState<boolean>(true);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [selectList, setSelectList] = useState<number[]>([]);
   const [addForm] = Form.useForm();
@@ -121,6 +74,56 @@ const PricingTemplates: React.FC = () => {
     }
     setSelectList(list);
   };
+  const columns = [
+    {
+      dataIndex: 'no',
+      key: 'no',
+      title: '编号',
+      width: 300,
+    },
+    {
+      dataIndex: 'engineeringTemplateType',
+      key: 'engineeringTemplateType',
+      title: '模板类型',
+      render: (text: string, record: any) => {
+        return getTypeName(record.engineeringTemplateType);
+      },
+    },
+    {
+      dataIndex: 'publishDate',
+      key: 'publishDate',
+      title: '发布时间',
+      render: (text: string, record: any) => {
+        return moment(record.publishDate).format('YYYY-MM-DD HH:mm ');
+      },
+    },
+    {
+      dataIndex: 'version',
+      key: 'version',
+      title: '版本',
+    },
+    {
+      dataIndex: 'remark',
+      key: 'remark',
+      title: '备注',
+    },
+    {
+      dataIndex: 'enabled',
+      key: 'enabled',
+      title: '状态',
+      render(value: boolean, record: DataSource) {
+        return (
+          <Switch
+            defaultChecked={value}
+            onClick={(checked) => {
+              setPricingTemplate(record.id, checked);
+              tableRef.current.reset();
+            }}
+          />
+        );
+      },
+    },
+  ];
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
@@ -136,17 +139,12 @@ const PricingTemplates: React.FC = () => {
   };
   // 新增确认按钮
   const sureAddAuthorization = () => {
-    addForm.validateFields().then((values) => {
-      setSpinning(true);
-      addPricingTemplate(values)
-        .then(() => {
-          refresh();
-          setAddFormVisible(false);
-          addForm.resetFields();
-        })
-        .finally(() => {
-          setSpinning(false);
-        });
+    addForm.validateFields().then(async (values) => {
+      await addPricingTemplate(values);
+      setSpinning(false)
+      refresh();
+      setAddFormVisible(false);
+      addForm.resetFields();
     });
   };
   // 编辑确认按钮
@@ -162,18 +160,17 @@ const PricingTemplates: React.FC = () => {
       let value = values;
       value.id = id;
       // TODO 编辑接口
-      editPricingTemplate(value)
-        .then(() => {
-          refresh();
-          setEditFormVisible(false);
-          editForm.resetFields();
-          setTableSelectRows([]);
-          tableRef.current.reset();
-        })
-        .finally(() => {
-          setSpinning(false);
-        });
+      toUpdate(value);
     });
+  };
+  const toUpdate = async (value: any) => {
+    await editPricingTemplate(value);
+    setSpinning(false);
+    refresh();
+    setEditFormVisible(false);
+    editForm.resetFields();
+    setTableSelectRows([]);
+    getSelectList();
   };
   // 删除
   const sureDeleteData = async () => {
@@ -186,6 +183,7 @@ const PricingTemplates: React.FC = () => {
     refresh();
     setTableSelectRows([]);
     message.success('删除成功');
+    getSelectList();
   };
 
   // 编辑按钮
@@ -231,6 +229,12 @@ const PricingTemplates: React.FC = () => {
     const id = tableSelectRows[0].id;
     history.push(`/technology-economic/total-table?id=${id}`);
   };
+  useEffect(() => {
+    setUpdate(false);
+    setTimeout(() => {
+      setUpdate(true);
+    }, 0);
+  }, [spinning]);
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -300,26 +304,41 @@ const PricingTemplates: React.FC = () => {
   const tableSelectEvent = (data: DataSource[] | Object) => {
     setTableSelectRows(data);
   };
-
+  const searchComponent = () => {
+    return (
+      <TableSearch label="关键词" width="203px">
+        <Search
+          value={searchKeyWord}
+          onChange={(e) => setSearchKeyWord(e.target.value)}
+          onSearch={() => refresh()}
+          enterButton
+          placeholder="键名"
+        />
+      </TableSearch>
+    );
+  };
   return (
     <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonRightContentSlot={tableElement}
-        needCommonButton={true}
-        columns={columns as ColumnsType<DataSource | object>}
-        url="/EngineeringTemplate/QueryEngineeringTemplatePager"
-        tableTitle="计价模板管理"
-        getSelectData={tableSelectEvent}
-        type="radio"
-        requestSource="tecEco1"
-        extractParams={{
-          keyWord: searchKeyWord,
-        }}
-      />
+      {update && (
+        <GeneralTable
+          ref={tableRef}
+          buttonRightContentSlot={tableElement}
+          buttonLeftContentSlot={searchComponent}
+          needCommonButton={true}
+          columns={columns as ColumnsType<DataSource | object>}
+          url="/EngineeringTemplate/QueryEngineeringTemplatePager"
+          tableTitle="计价模板管理"
+          getSelectData={tableSelectEvent}
+          type="radio"
+          requestSource="tecEco1"
+          extractParams={{
+            keyWord: searchKeyWord,
+          }}
+        />
+      )}
       <Modal
         maskClosable={false}
-        title="创建-计价模板"
+        title="添加-计价模板"
         width="880px"
         visible={addFormVisible}
         okText="确认"

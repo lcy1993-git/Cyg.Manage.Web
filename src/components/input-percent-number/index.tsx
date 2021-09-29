@@ -28,7 +28,7 @@ interface InputPercentNumberProps {
 const InputPercentNumber: React.FC<InputPercentNumberProps> = ({
   preSlot,
   nextSlot,
-  width = 58,
+  width = 66,
   max = 1000,
   min = 100,
   step = 100,
@@ -66,7 +66,7 @@ const InputPercentNumber: React.FC<InputPercentNumberProps> = ({
             )
         }
       </Button>
-      <Input style={{ width }} value={value + unit} />
+      <Input style={{ width }} value={value + unit} className={styles.input}/>
       <Button className={styles.nextSlot} onClick={increaseHandleClick}>
         {
           nextSlot ?

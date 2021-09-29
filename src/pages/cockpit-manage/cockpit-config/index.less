@@ -3,7 +3,17 @@
   width: 100%;
   height: calc(100% - 5px);
   background-color: @bg-primary-color;
-
+  :global {
+    .ant-spin-container,
+    // .ant-spin-nested-loading,
+    .ant-spin-nested-loading
+    {
+      height: 100%;
+    }
+    .ant-spin-blur {
+      opacity: 0;
+    }
+  }
   .cockpitConfigPageContent {
     flex: 1;
     min-height: 100%;

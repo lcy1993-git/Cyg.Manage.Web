@@ -1,5 +1,16 @@
 .indexWrap {
   padding: 0 !important;
+  :global {
+    .ant-spin-container,
+    // .ant-spin-nested-loading,
+    .ant-spin-nested-loading
+    {
+      height: 100%;
+    }
+    .ant-spin-blur {
+      opacity: 0;
+    }
+  }
   .indexPage {
     display: flex;
     width: 100%;

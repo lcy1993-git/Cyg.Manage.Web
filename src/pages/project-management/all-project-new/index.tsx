@@ -46,6 +46,7 @@ import AddFavoriteModal from './components/add-favorite-modal';
 import FavoriteList from './components/favorite-list';
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list';
 import { useMemo } from 'react';
+import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -144,7 +145,7 @@ const AllProject: React.FC = () => {
     setAllProjectSearchType,
     allProjectSearchPerson,
     allProjectSearchProjectId,
-    allProjectSearchType
+    allProjectSearchType,
   } = useLayoutStore();
 
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
@@ -278,7 +279,7 @@ const AllProject: React.FC = () => {
       const projectInfo = await getProjectInfo(thisProjectId);
       setDataSourceType(Number(projectInfo.dataSourceType));
       const { allots = [] } = projectInfo ?? {};
-      if (allots.length > 0) {
+      if (allots?.length > 0) {
         const latestAllot = allots[allots?.length - 1];
         const { allotType, allotCompanyGroup } = latestAllot;
         if (allotType) {
@@ -527,6 +528,39 @@ const AllProject: React.FC = () => {
     </Menu>
   );
 
+  const removeFavEvent = async () => {
+    await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds });
+    message.success('已移出当前收藏夹');
+    searchByParams({
+      ...searchParams,
+      engineerFavoritesId: selectedFavId,
+      keyWord,
+    });
+  };
+
+  const removeConfirm = () => {
+    if (!sideVisible) {
+      message.warning('该功能仅能在收藏夹项目列表中使用');
+      return;
+    }
+    if (!selectedFavId) {
+      message.warning('您还未选择收藏夹');
+      return;
+    }
+    if (engineerIds && engineerIds.length === 0) {
+      message.warning('请选择要移出当前收藏夹的工程');
+      return;
+    }
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '确定要移除所选工程',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: removeFavEvent,
+    });
+  };
+
   //收藏夹操作
   const favoriteMenu = (
     <Menu>
@@ -534,17 +568,7 @@ const AllProject: React.FC = () => {
         <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('remove-favorite-project') && (
-        <Menu.Item>
-          <Popconfirm
-            placement="top"
-            title="确定要移除所选工程?"
-            onConfirm={() => removeFavEvent()}
-            okText="确认"
-            cancelText="取消"
-          >
-            移出当前收藏夹
-          </Popconfirm>
-        </Menu.Item>
+        <Menu.Item onClick={() => removeConfirm()}>移出当前收藏夹</Menu.Item>
       )}
     </Menu>
   );
@@ -555,28 +579,6 @@ const AllProject: React.FC = () => {
       return;
     }
     message.warning('您还未选择任何工程');
-  };
-
-  const removeFavEvent = async () => {
-    if (sideVisible) {
-      if (selectedFavId) {
-        if (engineerIds && engineerIds.length > 0) {
-          await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds });
-          message.success('已移出当前收藏夹');
-          searchByParams({
-            ...searchParams,
-            engineerFavoritesId: selectedFavId,
-            keyWord,
-          });
-          return;
-        }
-        message.warning('请选择要移出当前收藏夹的工程');
-        return;
-      }
-      message.warning('您还未选择收藏夹');
-      return;
-    }
-    message.warning('该功能仅能在收藏夹项目列表中使用');
   };
 
   const postProjectMenu = (
@@ -644,7 +646,7 @@ const AllProject: React.FC = () => {
         designUser: String(allProjectSearchPerson),
       });
     }
-  }, [allProjectSearchPerson, allProjectSearchProjectId,allProjectSearchType]);
+  }, [allProjectSearchPerson, allProjectSearchProjectId, allProjectSearchType]);
 
   const configChangeEvent = (config: any) => {
     setChooseColumns(config);
