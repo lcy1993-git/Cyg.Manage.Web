@@ -304,7 +304,6 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
             <div className={styles.cyGeneralTableTitleSlot}>{titleSlot?.()}</div>
             {!buttonLeftContentSlot && (
               <div className={styles.cyGeneralTableButtonContent}>
-                <div className={styles.cyGeneralTableButtonLeftContent}><div style={{height:'30px'}}>  </div></div>
                 <div className={styles.cyGeneralTableButtonRightContent}>
                   {buttonRightContentSlot?.()}
                 </div>
