@@ -41,7 +41,7 @@ const HasMapModal: React.FC = () => {
           编辑映射
         </Button>
 
-        <ModalConfirm changeEvent={deleteMapEvent} selectData={tableSelectRows} />
+        <ModalConfirm changeEvent={deleteMapEvent} selectData={tableSelectRows} title="删除映射" />
       </div>
     );
   };
