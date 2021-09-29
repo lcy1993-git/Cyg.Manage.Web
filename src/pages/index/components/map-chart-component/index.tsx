@@ -5,6 +5,7 @@ import {
   getMapStatisticsData,
   MapStatisticsData,
 } from '@/services/index';
+import { history } from 'umi'
 import { useLocalStorageState, useMount, useMouse, useRequest, useSize } from 'ahooks';
 import borderStylesHTML from '../../utils/borderStylesHTML';
 import styles from './index.less';
@@ -43,6 +44,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     //@ts-ignore
     window.setSelectCity = (city: string) => {
       localStorage.setItem('selectCity', city);
+      history.push('/visualization-results/result-page')
     };
     return () => {
       //@ts-ignore
@@ -117,9 +119,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                             <span style="color: #2AFE97">项目数量</span>: <span style="color: #fff">${
                               getMapStatisticData[nameIndex!].projectQuantity
                             }</span>
-                            <div style="color: #2AFE97">可视化成果: <a onclick=setSelectCity("${
+                            <div style="color: #2AFE97">可视化成果: <span onclick=setSelectCity("${
                               cityCodeObject[name] ?? name
-                            }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</a></div>
+                            }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</span></div>
                             
                         `
             );
@@ -376,6 +378,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const handlerOtherClick = () => {
     const id = mapStatisticData.find((item) => item.areaCode.includes('_other'))?.areaCode ?? '';
     localStorage.setItem('selectCity', id);
+    history.push('/visualization-results/result-page')
   };
 
   return (
@@ -407,11 +410,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     <div style={{ textAlign: 'right' }}>{ohterProjectTotalNumber}个</div>
                     <div>
                       {ohterProjectTotalNumber > 0 ? (
-                        <a href="/visualization-results/result-page">
                           <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
                             跳转可视化
                           </span>
-                        </a>
                       ) : (
                         <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
                           跳转可视化
