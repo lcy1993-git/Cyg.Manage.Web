@@ -601,7 +601,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           destroyOnClose={true}
           className={styles.mediaModal}
         >
-          <MediaModal content={mediaData?.content ?? []} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex} />
+          <MediaModal content={mediaListData} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex} />
         </Modal>
       </Modal>
       {
