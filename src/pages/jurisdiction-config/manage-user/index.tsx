@@ -254,12 +254,12 @@ const ManageUser: React.FC = () => {
   const leftSearch = () => {
     return (
       <div className={styles.search}>
-        <TableSearch label="关键词" width="280px">
+        <TableSearch width="280px">
           <Search
             value={searchKeyWord}
             onSearch={() => search()}
             onChange={(e) => setSearchKeyWord(e.target.value)}
-            placeholder="输入用户名/昵称/姓名搜索"
+            placeholder="输入用户名/姓名搜索"
             enterButton
           />
         </TableSearch>
