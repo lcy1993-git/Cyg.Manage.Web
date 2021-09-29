@@ -29,10 +29,7 @@ const pageType = [
 const ManualUpload: React.FC<Props> = () => {
   const [current, setCurrent] = useState<number>(0)
   const [file, setFile] = useState([])
-  const [isSpinning, setSpinning] = useState(true);
-  const onTextSuccess = (text: string) => {
-    setSpinning(false)
-  }
+
   useMount(()=>{
     let url = window.location.pathname;
     let str = url.substring(url.lastIndexOf('/') + 1, url.length);
@@ -63,16 +60,15 @@ const ManualUpload: React.FC<Props> = () => {
     xhr.send()
   }
   const getFile = async ()=>{
-    console.log(window.location.search.split('token='))
     const str = window.location.search.split('token=')[1]
     if (str === undefined){
       message.warn('缺少请求token')
-      setSpinning(false)
       return
     }
     const newFile = await getLatestInstructions(current)
+    console.log(!newFile)
     if (!newFile) {
-      setSpinning(false)
+      message.warn('没有找到可用的说明书!')
       return
     }
     downFile(newFile.fileId,str)
@@ -82,21 +78,15 @@ const ManualUpload: React.FC<Props> = () => {
     getFile()
   },[current])
   return (
-    // <Spin tip="加载中... " spinning={isSpinning}>
     <div>
       {
-        file.length === 0
-          ?
-          <div style={{margin:'100px auto'}}>
-            <Empty description={'这里什么也没有哦...'}/>
-          </div>
-          :
-          <ManualPreview file={file} onSuccess={onTextSuccess} height={'96vh'}/>
-
+        file.length !== 0 &&
+          <ManualPreview file={file}  height={'96vh'}/>
       }
+       {/*<div style={{margin:'100px auto',display :empty ? 'block' : 'none'}}>*/}
+       {/*   <Empty description={'请先上传说明书!'}/>*/}
+       {/* </div>*/}
     </div>
-
-    // </Spin>
   );
 };
 
