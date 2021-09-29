@@ -35,9 +35,6 @@ let mapStatus = {
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const { setCurrentAreaInfo, currentAreaInfo, isConfig } = props;
-  const [activeCityCode, setActiveCityCode] = useState<string>();
-
-  const [activeAreaCode, setActiveAreaCide] = useState<string>();
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
 
@@ -194,16 +191,28 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   };
 
   const firstMapInitChartEvent = async () => {
-    const statisticData = await getStatisticData({ areaCode: '', areaType: '1' });
-    if (statisticData && isArray(statisticData) && statisticData.length === 1) {
+    // 初试化的时候做判断
+    if (currentAreaInfo.areaLevel === '1') {
+      const statisticData = await getStatisticData({ areaCode: '', areaType: '1' });
+      if (statisticData && isArray(statisticData) && statisticData.length === 1) {
+        const provinceStatisticData = await getStatisticData({
+          areaCode: statisticData[0].areaCode,
+          areaType: '2',
+        });
+        initChart(statisticData[0].areaCode, provinceStatisticData, '2');
+        setCurrentAreaInfo({
+          areaId: statisticData[0].areaCode,
+          areaLevel: '2',
+        });
+      } else {
+        initChart('100000', statisticData, '1');
+      }
+    }else {
       const provinceStatisticData = await getStatisticData({
-        areaCode: statisticData[0].areaCode,
-        areaType: '2',
+        areaCode: currentAreaInfo.areaId,
+        areaType: currentAreaInfo.areaLevel,
       });
-      initChart(statisticData[0].areaCode, provinceStatisticData, '2');
-      setActiveCityCode(statisticData[0].areaCode);
-    } else {
-      initChart('100000', statisticData, '1');
+      initChart(currentAreaInfo.areaId!, provinceStatisticData, currentAreaInfo.areaLevel!);
     }
   };
 
@@ -238,12 +247,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             areaType: String(parseFloat(currentAreaLevel) + 1),
           });
           initChart(cityCodeObject[name], statisticData, String(parseFloat(currentAreaLevel) + 1));
-          if (parseFloat(currentAreaLevel!) + 1 === 2) {
-            setActiveCityCode(cityCodeObject[name]);
-          }
-          if (parseFloat(currentAreaLevel!) + 1 === 3) {
-            setActiveAreaCide(cityCodeObject[name]);
-          }
           setCurrentAreaInfo({
             areaId: cityCodeObject[name],
             areaLevel: String(parseFloat(currentAreaLevel!) + 1),
@@ -271,9 +274,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     const statisticData = await getStatisticData({ areaCode: '', areaType: '1' });
     initChart('100000', statisticData, '1');
 
-    setActiveCityCode('');
-    setActiveAreaCide('');
-
     setCurrentAreaInfo({
       areaId: '',
       areaLevel: '1',
@@ -281,27 +281,33 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   };
 
   const cityClickEvent = async () => {
-    if (!activeCityCode) {
+    if (!currentAreaInfo.areaId) {
       return;
     }
-    const statisticData = await getStatisticData({ areaCode: activeCityCode, areaType: '2' });
-    initChart(activeCityCode, statisticData, '2');
-    setActiveAreaCide('');
+    const statisticData = await getStatisticData({
+      areaCode: currentAreaInfo.areaId,
+      areaType: '2',
+    });
+    initChart(currentAreaInfo.areaId, statisticData, '2');
+
     setCurrentAreaInfo({
-      areaId: activeCityCode,
+      areaId: currentAreaInfo.areaId,
       areaLevel: '2',
     });
   };
 
   const areaClickEvent = async () => {
-    if (!activeAreaCode) {
+    if (!currentAreaInfo.areaId) {
       return;
     }
-    const statisticData = await getStatisticData({ areaCode: activeAreaCode, areaType: '2' });
-    initChart(activeAreaCode, statisticData, '2');
+    const statisticData = await getStatisticData({
+      areaCode: currentAreaInfo.areaId,
+      areaType: '2',
+    });
+    initChart(currentAreaInfo.areaId, statisticData, '2');
 
     setCurrentAreaInfo({
-      areaId: activeAreaCode,
+      areaId: currentAreaInfo.areaId,
       areaLevel: '3',
     });
   };
@@ -425,20 +431,32 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           <span className={`${styles.areaSpan} ${styles.hasChoose}`} onClick={provinceClickEvent}>
             省
           </span>
-          <span className={`${styles.splineIcon} ${activeCityCode ? styles.hasChoose : ''}`}>
+          <span
+            className={`${styles.splineIcon} ${
+              currentAreaInfo.areaLevel === '2' ? styles.hasChoose : ''
+            }`}
+          >
             &gt;
           </span>
           <span
-            className={`${styles.areaSpan} ${activeCityCode ? styles.hasChoose : ''}`}
+            className={`${styles.areaSpan} ${
+              currentAreaInfo.areaLevel === '2' ? styles.hasChoose : ''
+            }`}
             onClick={cityClickEvent}
           >
             市
           </span>
-          <span className={`${styles.splineIcon} ${activeAreaCode ? styles.hasChoose : ''}`}>
+          <span
+            className={`${styles.splineIcon} ${
+              currentAreaInfo.areaLevel === '3' ? styles.hasChoose : ''
+            }`}
+          >
             &gt;
           </span>
           <span
-            className={`${styles.areaSpan} ${activeAreaCode ? styles.hasChoose : ''}`}
+            className={`${styles.areaSpan} ${
+              currentAreaInfo.areaLevel === '3' ? styles.hasChoose : ''
+            }`}
             onClick={areaClickEvent}
           >
             县
