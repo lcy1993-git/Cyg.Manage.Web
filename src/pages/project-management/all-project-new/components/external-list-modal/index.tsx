@@ -31,6 +31,7 @@ import { useEffect } from 'react';
 import { removeAllotUser } from '@/services/project-management/all-project';
 import SelectAddListForm from '../select-add-list-form';
 import ViewAuditFile from './components/viewFile';
+import { isArray } from 'lodash';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -155,6 +156,10 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const reviewCheckEvent = async (id: string) => {
     const res = await getReviewFileUrl({ projectId: projectId, userId: id });
 
+    if (res && isArray(res) && res?.length === 0) {
+      message.info('该评审未产生评审成果');
+      return;
+    }
     const url = res[0]?.extend.file.url;
     const extension = res[0]?.extend.file.extension;
     const name = res[0]?.name;
