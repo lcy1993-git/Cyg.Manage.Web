@@ -16,13 +16,14 @@ import { useRequest } from 'ahooks';
 import AddComponentDetail from './add-form';
 import EditComponentDetail from './edit-form';
 import ModalConfirm from '@/components/modal-confirm';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 interface ModuleDetailParams {
   libId: string;
   componentId: string[];
 }
 
 const { Search } = Input;
-
+const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
   const { libId, componentId } = props;
 
@@ -46,7 +47,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
   const searchComponent = () => {
     return (
       <div>
-        <TableSearch label="组件明细" width="278px">
+        <TableSearch width="278px">
           <Search
             allowClear
             value={searchKeyWord}
@@ -207,15 +208,21 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRightSlot = (
     <>
-      <Button type="primary" className="mr7" onClick={() => addEvent()}>
-        <PlusOutlined />
-        添加
-      </Button>
-      <Button className="mr7" onClick={() => editEvent()}>
-        <EditOutlined />
-        编辑
-      </Button>
-      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      {buttonJurisdictionArray?.includes('add-component-detail') && (
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('edit-component-detail') && (
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('delete-component-detail') && (
+        <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      )}
     </>
   );
 

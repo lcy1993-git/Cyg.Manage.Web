@@ -304,7 +304,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     }
     const statisticData = await getStatisticData({
       areaCode: currentAreaInfo.areaId,
-      areaType: '2',
+      areaType: '3',
     });
     initChart(currentAreaInfo.areaId, statisticData, '2');
 
@@ -434,14 +434,18 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           </span>
           <span
             className={`${styles.splineIcon} ${
-              currentAreaInfo.areaLevel === '2' ? styles.hasChoose : ''
+              currentAreaInfo.areaLevel === '2' || currentAreaInfo.areaLevel === '3'
+                ? styles.hasChoose
+                : ''
             }`}
           >
             &gt;
           </span>
           <span
             className={`${styles.areaSpan} ${
-              currentAreaInfo.areaLevel === '2' ? styles.hasChoose : ''
+              currentAreaInfo.areaLevel === '2' || currentAreaInfo.areaLevel === '3'
+                ? styles.hasChoose
+                : ''
             }`}
             onClick={cityClickEvent}
           >

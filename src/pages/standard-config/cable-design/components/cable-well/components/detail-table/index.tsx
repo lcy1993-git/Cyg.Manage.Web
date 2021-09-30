@@ -16,6 +16,7 @@ import { useRequest } from 'ahooks';
 import AddCableWellDetail from './add-form';
 import EditCableWellDetail from './edit-form';
 import ModalConfirm from '@/components/modal-confirm';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 interface ModuleDetailParams {
   libId: string;
   cableWellId: string[];
@@ -34,7 +35,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const { data, run } = useRequest(getCableWellDetailItem, {
     manual: true,
   });
@@ -206,15 +207,21 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRightSlot = (
     <>
-      <Button type="primary" className="mr7" onClick={() => addEvent()}>
-        <PlusOutlined />
-        添加
-      </Button>
-      <Button className="mr7" onClick={() => editEvent()}>
-        <EditOutlined />
-        编辑
-      </Button>
-      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      {buttonJurisdictionArray?.includes('add-cableWell-detail') && (
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('edit-cableWell-detail') && (
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('delete-cableWell-detail') && (
+        <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      )}
     </>
   );
 

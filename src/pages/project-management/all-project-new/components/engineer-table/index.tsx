@@ -550,34 +550,45 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
       render: (record: any) => {
         const status = record.exportCoordinate;
-        return record.exportCoordinate === true ? (
-          <span
-            style={{ cursor: 'pointer' }}
-            className="colorRed"
-            onClick={() => {
-              modifyExportPowerState({
-                isEnable: !status,
-                projectIds: [record.id],
-              });
-              finishEvent?.();
-            }}
-          >
-            启用
-          </span>
-        ) : (
-          <span
-            style={{ cursor: 'pointer' }}
-            className="colorPrimary"
-            onClick={() => {
-              modifyExportPowerState({
-                isEnable: !status,
-                projectIds: [record.id],
-              });
-              finishEvent?.();
-            }}
-          >
-            禁用
-          </span>
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('export-coordinate') &&
+              (record.exportCoordinate === true ? (
+                <span
+                  style={{ cursor: 'pointer' }}
+                  className="colorRed"
+                  onClick={() => {
+                    modifyExportPowerState({
+                      isEnable: !status,
+                      projectIds: [record.id],
+                    });
+                    finishEvent?.();
+                  }}
+                >
+                  启用
+                </span>
+              ) : (
+                <span
+                  style={{ cursor: 'pointer' }}
+                  className="colorPrimary"
+                  onClick={() => {
+                    modifyExportPowerState({
+                      isEnable: !status,
+                      projectIds: [record.id],
+                    });
+                    finishEvent?.();
+                  }}
+                >
+                  禁用
+                </span>
+              ))}
+            {!buttonJurisdictionArray?.includes('export-coordinate') &&
+              (record.exportCoordinate === true ? (
+                <span className="colorRed">启用</span>
+              ) : (
+                <span className="colorPrimary">禁用</span>
+              ))}
+          </>
         );
       },
     },
