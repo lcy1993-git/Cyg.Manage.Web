@@ -5,8 +5,8 @@ import {
   getMapStatisticsData,
   MapStatisticsData,
 } from '@/services/index';
-import { history } from 'umi'
-import { useLocalStorageState, useMount, useMouse, useRequest, useSize } from 'ahooks';
+import { history } from 'umi';
+import { useMount, useRequest, useSize } from 'ahooks';
 import borderStylesHTML from '../../utils/borderStylesHTML';
 import styles from './index.less';
 
@@ -17,7 +17,7 @@ import 'echarts/lib/component/tooltip';
 import { cityCodeObject } from './map-info';
 import ChartBox from '../chart-box';
 
-import ProjectNumberIcon from '@/assets/image/index/project-number.png';
+// import ProjectNumberIcon from '@/assets/image/index/project-number.png';
 import { isArray } from 'lodash';
 import { useMemo } from 'react';
 import { Button, message } from 'antd';
@@ -44,7 +44,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     //@ts-ignore
     window.setSelectCity = (city: string) => {
       localStorage.setItem('selectCity', city);
-      history.push('/visualization-results/result-page')
+      history.push('/visualization-results/result-page');
     };
     return () => {
       //@ts-ignore
@@ -209,7 +209,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
       } else {
         initChart('100000', statisticData, '1');
       }
-    }else {
+    } else {
       const provinceStatisticData = await getStatisticData({
         areaCode: currentAreaInfo.areaId,
         areaType: currentAreaInfo.areaLevel,
@@ -378,7 +378,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const handlerOtherClick = () => {
     const id = mapStatisticData.find((item) => item.areaCode.includes('_other'))?.areaCode ?? '';
     localStorage.setItem('selectCity', id);
-    history.push('/visualization-results/result-page')
+    history.push('/visualization-results/result-page');
   };
 
   return (
@@ -410,9 +410,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     <div style={{ textAlign: 'right' }}>{ohterProjectTotalNumber}个</div>
                     <div>
                       {ohterProjectTotalNumber > 0 ? (
-                          <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
-                            跳转可视化
-                          </span>
+                        <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
+                          跳转可视化
+                        </span>
                       ) : (
                         <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
                           跳转可视化
