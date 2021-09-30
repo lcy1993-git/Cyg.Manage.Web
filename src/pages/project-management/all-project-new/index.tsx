@@ -142,9 +142,11 @@ const AllProject: React.FC = () => {
     setAllProjectSearchProjectId,
     setAllProjectSearchPerson,
     setAllProjectSearchType,
+    setAllProjectAreaInfo,
     allProjectSearchPerson,
     allProjectSearchProjectId,
     allProjectSearchType,
+    allProjectAreaInfo,
   } = useLayoutStore();
 
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
@@ -616,14 +618,22 @@ const AllProject: React.FC = () => {
       });
       setAllProjectSearchProjectId?.('');
     }
-    if (allProjectSearchType) {
+    if (allProjectSearchType && allProjectAreaInfo) {
       // TODO 有projectName的时候设置projectName
       searchByParams({
         ...searchParams,
         statisticalCategory: allProjectSearchType,
+        areaType: allProjectAreaInfo.areaLevel,
+        areaId: allProjectAreaInfo.areaId,
       });
       setStatisticalCategory(allProjectSearchType);
+      setSearchParams({
+        ...searchParams,
+        areaType: allProjectAreaInfo.areaLevel,
+        areaId: allProjectAreaInfo.areaId,
+      });
       setAllProjectSearchType?.('');
+      setAllProjectAreaInfo?.(undefined);
     }
     if (allProjectSearchPerson) {
       setAllProjectSearchPerson?.('');

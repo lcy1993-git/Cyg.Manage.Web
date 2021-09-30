@@ -54,9 +54,9 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
     },
   });
 
-  useMount(() => {
-    run();
-  })
+  // useMount(() => {
+  //   run();
+  // })
 
   // useEffect(() => {
   //   if (inViewPort) {
@@ -81,7 +81,7 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
 
 
   return (
-    <ScrollListQuee height={40} data={listData}>
+    <ScrollListQuee height={40} data={listData ?? []}>
       {
         (data1) => {
           return data1.map((item, idx) => {

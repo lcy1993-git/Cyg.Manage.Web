@@ -20,13 +20,20 @@ const typeEnmu = {
   delegation: '3',
   beShared: '4',
 };
+
+const areaTypeObj = {
+  "1": "-1",
+  "2": "1",
+  "3": "2"
+}
+
 const ToDo: React.FC<ToDoProps> = (props) => {
   const {
     componentProps = ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
     currentAreaInfo,
   } = props;
 
-  const { setAllProjectSearchType } = useLayoutStore();
+  const { setAllProjectSearchType, setAllProjectAreaInfo } = useLayoutStore();
 
   const { data: toDoStatisticsInfo, loading } = useRequest(
     () =>
@@ -56,8 +63,11 @@ const ToDo: React.FC<ToDoProps> = (props) => {
   }, [componentProps]);
 
   const toAllProjectListPage = (type: string) => {
-    console.log(typeEnmu[type]);
     setAllProjectSearchType?.(typeEnmu[type]);
+    setAllProjectAreaInfo?.({
+      areaId: currentAreaInfo.areaId,
+      areaLevel: areaTypeObj[currentAreaInfo.areaLevel!],
+    })
     history.push('/project-management/all-project');
   };
 

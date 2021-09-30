@@ -105,7 +105,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
     // 地区变化事件
     const areaChangeEvent = (value: string, option: any) => {
         setAreaInfo(option)
-        onChange?.({ provinceId: provinceInfo?.value, cityId: areaInfo?.value, areaId: option.value,cityData: citySelectData, areaData: areaSelectData,provinceInfo, cityInfo, areaInfo: option})
+        onChange?.({ provinceId: provinceInfo?.value, cityId: cityInfo?.value, areaId: option.value,cityData: citySelectData, areaData: areaSelectData,provinceInfo, cityInfo, areaInfo: option})
     }
 
     const hasSelectTipInfo = useMemo(() => {
