@@ -11,6 +11,7 @@ moment.locale('zh-cn');
 import styles from './index.less';
 import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons';
 import { LayoutProvider } from './context';
+import { AreaInfo } from '@/services/index';
 
 const { TabPane } = Tabs;
 
@@ -29,6 +30,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   const [allProjectSearchProjectId, setAllProjectSearchProjectId] = useState('');
   const [allProjectSearchPerson, setAllProjectSearchPerson] = useState('');
   const [allProjectSearchType, setAllProjectSearchType] = useState('');
+  const [allProjectAreaInfo, setAllProjectAreaInfo] = useState<AreaInfo>();
   const [resourceManageFlag, setResourceManageFlag] = useState<boolean>(false);
   const [workHandoverFlag, setWorkHandoverFlag] = useState<boolean>(false);
 
@@ -181,9 +183,11 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
           allProjectSearchProjectId,
           allProjectSearchPerson,
           allProjectSearchType,
+          allProjectAreaInfo,
           setAllProjectSearchType,
           setAllProjectSearchProjectId,
           setAllProjectSearchPerson,
+          setAllProjectAreaInfo,
           resourceManageFlag,
           setResourceManageFlag,
           workHandoverFlag,
