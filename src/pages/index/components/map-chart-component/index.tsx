@@ -201,11 +201,20 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           areaCode: statisticData[0].areaCode,
           areaType: '2',
         });
-        initChart(statisticData[0].areaCode, provinceStatisticData, '2');
-        setCurrentAreaInfo({
-          areaId: statisticData[0].areaCode,
-          areaLevel: '2',
-        });
+        console.log(provinceStatisticData)
+        if(provinceStatisticData && isArray(provinceStatisticData) && provinceStatisticData.length === 1 && !provinceStatisticData[0].areaCode.includes('othercity')){
+          initChart(provinceStatisticData[0].areaCode, provinceStatisticData, '3');
+          setCurrentAreaInfo({
+            areaId: provinceStatisticData[0].areaCode,
+            areaLevel: '3',
+          });
+        }else{
+          initChart(statisticData[0].areaCode, provinceStatisticData, '2');
+          setCurrentAreaInfo({
+            areaId: statisticData[0].areaCode,
+            areaLevel: '2',
+          });
+        }
       } else {
         initChart('100000', statisticData, '1');
       }

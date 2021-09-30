@@ -13,7 +13,7 @@ import { observer } from 'mobx-react-lite';
 import { findEnumKeyByCN } from '../../utils/loadEnum';
 import { formDataMateral } from '@/utils/utils';
 import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
-import { CommentRequestType, addComment, fetchCommentList } from '@/services/visualization-results/side-popup';
+import { CommentRequestType, addComment, fetchCommentList, porjectIsExecutor } from '@/services/visualization-results/side-popup';
 import styles from './index.less';
 import CableSection from '../cable-section';
 import MediaModal from '../media-modal';
@@ -198,6 +198,19 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     },
   });
 
+  const { run: reviewRun } = useRequest(porjectIsExecutor, {
+    manual: true,
+    onSuccess(data) {
+      if (data) {
+        reviewRef.current!.innerHTML = '查看';
+        reviewRef.current!.className = 'mapSideBarlinkBtn';
+      } else {
+        reviewRef.current!.innerHTML = '暂无数据';
+        reviewRef.current!.className = '';
+      }
+    },
+  })
+
   const { data: materialData, run: materialDataRun } = useRequest(getMaterialItemData, {
     manual: true,
     onSuccess(data) {
@@ -245,17 +258,23 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       } else {
         setMmaterialRefNone();
       }
-    }
+      // 审阅数据
+      const reviewData = dataResource?.find((item: any) => item.propertyName === '审阅')?.data ?? {};
+      if(reviewData?.id) {
+        reviewRun(reviewData.id)
+      }
+    } 
   }, [JSON.stringify(dataResource), rightSidebarVisible]);
 
   const mediaRef = useRef<HTMLSpanElement>(null);
   const materialRef = useRef<HTMLSpanElement>(null);
+  const reviewRef = useRef<HTMLSpanElement>(null);
 
   const [Comment, setComment] = useState('');
   const [mediaVisiable, setMediaVisiable] = useState(false);
   const [mediaIndex, setMediaIndex] = useState<number>(0);
   const store = useContainer();
-  const { vState, setMediaListVisibel } = useContainer();
+  // const { vState, setMediaListVisibel } = useContainer();
   const { checkedProjectIdList, mediaListVisibel, mediaListData } = store.vState;
 
   const data = useMemo(() => {
@@ -287,7 +306,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       width: 164,
       ellipsis: true,
       render(value: any, record: any, index: any) {
-        // console.log(value, record)
         if (record.propertyName === 'title') return null;
         if (record.propertyName === '三维模型') {
           if(record.data){
@@ -316,27 +334,32 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             </span>
           );
         } else if (record.propertyName === '审阅') {
-          if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
-            return (
-              <span
-                className={styles.link}
-                onClick={() => onOpenAddCommentModal(value)}
-                key={index}
-              >
-                添加审阅
-              </span>
-            );
-          } else {
-            return (
-              <span key={index} className={styles.none}>
-                暂无权限
-              </span>
-            );
-          }
+          return <span onClick={() => {
+            if(reviewRef.current?.innerHTML=== "查看") {
+              onOpenAddCommentModal(value)
+            }
+          }} ref={reviewRef}>暂无权限</span>
+          // if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
+          //   return (
+          //     <span
+          //       className={styles.link}
+          //       onClick={() => onOpenAddCommentModal(value)}
+          //       key={index}
+          //     >
+          //       添加审阅
+          //     </span>
+          //   );
+          // } else {
+          //   return (
+          //     <span key={index} className={styles.none}>
+          //       暂无权限
+          //     </span>
+          //   );
+          // }
         } else if (record.propertyName === "穿孔示意图") {
           return <CableSection key={JSON.stringify({ ...value })} {...value} />
         }
-        return <span key={index}></span>;
+        return <span key={index}>暂无权限</span>;
       },
     },
   ];
