@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styles from './index.less';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import bgSrc from '@/assets/image/index/bg.png';
 import {useMount, useRequest, useSize} from 'ahooks';
 import { getChartConfig } from '@/services/operation-config/cockpit';
-import { useRef } from 'react';
 
 import MapComponent from '@/pages/index/components/index-map-component';
 import PersonnelLoad from '@/pages/index/components/index-personnel-load-component';
@@ -24,7 +23,6 @@ import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import { useEffect } from 'react';
 import HealthPolling from './components/health-polling';
 import {getEnums} from "@/pages/technology-economic/utils";
 
