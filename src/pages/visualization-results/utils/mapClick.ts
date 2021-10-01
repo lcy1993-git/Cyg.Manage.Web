@@ -509,6 +509,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         const materialModifyList = await getDesignMaterialModifyList({
           deviceId: featureId,
           projectId: feature.getProperties().project_id,
+          layerType: layerType,
           // deviceType: "string"
         })
 
@@ -626,6 +627,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           const materialModifyList = await getDesignMaterialModifyList({
             deviceId: featureId,
             projectId: feature.getProperties().project_id,
+            layerType: layerType,
             // deviceType: "string"
           })
 

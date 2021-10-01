@@ -15,6 +15,7 @@ import { useRequest } from 'ahooks';
 import AddComponentProperty from './add-form';
 import EditComponentProperty from './edit-form';
 import ModalConfirm from '@/components/modal-confirm';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 interface ModuleDetailParams {
   libId: string;
   componentId: string[];
@@ -22,7 +23,7 @@ interface ModuleDetailParams {
 
 const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
   const { libId, componentId } = props;
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
@@ -130,15 +131,21 @@ const ComponentProperty: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRightSlot = (
     <>
-      <Button type="primary" className="mr7" onClick={() => addEvent()}>
-        <PlusOutlined />
-        添加
-      </Button>
-      <Button className="mr7" onClick={() => editEvent()}>
-        <EditOutlined />
-        编辑
-      </Button>
-      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      {buttonJurisdictionArray?.includes('add-component-property') && (
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('edit-component-property') && (
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('delete-component-property') && (
+        <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      )}
     </>
   );
 

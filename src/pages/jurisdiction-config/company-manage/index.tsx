@@ -174,18 +174,18 @@ const CompanyManage: React.FC = () => {
             编辑
           </Button>
         )}
-        {/* {buttonJurisdictionArray?.includes('company-manage-edit') && ( */}
-        <Button className="mr7" onClick={() => unitConfigEvent()}>
-          <ApartmentOutlined />
-          协作单位配置
-        </Button>
-        {/* )} */}
-        {/* {buttonJurisdictionArray?.includes('company-manage-edit') && ( */}
-        <Button className="mr7" onClick={() => shareEvent()}>
-          <ShareAltOutlined />
-          共享一览表
-        </Button>
-        {/* )} */}
+        {buttonJurisdictionArray?.includes('company-manage-config') && (
+          <Button className="mr7" onClick={() => unitConfigEvent()}>
+            <ApartmentOutlined />
+            协作单位配置
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('company-manage-share') && (
+          <Button className="mr7" onClick={() => shareEvent()}>
+            <ShareAltOutlined />
+            共享一览表
+          </Button>
+        )}
       </>
     );
   };

@@ -523,18 +523,18 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    if(Array.isArray(dateRange)) {
+    if (Array.isArray(dateRange)) {
       store.setDateRange({
         startDate: dateRange[0] ? moment(dateRange[0]).format('YYYY/MM/DD') : dateRange?.[0],
         endDate: dateRange[1] ? moment(dateRange[1]).format('YYYY/MM/DD') : dateRange?.[1],
-      })
-    }else{
+      });
+    } else {
       store.setDateRange({
         startDate: undefined,
-        endDate: undefined
-      })
+        endDate: undefined,
+      });
     }
-  }, [dateRange])
+  }, [dateRange]);
 
   const renderExtraFooter = () => {
     return (
@@ -693,7 +693,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       <div className={styles.buttonArea}>
         <SiderMenuAreaButtons
           buttonProps={[
-            {
+            buttonJurisdictionArray?.includes('result-manage') && {
               title: '成果管理',
               dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
               light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
@@ -703,7 +703,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
-            {
+            buttonJurisdictionArray?.includes('material-statistics') && {
               title: '材料统计',
               dart: require('@/assets/icon-image/menu-tree-icon/材料统计.png'),
               light: require('@/assets/icon-image/menu-tree-icon/材料统计-light.png'),
@@ -717,7 +717,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
-            {
+            buttonJurisdictionArray?.includes('review-message') && {
               title: '审阅消息',
               dart: require('@/assets/icon-image/menu-tree-icon/审阅消息.png'),
               light: require('@/assets/icon-image/menu-tree-icon/审阅消息-light.png'),
@@ -728,7 +728,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               style:
                 Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? { opacity: 0.4 } : {},
             },
-            {
+
+            buttonJurisdictionArray?.includes('export-media') && {
               title: '导出多媒体',
               dart: require('@/assets/icon-image/menu-tree-icon/导出多媒体.png'),
               light: require('@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'),
@@ -738,7 +739,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
-            {
+            buttonJurisdictionArray?.includes('export-coordinates') && {
               title: '导出坐标',
               dart: require('@/assets/icon-image/menu-tree-icon/导出坐标.png'),
               light: require('@/assets/icon-image/menu-tree-icon/导出坐标-light.png'),

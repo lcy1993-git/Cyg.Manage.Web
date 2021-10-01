@@ -24,7 +24,12 @@ import {
   getReviewFileUrl,
 } from '@/services/project-management/all-project';
 import styles from './index.less';
-import { DeleteOutlined, EnvironmentOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  DownloadOutlined,
+  EnvironmentOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons';
 
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
@@ -173,6 +178,18 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     refresh?.();
   };
 
+  const downloadEvent = async (id: string) => {
+    const res = await getReviewFileUrl({ projectId: projectId, userId: id });
+    if (res && isArray(res) && res?.length === 0) {
+      message.info('该评审无下载文件');
+      return;
+    }
+    const url = res[0]?.extend.file.url;
+    const aEl = document.createElement('a');
+    aEl.href = url;
+    aEl.click();
+  };
+
   return (
     <>
       <Modal
@@ -286,6 +303,13 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                     )}
                   </div>
                   <div style={{ marginRight: '12px' }}>
+                    <Tooltip title="下载">
+                      <DownloadOutlined
+                        className={styles.downloadIcon}
+                        onClick={() => downloadEvent(el.id)}
+                      />
+                    </Tooltip>
+
                     <Tooltip title="删除">
                       <DeleteOutlined
                         className={styles.deleteIcon}

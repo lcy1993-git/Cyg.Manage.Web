@@ -4,7 +4,7 @@ import TableSearch from '@/components/table-search';
 import React, { useState } from 'react';
 import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
-import { Button, Input, Spin, Tooltip, Popconfirm, message, Menu, Modal } from 'antd';
+import { Button, Input, Spin, Tooltip, message, Menu, Modal } from 'antd';
 import styles from './index.less';
 import EngineerTable from './components/engineer-table';
 import { useRef } from 'react';
@@ -46,7 +46,6 @@ import AddFavoriteModal from './components/add-favorite-modal';
 import FavoriteList from './components/favorite-list';
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list';
 import { useMemo } from 'react';
-import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -588,7 +587,7 @@ const AllProject: React.FC = () => {
       {buttonJurisdictionArray?.includes('all-project-recall-apply-knot') && (
         <Menu.Item onClick={() => revokeConfirm()}>撤回结项</Menu.Item>
       )}
-      {buttonJurisdictionArray?.includes('all-project-kont-pass') && (
+      {buttonJurisdictionArray?.includes('all-project-kont-approve') && (
         <Menu.Item onClick={() => auditKnotEvent()}>结项审批</Menu.Item>
       )}
       {/* {buttonJurisdictionArray?.includes('all-project-kont-no-pass') && (
@@ -689,19 +688,21 @@ const AllProject: React.FC = () => {
 
   return (
     <>
-      <Tooltip title="工程收藏夹">
-        <div
-          className={styles.folderButton}
-          onClick={() => {
-            setSideVisible(true);
-            setKeyWord('');
-          }}
-          style={{ display: sideVisible ? 'none' : 'block' }}
-        >
-          <img src={imgSrc} alt="" />
-          <div>收藏</div>
-        </div>
-      </Tooltip>
+      {buttonJurisdictionArray?.includes('engineer-favorite') && (
+        <Tooltip title="工程收藏夹">
+          <div
+            className={styles.folderButton}
+            onClick={() => {
+              setSideVisible(true);
+              setKeyWord('');
+            }}
+            style={{ display: sideVisible ? 'none' : 'block' }}
+          >
+            <img src={imgSrc} alt="" />
+            <div>收藏</div>
+          </div>
+        </Tooltip>
+      )}
       <PageCommonWrap noPadding={true} noColor={true}>
         <div className={styles.allProjectPage}>
           <div className={styles.projectsAndFavorite}>
@@ -828,7 +829,8 @@ const AllProject: React.FC = () => {
                         </Button>
                       </Dropdown>
                     )}
-                    {buttonJurisdictionArray?.includes('all-project-export') && (
+                    {(buttonJurisdictionArray?.includes('all-project-export-all') ||
+                      buttonJurisdictionArray?.includes('all-project-export-selected')) && (
                       <div className="mr7">
                         <TableExportButton
                           exportUrl="/Porject/Export"
@@ -847,8 +849,7 @@ const AllProject: React.FC = () => {
                     )}
                     {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
                       buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
-                      buttonJurisdictionArray?.includes('all-project-kont-pass') ||
-                      buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
+                      buttonJurisdictionArray?.includes('all-project-kont-approve')) && (
                       <Dropdown overlay={postProjectMenu}>
                         <Button className="mr7">
                           结项 <DownOutlined />
