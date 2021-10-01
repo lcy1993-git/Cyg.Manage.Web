@@ -205,8 +205,6 @@ const AllProject: React.FC = () => {
   };
 
   const statisticsClickEvent = (statisticsType: string) => {
-    console.log(selectedFavId, '11');
-
     setStatisticalCategory(statisticsType);
     searchByParams({
       ...searchParams,
@@ -273,8 +271,6 @@ const AllProject: React.FC = () => {
 
     await checkCanArrange(projectIds);
 
-    console.log(tableSelectData?.[0].projectInfo);
-
     // 如果只有一个项目需要安排的时候，需要去检查他是不是被安排了部组
     if (projectIds.length === 1) {
       const thisProjectId = projectIds[0];
@@ -298,18 +294,19 @@ const AllProject: React.FC = () => {
         setCurrentArrangeProjectType('2');
         setCurrentArrangeProjectIsArrange('');
       }
-    }
-
-    //根据现场数据来源数组 判断点击安排进入后的提示信息
-    const typeArray = tableSelectData?.[0].projectInfo?.dataSourceType;
-    if (typeArray?.length != 1 && !typeArray?.includes(0)) {
-      setDataSourceType(-1);
-    }
-    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {
-      setDataSourceType(1);
-    }
-    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(2)) {
-      setDataSourceType(2);
+    } else {
+      //根据现场数据来源数组 判断点击安排进入后的提示信息
+      const typeArray = tableSelectData.map((item) => item.projectInfo.dataSourceType).flat(1);
+      console.log(typeArray)
+      if (typeArray?.length != 1 && !typeArray?.includes(0)) {
+        setDataSourceType(-1);
+      }
+      if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {
+        setDataSourceType(1);
+      }
+      if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(2)) {
+        setDataSourceType(2);
+      }
     }
 
     setSelectProjectIds(projectIds);
@@ -609,11 +606,13 @@ const AllProject: React.FC = () => {
   });
 
   useEffect(() => {
-    if (allProjectSearchProjectId) {
+    if (allProjectSearchProjectId && allProjectAreaInfo) {
       // TODO 有projectName的时候设置projectName
       searchByParams({
         ...searchParams,
         projectId: allProjectSearchProjectId,
+        areaType: allProjectAreaInfo.areaLevel,
+        areaId: allProjectAreaInfo.areaId,
         keyWord,
         statisticalCategory,
       });
@@ -630,13 +629,12 @@ const AllProject: React.FC = () => {
       setStatisticalCategory(allProjectSearchType);
       setSearchParams({
         ...searchParams,
-        areaType: allProjectAreaInfo.areaLevel,
-        areaId: allProjectAreaInfo.areaId,
+        areaType: allProjectAreaInfo.areaLevel!,
+        areaId: allProjectAreaInfo.areaId!,
       });
       setAllProjectSearchType?.('');
-      setAllProjectAreaInfo?.(undefined);
     }
-    if (allProjectSearchPerson) {
+    if (allProjectSearchPerson && allProjectAreaInfo) {
       setAllProjectSearchPerson?.('');
 
       setSearchParams({
@@ -644,6 +642,8 @@ const AllProject: React.FC = () => {
         surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
         designUser: String(allProjectSearchPerson),
+        areaType: allProjectAreaInfo.areaLevel!,
+        areaId: allProjectAreaInfo.areaId!,
       });
 
       // TODO 有人的时候设置人
@@ -654,6 +654,8 @@ const AllProject: React.FC = () => {
         surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
         designUser: String(allProjectSearchPerson),
+        areaType: allProjectAreaInfo.areaLevel!,
+        areaId: allProjectAreaInfo.areaId!,
       });
     }
   }, [allProjectSearchPerson, allProjectSearchProjectId, allProjectSearchType]);
