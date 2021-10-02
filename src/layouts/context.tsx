@@ -5,11 +5,13 @@ interface LayoutContextValue {
   resourceManageFlag?: boolean;
   workHandoverFlag?: boolean;
   clearAgainLogin?: () => void;
+  mapSelectCity?: string;
   allProjectSearchProjectId?: string;
   allProjectSearchPerson?: string;
   allProjectSearchType?: string;
   allProjectAreaInfo?: AreaInfo;
   setResourceManageFlag?: (value: boolean) => void;
+  setMapSelectCity?: (value: string) => void;
   setWorkHandoverFlag?: (value: boolean) => void;
   setAllProjectSearchProjectId?: (value: string) => void;
   setAllProjectSearchPerson?: (value: string) => void;
