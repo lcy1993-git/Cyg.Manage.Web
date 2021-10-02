@@ -306,14 +306,14 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                     <Tooltip title="下载">
                       <DownloadOutlined
                         className={styles.downloadIcon}
-                        onClick={() => downloadEvent(el.id)}
+                        onClick={() => downloadEvent(el.userId)}
                       />
                     </Tooltip>
 
                     <Tooltip title="删除">
                       <DeleteOutlined
                         className={styles.deleteIcon}
-                        onClick={() => deleteConfirm(el.id)}
+                        onClick={() => deleteConfirm(el.userId)}
                       />
                     </Tooltip>
                   </div>
