@@ -697,7 +697,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                   }
                   setDataSourceType(value);
-                  if(field) {
+                  if (field) {
                     // 当有field的时候，重新触发校验
                     form.validateFields();
                   }
@@ -766,7 +766,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               fieldKey={[field.fieldKey, 'disclosureRange']}
               name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
               labelWidth={120}
-              dependencies={['dataSourceType']}
               required
               align="right"
               rules={[
