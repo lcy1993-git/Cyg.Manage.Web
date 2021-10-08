@@ -353,7 +353,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   //保存修改的模块属性
   const sureEditAttribute = () => {
     const editData = AttributeData!;
-
+    console.log(AttributeData)
     editAttributeForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {

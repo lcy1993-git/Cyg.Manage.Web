@@ -22,6 +22,7 @@ import { isArray } from 'lodash';
 import { useMemo } from 'react';
 import { Button, message } from 'antd';
 import { exportHomeStatisticData } from '@/services/operation-config/cockpit';
+import { useLayoutStore } from '@/layouts/context';
 
 interface MapChartComponentProps {
   currentAreaInfo: AreaInfo;
@@ -38,12 +39,12 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const { setCurrentAreaInfo, currentAreaInfo, isConfig } = props;
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
-
+  const { setMapSelectCity } = useLayoutStore();
   const divRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     //@ts-ignore
     window.setSelectCity = (city: string) => {
-      localStorage.setItem('selectCity', city);
+      setMapSelectCity?.(city);
       history.push('/visualization-results/result-page');
     };
     return () => {
@@ -201,17 +202,28 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           areaCode: statisticData[0].areaCode,
           areaType: '2',
         });
-        console.log(provinceStatisticData)
-        if(provinceStatisticData && isArray(provinceStatisticData) && provinceStatisticData.length === 1 && !provinceStatisticData[0].areaCode.includes('othercity')){
-          initChart(provinceStatisticData[0].areaCode, provinceStatisticData, '3');
+
+        if (
+          provinceStatisticData &&
+          isArray(provinceStatisticData) &&
+          provinceStatisticData.length === 1 &&
+          !provinceStatisticData[0].areaCode.includes('othercity')
+        ) {
+          const areaStatisticData = await getStatisticData({
+            areaCode: provinceStatisticData[0].areaCode,
+            areaType: '3',
+          });
+          initChart(provinceStatisticData[0].areaCode, areaStatisticData, '3');
           setCurrentAreaInfo({
             areaId: provinceStatisticData[0].areaCode,
+            cityId: statisticData[0].areaCode,
             areaLevel: '3',
           });
-        }else{
+        } else {
           initChart(statisticData[0].areaCode, provinceStatisticData, '2');
           setCurrentAreaInfo({
             areaId: statisticData[0].areaCode,
+            cityId: statisticData[0].areaCode,
             areaLevel: '2',
           });
         }
@@ -233,6 +245,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     currentAreaLevel: string,
   ) => {
     const option = getMapOption(currentAreaId, getMapStatisticData);
+
     const resData = await getMapData(currentAreaId);
 
     if (divRef && divRef.current) {
@@ -257,11 +270,20 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             areaCode: cityCodeObject[name],
             areaType: String(parseFloat(currentAreaLevel) + 1),
           });
+          if (parseFloat(currentAreaLevel) + 1 === 2) {
+            setCurrentAreaInfo({
+              areaId: cityCodeObject[name],
+              cityId: cityCodeObject[name],
+              areaLevel: String(parseFloat(currentAreaLevel!) + 1),
+            });
+          } else {
+            setCurrentAreaInfo({
+              areaId: cityCodeObject[name],
+              cityId: currentAreaId,
+              areaLevel: String(parseFloat(currentAreaLevel!) + 1),
+            });
+          }
           initChart(cityCodeObject[name], statisticData, String(parseFloat(currentAreaLevel) + 1));
-          setCurrentAreaInfo({
-            areaId: cityCodeObject[name],
-            areaLevel: String(parseFloat(currentAreaLevel!) + 1),
-          });
         }
       });
 
@@ -287,38 +309,41 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
 
     setCurrentAreaInfo({
       areaId: '',
+      cityId: '',
       areaLevel: '1',
     });
   };
 
   const cityClickEvent = async () => {
-    if (!currentAreaInfo.areaId) {
+    if (currentAreaInfo.areaLevel === '1') {
       return;
     }
     const statisticData = await getStatisticData({
-      areaCode: currentAreaInfo.areaId,
+      areaCode: currentAreaInfo.cityId,
       areaType: '2',
     });
-    initChart(currentAreaInfo.areaId, statisticData, '2');
+    initChart(currentAreaInfo.cityId!, statisticData, '2');
 
     setCurrentAreaInfo({
-      areaId: currentAreaInfo.areaId,
+      areaId: currentAreaInfo.cityId,
+      cityId: currentAreaInfo.cityId,
       areaLevel: '2',
     });
   };
 
   const areaClickEvent = async () => {
-    if (!currentAreaInfo.areaId) {
+    if (currentAreaInfo.areaLevel !== '3') {
       return;
     }
     const statisticData = await getStatisticData({
       areaCode: currentAreaInfo.areaId,
       areaType: '3',
     });
-    initChart(currentAreaInfo.areaId, statisticData, '2');
+    initChart(currentAreaInfo.areaId!, statisticData, '2');
 
     setCurrentAreaInfo({
       areaId: currentAreaInfo.areaId,
+      cityId: currentAreaInfo.cityId,
       areaLevel: '3',
     });
   };

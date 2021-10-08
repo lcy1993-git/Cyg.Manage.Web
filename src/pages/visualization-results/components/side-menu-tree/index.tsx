@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Tree, message, Input, Button, DatePicker, Modal } from 'antd';
 import { SearchOutlined, AlignLeftOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
-import { useMount, useRequest, useSize } from 'ahooks';
+import { useMount, useRequest, useSize, useUpdateEffect, useUpdateLayoutEffect } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
   fetchCompanyEngineerProjectListByParams,
@@ -35,6 +35,7 @@ const { RangePicker } = DatePicker;
 import SiderMenuAreaButtons from '../side-menu-area-buttons';
 import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { useLayoutStore } from '@/layouts/context';
 
 export interface SideMenuProps {
   className?: string;
@@ -121,10 +122,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 多媒体下载
   const [mediaLoadVisibel, setMediaLoadVisibel] = useState<boolean>(false);
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
-  const [buttonActive, setButtonActive] = useState<number>(
-    window.localStorage.getItem('selectCity') ? -1 : 2,
-  );
-
+  const [buttonActive, setButtonActive] = useState<number>(-1);
+  const { mapSelectCity, setMapSelectCity } = useLayoutStore();
   // 勘察轨迹
   // const [surveyModalVisible, setSurveyModalVisible] = useState(false)
   // const [surveyModalData, setSurveyModalData] = useState(null)
@@ -288,12 +287,12 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
      *
      */
 
-    const selectCity = localStorage.getItem('selectCity');
+    const selectCity = mapSelectCity;
 
     if (selectCity) {
       const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
 
-      localStorage.removeItem('selectCity');
+      setMapSelectCity?.('');
       const { expanded, checked } = key;
       setExpandedKeys([...expanded]);
       setCheckedKeys(getKeyList(checked));
@@ -303,6 +302,21 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       clearState();
     }
   };
+
+  useUpdateEffect(() => {
+    if (mapSelectCity) {
+      if (treeListReponseData?.length) {
+        const data = generateProjectTree(treeListReponseData);
+
+        setTreeData(data);
+        initSideTree(data);
+        // 修复初次请求默认到县级的bug
+      } else {
+        setTreeData([]);
+        message.warning('无数据');
+      }
+    }
+  }, [mapSelectCity]);
 
   /**
    * 从可视化界面跳转过来自动展开地区项目，并选中所有项目

@@ -2,7 +2,6 @@ import React from 'react';
 import { Menu, Button, Dropdown, message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { commonExport } from '@/services/common';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
 interface TableExportButtonProps {
   selectIds?: string[];
@@ -14,7 +13,6 @@ interface TableExportButtonProps {
 
 const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
   const { selectIds = [], exportUrl = '', extraParams, fileName = '表格', selectSlot } = props;
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const exportChoosedRow = async () => {
     if (selectIds && selectIds.length === 0) {
       message.error('请选择需要导出的行');
@@ -65,12 +63,8 @@ const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
 
   const importButoonMenu = (
     <Menu>
-      {buttonJurisdictionArray?.includes('all-project-export-selected') && (
-        <Menu.Item onClick={() => exportChoosedRow()}>导出所选</Menu.Item>
-      )}
-      {buttonJurisdictionArray?.includes('all-project-export-all') && (
-        <Menu.Item onClick={() => exportAllRow()}>导出所有</Menu.Item>
-      )}
+      <Menu.Item onClick={() => exportChoosedRow()}>导出所选</Menu.Item>
+      <Menu.Item onClick={() => exportAllRow()}>导出所有</Menu.Item>
       {selectSlot ? <Menu.Item>{selectSlot?.()}</Menu.Item> : null}
     </Menu>
   );

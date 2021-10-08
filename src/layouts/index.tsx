@@ -30,6 +30,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   const [allProjectSearchProjectId, setAllProjectSearchProjectId] = useState('');
   const [allProjectSearchPerson, setAllProjectSearchPerson] = useState('');
   const [allProjectSearchType, setAllProjectSearchType] = useState('');
+  const [mapSelectCity, setMapSelectCity] = useState('');
   const [allProjectAreaInfo, setAllProjectAreaInfo] = useState<AreaInfo>();
   const [resourceManageFlag, setResourceManageFlag] = useState<boolean>(false);
   const [workHandoverFlag, setWorkHandoverFlag] = useState<boolean>(false);
@@ -184,10 +185,12 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
           allProjectSearchPerson,
           allProjectSearchType,
           allProjectAreaInfo,
+          mapSelectCity,
           setAllProjectSearchType,
           setAllProjectSearchProjectId,
           setAllProjectSearchPerson,
           setAllProjectAreaInfo,
+          setMapSelectCity,
           resourceManageFlag,
           setResourceManageFlag,
           workHandoverFlag,
