@@ -697,6 +697,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                   }
                   setDataSourceType(value);
+                  if(field) {
+                    // 当有field的时候，重新触发校验
+                    form.validateFields();
+                  }
                   if (isNumber(index)) {
                     const copyData = [...copyFlag!];
                     // console.log(index)
