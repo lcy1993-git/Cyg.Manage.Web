@@ -681,8 +681,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 placeholder="请选择"
                 onChange={(value: any) => {
                   if (value === 2 || value === 1) {
-                    if (!field.fieldKey) {
+                    if (field.fieldKey === undefined) {
                       form.resetFields(['disclosureRange', 'pileRange']);
+
                       // form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                     } else {
                       const projectsInfo = form.getFieldValue('projects');
@@ -696,6 +697,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                   }
                   setDataSourceType(value);
+                  if (field) {
+                    // 当有field的时候，重新触发校验
+                    form.validateFields();
+                  }
                   if (isNumber(index)) {
                     const copyData = [...copyFlag!];
                     // console.log(index)
@@ -770,7 +775,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
                 () => ({
                   validator(_, value) {
+                    console.log(value);
+
                     if (value <= 99999 && value > -1) {
+                      return Promise.resolve();
+                    }
+                    if (form.getFieldValue('dataSourceType') === 1) {
+                      console.log(1);
+
                       return Promise.resolve();
                     }
                     if (value > 99999) {

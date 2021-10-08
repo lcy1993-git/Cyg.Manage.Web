@@ -117,8 +117,8 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     addUser();
   }, [addPeople]);
 
-  const deleteAllotUser = async (userId: string) => {
-    await removeAllotUser({ projectId: projectId, userAllotId: userId });
+  const deleteAllotUser = async (id: string) => {
+    await removeAllotUser({ projectId: projectId, userAllotId: id });
     message.success('已移除');
     const res = await run();
 
@@ -181,7 +181,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const downloadEvent = async (id: string) => {
     const res = await getReviewFileUrl({ projectId: projectId, userId: id });
     if (res && isArray(res) && res?.length === 0) {
-      message.info('该评审无下载文件');
+      message.info('该评审暂无下载文件');
       return;
     }
     const url = res[0]?.extend.file.url;
@@ -313,7 +313,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                     <Tooltip title="删除">
                       <DeleteOutlined
                         className={styles.deleteIcon}
-                        onClick={() => deleteConfirm(el.userId)}
+                        onClick={() => deleteConfirm(el.id)}
                       />
                     </Tooltip>
                   </div>
