@@ -312,6 +312,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
 
                   if (
                     moment(new Date(value).getTime()).isAfter(moment(startDate)) ||
+                    moment(new Date(value).getDate()).isAfter(
+                      moment(new Date(getFieldValue([field.fieldKey, 'startTime'])).getDate()),
+                    ) ||
                     !value ||
                     !getFieldValue('endTime') ||
                     !startDate

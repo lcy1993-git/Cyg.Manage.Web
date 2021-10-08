@@ -51,9 +51,9 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     refreshDeps: [allotCompanyId],
   });
 
-  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
-    refreshDeps: [allotCompanyId],
-  });
+  // const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
+  //   refreshDeps: [allotCompanyId],
+  // });
 
   const mapTreeData = (data: any) => {
     if (data.children && data.children.length > 0) {

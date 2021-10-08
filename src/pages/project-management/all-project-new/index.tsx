@@ -296,7 +296,7 @@ const AllProject: React.FC = () => {
     } else {
       //根据现场数据来源数组 判断点击安排进入后的提示信息
       const typeArray = tableSelectData.map((item) => item.projectInfo.dataSourceType).flat(1);
-      console.log(typeArray)
+      console.log(typeArray);
       if (typeArray?.length != 1 && !typeArray?.includes(0)) {
         setDataSourceType(-1);
       }
@@ -355,7 +355,20 @@ const AllProject: React.FC = () => {
     const { allotCompanyGroup = '' } = resData;
 
     setIfCanEdit(resData);
-
+    const typeArray = tableSelectData.map((item) => item.projectInfo.dataSourceType).flat(1);
+    console.log(typeArray);
+    if (typeArray?.length != 1 && typeArray?.includes(0)) {
+      setDataSourceType(0);
+    }
+    if (typeArray?.length != 1 && !typeArray?.includes(0)) {
+      setDataSourceType(-1);
+    }
+    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {
+      setDataSourceType(1);
+    }
+    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(2)) {
+      setDataSourceType(2);
+    }
     setEditCurrentAllotCompanyId(allotCompanyGroup);
     setSelectProjectIds(projectIds);
     setEditArrangeModalVisible(true);
