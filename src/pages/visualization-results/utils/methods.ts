@@ -598,6 +598,8 @@ const loadMediaSign = (map: any, layerGroups_?: LayerGroup[], mediaSign_?: boole
         let l:any = layerGroup.getLayers().getArray().find((l:any) => l.getProperties().name.includes('mediaSign'));
         if(l)
           l.getSource().clear();
+        if(!mediaSign)
+          return;
         layerGroup.getLayers().getArray().forEach((layer:any) => {
           let layerName = layer.getProperties().name;
           let layerType = layerName.split('_')[0];
