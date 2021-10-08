@@ -181,7 +181,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const downloadEvent = async (id: string) => {
     const res = await getReviewFileUrl({ projectId: projectId, userId: id });
     if (res && isArray(res) && res?.length === 0) {
-      message.info('该评审无下载文件');
+      message.info('该评审暂无下载文件');
       return;
     }
     const url = res[0]?.extend.file.url;
