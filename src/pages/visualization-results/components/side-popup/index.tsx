@@ -202,7 +202,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     manual: true,
     onSuccess(data) {
       if (data) {
-        reviewRef.current!.innerHTML = '查看';
+        reviewRef.current!.innerHTML = '添加审阅';
         reviewRef.current!.className = 'mapSideBarlinkBtn';
       } else {
         reviewRef.current!.innerHTML = '暂无数据';
@@ -304,7 +304,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       title: '属性值',
       dataIndex: 'data',
       width: 164,
-      ellipsis: true,
+      // ellipsis: true,
       render(value: any, record: any, index: any) {
         if (record.propertyName === 'title') return null;
         if (record.propertyName === '三维模型') {
@@ -320,7 +320,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           }
         }
         if (typeof value === 'string' || typeof value === 'number')
-          return <span key={index}>{value}</span>;
+          return <span title={value + ''} key={index}>{value}</span>;
         if (record.propertyName === '多媒体') {
           return (
             <span onClick={handlerMediaClick} ref={mediaRef}>
@@ -335,7 +335,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           );
         } else if (record.propertyName === '审阅') {
           return <span onClick={() => {
-            if(reviewRef.current?.innerHTML=== "查看") {
+            if(reviewRef.current?.innerHTML=== "添加审阅") {
               onOpenAddCommentModal(value)
             }
           }} ref={reviewRef}>暂无权限</span>
@@ -629,10 +629,12 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       </Modal>
       {
         rightSidebarVisible ? <div
-          title={'项目名称：' + data[1]}
+
           className={styles.sidePopupWrap}
         >
-          <div className={styles.title}>
+          <div className={styles.title}
+                    title={'项目名称：' + data[1]}
+          >
             <span className={styles.head}>项目名称：</span>
             <span className={styles.body}>{data[1]}</span>
           </div>

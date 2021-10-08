@@ -27,29 +27,7 @@ const devBaseUrl = {
   design: '/api/design/api',
 };
 
-// 在这里面不匹配的，统统都是21523端口
-const geoServerPortObject = {
-  '171.223.214.154:21563': '21561',
-  '171.223.214.154:21573': '21571',
-  '171.223.214.154:21583': '21581',
-  '171.223.214.154:21683': '21681',
-  '171.223.214.154:21693': '21691',
-  '171.223.214.154:21703': '21701',
-};
-
-const ipArray = [];
-
-const thisHost = `${window.location.hostname}:${window.location.port}`;
-const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21523';
-// const geoServerPort = geoServerPortObject[thisHost] ? geoServerPortObject[thisHost] : '21571';
-
-const geoServerBaseUrl =
-  // window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
-  window.location.hostname === 'localhost' ? '171.223.214.154' : window.location.hostname;
-
-export const geoServeUrl = !ipArray.includes(`${window.location.hostname}`)
-  ? `${document.location.protocol}//${geoServerBaseUrl}:${geoServerPort}/geoserver/pdd/ows`
-  : `${document.location.protocol}//${window.location.hostname}:8099/geoserver/pdd/ows`;
+export const geoServeUrl = "/geoserver/pdd/ows/";
 
 // interface UrlSelectParams {
 //   requestSource: 'project' | 'resource';
