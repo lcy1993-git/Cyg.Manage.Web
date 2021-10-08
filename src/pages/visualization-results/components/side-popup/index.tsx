@@ -202,7 +202,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     manual: true,
     onSuccess(data) {
       if (data) {
-        reviewRef.current!.innerHTML = '查看';
+        reviewRef.current!.innerHTML = '添加审阅';
         reviewRef.current!.className = 'mapSideBarlinkBtn';
       } else {
         reviewRef.current!.innerHTML = '暂无数据';
@@ -335,7 +335,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           );
         } else if (record.propertyName === '审阅') {
           return <span onClick={() => {
-            if(reviewRef.current?.innerHTML=== "查看") {
+            if(reviewRef.current?.innerHTML=== "添加审阅") {
               onOpenAddCommentModal(value)
             }
           }} ref={reviewRef}>暂无权限</span>
