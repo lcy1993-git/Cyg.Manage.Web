@@ -305,7 +305,9 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
-                    new Date(value).getTime() > new Date(getFieldValue('startTime')).getTime() ||
+                    moment(new Date(value).getDate()).isAfter(
+                      moment(new Date(getFieldValue('startTime')).getDate()),
+                    ) ||
                     !value ||
                     !getFieldValue('startTime')
                   ) {

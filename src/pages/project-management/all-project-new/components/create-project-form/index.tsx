@@ -304,12 +304,25 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
+                  console.log(
+                    new Date(value).getDate(),
+                    '555',
+                    new Date(getFieldValue('startTime')).getDate(),
+                  );
+
                   if (
                     moment(new Date(value).getTime()).isAfter(moment(startDate)) ||
                     !value ||
-                    !getFieldValue('startTime') ||
+                    !getFieldValue('endTime') ||
                     !startDate
                   ) {
+                    if (
+                      moment(new Date(value).getDate()).isSame(
+                        moment(new Date(getFieldValue('startTime')).getDate()),
+                      )
+                    ) {
+                      return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
+                    }
                     if (
                       getFieldValue('endTime')
                         ? moment(new Date(value).getTime()).isBefore(
@@ -329,7 +342,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                     return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                   }
-
                   return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
                 },
               }),
@@ -775,14 +787,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
                 () => ({
                   validator(_, value) {
-                    console.log(value);
-
                     if (value <= 99999 && value > -1) {
-                      return Promise.resolve();
-                    }
-                    if (form.getFieldValue('dataSourceType') === 1) {
-                      console.log(1);
-
                       return Promise.resolve();
                     }
                     if (value > 99999) {
