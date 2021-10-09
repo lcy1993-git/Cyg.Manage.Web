@@ -618,13 +618,11 @@ const AllProject: React.FC = () => {
   });
 
   useEffect(() => {
-    if (allProjectSearchProjectId && allProjectAreaInfo) {
+    if (allProjectSearchProjectId) {
       // TODO 有projectName的时候设置projectName
       searchByParams({
         ...searchParams,
         projectId: allProjectSearchProjectId,
-        areaType: allProjectAreaInfo.areaLevel,
-        areaId: allProjectAreaInfo.areaId,
         keyWord,
         statisticalCategory,
       });
