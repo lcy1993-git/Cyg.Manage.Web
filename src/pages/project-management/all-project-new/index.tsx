@@ -57,6 +57,30 @@ const statisticsObject = {
   '4': '被共享的项目',
 };
 
+const defaultParams = {
+  category: [],
+  stage: [],
+  constructType: [],
+  nature: [],
+  kvLevel: [],
+  status: [],
+  majorCategory: [],
+  pType: [],
+  reformAim: [],
+  classification: [],
+  attribute: [],
+  sourceType: [],
+  identityType: [],
+  areaType: '-1',
+  areaId: '',
+  dataSourceType: [],
+  logicRelation: 2,
+  startTime: '',
+  endTime: '',
+  designUser: '',
+  surveyUser: '',
+};
+
 const AllProject: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('');
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1');
@@ -621,24 +645,26 @@ const AllProject: React.FC = () => {
     if (allProjectSearchProjectId) {
       // TODO 有projectName的时候设置projectName
       searchByParams({
-        ...searchParams,
+        ...defaultParams,
         projectId: allProjectSearchProjectId,
-        keyWord,
-        statisticalCategory,
       });
       setAllProjectSearchProjectId?.('');
+      setSearchParams(defaultParams);
+      setStatisticalCategory("-1");
+      setKeyWord("");
     }
     if (allProjectSearchType && allProjectAreaInfo) {
       // TODO 有projectName的时候设置projectName
       searchByParams({
-        ...searchParams,
+        ...defaultParams,
         statisticalCategory: allProjectSearchType,
         areaType: allProjectAreaInfo.areaLevel,
         areaId: allProjectAreaInfo.areaId,
       });
       setStatisticalCategory(allProjectSearchType);
+      setKeyWord("");
       setSearchParams({
-        ...searchParams,
+        ...defaultParams,
         areaType: allProjectAreaInfo.areaLevel!,
         areaId: allProjectAreaInfo.areaId!,
       });
@@ -648,19 +674,20 @@ const AllProject: React.FC = () => {
       setAllProjectSearchPerson?.('');
 
       setSearchParams({
-        ...searchParams,
+        ...defaultParams,
         surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
         designUser: String(allProjectSearchPerson),
         areaType: allProjectAreaInfo.areaLevel!,
         areaId: allProjectAreaInfo.areaId!,
       });
-
+      setStatisticalCategory("-1");
+      setKeyWord("");
       // TODO 有人的时候设置人
       searchByParams({
-        ...searchParams,
-        keyWord,
-        statisticalCategory,
+        ...defaultParams,
+        keyWord: "",
+        statisticalCategory: "-1",
         surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
         designUser: String(allProjectSearchPerson),
