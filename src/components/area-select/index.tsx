@@ -86,7 +86,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
         setCitySelectData([{label: "-全部-", value: "", children: []},...newCityData])
         setCityInfo(undefined)
         setAreaInfo(undefined)
-        onChange?.({ provinceId: option.value, cityId: "", areaId: "", cityData: [], areaData: [], provinceInfo: option, cityInfo, areaInfo})
+        onChange?.({ provinceId: option.value, cityId: "", areaId: "", cityData: [{label: "-全部-", value: "", children: []},...newCityData], areaData: [], provinceInfo: option, cityInfo: undefined, areaInfo: undefined})
     }
     // 市级变化事件
     const cityChangeEvent = (value: string, option: any) => {
@@ -100,12 +100,12 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>,) => {
         })
         setAreaSelectData([{label: "-全部-", value: "", children: []},...newAreaData])
         setAreaInfo(undefined)
-        onChange?.({ provinceId: provinceInfo?.value, cityId: option.value, areaId: "" , cityData: citySelectData, areaData: [], provinceInfo, cityInfo: option, areaInfo})
+        onChange?.({ provinceId: provinceInfo?.value, cityId: option.value, areaId: "" , cityData: citySelectData, areaData: [{label: "-全部-", value: "", children: []},...newAreaData], provinceInfo, cityInfo: option, areaInfo: undefined})
     }
     // 地区变化事件
     const areaChangeEvent = (value: string, option: any) => {
         setAreaInfo(option)
-        onChange?.({ provinceId: provinceInfo?.value, cityId: areaInfo?.value, areaId: option.value,cityData: citySelectData, areaData: areaSelectData,provinceInfo, cityInfo, areaInfo: option})
+        onChange?.({ provinceId: provinceInfo?.value, cityId: cityInfo?.value, areaId: option.value,cityData: citySelectData, areaData: areaSelectData,provinceInfo, cityInfo, areaInfo: option})
     }
 
     const hasSelectTipInfo = useMemo(() => {

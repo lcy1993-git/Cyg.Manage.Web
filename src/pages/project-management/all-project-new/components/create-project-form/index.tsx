@@ -304,12 +304,28 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
+                  console.log(
+                    new Date(value).getDate(),
+                    '555',
+                    new Date(getFieldValue('startTime')).getDate(),
+                  );
+
                   if (
                     moment(new Date(value).getTime()).isAfter(moment(startDate)) ||
+                    moment(new Date(value).getDate()).isAfter(
+                      moment(new Date(getFieldValue([field.fieldKey, 'startTime'])).getDate()),
+                    ) ||
                     !value ||
-                    !getFieldValue('startTime') ||
+                    !getFieldValue('endTime') ||
                     !startDate
                   ) {
+                    if (
+                      moment(new Date(value).getDate()).isSame(
+                        moment(new Date(getFieldValue('startTime')).getDate()),
+                      )
+                    ) {
+                      return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
+                    }
                     if (
                       getFieldValue('endTime')
                         ? moment(new Date(value).getTime()).isBefore(
@@ -329,7 +345,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                     return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                   }
-
                   return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
                 },
               }),
@@ -681,8 +696,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 placeholder="请选择"
                 onChange={(value: any) => {
                   if (value === 2 || value === 1) {
-                    if (!field.fieldKey) {
+                    if (field.fieldKey === undefined) {
                       form.resetFields(['disclosureRange', 'pileRange']);
+
                       // form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                     } else {
                       const projectsInfo = form.getFieldValue('projects');
@@ -696,6 +712,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                   }
                   setDataSourceType(value);
+                  if (field) {
+                    // 当有field的时候，重新触发校验
+                    form.validateFields();
+                  }
                   if (isNumber(index)) {
                     const copyData = [...copyFlag!];
                     // console.log(index)

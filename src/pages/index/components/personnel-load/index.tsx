@@ -16,17 +16,27 @@ interface Props {
   currentAreaInfo: AreaInfo;
 }
 
+const areaTypeObj = {
+  "1": "-1",
+  "2": "1",
+  "3": "2"
+}
+
 const PersonnelLoad: React.FC<Props> = (props) => {
   const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props;
   const [activeKey, setActiveKey] = useState<string>('person');
 
-  const { setAllProjectSearchPerson } = useLayoutStore();
+  const { setAllProjectSearchPerson,setAllProjectAreaInfo } = useLayoutStore();
 
   useEffect(() => {
     //@ts-ignore
     window.toAllProject = (personId: string) => {
-      //@ts-ignore
-      setAllProjectSearchPerson(personId);
+
+      setAllProjectSearchPerson?.(personId);
+      setAllProjectAreaInfo?.({
+        areaId: currentAreaInfo.areaId,
+        areaLevel: areaTypeObj[currentAreaInfo.areaLevel!],
+      })
       history.push('/project-management/all-project');
     };
     return () => {

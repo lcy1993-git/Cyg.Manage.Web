@@ -172,28 +172,28 @@ const InfoManage: React.FC = () => {
               (isChecked ? (
                 <span
                   style={{ cursor: 'pointer' }}
-                  className="colorPrimary"
+                  className="colorRed"
                   onClick={() => updateStatus(record.id, isChecked)}
                 >
-                  启用
+                  禁用
                 </span>
               ) : (
                 <span
                   onClick={() => updateStatus(record.id, isChecked)}
                   style={{ cursor: 'pointer' }}
-                  className="colorRed"
+                  className="colorPrimary"
                 >
-                  禁用
+                  启用
                 </span>
               ))}
             {!buttonJurisdictionArray?.includes('start-forbid') &&
               (isChecked ? (
-                <span style={{ cursor: 'pointer' }} className="colorPrimary">
-                  启用
-                </span>
-              ) : (
                 <span style={{ cursor: 'pointer' }} className="colorRed">
                   禁用
+                </span>
+              ) : (
+                <span style={{ cursor: 'pointer' }} className="colorPrimary">
+                  启用
                 </span>
               ))}
           </>

@@ -252,9 +252,9 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
 
   return (
     <GeneralTable
-      defaultPageSize={20}
+      // defaultPageSize={10}
       size="middle"
-      scroll={{ x: 3000, y: 524 }}
+      scroll={{ x: 3600 }}
       ref={tableRef}
       titleSlot={titleSlotElement}
       buttonLeftContentSlot={searchComponent}

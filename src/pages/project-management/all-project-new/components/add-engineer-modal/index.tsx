@@ -120,7 +120,7 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
       destroyOnClose
     >
       <Form form={form} preserve={false}>
-        <CreateEngineer form={form} setCurrent={setCurrent} current={current} />
+        <CreateEngineer form={form} current={current} />
       </Form>
     </Modal>
   );

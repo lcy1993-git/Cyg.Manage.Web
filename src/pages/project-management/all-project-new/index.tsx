@@ -4,7 +4,7 @@ import TableSearch from '@/components/table-search';
 import React, { useState } from 'react';
 import AllStatistics from './components/all-statistics';
 import SingleStatistics from './components/single-statistics';
-import { Button, Input, Spin, Tooltip, Popconfirm, message, Menu, Modal } from 'antd';
+import { Button, Input, Spin, Tooltip, message, Menu, Modal } from 'antd';
 import styles from './index.less';
 import EngineerTable from './components/engineer-table';
 import { useRef } from 'react';
@@ -46,7 +46,6 @@ import AddFavoriteModal from './components/add-favorite-modal';
 import FavoriteList from './components/favorite-list';
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list';
 import { useMemo } from 'react';
-import ModalConfirm from '@/components/modal-confirm';
 
 const { Search } = Input;
 
@@ -143,9 +142,11 @@ const AllProject: React.FC = () => {
     setAllProjectSearchProjectId,
     setAllProjectSearchPerson,
     setAllProjectSearchType,
+    setAllProjectAreaInfo,
     allProjectSearchPerson,
     allProjectSearchProjectId,
     allProjectSearchType,
+    allProjectAreaInfo,
   } = useLayoutStore();
 
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
@@ -203,8 +204,6 @@ const AllProject: React.FC = () => {
   };
 
   const statisticsClickEvent = (statisticsType: string) => {
-    console.log(selectedFavId, '11');
-
     setStatisticalCategory(statisticsType);
     searchByParams({
       ...searchParams,
@@ -271,8 +270,6 @@ const AllProject: React.FC = () => {
 
     await checkCanArrange(projectIds);
 
-    console.log(tableSelectData?.[0].projectInfo);
-
     // 如果只有一个项目需要安排的时候，需要去检查他是不是被安排了部组
     if (projectIds.length === 1) {
       const thisProjectId = projectIds[0];
@@ -296,18 +293,19 @@ const AllProject: React.FC = () => {
         setCurrentArrangeProjectType('2');
         setCurrentArrangeProjectIsArrange('');
       }
-    }
-
-    //根据现场数据来源数组 判断点击安排进入后的提示信息
-    const typeArray = tableSelectData?.[0].projectInfo?.dataSourceType;
-    if (typeArray?.length != 1 && !typeArray?.includes(0)) {
-      setDataSourceType(-1);
-    }
-    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {
-      setDataSourceType(1);
-    }
-    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(2)) {
-      setDataSourceType(2);
+    } else {
+      //根据现场数据来源数组 判断点击安排进入后的提示信息
+      const typeArray = tableSelectData.map((item) => item.projectInfo.dataSourceType).flat(1);
+      console.log(typeArray);
+      if (typeArray?.length != 1 && !typeArray?.includes(0)) {
+        setDataSourceType(-1);
+      }
+      if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {
+        setDataSourceType(1);
+      }
+      if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(2)) {
+        setDataSourceType(2);
+      }
     }
 
     setSelectProjectIds(projectIds);
@@ -357,7 +355,20 @@ const AllProject: React.FC = () => {
     const { allotCompanyGroup = '' } = resData;
 
     setIfCanEdit(resData);
-
+    const typeArray = tableSelectData.map((item) => item.projectInfo.dataSourceType).flat(1);
+    console.log(typeArray);
+    if (typeArray?.length != 1 && typeArray?.includes(0)) {
+      setDataSourceType(0);
+    }
+    if (typeArray?.length != 1 && !typeArray?.includes(0)) {
+      setDataSourceType(-1);
+    }
+    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {
+      setDataSourceType(1);
+    }
+    if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(2)) {
+      setDataSourceType(2);
+    }
     setEditCurrentAllotCompanyId(allotCompanyGroup);
     setSelectProjectIds(projectIds);
     setEditArrangeModalVisible(true);
@@ -589,7 +600,7 @@ const AllProject: React.FC = () => {
       {buttonJurisdictionArray?.includes('all-project-recall-apply-knot') && (
         <Menu.Item onClick={() => revokeConfirm()}>撤回结项</Menu.Item>
       )}
-      {buttonJurisdictionArray?.includes('all-project-kont-pass') && (
+      {buttonJurisdictionArray?.includes('all-project-kont-approve') && (
         <Menu.Item onClick={() => auditKnotEvent()}>结项审批</Menu.Item>
       )}
       {/* {buttonJurisdictionArray?.includes('all-project-kont-no-pass') && (
@@ -607,26 +618,35 @@ const AllProject: React.FC = () => {
   });
 
   useEffect(() => {
-    if (allProjectSearchProjectId) {
+    if (allProjectSearchProjectId && allProjectAreaInfo) {
       // TODO 有projectName的时候设置projectName
       searchByParams({
         ...searchParams,
         projectId: allProjectSearchProjectId,
+        areaType: allProjectAreaInfo.areaLevel,
+        areaId: allProjectAreaInfo.areaId,
         keyWord,
         statisticalCategory,
       });
       setAllProjectSearchProjectId?.('');
     }
-    if (allProjectSearchType) {
+    if (allProjectSearchType && allProjectAreaInfo) {
       // TODO 有projectName的时候设置projectName
       searchByParams({
         ...searchParams,
         statisticalCategory: allProjectSearchType,
+        areaType: allProjectAreaInfo.areaLevel,
+        areaId: allProjectAreaInfo.areaId,
       });
       setStatisticalCategory(allProjectSearchType);
+      setSearchParams({
+        ...searchParams,
+        areaType: allProjectAreaInfo.areaLevel!,
+        areaId: allProjectAreaInfo.areaId!,
+      });
       setAllProjectSearchType?.('');
     }
-    if (allProjectSearchPerson) {
+    if (allProjectSearchPerson && allProjectAreaInfo) {
       setAllProjectSearchPerson?.('');
 
       setSearchParams({
@@ -634,6 +654,8 @@ const AllProject: React.FC = () => {
         surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
         designUser: String(allProjectSearchPerson),
+        areaType: allProjectAreaInfo.areaLevel!,
+        areaId: allProjectAreaInfo.areaId!,
       });
 
       // TODO 有人的时候设置人
@@ -644,6 +666,8 @@ const AllProject: React.FC = () => {
         surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
         designUser: String(allProjectSearchPerson),
+        areaType: allProjectAreaInfo.areaLevel!,
+        areaId: allProjectAreaInfo.areaId!,
       });
     }
   }, [allProjectSearchPerson, allProjectSearchProjectId, allProjectSearchType]);
@@ -677,19 +701,21 @@ const AllProject: React.FC = () => {
 
   return (
     <>
-      <Tooltip title="工程收藏夹">
-        <div
-          className={styles.folderButton}
-          onClick={() => {
-            setSideVisible(true);
-            setKeyWord('');
-          }}
-          style={{ display: sideVisible ? 'none' : 'block' }}
-        >
-          <img src={imgSrc} alt="" />
-          <div>收藏</div>
-        </div>
-      </Tooltip>
+      {buttonJurisdictionArray?.includes('engineer-favorite') && (
+        <Tooltip title="工程收藏夹">
+          <div
+            className={styles.folderButton}
+            onClick={() => {
+              setSideVisible(true);
+              setKeyWord('');
+            }}
+            style={{ display: sideVisible ? 'none' : 'block' }}
+          >
+            <img src={imgSrc} alt="" />
+            <div>收藏</div>
+          </div>
+        </Tooltip>
+      )}
       <PageCommonWrap noPadding={true} noColor={true}>
         <div className={styles.allProjectPage}>
           <div className={styles.projectsAndFavorite}>
@@ -816,7 +842,8 @@ const AllProject: React.FC = () => {
                         </Button>
                       </Dropdown>
                     )}
-                    {buttonJurisdictionArray?.includes('all-project-export') && (
+                    {(buttonJurisdictionArray?.includes('all-project-export-all') ||
+                      buttonJurisdictionArray?.includes('all-project-export-selected')) && (
                       <div className="mr7">
                         <TableExportButton
                           exportUrl="/Porject/Export"
@@ -835,8 +862,7 @@ const AllProject: React.FC = () => {
                     )}
                     {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
                       buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
-                      buttonJurisdictionArray?.includes('all-project-kont-pass') ||
-                      buttonJurisdictionArray?.includes('all-project-kont-no-pass')) && (
+                      buttonJurisdictionArray?.includes('all-project-kont-approve')) && (
                       <Dropdown overlay={postProjectMenu}>
                         <Button className="mr7">
                           结项 <DownOutlined />

@@ -13,6 +13,7 @@ import CheckMapping from '../check-mapping-form';
 import CreateMap from '../create-map';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import ModalConfirm from '@/components/modal-confirm';
+const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
 const HasMapModal: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -32,16 +33,24 @@ const HasMapModal: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        <Button className="mr7" type="primary" onClick={() => createMapEvent()}>
-          <ImportOutlined />
-          新建映射
-        </Button>
-
-        <Button className="mr7" onClick={() => editMapEvent()}>
-          编辑映射
-        </Button>
-
-        <ModalConfirm changeEvent={deleteMapEvent} selectData={tableSelectRows} title="删除映射" />
+        {buttonJurisdictionArray?.includes('new-mapping') && (
+          <Button className="mr7" type="primary" onClick={() => createMapEvent()}>
+            <ImportOutlined />
+            新建映射
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('edit-mapping') && (
+          <Button className="mr7" onClick={() => editMapEvent()}>
+            编辑映射
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('delete-mapping') && (
+          <ModalConfirm
+            changeEvent={deleteMapEvent}
+            selectData={tableSelectRows}
+            title="删除映射"
+          />
+        )}
       </div>
     );
   };
@@ -104,7 +113,7 @@ const HasMapModal: React.FC = () => {
       render: (text: any, record: any) => {
         return (
           <>
-            {buttonJurisdictionArray?.includes('inventory-check') && (
+            {buttonJurisdictionArray?.includes('check-inventory-mapping') && (
               <span
                 onClick={() => checkMapEvent(record.inventoryOverviewId, record.name, record.id)}
                 className={styles.checkHasMap}
@@ -112,7 +121,7 @@ const HasMapModal: React.FC = () => {
                 {record.resourceLibName}
               </span>
             )}
-            {!buttonJurisdictionArray?.includes('inventory-check') && (
+            {!buttonJurisdictionArray?.includes('check-inventory-mapping') && (
               <span>{record.resourceLibName}</span>
             )}
           </>

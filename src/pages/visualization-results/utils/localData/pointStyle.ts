@@ -45,21 +45,38 @@ const pointStyle = function (type: string, feature: Feature, selected: boolean, 
     let isDismantle;
 
     if(media) {
-        return new ClassStyle({
+        return [
+            new ClassStyle({
               text: new Text({
-                  font: 'Normal 15px webgisIconFont',
+                  font: 'Normal 22px webgisIconFont',
                   text: '\ue8f7',
-                  offsetX: 10,
-                  offsetY: -10,
+                  offsetX: 15,
+                  offsetY: -15,
                   fill: new Fill({
                     color: 'rgba(156, 254, 237, 1)',
                 }),
                 stroke: new Stroke({
                     color: 'rgba(82, 45, 85, 1)',
-                    width: 1
+                    width: 5
                 })
               })
-            })
+            }),
+            new ClassStyle({
+                text: new Text({
+                    font: 'Normal 12px webgisIconFont',
+                    text: '\ue620',
+                    offsetX: 16,
+                    offsetY: -15,
+                    fill: new Fill({
+                      color: 'rgba(82, 45, 85, 1)',
+                  }),
+                  stroke: new Stroke({
+                      color: 'rgba(82, 45, 85, 1)',
+                      width: 1
+                  })
+                })
+              })
+        ]
     }
 
     if (type.indexOf('mark') >= 0) {
@@ -93,19 +110,19 @@ const pointStyle = function (type: string, feature: Feature, selected: boolean, 
             iconFontText = '\ue896';
         }
         style = new ClassStyle({
-            text: new Text({
-                font: 'Normal ' + size + 'px ' + iconFont,
-                text: iconFontText,
-                rotation: (feature.getProperties().azimuth + 90) * (Math.PI / 180) * -1,
-                offsetY: 13,
-                fill: new Fill({
-                    color: textFillColor
-                }),
-                stroke: new Stroke({
-                    color: 'rgba(255,255,255,0.5)'
-                })
-            })
-        });
+                    text: new Text({
+                        font: 'Normal ' + size + 'px ' + iconFont,
+                        text: iconFontText,
+                        rotation: (feature.getProperties().azimuth + 90) * (Math.PI / 180) * -1,
+                        offsetY: 13,
+                        fill: new Fill({
+                            color: textFillColor
+                        }),
+                        stroke: new Stroke({
+                            color: 'rgba(255,255,255,0.5)'
+                        })
+                    })
+                });
         return style;
     }
 
