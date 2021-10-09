@@ -253,11 +253,23 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
-                    moment(new Date(value).getTime()).isBefore(moment(endDate)) ||
                     !value ||
                     !getFieldValue('startTime') ||
-                    !endDate
+                    endDate ||
+                    moment(value.format('YYYY-MM-DD')).isBefore(
+                      moment(endDate).format('YYYY-MM-DD'),
+                    )
                   ) {
+                    if (
+                      moment(moment(new Date(value)).format('YYYY-MM-DD')).isAfter(
+                        moment(endDate).format('YYYY-MM-DD'),
+                      ) ||
+                      moment(moment(new Date(value)).format('YYYY-MM-DD')).isSame(
+                        moment(endDate).format('YYYY-MM-DD'),
+                      )
+                    ) {
+                      return Promise.reject('"项目开始日期"必须早于"项目结束日期"');
+                    }
                     if (
                       getFieldValue('startTime')
                         ? moment(new Date(value).getTime()).isAfter(
@@ -277,7 +289,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                     return Promise.reject('"项目开始日期"不得早于"工程开始日期"');
                   }
-                  return Promise.reject('"项目开始日期"必须早于"项目结束日期"');
+                  return Promise.resolve();
                 },
               }),
             ]}
@@ -304,24 +316,20 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  console.log(
-                    new Date(value).getDate(),
-                    '555',
-                    new Date(getFieldValue('startTime')).getDate(),
-                  );
-
                   if (
-                    moment(new Date(value).getTime()).isAfter(moment(startDate)) ||
-                    moment(new Date(value).getDate()).isAfter(
-                      moment(new Date(getFieldValue([field.fieldKey, 'startTime'])).getDate()),
+                    moment(value.format('YYYY-MM-DD')).isAfter(
+                      moment(startDate).format('YYYY-MM-DD'),
                     ) ||
                     !value ||
                     !getFieldValue('endTime') ||
-                    !startDate
+                    startDate
                   ) {
                     if (
-                      moment(new Date(value).getDate()).isSame(
-                        moment(new Date(getFieldValue('startTime')).getDate()),
+                      moment(value.format('YYYY-MM-DD')).isBefore(
+                        moment(startDate).format('YYYY-MM-DD'),
+                      ) ||
+                      moment(moment(new Date(value)).format('YYYY-MM-DD')).isSame(
+                        moment(startDate).format('YYYY-MM-DD'),
                       )
                     ) {
                       return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
@@ -345,7 +353,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                     return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                   }
-                  return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
+                  return Promise.resolve();
                 },
               }),
             ]}
