@@ -137,18 +137,19 @@ const TotalTable: React.FC<Props> = () => {
       align: 'center',
       ellipsis: true,
     },
-    {
-      dataIndex: 'costNo',
-      key: 'costNo',
-      title: '费用编码',
-      width: 120,
-      align: 'center',
-    },
+    // {
+    //   dataIndex: 'costNo',
+    //   key: 'costNo',
+    //   title: '费用编码',
+    //   width: 120,
+    //   align: 'center',
+    // },
     {
       dataIndex: 'remark',
       key: 'remark',
       title: '备注',
-      width: 120,
+      width: 220,
+      ellipsis: true,
       align: 'center',
     },
   ];
