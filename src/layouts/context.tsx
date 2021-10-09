@@ -7,16 +7,12 @@ interface LayoutContextValue {
   clearAgainLogin?: () => void;
   mapSelectCity?: string;
   allProjectSearchProjectId?: string;
-  allProjectSearchPerson?: string;
-  allProjectSearchType?: string;
-  allProjectAreaInfo?: AreaInfo;
+  allProjectSearchParams?: any;
   setResourceManageFlag?: (value: boolean) => void;
   setMapSelectCity?: (value: string) => void;
   setWorkHandoverFlag?: (value: boolean) => void;
   setAllProjectSearchProjectId?: (value: string) => void;
-  setAllProjectSearchPerson?: (value: string) => void;
-  setAllProjectSearchType?: (value: string) => void;
-  setAllProjectAreaInfo?: (value?: AreaInfo) => void;
+  setAllProjectSearchParams?: (value?: any) => void;
   removeTab?: (value: string) => void;
 }
 
