@@ -1,14 +1,11 @@
-import React, { useRef, useState } from 'react';
-import ToDo from '../components/to-do-second';
+import { divide } from "@umijs/deps/compiled/lodash"
+import VirtualScroll from "./components/virtual-scroll"
 
+const Test = () => {
+  const data = Array(100).fill(1)
+  console.log(data);
+  
+  return <VirtualScroll data={data} component={() => <div style={{height: 30, border: "1px solid red"}}>123</div>}/>
+}
 
-
-const TestPage = () => {
-  return (
-    <div style={{ width: '400px', height: '600px' }}>
-      <ToDo currentAreaInfo={{areaId: "", areaLevel: "1"}} />
-    </div>
-  );
-};
-
-export default TestPage;
+export default Test
