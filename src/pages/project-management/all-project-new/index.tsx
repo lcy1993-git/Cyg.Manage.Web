@@ -1032,4 +1032,4 @@ const AllProject: React.FC = () => {
   );
 };
 
-export default AllProject;
+export default React.memo(AllProject);
