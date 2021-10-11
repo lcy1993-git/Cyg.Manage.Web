@@ -19,19 +19,18 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
 }) => {
 
   const [step, setStep] = useState<Step>(email ? 0 : 1)
-  // const [step, setStep] = useState<Step>(2)
 
   const [currentEmail, setCurrentEmail] = useState<string>("")
 
   const bindEmailRef = useRef<Input>(null);
   const codeRef = useRef<Input>(null)
 
-
   const bindEmailHandler = () => {
     const emailNumber = bindEmailRef.current!.input.value;
     if (!regEmail.test(emailNumber)) {
-
       message.error("邮箱格式错误")
+    } else if (bindEmailRef.current!.input.value.length > 20) {
+      message.error('邮箱字符过长');
     } else if (bindEmailRef.current!.input.value === email) {
       message.error("更换的邮箱号不能与原邮箱号相同")
     } else {
@@ -73,14 +72,14 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
       return (
         <>
           <div className={styles.minHeight60}>
-            <span style={{display: "inline-block", width: "56px"}}>邮箱: </span>
+            <span style={{ display: "inline-block", width: "56px" }}>邮箱: </span>
             {currentEmail}验证邮件已发出，去<span className={styles.link}>查收</span>或<span className={styles.link}>再发一次</span>
           </div>
           <div className={classNames(styles.minHeight60, styles.flex)}>
             {/* <PersonInfoModalVerificationCode type={4} phoneNumber={currentEmail} canSend={true} /> */}
             <div>验证码：</div>
             <div>
-            <Input placeholder="验证码" ref={codeRef}></Input>
+              <Input placeholder="验证码" ref={codeRef}></Input>
             </div>
           </div>
           <div className={classNames(styles.minHeight60, styles.flex, styles.ml60)}>

@@ -106,7 +106,6 @@ const MediaImage: React.FC<MediaImageProps> = ({
         index = 0
       }
     } while (content[index]?.type === 2)
-    console.log(content.map((item) => item.filePath))
     setFsIndex(index)
   }
 

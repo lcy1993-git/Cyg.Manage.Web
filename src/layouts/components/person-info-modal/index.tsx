@@ -11,6 +11,7 @@ import { Button } from 'antd';
 // import EmailInfo from './components/email-info';
 import { useRef } from 'react';
 import { useGetUserInfo } from '@/utils/hooks';
+import EmailInfo from './components/email-info';
 
 interface PersonInfoModalProps {
   visible: boolean;
@@ -84,37 +85,38 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
         name={userInfo?.email}
         title="邮箱"
         expandState={closeState}
-        editNode={
-          <div className={styles.nodeWrap}>
-            <div className={styles.input}>
-              <Input ref={emailRef} style={{ width: '90%' }} placeholder="请填写您的邮箱"></Input>
-            </div>
-            <div className={styles.button}>
-              <Button
-                type="primary"
-                onClick={() => {
-                  const regEmail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
-                  if(emailRef.current!.input.value.length > 20){
-                    message.error('邮箱字符过长');
-                  } else if (!(regEmail.test(emailRef.current!.input.value) || emailRef.current!.input.value === "")) {
-                    message.error('邮箱格式有误');
-                    return;
-                  } else if (emailRef.current!.input.value === userInfo?.email) {
-                    message.error('更换的邮箱号不能与原邮箱号相同');
-                    return;
-                  } else {
-                    editUserInfo({ ...userInfo, email: emailRef.current!.input.value }).then(() => {
-                      run();
-                      message.success('更新成功');
-                    });
-                  }
-                }}
-              >
-                保存
-              </Button>
-            </div>
-          </div>
-        }
+        editNode={<EmailInfo email={userInfo?.email} refresh={run} />}
+        // editNode={
+        //   <div className={styles.nodeWrap}>
+        //     <div className={styles.input}>
+        //       <Input ref={emailRef} style={{ width: '90%' }} placeholder="请填写您的邮箱"></Input>
+        //     </div>
+        //     <div className={styles.button}>
+        //       <Button
+        //         type="primary"
+        //         onClick={() => {
+        //           const regEmail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        //           if(emailRef.current!.input.value.length > 20){
+        //             message.error('邮箱字符过长');
+        //           } else if (!(regEmail.test(emailRef.current!.input.value) || emailRef.current!.input.value === "")) {
+        //             message.error('邮箱格式有误');
+        //             return;
+        //           } else if (emailRef.current!.input.value === userInfo?.email) {
+        //             message.error('更换的邮箱号不能与原邮箱号相同');
+        //             return;
+        //           } else {
+        //             editUserInfo({ ...userInfo, email: emailRef.current!.input.value }).then(() => {
+        //               run();
+        //               message.success('更新成功');
+        //             });
+        //           }
+        //         }}
+        //       >
+        //         保存
+        //       </Button>
+        //     </div>
+        //   </div>
+        // }
       ></PersonInfoRow>
 
       <PersonInfoRow
