@@ -411,7 +411,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
 
   const handlerOtherClick = () => {
     const id = mapStatisticData.find((item) => item.areaCode.includes('_other'))?.areaCode ?? '';
-    localStorage.setItem('selectCity', id);
+    setMapSelectCity?.(id);
     history.push('/visualization-results/result-page');
   };
 
