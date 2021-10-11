@@ -278,7 +278,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
+        // buttonRightContentSlot={tableElement}
         columns={columns}
         requestSource="resource"
         url="/PoleType/GetPageList"
