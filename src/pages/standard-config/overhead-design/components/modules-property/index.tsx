@@ -3,11 +3,11 @@ import TableSearch from '@/components/table-search';
 import {
   EditOutlined,
   PlusOutlined,
-  DeleteOutlined,
+
   FileTextOutlined,
   FileOutlined,
 } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
+import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -353,7 +353,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   //保存修改的模块属性
   const sureEditAttribute = () => {
     const editData = AttributeData!;
-
+    console.log(AttributeData)
     editAttributeForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {

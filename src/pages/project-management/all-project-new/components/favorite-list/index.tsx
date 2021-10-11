@@ -11,6 +11,7 @@ import TitleTreeNode from './components/title-tree-node';
 import findCurrentNode from './utils';
 import { mixinDeps, getParentIds } from './utils';
 import ImageIcon from '@/components/image-icon';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 interface FavoriteListParams {
   visible?: boolean;
   setVisible?: Dispatch<SetStateAction<boolean>>;
@@ -41,7 +42,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   } = props;
   const [treeData, setTreeData] = useState<treeDataItems[]>([]);
   const [parentId, setParentId] = useState<string>('');
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [allExpand, setAllExpand] = useState<boolean>(true);
   const [isEdit, setIsEdit] = useState<string>('');
   const [selectkey, setSelectkey] = useState<string>('');
@@ -134,26 +135,30 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       <div className={styles.favHeader}>
         <div className={styles.favTitle}>收藏夹</div>
         <div className={styles.headBtn}>
-          <Button className="mr7" onClick={createEvent}>
-            <PlusOutlined style={{ color: '#aeaeae' }} />
-            新建
-          </Button>
-          <Button
-            onClick={() => {
-              setVisible?.(false);
-              setIsEdit('');
-              setSelectkey('');
-              // setAllExpand(true);
-              getFavId?.('');
-              getFavName?.('');
-              setStatisticalTitle?.('-1');
-              finishEvent?.();
-            }}
-            style={{ display: 'flex', alignItems: 'center' }}
-          >
-            <ImageIcon width={18} height={18} imgUrl="exit.png" marginRight={8} />
-            退出
-          </Button>
+          {buttonJurisdictionArray?.includes('new-favorite') && (
+            <Button className="mr7" onClick={createEvent}>
+              <PlusOutlined style={{ color: '#aeaeae' }} />
+              新建
+            </Button>
+          )}
+          {buttonJurisdictionArray?.includes('quit-favorite') && (
+            <Button
+              onClick={() => {
+                setVisible?.(false);
+                setIsEdit('');
+                setSelectkey('');
+                // setAllExpand(true);
+                getFavId?.('');
+                getFavName?.('');
+                setStatisticalTitle?.('-1');
+                finishEvent?.();
+              }}
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
+              <ImageIcon width={18} height={18} imgUrl="exit.png" marginRight={8} />
+              退出
+            </Button>
+          )}
         </div>
       </div>
 

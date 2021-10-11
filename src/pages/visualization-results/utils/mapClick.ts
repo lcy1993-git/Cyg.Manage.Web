@@ -509,6 +509,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         const materialModifyList = await getDesignMaterialModifyList({
           deviceId: featureId,
           projectId: feature.getProperties().project_id,
+          layerType: layerType,
           // deviceType: "string"
         })
 
@@ -548,8 +549,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     // }
 
     let threeMode = getMode(layerName, feature.getProperties());
-    if(threeMode && threeMode !== '')
-      pJSON['三维模型'] = threeMode;
+    if(threeMode && threeMode !== '') {
+      // dev上的三维模型需要关闭
+      // pJSON['三维模型'] = threeMode;
+    }
+
 
     // 轨迹线不弹出侧边栏
     if (elementTypeEnum[layerName] === '轨迹线') {
@@ -623,6 +627,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           const materialModifyList = await getDesignMaterialModifyList({
             deviceId: featureId,
             projectId: feature.getProperties().project_id,
+            layerType: layerType,
             // deviceType: "string"
           })
 

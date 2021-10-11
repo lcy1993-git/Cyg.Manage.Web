@@ -17,6 +17,7 @@ import UrlSelect from '@/components/url-select';
 import AddModuleDetailTable from './add-form';
 import EditModuleDetail from './edit-form';
 import ModalConfirm from '@/components/modal-confirm';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 interface ModuleDetailParams {
   libId: string;
   moduleId: string[];
@@ -40,7 +41,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
   const { data, run } = useRequest(getModuleDetailItem, {
     manual: true,
   });
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   // useEffect(() => {
   //   search();
   // }, [moduleId]);
@@ -237,15 +238,21 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRightSlot = (
     <>
-      <Button type="primary" className="mr7" onClick={() => addEvent()}>
-        <PlusOutlined />
-        添加
-      </Button>
-      <Button className="mr7" onClick={() => editEvent()}>
-        <EditOutlined />
-        编辑
-      </Button>
-      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      {buttonJurisdictionArray?.includes('add-module-detail') && (
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('edit-module-detail') && (
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('delete-module-detail') && (
+        <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      )}
     </>
   );
 

@@ -15,6 +15,7 @@ import { useRequest } from 'ahooks';
 import AddcableChannelDetail from './add-form';
 import EditcableChannelDetail from './edit-form';
 import ModalConfirm from '@/components/modal-confirm';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 interface ModuleDetailParams {
   libId: string;
   cableChannelId: string[];
@@ -30,7 +31,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
@@ -211,15 +212,21 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRightSlot = (
     <>
-      <Button type="primary" className="mr7" onClick={() => addEvent()}>
-        <PlusOutlined />
-        添加
-      </Button>
-      <Button className="mr7" onClick={() => editEvent()}>
-        <EditOutlined />
-        编辑
-      </Button>
-      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      {buttonJurisdictionArray?.includes('add-cableChan-detail') && (
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('edit-cableChan-detail') && (
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('delete-cableChan-detail') && (
+        <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      )}
     </>
   );
 

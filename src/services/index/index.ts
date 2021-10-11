@@ -15,6 +15,7 @@ interface HomeStatisticCommonParams {
 export interface AreaInfo {
   areaId?: string | undefined;
   areaLevel?: string | undefined;
+  cityId?: string | undefined;
 }
 export interface projectOperationLogParams {
   limit: number;

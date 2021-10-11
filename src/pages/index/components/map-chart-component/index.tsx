@@ -5,7 +5,8 @@ import {
   getMapStatisticsData,
   MapStatisticsData,
 } from '@/services/index';
-import { useLocalStorageState, useMount, useMouse, useRequest, useSize } from 'ahooks';
+import { history } from 'umi';
+import { useMount, useRequest, useSize } from 'ahooks';
 import borderStylesHTML from '../../utils/borderStylesHTML';
 import styles from './index.less';
 
@@ -16,11 +17,12 @@ import 'echarts/lib/component/tooltip';
 import { cityCodeObject } from './map-info';
 import ChartBox from '../chart-box';
 
-import ProjectNumberIcon from '@/assets/image/index/project-number.png';
+// import ProjectNumberIcon from '@/assets/image/index/project-number.png';
 import { isArray } from 'lodash';
 import { useMemo } from 'react';
 import { Button, message } from 'antd';
 import { exportHomeStatisticData } from '@/services/operation-config/cockpit';
+import { useLayoutStore } from '@/layouts/context';
 
 interface MapChartComponentProps {
   currentAreaInfo: AreaInfo;
@@ -35,17 +37,15 @@ let mapStatus = {
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const { setCurrentAreaInfo, currentAreaInfo, isConfig } = props;
-  const [activeCityCode, setActiveCityCode] = useState<string>();
-
-  const [activeAreaCode, setActiveAreaCide] = useState<string>();
 
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
-
+  const { setMapSelectCity } = useLayoutStore();
   const divRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     //@ts-ignore
     window.setSelectCity = (city: string) => {
-      localStorage.setItem('selectCity', city);
+      setMapSelectCity?.(city);
+      history.push('/visualization-results/result-page');
     };
     return () => {
       //@ts-ignore
@@ -120,9 +120,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                             <span style="color: #2AFE97">项目数量</span>: <span style="color: #fff">${
                               getMapStatisticData[nameIndex!].projectQuantity
                             }</span>
-                            <div style="color: #2AFE97">可视化成果: <a onclick=setSelectCity("${
+                            <div style="color: #2AFE97">可视化成果: <span onclick=setSelectCity("${
                               cityCodeObject[name] ?? name
-                            }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</a></div>
+                            }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</span></div>
                             
                         `
             );
@@ -194,16 +194,48 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   };
 
   const firstMapInitChartEvent = async () => {
-    const statisticData = await getStatisticData({ areaCode: '', areaType: '1' });
-    if (statisticData && isArray(statisticData) && statisticData.length === 1) {
-      const provinceStatisticData = await getStatisticData({
-        areaCode: statisticData[0].areaCode,
-        areaType: '2',
-      });
-      initChart(statisticData[0].areaCode, provinceStatisticData, '2');
-      setActiveCityCode(statisticData[0].areaCode);
+    // 初试化的时候做判断
+    if (currentAreaInfo.areaLevel === '1') {
+      const statisticData = await getStatisticData({ areaCode: '', areaType: '1' });
+      if (statisticData && isArray(statisticData) && statisticData.length === 1) {
+        const provinceStatisticData = await getStatisticData({
+          areaCode: statisticData[0].areaCode,
+          areaType: '2',
+        });
+
+        if (
+          provinceStatisticData &&
+          isArray(provinceStatisticData) &&
+          provinceStatisticData.length === 1 &&
+          !provinceStatisticData[0].areaCode.includes('othercity')
+        ) {
+          const areaStatisticData = await getStatisticData({
+            areaCode: provinceStatisticData[0].areaCode,
+            areaType: '3',
+          });
+          initChart(provinceStatisticData[0].areaCode, areaStatisticData, '3');
+          setCurrentAreaInfo({
+            areaId: provinceStatisticData[0].areaCode,
+            cityId: statisticData[0].areaCode,
+            areaLevel: '3',
+          });
+        } else {
+          initChart(statisticData[0].areaCode, provinceStatisticData, '2');
+          setCurrentAreaInfo({
+            areaId: statisticData[0].areaCode,
+            cityId: statisticData[0].areaCode,
+            areaLevel: '2',
+          });
+        }
+      } else {
+        initChart('100000', statisticData, '1');
+      }
     } else {
-      initChart('100000', statisticData, '1');
+      const provinceStatisticData = await getStatisticData({
+        areaCode: currentAreaInfo.areaId,
+        areaType: currentAreaInfo.areaLevel,
+      });
+      initChart(currentAreaInfo.areaId!, provinceStatisticData, currentAreaInfo.areaLevel!);
     }
   };
 
@@ -213,6 +245,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     currentAreaLevel: string,
   ) => {
     const option = getMapOption(currentAreaId, getMapStatisticData);
+
     const resData = await getMapData(currentAreaId);
 
     if (divRef && divRef.current) {
@@ -237,17 +270,20 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
             areaCode: cityCodeObject[name],
             areaType: String(parseFloat(currentAreaLevel) + 1),
           });
+          if (parseFloat(currentAreaLevel) + 1 === 2) {
+            setCurrentAreaInfo({
+              areaId: cityCodeObject[name],
+              cityId: cityCodeObject[name],
+              areaLevel: String(parseFloat(currentAreaLevel!) + 1),
+            });
+          } else {
+            setCurrentAreaInfo({
+              areaId: cityCodeObject[name],
+              cityId: currentAreaId,
+              areaLevel: String(parseFloat(currentAreaLevel!) + 1),
+            });
+          }
           initChart(cityCodeObject[name], statisticData, String(parseFloat(currentAreaLevel) + 1));
-          if (parseFloat(currentAreaLevel!) + 1 === 2) {
-            setActiveCityCode(cityCodeObject[name]);
-          }
-          if (parseFloat(currentAreaLevel!) + 1 === 3) {
-            setActiveAreaCide(cityCodeObject[name]);
-          }
-          setCurrentAreaInfo({
-            areaId: cityCodeObject[name],
-            areaLevel: String(parseFloat(currentAreaLevel!) + 1),
-          });
         }
       });
 
@@ -271,37 +307,43 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     const statisticData = await getStatisticData({ areaCode: '', areaType: '1' });
     initChart('100000', statisticData, '1');
 
-    setActiveCityCode('');
-    setActiveAreaCide('');
-
     setCurrentAreaInfo({
       areaId: '',
+      cityId: '',
       areaLevel: '1',
     });
   };
 
   const cityClickEvent = async () => {
-    if (!activeCityCode) {
+    if (currentAreaInfo.areaLevel === '1') {
       return;
     }
-    const statisticData = await getStatisticData({ areaCode: activeCityCode, areaType: '2' });
-    initChart(activeCityCode, statisticData, '2');
-    setActiveAreaCide('');
+    const statisticData = await getStatisticData({
+      areaCode: currentAreaInfo.cityId,
+      areaType: '2',
+    });
+    initChart(currentAreaInfo.cityId!, statisticData, '2');
+
     setCurrentAreaInfo({
-      areaId: activeCityCode,
+      areaId: currentAreaInfo.cityId,
+      cityId: currentAreaInfo.cityId,
       areaLevel: '2',
     });
   };
 
   const areaClickEvent = async () => {
-    if (!activeAreaCode) {
+    if (currentAreaInfo.areaLevel !== '3') {
       return;
     }
-    const statisticData = await getStatisticData({ areaCode: activeAreaCode, areaType: '2' });
-    initChart(activeAreaCode, statisticData, '2');
+    const statisticData = await getStatisticData({
+      areaCode: currentAreaInfo.areaId,
+      areaType: '3',
+    });
+    initChart(currentAreaInfo.areaId!, statisticData, '2');
 
     setCurrentAreaInfo({
-      areaId: activeAreaCode,
+      areaId: currentAreaInfo.areaId,
+      cityId: currentAreaInfo.cityId,
       areaLevel: '3',
     });
   };
@@ -369,7 +411,8 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
 
   const handlerOtherClick = () => {
     const id = mapStatisticData.find((item) => item.areaCode.includes('_other'))?.areaCode ?? '';
-    localStorage.setItem('selectCity', id);
+    setMapSelectCity?.(id);
+    history.push('/visualization-results/result-page');
   };
 
   return (
@@ -401,11 +444,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     <div style={{ textAlign: 'right' }}>{ohterProjectTotalNumber}个</div>
                     <div>
                       {ohterProjectTotalNumber > 0 ? (
-                        <a href="/visualization-results/result-page">
-                          <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
-                            跳转可视化
-                          </span>
-                        </a>
+                        <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
+                          跳转可视化
+                        </span>
                       ) : (
                         <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
                           跳转可视化
@@ -425,20 +466,36 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           <span className={`${styles.areaSpan} ${styles.hasChoose}`} onClick={provinceClickEvent}>
             省
           </span>
-          <span className={`${styles.splineIcon} ${activeCityCode ? styles.hasChoose : ''}`}>
+          <span
+            className={`${styles.splineIcon} ${
+              currentAreaInfo.areaLevel === '2' || currentAreaInfo.areaLevel === '3'
+                ? styles.hasChoose
+                : ''
+            }`}
+          >
             &gt;
           </span>
           <span
-            className={`${styles.areaSpan} ${activeCityCode ? styles.hasChoose : ''}`}
+            className={`${styles.areaSpan} ${
+              currentAreaInfo.areaLevel === '2' || currentAreaInfo.areaLevel === '3'
+                ? styles.hasChoose
+                : ''
+            }`}
             onClick={cityClickEvent}
           >
             市
           </span>
-          <span className={`${styles.splineIcon} ${activeAreaCode ? styles.hasChoose : ''}`}>
+          <span
+            className={`${styles.splineIcon} ${
+              currentAreaInfo.areaLevel === '3' ? styles.hasChoose : ''
+            }`}
+          >
             &gt;
           </span>
           <span
-            className={`${styles.areaSpan} ${activeAreaCode ? styles.hasChoose : ''}`}
+            className={`${styles.areaSpan} ${
+              currentAreaInfo.areaLevel === '3' ? styles.hasChoose : ''
+            }`}
             onClick={areaClickEvent}
           >
             县

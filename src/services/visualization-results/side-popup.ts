@@ -47,3 +47,12 @@ export const fetchCommentList = (params: fetchCommentListType) => {
     ),
   );
 };
+
+export const porjectIsExecutor = (projectId : string) => {
+  return cyRequest<CommentType[]>(() =>
+    request(
+      `${baseUrl.project}/Porject/IsExecutor`,
+      { method: 'GET', params: {projectId } },
+    ),
+  );
+};

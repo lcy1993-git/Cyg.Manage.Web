@@ -1,17 +1,18 @@
+import { AreaInfo } from '@/services/index';
 import { createContext, useContext } from 'react';
 
 interface LayoutContextValue {
   resourceManageFlag?: boolean;
   workHandoverFlag?: boolean;
   clearAgainLogin?: () => void;
+  mapSelectCity?: string;
   allProjectSearchProjectId?: string;
-  allProjectSearchPerson?: string;
-  allProjectSearchType?: string;
+  allProjectSearchParams?: any;
   setResourceManageFlag?: (value: boolean) => void;
+  setMapSelectCity?: (value: string) => void;
   setWorkHandoverFlag?: (value: boolean) => void;
   setAllProjectSearchProjectId?: (value: string) => void;
-  setAllProjectSearchPerson?: (value: string) => void;
-  setAllProjectSearchType?:  (value: string) => void;
+  setAllProjectSearchParams?: (value?: any) => void;
   removeTab?: (value: string) => void;
 }
 

@@ -153,7 +153,7 @@ const CockpitManage: React.FC = () => {
         h: 11,
         edit: true,
         key: uuid.v1(),
-        componentProps: ['awaitProcess', 'inProgress', 'delegation'],
+        componentProps: ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
       },
       {
         name: 'mapComponent',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Button, Dropdown, message, Modal } from 'antd';
+import { Menu, Button, Dropdown, message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { commonExport } from '@/services/common';
 
@@ -13,7 +13,6 @@ interface TableExportButtonProps {
 
 const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
   const { selectIds = [], exportUrl = '', extraParams, fileName = '表格', selectSlot } = props;
-
   const exportChoosedRow = async () => {
     if (selectIds && selectIds.length === 0) {
       message.error('请选择需要导出的行');

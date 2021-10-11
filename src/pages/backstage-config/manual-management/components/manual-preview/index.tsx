@@ -139,7 +139,7 @@ const ManualPreview: React.FC<Props> = (props) => {
       {
         pageLoading &&
         <div className={styles.pageLoading}>
-          <Spin spinning={pageLoading} />
+          <Spin spinning={pageLoading} tip={'加载中...'}/>
         </div>
       }
     </div>

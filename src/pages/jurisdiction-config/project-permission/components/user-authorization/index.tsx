@@ -77,7 +77,7 @@ const UserPermissionAccredit: React.FC<UserAuthorizationProps> = (props) => {
   };
 
   const tableLeftSlot = (
-    <TableSearch label="用户信息" width="248px">
+    <TableSearch width="248px">
       <Search
         value={searchKeyWord}
         onChange={(e) => setSearchKeyWord(e.target.value)}

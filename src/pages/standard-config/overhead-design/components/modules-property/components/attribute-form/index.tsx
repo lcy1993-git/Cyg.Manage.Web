@@ -12,15 +12,15 @@ const ModuleAttributeForm: React.FC<AttributeParams> = (props) => {
   return (
     <>
       <CyFormItem label="高度(m)" name="height" labelWidth={111} align="right">
-        <Input />
+        <Input type="number" />
       </CyFormItem>
 
       <CyFormItem label="埋深(m)" name="depth" labelWidth={111} align="right">
-        <Input />
+        <Input type="number" />
       </CyFormItem>
 
       <CyFormItem label="呼称高(m)" name="nominalHeight" labelWidth={111} align="right">
-        <Input />
+        <Input type="number" />
       </CyFormItem>
 
       <CyFormItem label="钢材强度" name="steelStrength" labelWidth={111} align="right">
@@ -31,11 +31,11 @@ const ModuleAttributeForm: React.FC<AttributeParams> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="杆梢径(mm)" name="rodDiameter" labelWidth={111} align="right">
-        <Input />
+        <Input type="number" />
       </CyFormItem>
 
       <CyFormItem label="基重(kg)" name="baseWeight" labelWidth={111} align="right">
-        <Input />
+        <Input type="number" />
       </CyFormItem>
 
       <CyFormItem label="分段方式" name="segmentMode" labelWidth={111} align="right">
@@ -59,7 +59,7 @@ const ModuleAttributeForm: React.FC<AttributeParams> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="线数" name="lineNumber" labelWidth={111} align="right">
-        <Input />
+        <Input type="number" />
       </CyFormItem>
 
       <CyFormItem label="导线类型" name="conductorType" labelWidth={111} align="right">

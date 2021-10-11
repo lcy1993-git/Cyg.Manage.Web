@@ -1,5 +1,8 @@
-
-import { createEngineerFile, delEngineerFile, GetEngineerFileGetList } from '@/services/project-management/all-project';
+import {
+  createEngineerFile,
+  delEngineerFile,
+  GetEngineerFileGetList,
+} from '@/services/project-management/all-project';
 import { downLoadFileItem } from '@/services/operation-config/company-file';
 import { useControllableValue, useMount } from 'ahooks';
 import { getUploadUrl } from '@/services/resource-config/drawing';
@@ -11,7 +14,7 @@ import { useRequest } from 'ahooks';
 import FileUpload from '@/components/file-upload';
 
 import styles from './index.less';
-import { uploadCompanyFile } from '@/services/operation-config/company-file'
+import { uploadCompanyFile } from '@/services/operation-config/company-file';
 import moment from 'moment';
 
 interface EditEngineerProps {
@@ -21,16 +24,14 @@ interface EditEngineerProps {
   changeFinishEvent: () => void;
 }
 
-
-
 const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
 
-  const [fileList, setFileList] = useState([])
+  const [fileList, setFileList] = useState([]);
 
   const { engineerId } = props;
-  const {data=[], run} = useRequest<any[]>(() => GetEngineerFileGetList(engineerId), {
-    manual: true
+  const { data = [], run } = useRequest<any[]>(() => GetEngineerFileGetList(engineerId), {
+    manual: true,
   });
 
   const { data: keyData } = useRequest(() => getUploadUrl());
@@ -38,11 +39,11 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
   const securityKey = keyData?.uploadCompanyFileApiSecurity;
 
   useMount(() => {
-    run()
-  })
+    run();
+  });
 
   const handlerUpload = async (fileId: string, fileName: string) => {
-    const res = await downLoadFileItem({fileId, securityKey})
+    const res = await downLoadFileItem({ fileId, securityKey });
     const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1);
 
     const blob = new Blob([res], {
@@ -63,61 +64,61 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
       document.body.removeChild(link);
     }
     message.success('下载成功');
-  }
+  };
 
   const handlerDel = async (id: string) => {
     delEngineerFile(id).then(() => {
       message.success('删除成功');
       run();
-    })
-  }
+    });
+  };
 
   const columns = [
     {
-      title: "文档标题",
-      index: "fileName",
-      dataIndex: "fileName",
-      ellipsis: true
+      title: '文档标题',
+      index: 'fileName',
+      dataIndex: 'fileName',
+      ellipsis: true,
     },
     {
-      title: "创建人",
-      index: "createdByName",
-      dataIndex: "createdByName",
-      ellipsis: true
+      title: '创建人',
+      index: 'createdByName',
+      dataIndex: 'createdByName',
+      ellipsis: true,
     },
     {
-      title: "创建时间",
-      index: "createdOn",
-      dataIndex: "createdOn",
-      render(v: string){
-        return moment(v).format("YYYY-MM-DD")
-      }
+      title: '创建时间',
+      index: 'createdOn',
+      dataIndex: 'createdOn',
+      render(v: string) {
+        return moment(v).format('YYYY-MM-DD');
+      },
     },
     {
-      title: "操作",
-      render(t, record: any){
+      title: '操作',
+      render(t, record: any) {
         const { id, fileId, fileName } = record;
         return (
           <div className={styles.buttonArea}>
-            <Button type="link" onClick={() => handlerUpload(fileId, fileName)}>下载</Button>
-            <Button type="link" onClick={() => handlerDel(id)}>删除</Button>
+            <Button type="link" onClick={() => handlerUpload(fileId, fileName)}>
+              下载
+            </Button>
+            <Button type="link" onClick={() => handlerDel(id)}>
+              删除
+            </Button>
           </div>
-        )
+        );
       },
-      width: 100
+      width: 100,
     },
   ];
 
   const upLoadFn = async () => {
-    const fileId = await uploadCompanyFile(
-      fileList,
-      { securityKey },
-      '/Upload/CompanyFile',
-    );
+    const fileId = await uploadCompanyFile(fileList, { securityKey }, '/Upload/CompanyFile');
     createEngineerFile({
       fileId,
       category: 1,
-      engineerId
+      engineerId,
     }).then(() => run());
   };
 
@@ -138,23 +139,16 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
       <div className={styles.fileUploadWrap}>
         <div className={styles.improtText}>导 入</div>
         <div className={styles.fileUpload}>
-        <FileUpload
-          uploadFileBtn
-          uploadFileFn={upLoadFn}
-          maxCount={1}
-          fileList={fileList}
-          onChange={setFileList}
-        />
+          <FileUpload
+            uploadFileBtn
+            uploadFileFn={upLoadFn}
+            maxCount={1}
+            fileList={fileList}
+            onChange={setFileList}
+          />
         </div>
-
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-
-      />
-
+      <Table columns={columns} dataSource={data} pagination={false} />
     </Modal>
   );
 };

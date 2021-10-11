@@ -168,22 +168,32 @@ const ResourceLib: React.FC = () => {
             const isChecked = !record.isDisabled;
             return (
               <>
-                {isChecked ? (
-                  <span
-                    style={{ cursor: 'pointer' }}
-                    className="colorPrimary"
-                    onClick={() => updateStatusEvent(record.id, 2)}
-                  >
-                    启用
-                  </span>
-                ) : (
-                  <span
-                    onClick={() => updateStatusEvent(record.id, 1)}
-                    style={{ cursor: 'pointer' }}
-                    className="colorRed"
-                  >
-                    禁用
-                  </span>
+                {buttonJurisdictionArray?.includes('lib-status') &&
+                  (isChecked ? (
+                    <span
+                      style={{ cursor: 'pointer' }}
+                      className="colorPrimary"
+                      onClick={() => updateStatusEvent(record.id, 2)}
+                    >
+                      启用
+                    </span>
+                  ) : (
+                    <span
+                      onClick={() => updateStatusEvent(record.id, 1)}
+                      style={{ cursor: 'pointer' }}
+                      className="colorRed"
+                    >
+                      禁用
+                    </span>
+                  ))}
+                {!buttonJurisdictionArray?.includes('lib-status') && (
+                  <>
+                    {isChecked ? (
+                      <span className="colorPrimary">启用</span>
+                    ) : (
+                      <span className="colorRed">禁用</span>
+                    )}
+                  </>
                 )}
               </>
             );
@@ -495,7 +505,7 @@ const ResourceLib: React.FC = () => {
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('all-project-resource') && (
+        {buttonJurisdictionArray?.includes('lib-resource-iterate') && (
           <Button className="mr7" onClick={() => setLibVisible(true)}>
             资源库迭代
           </Button>
