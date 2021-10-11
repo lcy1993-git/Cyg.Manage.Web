@@ -458,70 +458,6 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1">
-              <CyFormItem label="项目状态" align="right" labelWidth={135}>
-                <div style={{ width: '275px' }}>
-                  <EnumSelect
-                    enumList={ProjectStatus}
-                    {...selectStyle}
-                    allowClear
-                    mode="multiple"
-                    value={status}
-                    onChange={(value) => setStatus(value as number[])}
-                    className="widthAll"
-                    placeholder="项目状态"
-                  />
-                </div>
-              </CyFormItem>
-            </div>
-          </div>
-
-          <div className="flex">
-            <div className="flex1">
-              <CyFormItem label="项目来源" align="right" labelWidth={100}>
-                <div style={{ width: '275px' }}>
-                  <EnumSelect
-                    enumList={ProjectSourceType}
-                    {...selectStyle}
-                    allowClear
-                    mode="multiple"
-                    value={sourceType}
-                    onChange={(value) => setSourceType(value as number[])}
-                    className="widthAll"
-                    placeholder="项目来源"
-                  />
-                </div>
-              </CyFormItem>
-            </div>
-            <div className="flex1">
-              <CyFormItem label="项目身份" align="right" labelWidth={135}>
-                <div style={{ width: '275px' }}>
-                  <EnumSelect
-                    enumList={ProjectIdentityType}
-                    {...selectStyle}
-                    allowClear
-                    mode="multiple"
-                    value={identityType}
-                    onChange={(value) => setIdentityType(value as number[])}
-                    className="widthAll"
-                    placeholder="项目身份"
-                  />
-                </div>
-              </CyFormItem>
-            </div>
-          </div>
-          <div className="flex">
-            <div className="flex1">
-              <CyFormItem label="人员安排" align="right" labelWidth={100}>
-                <div style={{ width: '275px' }}>
-                  <ChooseDesignAndSurvey
-                    ref={personRef}
-                    defaultValue={selectDefaultData}
-                    onChange={setPersonInfo}
-                  />
-                </div>
-              </CyFormItem>
-            </div>
-            <div className="flex1">
               <CyFormItem label="电压等级" align="right" labelWidth={135}>
                 <div style={{ width: '275px' }}>
                   <UrlSelect
@@ -538,6 +474,7 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
               </CyFormItem>
             </div>
           </div>
+
           <div className={styles.moreInfo}>
             {!showMoreFlag ? (
               <>
@@ -677,26 +614,6 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
                       className="widthAll"
                       value={attribute}
                       onChange={(value) => setAttribute(value as number[])}
-                      placeholder="请选择"
-                    />
-                  </div>
-                </CyFormItem>
-              </div>
-            </div>
-
-            <div className="flex">
-              <div className="flex1">
-                <CyFormItem label="现场数据来源" align="right" labelWidth={100}>
-                  <div style={{ width: '275px' }}>
-                    <UrlSelect
-                      {...selectStyle}
-                      allowClear
-                      mode="multiple"
-                      defaultData={projectDataSourceType}
-                      value={dataSourceType}
-                      dropdownMatchSelectWidth={168}
-                      onChange={(value) => setDataSourceType(value as number[])}
-                      className="widthAll"
                       placeholder="请选择"
                     />
                   </div>

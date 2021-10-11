@@ -5,7 +5,6 @@ import EntrustTable from './components/entrust-table';
 import { Button, Input } from 'antd';
 import styles from './index.less';
 import React, { useState } from 'react';
-import { DownOutlined } from '@ant-design/icons';
 import FilterEntrustModal from './components/filter-entrust-modal';
 const { Search } = Input;
 const ProjectEntrust: React.FC = () => {
@@ -44,7 +43,7 @@ const ProjectEntrust: React.FC = () => {
   return (
     <PageCommonWrap>
       <CommonTitle>待办项目</CommonTitle>
-      <div>
+      <div style={{ color: 'red' }}>
         在当前列表中可以查看所属公司被其他单位委托的项目，并且可以将该项目获取至当前个人账号，获取后的项目在【我的工作台】模块中查看。
       </div>
       <div className={styles.searchAndButton}>
