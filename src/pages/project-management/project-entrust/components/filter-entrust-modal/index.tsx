@@ -7,12 +7,7 @@ import CyFormItem from '@/components/cy-form-item';
 import moment from 'moment';
 import AreaSelect from '@/components/area-select';
 import EnumSelect from '@/components/enum-select';
-import {
-  ProjectIdentityType,
-  ProjectSourceType,
-  ProjectStatus,
-} from '@/services/project-management/all-project';
-import ChooseDesignAndSurvey from '@/pages/project-management/all-project-new/components/choose-design-and-survey';
+
 import styles from './index.less';
 import { useEffect } from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -48,8 +43,7 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
   const [sourceType, setSourceType] = useState<number[]>([]); //项目来源
   const [identityType, setIdentityType] = useState<number[]>([]); //项目身份
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
-  const [dataSourceType, setDataSourceType] = useState<number[]>([]);
-  const [personInfo, setPersonInfo] = useState<any>({ logicRelation: 2, design: '', survey: '' });
+
   const [startTime, setStartTime] = useState<null | string>('');
   const [endTime, setEndTime] = useState<null | string>('');
   const areaRef = useRef<HTMLDivElement>(null);
@@ -105,12 +99,9 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
       sourceType,
       identityType,
       ...areaInfo,
-      dataSourceType,
+
       startTime: startTime ?? '',
       endTime: endTime ?? '',
-      surveyUser: personInfo.survey,
-      designUser: personInfo.design,
-      logicRelation: personInfo.logicRelation,
     });
     setState(false);
   };
@@ -314,11 +305,7 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
       } else {
         setIdentityType([]);
       }
-      if (searchParams.dataSourceType) {
-        setDataSourceType(searchParams.dataSourceType);
-      } else {
-        setDataSourceType([]);
-      }
+     
       if (searchParams.startTime) {
         setStartTime(searchParams.startTime);
       } else {
@@ -329,19 +316,7 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
       } else {
         setEndTime(null);
       }
-      if (searchParams.logicRelation) {
-        setSelectDefaultData({
-          logicRelation: searchParams.logicRelation,
-          design: searchParams.designUser,
-          survey: searchParams.surveyUser,
-        });
-      } else {
-        setSelectDefaultData({
-          logicRelation: 2,
-          design: '',
-          survey: '',
-        });
-      }
+     
       if (searchParams.areaType !== '-1') {
         if (areaRef && areaRef.current) {
           // @ts-ignore

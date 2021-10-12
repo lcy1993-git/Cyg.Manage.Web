@@ -650,8 +650,8 @@ const AllProject: React.FC = () => {
       });
       setAllProjectSearchProjectId?.('');
       setSearchParams(defaultParams);
-      setStatisticalCategory("-1");
-      setKeyWord("");
+      setStatisticalCategory('-1');
+      setKeyWord('');
     }
     if (allProjectSearchType && allProjectAreaInfo) {
       // TODO 有projectName的时候设置projectName
@@ -662,7 +662,7 @@ const AllProject: React.FC = () => {
         areaId: allProjectAreaInfo.areaId,
       });
       setStatisticalCategory(allProjectSearchType);
-      setKeyWord("");
+      setKeyWord('');
       setSearchParams({
         ...defaultParams,
         areaType: allProjectAreaInfo.areaLevel!,
@@ -681,13 +681,13 @@ const AllProject: React.FC = () => {
         areaType: allProjectAreaInfo.areaLevel!,
         areaId: allProjectAreaInfo.areaId!,
       });
-      setStatisticalCategory("-1");
-      setKeyWord("");
+      setStatisticalCategory('-1');
+      setKeyWord('');
       // TODO 有人的时候设置人
       searchByParams({
         ...defaultParams,
-        keyWord: "",
-        statisticalCategory: "-1",
+        keyWord: '',
+        statisticalCategory: '-1',
         surveyUser: String(allProjectSearchPerson),
         logicRelation: 1,
         designUser: String(allProjectSearchPerson),

@@ -1,16 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import EmptyTip from '@/components/empty-tip';
-import {
-  AllProjectStatisticsParams,
-  applyKnot,
-  auditKnot,
-  getExternalArrangeStep,
-  getProjectInfo,
-  getProjectTableList,
-  getEngineerInfo,
-  againInherit,
-  deleteProject,
-} from '@/services/project-management/all-project';
+import { getEntrustProjectList } from '@/services/project-management/project-entrust';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
 import { useRequest, useSize } from 'ahooks';
@@ -27,24 +17,10 @@ import ScrollView from 'react-custom-scrollbars';
 import styles from './index.less';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
-import { Dropdown } from 'antd';
-import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons';
 import { TableContext } from '@/pages/project-management/all-project-new/components/engineer-table/table-store';
 import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
 import ProjectDetailInfo from '@/pages/project-management/all-project-new/components/project-detail-info';
 import moment from 'moment';
-import ImageIcon from '@/components/image-icon';
-
-const colorMap = {
-  立项: 'green',
-  委托: 'blue',
-  共享: 'yellow',
-  执行: 'yellow',
-};
-
-interface ExtractParams extends AllProjectStatisticsParams {
-  statisticalCategory?: string;
-}
 
 interface EntrustTableProps {
   extractParams: ExtractParams;
@@ -71,7 +47,6 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('');
 
   const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('');
-  const [currentArrageProjectId, setCurrentArrageProjectId] = useState<string>('');
 
   const [projectNeedInfo, setProjectNeedInfo] = useState({
     engineerId: '',
@@ -80,12 +55,13 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     companyName: '',
   });
   const [currentProName, setCurrentProName] = useState<string | undefined>('');
-  const [externalStepData, setExternalStepData] = useState<any>();
 
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
 
-  const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
+  const { data: tableData, loading, run } = useRequest(getEntrustProjectList, { manual: true });
+
+  console.log(tableData, '55');
 
   const scrollbar = useRef<any>(null);
   const tableContentRef = useRef<HTMLDivElement>(null);
@@ -307,9 +283,8 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
 
   const tableResultData = useMemo(() => {
     if (tableData) {
-      const { pagedData, statistics } = tableData;
-      const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = pagedData;
-      getStatisticsData?.(statistics);
+      // const { pagedData, statistics } = tableData;
+      const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = tableData;
       return {
         items: items ?? [],
         pageIndex: resPageIndex,
@@ -425,22 +400,22 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
       setTableSelectData([]);
       onSelect?.([]);
     },
-    searchByParams: (params: object) => {
-      setPageIndex(1);
-      run({
-        ...params,
-        pageIndex: 1,
-        pageSize,
-      });
-      if (scrollbar && scrollbar.current) {
-        scrollbar.current.view.scroll({
-          top: 0,
-          behavior: 'smooth',
-        });
-      }
-      setTableSelectData([]);
-      onSelect?.([]);
-    },
+    // searchByParams: (params: object) => {
+    //   setPageIndex(1);
+    //   run({
+    //     ...params,
+    //     pageIndex: 1,
+    //     pageSize,
+    //   });
+    //   if (scrollbar && scrollbar.current) {
+    //     scrollbar.current.view.scroll({
+    //       top: 0,
+    //       behavior: 'smooth',
+    //     });
+    //   }
+    //   setTableSelectData([]);
+    //   onSelect?.([]);
+    // },
     delayRefresh: async (ms: number) => {
       await delay(500);
       run({

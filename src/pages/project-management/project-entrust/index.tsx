@@ -4,11 +4,13 @@ import TableSearch from '@/components/table-search';
 import EntrustTable from './components/entrust-table';
 import { Button, Input } from 'antd';
 import styles from './index.less';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import FilterEntrustModal from './components/filter-entrust-modal';
 const { Search } = Input;
+
 const ProjectEntrust: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>();
+  const tableRef = useRef<HTMLDivElement>(null);
   const [screenModalVisible, setScreenModalVisible] = useState(false);
   const [searchParams, setSearchParams] = useState({
     category: [],
@@ -20,23 +22,18 @@ const ProjectEntrust: React.FC = () => {
     majorCategory: [],
     pType: [],
     reformAim: [],
-    classification: [],
     attribute: [],
     sourceType: [],
     identityType: [],
     areaType: '-1',
     areaId: '',
-    dataSourceType: [],
-    logicRelation: 2,
     startTime: '',
     endTime: '',
-    designUser: '',
-    surveyUser: '',
   });
   const searchEvent = () => {};
 
   const screenClickEvent = (params: any) => {
-    // setSearchParams({ ...params, keyWord, statisticalCategory });
+    setSearchParams({ ...params, keyWord });
     // searchByParams({ ...params, engineerFavoritesId: selectedFavId, keyWord, statisticalCategory });
   };
 
@@ -69,7 +66,7 @@ const ProjectEntrust: React.FC = () => {
         {/* )} */}
       </div>
       <div>
-        <EntrustTable />
+        <EntrustTable ref={tableRef} extractParams={{ keyWord, ...searchParams }} />
       </div>
 
       <FilterEntrustModal
