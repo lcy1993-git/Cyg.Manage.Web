@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo,memo } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tooltip } from 'antd';
@@ -386,4 +386,4 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   );
 };
 
-export default EngineerTableItem;
+export default memo(EngineerTableItem);

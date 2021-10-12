@@ -17,7 +17,7 @@ import { useRequest, useSize } from 'ahooks';
 import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
-import { forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
+import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
 
 import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item';
 import ScrollView from 'react-custom-scrollbars';
@@ -1218,4 +1218,4 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   );
 };
 
-export default forwardRef(EngineerTable);
+export default memo(forwardRef(EngineerTable));

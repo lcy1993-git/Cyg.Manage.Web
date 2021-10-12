@@ -18,7 +18,7 @@ const EditPassword = (props: EditPasswordProps) => {
   const sureEditPassword = () => {
     form.validateFields().then(async (value) => {
       const { pwd, newPwd } = value;
-      await editPassword({ pwd, newPwd });
+      await editPassword({ oldPwd: pwd, newPwd });
 
       setState(false);
       message.info('密码已经修改,请重新登录');

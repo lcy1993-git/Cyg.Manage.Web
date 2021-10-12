@@ -164,13 +164,9 @@ const AllProject: React.FC = () => {
 
   const {
     setAllProjectSearchProjectId,
-    setAllProjectSearchPerson,
-    setAllProjectSearchType,
-    setAllProjectAreaInfo,
-    allProjectSearchPerson,
+    allProjectSearchParams,
     allProjectSearchProjectId,
-    allProjectSearchType,
-    allProjectAreaInfo,
+    setAllProjectSearchParams,
   } = useLayoutStore();
 
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
@@ -653,33 +649,45 @@ const AllProject: React.FC = () => {
       setStatisticalCategory('-1');
       setKeyWord('');
     }
-    if (allProjectSearchType && allProjectAreaInfo) {
-      // TODO 有projectName的时候设置projectName
+    if (allProjectSearchParams.searchType) {
+      setSearchParams({
+        ...defaultParams,
+        areaType: allProjectSearchParams.areaLevel!,
+        areaId: allProjectSearchParams.areaId!,
+      });
+      setAllProjectSearchParams?.({
+        areaLevel: '-1',
+        areaId: '',
+        cityId: '',
+        searchPerson: '',
+        searchType: '',
+      });
+      setKeyWord('');   
+      setStatisticalCategory(allProjectSearchParams.searchType);
       searchByParams({
         ...defaultParams,
-        statisticalCategory: allProjectSearchType,
-        areaType: allProjectAreaInfo.areaLevel,
-        areaId: allProjectAreaInfo.areaId,
+        statisticalCategory: allProjectSearchParams.searchType,
+        areaType: allProjectSearchParams.areaLevel,
+        areaId: allProjectSearchParams.areaId,
       });
-      setStatisticalCategory(allProjectSearchType);
-      setKeyWord('');
-      setSearchParams({
-        ...defaultParams,
-        areaType: allProjectAreaInfo.areaLevel!,
-        areaId: allProjectAreaInfo.areaId!,
-      });
-      setAllProjectSearchType?.('');
+      
     }
-    if (allProjectSearchPerson && allProjectAreaInfo) {
-      setAllProjectSearchPerson?.('');
 
+    if (allProjectSearchParams.searchPerson) {
       setSearchParams({
         ...defaultParams,
-        surveyUser: String(allProjectSearchPerson),
+        surveyUser: String(allProjectSearchParams.searchPerson),
         logicRelation: 1,
-        designUser: String(allProjectSearchPerson),
-        areaType: allProjectAreaInfo.areaLevel!,
-        areaId: allProjectAreaInfo.areaId!,
+        designUser: String(allProjectSearchParams.searchPerson),
+        areaType: allProjectSearchParams.areaLevel!,
+        areaId: allProjectSearchParams.areaId!,
+      });
+      setAllProjectSearchParams?.({
+        areaLevel: '-1',
+        areaId: '',
+        cityId: '',
+        searchPerson: '',
+        searchType: '',
       });
       setStatisticalCategory('-1');
       setKeyWord('');
@@ -688,14 +696,14 @@ const AllProject: React.FC = () => {
         ...defaultParams,
         keyWord: '',
         statisticalCategory: '-1',
-        surveyUser: String(allProjectSearchPerson),
+        surveyUser: String(allProjectSearchParams.searchPerson),
         logicRelation: 1,
-        designUser: String(allProjectSearchPerson),
-        areaType: allProjectAreaInfo.areaLevel!,
-        areaId: allProjectAreaInfo.areaId!,
+        designUser: String(allProjectSearchParams.searchPerson),
+        areaType: allProjectSearchParams.areaLevel!,
+        areaId: allProjectSearchParams.areaId!,
       });
     }
-  }, [allProjectSearchPerson, allProjectSearchProjectId, allProjectSearchType]);
+  }, [allProjectSearchProjectId, JSON.stringify(allProjectSearchParams)]);
 
   const configChangeEvent = (config: any) => {
     setChooseColumns(config);
@@ -1024,4 +1032,4 @@ const AllProject: React.FC = () => {
   );
 };
 
-export default AllProject;
+export default React.memo(AllProject);

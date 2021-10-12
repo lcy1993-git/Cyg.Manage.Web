@@ -3,7 +3,7 @@ import { Moment } from 'moment';
 import { cyRequest, baseUrl } from '../common';
 import { TableRequestResult } from '../table';
 
-interface ProjectEntrustTableParams {
+interface ProjectEntrustTableParams extends TableRequestResult {
   keyWord?: string;
   category?: number[];
   pCategory?: number[];

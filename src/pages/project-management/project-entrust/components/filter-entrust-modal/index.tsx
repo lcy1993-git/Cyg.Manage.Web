@@ -131,7 +131,6 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
     setAttribute([]);
     setSourceType([]);
     setIdentityType([]);
-    setDataSourceType([]);
     setSourceType([]);
     setStartTime(null);
     setAreaInfo({ areaType: '-1', areaId: '' });
@@ -477,7 +476,6 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
                     setReformAim([]);
                     setPCategory([]);
                     setAttribute([]);
-                    setDataSourceType([]);
                   }}
                 >
                   收起条件

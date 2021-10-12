@@ -4,7 +4,7 @@ import TableSearch from '@/components/table-search';
 import EntrustTable from './components/entrust-table';
 import { Button, Input } from 'antd';
 import styles from './index.less';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FilterEntrustModal from './components/filter-entrust-modal';
 const { Search } = Input;
 
@@ -36,6 +36,8 @@ const ProjectEntrust: React.FC = () => {
     setSearchParams({ ...params, keyWord });
     // searchByParams({ ...params, engineerFavoritesId: selectedFavId, keyWord, statisticalCategory });
   };
+
+  useEffect(() => {}, [searchParams]);
 
   return (
     <PageCommonWrap>
