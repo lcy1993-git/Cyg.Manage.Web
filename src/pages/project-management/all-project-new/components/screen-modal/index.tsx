@@ -55,28 +55,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const areaRef = useRef<HTMLDivElement>(null);
   const personRef = useRef<HTMLDivElement>(null);
 
-  const [lastSaveAreaInfo, setLastSaveAreaInfo] = useState({
-    provinceId: '',
-    cityId: '',
-    areaId: '',
-    cityData: [],
-    areaData: [],
-    provinceInfo: undefined,
-    cityInfo: undefined,
-    areaInfo: undefined,
-  });
-
-  const [storageAreaInfo, setStorageAreaInfo] = useState({
-    provinceId: '',
-    cityId: '',
-    areaId: '',
-    cityData: [],
-    areaData: [],
-    provinceInfo: undefined,
-    cityInfo: undefined,
-    areaInfo: undefined,
-  });
-
   // 更多条件
   const [showMoreFlag, setShowMoreFlag] = useState<boolean>(false);
 
@@ -89,7 +67,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const imgSrc = require('../../../../../assets/icon-image/' + icon + '.png');
 
   const searchEvent = () => {
-    setLastSaveAreaInfo(storageAreaInfo);
     finishEvent?.({
       category,
       stage,
@@ -147,17 +124,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setEndTime(null);
     resetRef();
 
-    setLastSaveAreaInfo({
-      provinceId: '',
-      cityId: '',
-      areaId: '',
-      cityData: [],
-      areaData: [],
-      provinceInfo: undefined,
-      cityInfo: undefined,
-      areaInfo: undefined,
-    });
-
     finishEvent?.({
       category: [],
       stage: [],
@@ -186,7 +152,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
   const areaChangeEvent = (params: any) => {
     const { provinceId, cityId, areaId } = params;
-    setStorageAreaInfo(params);
     if (areaId) {
       setAreaInfo({
         areaType: '3',
@@ -345,7 +310,10 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       if (searchParams.areaType !== '-1') {
         if (areaRef && areaRef.current) {
           // @ts-ignore
-          areaRef?.current?.initComponentData(lastSaveAreaInfo);
+          areaRef?.current?.initComponentById({
+            areaType: searchParams.areaType,
+            areaId: searchParams.areaId,
+          });
         }
       }
     }

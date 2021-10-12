@@ -4,6 +4,8 @@ import { request, history } from 'umi';
 import tokenRequest from '@/utils/request';
 import { requestBaseUrl } from '../../public/config/request';
 import type { RequestDataType, RequestDataCommonType } from './common.d';
+import {webConfig} from "@/global";
+
 import { isArray } from 'lodash';
 
 const { NODE_ENV } = process.env;
@@ -33,7 +35,9 @@ export const geoServeUrl = "/geoserver/pdd/ows/";
 //   requestSource: 'project' | 'resource';
 // }
 
-export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;
+// export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;
+
+export const baseUrl = webConfig.requestUrl;
 
 export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>): Promise<T> => {
   return new Promise(async (resolve, reject) => {

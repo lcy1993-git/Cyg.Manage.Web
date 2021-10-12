@@ -1,6 +1,6 @@
 import React from 'react';
 import logonSrc from '@/assets/image/logo.png';
-import { logoArray } from '../../../public/config/request';
+import { webConfig } from '@/global';
 
 interface LogoComponentProps {
   className?: string;
@@ -8,7 +8,7 @@ interface LogoComponentProps {
 
 const LogoComponent: React.FC<LogoComponentProps> = (props) => {
   const thisHostName = window.location.hostname;
-  const imgName = logoArray[thisHostName];
+  const imgName = webConfig.logoUrl[thisHostName];
   const { className, ...rest } = props;
   const imgSrc = imgName ? require('../../assets/image/' + imgName + '') : logonSrc;
   return <img src={imgSrc} {...rest} className={className} alt="logo" />;
