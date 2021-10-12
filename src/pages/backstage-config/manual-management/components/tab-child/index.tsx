@@ -121,7 +121,7 @@ const ManualUpload: React.FC<Props> = (props) => {
     getLastFile();
   });
   return (
-    <Spin tip="waiting... " spinning={isSpinning}>
+    <Spin tip="上传中... " spinning={isSpinning}>
       <div className={styles.content}>
         <div className={styles.title}>说明书管理</div>
         <h4 className={styles.current}>
