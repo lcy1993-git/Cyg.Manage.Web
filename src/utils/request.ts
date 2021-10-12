@@ -1,9 +1,9 @@
 import { extend, RequestOptionsInit } from 'umi-request';
+const { NODE_ENV } = process.env;
 
 const request = extend({
-  //credentials: 'include', // 默认请求是否带上cookie
+  prefix: NODE_ENV === 'development' ? "/api" : ""
 });
-
 
 // request拦截器, 改变url 或 options.
 // @ts-ignore

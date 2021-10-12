@@ -1,8 +1,5 @@
 import React from 'react';
-import { history } from 'umi';
 import styles from './index.less';
-import { explainUrl } from '../../../public/config/request';
-
 interface PageCommonWrapProps {
   noPadding?: boolean;
   noColor?: boolean;
@@ -15,9 +12,6 @@ const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
   const noPaddingClass = noPadding ? styles.noPadding : '';
   const noColorClass = noColor ? styles.noColor : '';
 
-  const toExplain = () => {
-    window.open(explainUrl);
-  };
   return (
     <div className={`${styles.pageCommonWrap} ${className}`}>
       <div className={`${styles.pageCommonWrapContent} ${noPaddingClass} ${noColorClass}`}>
