@@ -150,7 +150,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         </CyFormItem>
       )}
 
-      {/* {canEditCost ? (
+      {canEditCost ? (
         <CyFormItem label="造价" name="costUser">
           <TreeSelect
             key="editCostUser"
@@ -173,7 +173,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             allowClear
           />
         </CyFormItem>
-      )} */}
+      )}
 
       {/* 继续安排审核 */}
       <div className={styles.continueAudit}>
@@ -286,7 +286,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
           </CyFormItem>
         )}
         {/* 造价内审 */}
-        {/* <Divider>
+        <Divider>
           <span className={styles.divider}>造价校审</span>
         </Divider>
         {canEditCostAuditUser1 ? (
@@ -361,7 +361,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-        )} */}
+        )}
       </div>
     </>
   );
