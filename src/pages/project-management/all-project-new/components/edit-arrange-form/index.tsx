@@ -51,9 +51,9 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     refreshDeps: [allotCompanyId],
   });
 
-  // const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
-  //   refreshDeps: [allotCompanyId],
-  // });
+  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
+    refreshDeps: [allotCompanyId],
+  });
 
   const mapTreeData = (data: any) => {
     if (data.children && data.children.length > 0) {
@@ -150,7 +150,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         </CyFormItem>
       )}
 
-      {/* {canEditCost ? (
+      {canEditCost ? (
         <CyFormItem label="造价" name="costUser">
           <TreeSelect
             key="editCostUser"
@@ -173,7 +173,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             allowClear
           />
         </CyFormItem>
-      )} */}
+      )}
 
       {/* 继续安排审核 */}
       <div className={styles.continueAudit}>
