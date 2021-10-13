@@ -76,34 +76,34 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     setEngineerModalVisible(true);
   };
 
-  const refreshEvent = () => {
-    run({
-      ...extractParams,
-      pageIndex,
-      pageSize,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
+  // const refreshEvent = () => {
+  //   run({
+  //     ...extractParams,
+  //     pageIndex,
+  //     pageSize,
+  //   });
+  //   setTableSelectData([]);
+  //   onSelect?.([]);
+  // };
 
-  const refreshByParams = (params: any) => {
-    run({
-      ...params,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
+  // const refreshByParams = (params: any) => {
+  //   run({
+  //     ...params,
+  //   });
+  //   setTableSelectData([]);
+  //   onSelect?.([]);
+  // };
 
-  const delayRefresh = async () => {
-    await delay(500);
-    run({
-      ...extractParams,
-      pageIndex,
-      pageSize,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
+  // const delayRefresh = async () => {
+  //   await delay(500);
+  //   run({
+  //     ...extractParams,
+  //     pageIndex,
+  //     pageSize,
+  //   });
+  //   setTableSelectData([]);
+  //   onSelect?.([]);
+  // };
 
   const completeConfig = [
     {
@@ -297,11 +297,11 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     setPageIndex(1);
     setPageSize(size);
 
-    run({
-      ...extractParams,
-      pageIndex: 1,
-      pageSize: size,
-    });
+    // run({
+    //   ...extractParams,
+    //   pageIndex: 1,
+    //   pageSize: size,
+    // });
     setTableSelectData([]);
     onSelect?.([]);
   };
@@ -309,17 +309,16 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   // 列显示处理
   const currentPageChange = (page: any, size: any) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
-    if (pageSize === size) {
-      setPageIndex(page === 0 ? 1 : page);
-
-      run({
-        ...extractParams,
-        pageIndex: page,
-        pageSize,
-      });
-      setTableSelectData([]);
-      onSelect?.([]);
-    }
+    // if (pageSize === size) {
+    //   setPageIndex(page === 0 ? 1 : page);
+    //   run({
+    //     ...extractParams,
+    //     pageIndex: page,
+    //     pageSize,
+    //   });
+    //   setTableSelectData([]);
+    //   onSelect?.([]);
+    // }
   };
 
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
@@ -357,32 +356,32 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
-    refresh: () => {
-      run({
-        ...extractParams,
-        pageIndex,
-        pageSize,
-      });
-      setTableSelectData([]);
-      onSelect?.([]);
-    },
-    search: () => {
-      setPageIndex(1);
-      run({
-        ...extractParams,
-        pageIndex: 1,
-        pageSize,
-      });
-      if (scrollbar && scrollbar.current) {
-        // @ts-ignore
-        scrollbar.current.view.scroll({
-          top: 0,
-          behavior: 'smooth',
-        });
-      }
-      setTableSelectData([]);
-      onSelect?.([]);
-    },
+    // refresh: () => {
+    //   run({
+    //     ...extractParams,
+    //     pageIndex,
+    //     pageSize,
+    //   });
+    //   setTableSelectData([]);
+    //   onSelect?.([]);
+    // },
+    // search: () => {
+    //   setPageIndex(1);
+    //   run({
+    //     ...extractParams,
+    //     pageIndex: 1,
+    //     pageSize,
+    //   });
+    //   if (scrollbar && scrollbar.current) {
+    //     // @ts-ignore
+    //     scrollbar.current.view.scroll({
+    //       top: 0,
+    //       behavior: 'smooth',
+    //     });
+    //   }
+    //   setTableSelectData([]);
+    //   onSelect?.([]);
+    // },
     // searchByParams: (params: object) => {
     //   setPageIndex(1);
     //   run({
@@ -399,16 +398,16 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     //   setTableSelectData([]);
     //   onSelect?.([]);
     // },
-    delayRefresh: async (ms: number) => {
-      await delay(500);
-      run({
-        ...extractParams,
-        pageIndex,
-        pageSize,
-      });
-      setTableSelectData([]);
-      onSelect?.([]);
-    },
+    // delayRefresh: async (ms: number) => {
+    //   await delay(500);
+    //   run({
+    //     ...extractParams,
+    //     pageIndex,
+    //     pageSize,
+    //   });
+    //   setTableSelectData([]);
+    //   onSelect?.([]);
+    // },
   }));
 
   const scrollEvent = (size: any) => {
