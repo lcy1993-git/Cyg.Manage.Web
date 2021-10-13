@@ -221,7 +221,6 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
     projectMajorCategory,
     projectReformAim,
     projectAttribute,
-    projectDataSourceType,
   } = useGetProjectEnum();
 
   const timeChange = (dates: any, dateStrings: any) => {
@@ -304,7 +303,7 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
       } else {
         setIdentityType([]);
       }
-     
+
       if (searchParams.startTime) {
         setStartTime(searchParams.startTime);
       } else {
@@ -315,7 +314,7 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
       } else {
         setEndTime(null);
       }
-     
+
       if (searchParams.areaType !== '-1') {
         if (areaRef && areaRef.current) {
           // @ts-ignore

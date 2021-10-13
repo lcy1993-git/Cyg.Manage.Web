@@ -67,7 +67,7 @@ const ProjectEntrust: React.FC = () => {
 
         {/* )} */}
       </div>
-      <div>
+      <div className={styles.entrustTableContent}>
         <EntrustTable ref={tableRef} extractParams={{ keyWord, ...searchParams }} />
       </div>
 

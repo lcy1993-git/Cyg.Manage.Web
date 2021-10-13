@@ -967,7 +967,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       onSelect?.([]);
     },
   }));
-
   const scrollEvent = (size: any) => {
     if (size) {
       const tableTitle = document.getElementsByClassName('tableTitleContent');

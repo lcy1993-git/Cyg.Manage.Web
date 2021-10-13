@@ -40,7 +40,6 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     finishEvent,
     configFinishEvent,
   } = props;
-  console.log(extractParams);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -55,19 +54,17 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     company: '',
     companyName: '',
   });
-  const [currentProName, setCurrentProName] = useState<string | undefined>('');
 
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
 
   const { data: tableData, loading, run } = useRequest(() => getEntrustProjectList(extractParams));
 
-  console.log(tableData, '55');
-
   const scrollbar = useRef<any>(null);
   const tableContentRef = useRef<HTMLDivElement>(null);
 
   const tableContentSize = useSize(tableContentRef);
+  console.log(tableContentSize, '213');
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -112,6 +109,19 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
       width: 300,
       //   render: projectNameRender,
       ellipsis: true,
+      render: (record: any) => {
+        return (
+          <u
+            className="canClick"
+            onClick={() => {
+              setCurrentClickProjectId(record.id);
+              setProjectModalVisible(true);
+            }}
+          >
+            {record.name}
+          </u>
+        );
+      },
     },
     {
       title: '项目分类',
@@ -243,8 +253,9 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   }, [JSON.stringify(columnsConfig)]);
 
   const columnsInfo = useMemo(() => {
-    const showColumns = completeConfig.filter((item) => chooseColumns.includes(item.dataIndex));
-    const columnsWidth = showColumns.reduce((sum, item) => {
+    // const showColumns = completeConfig.filter((item) => chooseColumns.includes(item.dataIndex));
+
+    const columnsWidth = completeConfig.reduce((sum, item) => {
       return sum + (item.width ? item.width : 100);
     }, 0);
     const isOverflow = (tableContentSize.width ?? 0) - 40 - columnsWidth < 0;
@@ -259,10 +270,12 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
 
     return {
       isOverflow,
-      columns: showColumns,
+      columns: completeConfig,
       columnsWidth: columnsWidth + 38,
     };
   }, [chooseColumns, JSON.stringify(tableContentSize.width)]);
+
+  console.log(columnsInfo, '2233');
 
   const tableResultData = useMemo(() => {
     if (tableData) {
@@ -342,6 +355,7 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   const engineerTableElement = tableResultData?.items.map((item: any) => {
     return (
       <EngineerTableItem
+        noPadding={true}
         getClickProjectId={projectNameClickEvent}
         onChange={tableItemSelectEvent}
         columns={columnsInfo.columns}
@@ -411,12 +425,13 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   }));
 
   const scrollEvent = (size: any) => {
+    console.log(size, '666');
+
     if (size) {
       const tableTitle = document.getElementsByClassName('tableTitleContent');
       const tableCheckbox = document.getElementsByClassName('checkboxContent');
       const tableNameTd = document.getElementsByClassName('nameTdContent');
-      const tableActionTd = document.getElementsByClassName('actionTdContent');
-      const tableStatusTd = document.getElementsByClassName('statusTdContent');
+
       if (tableTitle && tableTitle.length > 0) {
         for (let i = 0; i < tableTitle.length; i += 1) {
           // @ts-ignore
@@ -433,18 +448,6 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
         for (let i = 0; i < tableNameTd.length; i += 1) {
           // @ts-ignore
           tableNameTd[i].style.left = `${size.scrollLeft + 38}px`;
-        }
-      }
-      if (tableActionTd && tableActionTd.length > 0) {
-        for (let i = 0; i < tableActionTd.length; i += 1) {
-          // @ts-ignore
-          tableActionTd[i].style.left = `${size.scrollLeft + tableContentSize.width - 60}px`;
-        }
-      }
-      if (tableStatusTd && tableStatusTd.length > 0) {
-        for (let i = 0; i < tableStatusTd.length; i += 1) {
-          // @ts-ignore
-          tableStatusTd[i].style.left = `${size.scrollLeft + tableContentSize.width - 180}px`;
         }
       }
     }
@@ -509,6 +512,21 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
           </div>
         </div>
       </div>
+      {projectModalVisible && (
+        <ProjectDetailInfo
+          projectId={currentClickProjectId}
+          visible={projectModalVisible}
+          onChange={setProjectModalVisible}
+        />
+      )}
+
+      {engineerModalVisible && (
+        <EngineerDetailInfo
+          engineerId={currentClickEngineerId}
+          visible={engineerModalVisible}
+          onChange={setEngineerModalVisible}
+        />
+      )}
     </TableContext.Provider>
   );
 };
