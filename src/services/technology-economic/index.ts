@@ -159,11 +159,11 @@ export const UploadChapterDescriptionFiles= (data: {
 }
 // 上传定额说明doc文档
 export const UploadChapterDescriptionFile= (data: {
-  files:any,
+  file:any,
   quotaLibraryCatalogId :string
 }) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/QuotaLibraryCatalog/UploadChapterDescriptionFiles/${data.quotaLibraryCatalogId }`, { method: 'POST', data:formData(data) })
+    request(`${baseUrl.tecEco}//QuotaLibraryCatalog/UploadChapterDescriptionFile/${data.quotaLibraryCatalogId}`, { method: 'POST', data:formData(data) })
   )
 }
 // 保存定额库目录章节说明
