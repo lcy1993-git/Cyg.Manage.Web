@@ -242,7 +242,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             </CyFormItem>
 
             {/* 造价内审 */}
-            <Divider>
+            {/* <Divider>
               <span className={styles.divider}>造价校审</span>
             </Divider>
             <CyFormItem label="校核" name="costAuditUser1">
@@ -274,7 +274,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 treeDefaultExpandAll
                 allowClear
               />
-            </CyFormItem>
+            </CyFormItem> */}
           </div>
         </>
       )}
