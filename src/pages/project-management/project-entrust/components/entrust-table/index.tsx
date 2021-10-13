@@ -23,7 +23,7 @@ import ProjectDetailInfo from '@/pages/project-management/all-project-new/compon
 import moment from 'moment';
 
 interface EntrustTableProps {
-  extractParams: ExtractParams;
+  extractParams: any;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   getStatisticsData?: (value: any) => void;
   columnsConfig: string[];
@@ -40,6 +40,7 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     finishEvent,
     configFinishEvent,
   } = props;
+  console.log(extractParams);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -59,7 +60,7 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
 
-  const { data: tableData, loading, run } = useRequest(getEntrustProjectList, { manual: true });
+  const { data: tableData, loading, run } = useRequest(() => getEntrustProjectList(extractParams));
 
   console.log(tableData, '55');
 
@@ -215,24 +216,6 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
       ellipsis: true,
     },
 
-    {
-      title: '勘察人',
-      dataIndex: 'surveyUser',
-      width: 120,
-      ellipsis: true,
-      render: (record: any) => {
-        return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
-      },
-    },
-    {
-      title: '设计人',
-      dataIndex: 'designUser',
-      width: 120,
-      ellipsis: true,
-      render: (record: any) => {
-        return record.designUser ? `${record.designUser.value}` : '';
-      },
-    },
     {
       title: '项目批次',
       dataIndex: 'batchText',
