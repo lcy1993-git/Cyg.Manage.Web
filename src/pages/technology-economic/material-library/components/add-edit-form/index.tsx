@@ -35,9 +35,9 @@ const DictionaryForm: React.FC<{ type?: string }> = () => {
           <CyFormItem label="价格年度" name="year" required rules={[{required: true,message:'请选择价格年度'}]}>
             <DateFormItem picker="year" />
           </CyFormItem>
-          <CyFormItem label="状态" name="enabled" required rules={[{required: true}]}>
-            <FormSwitch />
-          </CyFormItem>
+          {/*<CyFormItem label="状态" name="enabled" required rules={[{required: true}]}>*/}
+          {/*  <FormSwitch />*/}
+          {/*</CyFormItem>*/}
         </Col>
       </Row>
       <CyFormItem label="备注" name="remark">

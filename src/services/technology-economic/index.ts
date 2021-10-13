@@ -9,7 +9,7 @@ import { cyRequest, baseUrl } from '../common';
 const formData = (params: Object) => {
   const form = new FormData();
   for (let k in params) {
-    if(k === 'file') {
+    if(k === 'file' || k === 'files') {
       form.append(k, params[k]?.[0])
     }else{
       form.append(k, params[k]);
@@ -148,6 +148,24 @@ export const getQuotaLibraryCatalogDescription= (id: string) => {
   )
 }
 
+// 上传章节说明
+export const UploadChapterDescriptionFiles= (data: {
+  files:any,
+  quotaLibraryCatalogId :string
+}) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}/QuotaLibraryCatalog/UploadChapterDescriptionFiles/${data.quotaLibraryCatalogId }`, { method: 'POST', data:formData(data) })
+  )
+}
+// 上传定额说明doc文档
+export const UploadChapterDescriptionFile= (data: {
+  file:any,
+  quotaLibraryCatalogId :string
+}) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco}//QuotaLibraryCatalog/UploadChapterDescriptionFile/${data.quotaLibraryCatalogId}`, { method: 'POST', data:formData(data) })
+  )
+}
 // 保存定额库目录章节说明
 export const saveQuotaLibraryCatalogDescription= (data: SaveQuotaLibraryCatalogDescription) => {
   return cyRequest(() =>

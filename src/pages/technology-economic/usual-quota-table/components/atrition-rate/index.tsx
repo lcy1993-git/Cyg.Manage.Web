@@ -75,7 +75,7 @@ const AttritionRate: React.FC<Props> = (props) => {
       </div>
       <Table
         pagination={false}
-        scroll={{y: 570}}
+        scroll={{y: 520}}
         bordered
         size={'small'}
         rowKey={'id'}

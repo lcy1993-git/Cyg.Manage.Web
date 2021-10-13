@@ -98,6 +98,14 @@ export const importRateTable = (rateFileId: string, file: File) => {
     request(`${baseUrl.tecEco1}/RateTable/ImportRateTable`, {method: 'POST', data})
   )
 }
+// 导入费率zip
+export const ImportRateFileZip = (file: File) => {
+  const data = new FormData();
+  data.append('file', file)
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/ImportRateFileZip`, {method: 'POST', data})
+  )
+}
 
 // 下载模板
 export const downloadTemplate = () => {

@@ -81,7 +81,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
         <TabPane tab="土方参数" key="1">
           <Table
             pagination={false}
-            scroll={{y: 760}}
+            scroll={{y: 720}}
             bordered
             size={'small'}
             rowKey={'id'}
@@ -220,7 +220,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
         <TabPane tab="放坡系数" key="3">
           <Table
             pagination={false}
-            scroll={{y: 780}}
+            scroll={{y: 720}}
             bordered
             size={'small'}
             rowKey={'id'}

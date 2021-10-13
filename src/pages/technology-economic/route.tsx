@@ -147,7 +147,7 @@ export default [
     component: <UsualQuotaTable />,
   },
   {
-    title: '定额常用表详情',
+    title: '费率详情',
     path: '/technology-economic/usual-quota-table/detail',
     component: <UsualQuotaTableDetail />,
   },
