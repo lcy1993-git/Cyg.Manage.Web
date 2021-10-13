@@ -63,3 +63,31 @@ export const bindUserPhone = (params: ChangeUserPhone) => {
     request(`${baseUrl.project}/Manage/Users/BindPhone`, { method: 'POST', data: {...params}})
   );
 }
+
+// 解绑手机号
+export const unBindUserPhone = () => {
+  return cyRequest(() =>
+      request(`${baseUrl.project}/Users/unBindPhone`, { method: 'GET'})
+  );
+}
+
+// 发送电子邮箱验证码
+export const sendBindEmailCode = (email: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Users/SendBindEmailCode`, { method: 'POST', data: {email}})
+  );
+}
+
+// 绑定电子邮箱
+export const bindEmail = (email: string, code: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Users/BindEmail`, { method: 'POST', data: {email, code}})
+  );
+}
+
+// 解绑电子邮箱
+export const unBindEmail = () => {
+  return cyRequest(() =>
+      request(`${baseUrl.project}/Users/UnBindEmail`, { method: 'GET'})
+  );
+}

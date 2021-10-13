@@ -1,9 +1,11 @@
+import { useRef, useState } from "react";
 import { Button, Input, message } from "antd";
-import { useState } from "react";
-import classNames from "classnames";
 
+import { sendBindEmailCode, bindEmail, unBindEmail } from '@/services/user/user-info';
+
+import classNames from "classnames";
 import styles from '../phone-info/index.less';
-import { useRef } from "react";
+
 
 interface EmailInfoProps {
   email: undefined | string;
@@ -34,8 +36,10 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
     } else if (bindEmailRef.current!.input.value === email) {
       message.error("更换的邮箱号不能与原邮箱号相同")
     } else {
-      setCurrentEmail(emailNumber);
-      setStep(2);
+      sendBindEmailCode(emailNumber).then(() => {
+        setCurrentEmail(emailNumber);
+        setStep(2);
+      })
     }
   }
   const filishClickHandler = () => {
