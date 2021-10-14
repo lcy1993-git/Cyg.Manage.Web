@@ -73,8 +73,6 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     };
   };
 
-  console.log(canEditSurvey, dataSourceType, '类型');
-
   return (
     <>
       {canEditSurvey && dataSourceType === 0 ? (
@@ -155,7 +153,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
           <TreeSelect
             key="editCostUser"
             style={{ width: '100%' }}
-            treeData={notEdit.concat(designData.map(mapTreeData))}
+            treeData={notEdit.concat(costUserData.map(mapTreeData))}
             placeholder="请选择"
             treeDefaultExpandAll
             allowClear
