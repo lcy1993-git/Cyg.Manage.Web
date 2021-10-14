@@ -147,7 +147,6 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
                         message.success('更新成功');
                       });
                     }
-
                   }}
                 >
                   保存

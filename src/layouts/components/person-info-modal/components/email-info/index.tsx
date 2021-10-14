@@ -1,9 +1,13 @@
 import { useRef, useState } from "react";
-import { Button, Input, message } from "antd";
+import { Button, Input, message, Popconfirm, Space, } from "antd";
 
 import { sendBindEmailCode, bindEmail, unBindEmail } from '@/services/user/user-info';
 
+import _ from 'lodash'
 import classNames from "classnames";
+
+import { isRegularCode } from "../../person-info-rule";
+
 import styles from '../phone-info/index.less';
 
 
@@ -24,6 +28,8 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
 
   const [currentEmail, setCurrentEmail] = useState<string>("")
 
+  const [sendCodeLoading, setSendCodeLoading] = useState(false)
+
   const bindEmailRef = useRef<Input>(null);
   const codeRef = useRef<Input>(null)
 
@@ -36,14 +42,47 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
     } else if (bindEmailRef.current!.input.value === email) {
       message.error("更换的邮箱号不能与原邮箱号相同")
     } else {
+      setSendCodeLoading(true)
       sendBindEmailCode(emailNumber).then(() => {
         setCurrentEmail(emailNumber);
         setStep(2);
+        setSendCodeLoading(false)
+      }).catch(() => {
+        setSendCodeLoading(false)
       })
     }
   }
-  const filishClickHandler = () => {
+
+  const gotoOpenEmailWindow = () => {
+    const [_0, emailRootName] = currentEmail.split(/(?:\.|@)/)
+    window.open(`http://mail.${emailRootName}.com`)
   }
+
+  const sendAgain = _.throttle(() => {
+    sendBindEmailCode(currentEmail).then(() => message.success('邮箱已发送，请查收'))
+  }, 1000)
+
+  const filishClickHandler = _.throttle(() => {
+    const code = codeRef.current?.input.value!
+    if (isRegularCode(code)) {
+      bindEmail(currentEmail, code).then((res) => {
+        if(res.isSuccess) {
+          message.success('绑定成功')
+          refresh()
+        }
+      })
+    } else {
+      message.error('验证码格式错误')
+    }
+  }, 1000)
+
+  const handlerUnbindEmail = () => {
+    unBindEmail().then(() => {
+      message.success('解绑成功')
+      refresh()
+    })
+  }
+
   const getStepComponent = (step: Step) => {
     // 已绑定手机
     if (step === 0) {
@@ -53,7 +92,15 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
             已经绑定邮箱: {email}
           </div>
           <div className={classNames(styles.ml110, styles.minHeight60)}>
-            <Button onClick={() => setStep(1)} type="primary">更换邮箱</Button>
+            <Space>
+              <Button onClick={() => setStep(1)} type="primary">更换邮箱</Button>
+              {
+                email &&
+                <Popconfirm placement="top" title="确定要解绑吗？" onConfirm={handlerUnbindEmail} >
+                  <Button>解绑</Button>
+                </Popconfirm>
+              }
+            </Space>
           </div>
         </>
       );
@@ -66,7 +113,7 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
             <div><Input style={{ width: "200px" }} ref={bindEmailRef} /></div>
           </div>
           <div className={classNames(styles.minHeight60, styles.ml60)}>
-            <Button type="primary" onClick={bindEmailHandler}>下一步</Button>
+            <Button type="primary" onClick={bindEmailHandler} loading={sendCodeLoading}>下一步</Button>
             <Button className={styles.ml12} onClick={() => setStep(email ? 0 : 1)}>取消</Button>
           </div>
         </>
@@ -77,7 +124,7 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
         <>
           <div className={styles.minHeight60}>
             <span style={{ display: "inline-block", width: "56px" }}>邮箱: </span>
-            {currentEmail}验证邮件已发出，去<span className={styles.link}>查收</span>或<span className={styles.link}>再发一次</span>
+            {currentEmail}验证邮件已发出，去<span className={styles.link} onClick={gotoOpenEmailWindow}>查收</span>或<span className={styles.link} onClick={sendAgain}>再发一次</span>
           </div>
           <div className={classNames(styles.minHeight60, styles.flex)}>
             {/* <PersonInfoModalVerificationCode type={4} phoneNumber={currentEmail} canSend={true} /> */}

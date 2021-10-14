@@ -1,9 +1,10 @@
 import { useState, useRef } from "react";
-import { Button, Input, message } from "antd";
+import { Button, Input, message, Popconfirm, Space } from "antd";
 import classNames from "classnames";
-import { changeUserPhone } from '@/services/user/user-info';
+import { changeUserPhone, unBindUserPhone } from '@/services/user/user-info';
 import PersonInfoModalVerificationCode from "../verification-code";
 import styles from './index.less';
+import { isRegularCode } from "../../person-info-rule";
 
 interface PhoneInfoProps {
   phone: undefined | string;
@@ -42,16 +43,23 @@ const PhoneInfo: React.FC<PhoneInfoProps> = ({
   }
 
   const filishClickHandler = () => {
-    if(!(/^\d{6}$/).test(currentCode)) {
+    if(!isRegularCode(currentCode)) {
       message.error("验证码格式有误，请输入有效6位数验证码")
       return 
     }
     changeUserPhone({
       code: currentCode,
       phone: currentPhone
-    }).then((res) => {
+    }).then(() => {
       setStep(0)
       message.success("更新成功")
+      refresh()
+    })
+  }
+
+  const handlerUnBindPhone = () => {
+    unBindUserPhone().then(() => {
+      message.success('解绑成功')
       refresh()
     })
   }
@@ -65,7 +73,12 @@ const PhoneInfo: React.FC<PhoneInfoProps> = ({
             已经绑定手机号: {phone}
           </div>
           <div className={classNames(styles.ml110, styles.minHeight60)}>
-            <Button onClick={() => setStep(1)} type="primary">更换手机号</Button>
+            <Space>
+              <Button onClick={() => setStep(1)} type="primary">更换手机号</Button>
+              <Popconfirm placement="top" title="确定要解绑吗？" onConfirm={handlerUnBindPhone}>
+                <Button>解绑</Button>
+              </Popconfirm>
+            </Space>
           </div>
         </>
       );

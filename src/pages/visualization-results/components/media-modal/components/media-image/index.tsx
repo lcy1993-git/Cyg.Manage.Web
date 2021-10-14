@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import type { MouseEvent } from 'react';
 import { useUpdateEffect } from 'ahooks';
 import type { MediaData } from '../../getComponentsByData';
 
