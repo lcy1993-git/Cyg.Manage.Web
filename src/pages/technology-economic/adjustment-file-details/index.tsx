@@ -1,28 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useMount, useRequest } from 'ahooks';
-import { Button, Modal, message, Spin, Popconfirm, Form } from 'antd';
 import WrapperComponent from '@/components/page-common-wrap';
 import CommonTitle from '@/components/common-title';
 import styles from './index.less';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-// import RightComponent from './components/right-component';
-import ImportTemplateForm from './components/import-template/inex';
-import RightComponent from './components/RightComponent';
 import { getEnabledAdjustmentFiles } from '@/services/technology-economic/spread-coefficient';
-
+import { baseUrl } from '@/services/common';
+import FileDwgView from '@/components/api-file-view/componnents/file-dwg-view';
 interface ListData {
   id: string;
   name: string;
   [key: string]: string;
 }
-
 const AdjustmentFileDetails: React.FC = () => {
-  const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
-
-  const [fileList, setFileList] = useState<File[]>([]);
   const [listData, setListData] = useState<ListData[]>([]);
-  const [activeValue, setActiveValue] = useState<ListData>({ id: '', name: '' });
+  const [activeValue, setActiveValue] = useState<ListData>({ id: '', name: '', path: '' });
+  const [path, setPath] = useState('');
+  const [api, setApi] = useState({});
   useEffect(() => {
     getList();
   }, []);
@@ -30,43 +22,38 @@ const AdjustmentFileDetails: React.FC = () => {
   const getList = async () => {
     const result: any = await getEnabledAdjustmentFiles();
     setListData(result);
+    result && result[0].path && getApi(result[0].path);
     setActiveValue(result[0]);
+    setPath(result[0].path);
   };
-  // const {
-  //   data: listData = [],
-  //   run: listDataRun,
-  //   loading: preLoading,
-  // } = useRequest<ListData[]>(getRateTypeList, {
-  //   manual: true,
-  //   onSuccess: (res) => {
-  //     setActiveValue(res[0]);
-  //   },
-  // });
-
-  // useMount(() => {
-  //   listDataRun();
-  // });
-  // const listData = [
-  //   { value: '1', text: '定额【2021】4号价差调整文件' },
-  //   { value: '2', text: '定额【2021】4号价差调整文件' },
-  //   { value: '3', text: '定额【2021】4号价差调整文件' },
-  //   { value: '4', text: '定额【2021】4号价差调整文件' },
-  // ];
-
-  const listDataElement = listData.map((item, index) => {
+  const listDataElement = listData.map((item: any, index) => {
     return (
       <div
         className={`${styles.listElementItem} ${
           item.id === activeValue.id ? styles.listActive : ''
         }`}
         key={item.id}
-        onClick={() => setActiveValue(item)}
+        onClick={() => {
+          item.path && getApi(item.path);
+          setActiveValue(item);
+          setPath(item.path);
+        }}
       >
         {item.name}
       </div>
     );
   });
-
+  const getApi = (id: string) => {
+    const api = {
+      url: `${
+        baseUrl.upload
+      }/Download/GetFileById?fileId=${id}&securityKey=${'1202531026526199123'}`,
+      httpHeaders: {
+        Authorization: window.localStorage.getItem('Authorization'),
+      },
+    };
+    setApi(api);
+  };
   return (
     <WrapperComponent>
       <div className={styles.allDiv}>
@@ -82,7 +69,9 @@ const AdjustmentFileDetails: React.FC = () => {
             <div className={styles.listElement}>{listDataElement}</div>
           </div>
           <div className={styles.containerRight}>
-            <div className={styles.body}>{/* <RightComponent /> */}</div>
+            <div className={styles.body}>
+              {path && <FileDwgView params={api} hasAuthorization={true} />}
+            </div>
           </div>
         </div>
         {/* </Spin> */}
