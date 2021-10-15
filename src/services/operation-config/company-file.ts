@@ -17,6 +17,12 @@ interface ItemDetailData extends CompanyFileItemParams {
   id: string;
 }
 
+export const getFileList = (params: any) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.project}/CompanyFile/GetPagedList`, { method: 'POST', data: params }),
+  );
+};
+
 //获取选中数据
 export const getCompanyFileDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>

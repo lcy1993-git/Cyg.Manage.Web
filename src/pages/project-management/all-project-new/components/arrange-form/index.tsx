@@ -88,10 +88,12 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
   useEffect(() => {
     if (defaultType) {
-      setCheckedValue(defaultType);
-      onChange?.(defaultType);
+      setCheckedValue(defaultType === '5' ? '2' : defaultType);
+      onChange?.(defaultType === '5' ? '2' : defaultType);
     }
   }, [defaultType]);
+
+  console.log(defaultType, checkedValue, '5543545');
 
   const notChoose = (() => {
     return [

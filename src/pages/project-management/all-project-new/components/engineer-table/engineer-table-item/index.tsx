@@ -72,8 +72,6 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     noPadding = false,
   } = props;
 
-  console.log(columnsWidth, contentWidth, columns, '5533');
-
   const noPaddingRight = noPadding ? styles.noPaddingRight : '';
 
   const valueList = useMemo(() => {
@@ -223,7 +221,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   const tbodyElement = useMemo(() => {
     return (projectInfo.projects ?? []).map((item: any) => {
       return (
-        <div key={`${item.id}Td`} className={`${styles.engineerTableTr} ${styles.noPaddingRight}`}>
+        <div key={`${item.id}Td`} className={`${styles.engineerTableTr} ${noPaddingRight}`}>
           <div
             className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox} checkboxContent`}
             style={{ width: '38px', left: `0px` }}

@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react';
-import { useControllableValue } from 'ahooks';
+import { useControllableValue, useUpdateEffect } from 'ahooks';
 import UrlSelect from '@/components/url-select';
 import { Button, Modal, Form, DatePicker, Tooltip } from 'antd';
 import { useGetProjectEnum } from '@/utils/hooks';
@@ -73,12 +73,6 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
 
   // 更多条件
   const [showMoreFlag, setShowMoreFlag] = useState<boolean>(false);
-
-  const [selectDefaultData, setSelectDefaultData] = useState({
-    logicRelation: 2,
-    survey: '',
-    design: '',
-  });
 
   const imgSrc = require('../../../../../assets/icon-image/' + icon + '.png');
 

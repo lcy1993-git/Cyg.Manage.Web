@@ -2,14 +2,18 @@ import CommonTitle from '@/components/common-title';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import EntrustTable from './components/entrust-table';
-import { Button, Input } from 'antd';
+import { Button, Input, message } from 'antd';
 import styles from './index.less';
 import React, { useEffect, useRef, useState } from 'react';
 import FilterEntrustModal from './components/filter-entrust-modal';
+import { receiveProject } from '@/services/project-management/project-entrust';
+import { TableItemCheckedInfo } from '@/pages/project-management/all-project-new/components/engineer-table/engineer-table-item';
+import { useUpdateEffect } from 'ahooks';
 const { Search } = Input;
 
 const ProjectEntrust: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>();
+  const [projectIds, setProjectIds] = useState<string[]>([]);
   const tableRef = useRef<HTMLDivElement>(null);
   const [screenModalVisible, setScreenModalVisible] = useState(false);
   const [searchParams, setSearchParams] = useState({
@@ -30,14 +34,53 @@ const ProjectEntrust: React.FC = () => {
     startTime: '',
     endTime: '',
   });
-  const searchEvent = () => {};
+
+  const searchByParams = (params: any) => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.searchByParams(params);
+    }
+  };
+
+  const searchEvent = () => {
+    console.log(keyWord);
+
+    searchByParams({
+      ...searchParams,
+      keyWord,
+    });
+  };
+
+  //获取选择项目id
+  const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
+    const projectIds = checkedValue.map((item) => item.checkedArray).flat(1);
+    console.log(projectIds);
+
+    setProjectIds(projectIds);
+  };
 
   const screenClickEvent = (params: any) => {
     setSearchParams({ ...params, keyWord });
-    // searchByParams({ ...params, engineerFavoritesId: selectedFavId, keyWord, statisticalCategory });
+    searchByParams({ ...params, keyWord });
   };
 
-  useEffect(() => {}, [searchParams]);
+  useUpdateEffect(() => {
+    searchByParams({ ...searchParams, keyWord });
+  }, [searchParams]);
+
+  const refresh = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.refresh();
+    }
+  };
+
+  //项目获取
+  const receiveProjectEvent = async () => {
+    await receiveProject(projectIds);
+    message.success('项目获取成功');
+    refresh();
+  };
 
   return (
     <PageCommonWrap>
@@ -61,14 +104,23 @@ const ProjectEntrust: React.FC = () => {
 
         {/* {(buttonJurisdictionArray?.includes('all-project-project-approval')  */}
 
-        <Button className="mr7" type="primary" style={{ width: '70px', borderRadius: '5px' }}>
+        <Button
+          className="mr7"
+          type="primary"
+          style={{ width: '70px', borderRadius: '5px' }}
+          onClick={() => receiveProjectEvent()}
+        >
           获取
         </Button>
 
         {/* )} */}
       </div>
       <div className={styles.entrustTableContent}>
-        <EntrustTable ref={tableRef} extractParams={{ keyWord, ...searchParams }} />
+        <EntrustTable
+          ref={tableRef}
+          extractParams={{ ...searchParams, keyWord }}
+          onSelect={tableSelectEvent}
+        />
       </div>
 
       <FilterEntrustModal

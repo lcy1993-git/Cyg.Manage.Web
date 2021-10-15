@@ -3,7 +3,7 @@ import EmptyTip from '@/components/empty-tip';
 import { getEntrustProjectList } from '@/services/project-management/project-entrust';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
-import { useRequest, useSize } from 'ahooks';
+import { useRequest, useSize, useUpdateEffect } from 'ahooks';
 import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
@@ -26,20 +26,12 @@ interface EntrustTableProps {
   extractParams: any;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
   getStatisticsData?: (value: any) => void;
-  columnsConfig: string[];
   finishEvent: () => void;
   configFinishEvent?: (checkedValue: any) => void;
 }
 
 const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
-  const {
-    extractParams,
-    onSelect,
-    getStatisticsData,
-    columnsConfig = [],
-    finishEvent,
-    configFinishEvent,
-  } = props;
+  const { extractParams, onSelect, getStatisticsData, finishEvent, configFinishEvent } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -48,23 +40,20 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
 
   const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('');
 
-  const [projectNeedInfo, setProjectNeedInfo] = useState({
-    engineerId: '',
-    areaId: '',
-    company: '',
-    companyName: '',
-  });
+  //@ts-ignore
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'));
 
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
 
-  const { data: tableData, loading, run } = useRequest(() => getEntrustProjectList(extractParams));
+  const { data: tableData, loading, run } = useRequest(() =>
+    getEntrustProjectList({ ...extractParams, pageIndex, pageSize }),
+  );
 
   const scrollbar = useRef<any>(null);
   const tableContentRef = useRef<HTMLDivElement>(null);
 
   const tableContentSize = useSize(tableContentRef);
-  console.log(tableContentSize, '213');
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
 
@@ -234,24 +223,6 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     },
   ];
 
-  const chooseColumns = useMemo(() => {
-    if (columnsConfig) {
-      return ['name', ...columnsConfig, 'sources', 'identitys', 'status', 'action'];
-    }
-    return [
-      'categoryText',
-      'kvLevelText',
-      'natureTexts',
-      'majorCategoryText',
-      'constructTypeText',
-      'stageText',
-      'exportCoordinate',
-      'surveyUser',
-      'designUser',
-      'identitys',
-    ];
-  }, [JSON.stringify(columnsConfig)]);
-
   const columnsInfo = useMemo(() => {
     // const showColumns = completeConfig.filter((item) => chooseColumns.includes(item.dataIndex));
 
@@ -273,14 +244,13 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
       columns: completeConfig,
       columnsWidth: columnsWidth + 38,
     };
-  }, [chooseColumns, JSON.stringify(tableContentSize.width)]);
-
-  console.log(columnsInfo, '2233');
+  }, [JSON.stringify(tableContentSize.width)]);
 
   const tableResultData = useMemo(() => {
     if (tableData) {
       // const { pagedData, statistics } = tableData;
       const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = tableData;
+
       return {
         items: items ?? [],
         pageIndex: resPageIndex,
@@ -310,11 +280,6 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     setPageIndex(1);
     setPageSize(size);
 
-    // run({
-    //   ...extractParams,
-    //   pageIndex: 1,
-    //   pageSize: size,
-    // });
     setTableSelectData([]);
     onSelect?.([]);
   };
@@ -322,20 +287,19 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   // 列显示处理
   const currentPageChange = (page: any, size: any) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
-    // if (pageSize === size) {
-    //   setPageIndex(page === 0 ? 1 : page);
-    //   run({
-    //     ...extractParams,
-    //     pageIndex: page,
-    //     pageSize,
-    //   });
-    //   setTableSelectData([]);
-    //   onSelect?.([]);
-    // }
+
+    if (pageSize === size) {
+      setPageIndex(page === 0 ? 1 : page);
+      setTableSelectData([]);
+      onSelect?.([]);
+    }
   };
 
+  useUpdateEffect(() => {
+    run();
+  }, [pageIndex, pageSize]);
+
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
-    console.log(projectSelectInfo);
     // 监测现在数组是否含有此id的数据
     const hasData = tableSelectData.findIndex(
       (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id,
@@ -370,15 +334,14 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
-    // refresh: () => {
-    //   run({
-    //     ...extractParams,
-    //     pageIndex,
-    //     pageSize,
-    //   });
-    //   setTableSelectData([]);
-    //   onSelect?.([]);
-    // },
+    refresh: () => {
+      console.log(pageIndex, '523');
+
+      run();
+      setTableSelectData([]);
+      onSelect?.([]);
+    },
+
     // search: () => {
     //   setPageIndex(1);
     //   run({
@@ -396,22 +359,19 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     //   setTableSelectData([]);
     //   onSelect?.([]);
     // },
-    // searchByParams: (params: object) => {
-    //   setPageIndex(1);
-    //   run({
-    //     ...params,
-    //     pageIndex: 1,
-    //     pageSize,
-    //   });
-    //   if (scrollbar && scrollbar.current) {
-    //     scrollbar.current.view.scroll({
-    //       top: 0,
-    //       behavior: 'smooth',
-    //     });
-    //   }
-    //   setTableSelectData([]);
-    //   onSelect?.([]);
-    // },
+
+    searchByParams: (params: object) => {
+      setPageIndex(1);
+      run();
+      if (scrollbar && scrollbar.current) {
+        scrollbar.current.view.scroll({
+          top: 0,
+          behavior: 'smooth',
+        });
+      }
+      setTableSelectData([]);
+      onSelect?.([]);
+    },
     // delayRefresh: async (ms: number) => {
     //   await delay(500);
     //   run({
@@ -425,8 +385,6 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   }));
 
   const scrollEvent = (size: any) => {
-    console.log(size, '666');
-
     if (size) {
       const tableTitle = document.getElementsByClassName('tableTitleContent');
       const tableCheckbox = document.getElementsByClassName('checkboxContent');
@@ -481,7 +439,14 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
           >
             <Spin spinning={loading}>
               {tableResultData.items.length > 0 && engineerTableElement}
-              {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}
+              {tableResultData.items.length === 0 && (
+                <div style={{ color: '#8C8C8C' }}>
+                  <EmptyTip
+                    className="pt20"
+                    description={userType === 2 ? '暂无匹配的记录' : '公司管理员账号无需使用该功能'}
+                  />
+                </div>
+              )}
             </Spin>
           </ScrollView>
         </div>
