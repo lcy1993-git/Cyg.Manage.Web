@@ -29,6 +29,7 @@ const CommonRateInfomation: React.FC = () => {
   const [activeValue, setActiveValue] = useState<ListData>({value: "", text: ""});
 
   const [importVisibel, setImportVisibel] = useState<boolean>(false);
+  const [update, setUpdate] = useState<boolean>(true);
 
   const [fileList, setFileList] = useState<File[]>([])
 
@@ -78,11 +79,15 @@ const CommonRateInfomation: React.FC = () => {
     if (fileList.length === 0) {
       message.error('当前未上传文件');
     } else {
+      setUpdate(false)
       importRateTable((params as Params).id, fileList[0]).then(() => {
         message.success('上传成功');
         setImportVisibel(false);
         listDataRun((params as Params).id)
-      });
+        setUpdate(true)
+      }).finally(()=>{
+        setUpdate(true)
+      })
     }
   }
 
@@ -151,8 +156,8 @@ const CommonRateInfomation: React.FC = () => {
             </div>
             <div className={styles.containerRight}>
               <div className={styles.body}>
-                <CommonRateTable rateFileId={(params as Params).id} id={activeValue.value} type={activeValue.value}
-                                 demolition={(params as Params).isDemolition}/>
+                {update &&  <CommonRateTable rateFileId={(params as Params).id} id={activeValue.value} type={activeValue.value}
+                                             demolition={(params as Params).isDemolition}/>}
               </div>
             </div>
           </div>

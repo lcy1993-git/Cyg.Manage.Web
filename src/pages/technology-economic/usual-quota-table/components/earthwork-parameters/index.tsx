@@ -33,7 +33,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
     let res = await getAllEarthWorks(id) //获取所有的土方参数
     let res1 = await getAllEarthworkMargins(id) //获取所有的挖方裕度
     let res2 = await GetAllEarthworkSlopeCoefficients(id) //获取所有的放坡系数
-
+    console.log(res)
     setDataSource(res)
     setDataSource1(res1)
     setDataSource2(res2)
@@ -67,7 +67,9 @@ const EarthworkParameters: React.FC<Props> = (props) => {
     xhr.send()
   }
   useEffect(()=>{
+    console.log(dataSource)
     dataSource.map(item=>{
+      console.log(item)
       downImage(item)
       return item
     })
