@@ -108,9 +108,16 @@ export const ImportRateFileZip = (file: File) => {
 }
 
 // 下载模板
-export const downloadTemplate = () => {
-  return request(`${baseUrl.tecEco1}/RateTable/DownloadTemplate`, {method: 'GET', responseType: "blob"});
+export const downloadTemplate = (rateFileType?:number) => {
+  return request(`${baseUrl.tecEco1}/RateTable/DownloadTemplate?rateFileType=${rateFileType}`, {method: 'GET', responseType: "blob"});
 }
+// rateFileType
+// 建筑安装取费表费率 = 1,
+//   拆除取费表费率 = 2,
+//   地形增加系数 = 3,
+//   未计价材料施工损耗率 = 4,
+//   土方参数 = 5,
+//   社保公积金费率 = 6
 
 // 获取拆除工程简单费率详情
 export const getDemolitionEasyRate = (rateTableType: string, rateFileId: string) => {

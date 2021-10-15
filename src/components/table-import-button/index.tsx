@@ -6,6 +6,7 @@ import FileUpload from '../file-upload';
 import { commonUpload } from '@/services/common';
 import { checkHasUploadFile } from '@/utils/common-rule';
 import {commonlyTableTemplate} from "@/services/technology-economic/project-list";
+import { downloadTemplate } from '@/services/technology-economic/common-rate';
 
 interface TableImportButtonProps extends ButtonProps {
   importUrl: string;
@@ -47,7 +48,8 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     setImportModalVisible(false);
   };
   const downLoad = async () => {
-    const res = await commonlyTableTemplate({commonlyTableType:downType});
+    const res = await downloadTemplate(downType);
+    console.log(res)
     let blob = new Blob([res], {
       type: `application/xlsx`,
     });

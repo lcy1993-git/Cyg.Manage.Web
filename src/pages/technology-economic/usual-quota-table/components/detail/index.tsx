@@ -19,7 +19,11 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
   const getTabList = async () => {
     const name = decodeURI(window.location.search.split('=')[1]).replace('&id','')
     if (name === '地形增加系数'){
-      setActive(2)
+      setActive(3)
+    } else if (name === '未计价材料施工损耗率'){
+      setActive(4)
+    } else if (name === '土方参数'){
+      setActive(5)
     }
   };
   useEffect(() => {
