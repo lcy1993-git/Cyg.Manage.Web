@@ -91,13 +91,14 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId}) => {
     xhr.send();
   };
   const uploadFile = async () => {
-
     let type:string =  file[0].name.split('.')[1]
     if (type === 'zip'){
       await UploadChapterDescriptionFiles({
         files: file,
         quotaLibraryCatalogId : window.location.search.split('=')[1] ?? '',
       });
+      update()
+
     } else {
       if (title !== file[0].name.split('.')[0]){
         message.warn('当前选中章节与上传文档的章节说明不匹配,请重新选择章节!');
@@ -107,6 +108,8 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId}) => {
         file: file,
         quotaLibraryCatalogId : nodeId as string,
       });
+      update()
+
     }
 
     setUploadModalVisible(false);

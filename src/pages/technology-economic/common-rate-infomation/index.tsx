@@ -1,12 +1,16 @@
-import { useState } from 'react';
-import { useMount, useRequest } from 'ahooks';
-import { Button, Modal, message, Spin, Space } from 'antd';
+import {useState} from 'react';
+import {useMount, useRequest} from 'ahooks';
+import {Button, Modal, message, Spin, Space} from 'antd';
 import WrapperComponent from '@/components/page-common-wrap';
 import CommonTitle from '@/components/common-title';
-import { getRateTypeList } from '@/services/technology-economic/common-rate'
+import {getRateTypeList} from '@/services/technology-economic/common-rate'
 import CommonRateTable from './components/common-rate-table';
-import { downloadTemplate, downloadDemolitionTemplate, importRateTable } from '@/services/technology-economic/common-rate';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import {
+  downloadTemplate,
+  downloadDemolitionTemplate,
+  importRateTable
+} from '@/services/technology-economic/common-rate';
+import {useGetButtonJurisdictionArray} from '@/utils/hooks';
 import styles from './index.less';
 import FileUpload from '@/components/file-upload';
 import {history} from "@@/core/history";
@@ -22,7 +26,7 @@ interface Params {
 }
 
 const CommonRateInfomation: React.FC = () => {
-  const [activeValue, setActiveValue] = useState<ListData>({ value: "", text: "" });
+  const [activeValue, setActiveValue] = useState<ListData>({value: "", text: ""});
 
   const [importVisibel, setImportVisibel] = useState<boolean>(false);
 
@@ -30,16 +34,16 @@ const CommonRateInfomation: React.FC = () => {
 
   const params = window.location.search.split("?")[1].split("&").reduce((pre, val) => {
     const unit = val.split("=");
-    if(unit[0] === "isDemolition") {
+    if (unit[0] === "isDemolition") {
       pre[unit[0]] = Boolean(unit[1]);
-    }else{
+    } else {
       pre[unit[0]] = unit[1];
     }
 
     return pre;
   }, {})
 
-  const { data: listData = [], run: listDataRun, loading: preLoading } = useRequest<ListData[]>(getRateTypeList,
+  const {data: listData = [], run: listDataRun, loading: preLoading} = useRequest<ListData[]>(getRateTypeList,
     {
       manual: true,
       onSuccess: (res) => {
@@ -49,9 +53,9 @@ const CommonRateInfomation: React.FC = () => {
   )
 
   useMount(() => {
-    if((params as Params).id){
+    if ((params as Params).id) {
       listDataRun((params as Params).id)
-    }else{
+    } else {
       message.error("当前费率详情的rateFileId的值为空")
     }
   })
@@ -73,7 +77,7 @@ const CommonRateInfomation: React.FC = () => {
   const onOK = () => {
     if (fileList.length === 0) {
       message.error('当前未上传文件');
-    }else{
+    } else {
       importRateTable((params as Params).id, fileList[0]).then(() => {
         message.success('上传成功');
         setImportVisibel(false);
@@ -84,12 +88,12 @@ const CommonRateInfomation: React.FC = () => {
 
   const downLoad = async () => {
     let res;
-
-    if((params as Params).isDemolition) {
-      res = await downloadDemolitionTemplate()
-    }else{
-      res = await downloadTemplate()
-
+    let name = decodeURI(window.location.search.split('=')[2])
+    console.log(name)
+    if (name === '拆除取费表费率') {
+      res = await downloadTemplate(2)
+    } else if (name === '建筑安装取费表费率') {
+      res = await downloadTemplate(1)
     }
     const blob = new Blob([res], {
       type: 'application/xlsx',
@@ -112,7 +116,7 @@ const CommonRateInfomation: React.FC = () => {
     }
     message.success('导出成功');
   }
-  const linkToArea = ()=>{
+  const linkToArea = () => {
     history.push(`/technology-economic/area-type-manage`)
   }
   return (
@@ -136,21 +140,22 @@ const CommonRateInfomation: React.FC = () => {
           </div>
         </div>
         <Spin spinning={preLoading}>
-        <div className={styles.bottomContainer}>
-          <div className={styles.containerLeft}>
-            <div className={styles.containerLeftTitle}>
-              目录
+          <div className={styles.bottomContainer}>
+            <div className={styles.containerLeft}>
+              <div className={styles.containerLeftTitle}>
+                目录
+              </div>
+              <div className={styles.listElement}>
+                {listDataElement}
+              </div>
             </div>
-            <div className={styles.listElement}>
-              {listDataElement}
+            <div className={styles.containerRight}>
+              <div className={styles.body}>
+                <CommonRateTable rateFileId={(params as Params).id} id={activeValue.value} type={activeValue.value}
+                                 demolition={(params as Params).isDemolition}/>
+              </div>
             </div>
           </div>
-          <div className={styles.containerRight}>
-            <div className={styles.body}>
-              <CommonRateTable rateFileId={(params as Params).id} id={activeValue.value} type={activeValue.value} demolition={(params as Params).isDemolition}/>
-            </div>
-          </div>
-        </div>
         </Spin>
       </div>
       <Modal
@@ -174,7 +179,8 @@ const CommonRateInfomation: React.FC = () => {
               process={true}
               onChange={(e) => setFileList(e)}
               className={styles.file}
-              uploadFileFn={async () => { }}
+              uploadFileFn={async () => {
+              }}
             />
           </div>
         </div>

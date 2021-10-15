@@ -49,10 +49,13 @@ const ProjectList: React.FC = () => {
     //   width: 160,
     // },
     {
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'rateFileType',
+      key: 'rateFileType',
       title: '费率类型',
       width: 200,
+      render(v: number): string {
+        return ['建筑安装取费表费率','拆除取费表费率','地形增加系数','未计价材料施工损耗率','土方参数','社保公积金费率'][v-1]
+      }
     },
     {
       dataIndex: 'name',
@@ -184,11 +187,10 @@ const ProjectList: React.FC = () => {
       message.error('请选择一条数据进行查看');
       return;
     }
-    console.log(tableSelectRows)
-    let name = tableSelectRows[0].name
+    let name = ['建筑安装取费表费率','拆除取费表费率','地形增加系数','未计价材料施工损耗率','土方参数','社保公积金费率'][tableSelectRows[0].rateFileType - 1]
     let id = tableSelectRows[0].id
-    if (['预规费率','拆除取费表费率'].includes(name)){
-      history.push(`/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&isDemolition=${tableSelectRows[0].isDemolitionMajor ? 1 : ""}`)
+    if (['建筑安装取费表费率','拆除取费表费率'].includes(name)){
+      history.push(`/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&name=${name}`)
     } else if(['地形增加系数','未计价材料施工损耗率','土方参数'].includes(name)){
       history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`)
     } else if (name === '社保公积金费率'){
