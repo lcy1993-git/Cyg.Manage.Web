@@ -49,6 +49,12 @@ const ProjectList: React.FC = () => {
     //   width: 160,
     // },
     {
+      dataIndex: 'name',
+      key: 'name',
+      title: '名称',
+      width: 200,
+    },
+    {
       dataIndex: 'rateFileType',
       key: 'rateFileType',
       title: '费率类型',
@@ -57,12 +63,7 @@ const ProjectList: React.FC = () => {
         return ['建筑安装取费表费率','拆除取费表费率','地形增加系数','未计价材料施工损耗率','土方参数','社保公积金费率'][v-1]
       }
     },
-    {
-      dataIndex: 'name',
-      key: 'name',
-      title: '名称',
-      width: 200,
-    },
+
     {
       dataIndex: 'sourceFile',
       key: 'sourceFile',
@@ -194,7 +195,7 @@ const ProjectList: React.FC = () => {
     } else if(['地形增加系数','未计价材料施工损耗率','土方参数'].includes(name)){
       history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`)
     } else if (name === '社保公积金费率'){
-      history.push(`/technology-economic/social-security-fund`)
+      history.push(`/technology-economic/social-security-fund?id=${tableSelectRows[0].id}`)
     }
   };
 
@@ -294,7 +295,7 @@ const ProjectList: React.FC = () => {
           rowKey={'id'}
           columns={initColumns as (ColumnsType<object>)}
           url="/RateTable/QueryRateFilePager"
-          tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
+          tableTitle="常用费率"
           getSelectData={tableSelectEvent}
           requestSource='tecEco1'
           type="radio"

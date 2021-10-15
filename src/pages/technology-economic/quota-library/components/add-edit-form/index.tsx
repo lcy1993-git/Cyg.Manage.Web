@@ -153,22 +153,22 @@ const DictionaryForm: React.FC<null> = () => {
               valuekey="value"
             />
           </CyFormItem>
-          <CyFormItem
-            label="关联物料库"
-            name="SourceMaterialLibraryId"
-            required
-            rules={[{ required: true, message: '关联物料库为必填' }]}
-          >
-            <Select>
-              {materialList.map((item) => {
-                return (
-                  <Option key={item.id} value={item.id}>
-                    {item.name}
-                  </Option>
-                );
-              })}
-            </Select>
-          </CyFormItem>
+          {/*<CyFormItem*/}
+          {/*  label="关联物料库"*/}
+          {/*  name="SourceMaterialLibraryId"*/}
+          {/*  required*/}
+          {/*  rules={[{ required: true, message: '关联物料库为必填' }]}*/}
+          {/*>*/}
+          {/*  <Select>*/}
+          {/*    {materialList.map((item) => {*/}
+          {/*      return (*/}
+          {/*        <Option key={item.id} value={item.id}>*/}
+          {/*          {item.name}*/}
+          {/*        </Option>*/}
+          {/*      );*/}
+          {/*    })}*/}
+          {/*  </Select>*/}
+          {/*</CyFormItem>*/}
         </Col>
       </Row>
 
