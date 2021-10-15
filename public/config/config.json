@@ -2,7 +2,7 @@
     "requestUrl": {
         "project": "/manage/v2/api",
         "common": "/common/api",
-        "upload": "/api/storage/api",
+        "upload": "/storage/api",
         "resource": "/resourcemanage/v2/api",
         "webGis": "/webgis/api",
         "webGis2": "/webgis2/api",
