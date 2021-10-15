@@ -117,6 +117,8 @@ const QuotaProject = () => {
   const [activeQuotaId, setActiveQuotaId] = useState<string>(qs.parse(window.location.href.split("?")[1]).id as string || "");
   const [catalogueId,setCatalogueId] = useState<string>("");
   const [resourceItem, setResourceItem] = useState<object>({});
+  const [title,setTitle] = useState<string>('')
+  const [nodeId,setNodeId] = useState<string>('')
 
   const {data: quotaList = {total: 0, items: []}, run: quotaListRun} = useRequest<QuotaList>(queryQuotaLibraryPager, {
     manual: true
@@ -167,7 +169,9 @@ const QuotaProject = () => {
 
   }, [quotaList]);
 
-  const onCheck = (kes: React.Key[], {node}: {node: {key: number | string}}) => {
+  const onCheck = (kes: React.Key[], {node}: {node: {key: number | string,name:string,id:string}}) => {
+    setTitle(node.name)
+    setNodeId(node.id)
     catalogueId === node.key || setCatalogueId(node.key as string);
     setResourceItem({})
   }
@@ -214,7 +218,10 @@ const QuotaProject = () => {
                 </div>
               </TabPane>
               <TabPane tab="章节说明" key="章节说明">
-                <ChapterInfo data={chapterData || ""} id={catalogueId} update={()=>chapterRun(catalogueId)}/>
+                <ChapterInfo data={chapterData || ""}
+                             title={title}
+                             nodeId={nodeId}
+                             id={catalogueId} update={()=>chapterRun(catalogueId)}/>
               </TabPane>
             </Tabs>
         </div>

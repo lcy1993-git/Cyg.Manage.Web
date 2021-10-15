@@ -17,7 +17,7 @@ import { useRequest, useSize } from 'ahooks';
 import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
-import { forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
+import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
 
 import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item';
 import ScrollView from 'react-custom-scrollbars';
@@ -550,34 +550,45 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
       render: (record: any) => {
         const status = record.exportCoordinate;
-        return record.exportCoordinate === true ? (
-          <span
-            style={{ cursor: 'pointer' }}
-            className="colorRed"
-            onClick={() => {
-              modifyExportPowerState({
-                isEnable: !status,
-                projectIds: [record.id],
-              });
-              finishEvent?.();
-            }}
-          >
-            启用
-          </span>
-        ) : (
-          <span
-            style={{ cursor: 'pointer' }}
-            className="colorPrimary"
-            onClick={() => {
-              modifyExportPowerState({
-                isEnable: !status,
-                projectIds: [record.id],
-              });
-              finishEvent?.();
-            }}
-          >
-            禁用
-          </span>
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('export-coordinate') &&
+              (record.exportCoordinate === true ? (
+                <span
+                  style={{ cursor: 'pointer' }}
+                  className="colorRed"
+                  onClick={() => {
+                    modifyExportPowerState({
+                      isEnable: !status,
+                      projectIds: [record.id],
+                    });
+                    finishEvent?.();
+                  }}
+                >
+                  启用
+                </span>
+              ) : (
+                <span
+                  style={{ cursor: 'pointer' }}
+                  className="colorPrimary"
+                  onClick={() => {
+                    modifyExportPowerState({
+                      isEnable: !status,
+                      projectIds: [record.id],
+                    });
+                    finishEvent?.();
+                  }}
+                >
+                  禁用
+                </span>
+              ))}
+            {!buttonJurisdictionArray?.includes('export-coordinate') &&
+              (record.exportCoordinate === true ? (
+                <span className="colorRed">启用</span>
+              ) : (
+                <span className="colorPrimary">禁用</span>
+              ))}
+          </>
         );
       },
     },
@@ -866,6 +877,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
+    console.log(projectSelectInfo);
     // 监测现在数组是否含有此id的数据
     const hasData = tableSelectData.findIndex(
       (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id,
@@ -1206,4 +1218,4 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   );
 };
 
-export default forwardRef(EngineerTable);
+export default memo(forwardRef(EngineerTable));

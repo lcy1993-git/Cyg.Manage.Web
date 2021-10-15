@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Tree, message, Input, Button, DatePicker, Modal } from 'antd';
 import { SearchOutlined, AlignLeftOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
-import { useMount, useRequest, useSize } from 'ahooks';
+import { useMount, useRequest, useSize, useUpdateEffect, useUpdateLayoutEffect } from 'ahooks';
 import {
   fetchAreaEngineerProjectListByParams,
   fetchCompanyEngineerProjectListByParams,
@@ -35,6 +35,7 @@ const { RangePicker } = DatePicker;
 import SiderMenuAreaButtons from '../side-menu-area-buttons';
 import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { useLayoutStore } from '@/layouts/context';
 
 export interface SideMenuProps {
   className?: string;
@@ -121,10 +122,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 多媒体下载
   const [mediaLoadVisibel, setMediaLoadVisibel] = useState<boolean>(false);
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
-  const [buttonActive, setButtonActive] = useState<number>(
-    window.localStorage.getItem('selectCity') ? -1 : 2,
-  );
-
+  const [buttonActive, setButtonActive] = useState<number>(-1);
+  const { mapSelectCity, setMapSelectCity } = useLayoutStore();
   // 勘察轨迹
   // const [surveyModalVisible, setSurveyModalVisible] = useState(false)
   // const [surveyModalData, setSurveyModalData] = useState(null)
@@ -288,12 +287,12 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
      *
      */
 
-    const selectCity = localStorage.getItem('selectCity');
+    const selectCity = mapSelectCity;
 
     if (selectCity) {
       const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
 
-      localStorage.removeItem('selectCity');
+      setMapSelectCity?.('');
       const { expanded, checked } = key;
       setExpandedKeys([...expanded]);
       setCheckedKeys(getKeyList(checked));
@@ -303,6 +302,21 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       clearState();
     }
   };
+
+  useUpdateEffect(() => {
+    if (mapSelectCity) {
+      if (treeListReponseData?.length) {
+        const data = generateProjectTree(treeListReponseData);
+
+        setTreeData(data);
+        initSideTree(data);
+        // 修复初次请求默认到县级的bug
+      } else {
+        setTreeData([]);
+        message.warning('无数据');
+      }
+    }
+  }, [mapSelectCity]);
 
   /**
    * 从可视化界面跳转过来自动展开地区项目，并选中所有项目
@@ -523,11 +537,18 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   };
 
   useEffect(() => {
-    store.setDateRange({
-      startDate: dateRange[0] ? moment(dateRange[0]).format('YYYY/MM/DD') : dateRange?.[0],
-      endDate: dateRange[1] ? moment(dateRange[1]).format('YYYY/MM/DD') : dateRange?.[1],
-    })
-  }, [dateRange])
+    if (Array.isArray(dateRange)) {
+      store.setDateRange({
+        startDate: dateRange[0] ? moment(dateRange[0]).format('YYYY/MM/DD') : dateRange?.[0],
+        endDate: dateRange[1] ? moment(dateRange[1]).format('YYYY/MM/DD') : dateRange?.[1],
+      });
+    } else {
+      store.setDateRange({
+        startDate: undefined,
+        endDate: undefined,
+      });
+    }
+  }, [dateRange]);
 
   const renderExtraFooter = () => {
     return (
@@ -686,7 +707,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       <div className={styles.buttonArea}>
         <SiderMenuAreaButtons
           buttonProps={[
-            {
+            buttonJurisdictionArray?.includes('result-manage') && {
               title: '成果管理',
               dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
               light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
@@ -696,7 +717,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
-            {
+            buttonJurisdictionArray?.includes('material-statistics') && {
               title: '材料统计',
               dart: require('@/assets/icon-image/menu-tree-icon/材料统计.png'),
               light: require('@/assets/icon-image/menu-tree-icon/材料统计-light.png'),
@@ -710,7 +731,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
-            {
+            buttonJurisdictionArray?.includes('review-message') && {
               title: '审阅消息',
               dart: require('@/assets/icon-image/menu-tree-icon/审阅消息.png'),
               light: require('@/assets/icon-image/menu-tree-icon/审阅消息-light.png'),
@@ -721,7 +742,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               style:
                 Array.isArray(checkedKeys) && checkedKeys?.length === 0 ? { opacity: 0.4 } : {},
             },
-            {
+
+            buttonJurisdictionArray?.includes('export-media') && {
               title: '导出多媒体',
               dart: require('@/assets/icon-image/menu-tree-icon/导出多媒体.png'),
               light: require('@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'),
@@ -731,7 +753,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
-            {
+            buttonJurisdictionArray?.includes('export-coordinates') && {
               title: '导出坐标',
               dart: require('@/assets/icon-image/menu-tree-icon/导出坐标.png'),
               light: require('@/assets/icon-image/menu-tree-icon/导出坐标-light.png'),

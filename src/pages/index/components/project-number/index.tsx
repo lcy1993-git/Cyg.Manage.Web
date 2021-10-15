@@ -67,7 +67,6 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
         formatter: (params: any) => {
           const { dataIndex } = params[0];
 
-          const thisTime = dateData[dataIndex];
           const currentData = currentDateData[dataIndex] ?? 0;
           const currentChangeData = changeDateData[dataIndex] ?? 0;
           const arrow = currentChangeData === 0 ? "" : (currentChangeData > 0 ? "↑" : "↓") 
@@ -76,7 +75,7 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
           return `${borderStylesHTML}
 
                 <span style="color: #fff"><span style="color: #2AFE97">当前项目数：</span>${currentData}</span><br />
-                <span style="color: #fff"><span style="color: #2AFE97">较昨日变化：</span>${arrow}${currentChangeData}</span>
+                <span style="color: #fff"><span style="color: #2AFE97">较昨日变化：</span>${arrow}${Math.abs(currentChangeData)}</span>
               `;
         },
       },

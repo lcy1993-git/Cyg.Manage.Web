@@ -73,8 +73,6 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     };
   };
 
-  console.log(canEditSurvey, dataSourceType, '类型');
-
   return (
     <>
       {canEditSurvey && dataSourceType === 0 ? (
@@ -150,12 +148,12 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         </CyFormItem>
       )}
 
-      {/* {canEditCost ? (
+      {canEditCost ? (
         <CyFormItem label="造价" name="costUser">
           <TreeSelect
             key="editCostUser"
             style={{ width: '100%' }}
-            treeData={notEdit.concat(designData.map(mapTreeData))}
+            treeData={notEdit.concat(costUserData.map(mapTreeData))}
             placeholder="请选择"
             treeDefaultExpandAll
             allowClear
@@ -173,7 +171,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             allowClear
           />
         </CyFormItem>
-      )} */}
+      )}
 
       {/* 继续安排审核 */}
       <div className={styles.continueAudit}>

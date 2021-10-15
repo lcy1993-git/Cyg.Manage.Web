@@ -1,22 +1,19 @@
 import CommonTitle from '@/components/common-title';
 import { CopyOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Tabs, Form, message, Steps } from 'antd';
-import { divide } from 'lodash';
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import { Button, Tabs, Form, message } from 'antd';
+import React, { useState } from 'react';
 import CreateEngineerForm from '../create-engineer-form';
 import CreateProjectForm from '../create-project-form';
 
 const { TabPane } = Tabs;
-const { Step } = Steps;
 
 interface CreateEngineerProps {
   form: any;
   current?: number;
-  setCurrent?: Dispatch<SetStateAction<number>>;
 }
 
 const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
-  const { form, setCurrent, current } = props;
+  const { form, current } = props;
 
   const [activeProjectKey, setActiveProjectKey] = useState<string>('0');
   const [areaId, setAreaId] = useState<string>('');

@@ -62,7 +62,7 @@ const FilterModal: React.FC<Props> = ({
 
   const onReset= () => {
     form.setFieldsValue({
-      statuss: undefined,
+      status: undefined,
       pCategory: undefined,
       constructType: undefined,
       nature: undefined,

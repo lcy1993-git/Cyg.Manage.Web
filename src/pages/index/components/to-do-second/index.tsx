@@ -20,13 +20,20 @@ const typeEnmu = {
   delegation: '3',
   beShared: '4',
 };
+
+const areaTypeObj = {
+  '1': '-1',
+  '2': '1',
+  '3': '2',
+};
+
 const ToDo: React.FC<ToDoProps> = (props) => {
   const {
     componentProps = ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
     currentAreaInfo,
   } = props;
 
-  const { setAllProjectSearchType } = useLayoutStore();
+  const { setAllProjectSearchParams } = useLayoutStore();
 
   const { data: toDoStatisticsInfo, loading } = useRequest(
     () =>
@@ -56,8 +63,13 @@ const ToDo: React.FC<ToDoProps> = (props) => {
   }, [componentProps]);
 
   const toAllProjectListPage = (type: string) => {
-    console.log(typeEnmu[type]);
-    setAllProjectSearchType?.(typeEnmu[type]);
+    setAllProjectSearchParams?.({
+      areaLevel: areaTypeObj[currentAreaInfo.areaLevel!],
+      areaId: currentAreaInfo.areaId,
+      cityId: currentAreaInfo.cityId,
+      searchPerson: '',
+      searchType: typeEnmu[type],
+    });
     history.push('/project-management/all-project');
   };
 
@@ -95,7 +107,6 @@ const ToDo: React.FC<ToDoProps> = (props) => {
   };
 
   return (
-
     <ChartBox title="项目管理">
       <Spin spinning={loading} delay={300}>
         <div className={styles.projectManageContent}>
@@ -103,7 +114,6 @@ const ToDo: React.FC<ToDoProps> = (props) => {
         </div>
       </Spin>
     </ChartBox>
-
   );
 };
 

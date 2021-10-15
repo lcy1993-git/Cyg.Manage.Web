@@ -51,8 +51,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const [startDate, setStartDate] = useState<Moment>();
   const [endDate, setEndDate] = useState<Moment>();
   const [dataSourceType, setDataSourceType] = useState<number>();
-  const [disRangeValue, setDisRangeValue] = useState<number>();
-  const [pileRangeValue, setPileRangeValue] = useState<number>();
+  const [disRangeValue] = useState<number>();
+  const [pileRangeValue] = useState<number>();
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
     onSuccess: () => {
@@ -253,11 +253,23 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
-                    moment(new Date(value).getTime()).isBefore(moment(endDate)) ||
                     !value ||
                     !getFieldValue('startTime') ||
-                    !endDate
+                    endDate ||
+                    moment(value.format('YYYY-MM-DD')).isBefore(
+                      moment(endDate).format('YYYY-MM-DD'),
+                    )
                   ) {
+                    if (
+                      moment(moment(new Date(value)).format('YYYY-MM-DD')).isAfter(
+                        moment(endDate).format('YYYY-MM-DD'),
+                      ) ||
+                      moment(moment(new Date(value)).format('YYYY-MM-DD')).isSame(
+                        moment(endDate).format('YYYY-MM-DD'),
+                      )
+                    ) {
+                      return Promise.reject('"项目开始日期"必须早于"项目结束日期"');
+                    }
                     if (
                       getFieldValue('startTime')
                         ? moment(new Date(value).getTime()).isAfter(
@@ -277,7 +289,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                     return Promise.reject('"项目开始日期"不得早于"工程开始日期"');
                   }
-                  return Promise.reject('"项目开始日期"必须早于"项目结束日期"');
+                  return Promise.resolve();
                 },
               }),
             ]}
@@ -305,11 +317,23 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
-                    moment(new Date(value).getTime()).isAfter(moment(startDate)) ||
+                    moment(value.format('YYYY-MM-DD')).isAfter(
+                      moment(startDate).format('YYYY-MM-DD'),
+                    ) ||
                     !value ||
-                    !getFieldValue('startTime') ||
-                    !startDate
+                    !getFieldValue('endTime') ||
+                    startDate
                   ) {
+                    if (
+                      moment(value.format('YYYY-MM-DD')).isBefore(
+                        moment(startDate).format('YYYY-MM-DD'),
+                      ) ||
+                      moment(moment(new Date(value)).format('YYYY-MM-DD')).isSame(
+                        moment(startDate).format('YYYY-MM-DD'),
+                      )
+                    ) {
+                      return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
+                    }
                     if (
                       getFieldValue('endTime')
                         ? moment(new Date(value).getTime()).isBefore(
@@ -329,8 +353,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                     return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
                   }
-
-                  return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
+                  return Promise.resolve();
                 },
               }),
             ]}
@@ -681,9 +704,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 placeholder="请选择"
                 onChange={(value: any) => {
                   if (value === 2 || value === 1) {
-                    if (!field.fieldKey) {
+                    if (field.fieldKey === undefined) {
                       form.resetFields(['disclosureRange', 'pileRange']);
-                      // form.setFieldsValue({ disclosureRange: 1, pileRange: 2 });
+
+                      // form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                     } else {
                       const projectsInfo = form.getFieldValue('projects');
                       const newProjectsInfo = projectsInfo.map((item: any, ind: number) => {
@@ -696,6 +720,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     }
                   }
                   setDataSourceType(value);
+                  if (field) {
+                    // 当有field的时候，重新触发校验
+                    form.validateFields();
+                  }
                   if (isNumber(index)) {
                     const copyData = [...copyFlag!];
                     // console.log(index)

@@ -24,13 +24,19 @@ import {
   getReviewFileUrl,
 } from '@/services/project-management/all-project';
 import styles from './index.less';
-import { DeleteOutlined, EnvironmentOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  DownloadOutlined,
+  EnvironmentOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons';
 
 import { useRequest } from 'ahooks';
 import { useEffect } from 'react';
 import { removeAllotUser } from '@/services/project-management/all-project';
 import SelectAddListForm from '../select-add-list-form';
 import ViewAuditFile from './components/viewFile';
+import { isArray } from 'lodash';
 
 interface GetGroupUserProps {
   onChange?: Dispatch<SetStateAction<boolean>>;
@@ -111,8 +117,8 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     addUser();
   }, [addPeople]);
 
-  const deleteAllotUser = async (userId: string) => {
-    await removeAllotUser({ projectId: projectId, userAllotId: userId });
+  const deleteAllotUser = async (id: string) => {
+    await removeAllotUser({ projectId: projectId, userAllotId: id });
     message.success('已移除');
     const res = await run();
 
@@ -155,6 +161,10 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const reviewCheckEvent = async (id: string) => {
     const res = await getReviewFileUrl({ projectId: projectId, userId: id });
 
+    if (res && isArray(res) && res?.length === 0) {
+      message.info('该评审未产生评审成果');
+      return;
+    }
     const url = res[0]?.extend.file.url;
     const extension = res[0]?.extend.file.extension;
     const name = res[0]?.name;
@@ -166,6 +176,18 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     setState(false);
     message.success('外审已退回');
     refresh?.();
+  };
+
+  const downloadEvent = async (id: string) => {
+    const res = await getReviewFileUrl({ projectId: projectId, userId: id });
+    if (res && isArray(res) && res?.length === 0) {
+      message.info('该评审暂无下载文件');
+      return;
+    }
+    const url = res[0]?.extend.file.url;
+    const aEl = document.createElement('a');
+    aEl.href = url;
+    aEl.click();
   };
 
   return (
@@ -281,6 +303,13 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                     )}
                   </div>
                   <div style={{ marginRight: '12px' }}>
+                    <Tooltip title="下载">
+                      <DownloadOutlined
+                        className={styles.downloadIcon}
+                        onClick={() => downloadEvent(el.userId)}
+                      />
+                    </Tooltip>
+
                     <Tooltip title="删除">
                       <DeleteOutlined
                         className={styles.deleteIcon}
@@ -324,7 +353,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
               <p style={{ textAlign: 'center' }}>外审退回</p>
               <Radio.Group onChange={(e) => setBackTo(e.target.value)} value={backTo}>
                 <Radio value={4}>设计中</Radio>
-                {/* <Radio value={11}>造价中</Radio> */}
+                <Radio value={11}>造价中</Radio>
               </Radio.Group>
             </div>
           </Form>

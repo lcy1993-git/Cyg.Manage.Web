@@ -30,8 +30,6 @@ const FileUploadShowItem: React.FC<FileUploadShowItemProps> = (props) => {
     uploadStatus,
   } = props;
 
-  console.log(uploadStatus, '11');
-
   const deleteFunction = () => {
     deleteEvent?.(uid);
   };

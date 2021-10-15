@@ -29,6 +29,7 @@ import {DeleteOutlined, EditOutlined, ExclamationCircleOutlined, EyeOutlined, Pl
 import WrapperComponent from "@/components/page-common-wrap";
 import GeneralTable from "@/components/general-table";
 import _ from "lodash";
+import TableSearch from "@/components/table-search";
 
 interface Props {
 }
@@ -211,6 +212,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
         setIsModalVisible(false)
         setIsEdit(false)
         tableRef.current?.reset()
+        tableRef.current?.refresh()
       }).finally(()=>{
         setSpinning(false)
       })
@@ -221,6 +223,7 @@ const UsualQuotaTable: React.FC<Props> = () => {
          setIsModalVisible(false)
          setIsEdit(false)
          tableRef.current?.reset()
+         tableRef.current?.refresh()
        }).finally(()=>{
          setSpinning(false)
        })
@@ -294,13 +297,9 @@ const UsualQuotaTable: React.FC<Props> = () => {
     })
     setDataSource(res.items)
   }
-  useEffect(() => {
-    getAllList()
-    getCommonlyTableType()
-  }, [])
-  return (
-    <WrapperComponent>
-      <div className={styles.usualQuotaTable}>
+  const tableElement = () => {
+    return (
+      <div className={styles.usualQuotaTable} >
         <div className={styles.topButtons}>
           <Space>
             <Button type={'primary'} onClick={showDetail}>
@@ -318,9 +317,26 @@ const UsualQuotaTable: React.FC<Props> = () => {
               删除</Button>
           </Space>
         </div>
+      </div>
+    )
+  }
+  const searchComponent = () => {
+    return (
+      <div></div>
+    );
+  };
+  useEffect(() => {
+    getAllList()
+    getCommonlyTableType()
+  }, [])
+  return (
+    <WrapperComponent>
+     <div>
         <GeneralTable
           ref={tableRef}
           needCommonButton={true}
+          buttonRightContentSlot={tableElement}
+          buttonLeftContentSlot={searchComponent}
           columns={columns as (ColumnsType<object>)}
           url="/CommonlyTable/QueryCommonlyTablePager"
           tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"

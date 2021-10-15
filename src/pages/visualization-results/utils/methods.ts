@@ -82,10 +82,12 @@ const checkZoom = (evt: any, map: any) => {
   
   timer && clearInterval(timer);
   if(mediaSign){
-    loadMediaSign(map, layerGroups, true);
+    loadMediaSign(map, layerGroups, mediaSign, true);
     timer = setInterval(function() {
-      loadMediaSign(map, layerGroups, true);
-  }, 1000);
+      loadMediaSign(map, layerGroups, mediaSign, true);
+    }, 1000);
+  } else{
+    timer && clearInterval(timer);
   }
 }
 
@@ -576,24 +578,28 @@ const clearTrackLayers = (trackLayers: any, type: number = 0) => {
 };
 
 // 多媒体标记
-const loadMediaSign = (map:any, layerGroups_?: LayerGroup[], mediaSign_?: boolean) => {
+const loadMediaSign = (map: any, layerGroups_?: LayerGroup[], mediaSign_?: boolean, isChange?: boolean) => {
   if(layerGroups_)
     layerGroups = layerGroups_;
-
-  if(mediaSign_ != null)
-    mediaSign = mediaSign_;
-
   
+  if(mediaSign_ != null && !isChange){
+    mediaSign = mediaSign_;
+  }
+
   if(!mediaSignData)
     loadMediaSignData();
-  if(!mediaSignData)
+
+  if(!mediaSignData){
     return;
+  }
     mediaSignData.then((data: any) => {
     if(data.content && data.content.length > 0){
       layerGroups.forEach((layerGroup:any) => {
         let l:any = layerGroup.getLayers().getArray().find((l:any) => l.getProperties().name.includes('mediaSign'));
         if(l)
           l.getSource().clear();
+        if(!mediaSign)
+          return;
         layerGroup.getLayers().getArray().forEach((layer:any) => {
           let layerName = layer.getProperties().name;
           let layerType = layerName.split('_')[0];

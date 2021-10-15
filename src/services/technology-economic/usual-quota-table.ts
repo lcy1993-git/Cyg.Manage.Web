@@ -79,21 +79,21 @@ export const deleteCommonlyTable = (commonlyTableId: string) => {
 }
 
 // 获取地形增加系数表
-export const getCommonlyTableLandRatio = (commonlyTableId: string) => {
+export const getCommonlyTableLandRatio = (rateFileId : string) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.tecEco1}/CommonlyTable/GetCommonlyTableLandRatio`,
       { method: 'get',params:{
-          commonlyTableId
+          rateFileId
         }}),
   );
 }
 
 // 获取未计价材料施工损耗率表
-export const getCommonlyTableLossRatio = (commonlyTableId: string) => {
+export const getCommonlyTableLossRatio = (rateFileId : string) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.tecEco1}/CommonlyTable/GetCommonlyTableLossRatio`,
       { method: 'get',params:{
-          commonlyTableId
+          rateFileId
         }}),
   );
 }
