@@ -6,6 +6,7 @@ import { useMount, useUpdateEffect } from 'ahooks';
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf';
 import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry';
 import styles from './index.less'
+import { PDFPageProxy } from 'pdfjs-dist/types/display/api';
 // import type { PDFWorker } from 'pdfjs-dist';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker;
@@ -49,7 +50,6 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   const [page, setPage] = useState<PDFPageProxy | null>(null)
   const [downPosition, setDownPositon] = useState({ x: 0, y: 0 })
   const [downScroll, setDownScroll] = useState({ x: 0, y: 0 })
-  const [isMout, setIsMout] = useState<boolean>(true)
 
   // 初始化缩放比
   const initkScale = (page: any) => {
@@ -121,7 +121,14 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
       viewport,
     };
 
-    page!.render(renderContext);
+    const pageRendering = page!.render(renderContext);
+    var completeCallback = pageRendering._internalRenderTask.callback;
+    pageRendering._internalRenderTask.callback = function (err: any) {
+      console.log(2);
+      completeCallback.call(this,err)
+      console.log(3)
+    }
+    
     ref.current.innerHTML = "";
     ref.current.append(canvas)
     setTimeout(() => {
@@ -249,6 +256,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   }
 
   const onWheel = (e: { nativeEvent: { deltaY: number; offsetX: number; offsetY: number; }; }) => {
+
     // 等待状态不能进行缩放操作
     if (wrapRef.current!.style.cursor === "wait") return;
     let currentscale;
@@ -265,6 +273,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
       x: e.nativeEvent.offsetX * (currentscale - cssScale),
       y: e.nativeEvent.offsetY * (currentscale - cssScale),
     })
+
   }
 
   const onMouseDown = (e: any) => {
