@@ -1,12 +1,11 @@
 import { getVersionUpdate } from '@/services/common';
 import { useControllableValue, useRequest } from 'ahooks';
-import { version } from '../../../../public/config/request';
+import { webConfig } from '@/global';
 import { Modal, Spin } from 'antd';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import styles from './index.less';
 import { useEffect } from 'react';
 import uuid from 'node-uuid';
-import { serverCodeArray } from '../../../../public/config/request';
 
 interface VersionInfoModalProps {
   visible: boolean;
@@ -20,23 +19,27 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   const [historyVersionData, setHistoryVersionData] = useState<any[]>([]);
   const [versionLoading, setVersionLoading] = useState<boolean>(false);
 
-  const serverCode = serverCodeArray.hostName === 'localhost' ? '10.6.1.36' : serverCodeArray.hostName;
+  const serverCode =
+    window.location.hostname === 'localhost' ? '10.6.1.36' : window.location.hostname;
 
   // 171.223.214.154 环境需要做特殊处理
   const serverCodeObejct = {
-    "171.223.214.154:21563": "171.223.214.154",
-    "171.223.214.154:21573": "171_223_214_154_2",
-    "171.223.214.154:21583": "171_223_214_154_3",
-  }
+    '171.223.214.154:21563': '171.223.214.154',
+    '171.223.214.154:21573': '171_223_214_154_2',
+    '171.223.214.154:21583': '171_223_214_154_3',
+  };
 
-  const finalyServerCode = serverCodeArray.hostName === "171.223.214.154" ? serverCodeObejct[`${serverCode}:${window.location.port}`] : serverCode;
+  const finalyServerCode =
+    window.location.hostname === '171.223.214.154'
+      ? serverCodeObejct[`${serverCode}:${window.location.port}`]
+      : serverCode;
 
   const { data: versionInfo, run: getVersionInfoEvent, loading } = useRequest(
     () =>
       getVersionUpdate({
         productCode: '1301726010322214912',
         moduleCode: 'ManageWebV2',
-        versionNo: version,
+        versionNo: webConfig.version,
         serverCode: finalyServerCode,
       }),
     {

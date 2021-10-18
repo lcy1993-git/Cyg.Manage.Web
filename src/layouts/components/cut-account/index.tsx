@@ -1,5 +1,5 @@
 import CyFormItem from '@/components/cy-form-item';
-import { userLoginRequest } from '@/services/login';
+import { getAuthorityModules, getUserInfoRequest, userLoginRequest } from '@/services/login';
 import { useGetUserInfo } from '@/utils/hooks';
 import { flatten } from '@/utils/utils';
 import { useControllableValue } from 'ahooks';
@@ -32,16 +32,19 @@ const CutAccount = (props: EditPasswordProps) => {
 
       const isLastAccount = (lastAccount && lastAccount.userName === userName);
 
-      const { accessToken, modules, user } = resData;
+      const { accessToken } = resData;
+      localStorage.setItem('Authorization', accessToken);
 
+      const userInfo = await getUserInfoRequest();
+      const modules = await getAuthorityModules();
+      
       const buttonModules = flatten(modules);
       const buttonArray = buttonModules
         .filter((item: any) => item.category === 3)
         .map((item: any) => item.authCode);
 
-      localStorage.setItem('Authorization', accessToken);
       localStorage.setItem('functionModules', JSON.stringify(modules));
-      localStorage.setItem('userInfo', JSON.stringify(user));
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
       localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
 
       if (!againLogin || !isLastAccount) {

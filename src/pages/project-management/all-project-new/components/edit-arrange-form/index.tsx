@@ -51,9 +51,9 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     refreshDeps: [allotCompanyId],
   });
 
-  // const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
-  //   refreshDeps: [allotCompanyId],
-  // });
+  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
+    refreshDeps: [allotCompanyId],
+  });
 
   const mapTreeData = (data: any) => {
     if (data.children && data.children.length > 0) {
@@ -72,8 +72,6 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
       children: data.children ? data.children.map(mapTreeData) : [],
     };
   };
-
-  console.log(canEditSurvey, dataSourceType, '类型');
 
   return (
     <>
@@ -150,12 +148,12 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         </CyFormItem>
       )}
 
-      {/* {canEditCost ? (
+      {canEditCost ? (
         <CyFormItem label="造价" name="costUser">
           <TreeSelect
             key="editCostUser"
             style={{ width: '100%' }}
-            treeData={notEdit.concat(designData.map(mapTreeData))}
+            treeData={notEdit.concat(costUserData.map(mapTreeData))}
             placeholder="请选择"
             treeDefaultExpandAll
             allowClear
@@ -173,7 +171,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             allowClear
           />
         </CyFormItem>
-      )} */}
+      )}
 
       {/* 继续安排审核 */}
       <div className={styles.continueAudit}>
