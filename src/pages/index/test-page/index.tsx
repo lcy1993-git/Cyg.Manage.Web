@@ -1,11 +1,7 @@
-import { divide } from "@umijs/deps/compiled/lodash"
-import VirtualScroll from "./components/virtual-scroll"
+import FileDwgView from "@/components/api-file-view/componnents/file-dwg-view"
 
 const Test = () => {
-  const data = Array(100).fill(1)
-  console.log(data);
-  
-  return <VirtualScroll data={data} component={() => <div style={{height: 30, border: "1px solid red"}}>123</div>}/>
+  return <FileDwgView params={null} hasAuthorization={false}/>
 }
 
 export default Test
