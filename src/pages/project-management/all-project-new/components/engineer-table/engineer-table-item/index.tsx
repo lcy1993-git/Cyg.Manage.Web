@@ -12,8 +12,6 @@ import EmptyTip from '@/components/empty-tip';
 import { useContext } from 'react';
 import { useEffect } from 'react';
 import { isNumber } from 'lodash';
-import { FixedSizeList } from 'react-window';
-import Item from 'antd/lib/list/Item';
 
 export interface AddProjectValue {
   engineerId: string;
@@ -182,31 +180,32 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
 
   const theadElement = useMemo(() => {
     return columns.map((item) => {
-      console.log(item);
-
       return (
         <div
-          className={`${styles.engineerTableTh} ${item.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
-            } ${item.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${item.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
-            } `}
+          className={`${styles.engineerTableTh} ${
+            item.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
+          } ${item.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${
+            item.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
+          }`}
           key={`${item.dataIndex}`}
           style={
             isOverflow
               ? {
-                width: `${item.width}px`,
-                left: `${item.dataIndex === 'action' ? `${contentWidth - 60}px` : ''} ${item.dataIndex === 'status' ? `${contentWidth - 180}px` : ''
+                  width: `${item.width}px`,
+                  left: `${item.dataIndex === 'action' ? `${contentWidth - 60}px` : ''} ${
+                    item.dataIndex === 'status' ? `${contentWidth - 180}px` : ''
                   } ${item.dataIndex === 'name' ? `${38}px` : ''}`,
-              }
+                }
               : {
-                width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
-                flex: `${item.dataIndex === 'name' ? '1' : 'none'}`,
-              }
+                  width: `${Math.floor((item.width / columnsWidth) * 100)}%`,
+                  flex: `${item.dataIndex === 'name' ? '1' : 'none'}`,
+                }
           }
         >
           {item.title}
         </div>
-      )
-    })
+      );
+    });
   }, [
     JSON.stringify(projectInfo),
     contentWidth,
@@ -216,76 +215,6 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   ]);
 
   const tbodyElement = useMemo(() => {
-    const projects = projectInfo.projects ?? []
-    if (projects.length >= 10) {
-      return (
-        <FixedSizeList
-          // className={styles.scrollPositionHide}
-          height={320}
-          itemCount={projects.length}
-          itemSize={32} // 列表行高
-          width={"100% - 17px"} //列表可视区域的宽度
-        >
-          {({ index, style }) => (
-            <div style={style}>
-              <div key={`${projects[index].id}Td`} className={styles.engineerTableTr}>
-                <div
-                  className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox} checkboxContent`}
-                  style={{ width: '38px', left: `0px` }}
-                >
-                  <Checkbox style={{ marginLeft: '4px' }} value={projects[index].id} />
-                </div>
-                {columns.map((ite) => {
-                  return (
-                    <div
-                      className={`${styles.engineerTableTd} ${styles.scrollPositionHide} ${ite.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
-                        } ${ite.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${ite.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
-                        }`}
-                      key={`${projects[index].id}Td${ite.dataIndex}`}
-                      style={
-                        isOverflow
-                          ? {
-                            width: `${ite.width}px`,
-                            left: `${ite.dataIndex === 'action' ? `${contentWidth - 60}px` : ''} ${ite.dataIndex === 'status' ? `${contentWidth - 180}px` : ''
-                              } ${ite.dataIndex === 'name' ? `${38}px` : ''}`,
-                          }
-                          : {
-                            width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
-                            flex: `${ite.dataIndex === 'name' ? '1' : 'none'}`,
-                          }
-                      }
-                    >
-                      <div className={styles.iconSlot}>
-                        {ite.iconSlot?.(projects[index], projectInfo.projects)}
-                      </div>
-                      <div className={`${styles.engineerTableTdContent} ${ite.ellipsis ? styles.ellipsis : ''}`}>
-                        {ite.ellipsis ? (
-                          // eslint-disable-next-line no-nested-ternary
-                          <Tooltip
-                            title={
-                              // eslint-disable-next-line no-nested-ternary
-                              typeof projects[index][ite.dataIndex] === 'string'
-                                ? projects[index][ite.dataIndex]
-                                : ite.render
-                                  ? ite.render(projects[index], projectInfo)
-                                  : ''
-                            }
-                          >
-                            {ite.render ? ite.render(projects[index], projectInfo) : projects[index][ite.dataIndex]}
-                          </Tooltip>
-                        ) : (
-                          <span>{ite.render ? ite.render(projects[index], projectInfo) : projects[index][ite.dataIndex]}</span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </FixedSizeList>
-      );
-    }
     return (projectInfo.projects ?? []).map((item: any) => {
       return (
         <div key={`${item.id}Td`} className={styles.engineerTableTr}>
@@ -298,25 +227,28 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
           {columns.map((ite) => {
             return (
               <div
-                className={`${styles.engineerTableTd} ${ite.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
-                  } ${ite.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${ite.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
-                  }`}
+                className={`${styles.engineerTableTd} ${
+                  ite.dataIndex === 'action' ? `${styles.actionTd} actionTdContent` : ''
+                } ${ite.dataIndex === 'status' ? `${styles.statusTd} statusTdContent` : ''} ${
+                  ite.dataIndex === 'name' ? `${styles.nameTd} nameTdContent` : ''
+                }`}
                 key={`${item.id}Td${ite.dataIndex}`}
                 style={
                   isOverflow
                     ? {
-                      width: `${ite.width}px`,
-                      left: `${ite.dataIndex === 'action' ? `${contentWidth - 60}px` : ''} ${ite.dataIndex === 'status' ? `${contentWidth - 180}px` : ''
+                        width: `${ite.width}px`,
+                        left: `${ite.dataIndex === 'action' ? `${contentWidth - 60}px` : ''} ${
+                          ite.dataIndex === 'status' ? `${contentWidth - 180}px` : ''
                         } ${ite.dataIndex === 'name' ? `${38}px` : ''}`,
-                    }
+                      }
                     : {
-                      width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
-                      flex: `${ite.dataIndex === 'name' ? '1' : 'none'}`,
-                    }
+                        width: `${Math.floor((ite.width / columnsWidth) * 100)}%`,
+                        flex: `${ite.dataIndex === 'name' ? '1' : 'none'}`,
+                      }
                 }
               >
                 <div className={styles.iconSlot}>
-                  {ite.iconSlot?.(item, projectInfo.projects)}
+                  {ite.iconSlot?.(item,projectInfo.projects)}
                 </div>
                 <div className={`${styles.engineerTableTdContent} ${ite.ellipsis ? styles.ellipsis : ''}`}>
                   {ite.ellipsis ? (
@@ -327,8 +259,8 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                         typeof item[ite.dataIndex] === 'string'
                           ? item[ite.dataIndex]
                           : ite.render
-                            ? ite.render(item, projectInfo)
-                            : ''
+                          ? ite.render(item, projectInfo)
+                          : ''
                       }
                     >
                       {ite.render ? ite.render(item, projectInfo) : item[ite.dataIndex]}
@@ -430,7 +362,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
           <Checkbox.Group value={checkedList} onChange={checkboxChange}>
             <div className={styles.engineerTable}>
               <div className={styles.engineerTableContent}>
-                <div className={`${styles.engineerTableHeader} ${projectInfo?.projects?.length >= 10 ? styles.pr17 : ""}`}>
+                <div className={styles.engineerTableHeader}>
                   <div
                     className={`${styles.engineerTableTh} ${styles.engineerTableThCheckbox} checkboxContent`}
                     style={{ width: '38px', left: `0px` }}
