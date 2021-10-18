@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import JsonP from 'jsonp';
+import noTokenRequest from 'umi-request'
 // import { webConfig } from '../../../public/config/request';
 import { baseUrl, geoServeUrl } from '../common';
 // const ip = window.location.hostname;
@@ -17,7 +18,7 @@ export interface ProjectList {
 
 // 获取地图资源
 export const getMapList = (params: any) => {
-  return request('http://service.pwcloud.cdsrth.com:8101/api/Map/GetList', {
+  return noTokenRequest('http://service.pwcloud.cdsrth.com:8101/api/Map/GetList', {
     method: 'POST',
     data: { ...params },
   });
