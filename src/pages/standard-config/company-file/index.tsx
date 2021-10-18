@@ -3,9 +3,9 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import { EditOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from 'antd';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styles from './index.less';
-import { useRequest } from 'ahooks';
+import { useRequest, useUpdateEffect } from 'ahooks';
 import { isArray } from 'lodash';
 import '@/assets/icon/iconfont.css';
 import CompanyFileForm from './components/add-edit-form';
@@ -20,6 +20,7 @@ import {
   addFileGroupItem,
   deleteFileGroupItem,
   downLoadFileItem,
+  getFileList,
 } from '@/services/operation-config/company-file';
 import DefaultParams from './components/default-params';
 import { getUploadUrl } from '@/services/resource-config/drawing';
@@ -79,6 +80,24 @@ const CompanyFile: React.FC = () => {
       },
     },
   );
+
+  const { data: fileData = [] } = useRequest(
+    () => getFileList({ keyWord: searchKeyWord, groupId: fileGroupId }),
+    {
+      ready: !!fileGroupId,
+      refreshDeps: [fileGroupId],
+    },
+  );
+
+  //判断文件组立项依据是否存在
+  const isBasisExist = useMemo(() => {
+    if (fileData) {
+      const fileCategory = fileData.items?.map((item: any) => {
+        return item.fileCategory;
+      });
+      return fileCategory?.includes(5);
+    }
+  }, [fileData]);
 
   const searchComponent = () => {
     return (
@@ -504,7 +523,12 @@ const CompanyFile: React.FC = () => {
       >
         <Form onValuesChange={onAddFormChange} form={addForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyFileForm uploadFileFn={addUploadFile} type="add" groupData={tableData} />
+            <CompanyFileForm
+              uploadFileFn={addUploadFile}
+              type="add"
+              groupData={tableData}
+              isBasisExist={isBasisExist}
+            />
           </Spin>
         </Form>
       </Modal>

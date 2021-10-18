@@ -1,4 +1,4 @@
-import React, { useMemo,memo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Tooltip } from 'antd';
@@ -21,6 +21,7 @@ export interface AddProjectValue {
 }
 
 interface EngineerTableItemProps {
+  noPadding?: boolean;
   projectInfo: any;
   columns: any[];
   onChange?: (checkedValue: TableItemCheckedInfo) => void;
@@ -68,7 +69,10 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     isOverflow = false,
     columnsWidth,
     contentWidth,
+    noPadding = false,
   } = props;
+
+  const noPaddingRight = noPadding ? styles.noPaddingRight : '';
 
   const valueList = useMemo(() => {
     if (projectInfo.projects) {
@@ -217,7 +221,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
   const tbodyElement = useMemo(() => {
     return (projectInfo.projects ?? []).map((item: any) => {
       return (
-        <div key={`${item.id}Td`} className={styles.engineerTableTr}>
+        <div key={`${item.id}Td`} className={`${styles.engineerTableTr} ${noPaddingRight}`}>
           <div
             className={`${styles.engineerTableTd} ${styles.engineerTableThCheckbox} checkboxContent`}
             style={{ width: '38px', left: `0px` }}
@@ -247,10 +251,12 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                       }
                 }
               >
-                <div className={styles.iconSlot}>
-                  {ite.iconSlot?.(item,projectInfo.projects)}
-                </div>
-                <div className={`${styles.engineerTableTdContent} ${ite.ellipsis ? styles.ellipsis : ''}`}>
+                <div className={styles.iconSlot}>{ite.iconSlot?.(item, projectInfo.projects)}</div>
+                <div
+                  className={`${styles.engineerTableTdContent} ${
+                    ite.ellipsis ? styles.ellipsis : ''
+                  }`}
+                >
                   {ite.ellipsis ? (
                     // eslint-disable-next-line no-nested-ternary
                     <Tooltip
