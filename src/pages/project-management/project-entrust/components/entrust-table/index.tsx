@@ -2,15 +2,12 @@
 import EmptyTip from '@/components/empty-tip';
 import { getEntrustProjectList } from '@/services/project-management/project-entrust';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { delay } from '@/utils/utils';
 import { useRequest, useSize, useUpdateEffect } from 'ahooks';
-import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
 import { forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
 
 import EngineerTableItem, {
-  AddProjectValue,
   TableItemCheckedInfo,
 } from '@/pages/project-management/all-project-new/components/engineer-table/engineer-table-item';
 import ScrollView from 'react-custom-scrollbars';
@@ -25,13 +22,12 @@ import moment from 'moment';
 interface EntrustTableProps {
   extractParams: any;
   onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
-  getStatisticsData?: (value: any) => void;
-  finishEvent: () => void;
-  configFinishEvent?: (checkedValue: any) => void;
+  // getStatisticsData?: (value: any) => void;
+  // finishEvent: () => void;
 }
 
 const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect, getStatisticsData, finishEvent, configFinishEvent } = props;
+  const { extractParams, onSelect } = props;
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
@@ -335,8 +331,6 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
     refresh: () => {
-      console.log(pageIndex, '523');
-
       run();
       setTableSelectData([]);
       onSelect?.([]);
@@ -442,7 +436,7 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
               {tableResultData.items.length === 0 && (
                 <div style={{ color: '#8C8C8C' }}>
                   <EmptyTip
-                    className="pt20"
+                    className="pt21"
                     description={userType === 2 ? '暂无匹配的记录' : '公司管理员账号无需使用该功能'}
                   />
                 </div>

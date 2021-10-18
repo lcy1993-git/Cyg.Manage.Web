@@ -4,11 +4,12 @@ import TableSearch from '@/components/table-search';
 import EntrustTable from './components/entrust-table';
 import { Button, Input, message } from 'antd';
 import styles from './index.less';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import FilterEntrustModal from './components/filter-entrust-modal';
 import { receiveProject } from '@/services/project-management/project-entrust';
 import { TableItemCheckedInfo } from '@/pages/project-management/all-project-new/components/engineer-table/engineer-table-item';
 import { useUpdateEffect } from 'ahooks';
+import { isArray } from 'lodash';
 const { Search } = Input;
 
 const ProjectEntrust: React.FC = () => {
@@ -54,7 +55,6 @@ const ProjectEntrust: React.FC = () => {
   //获取选择项目id
   const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
     const projectIds = checkedValue.map((item) => item.checkedArray).flat(1);
-    console.log(projectIds);
 
     setProjectIds(projectIds);
   };
@@ -77,9 +77,13 @@ const ProjectEntrust: React.FC = () => {
 
   //项目获取
   const receiveProjectEvent = async () => {
-    await receiveProject(projectIds);
-    message.success('项目获取成功');
-    refresh();
+    if (projectIds && isArray(projectIds) && projectIds.length > 0) {
+      await receiveProject(projectIds);
+      message.success('项目获取成功');
+      refresh();
+      return;
+    }
+    message.info('请选择您要获取的待办项目');
   };
 
   return (
