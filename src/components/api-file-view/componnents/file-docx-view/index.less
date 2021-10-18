@@ -1,0 +1,16 @@
+.table {
+  table {
+    border: 1px solid #333;
+    width: 100%;
+    table-layout: fixed;
+    td{
+      border: 1px solid #333;
+      border-collapse: collapse;
+      &:empty {
+        border: none;
+        width: 0;
+        padding: 0;
+      }
+    }
+  }
+}

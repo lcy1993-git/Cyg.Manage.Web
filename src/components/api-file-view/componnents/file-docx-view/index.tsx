@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { message } from 'antd';
 import classNames from 'classnames';
 import mammoth from 'mammoth';
-
+import docStyle from './index.less'
 export interface FileDocxViewProps {
   data: ArrayBuffer;
   className?: StyleSheet;
@@ -34,7 +34,7 @@ const FileDocxView: React.FC<FileDocxViewProps> = ({
   }, [data])
   
   return (
-    <div ref={ref} style={{minHeight: window.innerHeight - 100}} className={classNames(className)} />
+    <div ref={ref} style={{minHeight: window.innerHeight - 100}} className={classNames(className, docStyle.table)} />
   )
 }
 
