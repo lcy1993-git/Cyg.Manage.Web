@@ -1,9 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import {EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined, ImportOutlined} from '@ant-design/icons';
+import {
+  EyeOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  ImportOutlined,
+} from '@ant-design/icons';
 import { isArray } from 'lodash';
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
@@ -13,31 +19,31 @@ import {
   setRateTableStatus,
   deleteRateTable,
   addRateTable,
-  editRateTable, importAreaInfo, ImportRateFileZip
+  editRateTable,
+  importAreaInfo,
+  ImportRateFileZip,
 } from '@/services/technology-economic/common-rate';
 import styles from './index.less';
 import moment from 'moment';
-import FileUpload from "@/components/file-upload";
+import FileUpload from '@/components/file-upload';
 
 const { Search } = Input;
 
 type DataSource = {
   id: string;
   [key: string]: string;
-}
-
+};
 
 const ProjectList: React.FC = () => {
-
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [modalType, setModalType] = useState<string>("");
+  const [modalType, setModalType] = useState<string>('');
   const [formVisible, setFormVisible] = useState<boolean>(false);
   const [updateTable, setUpdateTable] = useState<boolean>(true);
   const [spinning, setSpinning] = useState<boolean>(false);
   const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-  const [fileList, setFileList] = useState<File[]>([])
+  const [fileList, setFileList] = useState<File[]>([]);
   const [importVisibel, setImportVisibel] = useState<boolean>(false);
   const [form] = Form.useForm();
 
@@ -60,8 +66,15 @@ const ProjectList: React.FC = () => {
       title: '费率类型',
       width: 200,
       render(v: number): string {
-        return ['建筑安装取费表费率','拆除取费表费率','地形增加系数','未计价材料施工损耗率','土方参数','社保公积金费率'][v-1]
-      }
+        return [
+          '建筑安装取费表费率',
+          '拆除取费表费率',
+          '地形增加系数',
+          '未计价材料施工损耗率',
+          '土方参数',
+          '社保公积金费率',
+        ][v - 1];
+      },
     },
 
     {
@@ -76,20 +89,20 @@ const ProjectList: React.FC = () => {
       title: '发布时间',
       width: 130,
       render(v: string) {
-        return moment(v).format('YYYY-MM-DD')
-      }
+        return moment(v).format('YYYY-MM-DD');
+      },
     },
     {
       dataIndex: 'publishOrg',
       key: 'publishOrg',
       title: '发布机构',
-      width: 150
+      width: 150,
     },
     {
       dataIndex: 'year',
       key: 'year',
       title: '费率年度',
-      width: 100
+      width: 100,
     },
     {
       dataIndex: 'majorType',
@@ -101,10 +114,9 @@ const ProjectList: React.FC = () => {
       dataIndex: 'remark',
       index: 'remark',
       title: '备注',
-      width: 220
+      width: 220,
     },
-  ]
-
+  ];
 
   const searchComponent = () => {
     return (
@@ -158,16 +170,14 @@ const ProjectList: React.FC = () => {
 
   // 编辑
   const editEvent = () => {
-
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行编辑');
     } else {
       const publishDate = moment(tableSelectRows[0].publishDate);
       setModalType('edit');
       setFormVisible(true);
-      form.setFieldsValue({ ...tableSelectRows[0], publishDate })
+      form.setFieldsValue({ ...tableSelectRows[0], publishDate });
     }
-
   };
 
   // 查看详情
@@ -183,32 +193,39 @@ const ProjectList: React.FC = () => {
   };
 
   const gotoMoreInfo = () => {
-
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择一条数据进行查看');
       return;
     }
-    let name = ['建筑安装取费表费率','拆除取费表费率','地形增加系数','未计价材料施工损耗率','土方参数','社保公积金费率'][tableSelectRows[0].rateFileType - 1]
-    let id = tableSelectRows[0].id
-    if (['建筑安装取费表费率','拆除取费表费率'].includes(name)){
-      history.push(`/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&name=${name}`)
-    } else if(['地形增加系数','未计价材料施工损耗率','土方参数'].includes(name)){
-      history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`)
-    } else if (name === '社保公积金费率'){
-      history.push(`/technology-economic/social-security-fund?id=${tableSelectRows[0].id}`)
+    let name = [
+      '建筑安装取费表费率',
+      '拆除取费表费率',
+      '地形增加系数',
+      '未计价材料施工损耗率',
+      '土方参数',
+      '社保公积金费率',
+    ][tableSelectRows[0].rateFileType - 1];
+    let id = tableSelectRows[0].id;
+    if (['建筑安装取费表费率', '拆除取费表费率'].includes(name)) {
+      history.push(
+        `/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&name=${name}`,
+      );
+    } else if (['地形增加系数', '未计价材料施工损耗率', '土方参数'].includes(name)) {
+      history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`);
+    } else if (name === '社保公积金费率') {
+      history.push(`/technology-economic/social-security-fund?id=${tableSelectRows[0].id}`);
     }
   };
 
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {
-          !buttonJurisdictionArray?.includes('commonrate-edit') &&
+        {!buttonJurisdictionArray?.includes('commonrate-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
-        }
+        )}
         <Button className="mr7" onClick={() => setImportVisibel(true)}>
           <ImportOutlined />
           导入
@@ -227,14 +244,12 @@ const ProjectList: React.FC = () => {
         {/*    </Button>*/}
         {/*  </Popconfirm>*/}
         {/*}*/}
-        {
-          !buttonJurisdictionArray?.includes('commonrate-info') &&
+        {!buttonJurisdictionArray?.includes('commonrate-info') && (
           <Button className="mr7" onClick={() => gotoMoreInfo()}>
             <EyeOutlined />
             费率详情
           </Button>
-        }
-
+        )}
       </div>
     );
   };
@@ -245,79 +260,83 @@ const ProjectList: React.FC = () => {
   const onOK = () => {
     if (fileList.length === 0) {
       message.error('当前未上传文件');
-    }else{
+    } else {
       ImportRateFileZip(fileList[0]).then(() => {
         message.success('上传成功');
-        setImportVisibel(false)
+        setImportVisibel(false);
       });
     }
-  }
+  };
   const onModalOkClick = async () => {
     const values = await form.validateFields();
-    setSpinning(true)
-    setUpdateTable(false)
+    setSpinning(true);
+    setUpdateTable(false);
     if (modalType === 'add') {
-      addRateTable({ ...values, }).then(() => {
-        message.success('添加成功')
-        setFormVisible(false);
-        setSpinning(false)
-        form.resetFields();
-        tableRef.current.reset();
-      }).finally(()=>{
-        setSpinning(false)
-      });
+      addRateTable({ ...values })
+        .then(() => {
+          message.success('添加成功');
+          setFormVisible(false);
+          setSpinning(false);
+          form.resetFields();
+          tableRef.current.reset();
+        })
+        .finally(() => {
+          setSpinning(false);
+        });
     } else if (modalType === 'edit') {
-      editRateTable({ ...values,id:tableSelectRows[0].id }).then(() => {
-        message.success('编辑成功')
-        // tableRef.current.reset();
-        setFormVisible(false);
-        setTableSelectRow([])
-        setSpinning(false)
+      editRateTable({ ...values, id: tableSelectRows[0].id })
+        .then(() => {
+          message.success('编辑成功');
+          // tableRef.current.reset();
+          setFormVisible(false);
+          setTableSelectRow([]);
+          setSpinning(false);
 
-        tableRef.current.reset();
-        tableRef.current.refresh();
-        form.resetFields();
-      }).finally(()=>{
-        setSpinning(false)
-      });
+          tableRef.current.reset();
+          tableRef.current.refresh();
+          form.resetFields();
+        })
+        .finally(() => {
+          setSpinning(false);
+        });
     }
-    setUpdateTable(true)
+    setUpdateTable(true);
     refresh();
-  }
+  };
 
   return (
     <PageCommonWrap>
       <GeneralTable
-          ref={tableRef}
-          buttonLeftContentSlot={searchComponent}
-          buttonRightContentSlot={tableElement}
-          needCommonButton={true}
-          rowKey={'id'}
-          columns={initColumns as (ColumnsType<object>)}
-          url="/RateTable/QueryRateFilePager"
-          tableTitle="常用费率"
-          getSelectData={tableSelectEvent}
-          requestSource='tecEco1'
-          type="radio"
-          extractParams={{
-            keyWord: searchKeyWord,
-          }}
-        />
+        ref={tableRef}
+        buttonLeftContentSlot={searchComponent}
+        buttonRightContentSlot={tableElement}
+        needCommonButton={true}
+        rowKey={'id'}
+        columns={initColumns as ColumnsType<object>}
+        url="/RateTable/QueryRateFilePager"
+        tableTitle="常用费率"
+        getSelectData={tableSelectEvent}
+        requestSource="tecEco1"
+        type="radio"
+        extractParams={{
+          keyWord: searchKeyWord,
+        }}
+      />
       <Modal
         title="导入常用费率"
         onOk={onOK}
         onCancel={() => setImportVisibel(false)}
         visible={importVisibel}
       >
-            <FileUpload
-              maxCount={1}
-              accept=".zip"
-              trigger={true}
-              process={true}
-              onChange={(e) => setFileList(e)}
-              className={styles.file}
-              uploadFileFn={async () => { }}
-            />
+        <FileUpload
+          maxCount={1}
+          accept=".zip"
+          trigger={true}
+          process={true}
+          onChange={(e) => setFileList(e)}
+          className={styles.file}
+          uploadFileFn={async () => {}}
+        />
       </Modal>
       <Modal
         maskClosable={false}
@@ -326,23 +345,21 @@ const ProjectList: React.FC = () => {
         visible={formVisible}
         okText="确认"
         footer={null}
-        onCancel={()=>setFormVisible(false)}
+        onCancel={() => setFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
         <Spin spinning={spinning}>
           <Form form={form} preserve={false}>
-            <AddDictionaryForm modalType={modalType}/>
+            <AddDictionaryForm modalType={modalType} />
           </Form>
-          <div style={{display : 'flex',justifyContent:'right'}}>
-              <Space>
-                <Button onClick={()=>setFormVisible(false)}>
-                  取消
-                </Button>
-                <Button onClick={onModalOkClick} type={'primary'}>
-                  确定
-                </Button>
-              </Space>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
+            <Space>
+              <Button onClick={() => setFormVisible(false)}>取消</Button>
+              <Button onClick={onModalOkClick} type={'primary'}>
+                确定
+              </Button>
+            </Space>
           </div>
         </Spin>
       </Modal>

@@ -276,7 +276,7 @@ const Component: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('component-add') && (
+        {/* {buttonJurisdictionArray?.includes('component-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -299,7 +299,7 @@ const Component: React.FC<libParams> = (props) => {
             <ImportOutlined />
             导入组件
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('component-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>

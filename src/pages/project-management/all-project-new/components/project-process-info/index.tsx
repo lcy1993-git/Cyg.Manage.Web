@@ -1,16 +1,15 @@
-import { Timeline } from "antd";
-import uuid from "node-uuid";
-import React from "react";
-import ProjectProcessItem from "../project-process-item";
+import { Timeline } from 'antd';
+import uuid from 'node-uuid';
+import React from 'react';
+import ProjectProcessItem from '../project-process-item';
 import { OperateLog } from '@/services/project-management/all-project';
-import styles from "./index.less";
+import styles from './index.less';
 
 interface ProjectProcessInfoProps {
-  operateLog: OperateLog[]
+  operateLog: OperateLog[];
 }
 
 const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = ({ operateLog }) => {
-
   return (
     <div className={styles.projectProcessInfo}>
       <Timeline>
@@ -20,11 +19,10 @@ const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = ({ operateLog }) =
               <ProjectProcessItem {...item} />
             </Timeline.Item>
           );
-
         })}
       </Timeline>
     </div>
-  )
-}
+  );
+};
 
-export default ProjectProcessInfo
+export default ProjectProcessInfo;
