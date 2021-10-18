@@ -311,7 +311,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('cable-channel-add') && (
+        {/* {buttonJurisdictionArray?.includes('cable-channel-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -327,7 +327,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
 
         {buttonJurisdictionArray?.includes('cable-channel-delete') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('cable-channel-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>

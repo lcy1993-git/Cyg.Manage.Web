@@ -63,14 +63,14 @@ const CableDesign: React.FC<libParams> = (props) => {
             <div className="flex1 flex">
               <CommonTitle>电缆设计</CommonTitle>
             </div>
-            <div>
+            {/* <div>
               {buttonJurisdictionArray?.includes('cable-design-import') && (
                 <Button className="mr7" onClick={() => importCableDesignEvent()}>
                   <ImportOutlined />
                   导入(电缆井+电缆通道)
                 </Button>
               )}
-            </div>
+            </div> */}
           </div>
           <CableDesignTab libId={libId} />
         </div>
