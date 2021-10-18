@@ -1,15 +1,14 @@
-import React from 'react'
+import React from 'react';
 
-import { FixedSizeList } from 'react-window'
+// import { FixedSizeList } from 'react-window'
 
-const ctx = React.createContext({})
-
+const ctx = React.createContext({});
 
 const Test: React.FC = () => {
   return (
     <div>
       23
-      <FixedSizeList
+      {/* <FixedSizeList
         height={300}
         itemCount={100}
         itemSize={35} // 列表行高
@@ -20,10 +19,9 @@ const Test: React.FC = () => {
             {index}
           </div>
         )}
-      </FixedSizeList>
+      </FixedSizeList> */}
     </div>
-
   );
-}
+};
 
 export default Test;
