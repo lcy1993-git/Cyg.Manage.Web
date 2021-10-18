@@ -38,10 +38,11 @@ const TotalTable: React.FC<Props> = () => {
   const columns: ColumnsType<any> = [
     {
       title: '序号',
-      width: 50,
+      width: 70,
       align:'center',
-      render: (text: string, record: any, index: number) => {
-        return <span>{index + 1}</span>;
+      dataIndex:'no',
+      render: (text: string) => {
+        return text?.includes(')') ? <span>&emsp;{text}</span> : <span>{text}</span>
       },
     },
     {
@@ -154,7 +155,19 @@ const TotalTable: React.FC<Props> = () => {
     },
   ];
   const getTableData = async () => {
-    const res = await queryEngineeringInfoCostTotal(id);
+    let res = await queryEngineeringInfoCostTotal(id);
+    res = res?.map((item: { children: any[] | null; }) => {
+      if (item.children?.length === 0) {
+        item.children = null;
+      } else {
+        item.children = item.children?.map((child) => {
+          child.children =
+            child.children?.length === 0 ? null : child.children;
+          return child
+        });
+      }
+      return item;
+    });
     // @ts-ignore
     setDataSource(res);
   };
@@ -176,6 +189,7 @@ const TotalTable: React.FC<Props> = () => {
         <Table
           pagination={false}
           size={'small'}
+          expandIconColumnIndex={1}
           scroll={{ y: 720,x:2200 }}
           bordered
           dataSource={dataSource}
