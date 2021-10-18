@@ -3,13 +3,14 @@ import React, { useState} from 'react';
 import styles from "./index.less";
 import CommonTitle from "@/components/common-title";
 import type { TreeDataNode} from "antd";
-import {message, Modal, Table} from "antd";
+import {message, Modal, Space, Table} from "antd";
 import {Button, Spin, Tree} from "antd";
 import {useMount} from "ahooks";
 import {importSocialSecurityHouseFund, querySocialSecurityHouseFundTree } from '@/services/technology-economic/social-security-fund';
 import { DownOutlined } from '@ant-design/icons';
 import WrapperComponent from "@/components/page-common-wrap";
 import FileUpload from "@/components/file-upload";
+import TableImportButton from "@/components/table-import-button";
 
 type DirectoryNode = TreeDataNode & {
   id: string
@@ -115,7 +116,19 @@ const SocialSecurityFund: React.FC = () => {
             <CommonTitle>社保公积金费率</CommonTitle>
           </div>
           <div className={styles.importButton}>
-            <Button type="primary" onClick={()=>setImportVisibel(true)}>导入费率</Button>
+            <TableImportButton
+              extraParams={{
+                // commonlyTableType: active,
+                RateFileId:window.location.search.split('=')[1]
+              }}
+              modalTitle={'导入费率'}
+              buttonTitle={'导入费率'}
+              // style={{ zIndex: 99 }}
+              template={true}
+              requestSource={'tecEco1'}
+              importUrl={'/RateTable/ImportRateTable'}
+              setSuccessful={getTableList}
+            />
           </div>
         </div>
         <Spin spinning={preLoading}>
@@ -127,7 +140,7 @@ const SocialSecurityFund: React.FC = () => {
               <div className={styles.listElement}>
                 {
                   !preLoading && <Tree
-                    height={650}
+                    height={620}
                     selectedKeys={activeKey}
                     showLine
                     key={'id'}
@@ -157,28 +170,6 @@ const SocialSecurityFund: React.FC = () => {
         </Spin>
       </div>
     </div>
-      <Modal
-        title="导入费率"
-        onOk={onOK}
-        onCancel={() => setImportVisibel(false)}
-        visible={importVisibel}
-      >
-        <div className={styles.modalWrap}>
-          <div className={styles.row}>
-            <span className={styles.label}>上传文件</span>
-            <FileUpload
-              uploadFileBtn
-              maxCount={1}
-              accept=".xlsx"
-              trigger={true}
-              process={true}
-              onChange={(e) => setFileList(e)}
-              className={styles.file}
-              uploadFileFn={async () => { }}
-            />
-          </div>
-        </div>
-      </Modal>
       </WrapperComponent>
   );
 };

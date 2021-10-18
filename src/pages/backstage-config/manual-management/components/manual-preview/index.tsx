@@ -9,15 +9,17 @@ interface Props{
   onSuccess?: (val:string) => void;
   height?: string
   fileTitle?: string
+  showDirectory ?: boolean
 }
 const ManualPreview: React.FC<Props> = (props) => {
-  const {file,onSuccess,height='70vh',fileTitle} = props
+  const {file,onSuccess,height='70vh',fileTitle,showDirectory=true} = props
   const [pageLoading, setPageLoading] = useState(true);
   const [catalogList, setCatalogList] = useState<object[]>([]);
   const [src,setSrc] = useState<ArrayBuffer | null>(null)
 
   // 给所有的h标签加上锚点，并且根据滚动条让锚点点亮
   const loadSuccessEvent = (text:string) => {
+    console.log('text',text)
     onSuccess?.(text)
     const h1Element = document.getElementsByTagName("h1") ?? [];
     const h2Element = document.getElementsByTagName("h2") ?? [];
@@ -120,8 +122,8 @@ const ManualPreview: React.FC<Props> = (props) => {
   })
   return (
     <div className={styles.pageShowFile} style={{height:height}}>
-      <div className={styles.pageShowFileCatalog}>
-        <div className={styles.pageShowFileCatalogTitle}>
+      <div className={styles.pageShowFileCatalog} style={{display: showDirectory ? 'block' : 'none'}}>
+        <div className={styles.pageShowFileCatalogTitle} >
           <span>目录</span>
         </div>
         <div id="pageCatalogContainer">
