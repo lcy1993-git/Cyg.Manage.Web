@@ -3,7 +3,7 @@ import React from 'react';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
 
 const AllProject = Loadable({
-  loader: () => import('@/pages/project-management/all-project-new'),
+  loader: () => import('@/pages/project-management/all-project'),
   loading: () => <Loading />,
   delay: 150,
 });

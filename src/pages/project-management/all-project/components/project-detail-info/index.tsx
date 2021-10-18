@@ -7,7 +7,7 @@ import ProjectBaseInfo from '../project-base-info';
 
 import styles from './index.less';
 import ProjectProcessInfo from '../project-process-info/index';
-import CheckResultModal from '@/pages/project-management/all-project-new/components/check-result-modal';
+import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal';
 const { TabPane } = Tabs;
 
 interface ProjectDetailInfoProps {
