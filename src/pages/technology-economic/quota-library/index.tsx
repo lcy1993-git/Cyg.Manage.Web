@@ -79,22 +79,22 @@ const columns = [
     title: '适用专业',
     width: 150,
   },
-  {
-    dataIndex: 'enabled',
-    key: 'enabled',
-    title: '状态',
-    width: 70,
-    render(value: boolean, record: DataSource) {
-      return (
-        <Switch
-          defaultChecked={value}
-          onClick={(checked) => {
-            setQuotaLibraryStatus(record.id, checked);
-          }}
-        />
-      );
-    },
-  },
+  // {
+  //   dataIndex: 'enabled',
+  //   key: 'enabled',
+  //   title: '状态',
+  //   width: 70,
+  //   render(value: boolean, record: DataSource) {
+  //     return (
+  //       <Switch
+  //         defaultChecked={value}
+  //         onClick={(checked) => {
+  //           setQuotaLibraryStatus(record.id, checked);
+  //         }}
+  //       />
+  //     );
+  //   },
+  // },
   {
     dataIndex: 'remark',
     index: 'remark',
@@ -154,7 +154,7 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const sureAddAuthorization = () => {
-    setSpinning(true);
+    // setSpinning(true);
     addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
       const data = {};
       for (let key: string in values) {

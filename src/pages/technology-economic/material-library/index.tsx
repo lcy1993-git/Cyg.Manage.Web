@@ -65,21 +65,21 @@ const columns = [
     key: 'industryType',
     title: '适用行业',
   },
-  {
-    dataIndex: 'enabled',
-    key: 'enabled',
-    title: '状态',
-    render(value: boolean, record: DataSource) {
-      return (
-        <Switch
-          defaultChecked={value}
-          onClick={(checked) => {
-            setMaterialMachineLibraryStatus(record.id, checked);
-          }}
-        />
-      );
-    },
-  },
+  // {
+  //   dataIndex: 'enabled',
+  //   key: 'enabled',
+  //   title: '状态',
+  //   render(value: boolean, record: DataSource) {
+  //     return (
+  //       <Switch
+  //         defaultChecked={value}
+  //         onClick={(checked) => {
+  //           setMaterialMachineLibraryStatus(record.id, checked);
+  //         }}
+  //       />
+  //     );
+  //   },
+  // },
   {
     dataIndex: 'remark',
     key: 'remark',

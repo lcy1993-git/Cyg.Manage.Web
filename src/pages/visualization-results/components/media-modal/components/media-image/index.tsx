@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import type { MouseEvent } from 'react';
 import { useUpdateEffect } from 'ahooks';
 import type { MediaData } from '../../getComponentsByData';
 
@@ -21,11 +20,6 @@ interface MediaImageProps {
   content: any[];
 }
 
-interface Position {
-  x: number;
-  y: number;
-}
-
 const MediaImage: React.FC<MediaImageProps> = ({
   data,
   content,
@@ -34,10 +28,14 @@ const MediaImage: React.FC<MediaImageProps> = ({
   nextFullClick,
 }) => {
 
-  const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
-  const [isDrag, setIsDrag] = useState<Boolean>(false);
-  const [startPosition, setStartPostion] = useState<Position>({ x: 0, y: 0 })
-  const [p, setP] = useState({ x: 0, y: 0 })
+  const [currentPosition, setCurrentPosition] = useState([0,0])
+
+  const [downPosition, setDownPosition] = useState([0,0]);
+
+  const [originPosition, setOriginPosition] = useState([0,0])
+
+  const [isDrag, setIsDrag] = useState(false);
+
   const [percent, setPercent] = useState<number>(100);
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
@@ -46,7 +44,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
   const imgRef = useRef<HTMLImageElement>(null);
 
   const outoSizeHandler = () => {
-    setPosition({ x: 0, y: 0 })
+    setCurrentPosition([0,0])
     setPercent(100);
   }
 
@@ -63,38 +61,28 @@ const MediaImage: React.FC<MediaImageProps> = ({
     a.click();
   }
 
-  const onmouseMove = (e: MouseEvent) => {
-    if (isDrag && percent !== 100) {
-      setPosition({
-        x: (p.x + e.nativeEvent.offsetX - startPosition.x),
-        y: (p.y + e.nativeEvent.offsetY - startPosition.y)
-      })
+  const onMouseDown = (e: React.MouseEvent) => {
+    if(percent !== 100){
+      setDownPosition([e.clientX, e.clientY])
+      setOriginPosition([...currentPosition])
+      setIsDrag(true)
     }
   }
-  
-  const onmouseUp = () => {
-    setIsDrag(false)
-  }
-
-  const onmousedown = (e: MouseEvent) => {
-    setStartPostion({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })
-    setP({ ...position })
-    setTimeout(() => {
-      setIsDrag(true);
-    }, 10)
+  const onMouseMove = (e: React.MouseEvent) => {
+    if(isDrag) {
+      setCurrentPosition([
+        originPosition[0] + e.clientX - downPosition[0],
+        originPosition[1] + e.clientY - downPosition[1]
+      ])
+    }
   }
 
   useUpdateEffect(() => {
-    imgRef.current!.style.left = 2 * position.x + "px";
-    imgRef.current!.style.top = position.y + "px";
-  }, [JSON.stringify(position)])
+    imgRef.current!.style.transform = `translate3d(${currentPosition[0]}px, ${currentPosition[1]}px, 0px) scale(${percent / 100})`
+  }, [JSON.stringify(currentPosition), percent])
 
   useUpdateEffect(() => {
-    imgRef.current!.style.transform = `scale(${percent / 100})`;
-  }, [percent])
-
-  useUpdateEffect(() => {
-    setPosition({ x: 0, y: 0 })
+    setCurrentPosition([0,0])
     setPercent(100)
   }, [index])
 
@@ -117,22 +105,22 @@ const MediaImage: React.FC<MediaImageProps> = ({
         index = 0
       }
     } while (content[index]?.type === 2)
-    console.log(content.map((item) => item.filePath))
     setFsIndex(index)
   }
 
   return (
     <>
       <div className={styles.imagWrap}>
-        <div className={classNames(styles.overhidden, isDrag ? styles.isDrag : "")}
-          onMouseMove={onmouseMove}
-          onMouseUp={onmouseUp}
-          onMouseDown={onmousedown}
-          onMouseLeave={onmouseUp}
+        <div className={styles.overhidden}
         >
           <img
+            draggable={false}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={() => setIsDrag(false)}
+            onMouseLeave={() => setIsDrag(false)}
             ref={imgRef}
-            className={styles.img}
+            className={classNames(styles.img, percent === 100 ? styles.imgUnsetPointer : "") }
             crossOrigin={''}
             src={`${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
