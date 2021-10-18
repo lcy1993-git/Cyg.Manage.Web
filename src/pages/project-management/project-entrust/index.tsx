@@ -10,6 +10,7 @@ import { receiveProject } from '@/services/project-management/project-entrust';
 import { TableItemCheckedInfo } from '@/pages/project-management/all-project-new/components/engineer-table/engineer-table-item';
 import { useUpdateEffect } from 'ahooks';
 import { isArray } from 'lodash';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 const { Search } = Input;
 
 const ProjectEntrust: React.FC = () => {
@@ -17,6 +18,8 @@ const ProjectEntrust: React.FC = () => {
   const [projectIds, setProjectIds] = useState<string[]>([]);
   const tableRef = useRef<HTMLDivElement>(null);
   const [screenModalVisible, setScreenModalVisible] = useState(false);
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+
   const [searchParams, setSearchParams] = useState({
     category: [],
     stage: [],
@@ -106,18 +109,16 @@ const ProjectEntrust: React.FC = () => {
           <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
         </div>
 
-        {/* {(buttonJurisdictionArray?.includes('all-project-project-approval')  */}
-
-        <Button
-          className="mr7"
-          type="primary"
-          style={{ width: '70px', borderRadius: '5px' }}
-          onClick={() => receiveProjectEvent()}
-        >
-          获取
-        </Button>
-
-        {/* )} */}
+        {buttonJurisdictionArray?.includes('get-project-entrust') && (
+          <Button
+            className="mr7"
+            type="primary"
+            style={{ width: '70px', borderRadius: '5px' }}
+            onClick={() => receiveProjectEvent()}
+          >
+            获取
+          </Button>
+        )}
       </div>
       <div className={styles.entrustTableContent}>
         <EntrustTable
