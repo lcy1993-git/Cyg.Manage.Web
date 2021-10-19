@@ -10,13 +10,13 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 
 import {
-  getMaterialLibraryAllList,
+  GetMaterialLibraryAllListNoUsed,
 } from '@/services/technology-economic/supplies-library';
 import FileUpload from '@/components/file-upload';
 import useBoolean from 'ahooks/lib/useBoolean';
 import moment from 'moment';
 import {addSourceMaterialMappingQuota, deleteMaterialMappingQuota, materialMappingQuotaModifyStatus } from '@/services/technology-economic/material';
-import AdjustmentFileForm from "@/pages/technology-economic/spread-coefficient/components/adjustment-file-form";
+// import AdjustmentFileForm from "@/pages/technology-economic/spread-coefficient/components/adjustment-file-form";
 
 export interface SuppliesLibraryData {
   "id"?: string
@@ -48,7 +48,7 @@ const MaterialMapping: React.FC = () => {
   const [form] = Form.useForm();
 
   const getMaterialData = async ()=>{
-    const res = await getMaterialLibraryAllList()
+    const res = await GetMaterialLibraryAllListNoUsed()
     setMaterialList(res)
   }
   useEffect(()=>{
