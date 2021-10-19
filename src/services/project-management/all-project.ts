@@ -619,6 +619,16 @@ export const getCompileResultTreeData = (projectId: string) => {
   );
 };
 
+//获取评审成果树状结构
+export const getAuditResultData = (projectId: string) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.review}/ReviewOpinionFile/GetReivewFileTree`, {
+      method: 'GET',
+      params: { projectId },
+    }),
+  );
+};
+
 // 生成设计成果
 export const createResult = (params: any) => {
   return cyRequest(() =>

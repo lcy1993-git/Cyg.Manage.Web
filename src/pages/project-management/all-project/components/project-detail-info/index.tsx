@@ -26,8 +26,6 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
     manual: true,
   });
 
-  console.log(projectInfo);
-
   useEffect(() => {
     if (state) {
       run();

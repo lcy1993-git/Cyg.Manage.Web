@@ -249,7 +249,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('modules-add') && (
+        {/* {buttonJurisdictionArray?.includes('modules-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -271,7 +271,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
 
         {buttonJurisdictionArray?.includes('modules-delete') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('modules-check') && (
           <Button className="mr7" onClick={() => checkDetailEvent()}>

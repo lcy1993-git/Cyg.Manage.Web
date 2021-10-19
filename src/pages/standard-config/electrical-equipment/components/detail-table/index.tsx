@@ -222,7 +222,7 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => searchComponent()}
-        buttonRightContentSlot={() => tableRightSlot}
+        // buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/ComponentDetail/GetPageList"
         columns={columns}

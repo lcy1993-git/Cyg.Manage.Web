@@ -5,6 +5,7 @@ import {
   createCompileResult,
   downloadFileComplie,
   getCompileResultTreeData,
+  getAuditResultData,
 } from '@/services/project-management/all-project';
 import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useControllableValue, useRequest } from 'ahooks';
@@ -21,6 +22,7 @@ import jpgSvg from '@/assets/image/fileIcon/jpg.svg';
 import styles from './index.less';
 import UrlFileView from '@/components/url-file-view';
 import { FileType } from '@/components/api-file-view/getStrategyComponent';
+import AuditResultTab from '../check-audit-result';
 
 const { TabPane } = Tabs;
 
@@ -59,11 +61,15 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     }
   };
 
-  const { data: resultData, run, loading } = useRequest(getResultTreeData, {
+  const { data: resultData, run } = useRequest(getResultTreeData, {
     manual: true,
   });
 
   const { data: compileResultData, run: getCompileTree } = useRequest(getCompileResultTreeData, {
+    manual: true,
+  });
+
+  const { data: auditResultData, run: getAuditTree } = useRequest(getAuditResultData, {
     manual: true,
   });
 
@@ -195,6 +201,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     if (currentTab === 'compile') {
       getCompileTree(projectInfo.projectId);
     }
+    if (currentTab === 'audit') {
+      getAuditTree(projectInfo.projectId);
+    }
   }, [currentTab]);
 
   return (
@@ -234,6 +243,14 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
             <TabPane key="compile" tab="项目需求编制成果">
               <CompileResultTab
                 compileResultData={compileResultData?.map(mapTreeData)}
+                createEvent={setCompileKeys}
+                setTabEvent={setCurrentTab}
+                setCurrentFileInfo={setCurrentFileInfo}
+              />
+            </TabPane>
+            <TabPane key="audit" tab="评审成果">
+              <AuditResultTab
+                auditResultData={compileResultData?.map(mapTreeData)}
                 createEvent={setCompileKeys}
                 setTabEvent={setCurrentTab}
                 setCurrentFileInfo={setCurrentFileInfo}

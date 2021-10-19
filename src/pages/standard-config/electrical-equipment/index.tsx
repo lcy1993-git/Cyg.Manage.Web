@@ -251,7 +251,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('electrical-add') && (
+        {/* {buttonJurisdictionArray?.includes('electrical-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -274,7 +274,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
             <ImportOutlined />
             导入电气设备
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('electrical-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>

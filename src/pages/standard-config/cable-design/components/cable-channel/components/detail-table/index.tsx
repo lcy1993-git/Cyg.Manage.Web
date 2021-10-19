@@ -234,7 +234,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => searchComponent()}
-        buttonRightContentSlot={() => tableRightSlot}
+        // buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/cableChannelDetails/GetPageList"
         columns={columns}

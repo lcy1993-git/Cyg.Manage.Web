@@ -69,6 +69,8 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
         if(res.isSuccess) {
           message.success('绑定成功')
           refresh()
+        }else{
+          message.error(res.message)
         }
       })
     } else {

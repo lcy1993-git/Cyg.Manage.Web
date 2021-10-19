@@ -152,7 +152,7 @@ const Drawing: React.FC<libParams> = (props) => {
         rowKey="chartId"
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
+        // buttonRightContentSlot={tableElement}
         columns={columns}
         requestSource="resource"
         url="/Chart/GetPageList"
