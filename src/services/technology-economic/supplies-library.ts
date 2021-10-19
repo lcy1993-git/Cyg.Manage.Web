@@ -57,6 +57,13 @@ export const getMaterialLibraryAllList = () => {
       { method: 'GET' }),
   );
 }
+// 查询物料库列表没有使用的(物料映射库用)
+export const GetMaterialLibraryAllListNoUsed = () => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryAllListNoUsed`,
+      { method: 'GET' }),
+  );
+}
 
 
 // 新增物料库
