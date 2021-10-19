@@ -662,7 +662,7 @@ const AllProject: React.FC = () => {
         searchPerson: '',
         searchType: '',
       });
-      setKeyWord('');
+      setKeyWord('');   
       setStatisticalCategory(allProjectSearchParams.searchType);
       searchByParams({
         ...defaultParams,

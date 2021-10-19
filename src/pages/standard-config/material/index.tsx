@@ -315,7 +315,7 @@ const Material: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('material-add') && (
+        {/* {buttonJurisdictionArray?.includes('material-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -338,7 +338,7 @@ const Material: React.FC<libParams> = (props) => {
             <ImportOutlined />
             导入物料
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('material-property') && (
           <Button className={styles.importBtn} onClick={() => openWireAttribute()}>

@@ -303,6 +303,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   };
 
   const arrange = async (projectId: string, projectType?: number, allotCompanyId?: string) => {
+    console.log(projectType);
+
     const projectInfo = await getProjectInfo(projectId);
     setCurrentDataSourceType(Number(projectInfo?.dataSourceType));
     setCurrentArrageProjectId(projectId);
@@ -967,7 +969,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       onSelect?.([]);
     },
   }));
-
   const scrollEvent = (size: any) => {
     if (size) {
       const tableTitle = document.getElementsByClassName('tableTitleContent');

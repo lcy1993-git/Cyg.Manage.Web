@@ -61,14 +61,14 @@ const OverheadDesign: React.FC<libParams> = (props) => {
             <div className="flex1 flex">
               <CommonTitle>架空设计</CommonTitle>
             </div>
-            <div>
+            {/* <div>
               {buttonJurisdictionArray?.includes('modules-import') && (
                 <Button className="mr7" onClick={() => importOverheadDesignEvent()}>
                   <ImportOutlined />
                   导入(杆型+模块)
                 </Button>
               )}
-            </div>
+            </div> */}
           </div>
           <OverHeadDesignTab libId={libId} />
         </div>

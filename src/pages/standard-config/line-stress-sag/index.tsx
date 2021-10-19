@@ -120,7 +120,7 @@ const LineStressSag: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('line-stress-sag-import') && (
+        {/* {buttonJurisdictionArray?.includes('line-stress-sag-import') && (
           <Button className="mr7" onClick={() => importLineStressEvent()}>
             导入应力弧垂表
           </Button>
@@ -131,7 +131,7 @@ const LineStressSag: React.FC<libParams> = (props) => {
             <ImportOutlined />
             上传图纸
           </Button>
-        )}
+        )} */}
       </div>
     );
   };

@@ -12,10 +12,11 @@ interface CompanyFileForm {
   editingName?: string;
   fileCategory?: number | undefined;
   uploadFileFn: () => Promise<void>;
+  isBasisExist?: boolean;
 }
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
-  const { type = 'edit', groupData, editingName, uploadFileFn, fileCategory } = props;
+  const { type = 'edit', groupData, editingName, uploadFileFn, fileCategory, isBasisExist } = props;
 
   const [categoryValue, setCategoryValue] = useState<number>();
 
@@ -60,7 +61,22 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         <Input placeholder="请输入名称" />
       </CyFormItem>
       {type === 'add' && (
-        <CyFormItem label="文件类别" name="fileCategory" required rules={rules.fileCategory}>
+        <CyFormItem
+          label="文件类别"
+          name="fileCategory"
+          required
+          rules={[
+            { required: true, message: '请选择文件类别' },
+            () => ({
+              validator(_, value) {
+                if (isBasisExist && value === 5) {
+                  return Promise.reject('每个文件组内仅能上传一份立项依据');
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
+        >
           <UrlSelect
             onChange={(value: any) => setCategoryValue(value)}
             titlekey="text"
@@ -71,7 +87,12 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         </CyFormItem>
       )}
       {type === 'add' && (
-        <CyFormItem label="上传文件" name="file" required rules={rules.fileld}>
+        <CyFormItem
+          label="上传文件"
+          name="file"
+          required
+          rules={[{ required: true, message: '还未上传文件' }]}
+        >
           <FileUpload uploadFileBtn uploadFileFn={uploadFileFn} maxCount={1} accept={acceptValue} />
         </CyFormItem>
       )}

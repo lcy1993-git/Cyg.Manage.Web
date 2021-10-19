@@ -1,47 +1,47 @@
 .engineerTableItem {
-  font-size: 0;
-  line-height: 1;
   position: relative;
   padding-top: 38px;
+  font-size: 0;
+  line-height: 1;
 
   .engineerTableItemHeader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
     width: 100%;
     height: 38px;
     font-size: 13px;
     background-color: @table-thead-color;
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: flex;
     border-right: 1px solid @table-line-color;
     border-bottom: 1px solid @table-line-color;
 
     .foldButton {
-      width: 38px;
       flex-shrink: 0;
+      box-sizing: border-box;
+      width: 38px;
       height: 38px;
       font-size: 14px;
       line-height: 38px;
       text-align: center;
       border-right: 1px solid @table-line-color;
-      box-sizing: border-box;
       cursor: pointer;
     }
 
     .engineerName {
+      display: flex;
       flex: 1;
       padding-top: 8px;
       padding-left: 10px;
-      display: flex;
       overflow: hidden;
 
       .engineerNameContent {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
         display: inline-block;
-        line-height: 22px;
         height: 22px;
+        overflow: hidden;
+        line-height: 22px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
       }
     }
 
@@ -63,12 +63,12 @@
     }
 
     .createTime {
+      flex-shrink: 0;
       width: 240px;
+      padding-left: 10px;
+      color: @black-color;
       font-weight: 600;
       line-height: 38px;
-      padding-left: 10px;
-      flex-shrink: 0;
-      color: @black-color;
     }
 
     .label {
@@ -76,11 +76,11 @@
     }
 
     .projectButtons {
-      width: 240px;
       flex-shrink: 0;
+      width: 240px;
+      padding-top: 4px;
       padding-right: 20px;
       text-align: right;
-      padding-top: 4px;
 
       :global {
         .ant-btn {
@@ -101,7 +101,8 @@
 
   &.overflowTable {
     .engineerTableBody {
-      &.foldClassName {}
+      &.foldClassName {
+      }
 
       .engineerTableContent {
         .engineerTableHeader {
@@ -127,45 +128,47 @@
           .nameTd {
             position: absolute;
             top: 0;
-            height: 100%;
             z-index: 100;
+            height: 100%;
             background-color: #fff;
             border-right: 1px solid @table-line-color;
             box-shadow: 5px 0 10px -5px rgba(0, 0, 0, 0.16);
           }
 
           .engineerTableThCheckbox {
-            height: 100%;
-            border-bottom: 1px solid @table-line-color;
             position: absolute;
-            left: 0;
             top: 0;
-            background-color: #fff;
+            left: 0;
             z-index: 100;
+            height: 100%;
+            background-color: #fff;
+            border-bottom: 1px solid @table-line-color;
           }
         }
 
         .engineerTableBody {
           .engineerTableTr {
             position: relative;
-            padding-left: 338px;
             padding-right: 120px;
-
+            padding-left: 338px;
+            &.noPaddingRight {
+              padding-right: 0;
+            }
             .engineerTableTd {
               &.engineerTableThCheckbox {
-                height: 100%;
                 position: absolute;
-                left: 0;
                 top: 0;
-                background-color: #fff;
+                left: 0;
                 z-index: 100;
+                height: 100%;
+                background-color: #fff;
               }
 
               &.nameTd {
                 position: absolute;
                 top: 0;
-                height: 100%;
                 z-index: 100;
+                height: 100%;
                 background-color: #fff;
                 border-right: 1px solid @table-line-color;
                 box-shadow: 5px 0 10px -5px rgba(0, 0, 0, 0.16);
@@ -175,17 +178,16 @@
                 position: absolute;
                 top: 0;
                 z-index: 100;
-                background-color: #fff;
                 height: 100%;
-
+                background-color: #fff;
               }
 
               &.statusTd {
                 position: absolute;
                 top: 0;
                 z-index: 100;
-                background-color: #fff;
                 height: 100%;
+                background-color: #fff;
                 border-left: 1px solid @table-line-color;
                 box-shadow: -5px 0 10px -5px rgba(0, 0, 0, 0.16);
               }
@@ -197,7 +199,8 @@
   }
 
   .engineerTableBody {
-    &.foldClassName {}
+    &.foldClassName {
+    }
 
     .engineerTableContent {
       width: 100%;
@@ -207,11 +210,11 @@
         width: 100%;
 
         .engineerTableTh {
+          box-sizing: border-box;
           padding: 8px;
+          font-weight: 600;
           border-right: 1px solid @table-line-color;
           border-bottom: 1px solid @table-line-color;
-          font-weight: 600;
-          box-sizing: border-box;
 
           &.checkboxTh {
             width: 38px;
@@ -229,13 +232,13 @@
         }
 
         .engineerTableTd {
-          padding: 8px 8px 4px 8px;
+          display: flex;
           box-sizing: border-box;
+          padding: 8px 8px 4px 8px;
           color: @gray-color;
           word-break: break-all;
           border-right: 1px solid @table-line-color;
           border-bottom: 1px solid @table-line-color;
-          display: flex;
 
           .engineerTableTdContent {
             flex: 1;
@@ -247,8 +250,8 @@
 
           .ellipsis {
             overflow: hidden;
-            text-overflow: ellipsis;
             white-space: nowrap;
+            text-overflow: ellipsis;
           }
 
           &.engineerTableThCheckbox {
@@ -258,8 +261,6 @@
       }
     }
   }
-
-
 
   .noEngineerData {
     border-right: 1px solid @table-line-color;

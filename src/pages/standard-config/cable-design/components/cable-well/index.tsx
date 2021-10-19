@@ -293,7 +293,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('cable-well-add') && (
+        {/* {buttonJurisdictionArray?.includes('cable-well-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -309,7 +309,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
 
         {buttonJurisdictionArray?.includes('cable-well-delete') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('cable-well-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>

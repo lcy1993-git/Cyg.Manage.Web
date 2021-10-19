@@ -260,7 +260,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => searchComponent()}
-        buttonRightContentSlot={() => tableRightSlot}
+        // buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/ModulesDetails/GetPageList"
         columns={columns}
