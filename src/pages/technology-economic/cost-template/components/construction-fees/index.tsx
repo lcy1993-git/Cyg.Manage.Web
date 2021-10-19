@@ -37,12 +37,12 @@ const ConstructionFees: React.FC<Props> = forwardRef((props, ref: Ref<any>) => {
 
   const columns = [
     {
-      dataIndex: 'materialCode',
-      index: 'materialCode',
+      dataIndex: 'number',
+      index: 'number',
       title: '序号',
       width: 80,
       render: (text: string, record: any, index: number) => {
-        return <span>{index + 1}</span>;
+        return <span>{text}</span>;
       },
     },
     {

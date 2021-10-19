@@ -157,6 +157,9 @@ export const commonUpload = (
     tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',
       data: formData,
+      // headers:{
+      //   'content-Type':'application/zip'
+      // },
       requestType: 'form',
     }),
   );

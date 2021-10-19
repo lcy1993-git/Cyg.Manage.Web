@@ -13,12 +13,11 @@ import {
 
 /**
  * 根据费率表类型获取相应接口
- * 
+ *
  * @param type 费率表类型
  * @returns 费率表相关接口
  */
 export const getApiByType = (rateTableType: string, rateFileId: string, demolition: boolean) => {
-  
   if(demolition){
     switch (String(rateTableType)) {
       /**
