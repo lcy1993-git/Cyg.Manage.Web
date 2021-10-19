@@ -26,6 +26,7 @@ import {
 import styles from './index.less';
 import moment from 'moment';
 import FileUpload from '@/components/file-upload';
+import TableImportButton from "@/components/table-import-button";
 
 const { Search } = Input;
 
@@ -208,7 +209,7 @@ const ProjectList: React.FC = () => {
     let id = tableSelectRows[0].id;
     if (['建筑安装取费表费率', '拆除取费表费率'].includes(name)) {
       history.push(
-        `/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&name=${name}`,
+        `/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&name=${name}&isDemolition=${name === '拆除取费表费率'}`,
       );
     } else if (['地形增加系数', '未计价材料施工损耗率', '土方参数'].includes(name)) {
       history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`);
@@ -216,20 +217,32 @@ const ProjectList: React.FC = () => {
       history.push(`/technology-economic/social-security-fund?id=${tableSelectRows[0].id}`);
     }
   };
+  const setSuccessful = ()=>{
 
+  }
   const tableElement = () => {
     return (
-      <div className={styles.buttonArea}>
+      <div style={{display:'flex'}}>
         {!buttonJurisdictionArray?.includes('commonrate-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         )}
-        <Button className="mr7" onClick={() => setImportVisibel(true)}>
-          <ImportOutlined />
-          导入
-        </Button>
+        <TableImportButton
+          modalTitle={'导入常用费率'}
+          buttonTitle={'导入'}
+          requestSource={'tecEco1'}
+          accept={'.zip'}
+          style={{display:'inline'}}
+          importUrl={`/RateTable/ImportRateFileZip`}
+          setSuccessful={setSuccessful}
+        />
+        &nbsp;
+        {/*<Button className="mr7" onClick={() => setImportVisibel(true)}>*/}
+        {/*  <ImportOutlined />*/}
+        {/*  导入*/}
+        {/*</Button>*/}
         {/*{*/}
         {/*  !buttonJurisdictionArray?.includes('commonrate-del') &&*/}
         {/*  <Popconfirm*/}
@@ -322,22 +335,23 @@ const ProjectList: React.FC = () => {
           keyWord: searchKeyWord,
         }}
       />
-      <Modal
-        title="导入常用费率"
-        onOk={onOK}
-        onCancel={() => setImportVisibel(false)}
-        visible={importVisibel}
-      >
-        <FileUpload
-          maxCount={1}
-          accept=".zip"
-          trigger={true}
-          process={true}
-          onChange={(e) => setFileList(e)}
-          className={styles.file}
-          uploadFileFn={async () => {}}
-        />
-      </Modal>
+
+      {/*<Modal*/}
+      {/*  title="导入常用费率"*/}
+      {/*  onOk={onOK}*/}
+      {/*  onCancel={() => setImportVisibel(false)}*/}
+      {/*  visible={importVisibel}*/}
+      {/*>*/}
+      {/*  <FileUpload*/}
+      {/*    maxCount={1}*/}
+      {/*    accept=".zip"*/}
+      {/*    trigger={true}*/}
+      {/*    process={true}*/}
+      {/*    onChange={(e) => setFileList(e)}*/}
+      {/*    className={styles.file}*/}
+      {/*    uploadFileFn={async () => {}}*/}
+      {/*  />*/}
+      {/*</Modal>*/}
       <Modal
         maskClosable={false}
         title={`${modalType === 'add' ? '添加' : '编辑'}-常用费率`}

@@ -154,7 +154,7 @@ const QuotaLibrary: React.FC = () => {
   };
 
   const sureAddAuthorization = () => {
-    // setSpinning(true);
+    setSpinning(true);
     addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
       const data = {};
       for (let key: string in values) {
@@ -268,7 +268,7 @@ const QuotaLibrary: React.FC = () => {
         footer={false}
         destroyOnClose
       >
-        <Spin spinning={spinning}>
+        <Spin spinning={spinning} tip={'上传中...'}>
           <Form form={addForm} preserve={false}>
             <DictionaryForm type="add" />
           </Form>

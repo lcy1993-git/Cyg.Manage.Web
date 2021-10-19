@@ -2,40 +2,12 @@
 import { message } from 'antd';
 import { request, history } from 'umi';
 import tokenRequest from '@/utils/request';
-import { requestBaseUrl } from '../../public/config/request';
 import type { RequestDataType, RequestDataCommonType } from './common.d';
 import {webConfig} from "@/global";
 
 import { isArray } from 'lodash';
 
-const { NODE_ENV } = process.env;
-
-const devBaseUrl = {
-  project: '/api/manage/v2/api',
-  common: '/api/common/api',
-  upload: '/api/storage/api',
-  resource: '/api/resourcemanage/v2/api',
-  webGis: '/api/webgis/api',
-  webGis2: '/api/webgis2/api',
-  comment: '/api/project/api',
-  tecEco: '/api/quota/api',
-  tecEco1: '/api/technicaleconomy/api',
-  review: '/api/review/api',
-
-  // webGis
-  resourceV1: '/api/resource/api',
-  manage: '/api/manage/api',
-  geoserver: '/api/geoserver',
-  design: '/api/design/api',
-};
-
-export const geoServeUrl = "/geoserver/pdd/ows/";
-
-// interface UrlSelectParams {
-//   requestSource: 'project' | 'resource';
-// }
-
-// export const baseUrl = NODE_ENV === 'development' ? devBaseUrl : requestBaseUrl;
+export const geoServeUrl = webConfig.requestUrl.geoServerUrl;
 
 export const baseUrl = webConfig.requestUrl;
 
@@ -185,6 +157,9 @@ export const commonUpload = (
     tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',
       data: formData,
+      // headers:{
+      //   'content-Type':'application/zip'
+      // },
       requestType: 'form',
     }),
   );
