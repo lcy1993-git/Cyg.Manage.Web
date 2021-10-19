@@ -93,7 +93,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   // 请求数据
   const initPdfViewer = () => {
     const token = localStorage.getItem("Authorization");
-    pdfjsLib.getDocument({ url: 'http://26.26.26.1:12333/test8.pdf' })
+    // pdfjsLib.getDocument({ url: 'http://26.26.26.1:12333/test8.pdf' })
       pdfjsLib.getDocument(
         Object.assign(params,
           token && ("httpHeaders" in params || !hasAuthorization)
