@@ -76,6 +76,7 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
                 buttonTitle={'导入土方参数图形'}
                 style={{ zIndex: 99, display: name === '土方参数' ? 'block' : 'none' }}
                 downType={active}
+                accept={'.zip'}
                 requestSource={'tecEco1'}
                 importUrl={`/Earthwork/UploadEarthworkPictures`}
                 setSuccessful={setSuccessful}
