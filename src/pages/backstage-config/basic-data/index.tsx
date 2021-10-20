@@ -23,16 +23,6 @@ const BasicData: React.FC = () => {
     });
   };
 
-  const uploadJurisdictionFile = async () => {
-    jurisdictionForm.validateFields().then(async (values) => {
-      const { jurisdictionFile } = values;
-
-      await commonUpload('/Manage/ImportAuthority', jurisdictionFile, 'file', 'project');
-      message.success('上传成功');
-      jurisdictionForm.resetFields();
-    });
-  };
-
   //上传气象区文件
   const uploadAreaFile = async () => {
     areaForm.validateFields().then(async (values) => {
@@ -100,27 +90,6 @@ const BasicData: React.FC = () => {
                 开始上传
               </Button>
             </div>
-          </div>
-        </div>
-
-        <div className={styles.jurisdictionUpload}>
-          <CommonTitle>权限</CommonTitle>
-          <Form form={jurisdictionForm}>
-            <CyFormItem
-              name="jurisdictionFile"
-              labelWidth={111}
-              label="权限文件上传"
-              rules={[{ required: true, message: '请至少上传一个文件' }]}
-            >
-              <FileUpLoad maxCount={1} style={{ width: '99%' }} />
-            </CyFormItem>
-          </Form>
-          <div className={styles.basicPageButtonContent}>
-            <ExportAuthorityButton exportUrl="/Manage/ExportAuthority" />
-            <Button type="primary" className="mr7" onClick={() => uploadJurisdictionFile()}>
-              <UploadOutlined />
-              开始上传
-            </Button>
           </div>
         </div>
       </div>
