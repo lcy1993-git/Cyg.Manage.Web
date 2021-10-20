@@ -18,9 +18,10 @@ interface Props {
   title?: string;
   nodeId?: string;
   update: () => void;
+  fileId:string
 }
 
-const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId}) => {
+const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId}) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
   const [html, setHtml] = useState<string>(data);
@@ -95,7 +96,7 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId}) => {
     if (type === 'zip'){
       await UploadChapterDescriptionFiles({
         files: file,
-        quotaLibraryCatalogId : window.location.search.split('=')[1] ?? '',
+        quotaLibraryCatalogId : fileId
       });
       update()
 
