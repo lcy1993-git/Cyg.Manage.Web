@@ -29,9 +29,14 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
   const emailRef = useRef<Input>(null);
 
   const [refreshPhone, setRefreshPhone] = useState<boolean>(false)
+  const [refreshEmail, setRefreshEmail] = useState<boolean>(false)
 
   const cancelPhone = () => {
     setRefreshPhone(!refreshPhone)
+  }
+
+  const cancelEmail = () => {
+    setRefreshEmail(!refreshEmail)
   }
 
   const { data: userInfo, run: request } = useRequest(() => getUserInfo(), {
@@ -84,8 +89,8 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
       <PersonInfoRow
         name={userInfo?.email}
         title="邮箱"
-        expandState={closeState}
-        editNode={<EmailInfo email={userInfo?.email} refresh={run} />}
+        expandState={closeState || refreshEmail}
+        editNode={<EmailInfo email={userInfo?.email} refresh={run} cancelEmail={cancelEmail}/>}
         // editNode={
         //   <div className={styles.nodeWrap}>
         //     <div className={styles.input}>

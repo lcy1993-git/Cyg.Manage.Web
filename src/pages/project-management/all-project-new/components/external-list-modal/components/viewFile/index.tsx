@@ -31,9 +31,7 @@ const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
     return <XlsxViewer url={api} />;
   } else {
     const { url, extension } = params;
-    console.log(url, extension, '456');
     const { data } = useRequest(() => getFileStream({ url, extension }));
-    console.log(data);
 
     return <FileDocxView data={data} />;
   }

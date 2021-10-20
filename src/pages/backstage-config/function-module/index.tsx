@@ -8,8 +8,9 @@ import {
   updateFunctionModuleItem,
   getFunctionModuleDetail,
 } from '@/services/system-config/function-module';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import FunctionModuleForm from './components/form';
+import FileUpLoad from '@/components/file-upload';
 
 import {
   updateFunctionItemStatus,
@@ -18,9 +19,15 @@ import {
 } from '@/services/system-config/function-module';
 import { isArray } from 'lodash';
 import { useRequest } from 'ahooks';
+import CommonTitle from '@/components/common-title';
+import styles from './index.less';
+import CyFormItem from '@/components/cy-form-item';
+import ExportAuthorityButton from '@/components/authortiy-export-button';
+import { commonUpload } from '@/services/common';
 
 const FunctionModule: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null);
+  const [jurisdictionForm] = Form.useForm();
 
   const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
 
@@ -37,6 +44,17 @@ const FunctionModule: React.FC = () => {
   const { data: selectTreeData = [], run: getSelectTreeData } = useRequest(getTreeSelectData, {
     manual: true,
   });
+
+  //权限文件操作
+  const uploadJurisdictionFile = async () => {
+    jurisdictionForm.validateFields().then(async (values) => {
+      const { jurisdictionFile } = values;
+
+      await commonUpload('/Manage/ImportAuthority', jurisdictionFile, 'file', 'project');
+      message.success('上传成功');
+      jurisdictionForm.resetFields();
+    });
+  };
 
   const updateStatus = async (record: TreeDataItem) => {
     const { id } = record;
@@ -205,15 +223,39 @@ const FunctionModule: React.FC = () => {
   };
 
   return (
-    <PageCommonWrap>
-      <TreeTable
-        ref={tableRef}
-        tableTitle="模块列表"
-        rightButtonSlot={functionModuleButton}
-        getSelectData={(data) => setTableSelectRows(data)}
-        columns={functionTableColumns}
-        url="/Module/GetTreeList"
-      />
+    <PageCommonWrap noPadding>
+      <div className={styles.paddingClass}>
+        <CommonTitle>权限</CommonTitle>
+        <Form form={jurisdictionForm}>
+          <CyFormItem
+            name="jurisdictionFile"
+            labelWidth={111}
+            label="权限文件上传"
+            rules={[{ required: true, message: '请至少上传一个文件' }]}
+          >
+            <FileUpLoad maxCount={1} style={{ width: '99.6%' }} />
+          </CyFormItem>
+          <div className={styles.basicPageButtonContent}>
+            <ExportAuthorityButton exportUrl="/Manage/ExportAuthority" />
+            <Button type="primary" className="mr7" onClick={() => uploadJurisdictionFile()}>
+              <UploadOutlined />
+              开始上传
+            </Button>
+          </div>
+        </Form>
+      </div>
+      <div className={styles.divider}></div>
+      <div className={styles.paddingClass}>
+        <TreeTable
+          ref={tableRef}
+          tableTitle="模块列表"
+          rightButtonSlot={functionModuleButton}
+          getSelectData={(data) => setTableSelectRows(data)}
+          columns={functionTableColumns}
+          url="/Module/GetTreeList"
+        />
+      </div>
+
       <Modal
         maskClosable={false}
         title="添加-模块"

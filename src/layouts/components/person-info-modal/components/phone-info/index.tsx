@@ -75,7 +75,7 @@ const PhoneInfo: React.FC<PhoneInfoProps> = ({
           <div className={classNames(styles.ml110, styles.minHeight60)}>
             <Space>
               <Button onClick={() => setStep(1)} type="primary">更换手机号</Button>
-              <Popconfirm placement="top" title="确定要解绑吗？" onConfirm={handlerUnBindPhone}>
+              <Popconfirm placement="top" title="解绑后无法通过该手机号登录，是否解绑？" onConfirm={handlerUnBindPhone}>
                 <Button>解绑</Button>
               </Popconfirm>
             </Space>

@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import EmptyTip from '@/components/empty-tip';
-import type { CurrentFileInfo } from '../check-result-modal';
+import type { AuditFileInfo } from '../check-result-modal';
 import { Tree } from 'antd';
 import styles from './index.less';
 const { DirectoryTree } = Tree;
@@ -9,27 +9,28 @@ interface AuditResultTabProps {
   createEvent: Dispatch<SetStateAction<React.Key[]>>;
   setTabEvent: Dispatch<SetStateAction<string>>;
   auditResultData: any;
-  setCurrentFileInfo: (fileInfo: CurrentFileInfo) => void;
+  setAuditFileInfo: (fileInfo: AuditFileInfo) => void;
 }
 
 const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
-  const { createEvent, setTabEvent, auditResultData, setCurrentFileInfo } = props;
+  const { createEvent, setTabEvent, auditResultData, setAuditFileInfo } = props;
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
 
   const onCheck = (checkedKeysValue: React.Key[]) => {
+    console.log(checkedKeysValue, '111');
     createEvent(checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
-    setTabEvent('design');
+    setTabEvent('audit');
   };
 
   const onSelect = (info: string, e: any) => {
     if (e.node.category === 2 && e.node.title) {
-      const typeArray = e.node.title.split('.');
-      const type = typeArray[typeArray.length - 1];
+      // const typeArray = e.node.type.split('.').filter(Boolean);
+      // const type = typeArray[typeArray.length - 1];
 
-      setCurrentFileInfo({
-        type,
-        path: info[0],
+      setAuditFileInfo({
+        extension: e.node.type,
+        url: e.node.value,
         title: e.node.title,
       });
     }
@@ -57,7 +58,7 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
             onCheck={onCheck}
             checkedKeys={checkedKeys}
             defaultExpandAll={true}
-            treeData={designData}
+            treeData={auditResultData}
             onSelect={onSelect}
           />
         </div>
