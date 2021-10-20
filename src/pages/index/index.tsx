@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from './index.less';
 import { WidthProvider, Responsive } from 'react-grid-layout';
 import bgSrc from '@/assets/image/index/bg.png';
-import {useMount, useRequest, useSize} from 'ahooks';
+import { useMount, useRequest, useSize } from 'ahooks';
 import { getChartConfig } from '@/services/operation-config/cockpit';
 
 import MapComponent from '@/pages/index/components/index-map-component';
@@ -24,14 +24,14 @@ import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import HealthPolling from './components/health-polling';
-import {getEnums} from "@/pages/technology-economic/utils";
+import { getEnums } from '@/pages/technology-economic/utils';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
     case 'toDo':
-      return <ToDo componentProps={componentProps}/>;
+      return <ToDo componentProps={componentProps} />;
       break;
     case 'mapComponent':
       return <MapComponent componentProps={componentProps} />;
@@ -156,9 +156,9 @@ const Index: React.FC = () => {
       setReloadLoading(false);
     }, 0);
   }, [height]);
-  useMount(()=>{
-    getEnums('EngineeringTemplateType')
-  })
+  // useMount(()=>{
+  //   getEnums('EngineeringTemplateType')
+  // })
   return (
     <PageCommonWrap noPadding={true} className={styles.indexWrap}>
       <IndexContext.Provider
