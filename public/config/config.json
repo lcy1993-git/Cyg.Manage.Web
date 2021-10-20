@@ -15,7 +15,8 @@
         "resourceV1": "/resource/api",
         "manage": "/manage/api",
         "geoserver": "/geoserver",
-        "design": "/design/api"
+        "design": "/design/api",
+        "geoServerUrl": "/geoserver/pdd/ows/"
     },
     "logoUrl": {
         "218.6.242.125": "ke-rui-logo.png",
@@ -27,5 +28,5 @@
         "10.6.1.38": "logo.png"
     },
     "areaStatisticsUrl": "/chart/index.html",
-    "version": "1.0.130"
+    "version": "1.0.133"
 }

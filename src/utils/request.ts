@@ -1,9 +1,6 @@
 import { extend, RequestOptionsInit } from 'umi-request';
-const { NODE_ENV } = process.env;
 
-const request = extend({
-  prefix: NODE_ENV === 'development' ? "/api" : ""
-});
+const request = extend({});
 
 // request拦截器, 改变url 或 options.
 // @ts-ignore

@@ -21,7 +21,8 @@ const regEmail = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
 
 const EmailInfo: React.FC<EmailInfoProps> = ({
   email,
-  refresh
+  refresh,
+  cancelEmail
 }) => {
 
   const [step, setStep] = useState<Step>(email ? 0 : 1)
@@ -40,7 +41,7 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
     } else if (bindEmailRef.current!.input.value.length > 20) {
       message.error('邮箱字符过长');
     } else if (bindEmailRef.current!.input.value === email) {
-      message.error("更换的邮箱号不能与原邮箱号相同")
+      message.error("更换的邮箱不能与原邮箱地址相同")
     } else {
       setSendCodeLoading(true)
       sendBindEmailCode(emailNumber).then(() => {
@@ -69,10 +70,12 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
         if(res.isSuccess) {
           message.success('绑定成功')
           refresh()
+        }else{
+          message.error(res.message)
         }
       })
     } else {
-      message.error('验证码格式错误')
+      message.error('验证码格式有误，请输入有效6位数验证码')
     }
   }, 1000)
 
@@ -96,7 +99,7 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
               <Button onClick={() => setStep(1)} type="primary">更换邮箱</Button>
               {
                 email &&
-                <Popconfirm placement="top" title="确定要解绑吗？" onConfirm={handlerUnbindEmail} >
+                <Popconfirm placement="top" title="解绑后无法通过该手机号登录，是否解绑？" onConfirm={handlerUnbindEmail} >
                   <Button>解绑</Button>
                 </Popconfirm>
               }
@@ -134,7 +137,7 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
             </div>
           </div>
           <div className={classNames(styles.minHeight60, styles.flex, styles.ml60)}>
-            <Button type="primary" onClick={filishClickHandler}>下一步</Button>
+            <Button type="primary" onClick={filishClickHandler}>绑定</Button>
             <Button className={styles.ml12} onClick={() => setStep(email ? 0 : 1)}>取消</Button>
           </div>
         </>

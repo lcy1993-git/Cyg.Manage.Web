@@ -103,7 +103,9 @@ export const ImportRateFileZip = (file: File) => {
   const data = new FormData();
   data.append('file', file)
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/RateTable/ImportRateFileZip`, {method: 'POST', data})
+    request(`${baseUrl.tecEco1}/RateTable/ImportRateFileZip`, {
+      method: 'POST',
+      data})
   )
 }
 

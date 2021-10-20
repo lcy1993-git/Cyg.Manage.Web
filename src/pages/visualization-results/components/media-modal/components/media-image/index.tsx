@@ -28,11 +28,11 @@ const MediaImage: React.FC<MediaImageProps> = ({
   nextFullClick,
 }) => {
 
-  const [currentPosition, setCurrentPosition] = useState([0,0])
+  const [currentPosition, setCurrentPosition] = useState([0, 0])
 
-  const [downPosition, setDownPosition] = useState([0,0]);
+  const [downPosition, setDownPosition] = useState([0, 0]);
 
-  const [originPosition, setOriginPosition] = useState([0,0])
+  const [originPosition, setOriginPosition] = useState([0, 0])
 
   const [isDrag, setIsDrag] = useState(false);
 
@@ -44,12 +44,12 @@ const MediaImage: React.FC<MediaImageProps> = ({
   const imgRef = useRef<HTMLImageElement>(null);
 
   const outoSizeHandler = () => {
-    setCurrentPosition([0,0])
+    setCurrentPosition([0, 0])
     setPercent(100);
   }
 
   useEffect(() => {
-    if(percent === 100) {
+    if (percent === 100) {
       outoSizeHandler()
     }
   }, [percent])
@@ -62,14 +62,14 @@ const MediaImage: React.FC<MediaImageProps> = ({
   }
 
   const onMouseDown = (e: React.MouseEvent) => {
-    if(percent !== 100){
+    if (percent !== 100) {
       setDownPosition([e.clientX, e.clientY])
       setOriginPosition([...currentPosition])
       setIsDrag(true)
     }
   }
   const onMouseMove = (e: React.MouseEvent) => {
-    if(isDrag) {
+    if (isDrag) {
       setCurrentPosition([
         originPosition[0] + e.clientX - downPosition[0],
         originPosition[1] + e.clientY - downPosition[1]
@@ -82,15 +82,15 @@ const MediaImage: React.FC<MediaImageProps> = ({
   }, [JSON.stringify(currentPosition), percent])
 
   useUpdateEffect(() => {
-    setCurrentPosition([0,0])
+    setCurrentPosition([0, 0])
     setPercent(100)
   }, [index])
 
   const checkPreImg = () => {
     let index = fsIndex;
     do {
-      index --
-      if(index < 0){
+      index--
+      if (index < 0) {
         index = content.length - 1
       }
     } while (content[index]?.type === 2)
@@ -100,8 +100,8 @@ const MediaImage: React.FC<MediaImageProps> = ({
   const checkNextImg = () => {
     let index = fsIndex;
     do {
-      index ++
-      if(index === content.length){
+      index++
+      if (index === content.length) {
         index = 0
       }
     } while (content[index]?.type === 2)
@@ -120,7 +120,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
             onMouseUp={() => setIsDrag(false)}
             onMouseLeave={() => setIsDrag(false)}
             ref={imgRef}
-            className={classNames(styles.img, percent === 100 ? styles.imgUnsetPointer : "") }
+            className={classNames(styles.img, percent === 100 ? styles.imgUnsetPointer : "")}
             crossOrigin={''}
             src={`${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
@@ -151,12 +151,12 @@ const MediaImage: React.FC<MediaImageProps> = ({
             {
               data.type === 1 &&
               <img
-              key={uuid.v1()}
-              style={{ maxHeight: window.innerHeight, maxWidth: window.innerWidth }}
-              className={styles.fullScreenImg}
-              crossOrigin={''}
-              src={`${baseUrl.upload}/Download/GetFileById?fileId=${content[fsIndex].filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
-            />
+                key={uuid.v1()}
+                style={{ maxHeight: window.innerHeight, maxWidth: window.innerWidth }}
+                className={styles.fullScreenImg}
+                crossOrigin={''}
+                src={`${baseUrl.upload}/Download/GetFileById?fileId=${content[fsIndex].filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+              />
             }
           </div>
         </Modal>
