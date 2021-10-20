@@ -184,7 +184,7 @@ const QuotaProject = () => {
       <div className={styles.wrap} ref={ref}>
         <div className={styles.wrapLeftMenu}>
           <Tabs className="normalTabs noMargin" >
-              <TabPane tab="定额库目录" key="1">
+            <TabPane tab="定额库目录" key="1">
                 <div className={styles.selectWrap}>
                   <Select placeholder="请选择定额库" style={{width: '100%'}} children={options} onChange={(e)=>onSelect(e)} defaultValue={activeQuotaId}/>
                 </div>
@@ -221,6 +221,7 @@ const QuotaProject = () => {
                 <ChapterInfo data={chapterData || ""}
                              title={title}
                              nodeId={nodeId}
+                             fileId={activeQuotaId}
                              id={catalogueId} update={()=>chapterRun(catalogueId)}/>
               </TabPane>
             </Tabs>
