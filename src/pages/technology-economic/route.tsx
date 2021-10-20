@@ -132,7 +132,7 @@ export default [
     component: <AdjustmentFileDetails />,
   },
   {
-    title: '费用模板',
+    title: '取费表',
     path: '/technology-economic/cost-template',
     component: <CostTemplate />,
   },

@@ -268,7 +268,7 @@ const PricingTemplates: React.FC = () => {
         <Button className="mr7" onClick={() => gotoCostTemplate()}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <ImageIcon width={16} height={16} imgUrl="feeTemplate.png" />
-            <div style={{ marginLeft: '5px' }}>费用模板</div>
+            <div style={{ marginLeft: '5px' }}>取费表</div>
           </div>
         </Button>
         <Button className="mr7" onClick={() => engineeringCatalog()}>
