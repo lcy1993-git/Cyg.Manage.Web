@@ -66,7 +66,12 @@ const ElectricCompany: React.FC = () => {
 
   //选择省份onChange事件
   const searchBySelectProvince = (value: any) => {
-    search();
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        provinceId: value,
+      });
+    }
   };
 
   const sureDeleteData = async () => {

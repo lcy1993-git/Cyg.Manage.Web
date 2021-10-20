@@ -1,6 +1,6 @@
 import Loadable from 'react-loadable';
 import Loading from '@ant-design/pro-layout/es/PageLoading';
-import ManualManagement from "@/pages/backstage-config/manual-management";
+import ManualManagement from '@/pages/backstage-config/manual-management';
 
 const FunctionModule = Loadable({
   loader: () => import('@/pages/backstage-config/function-module'),
@@ -36,6 +36,11 @@ const FeedBack = Loadable({
 });
 const MapField = Loadable({
   loader: () => import('@/pages/backstage-config/map-field'),
+  loading: Loading,
+  delay: 150,
+});
+const LoginStrategy = Loadable({
+  loader: () => import('@/pages/backstage-config/login-strategy'),
   loading: Loading,
   delay: 150,
 });
@@ -86,6 +91,11 @@ export default [
     path: '/backstage-config/map-field',
     component: <MapField />,
   },
+  {
+    title: '登录策略',
+    path: '/backstage-config/login-strategy',
+    component: <LoginStrategy />,
+  },
   // {
   //   title: '终端设备',
   //   path: '/backstage-config/terminal-unit',
@@ -96,7 +106,8 @@ export default [
     title: '基础数据',
     path: '/backstage-config/basic-data',
     component: <BasicData />,
-  },  {
+  },
+  {
     title: '说明书管理',
     path: '/backstage-config/manual-management',
     component: <ManualManagement />,
