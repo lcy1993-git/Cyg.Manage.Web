@@ -4,21 +4,21 @@ import TableSearch from '@/components/table-search';
 import { PlusOutlined } from '@ant-design/icons';
 import { Input, Button, Modal, Form, message } from 'antd';
 import React, { useState } from 'react';
-import {
-  getElectricCompanyDetail,
-  addElectricCompanyItem,
-  updateElectricityCompanyItem,
-  deleteElectricityCompanyItem,
-  // getProvince,
-} from '@/services/system-config/electric-company';
+import { createLoginStrategy, deleteLoginStrategy } from '@/services/system-config/login-strategy';
 import { isArray } from 'lodash';
-import UrlSelect from '@/components/url-select';
+import EnumSelect from '@/components/enum-select';
 
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import ModalConfirm from '@/components/modal-confirm';
 import AddLoginStrategyForm from './components/add-form';
 
 const { Search } = Input;
+
+enum LoginEnum {
+  '全部',
+  '授权账号',
+  '授权IP ',
+}
 
 const LoginStrategy: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null);
@@ -42,14 +42,11 @@ const LoginStrategy: React.FC = () => {
           />
         </TableSearch>
         <TableSearch marginLeft="20px" label="类型" width="260px">
-          <UrlSelect
+          <EnumSelect
+            placeholder="-全部-"
+            enumList={LoginEnum}
             style={{ width: '120px' }}
-            showSearch
-            url="/Area/GetList?pId=-1"
-            titlekey="text"
-            valuekey="value"
-            placeholder="请选择"
-            onChange={(value: any) => searchBySelectProvince(value)}
+            onChange={(value: any) => searchByType(value)}
           />
         </TableSearch>
       </div>
@@ -57,8 +54,13 @@ const LoginStrategy: React.FC = () => {
   };
 
   //选择省份onChange事件
-  const searchBySelectProvince = (value: any) => {
-    search();
+  const searchByType = (value: any) => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.searchByParams({
+        authorizeType: value,
+      });
+    }
   };
 
   const sureDeleteData = async () => {
@@ -69,7 +71,7 @@ const LoginStrategy: React.FC = () => {
     const editData = tableSelectRows[0];
     const editDataId = editData.id;
 
-    await deleteElectricityCompanyItem(editDataId);
+    await deleteLoginStrategy(editDataId);
     refresh();
     setTableSelectRows([]);
     message.success('删除成功');
@@ -93,16 +95,19 @@ const LoginStrategy: React.FC = () => {
 
   const columns = [
     {
-      dataIndex: 'id',
-      index: 'id',
-      title: '名称',
+      dataIndex: 'key',
+      index: 'key',
+      title: '授权账号/授权IP',
       width: '50%',
     },
     {
-      dataIndex: 'provinceName',
-      index: 'provinceName',
+      dataIndex: 'authorizeType',
+      index: 'authorizeType',
       title: '类型',
       width: '50%',
+      render: (text: any, record: any) => {
+        return record.authorizeTypeText;
+      },
     },
   ];
 
@@ -115,14 +120,13 @@ const LoginStrategy: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          province: '',
-          companyName: '',
-          countyCompany: '',
-          powerSupply: '',
+          key: '',
+          authorizeType: 1,
+          remark: '',
         },
         value,
       );
-      await addElectricCompanyItem(submitInfo);
+      await createLoginStrategy(submitInfo);
       refresh();
       setAddFormVisible(false);
       addForm.resetFields();
@@ -157,8 +161,8 @@ const LoginStrategy: React.FC = () => {
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         columns={columns}
-        url="/ElectricityCompany/GetPagedList"
-        tableTitle="登录策略"
+        url="/LoginAuthorize/GetPagedList"
+        tableTitle="登录授权策略"
         getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
