@@ -3,7 +3,7 @@ import {
   downloadFile,
   getResultTreeData,
   createCompileResult,
-  downloadFileComplie,
+  downloadFileCompile,
   getCompileResultTreeData,
   getAuditResultData,
 } from '@/services/project-management/all-project';
@@ -164,6 +164,43 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       } finally {
         setRequestLoading(false);
       }
+    } else if (currentTab === 'compile') {
+      if (compileKeys.length === 0) {
+        message.error('请至少选择一个文件进行下载');
+        return;
+      }
+      try {
+        setRequestLoading(true);
+        const path = await createCompileResult({
+          projectId: projectInfo.projectId,
+          paths: compileKeys,
+        });
+        const res = await downloadFileCompile({
+          path: path,
+        });
+
+        let blob = new Blob([res], {
+          type: 'application/zip',
+        });
+        let finalyFileName = `导出成果.zip`;
+        // for IE
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
+        } else {
+          // for Non-IE
+          let objectUrl = URL.createObjectURL(blob);
+          let link = document.createElement('a');
+          link.href = objectUrl;
+          link.setAttribute('download', finalyFileName);
+          document.body.appendChild(link);
+          link.click();
+          window.URL.revokeObjectURL(link.href);
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+      } finally {
+        setRequestLoading(false);
+      }
     } else {
       if (compileKeys.length === 0) {
         message.error('请至少选择一个文件进行下载');
@@ -175,7 +212,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           projectId: projectInfo.projectId,
           paths: compileKeys,
         });
-        const res = await downloadFileComplie({
+        const res = await downloadFileCompile({
           path: path,
         });
 
@@ -257,6 +294,8 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     }
     return;
   }, [auditResultData]);
+
+  console.log(auditKeys, '123123');
 
   return (
     <>

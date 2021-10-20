@@ -667,7 +667,7 @@ export const fileRead = (params: any) => {
 };
 
 //下载--项目编制成果
-export const downloadFileComplie = (params: any) => {
+export const downloadFileCompile = (params: any) => {
   return request(`${baseUrl.upload}/Download/GetProjectCompilationResultFile`, {
     method: 'GET',
     params,
