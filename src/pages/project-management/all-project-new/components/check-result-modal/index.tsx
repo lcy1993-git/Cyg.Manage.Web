@@ -10,7 +10,7 @@ import {
 import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useControllableValue, useRequest } from 'ahooks';
 import { Button, Modal, Spin, message, Tabs } from 'antd';
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useState, useEffect, useMemo } from 'react';
 import CompileResultTab from '../check-compile-result';
 import DesignResultTab from '../check-design-result';
 import pdfSvg from '@/assets/image/fileIcon/pdf.svg';
@@ -23,12 +23,18 @@ import styles from './index.less';
 import UrlFileView from '@/components/url-file-view';
 import { FileType } from '@/components/api-file-view/getStrategyComponent';
 import AuditResultTab from '../check-audit-result';
+import ViewAuditFile from '../external-list-modal/components/viewFile';
 
 const { TabPane } = Tabs;
 
 export interface CurrentFileInfo {
   path: string;
   type: FileType | undefined;
+  title: string;
+}
+export interface AuditFileInfo {
+  url: string;
+  extension: string | undefined;
   title: string;
 }
 
@@ -42,6 +48,7 @@ interface CheckResultModalProps {
 const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   // const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
+  const [auditKeys, setAuditKeys] = useState<React.Key[]>([]);
   const [compileKeys, setCompileKeys] = useState<React.Key[]>([]);
   const [currentTab, setCurrentTab] = useState<string>('design');
   const { projectInfo } = props;
@@ -50,6 +57,11 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   const [currentFileInfo, setCurrentFileInfoErr] = useState<CurrentFileInfo>({
     path: '',
     type: undefined,
+    title: '',
+  });
+  const [auditFileInfo, setAuditFileInfo] = useState<AuditFileInfo>({
+    url: '',
+    extension: undefined,
     title: '',
   });
 
@@ -206,6 +218,46 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     }
   }, [currentTab]);
 
+  const mapAuditTree = (datas: any) => {
+    return {
+      title: datas.key,
+      icon: <img src={foldSvg} className={styles.svg} />,
+      value: datas.key,
+      key: datas.key,
+      children: [
+        {
+          title: datas.value.extend.file.name,
+          value: datas.value.extend.file.url,
+          key: datas.value.extend.file.url,
+          type: datas.value.extend.file.extension,
+          icon:
+            datas.value.extend.file.extension === '.doc' ||
+            datas.value.extend.file.extension === '.docx' ? (
+              <img src={wordSvg} className={styles.svg} />
+            ) : (
+              <img src={excelSvg} className={styles.svg} />
+            ),
+          category: 2,
+        },
+      ],
+    };
+  };
+
+  const handleAuditData = useMemo(() => {
+    if (auditResultData) {
+      return auditResultData.map((item) => {
+        return {
+          title: item.name,
+          key: item.name,
+          category: 1,
+          icon: <img src={foldSvg} className={styles.svg} />,
+          children: item.datas.map(mapAuditTree),
+        };
+      });
+    }
+    return;
+  }, [auditResultData]);
+
   return (
     <>
       <Spin spinning={requestLoading} tip="正在生成...">
@@ -250,10 +302,10 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
             </TabPane>
             <TabPane key="audit" tab="评审成果">
               <AuditResultTab
-                auditResultData={compileResultData?.map(mapTreeData)}
-                createEvent={setCompileKeys}
+                auditResultData={handleAuditData}
+                createEvent={setAuditKeys}
                 setTabEvent={setCurrentTab}
-                setCurrentFileInfo={setCurrentFileInfo}
+                setAuditFileInfo={setAuditFileInfo}
               />
             </TabPane>
           </Tabs>
@@ -325,7 +377,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         maskClosable={false}
         className={styles.fileRead}
         title={`预览-${currentFileInfo.title}`}
-        width={'99%'}
+        width={'98%'}
         style={{ top: 20 }}
         visible={!!currentFileInfo.type}
         destroyOnClose
@@ -335,6 +387,19 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         {currentFileInfo.path && (
           <UrlFileView params={{ path: currentFileInfo.path }} fileType={currentFileInfo.type!} />
         )}
+      </Modal>
+      <Modal
+        maskClosable={false}
+        className={styles.fileRead}
+        title={`预览-${auditFileInfo.title}`}
+        width={'98%'}
+        style={{ top: 20 }}
+        visible={!!auditFileInfo.extension}
+        destroyOnClose
+        footer={null}
+        onCancel={() => setAuditFileInfo({ ...auditFileInfo, extension: undefined })}
+      >
+        {auditFileInfo.url && <ViewAuditFile params={auditFileInfo} />}
       </Modal>
     </>
   );

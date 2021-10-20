@@ -69,7 +69,6 @@ interface XlsxViewerProps {
 
 const XlsxViewer: React.FC<XlsxViewerProps> = (props) => {
   const { url, name = '' } = props;
-  console.log(url);
 
   const initTableData = () => {
     luckyExcel.transformExcelToLuckyByUrl(

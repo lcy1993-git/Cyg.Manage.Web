@@ -9,7 +9,7 @@ interface DesignResultProps {
   createEvent: Dispatch<SetStateAction<React.Key[]>>;
   setTabEvent: Dispatch<SetStateAction<string>>;
   designData: any;
-  setCurrentFileInfo: (fileInfo: CurrentFileInfo) => void
+  setCurrentFileInfo: (fileInfo: CurrentFileInfo) => void;
 }
 
 const DesignResultTab: React.FC<DesignResultProps> = (props) => {
@@ -17,21 +17,22 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
 
   const onCheck = (checkedKeysValue: React.Key[]) => {
+
     createEvent(checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
     setTabEvent('design');
   };
 
   const onSelect = (info: string, e: any) => {
-    if(e.node.category === 2 && e.node.title) {
-      const typeArray = e.node.title.split(".");
+    if (e.node.category === 2 && e.node.title) {
+      const typeArray = e.node.title.split('.');
       const type = typeArray[typeArray.length - 1];
 
       setCurrentFileInfo({
         type,
         path: info[0],
-        title: e.node.title
-      })
+        title: e.node.title,
+      });
     }
   };
 
