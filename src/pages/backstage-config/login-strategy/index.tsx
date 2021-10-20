@@ -11,6 +11,7 @@ import EnumSelect from '@/components/enum-select';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import ModalConfirm from '@/components/modal-confirm';
 import AddLoginStrategyForm from './components/add-form';
+import moment from 'moment';
 
 const { Search } = Input;
 
@@ -98,16 +99,34 @@ const LoginStrategy: React.FC = () => {
       dataIndex: 'key',
       index: 'key',
       title: '授权账号/授权IP',
-      width: '50%',
+      width: 240,
     },
     {
       dataIndex: 'authorizeType',
       index: 'authorizeType',
       title: '类型',
-      width: '50%',
+      width: 150,
       render: (text: any, record: any) => {
         return record.authorizeTypeText;
       },
+    },
+    {
+      dataIndex: 'createdOn',
+      index: 'createdOn',
+      title: '创建时间',
+      width: 200,
+      render: (text: any) => moment(text).format('YYYY-MM-DD HH:mm'),
+    },
+    {
+      dataIndex: 'createdByUserName',
+      index: 'createdByUserName',
+      title: '创建用户',
+      width: 180,
+    },
+    {
+      dataIndex: 'remark',
+      index: 'remark',
+      title: '备注',
     },
   ];
 
