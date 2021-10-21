@@ -61,8 +61,8 @@ const columns = [
     title: '价格年度',
   },
   {
-    dataIndex: 'industryType',
-    key: 'industryType',
+    dataIndex: 'industryTypeText',
+    key: 'industryTypeText',
     title: '适用行业',
   },
   // {

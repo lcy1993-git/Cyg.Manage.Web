@@ -168,7 +168,7 @@ const InfoTabs: React.FC<Props> = ({ data }) => {
           </TabPane>
           <TabPane tab="工作内容" key="工作内容">
             {/*@ts-ignore*/}
-            <div className={styles.workContent}>{JSON.stringify(data?.quotaItem?.workContent)}</div>
+            <div className={styles.workContent}>{JSON.stringify(data?.quotaItem?.workContent) || ''}</div>
           </TabPane>
         </Tabs>
       </div>

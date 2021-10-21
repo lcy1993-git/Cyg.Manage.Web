@@ -236,6 +236,7 @@ const DesignMappingInfo: React.FC = () => {
     setTableSelectRows(val[0])
   }
   useEffect(() => {
+    console.log(qs.parse(window.location.href.split("?")[1])?.id)
     let val = qs.parse(window.location.href.split("?")[1])?.id
     val = val === 'undefined' ? '' : val
     setId(val as string);
@@ -311,7 +312,7 @@ const DesignMappingInfo: React.FC = () => {
         destroyOnClose
       >
         <div style={{height: '720px'}}>
-          <MappingManage materialMappingDesignItemId={tableSelectRows.id} close={closeModel}/>
+          <MappingManage materialMappingDesignItemId={tableSelectRows?.id ?? ''} close={closeModel}/>
         </div>
       </Modal>
     </PageCommonWrap>
