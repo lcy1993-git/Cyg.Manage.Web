@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 import { Moment } from 'moment';
+import React from 'react';
 import { cyRequest, baseUrl } from '../common';
 import { TableRequestResult } from '../table';
 
@@ -667,11 +668,21 @@ export const fileRead = (params: any) => {
 };
 
 //下载--项目编制成果
-export const downloadFileComplie = (params: any) => {
+export const downloadFileCompile = (params: any) => {
   return request(`${baseUrl.upload}/Download/GetProjectCompilationResultFile`, {
     method: 'GET',
     params,
     responseType: 'blob',
+  });
+};
+
+//导出-评审文件
+export const downloadAuditFile = (projectId: string, opinionIds: React.Key[]) => {
+  return request(`${baseUrl.review}/ReviewOpinionFile/DownReivewFileTree?projectId=${projectId}`, {
+    method: 'POST',
+    data: opinionIds,
+    responseType: 'blob',
+    
   });
 };
 

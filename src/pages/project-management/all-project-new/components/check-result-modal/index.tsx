@@ -3,9 +3,10 @@ import {
   downloadFile,
   getResultTreeData,
   createCompileResult,
-  downloadFileComplie,
+  downloadFileCompile,
   getCompileResultTreeData,
   getAuditResultData,
+  downloadAuditFile,
 } from '@/services/project-management/all-project';
 import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useControllableValue, useRequest } from 'ahooks';
@@ -144,7 +145,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         let blob = new Blob([res], {
           type: 'application/zip',
         });
-        let finalyFileName = `导出成果.zip`;
+        let finalyFileName = `导出设计成果.zip`;
         // for IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
@@ -164,7 +165,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       } finally {
         setRequestLoading(false);
       }
-    } else {
+    } else if (currentTab === 'compile') {
       if (compileKeys.length === 0) {
         message.error('请至少选择一个文件进行下载');
         return;
@@ -175,14 +176,49 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           projectId: projectInfo.projectId,
           paths: compileKeys,
         });
-        const res = await downloadFileComplie({
+        const res = await downloadFileCompile({
           path: path,
         });
 
         let blob = new Blob([res], {
           type: 'application/zip',
         });
-        let finalyFileName = `导出成果.zip`;
+        let finalyFileName = `导出项目需求编制成果.zip`;
+        // for IE
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
+        } else {
+          // for Non-IE
+          let objectUrl = URL.createObjectURL(blob);
+          let link = document.createElement('a');
+          link.href = objectUrl;
+          link.setAttribute('download', finalyFileName);
+          document.body.appendChild(link);
+          link.click();
+          window.URL.revokeObjectURL(link.href);
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+      } finally {
+        setRequestLoading(false);
+      }
+    } else {
+      if (auditKeys.length === 0) {
+        message.error('请至少选择一个文件进行下载');
+        return;
+      }
+      try {
+        setRequestLoading(true);
+        // const path = await createCompileResult({
+        //   projectId: projectInfo.projectId,
+        //   paths: compileKeys,
+        // });
+        const res = await downloadAuditFile(projectInfo.projectId, auditKeys);
+
+        let blob = new Blob([res], {
+          type: 'application/zip',
+        });
+        let finalyFileName = `导出评审成果.zip`;
         // for IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
@@ -222,8 +258,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     return {
       title: datas.key,
       icon: <img src={foldSvg} className={styles.svg} />,
-      value: datas.key,
-      key: datas.key,
+      value: datas.value.id,
+      category: 1,
+      key: datas.value.id,
       children: [
         {
           title: datas.value.extend.file.name,

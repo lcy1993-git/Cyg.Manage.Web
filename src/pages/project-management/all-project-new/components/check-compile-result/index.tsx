@@ -25,13 +25,13 @@ const CompileResultTab: React.FC<DesignResultProps> = (props) => {
   };
 
   const onSelect = (info: string, e: any) => {
-    if(e.node.category === 2) {
-      const type = e.node.title.split(".").at(-1);
+    if (e.node.category === 2) {
+      const type = e.node.title.split('.').at(-1);
       setCurrentFileInfo({
         type,
         path: info[0],
-        title: e.node.title
-      })
+        title: e.node.title,
+      });
     }
   };
 

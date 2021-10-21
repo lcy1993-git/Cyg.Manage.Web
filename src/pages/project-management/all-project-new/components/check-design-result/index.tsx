@@ -17,7 +17,6 @@ const DesignResultTab: React.FC<DesignResultProps> = (props) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
 
   const onCheck = (checkedKeysValue: React.Key[]) => {
-
     createEvent(checkedKeysValue);
     setCheckedKeys(checkedKeysValue);
     setTabEvent('design');

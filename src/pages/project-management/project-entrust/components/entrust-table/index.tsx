@@ -141,27 +141,7 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
         });
       },
     },
-    {
-      title: '项目起止时间',
-      dataIndex: 'projectTime',
-      width: 190,
-      ellipsis: true,
-      render: (record: any) => {
-        const { startTime, endTime } = record;
-        if (startTime && endTime) {
-          return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
-            'YYYY-MM-DD',
-          )}`;
-        }
-        if (startTime && !endTime) {
-          return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
-        }
-        if (!startTime && endTime) {
-          return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
-        }
-        return '未设置起止时间';
-      },
-    },
+
     {
       title: '专业类别',
       dataIndex: 'majorCategoryText',
