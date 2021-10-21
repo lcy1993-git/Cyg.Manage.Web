@@ -36,8 +36,10 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
 
   const bindEmailHandler = () => {
     const emailNumber = bindEmailRef.current!.input.value;
-    if (!regEmail.test(emailNumber)) {
-      message.error("邮箱格式错误")
+    if(!emailNumber){
+      message.error('请输入有效的邮箱地址')
+    } else if (!regEmail.test(emailNumber)) {
+      message.error("邮箱格式有误")
     } else if (bindEmailRef.current!.input.value.length > 20) {
       message.error('邮箱字符过长');
     } else if (bindEmailRef.current!.input.value === email) {
@@ -100,7 +102,7 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
               {
                 email &&
                 <Popconfirm placement="top" title="解绑后无法通过该手机号登录，是否解绑？" onConfirm={handlerUnbindEmail} >
-                  <Button>解绑</Button>
+                  <Button>解除绑定</Button>
                 </Popconfirm>
               }
             </Space>
@@ -113,11 +115,11 @@ const EmailInfo: React.FC<EmailInfoProps> = ({
         <>
           <div className={classNames(styles.minHeight60, styles.flex)}>
             <div className={styles.base60}>邮箱: </div>
-            <div><Input style={{ width: "200px" }} ref={bindEmailRef} /></div>
+            <div><Input style={{ width: "200px" }} placeholder="请填写您的邮箱" ref={bindEmailRef} /></div>
           </div>
           <div className={classNames(styles.minHeight60, styles.ml60)}>
             <Button type="primary" onClick={bindEmailHandler} loading={sendCodeLoading}>下一步</Button>
-            <Button className={styles.ml12} onClick={() => setStep(email ? 0 : 1)}>取消</Button>
+            <Button className={styles.ml12} onClick={() => email ? setStep(0) : cancelEmail()}>取消</Button>
           </div>
         </>
       );
