@@ -47,8 +47,6 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   // 设置缩放
   const [scale, setScale] = useState(1);
 
-  console.log(scale);
-
   // transform缩放
   const [cssScale, setCssScale] = useState(1);
   const [displacement, setDisplacement] = useState({ x: 0, y: 0 });
@@ -92,9 +90,10 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   // 请求数据
   const initPdfViewer = () => {
     const token = localStorage.getItem('Authorization');
+    
     pdfjsLib
       .getDocument({
-        url: 'http://26.26.26.1:12333/test8.pdf',
+        url: 'http://10.6.5.239:8000/test8.pdf',
       })
       // pdfjsLib.getDocument(
       //   Object.assign(params,
@@ -133,7 +132,6 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
     const pageRendering = page!.render(renderContext);
     var completeCallback = pageRendering._internalRenderTask.callback;
     pageRendering._internalRenderTask.callback = function (err: any) {
-      console.log(2);
       completeCallback.call(this, err);
       cssScale !== 1 && changeMode(true);
     };
@@ -270,6 +268,9 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
     if (currentscale < 1 || currentscale > maxScale) return;
     changeMode(false);
     setCssScale(currentscale);
+    console.log(currentscale,"scale")
+    console.log(e.nativeEvent.offsetX, "offsetX")
+    console.log(e.nativeEvent.offsetX * (currentscale - cssScale), "offsetX-a")
     setDisplacement({
       x: e.nativeEvent.offsetX * (currentscale - cssScale),
       y: e.nativeEvent.offsetY * (currentscale - cssScale),

@@ -1,7 +1,8 @@
-import FileDwgView from "@/components/api-file-view/componnents/file-dwg-view"
+import PdfFileView from "@/components/pdf-file-view"
+
 
 const Test = () => {
-  return <FileDwgView params={null} hasAuthorization={false}/>
+  return <PdfFileView />
 }
 
 export default Test
