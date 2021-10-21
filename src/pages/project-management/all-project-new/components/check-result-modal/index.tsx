@@ -6,6 +6,7 @@ import {
   downloadFileCompile,
   getCompileResultTreeData,
   getAuditResultData,
+  downloadAuditFile,
 } from '@/services/project-management/all-project';
 import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import { useControllableValue, useRequest } from 'ahooks';
@@ -202,19 +203,17 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         setRequestLoading(false);
       }
     } else {
-      if (compileKeys.length === 0) {
+      if (auditKeys.length === 0) {
         message.error('请至少选择一个文件进行下载');
         return;
       }
       try {
         setRequestLoading(true);
-        const path = await createCompileResult({
-          projectId: projectInfo.projectId,
-          paths: compileKeys,
-        });
-        const res = await downloadFileCompile({
-          path: path,
-        });
+        // const path = await createCompileResult({
+        //   projectId: projectInfo.projectId,
+        //   paths: compileKeys,
+        // });
+        const res = await downloadAuditFile(projectInfo.projectId, auditKeys);
 
         let blob = new Blob([res], {
           type: 'application/zip',
@@ -259,8 +258,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     return {
       title: datas.key,
       icon: <img src={foldSvg} className={styles.svg} />,
-      value: datas.key,
-      key: datas.key,
+      value: datas.value.id,
+      category: 1,
+      key: datas.value.id,
       children: [
         {
           title: datas.value.extend.file.name,
@@ -294,8 +294,6 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     }
     return;
   }, [auditResultData]);
-
-  console.log(auditKeys, '123123');
 
   return (
     <>

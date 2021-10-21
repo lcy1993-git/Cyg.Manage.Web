@@ -16,9 +16,16 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
   const { createEvent, setTabEvent, auditResultData, setAuditFileInfo } = props;
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
 
-  const onCheck = (checkedKeysValue: React.Key[]) => {
-    console.log(checkedKeysValue, '111');
-    createEvent(checkedKeysValue);
+  const onCheck = (checkedKeysValue: React.Key[], e: any) => {
+    const checkedIds = e.checkedNodes
+      .map((item: any) => {
+        if (item.category === 1) {
+          return item.value;
+        }
+      })
+      .filter(Boolean);
+
+    createEvent(checkedIds);
     setCheckedKeys(checkedKeysValue);
     setTabEvent('audit');
   };
