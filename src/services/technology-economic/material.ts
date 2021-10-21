@@ -104,6 +104,7 @@ export const deleteMaterialMappingDesignLibrary  = (Id: string) => {
 export const DeleteMaterialMappingDesignItem
   = (Id: string) => {
   return cyRequest(() =>
+
     request(`${baseUrl.tecEco1}/MaterialLibrary/DeleteMaterialMappingDesignItem`,
       {method: 'GET', params: {Id}}),
   );
