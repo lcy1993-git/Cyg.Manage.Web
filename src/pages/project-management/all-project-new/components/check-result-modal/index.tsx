@@ -145,7 +145,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         let blob = new Blob([res], {
           type: 'application/zip',
         });
-        let finalyFileName = `导出成果.zip`;
+        let finalyFileName = `导出设计成果.zip`;
         // for IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
@@ -183,7 +183,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         let blob = new Blob([res], {
           type: 'application/zip',
         });
-        let finalyFileName = `导出成果.zip`;
+        let finalyFileName = `导出项目需求编制成果.zip`;
         // for IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
@@ -218,7 +218,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         let blob = new Blob([res], {
           type: 'application/zip',
         });
-        let finalyFileName = `导出成果.zip`;
+        let finalyFileName = `导出评审成果.zip`;
         // for IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
