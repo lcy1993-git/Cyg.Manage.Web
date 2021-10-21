@@ -9,7 +9,7 @@ import TableSearch from '@/components/table-search';
 import {
   getSourceMaterialMappingDesignLibraryList,
   deleteMaterialMappingDesignLibrary,
-  MaterialMappingInherit,
+  MaterialMappingInherit, DeleteMaterialMappingDesignItem,
 } from '@/services/technology-economic/material';
 import qs from "qs";
 import styles from "./index.less";
@@ -73,7 +73,7 @@ const DesignMappingInfo: React.FC = () => {
       title: '确定要删除该映射吗?',
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await deleteMaterialMappingDesignLibrary(val)
+        await DeleteMaterialMappingDesignItem(val)
         refresh()
       },
       onCancel() {
