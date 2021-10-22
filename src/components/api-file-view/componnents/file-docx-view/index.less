@@ -1,16 +1,37 @@
 .table {
   table {
+    width: 95%;
+    white-space: nowrap;
     border: 1px solid #333;
-    width: 100%;
-    table-layout: fixed;
-    td{
+    td {
       border: 1px solid #333;
       border-collapse: collapse;
+      padding: 0 4px;
       &:empty {
-        border: none;
         width: 0;
         padding: 0;
+        border: none;
       }
+    }
+  }
+  ul {
+    margin: 0px;
+    padding: 0px;
+    list-style-type: desc;
+    li {
+      padding-left: 14px;
+      background-repeat: no-repeat;
+      background-position: 0px 5px;
+    }
+  }
+  ol {
+    list-style-type: decimal;
+    font-size: 22px;
+    font-weight: 600;
+    li {
+      padding-left: 14px;
+      background-repeat: no-repeat;
+      background-position: 0px 5px;
     }
   }
 }

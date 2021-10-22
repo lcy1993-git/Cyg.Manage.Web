@@ -120,7 +120,7 @@ const DesignMaterialMapping: React.FC = () => {
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="请输入关键词"
         />
       </TableSearch>
     );
@@ -161,7 +161,6 @@ const DesignMaterialMapping: React.FC = () => {
       message.warn('请选择要操作的行');
       return;
     }
-    console.log(tableSelectRows)
     const {id,sourceMaterialLibraryId,sourceMaterialLibraryName} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/design-mapping-info?id=${id}&sourceMaterialLibraryName=${sourceMaterialLibraryName}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
   };
@@ -174,6 +173,7 @@ const DesignMaterialMapping: React.FC = () => {
      addMaterialMappingDesignLibrary(data).then(()=>{
        setAddFormVisible(false)
        refresh()
+       form.resetFields()
      }).finally(()=>{
        setSpinning(false)
      })
@@ -189,6 +189,8 @@ const DesignMaterialMapping: React.FC = () => {
       async onOk() {
         await deleteMaterialMappingDesignLibrary(tableSelectRows[0].id)
         refresh()
+        tableRef.current.reset()
+        setTableSelectRows([])
       },
       onCancel() {
         console.log('Cancel');

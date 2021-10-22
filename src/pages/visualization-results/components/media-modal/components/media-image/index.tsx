@@ -120,7 +120,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
             onMouseUp={() => setIsDrag(false)}
             onMouseLeave={() => setIsDrag(false)}
             ref={imgRef}
-            className={classNames(styles.img, percent === 100 ? styles.imgUnsetPointer : "")}
+            className={classNames(styles.img, percent === 100 ? styles.imgUnsetPointer : styles.imgSetMove)}
             crossOrigin={''}
             src={`${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
