@@ -174,7 +174,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           checked={item.checked}
           onChange={(e: CheckboxChangeEvent) => columnChangeEvent(e.target.checked, item.dataIndex)}
         >
-          {item.title}
+          {typeof item.title === 'string' ? item.title : item.title()}
         </Checkbox>
       </Menu.Item>
     );

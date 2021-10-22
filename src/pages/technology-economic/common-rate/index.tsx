@@ -1,32 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { history } from 'umi';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd';
+import { Input, Button, Modal, Form, message, Spin, Space } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
-import {
-  EyeOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  ImportOutlined,
-} from '@ant-design/icons';
+import { EyeOutlined, EditOutlined } from '@ant-design/icons';
 import { isArray } from 'lodash';
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import AddDictionaryForm from './components/add-edit-form';
 import {
-  setRateTableStatus,
   deleteRateTable,
   addRateTable,
   editRateTable,
-  importAreaInfo,
   ImportRateFileZip,
 } from '@/services/technology-economic/common-rate';
-import styles from './index.less';
 import moment from 'moment';
-import FileUpload from '@/components/file-upload';
-import TableImportButton from "@/components/table-import-button";
+import TableImportButton from '@/components/table-import-button';
 
 const { Search } = Input;
 
@@ -153,12 +143,12 @@ const ProjectList: React.FC = () => {
     }
   };
 
-  //添加
-  const addEvent = () => {
-    form.resetFields();
-    setModalType('add');
-    setFormVisible(true);
-  };
+  // //添加
+  // const addEvent = () => {
+  //   form.resetFields();
+  //   setModalType('add');
+  //   setFormVisible(true);
+  // };
 
   // const sureAddAuthorization = () => {
   //   form.validateFields().then(async (values: AddRateTable) => {
@@ -180,18 +170,18 @@ const ProjectList: React.FC = () => {
       form.setFieldsValue({ ...tableSelectRows[0], publishDate });
     }
   };
-
-  // 查看详情
-  const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
-    }
-    const id = tableSelectRows[0].id;
-    await deleteRateTable(id);
-    refresh();
-    message.success('删除成功');
-  };
+  //
+  // // 查看详情
+  // const sureDeleteData = async () => {
+  //   if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+  //     message.error('请选择一条数据进行编辑');
+  //     return;
+  //   }
+  //   const id = tableSelectRows[0].id;
+  //   await deleteRateTable(id);
+  //   refresh();
+  //   message.success('删除成功');
+  // };
 
   const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -209,7 +199,9 @@ const ProjectList: React.FC = () => {
     let id = tableSelectRows[0].id;
     if (['建筑安装取费表费率', '拆除取费表费率'].includes(name)) {
       history.push(
-        `/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&name=${name}&isDemolition=${name === '拆除取费表费率'}`,
+        `/technology-economic/common-rate-infomation?id=${
+          tableSelectRows[0].id
+        }&name=${name}&isDemolition=${name === '拆除取费表费率'}`,
       );
     } else if (['地形增加系数', '未计价材料施工损耗率', '土方参数'].includes(name)) {
       history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`);
@@ -217,12 +209,10 @@ const ProjectList: React.FC = () => {
       history.push(`/technology-economic/social-security-fund?id=${tableSelectRows[0].id}`);
     }
   };
-  const setSuccessful = ()=>{
-
-  }
+  const setSuccessful = () => {};
   const tableElement = () => {
     return (
-      <div style={{display:'flex'}}>
+      <div style={{ display: 'flex' }}>
         {!buttonJurisdictionArray?.includes('commonrate-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
@@ -234,7 +224,7 @@ const ProjectList: React.FC = () => {
           buttonTitle={'导入'}
           requestSource={'tecEco1'}
           accept={'.zip'}
-          style={{display:'inline'}}
+          style={{ display: 'inline' }}
           importUrl={`/RateTable/ImportRateFileZip`}
           setSuccessful={setSuccessful}
         />
@@ -270,16 +260,16 @@ const ProjectList: React.FC = () => {
   const tableSelectEvent = (data: DataSource[] | object) => {
     setTableSelectRow(data);
   };
-  const onOK = () => {
-    if (fileList.length === 0) {
-      message.error('当前未上传文件');
-    } else {
-      ImportRateFileZip(fileList[0]).then(() => {
-        message.success('上传成功');
-        setImportVisibel(false);
-      });
-    }
-  };
+  // const onOK = () => {
+  //   if (fileList.length === 0) {
+  //     message.error('当前未上传文件');
+  //   } else {
+  //     ImportRateFileZip(fileList[0]).then(() => {
+  //       message.success('上传成功');
+  //       setImportVisibel(false);
+  //     });
+  //   }
+  // };
   const onModalOkClick = async () => {
     const values = await form.validateFields();
     setSpinning(true);

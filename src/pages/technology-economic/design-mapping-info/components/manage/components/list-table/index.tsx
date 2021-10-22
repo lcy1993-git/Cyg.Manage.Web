@@ -1,19 +1,8 @@
 import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined, AccountBookOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
-import React, {useState, useMemo, useCallback, useReducer, useEffect} from 'react';
-// import DictionaryForm from '../add-edit-form';
-// import QuotaDetails from '../quota-details';
+import { Input, Button } from 'antd';
+import React, {useState, useEffect} from 'react';
 
-
-import { useRequest } from 'ahooks';
-import {
-  getDictionaryDetail,
-} from '@/services/system-config/dictyionary-manage';
-
-import styles from './index.less';
 
 const { Search } = Input;
 
@@ -23,14 +12,9 @@ interface Props {
   scrolly: number;
 }
 
-interface RouteListItem {
-  name: string;
-  id: string;
-}
 
-interface State {
-  routeList: RouteListItem[];
-}
+
+
 
 // const reducer = (state: State, action: any) => {
 //   switch (action.code) {
@@ -99,7 +83,7 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly,associated}) => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => tableSearchEvent()}
             enterButton
-            placeholder="键名"
+            placeholder="请输入关键词"
           />
         </TableSearch>
         &emsp;

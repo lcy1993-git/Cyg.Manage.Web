@@ -84,7 +84,7 @@ const columns = [
 ];
 
 const ListTable: React.FC<Props> = ({catalogueId, scrolly}) => {
-  
+
   const tableRef = React.useRef<HTMLDivElement>(null);
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
 
@@ -96,7 +96,7 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly}) => {
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="请输入关键词"
         />
       </TableSearch>
     );

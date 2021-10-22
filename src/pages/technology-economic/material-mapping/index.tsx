@@ -24,7 +24,7 @@ export interface SuppliesLibraryData {
   "publishOrg": string
   "publishDate": string | moment.Moment
   "remark": string
-  "enabled": boolean
+  // "enabled": boolean
   'file': any
 }
 
@@ -80,22 +80,22 @@ const MaterialMapping: React.FC = () => {
       align: 'center',
       width: 170,
     },
-    {
-      dataIndex: 'enabled',
-      key: 'enabled',
-      title: '状态',
-      ellipsis: true,
-      align: 'center',
-      width: 140,
-      render: (enable: boolean, record: any) => {
-        return (
-          <Space>
-            <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
-            <span>{enable ? '启用' : '停用'}</span>
-          </Space>
-        )
-      }
-    },
+    // {
+    //   dataIndex: 'enabled',
+    //   key: 'enabled',
+    //   title: '状态',
+    //   ellipsis: true,
+    //   align: 'center',
+    //   width: 140,
+    //   render: (enable: boolean, record: any) => {
+    //     return (
+    //       <Space>
+    //         <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
+    //         <span>{enable ? '启用' : '停用'}</span>
+    //       </Space>
+    //     )
+    //   }
+    // },
     {
       dataIndex: 'remark',
       key: 'remark',
@@ -113,7 +113,7 @@ const MaterialMapping: React.FC = () => {
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="请输入关键词"
         />
       </TableSearch>
     );
@@ -159,7 +159,7 @@ const MaterialMapping: React.FC = () => {
     setSpinning(true)
 
     const data = JSON.parse(JSON.stringify(val))
-    data.enabled = !!data.enabled
+    // data.enabled = !!data.enabled
     data.file = val.file
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
     addSourceMaterialMappingQuota(data).then(()=>{
@@ -172,7 +172,7 @@ const MaterialMapping: React.FC = () => {
   }
   const onRemoveRow = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
     confirm({
@@ -274,16 +274,15 @@ const MaterialMapping: React.FC = () => {
                   <Input/>
                 </Form.Item>
               </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="状态"
-                  name="enabled"
-                >
-                  <Switch/>
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={20}>
+              {/*<Col span={12}>*/}
+              {/*  <Form.Item*/}
+              {/*    label="状态"*/}
+              {/*    name="enabled"*/}
+              {/*  >*/}
+              {/*    <Switch/>*/}
+              {/*  </Form.Item>*/}
+              {/*</Col>*/}
+
               <Col span={12}>
                 <Form.Item
                   label="关联物料库"
@@ -299,6 +298,8 @@ const MaterialMapping: React.FC = () => {
                   </Select>
                 </Form.Item>
               </Col>
+            </Row>
+            <Row gutter={20}>
               <Col span={12}>
                 <Form.Item
                   label="上传文件"
@@ -311,8 +312,7 @@ const MaterialMapping: React.FC = () => {
                     accept=".xls,.xlsx"/>
                 </Form.Item>
               </Col>
-            </Row>
-            <Row gutter={20}>
+
               <Col span={12}>
                 <Form.Item
                   label="说明"

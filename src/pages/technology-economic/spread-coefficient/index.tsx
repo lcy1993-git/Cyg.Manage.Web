@@ -172,7 +172,7 @@ const SpreadCoefficient: React.FC = () => {
     if (projectType === 1) {
       // 价差目录
       if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-        message.error('请选择要操作的行');
+        message.warning('请选择要操作的行');
         return;
       }
       setEditFormVisible(true);
@@ -182,7 +182,7 @@ const SpreadCoefficient: React.FC = () => {
     } else {
       // 调整文件
       if (tableSelectADRows && isArray(tableSelectADRows) && tableSelectADRows.length === 0) {
-        message.error('请选择要操作的行');
+        message.warning('请选择要操作的行');
         return;
       }
       setEditADFormVisible(true);
@@ -195,7 +195,7 @@ const SpreadCoefficient: React.FC = () => {
   const lookDetail = () => {
     if (projectType === 1) {
       if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-        message.error('请选择要操作的行');
+        message.warning('请选择要操作的行');
         return;
       }
       const { id } = tableSelectRows[0];
