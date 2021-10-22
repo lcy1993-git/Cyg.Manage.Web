@@ -9,7 +9,7 @@ import TableSearch from '@/components/table-search';
 import {
   getSourceMaterialMappingDesignLibraryList,
   deleteMaterialMappingDesignLibrary,
-  MaterialMappingInherit,
+  MaterialMappingInherit, DeleteMaterialMappingDesignItem,
 } from '@/services/technology-economic/material';
 import qs from "qs";
 import styles from "./index.less";
@@ -73,7 +73,7 @@ const DesignMappingInfo: React.FC = () => {
       title: '确定要删除该映射吗?',
       icon: <ExclamationCircleOutlined/>,
       async onOk() {
-        await deleteMaterialMappingDesignLibrary(val)
+        await DeleteMaterialMappingDesignItem(val)
         refresh()
       },
       onCancel() {
@@ -236,6 +236,7 @@ const DesignMappingInfo: React.FC = () => {
     setTableSelectRows(val[0])
   }
   useEffect(() => {
+    console.log(qs.parse(window.location.href.split("?")[1])?.id)
     let val = qs.parse(window.location.href.split("?")[1])?.id
     val = val === 'undefined' ? '' : val
     setId(val as string);
@@ -311,7 +312,7 @@ const DesignMappingInfo: React.FC = () => {
         destroyOnClose
       >
         <div style={{height: '720px'}}>
-          <MappingManage materialMappingDesignItemId={tableSelectRows.id} close={closeModel}/>
+          <MappingManage materialMappingDesignItemId={tableSelectRows?.id ?? ''} close={closeModel}/>
         </div>
       </Modal>
     </PageCommonWrap>

@@ -247,7 +247,7 @@ const MappingInfomation = () => {
                               dataSource={tableData}
                               rowKey={'id'}
                               columns={columns}
-                              tableTitle="定额计价(安装乙供设备计入设备购置费)-常用费率"
+                              tableTitle=""
                               requestSource='tecEco1'
                               type="radio"
                               childrenColumnName={'materialMappingQuota'}
