@@ -8,7 +8,6 @@ import TableSearch from '@/components/table-search';
 
 import {
   getSourceMaterialMappingDesignLibraryList,
-  deleteMaterialMappingDesignLibrary,
   MaterialMappingInherit, DeleteMaterialMappingDesignItem,
 } from '@/services/technology-economic/material';
 import qs from "qs";
@@ -89,7 +88,7 @@ const DesignMappingInfo: React.FC = () => {
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="请输入关键词"
         />
       </TableSearch>
     );
@@ -265,6 +264,14 @@ const DesignMappingInfo: React.FC = () => {
               keyWord: searchKeyWord,
               materialMappingDesignLibraryId: id,
             }}
+            onHeaderRow={(columns,index)=>{
+              return {
+               onClick:()=>{
+                 console.log(columns,index);
+               }
+              }
+            }
+            }
           />
         }
       </div>

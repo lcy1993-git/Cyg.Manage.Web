@@ -118,7 +118,7 @@ const QuotaLibrary: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, u
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="请输入关键词"
         />
       </TableSearch>
     );
@@ -136,7 +136,7 @@ const QuotaLibrary: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, u
     }
   };
 
-  const tableSelectEvent = (data: any) => {    
+  const tableSelectEvent = (data: any) => {
     setResourceItem(Array.isArray(data) ? data[0] : {});
   };
 

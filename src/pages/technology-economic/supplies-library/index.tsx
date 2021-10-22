@@ -10,7 +10,7 @@ import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 
 import {
-  modifyMaterialLibraryStatus,
+  // modifyMaterialLibraryStatus,
   addMaterialLibrary,
   deleteMaterialLibraryById
 } from '@/services/technology-economic/supplies-library';
@@ -24,7 +24,7 @@ export interface SuppliesLibraryData {
   "publishOrg": string
   "publishDate": string | moment.Moment
   "remark": string
-  "enabled": boolean
+  // "enabled": boolean
   'file': any
 }
 
@@ -70,22 +70,22 @@ const SuppliesLibrary: React.FC = () => {
       align: 'center',
       width: 170,
     },
-    {
-      dataIndex: 'enabled',
-      key: 'enabled',
-      title: '状态',
-      ellipsis: true,
-      align: 'center',
-      width: 140,
-      render: (enable: boolean, record: any) => {
-        return (
-          <Space>
-            <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
-            <span>{enable ? '启用' : '停用'}</span>
-          </Space>
-        )
-      }
-    },
+    // {
+    //   dataIndex: 'enabled',
+    //   key: 'enabled',
+    //   title: '状态',
+    //   ellipsis: true,
+    //   align: 'center',
+    //   width: 140,
+    //   render: (enable: boolean, record: any) => {
+    //     return (
+    //       <Space>
+    //         <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
+    //         <span>{enable ? '启用' : '停用'}</span>
+    //       </Space>
+    //     )
+    //   }
+    // },
     {
       dataIndex: 'remark',
       key: 'remark',
@@ -134,16 +134,16 @@ const SuppliesLibrary: React.FC = () => {
     setAddFormVisible(true);
   };
 
-  const setStatus = async (status: boolean, record: any) => {
-    await modifyMaterialLibraryStatus(record.id)
-    refresh()
-  }
+  // const setStatus = async (status: boolean, record: any) => {
+  //   await modifyMaterialLibraryStatus(record.id)
+  //   refresh()
+  // }
 
   const gotoMoreInfo = () => {
-    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-    //   message.error('请选择要操作的行');
-    //   return;
-    // }
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择要操作的行');
+      return;
+    }
     const {id} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/suppliesl-infomation?id=${id}`)
   };
@@ -151,20 +151,27 @@ const SuppliesLibrary: React.FC = () => {
     setSpinning(true)
     const data = JSON.parse(JSON.stringify(val))
     data.file = val.file
-    data.enabled = !!data.enabled
+    // data.enabled = !!data.enabled
+    data.name = data.name.trimEnd().trimStart()
+    if (data.name === ''){
+      message.warning('物料库名称不能为空')
+      setSpinning(false)
+      return
+    }
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
      addMaterialLibrary(data).then(()=>{
        setSpinning(false)
        setAddFormVisible(false)
        form.resetFields()
+       refresh()
      }).finally(()=>{
        setSpinning(false)
      })
-    refresh()
+
   }
   const onRemoveRow = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
     confirm({
@@ -270,14 +277,14 @@ const SuppliesLibrary: React.FC = () => {
                 <Input/>
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item
-                label="状态"
-                name="enabled"
-              >
-                <Switch/>
-              </Form.Item>
-            </Col>
+            {/*<Col span={12}>*/}
+            {/*  <Form.Item*/}
+            {/*    label="状态"*/}
+            {/*    name="enabled"*/}
+            {/*  >*/}
+            {/*    <Switch/>*/}
+            {/*  </Form.Item>*/}
+            {/*</Col>*/}
           </Row>
           <Row gutter={20}>
             <Col span={12}>

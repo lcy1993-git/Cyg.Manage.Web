@@ -23,7 +23,7 @@ export interface SuppliesLibraryData {
   "publishDate": string | moment.Moment
   "sourceMaterialLibraryId": string
   "remark": string
-  "enabled": boolean
+  // "enabled": boolean
   'file': any
 }
 
@@ -52,7 +52,7 @@ const DesignMaterialMapping: React.FC = () => {
   }
   useEffect(()=>{
     getMaterialData()
-  },[])
+  },[addFormVisible])
   const columns: ColumnsType<any> = [
     {
       dataIndex: 'name',
@@ -87,22 +87,22 @@ const DesignMaterialMapping: React.FC = () => {
       align: 'center',
       width: 170,
     },
-    {
-      dataIndex: 'enabled',
-      key: 'enabled',
-      title: '状态',
-      ellipsis: true,
-      align: 'center',
-      width: 140,
-      render: (enable: boolean, record: any) => {
-        return (
-          <Space>
-            <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
-            <span>{enable ? '启用' : '停用'}</span>
-          </Space>
-        )
-      }
-    },
+    // {
+    //   dataIndex: 'enabled',
+    //   key: 'enabled',
+    //   title: '状态',
+    //   ellipsis: true,
+    //   align: 'center',
+    //   width: 140,
+    //   render: (enable: boolean, record: any) => {
+    //     return (
+    //       <Space>
+    //         <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
+    //         <span>{enable ? '启用' : '停用'}</span>
+    //       </Space>
+    //     )
+    //   }
+    // },
     {
       dataIndex: 'remark',
       key: 'remark',
@@ -167,7 +167,7 @@ const DesignMaterialMapping: React.FC = () => {
   const onFinish = (val: SuppliesLibraryData) => {
     setSpinning(true)
     const data = {...val}
-    data.enabled = !!data.enabled
+    // data.enabled = !!data.enabled
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
     data.remark = data.remark === undefined ? '' : data.remark
      addMaterialMappingDesignLibrary(data).then(()=>{
@@ -180,7 +180,7 @@ const DesignMaterialMapping: React.FC = () => {
   }
   const onRemoveRow = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
     confirm({
@@ -189,6 +189,7 @@ const DesignMaterialMapping: React.FC = () => {
       async onOk() {
         await deleteMaterialMappingDesignLibrary(tableSelectRows[0].id)
         refresh()
+        // @ts-ignore
         tableRef.current.reset()
         setTableSelectRows([])
       },
@@ -314,14 +315,14 @@ const DesignMaterialMapping: React.FC = () => {
             </Col>
           </Row>
           <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="状态"
-                name="enabled"
-              >
-                <Switch/>
-              </Form.Item>
-            </Col>
+            {/*<Col span={12}>*/}
+            {/*  <Form.Item*/}
+            {/*    label="状态"*/}
+            {/*    name="enabled"*/}
+            {/*  >*/}
+            {/*    <Switch/>*/}
+            {/*  </Form.Item>*/}
+            {/*</Col>*/}
             <Col span={12}>
               <Form.Item
                 label="说明"

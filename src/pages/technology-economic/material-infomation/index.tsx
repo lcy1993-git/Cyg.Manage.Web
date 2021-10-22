@@ -89,14 +89,11 @@ const columns = [
     }
   },
   {
-    dataIndex: 'valuationTypeText',
-    index: 'valuationTypeText',
+    dataIndex: 'Catalog',
+    index: 'Catalog',
     title: '类别',
     width: 70,
     ellipsis: true,
-    render(v: any, record: any){
-      return record?.materialMachineItem?.valuationTypeText
-    }
   }
 ];
 
