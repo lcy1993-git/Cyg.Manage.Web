@@ -117,6 +117,7 @@ const PricingTemplates: React.FC = () => {
             defaultChecked={value}
             onClick={(checked) => {
               setPricingTemplate(record.id, checked);
+              // @ts-ignore
               tableRef.current.reset();
             }}
           />
@@ -189,7 +190,7 @@ const PricingTemplates: React.FC = () => {
   // 编辑按钮
   const editEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
     setEditFormVisible(true);
@@ -200,7 +201,7 @@ const PricingTemplates: React.FC = () => {
   // 跳转工程目录
   const engineeringCatalog = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
     const id = tableSelectRows[0].id;
@@ -212,7 +213,7 @@ const PricingTemplates: React.FC = () => {
   // 跳转常用费率
   const gotoCostTemplate = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
     const id = tableSelectRows[0].id;
@@ -223,7 +224,7 @@ const PricingTemplates: React.FC = () => {
   // 跳转总算表
   const gotoTotalTable = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
     const id = tableSelectRows[0].id;
@@ -312,7 +313,7 @@ const PricingTemplates: React.FC = () => {
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => refresh()}
           enterButton
-          placeholder="键名"
+          placeholder="请输入关键词"
         />
       </TableSearch>
     );

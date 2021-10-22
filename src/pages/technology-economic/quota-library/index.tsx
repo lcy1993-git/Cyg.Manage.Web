@@ -122,7 +122,7 @@ const QuotaLibrary: React.FC = () => {
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="键名"
+          placeholder="请输入关键词"
         />
       </TableSearch>
     );
@@ -192,7 +192,7 @@ const QuotaLibrary: React.FC = () => {
 
   const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
+      message.warning('请选择要操作的行');
       return;
     }
     const id = tableSelectRows[0].id;

@@ -131,6 +131,7 @@ const QuotaProject = () => {
   const {data: chapterData, run: chapterRun} = useRequest<string>(getQuotaLibraryCatalogDescription, {manual: true});
 
   useEffect(() => {
+    console.log('catalogueId',catalogueId)
     catalogueId && chapterRun(catalogueId);
   }, [catalogueId])
 
@@ -183,6 +184,8 @@ const QuotaProject = () => {
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
       <div className={styles.wrap} ref={ref}>
         <div className={styles.wrapLeftMenu}>
+          {catalogueId}
+          {activeQuotaId}
           <Tabs className="normalTabs noMargin" >
             <TabPane tab="定额库目录" key="1">
                 <div className={styles.selectWrap}>
@@ -190,6 +193,7 @@ const QuotaProject = () => {
                 </div>
                 <div className={styles.fileTree}>
                   <Tree.DirectoryTree
+                    // @ts-ignore
                     onSelect={onCheck}
                     treeData={treeData}
                     defaultExpandAll
@@ -221,8 +225,8 @@ const QuotaProject = () => {
                 <ChapterInfo data={chapterData || ""}
                              title={title}
                              nodeId={nodeId}
-                             fileId={activeQuotaId}
-                             id={catalogueId} update={()=>chapterRun(catalogueId)}/>
+                             fileId={activeQuotaId || catalogueId}
+                             id={catalogueId} update={()=>catalogueId && chapterRun(catalogueId)}/>
               </TabPane>
             </Tabs>
         </div>
