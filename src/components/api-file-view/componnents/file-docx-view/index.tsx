@@ -22,10 +22,14 @@ const FileDocxView: React.FC<FileDocxViewProps> = ({
         const html = res.value;
         const newHTML = html.replace(//g, '')
         .replace('<h1>', '<h1 style="text-align: center;">')
-        .replace(/<table>/g, '<table style="border-collapse: collapse;">')
-        .replace(/<tr>/g, '<tr style="height: 30px;">')
-        .replace(/<td>/g, '<td style="border: 1px solid pink;">')
-        .replace(/<p>/g, '<p style="text-indent: 2em;">');
+        .replace('<ul>', '<ol>')
+        .replace('<ol/>', '<ol/>')
+        // .replace(/<table>/g, '<table style="border-collapse: collapse;">')
+        // .replace(/<tr>/g, '<tr style="height: 30px;">')
+        // .replace(/<td>/g, '<td style="border: 1px solid pink;">')
+        // .replace(/<p>/g, '<p style="text-indent: 2em;">');
+        console.log(newHTML);
+        
         ref.current!.innerHTML = newHTML;
       })
     } catch (error) {
