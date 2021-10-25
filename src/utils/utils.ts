@@ -1,3 +1,5 @@
+import { MaterialDataType } from "@/services/visualization-results/list-menu";
+
 /**
  *  @param treeData 需要平铺的树状数据
  *  @param childName 儿子数组的名称
@@ -184,6 +186,37 @@ export const formDataMateral = (content: any, getProperties: any) => {
     return curr;
   }, []);
 }
+
+export const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDataType[] => {
+  /**
+   * 获取type
+   */
+  const typeSet: Set<string> = new Set(
+    materialData.map((v) => {
+      return v.type;
+    }),
+  );
+  /**
+   * 先获取到所有的type
+   */
+
+  const typeArr = [...typeSet];
+  //创建第一层结构
+  const parentArr: MaterialDataType[] = typeArr.map((type) => ({
+    key: `type${Math.random()}`,
+    type: type,
+    children: undefined,
+  }));
+  parentArr.forEach((value) => {
+    value.children = materialData.filter((materialItem) => {
+      materialItem.key = Math.random().toLocaleString();
+      return materialItem.type === value.type;
+    });
+  });
+
+  return parentArr;
+};
+
 /**
  * 创建唯一标识
  * @param content
