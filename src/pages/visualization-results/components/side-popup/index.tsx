@@ -11,13 +11,14 @@ import { useRequest } from 'ahooks';
 import { observer } from 'mobx-react-lite';
 
 import { findEnumKeyByCN } from '../../utils/loadEnum';
-import { formDataMateral } from '@/utils/utils';
+import { formDataMateral, generateMaterialTreeList } from '@/utils/utils';
 import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { CommentRequestType, addComment, fetchCommentList, porjectIsExecutor } from '@/services/visualization-results/side-popup';
 import styles from './index.less';
 import CableSection from '../cable-section';
 import MediaModal from '../media-modal';
 import classnames from 'classnames';
+import { MaterialTable } from '../material-table';
 
 export interface TableDataType {
   [propName: string]: any;
@@ -211,7 +212,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     },
   })
 
-  const { data: materialData, run: materialDataRun } = useRequest(getMaterialItemData, {
+  const { data: materialData, run: materialDataRun, loading: matiralsLoading } = useRequest(getMaterialItemData, {
     manual: true,
     onSuccess(data) {
       if (data?.content?.length > 0) {
@@ -503,13 +504,19 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   }, [JSON.stringify(checkedProjectIdList)]);
 
   const materialDataRes = useMemo(() => {
+    if(Array.isArray(materialData?.content) && materialData?.content.length > 0) {
+      console.log(generateMaterialTreeList(materialData.content));
+      
+      return generateMaterialTreeList(materialData.content)
+    }else{
+      return []
+    }
+    // const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
+    //   ?.params ?? {};
 
-    const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
-      ?.params ?? {};
-
-    return materialData?.content && materialData?.content.length > 0
-      ? formDataMateral(materialData?.content, materialParams.getProperties)
-      : [];
+    // return materialData?.content && materialData?.content.length > 0
+    //   ? generateMaterialTreeList(materialData?.content)
+    //   : [];
 
   }, [JSON.stringify(materialData)]);
 
@@ -566,14 +573,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           ></Table>
         )}
         {activeType === 'material' && (
-          <Table
-            key="material"
-            columns={materiaColumns}
-            pagination={false}
-            rowKey={(r) => r.objID}
-            dataSource={materialDataRes ?? []}
-            scroll={{ x: 1400, y: 350 }}
-          ></Table>
+          <MaterialTable data={materialDataRes} loading={matiralsLoading}/>
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
