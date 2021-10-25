@@ -184,8 +184,8 @@ const QuotaProject = () => {
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
       <div className={styles.wrap} ref={ref}>
         <div className={styles.wrapLeftMenu}>
-          {catalogueId}
-          {activeQuotaId}
+          {/*{catalogueId}*/}
+          {/*{activeQuotaId}*/}
           <Tabs className="normalTabs noMargin" >
             <TabPane tab="定额库目录" key="1">
                 <div className={styles.selectWrap}>

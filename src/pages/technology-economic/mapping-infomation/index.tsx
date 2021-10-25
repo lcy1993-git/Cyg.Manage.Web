@@ -208,7 +208,7 @@ const MappingInfomation = () => {
   const tabs = [
     {
       title: '预算',
-      key: 1,
+      key: 3,
     },
     {
       title: '概算',
@@ -216,7 +216,7 @@ const MappingInfomation = () => {
     },
     {
       title: '估算',
-      key: 3,
+      key: 1,
     },
     {
       title: '拆除',
