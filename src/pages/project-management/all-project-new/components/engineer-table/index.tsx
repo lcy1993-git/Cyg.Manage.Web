@@ -1020,6 +1020,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     return <div style={{ ...style, ...viewStyle }} {...rest} />;
   };
 
+  console.log(tableResultData, '列表');
+
   return (
     <TableContext.Provider
       value={{
@@ -1036,8 +1038,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             renderThumbVertical={scrollBarRenderView}
           >
             <Spin spinning={loading}>
-              {tableResultData.items.length > 0 && engineerTableElement}
-              {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}
+              {/* {tableResultData.items.length > 0 && engineerTableElement} */}
+              {/* {tableResultData.items.length === 0 && <EmptyTip className="pt20" />} */}
             </Spin>
           </ScrollView>
         </div>
