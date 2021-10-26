@@ -8,28 +8,44 @@ import { add, subtract, multiply, divide } from 'lodash';
 pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker;
 
 import styles from './index.less';
-import { useMount, useSize } from 'ahooks';
+import { useMount} from 'ahooks';
 
-const PdfFileView: React.FC = (params) => {
-  const scale = 1;
+interface PdfFileViewProps {
+  params: any;
+  hasAuthorization: boolean;
+}
+
+const PdfFileView: React.FC<PdfFileViewProps> = ({
+  params,
+  hasAuthorization = false
+}) => {
   const zoom = 0.2;
-  const maxScale = 4;
   const [savePage, setSavePage] = useState<PDFPageProxy | null>(null);
 
   // transform缩放
   const [cssScale, setCssScale] = useState(1);
-
+  const [isDrag, setIsDrag] = useState<boolean>(false)
+  const [downPosition, setDownPosition] = useState<[number, number]>([0, 0])
+  const [activePosition, setActivePosition] = useState<[number, number]>([0, 0])
+  const maxScale = useRef<number>(0)
+  const minScale = useRef<number>(0)
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const wrapCanvasRef = useRef<HTMLDivElement>(null);
 
-  const wrapSize = useSize(wrapRef);
-
   const initPdfFileViewer = () => {
-    pdfjsLib
-      .getDocument({
-        url: 'http://10.6.5.239:8000/test8.pdf',
-      })
+
+    const token = localStorage.getItem('Authorization');
+
+    // pdfjsLib.getDocument({
+    //     url: 'http://10.6.4.107:12333/test8.pdf',
+    //   })
+    pdfjsLib.getDocument(
+      Object.assign(params,
+        token && ("httpHeaders" in params || !hasAuthorization)
+          ? { httpHeaders: { Authorization: token } }
+          : {})
+    )
       .promise.then((pdf) => {
         initPdfPage(pdf);
       });
@@ -38,9 +54,13 @@ const PdfFileView: React.FC = (params) => {
   const initPdfPage = (pdfInfo: any) => {
     pdfInfo.getPage(1).then((page: any) => {
       if (!page._pdfBug) {
-        const viewport = page.getViewport({ scale });
-        loadCanvas(canvasRef, viewport, page);
 
+        const [_0, _1, width, height] = page.view
+        maxScale.current = + parseInt(Math.min(15000 / width, 15000 / height) as unknown as string)
+        minScale.current = + parseFloat(Math.min(wrapRef.current!.clientWidth / width, wrapRef.current!.clientHeight / height) as unknown as string).toFixed(1)
+        
+        const viewport = page.getViewport({ scale: minScale.current });
+        loadCanvas(canvasRef, viewport, page);
         setSavePage(page);
       } else {
         message.error('获取文件失败');
@@ -67,7 +87,7 @@ const PdfFileView: React.FC = (params) => {
     ref.current.append(canvas);
   };
 
-  const onWheel = (e: { nativeEvent: { deltaY: number; offsetX: number; offsetY: number } }) => {
+  const onWheel = (e: React.WheelEvent) => {
     // 等待状态不能进行缩放操作
 
     if (wrapRef.current!.style.cursor === 'wait') return;
@@ -78,7 +98,13 @@ const PdfFileView: React.FC = (params) => {
       currentscale = cssScale - zoom;
     }
     // 缩放边界限定,若缩放边界超出则不执行
-    if (currentscale < 1 || currentscale > maxScale) return;
+    if (currentscale < minScale.current) {
+      return setCssScale(minScale.current);
+
+    };
+    if(currentscale > maxScale.current){
+      return setCssScale(maxScale.current);
+    }
     // 计算点的偏移量
     const viewport = savePage!.getViewport({ scale: currentscale });
 
@@ -89,8 +115,8 @@ const PdfFileView: React.FC = (params) => {
     const currentScaleY = add(e.currentTarget.offsetTop, e.nativeEvent.offsetY);
     const afterScaleY = multiply(divide(currentScaleY, cssScale), currentscale);
     const yDiff = subtract(afterScaleY, currentScaleY);
-    wrapCanvasRef!.current.style.width = `${currentscale * 100}%`;
-    wrapCanvasRef!.current.style.height = `${currentscale * 100}%`;
+    wrapCanvasRef.current!.style.width = `${currentscale * 100}%`;
+    wrapCanvasRef.current!.style.height = `${currentscale * 100}%`;
     wrapRef.current!.scrollLeft = wrapRef.current!.scrollLeft + xDiff;
     wrapRef.current!.scrollTop = wrapRef.current!.scrollTop + yDiff;
 
@@ -110,6 +136,32 @@ const PdfFileView: React.FC = (params) => {
     };
   }, []);
 
+  
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    setIsDrag(true)
+    if(wrapRef.current) {
+      wrapRef.current!.style.cursor = 'pointer'
+    }
+
+    setDownPosition([e.clientX, e.clientY])
+    setActivePosition([wrapRef.current!.scrollLeft, wrapRef.current!.scrollTop])
+  }
+
+  const onMouseMove = (e: React.MouseEvent) => {
+    if (isDrag) {
+      wrapRef.current!.scrollLeft = activePosition[0] + downPosition[0] - e.clientX
+      wrapRef.current!.scrollTop = activePosition[1] + downPosition[1] - e.clientY
+    }
+  }
+
+  const onMouseUp = (e: React.MouseEvent) => {
+    setIsDrag(false)
+    if(wrapRef.current) {
+      wrapRef.current!.style.cursor = 'unset'
+    }
+  }
+
   return (
     <div className={styles.viewContent} ref={wrapRef}>
       <div
@@ -117,7 +169,15 @@ const PdfFileView: React.FC = (params) => {
         className={styles.wrapCanvasContent}
         style={{ width: `100%`, height: `100%` }}
       >
-        <div className={styles.canvas} ref={canvasRef} onWheel={onWheel}></div>
+        <div
+          className={styles.canvas}
+          ref={canvasRef}
+          onWheel={onWheel}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseLeave={onMouseUp}
+          onMouseUp={onMouseUp}
+        ></div>
       </div>
     </div>
   );
