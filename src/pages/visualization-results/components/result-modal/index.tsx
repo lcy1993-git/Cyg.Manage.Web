@@ -1,6 +1,6 @@
 import React, { Dispatch, memo, SetStateAction, useEffect } from 'react';
 import { Modal } from 'antd';
-import CheckResultModal from '@/pages/project-management/all-project-new/components/check-result-modal';
+import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal';
 import { getProjectInfo } from '@/services/project-management/all-project';
 import { useControllableValue, useRequest } from 'ahooks';
 
