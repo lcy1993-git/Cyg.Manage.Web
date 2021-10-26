@@ -43,6 +43,7 @@ import { modifyExportPowerState } from '@/services/project-management/all-projec
 import ProjectInheritModal from '../project-inherit-modal';
 import ImageIcon from '@/components/image-icon';
 import ColumnsConfigModal from '../columns-config-modal';
+import VirtualTable from '../virtual-table/VirtualTable';
 
 const colorMap = {
   立项: 'green',
@@ -1038,6 +1039,36 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             renderThumbVertical={scrollBarRenderView}
           >
             <Spin spinning={loading}>
+              {/* <VirtualTable
+                style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
+                className="border"
+                data={data}
+                columns={subColumns as any[]}
+                headerRows={({ _header }) => _header === true}
+                customRow={{
+                  custom: ({ _parent }) => _parent === true,
+                  row: (props) => (
+                    <ParentRow
+                      data={data}
+                      cache={cache}
+                      update={update}
+                      columns={parentColumns}
+                      {...props}
+                    />
+                  ),
+                }}
+                rowHeight={50}
+                rowSelection={{
+                  defaultSelectedKeys: [],
+                  rowKey: ({ id }) => id,
+                  onChange: (keys) => {
+                    console.log(keys);
+                  },
+                  onSelect: (key: Key, selected: boolean, rowData: Record<string, any>) => {
+                    console.log(key, selected, rowData);
+                  },
+                }}
+              /> */}
               {/* {tableResultData.items.length > 0 && engineerTableElement} */}
               {/* {tableResultData.items.length === 0 && <EmptyTip className="pt20" />} */}
             </Spin>
