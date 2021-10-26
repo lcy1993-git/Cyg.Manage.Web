@@ -79,12 +79,6 @@ const MappingInfomation = () => {
   const [sourceMaterialLibraryId, setSourceMaterialLibraryId] = useState<string>('');
   const [visible, setVisible] = useState<boolean>(true);
   const [mappingType, setMappingType] = useState<string>('1');
-  const [extractParams, setExtractParams] = useState<object>({
-    mappingType: 1,
-    sourceMaterialMappingLibraryId: '',
-    sourceMaterialLibraryId: '',
-    sourceMaterialLibraryCatalogueId: '',
-  });
   const tableRef = React.useRef<HTMLDivElement>(null);
   const getTree = (arr: any[]) => {
     return arr.map((item) => {
@@ -111,23 +105,6 @@ const MappingInfomation = () => {
   });
   const getTreeList = async () => {
     if (id === '') return;
-    // const data = {
-    //   mappingType: mappingType,
-    //   sourceMaterialMappingLibraryId: id,
-    //   sourceMaterialLibraryId: sourceMaterialLibraryId,
-    //   // pageIndex: 1,
-    //   // pageSize: 9999,
-    // };
-    // if (materialLibraryId !== '') {
-    //   // @ts-ignore
-    //   data.sourceMaterialLibraryCatalogueId = materialLibraryId;
-    // }
-    // if (searchKeyWord !== '') {
-    //   // @ts-ignore
-    //   data.keyWord = searchKeyWord;
-    // }
-    // // @ts-ignore
-    // setExtractParams(data);
     tableRef && tableRef?.current?.reset();
     tableRef && tableRef?.current?.search();
   };
@@ -139,6 +116,7 @@ const MappingInfomation = () => {
   const tableTabChange = (val: string) => {
     setMappingType(val);
     setVisible(false);
+    setSearchKeyWord('')
     setTimeout(() => {
       setVisible(true);
     });
@@ -176,14 +154,17 @@ const MappingInfomation = () => {
     const res = await getSourceMaterialMappingLibraryList(data);
     setSlectLsit(res?.items);
   };
-
+  const onSearch = ()=>{
+    // tableRef && tableRef?.current?.searchByParams({'keyWord':searchKeyWord})
+    tableRef && tableRef?.current?.search()
+  }
   const searchComponent = () => {
     return (
       <TableSearch label="关键词" width="203px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}
-          onSearch={() => getTreeList()}
+          onSearch={onSearch}
           enterButton
           placeholder="请输入关键词"
         />
@@ -206,17 +187,18 @@ const MappingInfomation = () => {
     getSelectList();
   }, []);
   const tabs = [
+
     {
-      title: '预算',
-      key: 3,
+      title: '估算',
+      key: 1,
     },
     {
       title: '概算',
       key: 2,
     },
     {
-      title: '估算',
-      key: 1,
+      title: '预算',
+      key: 3,
     },
     {
       title: '拆除',
@@ -278,7 +260,7 @@ const MappingInfomation = () => {
                             type="radio"
                             childrenColumnName={'materialMappingQuota'}
                             extractParams={{
-                              keyWord: searchKeyWord,
+                              keyWord: searchKeyWord.trim(),
                               mappingType: mappingType,
                               sourceMaterialMappingLibraryId: id || getRequest()?.id,
                               sourceMaterialLibraryId:
