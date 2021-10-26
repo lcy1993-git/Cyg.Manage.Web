@@ -53,24 +53,24 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
                 }}
                 modalTitle={'导入费率'}
                 buttonTitle={'导入费率'}
-                style={{ zIndex: 99, display: name !== '土方参数' ? 'block' : 'none' }}
+                style={{ zIndex: 99}}
                 template={true}
                 downType={active}
                 requestSource={'tecEco1'}
                 importUrl={'/RateTable/ImportRateTable'}
                 setSuccessful={setSuccessful}
               />
-              <TableImportButton
-                extraParams={{ commonlyTableType: active }}
-                modalTitle={'导入费率'}
-                buttonTitle={'导入费率'}
-                style={{ zIndex: 99, display: name == '土方参数' ? 'block' : 'none' }}
-                template={true}
-                downType={active}
-                requestSource={'tecEco1'}
-                importUrl={'/Earthwork/ImportEarthwork'}
-                setSuccessful={setSuccessful}
-              />
+              {/*<TableImportButton*/}
+              {/*  extraParams={{ commonlyTableType: active }}*/}
+              {/*  modalTitle={'导入费率'}*/}
+              {/*  buttonTitle={'导入费率'}*/}
+              {/*  style={{ zIndex: 99, display: name == '土方参数' ? 'block' : 'none' }}*/}
+              {/*  template={true}*/}
+              {/*  downType={active}*/}
+              {/*  requestSource={'tecEco1'}*/}
+              {/*  importUrl={'/Earthwork/ImportEarthwork'}*/}
+              {/*  setSuccessful={setSuccessful}*/}
+              {/*/>*/}
               <TableImportButton
                 modalTitle={'导入土方参数图形'}
                 buttonTitle={'导入土方参数图形'}

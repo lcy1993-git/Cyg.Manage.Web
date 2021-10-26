@@ -376,7 +376,7 @@ function getMappingTagsDictionary() {
         "type": findenumsValue("ElectricMeterType"),
         "kv_level": findenumsValue("KVLevel"),
         "state": findenumsValue("SurveyState"),
-        // "entry_type": findenumsValue("EntryMode")
+        "entry_type": findenumsValue("EntryMode")
       }
     };
     mappingTagsDictionary.cross_arm = {

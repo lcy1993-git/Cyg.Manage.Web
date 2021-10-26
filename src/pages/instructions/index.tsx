@@ -29,6 +29,7 @@ const pageType = [
 const ManualUpload: React.FC<Props> = () => {
   const [current, setCurrent] = useState<number>(0)
   const [file, setFile] = useState([])
+  const [isMobile, setisMobile] = useState(false)
 
   useMount(()=>{
     let url = window.location.pathname;
@@ -38,6 +39,11 @@ const ManualUpload: React.FC<Props> = () => {
     })
     if (num !== undefined){
       setCurrent(num.category)
+    }
+    if (!/windows phone|iphone|android/ig.test(window.navigator.userAgent)) {
+      setisMobile(true)
+    }else{
+      setisMobile(false)
     }
   })
   const downFile =  (id:string,token:string)=>{
@@ -66,7 +72,6 @@ const ManualUpload: React.FC<Props> = () => {
       return
     }
     const newFile = await getLatestInstructions(current)
-    console.log(!newFile)
     if (!newFile) {
       message.warn('没有找到可用的说明书!')
       return
@@ -81,7 +86,10 @@ const ManualUpload: React.FC<Props> = () => {
     <div>
       {
         file.length !== 0 &&
-          <ManualPreview file={file}  height={'96vh'}/>
+          <ManualPreview file={file}
+                         showDirectory={isMobile}
+                         height={'96vh'}
+          />
       }
        {/*<div style={{margin:'100px auto',display :empty ? 'block' : 'none'}}>*/}
        {/*   <Empty description={'请先上传说明书!'}/>*/}
