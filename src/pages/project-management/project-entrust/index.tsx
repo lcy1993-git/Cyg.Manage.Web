@@ -7,7 +7,7 @@ import styles from './index.less';
 import React, { useRef, useState } from 'react';
 import FilterEntrustModal from './components/filter-entrust-modal';
 import { receiveProject } from '@/services/project-management/project-entrust';
-import { TableItemCheckedInfo } from '@/pages/project-management/all-project-new/components/engineer-table/engineer-table-item';
+import { TableItemCheckedInfo } from '@/pages/project-management/all-project/components/engineer-table/engineer-table-item';
 import { useUpdateEffect } from 'ahooks';
 import { isArray } from 'lodash';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';

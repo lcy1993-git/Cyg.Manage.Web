@@ -11,7 +11,7 @@ import {
 import { ProjectList } from '@/services/visualization-results/visualization-results';
 import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
 
-import ProjectDetailInfo from '@/pages/project-management/all-project-new/components/project-detail-info';
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { downloadMapPositon } from '@/services/visualization-results/list-menu';
 import ExportMapPositionModal from '../export-map-position-modal';
 import FilterModal from '../filter-modal';
@@ -33,7 +33,7 @@ import styles from './index.less';
 const { RangePicker } = DatePicker;
 
 import SiderMenuAreaButtons from '../side-menu-area-buttons';
-import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
+import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { useLayoutStore } from '@/layouts/context';
 

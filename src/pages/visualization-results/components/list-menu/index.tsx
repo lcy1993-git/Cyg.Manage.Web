@@ -9,7 +9,7 @@ import {
   NodeIndexOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import ProjectDetailInfo from '@/pages/project-management/all-project-new/components/project-detail-info';
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import { useContainer } from '../../result-page/mobx-store';
 import CommentModal from '../comment-modal';
 import MaterialModal from '../material-modal';

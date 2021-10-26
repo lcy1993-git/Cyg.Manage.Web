@@ -2,7 +2,8 @@ import request from '@/utils/request';
 import ApiFileView from '../api-file-view';
 import { cyRequest, baseUrl } from '@/services/common';
 import type { FileType } from '../api-file-view/getStrategyComponent';
-import FileDwgView from '../api-file-view/componnents/file-dwg-view';
+// import FileDwgView from '../api-file-view/componnents/file-dwg-view';
+import PdfFileView from '@/components/pdf-file-view';
 import XlsxViewer from '../api-file-view/componnents/file-excel-view';
 import React from 'react';
 
@@ -30,7 +31,7 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
         Authorization: window.localStorage.getItem('Authorization'),
       },
     };
-    return <FileDwgView params={api} hasAuthorization={true} {...rest} />;
+    return <PdfFileView params={api} hasAuthorization={true} {...rest} />;
   } else if (fileType === 'xlsx') {
     api = `${baseUrl[requestSource]}${url}?path=${params.path}&token=${window.localStorage.getItem(
       'Authorization',
