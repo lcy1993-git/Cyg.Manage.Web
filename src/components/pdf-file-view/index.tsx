@@ -28,7 +28,7 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({
   const [downPosition, setDownPosition] = useState<[number, number]>([0, 0])
   const [activePosition, setActivePosition] = useState<[number, number]>([0, 0])
   const maxScale = useRef<number>(0)
-  const minScale = useRef<number>(0)
+  const minScale = useRef<number>(1)
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const wrapCanvasRef = useRef<HTMLDivElement>(null);
@@ -56,7 +56,7 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({
       if (!page._pdfBug) {
 
         const [_0, _1, width, height] = page.view
-        maxScale.current = + parseInt(Math.min(15000 / width, 15000 / height) as unknown as string)
+        maxScale.current = + parseInt(Math.min(4000 / width, 4000 / height) as unknown as string)
         minScale.current = + parseFloat(Math.min(wrapRef.current!.clientWidth / width, wrapRef.current!.clientHeight / height) as unknown as string).toFixed(1)
         
         const viewport = page.getViewport({ scale: minScale.current });
@@ -163,7 +163,7 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({
   }
 
   return (
-    <div className={styles.viewContent} ref={wrapRef}>
+    <div className={styles.viewContent} ref={wrapRef} style={{height: window.innerHeight - 100}}>
       <div
         ref={wrapCanvasRef}
         className={styles.wrapCanvasContent}
