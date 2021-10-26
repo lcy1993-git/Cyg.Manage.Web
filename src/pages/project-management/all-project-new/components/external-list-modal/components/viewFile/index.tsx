@@ -1,9 +1,7 @@
-import request from '@/utils/request';
 import { cyRequest, baseUrl } from '@/services/common';
 import React from 'react';
 import { useRequest } from 'ahooks';
 import XlsxViewer from '@/components/api-file-view/componnents/file-excel-view';
-import DocxFileViewer from '@/components/docx-file-viewer';
 import { getFileStream } from '@/services/project-management/all-project';
 import FileDocxView from '@/components/api-file-view/componnents/file-docx-view';
 
