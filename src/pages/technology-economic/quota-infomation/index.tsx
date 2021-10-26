@@ -119,6 +119,7 @@ const QuotaProject = () => {
   const [resourceItem, setResourceItem] = useState<object>({});
   const [title,setTitle] = useState<string>('')
   const [nodeId,setNodeId] = useState<string>('')
+  const [disabledDown,setDisabledDown] = useState<boolean>(false)
 
   const {data: quotaList = {total: 0, items: []}, run: quotaListRun} = useRequest<QuotaList>(queryQuotaLibraryPager, {
     manual: true
@@ -173,6 +174,7 @@ const QuotaProject = () => {
   const onCheck = (kes: React.Key[], {node}: {node: {key: number | string,name:string,id:string}}) => {
     setTitle(node.name)
     setNodeId(node.id)
+    setDisabledDown(node?.name?.includes('.') && !node?.name?.includes('第'))
     catalogueId === node.key || setCatalogueId(node.key as string);
     setResourceItem({})
   }
@@ -225,6 +227,7 @@ const QuotaProject = () => {
                 <ChapterInfo data={chapterData || ""}
                              title={title}
                              nodeId={nodeId}
+                             disabledDown={disabledDown}
                              fileId={activeQuotaId || catalogueId}
                              id={catalogueId} update={()=>catalogueId && chapterRun(catalogueId)}/>
               </TabPane>

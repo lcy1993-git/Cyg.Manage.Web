@@ -19,7 +19,7 @@ const DictionaryForm: React.FC<{ type?: string }> = () => {
           </CyFormItem>
           <CyFormItem label="适用行业" name="industryType">
             <UrlSelect
-              url="/CommonEnum/GetMajorTypeEnums"
+              url="/CommonEnum/GetIndustryTypeEnums"
               requestType="get"
               requestSource="tecEco"
               titlekey="text"
