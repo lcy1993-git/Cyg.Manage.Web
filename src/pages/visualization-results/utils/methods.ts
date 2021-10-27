@@ -48,6 +48,7 @@ const refreshMap = async (
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map } = ops;
   clearGroups(groupLayers);
   clearHighlightLayer(map);
+  lineClusters = [];
   if (projects.length === 0) return;
 
   const postData = getXmlData(projects, startDate, endDate);
