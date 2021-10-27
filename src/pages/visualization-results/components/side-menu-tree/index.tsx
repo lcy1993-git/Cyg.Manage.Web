@@ -36,6 +36,7 @@ import SiderMenuAreaButtons from '../side-menu-area-buttons';
 import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { useLayoutStore } from '@/layouts/context';
+import { useMemo } from '@umijs/renderer-react/node_modules/@types/react';
 
 export interface SideMenuProps {
   className?: string;
@@ -77,7 +78,7 @@ function generateProjectTree(projectList: ProjectListByAreaType[]): TreeNodeType
     return {
       title: v.name,
       id: v.id,
-      key: Math.random().toString(),
+      key: Math.random().toString(36).slice(2),
       engineerId: v.parentId,
       parentId: v.parentId,
       levelCategory: v.levelCategory,
@@ -100,9 +101,9 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
 type KeyType =
   | React.Key[]
   | {
-      checked: React.Key[];
-      halfChecked: React.Key[];
-    };
+    checked: React.Key[];
+    halfChecked: React.Key[];
+  };
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 项目详情
@@ -290,10 +291,9 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     const selectCity = mapSelectCity;
 
     if (selectCity) {
-      const key = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
-
+      const { expanded, checked } = getSelectCityExpanedAndCheckedProjectKeys(data, selectCity);
+      
       setMapSelectCity?.('');
-      const { expanded, checked } = key;
       setExpandedKeys([...expanded]);
       setCheckedKeys(getKeyList(checked));
       store.setProjectIdList(generatorProjectInfoList(checked));
@@ -306,10 +306,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   useUpdateEffect(() => {
     if (mapSelectCity) {
       if (treeListReponseData?.length) {
-        const data = generateProjectTree(treeListReponseData);
-
-        setTreeData(data);
-        initSideTree(data);
+        setTreeData(treeData);
+        initSideTree(treeData);
         // 修复初次请求默认到县级的bug
       } else {
         setTreeData([]);

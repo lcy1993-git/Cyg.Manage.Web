@@ -11,14 +11,14 @@ import { useRequest } from 'ahooks';
 import { observer } from 'mobx-react-lite';
 
 import { findEnumKeyByCN } from '../../utils/loadEnum';
-import { formDataMateral, generateMaterialTreeList } from '@/utils/utils';
+import { formDataMateral, generateMaterialTreeList, translateMatDataToTree } from '@/utils/utils';
 import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
 import { CommentRequestType, addComment, fetchCommentList, porjectIsExecutor } from '@/services/visualization-results/side-popup';
 import styles from './index.less';
 import CableSection from '../cable-section';
 import MediaModal from '../media-modal';
 import classnames from 'classnames';
-import { MaterialTable } from '../material-table';
+import { MaterialTableNew } from '../material-table-new';
 
 export interface TableDataType {
   [propName: string]: any;
@@ -505,9 +505,8 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   const materialDataRes = useMemo(() => {
     if(Array.isArray(materialData?.content) && materialData?.content.length > 0) {
-      console.log(generateMaterialTreeList(materialData.content));
       
-      return generateMaterialTreeList(materialData.content)
+      return translateMatDataToTree(materialData.content)
     }else{
       return []
     }
@@ -573,7 +572,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           ></Table>
         )}
         {activeType === 'material' && (
-          <MaterialTable data={materialDataRes} loading={matiralsLoading}/>
+          <MaterialTableNew data={materialDataRes} loading={matiralsLoading}/>
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
