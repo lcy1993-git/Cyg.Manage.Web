@@ -68,7 +68,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
 
   const setCurrentFileInfo = (info: CurrentFileInfo) => {
     if (info.type === 'doc' || info.type === 'xls') {
-      message.error(`当前版本暂不支持${info.type}文件预览，请导出该文件再本地进行预览`);
+      message.error(`当前版本暂不支持${info.type}文件预览，请导出该文件在本地进行预览`);
     } else {
       setCurrentFileInfoErr(info);
     }
@@ -76,7 +76,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
 
   const setAuditFileInfo = (info: AuditFileInfo) => {
     if (info.extension === '.doc' || info.extension === '.xls') {
-      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件再本地进行预览`);
+      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件在本地进行预览`);
     } else {
       setAuditFileInfoErr(info);
     }
