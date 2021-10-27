@@ -17,7 +17,7 @@ import { useRequest, useSize } from 'ahooks';
 import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
-import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
+import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState, Key } from 'react';
 
 import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item';
 import ScrollView from 'react-custom-scrollbars';
@@ -44,6 +44,7 @@ import ProjectInheritModal from '../project-inherit-modal';
 import ImageIcon from '@/components/image-icon';
 import ColumnsConfigModal from '../columns-config-modal';
 import VirtualTable from '../virtual-table/VirtualTable';
+import ParentRow from '../virtual-table/ParentRow';
 
 const colorMap = {
   立项: 'green',
@@ -128,7 +129,30 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   // 项目继承状态判断
   const [inheritState, setInheritState] = useState<boolean>(false);
 
-  const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
+  function onSuccess(data: any) {
+    console.log(data, 'act');
+
+    const allProjects = data.content.pagedData.items.slice(0, 10).reduce((p: any[], c: any) => {
+      // _parent 父级
+      // _header 表头
+      p.push({ ...c, _parent: true }, { _header: true }, ...c.projects);
+      return p;
+    }, []);
+
+    return allProjects;
+  }
+
+  const { data: tableData, loading, run } = useRequest(getProjectTableList, {
+    manual: true,
+    onSuccess: (tableData) => {
+      const washedData = onSuccess(tableData);
+      cache.current = washedData;
+      return washedData;
+    },
+  });
+
+  const cache = useRef(tableData);
+  console.log(tableData, '列表');
 
   const scrollbar = useRef<any>(null);
   const tableContentRef = useRef<HTMLDivElement>(null);
@@ -1039,10 +1063,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             renderThumbVertical={scrollBarRenderView}
           >
             <Spin spinning={loading}>
-              {/* <VirtualTable
+              <VirtualTable
                 style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
                 className="border"
-                data={data}
+                data={tableData}
                 columns={subColumns as any[]}
                 headerRows={({ _header }) => _header === true}
                 customRow={{
@@ -1068,7 +1092,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     console.log(key, selected, rowData);
                   },
                 }}
-              /> */}
+              />
               {/* {tableResultData.items.length > 0 && engineerTableElement} */}
               {/* {tableResultData.items.length === 0 && <EmptyTip className="pt20" />} */}
             </Spin>
