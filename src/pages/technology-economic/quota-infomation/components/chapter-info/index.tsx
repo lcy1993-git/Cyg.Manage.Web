@@ -19,9 +19,10 @@ interface Props {
   nodeId?: string;
   update: () => void;
   fileId:string
+  disabledDown:boolean
 }
 
-const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId}) => {
+const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId,disabledDown}) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
   const [html, setHtml] = useState<string>(data);
@@ -93,6 +94,14 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId}) 
   };
   const uploadFile = async () => {
     let type:string =  file[0].name.split('.')[1]
+    if (disabledDown){
+      message.warning('当前选中目录的不可导入章节说明')
+      return
+    }
+    if (title !== file[0].name.split('.')[0] && type !== 'zip'){
+      message.warning('文档名称和选择目录名称不相同')
+      return
+    }
     if (type === 'zip'){
       await UploadChapterDescriptionFiles({
         files: file,
@@ -134,7 +143,7 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId}) 
           <ExportOutlined />
           导入说明
         </Button>
-        <Button type="primary" className="mr7" onClick={downWordFile} disabled={data === ''}>
+        <Button type="primary" className="mr7" onClick={downWordFile} disabled={data === '' || disabledDown}>
           <DownloadOutlined />
           下载
         </Button>

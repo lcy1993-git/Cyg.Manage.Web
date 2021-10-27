@@ -9,14 +9,14 @@ import { forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 
 
 import EngineerTableItem, {
   TableItemCheckedInfo,
-} from '@/pages/project-management/all-project-new/components/engineer-table/engineer-table-item';
+} from '@/pages/project-management/all-project/components/engineer-table/engineer-table-item';
 import ScrollView from 'react-custom-scrollbars';
 import styles from './index.less';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
-import { TableContext } from '@/pages/project-management/all-project-new/components/engineer-table/table-store';
-import EngineerDetailInfo from '@/pages/project-management/all-project-new/components/engineer-detail-info';
-import ProjectDetailInfo from '@/pages/project-management/all-project-new/components/project-detail-info';
+import { TableContext } from '@/pages/project-management/all-project/components/engineer-table/table-store';
+import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info';
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
 import moment from 'moment';
 
 interface EntrustTableProps {
