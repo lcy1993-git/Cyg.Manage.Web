@@ -28,6 +28,7 @@ const CommentTable: FC<CommentProps> = (props) => {
   const [layerType, setLayerType] = useState<number>();
   const [deviceType, setDeviceType] = useState<number>();
   const [currentPage, setCurrentPage] = useState<number>(1); //为了获取数据编号
+  const [pageSize, setPageSize] = useState<number>(10)
   const [projectCommentList, setProjectCommentList] = useState<ProjectCommentListItemType[]>();
   const [clickItemIsDelete, setIsItemDelete] = useState<boolean>(false); //用来表示被点击的item状态是否被删除
   const [commentListModalVisible, setCommentListModalVisible] = useState<boolean>(false);
@@ -114,7 +115,10 @@ const CommentTable: FC<CommentProps> = (props) => {
       ),
     },
   ];
-  const onPageChange = (page: number) => {
+  const onPageChange = (page: number, currentSize: number | undefined) => {
+    if(currentSize && currentSize !== pageSize){
+      setPageSize(currentSize)
+    }
     setCurrentPage(page);
   };
   /**
@@ -143,6 +147,7 @@ const CommentTable: FC<CommentProps> = (props) => {
     current: currentPage,
     onChange: onPageChange,
     pageSize: 10,
+
   };
 
   const {
@@ -236,7 +241,12 @@ const CommentTable: FC<CommentProps> = (props) => {
           bordered
           size="middle"
           rowKey="createdOn"
-          pagination={{ ...pagination }}
+          pagination={{
+            current: currentPage,
+            onChange: onPageChange,
+            pageSize,
+            total: projectCommentList?.length,
+          }}
           loading={fetchProjectCommentListLoading}
           columns={columns}
           scroll={{ x: 1000 }}

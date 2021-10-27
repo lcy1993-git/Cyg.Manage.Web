@@ -30,5 +30,5 @@ const CommentModal: FC<CommentModalProps> = (props) => {
     </Modal>
   );
 };
-         
+
 export default CommentModal;
