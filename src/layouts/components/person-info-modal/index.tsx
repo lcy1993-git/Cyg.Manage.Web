@@ -31,17 +31,21 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
   const [refreshPhone, setRefreshPhone] = useState<boolean>(false)
   const [refreshEmail, setRefreshEmail] = useState<boolean>(false)
 
-  const cancelPhone = () => {
-    setRefreshPhone(!refreshPhone)
-  }
 
-  const cancelEmail = () => {
-    setRefreshEmail(!refreshEmail)
-  }
 
   const { data: userInfo, run: request } = useRequest(() => getUserInfo(), {
     manual: true,
   });
+
+  const cancelEmail = () => {
+    setRefreshEmail(!refreshEmail)
+    request()
+  }
+
+  const cancelPhone = () => {
+    setRefreshPhone(!refreshPhone)
+    request()
+  }
 
   const run = () => {
     request();
@@ -81,12 +85,14 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
         </div>
       </div>
       <PersonInfoRow
+        key={userInfo?.phone + 'phone'}
         name={userInfo?.phone}
         title="手机"
         expandState={closeState || refreshPhone}
         editNode={<PhoneInfo phone={userInfo?.phone} refresh={run} cancelPhone={cancelPhone}/>}
       />
       <PersonInfoRow
+        key={userInfo?.email + 'email'}
         name={userInfo?.email}
         title="邮箱"
         expandState={closeState || refreshEmail}
