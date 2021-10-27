@@ -108,6 +108,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const { data, run, loading } = useRequest(tableCommonRequest, {
     manual: true,
     onSuccess: () => {
+      console.log(data)
       getTableRequestData?.(data!);
     },
   });
