@@ -20,6 +20,8 @@ export class LineCluster {
     this.targetTopLine = new Feature();
     this.targetBottomLine = new Feature();
 
+    
+
     // 初始化要素的标注的显示控制量
     if(lines.length > 0) {
       lines[0].setProperties({
@@ -27,6 +29,8 @@ export class LineCluster {
       });
       this.targetTopLine = lines[0];
       this.targetBottomLine = lines[0];
+
+      this.project_id = lines[0].getProperties().project_id;
     }
     else if (zero_guys.length > 0) {
       zero_guys[0].setProperties({
@@ -40,6 +44,10 @@ export class LineCluster {
    * 线簇id
    */
   id: number;
+  /**
+   * 线簇所属项目
+   */
+  project_id: string;
   /**
    * 起点id
    */
