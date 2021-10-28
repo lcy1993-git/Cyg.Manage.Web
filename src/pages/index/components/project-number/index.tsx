@@ -48,7 +48,6 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
   const getOptions = () => {
     const dateData = data.map((item) => moment(item.key).format('MM月DD日')).reverse();
     const currentDateData = data.map((item) => item.value.qty).reverse();
-    console.log(currentDateData);
     const changeDateData = data.map((item) => item.value.qty - item.value.yesterdayQty).reverse();
     return {
       grid: {
