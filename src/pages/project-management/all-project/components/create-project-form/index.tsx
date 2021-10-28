@@ -317,7 +317,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
-                    moment(value.format('YYYY-MM-DD')).isAfter(
+                    moment(value?.format('YYYY-MM-DD')).isAfter(
                       moment(startDate).format('YYYY-MM-DD'),
                     ) ||
                     !value ||
@@ -325,10 +325,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     startDate
                   ) {
                     if (
-                      moment(value.format('YYYY-MM-DD')).isBefore(
+                      moment(value?.format('YYYY-MM-DD')).isBefore(
                         moment(startDate).format('YYYY-MM-DD'),
                       ) ||
-                      moment(moment(new Date(value)).format('YYYY-MM-DD')).isSame(
+                      moment(moment(new Date(value))?.format('YYYY-MM-DD')).isSame(
                         moment(startDate).format('YYYY-MM-DD'),
                       )
                     ) {

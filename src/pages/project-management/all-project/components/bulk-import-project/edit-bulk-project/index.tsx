@@ -42,6 +42,18 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
       natures: (projectInfo?.natures ?? []).map((item: any) => Number(item)),
       isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
       powerSupply: projectInfo?.powerSupply ? projectInfo?.powerSupply : 'none',
+      disclosureRange:
+        projectInfo?.dataSourceType === 2
+          ? undefined
+          : projectInfo?.dataSourceType === 1
+          ? undefined
+          : projectInfo?.disclosureRange,
+      pileRange:
+        projectInfo?.dataSourceType === 2
+          ? undefined
+          : projectInfo?.dataSourceType === 1
+          ? undefined
+          : projectInfo?.pileRange,
     });
     setDataSourceType(projectInfo?.dataSourceType);
     setPowerSupplySelectData(selectData.departmentSelectData);
@@ -569,7 +581,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
 
           <div className="flex">
             <div className="flex1 flowHidden">
-              {dataSourceType === 2 ? (
+              {dataSourceType === 2 || disRangeValue === 0 ? (
                 <CyFormItem
                   label="交底范围(米)"
                   // initialValue={'50'}

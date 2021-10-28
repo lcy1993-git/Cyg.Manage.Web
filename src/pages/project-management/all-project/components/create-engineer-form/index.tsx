@@ -304,9 +304,11 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
               { required: true, message: '工程结束时间不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
+                  console.log(value);
+
                   if (
                     moment(moment(new Date(value)).format('YYYY-MM-DD')).isAfter(
-                      moment(new Date(getFieldValue('startTime').format('YYYY-MM-DD'))),
+                      moment(new Date(getFieldValue('startTime')?.format('YYYY-MM-DD'))),
                     ) ||
                     !value ||
                     !getFieldValue('startTime')
