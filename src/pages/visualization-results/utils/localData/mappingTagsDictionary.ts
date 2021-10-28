@@ -144,7 +144,7 @@ function getMappingTagsDictionary() {
       },
       {
         value: 2,
-        text: '二级分支等'
+        text: '二级分支'
       }
       ]
     });

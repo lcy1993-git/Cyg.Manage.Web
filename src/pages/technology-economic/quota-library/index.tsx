@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { history } from 'umi';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { isArray } from 'lodash';
+import React, {useState} from 'react';
+import {history} from 'umi';
+import {useGetButtonJurisdictionArray} from '@/utils/hooks';
+import {Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space} from 'antd';
+import {ColumnsType} from 'antd/lib/table';
+import {EyeOutlined, PlusOutlined, DeleteOutlined} from '@ant-design/icons';
+import {isArray} from 'lodash';
 
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
@@ -20,7 +20,7 @@ import {
 import styles from './index.less';
 import moment from 'moment';
 
-const { Search } = Input;
+const {Search} = Input;
 
 type DataSource = {
   id: string;
@@ -78,6 +78,15 @@ const columns = [
     key: 'majorType',
     title: '适用专业',
     width: 150,
+    render: (num: number) => {
+      if (num == 1) {
+        return '建筑'
+      } else if (num == 2) {
+        return '安装'
+      } else {
+        return ''
+      }
+    }
   },
   // {
   //   dataIndex: 'enabled',
@@ -205,7 +214,7 @@ const QuotaLibrary: React.FC = () => {
         {
           // buttonJurisdictionArray?.includes('quotalib-add') &&
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
-            <PlusOutlined />
+            <PlusOutlined/>
             添加
           </Button>
         }
@@ -218,7 +227,7 @@ const QuotaLibrary: React.FC = () => {
             cancelText="取消"
           >
             <Button className="mr7">
-              <DeleteOutlined />
+              <DeleteOutlined/>
               删除
             </Button>
           </Popconfirm>
@@ -226,7 +235,7 @@ const QuotaLibrary: React.FC = () => {
         {
           // buttonJurisdictionArray?.includes('quotalib-info') &&
           <Button className="mr7" onClick={() => gotoMoreInfo()}>
-            <EyeOutlined />
+            <EyeOutlined/>
             查看详情
           </Button>
         }
@@ -270,9 +279,9 @@ const QuotaLibrary: React.FC = () => {
       >
         <Spin spinning={spinning} tip={'上传中...'}>
           <Form form={addForm} preserve={false}>
-            <DictionaryForm type="add" />
+            <DictionaryForm type="add"/>
           </Form>
-          <div style={{ display: 'flex', justifyContent: 'right' }}>
+          <div style={{display: 'flex', justifyContent: 'right'}}>
             <Space>
               <Button onClick={() => setAddFormVisible(false)}>取消</Button>
               <Button onClick={sureAddAuthorization} type={'primary'}>
