@@ -152,6 +152,10 @@ const MaterialMapping: React.FC = () => {
   }
 
   const gotoMoreInfo = () => {
+    if (tableSelectRows?.length === 0){
+      message.warning('请选择要操作的行');
+      return
+    }
     const {id,sourceMaterialLibraryId} = tableSelectRows?.[0] ?? '';
     history.push(`/technology-economic/mapping-infomation?id=${id}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
   };

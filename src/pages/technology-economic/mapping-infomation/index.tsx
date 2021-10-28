@@ -156,7 +156,11 @@ const MappingInfomation = () => {
   };
   const onSearch = ()=>{
     // tableRef && tableRef?.current?.searchByParams({'keyWord':searchKeyWord})
-    tableRef && tableRef?.current?.search()
+    setVisible(false);
+    setTimeout(() => {
+      setVisible(true);
+    });
+    // tableRef && tableRef?.current?.search()
   }
   const searchComponent = () => {
     return (

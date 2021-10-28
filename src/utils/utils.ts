@@ -254,3 +254,45 @@ export const BlobOrArrayBuffertoUnit8 = (data: Bolb | ArrayBuffer) => {
       break;
   }
 }
+
+interface Data {
+  parentID: number;
+  id: number;
+  children?: Data[]
+  [key: string]: any
+}
+
+/**
+ * 材料表扁平化数据树形结构化
+ */
+export const translateMatDataToTree = (soureceData: Data[]) => {
+  const data = soureceData.map((dataItem) => {
+    return {
+      ...dataItem
+    }
+  })
+  let parents = data.filter(value => value.parentID === -1)
+
+  let childrens = data.filter(value => value.parentID !== -1)
+  
+  const translator = (parents: Data[], childrens: Data[]) => {
+    parents.forEach((parent) => {
+      childrens.forEach((current, index) => {
+        
+        if (current.parentID === parent.id) {
+          let temp = JSON.parse(JSON.stringify(childrens))
+          temp.splice(index, 1)
+          translator([current], temp)
+          
+          typeof parent.children !== 'undefined' ? parent.children.push(current) : parent.children = [current]
+        }
+      }
+      )
+    }
+    )
+  }
+
+  translator(parents, childrens)
+
+  return parents
+}
