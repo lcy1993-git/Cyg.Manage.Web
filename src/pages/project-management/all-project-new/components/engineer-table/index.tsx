@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import EmptyTip from '@/components/empty-tip';
+// import EmptyTip from '@/components/empty-tip';
 import {
   AllProjectStatisticsParams,
   applyKnot,
@@ -14,7 +14,7 @@ import {
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import { delay } from '@/utils/utils';
 import { useRequest, useSize } from 'ahooks';
-import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
+import { Button, Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
 import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState, Key } from 'react';
@@ -144,11 +144,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const { data: tableData, loading, run } = useRequest(getProjectTableList, {
     manual: true,
-    onSuccess: (tableData) => {
-      const washedData = onSuccess(tableData);
-      cache.current = washedData;
-      return washedData;
-    },
+    // onSuccess: (tableData) => {
+    //   const washedData = onSuccess(tableData);
+    //   cache.current = washedData;
+    //   return washedData;
+    // },
   });
 
   const cache = useRef(tableData);
@@ -1047,6 +1047,52 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   console.log(tableResultData, '列表');
 
+  const parentColumns: any[] = [
+    {
+      dataIndex: 'name',
+      key: 'name',
+      render: (value: string) => {
+        return (
+          <>
+            <span className="pl-2">{value}</span>
+          </>
+        );
+      },
+    },
+    {
+      render: (_: unknown, record: any) => {
+        return <span>共有项目：{record.projects.length} 个</span>;
+      },
+    },
+    {
+      render: (_: unknown, record: any) => {
+        return (
+          <span>
+            工程日期：{record.startTime}-{record.endTime}
+          </span>
+        );
+      },
+    },
+    {
+      render: (_: unknown, record: any) => {
+        return <span>编制日期：{record.compileTime}</span>;
+      },
+    },
+    {
+      render: (_: unknown, record: any) => {
+        return (
+          <>
+            <Button key="0">新增项目</Button>
+            <Button className="space-x-2" key="1">
+              编辑
+            </Button>
+            <Button key="2">批复文件</Button>
+          </>
+        );
+      },
+    },
+  ];
+
   return (
     <TableContext.Provider
       value={{
@@ -1067,7 +1113,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
                 className="border"
                 data={tableData}
-                columns={subColumns as any[]}
+                // columns={subColumns as any[]}
                 headerRows={({ _header }) => _header === true}
                 customRow={{
                   custom: ({ _parent }) => _parent === true,
