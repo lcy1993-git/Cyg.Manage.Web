@@ -145,6 +145,38 @@ function getMappingTagsDictionary() {
       {
         value: 2,
         text: '二级分支'
+      },
+      {
+        value: 3,
+        text: '三级分支'
+      },
+      {
+        value: 4,
+        text: '四级分支'
+      },
+      {
+        value: 5,
+        text: '五级分支'
+      },
+      {
+        value: 6,
+        text: '六级分支'
+      },
+      {
+        value: 7,
+        text: '七级分支'
+      },
+      {
+        value: 8,
+        text: '八级分支'
+      },
+      {
+        value: 9,
+        text: '九级分支'
+      },
+      {
+        value: 10,
+        text: '十级分支'
       }
       ]
     });

@@ -866,7 +866,7 @@ const line_style = function (feature: Feature, select: boolean = false) {
         stroke: new Stroke(strokeOpts)
     })
     let styles = [backgroundStyle, style_mode, style_length];
-    if (style.isDismantle) {
+    if (feature.getProperties().state === 4) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
                 font: 'Normal 22px webgisIconFont',
@@ -980,7 +980,7 @@ const zero_guy_style = function (feature: Feature, select: boolean = false) {
         stroke: new Stroke(strokeOpts)
     })
     let styles = [backgroundStyle, style_mode, style_length];
-    if (guyStyle.isDismantle) {
+    if (feature.getProperties().state === 4) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
                 font: 'Normal 22px webgisIconFont',
@@ -1087,7 +1087,7 @@ const cable_channel_styles = function (feature: Feature, select: boolean = false
         styles.push(style);
     }
     
-    if (obj.isDismantle) {
+    if (feature.getProperties().state === 4) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
                 font: 'Normal 22px webgisIconFont',
