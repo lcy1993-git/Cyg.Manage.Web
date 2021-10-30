@@ -1,6 +1,27 @@
 .treeTableContent {
   min-height: 130px;
+  padding: 12px;
   .treeTable {
     padding-top: 10px;
+    .treeTitle:hover {
+      color: #0e7b3b;
+      text-decoration: underline;
+    }
+    :global {
+      .ant-tree.ant-tree-directory .ant-tree-treenode-selected:hover::before,
+      .ant-tree.ant-tree-directory .ant-tree-treenode-selected::before {
+        background: none !important;
+      }
+      .ant-tree.ant-tree-directory
+        .ant-tree-treenode
+        .ant-tree-node-content-wrapper.ant-tree-node-selected {
+        color: #0e7b3b;
+        background-color: #e4f5eb !important;
+      }
+      .ant-tree.ant-tree-directory .ant-tree-treenode-selected .ant-tree-switcher {
+        color: black;
+        background-color: transparent;
+      }
+    }
   }
 }

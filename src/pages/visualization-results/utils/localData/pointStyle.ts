@@ -766,7 +766,7 @@ const pointStyle = function (type: string, feature: Feature, selected: boolean, 
     }
 
     let pointStyles = [];
-    if (type.split('_')[0] == 'dismantle' || isDismantle) {
+    if (isDismantle) {
         let dismantleColor = 'rgba(255, 0, 0, 1)';
         let dismantleStyle = new ClassStyle({
             text: new Text({
@@ -866,7 +866,7 @@ const line_style = function (feature: Feature, select: boolean = false) {
         stroke: new Stroke(strokeOpts)
     })
     let styles = [backgroundStyle, style_mode, style_length];
-    if (style.isDismantle) {
+    if (feature.getProperties().state === 4) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
                 font: 'Normal 22px webgisIconFont',
@@ -980,7 +980,7 @@ const zero_guy_style = function (feature: Feature, select: boolean = false) {
         stroke: new Stroke(strokeOpts)
     })
     let styles = [backgroundStyle, style_mode, style_length];
-    if (guyStyle.isDismantle) {
+    if (feature.getProperties().state === 4) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
                 font: 'Normal 22px webgisIconFont',
@@ -1087,7 +1087,7 @@ const cable_channel_styles = function (feature: Feature, select: boolean = false
         styles.push(style);
     }
     
-    if (obj.isDismantle) {
+    if (feature.getProperties().state === 4) {
         let dismantleStyle = new ClassStyle({
             text: new Text({
                 font: 'Normal 22px webgisIconFont',

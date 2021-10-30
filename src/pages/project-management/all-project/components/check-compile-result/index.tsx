@@ -27,6 +27,9 @@ const CompileResultTab: React.FC<DesignResultProps> = (props) => {
   const onSelect = (info: string, e: any) => {
     if (e.node.category === 2) {
       const type = e.node.title.split('.').at(-1);
+      if (type === 'dwg') {
+        return;
+      }
       setCurrentFileInfo({
         type,
         path: info[0],
@@ -40,6 +43,13 @@ const CompileResultTab: React.FC<DesignResultProps> = (props) => {
       {compileResultData?.length > 0 && (
         <div className={styles.treeTable}>
           <DirectoryTree
+            titleRender={(v) => {
+              return v.category === 2 ? (
+                <span className={styles.treeTitle}>{v.title}</span>
+              ) : (
+                <span>{v.title}</span>
+              );
+            }}
             checkable
             onCheck={onCheck}
             checkedKeys={checkedKeys}
