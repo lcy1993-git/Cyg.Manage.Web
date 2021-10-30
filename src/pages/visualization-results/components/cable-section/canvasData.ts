@@ -41,6 +41,8 @@ export const grooveEnum = {
  */
 export const getMatrixData: (row: number, col: number, hasRedHole?: boolean, width?: number) => any[]
   = (row = 1, col = 1, hasRedHole = false, width = 150) => {
+
+    // flg为1是排管
     const flag = hasRedHole ? 1 : 0;
     const unitX = (width - flag * 20) / (col);
     const unitY = width / (row);
@@ -50,7 +52,7 @@ export const getMatrixData: (row: number, col: number, hasRedHole?: boolean, wid
     let number = -1;
     
     for (let i = row - 1; i >= 0; i--) {
-      for (let j = 0; j < (flag ? col + 1 : col); j++) {
+      for (let j = 1; j < (flag ? col + 1 : col); j++) {
         number++
         if (flag && j === 0) {
           sign.push(number)
@@ -100,6 +102,152 @@ export const getMatrixData: (row: number, col: number, hasRedHole?: boolean, wid
     return opArray
 
   }
+
+// 直埋
+
+export const getMatrixDataDirectBurial: (row: number, col: number, hasRedHole?: boolean, width?: number) => any[]
+  = (row = 1, col = 1, hasRedHole = false, width = 150) => {
+    
+    const unitX = (width) / (col);
+    const unitY = width / (row);
+    const r = Math.min(unitX / 5, unitY / 5)
+    const opArray = [];
+    const sign = [];
+    let number = -1;
+    
+    for (let i = row - 1; i >= 0; i--) {
+      for (let j = 0; j < col; j++) {
+        number++
+        if (false && j === 0) {
+          sign.push(number)
+          opArray.push({
+            x: 0,
+            y: 0,
+            r: 0
+          })
+        } else {
+          opArray.push({
+            x: unitX * (j + .5),
+            y: unitY * (i + .5),
+            r,
+            stroke: "#000"
+          })
+        }
+      }
+    }
+    // if (hasRedHole) {
+    //   opArray[sign[1]] = {
+    //     x: 10,
+    //     y: width / 2 - 20,
+    //     r: Math.min(r * .7, 8),
+    //     stroke: "#f00"
+    //   }
+
+    //   opArray[sign[0]] = {
+    //     x: 10,
+    //     y: width / 2 + 20,
+    //     r: Math.min(r * .7, 8),
+    //     stroke: "#f00"
+    //   }
+
+      // opArray.push({
+      //   x: 10,
+      //   y: width / 2 - 20,
+      //   r: Math.min(r * .7, 8),
+      //   stroke: "#f00"
+      // })
+      // opArray.push({
+      //   x: 10,
+      //   y: width / 2 + 20,
+      //   r: Math.min(r * .7, 8),
+      //   stroke: "#f00"
+      // })
+    
+    return opArray
+
+  }
+
+// 排管
+export const getMatrixDataRowPipe: (row: number, col: number, hasRedHole?: boolean, width?: number) => any[]
+= (row = 1, col = 1, hasRedHole = false, width = 150) => {
+
+    const unitX = (width - 1 * 20) / (col);
+    const unitY = width / (row);
+    const r = Math.min(unitX / 5, unitY / 5)
+    const opArray = [];
+    const sign = [];
+    let number = -1;
+    
+    // 先插入小红圈
+
+    opArray[0] = {
+      x: 10,
+      y: width / 2 + 20,
+      r: Math.min(r * .7, 8),
+      stroke: "#f00"
+    }
+
+    opArray[1] = {
+      x: 10,
+      y: width / 2 - 20,
+      r: Math.min(r * .7, 8),
+      stroke: "#f00"
+    }
+
+
+    for (let i = row - 1; i >= 0; i--) {
+      for (let j = 1; j < (1 ? col + 1 : col); j++) {
+        number++
+        if (j === 0) {
+          sign.push(number)
+          opArray.push({
+            x: 0,
+            y: 0,
+            r: 0
+          })
+        } else {
+          opArray.push({
+            x: unitX * (j - .5)  + 20,
+            y: unitY * (i + .5),
+            r,
+            stroke: "#000"
+          })
+        }
+      }
+    }
+    // if (hasRedHole) {
+    //   opArray[sign[1]] = {
+    //     x: 10,
+    //     y: width / 2 - 20,
+    //     r: Math.min(r * .7, 8),
+    //     stroke: "#f00"
+    //   }
+
+    //   opArray[sign[0]] = {
+    //     x: 10,
+    //     y: width / 2 + 20,
+    //     r: Math.min(r * .7, 8),
+    //     stroke: "#f00"
+    //   }
+
+    //   // opArray.push({
+    //   //   x: 10,
+    //   //   y: width / 2 - 20,
+    //   //   r: Math.min(r * .7, 8),
+    //   //   stroke: "#f00"
+    //   // })
+    //   // opArray.push({
+    //   //   x: 10,
+    //   //   y: width / 2 + 20,
+    //   //   r: Math.min(r * .7, 8),
+    //   //   stroke: "#f00"
+    //   // })
+    // }
+    return opArray
+}
+
+
+
 /**
  * 沟槽 已排序
  * 
@@ -621,12 +769,12 @@ export const pipeJacking = {
       r: 9
     },
     // row2
-    {
-      x: 0,
-      y: 0,
-      r: 0,
-      stroke: "red"
-    },
+    // {
+    //   x: 0,
+    //   y: 0,
+    //   r: 0,
+    //   stroke: "red"
+    // },
     {
       x: 9 + 75 - 37,
       y: 75 - 5 - 7.5,
@@ -648,12 +796,12 @@ export const pipeJacking = {
       r: 9
     },
     // row3
-    {
-      x: 0,
-      y: 0,
-      r: 0,
-      stroke: "red"
-    },
+    // {
+    //   x: 0,
+    //   y: 0,
+    //   r: 0,
+    //   stroke: "red"
+    // },
     {
       x: 9 + 75 - 37,
       y: 75 - 37,
