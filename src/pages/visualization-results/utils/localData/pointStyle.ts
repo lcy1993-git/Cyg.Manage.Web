@@ -766,7 +766,7 @@ const pointStyle = function (type: string, feature: Feature, selected: boolean, 
     }
 
     let pointStyles = [];
-    if (type.split('_')[0] == 'dismantle' || isDismantle) {
+    if (isDismantle) {
         let dismantleColor = 'rgba(255, 0, 0, 1)';
         let dismantleStyle = new ClassStyle({
             text: new Text({

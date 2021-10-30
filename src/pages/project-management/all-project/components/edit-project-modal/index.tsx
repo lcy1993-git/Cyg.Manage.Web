@@ -52,15 +52,15 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
         disclosureRange:
           projectInfo?.dataSourceType === 2
-            ? '“无需现场数据”项目，免设置此条目'
+            ? undefined
             : projectInfo?.dataSourceType === 1
-            ? '“点位导入”项目，免设置此条目'
+            ? undefined
             : projectInfo?.disclosureRange,
         pileRange:
           projectInfo?.dataSourceType === 2
-            ? '“无需现场数据”项目，免设置此条目'
+            ? undefined
             : projectInfo?.dataSourceType === 1
-            ? '“点位导入”项目，免设置此条目'
+            ? undefined
             : projectInfo?.pileRange,
       });
     },
@@ -80,15 +80,11 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
           disclosureRange:
-            value.disclosureRange === '“无需现场数据”项目，免设置此条目' ||
-            value.disclosureRange === '“点位导入”项目，免设置此条目'
+            value.disclosureRange === undefined || value.disclosureRange === undefined
               ? 0
               : value.disclosureRange,
           pileRange:
-            value.pileRange === '“无需现场数据”项目，免设置此条目' ||
-            value.pileRange === '“点位导入”项目，免设置此条目'
-              ? 0
-              : value.pileRange,
+            value.pileRange === undefined || value.pileRange === undefined ? 0 : value.pileRange,
         });
         message.success('项目信息更新成功');
         setState(false);
