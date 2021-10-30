@@ -162,6 +162,7 @@ const QuotaLibrary: React.FC = () => {
     const {id} = tableSelectRows[0];
     await deleteMaterialMachineLibrary(id);
     refresh();
+    setTableSelectRows([])
     message.success('删除成功');
   };
 

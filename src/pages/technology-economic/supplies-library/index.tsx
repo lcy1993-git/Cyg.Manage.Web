@@ -180,6 +180,7 @@ const SuppliesLibrary: React.FC = () => {
       async onOk() {
         await deleteMaterialLibraryById(tableSelectRows[0].id)
         refresh()
+        setTableSelectRows([])
       },
       onCancel() {
         console.log('Cancel');
