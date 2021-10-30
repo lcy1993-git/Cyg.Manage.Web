@@ -185,6 +185,7 @@ const MaterialMapping: React.FC = () => {
       async onOk() {
         await deleteMaterialMappingQuota(tableSelectRows[0].id)
         refresh()
+        setTableSelectRows([])
       }
     });
   }
