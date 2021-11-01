@@ -121,7 +121,7 @@ const ManualUpload: React.FC<Props> = (props) => {
     getLastFile();
   });
   return (
-    <Spin tip="上传中... " spinning={isSpinning}>
+    <Spin tip="请稍等... " spinning={isSpinning}>
       <div className={styles.content}>
         <div className={styles.title}>说明书管理</div>
         <h4 className={styles.current}>
@@ -163,7 +163,7 @@ const ManualUpload: React.FC<Props> = (props) => {
           destroyOnClose
           onCancel={() => setIsModalVisible(false)}
         >
-          <ManualPreview file={file} fileTitle={`${tabList.find(item=>item.value==id)?.text ?? ''}说明书`}/>
+            <ManualPreview file={file} fileTitle={`${tabList.find(item=>item.value==id)?.text ?? ''}说明书`}/>
           <div style={{display:showFooter ? 'flex' : 'none',justifyContent:'right',marginTop:'15px'}}>
             <Space>
               <Button onClick={()=>setIsModalVisible(false)}>取消</Button>

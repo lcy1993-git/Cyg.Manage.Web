@@ -88,6 +88,7 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId,di
         }
       } else {
         message.error('下载失败!')
+        setDocx([])
       }
     };
     xhr.send();
