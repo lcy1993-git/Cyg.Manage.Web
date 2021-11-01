@@ -31,7 +31,12 @@ const CableSection: React.FC<CableSectionProps> = (params) => {
       message.error(err);
       return [];
     });
-   
+    
+    // console.log('canvas');
+
+    
+    // console.log(data.map(item => item.usageState + "col" + item.col + "row" +item.row));
+    
     
     initCtx(ctx, data, layMode, arrangement, title)
   })

@@ -4,7 +4,9 @@ import {
   getMatrixData,
   getGrooveData,
   pipeMode5,
-  pipeJacking
+  pipeJacking,
+  getMatrixDataRowPipe,
+  getMatrixDataDirectBurial
 } from './canvasData';
 
 interface DataOptions {
@@ -142,23 +144,25 @@ const drawCircular = (data: DataOptions[], ctx: CanvasRenderingContext2D, otherD
 export const initCtx = (ctx: CanvasRenderingContext2D, data: any, layMode: number, arrangement: string | null, title: string) => {
   
   const sortData = sortDataByRowCol(data)
+  
+  
 
   switch (layMode) {
     case 1:
       
       if (arrangement && typeof arrangement === 'string') {
-        const getArray = getMatrixData(parseInt(arrangement[0]), parseInt(arrangement[2]), false);
-        
+        const getArray = getMatrixDataDirectBurial(parseInt(arrangement[0]), parseInt(arrangement[2]), false);
+
         drawCircular(simpleMixIn(getArray, sortData), ctx)
       }
       break;
     case 2:
       if (arrangement && typeof arrangement === 'string') {
-        const getArray = getMatrixData(parseInt(arrangement[0]), parseInt(arrangement[2]), true);
-
+        const getArray = getMatrixDataRowPipe(parseInt(arrangement[0]), parseInt(arrangement[2]), true);
+        
         // const res = mixInArray(getArray, sortData, layMode, parseInt(arrangement[0])) ?? [];
-
-        drawCircular(simpleMixIn(getArray, sortData), ctx)
+        
+        drawCircular(simpleMixIn(getArray, data), ctx)
       }
       break;
     case 3:
