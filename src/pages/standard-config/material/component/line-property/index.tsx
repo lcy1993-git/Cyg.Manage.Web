@@ -62,7 +62,7 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
   };
 
   const tableLeftSlot = (
-    <TableSearch label="物料" width="248px">
+    <TableSearch width="248px">
       <Search
         value={searchKeyWord}
         onChange={(e) => setSearchKeyWord(e.target.value)}

@@ -96,19 +96,25 @@ const Material: React.FC<libParams> = (props) => {
     {
       dataIndex: 'materialId',
       index: 'materialId',
-      title: '编号',
+      title: '物料编码',
       width: 180,
+    },
+    {
+      dataIndex: 'code',
+      index: 'code',
+      title: '物资编号',
+      width: 220,
     },
     {
       dataIndex: 'category',
       index: 'category',
-      title: '类型',
+      title: '物料类型',
       width: 180,
     },
     {
       dataIndex: 'materialName',
       index: 'materialName',
-      title: '名称',
+      title: '物料名称',
       width: 320,
     },
     {
@@ -116,6 +122,12 @@ const Material: React.FC<libParams> = (props) => {
       index: 'spec',
       title: '规格型号',
       width: 320,
+    },
+    {
+      dataIndex: 'materialType',
+      index: 'materialType',
+      title: '类别',
+      width: 180,
     },
     {
       dataIndex: 'unit',
@@ -129,40 +141,27 @@ const Material: React.FC<libParams> = (props) => {
       title: '单重(kg)',
       width: 180,
     },
-    {
-      dataIndex: 'unitPrice',
-      index: 'unitPrice',
-      title: '单价(元)',
-      width: 180,
-    },
+    // {
+    //   dataIndex: 'unitPrice',
+    //   index: 'unitPrice',
+    //   title: '单价(元)',
+    //   width: 180,
+    // },
 
-    {
-      dataIndex: 'materialType',
-      index: 'materialType',
-      title: '类别',
-      width: 180,
-    },
+    // {
+    //   dataIndex: 'usage',
+    //   index: 'usage',
+    //   title: '用途',
+    //   width: 320,
+    // },
 
-    {
-      dataIndex: 'usage',
-      index: 'usage',
-      title: '用途',
-      width: 320,
-    },
+    // {
+    //   dataIndex: 'inspection',
+    //   index: 'inspection',
+    //   title: '物料(运检)',
+    //   width: 240,
+    // },
 
-    {
-      dataIndex: 'inspection',
-      index: 'inspection',
-      title: '物料(运检)',
-      width: 240,
-    },
-
-    {
-      dataIndex: 'code',
-      index: 'code',
-      title: '物资编号',
-      width: 220,
-    },
     {
       dataIndex: 'supplySide',
       index: 'supplySide',
@@ -175,35 +174,29 @@ const Material: React.FC<libParams> = (props) => {
       title: '运输类型',
       width: 240,
     },
-    {
-      dataIndex: 'statisticType',
-      index: 'statisticType',
-      title: '统计类型',
-      width: 240,
-    },
+    // {
+    //   dataIndex: 'statisticType',
+    //   index: 'statisticType',
+    //   title: '统计类型',
+    //   width: 240,
+    // },
     {
       dataIndex: 'kvLevel',
       index: 'kvLevel',
       title: '电压等级',
-      width: 240,
+      width: 160,
     },
     {
       dataIndex: 'forProject',
       index: 'forProject',
       title: '所属工程',
-      width: 240,
+      width: 160,
     },
     {
       dataIndex: 'forDesign',
       index: 'forDesign',
       title: '所属设计',
-      width: 240,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '描述',
-      width: 320,
+      width: 160,
     },
   ];
 
@@ -244,6 +237,7 @@ const Material: React.FC<libParams> = (props) => {
         },
         value,
       );
+
       await addMaterialItem(submitInfo);
       refresh();
       setAddFormVisible(false);
@@ -267,6 +261,13 @@ const Material: React.FC<libParams> = (props) => {
     const ResourceLibData = await run(libId, editDataId);
 
     editForm.setFieldsValue(ResourceLibData);
+  };
+
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset();
+    }
   };
 
   const sureEditMaterial = () => {
@@ -307,6 +308,7 @@ const Material: React.FC<libParams> = (props) => {
       await updateMaterialItem(submitInfo);
       refresh();
       message.success('更新成功');
+      reset();
       editForm.resetFields();
       setEditFormVisible(false);
     });
@@ -315,7 +317,7 @@ const Material: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('material-add') && (
+        {buttonJurisdictionArray?.includes('material-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -338,7 +340,7 @@ const Material: React.FC<libParams> = (props) => {
             <ImportOutlined />
             导入物料
           </Button>
-        )} */}
+        )}
 
         {buttonJurisdictionArray?.includes('material-property') && (
           <Button className={styles.importBtn} onClick={() => openWireAttribute()}>

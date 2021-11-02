@@ -118,20 +118,20 @@ const Component: React.FC<libParams> = (props) => {
     {
       dataIndex: 'componentId',
       index: 'componentId',
-      title: '编号',
+      title: '组件编码',
       width: 180,
     },
     {
       dataIndex: 'componentName',
       index: 'componentName',
-      title: '名称',
+      title: '组件名称',
       width: 380,
     },
     {
       dataIndex: 'componentSpec',
       index: 'componentName',
-      title: '规格型号',
-      width: 320,
+      title: '组件型号',
+      width: 380,
     },
     {
       dataIndex: 'typicalCode',
@@ -148,7 +148,7 @@ const Component: React.FC<libParams> = (props) => {
     {
       dataIndex: 'deviceCategory',
       index: 'deviceCategory',
-      title: '设备类别',
+      title: '设备分类',
       width: 180,
     },
     {
@@ -175,12 +175,6 @@ const Component: React.FC<libParams> = (props) => {
       index: 'forDesign',
       title: '所属设计',
       width: 150,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '描述',
-      width: 220,
     },
   ];
 

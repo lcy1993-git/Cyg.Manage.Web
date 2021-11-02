@@ -32,7 +32,7 @@ export default defineConfig({
       drop_debugger: true,
     },
   },
-  title: "管理端",
+  title: '工程智慧云 | 管理',
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {
@@ -52,23 +52,22 @@ export default defineConfig({
   lessLoader: {
     modifyVars: {
       // 或者可以通过 less 文件覆盖（文件路径为绝对路径）
-      'hack': `true; @import "~@/styles/base.less";`
-    }
+      hack: `true; @import "~@/styles/base.less";`,
+    },
   },
   chainWebpack(config) {
-    config.module.rule('docx-with-file')
+    config.module
+      .rule('docx-with-file')
       .test(/.docx$/)
       .use('url-loader')
-      .loader('file-loader')
+      .loader('file-loader');
 
-    config.module.rule('xls-with-file')
-      .test(/.xls$/)
-      .use('url-loader')
-      .loader('file-loader')
-      
-    config.module.rule('xlsx-with-file')
+    config.module.rule('xls-with-file').test(/.xls$/).use('url-loader').loader('file-loader');
+
+    config.module
+      .rule('xlsx-with-file')
       .test(/.xlsx$/)
       .use('url-loader')
-      .loader('file-loader')
+      .loader('file-loader');
   },
 });
