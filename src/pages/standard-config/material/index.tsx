@@ -379,6 +379,7 @@ const Material: React.FC<libParams> = (props) => {
 
     await deleteMaterialItem({ libId: libId, ids: deleteIds });
     refresh();
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 

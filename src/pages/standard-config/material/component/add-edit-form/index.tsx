@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Input, Tooltip } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
@@ -37,10 +37,6 @@ enum forDesignType {
 
 const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
   const { resourceLibId } = props;
-
-  const [forDesign, setForDesign] = useState<string>('不限');
-  const [forProject, setForProject] = useState<string>('不限');
-  const [kvLevel, setKvLevel] = useState<string>('不限');
 
   const unitSlot = () => {
     return (
@@ -129,51 +125,30 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         label="电压等级"
         name="kvLevel"
         required
+        initialValue="不限"
         rules={[{ required: true, message: '电压等级不能为空' }]}
       >
-        <EnumSelect
-          placeholder="请选择电压等级"
-          enumList={kvLevelType}
-          valueString
-          defaultValue={kvLevel}
-          value={kvLevel}
-          // onChange={(value: any) => {
-          //   console.log(value);
-          //   setKvLevel(value);
-          // }}
-        />
+        <EnumSelect placeholder="请选择电压等级" enumList={kvLevelType} valueString />
       </CyFormItem>
 
       <CyFormItem
         label="所属工程"
         name="forProject"
         required
+        initialValue="不限"
         rules={[{ required: true, message: '所属工程不能为空' }]}
       >
-        <EnumSelect
-          value={forProject}
-          placeholder="请选择所属工程"
-          enumList={forProjectType}
-          valueString
-          defaultValue="不限"
-          onChange={(value: any) => setForProject(value)}
-        />
+        <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
       </CyFormItem>
 
       <CyFormItem
         label="所属设计"
         name="forDesign"
         required
+        initialValue="不限"
         rules={[{ required: true, message: '所属设计不能为空' }]}
       >
-        <EnumSelect
-          value={forDesign}
-          placeholder="请选择所属设计"
-          enumList={forDesignType}
-          valueString
-          defaultValue="不限"
-          onChange={(value: any) => setForDesign(value)}
-        />
+        <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
       </CyFormItem>
 
       <CyFormItem label="加工图" name="chartIds">
