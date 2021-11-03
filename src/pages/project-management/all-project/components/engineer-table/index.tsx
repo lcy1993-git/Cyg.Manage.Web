@@ -18,7 +18,6 @@ import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
 import { Spin } from 'antd';
 import { Pagination } from 'antd';
 import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
-
 import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item';
 import ScrollView from 'react-custom-scrollbars';
 import styles from './index.less';
@@ -430,6 +429,20 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       },
     },
     {
+      title: '现场数据来源',
+      dataIndex: 'dataSourceTypeText',
+      width: 120,
+      render: (record: any) => {
+        return record.dataSourceType === 0 ? (
+          <ImageIcon width={52} height={18} imgUrl="kc.png" />
+        ) : record.dataSourceType === 1 ? (
+          <ImageIcon width={52} height={18} imgUrl="dwdr.png" />
+        ) : (
+          <ImageIcon width={66} height={18} imgUrl="mkc.png" />
+        );
+      },
+    },
+    {
       title: '项目分类',
       dataIndex: 'categoryText',
       width: 100,
@@ -541,11 +554,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'pileRange',
       width: 120,
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-      width: 120,
-    },
+
     {
       title: '导出坐标权限',
       dataIndex: 'exportCoordinate',

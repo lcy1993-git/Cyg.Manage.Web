@@ -92,7 +92,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
-            placeholder="“无需现场数据”项目，免安排勘察人员"
+            placeholder="“免勘察”项目，免安排勘察人员"
             treeDefaultExpandAll
             disabled
           />
@@ -116,7 +116,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
-            placeholder="“点位导入”项目，免安排勘察人员"
+            placeholder="“导入”项目，免安排勘察人员"
             treeDefaultExpandAll
             allowClear
           />

@@ -760,7 +760,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             >
               <InputNumber
                 disabled
-                placeholder="“无需现场数据”项目，免设置此条目"
+                placeholder="“免勘察”项目，免设置此条目"
                 style={{ width: '100%' }}
                 value={disRangeValue}
               />
@@ -777,7 +777,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             >
               <InputNumber
                 disabled
-                placeholder="“点位导入”项目，免设置此条目"
+                placeholder="“导入”项目，免设置此条目"
                 style={{ width: '100%' }}
                 value={disRangeValue}
               />
@@ -798,11 +798,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
                 () => ({
                   validator(_, value) {
-                    if (value <= 99999 && value > -1) {
+                    if (value <= 999 && value > -1) {
                       return Promise.resolve();
                     }
-                    if (value > 99999) {
-                      return Promise.reject('请填写0~99999以内的整数');
+                    if (value > 999) {
+                      return Promise.reject('请填写0~999以内的整数');
                     }
                     return Promise.resolve();
                   },
@@ -837,7 +837,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <InputNumber
                 value={pileRangeValue}
                 disabled
-                placeholder="“无需现场数据”项目，免设置此条目"
+                placeholder="“免勘察”项目，免设置此条目"
                 style={{ width: '100%' }}
               />
             </CyFormItem>
@@ -854,7 +854,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <InputNumber
                 value={pileRangeValue}
                 disabled
-                placeholder="“点位导入”项目，免设置此条目"
+                placeholder="“导入”项目，免设置此条目"
                 style={{ width: '100%' }}
               />
             </CyFormItem>
@@ -874,11 +874,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
                 () => ({
                   validator(_, value) {
-                    if (value <= 99999 && value > -1) {
+                    if (value <= 999 && value > -1) {
                       return Promise.resolve();
                     }
-                    if (value > 99999) {
-                      return Promise.reject('请填写1~99999以内的整数');
+                    if (value > 999) {
+                      return Promise.reject('请填写0~999以内的整数');
                     }
                     return Promise.resolve();
                   },

@@ -32,6 +32,10 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       must: true,
     },
     {
+      title: '现场数据来源',
+      dataIndex: 'dataSourceTypeText',
+    },
+    {
       title: '项目分类',
       dataIndex: 'categoryText',
     },
@@ -91,10 +95,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       title: '桩位范围',
       dataIndex: 'pileRange',
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-    },
+
     {
       title: '导出坐标权限',
       dataIndex: 'exportCoordinate',
@@ -186,6 +187,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
   const defaultConfig = [
     'categoryText',
     'kvLevelText',
+    'dataSourceTypeText',
     'natureTexts',
     'majorCategoryText',
     'constructTypeText',
@@ -197,8 +199,8 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
   ];
 
   const revertConfig = () => {
-    setCheckedList(defaultConfig)
-  }
+    setCheckedList(defaultConfig);
+  };
 
   return (
     <Modal
