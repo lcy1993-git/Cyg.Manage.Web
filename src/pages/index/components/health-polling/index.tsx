@@ -1,5 +1,5 @@
 import { pollingHealth } from '@/services/index';
-import { useInterval, useRequest, useTimeout } from 'ahooks';
+import { useInterval, useRequest } from 'ahooks';
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'umi';
 
