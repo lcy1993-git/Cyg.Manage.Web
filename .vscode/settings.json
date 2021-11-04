@@ -1,0 +1,23 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true,
+    "source.addMissingImports": true
+  },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "cSpell.words": [
+    "camelcase",
+    "colorpicker",
+    "compat",
+    "craco",
+    "entrypoint",
+    "entrypoints",
+    "loglevel",
+    "mockjs",
+    "mousewheel",
+    "pmmmwh",
+    "reduxjs",
+    "svgr"
+  ]
+}

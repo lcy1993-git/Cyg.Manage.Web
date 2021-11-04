@@ -8,7 +8,6 @@ _roadhog-api-doc
 
 # production
 /dist
-/.vscode
 /config/proxy.ts
 
 # misc
@@ -38,3 +37,4 @@ screenshot
 .eslintcache
 
 build
+*.exe.stackdump
