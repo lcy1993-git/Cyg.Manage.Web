@@ -69,6 +69,8 @@ const LayoutHeader: React.FC = () => {
     history.push(path);
   };
   // TODO 获取menu需要根据权限进行处理一下，没权限的不用展示出来
+
+
   const menuContent = menuData
     ?.filter((item) => item.category === 1)
     .map((item, index) => {

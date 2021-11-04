@@ -11,6 +11,7 @@ moment.locale('zh-cn');
 import styles from './index.less';
 import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons';
 import { LayoutProvider } from './context';
+import {useMount} from "ahooks";
 
 const { TabPane } = Tabs;
 

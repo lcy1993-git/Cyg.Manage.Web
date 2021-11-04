@@ -75,13 +75,13 @@ const LoginForm: React.FC = () => {
           localStorage.setItem('Authorization', accessToken);
           const userInfo = await getUserInfoRequest();
           const modules = await getAuthorityModules();
-    
+
           const buttonModules = flatten(modules);
-      
+
           const buttonArray = buttonModules
             .filter((item: any) => item.category === 3)
             .map((item: any) => item.authCode);
-          
+
           localStorage.setItem('functionModules', JSON.stringify(modules));
           localStorage.setItem('userInfo', JSON.stringify(userInfo));
           localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import IndexRoute from '@/pages/index/route';
+import AdminIndexRoute from '@/pages/adminIndex/route';
 import BackStageConfigRoutes from '@/pages/backstage-config/route';
 import JurisdictionConfig from '@/pages/jurisdiction-config/route';
 import SystemConfig from '@/pages/system-config/route';
@@ -27,6 +28,7 @@ interface TabRouteListItem extends RouteListItem {
 
 const routeList: TabRouteListItem[] = [
   ...IndexRoute,
+  ...AdminIndexRoute,
   ...BackStageConfigRoutes,
   ...JurisdictionConfig,
   ...SystemConfig,
