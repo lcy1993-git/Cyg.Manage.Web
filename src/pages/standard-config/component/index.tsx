@@ -1,8 +1,7 @@
 import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined, ImportOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
+import { EditOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons';
+import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -187,6 +186,13 @@ const Component: React.FC<libParams> = (props) => {
     setAddFormVisible(true);
   };
 
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset();
+    }
+  };
+
   const sureAddComponent = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
@@ -263,6 +269,7 @@ const Component: React.FC<libParams> = (props) => {
       refresh();
       message.success('更新成功');
       editForm.resetFields();
+      reset();
       setEditFormVisible(false);
     });
   };
@@ -270,7 +277,7 @@ const Component: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('component-add') && (
+        {buttonJurisdictionArray?.includes('component-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -293,7 +300,7 @@ const Component: React.FC<libParams> = (props) => {
             <ImportOutlined />
             导入组件
           </Button>
-        )} */}
+        )}
 
         {buttonJurisdictionArray?.includes('component-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>
@@ -329,15 +336,19 @@ const Component: React.FC<libParams> = (props) => {
 
     await deleteComponentItem(libId, selectedDataId);
     refresh();
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 
   //展示组件明细
   const openDetail = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请先选择资源库');
-    //   return;
-    // }
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.warning('请选择单行数据查看');
+      return;
+    }
     setDetailVisible(true);
   };
 

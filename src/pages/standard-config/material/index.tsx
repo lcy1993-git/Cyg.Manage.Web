@@ -1,8 +1,7 @@
 import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined, ImportOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
+import { EditOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons';
+import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useState, useEffect } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -13,7 +12,7 @@ import {
   addMaterialItem,
 } from '@/services/resource-config/material';
 import { isArray } from 'lodash';
-import UrlSelect from '@/components/url-select';
+// import UrlSelect from '@/components/url-select';
 import MaterialForm from './component/add-edit-form';
 import LineProperty from './component/line-property';
 import CableMapping from './component/cable-mapping';

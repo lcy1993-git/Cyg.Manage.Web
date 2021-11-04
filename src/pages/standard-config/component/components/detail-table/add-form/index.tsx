@@ -1,18 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import EditFormTable from '@/components/edit-form-table';
 import { Form, Input } from 'antd';
 import UrlSelect from '@/components/url-select';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
 import Scrollbars from 'react-custom-scrollbars';
+import EnumSelect from '@/components/enum-select';
 
 interface AddDetailParams {
   resourceLibId: string;
   addForm: any;
 }
+
+enum componentType {
+  '物料',
+  '组件',
+}
+
 const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
   const { resourceLibId, addForm } = props;
+  const [type, setType] = useState<string>();
+
+  console.log(type, '323');
 
   const columns = [
+    {
+      title: '类型',
+      dataIndex: 'type',
+      index: 'type',
+      width: 240,
+      render: () => (
+        <EnumSelect
+          placeholder="请选择类型"
+          enumList={componentType}
+          onChange={(value: any) => setType(value)}
+        />
+      ),
+    },
     {
       title: (
         <>
@@ -33,7 +56,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
             allowClear
             requestType="post"
             postType="query"
-            placeholder="--所属组件--"
+            placeholder={type === '0' ? '--所属组件--' : '123'}
             libId={resourceLibId}
           />
         );
@@ -45,15 +68,16 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       dataIndex: 'componentId',
       index: 'componentId',
       width: 400,
-      render: () => <CascaderUrlSelect urlHead="Component" libId={resourceLibId} />,
+      render: () => {
+        return (
+          <CascaderUrlSelect
+            urlHead={type === '0' ? 'Material' : 'Component'}
+            libId={resourceLibId}
+          />
+        );
+      },
     },
-    {
-      title: '物料(或组件选其一)',
-      dataIndex: 'materialId',
-      index: 'materialId',
-      width: 400,
-      render: () => <CascaderUrlSelect urlHead="Material" libId={resourceLibId} />,
-    },
+
     {
       title: (
         <>

@@ -1,9 +1,8 @@
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
 import { Input, Button, message, Form, Modal } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Popconfirm } from 'antd';
+import React, { useState } from 'react';
+import { PlusOutlined, EditOutlined } from '@ant-design/icons';
 // import styles from './index.less';
 import { isArray } from 'lodash';
 import {
@@ -79,28 +78,22 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'componentId',
-      index: 'componentId',
-      title: '所属组件编码',
-      width: 280,
-    },
-    {
-      dataIndex: 'componentName',
-      index: 'componentName',
-      title: '所属组件名称',
-      width: 450,
-    },
-
-    {
       dataIndex: 'itemId',
       index: 'itemId',
       title: '物料/组件编码',
       width: 180,
     },
     {
-      dataIndex: 'itemName',
-      index: 'itemName',
+      dataIndex: 'componentName',
+      index: 'componentName',
       title: '物料/组件名称',
+      width: 450,
+    },
+
+    {
+      dataIndex: 'spec',
+      index: 'spec',
+      title: '物料/组件型号',
       width: 350,
     },
 
@@ -230,7 +223,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => searchComponent()}
-        // buttonRightContentSlot={() => tableRightSlot}
+        buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/ComponentDetail/GetPageList"
         columns={columns}
