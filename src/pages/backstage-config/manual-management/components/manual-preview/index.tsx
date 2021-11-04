@@ -19,7 +19,6 @@ const ManualPreview: React.FC<Props> = (props) => {
 
   // 给所有的h标签加上锚点，并且根据滚动条让锚点点亮
   const loadSuccessEvent = (text:string) => {
-    console.log('text',text)
     onSuccess?.(text)
     const h1Element = document.getElementsByTagName("h1") ?? [];
     const h2Element = document.getElementsByTagName("h2") ?? [];
@@ -119,6 +118,10 @@ const ManualPreview: React.FC<Props> = (props) => {
   })
   useMount(()=>{
     turnFileToBlob(file)
+    console.log('start')
+    setTimeout(()=>{
+      setPageLoading(false)
+    },2000)
   })
   return (
     <div className={styles.pageShowFile} style={{height:height}}>

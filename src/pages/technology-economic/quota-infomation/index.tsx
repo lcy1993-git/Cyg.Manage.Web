@@ -132,7 +132,6 @@ const QuotaProject = () => {
   const {data: chapterData, run: chapterRun} = useRequest<string>(getQuotaLibraryCatalogDescription, {manual: true});
 
   useEffect(() => {
-    console.log('catalogueId',catalogueId)
     catalogueId && chapterRun(catalogueId);
   }, [catalogueId])
 
