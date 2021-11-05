@@ -1,18 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
-import 'ol/ol.css';
-import GeometryType from 'ol/geom/GeometryType'
-import Map from 'ol/Map';
-import View from 'ol/View';
-import { Draw, Modify, Snap } from 'ol/interaction';
-import { Source, Vector as VectorSource } from 'ol/source';
-import { Layer } from 'ol/layer';
 import { useCurrentRef } from '@/utils/hooks';
-import Geometry from 'ol/geom/Geometry';
-import BaseEvent from 'ol/events/Event';
 import { useEventEmitter, useMount } from 'ahooks';
-import { getVectorLayer, vecLayer } from './layers';
+import { Feature } from 'ol';
+import BaseEvent from 'ol/events/Event';
+import Geometry from 'ol/geom/Geometry';
+import GeometryType from 'ol/geom/GeometryType';
+import LineString from 'ol/geom/LineString';
+import { Draw, Modify, Snap } from 'ol/interaction';
+import { Layer } from 'ol/layer';
+import Map from 'ol/Map';
+import 'ol/ol.css';
 import * as proj from 'ol/proj';
+import { Source, Vector as VectorSource } from 'ol/source';
+import View from 'ol/View';
+import { useEffect, useRef, useState } from 'react';
 import { drawEnd } from './draw';
+import { getVectorLayer, vecLayer } from './layers';
 
 interface interActionRef {
   draw?: Draw;
@@ -22,10 +24,7 @@ interface interActionRef {
   isDraw?: boolean;
 }
 
-declare type MapLayerType = "STREET" | "SATELLITE";
-
 const HistoryMapBase = () => {
-
 
   type MapLayerType = "STREET" | "SATELLITE";
   /**
@@ -155,6 +154,15 @@ const HistoryMapBase = () => {
   }
 
   function test() {
+    // 读取GeoJSON数据
+    // new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!)
+    const json = JSON.parse(window.localStorage.getItem("json")!)
+    console.log(json);
+    const features = json.features.map((f) => {
+      return new Feature<LineString>({
+        geometry: new LineString([])
+      })
+    })
   }
 
   return (
