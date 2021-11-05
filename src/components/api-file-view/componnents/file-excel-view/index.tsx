@@ -1,23 +1,19 @@
-import { useMount } from 'ahooks';
-import React from 'react';
+import { useMount } from 'ahooks'
+import React from 'react'
 
-const jquery = require('jquery');
+const jquery = require('jquery')
 // @ts-ignore
-window.jQuery = jquery;
+window.jQuery = jquery
 // @ts-ignore
-window.$ = jquery;
-const uuid = require('node-uuid');
+window.$ = jquery
+const uuid = require('node-uuid')
 // @ts-ignore
-window.uuid = uuid;
-require('jquery-mousewheel');
-require('spectrum-colorpicker');
-require('@/utils/lucky-sheet/plugins/css/pluginsCss.css');
-require('@/utils/lucky-sheet/plugins/plugins.css');
-require('@/utils/lucky-sheet/css/luckysheet.css');
-require('@/utils/lucky-sheet/assets/iconfont/iconfont.css');
-require('@/utils/lucky-sheet/plugins/js/plugin.js');
-const luckysheet = require('@/utils/lucky-sheet/luckysheet.umd.js');
-const luckyExcel = require('@/utils/lucky-sheet/luckyexcel.umd');
+window.uuid = uuid
+require('jquery-mousewheel')
+require('spectrum-colorpicker')
+
+const luckysheet = window.luckysheet
+const luckyExcel = window.LuckyExcel
 
 const onlyViewTableConfig = {
   container: 'onlyViewComponent',
@@ -60,15 +56,15 @@ const onlyViewTableConfig = {
     hide: false, // 隐藏，取消隐藏
     move: false, // 向左移，向右移
   },
-};
+}
 
 interface XlsxViewerProps {
-  url: string;
-  name?: string;
+  url: string
+  name?: string
 }
 
 const XlsxViewer: React.FC<XlsxViewerProps> = (props) => {
-  const { url, name = '' } = props;
+  const { url, name = '' } = props
 
   const initTableData = () => {
     luckyExcel.transformExcelToLuckyByUrl(
@@ -78,25 +74,25 @@ const XlsxViewer: React.FC<XlsxViewerProps> = (props) => {
       function (exportJson: any) {
         if (exportJson.sheets == null || exportJson.sheets.length == 0) {
           alert(
-            'Failed to read the content of the excel file, currently does not support xls files!',
-          );
-          return;
+            'Failed to read the content of the excel file, currently does not support xls files!'
+          )
+          return
         }
         luckysheet.create({
           ...onlyViewTableConfig,
           data: exportJson.sheets,
-        });
-      },
-    );
-  };
+        })
+      }
+    )
+  }
 
   useMount(() => {
-    initTableData();
-  });
+    initTableData()
+  })
 
   return (
     <div id="onlyViewComponent" style={{ width: '100%', height: '800px', position: 'relative' }} />
-  );
-};
+  )
+}
 
-export default XlsxViewer;
+export default XlsxViewer

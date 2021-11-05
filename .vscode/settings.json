@@ -19,6 +19,8 @@
     "esbuild",
     "flowtype",
     "loglevel",
+    "luckyexcel",
+    "luckysheet",
     "mockjs",
     "mousewheel",
     "pmmmwh",

@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "cross-env REACT_APP_ENV=dev MOCK=none umi dev",
     "build": "umi build",
+    "serve": "serve dist",
     "analyze": "cross-env ANALYZE=1 umi build",
     "lint": "run-s lint:*",
     "lint:js": "eslint --fix . --ext .js,.jsx,.ts,.tsx",
@@ -140,6 +141,7 @@
     "prettier": "^2.0.1",
     "pro-download": "1.0.1",
     "puppeteer-core": "^5.0.0",
+    "serve": "^13.0.2",
     "spectrum-colorpicker": "^1.8.1",
     "stylelint": "^14.0.1",
     "typescript": "^4.0.3"
