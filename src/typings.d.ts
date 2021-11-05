@@ -31,6 +31,11 @@ interface Window {
   /** lucky-sheet */
   luckysheet: any
   LuckyExcel: any
+  /** jquery */
+  $: jQuery
+  jQuery: jQuery
+  /** uuid */
+  uuid: v4
 }
 
 declare let ga: Function

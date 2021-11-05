@@ -1,16 +1,14 @@
 import { useMount } from 'ahooks'
+import * as jquery from 'jquery'
+import jqueryMousewheel from 'jquery-mousewheel'
 import React from 'react'
+import 'spectrum-colorpicker'
+import { v4 as uuid } from 'uuid'
 
-const jquery = require('jquery')
-// @ts-ignore
+jqueryMousewheel(jquery)
 window.jQuery = jquery
-// @ts-ignore
 window.$ = jquery
-const uuid = require('node-uuid')
-// @ts-ignore
 window.uuid = uuid
-require('jquery-mousewheel')
-require('spectrum-colorpicker')
 
 const luckysheet = window.luckysheet
 const luckyExcel = window.LuckyExcel
