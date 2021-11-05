@@ -24,10 +24,16 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
 
   const columns = [
     {
-      title: '类型',
+      title: (
+        <>
+          <span style={{ color: '#e56161' }}>* </span>
+          <span>类型</span>
+        </>
+      ),
       dataIndex: 'type',
       index: 'type',
       width: 240,
+
       render: () => (
         <EnumSelect
           placeholder="请选择类型"
@@ -36,38 +42,36 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
         />
       ),
     },
+
     {
       title: (
         <>
           <span style={{ color: '#e56161' }}>* </span>
-          <span>所属组件</span>
+          <span>物料/组件名称</span>
         </>
       ),
-      dataIndex: 'belongComponentId',
-      index: 'belongComponentId',
-      width: 180,
+      dataIndex: 'componentId',
+      index: 'componentId',
+      width: 240,
       render: () => {
         return (
-          <UrlSelect
-            requestSource="resource"
-            url="/Component/GetList"
-            valuekey="componentId"
-            titlekey="componentName"
-            allowClear
-            requestType="post"
-            postType="query"
-            placeholder={type === '0' ? '--所属组件--' : '123'}
+          <CascaderUrlSelect
+            urlHead={type === '0' ? 'Material' : 'Component'}
             libId={resourceLibId}
           />
         );
       },
-      rules: [{ required: true, message: '所属组件不能为空' }],
     },
     {
-      title: '组件(或物料选其一)',
+      title: (
+        <>
+          <span style={{ color: '#e56161' }}>* </span>
+          <span>物料/组件规格</span>
+        </>
+      ),
       dataIndex: 'componentId',
       index: 'componentId',
-      width: 400,
+      width: 240,
       render: () => {
         return (
           <CascaderUrlSelect

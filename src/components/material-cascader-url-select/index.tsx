@@ -13,7 +13,8 @@ interface CascaderProps {
 }
 
 const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
-  const { onChange, libId, requestSource = 'resource', urlHead, value } = props;
+  const { onChange, libId, requestSource = 'resource', urlHead = '', value } = props;
+  console.log(urlHead, '23');
 
   const [id, setId] = useState<string>();
   const [name, setName] = useState<string>();
@@ -44,7 +45,10 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   /**
    * 根据上面名字获取spec的id
    */
-  const { data: specReponseData } = useRequest(fetchFn);
+  const { data: specReponseData } = useRequest(fetchFn, {
+    // ready: !urlHead,
+    refreshDeps: [urlHead],
+  });
 
   const onSpecChange = (value: string) => {
     if (value) {
@@ -90,7 +94,7 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
           </Select.Option>
         ))}
       </Select>
-      <UrlSelect
+      {/* <UrlSelect
         defaultData={nameReponseData}
         valuekey={key}
         titlekey={speckey}
@@ -100,7 +104,7 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
         className={styles.selectItem}
         onChange={(value) => onSpecChange(value as string)}
         libId={libId}
-      />
+      /> */}
     </div>
   );
 });
