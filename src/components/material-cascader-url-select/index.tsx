@@ -14,7 +14,6 @@ interface CascaderProps {
 
 const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   const { onChange, libId, requestSource = 'resource', urlHead = '', value } = props;
-  console.log(urlHead, '23');
 
   const [id, setId] = useState<string>();
   const [name, setName] = useState<string>();

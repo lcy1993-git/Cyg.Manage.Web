@@ -100,6 +100,12 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
         { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
       ],
     },
+    {
+      title: '单位',
+      dataIndex: 'unit',
+      index: 'unit',
+      width: 140,
+    },
   ];
 
   return (
