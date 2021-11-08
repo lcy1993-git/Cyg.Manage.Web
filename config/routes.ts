@@ -1,4 +1,6 @@
-export default [
+import { IConfigFromPlugins } from '@/.umi/core/pluginConfig'
+
+const routes: IConfigFromPlugins['routes'] = [
   { path: '/', redirect: '/login' },
   { path: '/home/login', redirect: '/login' },
   { path: '/Home/Login', redirect: '/login' },
@@ -13,4 +15,6 @@ export default [
     component: '../layouts/index.tsx',
     routes: [{ path: '/index', component: './index' }],
   },
-];
+]
+
+export default routes

@@ -19,7 +19,6 @@ yarn-error.log
 .idea
 .zip
 *bak
-.vscode
 
 # visual studio code
 .history
@@ -36,5 +35,4 @@ screenshot
 .firebase
 .eslintcache
 
-build
 *.exe.stackdump
