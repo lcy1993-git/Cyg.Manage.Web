@@ -2,7 +2,6 @@ import Geometry from "ol/geom/Geometry";
 import TileLayer from "ol/layer/Tile";
 import VectorLayer from "ol/layer/Vector";
 import { Vector as VectorSource, XYZ } from "ol/source";
-import { vectorLayerStyle } from "../styles";
 
 // 卫星图层
 export const vecLayer = new TileLayer({
@@ -15,5 +14,5 @@ export const vecLayer = new TileLayer({
 // Vector层
 export const getVectorLayer = (source: VectorSource<Geometry>) => new VectorLayer({
   source: source,
-  style: vectorLayerStyle
+  // style: vectorLayerStyle
 });

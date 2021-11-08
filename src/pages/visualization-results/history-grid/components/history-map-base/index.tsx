@@ -1,20 +1,28 @@
+import img from '@/assets/icon-image/survey-track.png';
 import { useCurrentRef } from '@/utils/hooks';
-import { useEventEmitter, useMount } from 'ahooks';
+import { useEventEmitter, useMount, useUpdateEffect } from 'ahooks';
+import { FeatureCollection } from 'geojson';
 import { Feature } from 'ol';
 import BaseEvent from 'ol/events/Event';
+import GeoJSON from 'ol/format/GeoJSON';
 import Geometry from 'ol/geom/Geometry';
 import GeometryType from 'ol/geom/GeometryType';
 import LineString from 'ol/geom/LineString';
+import Point from 'ol/geom/Point';
 import { Draw, Modify, Snap } from 'ol/interaction';
+import { LineCoordType, PointCoordType } from 'ol/interaction/Draw';
 import { Layer } from 'ol/layer';
 import Map from 'ol/Map';
 import 'ol/ol.css';
 import * as proj from 'ol/proj';
 import { Source, Vector as VectorSource } from 'ol/source';
+import { Icon, Style } from 'ol/style';
 import View from 'ol/View';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { drawEnd } from './draw';
 import { getVectorLayer, vecLayer } from './layers';
+import { featureStyle } from './styles';
+
 
 interface interActionRef {
   draw?: Draw;
@@ -68,11 +76,9 @@ const HistoryMapBase = () => {
   });
 
   // 处理geometryType变化
-  useEffect(() => {
-    if (ref.current && geometryType) {
-      removeaddInteractions()
-      addInteractions(geometryType)
-    }
+  useUpdateEffect(() => {
+    removeaddInteractions()
+    if (geometryType) addInteractions(geometryType)
   }, [geometryType]);
 
   // beforinit
@@ -111,21 +117,29 @@ const HistoryMapBase = () => {
   // 绑定事件
   function bindEvent() {
     mapRef.map.on("click", (e: BaseEvent) => {
-      console.log("click", e);
     })
 
     // 地图拖动事件
     mapRef.map.on('moveend', (e: BaseEvent) => {
-      console.log("moveend", e);
-      console.log(interActionRef.source);
     })
   }
 
   // 初始化interaction
   function initInterAction() {
-    interActionRef.modify = new Modify({ source: interActionRef.source })
-    interActionRef.modify.on(["modifyend", "modifystart"], function (e) {
-      console.log("编辑时回调", e);
+    interActionRef.modify = new Modify({ source: interActionRef.source, style: new Style({
+      image: new Icon({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: img,
+        scale: .8
+      }),
+    }) ,
+    // 设置容差
+    pixelTolerance: 25
+  })
+    interActionRef.modify.on(["modifyend"], function (e) {
+      e.features.getArray()[0].setStyle(featureStyle.type2)
     });
     mapRef.map.addInteraction(interActionRef.modify);
   }
@@ -154,24 +168,50 @@ const HistoryMapBase = () => {
   }
 
   function test() {
+    interActionRef.source?.clear();
     // 读取GeoJSON数据
     // new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!)
-    const json = JSON.parse(window.localStorage.getItem("json")!)
-    console.log(json);
-    const features = json.features.map((f) => {
-      return new Feature<LineString>({
-        geometry: new LineString([])
-      })
+    const json = JSON.parse(window.localStorage.getItem("json")!) as FeatureCollection
+    const features = (json.features).map(({geometry}) => {
+
+      const feature = new Feature();
+      
+      if(geometry.type === GeometryType.LINE_STRING) {
+
+        feature.setGeometry(new LineString(geometry.coordinates as LineCoordType));
+        feature.setStyle(featureStyle.type1)
+
+      }else if (geometry.type === GeometryType.POINT){
+        const point = new Point(geometry.coordinates as PointCoordType);
+        feature.setGeometry(point)
+        feature.setStyle(featureStyle.type2)
+      }
+      return feature
     })
+
+    
+    interActionRef.source?.addFeatures(features)
+  }
+
+  const loadJSON = () => {
+    console.log(JSON.parse(
+      new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!)
+    ));
+    
+    localStorage.setItem("json",
+      new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!)
+    )
   }
 
   return (
     <div>
       <div ref={ref} style={{ height: window.innerHeight - 300, width: window.innerWidth }}></div>
       <div>onClick</div>
-      <span onClick={() => setGeometryType(GeometryType.POINT)}>Point</span>
-      <span style={{ color: "red" }} onClick={() => setGeometryType(GeometryType.LINE_STRING)}>Line</span>
-      <span onClick={test}>test</span>
+      <button onClick={() => setGeometryType(GeometryType.POINT)}>Point</button>
+      <button style={{ color: "red" }} onClick={() => setGeometryType(GeometryType.LINE_STRING)}>Line</button>
+      <button style={{ color: "red" }} onClick={() => setGeometryType("")}>None</button>
+      <button onClick={loadJSON}>loadJSON</button>
+      <button onClick={test}>test</button>
     </div>
   );
 }

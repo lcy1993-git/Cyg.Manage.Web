@@ -1,27 +1,26 @@
+import '@/assets/icon/webgisIconFont.css';
+import arrowSrc from '@/assets/image/webgis/arrow.png';
+import markImageSrc8 from "@/assets/image/webgis/img_地物_其他.png";
+import { default as markImageSrc4, default as markImageSrc5 } from "@/assets/image/webgis/img_地物_房屋.png";
+import markImageSrc2 from "@/assets/image/webgis/img_地物_河流.png";
+import markImageSrc3 from "@/assets/image/webgis/img_地物_湖塘.png";
+import markImageSrc6 from "@/assets/image/webgis/img_地物_电力线.png";
+import markImageSrc7 from "@/assets/image/webgis/img_地物_通讯线.png";
+import markImageSrc1 from "@/assets/image/webgis/img_地物_道路.png";
+import markerIconSrc from '@/assets/image/webgis/marker-icon.png';
+import { Feature } from 'ol';
+import { Color } from 'ol/color';
+import { ColorLike } from 'ol/colorlike';
+import Point from 'ol/geom/Point';
+import Circle from 'ol/style/Circle';
 import Fill from 'ol/style/Fill';
+import Icon from 'ol/style/Icon';
+import RegularShape from 'ol/style/RegularShape';
 import Stroke from 'ol/style/Stroke';
 import ClassStyle from 'ol/style/Style';
 import Text from 'ol/style/Text';
-import RegularShape from 'ol/style/RegularShape';
-import Circle from 'ol/style/Circle';
-import { Color } from 'ol/color';
-import { ColorLike } from 'ol/colorlike';
-import Icon from 'ol/style/Icon';
-import Point from 'ol/geom/Point';
-
 import Styles from './Styles';
-import '@/assets/icon/webgisIconFont.css';
-import markerIconSrc from '@/assets/image/webgis/marker-icon.png';
-import arrowSrc from '@/assets/image/webgis/arrow.png';
-import markImageSrc1 from "@/assets/image/webgis/img_地物_道路.png";
-import markImageSrc2 from "@/assets/image/webgis/img_地物_河流.png";
-import markImageSrc3 from "@/assets/image/webgis/img_地物_湖塘.png";
-import markImageSrc4 from "@/assets/image/webgis/img_地物_房屋.png";
-import markImageSrc5 from "@/assets/image/webgis/img_地物_房屋.png";
-import markImageSrc6 from "@/assets/image/webgis/img_地物_电力线.png";
-import markImageSrc7 from "@/assets/image/webgis/img_地物_通讯线.png";
-import markImageSrc8 from "@/assets/image/webgis/img_地物_其他.png";
-import { Feature } from 'ol';
+
 
 export interface Options {
     color?: Color | ColorLike;
@@ -1227,4 +1226,4 @@ export {
     zero_guy_style,
     trackStyle,
     trackLineStyle,
-}
+};
