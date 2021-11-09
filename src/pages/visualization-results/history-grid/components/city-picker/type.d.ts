@@ -9,3 +9,10 @@ export interface City {
 export interface Province extends City {
   cities: City[]
 }
+
+export type CityWithProvince = City & { province: Omit<Province, 'cities'> }
+
+export type LetterWithProvinces = {
+  letter: string
+  provinces: Province[]
+}

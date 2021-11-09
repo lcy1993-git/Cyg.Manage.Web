@@ -1,59 +1,63 @@
-import { CSSProperties, FC } from 'react'
+import { FC } from 'react'
 import CityList from './CityList'
 import LetterPicker from './LetterPicker'
 import rawData from './province-city.json'
-import { Province } from './type'
+import { CityWithProvince } from './type'
+import useCityPicker from './useCityPicker'
 
-/**
- * 省市数据
- * @see https://github.com/xiangyuecn/AreaCity-JsSpider-StatsGov
- */
-const processData = (rawData: any) => {
-  const provinces: Province[] = Object.values(rawData)
-    .map(({ c, y, n }: any) => {
-      return {
-        cities: c ? Object.values(c).map((c: any) => ({ name: c.n, letter: c.y })) : c,
-        name: n,
-        letter: y,
-      }
-    })
-    .sort((a, b) => a.letter.codePointAt(0)! - b.letter.codePointAt(0)!)
+export type CityPickerProps = {
+  onSelect: (city: CityWithProvince) => void
+}
 
-  const letters = [...new Set(provinces.map((d) => d.letter))]
-
-  const data = letters.map((letter) => {
-    return {
-      letter,
-      provinces: provinces.filter((p) => p.letter === letter),
-    }
-  })
-
-  return {
+const CityPicker: FC<CityPickerProps> = ({ children, ...rest }) => {
+  const {
     letters,
     data,
-  }
-}
+    selectedCityLocation,
+    selectedCity,
+    selectedLetter,
+    onSelectCity,
+    onSelectLetter,
+  } = useCityPicker({
+    ...rest,
+    rawData,
+  })
 
-const { letters, data } = processData(rawData)
-
-export interface CityPickerProps {
-  className?: string
-  style?: CSSProperties
-}
-
-const CityPicker: FC<CityPickerProps> = ({ className, style }) => {
   return (
-    <div className={className} style={style}>
+    <div
+      style={{
+        border: '#DBDBDB',
+        borderWidth: '1px',
+        borderStyle: 'solid',
+        width: '350px',
+        userSelect: 'none',
+      }}
+    >
+      <div
+        style={{
+          padding: '.3rem .5rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div>
+          <span style={{ color: '#505050' }}>选择城市：</span>
+          <span style={{ color: '#1F1F1F' }}>{selectedCityLocation}</span>
+        </div>
+        {children}
+      </div>
       <LetterPicker
-        onSelect={(v) => {
-          console.log(v)
+        onSelect={(l) => {
+          onSelectLetter(l)
         }}
         letters={letters}
       />
       <CityList
-        onSelect={(v) => {
-          console.log(v)
+        onSelect={(c, p) => {
+          onSelectCity({ ...c, province: p })
         }}
+        selectedCity={selectedCity}
+        selectedLetter={selectedLetter}
         data={data}
       />
     </div>

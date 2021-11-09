@@ -5,7 +5,13 @@ const HistoryGrid = () => {
   return (
     <div>
       <HistoryMapBase />
-      <CityPicker />
+      <CityPicker
+        onSelect={(city) => {
+          console.log(city)
+        }}
+      >
+        <span style={{ cursor: 'pointer' }}>定位</span>
+      </CityPicker>
     </div>
   )
 }
