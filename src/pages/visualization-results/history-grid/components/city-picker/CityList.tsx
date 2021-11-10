@@ -29,13 +29,7 @@ const CityList = ({ selectedLetter, selectedCity, data, onSelect }: CityListProp
   }, [selectedLetter])
 
   return (
-    <div
-      style={{
-        width: '350px',
-        height: '350px',
-        overflowY: 'auto',
-      }}
-    >
+    <div className="overflow-y-auto pl-2 pt-2" style={{ width: '350px', height: '350px' }}>
       <CityListContext.Provider value={{ selectedCity, onSelect }}>
         {data.map((item) => (
           <CorrespondingProvinces key={item.letter} {...item} />
@@ -47,31 +41,14 @@ const CityList = ({ selectedLetter, selectedCity, data, onSelect }: CityListProp
 
 const CorrespondingProvinces = ({ letter, provinces }: CorrespondingProvincesProps) => {
   return (
-    <div
-      id={`${ID_PREFIX}${letter.toUpperCase()}`}
-      style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        padding: '.5rem 0 .5rem .5rem',
-      }}
-    >
-      <div
-        style={{
-          flexShrink: 0,
-          width: '2rem',
-          textAlign: 'left',
-          fontSize: '1.2rem',
-          fontWeight: 600,
-          color: '#B2B2B2',
-          lineHeight: '1.2rem',
-        }}
-      >
+    <div id={`${ID_PREFIX}${letter.toUpperCase()}`} className="flex items-start">
+      <div className="flex-shrink-0 w-8 text-left text-xl font-semibold leading-5 text-gray-400">
         {letter.toUpperCase()}
       </div>
       <div>
         {provinces.map(({ cities, ...rest }) => (
-          <div key={rest.name} style={{ display: 'flex' }}>
-            <div style={{ flexShrink: 0, color: '#1F1F1F', width: '3.5rem' }}>{rest.name}：</div>
+          <div key={rest.name} className="flex">
+            <div className="flex-shrink-0 w-14 text-gray-900">{rest.name}：</div>
             <CorrespondingCities cities={cities} {...rest} />
           </div>
         ))}
@@ -84,16 +61,14 @@ const CorrespondingCities = ({ cities, ...rest }: CorrespondingCitiesProps) => {
   const { onSelect, selectedCity } = useContext(CityListContext)
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'stretch' }}>
+    <div className="flex flex-wrap">
       {cities.map((c) => (
         <span
-          style={{
-            margin: '0 .5rem .2rem .2rem',
-            padding: '0 .2rem',
-            cursor: 'pointer',
-            color: selectedCity?.name === c.name ? '#0E7B3B' : '#1F1F1F',
-            backgroundColor: selectedCity?.name === c.name ? '#E4F5EB' : 'unset',
-          }}
+          className={`mx-1 mb-2 px-1 cursor-pointer ${
+            selectedCity?.name === c.name
+              ? 'text-theme-green bg-theme-green-light'
+              : 'text-gray-800'
+          }`}
           key={c.name}
           onClick={() => onSelect(c, rest)}
         >

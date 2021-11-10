@@ -3,7 +3,7 @@ import HistoryMapBase from './components/history-map-base'
 
 const HistoryGrid = () => {
   return (
-    <div>
+    <div className="">
       <HistoryMapBase />
       <CityPicker
         onSelect={(city) => {

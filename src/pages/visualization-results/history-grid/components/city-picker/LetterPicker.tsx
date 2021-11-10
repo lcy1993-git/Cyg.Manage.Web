@@ -7,24 +7,11 @@ type LetterPickerProps = {
 
 const LetterPicker = ({ letters, onSelect }: LetterPickerProps) => {
   return (
-    <div
-      style={{
-        padding: '.3rem 0 .3rem .5rem',
-        border: '#DBDBDB',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        borderLeft: 'none',
-        borderRight: 'none',
-      }}
-    >
-      <span style={{ color: '#505050' }}>首字母：</span>
-      <span style={{ color: '#0E7B3B', backgroundColor: '#E4F5EB', marginRight: '.4rem' }}>#</span>
+    <div className="pl-2 py-1 border border-gray-300 border-solid border-l-0 border-r-0">
+      <span className="text-gray-600">首字母：</span>
+      <span className="text-theme-green bg-theme-green-light px-1 mr-2">#</span>
       {letters.map((l) => (
-        <span
-          onClick={() => onSelect(l)}
-          style={{ marginRight: '.4rem', padding: '0 .1rem', cursor: 'pointer', color: '#1F1F1F' }}
-          key={l}
-        >
+        <span onClick={() => onSelect(l)} className="mr-2 cursor-pointer text-gray-900" key={l}>
           {l.toUpperCase()}
         </span>
       ))}

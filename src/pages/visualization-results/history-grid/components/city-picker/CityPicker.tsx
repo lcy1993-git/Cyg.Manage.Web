@@ -24,25 +24,11 @@ const CityPicker: FC<CityPickerProps> = ({ children, ...rest }) => {
   })
 
   return (
-    <div
-      style={{
-        border: '#DBDBDB',
-        borderWidth: '1px',
-        borderStyle: 'solid',
-        width: '350px',
-        userSelect: 'none',
-      }}
-    >
-      <div
-        style={{
-          padding: '.3rem .5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-        }}
-      >
+    <div className="border border-gray-300 border-solid select-none" style={{ width: '350px' }}>
+      <div className="py-1 px-2 flex justify-between">
         <div>
-          <span style={{ color: '#505050' }}>选择城市：</span>
-          <span style={{ color: '#1F1F1F' }}>{selectedCityLocation}</span>
+          <span className="text-gray-500">选择城市：</span>
+          <span className="text-gray-900">{selectedCityLocation}</span>
         </div>
         {children}
       </div>

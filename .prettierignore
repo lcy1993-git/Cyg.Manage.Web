@@ -1,4 +1,7 @@
 public
 assets
+dist
+.umi
+iconfont.js
 luckySheet
 province-city.json
