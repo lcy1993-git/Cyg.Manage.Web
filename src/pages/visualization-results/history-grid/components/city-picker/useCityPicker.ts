@@ -4,11 +4,11 @@ import { CityWithProvince, Province } from './type'
 
 type useCityPickerProps = CityPickerProps & { rawData: unknown }
 
-const useCityPicker = ({ rawData, onSelect }: useCityPickerProps) => {
+const useCityPicker = ({ rawData, onSelect, value }: useCityPickerProps) => {
   const { letters, data } = processData(rawData)
 
   const [selectedLetter, setSelectedLetter] = useState<string>('a')
-  const [selectedCity, setSelectedCity] = useState<CityWithProvince>()
+  const [selectedCity, setSelectedCity] = useState<CityWithProvince | undefined>(value)
 
   const selectedCityLocation = useMemo(() => {
     if (!selectedCity) {

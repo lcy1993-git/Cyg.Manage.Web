@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { CSSProperties, FC } from 'react'
 import CityList from './CityList'
 import LetterPicker from './LetterPicker'
 import rawData from './province-city.json'
@@ -6,10 +6,13 @@ import { CityWithProvince } from './type'
 import useCityPicker from './useCityPicker'
 
 export type CityPickerProps = {
+  className?: string
+  style?: CSSProperties
+  value?: CityWithProvince
   onSelect: (city: CityWithProvince) => void
 }
 
-const CityPicker: FC<CityPickerProps> = ({ children, ...rest }) => {
+const CityPicker: FC<CityPickerProps> = ({ className, style, children, ...rest }) => {
   const {
     letters,
     data,
@@ -24,8 +27,13 @@ const CityPicker: FC<CityPickerProps> = ({ children, ...rest }) => {
   })
 
   return (
-    <div className="border border-gray-300 border-solid select-none" style={{ width: '350px' }}>
-      <div className="py-1 px-2 flex justify-between">
+    <div
+      className={`border border-gray-300 bg-white border-solid select-none overflow-hidden ${
+        className || ''
+      }`}
+      style={{ ...style, width: '350px' }}
+    >
+      <div className="py-1 px-2 flex justify-between items-center">
         <div>
           <span className="text-gray-500">选择城市：</span>
           <span className="text-gray-900">{selectedCityLocation}</span>
