@@ -1,4 +1,5 @@
 @import '~antd/es/style/themes/default.less';
+@import './styles/tailwindcss.css';
 
 @keyframes mymove {
   0% {
@@ -32,10 +33,12 @@ canvas {
 }
 
 body {
+  font-family: 'Source Han Sans CN', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: "Source Han Sans CN", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 ul,
@@ -52,14 +55,13 @@ iframe {
     width: 100%;
     overflow-x: auto;
 
-    &-thead>tr,
-    &-tbody>tr {
-
-      >th,
-      >td {
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
         white-space: pre;
 
-        >span {
+        > span {
           display: block;
         }
       }
@@ -68,9 +70,8 @@ iframe {
 }
 
 // 兼容IE11
-@media screen and(-ms-high-contrast: active),
-(-ms-high-contrast: none) {
-  body .ant-design-pro>.ant-layout {
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+  body .ant-design-pro > .ant-layout {
     min-height: 100vh;
   }
 }
@@ -78,12 +79,12 @@ iframe {
 .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-item {
   padding: 6px 48px 6px 12px !important;
-  color: @gray-color  !important;
+  color: @gray-color !important;
   font-weight: 400;
   font-size: 16px !important;
 
   &:hover {
-    background-color: @light-primary-color  !important;
+    background-color: @light-primary-color !important;
   }
 }
 
@@ -177,22 +178,22 @@ iframe {
 }
 
 .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
-  background-color: @light-primary-color  !important;
+  background-color: @light-primary-color !important;
 
   .ant-select-item-option-content {
-    color: @primary-color  !important;
+    color: @primary-color !important;
   }
 }
 
 .ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
-  background-color: @light-primary-color  !important;
+  background-color: @light-primary-color !important;
 
   .ant-select-item-option-content {
-    color: @primary-color  !important;
+    color: @primary-color !important;
   }
 }
 
-.ant-input-search>.ant-input-group>.ant-input-group-addon:last-child .ant-input-search-button {
+.ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button {
   padding: 4px 10px;
   font-size: 18px;
 }
@@ -215,7 +216,7 @@ iframe {
           padding: 8px 0 !important;
 
           &.ant-tabs-tab-active {
-            background-color: @white-color  !important;
+            background-color: @white-color !important;
           }
 
           &::before {
@@ -232,10 +233,10 @@ iframe {
 }
 
 .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
-  background-color: @light-primary-color  !important;
+  background-color: @light-primary-color !important;
 
   .ant-select-item-option-content {
-    color: @primary-color  !important;
+    color: @primary-color !important;
   }
 
   &:hover {
@@ -302,16 +303,16 @@ iframe {
     }
 
     .ant-menu-item-selected {
-      background-color: @light-primary-color  !important;
+      background-color: @light-primary-color !important;
     }
   }
 }
 
 .ant-cascader-menu-item-active {
-  background-color: @light-primary-color  !important;
+  background-color: @light-primary-color !important;
 }
 
-.react-grid-layout .react-grid-item>.react-resizable-handle::after {
+.react-grid-layout .react-grid-item > .react-resizable-handle::after {
   border-right: 2px solid @white-color;
   border-bottom: 2px solid @white-color;
 }

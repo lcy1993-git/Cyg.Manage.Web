@@ -54,6 +54,7 @@ export default defineConfig({
       hack: `true; @import "~@/styles/base.less";`,
     },
   },
+  extraPostCSSPlugins: [require('tailwindcss')],
   webpack5: {},
 
   chainWebpack(config: any) {
