@@ -95,3 +95,19 @@ export enum meteorologic {
   'B类' = 'B类',
   'C类' = 'C类',
 }
+
+export enum feature {
+  '工作井' = '工作井',
+  '检查井' = '检查井',
+  '普通井' = '普通井',
+  '中间头井' = '中间头井',
+}
+export enum coverMode {
+  '人孔' = '人孔',
+  '全开启' = '全开启',
+}
+
+export enum grooveStructure {
+  '砖彻' = '砖彻',
+  '钢筋混凝土' = '钢筋混凝土',
+}

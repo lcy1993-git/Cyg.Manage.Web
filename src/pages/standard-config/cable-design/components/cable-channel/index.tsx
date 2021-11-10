@@ -102,25 +102,20 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'channelName',
       index: 'channelName',
-      title: '名称',
+      title: '模块名称',
       width: 480,
     },
     {
       dataIndex: 'shortName',
       index: 'shortName',
-      title: '简称',
-      width: 320,
+      title: '模块简称',
+      width: 260,
     },
-    {
-      dataIndex: 'typicalCode',
-      index: 'typicalCode',
-      title: '典设编码',
-      width: 220,
-    },
+
     {
       dataIndex: 'channelCode',
       index: 'channelCode',
-      title: '规格简号',
+      title: '简号',
       width: 320,
     },
     {
@@ -129,11 +124,24 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       title: '单位',
       width: 180,
     },
+
+    {
+      dataIndex: 'forProject',
+      index: 'forProject',
+      title: '所属工程',
+      width: 240,
+    },
+    {
+      dataIndex: 'forDesign',
+      index: 'forDesign',
+      title: '所属设计',
+      width: 240,
+    },
     {
       dataIndex: 'reservedWidth',
       index: 'reservedWidth',
-      title: '预留宽度(mm)',
-      width: 180,
+      title: '通道预留宽度(mm)',
+      width: 240,
     },
 
     {
@@ -151,31 +159,7 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'cableNumber',
       index: 'cableNumber',
-      title: '电缆数量',
-      width: 240,
-    },
-    {
-      dataIndex: 'pavement',
-      index: 'pavement',
-      title: '路面环境',
-      width: 240,
-    },
-    {
-      dataIndex: 'protectionMode',
-      index: 'protectionMode',
-      title: '保护方式',
-      width: 240,
-    },
-    {
-      dataIndex: 'ductMaterialId',
-      index: 'ductMaterialId',
-      title: '电缆管材质编号',
-      width: 320,
-    },
-    {
-      dataIndex: 'arrangement',
-      index: 'arrangement',
-      title: '排列方式',
+      title: '可容纳电缆数',
       width: 180,
     },
     {
@@ -184,23 +168,12 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       title: '支架层数',
       width: 180,
     },
+
     {
-      dataIndex: 'forProject',
-      index: 'forProject',
-      title: '所属工程',
-      width: 240,
-    },
-    {
-      dataIndex: 'forDesign',
-      index: 'forDesign',
-      title: '所属设计',
-      width: 240,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '备注',
-      width: 220,
+      dataIndex: 'arrangement',
+      index: 'arrangement',
+      title: '排列方式',
+      width: 180,
     },
   ];
 

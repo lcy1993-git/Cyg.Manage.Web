@@ -121,10 +121,12 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const sureAddComponentDetail = () => {
     addForm.validateFields().then(async (value) => {
+      console.log(value);
+
       const saveInfo = Object.assign(
         {
           libId: libId,
-          componentId: componentId[0],
+          belongComponentId: componentId[0],
         },
         value,
       );
@@ -251,7 +253,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm}>
-          <AddComponentDetail addForm={addForm} resourceLibId={libId} />
+          <AddComponentDetail addForm={addForm} resourceLibId={libId} selectId={componentId[0]} />
         </Form>
       </Modal>
 

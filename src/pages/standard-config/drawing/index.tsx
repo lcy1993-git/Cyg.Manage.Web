@@ -41,18 +41,6 @@ const Drawing: React.FC<libParams> = (props) => {
             placeholder="请输入图纸信息"
           />
         </TableSearch>
-        {/* <TableSearch marginLeft="20px" label="选择资源" width="300px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
-          />
-        </TableSearch> */}
       </div>
     );
   };
@@ -92,31 +80,22 @@ const Drawing: React.FC<libParams> = (props) => {
       dataIndex: 'chartId',
       index: 'chartId',
       title: '图纸编号',
-      width: 150,
+      width: 240,
     },
-    {
-      dataIndex: 'fileId',
-      index: 'fileId',
-      title: '文件编号',
-      width: 150,
-    },
+
     {
       dataIndex: 'category',
       index: 'category',
       title: '类别',
-      width: 200,
+      width: 240,
     },
     {
       dataIndex: 'type',
       index: 'type',
       title: '类型',
-      width: 200,
+      width: 240,
     },
-    {
-      dataIndex: 'fileName',
-      index: 'fileName',
-      title: '文件名',
-    },
+
     {
       dataIndex: 'chartName',
       index: 'chartName',
@@ -152,7 +131,7 @@ const Drawing: React.FC<libParams> = (props) => {
         rowKey="chartId"
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
-        // buttonRightContentSlot={tableElement}
+        buttonRightContentSlot={tableElement}
         columns={columns}
         requestSource="resource"
         url="/Chart/GetPageList"

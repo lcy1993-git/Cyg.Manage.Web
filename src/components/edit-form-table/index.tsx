@@ -30,7 +30,16 @@ const EditFormTable: React.FC<EditFormTableProps> = (props) => {
                 <tr>
                   <th style={{ width: '50px' }}>序号</th>
                   {theadElement}
-                  <th style={{ width: '60px' }}>操作</th>
+                  <th style={{ width: '60px' }}>
+                    <span
+                      className="mr7"
+                      onClick={() => add()}
+                      style={{ cursor: 'pointer', color: '#0E7B3B' }}
+                    >
+                      <PlusOutlined style={{ paddingRight: '8px' }} />
+                      添加
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -53,12 +62,16 @@ const EditFormTable: React.FC<EditFormTableProps> = (props) => {
                         );
                       })}
                       <td>
-                        <span className="mr7" onClick={() => add()}>
-                          <PlusOutlined />
-                        </span>
                         {fields.length > 1 && (
-                          <span onClick={() => remove(field.name)}>
-                            <MinusOutlined />
+                          <span
+                            onClick={() => remove(field.name)}
+                            style={{
+                              color: '#FF0000',
+                              textDecoration: 'underline',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            删除
                           </span>
                         )}
                       </td>

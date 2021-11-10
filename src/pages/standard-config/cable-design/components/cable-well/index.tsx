@@ -154,7 +154,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       dataIndex: 'isSwitchingPipe',
       index: 'isSwitchingPipe',
       title: '是否转接孔管',
-      width: 140,
+      width: 200,
     },
     {
       dataIndex: 'feature',

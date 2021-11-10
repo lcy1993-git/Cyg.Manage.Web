@@ -29,25 +29,22 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
 
   const [id, setId] = useState<string>();
   const [name, setName] = useState<string>();
-  const { data: nameReponseData, run: fetchSpecRequest } = useRequest(
-    () =>
-      getDataByUrl(
-        `/${urlHead}/GetListByName`,
-        { libId, selectName },
-        requestSource,
-        'post',
-        'body',
-        libId,
-      ),
-    {
-      // manual: true,
-      refreshDeps: [selectName],
-      onSuccess: () => {},
-    },
-  );
-
-  console.log(nameReponseData, '213123');
-  console.log(selectName, '213123');
+  // const { data: nameReponseData, run: fetchSpecRequest } = useRequest(
+  //   (selectName) =>
+  //     getDataByUrl(
+  //       `/${urlHead}/GetListByName`,
+  //       { libId, selectName },
+  //       requestSource,
+  //       'post',
+  //       'body',
+  //       libId,
+  //     ),
+  //   {
+  //     // manual: true,
+  //     refreshDeps: [selectName],
+  //     onSuccess: () => {},
+  //   },
+  // );
 
   const placeholder =
     urlHead === 'Material'
@@ -55,8 +52,7 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
       : urlHead === 'Component'
       ? '请选择组件'
       : '请选择物料/组件';
-  const key = urlHead === 'Material' ? 'materialId' : 'componentId';
-  const speckey = urlHead === 'Material' ? 'spec' : 'componentSpec';
+
   const fetchUrl =
     urlHead === 'Material'
       ? `/Material/GetMaterialNameList?libId=${libId}`
@@ -104,37 +100,20 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
   // }, [value]);
   return (
     <div className={styles.cascader}>
-      {type === 'name' && (
-        <Select
-          placeholder={`${placeholder}名称`}
-          allowClear
-          bordered={false}
-          value={name}
-          onChange={(value) => onNameChange(value as string)}
-          className={styles.selectItem}
-        >
-          {urlHead &&
-            specReponseData?.map((v: string) => (
-              <Select.Option key={v} value={v}>
-                {v}
-              </Select.Option>
-            ))}
-        </Select>
-      )}
-      {type === 'spec' && (
-        <UrlSelect
-          defaultData={nameReponseData}
-          valuekey={key}
-          titlekey={speckey}
-          allowClear
-          value={id}
-          bordered={false}
-          placeholder={`${placeholder}规格`}
-          className={styles.selectItem}
-          onChange={(value) => onSpecChange(value as string)}
-          libId={libId}
-        />
-      )}
+      <Select
+        placeholder={`${placeholder}名称`}
+        allowClear
+        bordered={false}
+        value={name}
+        onChange={(value) => onNameChange(value as string)}
+      >
+        {urlHead &&
+          specReponseData?.map((v: string) => (
+            <Select.Option key={v} value={v}>
+              {v}
+            </Select.Option>
+          ))}
+      </Select>
     </div>
   );
 });

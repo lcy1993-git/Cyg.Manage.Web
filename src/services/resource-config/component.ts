@@ -54,6 +54,7 @@ export const deleteComponentItem = (libId: string, ids: string[]) => {
 
 /**组件明细操作 */
 interface ComponentDetailParams {
+  libId: string;
   id: string;
   belongComponentId: string;
   componentId: string;
@@ -138,6 +139,24 @@ export const deleteComponentPropertyItem = (libId: string, id: string) => {
     request(`${baseUrl.resource}/ComponentProperty/Delete`, {
       method: 'POST',
       params: { libId, id },
+    }),
+  );
+};
+
+export const getSpecName = (params: { libId: string; name: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/Component/GetListByName`, {
+      method: 'POST',
+      data: params,
+    }),
+  );
+};
+
+export const getMaterialSpecName = (params: { libId: string; name: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/Material/GetListByName`, {
+      method: 'POST',
+      data: params,
     }),
   );
 };
