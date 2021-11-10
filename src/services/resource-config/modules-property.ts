@@ -13,7 +13,9 @@ interface ModulesPropertyParams {
   forProject: string;
   forDesign: boolean;
   remark: string;
-  chartIds: string[];
+  processChartIds: string[];
+  towerModelChartIds: string[];
+  designChartIds: string[];
 }
 
 interface ItemDetailData extends ModulesPropertyParams {

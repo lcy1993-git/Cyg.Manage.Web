@@ -87,19 +87,19 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'poleTypeCode',
       index: 'poleTypeCode',
-      title: '简号编码',
+      title: '杆型简号',
       width: 180,
     },
     {
       dataIndex: 'poleTypeName',
       index: 'poleTypeName',
-      title: '名称',
+      title: '杆型名称',
       width: 280,
     },
     {
       dataIndex: 'category',
       index: 'category',
-      title: '类别',
+      title: '类型',
       width: 200,
     },
     {
@@ -111,7 +111,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'type',
       index: 'type',
-      title: '类型',
+      title: '杆型类型',
       width: 180,
     },
     {
@@ -123,7 +123,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'material',
       index: 'material',
-      title: '材质',
+      title: '杆型材质',
       width: 180,
     },
     {
@@ -141,12 +141,6 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       render: (text: any, record: any) => {
         return record.isTension == true ? '是' : '否';
       },
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '备注',
-      width: 180,
     },
   ];
 
@@ -270,6 +264,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
 
     await deletePoleTypeItem(resourceLibId, editDataId);
     refresh();
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 
@@ -278,12 +273,12 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
-        // buttonRightContentSlot={tableElement}
+        buttonRightContentSlot={tableElement}
         columns={columns}
         requestSource="resource"
         url="/PoleType/GetPageList"
         getSelectData={(data) => setTableSelectRows(data)}
-        type="radio"
+        type="checkbox"
         extractParams={{
           resourceLibId: libId,
           keyWord: searchKeyWord,

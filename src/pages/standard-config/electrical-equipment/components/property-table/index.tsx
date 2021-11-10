@@ -147,7 +147,7 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
       {/* <Table dataSource={propertyData} columns={columns} /> */}
       <GeneralTable
         noPaging
-        // buttonRightContentSlot={() => tableRightSlot}
+        buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/ComponentProperty/GetList"
         columns={columns}

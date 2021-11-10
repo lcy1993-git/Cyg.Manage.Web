@@ -1,9 +1,13 @@
 import React from 'react';
 import { Input, Radio } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-
-const { TextArea } = Input;
+import {
+  poleType,
+  poleMaterial,
+  loopNumber,
+  poleKvLevel,
+} from '@/services/resource-config/resource-enum';
+import EnumSelect from '@/components/enum-select';
 interface PoleTypeParams {
   type?: 'edit' | 'add';
   resourceLibId: string;
@@ -16,46 +20,80 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
     <>
       {type == 'add' && (
         <CyFormItem
-          label="简号编码"
+          label="杆型简号"
           name="poleTypeCode"
           required
-          rules={[{ required: true, message: '简号编码不能为空' }]}
+          rules={[{ required: true, message: '杆型简号不能为空' }]}
         >
-          <Input placeholder="请输入简号编码" />
+          <Input placeholder="请输入杆型简号" />
         </CyFormItem>
       )}
 
       <CyFormItem
-        label="名称"
+        label="杆型名称"
         name="poleTypeName"
         required
-        rules={[{ required: true, message: '名称不能为空' }]}
+        rules={[{ required: true, message: '杆型名称不能为空' }]}
       >
-        <Input placeholder="请输入名称" />
+        <Input placeholder="请输入杆型名称" />
       </CyFormItem>
 
-      <CyFormItem label="类别" name="category">
-        <Input placeholder="请输入类别" />
+      <CyFormItem
+        label="类型"
+        name="category"
+        required
+        initialValue="架空"
+        rules={[{ required: true, message: '类型不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择类型" enumList={poleType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="电压等级" name="kvLevel">
-        <Input placeholder="请输入电压等级" />
+      <CyFormItem
+        label="电压等级"
+        name="kvLevel"
+        required
+        initialValue="10kV"
+        rules={[{ required: true, message: '电压等级不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择电压等级" enumList={poleKvLevel} valueString />
       </CyFormItem>
 
-      <CyFormItem label="类型" name="type">
-        <Input placeholder="请输入类型" />
+      <CyFormItem
+        label="杆型类型"
+        name="type"
+        required
+        rules={[{ required: true, message: '杆型类型不能为空' }]}
+      >
+        <Input placeholder="请输入杆型类型" />
       </CyFormItem>
 
-      <CyFormItem label="转角" name="corner">
+      <CyFormItem
+        label="转角"
+        name="corner"
+        required
+        rules={[{ required: true, message: '转角不能为空' }]}
+      >
         <Input placeholder="请输入转角" />
       </CyFormItem>
 
-      <CyFormItem label="材质" name="material">
-        <Input placeholder="请输入材质" />
+      <CyFormItem
+        label="杆型材质"
+        name="material"
+        required
+        initialValue="水泥单杆"
+        rules={[{ required: true, message: '杆型材质不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择杆型材质" enumList={poleMaterial} valueString />
       </CyFormItem>
 
-      <CyFormItem label="回路数" name="loopNumber">
-        <Input placeholder="请输入回路数" />
+      <CyFormItem
+        label="回路数"
+        name="loopNumber"
+        required
+        initialValue="单回路"
+        rules={[{ required: true, message: '回路数不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择回路数" enumList={loopNumber} valueString />
       </CyFormItem>
 
       <CyFormItem label="是否耐张" name="isTension" initialValue={false}>
@@ -63,25 +101,6 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
           <Radio value={true}>是</Radio>
           <Radio value={false}>否</Radio>
         </Radio.Group>
-      </CyFormItem>
-
-      <CyFormItem label="描述" name="remark">
-        <TextArea showCount maxLength={100} placeholder="备注说明" />
-      </CyFormItem>
-
-      <CyFormItem label="图纸" name="chartIds">
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
-          requestSource="resource"
-          url="/Chart/GetList"
-          titlekey="chartName"
-          valuekey="chartId"
-          placeholder="请选择图纸"
-          postType="query"
-          libId={resourceLibId}
-        />
       </CyFormItem>
     </>
   );

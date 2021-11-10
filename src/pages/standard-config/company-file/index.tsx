@@ -81,7 +81,7 @@ const CompanyFile: React.FC = () => {
     },
   );
 
-  const { data: fileData = [] } = useRequest(
+  const { data: fileData = [], run: getList } = useRequest(
     () => getFileList({ keyWord: searchKeyWord, groupId: fileGroupId }),
     {
       ready: !!fileGroupId,
@@ -124,6 +124,7 @@ const CompanyFile: React.FC = () => {
     const editDataId = editData.id;
     await deleteCompanyFileItem(editDataId);
     refresh();
+    getList();
     setTableSelectRows([]);
     message.success('删除成功');
   };
@@ -221,6 +222,7 @@ const CompanyFile: React.FC = () => {
 
         await addCompanyFileItem(submitInfo);
         refresh();
+        getList();
         message.success('添加成功');
         setAddFormVisible(false);
         addForm.resetFields();

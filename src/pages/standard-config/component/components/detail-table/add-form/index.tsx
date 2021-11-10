@@ -19,6 +19,9 @@ enum componentType {
 const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
   const { resourceLibId, addForm } = props;
   const [type, setType] = useState<string>();
+  const [selectName, setSelectName] = useState<string>('');
+
+  console.log(selectName, 'name');
 
   console.log(type, '323');
 
@@ -36,6 +39,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
 
       render: () => (
         <EnumSelect
+          bordered={false}
           placeholder="请选择类型"
           enumList={componentType}
           onChange={(value: any) => setType(value)}
@@ -56,8 +60,10 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       render: () => {
         return (
           <CascaderUrlSelect
-            urlHead={type === '0' ? 'Material' : 'Component'}
+            type="name"
+            urlHead={type === '0' ? 'Material' : type === '1' ? 'Component' : ''}
             libId={resourceLibId}
+            setSelectName={setSelectName}
           />
         );
       },
@@ -75,8 +81,10 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       render: () => {
         return (
           <CascaderUrlSelect
-            urlHead={type === '0' ? 'Material' : 'Component'}
+            type="spec"
+            urlHead={type === '0' ? 'Material' : type === '1' ? 'Component' : ''}
             libId={resourceLibId}
+            selectName={selectName}
           />
         );
       },
@@ -93,7 +101,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       index: 'itemNumber',
       width: 160,
       render: () => {
-        return <Input type="number" min={1} placeholder="请输入数量（正整数）" />;
+        return <Input type="number" min={1} placeholder="请输入数量（正整数）" bordered={false} />;
       },
       rules: [
         { required: true, message: '数量不能为空' },

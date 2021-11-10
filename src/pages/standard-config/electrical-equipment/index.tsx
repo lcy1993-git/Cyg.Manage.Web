@@ -92,19 +92,32 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
     {
       dataIndex: 'componentId',
       index: 'componentId',
-      title: '编号',
+      title: '组件编码',
+      width: 180,
+    },
+    {
+      dataIndex: 'deviceCategory',
+      index: 'deviceCategory',
+      title: '设备分类',
+      width: 180,
+    },
+
+    {
+      dataIndex: 'componentType',
+      index: 'componentType',
+      title: '组件分类',
       width: 180,
     },
     {
       dataIndex: 'componentName',
       index: 'componentName',
-      title: '名称',
+      title: '组件名称',
       width: 240,
     },
     {
       dataIndex: 'componentSpec',
       index: 'componentName',
-      title: '规格型号',
+      title: '组件型号',
       width: 320,
     },
     {
@@ -119,25 +132,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
       title: '单位',
       width: 140,
     },
-    {
-      dataIndex: 'deviceCategory',
-      index: 'deviceCategory',
-      title: '设备类别',
-      width: 180,
-    },
-    {
-      dataIndex: 'componentType',
-      index: 'componentType',
-      title: '组件分类',
-      width: 180,
-    },
 
-    {
-      dataIndex: 'kvLevel',
-      index: 'kvLevel',
-      title: '电压等级',
-      width: 180,
-    },
     {
       dataIndex: 'forProject',
       index: 'forProject',
@@ -149,12 +144,6 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
       index: 'forDesign',
       title: '所属设计',
       width: 240,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '备注',
-      width: 220,
     },
   ];
 
@@ -251,7 +240,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('electrical-add') && (
+        {buttonJurisdictionArray?.includes('electrical-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -274,7 +263,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
             <ImportOutlined />
             导入电气设备
           </Button>
-        )} */}
+        )}
 
         {buttonJurisdictionArray?.includes('electrical-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>
@@ -311,6 +300,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
 
     await deleteElectricalEquipmentItem(libId, editDataId);
     refresh();
+    setTableSelectRows([]);
     message.success('删除成功');
   };
 

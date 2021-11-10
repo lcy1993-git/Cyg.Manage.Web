@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, } from 'antd';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
+import { Input, Button, Modal, Form, message, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styles from './index.less';
 import { useRequest } from 'ahooks';
@@ -91,26 +91,8 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'cableWellId',
       index: 'cableWellId',
-      title: '编号',
+      title: '模块编码',
       width: 180,
-    },
-    {
-      dataIndex: 'cableWellName',
-      index: 'cableWellName',
-      title: '名称',
-      width: 420,
-    },
-    {
-      dataIndex: 'shortName',
-      index: 'shortName',
-      title: '简称',
-      width: 200,
-    },
-    {
-      dataIndex: 'typicalCode',
-      index: 'typicalCode',
-      title: '典设编码',
-      width: 220,
     },
     {
       dataIndex: 'type',
@@ -119,10 +101,35 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       width: 140,
     },
     {
+      dataIndex: 'cableWellName',
+      index: 'cableWellName',
+      title: '模块名称',
+      width: 420,
+    },
+    {
+      dataIndex: 'shortName',
+      index: 'shortName',
+      title: '模块简称',
+      width: 200,
+    },
+
+    {
       dataIndex: 'unit',
       index: 'unit',
       title: '单位',
       width: 140,
+    },
+    {
+      dataIndex: 'forProject',
+      index: 'forProject',
+      title: '所属工程',
+      width: 240,
+    },
+    {
+      dataIndex: 'forDesign',
+      index: 'forDesign',
+      title: '所属设计',
+      width: 240,
     },
     {
       dataIndex: 'width',
@@ -136,6 +143,18 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       index: 'depth',
       title: '井深',
       width: 180,
+    },
+    {
+      dataIndex: 'isConfined',
+      index: 'isConfined',
+      title: '是否封闭',
+      width: 140,
+    },
+    {
+      dataIndex: 'isSwitchingPipe',
+      index: 'isSwitchingPipe',
+      title: '是否转接孔管',
+      width: 140,
     },
     {
       dataIndex: 'feature',
@@ -166,24 +185,6 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       index: 'grooveStructure',
       title: '沟体结构',
       width: 200,
-    },
-    {
-      dataIndex: 'forProject',
-      index: 'forProject',
-      title: '所属工程',
-      width: 240,
-    },
-    {
-      dataIndex: 'forDesign',
-      index: 'forDesign',
-      title: '所属设计',
-      width: 240,
-    },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '备注',
-      width: 180,
     },
   ];
 
@@ -293,7 +294,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('cable-well-add') && (
+        {buttonJurisdictionArray?.includes('cable-well-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -309,7 +310,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
 
         {buttonJurisdictionArray?.includes('cable-well-delete') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
-        )} */}
+        )}
 
         {buttonJurisdictionArray?.includes('cable-well-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>

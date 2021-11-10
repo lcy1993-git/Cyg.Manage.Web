@@ -1,9 +1,20 @@
 import React from 'react';
-import { Input } from 'antd';
+import { Input, Select, Tooltip } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
+import EnumSelect from '@/components/enum-select';
+import {
+  forDesignType,
+  forProjectType,
+  loopNumber,
+  segment,
+  arrangement,
+  meteorologic,
+} from '@/services/resource-config/resource-enum';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
+const { Option } = Select;
 interface PoleTypeParams {
   type?: 'edit' | 'add';
   resourceLibId: string;
@@ -12,35 +23,49 @@ interface PoleTypeParams {
 const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
   const { type = 'edit', resourceLibId } = props;
 
+  const unitSlot = () => {
+    return (
+      <>
+        <span>单位</span>
+        <Tooltip title="长度单位请用m/km" placement="top">
+          <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    );
+  };
+
   return (
     <>
       {type == 'add' && (
         <CyFormItem
-          label="编号"
+          label="模块编码"
           name="moduleId"
           required
-          rules={[{ required: true, message: '模块编号不能为空' }]}
+          labelWidth={98}
+          rules={[{ required: true, message: '模块编码不能为空' }]}
         >
-          <Input placeholder="请输入编号" />
+          <Input placeholder="请输入模块编码" />
         </CyFormItem>
       )}
 
       <CyFormItem
-        label="名称"
+        label="模块名称"
         name="moduleName"
         required
-        rules={[{ required: true, message: '名称不能为空' }]}
+        labelWidth={98}
+        rules={[{ required: true, message: '模块名称不能为空' }]}
       >
-        <Input placeholder="请输入名称" />
+        <Input placeholder="请输入模块名称" />
       </CyFormItem>
 
       <CyFormItem
-        label="简称"
-        name="shortName"
+        label="杆型简号"
+        name="poleTypeCode"
         required
-        rules={[{ required: true, message: '简称不能为空' }]}
+        labelWidth={98}
+        rules={[{ required: true, message: '杆型简号不能为空' }]}
       >
-        <Input placeholder="请输入简称" />
+        <Input placeholder="请输入杆型简号" />
       </CyFormItem>
 
       {type == 'add' && (
@@ -48,38 +73,58 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           label="典设编码"
           name="typicalCode"
           required
+          labelWidth={98}
           rules={[{ required: true, message: '典设编码不能为空' }]}
         >
           <Input placeholder="请输入典设编码" />
         </CyFormItem>
       )}
 
-      {type == 'add' && (
-        <CyFormItem
-          label="杆型简称"
-          name="poleTypeCode"
-          required
-          rules={[{ required: true, message: '杆型简称不能为空' }]}
-        >
-          <UrlSelect
-            showSearch
-            requestSource="resource"
-            url="/PoleType/GetList"
-            titlekey="poleTypeCode"
-            valuekey="poleTypeName"
-            placeholder="请选择杆型简称"
-            extraParams={{ libId: resourceLibId }}
-          />
-        </CyFormItem>
-      )}
+      <CyFormItem
+        labelSlot={unitSlot}
+        name="unit"
+        required
+        labelWidth={98}
+        rules={[{ required: true, message: '单位不能为空' }]}
+      >
+        <Input placeholder="请输入单位" />
+      </CyFormItem>
 
-      <CyFormItem label="图纸" name="chartIds">
+      <CyFormItem label="设计图" name="designChartIds" labelWidth={98}>
         <UrlSelect
           requestType="post"
           mode="multiple"
           showSearch
           requestSource="resource"
-          url="/Chart/GetList"
+          url="/Chart/GetDesignChartList"
+          titlekey="chartName"
+          valuekey="chartId"
+          placeholder="请选择图纸"
+          postType="query"
+          libId={resourceLibId}
+        />
+      </CyFormItem>
+      <CyFormItem label="加工图" name="processChartIds" labelWidth={98}>
+        <UrlSelect
+          requestType="post"
+          mode="multiple"
+          showSearch
+          requestSource="resource"
+          url="/Chart/GetProcessChartList"
+          titlekey="chartName"
+          valuekey="chartId"
+          placeholder="请选择图纸"
+          postType="query"
+          libId={resourceLibId}
+        />
+      </CyFormItem>
+      <CyFormItem label="杆型一览图" name="towerModelChartIds" labelWidth={98}>
+        <UrlSelect
+          requestType="post"
+          mode="multiple"
+          showSearch
+          requestSource="resource"
+          url="/Chart/GetTowerModelChartList"
           titlekey="chartName"
           valuekey="chartId"
           placeholder="请选择图纸"
@@ -88,24 +133,114 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         />
       </CyFormItem>
 
-      <CyFormItem label="单位" name="unit">
-        <Input placeholder="请输入单位" />
+      <CyFormItem
+        label="所属工程"
+        name="forProject"
+        required
+        initialValue="不限"
+        rules={[{ required: true, message: '所属工程不能为空' }]}
+        labelWidth={98}
+      >
+        <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="模块分类" name="moduleType">
-        <Input placeholder="请输入模块分类" />
+      <CyFormItem
+        label="所属设计"
+        name="forDesign"
+        required
+        initialValue="不限"
+        rules={[{ required: true, message: '所属设计不能为空' }]}
+        labelWidth={98}
+      >
+        <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="所属工程" name="forProject">
-        <Input placeholder="请输入所属工程" />
+      <CyFormItem
+        label="高度（m）"
+        name="height"
+        required
+        rules={[{ required: true, message: '高度不能为空' }]}
+        labelWidth={98}
+      >
+        <Input type="number" placeholder="请输入高度" />
       </CyFormItem>
 
-      <CyFormItem label="所属设计" name="forDesign">
-        <Input placeholder="请输入所属设计" />
+      <CyFormItem
+        label="埋深（m）"
+        name="depth"
+        required
+        rules={[{ required: true, message: '埋深不能为空' }]}
+        labelWidth={98}
+      >
+        <Input placeholder="请输入埋深" type="number" />
       </CyFormItem>
 
-      <CyFormItem label="描述" name="remark">
-        <TextArea showCount maxLength={100} placeholder="备注说明" />
+      <CyFormItem label="呼称高（m）" name="nominalHeight" labelWidth={98}>
+        <Input placeholder="请输入呼称高" type="number" />
+      </CyFormItem>
+
+      <CyFormItem label="杆梢径（m）" name="rodDiameter" labelWidth={98}>
+        <Input placeholder="请输入杆梢径" type="number" />
+      </CyFormItem>
+
+      <CyFormItem
+        label="分段方式"
+        name="segmentMode"
+        required
+        initialValue="不分段"
+        labelWidth={98}
+        rules={[{ required: true, message: '分段方式不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择分段方式" enumList={segment} valueString />
+      </CyFormItem>
+
+      <CyFormItem
+        label="导线排列方式"
+        name="arrangement"
+        required
+        // initialValue="不分段"
+        labelWidth={98}
+        rules={[{ required: true, message: '导线排列方式不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择导线排列方式" enumList={arrangement} valueString />
+      </CyFormItem>
+
+      <CyFormItem
+        label="气象区"
+        name="meteorologic"
+        required
+        initialValue="B类"
+        labelWidth={98}
+        rules={[{ required: true, message: '气象区不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择气象区" enumList={meteorologic} valueString />
+      </CyFormItem>
+
+      <CyFormItem
+        label="回路数"
+        name="loopNumber"
+        required
+        initialValue="单回路"
+        labelWidth={98}
+        rules={[{ required: true, message: '回路数不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择回路数" enumList={loopNumber} valueString />
+      </CyFormItem>
+
+      <CyFormItem
+        label="线数"
+        name="lineNumber"
+        required
+        initialValue={1}
+        labelWidth={98}
+        rules={[{ required: true, message: '线数不能为空' }]}
+      >
+        <Select>
+          <Option value={1}>1</Option>
+          <Option value={2}>2</Option>
+          <Option value={3}>3</Option>
+          <Option value={4}>4</Option>
+        </Select>
       </CyFormItem>
     </>
   );

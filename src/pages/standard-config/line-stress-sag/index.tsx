@@ -86,17 +86,9 @@ const LineStressSag: React.FC<libParams> = (props) => {
     {
       dataIndex: 'chartName',
       index: 'chartName',
-      title: '图纸',
+      title: '应力弧垂表图纸',
     },
-    {
-      dataIndex: 'isExistsChart',
-      index: 'isExistsChart',
-      title: '图纸是否存在',
-      width: 180,
-      render: (text: any, record: any) => {
-        return record.isExistsChart == false ? '不存在' : '存在';
-      },
-    },
+
     {
       dataIndex: 'safetyFactor',
       index: 'safetyFactor',
@@ -120,7 +112,7 @@ const LineStressSag: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('line-stress-sag-import') && (
+        {buttonJurisdictionArray?.includes('line-stress-sag-import') && (
           <Button className="mr7" onClick={() => importLineStressEvent()}>
             导入应力弧垂表
           </Button>
@@ -131,7 +123,7 @@ const LineStressSag: React.FC<libParams> = (props) => {
             <ImportOutlined />
             上传图纸
           </Button>
-        )} */}
+        )}
       </div>
     );
   };

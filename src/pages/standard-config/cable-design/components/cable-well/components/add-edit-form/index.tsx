@@ -1,7 +1,8 @@
 import React from 'react';
-import { Input, Select } from 'antd';
+import { Input, Select, Tooltip } from 'antd';
 import CyFormItem from '@/components/cy-form-item';
 import UrlSelect from '@/components/url-select';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 interface PoleTypeParams {
@@ -11,12 +12,21 @@ interface PoleTypeParams {
 
 const CableWellForm: React.FC<PoleTypeParams> = (props) => {
   const { type = 'edit', resourceLibId } = props;
-
+  const unitSlot = () => {
+    return (
+      <>
+        <span>单位</span>
+        <Tooltip title="长度单位请用m/km" placement="top">
+          <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    );
+  };
   return (
     <>
       {type == 'add' && (
         <CyFormItem
-          label="编号"
+          label="模块编码"
           name="cableWellId"
           labelWidth={98}
           align="right"
@@ -28,36 +38,47 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
       )}
 
       <CyFormItem
-        label="名称"
+        label="类型"
+        name="type"
+        labelWidth={98}
+        align="right"
+        required
+        rules={[{ required: true, message: '类型不能为空' }]}
+      >
+        <Input placeholder="请输入类型" />
+      </CyFormItem>
+
+      <CyFormItem
+        label="模块名称"
         name="cableWellName"
         labelWidth={98}
         align="right"
         required
-        rules={[{ required: true, message: '名称不能为空' }]}
+        rules={[{ required: true, message: '模块名称不能为空' }]}
       >
-        <Input placeholder="请输入名称" />
+        <Input placeholder="请输入模块名称" />
       </CyFormItem>
 
       <CyFormItem
-        label="简称"
+        label="模块简称"
         name="shortName"
         labelWidth={98}
         align="right"
         required
-        rules={[{ required: true, message: '简称不能为空' }]}
+        rules={[{ required: true, message: '模块简称不能为空' }]}
       >
-        <Input placeholder="请输入简称" />
+        <Input placeholder="请输入模块简称" />
       </CyFormItem>
 
       <CyFormItem
-        label="典设编码"
-        name="typicalCode"
+        labelSlot={unitSlot}
+        name="unit"
         labelWidth={98}
         align="right"
         required
-        rules={[{ required: true, message: '典设编码不能为空' }]}
+        rules={[{ required: true, message: '单位不能为空' }]}
       >
-        <Input placeholder="请输入典设编码" />
+        <Input placeholder="请输入单位" />
       </CyFormItem>
 
       <CyFormItem label="加工图" name="chartIds" labelWidth={98} align="right">
@@ -73,14 +94,6 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
           postType="query"
           libId={resourceLibId}
         />
-      </CyFormItem>
-
-      <CyFormItem label="类型" name="type" labelWidth={98} align="right">
-        <Input placeholder="请输入类型" />
-      </CyFormItem>
-
-      <CyFormItem label="单位" name="unit" labelWidth={98} align="right">
-        <Input placeholder="请输入单位" />
       </CyFormItem>
 
       <CyFormItem label="宽度(mm)" name="width" labelWidth={98} align="right">
