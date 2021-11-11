@@ -1,5 +1,5 @@
-import { Fill, Stroke, Style } from "ol/style";
-import CircleStyle from "ol/style/Circle";
+import { Fill, Stroke, Style } from 'ol/style'
+import CircleStyle from 'ol/style/Circle'
 
 // 街道图层style
 export const StreetLayerStyle = new Style({
@@ -16,7 +16,7 @@ export const StreetLayerStyle = new Style({
       color: '#ffcc33',
     }),
   }),
-});
+})
 
 // vector层Style
 export const vectorLayerStyle = new Style({
@@ -33,4 +33,4 @@ export const vectorLayerStyle = new Style({
       color: '#ffcc33',
     }),
   }),
-});
+})

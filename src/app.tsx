@@ -1,1 +1,1 @@
-import '@/assets/webgis-icon/iconfont.css';
+import '@/assets/webgis-icon/iconfont.css'
