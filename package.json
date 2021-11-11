@@ -98,11 +98,8 @@
     "@types/classnames": "^2.2.7",
     "@types/express": "^4.17.0",
     "@types/history": "^4.7.2",
-<<<<<<< HEAD
-=======
     "@types/jquery": "^3.5.8",
     "@types/jquery-mousewheel": "^3.1.9",
->>>>>>> origin/feature/history-grid
     "@types/lodash": "^4.14.144",
     "@types/node-uuid": "0.0.28",
     "@types/numeral": "^2.0.1",
@@ -113,10 +110,7 @@
     "@types/react-grid-layout": "^1.1.1",
     "@types/react-helmet": "^6.1.0",
     "@types/react-loadable": "^5.5.4",
-<<<<<<< HEAD
-=======
     "@types/uuid": "^8.3.1",
->>>>>>> origin/feature/history-grid
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "@umijs/fabric": "^2.3.0",
@@ -143,11 +137,6 @@
     "express": "^4.17.1",
     "file-loader": "^6.2.0",
     "husky": "^7.0.4",
-<<<<<<< HEAD
-    "jquery": "^3.6.0",
-    "jquery-mousewheel": "^3.1.13",
-=======
->>>>>>> origin/feature/history-grid
     "jsdom-global": "^3.0.2",
     "jsonp": "^0.2.1",
     "lint-staged": "^11.2.6",
