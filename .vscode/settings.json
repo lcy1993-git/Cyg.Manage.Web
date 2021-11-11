@@ -4,8 +4,13 @@
     "source.organizeImports": true,
     "source.addMissingImports": true
   },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "css.validate": false,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "typescript.tsdk": "./node_modules/typescript/lib",
+  "tailwindCSS.rootFontSize": 14,
   "cSpell.words": [
     "ahooks",
     "camelcase",

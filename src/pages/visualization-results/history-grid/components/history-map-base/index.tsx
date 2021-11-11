@@ -38,6 +38,8 @@ interface interActionRef {
   select?: Record<Exclude<SelecyType, ''>, Select>
 }
 
+declare type MapLayerType = 'STREET' | 'SATELLITE'
+
 const HistoryMapBase = () => {
   // 选择类型
   const [selectType, setSelectType] = useState<SelecyType>('')
