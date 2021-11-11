@@ -11,7 +11,11 @@ module.exports = {
     },
   },
   variants: {
+    scrollbar: ['rounded'],
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    /** @see https://github.com/adoxography/tailwind-scrollbar */
+    require('tailwind-scrollbar'),
+  ],
 }

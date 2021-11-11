@@ -29,7 +29,7 @@ const CityList = ({ selectedLetter, selectedCity, data, onSelect }: CityListProp
   }, [selectedLetter])
 
   return (
-    <div className="overflow-y-auto pl-2 pt-2" style={{ height: '400px' }}>
+    <div className="overflow-y-auto pl-2 pt-2 scrollbar-base" style={{ height: '400px' }}>
       <CityListContext.Provider value={{ selectedCity, onSelect }}>
         {data.map((item) => (
           <CorrespondingProvinces key={item.letter} {...item} />
