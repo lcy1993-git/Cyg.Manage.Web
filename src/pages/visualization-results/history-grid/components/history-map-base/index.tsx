@@ -38,8 +38,6 @@ interface interActionRef {
   select?: Record<Exclude<SelecyType, ''>, Select>
 }
 
-declare type MapLayerType = 'STREET' | 'SATELLITE'
-
 const HistoryMapBase = () => {
   // 选择类型
   const [selectType, setSelectType] = useState<SelecyType>('')
@@ -91,15 +89,7 @@ const HistoryMapBase = () => {
     [mapLayerType]
   )
   // 处理当选择类型发生变化
-  useUpdateEffect(() => {
-    console.log(selectType)
-
-    mapRef.map.removeInteraction(interActionRef.select!.pointmove)
-    mapRef.map.removeInteraction(interActionRef.select!.boxSelect)
-    if (selectType) {
-      mapRef.map.addInteraction(interActionRef.select![selectType])
-    }
-  }, [selectType])
+  useUpdateEffect(() => {}, [selectType])
   // beforinit
   function beforeInit() {
     ref.current!.innerHTML = ''
@@ -160,29 +150,6 @@ const HistoryMapBase = () => {
       // e.features.getArray()[0].setStyle(featureStyle.type2)
     })
 
-    const pointmove = new Select({
-      condition: ConditionMove,
-    })
-    const boxSelect = new Select({})
-    const selectedFeatures = boxSelect.getFeatures()
-    const dragBox = new DragBox({ condition: always })
-    // 框选结束添加高亮
-    dragBox.on('boxend', function () {
-      var extent = dragBox.getGeometry().getExtent()
-      interActionRef.source!.forEachFeatureIntersectingExtent(extent, function (feature) {
-        selectedFeatures.push(feature)
-      })
-    })
-    // 框选鼠标按下清除高亮
-    dragBox.on('boxstart', function () {
-      selectedFeatures.clear()
-    })
-    interActionRef.currentSelect = pointmove
-    interActionRef.select = {
-      pointmove,
-      boxSelect,
-    }
-    mapRef.map.addInteraction(interActionRef.currentSelect)
     mapRef.map.addInteraction(interActionRef.modify)
   }
 
