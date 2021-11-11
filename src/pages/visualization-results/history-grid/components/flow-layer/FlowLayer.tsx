@@ -31,15 +31,17 @@ const FlowLayer: FC<FlowLayerProps> = ({
       style={{ ...style, visibility: _visible ? 'visible' : 'hidden' }}
       className={`absolute bg-white ${className || ''}`}
     >
-      <div className="p-2 border-0 border-b border-gray-300 border-solid flex items-center justify-between">
-        <div className="text-lg">{title}</div>
-        {showClose && (
-          <CloseOutlined
-            className="text-gray-500 cursor-pointer"
-            onClick={() => (typeof onClose === 'function' ? onClose() : setVisible((v) => !v))}
-          />
-        )}
-      </div>
+      {title && (
+        <div className="p-2 border-0 border-b border-gray-300 border-solid flex items-center justify-between">
+          <div className="text-base">{title}</div>
+          {showClose && (
+            <CloseOutlined
+              className="text-gray-500 cursor-pointer"
+              onClick={() => (typeof onClose === 'function' ? onClose() : setVisible((v) => !v))}
+            />
+          )}
+        </div>
+      )}
       {children}
     </div>
   )
