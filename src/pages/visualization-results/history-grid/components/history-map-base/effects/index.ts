@@ -1,3 +1,4 @@
 import onMapLayerTypeChange from './onMapLayerTypeChange'
+import onSelectTypeChange from './onSelectTypeChange'
 
-export { onMapLayerTypeChange }
+export { onMapLayerTypeChange, onSelectTypeChange }

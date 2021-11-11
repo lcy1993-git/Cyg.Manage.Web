@@ -3,7 +3,7 @@ import { useCurrentRef } from '@/utils/hooks'
 import { useEventEmitter, useMount, useUpdateEffect } from 'ahooks'
 import { FeatureCollection, LineString as LineStringJSON, Point as PointJSON } from 'geojson'
 import { Feature, Map, MapEvent, View } from 'ol'
-import { always, pointerMove as ConditionMove } from 'ol/events/condition'
+import { click as conditionClick } from 'ol/events/condition'
 import BaseEvent from 'ol/events/Event'
 import GeoJSON from 'ol/format/GeoJSON'
 import Geometry from 'ol/geom/Geometry'
@@ -18,29 +18,35 @@ import * as proj from 'ol/proj'
 import { Source, Vector as VectorSource } from 'ol/source'
 import { useRef, useState } from 'react'
 import { drawEnd } from './draw'
-import { onMapLayerTypeChange } from './effects'
+import { onMapLayerTypeChange, onSelectTypeChange } from './effects'
 import { moveend, pointermove } from './event'
+import mapClick from './event/mapClick'
 import styles from './index.less'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
 import { featureStyle, modifyStyle } from './styles'
 import pointStyle from './styles/pointStyles'
+export interface MapRef {
+  map: Map
+}
 
-type SelecyType = '' | 'pointmove' | 'boxSelect'
-type MapLayerType = 'STREET' | 'SATELLITE'
-
-interface interActionRef {
+export interface InterActionRef {
   draw?: Draw
   snap?: Snap
   source?: VectorSource<Geometry>
   modify?: Modify
   isDraw?: boolean
   currentSelect?: Select
-  select?: Record<Exclude<SelecyType, ''>, Select>
+  select?: Record<Exclude<SelectType, ''>, Select>
+  dragBox?: DragBox
+  isDragBox?: boolean
 }
+
+export type SelectType = '' | 'pointSelect' | 'toggleSelect' | 'boxSelect'
+export type MapLayerType = 'STREET' | 'SATELLITE'
 
 const HistoryMapBase = () => {
   // 选择类型
-  const [selectType, setSelectType] = useState<SelecyType>('')
+  const [selectType, setSelectType] = useState<SelectType>('')
   // 绘制类型
   const [geometryType, setGeometryType] = useState<string>('')
   // 当前地图类型(街道图,卫星图)
@@ -58,20 +64,21 @@ const HistoryMapBase = () => {
 
   const ref = useRef<HTMLDivElement>(null)
   // 地图实例
-  const mapRef = useCurrentRef<{ map: Map }>({ map: {} })
+  const mapRef = useCurrentRef<MapRef>({ map: {} })
   // 图层缓存数据
   const layerRef = useCurrentRef<Record<string, Layer<Source>>>({})
   // 视图实例
   const viewRef = useCurrentRef<{ view: View }>({})
   // 画图缓存数据
-  const interActionRef = useCurrentRef<interActionRef>({})
+  const interActionRef = useCurrentRef<InterActionRef>({})
   // 挂载地图
   useMount(() => {
     beforeInit()
     initLayer()
     initView()
     initMap()
-    // test map
+    // test map in chrome
+    // @ts-ignore
     window.m = mapRef.map
     // 初始化之后注册交互行为
     bindEvent()
@@ -89,7 +96,7 @@ const HistoryMapBase = () => {
     [mapLayerType]
   )
   // 处理当选择类型发生变化
-  useUpdateEffect(() => {}, [selectType])
+  useUpdateEffect(() => onSelectTypeChange(selectType, interActionRef, mapRef), [selectType])
   // beforinit
   function beforeInit() {
     ref.current!.innerHTML = ''
@@ -130,7 +137,7 @@ const HistoryMapBase = () => {
 
   // 绑定事件
   function bindEvent() {
-    mapRef.map.on('click', (e: BaseEvent) => {})
+    mapRef.map.on('click', (e: BaseEvent) => mapClick(e, { interActionRef }))
     mapRef.map.on('pointermove', (e) => pointermove(e))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
@@ -149,8 +156,33 @@ const HistoryMapBase = () => {
       // e.features.getArray()[0].setStyle(pointStyle.hight)
       // e.features.getArray()[0].setStyle(featureStyle.type2)
     })
+    // 暂时屏蔽编辑功能
+    false && mapRef.map.addInteraction(interActionRef.modify!)
 
-    mapRef.map.addInteraction(interActionRef.modify)
+    const pointSelect = new Select()
+    const dragBox = new DragBox({})
+    const boxSelect = new Select()
+    const toggleSelect = new Select({
+      condition: conditionClick,
+      toggleCondition: conditionClick,
+    })
+    interActionRef.select = {
+      pointSelect,
+      boxSelect,
+      toggleSelect,
+    }
+    interActionRef.dragBox = dragBox
+    const selectedFeatures = boxSelect.getFeatures()
+    dragBox.on('boxend', function () {
+      var extent = dragBox.getGeometry().getExtent()
+      interActionRef.source!.forEachFeatureIntersectingExtent(extent, function (feature) {
+        selectedFeatures.push(feature)
+      })
+    })
+    // 框选鼠标按下清除高亮
+    dragBox.on('boxstart', function () {
+      selectedFeatures.clear()
+    })
   }
 
   // 删除draw交互行为
@@ -246,7 +278,8 @@ const HistoryMapBase = () => {
       <div>
         <span>选择方式：</span>
         <button onClick={() => setSelectType('')}>不选择</button>
-        <button onClick={() => setSelectType('pointmove')}>鼠标悬浮</button>
+        <button onClick={() => setSelectType('pointSelect')}>点选</button>
+        <button onClick={() => setSelectType('pointSelect')}>多选</button>
         <button onClick={() => setSelectType('boxSelect')}>框选</button>
       </div>
     </div>
