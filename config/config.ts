@@ -47,7 +47,7 @@ export default defineConfig({
     },
   },
   extraPostCSSPlugins: [require('tailwindcss')],
-  webpack5: {},
+  // webpack5: {},
 
   chainWebpack(config: any) {
     config.module
@@ -61,6 +61,8 @@ export default defineConfig({
       .test(/.xlsx$/)
       .use('url-loader')
       .loader('file-loader')
-    config.module.rule('mjs-rule').test(/.m?js/).resolve.set('fullySpecified', false)
+
+    // webpack5
+    // config.module.rule('mjs-rule').test(/.m?js/).resolve.set('fullySpecified', false)
   },
 })
