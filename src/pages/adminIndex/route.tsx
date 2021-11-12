@@ -8,10 +8,20 @@ const AdminIndexHome = Loadable({
   loading: Loading,
   delay: 150,
 });
+const AdminIndexReport = Loadable({
+  loader: () => import('@/pages/adminIndex/report/index'),
+  loading: Loading,
+  delay: 150,
+});
 export default [
   {
     title: '安全审计',
     path: '/admin-index/home',
     component: <AdminIndexHome />,
+  },
+  {
+    title: '安全审计报表',
+    path: '/admin-index/report',
+    component: <AdminIndexReport />,
   },
 ]

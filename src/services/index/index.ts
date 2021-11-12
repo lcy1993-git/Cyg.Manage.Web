@@ -1,6 +1,7 @@
 import request from '@/utils/request';
 import { Moment } from 'moment';
 import { cyRequest, baseUrl } from '../common';
+import {webConfig} from "@/global";
 
 interface ToDoRequestResult {
   awaitKnot: number;
@@ -249,6 +250,34 @@ interface ProjectResultData {
 export const getProjectNumberData = (params: ProjectParams) => {
   return cyRequest<ProjectResultData[]>(() =>
     request(`${baseUrl.project}/HomeStatistic/GetProjectStatusQty`, {
+      method: 'POST',
+      data: { ...params },
+    }),
+  );
+};
+
+// 获取停服公告
+export const getStopServerNotice = (params: {
+  serverCode:string,
+  kickOutSeconds:number
+}) => {
+  return cyRequest<any>(() =>
+    request(`${webConfig.commonServer}/api/StopServerNotice/Get`, {
+      method: 'POST',
+      data: { ...params },
+    }),
+  );
+};
+
+// 获取服务器列表
+export const getProductServerList = (params: {
+  "productCode": string,
+  "category": number,
+  "status": number,
+  "province"?: string
+}) => {
+  return cyRequest<any>(() =>
+    request(`${webConfig.commonServer}/api/ProductServer/GetList`, {
       method: 'POST',
       data: { ...params },
     }),

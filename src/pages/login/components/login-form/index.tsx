@@ -17,11 +17,16 @@ import {
 } from '@/services/login';
 
 import styles from './index.less';
+import {Stop} from "@/pages/login";
 const { TabPane } = Tabs;
 
 export type LoginType = 'account' | 'phone';
-
-const LoginForm: React.FC = () => {
+interface Props {
+  stopInfo:Stop
+  stopLogin:()=>void
+}
+const LoginForm: React.FC<Props> = (props) => {
+  const {stopInfo} = props
   const [needVerifycode, setNeedVerifycode] = useState<boolean>(false);
   const [imageCode, setImageCode] = useState<string>('');
   // 是否验证码错误
@@ -106,6 +111,13 @@ const LoginForm: React.FC = () => {
 
   // 登录前的验证码校准，当needVerifycode存在先行判断验证码
   const loginButtonClick = async () => {
+    if ([2,3].includes(stopInfo.stage) && stopInfo.testerAccountPrefix !== ''){ // 停服公告,前缀没有也直接放行
+      const data = form.getFieldsValue()
+      if (!data.userName.includes(stopInfo.testerAccountPrefix)){
+        props.stopLogin()
+        return
+      }
+    }
     if (needVerifycode) {
       const fromData = await form.validateFields();
       const key = activeKey === 'account' ? fromData.userName : fromData.phone;

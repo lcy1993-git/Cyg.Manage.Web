@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
-import { FormOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Form } from 'antd';
+import {DownloadOutlined, FormOutlined } from '@ant-design/icons';
+import { Button, Modal, message, Input, DatePicker, Form, Space } from 'antd';
 import React, { useRef, useState } from 'react';
 import { isArray } from 'lodash';
 import { getFeedbackDetail, handleFeedback } from '@/services/system-config/platform-feedback';
@@ -14,6 +14,7 @@ import EnumSelect from '@/components/enum-select';
 import { Spin } from 'antd';
 import { SourceType, Category, Status } from '@/services/system-config/platform-feedback';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import {downLoadFileItem} from "@/services/operation-config/company-file";
 
 const { Search } = Input;
 
@@ -35,16 +36,55 @@ const PlatFormFeedBack: React.FC = () => {
   });
 
   const [form] = Form.useForm();
-
+  const downFile = async ()=>{
+    console.log(tableSelectRows)
+    if (tableSelectRows?.length === 0){
+      message.error('请选择一条数据下载文件');
+      return
+    } else if (tableSelectRows?.length > 1){
+      message.error('只能同时下载一个文件');
+      return
+    } else if (!tableSelectRows[0]?.fileId){
+      message.error('该反馈没有可以下载的文件');
+      return
+    }
+    const res = await downLoadFileItem({ fileId:tableSelectRows[0]?.fileId });
+    const suffix = tableSelectRows[0]?.fileName?.substring(tableSelectRows[0]?.fileName.lastIndexOf('.') + 1);
+    console.log(suffix)
+    const blob = new Blob([res], {
+      type: `application/${suffix}`,
+    });
+    // for IE
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, tableSelectRows[0]?.fileName);
+    } else {
+      // for Non-IE
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = objectUrl;
+      link.setAttribute('download', tableSelectRows[0]?.fileName);
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+      document.body.removeChild(link);
+    }
+    message.success('下载成功');
+  }
   const rightButton = () => {
     return (
       <div>
-        {buttonJurisdictionArray?.includes('handle-feedback') && (
-          <Button type="primary" onClick={() => dealEvent()}>
-            <FormOutlined />
-            处理
+        <Space>
+          {buttonJurisdictionArray?.includes('handle-feedback') && (
+            <Button type="primary" onClick={() => dealEvent()}>
+              <FormOutlined />
+              处理
+            </Button>
+          )}
+          <Button type="primary" onClick={() => downFile()}>
+            <DownloadOutlined />
+            下载
           </Button>
-        )}
+        </Space>
       </div>
     );
   };
@@ -190,6 +230,15 @@ const PlatFormFeedBack: React.FC = () => {
       width: 200,
       render: (text: any, record: any) => {
         return record.createdByUserName;
+      },
+    },
+    {
+      title: '附件',
+      dataIndex: 'fileName',
+      index: 'fileName',
+      width: 200,
+      render: (text: any, record: any) => {
+        return record.fileName;
       },
     },
     {

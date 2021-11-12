@@ -28,5 +28,6 @@
         "10.6.1.38": "logo.png"
     },
     "areaStatisticsUrl": "/chart/index.html",
+    "commonServer": "http://service.pwcloud.cdsrth.com:8101",
     "version": "1.0.143"
 }

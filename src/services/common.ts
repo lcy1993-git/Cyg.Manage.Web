@@ -14,10 +14,13 @@ export const baseUrl = webConfig.requestUrl;
 export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>): Promise<T> => {
   return new Promise(async (resolve, reject) => {
     const res = await func();
-
-    const { code, content, isSuccess } = res;
+    const { code, content, isSuccess ,data } = res;
     if (isSuccess && code === 200) {
-      resolve(content);
+      if (content){
+        resolve(content);
+      } else {
+        resolve(data)
+      }
     } else {
       if (code === 401) {
         history.push('/again-login');

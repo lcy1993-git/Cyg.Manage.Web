@@ -3,18 +3,23 @@ import WrapperComponent from '@/components/page-common-wrap';
 import EventNumber from "@/pages/adminIndex/home/child/eventsNumber";
 import styles from './index.less'
 import * as echarts from 'echarts/lib/echarts';
-import {useSize} from "ahooks";
+import 'echarts/lib/component/grid';
+import 'echarts/lib/component/tooltip';
+import { TitleComponent } from 'echarts/components';
+import {useMount, useSize} from "ahooks";
+import RecentlyWarned from "@/pages/adminIndex/home/child/recentlyWarned";
+import {Button, Table} from 'antd';
+import {ColumnsType} from "antd/lib/table";
+import {useHistory} from "react-router-dom";
 
-interface Props {
-
-}
-
-const AdminIndex: React.FC<Props> = () => {
+const AdminIndex: React.FC = () => {
   const lineRef = useRef<HTMLDivElement>(null);
   const circleRef = useRef<HTMLDivElement>(null);
-  let myChart: any = null;
+  let myChartLine: any = null;
+  let myChartCircle: any = null;
   const lineSize = useSize(lineRef);
   const circleSize = useSize(lineRef);
+  const history = useHistory();
   const lineOptions = {
     title: {
       text: '日志趋势',
@@ -110,11 +115,11 @@ const AdminIndex: React.FC<Props> = () => {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
             {
               offset: 0,
-              color: 'rgba(77, 169, 68, 0.8)'
+              color: 'rgba(77, 169, 68, 0.9)'
             },
             {
               offset: 1,
-              color: 'rgba(77, 169, 68, 0.4)'
+              color: 'rgba(77, 169, 68, 0.3)'
             }
           ])
         },
@@ -160,21 +165,82 @@ const AdminIndex: React.FC<Props> = () => {
       },
     ]
   };
-
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'key',
+      key: 'name',
+      width: 70,
+      align:'center'
+    },
+    {
+      title: '报表名称',
+      dataIndex: 'age',
+      key: 'age',
+      width:'70%'
+    },
+    {
+      title: '计数',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: '操作',
+      key: 'tags',
+      dataIndex: 'tags',
+      render:(row: any)=>{
+        return <Button type={'link'} onClick={()=>showReport(row)}>
+          查看报表
+        </Button>
+      }
+    },
+  ];
+  const data = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+      address: 'New York No. 1 Lake Park',
+      tags: ['nice', 'developer'],
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 1 Lake Park',
+      tags: ['loser'],
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 32,
+      address: 'Sidney No. 1 Lake Park',
+      tags: ['cool', 'teacher'],
+    },
+  ];
+  const showReport = (row)=>{
+    console.log(row)
+    history.push('/admin-index/report')
+  }
   const initChart = () => {
     if (lineRef && lineRef.current) {
-      myChart = echarts.init((lineRef.current as unknown) as HTMLDivElement);
-      myChart.setOption(lineOptions);
+      myChartLine = echarts.init((lineRef.current as unknown) as HTMLDivElement);
+      myChartLine.setOption(lineOptions);
     }
     if (circleRef && circleRef.current) {
-      myChart = echarts.init((circleRef.current as unknown) as HTMLDivElement);
-      myChart.setOption(circleOptions);
+      myChartCircle = echarts.init((circleRef.current as unknown) as HTMLDivElement);
+      myChartCircle.setOption(circleOptions);
     }
   };
   const resize = () => {
-    if (myChart) {
+    if (myChartCircle) {
       setTimeout(() => {
-        myChart.resize();
+        myChartCircle.resize();
+      }, 100);
+    }
+    if (myChartLine) {
+      setTimeout(() => {
+        myChartLine.resize();
       }, 100);
     }
   };
@@ -195,6 +261,9 @@ const AdminIndex: React.FC<Props> = () => {
       initChart();
     }
   }, [JSON.stringify(lineOptions), JSON.stringify(lineSize),JSON.stringify(circleSize)]);
+  useMount(()=>{
+    initChart();
+  })
   return (
     <WrapperComponent noColor={true} noPadding={true}>
       <div className={styles.indexBack}>
@@ -210,11 +279,20 @@ const AdminIndex: React.FC<Props> = () => {
               </div>
             </div>
             <div className={styles.leftTable}>
-              3
+              <div className={styles.tableTitle}>
+                安全事件
+              </div>
+              <div className={styles.tableBox}>
+                <Table
+                  columns={columns as ColumnsType}
+                  bordered
+                  size={'small'}
+                  dataSource={data} />
+              </div>
             </div>
           </div>
           <div className={styles.RightContent}>
-            4
+              <RecentlyWarned/>
           </div>
         </div>
       </div>
