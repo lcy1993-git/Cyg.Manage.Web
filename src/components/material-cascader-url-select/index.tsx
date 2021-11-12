@@ -103,7 +103,7 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
       <Select
         placeholder={`${placeholder}名称`}
         allowClear
-        bordered={false}
+        // bordered={false}
         value={name}
         onChange={(value) => onNameChange(value as string)}
       >

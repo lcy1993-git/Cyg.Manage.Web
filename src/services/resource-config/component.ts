@@ -61,9 +61,11 @@ interface ComponentDetailParams {
   componentName: string;
   materialId: string;
   itemId: string;
+  spec: string;
   itemName: string;
   itemNumber: number;
   isComponent: number;
+  unit: string;
 }
 
 //获取单条明细数据

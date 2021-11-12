@@ -27,7 +27,7 @@ const EditFormTable: React.FC<EditFormTableProps> = (props) => {
           <>
             <table>
               <thead>
-                <tr>
+                <tr >
                   <th style={{ width: '50px' }}>序号</th>
                   {theadElement}
                   <th style={{ width: '60px' }}>

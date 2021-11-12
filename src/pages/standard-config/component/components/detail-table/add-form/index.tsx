@@ -5,9 +5,8 @@ import UrlSelect from '@/components/url-select';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
 import Scrollbars from 'react-custom-scrollbars';
 import EnumSelect from '@/components/enum-select';
-import { useRequest, useUpdateEffect } from 'ahooks';
+import { useRequest } from 'ahooks';
 import { getSpecName, getMaterialSpecName } from '@/services/resource-config/component';
-import uuid from 'node-uuid';
 
 interface AddDetailParams {
   resourceLibId: string;
@@ -105,6 +104,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
           />
         );
       },
+      rules: [{ required: selectName ? true : false, message: '物料/组件不能为空' }],
     },
     {
       title: (

@@ -31,7 +31,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-
+  const [formData, setFormData] = useState<any>();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
@@ -156,12 +156,22 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         ? {
             componentId: { id: ComponentDetailData.itemId, name: ComponentDetailData.itemName },
             itemNumber: ComponentDetailData.itemNumber,
+            spec: ComponentDetailData.spec,
+            type: '1',
+            unit: ComponentDetailData.unit,
           }
         : {
-            materialId: { id: ComponentDetailData.itemId, name: ComponentDetailData.itemName },
+            materialId: {
+              id: ComponentDetailData.itemId,
+              name: ComponentDetailData.itemName,
+            },
+            type: '0',
+            spec: ComponentDetailData.spec,
+            unit: ComponentDetailData.unit,
             itemNumber: ComponentDetailData.itemNumber,
           };
-
+    // console.log(formData);
+    setFormData(formData);
     editForm.setFieldsValue(formData);
   };
 
@@ -270,7 +280,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <EditComponentDetail resourceLibId={libId} />
+          <EditComponentDetail resourceLibId={libId} formData={formData} />
         </Form>
       </Modal>
     </div>
