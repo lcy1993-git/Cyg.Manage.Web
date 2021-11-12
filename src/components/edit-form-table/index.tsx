@@ -56,7 +56,7 @@ const EditFormTable: React.FC<EditFormTableProps> = (props) => {
                               name={[field.name, ite.dataIndex]}
                               fieldKey={[field.fieldKey, ite.dataIndex]}
                             >
-                              {ite.render?.()}
+                              {ite.render?.(index)}
                             </Form.Item>
                           </td>
                         );

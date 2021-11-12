@@ -3,7 +3,6 @@ import EditFormTable from '@/components/edit-form-table';
 import { Form, Input } from 'antd';
 import UrlSelect from '@/components/url-select';
 import CascaderUrlSelect from '@/components/material-cascader-url-select';
-import Scrollbars from 'react-custom-scrollbars';
 import EnumSelect from '@/components/enum-select';
 import { useRequest } from 'ahooks';
 import { getSpecName, getMaterialSpecName } from '@/services/resource-config/component';
@@ -75,12 +74,23 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       index: 'type',
       width: 240,
 
-      render: () => (
+      render: (index: number) => (
         <EnumSelect
           bordered={false}
           placeholder="请选择类型"
           enumList={componentType}
-          onChange={(value: any) => setType(value)}
+          onChange={(value) => {
+            const formValues = addForm.getFieldValue('items');
+            const thisValue = formValues[index];
+            const changeFormValues = formValues.splice(index, 1, {
+              ...thisValue,
+              type: value,
+              componentId: undefined,
+              guige: undefined,
+              unit: undefined,
+            });
+            addForm.setFieldsValue({ items: changeFormValues });
+          }}
         />
       ),
     },
@@ -113,8 +123,8 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
           <span>物料/组件规格</span>
         </>
       ),
-      dataIndex: 'componentId',
-      index: 'componentId',
+      dataIndex: 'guige',
+      index: 'guige',
       width: 240,
       render: () => {
         return (
@@ -125,9 +135,6 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
             allowClear
             value={spec}
             bordered={false}
-            placeholder={`${placeholder}规格`}
-            // className={styles.selectItem}
-            onChange={(value) => onSpecChange(value as string)}
           />
         );
       },
@@ -157,16 +164,12 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       index: 'unit',
       width: 140,
       render: () => {
-        return <Input value={unit} bordered={false} disabled />;
+        return <Input bordered={false} disabled />;
       },
     },
   ];
 
-  return (
-    <Scrollbars autoHeight>
-      <EditFormTable formName="items" columns={columns}></EditFormTable>
-    </Scrollbars>
-  );
+  return <EditFormTable formName="items" columns={columns}></EditFormTable>;
 };
 
 export default AddComponentDetail;
