@@ -1,46 +1,46 @@
-type ElectricPointType =
-  | '无类型'
-  | '开闭所'
-  | '环网柜'
-  | '分支箱'
-  | '配变'
-  | '联络开关'
-  | '分段开关'
-type ElectricLineType = '无类型' | '架空线' | '电缆'
+// type ElectricPointType =
+//   | '无类型'
+//   | '开闭所'
+//   | '环网柜'
+//   | '分支箱'
+//   | '配变'
+//   | '联络开关'
+//   | '分段开关'
+// type ElectricLineType = '无类型' | '架空线' | '电缆'
 
-interface ElectricLineData {
-  id: string
-  name: string
-  type: ElectricLineType
-  startLng?: number
-  startLat?: number
-  endLng?: number
-  endLat?: number
-  remark?: string
-  startId?: string
-  endId?: string
-}
+// interface ElectricLineData {
+//   id: string
+//   name: string
+//   type: ElectricLineType
+//   startLng?: number
+//   startLat?: number
+//   endLng?: number
+//   endLat?: number
+//   remark?: string
+//   startId?: string
+//   endId?: string
+// }
 
-interface ElectricPointData {
-  id: string
-  name: string
-  type: ElectricPointType
-  Lng?: number
-  Lat?: number
-  remark?: string
-}
+// interface ElectricPointData {
+//   id: string
+//   name: string
+//   type: ElectricPointType
+//   Lng?: number
+//   Lat?: number
+//   remark?: string
+// }
 
-type DataSource = {
-  point: ElectricPointData[]
-  line: ElectricLineData[]
-}
+// type DataSource = {
+//   point: ElectricPointData[]
+//   line: ElectricLineData[]
+// }
 
-const dataSource: DataSource = {
-  point: [],
-  line: [],
-}
+// const dataSource: DataSource = {
+//   point: [],
+//   line: [],
+// }
 
-export default dataSource
+// export default dataSource
 
 const testData = {
   type: 'FeatureCollection',
@@ -122,8 +122,36 @@ const resData = {
   line: [],
 }
 
-testData.features.forEach((f) => {
+let pIndex = 0
+let lIndex = 0
+
+const pt = ['无类型', '开闭所', '环网柜', '分支箱', '配变', '分段开关']
+const lt = ['无类型', '架空线', '电缆']
+
+testData.features.forEach((f, index) => {
   if (f.geometry.type === 'Point') {
+    resData.point.push({
+      id: '000' + index,
+      name: Math.random().toString(16).slice(2),
+      type: pt[pIndex++],
+      Lng: f.geometry.coordinates[0],
+      Lat: f.geometry.coordinates[1],
+      remark: '',
+    })
   } else if (f.geometry.type === 'LineString') {
+    resData.line.push({
+      id: '000' + index,
+      name: Math.random().toString(16).slice(2),
+      type: lt[lIndex++ % 3],
+      startLng: f.geometry.coordinates[0][0],
+      startLat: f.geometry.coordinates[0][1],
+      endLng: f.geometry.coordinates[1][0],
+      endLat: f.geometry.coordinates[1][1],
+      remark: '',
+      startId: '',
+      endId: '',
+    })
   }
 })
+
+console.log(resData)

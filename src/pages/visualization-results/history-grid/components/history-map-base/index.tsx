@@ -1,6 +1,6 @@
 import '@/assets/icon/history-grid-icon.css'
 import { useCurrentRef } from '@/utils/hooks'
-import { useEventEmitter, useMount, useUpdateEffect } from 'ahooks'
+import { useEventEmitter, useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { FeatureCollection, LineString as LineStringJSON, Point as PointJSON } from 'geojson'
 import { Feature, Map, MapEvent, View } from 'ol'
 import { click as conditionClick } from 'ol/events/condition'
@@ -17,14 +17,15 @@ import 'ol/ol.css'
 import * as proj from 'ol/proj'
 import { Source, Vector as VectorSource } from 'ol/source'
 import { useRef, useState } from 'react'
+import { getData } from './data'
 import { drawEnd } from './draw'
 import { onMapLayerTypeChange, onSelectTypeChange } from './effects'
 import { moveend, pointermove } from './event'
 import mapClick from './event/mapClick'
 import styles from './index.less'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
-import { featureStyle, modifyStyle } from './styles'
-import pointStyle from './styles/pointStyles'
+import { featureStyle, lineStyle, modifyStyle } from './styles'
+import pointStyle from './styles/pointStyle'
 export interface MapRef {
   map: Map
 }
@@ -45,6 +46,9 @@ export type SelectType = '' | 'pointSelect' | 'toggleSelect' | 'boxSelect'
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
 const HistoryMapBase = () => {
+  // 数据源
+  const { data } = useRequest(getData)
+
   // 选择类型
   const [selectType, setSelectType] = useState<SelectType>('')
   // 绘制类型
@@ -95,6 +99,53 @@ const HistoryMapBase = () => {
     () => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer),
     [mapLayerType]
   )
+  // 加载数据
+  useUpdateEffect(() => {
+    console.log(data)
+    LoadJSON1(data)
+  }, [JSON.stringify(data)])
+
+  function LoadJSON1(data) {
+    if (data) {
+      interActionRef.source?.clear()
+
+      if (Array.isArray(data.point)) {
+        const points = data.point.map((p) => {
+          const feature = new Feature()
+          feature.setGeometry(new Point([p.Lng, p.Lat]))
+          feature.setStyle(pointStyle[p.type])
+          feature.set('id', p.id)
+          feature.set('name', p.name)
+          feature.set('remark', p.remark)
+          return feature
+        })
+
+        interActionRef.source?.addFeatures(points)
+      }
+      if (Array.isArray(data.line)) {
+        const lines = data.line.map((p) => {
+          const feature = new Feature()
+          console.log(p)
+
+          feature.setGeometry(
+            new LineString([
+              [p.startLng, p.startLat],
+              [p.endLng, p.endLat],
+            ])
+          )
+          feature.setStyle(lineStyle[p.type])
+          feature.set('id', p.id)
+          feature.set('name', p.name)
+          feature.set('remark', p.remark)
+          return feature
+        })
+        console.log(lines)
+
+        interActionRef.source?.addFeatures(lines)
+      }
+    }
+  }
+
   // 处理当选择类型发生变化
   useUpdateEffect(() => onSelectTypeChange(selectType, interActionRef, mapRef), [selectType])
   // beforinit
