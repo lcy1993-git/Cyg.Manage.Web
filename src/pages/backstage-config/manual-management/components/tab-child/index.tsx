@@ -1,55 +1,55 @@
-import FileUpload from '@/components/file-upload';
-import React, { useState } from 'react';
+import FileUpload from '@/components/file-upload'
+import React, { useState } from 'react'
 
-import styles from './index.less';
-import Modal from 'antd/lib/modal';
-import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview';
-import GeneralTable from '@/components/general-table';
-import {Button, message, Space, Spin } from 'antd';
+import styles from './index.less'
+import Modal from 'antd/lib/modal'
+import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
+import GeneralTable from '@/components/general-table'
+import { Button, message, Space, Spin } from 'antd'
 import {
   getLatestInstructions,
   instructionsCreate,
   uploadCreate,
-} from '@/services/system-config/manual-management';
-import { useMount } from 'ahooks';
-import { baseUrl } from '@/services/common';
-import moment from "moment";
+} from '@/services/system-config/manual-management'
+import { useMount } from 'ahooks'
+import { baseUrl } from '@/services/common'
+import moment from 'moment'
 
 interface Props {
-  id: number;
-  tabList:{text:string,value:number}[]
+  id: number
+  tabList: { text: string; value: number }[]
 }
 
 const ManualUpload: React.FC<Props> = (props) => {
-  const { id,tabList } = props;
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [file, setFile] = useState<any>([]);
+  const { id, tabList } = props
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [file, setFile] = useState<any>([])
   const [lastFile, setLastFile] = useState<{ fileName: string; fileId: string }>({
     fileId: '',
     fileName: '',
-  });
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isSpinning, setSpinning] = useState(false);
-  const [showFooter, setShowFooter] = useState(false);
-  const upLoadFn = async () => {};
+  })
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [isSpinning, setSpinning] = useState(false)
+  const [showFooter, setShowFooter] = useState(false)
+  const upLoadFn = async () => {}
   const handleOk = async () => {
-    setIsModalVisible(false);
-    setSpinning(true);
+    setIsModalVisible(false)
+    setSpinning(true)
     const res = await uploadCreate({
       category: id,
       file: file,
-    });
+    })
     await instructionsCreate({
       category: id,
       fileId: res.value,
       fileName: res.text,
-    });
-    setSpinning(false);
-    message.success('上传成功!');
-    getLastFile();
+    })
+    setSpinning(false)
+    message.success('上传成功!')
+    getLastFile()
     // @ts-ignore
-    tableRef.current.refresh();
-  };
+    tableRef.current.refresh()
+  }
   const columns = [
     {
       dataIndex: 'fileName',
@@ -69,23 +69,23 @@ const ManualUpload: React.FC<Props> = (props) => {
       width: 150,
       render(v: string) {
         return moment(v).format('YYYY-MM-DD HH:MM:SS')
-      }
+      },
     },
-  ];
+  ]
   const onChange = async (val: any) => {
     if (val.length !== 0) {
-      setFile(val);
+      setFile(val)
       setShowFooter(true)
       setIsModalVisible(true)
     } else {
-      setFile([]);
+      setFile([])
     }
-  };
+  }
   const downFile = () => {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', `${baseUrl.upload}/Download/GetFileById?fileId=${lastFile.fileId}`, true); // 也可以使用POST方式，根据接口
-    xhr.responseType = 'blob'; // 返回类型blob
-    xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string);
+    var xhr = new XMLHttpRequest()
+    xhr.open('GET', `${baseUrl.upload}/Download/GetFileById?fileId=${lastFile.fileId}`, true) // 也可以使用POST方式，根据接口
+    xhr.responseType = 'blob' // 返回类型blob
+    xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string)
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
     // @ts-ignore
     xhr.onload = function (e) {
@@ -93,35 +93,35 @@ const ManualUpload: React.FC<Props> = (props) => {
       if (this.status === 200) {
         // 返回200
         // @ts-ignore
-        var res = e.target.response;
+        var res = e.target.response
         // @ts-ignore
-        setFile([res]);
-        setSpinning(false);
-        setIsModalVisible(true);
+        setFile([res])
+        setSpinning(false)
+        setIsModalVisible(true)
       }
-    };
-    xhr.send();
-  };
+    }
+    xhr.send()
+  }
   const getLastFile = async () => {
-    const res = await getLatestInstructions(id);
+    const res = await getLatestInstructions(id)
     if (res) {
       setLastFile({
         fileName: res.fileName,
         fileId: res.fileId,
-      });
+      })
     }
-  };
+  }
   const showLast = () => {
     setFile([])
     setShowFooter(false)
-    setSpinning(true);
-    downFile();
-  };
+    setSpinning(true)
+    downFile()
+  }
   useMount(() => {
-    getLastFile();
-  });
+    getLastFile()
+  })
   return (
-    <Spin tip="上传中... " spinning={isSpinning}>
+    <Spin tip="请稍等... " spinning={isSpinning}>
       <div className={styles.content}>
         <div className={styles.title}>说明书管理</div>
         <h4 className={styles.current}>
@@ -163,17 +163,28 @@ const ManualUpload: React.FC<Props> = (props) => {
           destroyOnClose
           onCancel={() => setIsModalVisible(false)}
         >
-          <ManualPreview file={file} fileTitle={`${tabList.find(item=>item.value==id)?.text ?? ''}说明书`}/>
-          <div style={{display:showFooter ? 'flex' : 'none',justifyContent:'right',marginTop:'15px'}}>
+          <ManualPreview
+            file={file}
+            fileTitle={`${tabList.find((item) => item.value == id)?.text ?? ''}说明书`}
+          />
+          <div
+            style={{
+              display: showFooter ? 'flex' : 'none',
+              justifyContent: 'right',
+              marginTop: '15px',
+            }}
+          >
             <Space>
-              <Button onClick={()=>setIsModalVisible(false)}>取消</Button>
-              <Button type={'primary'} onClick={handleOk}>确定</Button>
+              <Button onClick={() => setIsModalVisible(false)}>取消</Button>
+              <Button type={'primary'} onClick={handleOk}>
+                确定
+              </Button>
             </Space>
           </div>
         </Modal>
       </div>
     </Spin>
-  );
-};
+  )
+}
 
-export default ManualUpload;
+export default ManualUpload
