@@ -36,3 +36,4 @@ screenshot
 .eslintcache
 
 *.exe.stackdump
+/.husky/
