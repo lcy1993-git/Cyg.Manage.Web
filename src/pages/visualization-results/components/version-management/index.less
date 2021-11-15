@@ -1,0 +1,60 @@
+.versionManagement {
+  position: absolute;
+  top: 50px;
+  right: 200px;
+  width: 200px;
+  background: transparent;
+  .versionManagementButton {
+    display: flex;
+    height: 32px;
+    line-height: 32px;
+    opacity: 0.8;
+    //margin-bottom: 12px;
+    .versionManagementIcon {
+      color: #fff;
+      font-size: 16px;
+      line-height: 34px;
+    }
+    .versionManagementText {
+      width: 80px;
+      height: 26px;
+      margin-left: 6px;
+      color: white;
+      line-height: 26px;
+      text-align: center;
+      border: 1px solid white;
+      cursor: pointer;
+      user-select: none;
+      //border-radius: 4px;
+    }
+  }
+  .versionManagementList {
+    height: 70vh;
+    overflow-y: auto;
+    transition: all 0.5s;
+    .listText {
+      color: white;
+      cursor: pointer;
+      opacity: 0.5;
+    }
+    .listActiveText {
+      color: white;
+      cursor: pointer;
+      opacity: 1;
+    }
+    .listText:hover {
+      opacity: 1;
+      :global .ant-timeline-item-tail {
+        opacity: 0.5;
+      }
+    }
+    .listActiveText {
+      :global .ant-timeline-item-tail {
+        opacity: 0.5;
+      }
+    }
+  }
+  .versionManagementList::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}
