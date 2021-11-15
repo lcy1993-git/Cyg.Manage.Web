@@ -1,7 +1,9 @@
 import img from '@/assets/icon-image/survey-track-light.png'
 import { Fill, Icon, Stroke, Style } from 'ol/style'
 import CircleStyle from 'ol/style/Circle'
+import lineStyle from './lineStyle'
 import modifyStyle from './modifyStyle'
+import pointStyle from './pointStyle'
 
 // 街道图层style
 export const StreetLayerStyle = new Style({
@@ -79,4 +81,4 @@ export const featureStyle: Record<string, Style> = {
   //   }),
 }
 
-export { modifyStyle }
+export { modifyStyle, lineStyle, pointStyle }
