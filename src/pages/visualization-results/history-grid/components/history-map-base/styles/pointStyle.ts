@@ -86,7 +86,7 @@ const pointStyle = {
   ],
   环网柜: new ClassStyle({
     text: new Text({
-      text: '\ue823',
+      text: '\ue852',
       ...options(),
     }),
   }),
