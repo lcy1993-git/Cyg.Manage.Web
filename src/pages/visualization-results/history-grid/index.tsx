@@ -4,26 +4,26 @@ import VersionManagement from '@/pages/visualization-results/components/version-
 import AddElectricalEquipment, {
   ElectricalEquipmentForm,
 } from '@/pages/visualization-results/components/map-form/add-electrical-equipment'
+import { useState } from 'react'
 
 const HistoryGrid = () => {
-  const onFiniosh = (value: ElectricalEquipmentForm) => {
-    console.log(value)
-  }
+  const [visible, setVisible] = useState<boolean>(true)
   return (
     <div className="relative h-full">
+      <button onClick={() => setVisible(!visible)}>222</button>
       <HistoryMapBase />
       {/*时间轴组件*/}
       <VersionManagement listHeight={'50vh'} />
       <CityPickerWrapper />
       <AddElectricalEquipment
-        type={'edit'}
-        onFinish={onFiniosh}
-        values={{
-          name: 'lzw',
-          type: '1',
-          remark: '123',
-          level: '10',
+        showLength={true}
+        type={'LineString'}
+        visible={visible}
+        position={{
+          x: 500,
+          y: 200,
         }}
+        data={[]}
       />
     </div>
   )
