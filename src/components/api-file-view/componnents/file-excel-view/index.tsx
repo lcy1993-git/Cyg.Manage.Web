@@ -1,11 +1,10 @@
 import { useMount } from 'ahooks'
 import * as jquery from 'jquery'
-import jqueryMousewheel from 'jquery-mousewheel'
+import 'jquery-mousewheel'
 import React from 'react'
 import 'spectrum-colorpicker'
 import { v4 as uuid } from 'uuid'
 
-jqueryMousewheel(jquery)
 window.jQuery = jquery
 window.$ = jquery
 window.uuid = uuid
