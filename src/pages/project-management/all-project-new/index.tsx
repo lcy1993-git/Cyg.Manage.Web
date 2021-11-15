@@ -180,7 +180,10 @@ const AllProject: React.FC = () => {
                   <TabPane tab="待安排" key="awaitApproval">
                     111
                   </TabPane>
-                  <TabPane tab="立项审批中" key="inApproval">
+                  <TabPane tab="待安排评审" key="inApproval">
+                    111
+                  </TabPane>
+                  <TabPane tab="公司待办" key="inApproval">
                     111
                   </TabPane>
                 </Tabs>
@@ -189,14 +192,15 @@ const AllProject: React.FC = () => {
             {currentClickTab === '4' && (
               <div className={styles.reviewManageList}>
                 <Tabs>
-                  <TabPane>222</TabPane>
+                  <TabPane tab="外审中">222</TabPane>
                 </Tabs>
               </div>
             )}
             {currentClickTab === '5' && (
               <div className={styles.finishProjectList}>
                 <Tabs>
-                  <TabPane>222</TabPane>
+                  <TabPane tab="待结项">222</TabPane>
+                  <TabPane tab="结项审批">222</TabPane>
                 </Tabs>
               </div>
             )}
