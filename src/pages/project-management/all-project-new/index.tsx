@@ -83,47 +83,123 @@ const defaultParams = {
 };
 
 const AllProject: React.FC = () => {
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const [currentClickTab, setCurrentClickTab] = useState<string>('1');
+  const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
+  const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
+
+  const addEngineerEvent = () => {
+    setAddEngineerModalVisible(true);
+  };
+
+  const batchAddEngineerEvent = () => {
+    setBatchAddEngineerModalVisible(true);
+  };
+  const addEngineerMenu = (
+    <Menu>
+      {buttonJurisdictionArray?.includes('all-project-project-approval') && (
+        <Menu.Item onClick={() => addEngineerEvent()}>立项</Menu.Item>
+      )}
+      {buttonJurisdictionArray?.includes('all-project-batch-project') && (
+        <Menu.Item onClick={() => batchAddEngineerEvent()}>批量立项</Menu.Item>
+      )}
+    </Menu>
+  );
+
   return (
     <>
       <PageCommonWrap noPadding={true} noColor={true}>
         <div className={styles.allProjectPage}>
           <div className={styles.allProjectCheckTab}>
-            <div className={styles.projectManagementStatisticItem}>
+            <div
+              className={styles.projectManagementStatisticItem}
+              onClick={() => setCurrentClickTab('1')}
+            >
               <SingleStatistics label="全部项目" icon="awaitProcess">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
-            <div>
+            <div
+              className={styles.projectManagementStatisticItem}
+              onClick={() => setCurrentClickTab('2')}
+            >
               <SingleStatistics label="立项审批" icon="awaitProcess">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
-            <div>
+            <div
+              className={styles.projectManagementStatisticItem}
+              onClick={() => setCurrentClickTab('3')}
+            >
               <SingleStatistics label="任务安排" icon="awaitProcess">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
-            <div>
+            <div
+              className={styles.projectManagementStatisticItem}
+              onClick={() => setCurrentClickTab('4')}
+            >
               <SingleStatistics label="评审管理" icon="awaitProcess">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
-            <div>
+            <div
+              className={styles.projectManagementStatisticItem}
+              onClick={() => setCurrentClickTab('5')}
+            >
               <SingleStatistics label="结项管理" icon="awaitProcess">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
-            {/* <Tabs>
-              <TabPane tab="基本信息" key="1">
-                <BaseInfo baseInfo={detailData} />
-              </TabPane>
-              <TabPane tab="内容" key="2">
-                <Content info={detailData} />
-              </TabPane>
-              <TabPane tab="请求头" key="3">
-                <ReqHeader info={detailData} />
-              </TabPane>
-            </Tabs> */}
+          </div>
+          <div className={styles.allProjectContent}>
+            {currentClickTab === '1' && (
+              <div className={styles.myProjectList}>
+                <Tabs>
+                  <TabPane tab="我的项目" key="awaitApproval">
+                    111
+                  </TabPane>
+                </Tabs>
+              </div>
+            )}
+            {currentClickTab === '2' && (
+              <div className={styles.projectApprovalList}>
+                <Tabs>
+                  <TabPane tab="立项待审批" key="awaitApproval">
+                    111
+                  </TabPane>
+                  <TabPane tab="立项审批中" key="inApproval">
+                    111
+                  </TabPane>
+                </Tabs>
+              </div>
+            )}
+            {currentClickTab === '3' && (
+              <div className={styles.taskArrangeList}>
+                <Tabs>
+                  <TabPane tab="待安排" key="awaitApproval">
+                    111
+                  </TabPane>
+                  <TabPane tab="立项审批中" key="inApproval">
+                    111
+                  </TabPane>
+                </Tabs>
+              </div>
+            )}
+            {currentClickTab === '4' && (
+              <div className={styles.reviewManageList}>
+                <Tabs>
+                  <TabPane>222</TabPane>
+                </Tabs>
+              </div>
+            )}
+            {currentClickTab === '5' && (
+              <div className={styles.finishProjectList}>
+                <Tabs>
+                  <TabPane>222</TabPane>
+                </Tabs>
+              </div>
+            )}
           </div>
         </div>
       </PageCommonWrap>
