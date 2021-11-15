@@ -2,8 +2,8 @@ import '@/assets/icon/history-grid-icon.css'
 import { useCurrentRef } from '@/utils/hooks'
 import { useEventEmitter, useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { FeatureCollection, LineString as LineStringJSON, Point as PointJSON } from 'geojson'
-import { Feature, Map, MapBrowserEvent, MapEvent, View } from 'ol'
-import { click as conditionClick, platformModifierKeyOnly } from 'ol/events/condition'
+import { Feature, Map, MapEvent, View } from 'ol'
+import { click as conditionClick } from 'ol/events/condition'
 import BaseEvent from 'ol/events/Event'
 import GeoJSON from 'ol/format/GeoJSON'
 import Geometry from 'ol/geom/Geometry'
@@ -12,7 +12,6 @@ import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import { LineCoordType, PointCoordType } from 'ol/interaction/Draw'
-import { SelectEvent } from 'ol/interaction/Select'
 import { Layer } from 'ol/layer'
 import 'ol/ol.css'
 import * as proj from 'ol/proj'
@@ -43,10 +42,10 @@ export interface InterActionRef {
   isDragBox?: boolean
 }
 
-export type SelectType = '' | 'pointSelect' | 'boxSelect'
+export type SelectType = '' | 'pointSelect' | 'toggleSelect' | 'boxSelect'
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
-const HistoryMapBase = () => {
+const GridPreDesignMap = () => {
   // 数据源
   const { data } = useRequest(getData)
 
@@ -114,9 +113,9 @@ const HistoryMapBase = () => {
           const feature = new Feature()
           feature.setGeometry(new Point([p.Lng, p.Lat]))
           feature.setStyle(pointStyle[p.type])
-          Object.keys(p).forEach((key) => {
-            feature.set(key, p[key])
-          })
+          feature.set('id', p.id)
+          feature.set('name', p.name)
+          feature.set('remark', p.remark)
           return feature
         })
 
@@ -134,9 +133,9 @@ const HistoryMapBase = () => {
             ])
           )
           feature.setStyle(lineStyle[p.type])
-          Object.keys(p).forEach((key) => {
-            feature.set(key, p[key])
-          })
+          feature.set('id', p.id)
+          feature.set('name', p.name)
+          feature.set('remark', p.remark)
           return feature
         })
         console.log(lines)
@@ -188,7 +187,7 @@ const HistoryMapBase = () => {
 
   // 绑定事件
   function bindEvent() {
-    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) => mapClick(e, { interActionRef, mapRef }))
+    mapRef.map.on('click', (e: BaseEvent) => mapClick(e, { interActionRef }))
     mapRef.map.on('pointermove', (e) => pointermove(e))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
@@ -215,28 +214,12 @@ const HistoryMapBase = () => {
     const boxSelect = new Select()
     const toggleSelect = new Select({
       condition: conditionClick,
-      toggleCondition: platformModifierKeyOnly,
+      toggleCondition: conditionClick,
     })
-    toggleSelect.on('select', (e: SelectEvent) => {
-      const select = e.target as Select
-      const features = select.getFeatures()
-
-      const firstFeature = features.item(0)
-
-      if (firstFeature) {
-        console.log(firstFeature)
-      }
-    })
-    toggleSelect.setHitTolerance(8)
-    // toggleSelect.on('change', (...args) => {
-    //   console.log(...args);
-    // })
-
-    mapRef.map.addInteraction(toggleSelect)
     interActionRef.select = {
       pointSelect,
       boxSelect,
-      // toggleSelect,
+      toggleSelect,
     }
     interActionRef.dragBox = dragBox
     const selectedFeatures = boxSelect.getFeatures()
@@ -305,16 +288,8 @@ const HistoryMapBase = () => {
     localStorage.setItem('json', new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!))
   }
 
-  const onKeyDown = () => {
-    console.log('down')
-  }
-
-  const onKeyUp = () => {
-    console.log('up')
-  }
-
   return (
-    <div onKeyDown={onKeyDown} onKeyUp={onKeyUp} onKeyPress={onKeyDown}>
+    <div>
       <div ref={ref} style={{ height: window.innerHeight - 300, width: window.innerWidth }}></div>
       <button onClick={() => setGeometryType(GeometryType.POINT)}>Point</button>
       <button style={{ color: 'red' }} onClick={() => setGeometryType(GeometryType.LINE_STRING)}>
@@ -354,11 +329,11 @@ const HistoryMapBase = () => {
         <span>选择方式：</span>
         <button onClick={() => setSelectType('')}>不选择</button>
         <button onClick={() => setSelectType('pointSelect')}>点选</button>
-        {/* <button onClick={() => setSelectType('toggleSelect')}>多选</button> */}
+        <button onClick={() => setSelectType('pointSelect')}>多选</button>
         <button onClick={() => setSelectType('boxSelect')}>框选</button>
       </div>
     </div>
   )
 }
 
-export default HistoryMapBase
+export default GridPreDesignMap
