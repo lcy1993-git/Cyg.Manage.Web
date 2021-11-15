@@ -2,13 +2,13 @@ import { EnvironmentFilled } from '@ant-design/icons'
 import { Button, Select } from 'antd'
 import { useState } from 'react'
 import CityPicker from './components/city-picker'
-import { CityWithProvince } from './components/city-picker/type'
 import FlowLayer from './components/flow-layer'
+import { useHistoryGridContext } from './context'
 
 const FL_MARGIN_LEFT = 10
 
 const CityPickerWrapper = () => {
-  const [city, setCity] = useState<CityWithProvince>()
+  const { city, dispatch } = useHistoryGridContext()
   const [visible, setVisible] = useState(true)
 
   return (
@@ -41,7 +41,7 @@ const CityPickerWrapper = () => {
         <CityPicker
           value={city}
           onSelect={(city) => {
-            setCity(city)
+            dispatch({ type: 'setCity', payload: city })
           }}
         >
           <span className="cursor-pointer text-base text-theme-green">
