@@ -11,10 +11,13 @@ export interface TimeLine {
 
 interface Props {
   onClick?: () => void
+  listHeight?: string
+  top?: number
+  left?: number
 }
 
 const VersionManagement = (props: Props, ref: Ref<any>) => {
-  const { onClick } = props
+  const { onClick, listHeight = '70vh', top, left } = props
   const [active, setActive] = useState<boolean>(false)
   const [activeId, setActiveId] = useState<string>('')
   const [list, setList] = useState<TimeLine[]>([])
@@ -46,12 +49,18 @@ const VersionManagement = (props: Props, ref: Ref<any>) => {
     console.log(val)
   }
   return (
-    <div className={styles.versionManagement}>
+    <div
+      className={styles.versionManagement}
+      style={{
+        top: top ? `${top}px` : '80px',
+        left: left ? `${left}px` : '16px',
+      }}
+    >
       <div className={styles.versionManagementButton}>
         {active ? (
-          <DownOutlined className={styles.versionManagementIcon} />
+          <DownOutlined className={styles.versionManagementIcon} onClick={activeList} />
         ) : (
-          <UpOutlined className={styles.versionManagementIcon} />
+          <UpOutlined className={styles.versionManagementIcon} onClick={activeList} />
         )}
         <div className={styles.versionManagementText} onClick={activeList}>
           版本管理
@@ -60,7 +69,7 @@ const VersionManagement = (props: Props, ref: Ref<any>) => {
       <div
         className={styles.versionManagementList}
         style={{
-          height: active ? '70vh' : '0vh',
+          height: active ? listHeight : '0vh',
           overflow: active ? 'auto' : 'hidden',
         }}
       >
