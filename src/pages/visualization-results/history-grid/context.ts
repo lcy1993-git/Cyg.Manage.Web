@@ -67,7 +67,7 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
 /** 惰性初始化 */
 export const init = (params: unknown) => {
   const initialState: ReducerState = {
-    mode: 'record',
+    mode: 'design',
   }
 
   return initialState

@@ -28,9 +28,7 @@ const CityPicker: FC<CityPickerProps> = ({ className, style, children, ...rest }
 
   return (
     <div
-      className={`border border-gray-300 bg-white border-solid select-none overflow-hidden ${
-        className || ''
-      }`}
+      className={`bg-white elect-none overflow-hidden ${className || ''}`}
       style={{ width: '350px', ...style }}
     >
       <div className="py-1 px-2 flex justify-between items-center">
