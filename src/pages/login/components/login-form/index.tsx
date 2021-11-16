@@ -66,6 +66,9 @@ const LoginForm: React.FC<Props> = (props) => {
   const login = (type: LoginType) => {
     // TODO  校验通过之后进行保存
     form.validateFields().then(async (values) => {
+      if ([2,3].includes(stopInfo.stage)){
+        values.userName = values?.userName?.replace(stopInfo.testerAccountPrefix,'')
+      }
       try {
         setRequestLoading(true);
         let resData = null;
@@ -78,7 +81,8 @@ const LoginForm: React.FC<Props> = (props) => {
           const { accessToken } = resData.content;
 
           localStorage.setItem('Authorization', accessToken);
-          const userInfo = await getUserInfoRequest();
+          let userInfo = await getUserInfoRequest();
+          userInfo['isTestUser'] = [2,3].includes(stopInfo?.stage) // 是否测试账号
           const modules = await getAuthorityModules();
 
           const buttonModules = flatten(modules);
@@ -119,7 +123,7 @@ const LoginForm: React.FC<Props> = (props) => {
       }
     }
     if (needVerifycode) {
-      const fromData = await form.validateFields();
+      let fromData = await form.validateFields();
       const key = activeKey === 'account' ? fromData.userName : fromData.phone;
       const codeRes = await compareVerifyCode(key, imageCode);
       if (codeRes.content === true) {

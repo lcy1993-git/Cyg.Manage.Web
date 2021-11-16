@@ -109,7 +109,7 @@ const Index: React.FC = () => {
         }
         if (val.stage === 3){
           const userInfo = JSON.parse(localStorage.getItem('userInfo') || '')
-          if (userInfo?.userName && !userInfo?.userName.includes(val.testerAccountPrefix)){ // 测试人员账号
+          if (!userInfo?.isTestUser){ // 测试人员账号
             message.warning('正在停服发版中,请稍等...')
             setTimeout(()=>{ // 非测试账号直接退出登录
               history.push("/login")
