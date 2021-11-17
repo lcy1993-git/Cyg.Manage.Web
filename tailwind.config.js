@@ -1,3 +1,16 @@
+const pseudoElementVariantsExtend = [
+  'width',
+  'height',
+  'fontSize',
+  'textColor',
+  'backgroundColor',
+  'borderWidth',
+  'borderColor',
+  'borderStyle',
+  'position',
+].reduce((s, c) => ((s[c] = ['before', 'after', 'hover::before', 'hover::after']), s), {})
+
+/** @see https://tailwindcss.com/docs */
 module.exports = {
   purge: ['./src/**/*.{ts,tsx}'],
   darkMode: false,
@@ -14,10 +27,19 @@ module.exports = {
   },
   variants: {
     scrollbar: ['rounded'],
-    extend: {},
+    extend: {
+      ...pseudoElementVariantsExtend,
+    },
   },
   plugins: [
     /** @see https://github.com/adoxography/tailwind-scrollbar */
     require('tailwind-scrollbar'),
+
+    /** @see https://github.com/croutonn/tailwindcss-pseudo-elements */
+    require('tailwindcss-pseudo-elements')({
+      contentUtilities: { prefix: 'tw-content' },
+      emptyContent: false,
+      classNameReplacer: {},
+    }),
   ],
 }

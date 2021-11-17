@@ -20,12 +20,19 @@ import { CityWithProvince } from './components/city-picker/type'
 type ReducerState = {
   /** record => 历史, history-edit => 历史绘制, edit => 预设计 */
   mode: 'record' | 'edit' | 'design'
+  /** 当前定位的城市 */
   city?: CityWithProvince
+
+  /** 预设计相关 */
+  designData?: {
+    /** 预设计名称 */
+    title: string
+  }
 }
 
 /** action */
 type SimpleActions = never
-type ComplexActions = 'reset' | 'changeMode' | 'setCity'
+type ComplexActions = 'reset' | 'changeMode' | 'setCity' | 'setDesignData'
 type Actions = SimpleActions | ComplexActions
 
 type ComplexActionReflectPayload<Action> = Action extends 'reset'
@@ -34,6 +41,8 @@ type ComplexActionReflectPayload<Action> = Action extends 'reset'
   ? ReducerState['mode']
   : Action extends 'setCity'
   ? ReducerState['city']
+  : Action extends 'setDesignData'
+  ? ReducerState['designData']
   : never
 
 type ReducerActionWithPayload = { type: Actions; payload: any }
@@ -57,6 +66,8 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
   switch (type) {
     case 'changeMode':
       return { ...state, mode: payload }
+    case 'setDesignData':
+      return { ...state, designData: payload }
     case 'setCity':
       return { ...state, city: payload }
     case 'reset':
