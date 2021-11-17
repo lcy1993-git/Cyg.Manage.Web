@@ -10,8 +10,7 @@ const whiteCircle = new ClassStyle({
     text: '\ue879',
     font: 'Normal 22px iconfontHistoryGrid',
     // text: '\xe905',
-    offsetX: 0,
-    offsetY: 0,
+
     fill: new Fill({
       color: 'rgba(255,255, 255, 1)',
     }),
@@ -27,17 +26,9 @@ const hightCircle = new ClassStyle({
   text: new Text({
     text: '\ue879',
     font: 'Normal 26px iconfontHistoryGrid',
-    // text: '\xe905',
-    offsetX: 0,
-    offsetY: 0,
     fill: new Fill({
       color: 'rgba(249, 149, 52, 1)',
     }),
-
-    // stroke: new Stroke({
-    //   color: 'rgba(255,255, 255, 1)',
-    //   width: 4,
-    // }),
   }),
 })
 
@@ -76,7 +67,6 @@ export const getPointStyle: GetPointStyle = (
     联络开关: '\ue901',
     分段开关: '\ue903',
   }
-
   return [
     isHight ? hightCircle : whiteCircle,
     new ClassStyle({
@@ -92,5 +82,3 @@ export const getPointStyle: GetPointStyle = (
     }),
   ]
 }
-
-getPointStyle('无类型', true)

@@ -1,13 +1,27 @@
+import type {
+  DataSource,
+  ElectricLineData,
+  ElectricPointData,
+} from './components/history-map-base/typings'
 import { useHistoryGridContext } from './context'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
 export interface GridMapGlobalState {
   mapLayerType: string
+  isDraw: boolean
+  dataSource?: DataSource
+  selectedData: (ElectricPointData | ElectricLineData)[]
+  cleanSelected: boolean
 }
 
 export const initGridMapState = {
-  mapLayerType: 'SATELLITE',
+  mapLayerType: 'SATELLITE', // 卫星图 ？ 街道图 ？
+  isDraw: false, // 是否为绘制状态
+  dataSource: undefined, // 绘制元素的数据源
+  selectedData: [], //被选中的元素
+  currentMousePosition: [0, 0], // 当前操作鼠标位置
+  cleanSelected: false, // 清屏(操作完成后)
 }
 
 export const mapReducer = <T extends GridMapGlobalState, K extends keyof T>(
