@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { Col, Input, Row } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import CascaderUrlSelect from '@/components/material-cascader-url-select';
-import Scrollbars from 'react-custom-scrollbars';
-import EnumSelect from '@/components/enum-select';
-import UrlSelect from '@/components/url-select';
-import { useRequest, useUpdateEffect } from 'ahooks';
-import { getMaterialSpecName, getSpecName } from '@/services/resource-config/component';
+import React, { useEffect, useMemo, useState } from 'react'
+import { Col, Input, Row } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import Scrollbars from 'react-custom-scrollbars'
+import EnumSelect from '@/components/enum-select'
+import { useRequest } from 'ahooks'
+import { getComponentName, getMaterialName } from '@/services/resource-config/component'
+import NameSelect from '../add-form/name-select'
+import SpecificationsSelect from '../add-form/specifications-select'
 
 interface EditComponentDetailParams {
-  resourceLibId: string;
-  formData: any;
+  resourceLibId: string
+  formData: any
+  editForm: any
 }
 
 enum componentType {
@@ -19,63 +20,62 @@ enum componentType {
 }
 
 const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
-  const { resourceLibId, formData } = props;
-  const [selectName, setSelectName] = useState<string>('');
-  const [specOptions, setSpecOptions] = useState<any>([]);
-  const [spec, setSpec] = useState<any>([]);
-  const [type, setType] = useState<string>();
+  const { resourceLibId, editForm, formData } = props
 
-  const { data: specData } = useRequest(
-    () =>
-      type === '0'
-        ? getMaterialSpecName({ libId: resourceLibId, name: selectName })
-        : getSpecName({ libId: resourceLibId, name: selectName }),
-    {
-      ready: !!selectName,
-      refreshDeps: [selectName],
-      onSuccess: () => {
-        setSpecOptions(specData);
-      },
-    },
-  );
+  const [type, setType] = useState<string>('')
+  const [changeName, setChangeName] = useState<string>('')
 
-  console.log(formData);
+  const { data: materialNameData } = useRequest(() => getMaterialName(resourceLibId), {
+    ready: !!resourceLibId,
+  })
 
-  useUpdateEffect(() => {
-    setType(formData?.type);
+  const { data: componentNameData } = useRequest(() => getComponentName(resourceLibId), {
+    ready: !!resourceLibId,
+  })
 
-    setSelectName(
-      formData?.type === '0' ? formData?.materialId?.name : formData?.componentId?.name,
-    );
-  }, [formData]);
+  const materialNameSelectData = useMemo(() => {
+    return materialNameData?.map((item) => {
+      return {
+        label: item,
+        value: item,
+      }
+    })
+  }, [materialNameData])
 
-  const onSpecChange = (value: string) => {
-    if (value) {
-      setSpec(value);
-    } else {
-      setSpec(undefined);
-    }
-  };
+  const componentSelectData = useMemo(() => {
+    return componentNameData?.map((item) => {
+      return {
+        label: item,
+        value: item,
+      }
+    })
+  }, [componentNameData])
 
-  // useEffect(() => {
-  //   setSpec(undefined);
-  // }, [type]);
+  console.log(formData)
 
-  const key = type === '0' ? 'materialId' : 'componentId';
-  const speckey = type === '0' ? 'spec' : 'componentSpec';
-  const placeholder = type === '0' ? '请选择物料' : '请选择组件';
+  useEffect(() => {
+    setType(formData?.itemType)
+    setChangeName(formData?.componentId)
+  }, [formData])
 
   return (
     <>
       <Scrollbars autoHeight>
         <Row>
           <Col span={12}>
-            <CyFormItem align="right" label="类型" name="type" required labelWidth={113}>
+            <CyFormItem align="right" required label="类型" name="itemType" labelWidth={113}>
               <EnumSelect
                 placeholder="请选择类型"
                 enumList={componentType}
-                value={type}
-                onChange={(value: any) => setType(value)}
+                onChange={(value: any) => {
+                  setType(value)
+                  editForm.setFieldsValue({
+                    itemType: value,
+                    componentId: undefined,
+                    itemId: undefined,
+                    unit: undefined,
+                  })
+                }}
               />
             </CyFormItem>
           </Col>
@@ -87,10 +87,18 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
               name="componentId"
               labelWidth={130}
             >
-              <CascaderUrlSelect
-                value={selectName}
-                urlHead={type === '0' ? 'Material' : type === '1' ? 'Component' : ''}
-                libId={resourceLibId}
+              <NameSelect
+                isBorder
+                typeEnum={type}
+                componentSelectData={componentSelectData}
+                materialNameSelectData={materialNameSelectData}
+                onChange={(value: any, option: any) => {
+                  setChangeName(value)
+                  editForm.setFieldsValue({
+                    itemId: undefined,
+                    unit: undefined,
+                  })
+                }}
               />
             </CyFormItem>
           </Col>
@@ -98,23 +106,17 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
 
         <Row>
           <Col span={12}>
-            <CyFormItem
-              align="right"
-              label="物料/组件规格"
-              name="materialId"
-              labelWidth={113}
-              required
-              dependencies={['componentId']}
-            >
-              <UrlSelect
-                defaultData={specOptions}
-                valuekey={key}
-                titlekey={speckey}
-                allowClear
-                value={spec}
-                placeholder={`${placeholder}规格`}
-                // className={styles.selectItem}
-                onChange={(value) => onSpecChange(value as string)}
+            <CyFormItem align="right" label="物料/组件规格" name="itemId" labelWidth={113} required>
+              <SpecificationsSelect
+                isBorder
+                onChange={(value: any, option: any) => {
+                  editForm.setFieldsValue({
+                    unit: option.unit,
+                  })
+                }}
+                libId={resourceLibId}
+                name={changeName}
+                typeEnum={type}
               />
             </CyFormItem>
           </Col>
@@ -130,7 +132,7 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
                 { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
               ]}
             >
-              <Input type="number" min={1} />
+              <Input type="number" min={1} placeholder="请输入数量（正整数）" />
             </CyFormItem>
           </Col>
         </Row>
@@ -143,7 +145,7 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
         </Row>
       </Scrollbars>
     </>
-  );
-};
+  )
+}
 
-export default EditComponentDetail;
+export default EditComponentDetail

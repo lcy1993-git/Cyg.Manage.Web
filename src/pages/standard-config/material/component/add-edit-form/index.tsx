@@ -1,43 +1,22 @@
-import React from 'react';
-import { Input, Tooltip } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import EnumSelect from '@/components/enum-select';
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import { materialType,supplySideType,kvLevelType,forProjectType,forDesignType, } from '@/services/resource-config/resource-enum';
+import React from 'react'
+import { Input, Tooltip } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import EnumSelect from '@/components/enum-select'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import {
+  materialType,
+  supplySideType,
+  kvBothLevelType,
+  forProjectType,
+  forDesignType,
+} from '@/services/resource-config/resource-enum'
 interface ChartListFromLibParams {
-  resourceLibId: string;
+  resourceLibId: string
 }
 
-// enum materialType {
-//   '材料' = '材料',
-//   '设备' = '设备',
-// }
-
-// enum supplySideType {
-//   '甲供' = '甲供',
-//   '乙供' = '乙供',
-// }
-
-// enum kvLevelType {
-//   '不限' = '不限',
-//   '10kV' = '10kV',
-//   '220V' = '220V',
-//   '380V' = '380V',
-// }
-// enum forProjectType {
-//   '不限' = '不限',
-//   '城网' = '城网',
-//   '农网' = '农网',
-// }
-// enum forDesignType {
-//   '不限' = '不限',
-//   '架空' = '架空',
-//   '电缆' = '电缆',
-// }
-
 const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { resourceLibId } = props;
+  const { resourceLibId } = props
 
   const unitSlot = () => {
     return (
@@ -47,8 +26,8 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
         </Tooltip>
       </>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -129,7 +108,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         initialValue="不限"
         rules={[{ required: true, message: '电压等级不能为空' }]}
       >
-        <EnumSelect placeholder="请选择电压等级" enumList={kvLevelType} valueString />
+        <EnumSelect placeholder="请选择电压等级" enumList={kvBothLevelType} valueString />
       </CyFormItem>
 
       <CyFormItem
@@ -167,7 +146,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default MaterialForm;
+export default MaterialForm

@@ -5,6 +5,7 @@ import {
   deleteComponentDetailItem,
   getComponentDetailItem,
   updateComponentDetailItem,
+  addComponentDetailItem,
 } from '@/services/resource-config/component'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { EditOutlined, PlusOutlined } from '@ant-design/icons'
@@ -18,11 +19,12 @@ import EditComponentDetail from './edit-form'
 interface ModuleDetailParams {
   libId: string
   componentId: string[]
+  selectId: string[]
 }
 
 const { Search } = Input
 const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, componentId } = props
+  const { libId, componentId, selectId } = props
 
   const tableRef = React.useRef<HTMLDivElement>(null)
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
@@ -151,26 +153,14 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
     setEditFormVisible(true)
     const ComponentDetailData = await run(libId, editDataId)
 
-    const formData =
-      ComponentDetailData?.isComponent === 1
-        ? {
-            componentId: { id: ComponentDetailData.itemId, name: ComponentDetailData.itemName },
-            itemNumber: ComponentDetailData.itemNumber,
-            spec: ComponentDetailData.spec,
-            type: '1',
-            unit: ComponentDetailData.unit,
-          }
-        : {
-            materialId: {
-              id: ComponentDetailData.itemId,
-              name: ComponentDetailData.itemName,
-            },
-            type: '0',
-            spec: ComponentDetailData.spec,
-            unit: ComponentDetailData.unit,
-            itemNumber: ComponentDetailData.itemNumber,
-          }
-    // console.log(formData);
+    const formData = {
+      componentId: ComponentDetailData.itemName,
+      itemId: ComponentDetailData.itemId,
+      itemNumber: ComponentDetailData.itemNumber,
+      // spec: ComponentDetailData.spec,
+      itemType: ComponentDetailData.isComponent === 1 ? '1' : '0',
+      unit: ComponentDetailData.unit,
+    }
     setFormData(formData)
     editForm.setFieldsValue(formData)
   }
@@ -183,14 +173,13 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         {
           id: editData.id,
           libId: libId,
-          componentId: editData.componentId,
-          materialId: editData.materialId,
           itemId: editData.itemId,
           itemNumber: editData.itemNumber,
-          isComponent: editData.isComponent,
+          itemType: editData.itemType,
         },
         values
       )
+
       await updateComponentDetailItem(submitInfo)
       refresh()
       message.success('更新成功')
@@ -243,7 +232,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           libId: libId,
-          componentIds: componentId,
+          componentIds: selectId,
           keyWord: searchKeyWord,
         }}
       />
@@ -263,7 +252,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm}>
-          <AddComponentDetail addForm={addForm} resourceLibId={libId} selectId={componentId[0]} />
+          <AddComponentDetail addForm={addForm} resourceLibId={libId} />
         </Form>
       </Modal>
 
@@ -280,7 +269,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <EditComponentDetail resourceLibId={libId} formData={formData} />
+          <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
         </Form>
       </Modal>
     </div>

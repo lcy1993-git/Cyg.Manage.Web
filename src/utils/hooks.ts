@@ -1,9 +1,8 @@
-import { getCommonSelectData, getDataByUrl } from '@/services/common'
+import { getCommonSelectData } from '@/services/common'
 import { getEngineerEnum } from '@/services/project-management/all-project'
 import { useRequest } from 'ahooks'
 import moment from 'moment'
 import React, { useMemo } from 'react'
-import { useMap } from 'ahooks'
 
 // const loadEnumsData = JSON.parse(localStorage.getItem('loadEnumsData') ?? '');
 

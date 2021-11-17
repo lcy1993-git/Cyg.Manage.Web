@@ -1,23 +1,23 @@
-import React from 'react';
-import { Input, Tooltip } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import { QuestionCircleOutlined } from '@ant-design/icons';
-import EnumSelect from '@/components/enum-select';
+import React from 'react'
+import { Input, Tooltip } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import EnumSelect from '@/components/enum-select'
 import {
   deviceCategoryType,
-  kvLevelType,
+  kvBothLevelType,
   forDesignType,
   forProjectType,
-} from '@/services/resource-config/resource-enum';
+} from '@/services/resource-config/resource-enum'
 
 interface ChartListFromLibParams {
-  resourceLibId: string;
-  type?: 'add' | 'edit';
+  resourceLibId: string
+  type?: 'add' | 'edit'
 }
 
 const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props;
+  const { type = 'edit', resourceLibId } = props
 
   const unitSlot = () => {
     return (
@@ -27,8 +27,8 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
           <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
         </Tooltip>
       </>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -99,7 +99,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         initialValue="不限"
         rules={[{ required: true, message: '电压等级不能为空' }]}
       >
-        <EnumSelect placeholder="请选择电压等级" enumList={kvLevelType} valueString />
+        <EnumSelect placeholder="请选择电压等级" enumList={kvBothLevelType} valueString />
       </CyFormItem>
 
       <CyFormItem
@@ -137,7 +137,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default ComponentForm;
+export default ComponentForm

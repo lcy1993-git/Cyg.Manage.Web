@@ -7,10 +7,11 @@ interface SpecificationsSelectProps {
   typeEnum: string
   name: string
   libId: string
+  isBorder: boolean
 }
 
 const SpecificationsSelect: React.FC<SpecificationsSelectProps> = (props) => {
-  const { name, typeEnum, libId, ...rest } = props
+  const { name, typeEnum, libId, isBorder = false, ...rest } = props
   const { run, data } = useRequest(
     () => (typeEnum === '0' ? getMaterialSpecName({ libId, name }) : getSpecName({ libId, name })),
     {
@@ -21,10 +22,14 @@ const SpecificationsSelect: React.FC<SpecificationsSelectProps> = (props) => {
   const handleSelectData = useMemo((): { label: string; value: string }[] => {
     if (name && data) {
       if (typeEnum === '0') {
-        return data.map((item) => ({ label: item.materialType, value: item.id, unit: item.unit }))
+        return data.map((item) => ({ label: item.spec, value: item.materialId, unit: item.unit }))
       }
       if (typeEnum === '1') {
-        return data.map((item) => ({ label: item.componentType, value: item.id, unit: item.unit }))
+        return data.map((item) => ({
+          label: item.componentSpec,
+          value: item.componentId,
+          unit: item.unit,
+        }))
       }
     }
     return []
@@ -38,16 +43,21 @@ const SpecificationsSelect: React.FC<SpecificationsSelectProps> = (props) => {
 
   const getSelectPlaceholder = (type: string): string => {
     if (type === '0') {
-      return '请选择物料名称'
+      return '请选择物料规格'
     }
     if (type === '1') {
-      return '请选择组件名称'
+      return '请选择组件规格'
     }
-    return '请选择类型'
+    return '请先选择类型'
   }
 
   return (
-    <DataSelect {...rest} placeholder={getSelectPlaceholder(typeEnum)} options={handleSelectData} />
+    <DataSelect
+      {...rest}
+      placeholder={getSelectPlaceholder(typeEnum)}
+      options={handleSelectData}
+      bordered={isBorder}
+    />
   )
 }
 

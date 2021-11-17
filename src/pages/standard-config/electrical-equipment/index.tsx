@@ -1,50 +1,50 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useState, useEffect } from 'react';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
+import TableSearch from '@/components/table-search'
 import {
-  getElectricalEquipmentDetail,
   addElectricalEquipmentItem,
-  updateElectricalEquipmentItem,
   deleteElectricalEquipmentItem,
-} from '@/services/resource-config/electrical-equipment';
-import { isArray } from 'lodash';
-import ElectricalEquipmentForm from './components/add-edit-form';
-import ElectricProperty from './components/property-table';
-import ElectricDetail from './components/detail-table';
-import SaveImportElectrical from './components/import-form';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
+  getElectricalEquipmentDetail,
+  updateElectricalEquipmentItem,
+} from '@/services/resource-config/electrical-equipment'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
+import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import ElectricalEquipmentForm from './components/add-edit-form'
+import ElectricDetail from './components/detail-table'
+import SaveImportElectrical from './components/import-form'
+import ElectricProperty from './components/property-table'
+import styles from './index.less'
 
-const { Search } = Input;
+const { Search } = Input
 
 interface libParams {
-  libId: string;
+  libId: string
 }
 
 const ElectricalEquipment: React.FC<libParams> = (props) => {
-  const { libId } = props;
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const { libId } = props
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [resourceLibId, setResourceLibId] = useState<string>('')
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const [attributeVisible, setAttributeVisible] = useState<boolean>(false);
-  const [importElectricalVisible, setImportElectricalVisible] = useState<boolean>(false);
-  const [detailVisible, setDetailVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const [attributeVisible, setAttributeVisible] = useState<boolean>(false)
+  const [importElectricalVisible, setImportElectricalVisible] = useState<boolean>(false)
+  const [detailVisible, setDetailVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getElectricalEquipmentDetail, {
     manual: true,
-  });
+  })
 
   const searchComponent = () => {
     return (
@@ -59,34 +59,34 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    setResourceLibId(value);
-    search();
-  };
+    setResourceLibId(value)
+    search()
+  }
 
   useEffect(() => {
-    searchByLib(resourceLibId);
-  }, [resourceLibId]);
+    searchByLib(resourceLibId)
+  }, [resourceLibId])
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
@@ -145,7 +145,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
       title: '所属设计',
       width: 240,
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
@@ -153,8 +153,8 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
     //   message.warning('请先选择资源库！');
     //   return;
     // }
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddMaterial = () => {
     addForm.validateFields().then(async (value) => {
@@ -175,15 +175,15 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
           chartIds: '',
           isElectricalEquipment: true,
         },
-        value,
-      );
-      await addElectricalEquipmentItem(submitInfo);
-      refresh();
-      setAddFormVisible(false);
-      message.success('添加成功');
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addElectricalEquipmentItem(submitInfo)
+      refresh()
+      setAddFormVisible(false)
+      message.success('添加成功')
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
@@ -191,24 +191,24 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
     ) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const ElectricalEquipmentData = await run(libId, editDataId);
+    setEditFormVisible(true)
+    const ElectricalEquipmentData = await run(libId, editDataId)
 
-    editForm.setFieldsValue(ElectricalEquipmentData);
-  };
+    editForm.setFieldsValue(ElectricalEquipmentData)
+  }
 
   const sureEditMaterial = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -227,15 +227,15 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
           remark: editData.remark,
           chartIds: editData.chartIds,
         },
-        values,
-      );
-      await updateElectricalEquipmentItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateElectricalEquipmentItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const tableElement = () => {
     return (
@@ -277,32 +277,32 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const importElectricalEvent = () => {
     // if (!resourceLibId) {
     //   message.warning('请选择资源库');
     //   return;
     // }
-    setImportElectricalVisible(true);
-  };
+    setImportElectricalVisible(true)
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows;
+    const editData = tableSelectRows
     const editDataId = editData.map((item) => {
-      return item.id;
-    });
+      return item.id
+    })
 
-    await deleteElectricalEquipmentItem(libId, editDataId);
-    refresh();
-    setTableSelectRows([]);
-    message.success('删除成功');
-  };
+    await deleteElectricalEquipmentItem(libId, editDataId)
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   //展示组件明细
   const openDetail = () => {
@@ -310,8 +310,8 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
     //   message.warning('请先选择资源库');
     //   return;
     // }
-    setDetailVisible(true);
-  };
+    setDetailVisible(true)
+  }
 
   //展示组件属性
   const openProperty = () => {
@@ -323,15 +323,15 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
     ) {
-      message.warning('请选择单行数据查看');
-      return;
+      message.warning('请选择单行数据查看')
+      return
     }
-    setAttributeVisible(true);
-  };
+    setAttributeVisible(true)
+  }
 
   const uploadFinishEvent = () => {
-    refresh();
-  };
+    refresh()
+  }
 
   return (
     // <PageCommonWrap>
@@ -400,8 +400,11 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         <Spin spinning={loading}>
           <ElectricDetail
             libId={libId}
+            selectId={tableSelectRows.map((item) => {
+              return item.id
+            })}
             componentId={tableSelectRows.map((item) => {
-              return item.id;
+              return item.componentId
             })}
           />
         </Spin>
@@ -422,7 +425,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
           <ElectricProperty
             libId={libId}
             componentId={tableSelectRows.map((item) => {
-              return item.id;
+              return item.id
             })}
           />
         </Spin>
@@ -436,7 +439,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
       />
       {/* </PageCommonWrap> */}
     </div>
-  );
-};
+  )
+}
 
-export default ElectricalEquipment;
+export default ElectricalEquipment

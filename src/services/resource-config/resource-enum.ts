@@ -14,6 +14,14 @@ export enum kvLevelType {
   '220V' = '220V',
   '380V' = '380V',
 }
+
+export enum kvBothLevelType {
+  '不限' = '不限',
+  '10kV' = '10kV',
+  '220V' = '220V',
+  '380V' = '380V',
+  '380V、220V' = '380V、220V',
+}
 export enum forProjectType {
   '不限' = '不限',
   '城网' = '城网',

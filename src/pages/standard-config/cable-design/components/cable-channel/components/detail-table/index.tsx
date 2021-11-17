@@ -1,43 +1,46 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input, Button, message, Form, Modal } from 'antd';
-import React, { useState } from 'react';
-import { PlusOutlined, EditOutlined } from '@ant-design/icons';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input, Button, message, Form, Modal } from 'antd'
+import React, { useState } from 'react'
+import { PlusOutlined, EditOutlined } from '@ant-design/icons'
 // import styles from './index.less';
-import { isArray } from 'lodash';
+import { isArray } from 'lodash'
 import {
   getCableChannelDetailItem,
   updateCableChannelDetailItem,
   deleteCableChannelDetailItem,
   addCableChannelDetailItem,
-} from '@/services/resource-config/cable-channel';
-import { useRequest } from 'ahooks';
-import AddcableChannelDetail from './add-form';
-import EditcableChannelDetail from './edit-form';
-import ModalConfirm from '@/components/modal-confirm';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+} from '@/services/resource-config/cable-channel'
+import { useRequest } from 'ahooks'
+
+import ModalConfirm from '@/components/modal-confirm'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import AddComponentDetail from '@/pages/standard-config/component/components/detail-table/add-form'
+import EditComponentDetail from '@/pages/standard-config/component/components/detail-table/edit-form'
 interface ModuleDetailParams {
-  libId: string;
-  cableChannelId: string[];
+  libId: string
+  cableChannelId: string[]
+  selectId: string[]
 }
 
-const { Search } = Input;
+const { Search } = Input
 
-const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, cableChannelId } = props;
+const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
+  const { libId, cableChannelId, selectId } = props
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [formData, setFormData] = useState<any>()
 
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run } = useRequest(getCableChannelDetailItem, {
     manual: true,
-  });
+  })
 
   // useEffect(() => {
   //   search();
@@ -57,39 +60,26 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
-    {
-      dataIndex: 'cableChannelId',
-      index: 'cableChannelId',
-      title: '电缆通道编号',
-      width: 180,
-    },
-    {
-      dataIndex: 'channelName',
-      index: 'channelName',
-      title: '电缆通道名称',
-      width: 500,
-    },
-
     {
       dataIndex: 'itemId',
       index: 'itemId',
@@ -100,7 +90,14 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       dataIndex: 'itemName',
       index: 'itemName',
       title: '物料/组件名称',
-      width: 220,
+      width: 450,
+    },
+
+    {
+      dataIndex: 'itemSpec',
+      index: 'itemSpec',
+      title: '物料/组件型号',
+      width: 350,
     },
 
     {
@@ -115,15 +112,15 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       title: '是否组件',
       width: 220,
       render: (text: any, record: any) => {
-        return record.isComponent === true ? '是' : '否';
+        return record.isComponent === 1 ? '是' : '否'
       },
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddcableChannelDetail = () => {
     addForm.validateFields().then(async (value) => {
@@ -132,83 +129,74 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
           libId: libId,
           cableChannelId: cableChannelId[0],
         },
-        value,
-      );
+        value
+      )
 
-      await addCableChannelDetailItem(saveInfo);
-      message.success('添加成功');
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+      await addCableChannelDetailItem(saveInfo)
+      message.success('添加成功')
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const cableChannelDetailData = await run(libId, editDataId);
-    const formData =
-      cableChannelDetailData?.isComponent == 1
-        ? {
-            componentId: {
-              id: cableChannelDetailData.itemId,
-              name: cableChannelDetailData.itemName,
-            },
-            itemNumber: cableChannelDetailData.itemNumber,
-          }
-        : {
-            materialId: {
-              id: cableChannelDetailData.itemId,
-              name: cableChannelDetailData.itemName,
-            },
-            itemNumber: cableChannelDetailData.itemNumber,
-          };
-
-    editForm.setFieldsValue(formData);
-  };
+    setEditFormVisible(true)
+    const ComponentDetailData = await run(libId, editDataId)
+    const formData = {
+      componentId: ComponentDetailData.itemName,
+      itemId: ComponentDetailData.itemId,
+      itemNumber: ComponentDetailData.itemNumber,
+      // spec: ComponentDetailData.spec,
+      itemType: ComponentDetailData.isComponent === 1 ? '1' : '0',
+      unit: ComponentDetailData.unit,
+    }
+    setFormData(formData)
+    editForm.setFieldsValue(formData)
+  }
 
   const sureEditcableChannelDetail = () => {
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
+          componentId: editData.itemName,
           libId: libId,
-          componentId: editData.componentId,
-          materialId: editData.materialId,
           itemId: editData.itemId,
           itemNumber: editData.itemNumber,
-          isComponent: editData.isComponent,
+          itemType: editData.itemType,
         },
-        values,
-      );
-      await updateCableChannelDetailItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateCableChannelDetailItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条模块明细删除！');
-      return;
+      message.error('请选择一条模块明细删除！')
+      return
     }
-    const selectDataId = tableSelectRows[0].id;
-    await deleteCableChannelDetailItem(libId, selectDataId);
-    refresh();
-    message.success('删除成功');
-    setTableSelectRows([]);
-  };
+    const selectDataId = tableSelectRows[0].id
+    await deleteCableChannelDetailItem(libId, selectDataId)
+    refresh()
+    message.success('删除成功')
+    setTableSelectRows([])
+  }
 
   const tableRightSlot = (
     <>
@@ -228,13 +216,13 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
       )}
     </>
-  );
+  )
 
   return (
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => searchComponent()}
-        // buttonRightContentSlot={() => tableRightSlot}
+        buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/cableChannelDetails/GetPageList"
         columns={columns}
@@ -243,7 +231,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           libId: libId,
-          cableChannelIds: cableChannelId,
+          cableChannelIds: selectId,
           keyWord: searchKeyWord,
         }}
       />
@@ -260,7 +248,7 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm}>
-          <AddcableChannelDetail addForm={addForm} resourceLibId={libId} />
+          <AddComponentDetail addForm={addForm} resourceLibId={libId} />
         </Form>
       </Modal>
 
@@ -277,11 +265,11 @@ const cableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <EditcableChannelDetail resourceLibId={libId} />
+          <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
         </Form>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default cableChannelDetail;
+export default CableChannelDetail

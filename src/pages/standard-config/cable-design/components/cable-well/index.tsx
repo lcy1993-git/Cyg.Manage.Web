@@ -1,49 +1,49 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useEffect, useState } from 'react';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, message, Spin } from 'antd'
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
 import {
   getCableWellDetail,
   updateCableWellItem,
   deleteCableWellItem,
   addCableWellItem,
-} from '@/services/resource-config/cable-well';
-import { isArray } from 'lodash';
+} from '@/services/resource-config/cable-well'
+import { isArray } from 'lodash'
 
-import CableWellForm from './components/add-edit-form';
-import CableWellDetail from './components/detail-table/index';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
+import CableWellForm from './components/add-edit-form'
+import CableWellDetail from './components/detail-table/index'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input;
+const { Search } = Input
 
 interface CableDesignParams {
-  libId: string;
+  libId: string
 }
 
 const CableWell: React.FC<CableDesignParams> = (props) => {
-  const { libId } = props;
+  const { libId } = props
 
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [ids, setIds] = useState<string[]>([]);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [resourceLibId, setResourceLibId] = useState<string>('')
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [ids] = useState<string[]>([])
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [detailVisible, setDetailVisible] = useState<boolean>(false);
+  const [detailVisible, setDetailVisible] = useState<boolean>(false)
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getCableWellDetail, {
     manual: true,
-  });
+  })
 
   const searchComponent = () => {
     return (
@@ -58,34 +58,34 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    setResourceLibId(value);
-    search();
-  };
+    setResourceLibId(value)
+    search()
+  }
 
   useEffect(() => {
-    searchByLib(libId);
-  }, [libId]);
+    searchByLib(libId)
+  }, [libId])
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
@@ -186,16 +186,16 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       title: '沟体结构',
       width: 200,
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
     if (!resourceLibId) {
-      message.warning('请先选择资源库！');
-      return;
+      message.warning('请先选择资源库！')
+      return
     }
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddMaterial = () => {
     addForm.validateFields().then(async (value) => {
@@ -222,15 +222,15 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
           remark: '',
           chartIds: [],
         },
-        value,
-      );
-      await addCableWellItem(submitInfo);
-      refresh();
-      message.success('添加成功');
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addCableWellItem(submitInfo)
+      refresh()
+      message.success('添加成功')
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
@@ -238,24 +238,24 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
     ) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const ResourceLibData = await run(resourceLibId, editDataId);
+    setEditFormVisible(true)
+    const ResourceLibData = await run(resourceLibId, editDataId)
 
-    editForm.setFieldsValue(ResourceLibData);
-  };
+    editForm.setFieldsValue(ResourceLibData)
+  }
 
   const sureEditCableWell = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -281,15 +281,15 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
           remark: editData.remark,
           chartIds: editData.chartIds,
         },
-        values,
-      );
-      await updateCableWellItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateCableWellItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const tableElement = () => {
     return (
@@ -318,31 +318,34 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
     tableSelectRows.map((item) => {
-      ids.push(item.id);
-    });
+      ids.push(item.id)
+    })
 
-    await deleteCableWellItem({ libId, ids });
-    refresh();
-    message.success('删除成功');
-  };
+    await deleteCableWellItem({ libId, ids })
+    refresh()
+    message.success('删除成功')
+  }
 
   //展示组件明细
   const openDetail = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.warning('请选择单行数据查看')
+      return
     }
-    setDetailVisible(true);
-  };
+    setDetailVisible(true)
+  }
 
   return (
     <>
@@ -411,14 +414,17 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         <Spin spinning={loading}>
           <CableWellDetail
             libId={libId}
+            selectId={tableSelectRows.map((item) => {
+              return item.id
+            })}
             cableWellId={tableSelectRows.map((item) => {
-              return item.id;
+              return item.cableWellId
             })}
           />
         </Spin>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default CableWell;
+export default CableWell
