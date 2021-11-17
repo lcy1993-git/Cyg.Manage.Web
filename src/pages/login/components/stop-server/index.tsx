@@ -23,6 +23,7 @@ const StopServer: React.FC<Props> = (props) => {
   },[data])
   return (
     <div className={styles.stopInfoBox}>
+
       <div className={styles.stopInfoTitle}>关于服务器停机维护的公告</div>
       <div>
         {data?.content}

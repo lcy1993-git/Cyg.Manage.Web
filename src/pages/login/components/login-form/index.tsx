@@ -66,6 +66,7 @@ const LoginForm: React.FC<Props> = (props) => {
   const login = (type: LoginType) => {
     // TODO  校验通过之后进行保存
     form.validateFields().then(async (values) => {
+      console.log(stopInfo,values)
       if ([2,3].includes(stopInfo.stage)){
         values.userName = values?.userName?.replace(stopInfo.testerAccountPrefix,'')
       }
