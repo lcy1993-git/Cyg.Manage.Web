@@ -1,5 +1,6 @@
 import { createContext, Reducer, useContext } from 'react'
 import { CityWithProvince } from './components/city-picker/type'
+import { GridMapGlobalState, initGridMapState, mapReducer } from './mapReducer'
 
 // ! 使用
 // 子组件中调用 useHistoryGridContext hook
@@ -21,17 +22,20 @@ type ReducerState = {
   /** record => 历史, history-edit => 历史绘制, edit => 预设计 */
   mode: 'record' | 'edit' | 'design'
   city?: CityWithProvince
+  gridMapState: GridMapGlobalState
 }
 
 /** action */
 type SimpleActions = 'reset'
-type ComplexActions = 'changeMode' | 'setCity'
+type ComplexActions = 'changeMode' | 'setCity' | 'changeGridMap'
 type Actions = SimpleActions | ComplexActions
 
 type ComplexActionReflectPayload<Action> = Action extends 'changeMode'
   ? ReducerState['mode']
   : Action extends 'setCity'
   ? ReducerState['city']
+  : Action extends 'changeGridMap'
+  ? [any, any]
   : never
 
 type ReducerActionWithPayload = { type: Actions; payload: any }
@@ -59,6 +63,8 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
       return { ...state, city: payload }
     case 'reset':
       return init(payload)
+    case 'changeGridMap':
+      return { ...state, gridMapState: { ...mapReducer(state.gridMapState, payload) } }
     default:
       throw new Error('action type does not exist')
   }
@@ -68,6 +74,7 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
 export const init = (params: unknown) => {
   const initialState: ReducerState = {
     mode: 'design',
+    gridMapState: initGridMapState,
   }
 
   return initialState

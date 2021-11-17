@@ -1,0 +1,61 @@
+import { useHistoryGridContext } from './context'
+
+export type MapLayerType = 'STREET' | 'SATELLITE'
+
+export interface GridMapGlobalState {
+  mapLayerType: string
+}
+
+export const initGridMapState = {
+  mapLayerType: 'SATELLITE',
+}
+
+export const mapReducer = <T extends GridMapGlobalState, K extends keyof T>(
+  state: GridMapGlobalState = initGridMapState,
+  props: [K, T[K]]
+) => {
+  const [key, value] = props
+  switch (key) {
+    case 'mapLayerType':
+      return { ...state, mapLayerType: value }
+    default:
+      return { ...state }
+  }
+}
+
+// // 选择类型
+// const [selectType, setSelectType] = useState<SelectType>('')
+// // 绘制类型
+// const [geometryType, setGeometryType] = useState<string>('')
+// // 当前地图类型(街道图,卫星图)
+// const [mapLayerType, setMapLayerType] = useState<MapLayerType>('SATELLITE')
+// // 显示名称
+// const [nameVisible, setNameVisible] = useState<boolean>(false)
+// // 定位到当前项目
+// const locateCurrent$ = useEventEmitter()
+// // 根据地区定位地图事件
+// const centerView$ = useEventEmitter()
+// // 导入事件
+// const importFile$ = useEventEmitter()
+// // 保存事件
+// const saveFile$ = useEventEmitter()
+
+// const ref = useRef<HTMLDivElement>(null)
+// // 地图实例
+// const mapRef = useCurrentRef<MapRef>({ map: {} })
+// // 图层缓存数据
+// const layerRef = useCurrentRef<Record<string, Layer<Source>>>({})
+// // 视图实例
+// const viewRef = useCurrentRef<{ view: View }>({})
+// // 画图缓存数据
+// const interActionRef = useCurrentRef<InterActionRef>({})
+
+export const useGridMap = () => {
+  const { gridMapState, dispatch } = useHistoryGridContext()
+
+  return [
+    gridMapState,
+    <T extends GridMapGlobalState, K extends keyof T = keyof T>(key: K, value: T[K]) =>
+      dispatch({ type: 'changeGridMap', payload: [key, value] }),
+  ] as const
+}

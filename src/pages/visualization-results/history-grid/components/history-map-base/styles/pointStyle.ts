@@ -26,7 +26,7 @@ const whiteCircle = new ClassStyle({
 const hightCircle = new ClassStyle({
   text: new Text({
     text: '\ue879',
-    font: 'Normal 24px iconfontHistoryGrid',
+    font: 'Normal 26px iconfontHistoryGrid',
     // text: '\xe905',
     offsetX: 0,
     offsetY: 0,

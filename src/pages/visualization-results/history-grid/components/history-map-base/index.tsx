@@ -1,7 +1,6 @@
 import '@/assets/icon/history-grid-icon.css'
 import { useCurrentRef } from '@/utils/hooks'
 import { useEventEmitter, useMount, useRequest, useUpdateEffect } from 'ahooks'
-import { FeatureCollection, LineString as LineStringJSON, Point as PointJSON } from 'geojson'
 import { Feature, Map, MapBrowserEvent, MapEvent, View } from 'ol'
 import { click as conditionClick, platformModifierKeyOnly } from 'ol/events/condition'
 import BaseEvent from 'ol/events/Event'
@@ -11,13 +10,13 @@ import GeometryType from 'ol/geom/GeometryType'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
-import { LineCoordType, PointCoordType } from 'ol/interaction/Draw'
 import { SelectEvent } from 'ol/interaction/Select'
 import { Layer } from 'ol/layer'
 import 'ol/ol.css'
 import * as proj from 'ol/proj'
 import { Source, Vector as VectorSource } from 'ol/source'
 import { useRef, useState } from 'react'
+import { useGridMap } from '../../mapReducer'
 import { getData } from './data'
 import { drawEnd } from './draw'
 import { onMapLayerTypeChange, onSelectTypeChange } from './effects'
@@ -25,7 +24,7 @@ import { moveend, pointermove } from './event'
 import mapClick from './event/mapClick'
 import styles from './index.less'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
-import { featureStyle, getStyle } from './styles'
+import { getStyle } from './styles'
 import { DataSource } from './typings'
 export interface MapRef {
   map: Map
@@ -48,6 +47,10 @@ export type SelectType = '' | 'pointSelect' | 'boxSelect'
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
 const HistoryMapBase = () => {
+  const [state, setState] = useGridMap()
+
+  const { mapLayerType } = state
+
   // 数据源
   const { data } = useRequest(getData)
 
@@ -56,7 +59,7 @@ const HistoryMapBase = () => {
   // 绘制类型
   const [geometryType, setGeometryType] = useState<string>('')
   // 当前地图类型(街道图,卫星图)
-  const [mapLayerType, setMapLayerType] = useState<MapLayerType>('SATELLITE')
+  // const [mapLayerType, setMapLayerType] = useState<MapLayerType>('SATELLITE')
   // 显示名称
   const [nameVisible, setNameVisible] = useState<boolean>(false)
   // 定位到当前项目
@@ -210,7 +213,7 @@ const HistoryMapBase = () => {
       // e.features.getArray()[0].setStyle(featureStyle.type2)
     })
     // 暂时屏蔽编辑功能
-    mapRef.map.addInteraction(interActionRef.modify!)
+    false && mapRef.map.addInteraction(interActionRef.modify!)
 
     const pointSelect = new Select()
     const dragBox = new DragBox({})
@@ -224,24 +227,47 @@ const HistoryMapBase = () => {
       },
     })
     toggleSelect.on('select', (e: SelectEvent) => {
-      console.log(e)
-      function getType(f: Feature<Geometry>) {
-        return f?.getGeometry()!.getType()
-      }
-
-      const select = e.target as Select
-      const features = select.getFeatures()
-      console.log(features)
-
-      const firstFeature = features.item(0)
-
-      if (firstFeature && features.getLength() > 1) {
-        console.log(firstFeature)
-        if (getType(firstFeature) === getType(e.selected[0] as Feature<Geometry>)) {
+      const hightFeatures = interActionRef.hightLightSource!.getFeatures()
+      const { selected, deselected } = e
+      if (selected.length > 0) {
+        if (hightFeatures.length === 0) {
+          isAdded(selected) || interActionRef.hightLightSource!.addFeatures(addHightStyle(selected))
         } else {
+          const currentType = getGeometryType(hightFeatures[0])
+          if (currentType === getGeometryType(selected[0])) {
+            isAdded(selected) ||
+              interActionRef.hightLightSource!.addFeatures(addHightStyle(selected))
+          }
         }
       }
-      // return false
+
+      if (deselected.length > 0) {
+        deselected.forEach((f) => canRemove(f) && interActionRef.hightLightSource!.removeFeature(f))
+      }
+
+      function getGeometryType(f: Feature<Geometry>) {
+        return f.getGeometry()!.getType()
+      }
+      // 判断是否已经被添加
+      function isAdded(selected: Feature<Geometry>[]) {
+        return hightFeatures.some((f) => f.get('name') === selected[0].get('name'))
+      }
+
+      // 判断是否能删除
+      function canRemove(o: Feature<Geometry>) {
+        return interActionRef
+          .hightLightSource!.getFeatures()
+          .some((f) => f.get('name') === o.get('name'))
+      }
+
+      // 添加高亮样式
+      function addHightStyle(fs: Feature<Geometry>[]) {
+        return fs.map((f) => {
+          const geometryType = getGeometryType(f)
+          f.setStyle(getStyle(geometryType)(f.get('type'), true))
+          return f
+        })
+      }
     })
     toggleSelect.setHitTolerance(8)
     // toggleSelect.on('change', (...args) => {
@@ -291,87 +317,52 @@ const HistoryMapBase = () => {
     }
   }
 
-  function LoadJSON() {
-    interActionRef.source?.clear()
-    // 读取GeoJSON数据
-    // new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!)
-    const json = JSON.parse(window.localStorage.getItem('json')!) as FeatureCollection
-    const features = json.features.map((f) => {
-      const geometry = f.geometry as PointJSON | LineStringJSON
-
-      const feature = new Feature()
-
-      if (geometry.type === GeometryType.LINE_STRING) {
-        feature.setGeometry(new LineString(geometry.coordinates as LineCoordType))
-        feature.setStyle(featureStyle.type1)
-      } else if (geometry.type === GeometryType.POINT) {
-        const point = new Point(geometry.coordinates as PointCoordType)
-        feature.setGeometry(point)
-        feature.setStyle(pointStyle.t0)
-      }
-      return feature
-    })
-
-    interActionRef.source?.addFeatures(features)
-  }
-
   const SaveJSON = () => {
     console.log(JSON.parse(new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!)))
 
     localStorage.setItem('json', new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!))
   }
 
-  const onKeyDown = () => {
-    console.log('down')
-  }
-
-  const onKeyUp = () => {
-    console.log('up')
-  }
-
   return (
-    <div onKeyDown={onKeyDown} onKeyUp={onKeyUp} onKeyPress={onKeyDown}>
-      <div ref={ref} style={{ height: window.innerHeight - 300, width: window.innerWidth }}></div>
-      <button onClick={() => setGeometryType(GeometryType.POINT)}>Point</button>
-      <button style={{ color: 'red' }} onClick={() => setGeometryType(GeometryType.LINE_STRING)}>
-        Line
-      </button>
-      <button style={{ color: 'red' }} onClick={() => setGeometryType('')}>
-        None
-      </button>
-      <button onClick={SaveJSON}>SaveJSON</button>
-      <button onClick={LoadJSON}>加载数据</button>
-      <button
-        onClick={() => setMapLayerType(mapLayerType === 'SATELLITE' ? 'STREET' : 'SATELLITE')}
-      >
-        {mapLayerType === 'SATELLITE' ? '卫星图' : '街道图'}
-      </button>
-
-      <button>显示名称</button>
-      <button>定位到当前位置</button>
-      <button>定位到现有网架</button>
-      <button
-        onClick={() => {
-          interActionRef.source?.clear()
-        }}
-      >
-        清屏
-      </button>
-      <button>导入</button>
-      <i className={styles.font}>&#xe901;</i>
-      <div></div>
-      <span id="historyGridPosition" style={{ color: 'red' }}>
-        经维度：
-      </span>
-      <span id="historyGridScale" style={{ color: 'green' }}>
-        比例：
-      </span>
-      <div>
-        <span>选择方式：</span>
-        <button onClick={() => setSelectType('')}>不选择</button>
-        <button onClick={() => setSelectType('pointSelect')}>点选</button>
-        {/* <button onClick={() => setSelectType('toggleSelect')}>多选</button> */}
+    <div className="w-full h-full">
+      <div ref={ref} className="w-full h-full"></div>
+      <div className="absolute bottom-0">
+        <button onClick={() => setGeometryType(GeometryType.POINT)}>Point</button>
+        <button style={{ color: 'red' }} onClick={() => setGeometryType(GeometryType.LINE_STRING)}>
+          Line
+        </button>
+        <button style={{ color: 'red' }} onClick={() => setGeometryType('')}>
+          None
+        </button>
+        <button onClick={SaveJSON}>SaveJSON</button>
+        <button
+          onClick={() =>
+            setState('mapLayerType', mapLayerType === 'SATELLITE' ? 'STREET' : 'SATELLITE')
+          }
+        >
+          {mapLayerType === 'SATELLITE' ? '卫星图' : '街道图'}
+        </button>
+        <button>显示名称</button>
+        <button>定位到当前位置</button>
+        <button>定位到现有网架</button>
+        <button
+          onClick={() => {
+            interActionRef.source?.clear()
+          }}
+        >
+          清屏
+        </button>
+        <button>导入</button>
+        <button onClick={() => setSelectType('')}>不选择</button>{' '}
         <button onClick={() => setSelectType('boxSelect')}>框选</button>
+        <i className={styles.font}>&#xe901;</i>
+        <div></div>
+        <span id="historyGridPosition" style={{ color: 'red' }}>
+          经维度：
+        </span>
+        <span id="historyGridScale" style={{ color: 'green' }}>
+          比例：
+        </span>
       </div>
     </div>
   )

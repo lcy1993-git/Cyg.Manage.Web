@@ -31,8 +31,8 @@ export const getLineStyle: GetLineStyle = (
     stroke: new Stroke({
       //lineJoin:'bevel',
       lineDash: textObject[type],
-      color: '#1294d0',
-      width: 2,
+      color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
+      width: isHight ? 3 : 2,
       ...ops,
     }),
   })
