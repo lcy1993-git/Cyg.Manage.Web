@@ -24,11 +24,13 @@ type ReducerState = {
 }
 
 /** action */
-type SimpleActions = 'reset'
-type ComplexActions = 'changeMode' | 'setCity'
+type SimpleActions = never
+type ComplexActions = 'reset' | 'changeMode' | 'setCity'
 type Actions = SimpleActions | ComplexActions
 
-type ComplexActionReflectPayload<Action> = Action extends 'changeMode'
+type ComplexActionReflectPayload<Action> = Action extends 'reset'
+  ? InitParams
+  : Action extends 'changeMode'
   ? ReducerState['mode']
   : Action extends 'setCity'
   ? ReducerState['city']
@@ -64,8 +66,10 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
   }
 }
 
+type InitParams = unknown
+
 /** 惰性初始化 */
-export const init = (params: unknown) => {
+export const init = (params: InitParams) => {
   const initialState: ReducerState = {
     mode: 'design',
   }
@@ -79,7 +83,9 @@ type DispatchParam<T extends ReducerAction> = T extends ReducerActionFn
   ? SimpleActions
   : Exclude<T, Actions | ReducerActionFn>['type'] extends `${infer S}`
   ? S extends Actions
-    ? { type: S; payload: ComplexActionReflectPayload<S> }
+    ? IsNever<ComplexActionReflectPayload<S>> extends true
+      ? { type: S }
+      : { type: S; payload: ComplexActionReflectPayload<S> }
     : ReducerActionWithPayload
   : ReducerActionWithPayload
 
