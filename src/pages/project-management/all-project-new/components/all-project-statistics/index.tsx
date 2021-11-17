@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './index.less';
-import TotalImageSrc from '@/assets/image/project-management/total.png';
 
 interface SingleStatisticsProps {
   label: string;
@@ -16,7 +15,7 @@ const SingleStatistics: React.FC<SingleStatisticsProps> = (props) => {
   return (
     <div className={styles.allStatistics}>
       <div className={styles.allStatisticsIcon}>
-        <img src={TotalImageSrc} />
+        <img src={imgSrc} />
       </div>
       <div className={styles.allStatisticsContent}>
         <div className={styles.allStatisticsTitle}>{label}</div>

@@ -2,8 +2,8 @@ import CommonTitle from '@/components/common-title';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
 import React, { useState } from 'react';
-import AllStatistics from './components/all-statistics';
-import SingleStatistics from './components/all-statistics';
+import AllStatistics from './components/all-project-statistics';
+import SingleStatistics from './components/all-project-statistics';
 import { Button, Input, Spin, Tooltip, message, Menu, Modal, Tabs } from 'antd';
 import styles from './index.less';
 import EngineerTable from './components/engineer-table';
@@ -83,7 +83,7 @@ const defaultParams = {
 };
 
 const AllProject: React.FC = () => {
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray();
   const [currentClickTab, setCurrentClickTab] = useState<string>('1');
   const [addEngineerModalVisible, setAddEngineerModalVisible] = useState(false);
   const [batchAddEngineerModalVisible, setBatchAddEngineerModalVisible] = useState(false);
@@ -115,7 +115,7 @@ const AllProject: React.FC = () => {
               className={styles.projectManagementStatisticItem}
               onClick={() => setCurrentClickTab('1')}
             >
-              <SingleStatistics label="全部项目" icon="awaitProcess">
+              <SingleStatistics label="我的项目" icon="allpro">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
@@ -123,7 +123,7 @@ const AllProject: React.FC = () => {
               className={styles.projectManagementStatisticItem}
               onClick={() => setCurrentClickTab('2')}
             >
-              <SingleStatistics label="立项审批" icon="awaitProcess">
+              <SingleStatistics label="立项审批" icon="approval">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
@@ -131,7 +131,7 @@ const AllProject: React.FC = () => {
               className={styles.projectManagementStatisticItem}
               onClick={() => setCurrentClickTab('3')}
             >
-              <SingleStatistics label="任务安排" icon="awaitProcess">
+              <SingleStatistics label="任务安排" icon="mission">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
@@ -139,7 +139,7 @@ const AllProject: React.FC = () => {
               className={styles.projectManagementStatisticItem}
               onClick={() => setCurrentClickTab('4')}
             >
-              <SingleStatistics label="评审管理" icon="awaitProcess">
+              <SingleStatistics label="评审管理" icon="review">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
@@ -147,7 +147,7 @@ const AllProject: React.FC = () => {
               className={styles.projectManagementStatisticItem}
               onClick={() => setCurrentClickTab('5')}
             >
-              <SingleStatistics label="结项管理" icon="awaitProcess">
+              <SingleStatistics label="结项管理" icon="finish">
                 22{/* {handleStatisticsData(statisticsData?.total)} */}
               </SingleStatistics>
             </div>
