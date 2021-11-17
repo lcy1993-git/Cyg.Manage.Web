@@ -3,6 +3,7 @@ export interface RequestDataType<T> {
     content: T
     isSuccess: boolean
     message?: string
+    data ?: any
     traceId?: string
 }
 

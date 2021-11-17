@@ -1,15 +1,18 @@
 import { getVersionUpdate } from '@/services/common';
-import { useControllableValue, useRequest } from 'ahooks';
+import {useControllableValue, useInterval, useRequest} from 'ahooks';
 import { webConfig } from '@/global';
 import { Modal, Spin } from 'antd';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import styles from './index.less';
 import { useEffect } from 'react';
 import uuid from 'node-uuid';
+import {Stop} from "@/pages/login";
+import StopServer from "@/pages/login/components/stop-server";
 
 interface VersionInfoModalProps {
   visible: boolean;
   onChange: Dispatch<SetStateAction<boolean>>;
+  stopServerInfo:Stop
 }
 
 const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
@@ -18,7 +21,6 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   const [historyVersionModalVisible, setHistoryVersionModalVisible] = useState<boolean>(false);
   const [historyVersionData, setHistoryVersionData] = useState<any[]>([]);
   const [versionLoading, setVersionLoading] = useState<boolean>(false);
-
   const serverCode =
     window.location.hostname === 'localhost' ? '10.6.1.36' : window.location.hostname;
 
@@ -102,6 +104,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       >
         <Spin spinning={loading}>
           <div className={styles.versionItem}>
+            {props.stopServerInfo?.content && <StopServer data={props.stopServerInfo}/>}
             <div className={styles.versionNumber}>版本：{versionInfo?.data?.versionNo}</div>
             <div className={styles.versionItemTitle}>【更新说明】</div>
             <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>

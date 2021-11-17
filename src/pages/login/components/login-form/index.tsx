@@ -17,11 +17,16 @@ import {
 } from '@/services/login';
 
 import styles from './index.less';
+import {Stop} from "@/pages/login";
 const { TabPane } = Tabs;
 
 export type LoginType = 'account' | 'phone';
-
-const LoginForm: React.FC = () => {
+interface Props {
+  stopInfo:Stop
+  stopLogin:()=>void
+}
+const LoginForm: React.FC<Props> = (props) => {
+  const {stopInfo} = props
   const [needVerifycode, setNeedVerifycode] = useState<boolean>(false);
   const [imageCode, setImageCode] = useState<string>('');
   // 是否验证码错误
@@ -61,6 +66,9 @@ const LoginForm: React.FC = () => {
   const login = (type: LoginType) => {
     // TODO  校验通过之后进行保存
     form.validateFields().then(async (values) => {
+      if ([2,3].includes(stopInfo.stage)){
+        values.userName = values?.userName?.replace(stopInfo.testerAccountPrefix,'')
+      }
       try {
         setRequestLoading(true);
         let resData = null;
@@ -73,15 +81,16 @@ const LoginForm: React.FC = () => {
           const { accessToken } = resData.content;
 
           localStorage.setItem('Authorization', accessToken);
-          const userInfo = await getUserInfoRequest();
+          let userInfo = await getUserInfoRequest();
+          userInfo['isTestUser'] = [2,3].includes(stopInfo?.stage) // 是否测试账号
           const modules = await getAuthorityModules();
-    
+
           const buttonModules = flatten(modules);
-      
+
           const buttonArray = buttonModules
             .filter((item: any) => item.category === 3)
             .map((item: any) => item.authCode);
-          
+
           localStorage.setItem('functionModules', JSON.stringify(modules));
           localStorage.setItem('userInfo', JSON.stringify(userInfo));
           localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
@@ -106,8 +115,15 @@ const LoginForm: React.FC = () => {
 
   // 登录前的验证码校准，当needVerifycode存在先行判断验证码
   const loginButtonClick = async () => {
+    if ([2,3].includes(stopInfo.stage) && stopInfo.testerAccountPrefix !== ''){ // 停服公告,前缀没有也直接放行
+      const data = form.getFieldsValue()
+      if (!data.userName.includes(stopInfo.testerAccountPrefix)){
+        props.stopLogin()
+        return
+      }
+    }
     if (needVerifycode) {
-      const fromData = await form.validateFields();
+      let fromData = await form.validateFields();
       const key = activeKey === 'account' ? fromData.userName : fromData.phone;
       const codeRes = await compareVerifyCode(key, imageCode);
       if (codeRes.content === true) {

@@ -1,22 +1,78 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styles from './index.less';
 import loginBg from '@/assets/image/login/bg.png';
 import bannerSrc from '@/assets/image/login/banner.png';
 import LoginForm from './components/login-form';
 import LogoComponent from '@/components/logo-component';
+import {useMount, useRequest} from 'ahooks';
+import {getProductServerList, getStopServerNotice} from '@/services/index';
+import StopServer from './components/stop-server';
+const { NODE_ENV } = process.env;
 
+export interface Stop {
+  content:string
+  countdownSeconds: number
+  createdOn: number
+  id: string
+  stage: number
+  testerAccountPrefix: string
+}
 const Login: React.FC = () => {
+  const [stopInfo, setStopInfo] = useState<Stop>({});
+  const [serverCode ,setServerCode] = useState<string>('')
+  const [activeStop,setActiveStop] = useState<boolean>(false)
+
+  const {run} = useRequest(() => getStopServerNotice({
+    serverCode: serverCode,
+    kickOutSeconds: 60,
+  }), {
+    pollingInterval: 5000,
+    manual : true,
+    onSuccess: (val) => {
+      setStopInfo(val)
+      sessionStorage.setItem('stopServerInfo', JSON.stringify(val));
+    }
+  })
+  const getServerList = async () => {
+    const res = await getProductServerList({
+      productCode: '1301726010322214912',
+      category: 0,
+      status: 0,
+      province: ""
+    })
+    const currenServer = res?.find((item: { propertys: { webSite: string; }; })=>{
+      if (NODE_ENV === 'development'){
+        return item.propertys?.webSite === 'http://10.6.1.40:21528/login'
+      } else {
+        return item.propertys?.webSite === window.location.href
+      }
+    })
+    if (currenServer){
+      localStorage.setItem('serverCode',currenServer?.code || '')
+      setServerCode(currenServer?.code || '')
+      await run()
+    }
+  };
+  useMount(() => {
+    getServerList();
+  });
   return (
     <div className={styles.loginPage}>
-      <div className={styles.loginPageContent} style={{ backgroundImage: `url(${loginBg})` }}>
+      <div className={styles.loginPageContent} style={{backgroundImage: `url(${loginBg})`}}>
         <div className={styles.loginFormContent}>
           <div className={styles.loginFormBanner}>
-            <LogoComponent className={styles.loginImage} />
+            <LogoComponent className={styles.loginImage}/>
             {/* UI切的图刚刚这么大的高度，所以logo只能定位上去 */}
-            <img className={styles.bannerImage} src={bannerSrc} alt="" />
+            <img className={styles.bannerImage} src={bannerSrc} alt=""/>
           </div>
           <div className={styles.loginForm}>
-            <LoginForm />
+            {
+              activeStop
+                ?
+                <StopServer data={stopInfo}/>
+                :
+                <LoginForm stopInfo={stopInfo} stopLogin={()=>setActiveStop(true)}/>
+            }
           </div>
         </div>
       </div>

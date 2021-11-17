@@ -15,7 +15,7 @@ import ProjectProgress from '@/pages/index/components/index-project-progress-com
 import ProjectNumber from './components/project-number-component';
 
 import { IndexContext } from './context';
-import { Spin } from 'antd';
+import {notification, Spin } from 'antd';
 import { divide, multiply, subtract } from 'lodash';
 import uuid from 'node-uuid';
 import PageCommonWrap from '@/components/page-common-wrap';
@@ -25,6 +25,9 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import HealthPolling from './components/health-polling';
 import { getEnums } from '@/pages/technology-economic/utils';
+import {getStopServerNotice} from "@/services/index";
+import {history} from "@@/core/history";
+import {message} from "antd/es";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -78,7 +81,45 @@ const Index: React.FC = () => {
       initPage();
     },
   });
-
+  useRequest(() => getStopServerNotice({
+    serverCode: localStorage.getItem('serverCode') as string,
+    kickOutSeconds: 60,
+  }), {
+    pollingInterval: 5000,
+    onSuccess: (val) => {
+      if (val){
+        sessionStorage.setItem('stopServerInfo', JSON.stringify(val));
+        let is600 = val?.countdownSeconds <=602 && val.countdownSeconds >= 598
+        let is300 = val?.countdownSeconds <=302 && val.countdownSeconds >= 298
+        let is60 = val?.countdownSeconds <=62 && val.countdownSeconds >= 58
+        if (is60 || is300 || is600){
+          notification.open({
+            message: '停服通知',
+            description:`您好！工程智慧云平台将在${is600 ? '10' : ''}${is300 ? '5' :''}${is60? '1' : ''}分钟后进行停机维护，
+          维护期间将无法使用平台，
+          给您带来的不变我们深表歉意，
+          维护结束后我们将在第一时间告知大家；`,
+            bottom:40,
+            placement:'bottomRight',
+            duration:null,
+            onClick: () => {
+              console.log('Notification Clicked!');
+            },
+          });
+        }
+        if (val.stage === 3){
+          const userInfo = JSON.parse(localStorage.getItem('userInfo') || '')
+          if (!userInfo?.isTestUser){ // 测试人员账号
+            message.warning('正在停服发版中,请稍等...')
+            setTimeout(()=>{ // 非测试账号直接退出登录
+              history.push("/login")
+              localStorage.setItem('Authorization','')
+            })
+          }
+        }
+      }
+    }
+  })
   const initPage = () => {
     const windowHeight = window.innerHeight - 115 > 828 ? window.innerHeight - 115 : 828;
     if (data) {

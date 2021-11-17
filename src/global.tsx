@@ -33,6 +33,7 @@ export let webConfig = {
   },
   areaStatisticsUrl: '/chart/index.html',
   version: '1.0.130',
+  commonServer: "https://service.pwcloud.cdsrth.com:8101",
 };
 
 const initConfig = async () => {

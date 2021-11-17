@@ -1,0 +1,58 @@
+.indexBack{
+  background: #F7F7F7;
+  .mainInfo{
+    overflow: hidden;
+    margin-top: 12px;
+    display: flex;
+    .leftContent{
+      width: 75%;
+      height: 73vh;
+      margin-right: 12px;
+      //background: white;
+      .leftContentTop{
+        height: 320px;
+        display: flex;
+        .lineChart{
+          padding: 16px 24px;
+          padding-bottom: 10px;
+          background: white;
+          width: 70%;
+          margin-right: 12px;
+        }
+        .circleChart{
+          padding: 16px 24px;
+          padding-bottom: 10px;
+          width: 30%;
+          background: white;
+        }
+      }
+      .leftTable{
+        margin-top: 12px;
+        height: 100%;
+        background: #fff;
+        padding: 16px 24px;
+        .tableTitle{
+          font-size: 16px;
+          font-family: Source Han Sans CN;
+          font-weight: 500;
+          line-height: 16px;
+          color: #1F1F1F;
+          opacity: 1;
+        }
+        .tableBox{
+          margin-top: 20px;
+          :global tbody td{
+            padding: 2px 8px;
+          }
+        }
+      }
+    }
+    .RightContent{
+      height: 73vh;
+      background: white;
+      padding: 16px 24px;
+      width: 25%;
+      //background: white ;
+    }
+  }
+}

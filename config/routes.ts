@@ -42,7 +42,7 @@
       {
         path: '/index',
         component: "./index"
-      },
+      }
     ]
   },
 
