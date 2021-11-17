@@ -1,27 +1,31 @@
-import React, { Key, useEffect, useRef, useState } from 'react';
-import styles from './index.less';
-import * as echarts from 'echarts/lib/echarts';
-import 'echarts/lib/component/grid';
-import 'echarts/lib/component/tooltip';
-import { useSize } from 'ahooks';
-import { Table, Input, DatePicker, Space, Button } from 'antd';
-import { DeleteOutlined, DownloadOutlined, SortAscendingOutlined } from '@ant-design/icons/lib/icons';
-const { Search } = Input;
-import { optionConfig } from '@/pages/adminIndex/report/child/reportDetail/optionCofig';
-import {Moment} from "moment";
+import React, { Key, useEffect, useRef, useState } from 'react'
+import styles from './index.less'
+import * as echarts from 'echarts/lib/echarts'
+import 'echarts/lib/component/grid'
+import 'echarts/lib/component/tooltip'
+import { useSize } from 'ahooks'
+import { Table, Input, DatePicker, Space, Button } from 'antd'
+import {
+  DeleteOutlined,
+  DownloadOutlined,
+  SortAscendingOutlined,
+} from '@ant-design/icons/lib/icons'
+import { optionConfig } from '@/pages/adminIndex/report/child/reportDetail/optionCofig'
+import { Moment } from 'moment'
+const { Search } = Input
 interface Props {
-  options: string | Key;
-  title: string;
+  options: string | Key
+  title: string
 }
 
 const ReportDetail: React.FC<Props> = (props) => {
-  const { options,title } = props;
-  const chartRef = useRef<HTMLDivElement>(null);
-  const [tabs, setTabs] = useState<{ tab: string; key: string }[]>([]);
-  const [optionData, setOptionData] = useState<object>({});
-  const [active, setActive] = useState<string>('1');
-  const chartSize = useSize(chartRef);
-  let myChart: any = null;
+  const { options, title } = props
+  const chartRef = useRef<HTMLDivElement>(null)
+  const [tabs, setTabs] = useState<{ tab: string; key: string }[]>([])
+  const [optionData, setOptionData] = useState<object>({})
+  const [active, setActive] = useState<string>('1')
+  const chartSize = useSize(chartRef)
+  let myChart: any = null
   const columns = [
     {
       title: '时间',
@@ -53,7 +57,7 @@ const ReportDetail: React.FC<Props> = (props) => {
       dataIndex: 'address',
       key: 'address',
     },
-  ];
+  ]
 
   const data = [
     {
@@ -77,52 +81,50 @@ const ReportDetail: React.FC<Props> = (props) => {
       address: 'Sidney No. 1 Lake Park',
       tags: ['cool', 'teacher'],
     },
-  ];
+  ]
   const initChart = () => {
     if (chartRef && chartRef.current) {
-      myChart = echarts.init((chartRef.current as unknown) as HTMLDivElement);
-      myChart.setOption(optionData,true);
+      myChart = echarts.init((chartRef.current as unknown) as HTMLDivElement)
+      myChart.setOption(optionData, true)
     }
-  };
+  }
   const resize = () => {
     if (myChart) {
       setTimeout(() => {
-        myChart.resize();
-      }, 100);
+        myChart.resize()
+      }, 100)
     }
-  };
-  const onSearch = (val:string) => {
-  };
-  const onChange = (val:Moment) => {
-  };
+  }
+  const onSearch = (val: string) => {}
+  const onChange = (val: Moment) => {}
   useEffect(() => {
     window.addEventListener('resize', () => {
       if (!chartRef.current) {
         // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
-        window.removeEventListener('resize', resize);
-        return;
+        window.removeEventListener('resize', resize)
+        return
       } else {
-        resize();
+        resize()
       }
-    });
-    window.removeEventListener('resize', resize);
-  });
+    })
+    window.removeEventListener('resize', resize)
+  })
   useEffect(() => {
     if (!!options) {
-      setTabs(optionConfig[options]);
+      setTabs(optionConfig[options])
       setActive(optionConfig[options][0].key)
     }
-  }, [JSON.stringify(chartSize),options]);
-  useEffect(()=>{
+  }, [JSON.stringify(chartSize), options])
+  useEffect(() => {
     if (options === undefined) return
-    let res = optionConfig[options].find((item: { key: string; })=> item.key === active)
-    if (!!res && res?.options){
+    let res = optionConfig[options].find((item: { key: string }) => item.key === active)
+    if (!!res && res?.options) {
       setOptionData(res.options)
     }
-  },[active,options])
-  useEffect(()=>{
+  }, [active, options])
+  useEffect(() => {
     initChart()
-  },[optionData])
+  }, [optionData])
   return (
     <div className={styles.reportDetailBox}>
       <div className={styles.reportDetailTitle}>
@@ -139,14 +141,16 @@ const ReportDetail: React.FC<Props> = (props) => {
               >
                 <p style={{ color: active === item.key ? '#1F1F1F' : '#696969' }}>{item.tab}</p>
               </div>
-            );
+            )
           })}
         </div>
         <div className={styles.exportButton}>
-          <Button icon={<DownloadOutlined />} type={'primary'}>导出</Button>
+          <Button icon={<DownloadOutlined />} type={'primary'}>
+            导出
+          </Button>
         </div>
         <div className={styles.chartBox}>
-         <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
+          <div ref={chartRef} style={{ width: '100%', height: '100%' }} />
         </div>
         <div className={styles.tableBox}>
           <div className={styles.tableBoxTool}>
@@ -168,9 +172,9 @@ const ReportDetail: React.FC<Props> = (props) => {
             columns={columns}
             rowSelection={{
               type: 'checkbox',
-              onChange:(vals)=>{
+              onChange: (vals) => {
                 console.log(vals)
-              }
+              },
             }}
             bordered
             pagination={false}
@@ -180,7 +184,7 @@ const ReportDetail: React.FC<Props> = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ReportDetail;
+export default ReportDetail

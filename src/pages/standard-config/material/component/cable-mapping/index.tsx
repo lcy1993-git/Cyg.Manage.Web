@@ -1,21 +1,21 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input } from 'antd';
-import React, { useRef, useState } from 'react';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input } from 'antd'
+import React, { useRef, useState } from 'react'
 
 interface WareHouseDetailParams {
-  libId: string;
-  materialIds?: string[];
+  libId: string
+  materialIds?: string[]
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const CableMapping: React.FC<WareHouseDetailParams> = (props) => {
-  const { libId, materialIds } = props;
+  const { libId, materialIds } = props
 
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null)
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const columns = [
     {
@@ -60,17 +60,17 @@ const CableMapping: React.FC<WareHouseDetailParams> = (props) => {
       index: 'isOutDoors',
       width: 180,
     },
-  ];
+  ]
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const tableLeftSlot = (
-    <TableSearch label="物料" width="248px">
+    <TableSearch width="248px">
       <Search
         value={searchKeyWord}
         onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -80,7 +80,7 @@ const CableMapping: React.FC<WareHouseDetailParams> = (props) => {
         allowClear
       />
     </TableSearch>
-  );
+  )
 
   return (
     <div>
@@ -98,7 +98,7 @@ const CableMapping: React.FC<WareHouseDetailParams> = (props) => {
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default CableMapping;
+export default CableMapping

@@ -11,14 +11,20 @@
     <meta http-equiv="cache-control" content="no-store" />
     <meta http-equiv="expires" content="0" />
     <meta name="google" content="notranslate" />
+
+    <!-- lucky-sheet -->
+    <link rel="stylesheet" href="<%= context.config.publicPath %>luckySheet/pluginsCss.css" />
+    <link rel="stylesheet" href="<%= context.config.publicPath %>luckySheet/plugins.css" />
+    <link rel="stylesheet" href="<%= context.config.publicPath %>luckySheet/luckysheet.css" />
+    <link rel="stylesheet" href="<%= context.config.publicPath %>luckySheet/iconfont.css" />
+    <script defer src="<%= context.config.publicPath %>luckySheet/plugin.js"></script>
+    <script defer src="<%= context.config.publicPath %>luckySheet/luckysheet.umd.js"></script>
+    <script defer src="<%= context.config.publicPath %>luckySheet/luckyexcel.umd.js"></script>
+
     <title>管理端</title>
   </head>
 
   <body>
-    <noscript>Out-of-the-box mid-stage front/design solution!</noscript>
     <div id="root"></div>
-    <noscript>
-      <iframe src="*.htm"></iframe>
-    </noscript>
   </body>
 </html>

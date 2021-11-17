@@ -5,7 +5,8 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
-export default {
+
+const proxy = {
   dev: {
     '/api/': {
       // http://10.6.1.54:21525/api/
@@ -41,4 +42,6 @@ export default {
       pathRewrite: { '^': '' },
     },
   },
-};
+}
+
+export default proxy

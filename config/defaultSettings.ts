@@ -1,8 +1,8 @@
-import { Settings as LayoutSettings } from '@ant-design/pro-layout';
+import { Settings as LayoutSettings } from '@ant-design/pro-layout'
 
-const Settings: LayoutSettings & {
-  pwa?: boolean;
-  logo?: string;
+const Settings: Partial<LayoutSettings> & {
+  pwa?: boolean
+  logo?: string
 } = {
   navTheme: 'light',
   // 拂晓蓝
@@ -15,6 +15,6 @@ const Settings: LayoutSettings & {
   pwa: false,
   logo: '',
   iconfontUrl: '',
-};
+}
 
-export default Settings;
+export default Settings

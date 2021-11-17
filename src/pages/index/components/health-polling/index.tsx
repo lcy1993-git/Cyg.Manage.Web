@@ -1,30 +1,30 @@
-import { pollingHealth } from '@/services/index';
-import { useInterval, useRequest } from 'ahooks';
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'umi';
+import { pollingHealth } from '@/services/index'
+import { useInterval, useRequest } from 'ahooks'
+import React, { useState, useEffect } from 'react'
+import { useLocation } from 'umi'
 
 const HealthPolling: React.FC = () => {
-  const [requestFlag, setRequestFlag] = useState(true);
-  const location = useLocation();
+  const [requestFlag, setRequestFlag] = useState(true)
+  const location = useLocation()
   //轮询
   const { run } = useRequest(() => pollingHealth(), {
     manual: true,
-  });
+  })
 
   useEffect(() => {
     if (location.pathname && location.pathname === '/again-login') {
-      setRequestFlag(false);
+      setRequestFlag(false)
     } else {
-      setRequestFlag(true);
+      setRequestFlag(true)
     }
-  }, [location.pathname]);
+  }, [location.pathname])
 
   useInterval(() => {
-    if(requestFlag) {
-      run();
+    if (requestFlag) {
+      run()
     }
-  },3000)
-  return <div></div>;
-};
+  }, 3000)
+  return <div></div>
+}
 
-export default HealthPolling;
+export default HealthPolling

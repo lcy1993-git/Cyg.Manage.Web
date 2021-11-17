@@ -1,76 +1,69 @@
-import type { Ref } from 'react';
-import React, {
-  forwardRef,
-  useMemo,
-  useState,
-  useImperativeHandle,
-  useRef,
-  useEffect,
-} from 'react';
-import { useRequest } from 'ahooks';
-import type { TableRequestResult } from '@/services/table';
-import { tableCommonRequest } from '@/services/table';
-import { Table, Pagination, message, Tooltip, Menu, Popover, Checkbox } from 'antd';
-import styles from './index.less';
-import CommonTitle from '../common-title';
-import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-design/icons';
-import EmptyTip from '../empty-tip';
-import type { CheckboxChangeEvent } from 'antd/lib/checkbox';
+import type { Ref } from 'react'
+import React, { forwardRef, useMemo, useState, useImperativeHandle, useRef, useEffect } from 'react'
+import { useRequest } from 'ahooks'
+import type { TableRequestResult } from '@/services/table'
+import { tableCommonRequest } from '@/services/table'
+import { Table, Pagination, message, Tooltip, Menu, Popover, Checkbox } from 'antd'
+import styles from './index.less'
+import CommonTitle from '../common-title'
+import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-design/icons'
+import EmptyTip from '../empty-tip'
+import type { CheckboxChangeEvent } from 'antd/lib/checkbox'
 
 interface GeneralTableProps {
   // 列表请求的url
-  url: string;
+  url: string
   // 请求所需要附带的额外参数
-  extractParams?: object;
+  extractParams?: object
   // Button 区域左边插入
-  buttonLeftContentSlot?: () => React.ReactNode;
+  buttonLeftContentSlot?: () => React.ReactNode
   // Button 区域右边插入
-  buttonRightContentSlot?: () => React.ReactNode;
+  buttonRightContentSlot?: () => React.ReactNode
   // 在标题上方插入一行
-  otherSlot?: () => React.ReactNode;
+  otherSlot?: () => React.ReactNode
   // 列表的名称
-  tableTitle?: string | React.ReactNode;
+  tableTitle?: string | React.ReactNode
   // 需要展示common的按钮
-  needCommonButton?: boolean;
+  needCommonButton?: boolean
   // 外部获取被选中的数据
-  getSelectData?: (value: object[]) => void;
+  getSelectData?: (value: object[]) => void
   // 在title旁边插入东西
-  titleSlot?: () => React.ReactNode;
+  titleSlot?: () => React.ReactNode
   // columns
-  columns: any[];
+  columns: any[]
 
-  type?: TableSelectType;
+  type?: TableSelectType
 
-  rowKey?: string;
+  rowKey?: string
 
-  requestSource?: 'project' | 'common' | 'resource' | 'tecEco' | 'tecEco1';
+  requestSource?: 'project' | 'common' | 'resource' | 'tecEco' | 'tecEco1'
 
-  noPaging?: boolean;
+  noPaging?: boolean
 
-  needTitleLine?: boolean;
+  needTitleLine?: boolean
 
-  defaultPageSize?: number;
+  defaultPageSize?: number
 
-  postType?: 'body' | 'query';
+  postType?: 'body' | 'query'
 
-  getTableRequestData?: (data: TableRequestResult) => void;
+  getTableRequestData?: (data: TableRequestResult) => void
 
-  hasFooter?: boolean;
+  hasFooter?: boolean
 
   // 获取id时候的bug,针对技经端拿不到行ID时的情况
-  cruxKey?: string;
+  cruxKey?: string
 
   // 当表格需要id传参时，判断当前id是否为空，若为空则限制请求
-  requestConditions?: string;
+  requestConditions?: string
   // 不显示左侧选择列
-  notShowSelect?: boolean;
+  notShowSelect?: boolean
 }
 
-type TableSelectType = 'radio' | 'checkbox';
+type TableSelectType = 'radio' | 'checkbox'
 
 const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
   props: P & GeneralTableProps,
-  ref: Ref<any>,
+  ref: Ref<any>
 ) => {
   const {
     url,
@@ -96,27 +89,26 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     cruxKey = '',
     requestConditions = true,
     ...rest
-  } = props;
+  } = props
 
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [currentPage, setCurrentPage] = useState<number>(1)
 
-  const [finallyColumns, setFinalyColumns] = useState<any[]>([]);
-  const [onRequest, setOnRequest] = useState<boolean>(false);
-  const tableRef = useRef<HTMLDivElement>(null);
+  const [finallyColumns, setFinalyColumns] = useState<any[]>([])
+  const [onRequest, setOnRequest] = useState<boolean>(false)
+  const tableRef = useRef<HTMLDivElement>(null)
 
   const { data, run, loading } = useRequest(tableCommonRequest, {
     manual: true,
     onSuccess: () => {
-      console.log(data)
-      getTableRequestData?.(data!);
+      getTableRequestData?.(data!)
     },
-  });
+  })
 
   const tableResultData = useMemo(() => {
     if (!noPaging) {
       if (data) {
-        const { items, pageIndex, pageSize, total } = data;
+        const { items, pageIndex, pageSize, total } = data
         return {
           items: items ?? [],
           pageIndex,
@@ -124,7 +116,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           total,
           dataStartIndex: Math.floor((pageIndex - 1) * pageSize + 1),
           dataEndIndex: Math.floor((pageIndex - 1) * pageSize + (items ?? []).length),
-        };
+        }
       }
       return {
         items: [],
@@ -133,39 +125,39 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         total: 0,
         dataStartIndex: 0,
         dataEndIndex: 0,
-      };
+      }
     }
     if (data) {
       return {
         items: data ?? [],
-      };
+      }
     }
     return {
       items: [],
-    };
-  }, [JSON.stringify(data)]);
+    }
+  }, [JSON.stringify(data)])
 
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([])
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
       setSelectedRowKeys(
         selectedRows.map((item) => {
-          return cruxKey ? item[cruxKey].id : item[rowKey];
-        }),
-      );
-      getSelectData?.(selectedRows);
+          return cruxKey ? item[cruxKey].id : item[rowKey]
+        })
+      )
+      getSelectData?.(selectedRows)
     },
-  };
+  }
 
   const columnChangeEvent = (value: boolean, dataIndex: string) => {
-    const copyColumns = [...finallyColumns];
-    const changeIndex = copyColumns.findIndex((item) => item.dataIndex === dataIndex);
+    const copyColumns = [...finallyColumns]
+    const changeIndex = copyColumns.findIndex((item) => item.dataIndex === dataIndex)
     if (changeIndex > -1) {
-      copyColumns.splice(changeIndex, 1, { ...copyColumns[changeIndex], checked: value });
-      setFinalyColumns(copyColumns);
+      copyColumns.splice(changeIndex, 1, { ...copyColumns[changeIndex], checked: value })
+      setFinalyColumns(copyColumns)
     }
-  };
+  }
 
   // 菜单
   const columnsMenu = finallyColumns.map((item) => {
@@ -178,10 +170,10 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
           {typeof item.title === 'string' ? item.title : item.title()}
         </Checkbox>
       </Menu.Item>
-    );
-  });
+    )
+  })
 
-  const columnsMenuElement = <Menu>{columnsMenu}</Menu>;
+  const columnsMenuElement = <Menu>{columnsMenu}</Menu>
 
   // 刷新列表
   const refreshTable = () => {
@@ -192,36 +184,36 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       pageSize,
       requestSource,
       postType,
-    });
-    message.success('刷新成功');
-  };
+    })
+    message.success('刷新成功')
+  }
   // 全屏
   const fullScreen = () => {
     if (!tableRef.current || !document.fullscreenEnabled) {
-      return;
+      return
     }
     if (document.fullscreenElement) {
-      document.exitFullscreen();
+      document.exitFullscreen()
     } else {
-      document.documentElement.requestFullscreen();
+      document.documentElement.requestFullscreen()
     }
-  };
+  }
 
   // 列显示处理
   const currentPageChange = (page: any, size: any) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
     if (pageSize === size) {
-      setCurrentPage(page === 0 ? 1 : page);
+      setCurrentPage(page === 0 ? 1 : page)
     }
-  };
+  }
 
   const pageSizeChange = (page: any, size: any) => {
-    setCurrentPage(1);
-    setPageSize(size);
-  };
+    setCurrentPage(1)
+    setPageSize(size)
+  }
 
   useEffect(() => {
-    if (url === '') return;
+    if (url === '') return
     requestConditions &&
       run({
         url,
@@ -230,12 +222,12 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         pageSize,
         requestSource,
         postType,
-      });
-  }, [pageSize, currentPage, requestConditions]);
+      })
+  }, [pageSize, currentPage, requestConditions])
 
   useImperativeHandle(ref, () => ({
     getCurrentPageLsit: () => {
-      return;
+      return
     },
     // changeVal 就是暴露给父组件的方法
     refresh: () => {
@@ -246,10 +238,10 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         pageSize,
         requestSource,
         postType,
-      });
+      })
     },
     search: () => {
-      setCurrentPage(1);
+      setCurrentPage(1)
       run({
         url,
         pageSize,
@@ -257,12 +249,12 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         extraParams: extractParams,
         requestSource,
         postType,
-      });
-      setSelectedRowKeys([]);
-      getSelectData?.([]);
+      })
+      setSelectedRowKeys([])
+      getSelectData?.([])
     },
     searchByParams: (params: object) => {
-      setCurrentPage(1);
+      setCurrentPage(1)
       run({
         url,
         pageSize,
@@ -270,31 +262,31 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         extraParams: params,
         requestSource,
         postType,
-      });
-      setSelectedRowKeys([]);
-      getSelectData?.([]);
+      })
+      setSelectedRowKeys([])
+      getSelectData?.([])
     },
     reset: () => {
-      setCurrentPage(1);
-      setSelectedRowKeys([]);
-      getSelectData?.([]);
+      setCurrentPage(1)
+      setSelectedRowKeys([])
+      getSelectData?.([])
     },
     resetSelectedRows: () => {
-      setSelectedRowKeys([]);
-      getSelectData?.([]);
+      setSelectedRowKeys([])
+      getSelectData?.([])
     },
-  }));
+  }))
 
   useEffect(() => {
-    const newColumns = columns.map((item) => ({ ...item, checked: true }));
-    setFinalyColumns(newColumns);
-  }, [JSON.stringify(columns)]);
+    const newColumns = columns.map((item) => ({ ...item, checked: true }))
+    setFinalyColumns(newColumns)
+  }, [JSON.stringify(columns)])
 
   useEffect(() => {
     if (defaultPageSize) {
-      setPageSize(defaultPageSize);
+      setPageSize(defaultPageSize)
     }
-  }, [defaultPageSize]);
+  }, [defaultPageSize])
 
   return (
     <div className={styles.cyGeneralTable} ref={tableRef}>
@@ -407,7 +399,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default forwardRef(withGeneralTable(Table));
+export default forwardRef(withGeneralTable(Table))

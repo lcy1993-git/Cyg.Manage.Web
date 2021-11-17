@@ -1,23 +1,23 @@
-import React, { FC, useState } from 'react';
-import CyFormItem from '@/components/cy-form-item';
-import { Button, Dropdown, Input, message } from 'antd';
+import React, { FC, useState } from 'react'
+import CyFormItem from '@/components/cy-form-item'
+import { Button, Dropdown, Input, message } from 'antd'
 
 import {
   queryOuterAuditUserByPhoneAndUsername,
   UserInfo,
-} from '@/services/project-management/select-add-list-form';
-const { Search } = Input;
+} from '@/services/project-management/select-add-list-form'
+import styles from './index.less'
+import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import { useBoolean, useRequest } from 'ahooks'
+const { Search } = Input
 export interface SelectAddListFormProps {
-  initPeople?: UserInfo[] | undefined[];
-  projectName?: string;
-  onChange?: (userInfoList: UserInfo[]) => void;
-  notArrangeShow?: boolean; //checkbox的标志用来是否显示不安排外审的内容
-  onSetPassArrangeStatus?: (flag: boolean) => void; //获取外审通不通过状态的callback
-  isAdd?: boolean;
+  initPeople?: UserInfo[] | undefined[]
+  projectName?: string
+  onChange?: (userInfoList: UserInfo[]) => void
+  notArrangeShow?: boolean //checkbox的标志用来是否显示不安排外审的内容
+  onSetPassArrangeStatus?: (flag: boolean) => void //获取外审通不通过状态的callback
+  isAdd?: boolean
 }
-import styles from './index.less';
-import { DeleteOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useBoolean, useRequest } from 'ahooks';
 
 const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const {
@@ -27,13 +27,13 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     projectName,
     isAdd,
     onChange,
-  } = props;
+  } = props
 
   // const debounceTimeout = 800;
   // const [fetching, setFetching] = useState<boolean>(false);
-  const [keyword, setKeyword] = useState<string>();
-  const [people, setPeople] = useState<UserInfo[]>([]);
-  const [visible, { setTrue, setFalse }] = useBoolean(false);
+  const [keyword, setKeyword] = useState<string>()
+  const [people, setPeople] = useState<UserInfo[]>([])
+  const [visible, { setTrue, setFalse }] = useBoolean(false)
 
   /**
    * 获取外审人员
@@ -42,13 +42,13 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     manual: true,
     onSuccess: () => {
       if (data) {
-        setTrue();
-        setOptions([data]);
+        setTrue()
+        setOptions([data])
       } else {
-        message.warn('账号不存在！请重新输入');
+        message.warn('账号不存在！请重新输入')
       }
     },
-  });
+  })
 
   // useEffect(() => {
   //   setPeople(initPeople);
@@ -56,21 +56,21 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   // }, [JSON.stringify(initPeople)]);
 
   const onPepleAdd = (p: UserInfo) => {
-    setFalse();
-    setPeople([...people.filter((v) => v?.value !== p?.value), p]);
-    onChange?.([...people.filter((v) => v?.value !== p?.value), p]);
-  };
+    setFalse()
+    setPeople([...people.filter((v) => v?.value !== p?.value), p])
+    onChange?.([...people.filter((v) => v?.value !== p?.value), p])
+  }
 
   const onPeopleDelete = (p: UserInfo) => {
-    setPeople([...people.filter((v) => v?.value !== p?.value)]);
-    onChange?.([...people.filter((v) => v?.value !== p?.value)]);
-  };
+    setPeople([...people.filter((v) => v?.value !== p?.value)])
+    onChange?.([...people.filter((v) => v?.value !== p?.value)])
+  }
   const [options, setOptions] = useState<
     {
-      text: string;
-      value: string;
+      text: string
+      value: string
     }[]
-  >([]);
+  >([])
 
   const OptionList = () => {
     return (
@@ -94,14 +94,14 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
                   </Button>
                 </div>
               </div>
-            );
+            )
           })
         ) : (
           <div>无内容，请先搜索</div>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const AddPeople = () => {
     return (
@@ -124,8 +124,8 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
           </div>
         ))}
       </div>
-    );
-  };
+    )
+  }
 
   // const onSetNotArrangePeopleStatus = (notArrangeStatus: boolean) => {
   //   onSetPassArrangeStatus?.(notArrangeStatus);
@@ -176,7 +176,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
         </>
       ) : null} */}
     </div>
-  );
-};
+  )
+}
 
-export default SelectAddListForm;
+export default SelectAddListForm

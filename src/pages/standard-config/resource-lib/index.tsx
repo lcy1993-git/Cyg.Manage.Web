@@ -1,68 +1,68 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
 import {
   EditOutlined,
   ImportOutlined,
   PlusOutlined,
   QuestionCircleOutlined,
   RedoOutlined,
-} from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Tooltip, Dropdown, Menu } from 'antd';
-import React, { useState } from 'react';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
+} from '@ant-design/icons'
+import { Input, Button, Modal, Form, message, Spin, Tooltip, Dropdown, Menu } from 'antd'
+import React, { useState } from 'react'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
 import {
   getResourceLibDetail,
   addResourceLibItem,
   updateResourceLibItem,
   restartResourceLib,
   changeLibStatus,
-} from '@/services/resource-config/resource-lib';
-import { isArray } from 'lodash';
-import ResourceLibForm from './components/add-edit-form';
-import UploadDrawing from './components/upload-drawing';
-import { getUploadUrl } from '@/services/resource-config/drawing';
-import SaveImportLib from './components/upload-lib';
-import SaveImportLineStressSag from './components/upload-lineStressSag';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import EnumSelect from '@/components/enum-select';
-import { BelongManageEnum } from '@/services/personnel-config/manage-user';
-import { history } from 'umi';
-import { useLayoutStore } from '@/layouts/context';
-import { useMemo } from 'react';
-import UploadAll from './components/upload-all';
-import ResourceLibraryManageModal from './components/resource-library-manage-modal';
+} from '@/services/resource-config/resource-lib'
+import { isArray } from 'lodash'
+import ResourceLibForm from './components/add-edit-form'
+import UploadDrawing from './components/upload-drawing'
+import { getUploadUrl } from '@/services/resource-config/drawing'
+import SaveImportLib from './components/upload-lib'
+import SaveImportLineStressSag from './components/upload-lineStressSag'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import EnumSelect from '@/components/enum-select'
+import { BelongManageEnum } from '@/services/personnel-config/manage-user'
+import { history } from 'umi'
+import { useLayoutStore } from '@/layouts/context'
+import { useMemo } from 'react'
+import UploadAll from './components/upload-all'
+import ResourceLibraryManageModal from './components/resource-library-manage-modal'
 
-const { Search } = Input;
+const { Search } = Input
 
 const ResourceLib: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false);
-  const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false);
-  const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false);
-  const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-  const [status, setStatus] = useState<string>('0');
-  const [libVisible, setLibVisible] = useState(false);
-  const [libId, setLibId] = useState<string>('');
-  const [currentManageId, setCurrentManageId] = useState<string>(window.localStorage.manageId); //当前管理 模块的资源库Id
+  const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false)
+  const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false)
+  const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false)
+  const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [status, setStatus] = useState<string>('0')
+  const [libVisible, setLibVisible] = useState(false)
+  const [libId, setLibId] = useState<string>('')
+  const [currentManageId, setCurrentManageId] = useState<string>(window.localStorage.manageId) //当前管理 模块的资源库Id
 
-  const { data: keyData } = useRequest(() => getUploadUrl());
+  const { data: keyData } = useRequest(() => getUploadUrl())
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
-  });
+  })
 
-  const { setResourceManageFlag: setResourceManageFlag, resourceManageFlag } = useLayoutStore();
+  const { setResourceManageFlag, resourceManageFlag } = useLayoutStore()
 
   const searchComponent = () => {
     return (
@@ -84,38 +84,38 @@ const ResourceLib: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const searchByStatus = (value: any) => {
-    setStatus(value);
+    setStatus(value)
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.searchByParams({
         status: value,
-      });
+      })
     }
-  };
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = useMemo(() => {
     if (!resourceManageFlag) {
-      setCurrentManageId('');
+      setCurrentManageId('')
       return [
         // {
         //   dataIndex: 'id',
@@ -161,11 +161,11 @@ const ResourceLib: React.FC = () => {
                   <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
                 </Tooltip>
               </span>
-            );
+            )
           },
           width: 150,
           render: (text: any, record: any) => {
-            const isChecked = !record.isDisabled;
+            const isChecked = !record.isDisabled
             return (
               <>
                 {buttonJurisdictionArray?.includes('lib-status') &&
@@ -196,7 +196,7 @@ const ResourceLib: React.FC = () => {
                   </>
                 )}
               </>
-            );
+            )
           },
         },
         {
@@ -204,24 +204,24 @@ const ResourceLib: React.FC = () => {
           title: '操作',
           width: 100,
           render: (text: any, record: any) => {
-            const storage = window.localStorage;
+            const storage = window.localStorage
             return (
               <span
                 className="canClick"
                 onClick={() => {
-                  setCurrentManageId(record.id);
-                  storage.setItem('manageId', record.id);
+                  setCurrentManageId(record.id)
+                  storage.setItem('manageId', record.id)
                   history.push({
                     pathname: `/standard-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
-                  });
+                  })
                 }}
               >
                 <u>管理</u>
               </span>
-            );
+            )
           },
         },
-      ];
+      ]
     }
     return [
       // {
@@ -268,11 +268,11 @@ const ResourceLib: React.FC = () => {
                 <QuestionCircleOutlined style={{ paddingLeft: 15 }} />
               </Tooltip>
             </span>
-          );
+          )
         },
         width: 150,
         render: (text: any, record: any) => {
-          const isChecked = !record.isDisabled;
+          const isChecked = !record.isDisabled
           return (
             <>
               {isChecked ? (
@@ -293,7 +293,7 @@ const ResourceLib: React.FC = () => {
                 </span>
               )}
             </>
-          );
+          )
         },
       },
 
@@ -309,16 +309,16 @@ const ResourceLib: React.FC = () => {
             >
               <u>管理</u>
             </span>
-          );
+          )
         },
       },
-    ];
-  }, [resourceManageFlag]);
+    ]
+  }, [resourceManageFlag])
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddResourceLib = () => {
     addForm.validateFields().then(async (value) => {
@@ -328,41 +328,41 @@ const ResourceLib: React.FC = () => {
           version: '',
           remark: '',
         },
-        value,
-      );
-      await addResourceLibItem(submitInfo);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addResourceLibItem(submitInfo)
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editDataId = tableSelectRows[0].id;
+    const editDataId = tableSelectRows[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentManageId) {
-      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
-      return;
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
+      return
     }
 
-    setEditFormVisible(true);
-    const ResourceLibData = await run(editDataId);
+    setEditFormVisible(true)
+    const ResourceLibData = await run(editDataId)
 
-    editForm.setFieldsValue(ResourceLibData);
-  };
+    editForm.setFieldsValue(ResourceLibData)
+  }
 
   const sureEditResourceLib = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -372,85 +372,85 @@ const ResourceLib: React.FC = () => {
           version: editData.version,
           remark: editData.remark,
         },
-        values,
-      );
-      await updateResourceLibItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateResourceLibItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   //重启资源服务
   const restartLib = async () => {
-    await restartResourceLib();
-    message.success('操作成功');
-  };
+    await restartResourceLib()
+    message.success('操作成功')
+  }
 
   const uploadAllEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
+      message.warning('请选择要操作的行')
+      return
     }
-    const editDataId = tableSelectRows[0].id;
+    const editDataId = tableSelectRows[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentManageId) {
-      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
-      return;
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
+      return
     }
-    setLibId(tableSelectRows[0].id);
-    setUploadAllVisible(true);
-  };
+    setLibId(tableSelectRows[0].id)
+    setUploadAllVisible(true)
+  }
 
   const importLibEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
+      message.warning('请选择要操作的行')
+      return
     }
-    const editDataId = tableSelectRows[0].id;
+    const editDataId = tableSelectRows[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentManageId) {
-      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
-      return;
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
+      return
     }
-    setLibId(tableSelectRows[0].id);
-    setUploadLibVisible(true);
-  };
+    setLibId(tableSelectRows[0].id)
+    setUploadLibVisible(true)
+  }
 
   const uploadDrawingEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
+      message.warning('请选择要操作的行')
+      return
     }
-    const editDataId = tableSelectRows[0].id;
+    const editDataId = tableSelectRows[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentManageId) {
-      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
-      return;
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
+      return
     }
-    setLibId(tableSelectRows[0].id);
-    setUploadDrawingVisible(true);
-  };
+    setLibId(tableSelectRows[0].id)
+    setUploadDrawingVisible(true)
+  }
 
   const importLineStreeSagEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
+      message.warning('请选择要操作的行')
+      return
     }
-    const editDataId = tableSelectRows[0].id;
+    const editDataId = tableSelectRows[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentManageId) {
-      message.error('当前资源库已打开"模块管理"界面，请关闭后重试');
-      return;
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
+      return
     }
-    setLibId(tableSelectRows[0].id);
-    setUploadLineStressSagVisible(true);
-  };
+    setLibId(tableSelectRows[0].id)
+    setUploadLineStressSagVisible(true)
+  }
 
   const importMenu = (
     <Menu>
@@ -464,7 +464,7 @@ const ResourceLib: React.FC = () => {
         <Menu.Item onClick={() => importLineStreeSagEvent()}>导入应力弧垂表</Menu.Item>
       )}
     </Menu>
-  );
+  )
 
   const tableElement = () => {
     return (
@@ -511,18 +511,18 @@ const ResourceLib: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const updateStatusEvent = async (id: string, status: number) => {
-    await changeLibStatus({ id: id, status: status });
-    message.success('操作成功');
-    refresh();
-  };
+    await changeLibStatus({ id: id, status: status })
+    message.success('操作成功')
+    refresh()
+  }
 
   const uploadFinishEvent = () => {
-    refresh();
-  };
+    refresh()
+  }
 
   return (
     <PageCommonWrap>
@@ -611,7 +611,7 @@ const ResourceLib: React.FC = () => {
         />
       )}
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default ResourceLib;
+export default ResourceLib
