@@ -10,7 +10,8 @@ const whiteCircle = new ClassStyle({
     text: '\ue879',
     font: 'Normal 22px iconfontHistoryGrid',
     // text: '\xe905',
-
+    // textAlign: "center",
+    placement: 'line',
     fill: new Fill({
       color: 'rgba(255,255, 255, 1)',
     }),
@@ -25,6 +26,8 @@ const whiteCircle = new ClassStyle({
 const hightCircle = new ClassStyle({
   text: new Text({
     text: '\ue879',
+    // textAlign: "center",
+    placement: 'point',
     font: 'Normal 26px iconfontHistoryGrid',
     fill: new Fill({
       color: 'rgba(249, 149, 52, 1)',
@@ -72,9 +75,8 @@ export const getPointStyle: GetPointStyle = (
     new ClassStyle({
       text: new Text({
         text: textObjet[type],
+        placement: 'point',
         font: 'Normal 22px iconfontHistoryGrid',
-        offsetX: 0,
-        offsetY: 0,
         fill: new Fill({
           color: ops.fill,
         }),

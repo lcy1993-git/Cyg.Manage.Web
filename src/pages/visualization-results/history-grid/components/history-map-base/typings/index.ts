@@ -1,3 +1,10 @@
+import '@/assets/icon/history-grid-icon.css'
+import { Map } from 'ol'
+import Geometry from 'ol/geom/Geometry'
+import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
+import 'ol/ol.css'
+import { Vector as VectorSource } from 'ol/source'
+
 export type ElectricPointType =
   | '无类型'
   | '开闭所'
@@ -39,3 +46,22 @@ export type DataSource = {
 }
 
 export type SelectedData = (ElectricPointData | ElectricLineData)[]
+
+export type SelectType = 'pointSelect' | 'toggleSelect'
+
+export interface InterActionRef {
+  draw?: Draw
+  snap?: Snap
+  source?: VectorSource<Geometry>
+  hightLightSource?: VectorSource<Geometry>
+  modify?: Modify
+  isDraw?: boolean
+  currentSelect?: Select
+  select?: Record<Exclude<SelectType, ''>, Select>
+  dragBox?: DragBox
+  isDragBox?: boolean
+}
+
+export interface MapRef {
+  map: Map
+}

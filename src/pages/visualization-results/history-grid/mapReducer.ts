@@ -8,6 +8,7 @@ export interface GridMapGlobalState {
   isDraw: boolean
   dataSource?: DataSource
   selectedData: SelectedData
+  currentMousePosition: [number, number]
   cleanSelected: boolean
 }
 
@@ -25,11 +26,11 @@ export const mapReducer = <T extends GridMapGlobalState, K extends keyof GridMap
   props: [K, T[K]]
 ): T => {
   const [key, value] = props
-  switch (key) {
-    case 'mapLayerType':
-      return { ...state, mapLayerType: value }
-    default:
-      return { ...state }
+  if (key in initGridMapState) {
+    return { ...state, [key]: value }
+  } else {
+    console.error(`使用mapReducer时，发现错误的key,错误key为${key}`)
+    return { ...state }
   }
 }
 
