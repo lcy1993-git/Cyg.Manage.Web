@@ -8,28 +8,6 @@
 //   | '分段开关'
 // type ElectricLineType = '无类型' | '架空线' | '电缆'
 
-// interface ElectricLineData {
-//   id: string
-//   name: string
-//   type: ElectricLineType
-//   startLng?: number
-//   startLat?: number
-//   endLng?: number
-//   endLat?: number
-//   remark?: string
-//   startId?: string
-//   endId?: string
-// }
-
-// interface ElectricPointData {
-//   id: string
-//   name: string
-//   type: ElectricPointType
-//   Lng?: number
-//   Lat?: number
-//   remark?: string
-// }
-
 // type DataSource = {
 //   point: ElectricPointData[]
 //   line: ElectricLineData[]

@@ -32,6 +32,7 @@ export default function mapClick(e: MapBrowserEvent<MouseEvent>, { interActionRe
      * @property {Feature} feature 点线实例
      * @property {[number, number]} position 点线实例
      */
+
     const featureData = {
       type: feature.getGeometry()!.getType(),
       data: {},

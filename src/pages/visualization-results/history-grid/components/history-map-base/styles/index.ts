@@ -1,9 +1,9 @@
 import img from '@/assets/icon-image/survey-track-light.png'
 import { Fill, Icon, Stroke, Style } from 'ol/style'
 import CircleStyle from 'ol/style/Circle'
-import lineStyle from './lineStyle'
-import modifyStyle from './modifyStyle'
-import pointStyle from './pointStyle'
+import { GemotType } from '../typings'
+import { GetLineStyle, getLineStyle } from './lineStyle'
+import { GetPointStyle, getPointStyle } from './pointStyle'
 
 // 街道图层style
 export const StreetLayerStyle = new Style({
@@ -81,4 +81,19 @@ export const featureStyle: Record<string, Style> = {
   //   }),
 }
 
-export { modifyStyle, lineStyle, pointStyle }
+/**
+ *
+ * @param {GemotType} type
+ * @returns {(ElectricLineType | ElectricPointType, boolean, LineOps | PointOps) => Style}
+ * @example
+ * getStyle("Point")("分支箱", true)
+ * 表示获取点元素的高亮分支箱类型
+ */
+
+function getStyle(type: 'Point'): GetPointStyle
+function getStyle(type: 'LineString'): GetLineStyle
+function getStyle(type: GemotType) {
+  return type === 'Point' ? getPointStyle : getLineStyle
+}
+
+export { getStyle }

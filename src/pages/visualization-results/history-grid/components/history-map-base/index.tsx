@@ -25,8 +25,8 @@ import { moveend, pointermove } from './event'
 import mapClick from './event/mapClick'
 import styles from './index.less'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
-import { featureStyle, lineStyle, modifyStyle } from './styles'
-import pointStyle from './styles/pointStyle'
+import { featureStyle, getStyle } from './styles'
+import { DataSource } from './typings'
 export interface MapRef {
   map: Map
 }
@@ -35,6 +35,7 @@ export interface InterActionRef {
   draw?: Draw
   snap?: Snap
   source?: VectorSource<Geometry>
+  hightLightSource?: VectorSource<Geometry>
   modify?: Modify
   isDraw?: boolean
   currentSelect?: Select
@@ -102,18 +103,19 @@ const HistoryMapBase = () => {
   )
   // 加载数据
   useUpdateEffect(() => {
-    LoadJSON1(data)
+    LoadJSON1(data as DataSource)
   }, [JSON.stringify(data)])
 
-  function LoadJSON1(data) {
+  function LoadJSON1(data: DataSource) {
     if (data) {
       interActionRef.source?.clear()
 
       if (Array.isArray(data.point)) {
         const points = data.point.map((p) => {
           const feature = new Feature()
-          feature.setGeometry(new Point([p.Lng, p.Lat]))
-          feature.setStyle(pointStyle[p.type])
+          feature.setGeometry(new Point([p.Lng!, p.Lat!]))
+          feature.setStyle(getStyle('Point')(p.type))
+          // feature.setStyle(pointStyle[p.type])
           Object.keys(p).forEach((key) => {
             feature.set(key, p[key])
           })
@@ -125,15 +127,14 @@ const HistoryMapBase = () => {
       if (Array.isArray(data.line)) {
         const lines = data.line.map((p) => {
           const feature = new Feature()
-          console.log(p)
-
           feature.setGeometry(
             new LineString([
-              [p.startLng, p.startLat],
-              [p.endLng, p.endLat],
+              [p.startLng!, p.startLat!],
+              [p.endLng!, p.endLat!],
             ])
           )
-          feature.setStyle(lineStyle[p.type])
+          feature.setStyle(getStyle('LineString')(p.type))
+          // feature.setStyle(lineStyle[p.type])
           Object.keys(p).forEach((key) => {
             feature.set(key, p[key])
           })
@@ -152,6 +153,7 @@ const HistoryMapBase = () => {
   function beforeInit() {
     ref.current!.innerHTML = ''
     interActionRef.source = new VectorSource()
+    interActionRef.hightLightSource = new VectorSource()
   }
   // 初始化layer
   function initLayer() {
@@ -163,6 +165,7 @@ const HistoryMapBase = () => {
     layerRef.annLayer = annLayer
     // 添加 vectorLayer
     layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
+    layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
   }
   // 初始化view
   function initView() {
@@ -198,9 +201,8 @@ const HistoryMapBase = () => {
   function initInterAction() {
     interActionRef.modify = new Modify({
       source: interActionRef.source,
-      style: modifyStyle,
       // 设置容差
-
+      style: undefined,
       pixelTolerance: 25,
     })
     interActionRef.modify.on(['modifyend'], (e: Event | BaseEvent) => {
@@ -208,7 +210,7 @@ const HistoryMapBase = () => {
       // e.features.getArray()[0].setStyle(featureStyle.type2)
     })
     // 暂时屏蔽编辑功能
-    false && mapRef.map.addInteraction(interActionRef.modify!)
+    mapRef.map.addInteraction(interActionRef.modify!)
 
     const pointSelect = new Select()
     const dragBox = new DragBox({})
@@ -216,16 +218,30 @@ const HistoryMapBase = () => {
     const toggleSelect = new Select({
       condition: conditionClick,
       toggleCondition: platformModifierKeyOnly,
+      style: (feature) => {
+        const geometryType = feature.getGeometry()?.getType()
+        return getStyle(geometryType)(feature.get('type'))
+      },
     })
     toggleSelect.on('select', (e: SelectEvent) => {
+      console.log(e)
+      function getType(f: Feature<Geometry>) {
+        return f?.getGeometry()!.getType()
+      }
+
       const select = e.target as Select
       const features = select.getFeatures()
+      console.log(features)
 
       const firstFeature = features.item(0)
 
-      if (firstFeature) {
+      if (firstFeature && features.getLength() > 1) {
         console.log(firstFeature)
+        if (getType(firstFeature) === getType(e.selected[0] as Feature<Geometry>)) {
+        } else {
+        }
       }
+      // return false
     })
     toggleSelect.setHitTolerance(8)
     // toggleSelect.on('change', (...args) => {
