@@ -25,7 +25,7 @@ import mapClick from './event/mapClick'
 import styles from './index.less'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
 import { getStyle } from './styles'
-import { DataSource } from './typings'
+import { DataSource, SelectedData } from './typings'
 export interface MapRef {
   map: Map
 }
@@ -227,23 +227,45 @@ const HistoryMapBase = () => {
       },
     })
     toggleSelect.on('select', (e: SelectEvent) => {
+      let flag = false // 是否需要set数据
       const hightFeatures = interActionRef.hightLightSource!.getFeatures()
       const { selected, deselected } = e
       if (selected.length > 0) {
         if (hightFeatures.length === 0) {
-          isAdded(selected) || interActionRef.hightLightSource!.addFeatures(addHightStyle(selected))
+          if (!isAdded(selected)) {
+            flag = true
+            interActionRef.hightLightSource!.addFeatures(addHightStyle(selected))
+          }
         } else {
           const currentType = getGeometryType(hightFeatures[0])
           if (currentType === getGeometryType(selected[0])) {
-            isAdded(selected) ||
+            if (!isAdded(selected)) {
+              flag = true
               interActionRef.hightLightSource!.addFeatures(addHightStyle(selected))
+            }
           }
         }
       }
 
       if (deselected.length > 0) {
-        deselected.forEach((f) => canRemove(f) && interActionRef.hightLightSource!.removeFeature(f))
+        deselected.forEach((f) => {
+          if (canRemove(f)) {
+            flag = true
+            interActionRef.hightLightSource!.removeFeature(f)
+          }
+        })
       }
+
+      if (flag) {
+        const data = interActionRef.hightLightSource!.getFeatures().map((f) => {
+          const { geometry, ...props } = f.getProperties()
+          return props
+        })
+        console.log('react')
+        setState('selectedData', data as SelectedData)
+      }
+
+      console.log()
 
       function getGeometryType(f: Feature<Geometry>) {
         return f.getGeometry()!.getType()

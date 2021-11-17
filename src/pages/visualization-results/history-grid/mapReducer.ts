@@ -1,8 +1,4 @@
-import type {
-  DataSource,
-  ElectricLineData,
-  ElectricPointData,
-} from './components/history-map-base/typings'
+import type { DataSource, SelectedData } from './components/history-map-base/typings'
 import { useHistoryGridContext } from './context'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
@@ -11,7 +7,7 @@ export interface GridMapGlobalState {
   mapLayerType: string
   isDraw: boolean
   dataSource?: DataSource
-  selectedData: (ElectricPointData | ElectricLineData)[]
+  selectedData: SelectedData
   cleanSelected: boolean
 }
 

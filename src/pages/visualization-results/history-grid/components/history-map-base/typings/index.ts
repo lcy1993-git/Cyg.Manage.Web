@@ -11,7 +11,7 @@ export type ElectricLineType = '无类型' | '架空线' | '电缆'
 
 export type GemotType = 'Point' | 'LineString'
 
-interface ElectricLineData {
+export interface ElectricLineData {
   id: string
   name: string
   type: ElectricLineType
@@ -24,7 +24,7 @@ interface ElectricLineData {
   endId?: string
 }
 
-interface ElectricPointData {
+export interface ElectricPointData {
   id: string
   name: string
   type: ElectricPointType
@@ -37,3 +37,5 @@ export type DataSource = {
   point: ElectricPointData[]
   line: ElectricLineData[]
 }
+
+export type SelectedData = (ElectricPointData | ElectricLineData)[]
