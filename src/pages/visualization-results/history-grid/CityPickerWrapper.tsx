@@ -15,16 +15,20 @@ const CityPickerWrapper = () => {
     <>
       <FlowLayer left={FL_MARGIN_LEFT} top={FL_MARGIN_LEFT}>
         <div
-          style={{ width: 300, height: 50 }}
+          style={{ width: 280, height: 50 }}
           className="bg-white p-2 flex justify-between items-center"
         >
           <Select
             open={false}
-            value={city?.name || '选择城市'}
-            className="flex-1"
+            value={city?.name || '地区定位'}
+            className="flex-1 truncate"
             onClick={() => !visible && setVisible(true)}
           />
-          <Button className="ml-4" type="primary">
+          <Button
+            className="ml-4"
+            type="primary"
+            onClick={() => dispatch({ type: 'changeMode', payload: 'edit' })}
+          >
             网架预设
           </Button>
         </div>

@@ -66,7 +66,7 @@ const CorrespondingCities = ({ cities, ...rest }: CorrespondingCitiesProps) => {
         <span
           className={`mx-1 mb-2 px-1 cursor-pointer ${
             selectedCity?.name === c.name
-              ? 'text-theme-green bg-theme-green-light'
+              ? 'text-theme-green bg-theme-green-lightest'
               : 'text-gray-800'
           }`}
           key={c.name}
