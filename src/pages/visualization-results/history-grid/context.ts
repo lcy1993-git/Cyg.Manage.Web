@@ -21,21 +21,32 @@ import { GridMapGlobalState, initGridMapState, mapReducer } from './mapReducer'
 type ReducerState = {
   /** record => 历史, history-edit => 历史绘制, edit => 预设计 */
   mode: 'record' | 'edit' | 'design'
+  /** 当前定位的城市 */
   city?: CityWithProvince
   gridMapState: GridMapGlobalState
+
+  /** 预设计相关 */
+  designData?: {
+    /** 预设计名称 */
+    title: string
+  }
 }
 
 /** action */
-type SimpleActions = 'reset'
-type ComplexActions = 'changeMode' | 'setCity' | 'changeGridMap'
+type SimpleActions = never
+type ComplexActions = 'reset' | 'changeMode' | 'setCity' | 'setDesignData' | 'changeGridMap'
 type Actions = SimpleActions | ComplexActions
 
-type ComplexActionReflectPayload<Action> = Action extends 'changeMode'
+type ComplexActionReflectPayload<Action> = Action extends 'reset'
+  ? InitParams
+  : Action extends 'changeMode'
   ? ReducerState['mode']
   : Action extends 'setCity'
   ? ReducerState['city']
   : Action extends 'changeGridMap'
   ? [any, any]
+  : Action extends 'setDesignData'
+  ? ReducerState['designData']
   : never
 
 type ReducerActionWithPayload = { type: Actions; payload: any }
@@ -59,6 +70,8 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
   switch (type) {
     case 'changeMode':
       return { ...state, mode: payload }
+    case 'setDesignData':
+      return { ...state, designData: payload }
     case 'setCity':
       return { ...state, city: payload }
     case 'reset':
@@ -70,8 +83,10 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
   }
 }
 
+type InitParams = unknown
+
 /** 惰性初始化 */
-export const init = (params: unknown) => {
+export const init = (params: InitParams) => {
   const initialState: ReducerState = {
     mode: 'design',
     gridMapState: initGridMapState,
@@ -86,7 +101,9 @@ type DispatchParam<T extends ReducerAction> = T extends ReducerActionFn
   ? SimpleActions
   : Exclude<T, Actions | ReducerActionFn>['type'] extends `${infer S}`
   ? S extends Actions
-    ? { type: S; payload: ComplexActionReflectPayload<S> }
+    ? IsNever<ComplexActionReflectPayload<S>> extends true
+      ? { type: S }
+      : { type: S; payload: ComplexActionReflectPayload<S> }
     : ReducerActionWithPayload
   : ReducerActionWithPayload
 

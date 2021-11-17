@@ -20,10 +20,10 @@ export const initGridMapState = {
   cleanSelected: false, // 清屏(操作完成后)
 }
 
-export const mapReducer = <T extends GridMapGlobalState, K extends keyof T>(
-  state: GridMapGlobalState = initGridMapState,
+export const mapReducer = <T extends GridMapGlobalState, K extends keyof GridMapGlobalState>(
+  state: T,
   props: [K, T[K]]
-) => {
+): T => {
   const [key, value] = props
   switch (key) {
     case 'mapLayerType':
