@@ -104,7 +104,8 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       >
         <Spin spinning={loading}>
           <div className={styles.versionItem}>
-            {props.stopServerInfo?.content && <StopServer data={props.stopServerInfo}/>}
+            <h3>【通知】</h3>
+            {props.stopServerInfo?.content ? <StopServer data={props.stopServerInfo}/> : '   -'}
             <div className={styles.versionNumber}>版本：{versionInfo?.data?.versionNo}</div>
             <div className={styles.versionItemTitle}>【更新说明】</div>
             <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>
