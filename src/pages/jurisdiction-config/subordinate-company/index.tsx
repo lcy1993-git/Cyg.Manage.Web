@@ -1,14 +1,14 @@
-import React, { useRef } from 'react';
-import GeneralTable from '@/components/general-table';
-import styles from './index.less';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { Tabs } from 'antd';
-import CommonTitle from '@/components/common-title';
+import React, { useRef } from 'react'
+import GeneralTable from '@/components/general-table'
+import styles from './index.less'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { Tabs } from 'antd'
+import CommonTitle from '@/components/common-title'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 const CompanyHierarchy: React.FC = () => {
-  const superiorRef = useRef<HTMLDivElement>(null);
-  const subordinateRef = useRef<HTMLDivElement>(null);
+  const superiorRef = useRef<HTMLDivElement>(null)
+  const subordinateRef = useRef<HTMLDivElement>(null)
 
   const columns = [
     {
@@ -18,9 +18,9 @@ const CompanyHierarchy: React.FC = () => {
       width: 320,
     },
     {
-      title: '公司名称',
-      dataIndex: 'name',
-      index: 'name',
+      title: '管理员账号',
+      dataIndex: 'adminUserName',
+      index: 'adminUserName',
       width: 320,
     },
     {
@@ -39,7 +39,7 @@ const CompanyHierarchy: React.FC = () => {
       dataIndex: 'address',
       index: 'address',
     },
-  ];
+  ]
 
   return (
     <>
@@ -79,7 +79,7 @@ const CompanyHierarchy: React.FC = () => {
         </div>
       </PageCommonWrap>
     </>
-  );
-};
+  )
+}
 
-export default CompanyHierarchy;
+export default CompanyHierarchy
