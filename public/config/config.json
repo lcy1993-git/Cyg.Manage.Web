@@ -29,5 +29,5 @@
     },
     "areaStatisticsUrl": "/chart/index.html",
     "commonServer": "http://service.pwcloud.cdsrth.com:8101",
-    "version": "1.0.146"
+    "version": "1.0.147"
 }
