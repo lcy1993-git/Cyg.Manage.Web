@@ -4,16 +4,18 @@ import styles from './index.less';
 interface SingleStatisticsProps {
   label: string;
   icon: string;
+  clickTab?: string;
   // tipSlot?: () => React.ReactNode;
 }
 
 const SingleStatistics: React.FC<SingleStatisticsProps> = (props) => {
-  const { label = '', icon = 'awaitProcess' } = props;
+  const { label = '', icon = 'awaitProcess', clickTab = '' } = props;
 
   const imgSrc = require('../../../../../assets/image/project-management/' + icon + '.png');
+  const borderColorClass = clickTab ? styles.borderClass : '';
 
   return (
-    <div className={styles.allStatistics}>
+    <div className={`${styles.allStatistics} ${borderColorClass}`}>
       <div className={styles.allStatisticsIcon}>
         <img src={imgSrc} />
       </div>
