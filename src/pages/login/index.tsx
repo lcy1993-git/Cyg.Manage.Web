@@ -4,8 +4,8 @@ import loginBg from '@/assets/image/login/bg.png'
 import bannerSrc from '@/assets/image/login/banner.png'
 import LoginForm from './components/login-form'
 import LogoComponent from '@/components/logo-component'
-import { useMount, useRequest } from 'ahooks'
-import { getProductServerList, getStopServerNotice } from '@/services/index'
+import { useMount } from 'ahooks'
+import { getProductServerList } from '@/services/index'
 import StopServer from './components/stop-server'
 const { NODE_ENV } = process.env
 
@@ -18,25 +18,10 @@ export interface Stop {
   testerAccountPrefix: string
 }
 const Login: React.FC = () => {
-  const [stopInfo, setStopInfo] = useState<Stop>({})
+  const [stopInfo, setStopInfo] = useState<Stop>({} as Stop)
   const [serverCode, setServerCode] = useState<string>('')
   const [activeStop, setActiveStop] = useState<boolean>(false)
 
-  const { run } = useRequest(
-    () =>
-      getStopServerNotice({
-        serverCode: serverCode,
-        kickOutSeconds: 60,
-      }),
-    {
-      pollingInterval: 5000,
-      manual: true,
-      onSuccess: (val) => {
-        setStopInfo(val)
-        sessionStorage.setItem('stopServerInfo', JSON.stringify(val))
-      },
-    }
-  )
   const getServerList = async () => {
     const res = await getProductServerList({
       productCode: '1301726010322214912',
@@ -52,9 +37,8 @@ const Login: React.FC = () => {
       }
     })
     if (currenServer) {
-      localStorage.setItem('serverCode', currenServer?.code || '')
+      sessionStorage.setItem('serverCode', currenServer?.code || '')
       setServerCode(currenServer?.code || '')
-      await run()
     }
   }
   const loginStop = (res: Stop) => {
@@ -63,8 +47,8 @@ const Login: React.FC = () => {
       setStopInfo(res)
     }
   }
-  useMount(() => {
-    getServerList()
+  useMount(async () => {
+    await getServerList()
   })
   return (
     <div className={styles.loginPage}>
@@ -79,7 +63,7 @@ const Login: React.FC = () => {
             {activeStop ? (
               <StopServer data={stopInfo} />
             ) : (
-              <LoginForm stopInfo={stopInfo} stopLogin={loginStop} />
+              <LoginForm serverCode={serverCode} stopLogin={loginStop} />
             )}
           </div>
         </div>
