@@ -22,10 +22,9 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
 }
 
-//* {
+// {
 //  moz-user-select: -moz-none;
 //  -moz-user-select: none;
 //  -o-user-select: none;
@@ -45,14 +44,13 @@ ol {
     width: 100%;
     overflow-x: auto;
 
-    &-thead>tr,
-    &-tbody>tr {
-
-      >th,
-      >td {
+    &-thead > tr,
+    &-tbody > tr {
+      > th,
+      > td {
         white-space: pre;
 
-        >span {
+        > span {
           display: block;
         }
       }
@@ -61,13 +59,11 @@ ol {
 }
 
 // 兼容IE11
-@media screen and(-ms-high-contrast: active),
-(-ms-high-contrast: none) {
-  body .ant-design-pro>.ant-layout {
+@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
+  body .ant-design-pro > .ant-layout {
     min-height: 100vh;
   }
 }
-
 
 .pg-viewer-wrapper {
   overflow-y: hidden !important;
@@ -84,39 +80,39 @@ ol {
 }
 
 .pageShowFile {
+  position: relative;
+  display: flex;
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  display: flex;
-  position: relative;
   * {
-    moz-user-select: -moz-none;
     -moz-user-select: none;
     -o-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    moz-user-select: -moz-none;
   }
 
   .pageShowFileCatalog {
-    width: 280px;
-    padding-left: 16px;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
+    width: 280px;
     height: 100%;
     padding-bottom: 20px;
-    -webkit-overflow-scrolling: touch;
+    padding-left: 16px;
     overflow-y: scroll;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 
     .pageShowFileCatalogTitle {
+      padding-top: 16px;
+      font-weight: 500;
       font-size: 24px;
       line-height: 48px;
       text-align: center;
-      font-weight: 500;
-      padding-top: 16px;
     }
 
     span {
@@ -133,67 +129,67 @@ ol {
     }
 
     .h2Title {
-      text-indent: 14px;
       margin-bottom: 6px;
+      text-indent: 14px;
     }
 
     .h3Title {
-      text-indent: 28px;
       margin-bottom: 6px;
+      text-indent: 28px;
     }
 
     .h4Title {
-      text-indent: 42px;
       margin-bottom: 6px;
+      text-indent: 42px;
     }
 
     .h5Title {
-      text-indent: 56px;
       margin-bottom: 6px;
+      text-indent: 56px;
     }
 
     .h6Title {
-      text-indent: 70px;
       margin-bottom: 6px;
+      text-indent: 70px;
     }
   }
 
   .pageShowFileContent {
     flex: 1;
+    padding: 0 20px;
     overflow-x: hidden;
     overflow-y: auto;
-    font-size: 14px;
     color: #333333;
-    padding: 0 20px;
+    font-size: 14px;
 
     h1 {
-      font-size: 24px;
       font-weight: 600;
+      font-size: 24px;
     }
 
     h2 {
-      font-size: 22px;
       font-weight: 600;
+      font-size: 22px;
     }
 
     h3 {
-      font-size: 20px;
       font-weight: 600;
+      font-size: 20px;
     }
 
     h4 {
-      font-size: 18px;
       font-weight: 600;
+      font-size: 18px;
     }
 
     h5 {
-      font-size: 16px;
       font-weight: 600;
+      font-size: 16px;
     }
 
     h6 {
-      font-size: 14px;
       font-weight: 600;
+      font-size: 14px;
     }
 
     ul,
@@ -209,32 +205,41 @@ ol {
     img {
       max-width: 100%;
     }
+    th {
+      border: 1px solid #212121 !important;
+    }
+    tr {
+      border: 1px solid #212121 !important;
+    }
+    td {
+      border: 1px solid #212121 !important;
+    }
   }
 
   .pageShowFileTitle {
-    font-size: 24px;
-    font-weight: 600;
-    text-align: center;
     width: 100%;
-    line-height: 48px;
-    padding-top: 16px;
     margin-bottom: 24px;
+    padding-top: 16px;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 48px;
+    text-align: center;
   }
 
   .pageLoading {
+    position: fixed;
     display: flex;
     justify-content: center;
-    width:88%;
+    width: 88%;
     //margin: 0 4%;
     height: 70vh;
-    position: fixed;
-    background-color: #ffffff;
-    text-align: center;
     padding-top: 18%;
+    text-align: center;
+    background-color: #ffffff;
   }
 }
 
-@media screen and (max-width:1080px) {
+@media screen and (max-width: 1080px) {
   .pageShowFileCatalog {
     display: none;
   }

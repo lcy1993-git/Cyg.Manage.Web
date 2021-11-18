@@ -3,8 +3,8 @@ import * as jquery from 'jquery'
 import 'jquery-mousewheel'
 import React from 'react'
 import 'spectrum-colorpicker'
-import { v4 as uuid } from 'uuid'
 
+const uuid = require('node-uuid')
 window.jQuery = jquery
 window.$ = jquery
 window.uuid = uuid

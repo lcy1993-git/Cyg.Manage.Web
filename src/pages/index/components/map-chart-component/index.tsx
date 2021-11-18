@@ -1,78 +1,78 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react'
 import {
   AreaInfo,
   getMapRegisterData,
   getMapStatisticsData,
   MapStatisticsData,
-} from '@/services/index';
-import { history } from 'umi';
-import { useMount, useRequest, useSize } from 'ahooks';
-import borderStylesHTML from '../../utils/borderStylesHTML';
-import styles from './index.less';
+} from '@/services/index'
+import { history } from 'umi'
+import { useMount, useRequest, useSize } from 'ahooks'
+import borderStylesHTML from '../../utils/borderStylesHTML'
+import styles from './index.less'
 
-import * as echarts from 'echarts';
-import 'echarts/lib/chart/map';
-import 'echarts/lib/component/tooltip';
+import * as echarts from 'echarts'
+import 'echarts/lib/chart/map'
+import 'echarts/lib/component/tooltip'
 
-import { cityCodeObject } from './map-info';
-import ChartBox from '../chart-box';
+import { cityCodeObject } from './map-info'
+import ChartBox from '../chart-box'
 
 // import ProjectNumberIcon from '@/assets/image/index/project-number.png';
-import { isArray } from 'lodash';
-import { useMemo } from 'react';
-import { Button, message } from 'antd';
-import { exportHomeStatisticData } from '@/services/operation-config/cockpit';
-import { useLayoutStore } from '@/layouts/context';
+import { isArray } from 'lodash'
+import { useMemo } from 'react'
+import { Button, message } from 'antd'
+import { exportHomeStatisticData } from '@/services/operation-config/cockpit'
+import { useLayoutStore } from '@/layouts/context'
 
 interface MapChartComponentProps {
-  currentAreaInfo: AreaInfo;
-  setCurrentAreaInfo: (areaInfo: any) => void;
-  isConfig?: boolean;
+  currentAreaInfo: AreaInfo
+  setCurrentAreaInfo: (areaInfo: any) => void
+  isConfig?: boolean
 }
 
 let mapStatus = {
   pt: [0, 0],
   name: '',
-};
+}
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
-  const { setCurrentAreaInfo, currentAreaInfo, isConfig } = props;
+  const { setCurrentAreaInfo, currentAreaInfo, isConfig } = props
 
-  const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false);
-  const { setMapSelectCity } = useLayoutStore();
-  const divRef = useRef<HTMLDivElement>(null);
+  const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false)
+  const { setMapSelectCity } = useLayoutStore()
+  const divRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     //@ts-ignore
     window.setSelectCity = (city: string) => {
-      setMapSelectCity?.(city);
-      history.push('/visualization-results/result-page');
-    };
+      setMapSelectCity?.(city)
+      history.push('/visualization-results/result-page')
+    }
     return () => {
       //@ts-ignore
-      window.testClick = null;
-    };
-  }, []);
-  const size = useSize(divRef);
+      window.testClick = null
+    }
+  }, [])
+  const size = useSize(divRef)
 
-  let myChart: any = null;
+  let myChart: any = null
 
   const { run: getMapData } = useRequest(getMapRegisterData, {
     manual: true,
-  });
+  })
 
   const { run: getStatisticData, data: mapStatisticData = [] } = useRequest(getMapStatisticsData, {
     manual: true,
-  });
+  })
 
   const projectTotalNumber = useMemo(() => {
     return mapStatisticData?.reduce((sum, item) => {
-      return sum + item.projectQuantity;
-    }, 0);
-  }, [JSON.stringify(mapStatisticData)]);
+      return sum + item.projectQuantity
+    }, 0)
+  }, [JSON.stringify(mapStatisticData)])
 
   const ohterProjectTotalNumber = useMemo(() => {
-    return mapStatisticData.find((item) => item.areaCode.includes('_other'))?.projectQuantity ?? 0;
-  }, [JSON.stringify(mapStatisticData)]);
+    return mapStatisticData.find((item) => item.areaCode.includes('_other'))?.projectQuantity ?? 0
+  }, [JSON.stringify(mapStatisticData)])
 
   const getMapOption = (mapName: string, getMapStatisticData: MapStatisticsData[]) => {
     const mapShowData = getMapStatisticData?.map((item) => {
@@ -80,8 +80,8 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         name: item.area,
         value: item.projectQuantity,
         selected: false,
-      };
-    });
+      }
+    })
     return {
       tooltip: {
         trigger: 'item',
@@ -90,27 +90,27 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         borderColor: '#000',
         enterable: true, // 鼠标是否可以进入浮层
         position(pt: any, params: any) {
-          const nameIndex = getMapStatisticData?.findIndex((item) => item.area === params.name);
+          const nameIndex = getMapStatisticData?.findIndex((item) => item.area === params.name)
           if (params.name === mapStatus.name) {
             if (nameIndex > -1) {
-              return [mapStatus.pt[0] - 150, mapStatus.pt[1] - 95];
+              return [mapStatus.pt[0] - 150, mapStatus.pt[1] - 95]
             } else {
-              return [pt[0] - 110, pt[1] - 65];
+              return [pt[0] - 110, pt[1] - 65]
             }
           } else {
             mapStatus = {
               name: params.name,
               pt,
-            };
-            return [mapStatus.pt[0] - 150, mapStatus.pt[1] - 95];
+            }
+            return [mapStatus.pt[0] - 150, mapStatus.pt[1] - 95]
             // return [pt[0] - 110, pt[1] - 65];
           }
         },
         confine: true,
         formatter(params: any) {
-          const { name } = params;
+          const { name } = params
 
-          const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name);
+          const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name)
 
           if (nameIndex > -1) {
             return (
@@ -125,7 +125,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                             }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</span></div>
                             
                         `
-            );
+            )
           }
           return (
             borderStylesHTML +
@@ -133,7 +133,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                         <span style="color: #fff">${name}</span>  <br />
                         <span style="color: #2AFE97">项目数量:</span> <span style="color: #fff">0</span>
                     `
-          );
+          )
         },
       },
 
@@ -190,18 +190,18 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           { start: 1, end: 10, color: '#2CFFFE' },
         ],
       },
-    };
-  };
+    }
+  }
 
   const firstMapInitChartEvent = async () => {
     // 初试化的时候做判断
     if (currentAreaInfo.areaLevel === '1') {
-      const statisticData = await getStatisticData({ areaCode: '', areaType: '1' });
+      const statisticData = await getStatisticData({ areaCode: '', areaType: '1' })
       if (statisticData && isArray(statisticData) && statisticData.length === 1) {
         const provinceStatisticData = await getStatisticData({
           areaCode: statisticData[0].areaCode,
           areaType: '2',
-        });
+        })
 
         if (
           provinceStatisticData &&
@@ -212,208 +212,208 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           const areaStatisticData = await getStatisticData({
             areaCode: provinceStatisticData[0].areaCode,
             areaType: '3',
-          });
-          initChart(provinceStatisticData[0].areaCode, areaStatisticData, '3');
+          })
+          initChart(provinceStatisticData[0].areaCode, areaStatisticData, '3')
           setCurrentAreaInfo({
             areaId: provinceStatisticData[0].areaCode,
             cityId: statisticData[0].areaCode,
             areaLevel: '3',
-          });
+          })
         } else {
-          initChart(statisticData[0].areaCode, provinceStatisticData, '2');
+          initChart(statisticData[0].areaCode, provinceStatisticData, '2')
           setCurrentAreaInfo({
             areaId: statisticData[0].areaCode,
             cityId: statisticData[0].areaCode,
             areaLevel: '2',
-          });
+          })
         }
       } else {
-        initChart('100000', statisticData, '1');
+        initChart('100000', statisticData, '1')
       }
     } else {
       const provinceStatisticData = await getStatisticData({
         areaCode: currentAreaInfo.areaId,
         areaType: currentAreaInfo.areaLevel,
-      });
-      initChart(currentAreaInfo.areaId!, provinceStatisticData, currentAreaInfo.areaLevel!);
+      })
+      initChart(currentAreaInfo.areaId!, provinceStatisticData, currentAreaInfo.areaLevel!)
     }
-  };
+  }
 
   const initChart = async (
     currentAreaId: string,
     getMapStatisticData: MapStatisticsData[],
-    currentAreaLevel: string,
+    currentAreaLevel: string
   ) => {
-    const option = getMapOption(currentAreaId, getMapStatisticData);
+    const option = getMapOption(currentAreaId, getMapStatisticData)
 
-    const resData = await getMapData(currentAreaId);
+    const resData = await getMapData(currentAreaId)
 
     if (divRef && divRef.current) {
-      echarts.registerMap(currentAreaId, resData);
-      myChart = echarts.init(divRef.current as HTMLDivElement);
+      echarts.registerMap(currentAreaId, resData)
+      myChart = echarts.init(divRef.current as HTMLDivElement)
       // @ts-ignore
-      myChart.setOption(option);
-      myChart.off('click');
-      myChart.off('mouseover');
+      myChart.setOption(option)
+      myChart.off('click')
+      myChart.off('mouseover')
       myChart.on('click', async (params: any) => {
-        const { name } = params;
+        const { name } = params
         if (cityCodeObject[name]) {
           // 新增需求，有项目数量的时候才可以下钻
-          const chooseAreaDataIndex = getMapStatisticData.findIndex((item) => item.area === name);
+          const chooseAreaDataIndex = getMapStatisticData.findIndex((item) => item.area === name)
           if (chooseAreaDataIndex === -1) {
-            return;
+            return
           }
           if (!getMapStatisticData[chooseAreaDataIndex].projectQuantity) {
-            return;
+            return
           }
           const statisticData = await getStatisticData({
             areaCode: cityCodeObject[name],
             areaType: String(parseFloat(currentAreaLevel) + 1),
-          });
+          })
           if (parseFloat(currentAreaLevel) + 1 === 2) {
             setCurrentAreaInfo({
               areaId: cityCodeObject[name],
               cityId: cityCodeObject[name],
               areaLevel: String(parseFloat(currentAreaLevel!) + 1),
-            });
+            })
           } else {
             setCurrentAreaInfo({
               areaId: cityCodeObject[name],
               cityId: currentAreaId,
               areaLevel: String(parseFloat(currentAreaLevel!) + 1),
-            });
+            })
           }
-          initChart(cityCodeObject[name], statisticData, String(parseFloat(currentAreaLevel) + 1));
+          initChart(cityCodeObject[name], statisticData, String(parseFloat(currentAreaLevel) + 1))
         }
-      });
+      })
 
       myChart.on('mouseover', function (params: any) {
         myChart.dispatchAction({
           type: 'downplay',
-        });
-      });
+        })
+      })
     }
-  };
+  }
 
   const resize = () => {
     if (myChart) {
       setTimeout(() => {
-        myChart.resize();
-      }, 100);
+        myChart.resize()
+      }, 100)
     }
-  };
+  }
 
   const provinceClickEvent = async () => {
-    const statisticData = await getStatisticData({ areaCode: '', areaType: '1' });
-    initChart('100000', statisticData, '1');
+    const statisticData = await getStatisticData({ areaCode: '', areaType: '1' })
+    initChart('100000', statisticData, '1')
 
     setCurrentAreaInfo({
       areaId: '',
       cityId: '',
       areaLevel: '1',
-    });
-  };
+    })
+  }
 
   const cityClickEvent = async () => {
     if (currentAreaInfo.areaLevel === '1') {
-      return;
+      return
     }
     const statisticData = await getStatisticData({
       areaCode: currentAreaInfo.cityId,
       areaType: '2',
-    });
-    initChart(currentAreaInfo.cityId!, statisticData, '2');
+    })
+    initChart(currentAreaInfo.cityId!, statisticData, '2')
 
     setCurrentAreaInfo({
       areaId: currentAreaInfo.cityId,
       cityId: currentAreaInfo.cityId,
       areaLevel: '2',
-    });
-  };
+    })
+  }
 
   const areaClickEvent = async () => {
     if (currentAreaInfo.areaLevel !== '3') {
-      return;
+      return
     }
     const statisticData = await getStatisticData({
       areaCode: currentAreaInfo.areaId,
       areaType: '3',
-    });
-    initChart(currentAreaInfo.areaId!, statisticData, '2');
+    })
+    initChart(currentAreaInfo.areaId!, statisticData, '2')
 
     setCurrentAreaInfo({
       areaId: currentAreaInfo.areaId,
       cityId: currentAreaInfo.cityId,
       areaLevel: '3',
-    });
-  };
+    })
+  }
 
   // 导出配置数据
   const exportHomeStatisticEvent = async () => {
     try {
-      setRequestExportLoading(true);
+      setRequestExportLoading(true)
       const res = await exportHomeStatisticData({
         areaCode: currentAreaInfo.areaId!,
         areaType: currentAreaInfo.areaLevel!,
         ganttChartLimit: 1000,
-      });
+      })
       let blob = new Blob([res], {
         type: 'application/vnd.ms-excel;charset=utf-8',
-      });
-      let finalyFileName = `首页统计图表.xlsx`;
+      })
+      let finalyFileName = `首页统计图表.xlsx`
       // for IE
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
+        window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
       } else {
         // for Non-IE
-        let objectUrl = URL.createObjectURL(blob);
-        let link = document.createElement('a');
-        link.href = objectUrl;
-        link.setAttribute('download', finalyFileName);
-        document.body.appendChild(link);
-        link.click();
-        window.URL.revokeObjectURL(link.href);
+        let objectUrl = URL.createObjectURL(blob)
+        let link = document.createElement('a')
+        link.href = objectUrl
+        link.setAttribute('download', finalyFileName)
+        document.body.appendChild(link)
+        link.click()
+        window.URL.revokeObjectURL(link.href)
       }
-      message.success('导出成功');
+      message.success('导出成功')
     } catch (msg) {
-      console.error(msg);
+      console.error(msg)
     } finally {
-      setRequestExportLoading(false);
+      setRequestExportLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
     window.addEventListener('resize', () => {
       if (!divRef.current) {
         // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
-        window.removeEventListener('resize', resize);
-        return;
+        window.removeEventListener('resize', resize)
+        return
       } else {
-        resize();
+        resize()
       }
-    });
+    })
 
-    () => {
-      window.removeEventListener('resize', resize);
-    };
-  });
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  })
 
   useEffect(() => {
     if (size.width || size.height) {
-      const myEvent = new Event('resize');
-      window.dispatchEvent(myEvent);
+      const myEvent = new Event('resize')
+      window.dispatchEvent(myEvent)
     }
-  }, [JSON.stringify(size)]);
+  }, [JSON.stringify(size)])
 
   useMount(() => {
-    firstMapInitChartEvent();
-  });
+    firstMapInitChartEvent()
+  })
 
   const handlerOtherClick = () => {
-    const id = mapStatisticData.find((item) => item.areaCode.includes('_other'))?.areaCode ?? '';
-    setMapSelectCity?.(id);
-    history.push('/visualization-results/result-page');
-  };
+    const id = mapStatisticData.find((item) => item.areaCode.includes('_other'))?.areaCode ?? ''
+    setMapSelectCity?.(id)
+    history.push('/visualization-results/result-page')
+  }
 
   return (
     <div className={styles.mapChartComponent}>
@@ -529,7 +529,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         <div className={styles.mapConent} ref={divRef} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MapChartComponent;
+export default MapChartComponent

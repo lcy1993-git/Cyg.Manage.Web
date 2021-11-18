@@ -1,14 +1,14 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from 'antd';
-import React, { useMemo, useState } from 'react';
-import styles from './index.less';
-import { useRequest, useUpdateEffect } from 'ahooks';
-import { isArray } from 'lodash';
-import '@/assets/icon/iconfont.css';
-import CompanyFileForm from './components/add-edit-form';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from 'antd'
+import React, { useMemo, useState } from 'react'
+import styles from './index.less'
+import { useRequest, useUpdateEffect } from 'ahooks'
+import { isArray } from 'lodash'
+import '@/assets/icon/iconfont.css'
+import CompanyFileForm from './components/add-edit-form'
 import {
   updateCompanyFileItem,
   addCompanyFileItem,
@@ -21,52 +21,52 @@ import {
   deleteFileGroupItem,
   downLoadFileItem,
   getFileList,
-} from '@/services/operation-config/company-file';
-import DefaultParams from './components/default-params';
-import { getUploadUrl } from '@/services/resource-config/drawing';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+} from '@/services/operation-config/company-file'
+import DefaultParams from './components/default-params'
+import { getUploadUrl } from '@/services/resource-config/drawing'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 // import UrlSelect from '@/components/url-select';
-import FileGroupForm from './components/add-file-group';
-import { useGetSelectData } from '@/utils/hooks';
-import DataSelect from '@/components/data-select';
-import { TableRequestResult } from '@/services/table';
-import ModalConfirm from '@/components/modal-confirm';
+import FileGroupForm from './components/add-file-group'
+import { useGetSelectData } from '@/utils/hooks'
+import DataSelect from '@/components/data-select'
+import { TableRequestResult } from '@/services/table'
+import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input;
+const { Search } = Input
 
 const CompanyFile: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
-  const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false);
-  const [fileGroupId, setFileGroupId] = useState<string>('');
-  const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
-  const [editingFileName, setEditingFileName] = useState<string>('');
-  const [fileId, setFileId] = useState<string>();
-  const [fileCategory, setFileCategory] = useState<number>();
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false)
+  const [fileGroupModalVisible, setFileGroupModalVisible] = useState<boolean>(false)
+  const [fileGroupId, setFileGroupId] = useState<string>('')
+  const [nowSelectGroup, setNowSelectGroup] = useState<string>('')
+  const [editingFileName, setEditingFileName] = useState<string>('')
+  const [fileId, setFileId] = useState<string>()
+  const [fileCategory, setFileCategory] = useState<number>()
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [tableData, setTableData] = useState<TableRequestResult>();
+  const [tableData, setTableData] = useState<TableRequestResult>()
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
-  const [defaultForm] = Form.useForm();
-  const [addGroupForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
+  const [defaultForm] = Form.useForm()
+  const [addGroupForm] = Form.useForm()
 
-  const { data: keyData } = useRequest(() => getUploadUrl());
+  const { data: keyData } = useRequest(() => getUploadUrl())
 
-  const securityKey = keyData?.uploadCompanyFileApiSecurity;
+  const securityKey = keyData?.uploadCompanyFileApiSecurity
 
   const { data, run, loading } = useRequest(getCompanyFileDetail, {
     manual: true,
-  });
+  })
 
   const { data: defaultOptions, run: getDefaultOptions } = useRequest(getCompanyDefaultOptions, {
     manual: true,
-  });
+  })
 
   const { data: fileGroupData = [], run: getfileGroup } = useGetSelectData(
     {
@@ -75,29 +75,29 @@ const CompanyFile: React.FC = () => {
     },
     {
       onSuccess: () => {
-        setFileGroupId(fileGroupData[0]?.value);
-        setNowSelectGroup(fileGroupData[0]?.label);
+        setFileGroupId(fileGroupData[0]?.value)
+        setNowSelectGroup(fileGroupData[0]?.label)
       },
-    },
-  );
+    }
+  )
 
-  const { data: fileData = [] } = useRequest(
+  const { data: fileData = [], run: getList } = useRequest(
     () => getFileList({ keyWord: searchKeyWord, groupId: fileGroupId }),
     {
       ready: !!fileGroupId,
       refreshDeps: [fileGroupId],
-    },
-  );
+    }
+  )
 
   //判断文件组立项依据是否存在
   const isBasisExist = useMemo(() => {
     if (fileData) {
       const fileCategory = fileData.items?.map((item: any) => {
-        return item.fileCategory;
-      });
-      return fileCategory?.includes(5);
+        return item.fileCategory
+      })
+      return fileCategory?.includes(5)
     }
-  }, [fileData]);
+  }, [fileData])
 
   const searchComponent = () => {
     return (
@@ -112,37 +112,38 @@ const CompanyFile: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
-    await deleteCompanyFileItem(editDataId);
-    refresh();
-    setTableSelectRows([]);
-    message.success('删除成功');
-  };
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
+    await deleteCompanyFileItem(editDataId)
+    refresh()
+    getList()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
@@ -151,7 +152,7 @@ const CompanyFile: React.FC = () => {
       title: '类别',
       width: 180,
       render: (text: any, record: any) => {
-        return record.fileCategoryText;
+        return record.fileCategoryText
       },
     },
     {
@@ -172,38 +173,38 @@ const CompanyFile: React.FC = () => {
       title: '描述',
       // width: 200,
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const addUploadFile = async () => {
     return uploadCompanyFile(
       addForm.getFieldValue('file'),
       { securityKey },
-      '/Upload/CompanyFile',
+      '/Upload/CompanyFile'
     ).then(
       (fileId: string) => {
-        setFileId(fileId);
+        setFileId(fileId)
       },
-      () => {},
-    );
-  };
+      () => {}
+    )
+  }
 
   const editUploadFile = async () => {
     return uploadCompanyFile(
       editForm.getFieldValue('file'),
       { securityKey },
-      '/Upload/CompanyFile',
+      '/Upload/CompanyFile'
     ).then(
       (fileId: string) => {
-        setFileId(fileId);
+        setFileId(fileId)
       },
-      () => {},
-    );
-  };
+      () => {}
+    )
+  }
 
   const sureAddCompanyFile = () => {
     addForm.validateFields().then(async (values) => {
@@ -216,44 +217,45 @@ const CompanyFile: React.FC = () => {
             describe: '',
             groupId: fileGroupId,
           },
-          values,
-        );
+          values
+        )
 
-        await addCompanyFileItem(submitInfo);
-        refresh();
-        message.success('添加成功');
-        setAddFormVisible(false);
-        addForm.resetFields();
+        await addCompanyFileItem(submitInfo)
+        refresh()
+        getList()
+        message.success('添加成功')
+        setAddFormVisible(false)
+        addForm.resetFields()
       } else {
-        message.warn('文件未上传或上传失败');
+        message.warn('文件未上传或上传失败')
       }
-    });
-  };
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
+    const editData = tableSelectRows[0]
 
-    const editDataId = editData.id;
-    setFileCategory(editData.fileCategory);
-    setEditingFileName(editData.name);
+    const editDataId = editData.id
+    setFileCategory(editData.fileCategory)
+    setEditingFileName(editData.name)
 
-    setEditFormVisible(true);
-    const CompanyFileData = await run(editDataId);
+    setEditFormVisible(true)
+    const CompanyFileData = await run(editDataId)
 
-    editForm.setFieldsValue(CompanyFileData);
-  };
+    editForm.setFieldsValue(CompanyFileData)
+  }
 
   const sureEditCompanyFile = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
@@ -263,24 +265,24 @@ const CompanyFile: React.FC = () => {
           describe: editData.describe,
           groupId: editData.groupId,
         },
-        values,
-      );
-      await updateCompanyFileItem(submitInfo);
-      message.success('更新成功');
-      setEditFormVisible(false);
-      search();
-    });
-  };
+        values
+      )
+      await updateCompanyFileItem(submitInfo)
+      message.success('更新成功')
+      setEditFormVisible(false)
+      search()
+    })
+  }
 
   const defaultParamsEvent = async () => {
-    setDefaultParamsVisible(true);
-    const defaultOptions = await getDefaultOptions(fileGroupId);
+    setDefaultParamsVisible(true)
+    const defaultOptions = await getDefaultOptions(fileGroupId)
 
-    defaultForm.setFieldsValue(defaultOptions);
-  };
+    defaultForm.setFieldsValue(defaultOptions)
+  }
 
   const saveDefaultOptionsEvent = () => {
-    const defaultData = defaultOptions!;
+    const defaultData = defaultOptions!
 
     defaultForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -291,14 +293,14 @@ const CompanyFile: React.FC = () => {
           directoryTemplate: defaultData.directoryTemplate,
           descriptionTemplate: defaultData.descriptionTemplate,
         },
-        values,
-      );
-      await updateCompanyDefaultOptions(submitInfo);
-      refresh();
-      message.success('更新成功');
-      setDefaultParamsVisible(false);
-    });
-  };
+        values
+      )
+      await updateCompanyDefaultOptions(submitInfo)
+      refresh()
+      message.success('更新成功')
+      setDefaultParamsVisible(false)
+    })
+  }
 
   const tableElement = () => {
     return (
@@ -334,67 +336,67 @@ const CompanyFile: React.FC = () => {
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   //下载公司文件
   const downLoadEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择公司文件下载');
-      return;
+      message.warning('请选择公司文件下载')
+      return
     }
-    const fileId = tableSelectRows[0].fileId;
-    const fileName = tableSelectRows[0].fileName;
+    const fileId = tableSelectRows[0].fileId
+    const fileName = tableSelectRows[0].fileName
 
-    const res = await downLoadFileItem({ fileId, securityKey });
+    const res = await downLoadFileItem({ fileId, securityKey })
 
-    const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1);
+    const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1)
 
     let blob = new Blob([res], {
       type: `application/${suffix}`,
-    });
-    let finallyFileName = `${tableSelectRows[0].name}.${suffix}`;
+    })
+    let finallyFileName = `${tableSelectRows[0].name}.${suffix}`
     //for IE
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, finallyFileName);
+      window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {
       // for Non-IE
-      let objectUrl = URL.createObjectURL(blob);
-      let link = document.createElement('a');
-      link.href = objectUrl;
-      link.setAttribute('download', finallyFileName);
-      document.body.appendChild(link);
-      link.click();
-      window.URL.revokeObjectURL(link.href);
-      document.body.removeChild(link);
+      let objectUrl = URL.createObjectURL(blob)
+      let link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', finallyFileName)
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+      document.body.removeChild(link)
     }
-    message.success('下载成功');
-  };
+    message.success('下载成功')
+  }
 
   //公司文件组操作
   const addFileGroupEvent = () => {
-    setFileGroupModalVisible(true);
-    refresh();
-  };
+    setFileGroupModalVisible(true)
+    refresh()
+  }
 
   //选择文件组别获取对应公司文件
   const searchByFileGroup = (value?: any) => {
     const currentTitle = fileGroupData.filter((item: any) => {
       if (value === item.value) {
-        return item.label;
+        return item.label
       }
-    });
+    })
 
-    setNowSelectGroup(currentTitle[0]?.label);
+    setNowSelectGroup(currentTitle[0]?.label)
 
-    setFileGroupId(value);
+    setFileGroupId(value)
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.searchByParams({
         groupId: value,
-      });
+      })
     }
-  };
+  }
 
   const saveFileGroupEvent = () => {
     addGroupForm.validateFields().then(async (values) => {
@@ -403,49 +405,49 @@ const CompanyFile: React.FC = () => {
           name: '',
           remark: '',
         },
-        values,
-      );
+        values
+      )
 
-      await addFileGroupItem(submitInfo);
-      message.success('添加成功');
-      getfileGroup();
-      setFileGroupModalVisible(false);
-      addGroupForm.resetFields();
-      refresh();
-      searchByFileGroup();
-    });
-  };
+      await addFileGroupItem(submitInfo)
+      message.success('添加成功')
+      getfileGroup()
+      setFileGroupModalVisible(false)
+      addGroupForm.resetFields()
+      refresh()
+      searchByFileGroup()
+    })
+  }
 
   const deleteFileGroupEvent = async () => {
     if (fileGroupId === undefined || fileGroupId === '') {
-      message.warning('未选择要删除公司文件组别');
-      return;
+      message.warning('未选择要删除公司文件组别')
+      return
     }
     if (tableData && tableData?.items.length > 0) {
-      message.error('该分组包含公司文件,无法删除');
-      return;
+      message.error('该分组包含公司文件,无法删除')
+      return
     }
-    await deleteFileGroupItem(fileGroupId);
-    message.success('已删除');
-    getfileGroup();
-    searchByFileGroup();
-  };
+    await deleteFileGroupItem(fileGroupId)
+    message.success('已删除')
+    getfileGroup()
+    searchByFileGroup()
+  }
 
   const titleSlotElement = () => {
-    return <div>{`-${nowSelectGroup}`}</div>;
-  };
+    return <div>{`-${nowSelectGroup}`}</div>
+  }
 
   const onAddFormChange = (changedValues: any) => {
     if (changedValues.file) {
-      setFileId(undefined);
+      setFileId(undefined)
     }
-  };
+  }
 
   const onEditFormChange = (changedValues: any) => {
     if (changedValues.file) {
-      setFileId(undefined);
+      setFileId(undefined)
     }
-  };
+  }
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -588,7 +590,7 @@ const CompanyFile: React.FC = () => {
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default CompanyFile;
+export default CompanyFile

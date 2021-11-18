@@ -1,18 +1,18 @@
-import CyTag from '@/components/cy-tag';
-import ReadonlyItem from '@/components/readonly-item';
-import { Tooltip } from 'antd';
-import moment from 'moment';
-import uuid from 'node-uuid';
-import React from 'react';
+import CyTag from '@/components/cy-tag'
+import ReadonlyItem from '@/components/readonly-item'
+import { Tooltip } from 'antd'
+import moment from 'moment'
+import uuid from 'node-uuid'
+import React from 'react'
 
-import styles from './index.less';
+import styles from './index.less'
 
 interface ProjectBaseInfoProps {
-  projectInfo: any;
+  projectInfo: any
 }
 
 const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
-  const { projectInfo } = props;
+  const { projectInfo } = props
   const tagElement = (projectInfo?.identitys ?? [])
     .filter((item: any) => item.text)
     .map((item: any) => {
@@ -20,16 +20,16 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
         <CyTag className="mr7" key={uuid.v1()}>
           {item.text}
         </CyTag>
-      );
-    });
+      )
+    })
 
   const natureElement = (projectInfo?.natures ?? []).map((item: any) => {
     return (
       <CyTag className="mr7" key={uuid.v1()}>
         {item.text}
       </CyTag>
-    );
-  });
+    )
+  })
 
   return (
     <div className={styles.projectBaseInfo}>
@@ -75,10 +75,11 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
-          <ReadonlyItem label="勘察评审状态" labelWidth={100}>
-            {projectInfo?.stateInfo?.isResetSurvey ? '已评审' : '未评审'}
+          <ReadonlyItem label="项目批次" labelWidth={100}>
+            {projectInfo?.batchText}
           </ReadonlyItem>
         </div>
+
         <div className="flex1">
           <ReadonlyItem label="电压等级" labelWidth={100}>
             {projectInfo?.kvLevelText}
@@ -202,8 +203,8 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
-          <ReadonlyItem label="项目批次" labelWidth={100}>
-            {projectInfo?.batchText}
+          <ReadonlyItem label="现场数据来源" labelWidth={100}>
+            {projectInfo?.dataSourceTypeText}
           </ReadonlyItem>
         </div>
         <div className="flex1">
@@ -232,14 +233,9 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
             {projectInfo?.deadline ? moment(projectInfo?.deadline).format('YYYY-MM-DD') : ''}
           </ReadonlyItem>
         </div>
-        <div className="flex1">
-          <ReadonlyItem label="现场数据来源" labelWidth={100}>
-            {projectInfo?.dataSourceTypeText}
-          </ReadonlyItem>
-        </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProjectBaseInfo;
+export default ProjectBaseInfo

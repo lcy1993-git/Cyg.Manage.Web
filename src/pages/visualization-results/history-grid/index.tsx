@@ -5,7 +5,9 @@ import HistoryMapBase from './components/history-map-base'
 import { HistoryGridContext, historyGridReducer, init, useHistoryGridContext } from './context'
 import DesignIcon from './DesignIcon'
 import styles from './index.less'
-
+import AddElectricalEquipment from '@/pages/visualization-results/components/map-form/add-electrical-equipment'
+import GridVersionManagement from '@/pages/visualization-results/history-grid/components/grid-version-management'
+import HistoryVersionManagement from '@/pages/visualization-results/components/history-version-management'
 const HistoryGrid = () => {
   const [state, dispatch] = useReducer(historyGridReducer, undefined, init)
 
@@ -16,6 +18,9 @@ const HistoryGrid = () => {
         <DesignTitle />
         <CityPickerWrapper />
         <DesignIcon />
+        <GridVersionManagement />
+        <HistoryVersionManagement />
+        {/*<AddElectricalEquipment data={[]} type={'Point'} visible/>*/}
       </HistoryGridContext.Provider>
     </div>
   )

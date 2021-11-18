@@ -1,43 +1,44 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input, Button, message, Form, Modal } from 'antd';
-import React, { useState, useEffect } from 'react';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Popconfirm } from 'antd';
-// import styles from './index.less';
-import { isArray } from 'lodash';
+import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
+import TableSearch from '@/components/table-search'
 import {
-  getComponentDetailItem,
   addComponentDetailItem,
-  updateComponentDetailItem,
   deleteComponentDetailItem,
-} from '@/services/resource-config/component';
-import { useRequest } from 'ahooks';
-import AddComponentDetail from './add-form';
-import EditComponentDetail from './edit-form';
-import ModalConfirm from '@/components/modal-confirm';
+  getComponentDetailItem,
+  updateComponentDetailItem,
+} from '@/services/resource-config/component'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal } from 'antd'
+// import styles from './index.less';
+import { isArray } from 'lodash'
+import React, { useState } from 'react'
+import AddComponentDetail from './add-form'
+import EditComponentDetail from './edit-form'
 interface ModuleDetailParams {
-  libId: string;
-  componentId: string[];
+  libId: string
+  componentId: string[]
+  selectId: string[]
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, componentId } = props;
+  const { libId, componentId, selectId } = props
 
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [formData, setFormData] = useState<any>()
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run } = useRequest(getComponentDetailItem, {
     manual: true,
-  });
+  })
 
   // useEffect(() => {
   //   search();
@@ -57,39 +58,26 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
-    {
-      dataIndex: 'componentId',
-      index: 'componentId',
-      title: '所属组件编码',
-      width: 280,
-    },
-    {
-      dataIndex: 'componentName',
-      index: 'componentName',
-      title: '所属组件名称',
-      width: 450,
-    },
-
     {
       dataIndex: 'itemId',
       index: 'itemId',
@@ -100,6 +88,13 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
       dataIndex: 'itemName',
       index: 'itemName',
       title: '物料/组件名称',
+      width: 450,
+    },
+
+    {
+      dataIndex: 'spec',
+      index: 'spec',
+      title: '物料/组件型号',
       width: 350,
     },
 
@@ -115,61 +110,59 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
       title: '是否组件',
       width: 220,
       render: (text: any, record: any) => {
-        return record.isComponent === 1 ? '是' : '否';
+        return record.isComponent === 1 ? '是' : '否'
       },
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddComponentDetail = () => {
     addForm.validateFields().then(async (value) => {
       const saveInfo = Object.assign(
         {
           libId: libId,
-          componentId: componentId[0],
+          belongComponentId: componentId[0],
         },
-        value,
-      );
+        value
+      )
 
-      await addComponentDetailItem(saveInfo);
-      message.success('添加成功');
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+      await addComponentDetailItem(saveInfo)
+      message.success('添加成功')
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const ComponentDetailData = await run(libId, editDataId);
-    const formData =
-      ComponentDetailData?.isComponent == 1
-        ? {
-            componentId: { id: ComponentDetailData.itemId, name: ComponentDetailData.itemName },
-            itemNumber: ComponentDetailData.itemNumber,
-          }
-        : {
-            materialId: { id: ComponentDetailData.itemId, name: ComponentDetailData.itemName },
-            itemNumber: ComponentDetailData.itemNumber,
-          };
-
-    editForm.setFieldsValue(formData);
-  };
+    setEditFormVisible(true)
+    const ComponentDetailData = await run(libId, editDataId)
+    const formData = {
+      componentId: ComponentDetailData.itemName,
+      itemId: ComponentDetailData.spec,
+      itemNumber: ComponentDetailData.itemNumber,
+      // spec: ComponentDetailData.spec,
+      itemType: ComponentDetailData.isComponent === 1 ? '1' : '0',
+      unit: ComponentDetailData.unit,
+    }
+    setFormData(formData)
+    editForm.setFieldsValue(formData)
+  }
 
   const sureEditcomponentDetail = () => {
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -182,27 +175,27 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
           itemNumber: editData.itemNumber,
           isComponent: editData.isComponent,
         },
-        values,
-      );
-      await updateComponentDetailItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateComponentDetailItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条模块明细删除！');
-      return;
+      message.error('请选择一条模块明细删除！')
+      return
     }
-    const selectDataId = tableSelectRows[0].id;
-    await deleteComponentDetailItem(libId, selectDataId);
-    refresh();
-    message.success('删除成功');
-    setTableSelectRows([]);
-  };
+    const selectDataId = tableSelectRows[0].id
+    await deleteComponentDetailItem(libId, selectDataId)
+    refresh()
+    message.success('删除成功')
+    setTableSelectRows([])
+  }
 
   const tableRightSlot = (
     <>
@@ -216,13 +209,13 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
       </Button>
       <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
     </>
-  );
+  )
 
   return (
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => searchComponent()}
-        // buttonRightContentSlot={() => tableRightSlot}
+        buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/ComponentDetail/GetPageList"
         columns={columns}
@@ -230,7 +223,7 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
         getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           libId: libId,
-          componentIds: componentId,
+          componentIds: selectId,
           keyWord: searchKeyWord,
         }}
       />
@@ -264,11 +257,11 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <EditComponentDetail resourceLibId={libId} />
+          <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
         </Form>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default ElectricDetail;
+export default ElectricDetail
