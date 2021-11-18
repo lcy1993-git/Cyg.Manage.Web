@@ -39,7 +39,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false)
   const [detailVisible, setDetailVisible] = useState<boolean>(false)
   const [moduleDetailVisible, setModuleDetailVisible] = useState<boolean>(false)
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -255,6 +255,8 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     const editData = data!
 
     editForm.validateFields().then(async (values) => {
+      console.log(values)
+
       const submitInfo = Object.assign(
         {
           id: editData.id,
@@ -269,9 +271,17 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           processChartIds: editData.processChartIds,
           designChartIds: editData.designChartIds,
           towerModelChartIds: editData.towerModelChartIds,
+          rodDiameter: editData.rodDiameter,
         },
-        values
+
+        {
+          ...values,
+          rodDiameter: values.rodDiameter ? values.rodDiameter : 0,
+          nominalHeight: values.nominalHeight ? values.nominalHeight : 0,
+        }
       )
+      console.log(submitInfo)
+
       await updateModulesPropertyItem(submitInfo)
       refresh()
       message.success('更新成功')
@@ -397,7 +407,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           nominalHeight: editData.nominalHeight,
           steelStrength: editData.steelStrength,
           poleStrength: editData.poleStrength,
-          rodDimaeter: editData.rodDimaeter,
+          rodDimaeter: editData.rodDiameter,
           baseWeight: editData.baseWeight,
           segmentMode: editData.segmentMode,
           earthwork: editData.earthwork,

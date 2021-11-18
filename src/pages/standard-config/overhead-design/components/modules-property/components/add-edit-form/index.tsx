@@ -41,7 +41,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           label="模块编码"
           name="moduleId"
           required
-          labelWidth={98}
+          labelWidth={108}
           rules={[{ required: true, message: '模块编码不能为空' }]}
         >
           <Input placeholder="请输入模块编码" />
@@ -52,7 +52,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         label="模块名称"
         name="moduleName"
         required
-        labelWidth={98}
+        labelWidth={108}
         rules={[{ required: true, message: '模块名称不能为空' }]}
       >
         <Input placeholder="请输入模块名称" />
@@ -62,7 +62,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         label="杆型简号"
         name="poleTypeCode"
         required
-        labelWidth={98}
+        labelWidth={108}
         rules={[{ required: true, message: '杆型简号不能为空' }]}
       >
         <Input placeholder="请输入杆型简号" />
@@ -73,7 +73,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           label="典设编码"
           name="typicalCode"
           required
-          labelWidth={98}
+          labelWidth={108}
           rules={[{ required: true, message: '典设编码不能为空' }]}
         >
           <Input placeholder="请输入典设编码" />
@@ -84,13 +84,13 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         labelSlot={unitSlot}
         name="unit"
         required
-        labelWidth={98}
+        labelWidth={108}
         rules={[{ required: true, message: '单位不能为空' }]}
       >
         <Input placeholder="请输入单位" />
       </CyFormItem>
 
-      <CyFormItem label="设计图" name="designChartIds" labelWidth={98}>
+      <CyFormItem label="设计图" name="designChartIds" labelWidth={108}>
         <UrlSelect
           requestType="post"
           mode="multiple"
@@ -104,7 +104,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           libId={resourceLibId}
         />
       </CyFormItem>
-      <CyFormItem label="加工图" name="processChartIds" labelWidth={98}>
+      <CyFormItem label="加工图" name="processChartIds" labelWidth={108}>
         <UrlSelect
           requestType="post"
           mode="multiple"
@@ -118,7 +118,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           libId={resourceLibId}
         />
       </CyFormItem>
-      <CyFormItem label="杆型一览图" name="towerModelChartIds" labelWidth={98}>
+      <CyFormItem label="杆型一览图" name="towerModelChartIds" labelWidth={108}>
         <UrlSelect
           requestType="post"
           mode="multiple"
@@ -139,7 +139,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         required
         initialValue="不限"
         rules={[{ required: true, message: '所属工程不能为空' }]}
-        labelWidth={98}
+        labelWidth={108}
       >
         <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
       </CyFormItem>
@@ -150,7 +150,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         required
         initialValue="不限"
         rules={[{ required: true, message: '所属设计不能为空' }]}
-        labelWidth={98}
+        labelWidth={108}
       >
         <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
       </CyFormItem>
@@ -160,7 +160,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         name="height"
         required
         rules={[{ required: true, message: '高度不能为空' }]}
-        labelWidth={98}
+        labelWidth={108}
       >
         <Input type="number" placeholder="请输入高度" />
       </CyFormItem>
@@ -170,16 +170,16 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         name="depth"
         required
         rules={[{ required: true, message: '埋深不能为空' }]}
-        labelWidth={98}
+        labelWidth={108}
       >
         <Input placeholder="请输入埋深" type="number" />
       </CyFormItem>
 
-      <CyFormItem label="呼称高（m）" name="nominalHeight" labelWidth={98}>
+      <CyFormItem label="呼称高（m）" name="nominalHeight" labelWidth={108}>
         <Input placeholder="请输入呼称高" type="number" />
       </CyFormItem>
 
-      <CyFormItem label="杆梢径（m）" name="rodDiameter" labelWidth={98}>
+      <CyFormItem label="杆梢径（mm）" name="rodDiameter" labelWidth={108}>
         <Input placeholder="请输入杆梢径" type="number" />
       </CyFormItem>
 
@@ -188,7 +188,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         name="segmentMode"
         required
         initialValue="不分段"
-        labelWidth={98}
+        labelWidth={108}
         rules={[{ required: true, message: '分段方式不能为空' }]}
       >
         <EnumSelect placeholder="请选择分段方式" enumList={segment} valueString />
@@ -199,7 +199,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         name="arrangement"
         required
         // initialValue="不分段"
-        labelWidth={98}
+        labelWidth={108}
         rules={[{ required: true, message: '导线排列方式不能为空' }]}
       >
         <EnumSelect placeholder="请选择导线排列方式" enumList={arrangement} valueString />
@@ -210,7 +210,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         name="meteorologic"
         required
         initialValue="B类"
-        labelWidth={98}
+        labelWidth={108}
         rules={[{ required: true, message: '气象区不能为空' }]}
       >
         <EnumSelect placeholder="请选择气象区" enumList={meteorologic} valueString />
@@ -221,7 +221,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         name="loopNumber"
         required
         initialValue="单回路"
-        labelWidth={98}
+        labelWidth={108}
         rules={[{ required: true, message: '回路数不能为空' }]}
       >
         <EnumSelect placeholder="请选择回路数" enumList={loopNumber} valueString />
@@ -232,7 +232,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         name="lineNumber"
         required
         initialValue={1}
-        labelWidth={98}
+        labelWidth={108}
         rules={[{ required: true, message: '线数不能为空' }]}
       >
         <Select>

@@ -122,7 +122,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="图纸" name="chartIds">
+      <CyFormItem label="加工图" name="chartIds">
         <UrlSelect
           requestType="post"
           mode="multiple"

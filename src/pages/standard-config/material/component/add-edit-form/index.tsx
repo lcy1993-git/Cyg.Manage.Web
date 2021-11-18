@@ -90,7 +90,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="单重(kg)" name="pieceWeight">
-        <Input placeholder="请输入单重" />
+        <Input placeholder="请输入单重" type="number" />
       </CyFormItem>
 
       <CyFormItem label="供给方" name="supplySide">

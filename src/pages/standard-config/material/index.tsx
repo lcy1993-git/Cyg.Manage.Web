@@ -35,7 +35,7 @@ const Material: React.FC<libParams> = (props) => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [importMaterialVisible, setImportMaterialVisible] = useState<boolean>(false)
 
@@ -302,7 +302,7 @@ const Material: React.FC<libParams> = (props) => {
           remark: editData.remark,
           chartIds: editData.chartIds,
         },
-        values
+        { ...values, pieceWeight: values.pieceWeight ? values.pieceWeight : 0 }
       )
       await updateMaterialItem(submitInfo)
       refresh()

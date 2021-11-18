@@ -29,7 +29,7 @@ interface ModuleAttributeParams extends ItemDetailData {
   nominalHeight: number
   steelStrength: string
   poleStrength: string
-  rodDimaeter: number
+  rodDiameter: number
   baseWeight: number
   segmentMode: string
   earthwork: string
