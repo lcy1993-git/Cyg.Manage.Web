@@ -24,11 +24,11 @@ const { TabPane } = Tabs
 const { NODE_ENV } = process.env
 export type LoginType = 'account' | 'phone'
 interface Props {
-  stopInfo: Stop
+  serverCode: string
   stopLogin: (data?: Stop) => void
 }
 const LoginForm: React.FC<Props> = (props) => {
-  const { stopInfo } = props
+  const { serverCode } = props
   const [needVerifycode, setNeedVerifycode] = useState<boolean>(false)
   const [imageCode, setImageCode] = useState<string>('')
   // 是否验证码错误
@@ -41,7 +41,6 @@ const LoginForm: React.FC<Props> = (props) => {
   const [formRules, setFormRules] = useState(loginRules['account'])
   const [phoneNumber, setPhoneNumber] = useState<string>('')
   const [canSendCode, setCanSendCode] = useState<boolean>(false)
-
   const [requestLoading, setRequestLoading] = useState<boolean>(false)
 
   const [form] = Form.useForm()
@@ -66,9 +65,10 @@ const LoginForm: React.FC<Props> = (props) => {
   const login = (type: LoginType, data?: Stop) => {
     // TODO  校验通过之后进行保存
     form.validateFields().then(async (values) => {
-      if ([2, 3].includes(stopInfo?.stage)) {
-        values.userName = values?.userName?.replace(stopInfo.testerAccountPrefix, '')
-      } else if ([2, 3].includes(data?.stage as number)) {
+      if (
+        [2, 3].includes(data?.stage as number) &&
+        values?.userName?.startsWith(data?.testerAccountPrefix)
+      ) {
         values.userName = values?.userName?.replace(data?.testerAccountPrefix, '')
       }
       try {
@@ -84,12 +84,9 @@ const LoginForm: React.FC<Props> = (props) => {
           localStorage.setItem('Authorization', accessToken)
           let userInfo = await getUserInfoRequest()
           if (data?.stage) {
-            userInfo['isTestUser'] = [2, 3].includes(data?.stage) // 是否测试账号
-          } else {
-            const formData = form.getFieldValue('userName')
-
+            const userName = form.getFieldValue('userName')
             userInfo['isTestUser'] =
-              [2, 3].includes(stopInfo?.stage) && formData.includes(stopInfo.testerAccountPrefix) // 是否测试账号
+              [2, 3].includes(data?.stage) && userName.startsWith(data?.testerAccountPrefix) // 是否测试账号
           }
           const modules = await getAuthorityModules()
 
@@ -108,7 +105,6 @@ const LoginForm: React.FC<Props> = (props) => {
           history.push('/index')
         } else if (resData.code === 40100) {
           // 临时关闭验证码，开启时，打开下行代码
-          // setNeedVerifycode(true);
           message.error(resData.message)
         } else {
           message.error(resData.message)
@@ -124,10 +120,9 @@ const LoginForm: React.FC<Props> = (props) => {
     (serverCode) =>
       getStopServerNotice({
         serverCode: serverCode,
-        kickOutSeconds: 60,
+        kickOutSeconds: 605,
       }),
     {
-      pollingInterval: 5000,
       manual: true,
       onSuccess: (val) => {
         return val
@@ -149,7 +144,7 @@ const LoginForm: React.FC<Props> = (props) => {
       }
     })
     if (currenServer) {
-      localStorage.setItem('serverCode', currenServer?.code || '')
+      sessionStorage.setItem('serverCode', currenServer?.code || '')
       return currenServer
     } else {
       return ''
@@ -157,42 +152,48 @@ const LoginForm: React.FC<Props> = (props) => {
   }
   const getStopInfo = async () => {
     setRequestLoading(true)
-    // window.localStorage.setItem('userInfo', '')
-    if (Object.keys(stopInfo).length === 0) {
+    if (serverCode === '') {
       // 如果前面没有获取到停服信息,在这里再获取一遍
       try {
         getServerList().then(async (res) => {
           if (res) {
-            res = await run(res.code)
-            if ([2, 3].includes(res.stage) && res.testerAccountPrefix !== '') {
+            let val = await run(res.code)
+            if (!val) {
+              await loginButtonClick()
+              return
+            }
+            if ([2, 3].includes(val?.stage) && val?.testerAccountPrefix !== '') {
               // 停服公告,前缀没有也直接放行
               const data = form.getFieldsValue()
-              if (!data.userName.includes(res.testerAccountPrefix)) {
-                props.stopLogin(res)
+              if (!data?.userName?.startsWith(val?.testerAccountPrefix)) {
+                props.stopLogin(val)
                 return
               }
-              await loginButtonClick({} as Stop)
             }
-            await loginButtonClick(res)
+            await loginButtonClick(val)
             return
           }
         })
       } catch {
-        await loginButtonClick({} as Stop)
+        await loginButtonClick()
       }
-    }
-    if ([2, 3].includes(stopInfo.stage) && stopInfo.testerAccountPrefix !== '') {
+    } else {
       // 停服公告,前缀没有也直接放行
       const data = form.getFieldsValue()
-      if (!data.userName.includes(stopInfo.testerAccountPrefix)) {
-        props.stopLogin()
+      let val = await run(serverCode)
+      if (
+        val !== null &&
+        !data?.userName?.startsWith(val?.testerAccountPrefix) &&
+        [2, 3].includes(val?.stage)
+      ) {
+        props.stopLogin(val)
         return
       }
-      await loginButtonClick({} as Stop)
+      await loginButtonClick(val)
     }
   }
   // 登录前的验证码校准，当needVerifycode存在先行判断验证码
-  const loginButtonClick = async (data: Stop) => {
+  const loginButtonClick = async (data?: Stop) => {
     if (needVerifycode) {
       let fromData = await form.validateFields()
       const key = activeKey === 'account' ? fromData.userName : fromData.phone
