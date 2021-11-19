@@ -1,11 +1,19 @@
-import { Stroke, Style } from 'ol/style'
+import { Fill, Stroke, Style } from 'ol/style'
+import ClassStyle from 'ol/style/Style'
+import Text from 'ol/style/Text'
 import type { ElectricLineType } from '../typings'
 
 interface LineOps {
   color?: string
 }
 
-export type GetLineStyle = (type: ElectricLineType, isHight?: boolean, ops?: LineOps) => Style
+export type GetLineStyle = (
+  type: ElectricLineType,
+  name: string,
+  showText: boolean,
+  isHight?: boolean,
+  ops?: LineOps
+) => Style[]
 
 /**
  * @description 获取LineStyle
@@ -18,6 +26,8 @@ export type GetLineStyle = (type: ElectricLineType, isHight?: boolean, ops?: Lin
 
 export const getLineStyle: GetLineStyle = (
   type: ElectricLineType,
+  name: string,
+  showText: boolean = false,
   isHight: boolean = false,
   ops: LineOps = {}
 ) => {
@@ -27,13 +37,53 @@ export const getLineStyle: GetLineStyle = (
     电缆: [1, 3],
   }
 
-  return new Style({
-    stroke: new Stroke({
-      //lineJoin:'bevel',
-      lineDash: textObject[type],
-      color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
-      width: isHight ? 3 : 2,
-      ...ops,
+  const baseStyle = [
+    new Style({
+      stroke: new Stroke({
+        //lineJoin:'bevel',
+        lineDash: textObject[type],
+        color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
+        width: isHight ? 3 : 2,
+        ...ops,
+      }),
     }),
-  })
+  ]
+
+  if (showText) {
+    // 线路名称样式
+    const styleMode = new ClassStyle({
+      // stroke: new Stroke(strokeOpts),
+      text: new Text({
+        text: name?.length > 10 ? `${name.slice(0, 10)}...` : name,
+        textAlign: 'center',
+        font: 'bold 12px Source Han Sans SC', //字体与大小
+        placement: 'line',
+        offsetY: -10,
+        fill: new Fill({
+          //文字填充色
+          color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
+        }),
+        // stroke: new Stroke({
+        //   //文字边界宽度与颜色
+        //   color: isHight ? 'rgba(249, 149, 52, 1)' : 'rgba(21, 32, 32, 1)',
+        //   width: 2,
+        // }),
+      }),
+    })
+
+    baseStyle.push(styleMode)
+  }
+
+  return baseStyle
+  // return [
+  //   new Style({
+  //     stroke: new Stroke({
+  //       //lineJoin:'bevel',
+  //       lineDash: textObject[type],
+  //       color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
+  //       width: isHight ? 3 : 2,
+  //       ...ops,
+  //     }),
+  //   }),
+  // ]
 }

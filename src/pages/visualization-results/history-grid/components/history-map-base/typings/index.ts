@@ -35,14 +35,14 @@ export interface ElectricPointData {
   id: string
   name: string
   type: ElectricPointType
-  Lng?: number
-  Lat?: number
+  lng?: number
+  lat?: number
   remark?: string
 }
 
 export type DataSource = {
-  point: ElectricPointData[]
-  line: ElectricLineData[]
+  equipments: ElectricPointData[]
+  lines: ElectricLineData[]
 }
 
 export type SelectedData = (ElectricPointData | ElectricLineData)[]
@@ -60,6 +60,10 @@ export interface InterActionRef {
   select?: Record<Exclude<SelectType, ''>, Select>
   dragBox?: DragBox
   isDragBox?: boolean
+}
+
+export interface ViewRef {
+  view: View
 }
 
 export interface MapRef {
