@@ -41,7 +41,7 @@ const Login: React.FC = () => {
       setServerCode(currenServer?.code || '')
     }
   }
-  const loginStop = (res: Stop) => {
+  const loginStop = (res?: Stop) => {
     setActiveStop(true)
     if (res) {
       setStopInfo(res)
