@@ -1,7 +1,10 @@
+import { message } from 'antd'
+import JsonP from 'jsonp'
 import { Feature } from 'ol'
 import Geometry from 'ol/geom/Geometry'
+import * as proj from 'ol/proj'
 import { getStyle } from '../styles'
-import { InterActionRef } from '../typings'
+import { InterActionRef, ViewRef } from '../typings'
 
 // 清空选择器和高亮图层
 export const clear = (interActionRef: InterActionRef) => {
@@ -39,4 +42,27 @@ export function getDataByFeature(f: Feature<Geometry>[]) {
     const { geometry, ...props } = f.getProperties()
     return props
   })
+}
+
+// 定位当前用户位置；调用的是百度定位api
+export const checkUserLocation = (viewRef: ViewRef) => {
+  JsonP(
+    `https://map.baidu.com?qt=ipLocation&t=${new Date().getTime()}`,
+    {},
+    function (err: any, res: any) {
+      if (err) {
+        message.error(err)
+      } else {
+        if (res?.rgc?.status === 'success') {
+          const lat = parseFloat(res?.rgc?.result?.location?.lat)
+          const lng = parseFloat(res?.rgc?.result?.location?.lng)
+          if (!isNaN(lat) && !isNaN(lng)) {
+            viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+          } else {
+            message.error('获取的位置信息无效，无法定位')
+          }
+        }
+      }
+    }
+  )
 }

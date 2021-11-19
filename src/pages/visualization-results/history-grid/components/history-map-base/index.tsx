@@ -21,7 +21,7 @@ import mapClick from './event/mapClick'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
 import { getStyle } from './styles'
 import { InterActionRef, MapRef } from './typings'
-import { clear } from './utils'
+import { checkUserLocation, clear } from './utils'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
@@ -89,14 +89,15 @@ const HistoryMapBase = () => {
   }, [isDraw])
 
   // 定位当当前项目位置
-  useUpdateEffect(() => {
-    viewRef.view.fit((layerRef.vectorLayer.getSource() as VectorSource<Geometry>).getExtent())
-  }, [onProjectLocationClick])
+  useUpdateEffect(
+    () =>
+      viewRef.view.fit((layerRef.vectorLayer.getSource() as VectorSource<Geometry>).getExtent()),
+    [onProjectLocationClick]
+  )
 
   // 定位到当前用户位置
-  useUpdateEffect(() => {
-    viewRef.view.setCenter([100, 100])
-  }, [onCurrentLocationClick])
+  useUpdateEffect(() => checkUserLocation(viewRef), [onCurrentLocationClick])
+
   // before init
   function beforeInit() {
     ref.current!.innerHTML = ''
@@ -249,7 +250,6 @@ const HistoryMapBase = () => {
         <button onClick={() => setState('onProjectLocationClick', !onProjectLocationClick)}>
           定位到当前项目
         </button>
-        <button>定位到现有网架</button>
         <button onClick={() => setState('showText', !showText)}>元素名称开关</button>
         <button
           onClick={() => {
