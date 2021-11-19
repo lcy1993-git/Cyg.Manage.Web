@@ -1,16 +1,23 @@
 import { EnvironmentFilled } from '@ant-design/icons'
 import { Button, Select } from 'antd'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import CityPicker from './components/city-picker'
 import FlowLayer from './components/flow-layer'
-import { useHistoryGridContext } from './context'
+import { useHistoryGridContext } from './store'
 
 const FL_MARGIN_LEFT = 10
 
 const CityPickerWrapper = () => {
-  const { city, dispatch } = useHistoryGridContext()
+  const { city, mode, dispatch } = useHistoryGridContext()
   const [visible, setVisible] = useState(true)
 
+  const onClick = useCallback(() => {
+    const payload = mode === 'preDesign' ? 'preDesigning' : 'recordEdit'
+
+    dispatch({ type: 'changeMode', payload: payload })
+  }, [dispatch, mode])
+
+  const BtnText = mode === 'preDesign' ? '预设' : mode === 'record' ? '绘制' : ''
   return (
     <>
       <FlowLayer left={FL_MARGIN_LEFT} top={FL_MARGIN_LEFT}>
@@ -24,12 +31,8 @@ const CityPickerWrapper = () => {
             className="flex-1 truncate"
             onClick={() => !visible && setVisible(true)}
           />
-          <Button
-            className="ml-4"
-            type="primary"
-            onClick={() => dispatch({ type: 'changeMode', payload: 'edit' })}
-          >
-            网架预设
+          <Button className="ml-4" type="primary" onClick={onClick}>
+            网架{BtnText}
           </Button>
         </div>
       </FlowLayer>
@@ -46,9 +49,13 @@ const CityPickerWrapper = () => {
           value={city}
           onSelect={(city) => {
             dispatch({ type: 'setCity', payload: city })
+            dispatch('locate')
           }}
         >
-          <span className="cursor-pointer text-base text-theme-green">
+          <span
+            onClick={() => dispatch('locate')}
+            className="cursor-pointer text-base text-theme-green"
+          >
             <EnvironmentFilled className="pr-1" />
             定位
           </span>

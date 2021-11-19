@@ -21,6 +21,7 @@ module.exports = {
         'theme-green-light': '#14A86B',
         'theme-green': '#0E7B3B',
         'theme-green-dark': '#0E7B3B',
+        'theme-green-darker': '#4DA944',
         'theme-blue': '#0E6CA5',
       },
     },

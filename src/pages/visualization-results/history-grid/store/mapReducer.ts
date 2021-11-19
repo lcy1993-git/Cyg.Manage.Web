@@ -1,5 +1,5 @@
-import type { DataSource, SelectedData } from './components/history-map-base/typings'
-import { useHistoryGridContext } from './context'
+import { useHistoryGridContext } from '.'
+import type { DataSource, SelectedData } from '../components/history-map-base/typings'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
 

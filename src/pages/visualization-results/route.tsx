@@ -20,7 +20,7 @@ const GridPreDesign = Loadable({
   delay: 150,
 })
 
-export default [
+const routes = [
   {
     title: '网架可视化',
     path: '/visualization-results/result-page',
@@ -34,6 +34,8 @@ export default [
   {
     title: '网架预设计',
     path: '/visualization-results/grid-pre-design',
-    component: <GridPreDesign />,
+    component: <HistoryGrid />,
   },
 ]
+
+export default routes

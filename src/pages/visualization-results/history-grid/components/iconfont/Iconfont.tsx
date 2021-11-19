@@ -1,9 +1,9 @@
-import '@/assets/icon/admin-icon'
-import '@/assets/icon/history-gird-icon'
 import { CSSProperties, memo, MouseEventHandler } from 'react'
+import '../../assets/iconfont/admin-icon'
+import '../../assets/iconfont/history-gird-icon'
 
 interface IconfontProps {
-  symbol?: string
+  symbol: string
   className?: string
   style?: CSSProperties
   onClick?: MouseEventHandler<SVGSVGElement>
