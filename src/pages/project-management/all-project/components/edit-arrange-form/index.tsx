@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { TreeSelect, Divider } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import { getGroupInfo } from '@/services/project-management/all-project';
-import { useRequest } from 'ahooks';
-import uuid from 'node-uuid';
-import styles from './index.less';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import React, { useState } from 'react'
+import { TreeSelect, Divider } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import { getGroupInfo } from '@/services/project-management/all-project'
+import { useRequest } from 'ahooks'
+import uuid from 'node-uuid'
+import styles from './index.less'
+import { DownOutlined, UpOutlined } from '@ant-design/icons'
 
 interface EditArrangeFormProps {
-  allotCompanyId?: string | undefined;
-  canEdit?: any;
-  dataSourceType?: number;
+  allotCompanyId?: string | undefined
+  canEdit?: any
+  dataSourceType?: number
 }
 
 const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
-  const { allotCompanyId = '', canEdit, dataSourceType } = props;
+  const { allotCompanyId = '', canEdit, dataSourceType } = props
   const {
     canEditDesign,
     canEditSurvey,
@@ -26,8 +26,8 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     canEditCostAuditUser1,
     canEditCostAuditUser2,
     canEditCostAuditUser3,
-  } = canEdit;
-  const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false);
+  } = canEdit
+  const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
 
   const notEdit = (function notChangeData() {
     return [
@@ -36,24 +36,24 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         title: '无需修改',
         children: null ?? [],
       },
-    ];
-  })();
+    ]
+  })()
 
   const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId), {
     refreshDeps: [allotCompanyId],
-  });
+  })
 
   const { data: designData = [] } = useRequest(() => getGroupInfo('8', allotCompanyId), {
     refreshDeps: [allotCompanyId],
-  });
+  })
 
   const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId), {
     refreshDeps: [allotCompanyId],
-  });
+  })
 
   const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
     refreshDeps: [allotCompanyId],
-  });
+  })
 
   const mapTreeData = (data: any) => {
     if (data.children && data.children.length > 0) {
@@ -63,15 +63,15 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         key: uuid.v1(),
         disabled: true,
         children: data.children ? data.children.map(mapTreeData) : [],
-      };
+      }
     }
     return {
       title: data.text,
       value: data.id,
       key: uuid.v1(),
       children: data.children ? data.children.map(mapTreeData) : [],
-    };
-  };
+    }
+  }
 
   return (
     <>
@@ -92,7 +92,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
-            placeholder="“无需现场数据”项目，免安排勘察人员"
+            placeholder="“免勘察”项目，免安排勘察人员"
             treeDefaultExpandAll
             disabled
           />
@@ -116,7 +116,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
-            placeholder="“点位导入”项目，免安排勘察人员"
+            placeholder="“导入”项目，免安排勘察人员"
             treeDefaultExpandAll
             allowClear
           />
@@ -362,7 +362,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         )} */}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default EditArrangeForm;
+export default EditArrangeForm

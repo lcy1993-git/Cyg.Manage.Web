@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import EmptyTip from '@/components/empty-tip';
+import EmptyTip from '@/components/empty-tip'
 import {
   AllProjectStatisticsParams,
   applyKnot,
@@ -10,64 +10,63 @@ import {
   getEngineerInfo,
   againInherit,
   deleteProject,
-} from '@/services/project-management/all-project';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { delay } from '@/utils/utils';
-import { useRequest, useSize } from 'ahooks';
-import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd';
-import { Spin } from 'antd';
-import { Pagination } from 'antd';
-import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
-
-import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item';
-import ScrollView from 'react-custom-scrollbars';
-import styles from './index.less';
-import CyTag from '@/components/cy-tag';
-import uuid from 'node-uuid';
-import { Dropdown } from 'antd';
-import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons';
-import { TableContext } from './table-store';
-import EngineerDetailInfo from '../engineer-detail-info';
-import ProjectDetailInfo from '../project-detail-info';
-import ArrangeModal from '../arrange-modal';
-import EditEnigneerModal from '../edit-engineer-modal';
-import EditProjectModal from '../edit-project-modal';
-import CopyProjectModal from '../copy-project-modal';
-import AddProjectModal from '../add-project-modal';
-import ApprovalProjectModal from '../approval-project-modal';
-import ExternalArrangeModal from '../external-arrange-modal';
-import ExternalListModal from '../external-list-modal';
-import AuditKnotModal from '../audit-knot-modal';
-import moment from 'moment';
-import { modifyExportPowerState } from '@/services/project-management/all-project';
-import ProjectInheritModal from '../project-inherit-modal';
-import ImageIcon from '@/components/image-icon';
-import ColumnsConfigModal from '../columns-config-modal';
+} from '@/services/project-management/all-project'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { delay } from '@/utils/utils'
+import { useRequest, useSize } from 'ahooks'
+import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
+import { Spin } from 'antd'
+import { Pagination } from 'antd'
+import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react'
+import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item'
+import ScrollView from 'react-custom-scrollbars'
+import styles from './index.less'
+import CyTag from '@/components/cy-tag'
+import uuid from 'node-uuid'
+import { Dropdown } from 'antd'
+import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons'
+import { TableContext } from './table-store'
+import EngineerDetailInfo from '../engineer-detail-info'
+import ProjectDetailInfo from '../project-detail-info'
+import ArrangeModal from '../arrange-modal'
+import EditEnigneerModal from '../edit-engineer-modal'
+import EditProjectModal from '../edit-project-modal'
+import CopyProjectModal from '../copy-project-modal'
+import AddProjectModal from '../add-project-modal'
+import ApprovalProjectModal from '../approval-project-modal'
+import ExternalArrangeModal from '../external-arrange-modal'
+import ExternalListModal from '../external-list-modal'
+import AuditKnotModal from '../audit-knot-modal'
+import moment from 'moment'
+import { modifyExportPowerState } from '@/services/project-management/all-project'
+import ProjectInheritModal from '../project-inherit-modal'
+import ImageIcon from '@/components/image-icon'
+import ColumnsConfigModal from '../columns-config-modal'
 
 const colorMap = {
   立项: 'green',
   委托: 'blue',
   共享: 'yellow',
   执行: 'yellow',
-};
+}
 
 interface ExtractParams extends AllProjectStatisticsParams {
-  statisticalCategory?: string;
+  statisticalCategory?: string
 }
 
 interface JurisdictionInfo {
-  canEdit: boolean;
-  canCopy: boolean;
-  canInherit: boolean;
+  canEdit: boolean
+  canCopy: boolean
+  canInherit: boolean
 }
 
 interface EngineerTableProps {
-  extractParams: ExtractParams;
-  onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
-  getStatisticsData?: (value: any) => void;
-  columnsConfig: string[];
-  finishEvent: () => void;
-  configFinishEvent?: (checkedValue: any) => void;
+  extractParams: ExtractParams
+  onSelect?: (checkedValue: TableItemCheckedInfo[]) => void
+  getStatisticsData?: (value: any) => void
+  columnsConfig: string[]
+  finishEvent: () => void
+  configFinishEvent?: (checkedValue: any) => void
 }
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
@@ -78,156 +77,156 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     columnsConfig = [],
     finishEvent,
     configFinishEvent,
-  } = props;
-  const [pageIndex, setPageIndex] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
+  } = props
+  const [pageIndex, setPageIndex] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([])
 
-  const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('');
+  const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('')
 
-  const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('');
-  const [currentArrageProjectId, setCurrentArrageProjectId] = useState<string>('');
-  const [currentProjectArrangeType, setCurrentProjectArrageType] = useState<string>();
-  const [arrangeAllotCompanyId, setArrangeAllotCompanyId] = useState<string>();
-  const [currentDataSourceType, setCurrentDataSourceType] = useState<number>();
-  const [currentEditEngineerId, setCurrentEditEngineerId] = useState<string>('');
-  const [currentAppEngineerId, setCurrentAppEngineerId] = useState<string>('');
-  const [currentEditProjectInfo, setCurrentEditProjectInfo] = useState<any>({});
-  const [currentCopyProjectInfo, setCurrentCopyProjectInfo] = useState<any>({});
+  const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('')
+  const [currentArrageProjectId, setCurrentArrageProjectId] = useState<string>('')
+  const [currentProjectArrangeType, setCurrentProjectArrageType] = useState<string>()
+  const [arrangeAllotCompanyId, setArrangeAllotCompanyId] = useState<string>()
+  const [currentDataSourceType, setCurrentDataSourceType] = useState<number>()
+  const [currentEditEngineerId, setCurrentEditEngineerId] = useState<string>('')
+  const [currentAppEngineerId, setCurrentAppEngineerId] = useState<string>('')
+  const [currentEditProjectInfo, setCurrentEditProjectInfo] = useState<any>({})
+  const [currentCopyProjectInfo, setCurrentCopyProjectInfo] = useState<any>({})
   const [projectNeedInfo, setProjectNeedInfo] = useState({
     engineerId: '',
     areaId: '',
     company: '',
     companyName: '',
-  });
-  const [currentProName, setCurrentProName] = useState<string | undefined>('');
-  const [externalStepData, setExternalStepData] = useState<any>();
+  })
+  const [currentProName, setCurrentProName] = useState<string | undefined>('')
+  const [externalStepData, setExternalStepData] = useState<any>()
 
-  const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
-  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
-  const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false);
-  const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false);
-  const [copyProjectVisible, setCopyProjectVisible] = useState<boolean>(false);
-  const [addProjectVisible, setAddProjectVisible] = useState<boolean>(false);
-  const [editProjectVisible, setEditProjectVisible] = useState<boolean>(false);
-  const [editEngineerVisible, setEditEngineerVisible] = useState<boolean>(false);
-  const [approvalEngineerVisible, setApprovalEngineerVisible] = useState<boolean>(false);
-  const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false);
+  const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false)
+  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false)
+  const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false)
+  const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false)
+  const [copyProjectVisible, setCopyProjectVisible] = useState<boolean>(false)
+  const [addProjectVisible, setAddProjectVisible] = useState<boolean>(false)
+  const [editProjectVisible, setEditProjectVisible] = useState<boolean>(false)
+  const [editEngineerVisible, setEditEngineerVisible] = useState<boolean>(false)
+  const [approvalEngineerVisible, setApprovalEngineerVisible] = useState<boolean>(false)
+  const [arrangeModalVisible, setArrangeModalVisible] = useState<boolean>(false)
 
-  const [projectInheritVisible, setProjectInheritVisible] = useState<boolean>(false);
-  const [inheritProjectNeedParams, setInheritProjectNeedParams] = useState<any>({});
+  const [projectInheritVisible, setProjectInheritVisible] = useState<boolean>(false)
+  const [inheritProjectNeedParams, setInheritProjectNeedParams] = useState<any>({})
 
-  const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false);
+  const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
   // 项目时间阈值state
-  const [minStartTime, setMinStartTime] = useState<number>();
-  const [maxEndTime, setMaxEndTime] = useState<number>();
+  const [minStartTime, setMinStartTime] = useState<number>()
+  const [maxEndTime, setMaxEndTime] = useState<number>()
 
-  const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false);
+  const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false)
 
   // 项目继承状态判断
-  const [inheritState, setInheritState] = useState<boolean>(false);
+  const [inheritState, setInheritState] = useState<boolean>(false)
 
-  const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true });
+  const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true })
 
-  const scrollbar = useRef<any>(null);
-  const tableContentRef = useRef<HTMLDivElement>(null);
+  const scrollbar = useRef<any>(null)
+  const tableContentRef = useRef<HTMLDivElement>(null)
 
-  const tableContentSize = useSize(tableContentRef);
+  const tableContentSize = useSize(tableContentRef)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const projectNameClickEvent = (engineerId: string) => {
-    setCurrentClickEngineerId(engineerId);
-    setEngineerModalVisible(true);
-  };
+    setCurrentClickEngineerId(engineerId)
+    setEngineerModalVisible(true)
+  }
 
   const editProjectEvent = (info: any) => {
     if (info.inheritState === 2) {
-      setInheritState(true);
+      setInheritState(true)
     }
-    setEditProjectVisible(true);
-    setCurrentEditProjectInfo(info);
-  };
+    setEditProjectVisible(true)
+    setCurrentEditProjectInfo(info)
+  }
 
   const copyProjectEvent = (info: any) => {
-    setCopyProjectVisible(true);
-    setCurrentCopyProjectInfo(info);
-  };
+    setCopyProjectVisible(true)
+    setCurrentCopyProjectInfo(info)
+  }
 
   const editEngineerEvent = async (data: AddProjectValue) => {
     // 编辑工程前获取工程下项目日期阈值
     const currentEditEngineer = tableData?.pagedData?.items
       .map((item: any) => {
         if (item.id === data.engineerId) {
-          return item;
+          return item
         }
       })
-      .filter(Boolean);
+      .filter(Boolean)
     const minStartTime = Math.min(
       ...currentEditEngineer?.[0].projects.map((item: any) => {
-        return item.startTime;
-      }),
-    );
+        return item.startTime
+      })
+    )
     const maxEndTime = Math.max(
       ...currentEditEngineer?.[0].projects.map((item: any) => {
-        return item.endTime;
-      }),
-    );
+        return item.endTime
+      })
+    )
 
-    setMinStartTime(minStartTime);
-    setMaxEndTime(maxEndTime);
-    setEditEngineerVisible(true);
-    setCurrentEditEngineerId(data.engineerId);
-  };
+    setMinStartTime(minStartTime)
+    setMaxEndTime(maxEndTime)
+    setEditEngineerVisible(true)
+    setCurrentEditEngineerId(data.engineerId)
+  }
 
   const approvalEngineerEvent = (data: AddProjectValue) => {
-    setCurrentAppEngineerId(data.engineerId);
-    setApprovalEngineerVisible(true);
-  };
+    setCurrentAppEngineerId(data.engineerId)
+    setApprovalEngineerVisible(true)
+  }
 
   const refreshEvent = () => {
     run({
       ...extractParams,
       pageIndex,
       pageSize,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
+    })
+    setTableSelectData([])
+    onSelect?.([])
+  }
 
   const refreshByParams = (params: any) => {
     run({
       ...params,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
+    })
+    setTableSelectData([])
+    onSelect?.([])
+  }
 
   const delayRefresh = async () => {
-    await delay(500);
+    await delay(500)
     run({
       ...extractParams,
       pageIndex,
       pageSize,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
+    })
+    setTableSelectData([])
+    onSelect?.([])
+  }
 
   const { run: getExternalStep } = useRequest(getExternalArrangeStep, {
     manual: true,
-  });
+  })
 
   const projectInherit = (projectInfo: any) => {
-    setProjectInheritVisible(true);
-    setInheritProjectNeedParams(projectInfo);
-  };
+    setProjectInheritVisible(true)
+    setInheritProjectNeedParams(projectInfo)
+  }
 
   const projectItemMenu = (
     jurisdictionInfo: JurisdictionInfo,
     tableItemData: any,
     engineerInfo: any,
-    status: any,
+    status: any
   ) => {
     return (
       <Menu>
@@ -243,7 +242,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 endTime: engineerInfo.endTime,
                 status: tableItemData.stateInfo.status,
                 inheritState: tableItemData.stateInfo.inheritStatus,
-              });
+              })
             }}
           >
             编辑
@@ -299,48 +298,48 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           </Menu.Item>
         )}
       </Menu>
-    );
-  };
+    )
+  }
 
   const arrange = async (projectId: string, projectType?: number, allotCompanyId?: string) => {
-    console.log(projectType);
+    console.log(projectType)
 
-    const projectInfo = await getProjectInfo(projectId);
-    setCurrentDataSourceType(Number(projectInfo?.dataSourceType));
-    setCurrentArrageProjectId(projectId);
-    setCurrentProjectArrageType(projectType ? String(projectType) : undefined);
-    setArrangeAllotCompanyId(allotCompanyId);
-    setArrangeModalVisible(true);
-  };
+    const projectInfo = await getProjectInfo(projectId)
+    setCurrentDataSourceType(Number(projectInfo?.dataSourceType))
+    setCurrentArrageProjectId(projectId)
+    setCurrentProjectArrageType(projectType ? String(projectType) : undefined)
+    setArrangeAllotCompanyId(allotCompanyId)
+    setArrangeModalVisible(true)
+  }
 
   // 外审安排
   const externalArrange = async (projectId: string, proName?: string) => {
-    setCurrentClickProjectId(projectId);
-    setCurrentProName(proName);
-    setExternalArrangeModalVisible(true);
-  };
+    setCurrentClickProjectId(projectId)
+    setCurrentProName(proName)
+    setExternalArrangeModalVisible(true)
+  }
 
   // 申请结项
   const applyKnotEvent = async (projectId: string[]) => {
-    await applyKnot(projectId);
-    message.success('申请结项成功');
+    await applyKnot(projectId)
+    message.success('申请结项成功')
 
-    finishEvent?.();
-  };
+    finishEvent?.()
+  }
 
   // 重新继承
   const againInheritEvent = async (projectId: string) => {
-    await againInherit(projectId);
-    message.success('重新继承申请成功');
+    await againInherit(projectId)
+    message.success('重新继承申请成功')
 
-    finishEvent?.();
-  };
+    finishEvent?.()
+  }
 
   // 外审列表
   const externalEdit = async (projectId: string) => {
-    setCurrentClickProjectId(projectId);
-    setExternalListModalVisible(true);
-  };
+    setCurrentClickProjectId(projectId)
+    setExternalListModalVisible(true)
+  }
 
   const projectNameRender = (record: any) => {
     // 代表未继承
@@ -349,42 +348,42 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         <u
           className="canClick"
           onClick={() => {
-            setCurrentClickProjectId(record.id);
-            setProjectModalVisible(true);
+            setCurrentClickProjectId(record.id)
+            setProjectModalVisible(true)
           }}
         >
           {record.name}
         </u>
-      );
+      )
     }
     if (record.stateInfo.inheritStatus) {
       if (record.stateInfo.inheritStatus === 1) {
-        return <span className={styles.disabled}>[继承中...]{record.name}</span>;
+        return <span className={styles.disabled}>[继承中...]{record.name}</span>
       }
       if (record.stateInfo.inheritStatus === 2) {
         return (
           <u
             className="canClick"
             onClick={() => {
-              setCurrentClickProjectId(record.id);
-              setProjectModalVisible(true);
+              setCurrentClickProjectId(record.id)
+              setProjectModalVisible(true)
             }}
           >
             {record.name}
           </u>
-        );
+        )
       }
       if (record.stateInfo.inheritStatus === 3) {
-        return <span className={styles.disabled}>{record.name}</span>;
+        return <span className={styles.disabled}>{record.name}</span>
       }
     }
-  };
+  }
 
   const deleteFailProject = async (projectId: string) => {
-    await deleteProject([projectId]);
-    message.success('已取消项目继承');
-    finishEvent?.();
-  };
+    await deleteProject([projectId])
+    message.success('已取消项目继承')
+    finishEvent?.()
+  }
 
   const completeConfig = [
     {
@@ -394,7 +393,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       render: projectNameRender,
       ellipsis: true,
       iconSlot: (record: any, projects: any) => {
-        const parentData = projects.filter((item: any) => item.id === record.inheritId);
+        const parentData = projects.filter((item: any) => item.id === record.inheritId)
 
         if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
           if (record.stateInfo.inheritStatus === 3) {
@@ -417,7 +416,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   </Popconfirm>
                 </span>
               </>
-            );
+            )
           }
           return (
             <Tooltip title={`继承自${record.inheritName}`}>
@@ -425,8 +424,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 <LinkOutlined />
               </span>
             </Tooltip>
-          );
+          )
         }
+      },
+    },
+    {
+      title: '现场数据来源',
+      dataIndex: 'dataSourceTypeText',
+      width: 120,
+      render: (record: any) => {
+        return record.dataSourceType === 0 ? (
+          <ImageIcon width={52} height={18} imgUrl="kc.png" />
+        ) : record.dataSourceType === 1 ? (
+          <ImageIcon width={52} height={18} imgUrl="dwdr.png" />
+        ) : (
+          <ImageIcon width={66} height={18} imgUrl="mkc.png" />
+        )
       },
     },
     {
@@ -452,14 +465,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'natureTexts',
       width: 180,
       render: (record: any) => {
-        const { natureTexts = [] } = record;
+        const { natureTexts = [] } = record
         return natureTexts.map((item: any) => {
           return (
             <CyTag key={uuid.v1()} className="mr7">
               {item}
             </CyTag>
-          );
-        });
+          )
+        })
       },
     },
     {
@@ -468,19 +481,19 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 190,
       ellipsis: true,
       render: (record: any) => {
-        const { startTime, endTime } = record;
+        const { startTime, endTime } = record
         if (startTime && endTime) {
           return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
-            'YYYY-MM-DD',
-          )}`;
+            'YYYY-MM-DD'
+          )}`
         }
         if (startTime && !endTime) {
-          return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+          return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`
         }
         if (!startTime && endTime) {
-          return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+          return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`
         }
-        return '未设置起止时间';
+        return '未设置起止时间'
       },
     },
     {
@@ -541,17 +554,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'pileRange',
       width: 120,
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-      width: 120,
-    },
+
     {
       title: '导出坐标权限',
       dataIndex: 'exportCoordinate',
       width: 120,
       render: (record: any) => {
-        const status = record.exportCoordinate;
+        const status = record.exportCoordinate
         return (
           <>
             {buttonJurisdictionArray?.includes('export-coordinate') &&
@@ -563,8 +572,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     modifyExportPowerState({
                       isEnable: !status,
                       projectIds: [record.id],
-                    });
-                    finishEvent?.();
+                    })
+                    finishEvent?.()
                   }}
                 >
                   启用
@@ -577,8 +586,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     modifyExportPowerState({
                       isEnable: !status,
                       projectIds: [record.id],
-                    });
-                    finishEvent?.();
+                    })
+                    finishEvent?.()
                   }}
                 >
                   禁用
@@ -591,7 +600,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 <span className="colorPrimary">禁用</span>
               ))}
           </>
-        );
+        )
       },
     },
     {
@@ -600,7 +609,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
       ellipsis: true,
       render: (record: any) => {
-        return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+        return record.surveyUser ? `${record.surveyUser.value}` : '无需安排'
       },
     },
     {
@@ -609,7 +618,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
       ellipsis: true,
       render: (record: any) => {
-        return record.designUser ? `${record.designUser.value}` : '';
+        return record.designUser ? `${record.designUser.value}` : ''
       },
     },
     {
@@ -623,7 +632,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'sources',
       width: 120,
       render: (record: any) => {
-        const { sources = [] } = record;
+        const { sources = [] } = record
         return sources?.map((item: any) => {
           return (
             <span key={uuid.v1()}>
@@ -631,8 +640,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                 <span>{item}</span>
               </CyTag>
             </span>
-          );
-        });
+          )
+        })
       },
     },
     {
@@ -640,7 +649,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'identitys',
       width: 180,
       render: (record: any) => {
-        const { identitys = [] } = record;
+        const { identitys = [] } = record
         return identitys
           .filter((item: any) => item.text)
           .map((item: any) => {
@@ -650,8 +659,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   {item.text}
                 </CyTag>
               </span>
-            );
-          });
+            )
+          })
       },
     },
     {
@@ -659,13 +668,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       width: 120,
       dataIndex: 'status',
       render: (record: any) => {
-        const { stateInfo, allot, identitys } = record;
-        let arrangeType: any = null;
-        let allotCompanyId: any = null;
+        const { stateInfo, allot, identitys } = record
+        let arrangeType: any = null
+        let allotCompanyId: any = null
 
         if (allot) {
-          arrangeType = allot.allotType;
-          allotCompanyId = allot.allotCompanyGroup;
+          arrangeType = allot.allotType
+          allotCompanyId = allot.allotCompanyGroup
         }
 
         // 如果是继承失败 和 继承中，直接返回状态，不用做下面的判断了。
@@ -673,7 +682,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           record.stateInfo.inheritStatus &&
           (record.stateInfo.inheritStatus === 1 || record.stateInfo.inheritStatus === 3)
         ) {
-          return <span>{stateInfo?.statusText}</span>;
+          return <span>{stateInfo?.statusText}</span>
         }
 
         return (
@@ -698,8 +707,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                   <span
                     className="canClick"
                     onClick={() => {
-                      setCurrentClickProjectId(record.id);
-                      setAuditKnotModalVisible(true);
+                      setCurrentClickProjectId(record.id)
+                      setAuditKnotModalVisible(true)
                     }}
                   >
                     {stateInfo?.statusText}
@@ -728,7 +737,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               <span>{stateInfo?.showStatusText}</span>
             )}
           </>
-        );
+        )
       },
     },
     {
@@ -736,7 +745,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'action',
       width: 60,
       render: (record: any, engineerInfo: any) => {
-        const { operationAuthority, stateInfo } = record;
+        const { operationAuthority, stateInfo } = record
 
         if (
           stateInfo.inheritStatus &&
@@ -746,7 +755,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             <Tooltip title="项目继承中，不能进行任何操作" placement="topRight">
               <BarsOutlined />
             </Tooltip>
-          );
+          )
         }
         return (
           <Dropdown
@@ -758,10 +767,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           >
             <BarsOutlined />
           </Dropdown>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const applyConfirm = (id: string[]) => {
     Modal.confirm({
@@ -771,12 +780,12 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       okText: '确认',
       cancelText: '取消',
       onOk: () => applyKnotEvent(id),
-    });
-  };
+    })
+  }
 
   const chooseColumns = useMemo(() => {
     if (columnsConfig) {
-      return ['name', ...columnsConfig, 'sources', 'identitys', 'status', 'action'];
+      return ['name', ...columnsConfig, 'sources', 'identitys', 'status', 'action']
     }
     return [
       'categoryText',
@@ -789,36 +798,36 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       'surveyUser',
       'designUser',
       'identitys',
-    ];
-  }, [JSON.stringify(columnsConfig)]);
+    ]
+  }, [JSON.stringify(columnsConfig)])
 
   const columnsInfo = useMemo(() => {
-    const showColumns = completeConfig.filter((item) => chooseColumns.includes(item.dataIndex));
+    const showColumns = completeConfig.filter((item) => chooseColumns.includes(item.dataIndex))
     const columnsWidth = showColumns.reduce((sum, item) => {
-      return sum + (item.width ? item.width : 100);
-    }, 0);
-    const isOverflow = (tableContentSize.width ?? 0) - 40 - columnsWidth < 0;
+      return sum + (item.width ? item.width : 100)
+    }, 0)
+    const isOverflow = (tableContentSize.width ?? 0) - 40 - columnsWidth < 0
 
     if (scrollbar && scrollbar.current) {
       // @ts-ignore
       scrollbar.current.view.scroll({
         left: 0,
         behavior: 'auto',
-      });
+      })
     }
 
     return {
       isOverflow,
       columns: showColumns,
       columnsWidth: columnsWidth + 38,
-    };
-  }, [chooseColumns, JSON.stringify(tableContentSize.width)]);
+    }
+  }, [chooseColumns, JSON.stringify(tableContentSize.width)])
 
   const tableResultData = useMemo(() => {
     if (tableData) {
-      const { pagedData, statistics } = tableData;
-      const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = pagedData;
-      getStatisticsData?.(statistics);
+      const { pagedData, statistics } = tableData
+      const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = pagedData
+      getStatisticsData?.(statistics)
       return {
         items: items ?? [],
         pageIndex: resPageIndex,
@@ -831,7 +840,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             ?.filter((item: any) => item.projects && item.projects.length > 0)
             .map((item: any) => item.projects)
             .flat().length ?? 0,
-      };
+      }
     }
     return {
       items: [],
@@ -841,60 +850,60 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataStartIndex: 0,
       dataEndIndex: 0,
       projectLen: 0,
-    };
-  }, [JSON.stringify(tableData)]);
+    }
+  }, [JSON.stringify(tableData)])
 
   const pageSizeChange = (page: any, size: any) => {
-    setPageIndex(1);
-    setPageSize(size);
+    setPageIndex(1)
+    setPageSize(size)
 
     run({
       ...extractParams,
       pageIndex: 1,
       pageSize: size,
-    });
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
+    })
+    setTableSelectData([])
+    onSelect?.([])
+  }
 
   // 列显示处理
   const currentPageChange = (page: any, size: any) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
     if (pageSize === size) {
-      setPageIndex(page === 0 ? 1 : page);
+      setPageIndex(page === 0 ? 1 : page)
 
       run({
         ...extractParams,
         pageIndex: page,
         pageSize,
-      });
-      setTableSelectData([]);
-      onSelect?.([]);
+      })
+      setTableSelectData([])
+      onSelect?.([])
     }
-  };
+  }
 
   const addProjectEvent = (projectNeedValue: AddProjectValue) => {
-    setAddProjectVisible(true);
-    setProjectNeedInfo(projectNeedValue);
-  };
+    setAddProjectVisible(true)
+    setProjectNeedInfo(projectNeedValue)
+  }
 
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
-    console.log(projectSelectInfo);
+    console.log(projectSelectInfo)
     // 监测现在数组是否含有此id的数据
     const hasData = tableSelectData.findIndex(
-      (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id,
-    );
-    const copyData: TableItemCheckedInfo[] = JSON.parse(JSON.stringify(tableSelectData));
+      (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id
+    )
+    const copyData: TableItemCheckedInfo[] = JSON.parse(JSON.stringify(tableSelectData))
     if (hasData > -1) {
-      copyData.splice(hasData, 1, projectSelectInfo);
-      setTableSelectData(copyData);
-      onSelect?.(copyData);
+      copyData.splice(hasData, 1, projectSelectInfo)
+      setTableSelectData(copyData)
+      onSelect?.(copyData)
     } else {
       // 代表没有数据，那就直接插进去
-      setTableSelectData([...tableSelectData, projectSelectInfo]);
-      onSelect?.([...tableSelectData, projectSelectInfo]);
+      setTableSelectData([...tableSelectData, projectSelectInfo])
+      onSelect?.([...tableSelectData, projectSelectInfo])
     }
-  };
+  }
 
   const engineerTableElement = tableResultData?.items.map((item: any) => {
     return (
@@ -911,8 +920,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         columnsWidth={columnsInfo.columnsWidth}
         contentWidth={tableContentSize.width!}
       />
-    );
-  });
+    )
+  })
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
@@ -921,104 +930,104 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...extractParams,
         pageIndex,
         pageSize,
-      });
-      setTableSelectData([]);
-      onSelect?.([]);
+      })
+      setTableSelectData([])
+      onSelect?.([])
     },
     search: () => {
-      setPageIndex(1);
+      setPageIndex(1)
       run({
         ...extractParams,
         pageIndex: 1,
         pageSize,
-      });
+      })
       if (scrollbar && scrollbar.current) {
         // @ts-ignore
         scrollbar.current.view.scroll({
           top: 0,
           behavior: 'smooth',
-        });
+        })
       }
-      setTableSelectData([]);
-      onSelect?.([]);
+      setTableSelectData([])
+      onSelect?.([])
     },
     searchByParams: (params: object) => {
-      setPageIndex(1);
+      setPageIndex(1)
       run({
         ...params,
         pageIndex: 1,
         pageSize,
-      });
+      })
       if (scrollbar && scrollbar.current) {
         scrollbar.current.view.scroll({
           top: 0,
           behavior: 'smooth',
-        });
+        })
       }
-      setTableSelectData([]);
-      onSelect?.([]);
+      setTableSelectData([])
+      onSelect?.([])
     },
     delayRefresh: async (ms: number) => {
-      await delay(500);
+      await delay(500)
       run({
         ...extractParams,
         pageIndex,
         pageSize,
-      });
-      setTableSelectData([]);
-      onSelect?.([]);
+      })
+      setTableSelectData([])
+      onSelect?.([])
     },
-  }));
+  }))
   const scrollEvent = (size: any) => {
     if (size) {
-      const tableTitle = document.getElementsByClassName('tableTitleContent');
-      const tableCheckbox = document.getElementsByClassName('checkboxContent');
-      const tableNameTd = document.getElementsByClassName('nameTdContent');
-      const tableActionTd = document.getElementsByClassName('actionTdContent');
-      const tableStatusTd = document.getElementsByClassName('statusTdContent');
+      const tableTitle = document.getElementsByClassName('tableTitleContent')
+      const tableCheckbox = document.getElementsByClassName('checkboxContent')
+      const tableNameTd = document.getElementsByClassName('nameTdContent')
+      const tableActionTd = document.getElementsByClassName('actionTdContent')
+      const tableStatusTd = document.getElementsByClassName('statusTdContent')
       if (tableTitle && tableTitle.length > 0) {
         for (let i = 0; i < tableTitle.length; i += 1) {
           // @ts-ignore
-          tableTitle[i].style.left = `${size.scrollLeft}px`;
+          tableTitle[i].style.left = `${size.scrollLeft}px`
         }
       }
       if (tableCheckbox && tableCheckbox.length > 0) {
         for (let i = 0; i < tableCheckbox.length; i += 1) {
           // @ts-ignore
-          tableCheckbox[i].style.left = `${size.scrollLeft}px`;
+          tableCheckbox[i].style.left = `${size.scrollLeft}px`
         }
       }
       if (tableNameTd && tableNameTd.length > 0) {
         for (let i = 0; i < tableNameTd.length; i += 1) {
           // @ts-ignore
-          tableNameTd[i].style.left = `${size.scrollLeft + 38}px`;
+          tableNameTd[i].style.left = `${size.scrollLeft + 38}px`
         }
       }
       if (tableActionTd && tableActionTd.length > 0) {
         for (let i = 0; i < tableActionTd.length; i += 1) {
           // @ts-ignore
-          tableActionTd[i].style.left = `${size.scrollLeft + tableContentSize.width - 60}px`;
+          tableActionTd[i].style.left = `${size.scrollLeft + tableContentSize.width - 60}px`
         }
       }
       if (tableStatusTd && tableStatusTd.length > 0) {
         for (let i = 0; i < tableStatusTd.length; i += 1) {
           // @ts-ignore
-          tableStatusTd[i].style.left = `${size.scrollLeft + tableContentSize.width - 180}px`;
+          tableStatusTd[i].style.left = `${size.scrollLeft + tableContentSize.width - 180}px`
         }
       }
     }
-  };
+  }
 
   const scrollBarRenderView = (params: any) => {
-    const { style, ...rest } = params;
+    const { style, ...rest } = params
     const viewStyle = {
       backgroundColor: `rgba(0, 0, 0, 0.2)`,
       borderRadius: '6px',
       cursor: 'pointer',
       zIndex: 100,
-    };
-    return <div style={{ ...style, ...viewStyle }} {...rest} />;
-  };
+    }
+    return <div style={{ ...style, ...viewStyle }} {...rest} />
+  }
 
   return (
     <TableContext.Provider
@@ -1216,7 +1225,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         )}
       </div>
     </TableContext.Provider>
-  );
-};
+  )
+}
 
-export default memo(forwardRef(EngineerTable));
+export default memo(forwardRef(EngineerTable))

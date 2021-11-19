@@ -1,32 +1,32 @@
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import { getProjectInfo } from '@/services/project-management/all-project';
-import { useGetProjectEnum } from '@/utils/hooks';
-import { useMount, useRequest } from 'ahooks';
-import { DatePicker, Input, InputNumber, Select } from 'antd';
-import { isEmpty, isNumber } from 'lodash';
-import moment, { Moment } from 'moment';
-import React, { memo, useEffect, useState } from 'react';
-import { useMemo } from 'react';
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import { getProjectInfo } from '@/services/project-management/all-project'
+import { useGetProjectEnum } from '@/utils/hooks'
+import { useMount, useRequest } from 'ahooks'
+import { DatePicker, Input, InputNumber, Select } from 'antd'
+import { isEmpty, isNumber } from 'lodash'
+import moment, { Moment } from 'moment'
+import React, { memo, useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
-import Rule from './project-form-rule';
+import Rule from './project-form-rule'
 
 interface CreateProjectFormProps {
-  field?: any;
-  areaId?: string;
-  company?: string;
-  companyName?: string;
-  status?: number;
-  projectId?: string;
-  form?: any;
-  engineerStart?: Moment;
-  engineerEnd?: Moment;
-  copyFlag?: number[];
-  setCopyFlag?: (value: number[]) => void;
-  index?: number;
-  isInherit?: boolean;
-  isEdit?: boolean;
-  pointVisible?: boolean;
+  field?: any
+  areaId?: string
+  company?: string
+  companyName?: string
+  status?: number
+  projectId?: string
+  form?: any
+  engineerStart?: Moment
+  engineerEnd?: Moment
+  copyFlag?: number[]
+  setCopyFlag?: (value: number[]) => void
+  index?: number
+  isInherit?: boolean
+  isEdit?: boolean
+  pointVisible?: boolean
 }
 
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
@@ -46,39 +46,39 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     isInherit = false,
     isEdit = false,
     setCopyFlag,
-  } = props;
+  } = props
 
-  const [startDate, setStartDate] = useState<Moment>();
-  const [endDate, setEndDate] = useState<Moment>();
-  const [dataSourceType, setDataSourceType] = useState<number>();
-  const [disRangeValue] = useState<number>();
-  const [pileRangeValue] = useState<number>();
+  const [startDate, setStartDate] = useState<Moment>()
+  const [endDate, setEndDate] = useState<Moment>()
+  const [dataSourceType, setDataSourceType] = useState<number>()
+  const [disRangeValue] = useState<number>()
+  const [pileRangeValue] = useState<number>()
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
     onSuccess: () => {
-      setStartDate(moment(projectInfo?.startTime));
-      setEndDate(moment(projectInfo?.endTime));
+      setStartDate(moment(projectInfo?.startTime))
+      setEndDate(moment(projectInfo?.endTime))
     },
     manual: true,
-  });
+  })
 
   useMount(() => {
-    projectId && run(projectId);
-  });
+    projectId && run(projectId)
+  })
 
   const disableDate = (current: any) => {
-    return current < moment('2010-01-01') || current > moment('2051-01-01');
-  };
+    return current < moment('2010-01-01') || current > moment('2051-01-01')
+  }
 
   useEffect(() => {
     if (!isInherit) {
-      setDataSourceType(Number(projectInfo?.dataSourceType));
+      setDataSourceType(Number(projectInfo?.dataSourceType))
     } else {
       setDataSourceType(
-        Number(projectInfo?.dataSourceType) === 1 ? 0 : Number(projectInfo?.dataSourceType),
-      );
+        Number(projectInfo?.dataSourceType) === 1 ? 0 : Number(projectInfo?.dataSourceType)
+      )
     }
-  }, [JSON.stringify(projectInfo)]);
+  }, [JSON.stringify(projectInfo)])
 
   const {
     projectCategory,
@@ -97,30 +97,30 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     projectAttribute,
     meteorologicLevel,
     projectDataSourceType,
-  } = useGetProjectEnum();
+  } = useGetProjectEnum()
 
   // 如果是继承，那么筛掉value是1的选项
   const handleProjectDataSourceType = useMemo(() => {
     if ((projectDataSourceType && pointVisible) || (isInherit && projectDataSourceType)) {
-      return projectDataSourceType.filter((item: any) => item.value !== 1);
+      return projectDataSourceType.filter((item: any) => item.value !== 1)
     }
-    return [];
-  }, [projectDataSourceType, pointVisible, isInherit]);
+    return []
+  }, [projectDataSourceType, pointVisible, isInherit])
 
   const handleProjectStage = useMemo(() => {
     if (isNumber(projectInfo?.stage) && projectStage && isInherit) {
-      return projectStage.filter((item: any) => item.value > projectInfo?.stage);
+      return projectStage.filter((item: any) => item.value > projectInfo?.stage)
     }
-    return [];
-  }, [projectStage, isInherit, projectInfo]);
+    return []
+  }, [projectStage, isInherit, projectInfo])
 
   const keyPressEvent = (e: any) => {
     //只要输入的内容是'+-eE'  ，就阻止元素发生默认的行为
-    const invalidChars = ['-', '+', 'e', 'E'];
+    const invalidChars = ['-', '+', 'e', 'E']
     if (invalidChars.indexOf(e.key) !== -1) {
-      e.preventDefault();
+      e.preventDefault()
     }
-  };
+  }
 
   return (
     <>
@@ -257,39 +257,39 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                     !getFieldValue('startTime') ||
                     endDate ||
                     moment(value.format('YYYY-MM-DD')).isBefore(
-                      moment(endDate).format('YYYY-MM-DD'),
+                      moment(endDate).format('YYYY-MM-DD')
                     )
                   ) {
                     if (
                       moment(moment(new Date(value)).format('YYYY-MM-DD')).isAfter(
-                        moment(endDate).format('YYYY-MM-DD'),
+                        moment(endDate).format('YYYY-MM-DD')
                       ) ||
                       moment(moment(new Date(value)).format('YYYY-MM-DD')).isSame(
-                        moment(endDate).format('YYYY-MM-DD'),
+                        moment(endDate).format('YYYY-MM-DD')
                       )
                     ) {
-                      return Promise.reject('"项目开始日期"必须早于"项目结束日期"');
+                      return Promise.reject('"项目开始日期"必须早于"项目结束日期"')
                     }
                     if (
                       getFieldValue('startTime')
                         ? moment(new Date(value).getTime()).isAfter(
                             engineerStart
                               ? engineerStart
-                              : new Date(getFieldValue('startTime')).getTime(),
+                              : new Date(getFieldValue('startTime')).getTime()
                           ) ||
                           moment(new Date(value).getTime()).isSame(
                             engineerStart
                               ? engineerStart
                               : new Date(getFieldValue('startTime')).getTime(),
-                            'day',
+                            'day'
                           )
                         : true
                     ) {
-                      return Promise.resolve();
+                      return Promise.resolve()
                     }
-                    return Promise.reject('"项目开始日期"不得早于"工程开始日期"');
+                    return Promise.reject('"项目开始日期"不得早于"工程开始日期"')
                   }
-                  return Promise.resolve();
+                  return Promise.resolve()
                 },
               }),
             ]}
@@ -297,7 +297,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <DatePicker
               placeholder="请选择"
               onChange={(value: any) => {
-                setStartDate(value);
+                setStartDate(value)
               }}
               disabledDate={disableDate}
             />
@@ -318,7 +318,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 validator(_, value) {
                   if (
                     moment(value?.format('YYYY-MM-DD')).isAfter(
-                      moment(startDate).format('YYYY-MM-DD'),
+                      moment(startDate).format('YYYY-MM-DD')
                     ) ||
                     !value ||
                     !getFieldValue('endTime') ||
@@ -326,34 +326,32 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                   ) {
                     if (
                       moment(value?.format('YYYY-MM-DD')).isBefore(
-                        moment(startDate).format('YYYY-MM-DD'),
+                        moment(startDate).format('YYYY-MM-DD')
                       ) ||
                       moment(moment(new Date(value))?.format('YYYY-MM-DD')).isSame(
-                        moment(startDate).format('YYYY-MM-DD'),
+                        moment(startDate).format('YYYY-MM-DD')
                       )
                     ) {
-                      return Promise.reject('"项目结束日期"必须晚于"项目开始日期"');
+                      return Promise.reject('"项目结束日期"必须晚于"项目开始日期"')
                     }
                     if (
                       getFieldValue('endTime')
                         ? moment(new Date(value).getTime()).isBefore(
-                            engineerEnd
-                              ? engineerEnd
-                              : new Date(getFieldValue('endTime')).getTime(),
+                            engineerEnd ? engineerEnd : new Date(getFieldValue('endTime')).getTime()
                           ) ||
                           moment(new Date(value).getTime()).isSame(
                             engineerEnd
                               ? engineerEnd
                               : new Date(getFieldValue('endTime')).getTime(),
-                            'day',
+                            'day'
                           )
                         : true
                     ) {
-                      return Promise.resolve();
+                      return Promise.resolve()
                     }
-                    return Promise.reject('“项目结束日期”不得晚于“工程结束日期”');
+                    return Promise.reject('“项目结束日期”不得晚于“工程结束日期”')
                   }
-                  return Promise.resolve();
+                  return Promise.resolve()
                 },
               }),
             ]}
@@ -363,7 +361,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               disabledDate={disableDate}
               format={'yyyy-MM-DD'}
               onChange={(value: any) => {
-                setEndDate(value);
+                setEndDate(value)
               }}
             />
           </CyFormItem>
@@ -705,31 +703,31 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 onChange={(value: any) => {
                   if (value === 2 || value === 1) {
                     if (field.fieldKey === undefined) {
-                      form.resetFields(['disclosureRange', 'pileRange']);
+                      form.resetFields(['disclosureRange', 'pileRange'])
 
                       // form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
                     } else {
-                      const projectsInfo = form.getFieldValue('projects');
+                      const projectsInfo = form.getFieldValue('projects')
                       const newProjectsInfo = projectsInfo.map((item: any, ind: number) => {
                         if (ind === index) {
-                          return { ...item, disclosureRange: undefined, pileRange: undefined };
+                          return { ...item, disclosureRange: undefined, pileRange: undefined }
                         }
-                        return item;
-                      });
-                      form.setFieldsValue({ projects: newProjectsInfo });
+                        return item
+                      })
+                      form.setFieldsValue({ projects: newProjectsInfo })
                     }
                   }
-                  setDataSourceType(value);
+                  setDataSourceType(value)
                   if (field) {
                     // 当有field的时候，重新触发校验
-                    form.validateFields();
+                    form.validateFields()
                   }
                   if (isNumber(index)) {
-                    const copyData = [...copyFlag!];
+                    const copyData = [...copyFlag!]
                     // console.log(index)
-                    copyData.splice(index!, 1, value);
+                    copyData.splice(index!, 1, value)
                     // console.log(copyData)
-                    setCopyFlag?.(copyData);
+                    setCopyFlag?.(copyData)
                   }
                 }}
               />
@@ -760,7 +758,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             >
               <InputNumber
                 disabled
-                placeholder="“无需现场数据”项目，免设置此条目"
+                placeholder="“免勘察”项目，免设置此条目"
                 style={{ width: '100%' }}
                 value={disRangeValue}
               />
@@ -777,7 +775,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             >
               <InputNumber
                 disabled
-                placeholder="“点位导入”项目，免设置此条目"
+                placeholder="“导入”项目，免设置此条目"
                 style={{ width: '100%' }}
                 value={disRangeValue}
               />
@@ -798,13 +796,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
                 () => ({
                   validator(_, value) {
-                    if (value <= 99999 && value > -1) {
-                      return Promise.resolve();
+                    if (value <= 999 && value > -1) {
+                      return Promise.resolve()
                     }
-                    if (value > 99999) {
-                      return Promise.reject('请填写0~99999以内的整数');
+                    if (value > 999) {
+                      return Promise.reject('请填写0~999以内的整数')
                     }
-                    return Promise.resolve();
+                    return Promise.resolve()
                   },
                 }),
                 {
@@ -837,7 +835,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <InputNumber
                 value={pileRangeValue}
                 disabled
-                placeholder="“无需现场数据”项目，免设置此条目"
+                placeholder="“免勘察”项目，免设置此条目"
                 style={{ width: '100%' }}
               />
             </CyFormItem>
@@ -854,7 +852,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <InputNumber
                 value={pileRangeValue}
                 disabled
-                placeholder="“点位导入”项目，免设置此条目"
+                placeholder="“导入”项目，免设置此条目"
                 style={{ width: '100%' }}
               />
             </CyFormItem>
@@ -874,13 +872,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 },
                 () => ({
                   validator(_, value) {
-                    if (value <= 99999 && value > -1) {
-                      return Promise.resolve();
+                    if (value <= 999 && value > -1) {
+                      return Promise.resolve()
                     }
-                    if (value > 99999) {
-                      return Promise.reject('请填写1~99999以内的整数');
+                    if (value > 999) {
+                      return Promise.reject('请填写0~999以内的整数')
                     }
-                    return Promise.resolve();
+                    return Promise.resolve()
                   },
                 }),
                 {
@@ -900,7 +898,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default memo(CreateProjectForm);
+export default memo(CreateProjectForm)
