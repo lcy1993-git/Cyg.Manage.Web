@@ -1,76 +1,73 @@
-import CyFormItem from '@/components/cy-form-item';
-import { getAuthorityModules, getUserInfoRequest, userLoginRequest } from '@/services/login';
-import { useGetUserInfo } from '@/utils/hooks';
-import { flatten } from '@/utils/utils';
-import { useControllableValue } from 'ahooks';
-import { Form, Input, message, Modal } from 'antd';
-import React, { Dispatch } from 'react';
-import { SetStateAction } from 'react';
-
-import { history } from 'umi';
+import CyFormItem from '@/components/cy-form-item'
+import { getAuthorityModules, getUserInfoRequest, userLoginRequest } from '@/services/login'
+import { useGetUserInfo } from '@/utils/hooks'
+import { flatten } from '@/utils/utils'
+import { useControllableValue } from 'ahooks'
+import { Form, Input, message, Modal } from 'antd'
+import { Dispatch, SetStateAction } from 'react'
+import { history } from 'umi'
 
 interface EditPasswordProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
   againLogin?: boolean
   finishEvent?: () => void
 }
 
 const CutAccount = (props: EditPasswordProps) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { againLogin = false,finishEvent } = props;
-  const [form] = Form.useForm();
-
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { againLogin = false, finishEvent } = props
+  const [form] = Form.useForm()
+  const lastAccount = useGetUserInfo()
   const sureCutAccount = () => {
     form.validateFields().then(async (value) => {
-      const { userName, pwd } = value;
+      const { userName, pwd } = value
       // TODO 快捷切换
-      const resData = await userLoginRequest({ userName, pwd });
+      const resData = await userLoginRequest({ userName, pwd })
 
       // 如果这次登录的账号跟之前的不一样，那么就只到首页
-      const lastAccount = useGetUserInfo();
 
-      const isLastAccount = (lastAccount && lastAccount.userName === userName);
+      const isLastAccount = lastAccount && lastAccount.userName === userName
 
-      const { accessToken } = resData;
-      localStorage.setItem('Authorization', accessToken);
+      const { accessToken } = resData
+      localStorage.setItem('Authorization', accessToken)
 
-      const userInfo = await getUserInfoRequest();
-      const modules = await getAuthorityModules();
-      
-      const buttonModules = flatten(modules);
+      const userInfo = await getUserInfoRequest()
+      const modules = await getAuthorityModules()
+
+      const buttonModules = flatten(modules)
       const buttonArray = buttonModules
         .filter((item: any) => item.category === 3)
-        .map((item: any) => item.authCode);
+        .map((item: any) => item.authCode)
 
-      localStorage.setItem('functionModules', JSON.stringify(modules));
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
-      localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
+      localStorage.setItem('functionModules', JSON.stringify(modules))
+      localStorage.setItem('userInfo', JSON.stringify(userInfo))
+      localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
 
       if (!againLogin || !isLastAccount) {
-        setState(false);
-        message.success('账户快捷登录成功');
-        history.push('/index');
-        location.reload();
-      }else {
-        finishEvent?.();
+        setState(false)
+        message.success('账户快捷登录成功')
+        history.push('/index')
+        window.location.reload()
+      } else {
+        finishEvent?.()
         //history.go(-1);
-        setState(false);
+        setState(false)
       }
-    });
-  };
+    })
+  }
 
   const onKeyDownLogin = (e: any) => {
     if (e.keyCode == 13) {
-      sureCutAccount();
+      sureCutAccount()
     }
-  };
+  }
 
   const cancelEvent = () => {
-    if(!againLogin) {
-      setState(false);
-    }else {
-      history.push("/login")
+    if (!againLogin) {
+      setState(false)
+    } else {
+      history.push('/login')
     }
   }
 
@@ -116,7 +113,7 @@ const CutAccount = (props: EditPasswordProps) => {
         </CyFormItem>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default CutAccount;
+export default CutAccount

@@ -1,10 +1,12 @@
 import headPortraitSrc from '@/assets/image/head-portrait.jpg'
 import ImageIcon from '@/components/image-icon'
 import LogoComponent from '@/components/logo-component'
+import { Stop } from '@/pages/login'
 import { signOut } from '@/services/login'
 import { useGetFunctionModules, useGetUserInfo } from '@/utils/hooks'
 import { BellOutlined } from '@ant-design/icons'
-import { Dropdown, Menu } from 'antd'
+import { useInterval } from 'ahooks'
+import { Badge, Dropdown, Menu } from 'antd'
 import React, { useState } from 'react'
 import { history } from 'umi'
 import CutAccount from '../cut-account'
@@ -19,6 +21,8 @@ const LayoutHeader: React.FC = () => {
   const [cutAccoutModalVisible, setCutAccountModalVisible] = useState<boolean>(false)
   const [personInfoModalVisible, setPersonInfoModalVisible] = useState<boolean>(false)
   const [versionModalVisible, setVersionModalVisible] = useState<boolean>(false)
+  const [count, setCount] = useState<number>(0)
+  const [stopServerInfo, setStopServerInfo] = useState<Stop>({} as Stop)
 
   const userInfo = useGetUserInfo()
 
@@ -33,7 +37,13 @@ const LayoutHeader: React.FC = () => {
   const personInfoEditEvent = () => {
     setPersonInfoModalVisible(true)
   }
-
+  useInterval(() => {
+    let info = JSON.parse(sessionStorage.getItem('stopServerInfo') || '')
+    if (info) {
+      setCount(1)
+      setStopServerInfo(info)
+    }
+  }, 5000)
   // TODO 点击个人信息对应的一些方法都还么写
   const myBaseInfoMenu = (
     <Menu>
@@ -69,17 +79,20 @@ const LayoutHeader: React.FC = () => {
     history.push(path)
   }
   // TODO 获取menu需要根据权限进行处理一下，没权限的不用展示出来
+
   const menuContent = menuData
     ?.filter((item) => item.category === 1)
     .map((item, index) => {
       return (
-        <LayoutHeaderMenu
-          key={`headerMenu_${index}`}
-          onSelect={menuSelectEvent}
-          name={item.name}
-          icon={item.icon}
-          menuData={item.children}
-        />
+        <>
+          <LayoutHeaderMenu
+            key={`headerMenu_${index}`}
+            onSelect={menuSelectEvent}
+            name={item.name}
+            icon={item.icon}
+            menuData={item.children}
+          />
+        </>
       )
     })
 
@@ -93,7 +106,9 @@ const LayoutHeader: React.FC = () => {
 
         <div className={styles.layoutMyBaseInfo}>
           <div onClick={() => setVersionModalVisible(true)}>
-            <BellOutlined style={{ height: '32px' }} className={styles.myMessageTips} />
+            <Badge count={count} color={'red'} size={'small'} offset={[1, 20]} dot>
+              <BellOutlined style={{ height: '32px' }} className={styles.myMessageTips} />
+            </Badge>
           </div>
           <Dropdown overlay={myBaseInfoMenu}>
             <div>
@@ -110,7 +125,11 @@ const LayoutHeader: React.FC = () => {
       <EditPassword visible={editPasswordModalVisible} onChange={setEditPasswordModalVisible} />
       <CutAccount visible={cutAccoutModalVisible} onChange={setCutAccountModalVisible} />
       <PersonInfoModal visible={personInfoModalVisible} onChange={setPersonInfoModalVisible} />
-      <VersionInfoModal visible={versionModalVisible} onChange={setVersionModalVisible} />
+      <VersionInfoModal
+        visible={versionModalVisible}
+        onChange={setVersionModalVisible}
+        stopServerInfo={stopServerInfo}
+      />
     </div>
   )
 }

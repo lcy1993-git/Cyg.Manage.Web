@@ -13,7 +13,12 @@ const routes: IConfigFromPlugins['routes'] = [
   {
     path: '/',
     component: '../layouts/index.tsx',
-    routes: [{ path: '/index', component: './index' }],
+    routes: [
+      {
+        path: '/index',
+        component: './index',
+      },
+    ],
   },
 ]
 

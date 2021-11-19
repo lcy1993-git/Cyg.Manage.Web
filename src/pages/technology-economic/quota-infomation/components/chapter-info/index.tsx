@@ -1,142 +1,147 @@
-import React, { useEffect, useState } from 'react';
-import { Button, message, Modal } from 'antd';
-import {DownloadOutlined, ExportOutlined } from '@ant-design/icons';
-import styles from './index.less';
-import WangEditor from '../wang-editor';
+import React, { useEffect, useState } from 'react'
+import { Button, message, Modal } from 'antd'
+import { DownloadOutlined, ExportOutlined } from '@ant-design/icons'
+import styles from './index.less'
+import WangEditor from '../wang-editor'
 import {
   saveQuotaLibraryCatalogDescription,
   UploadChapterDescriptionFile,
   UploadChapterDescriptionFiles,
-} from '@/services/technology-economic';
-import FileUpload from '@/components/file-upload';
-import { useBoolean } from 'ahooks';
-import { baseUrl } from '@/services/common';
-import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview';
+} from '@/services/technology-economic'
+import FileUpload from '@/components/file-upload'
+import { useBoolean } from 'ahooks'
+import { baseUrl } from '@/services/common'
+import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
 interface Props {
-  data: string;
-  id: string;
-  title?: string;
-  nodeId?: string;
-  update: () => void;
-  fileId:string
-  disabledDown:boolean
+  data: string
+  id: string
+  title?: string
+  nodeId?: string
+  update: () => void
+  fileId: string
+  disabledDown: boolean
 }
 
-const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId,disabledDown}) => {
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false);
-  const [html, setHtml] = useState<string>(data);
-  const [file, setFile] = useState<any[]>([]);
-  const [docx, setDocx] = useState<any[]>([]);
+const ChapterInfo: React.FC<Props> = ({
+  data,
+  id,
+  update,
+  title,
+  nodeId,
+  fileId,
+  disabledDown,
+}) => {
+  const [modalVisible, setModalVisible] = useState<boolean>(false)
+  const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false)
+  const [html, setHtml] = useState<string>(data)
+  const [file, setFile] = useState<any[]>([])
+  const [docx, setDocx] = useState<any[]>([])
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false);
+  ] = useBoolean(false)
 
   const saveData = () => {
-    saveQuotaLibraryCatalogDescription({ id, chapterDescription: html });
-    setModalVisible(false);
-    setHtml('');
+    saveQuotaLibraryCatalogDescription({ id, chapterDescription: html })
+    setModalVisible(false)
+    setHtml('')
     setTimeout(() => {
-      update();
-    }, 500);
-  };
+      update()
+    }, 500)
+  }
 
   const onChange = async (val: any) => {
     if (val.length !== 0) {
-      setFile(val);
+      setFile(val)
     } else {
-      setFile([]);
+      setFile([])
     }
-  };
+  }
 
-  const downFile = (id: string,down = false) => { // 下载文件
-    var xhr = new XMLHttpRequest();
-    xhr.open(
-      'GET',
-      `${baseUrl.upload}/Download/GetFileById?fileId=${id}`,
-      true,
-    ); // 也可以使用POST方式，根据接口
-    xhr.responseType = 'blob'; // 返回类型blob
-    xhr.setRequestHeader('Authorization',   localStorage.getItem('Authorization') as string);
+  const downFile = (id: string, down = false) => {
+    // 下载文件
+    var xhr = new XMLHttpRequest()
+    xhr.open('GET', `${baseUrl.upload}/Download/GetFileById?fileId=${id}`, true) // 也可以使用POST方式，根据接口
+    xhr.responseType = 'blob' // 返回类型blob
+    xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string)
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
     // @ts-ignore
     xhr.onload = function (e) {
       // 请求完成
       if (this.status === 200) {
         // 返回200
-        if (!down){ // 只展示
-          var res = e.target.response;
+        if (!down) {
+          // 只展示
+          var res = e.target.response
           // @ts-ignore
-          setDocx([res]);
-        } else { // 下载
-          let blob = new Blob([e.target.response], {type: `application/msword;charset=utf-8`});
+          setDocx([res])
+        } else {
+          // 下载
+          let blob = new Blob([e.target.response], { type: `application/msword;charset=utf-8` })
           // 获取heads中的filename文件名
-          let downloadElement = document.createElement('a');
+          let downloadElement = document.createElement('a')
           // 创建下载的链接
-          let href = window.URL.createObjectURL(blob);
-          downloadElement.href = href;
+          let href = window.URL.createObjectURL(blob)
+          downloadElement.href = href
           // 下载后文件名
-          downloadElement.download = `${title}.docx`;
-          document.body.appendChild(downloadElement);
+          downloadElement.download = `${title}.docx`
+          document.body.appendChild(downloadElement)
           // 点击下载
-          downloadElement.click();
+          downloadElement.click()
           // 下载完成移除元素
-          document.body.removeChild(downloadElement);
+          document.body.removeChild(downloadElement)
           // 释放掉blob对象
-          window.URL.revokeObjectURL(href);
+          window.URL.revokeObjectURL(href)
         }
       } else {
         message.error('下载失败!')
         setDocx([])
       }
-    };
-    xhr.send();
-  };
+    }
+    xhr.send()
+  }
   const uploadFile = async () => {
-    let type:string =  file[0].name.split('.')[1]
-    if (disabledDown){
+    let type: string = file[0].name.split('.')[1]
+    if (disabledDown) {
       message.warning('当前选中目录的不可导入章节说明')
       return
     }
-    if (title !== file[0].name.split('.')[0] && type !== 'zip'){
+    if (title !== file[0].name.split('.')[0] && type !== 'zip') {
       message.warning('文档名称和选择目录名称不相同')
       return
     }
-    if (type === 'zip'){
+    if (type === 'zip') {
       await UploadChapterDescriptionFiles({
         files: file,
-        quotaLibraryCatalogId : fileId
-      });
+        quotaLibraryCatalogId: fileId,
+      })
       update()
-
     } else {
-      if (title !== file[0].name.split('.')[0]){
-        message.warn('当前选中章节与上传文档的章节说明不匹配,请重新选择章节!');
+      if (title !== file[0].name.split('.')[0]) {
+        message.warn('当前选中章节与上传文档的章节说明不匹配,请重新选择章节!')
         return
       }
       await UploadChapterDescriptionFile({
         file: file,
-        quotaLibraryCatalogId : nodeId as string,
-      });
+        quotaLibraryCatalogId: nodeId as string,
+      })
       update()
-
     }
 
-    setUploadModalVisible(false);
-  };
-  const showSuccess = (html:string)=>{
+    setUploadModalVisible(false)
+  }
+  const showSuccess = (html: string) => {
     setHtml(html)
   }
-  const downWordFile = ()=>{
-    downFile(data,true)
+  const downWordFile = () => {
+    downFile(data, true)
     message.success('已开始下载')
   }
   useEffect(() => {
     setDocx([])
     if (data === '') return
-    downFile(data,false);
-  }, [data]);
+    downFile(data, false)
+  }, [data])
   return (
     <div className={styles.chapterInfoWrap}>
       <div className={styles.buttonArea}>
@@ -144,12 +149,21 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId,di
           <ExportOutlined />
           导入说明
         </Button>
-        <Button type="primary" className="mr7" onClick={downWordFile} disabled={data === '' || disabledDown}>
+        <Button
+          type="primary"
+          className="mr7"
+          onClick={downWordFile}
+          disabled={data === '' || disabledDown}
+        >
           <DownloadOutlined />
           下载
         </Button>
       </div>
-      {docx.length === 0 ? <div/> : <ManualPreview file={docx} fileTitle={``} showDirectory={false} onSuccess={showSuccess}/>}
+      {docx.length === 0 ? (
+        <div />
+      ) : (
+        <ManualPreview file={docx} fileTitle={``} showDirectory={false} onSuccess={showSuccess} />
+      )}
       <Modal
         visible={modalVisible}
         title="编辑-章节说明"
@@ -158,7 +172,7 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId,di
         onCancel={() => setModalVisible(false)}
         onOk={saveData}
       >
-        <WangEditor getHtml={setHtml} html={html}/>
+        <WangEditor getHtml={setHtml} html={html} />
       </Modal>
       <Modal
         visible={uploadModalVisible}
@@ -177,7 +191,7 @@ const ChapterInfo: React.FC<Props> = ({ data, id, update,title ,nodeId,fileId,di
         />
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default ChapterInfo;
+export default ChapterInfo

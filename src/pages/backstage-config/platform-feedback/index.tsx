@@ -1,63 +1,105 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { FormOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Form } from 'antd';
-import React, { useRef, useState } from 'react';
-import { isArray } from 'lodash';
-import { getFeedbackDetail, handleFeedback } from '@/services/system-config/platform-feedback';
-import { useRequest } from 'ahooks';
-import TableSearch from '@/components/table-search';
-import styles from './index.less';
-import FeedBackFormfrom from './components/deal-form';
-import moment, { Moment } from 'moment';
-import EnumSelect from '@/components/enum-select';
-import { Spin } from 'antd';
-import { SourceType, Category, Status } from '@/services/system-config/platform-feedback';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { DownloadOutlined, FormOutlined } from '@ant-design/icons'
+import { Button, Modal, message, Input, DatePicker, Form, Space } from 'antd'
+import React, { useRef, useState } from 'react'
+import { isArray } from 'lodash'
+import { getFeedbackDetail, handleFeedback } from '@/services/system-config/platform-feedback'
+import { useRequest } from 'ahooks'
+import TableSearch from '@/components/table-search'
+import styles from './index.less'
+import FeedBackFormfrom from './components/deal-form'
+import moment, { Moment } from 'moment'
+import EnumSelect from '@/components/enum-select'
+import { Spin } from 'antd'
+import { SourceType, Category, Status } from '@/services/system-config/platform-feedback'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { downLoadFileItem } from '@/services/operation-config/company-file'
 
-const { Search } = Input;
+const { Search } = Input
 
 const PlatFormFeedBack: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
-  const [beginDate, setBeginDate] = useState<Moment | null>();
-  const [endDate, setEndDate] = useState<Moment | null>();
-  const [sourceType, setSourceType] = useState<string | undefined>();
-  const [category, setCategory] = useState<string | undefined>();
-  const [feedbackStatus, setFeedbackStatus] = useState<string | undefined>();
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-  const [feedbackDetailVisible, setFeedBackDetailVisible] = useState<boolean>(false);
+  const [beginDate, setBeginDate] = useState<Moment | null>()
+  const [endDate, setEndDate] = useState<Moment | null>()
+  const [sourceType, setSourceType] = useState<string | undefined>()
+  const [category, setCategory] = useState<string | undefined>()
+  const [feedbackStatus, setFeedbackStatus] = useState<string | undefined>()
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [feedbackDetailVisible, setFeedBackDetailVisible] = useState<boolean>(false)
 
   const { data: detailData, loading, run: getDetailData } = useRequest(getFeedbackDetail, {
     manual: true,
-  });
+  })
 
-  const [form] = Form.useForm();
-
+  const [form] = Form.useForm()
+  const downFile = async () => {
+    console.log(tableSelectRows)
+    if (tableSelectRows?.length === 0) {
+      message.error('请选择一条数据下载文件')
+      return
+    } else if (tableSelectRows?.length > 1) {
+      message.error('只能同时下载一个文件')
+      return
+    } else if (!tableSelectRows[0]?.fileId) {
+      message.error('该反馈没有可以下载的文件')
+      return
+    }
+    const res = await downLoadFileItem({ fileId: tableSelectRows[0]?.fileId })
+    const suffix = tableSelectRows[0]?.fileName?.substring(
+      tableSelectRows[0]?.fileName.lastIndexOf('.') + 1
+    )
+    console.log(suffix)
+    const blob = new Blob([res], {
+      type: `application/${suffix}`,
+    })
+    // for IE
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, tableSelectRows[0]?.fileName)
+    } else {
+      // for Non-IE
+      const objectUrl = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', tableSelectRows[0]?.fileName)
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+      document.body.removeChild(link)
+    }
+    message.success('下载成功')
+  }
   const rightButton = () => {
     return (
       <div>
-        {buttonJurisdictionArray?.includes('handle-feedback') && (
-          <Button type="primary" onClick={() => dealEvent()}>
-            <FormOutlined />
-            处理
+        <Space>
+          {buttonJurisdictionArray?.includes('handle-feedback') && (
+            <Button type="primary" onClick={() => dealEvent()}>
+              <FormOutlined />
+              处理
+            </Button>
+          )}
+          <Button type="primary" onClick={() => downFile()}>
+            <DownloadOutlined />
+            下载
           </Button>
-        )}
+        </Space>
       </div>
-    );
-  };
+    )
+  }
 
   const dealEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据查看详情');
-      return;
+      message.error('请选择一条数据查看详情')
+      return
     }
-    setFeedBackDetailVisible(true);
+    setFeedBackDetailVisible(true)
 
-    await getDetailData(tableSelectRows[0].id);
-  };
+    await getDetailData(tableSelectRows[0].id)
+  }
 
   const leftSearchElement = () => {
     return (
@@ -118,33 +160,33 @@ const PlatFormFeedBack: React.FC = () => {
           </div>
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search();
+      tableRef.current?.search()
     }
-  };
+  }
   //数据修改刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   //重置搜索条件
   const resetEvent = () => {
-    setSearchKeyWord('');
-    setBeginDate(null);
-    setEndDate(null);
-    setCategory(undefined);
-    setFeedbackStatus(undefined);
-    setSourceType(undefined);
-    tableFresh();
-  };
+    setSearchKeyWord('')
+    setBeginDate(null)
+    setEndDate(null)
+    setCategory(undefined)
+    setFeedbackStatus(undefined)
+    setSourceType(undefined)
+    tableFresh()
+  }
 
   const columns = [
     {
@@ -153,7 +195,7 @@ const PlatFormFeedBack: React.FC = () => {
       index: 'sourceType',
       width: 150,
       render: (text: any, record: any) => {
-        return record.sourceTypeText;
+        return record.sourceTypeText
       },
     },
     {
@@ -162,7 +204,7 @@ const PlatFormFeedBack: React.FC = () => {
       index: 'category',
       width: 150,
       render: (text: any, record: any) => {
-        return record.categoryText;
+        return record.categoryText
       },
     },
     {
@@ -189,7 +231,16 @@ const PlatFormFeedBack: React.FC = () => {
       index: 'createdBy',
       width: 200,
       render: (text: any, record: any) => {
-        return record.createdByUserName;
+        return record.createdByUserName
+      },
+    },
+    {
+      title: '附件',
+      dataIndex: 'fileName',
+      index: 'fileName',
+      width: 200,
+      render: (text: any, record: any) => {
+        return record.fileName
       },
     },
     {
@@ -198,7 +249,7 @@ const PlatFormFeedBack: React.FC = () => {
       index: 'createdOn',
       width: 200,
       render: (text: any, record: any) => {
-        return moment(record.createdOn).format('YYYY-MM-DD hh:mm');
+        return moment(record.createdOn).format('YYYY-MM-DD hh:mm')
       },
     },
     {
@@ -207,7 +258,7 @@ const PlatFormFeedBack: React.FC = () => {
       index: 'processStatus',
       width: 180,
       render: (text: any, record: any) => {
-        return record.processStatus ? record.processStatusText : '待处理';
+        return record.processStatus ? record.processStatusText : '待处理'
       },
     },
     {
@@ -218,29 +269,29 @@ const PlatFormFeedBack: React.FC = () => {
       render: (text: any, record: any) => {
         return record.lastProcessDate
           ? moment(record.lastProcessDate).format('YYYY-MM-DD hh:mm')
-          : null;
+          : null
       },
     },
-  ];
+  ]
 
   const replyEvent = () => {
     form.validateFields().then(async (values) => {
-      const dealData = tableSelectRows[0];
+      const dealData = tableSelectRows[0]
       const dealInfo = Object.assign(
         {
           feedbackId: dealData.id,
           content: dealData.content,
           processStatus: dealData.processStatus,
         },
-        values,
-      );
+        values
+      )
 
-      await handleFeedback(dealInfo);
-      message.success('信息提交成功');
-      tableFresh();
-      setFeedBackDetailVisible(false);
-    });
-  };
+      await handleFeedback(dealInfo)
+      message.success('信息提交成功')
+      tableFresh()
+      setFeedBackDetailVisible(false)
+    })
+  }
 
   return (
     <PageCommonWrap>
@@ -278,7 +329,7 @@ const PlatFormFeedBack: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default PlatFormFeedBack;
+export default PlatFormFeedBack

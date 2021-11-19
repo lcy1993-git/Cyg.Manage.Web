@@ -31,7 +31,7 @@ export default defineConfig({
       drop_debugger: true,
     },
   },
-  title: '管理端',
+  title: '工程智慧云 | 管理',
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],
   manifest: {

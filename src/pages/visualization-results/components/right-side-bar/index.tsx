@@ -1,13 +1,11 @@
-
-import { useControllableValue } from 'ahooks';
-import { MenuUnfoldOutlined } from '@ant-design/icons';
-import styles from './index.less';
-interface Props {
-
-}
+import { useControllableValue } from 'ahooks'
+import { MenuUnfoldOutlined } from '@ant-design/icons'
+import styles from './index.less'
+import { Drawer } from 'antd'
+interface Props {}
 
 const RightSideBar: React.FC<Props> = (props) => {
-  const [state, setState] = useControllableValue(props, {valuePropName: ""})
+  const [state, setState] = useControllableValue(props, { valuePropName: '' })
   return (
     <div>
       <Drawer
@@ -35,7 +33,7 @@ const RightSideBar: React.FC<Props> = (props) => {
         /> */}
       </Drawer>
     </div>
-  );
+  )
 }
 
-export default RightSideBar;
+export default RightSideBar
