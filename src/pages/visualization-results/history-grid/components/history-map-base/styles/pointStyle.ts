@@ -41,6 +41,8 @@ interface PointOps {
 
 export type GetPointStyle = (
   type: ElectricPointType,
+  name: string,
+  showText: boolean,
   isHight?: boolean,
   ops?: PointOps
 ) => ClassStyle[]
@@ -56,7 +58,9 @@ export type GetPointStyle = (
 
 export const getPointStyle: GetPointStyle = (
   type: ElectricPointType,
-  isHight = false,
+  name: string,
+  showText: boolean = false,
+  isHight: boolean = false,
   ops: PointOps = {
     fill: 'rgba(0, 117, 206, 1)',
   }
@@ -70,8 +74,8 @@ export const getPointStyle: GetPointStyle = (
     联络开关: '\ue901',
     分段开关: '\ue903',
   }
-  return [
-    isHight ? hightCircle : whiteCircle,
+
+  const baseStyle = [
     new ClassStyle({
       text: new Text({
         text: textObjet[type],
@@ -83,4 +87,46 @@ export const getPointStyle: GetPointStyle = (
       }),
     }),
   ]
+
+  // 处理高亮图层
+  baseStyle.unshift(isHight ? hightCircle : whiteCircle)
+
+  // 处理设备名称
+  if (showText) {
+    const textStyle = new ClassStyle({
+      // stroke: new Stroke(strokeOpts),
+      text: new Text({
+        text: name?.length > 10 ? `${name.slice(0, 10)}...` : name,
+        textAlign: 'center',
+        font: 'bold 12px Source Han Sans SC', //字体与大小
+        // placement: 'line',
+        offsetY: 20,
+        fill: new Fill({
+          //文字填充色
+          color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
+        }),
+        // stroke: new Stroke({
+        //   //文字边界宽度与颜色
+        //   color: isHight ? 'rgba(249, 149, 52, 1)' : 'rgba(21, 32, 32, 1)',
+        //   width: 2,
+        // }),
+      }),
+    })
+    baseStyle.push(textStyle)
+  }
+  return baseStyle
+  // return [
+  //   isHight ? hightCircle : whiteCircle,
+  //   new ClassStyle({
+  //     text: new Text({
+  //       text: textObjet[type],
+  //       placement: 'point',
+  //       font: 'Normal 22px iconfontHistoryGrid',
+  //       fill: new Fill({
+  //         color: ops.fill,
+  //       }),
+  //     }),
+  //   }),
+
+  // ]
 }

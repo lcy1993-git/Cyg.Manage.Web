@@ -10,7 +10,10 @@ export const clear = (interActionRef: InterActionRef) => {
   interActionRef.hightLightSource!.clear()
 }
 
-// 清楚屏幕所有feature
+/**
+ * 清空地图上现有的所有选择器以及所有图层的Feature元素
+ * @param {InterActionRef} interActionRef
+ */
 export const clearScreen = (interActionRef: InterActionRef) => {
   clear(interActionRef)
   interActionRef.source!.clear()
@@ -22,10 +25,10 @@ export function getGeometryType(f: Feature<Geometry>) {
 }
 
 // 添加高亮样式
-export function addHightStyle(fs: Feature<Geometry>[]) {
+export function addHightStyle(fs: Feature<Geometry>[], showText) {
   return fs.map((f) => {
     const geometryType = getGeometryType(f)
-    f.setStyle(getStyle(geometryType)(f.get('type'), true))
+    f.setStyle(getStyle(geometryType)(f.get('type'), f.get('name'), showText, true))
     return f
   })
 }
