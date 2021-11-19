@@ -75,8 +75,6 @@ export function pointSelectCallback(
     interActionRef.hightLightSource!.removeFeature(f)
   })
 
-  console.log(mapBrowserEvent.pixel)
-
   setState(
     'selectedData',
     getDataByFeature(interActionRef.hightLightSource!.getFeatures()) as SelectedData

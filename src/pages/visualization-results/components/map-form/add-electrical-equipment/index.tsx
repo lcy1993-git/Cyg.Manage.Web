@@ -4,6 +4,7 @@ import { Button, Form, Input, Popconfirm, Space, Select } from 'antd'
 import styles from './index.less'
 import { CloseOutlined } from '@ant-design/icons'
 import { useMount } from 'ahooks'
+import { useGridMap } from '@/pages/visualization-results/history-grid/mapReducer'
 const { Option } = Select
 export interface ElectricalEquipmentForm {
   name?: string
@@ -25,6 +26,9 @@ interface Props {
   }
 }
 const AddElectricalEquipment: React.FC<Props> = (props) => {
+  const [state, setState] = useGridMap()
+
+  const {} = state
   const {
     type = 'add',
     showLength = false,
@@ -55,6 +59,9 @@ const AddElectricalEquipment: React.FC<Props> = (props) => {
       }
     }
   })
+  useEffect(() => {
+    console.log()
+  }, [])
   return (
     <div
       className={styles.formBox}

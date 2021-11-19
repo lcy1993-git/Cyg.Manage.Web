@@ -18,9 +18,9 @@ const HistoryGrid = () => {
         <DesignTitle />
         <CityPickerWrapper />
         <DesignIcon />
-        <GridVersionManagement />
-        <HistoryVersionManagement />
-        {/*<AddElectricalEquipment data={[]} type={'Point'} visible/>*/}
+        {/*<GridVersionManagement />*/}
+        {/*<HistoryVersionManagement />*/}
+        <AddElectricalEquipment data={[]} type={'Point'} visible />
       </HistoryGridContext.Provider>
     </div>
   )
