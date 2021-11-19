@@ -33,18 +33,16 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
   }
   return (
     <>
-      {type == 'add' && (
-        <CyFormItem
-          label="模块编码"
-          name="cableWellId"
-          labelWidth={98}
-          align="right"
-          required
-          rules={[{ required: true, message: '编号不能为空' }]}
-        >
-          <Input placeholder="请输入编号" />
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="模块编码"
+        name="cableWellId"
+        labelWidth={98}
+        align="right"
+        required
+        rules={[{ required: true, message: '编号不能为空' }]}
+      >
+        <Input placeholder="请输入编号" />
+      </CyFormItem>
 
       <CyFormItem
         label="类型"

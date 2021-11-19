@@ -32,16 +32,15 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
 
   return (
     <>
-      {type === 'add' && (
-        <CyFormItem
-          label="组件编码"
-          name="componentId"
-          required
-          rules={[{ required: true, message: '组件编码不能为空' }]}
-        >
-          <Input placeholder="请输入组件编码"></Input>
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="组件编码"
+        name="componentId"
+        required
+        rules={[{ required: true, message: '组件编码不能为空' }]}
+      >
+        <Input placeholder="请输入组件编码"></Input>
+      </CyFormItem>
+
       <CyFormItem
         label="组件名称"
         name="componentName"

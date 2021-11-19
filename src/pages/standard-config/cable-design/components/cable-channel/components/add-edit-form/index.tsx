@@ -4,15 +4,8 @@ import CyFormItem from '@/components/cy-form-item'
 import UrlSelect from '@/components/url-select'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import EnumSelect from '@/components/enum-select'
-import {
-  forDesignType,
-  forProjectType,
-  feature,
-  coverMode,
-  grooveStructure,
-} from '@/services/resource-config/resource-enum'
+import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
 
-const { TextArea } = Input
 interface PoleTypeParams {
   type?: 'edit' | 'add'
   resourceLibId: string
@@ -33,18 +26,16 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
 
   return (
     <>
-      {type == 'add' && (
-        <CyFormItem
-          label="模块编码"
-          name="channelId"
-          labelWidth={130}
-          align="right"
-          required
-          rules={[{ required: true, message: '模块编码不能为空' }]}
-        >
-          <Input placeholder="请输入编号" />
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="模块编码"
+        name="channelId"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '模块编码不能为空' }]}
+      >
+        <Input placeholder="请输入编号" />
+      </CyFormItem>
 
       <CyFormItem
         label="模块名称"
@@ -184,7 +175,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '可容纳电缆数量不能为空' }]}
       >
-        <Input placeholder="请输入电缆数量" />
+        <Input placeholder="请输入电缆数量" type="number" />
       </CyFormItem>
 
       <CyFormItem
@@ -195,7 +186,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '支架层数不能为空' }]}
       >
-        <Input placeholder="请输入支架层数" />
+        <Input placeholder="请输入支架层数" type="number" />
       </CyFormItem>
       <CyFormItem
         label="排列方式"

@@ -1,6 +1,6 @@
 import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, FileTextOutlined, FileOutlined } from '@ant-design/icons'
+import { EditOutlined, PlusOutlined, FileTextOutlined } from '@ant-design/icons'
 import { Input, Button, Modal, Form, message, Spin } from 'antd'
 import React, { useState, useEffect } from 'react'
 import styles from './index.less'
@@ -15,8 +15,7 @@ import {
 } from '@/services/resource-config/modules-property'
 import { isArray } from 'lodash'
 import ModulesPropertyForm from './components/add-edit-form'
-import ModuleAttributeForm from './components/attribute-form'
-import ModuleDetailTab from './components/detail-tabs'
+
 import ModuleDetailTable from './components/detail-table'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import ModalConfirm from '@/components/modal-confirm'
@@ -92,6 +91,13 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.search()
+    }
+  }
+
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset()
     }
   }
 
@@ -280,12 +286,12 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           nominalHeight: values.nominalHeight ? values.nominalHeight : 0,
         }
       )
-      console.log(submitInfo)
 
       await updateModulesPropertyItem(submitInfo)
       refresh()
       message.success('更新成功')
       editForm.resetFields()
+      reset()
       setEditFormVisible(false)
     })
   }
@@ -350,9 +356,9 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       message.error('请选择一条数据进行删除')
       return
     }
-    const editDataId = [tableSelectRows[0].id]
+    const ids = tableSelectRows.map((item: any) => item.id)
 
-    await deleteModulesPropertyItem(libId, editDataId)
+    await deleteModulesPropertyItem({ libId: libId, ids: ids })
     refresh()
     setTableSelectRows([])
     message.success('删除成功')
@@ -364,7 +370,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
     ) {
-      message.warning('请选择模块查看明细')
+      message.warning('请选择单行数据查看')
       return
     }
     setModuleDetailVisible(true)

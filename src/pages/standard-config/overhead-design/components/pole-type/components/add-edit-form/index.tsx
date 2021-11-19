@@ -14,20 +14,16 @@ interface PoleTypeParams {
 }
 
 const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
-
   return (
     <>
-      {type == 'add' && (
-        <CyFormItem
-          label="杆型简号"
-          name="poleTypeCode"
-          required
-          rules={[{ required: true, message: '杆型简号不能为空' }]}
-        >
-          <Input placeholder="请输入杆型简号" />
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="杆型简号"
+        name="poleTypeCode"
+        required
+        rules={[{ required: true, message: '杆型简号不能为空' }]}
+      >
+        <Input placeholder="请输入杆型简号" />
+      </CyFormItem>
 
       <CyFormItem
         label="杆型名称"

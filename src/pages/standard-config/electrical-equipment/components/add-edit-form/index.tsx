@@ -25,16 +25,15 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
   }
   return (
     <>
-      {type === 'add' && (
-        <CyFormItem
-          label="组件编码"
-          name="componentId"
-          required
-          rules={[{ required: true, message: '编号不能为空' }]}
-        >
-          <Input placeholder="请输入编号"></Input>
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="组件编码"
+        name="componentId"
+        required
+        rules={[{ required: true, message: '编号不能为空' }]}
+      >
+        <Input placeholder="请输入编号"></Input>
+      </CyFormItem>
+
       <CyFormItem
         initialValue="电气设备"
         label="设备分类"

@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
 import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { Ref, useEffect, useImperativeHandle, useState, forwardRef } from 'react'
 import styles from './index.less'
 import { useRequest } from 'ahooks'
 import {
@@ -24,7 +24,7 @@ interface CableDesignParams {
   libId: string
 }
 
-const CableWell: React.FC<CableDesignParams> = (props) => {
+const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
   const { libId } = props
 
   const tableRef = React.useRef<HTMLDivElement>(null)
@@ -33,8 +33,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-  const [ids] = useState<string[]>([])
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [detailVisible, setDetailVisible] = useState<boolean>(false)
 
@@ -78,6 +77,10 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       tableRef.current.refresh()
     }
   }
+
+  useImperativeHandle(ref, () => ({
+    refresh,
+  }))
 
   // 列表搜索
   const search = () => {
@@ -141,7 +144,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'depth',
       index: 'depth',
-      title: '井深',
+      title: '井深(mm)',
       width: 180,
     },
     {
@@ -149,12 +152,18 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       index: 'isConfined',
       title: '是否封闭',
       width: 140,
+      render: (text: any, record: any) => {
+        return record.isConfined === 0 ? '否' : '是'
+      },
     },
     {
       dataIndex: 'isSwitchingPipe',
       index: 'isSwitchingPipe',
       title: '是否转接孔管',
       width: 200,
+      render: (text: any, record: any) => {
+        return record.isSwitchingPipe === 0 ? '否' : '是'
+      },
     },
     {
       dataIndex: 'feature',
@@ -326,10 +335,8 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       message.error('请选择一条数据进行编辑')
       return
     }
-    tableSelectRows.map((item) => {
-      ids.push(item.id)
-    })
 
+    const ids = tableSelectRows.map((item: any) => item.id)
     await deleteCableWellItem({ libId, ids })
     refresh()
     message.success('删除成功')
@@ -427,4 +434,4 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   )
 }
 
-export default CableWell
+export default forwardRef(CableWell)

@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
 import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react'
 import styles from './index.less'
 import { useRequest } from 'ahooks'
 import {
@@ -23,7 +23,7 @@ interface CableDesignParams {
   libId: string
 }
 
-const CableChannel: React.FC<CableDesignParams> = (props) => {
+const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
   const { libId } = props
 
   const tableRef = React.useRef<HTMLDivElement>(null)
@@ -32,9 +32,8 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-  const [ids, setIds] = useState<string[]>([])
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const [detailVisible, setDetailVisible] = useState<boolean>(false)
 
   const [addForm] = Form.useForm()
@@ -67,6 +66,10 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       tableRef.current.refresh()
     }
   }
+
+  useImperativeHandle(ref, () => ({
+    refresh,
+  }))
 
   const reset = () => {
     if (tableRef && tableRef.current) {
@@ -316,10 +319,8 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
       message.error('请选择一条数据进行编辑')
       return
     }
-    tableSelectRows.map((item) => {
-      ids.push(item.id)
-    })
 
+    const ids = tableSelectRows.map((item: any) => item.id)
     await deleteCableChannelItem({ libId, ids })
     refresh()
     setTableSelectRows([])
@@ -417,4 +418,4 @@ const CableChannel: React.FC<CableDesignParams> = (props) => {
   )
 }
 
-export default CableChannel
+export default forwardRef(CableChannel)

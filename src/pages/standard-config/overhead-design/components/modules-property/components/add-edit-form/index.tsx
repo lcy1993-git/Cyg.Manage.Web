@@ -13,7 +13,6 @@ import {
 } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 
-const { TextArea } = Input
 const { Option } = Select
 interface PoleTypeParams {
   type?: 'edit' | 'add'
@@ -36,17 +35,15 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
 
   return (
     <>
-      {type == 'add' && (
-        <CyFormItem
-          label="模块编码"
-          name="moduleId"
-          required
-          labelWidth={108}
-          rules={[{ required: true, message: '模块编码不能为空' }]}
-        >
-          <Input placeholder="请输入模块编码" />
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="模块编码"
+        name="moduleId"
+        required
+        labelWidth={108}
+        rules={[{ required: true, message: '模块编码不能为空' }]}
+      >
+        <Input placeholder="请输入模块编码" />
+      </CyFormItem>
 
       <CyFormItem
         label="模块名称"
@@ -68,17 +65,15 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         <Input placeholder="请输入杆型简号" />
       </CyFormItem>
 
-      {type == 'add' && (
-        <CyFormItem
-          label="典设编码"
-          name="typicalCode"
-          required
-          labelWidth={108}
-          rules={[{ required: true, message: '典设编码不能为空' }]}
-        >
-          <Input placeholder="请输入典设编码" />
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="典设编码"
+        name="typicalCode"
+        required
+        labelWidth={108}
+        rules={[{ required: true, message: '典设编码不能为空' }]}
+      >
+        <Input placeholder="请输入典设编码" />
+      </CyFormItem>
 
       <CyFormItem
         labelSlot={unitSlot}

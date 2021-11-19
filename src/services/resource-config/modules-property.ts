@@ -63,9 +63,9 @@ export const updateModulesPropertyItem = (params: ItemDetailData) => {
 }
 
 // 删除
-export const deleteModulesPropertyItem = (libId: string, ids: string[]) => {
+export const deleteModulesPropertyItem = (params: { libId: string; ids: string[] }) => {
   return cyRequest(() =>
-    request(`${baseUrl.resource}/Modules/Delete`, { method: 'POST', data: { libId, ids } })
+    request(`${baseUrl.resource}/Modules/Delete`, { method: 'POST', data: params })
   )
 }
 

@@ -393,10 +393,6 @@ const Material: React.FC<libParams> = (props) => {
 
   //展示电缆终端头映射
   const openCableTerminal = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请先选择资源库');
-    //   return;
-    // }
     setCableTerminalVisible(true)
   }
 
@@ -470,7 +466,12 @@ const Material: React.FC<libParams> = (props) => {
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <LineProperty libId={libId} materialIds={[]} />
+        <LineProperty
+          libId={libId}
+          materialIds={tableSelectRows.map((item: any) => {
+            return item.id
+          })}
+        />
       </Modal>
 
       <Modal
@@ -485,7 +486,12 @@ const Material: React.FC<libParams> = (props) => {
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <CableMapping libId={libId} materialIds={[]} />
+        <CableMapping
+          libId={libId}
+          materialIds={tableSelectRows.map((item: any) => {
+            return item.id
+          })}
+        />
       </Modal>
       <SaveImportMaterial
         libId={libId}
