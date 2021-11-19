@@ -1,82 +1,116 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
+import React from 'react'
+import { Input, Tooltip } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import EnumSelect from '@/components/enum-select'
+import {
+  forDesignType,
+  forProjectType,
+  feature,
+  coverMode,
+  grooveStructure,
+} from '@/services/resource-config/resource-enum'
 
-const { TextArea } = Input;
+const { TextArea } = Input
 interface PoleTypeParams {
-  type?: 'edit' | 'add';
-  resourceLibId: string;
+  type?: 'edit' | 'add'
+  resourceLibId: string
 }
 
 const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props;
+  const { type = 'edit', resourceLibId } = props
+  const unitSlot = () => {
+    return (
+      <>
+        <span>单位</span>
+        <Tooltip title="长度单位请用m/km" placement="top">
+          <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    )
+  }
 
   return (
     <>
       {type == 'add' && (
         <CyFormItem
-          label="编号"
+          label="模块编码"
           name="channelId"
-          labelWidth={111}
+          labelWidth={130}
           align="right"
           required
-          rules={[{ required: true, message: '通道编号不能为空' }]}
+          rules={[{ required: true, message: '模块编码不能为空' }]}
         >
           <Input placeholder="请输入编号" />
         </CyFormItem>
       )}
 
       <CyFormItem
-        label="名称"
+        label="模块名称"
         name="channelName"
-        labelWidth={111}
+        labelWidth={130}
         align="right"
         required
-        rules={[{ required: true, message: '名称不能为空' }]}
+        rules={[{ required: true, message: '模块名称不能为空' }]}
       >
-        <Input placeholder="请输入名称" />
+        <Input placeholder="请输入模块名称" />
       </CyFormItem>
 
       <CyFormItem
-        label="简称"
+        label="模块简称"
         name="shortName"
-        labelWidth={111}
+        labelWidth={130}
         align="right"
         required
-        rules={[{ required: true, message: '简称不能为空' }]}
+        rules={[{ required: true, message: '模块简称不能为空' }]}
       >
-        <Input placeholder="请输入简称" />
+        <Input placeholder="请输入模块简称" />
       </CyFormItem>
 
       <CyFormItem
-        label="典设编码"
-        name="typicalCode"
-        labelWidth={111}
-        align="right"
-        required
-        rules={[{ required: true, message: '典设编码不能为空' }]}
-      >
-        <Input placeholder="请输入典设编码" />
-      </CyFormItem>
-      <CyFormItem
-        label="规格简号"
+        label="简号"
         name="channelCode"
-        labelWidth={111}
+        labelWidth={130}
         align="right"
         required
-        rules={[{ required: true, message: '规格简号不能为空' }]}
+        rules={[{ required: true, message: '简号不能为空' }]}
       >
-        <Input placeholder="请输入规格简号" />
+        <Input placeholder="请输入简号" />
       </CyFormItem>
 
-      <CyFormItem label="加工图" name="chartIds" labelWidth={111} align="right">
+      <CyFormItem
+        labelSlot={unitSlot}
+        name="unit"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '单位不能为空' }]}
+      >
+        <Input placeholder="请输入单位" />
+      </CyFormItem>
+
+      <CyFormItem label="设计图" name="designChartIds" labelWidth={130} align="right">
         <UrlSelect
           requestType="post"
           mode="multiple"
           showSearch
           requestSource="resource"
-          url="/Chart/GetList"
+          url="/Chart/GetDesignChartList"
+          titlekey="chartName"
+          valuekey="chartId"
+          placeholder="请选择图纸"
+          postType="query"
+          libId={resourceLibId}
+        />
+      </CyFormItem>
+      <CyFormItem label="加工图" name="processChartIds" labelWidth={130} align="right">
+        <UrlSelect
+          requestType="post"
+          mode="multiple"
+          showSearch
+          requestSource="resource"
+          url="/Chart/GetProcessChartList"
           titlekey="chartName"
           valuekey="chartId"
           placeholder="请选择图纸"
@@ -85,59 +119,96 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         />
       </CyFormItem>
 
-      <CyFormItem label="单位" name="unit" labelWidth={111} align="right">
-        <Input placeholder="请输入单位" />
+      <CyFormItem
+        label="所属工程"
+        name="forProject"
+        required
+        align="right"
+        labelWidth={130}
+        initialValue="不限"
+        rules={[{ required: true, message: '所属工程不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="预留宽度(mm)" name="reservedWidth" labelWidth={111} align="right">
-        <Input placeholder="请输入预留宽度" />
+      <CyFormItem
+        label="所属设计"
+        name="forDesign"
+        required
+        align="right"
+        labelWidth={130}
+        initialValue="不限"
+        rules={[{ required: true, message: '所属设计不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="挖深(mm)" name="digDepth" labelWidth={111} align="right">
-        <Input placeholder="请输入挖深" />
+      <CyFormItem
+        label="通道预留宽度(mm)"
+        name="reservedWidth"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '通道预留宽度不能为空' }]}
+      >
+        <Input placeholder="请输入通道预留宽度" type="number" />
       </CyFormItem>
 
-      <CyFormItem label="敷设方式" name="layingMode" labelWidth={111} align="right">
+      <CyFormItem
+        label="挖深(mm)"
+        name="digDepth"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '挖深不能为空' }]}
+      >
+        <Input placeholder="请输入挖深" type="number" />
+      </CyFormItem>
+
+      <CyFormItem
+        label="敷设方式"
+        name="layingMode"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '敷设方式不能为空' }]}
+      >
         <Input placeholder="请输入敷设方式" />
       </CyFormItem>
 
-      <CyFormItem label="电缆数量" name="cableNumber" labelWidth={111} align="right">
+      <CyFormItem
+        label="可容纳电缆数量"
+        name="cableNumber"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '可容纳电缆数量不能为空' }]}
+      >
         <Input placeholder="请输入电缆数量" />
       </CyFormItem>
 
-      <CyFormItem label="路面环境" name="pavement" labelWidth={111} align="right">
-        <Input placeholder="请输入路面环境" />
-      </CyFormItem>
-
-      <CyFormItem label="保护方式" name="protectionMode" labelWidth={111} align="right">
-        <Input placeholder="请输入保护方式" />
-      </CyFormItem>
-
-      <CyFormItem label="电缆管材质编号" name="ductMaterialId" labelWidth={111} align="right">
-        <Input placeholder="请输入材质编号" />
-      </CyFormItem>
-
-      <CyFormItem label="排列方式" name="arrangement" labelWidth={111} align="right">
-        <Input placeholder="请输入排列方式" />
-      </CyFormItem>
-
-      <CyFormItem label="支架层数" name="bracketNumber" labelWidth={111} align="right">
+      <CyFormItem
+        label="支架层数"
+        name="bracketNumber"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '支架层数不能为空' }]}
+      >
         <Input placeholder="请输入支架层数" />
       </CyFormItem>
-
-      <CyFormItem label="所属工程" name="forProject" labelWidth={111} align="right">
-        <Input placeholder="请输入所属工程" />
-      </CyFormItem>
-
-      <CyFormItem label="所属设计" name="forDesign" labelWidth={111} align="right">
-        <Input placeholder="请输入所属设计" />
-      </CyFormItem>
-
-      <CyFormItem label="备注" name="remark" labelWidth={111} align="right">
-        <TextArea showCount maxLength={100} placeholder="备注说明" />
+      <CyFormItem
+        label="排列方式"
+        name="arrangement"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '排列方式不能为空' }]}
+      >
+        <Input placeholder="请输入排列方式" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default CableChannelForm;
+export default CableChannelForm

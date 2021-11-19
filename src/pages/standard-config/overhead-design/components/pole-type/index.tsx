@@ -1,45 +1,45 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
-import React, { useEffect, useState } from 'react';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd'
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
 import {
   getPoleTypeDetail,
   updatePoleTypeItem,
   deletePoleTypeItem,
   addPoleTypeItem,
-} from '@/services/resource-config/pole-type';
-import { isArray } from 'lodash';
-import PoleTypeForm from './components/add-edit-form';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
+} from '@/services/resource-config/pole-type'
+import { isArray } from 'lodash'
+import PoleTypeForm from './components/add-edit-form'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input;
+const { Search } = Input
 
 interface CableDesignParams {
-  libId: string;
+  libId: string
 }
 
 const PoleType: React.FC<CableDesignParams> = (props) => {
-  const { libId } = props;
+  const { libId } = props
 
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [resourceLibId, setResourceLibId] = useState<string>('')
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getPoleTypeDetail, {
     manual: true,
-  });
+  })
 
   const searchComponent = () => {
     return (
@@ -54,52 +54,52 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    setResourceLibId(value);
-    search();
-  };
+    setResourceLibId(value)
+    search()
+  }
 
   useEffect(() => {
-    searchByLib(libId);
-  }, [libId]);
+    searchByLib(libId)
+  }, [libId])
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
       dataIndex: 'poleTypeCode',
       index: 'poleTypeCode',
-      title: '简号编码',
+      title: '杆型简号',
       width: 180,
     },
     {
       dataIndex: 'poleTypeName',
       index: 'poleTypeName',
-      title: '名称',
+      title: '杆型名称',
       width: 280,
     },
     {
       dataIndex: 'category',
       index: 'category',
-      title: '类别',
+      title: '类型',
       width: 200,
     },
     {
@@ -111,7 +111,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'type',
       index: 'type',
-      title: '类型',
+      title: '杆型类型',
       width: 180,
     },
     {
@@ -123,7 +123,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'material',
       index: 'material',
-      title: '材质',
+      title: '杆型材质',
       width: 180,
     },
     {
@@ -139,25 +139,19 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       title: '是否耐张',
       width: 180,
       render: (text: any, record: any) => {
-        return record.isTension == true ? '是' : '否';
+        return record.isTension == true ? '是' : '否'
       },
     },
-    {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '备注',
-      width: 180,
-    },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
     if (!resourceLibId) {
-      message.warning('请先选择资源库！');
-      return;
+      message.warning('请先选择资源库！')
+      return
     }
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddPoleType = () => {
     addForm.validateFields().then(async (value) => {
@@ -176,14 +170,14 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
           remark: '',
           chartIds: [],
         },
-        value,
-      );
-      await addPoleTypeItem(submitInfo);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addPoleTypeItem(submitInfo)
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
@@ -191,24 +185,24 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
     ) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const ResourceLibData = await run(resourceLibId, editDataId);
+    setEditFormVisible(true)
+    const ResourceLibData = await run(resourceLibId, editDataId)
 
-    editForm.setFieldsValue(ResourceLibData);
-  };
+    editForm.setFieldsValue(ResourceLibData)
+  }
 
   const sureEditPoleType = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -226,15 +220,15 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
           remark: editData.remark,
           chartIds: editData.chartIds,
         },
-        values,
-      );
-      await updatePoleTypeItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updatePoleTypeItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const tableElement = () => {
     return (
@@ -257,33 +251,34 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deletePoleTypeItem(resourceLibId, editDataId);
-    refresh();
-    message.success('删除成功');
-  };
+    await deletePoleTypeItem(resourceLibId, editDataId)
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   return (
     <>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
-        // buttonRightContentSlot={tableElement}
+        buttonRightContentSlot={tableElement}
         columns={columns}
         requestSource="resource"
         url="/PoleType/GetPageList"
         getSelectData={(data) => setTableSelectRows(data)}
-        type="radio"
+        type="checkbox"
         extractParams={{
           resourceLibId: libId,
           keyWord: searchKeyWord,
@@ -322,7 +317,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
         </Form>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default PoleType;
+export default PoleType

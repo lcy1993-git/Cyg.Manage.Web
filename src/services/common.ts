@@ -1,60 +1,63 @@
 /* eslint-disable no-async-promise-executor */
-import { message } from 'antd';
-import { request, history } from 'umi';
-import tokenRequest from '@/utils/request';
-import type { RequestDataType, RequestDataCommonType } from './common.d';
-import {webConfig} from "@/global";
+import { message } from 'antd'
+import { request, history } from 'umi'
+import tokenRequest from '@/utils/request'
+import type { RequestDataType, RequestDataCommonType } from './common.d'
+import { webConfig } from '@/global'
 
-import { isArray } from 'lodash';
+import { isArray } from 'lodash'
 
-export const geoServeUrl = webConfig.requestUrl.geoServerUrl;
+export const geoServeUrl = webConfig.requestUrl.geoServerUrl
 
-export const baseUrl = webConfig.requestUrl;
+export const baseUrl = webConfig.requestUrl
 
 export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>): Promise<T> => {
   return new Promise(async (resolve, reject) => {
-    const res = await func();
-
-    const { code, content, isSuccess } = res;
+    const res = await func()
+    const { code, content, isSuccess, data } = res
     if (isSuccess && code === 200) {
-      resolve(content);
+      if (content) {
+        resolve(content)
+      } else {
+        resolve(data)
+      }
     } else {
       if (code === 401) {
-        history.push('/again-login');
+        history.push('/again-login')
         // message.error('会话超时，已自动跳转到登录界面');
       } else {
         // eslint-disable-next-line no-lonely-if
         if (res.content && isArray(res.content) && res.content.length > 0) {
-          const errorMsgArray = res.content.map((item) => item.errorMessages).flat();
+          const errorMsgArray = res.content.map((item) => item.errorMessages).flat()
           const filterErrorMsg = errorMsgArray.filter((item, index, arr) => {
-            return arr.indexOf(item) === index;
-          });
-          const showErrorMsg = filterErrorMsg.join('\n');
-          message.error(showErrorMsg);
+            return arr.indexOf(item) === index
+          })
+          const showErrorMsg = filterErrorMsg.join('\n')
+          message.error(showErrorMsg)
         } else {
-          message.error(res.message);
+          message.error(res.message)
         }
       }
-      reject(res.message);
+      reject(res.message)
     }
-  });
-};
+  })
+}
 
 export const cyCommonRequest = <T extends {}>(
-  func: () => Promise<RequestDataCommonType>,
+  func: () => Promise<RequestDataCommonType>
 ): Promise<T> => {
   return new Promise(async (resolve, reject) => {
-    const res = await func();
+    const res = await func()
 
-    const { code, isSuccess } = res;
+    const { code, isSuccess } = res
     if (isSuccess && code === 200) {
-      resolve(res as unknown as T);
+      resolve((res as unknown) as T)
     } else {
-      message.error(res.message);
-      reject(res.message);
+      message.error(res.message)
+      reject(res.message)
     }
-  });
-};
+  })
+}
 
 export enum SendSmsType {
   '登录',
@@ -66,8 +69,8 @@ export enum SendSmsType {
 
 // 获取短信接口
 interface GetSmsCodeProps {
-  phoneNum: string;
-  sendSmsType: SendSmsType;
+  phoneNum: string
+  sendSmsType: SendSmsType
 }
 
 export const getSmsCode = (params: GetSmsCodeProps) => {
@@ -75,9 +78,9 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
     request(`${baseUrl.common}/ExternalApi/SendSms`, {
       method: 'GET',
       params: { ...params, sendSmsType: params.sendSmsType },
-    }),
-  );
-};
+    })
+  )
+}
 
 export const getDataByUrl = (
   url: string,
@@ -85,73 +88,73 @@ export const getDataByUrl = (
   requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'tecEco1',
   requestType = 'get',
   postType = 'body',
-  libId: string,
+  libId: string
 ) => {
-  const requestFinallyBaseUrl = baseUrl[requestSource];
+  const requestFinallyBaseUrl = baseUrl[requestSource]
 
   if (requestType === 'get') {
     return cyRequest<any[]>(() =>
-      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, params }),
-    );
+      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, params })
+    )
   }
   if (postType === 'body') {
     return cyRequest<any[]>(() =>
-      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, data: params }),
-    );
+      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, data: params })
+    )
   }
   return cyRequest<any[]>(() =>
-    tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, params: { libId } }),
-  );
-};
+    tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, params: { libId } })
+  )
+}
 
 interface GetCommonSelectDataParams {
-  url: string;
-  params?: any;
-  requestSource?: 'common' | 'project' | 'resource';
-  method?: 'get' | 'post';
-  postType?: 'body' | 'query';
+  url: string
+  params?: any
+  requestSource?: 'common' | 'project' | 'resource'
+  method?: 'get' | 'post'
+  postType?: 'body' | 'query'
 }
 
 export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) => {
-  const { url, params, requestSource = 'project', method = 'get', postType } = data;
+  const { url, params, requestSource = 'project', method = 'get', postType } = data
 
-  const requestFinallyBaseUrl = baseUrl[requestSource];
+  const requestFinallyBaseUrl = baseUrl[requestSource]
   if (method === 'post') {
     if (postType === 'query') {
       return cyRequest<T[]>(() =>
-        tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params }),
-      );
+        tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params })
+      )
     }
     return cyRequest<T[]>(() =>
-      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, data: params }),
-    );
+      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, data: params })
+    )
   }
   if (method === 'get' && postType) {
     return cyRequest<T[]>(() =>
-      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, data: params }),
-    );
+      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, data: params })
+    )
   }
-  return cyRequest<T[]>(() => tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params }));
-};
+  return cyRequest<T[]>(() => tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params }))
+}
 
 export const commonUpload = (
   url: string,
   files: any[],
   name: string = 'file',
   requestSource: 'project' | 'resource' | 'upload',
-  extraParams?: Record<string, any>,
+  extraParams?: Record<string, any>
   // postType: 'body' | 'query',
 ) => {
-  const requestUrl = baseUrl[requestSource];
-  const formData = new FormData();
+  const requestUrl = baseUrl[requestSource]
+  const formData = new FormData()
   files.forEach((item) => {
-    formData.append(name, item);
-  });
+    formData.append(name, item)
+  })
   if (extraParams) {
     Object.keys(extraParams).map((key) => {
-      formData.append(key, extraParams?.[key]);
-      return null;
-    });
+      formData.append(key, extraParams?.[key])
+      return null
+    })
   }
   return cyRequest<any[]>(() =>
     tokenRequest(`${requestUrl}${url}`, {
@@ -161,17 +164,17 @@ export const commonUpload = (
       //   'content-Type':'application/zip'
       // },
       requestType: 'form',
-    }),
-  );
-};
+    })
+  )
+}
 
 export const commonExport = (url: string, params: any, selectIds: string[]) => {
   return tokenRequest(`${baseUrl.project}${url}`, {
     method: 'POST',
     data: { ...params, ids: selectIds },
     responseType: 'blob',
-  });
-};
+  })
+}
 
 // 导出权限
 export const exportAuthority = (url: string, params: any, type: string) => {
@@ -179,20 +182,20 @@ export const exportAuthority = (url: string, params: any, type: string) => {
     method: type,
     data: { ...params },
     responseType: 'blob',
-  });
-};
+  })
+}
 
 // 版本更新内容
 
 interface VersionParams {
-  productCode: string;
-  moduleCode: string;
-  versionNo: string;
-  serverCode: string;
+  productCode: string
+  moduleCode: string
+  versionNo: string
+  serverCode: string
 }
 
-const versionUrl = 'http://service.sirenmap.com:8101/api/Version/Get';
+const versionUrl = 'http://service.sirenmap.com:8101/api/Version/Get'
 
 export const getVersionUpdate = (params: VersionParams) => {
-  return request(versionUrl, { method: 'POST', data: params });
-};
+  return request(versionUrl, { method: 'POST', data: params })
+}

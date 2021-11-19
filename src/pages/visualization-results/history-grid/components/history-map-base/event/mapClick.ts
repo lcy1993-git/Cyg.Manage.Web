@@ -21,25 +21,6 @@ export default function mapClick(e: MapBrowserEvent<MouseEvent>, { interActionRe
   // 多选状态下ctrl键按下 不进行操作
   if (e.originalEvent.ctrlKey) return
 
+  // 获取被选中的元素
   const feature = mapRef.map.getFeaturesAtPixel(e.pixel)[0]
-  if (feature) {
-    window.f = feature
-    const data = feature
-
-    /**
-     * @property {LineString | Point} type
-     * @property {Object} data 获取接口的数据源格式
-     * @property {Feature} feature 点线实例
-     * @property {[number, number]} position 点线实例
-     */
-
-    const featureData = {
-      type: feature.getGeometry()!.getType(),
-      data: {},
-      feature,
-      position: [...e.pixel],
-    }
-
-    console.log(featureData)
-  }
 }

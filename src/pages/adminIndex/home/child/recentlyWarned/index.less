@@ -1,0 +1,80 @@
+.recentlyWarned {
+  .title {
+    margin: 0;
+    margin-bottom: 10px;
+    color: #1f1f1f;
+    font-weight: 500;
+    font-size: 16px;
+    font-family: Source Han Sans CN;
+    line-height: 16px;
+    opacity: 1;
+  }
+  .warnList {
+    height: 68vh;
+    overflow-y: auto;
+    /* 滚动条 */
+    .warnItem {
+      padding-top: 12px;
+      border-bottom: 1px solid #ededed;
+      .warnText {
+        margin-bottom: 8px;
+        color: #505050;
+        font-weight: 500;
+        font-size: 14px;
+        font-family: Source Han Sans CN;
+        line-height: 20px;
+        opacity: 1;
+      }
+      .warnTime {
+        margin-bottom: 12px;
+        color: #8c8c8c;
+        font-weight: 400;
+        font-size: 14px;
+        font-family: Source Han Sans CN;
+        line-height: 14px;
+        opacity: 1;
+      }
+    }
+  }
+  .warnList::-webkit-scrollbar {
+    width: 8px;
+    height: 5px;
+    background: transparent;
+    border-radius: 5px;
+  }
+
+  /* 滚动条两端按钮 */
+  .warnList::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+  }
+
+  /* 外层轨道 */
+  .warnList::-webkit-scrollbar-track {
+    border-radius: 5px;
+  }
+
+  /* 内层轨道，它会覆盖外层轨道的样式 */
+  .warnList::-webkit-scrollbar-track-piece {
+    width: 4px;
+    margin: 0 -2px 0;
+  }
+
+  /* 滑块 */
+  .warnList::-webkit-scrollbar-thumb {
+    min-width: 60px;
+    min-height: 60px;
+    background-color: #ccc;
+    border-radius: 5px;
+  }
+
+  /* 纵向滑块悬浮 */
+  .warnList::-webkit-scrollbar-thumb:vertical:hover {
+    background-color: #999;
+  }
+
+  /* 横向滑块悬浮 */
+  .warnList::-webkit-scrollbar-thumb:horizontal:hover {
+    background-color: #999;
+  }
+}

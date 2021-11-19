@@ -1,4 +1,6 @@
+// 引入假数据 后续需要删除
 import { useHistoryGridContext } from '.'
+import dataSource from '../components/history-map-base/data'
 import type { DataSource, SelectedData } from '../components/history-map-base/typings'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
@@ -8,16 +10,27 @@ export interface GridMapGlobalState {
   isDraw: boolean
   dataSource?: DataSource
   selectedData: SelectedData
+  currentMousePosition: [number, number]
   cleanSelected: boolean
+  moveToByCityLocation: [number, number, boolean]
+  showText: boolean
+
+  onCurrentLocationClick: boolean
+  onProjectLocationClick: boolean
 }
 
 export const initGridMapState = {
   mapLayerType: 'SATELLITE', // 卫星图 ？ 街道图 ？
   isDraw: false, // 是否为绘制状态
-  dataSource: undefined, // 绘制元素的数据源
+  dataSource: dataSource, // 绘制元素的数据源 //这里暂时写假数据 后续真实数据过来需要删除
   selectedData: [], //被选中的元素
   currentMousePosition: [0, 0], // 当前操作鼠标位置
   cleanSelected: false, // 清屏(操作完成后)
+  moveToByCityLocation: [0, 0, false], // 当城市被点击时  flag用于标识是否被点击
+  showText: true, // 是否显示元素名称
+  // event
+  onCurrentLocationClick: false, // 定位当用户当前位置
+  onProjectLocationClick: false, // 定位当前项目
 }
 
 export const mapReducer = <T extends GridMapGlobalState, K extends keyof GridMapGlobalState>(
@@ -25,40 +38,13 @@ export const mapReducer = <T extends GridMapGlobalState, K extends keyof GridMap
   props: [K, T[K]]
 ): T => {
   const [key, value] = props
-  switch (key) {
-    case 'mapLayerType':
-      return { ...state, mapLayerType: value }
-    default:
-      return { ...state }
+  if (key in initGridMapState) {
+    return { ...state, [key]: value }
+  } else {
+    console.error(`使用mapReducer时，发现错误的key,错误key为${key}`)
+    return { ...state }
   }
 }
-
-// // 选择类型
-// const [selectType, setSelectType] = useState<SelectType>('')
-// // 绘制类型
-// const [geometryType, setGeometryType] = useState<string>('')
-// // 当前地图类型(街道图,卫星图)
-// const [mapLayerType, setMapLayerType] = useState<MapLayerType>('SATELLITE')
-// // 显示名称
-// const [nameVisible, setNameVisible] = useState<boolean>(false)
-// // 定位到当前项目
-// const locateCurrent$ = useEventEmitter()
-// // 根据地区定位地图事件
-// const centerView$ = useEventEmitter()
-// // 导入事件
-// const importFile$ = useEventEmitter()
-// // 保存事件
-// const saveFile$ = useEventEmitter()
-
-// const ref = useRef<HTMLDivElement>(null)
-// // 地图实例
-// const mapRef = useCurrentRef<MapRef>({ map: {} })
-// // 图层缓存数据
-// const layerRef = useCurrentRef<Record<string, Layer<Source>>>({})
-// // 视图实例
-// const viewRef = useCurrentRef<{ view: View }>({})
-// // 画图缓存数据
-// const interActionRef = useCurrentRef<InterActionRef>({})
 
 export const useGridMap = () => {
   const { gridMapState, dispatch } = useHistoryGridContext()

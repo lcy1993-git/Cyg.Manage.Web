@@ -6,7 +6,6 @@ import DesignIconWrapper, { DesignLabel, HistoryBtn, Legend } from './DesignIcon
 import DesignTitle from './DesignTitle'
 import MapOperator from './MapOperator'
 import { HistoryGridContext, historyGridReducer, init } from './store'
-
 const HistoryGrid = () => {
   const location = useLocation()
   const [state, dispatch] = useReducer(historyGridReducer, { location }, init)
@@ -22,6 +21,9 @@ const HistoryGrid = () => {
           <DesignLabel />
           <Legend />
         </DesignIconWrapper>
+        {/*<GridVersionManagement />*/}
+        {/*<HistoryVersionManagement />*/}
+        {/* <AddElectricalEquipment data={[]} type={'Point'} visible /> */}
       </HistoryGridContext.Provider>
     </div>
   )

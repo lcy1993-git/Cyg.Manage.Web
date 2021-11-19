@@ -1,95 +1,61 @@
 import '@/assets/icon/history-grid-icon.css'
 import { useCurrentRef } from '@/utils/hooks'
-import { useEventEmitter, useMount, useRequest, useUpdateEffect } from 'ahooks'
-import { Feature, Map, MapBrowserEvent, MapEvent, View } from 'ol'
+import { useMount, useUpdateEffect } from 'ahooks'
+import { Map, MapBrowserEvent, MapEvent, View } from 'ol'
 import { click as conditionClick, platformModifierKeyOnly } from 'ol/events/condition'
 import BaseEvent from 'ol/events/Event'
-import GeoJSON from 'ol/format/GeoJSON'
 import Geometry from 'ol/geom/Geometry'
 import GeometryType from 'ol/geom/GeometryType'
-import LineString from 'ol/geom/LineString'
-import Point from 'ol/geom/Point'
 import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import { SelectEvent } from 'ol/interaction/Select'
 import { Layer } from 'ol/layer'
 import 'ol/ol.css'
 import * as proj from 'ol/proj'
 import { Source, Vector as VectorSource } from 'ol/source'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useGridMap } from '../../store/mapReducer'
-import { getData } from './data'
-import { drawEnd } from './draw'
-import { onMapLayerTypeChange, onSelectTypeChange } from './effects'
-import { moveend, pointermove } from './event'
+import { drawByDataSource, drawEnd } from './draw'
+import { onMapLayerTypeChange } from './effects'
+import { moveend, pointermove, pointSelectCallback, toggleSelectCallback } from './event'
 import mapClick from './event/mapClick'
-import styles from './index.less'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
 import { getStyle } from './styles'
-import { DataSource, SelectedData } from './typings'
-export interface MapRef {
-  map: Map
-}
+import { InterActionRef, MapRef } from './typings'
+import { checkUserLocation, clear } from './utils'
 
-export interface InterActionRef {
-  draw?: Draw
-  snap?: Snap
-  source?: VectorSource<Geometry>
-  hightLightSource?: VectorSource<Geometry>
-  modify?: Modify
-  isDraw?: boolean
-  currentSelect?: Select
-  select?: Record<Exclude<SelectType, ''>, Select>
-  dragBox?: DragBox
-  isDragBox?: boolean
-}
-
-export type SelectType = '' | 'pointSelect' | 'boxSelect'
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
 const HistoryMapBase = () => {
   const [state, setState] = useGridMap()
 
-  const { mapLayerType } = state
+  const {
+    mapLayerType,
+    isDraw,
+    dataSource,
+    onProjectLocationClick,
+    onCurrentLocationClick,
+    showText,
+  } = state
 
-  // 数据源
-  const { data } = useRequest(getData)
-
-  // 选择类型
-  const [selectType, setSelectType] = useState<SelectType>('')
   // 绘制类型
   const [geometryType, setGeometryType] = useState<string>('')
-  // 当前地图类型(街道图,卫星图)
-  // const [mapLayerType, setMapLayerType] = useState<MapLayerType>('SATELLITE')
-  // 显示名称
-  const [nameVisible, setNameVisible] = useState<boolean>(false)
-  // 定位到当前项目
-  const locateCurrent$ = useEventEmitter()
-  // 根据地区定位地图事件
-  const centerView$ = useEventEmitter()
-  // 导入事件
-  const importFile$ = useEventEmitter()
-  // 保存事件
-  const saveFile$ = useEventEmitter()
 
   const ref = useRef<HTMLDivElement>(null)
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
   // 图层缓存数据
-  const layerRef = useCurrentRef<Record<string, Layer<Source>>>({})
+  const layerRef = useCurrentRef<Record<string, Layer<Source | VectorSource<Geometry>>>>({})
   // 视图实例
   const viewRef = useCurrentRef<{ view: View }>({})
   // 画图缓存数据
   const interActionRef = useCurrentRef<InterActionRef>({})
+
   // 挂载地图
   useMount(() => {
     beforeInit()
     initLayer()
     initView()
     initMap()
-    // test map in chrome
-    // @ts-ignore
-    window.m = mapRef.map
-    // 初始化之后注册交互行为
     bindEvent()
     initInterAction()
   })
@@ -104,55 +70,35 @@ const HistoryMapBase = () => {
     () => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer),
     [mapLayerType]
   )
-  // 加载数据
+  // 根据数据绘制点位线路
+  useEffect(() => {
+    if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, showText })
+  }, [dataSource, interActionRef, showText])
+
+  // 当绘制状态改变时
+
   useUpdateEffect(() => {
-    LoadJSON1(data as DataSource)
-  }, [JSON.stringify(data)])
-
-  function LoadJSON1(data: DataSource) {
-    if (data) {
-      interActionRef.source?.clear()
-
-      if (Array.isArray(data.point)) {
-        const points = data.point.map((p) => {
-          const feature = new Feature()
-          feature.setGeometry(new Point([p.Lng!, p.Lat!]))
-          feature.setStyle(getStyle('Point')(p.type))
-          // feature.setStyle(pointStyle[p.type])
-          Object.keys(p).forEach((key) => {
-            feature.set(key, p[key])
-          })
-          return feature
-        })
-
-        interActionRef.source?.addFeatures(points)
-      }
-      if (Array.isArray(data.line)) {
-        const lines = data.line.map((p) => {
-          const feature = new Feature()
-          feature.setGeometry(
-            new LineString([
-              [p.startLng!, p.startLat!],
-              [p.endLng!, p.endLat!],
-            ])
-          )
-          feature.setStyle(getStyle('LineString')(p.type))
-          // feature.setStyle(lineStyle[p.type])
-          Object.keys(p).forEach((key) => {
-            feature.set(key, p[key])
-          })
-          return feature
-        })
-        console.log(lines)
-
-        interActionRef.source?.addFeatures(lines)
-      }
+    clear(interActionRef)
+    if (isDraw) {
+      mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
+      mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
+    } else {
+      mapRef.map.removeInteraction(interActionRef.select!.toggleSelect)
+      mapRef.map.addInteraction(interActionRef.select!.pointSelect)
     }
-  }
+  }, [isDraw])
 
-  // 处理当选择类型发生变化
-  useUpdateEffect(() => onSelectTypeChange(selectType, interActionRef, mapRef), [selectType])
-  // beforinit
+  // 定位当当前项目位置
+  useUpdateEffect(
+    () =>
+      viewRef.view.fit((layerRef.vectorLayer.getSource() as VectorSource<Geometry>).getExtent()),
+    [onProjectLocationClick]
+  )
+
+  // 定位到当前用户位置
+  useUpdateEffect(() => checkUserLocation(viewRef), [onCurrentLocationClick])
+
+  // before init
   function beforeInit() {
     ref.current!.innerHTML = ''
     interActionRef.source = new VectorSource()
@@ -223,85 +169,25 @@ const HistoryMapBase = () => {
       toggleCondition: platformModifierKeyOnly,
       style: (feature) => {
         const geometryType = feature.getGeometry()?.getType()
-        return getStyle(geometryType)(feature.get('type'))
+        return getStyle(geometryType)(feature.get('type'), feature.get('name'), showText)
       },
     })
-    toggleSelect.on('select', (e: SelectEvent) => {
-      let flag = false // 是否需要set数据
-      const hightFeatures = interActionRef.hightLightSource!.getFeatures()
-      const { selected, deselected } = e
-      if (selected.length > 0) {
-        if (hightFeatures.length === 0) {
-          if (!isAdded(selected)) {
-            flag = true
-            interActionRef.hightLightSource!.addFeatures(addHightStyle(selected))
-          }
-        } else {
-          const currentType = getGeometryType(hightFeatures[0])
-          if (currentType === getGeometryType(selected[0])) {
-            if (!isAdded(selected)) {
-              flag = true
-              interActionRef.hightLightSource!.addFeatures(addHightStyle(selected))
-            }
-          }
-        }
-      }
-
-      if (deselected.length > 0) {
-        deselected.forEach((f) => {
-          if (canRemove(f)) {
-            flag = true
-            interActionRef.hightLightSource!.removeFeature(f)
-          }
-        })
-      }
-
-      if (flag) {
-        const data = interActionRef.hightLightSource!.getFeatures().map((f) => {
-          const { geometry, ...props } = f.getProperties()
-          return props
-        })
-        console.log('react')
-        setState('selectedData', data as SelectedData)
-      }
-
-      console.log()
-
-      function getGeometryType(f: Feature<Geometry>) {
-        return f.getGeometry()!.getType()
-      }
-      // 判断是否已经被添加
-      function isAdded(selected: Feature<Geometry>[]) {
-        return hightFeatures.some((f) => f.get('name') === selected[0].get('name'))
-      }
-
-      // 判断是否能删除
-      function canRemove(o: Feature<Geometry>) {
-        return interActionRef
-          .hightLightSource!.getFeatures()
-          .some((f) => f.get('name') === o.get('name'))
-      }
-
-      // 添加高亮样式
-      function addHightStyle(fs: Feature<Geometry>[]) {
-        return fs.map((f) => {
-          const geometryType = getGeometryType(f)
-          f.setStyle(getStyle(geometryType)(f.get('type'), true))
-          return f
-        })
-      }
-    })
+    // 绑定单选及多选回调事件
+    toggleSelect.on('select', (e: SelectEvent) =>
+      toggleSelectCallback(e, { interActionRef, setState, showText })
+    )
+    pointSelect.on('select', (e: SelectEvent) =>
+      pointSelectCallback(e, { interActionRef, setState, showText })
+    )
     toggleSelect.setHitTolerance(8)
-    // toggleSelect.on('change', (...args) => {
-    //   console.log(...args);
-    // })
-
-    mapRef.map.addInteraction(toggleSelect)
+    pointSelect.setHitTolerance(8)
     interActionRef.select = {
       pointSelect,
-      boxSelect,
-      // toggleSelect,
+      toggleSelect,
     }
+
+    mapRef.map.addInteraction(interActionRef.select.pointSelect)
+
     interActionRef.dragBox = dragBox
     const selectedFeatures = boxSelect.getFeatures()
     dragBox.on('boxend', function () {
@@ -339,12 +225,6 @@ const HistoryMapBase = () => {
     }
   }
 
-  const SaveJSON = () => {
-    console.log(JSON.parse(new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!)))
-
-    localStorage.setItem('json', new GeoJSON().writeFeatures(interActionRef.source?.getFeatures()!))
-  }
-
   return (
     <div className="w-full h-full">
       <div ref={ref} className="w-full h-full"></div>
@@ -356,7 +236,6 @@ const HistoryMapBase = () => {
         <button style={{ color: 'red' }} onClick={() => setGeometryType('')}>
           None
         </button>
-        <button onClick={SaveJSON}>SaveJSON</button>
         <button
           onClick={() =>
             setState('mapLayerType', mapLayerType === 'SATELLITE' ? 'STREET' : 'SATELLITE')
@@ -365,8 +244,13 @@ const HistoryMapBase = () => {
           {mapLayerType === 'SATELLITE' ? '卫星图' : '街道图'}
         </button>
         <button>显示名称</button>
-        <button>定位到当前位置</button>
-        <button>定位到现有网架</button>
+        <button onClick={() => setState('onCurrentLocationClick', !onCurrentLocationClick)}>
+          定位到当前位置
+        </button>
+        <button onClick={() => setState('onProjectLocationClick', !onProjectLocationClick)}>
+          定位到当前项目
+        </button>
+        <button onClick={() => setState('showText', !showText)}>元素名称开关</button>
         <button
           onClick={() => {
             interActionRef.source?.clear()
@@ -375,9 +259,12 @@ const HistoryMapBase = () => {
           清屏
         </button>
         <button>导入</button>
-        <button onClick={() => setSelectType('')}>不选择</button>{' '}
-        <button onClick={() => setSelectType('boxSelect')}>框选</button>
-        <i className={styles.font}>&#xe901;</i>
+        {/* <button onClick={() => setSelectType('')}>不选择</button>{' '}
+        <button onClick={() => setSelectType('pointSelect')}>不选择</button>{' '} */}
+        {/* <button onClick={() => setSelectType('boxSelect')}>框选</button> */}
+        <button onClick={() => setState('isDraw', !isDraw)} style={{ color: 'red' }}>
+          状态{isDraw ? '绘制' : '查看'}
+        </button>
         <div></div>
         <span id="historyGridPosition" style={{ color: 'red' }}>
           经维度：

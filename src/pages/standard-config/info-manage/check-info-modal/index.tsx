@@ -1,18 +1,18 @@
-import { useControllableValue, useRequest } from 'ahooks';
-import { Modal, Spin } from 'antd';
-import TableStatus from '@/components/table-status';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import { getNewsItemDetail } from '@/services/news-config/info-manage';
-import styles from './index.less';
-import ReadonlyItem from '@/components/readonly-item';
-import CyTag from '@/components/cy-tag';
-import uuid from 'node-uuid';
-import CyFormItem from '@/components/cy-form-item';
+import { useControllableValue, useRequest } from 'ahooks'
+import { Modal, Spin } from 'antd'
+import TableStatus from '@/components/table-status'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import { getNewsItemDetail } from '@/services/news-config/info-manage'
+import styles from './index.less'
+import ReadonlyItem from '@/components/readonly-item'
+import CyTag from '@/components/cy-tag'
+import uuid from 'node-uuid'
+import CyFormItem from '@/components/cy-form-item'
 
 interface CheckInfoModalProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  newsId: string;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  newsId: string
 }
 
 const mapColor = {
@@ -22,40 +22,38 @@ const mapColor = {
   评审端: 'greenThree',
   技经端: 'greenFour',
   设计端: 'greenFive',
-};
+}
 
 const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { newsId } = props;
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { newsId } = props
 
   const { data: newsInfo, run, loading } = useRequest(() => getNewsItemDetail(newsId), {
     ready: !!newsId,
     refreshDeps: [newsId],
-  });
-
-  console.log(newsInfo);
+  })
 
   useEffect(() => {
     if (state) {
-      run();
+      run()
     }
-  }, [state]);
+  }, [state])
 
   const userShowInfo = newsInfo?.users.map((item) => {
     return (
       <CyTag key={uuid.v1()} className="mr7 mb7">
         {item.text}
       </CyTag>
-    );
-  });
+    )
+  })
 
   const clientCategorysInfo = newsInfo?.clientCategorys.map((item) => {
     return (
       <TableStatus color={mapColor[item.text] ?? 'gray'} key={uuid.v1()} className="mr7 mb7">
         {item.text}
       </TableStatus>
-    );
-  });
+    )
+  })
 
   return (
     <Modal
@@ -100,7 +98,7 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
         </div>
       </Spin>
     </Modal>
-  );
-};
+  )
+}
 
-export default CheckInfoModal;
+export default CheckInfoModal

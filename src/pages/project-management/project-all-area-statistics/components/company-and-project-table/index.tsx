@@ -1,14 +1,14 @@
-import { LeftOutlined } from '@ant-design/icons';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useProjectAllAreaStatisticsStore } from '../../store';
-import TitleWindow from '../title-window';
-import CompanyTable from './components/company-table';
-import ProjectTable from './components/project-table';
-import TableSearch from '@/components/table-search';
-import UrlSelect from '@/components/url-select';
-import styles from './index.less';
-import { useGetSelectData } from '@/utils/hooks';
-import { Spin } from 'antd';
+import TableSearch from '@/components/table-search'
+import UrlSelect from '@/components/url-select'
+import { useGetSelectData } from '@/utils/hooks'
+import { LeftOutlined } from '@ant-design/icons'
+import { Spin } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
+import { useProjectAllAreaStatisticsStore } from '../../store'
+import TitleWindow from '../title-window'
+import CompanyTable from './components/company-table'
+import ProjectTable from './components/project-table'
+import styles from './index.less'
 
 const CompanyAndProjectTable: React.FC = () => {
   const {
@@ -18,50 +18,50 @@ const CompanyAndProjectTable: React.FC = () => {
     setDataType,
     setCompanyInfo,
     setProjectShareCompanyId,
-  } = useProjectAllAreaStatisticsStore();
-  const [nowCompanyId, setNowCompanyId] = useState<string>('');
-  const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
+  } = useProjectAllAreaStatisticsStore()
+  const [nowCompanyId, setNowCompanyId] = useState<string>('')
+  const { companyId = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}')
   const { data: companyData = [], loading } = useGetSelectData(
     {
       url: '/ProjectStatistics/GetCompanyList',
     },
     {
       onSuccess: () => {
-        setNowCompanyId(companyData[0]?.value);
+        setNowCompanyId(companyData[0]?.value)
       },
-    },
-  );
+    }
+  )
 
   const handleCompanyData = useMemo(() => {
     if (companyData) {
       return companyData.map((item: any) => {
         if (item.value === companyId) {
-          return { label: '我的公司', value: item.value };
+          return { label: '我的公司', value: item.value }
         }
-        return item;
-      });
+        return item
+      })
     }
-    return;
-  }, [companyData]);
+    return
+  }, [companyData])
 
-  const [selectedCompanyId] = useState<string>(companyId);
+  const [selectedCompanyId] = useState<string>(companyId)
 
   useEffect(() => {
-    setProjectShareCompanyId(companyId);
-  }, [selectedCompanyId]);
+    setProjectShareCompanyId(companyId)
+  }, [selectedCompanyId])
 
   const returnToCompanyType = () => {
     setCompanyInfo({
       companyId: '',
       companyName: '',
-    });
-    setProjectShareCompanyId(projectShareCompanyId);
-    setDataType('company');
-  };
+    })
+    setProjectShareCompanyId(projectShareCompanyId)
+    setDataType('company')
+  }
 
   const getTitle = () => {
     if (dataType === 'company') {
-      return <span>综合进度</span>;
+      return <span>综合进度</span>
     }
     return (
       <span>
@@ -70,8 +70,8 @@ const CompanyAndProjectTable: React.FC = () => {
         </span>
         <span>项目进度 - {companyInfo.companyName}</span>
       </span>
-    );
-  };
+    )
+  }
 
   return (
     <div className={styles.companyAndProjectTable}>
@@ -85,10 +85,9 @@ const CompanyAndProjectTable: React.FC = () => {
             valuekey="value"
             value={nowCompanyId}
             onChange={(value: any) => {
-              setNowCompanyId(value);
-              dataType === 'project' ? returnToCompanyType() : '';
-              // setSelectedCompanyId(value);
-              setProjectShareCompanyId(value);
+              setNowCompanyId(value)
+              dataType === 'project' && returnToCompanyType()
+              setProjectShareCompanyId(value)
             }}
           />
         </Spin>
@@ -98,7 +97,7 @@ const CompanyAndProjectTable: React.FC = () => {
         {dataType === 'project' && <ProjectTable />}
       </TitleWindow>
     </div>
-  );
-};
+  )
+}
 
-export default CompanyAndProjectTable;
+export default CompanyAndProjectTable
