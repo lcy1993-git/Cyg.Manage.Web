@@ -1,5 +1,5 @@
 import '@/assets/icon/history-grid-icon.css'
-import { Map } from 'ol'
+import { Map, View } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import 'ol/ol.css'
@@ -54,12 +54,14 @@ export interface InterActionRef {
   snap?: Snap
   source?: VectorSource<Geometry>
   hightLightSource?: VectorSource<Geometry>
+  designSource: VectorSource<Geometry>
   modify?: Modify
   isDraw?: boolean
   currentSelect?: Select
   select?: Record<Exclude<SelectType, ''>, Select>
   dragBox?: DragBox
   isDragBox?: boolean
+
 }
 
 export interface ViewRef {

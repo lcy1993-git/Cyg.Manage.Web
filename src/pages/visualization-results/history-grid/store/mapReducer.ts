@@ -14,6 +14,7 @@ export interface GridMapGlobalState {
   cleanSelected: boolean
   moveToByCityLocation: [number, number, boolean]
   showText: boolean
+  historyLayerVisible: boolean
 
   onCurrentLocationClick: boolean
   onProjectLocationClick: boolean
@@ -28,6 +29,7 @@ export const initGridMapState = {
   cleanSelected: false, // 清屏(操作完成后)
   moveToByCityLocation: [0, 0, false], // 当城市被点击时  flag用于标识是否被点击
   showText: true, // 是否显示元素名称
+  historyLayerVisible: true, // 历史网架开关
   // event
   onCurrentLocationClick: false, // 定位当用户当前位置
   onProjectLocationClick: false, // 定位当前项目
@@ -47,11 +49,12 @@ export const mapReducer = <T extends GridMapGlobalState, K extends keyof GridMap
 }
 
 export const useGridMap = () => {
-  const { gridMapState, dispatch } = useHistoryGridContext()
+  const { gridMapState, dispatch, mode } = useHistoryGridContext()
 
   return [
     gridMapState,
     <T extends GridMapGlobalState, K extends keyof T = keyof T>(key: K, value: T[K]) =>
       dispatch({ type: 'changeGridMap', payload: [key, value] }),
+    mode,
   ] as const
 }
