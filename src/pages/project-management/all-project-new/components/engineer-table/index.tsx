@@ -43,8 +43,8 @@ import { modifyExportPowerState } from '@/services/project-management/all-projec
 import ProjectInheritModal from '../project-inherit-modal';
 import ImageIcon from '@/components/image-icon';
 import ColumnsConfigModal from '../columns-config-modal';
-import VirtualTable from '../virtual-table/VirtualTable';
-import ParentRow from '../virtual-table/ParentRow';
+// import VirtualTable from '../virtual-table/VirtualTable';
+// import ParentRow from '../virtual-table/ParentRow';
 
 const colorMap = {
   立项: 'green',
@@ -1109,7 +1109,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             renderThumbVertical={scrollBarRenderView}
           >
             <Spin spinning={loading}>
-              <VirtualTable
+              {/* <VirtualTable
                 style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
                 className="border"
                 data={tableData}
@@ -1138,7 +1138,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
                     console.log(key, selected, rowData);
                   },
                 }}
-              />
+              /> */}
               {/* {tableResultData.items.length > 0 && engineerTableElement} */}
               {/* {tableResultData.items.length === 0 && <EmptyTip className="pt20" />} */}
             </Spin>

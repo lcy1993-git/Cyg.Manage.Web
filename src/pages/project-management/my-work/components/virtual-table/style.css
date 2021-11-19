@@ -7,12 +7,18 @@
   --vt-cell-padding-x: 0.5rem;
   /* 固定单元格背景颜色 */
   --vt-fixed-cell-bg-color: #fff;
-}
 
+  --vt-parent-bg-color: #F2F2F2;
+}
+.border {
+  border: var(--vt-border-width) solid var(--vt-border-color)
+}
 .vt-row:last-of-type .vt-cell {
   border-bottom-width: var(--vt-border-width);
 }
-
+.vt-row .vt-cell:first-of-type {
+  border-left: none;
+}
 .vt-row .vt-cell:not(:first-child) {
   border-left-width: var(--vt-border-width);
 }
@@ -26,6 +32,8 @@
   padding-left: var(--vt-cell-padding-x);
   padding-right: var(--vt-cell-padding-x);
   border-top-width: var(--vt-border-width);
+  border-left: 1px solid #dbdbdb;
+  border-bottom: 1px solid #dbdbdb;
   overflow: hidden;
 }
 
@@ -55,4 +63,7 @@
   margin-right: var(--vt-cell-padding-x);
   padding-right: var(--vt-cell-padding-x);
   border-right-width: var(--vt-border-width);
+  border-right-color: #dbdbdb;
+  border-right-style: solid;
+  width: 28px;
 }

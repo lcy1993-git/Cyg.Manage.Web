@@ -10,12 +10,12 @@ const HeaderRow = memo(
     return (
       <div
         className='vt-row min-w-max h-full font-bold'
-        style={{ borderBottom: 'none' }}
+
       >
         {originColumns!.map(({ title, width, ...rest }, index) => (
           <VTCell
             {...rest}
-            style={{ color: '#1F1F1F', borderBottom: 'none' }}
+            style={{ color: '#1F1F1F' }}
             width={width}
             height={rowHeight}
             prefix={(index: number) => {
@@ -23,7 +23,7 @@ const HeaderRow = memo(
               return (
                 <span
                   className='ant-checkbox-wrapper vt-checkbox'
-                  style={{ width: '25px' }}
+                  style={{ width: '28px', borderRight: "1px solid #dbdbdb"}}
                 />
               )
             }}

@@ -104,24 +104,23 @@ export interface TreeData {
  * @returns 树形结构数组
  */
 export const formatDataTree = (data: TreeData[]) => {
-
   // if(!Array.isArray(data)) return [];
-  const parents = data.filter(p => p.parentId === null);
-  const children = data.filter(p => p.parentId !== null);
+  const parents = data.filter((p) => p.parentId === null);
+  const children = data.filter((p) => p.parentId !== null);
   dataToTree(parents, children);
   function dataToTree(parents: TreeData[], children: TreeData[]) {
-    parents.forEach(p => {
+    parents.forEach((p) => {
       children.forEach((c) => {
-        if(p.id === c.parentId) {
-          if(!p.children) p.children = [];
+        if (p.id === c.parentId) {
+          if (!p.children) p.children = [];
           p.children.push(c);
-          dataToTree([c], children)
+          dataToTree([c], children);
         }
-      })
+      });
     });
   }
   return parents;
-}
+};
 
 /**
  * 格式化数据
@@ -134,18 +133,18 @@ export const fileTreeFormData = (data: TreeData[]) => {
   data.forEach((i) => {
     i.title = i.name;
     i.key = i.id;
-    if(i.children && i.children.length > 0) {
-      fileTreeFormData(i.children)
-    }else{
+    if (i.children && i.children.length > 0) {
+      fileTreeFormData(i.children);
+    } else {
       i.isLeaf = true;
     }
-  })
+  });
   return res;
-}
+};
 
 export const delay = (ms: number) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 /**
  * 可视化成果多媒体材料数据格式化
@@ -157,7 +156,7 @@ export const formDataMateral = (content: any, getProperties: any) => {
   const filterData = content.filter((item: any) => item.parentID !== -1);
   const data = filterData.map((item: any) => {
     console.log();
-    
+
     return {
       ...item,
       // state: getProperties?.state,
@@ -169,55 +168,53 @@ export const formDataMateral = (content: any, getProperties: any) => {
     if (exist) {
       curr.forEach((currExist: any, index: any) => {
         if (currExist.type === exist.type) {
-          if(!Array.isArray(curr[index].children)){
+          if (!Array.isArray(curr[index].children)) {
             curr[index].children = [];
           }
           curr[index].children.push(item);
         }
       });
     } else {
-      if(!Array.isArray(curr)) {
+      if (!Array.isArray(curr)) {
         curr = [];
       }
       curr.push(item);
     }
     return curr;
   }, []);
-}
+};
 /**
  * 创建唯一标识
  * @param content
  * @param getProperties
  * @returns
  */
-export const generateUUID = ()=> {
+export const generateUUID = () => {
   let d = new Date().getTime();
-  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = (d + Math.random()*16)%16 | 0;
-    d = Math.floor(d/16);
-    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (d + Math.random() * 16) % 16 | 0;
+    d = Math.floor(d / 16);
+    return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16);
   });
   return uuid;
 };
 
 export const handleRate = (number: number) => {
   const ret = new RegExp(/^\d+(\.\d{1,2})?$/);
-  if(ret.test(String(number))) return number
+  if (ret.test(String(number))) return number;
   return number.toFixed(2);
-}
+};
 
 export const BlobOrArrayBuffertoUnit8 = (data: Bolb | ArrayBuffer) => {
   const res = [];
   switch (Object.prototype.toString.call(b)) {
-    case "[object Blob]":
-      
+    case '[object Blob]':
       break;
-  
-    case "[object ArrayBuffer]":
-      
+
+    case '[object ArrayBuffer]':
       break;
-  
+
     default:
       break;
   }
-}
+};

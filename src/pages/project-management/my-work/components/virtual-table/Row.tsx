@@ -39,7 +39,7 @@ const VTRow = memo(
       isScrolling: !!isScrolling,
       selectedRowKeys: selectedKeys,
       selectRows: (...params: [keys: Key[], selected: boolean]) =>
-        updateSelectedKeysFlow(...params, rowData),
+        updateSelectedKeysFlow(...params, rowData, rowData.projects),
     } as const
 
     /* 表头 */
@@ -80,7 +80,7 @@ const VTRow = memo(
           className='vt-checkbox'
           checked={selectedKeys.includes(rowKey!)}
           onChange={(e) =>
-            updateSelectedKeysFlow([rowKey!], e.target.checked, rowData)
+            updateSelectedKeysFlow([rowKey!], e.target.checked, rowData, [rowData])
           }
         />
       )
