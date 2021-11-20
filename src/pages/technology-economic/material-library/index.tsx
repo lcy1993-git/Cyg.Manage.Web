@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
-import { history } from 'umi';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import {Input, Button, Modal, Form, message, Popconfirm, Spin, Space} from 'antd';
-import type { ColumnsType } from 'antd/lib/table';
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { isArray } from 'lodash';
+import React, { useState } from 'react'
+import { history } from 'umi'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { Input, Button, Modal, Form, message, Popconfirm, Spin, Space } from 'antd'
+import type { ColumnsType } from 'antd/lib/table'
+import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { isArray } from 'lodash'
 
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import DictionaryForm from './components/add-edit-form';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import DictionaryForm from './components/add-edit-form'
 
 import {
   createMaterialMachineLibrary,
   deleteMaterialMachineLibrary,
-} from '@/services/technology-economic';
-import styles from './index.less';
-import moment from "moment";
+} from '@/services/technology-economic'
+import styles from './index.less'
+import moment from 'moment'
 
 type DataSource = {
-  id: string;
-  [key: string]: string;
-};
+  id: string
+  [key: string]: string
+}
 
-const { Search } = Input;
+const { Search } = Input
 
 const columns = [
   {
@@ -36,9 +36,9 @@ const columns = [
     dataIndex: 'quotaLibrarys',
     key: 'quotaLibrarys',
     title: '已关联定额库',
-    render:(val:any[])=>{
+    render: (val: any[]) => {
       return val.join(' | ')
-    }
+    },
   },
   {
     dataIndex: 'publishDate',
@@ -46,7 +46,7 @@ const columns = [
     title: '发布时间',
     render: (text: any) => {
       return moment(text).format('YYYY/MM/DD')
-    }
+    },
   },
   {
     dataIndex: 'publishOrg',
@@ -84,18 +84,18 @@ const columns = [
     title: '备注',
     width: 400,
   },
-];
+]
 
 const QuotaLibrary: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | Object>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [spinning, setSpinning] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<DataSource[] | Object>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [spinning, setSpinning] = useState<boolean>(false)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [addForm] = Form.useForm();
+  const [addForm] = Form.useForm()
 
   const searchComponent = () => {
     return (
@@ -108,71 +108,73 @@ const QuotaLibrary: React.FC = () => {
           placeholder="请输入关键词"
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const tableSearchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   // 添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddAuthorization = () => {
     addForm.validateFields().then((values) => {
       setSpinning(true)
-      const data =  JSON.parse(JSON.stringify(values))
+      const data = JSON.parse(JSON.stringify(values))
       data.file = values.file
       data.publishDate = moment(values.publishDate).format('YYYY-MM-DD')
       data.year = moment(values.year).format('YYYY')
-      createMaterialMachineLibrary(data).then(()=>{
-        refresh();
-        setAddFormVisible(false);
-        addForm.resetFields();
-      }).finally(()=>{
-        setSpinning(false)
-      });
-
-    });
-  };
+      createMaterialMachineLibrary(data)
+        .then(() => {
+          refresh()
+          setAddFormVisible(false)
+          addForm.resetFields()
+        })
+        .finally(() => {
+          setSpinning(false)
+        })
+    })
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const {id} = tableSelectRows[0];
-    await deleteMaterialMachineLibrary(id);
-    refresh();
-    message.success('删除成功');
-  };
+    const { id } = tableSelectRows[0]
+    await deleteMaterialMachineLibrary(id)
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
+      message.warning('请选择要操作的行')
+      return
     }
-    const {id} = tableSelectRows[0];
+    const { id } = tableSelectRows[0]
     history.push(`/technology-economic/material-infomation?id=${id}`)
-  };
+  }
 
   const tableElement = () => {
     return (
@@ -203,12 +205,12 @@ const QuotaLibrary: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const tableSelectEvent = (data: DataSource[] | Object) => {
-    setTableSelectRows(data);
-  };
+    setTableSelectRows(data)
+  }
 
   return (
     <PageCommonWrap>
@@ -243,21 +245,18 @@ const QuotaLibrary: React.FC = () => {
           <Form form={addForm} preserve={false}>
             <DictionaryForm type="add" />
           </Form>
-          <div style={{display : 'flex',justifyContent:'right'}}>
+          <div style={{ display: 'flex', justifyContent: 'right' }}>
             <Space>
-              <Button onClick={()=>setAddFormVisible(false)}>
-                取消
-              </Button>
+              <Button onClick={() => setAddFormVisible(false)}>取消</Button>
               <Button onClick={sureAddAuthorization} type={'primary'}>
                 确定
               </Button>
             </Space>
           </div>
         </Spin>
-
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default QuotaLibrary;
+export default QuotaLibrary

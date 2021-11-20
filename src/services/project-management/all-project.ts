@@ -230,7 +230,7 @@ export interface AllProjectSearchParams extends AllProjectStatisticsParams {
   statisticalCategory?: string;
 }
 
-interface ProjectTableRequestData {
+export interface ProjectTableRequestData {
   pagedData: TableRequestResult;
   statistics: ProjectTableStatisticsResult;
 }

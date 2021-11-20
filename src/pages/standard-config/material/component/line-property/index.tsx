@@ -1,21 +1,21 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input } from 'antd';
-import React, { useRef, useState } from 'react';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input } from 'antd'
+import React, { useRef, useState } from 'react'
 
 interface WareHouseDetailParams {
-  libId: string;
-  materialIds?: string[];
+  libId: string
+  materialIds?: string[]
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
-  const { libId, materialIds } = props;
+  const { libId, materialIds } = props
 
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null)
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const columns = [
     {
@@ -42,27 +42,27 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
       index: 'isUsedHousehold',
       width: 220,
       render: (text: any, record: any) => {
-        return record.isUsedHousehold === true ? '是' : '否';
+        return record.isUsedHousehold === true ? '是' : '否'
       },
     },
-  ];
+  ]
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const refresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   const tableLeftSlot = (
-    <TableSearch label="物料" width="248px">
+    <TableSearch width="248px">
       <Search
         value={searchKeyWord}
         onChange={(e) => setSearchKeyWord(e.target.value)}
@@ -72,7 +72,7 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
         allowClear
       />
     </TableSearch>
-  );
+  )
 
   return (
     <div>
@@ -90,7 +90,7 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default LineProperty;
+export default LineProperty

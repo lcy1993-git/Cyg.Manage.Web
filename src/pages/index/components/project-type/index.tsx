@@ -1,31 +1,31 @@
-import React, { useState, useMemo } from 'react';
-import { CaretDownOutlined } from '@ant-design/icons';
-import { Select } from 'antd';
-import ChartBox from '../chart-box';
-import ChartTab from '../chart-tab';
-import ProjectBuilding from '../project-building';
-import ProjectCategory from '../project-category';
-import ProjectClassify from '../project-classify';
-import ProjectLevel from '../project-level';
-import ProjectStage from '../project-stage';
-import { AreaInfo, Type } from '@/services/index';
-import ScrollView from 'react-custom-scrollbars';
-const { Option } = Select;
+import React, { useState, useMemo } from 'react'
+import { CaretDownOutlined } from '@ant-design/icons'
+import { Select } from 'antd'
+import ChartBox from '../chart-box'
+import ChartTab from '../chart-tab'
+import ProjectBuilding from '../project-building'
+import ProjectCategory from '../project-category'
+import ProjectClassify from '../project-classify'
+import ProjectLevel from '../project-level'
+import ProjectStage from '../project-stage'
+import { AreaInfo, Type } from '@/services/index'
+import ScrollView from 'react-custom-scrollbars'
 
-import styles from './index.less';
+import styles from './index.less'
+const { Option } = Select
 
 interface Props {
-  componentProps?: string[];
-  currentAreaInfo: AreaInfo;
+  componentProps?: string[]
+  currentAreaInfo: AreaInfo
 }
 
 const ProjectType: React.FC<Props> = (props) => {
   const {
     componentProps = ['buildType', 'classify', 'category', 'stage', 'level'],
     currentAreaInfo,
-  } = props;
-  const [activeKey, setActiveKey] = useState<string>();
-  const [typeChart, setTypeChart] = useState<Type>('pie');
+  } = props
+  const [activeKey, setActiveKey] = useState<string>()
+  const [typeChart, setTypeChart] = useState<Type>('pie')
 
   const tabData = [
     {
@@ -48,25 +48,25 @@ const ProjectType: React.FC<Props> = (props) => {
       id: 'level',
       name: '电压等级',
     },
-  ];
+  ]
 
   const showTabData = useMemo(() => {
-    const filterData = tabData.filter((item) => componentProps.includes(item.id));
+    const filterData = tabData.filter((item) => componentProps.includes(item.id))
     if (filterData && filterData.length > 0) {
-      setActiveKey(filterData[0].id);
+      setActiveKey(filterData[0].id)
     }
-    return filterData;
-  }, [JSON.stringify(componentProps)]);
+    return filterData
+  }, [JSON.stringify(componentProps)])
 
   const scrollBarRenderView = (params: any) => {
-    const { style, ...rest } = params;
+    const { style, ...rest } = params
     const viewStyle = {
       backgroundColor: `#4DA944`,
       borderRadius: '6px',
       cursor: 'pointer',
-    };
-    return <div className="box" style={{ ...params.style, ...viewStyle }} {...rest} />;
-  };
+    }
+    return <div className="box" style={{ ...params.style, ...viewStyle }} {...rest} />
+  }
 
   return (
     <ChartBox title="项目类型">
@@ -114,7 +114,7 @@ const ProjectType: React.FC<Props> = (props) => {
         </ScrollView>
       </div>
     </ChartBox>
-  );
-};
+  )
+}
 
-export default ProjectType;
+export default ProjectType

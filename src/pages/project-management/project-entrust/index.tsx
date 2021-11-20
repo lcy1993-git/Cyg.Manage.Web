@@ -1,28 +1,28 @@
-import CommonTitle from '@/components/common-title';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import EntrustTable from './components/entrust-table';
-import { Button, Input, message, Modal } from 'antd';
-import styles from './index.less';
-import React, { useRef, useState } from 'react';
-import FilterEntrustModal from './components/filter-entrust-modal';
-import { receiveProject } from '@/services/project-management/project-entrust';
-import { TableItemCheckedInfo } from '@/pages/project-management/all-project-new/components/engineer-table/engineer-table-item';
-import { useUpdateEffect } from 'ahooks';
-import { isArray } from 'lodash';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-const { Search } = Input;
+import CommonTitle from '@/components/common-title'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import EntrustTable from './components/entrust-table'
+import { Button, Input, message, Modal } from 'antd'
+import styles from './index.less'
+import React, { useRef, useState } from 'react'
+import FilterEntrustModal from './components/filter-entrust-modal'
+import { receiveProject } from '@/services/project-management/project-entrust'
+import { TableItemCheckedInfo } from '@/pages/project-management/all-project/components/engineer-table/engineer-table-item'
+import { useUpdateEffect } from 'ahooks'
+import { isArray } from 'lodash'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+const { Search } = Input
 
 const ProjectEntrust: React.FC = () => {
-  const [keyWord, setKeyWord] = useState<string>();
-  const [projectIds, setProjectIds] = useState<string[]>([]);
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [screenModalVisible, setScreenModalVisible] = useState(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const [keyWord, setKeyWord] = useState<string>()
+  const [projectIds, setProjectIds] = useState<string[]>([])
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [screenModalVisible, setScreenModalVisible] = useState(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   //@ts-ignore
-  const { userType } = JSON.parse(localStorage.getItem('userInfo'));
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'))
 
   const [searchParams, setSearchParams] = useState({
     category: [],
@@ -41,50 +41,50 @@ const ProjectEntrust: React.FC = () => {
     areaId: '',
     startTime: '',
     endTime: '',
-  });
+  })
 
   const searchByParams = (params: any) => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.searchByParams(params);
+      tableRef.current.searchByParams(params)
     }
-  };
+  }
 
   const searchEvent = () => {
     searchByParams({
       ...searchParams,
       keyWord,
-    });
-  };
+    })
+  }
 
   //获取选择项目id
   const tableSelectEvent = (checkedValue: TableItemCheckedInfo[]) => {
-    const projectIds = checkedValue.map((item) => item.checkedArray).flat(1);
+    const projectIds = checkedValue.map((item) => item.checkedArray).flat(1)
 
-    setProjectIds(projectIds);
-  };
+    setProjectIds(projectIds)
+  }
 
   const screenClickEvent = (params: any) => {
-    setSearchParams({ ...params, keyWord });
-    searchByParams({ ...params, keyWord });
-  };
+    setSearchParams({ ...params, keyWord })
+    searchByParams({ ...params, keyWord })
+  }
 
   useUpdateEffect(() => {
-    searchByParams({ ...searchParams, keyWord });
-  }, [searchParams]);
+    searchByParams({ ...searchParams, keyWord })
+  }, [searchParams])
 
   const refresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   //项目获取
   const receiveProjectEvent = async () => {
     if (projectIds && isArray(projectIds) && projectIds.length === 0) {
-      message.info('请选择您要获取的待办项目');
-      return;
+      message.info('请选择您要获取的待办项目')
+      return
     }
     Modal.confirm({
       title: '获取待办项目',
@@ -93,14 +93,14 @@ const ProjectEntrust: React.FC = () => {
       okText: '确认',
       cancelText: '取消',
       onOk: sureReceiveProject,
-    });
-  };
+    })
+  }
 
   const sureReceiveProject = async () => {
-    await receiveProject(projectIds);
-    message.success('项目获取成功');
-    refresh();
-  };
+    await receiveProject(projectIds)
+    message.success('项目获取成功')
+    refresh()
+  }
 
   return (
     <PageCommonWrap>
@@ -150,7 +150,7 @@ const ProjectEntrust: React.FC = () => {
         searchParams={searchParams}
       />
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default ProjectEntrust;
+export default ProjectEntrust

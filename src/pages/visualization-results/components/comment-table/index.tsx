@@ -1,38 +1,39 @@
-import React, { FC, useState } from 'react';
-import styles from './index.less';
-import TableSearch from '@/components/table-search';
-import { Button, Input, Select, message, Table, Tag, Modal } from 'antd';
-import classnames from 'classnames';
-import { useRequest } from 'ahooks';
+import React, { FC, useState } from 'react'
+import styles from './index.less'
+import TableSearch from '@/components/table-search'
+import { Button, Input, Select, message, Table, Tag, Modal } from 'antd'
+import classnames from 'classnames'
+import { useRequest } from 'ahooks'
 import {
   fetchCommentListByParams,
   ProjectCommentListItemType,
-} from '@/services/visualization-results/list-menu';
-import CommentList from '../side-popup/components/comment-list';
-import { ColumnsType } from 'antd/es/table';
-import moment from 'moment';
-import { findEnumKeyByType } from '../../utils/loadEnum';
-import { fetchCommentList } from '@/services/visualization-results/side-popup';
+} from '@/services/visualization-results/list-menu'
+import CommentList from '../side-popup/components/comment-list'
+import { ColumnsType } from 'antd/es/table'
+import moment from 'moment'
+import { findEnumKeyByType } from '../../utils/loadEnum'
+import { fetchCommentList } from '@/services/visualization-results/side-popup'
 
-const { Option } = Select;
+const { Option } = Select
 
 interface CommentProps {
-  projectIds: string[];
+  projectIds: string[]
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const CommentTable: FC<CommentProps> = (props) => {
-  const { projectIds } = props;
-  const [keyword, setKeyword] = useState<string>();
-  const [layerType, setLayerType] = useState<number>();
-  const [deviceType, setDeviceType] = useState<number>();
-  const [currentPage, setCurrentPage] = useState<number>(1); //为了获取数据编号
-  const [projectCommentList, setProjectCommentList] = useState<ProjectCommentListItemType[]>();
-  const [clickItemIsDelete, setIsItemDelete] = useState<boolean>(false); //用来表示被点击的item状态是否被删除
-  const [commentListModalVisible, setCommentListModalVisible] = useState<boolean>(false);
-  const layers = new Map<number, string>(findEnumKeyByType('ProjectCommentLayer'));
-  const types = new Map<number, string>(findEnumKeyByType('ProjectCommentDevice'));
+  const { projectIds } = props
+  const [keyword, setKeyword] = useState<string>()
+  const [layerType, setLayerType] = useState<number>()
+  const [deviceType, setDeviceType] = useState<number>()
+  const [currentPage, setCurrentPage] = useState<number>(1) //为了获取数据编号
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [projectCommentList, setProjectCommentList] = useState<ProjectCommentListItemType[]>()
+  const [clickItemIsDelete, setIsItemDelete] = useState<boolean>(false) //用来表示被点击的item状态是否被删除
+  const [commentListModalVisible, setCommentListModalVisible] = useState<boolean>(false)
+  const layers = new Map<number, string>(findEnumKeyByType('ProjectCommentLayer'))
+  const types = new Map<number, string>(findEnumKeyByType('ProjectCommentDevice'))
 
   const columns: ColumnsType<ProjectCommentListItemType> = [
     {
@@ -106,44 +107,57 @@ const CommentTable: FC<CommentProps> = (props) => {
         <Button
           type="primary"
           onClick={() =>
-            onClickViewCommentList(record.projectId, record.deviceId, record.layerType, record.status !== 1)
+            onClickViewCommentList(
+              record.projectId,
+              record.deviceId,
+              record.layerType,
+              record.status !== 1
+            )
           }
         >
           查看
         </Button>
       ),
     },
-  ];
-  const onPageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+  ]
+  const onPageChange = (page: number, currentSize: number | undefined) => {
+    if (currentSize && currentSize !== pageSize) {
+      setPageSize(currentSize)
+    }
+    setCurrentPage(page)
+  }
   /**
    * 查看某个设备的评审记录
    * @param deviceId
    * @param layerType
    */
-  const onClickViewCommentList = (projectId: string, deviceId: string, layerType: number, isDelete: boolean) => {
-    setIsItemDelete(isDelete);
-    fetchCommentListRequest({ projectId, layer: layerType, deviceId });
-    setCommentListModalVisible(true);
-  };
+  const onClickViewCommentList = (
+    projectId: string,
+    deviceId: string,
+    layerType: number,
+    isDelete: boolean
+  ) => {
+    setIsItemDelete(isDelete)
+    fetchCommentListRequest({ projectId, layer: layerType, deviceId })
+    setCommentListModalVisible(true)
+  }
 
   const search = () => {
-    fetchProjectCommentListRquest(keyword);
-  };
+    fetchProjectCommentListRquest(keyword)
+  }
 
   const reset = () => {
-    setDeviceType(undefined);
-    setLayerType(undefined);
-    setKeyword(undefined);
-    fetchProjectCommentListRquest();
-  };
+    setDeviceType(undefined)
+    setLayerType(undefined)
+    setKeyword(undefined)
+    fetchProjectCommentListRquest()
+  }
 
   const pagination = {
     current: currentPage,
     onChange: onPageChange,
     pageSize: 10,
-  };
+  }
 
   const {
     data: commentListResponseData,
@@ -152,9 +166,9 @@ const CommentTable: FC<CommentProps> = (props) => {
   } = useRequest(fetchCommentList, {
     manual: true,
     onError: () => {
-      message.error('获取审阅失败');
+      message.error('获取审阅失败')
     },
-  });
+  })
 
   /**
    * 获取全部数据
@@ -176,16 +190,16 @@ const CommentTable: FC<CommentProps> = (props) => {
       refreshDeps: [layerType, deviceType, JSON.stringify(projectIds)],
       onSuccess: () => {
         if (projectCommentListResponseData) {
-          setProjectCommentList(projectCommentListResponseData);
+          setProjectCommentList(projectCommentListResponseData)
         } else {
-          message.warn('没有数据');
+          message.warn('没有数据')
         }
       },
       onError: () => {
-        message.error('获取数据失败');
+        message.error('获取数据失败')
       },
-    },
-  );
+    }
+  )
 
   return (
     <>
@@ -197,7 +211,7 @@ const CommentTable: FC<CommentProps> = (props) => {
               value={keyword}
               onSearch={() => search()}
               onChange={(e) => {
-                setKeyword(e.target.value);
+                setKeyword(e.target.value)
               }}
               enterButton
             />
@@ -236,7 +250,12 @@ const CommentTable: FC<CommentProps> = (props) => {
           bordered
           size="middle"
           rowKey="createdOn"
-          pagination={{ ...pagination }}
+          pagination={{
+            current: currentPage,
+            onChange: onPageChange,
+            pageSize,
+            total: projectCommentList?.length,
+          }}
           loading={fetchProjectCommentListLoading}
           columns={columns}
           scroll={{ x: 1000 }}
@@ -261,7 +280,7 @@ const CommentTable: FC<CommentProps> = (props) => {
         />
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default CommentTable;
+export default CommentTable
