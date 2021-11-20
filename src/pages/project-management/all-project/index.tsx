@@ -1,26 +1,5 @@
-import CommonTitle from '@/components/common-title'
 import PageCommonWrap from '@/components/page-common-wrap'
-import TableSearch from '@/components/table-search'
-import React, { useState } from 'react'
-import AllStatistics from './components/all-statistics'
-import SingleStatistics from './components/all-project-statistics'
-import { Button, Input, Spin, Tooltip, message, Menu, Modal, Tabs } from 'antd'
-import styles from './index.less'
-import EngineerTable from './components/engineer-table'
-import { useRef } from 'react'
 import { useLayoutStore } from '@/layouts/context'
-import { useEffect } from 'react'
-import ScreenModal from './components/screen-modal'
-import AddEngineerModal from './components/add-engineer-modal'
-import { Dropdown } from 'antd'
-import {
-  DeleteOutlined,
-  DownOutlined,
-  ExclamationCircleOutlined,
-  QuestionCircleOutlined,
-} from '@ant-design/icons'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { TableItemCheckedInfo } from './components/engineer-table/engineer-table-item'
 import {
   applyKnot,
   canEditArrange,
@@ -31,22 +10,17 @@ import {
   revokeAllot,
   revokeKnot,
 } from '@/services/project-management/all-project'
-import TableExportButton from '@/components/table-export-button'
-import UploadAddProjectModal from './components/upload-batch-modal'
-import ArrangeModal from './components/arrange-modal'
-import EditArrangeModal from './components/edit-arrange-modal'
-import EditExternalArrangeForm from './components/edit-external-modal'
-import ExternalArrangeForm from './components/external-arrange-modal'
-import ShareModal from './components/share-modal'
-import ProjectRecallModal from './components/project-recall-modal'
-import ExportPowerModal from './components/export-power-modal'
-import AuditKnotModal from './components/audit-knot-modal'
-import { useMount, useRequest, useUpdateEffect } from 'ahooks'
-import AddFavoriteModal from './components/add-favorite-modal'
-import FavoriteList from './components/favorite-list'
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list'
-import { useMemo } from 'react'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { ExclamationCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons'
+import { useMount, useRequest, useUpdateEffect } from 'ahooks'
+import { Input, Menu, message, Modal, Tabs, Tooltip } from 'antd'
+import { default as React, useEffect, useMemo, useRef, useState } from 'react'
+import MyProject from '../my-work/components/my-project'
 import ProjectEntrust from '../project-entrust'
+import SingleStatistics from './components/all-project-statistics'
+import { TableItemCheckedInfo } from './components/engineer-table/engineer-table-item'
+import styles from './index.less'
 
 const { Search } = Input
 const { TabPane } = Tabs
@@ -599,10 +573,14 @@ const AllProject: React.FC = () => {
   const favoriteMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('add-favorite-project') && (
-        <Menu.Item onClick={() => addFavEvent()}>添加至收藏夹</Menu.Item>
+        <Menu.Item key="add" onClick={() => addFavEvent()}>
+          添加至收藏夹
+        </Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('remove-favorite-project') && (
-        <Menu.Item onClick={() => removeConfirm()}>移出当前收藏夹</Menu.Item>
+        <Menu.Item key="out" onClick={() => removeConfirm()}>
+          移出当前收藏夹
+        </Menu.Item>
       )}
     </Menu>
   )
@@ -618,17 +596,20 @@ const AllProject: React.FC = () => {
   const postProjectMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('all-project-apply-knot') && (
-        <Menu.Item onClick={() => applyConfirm()}>申请结项</Menu.Item>
+        <Menu.Item key="apply" onClick={() => applyConfirm()}>
+          申请结项
+        </Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('all-project-recall-apply-knot') && (
-        <Menu.Item onClick={() => revokeConfirm()}>撤回结项</Menu.Item>
+        <Menu.Item key="revoke" onClick={() => revokeConfirm()}>
+          撤回结项
+        </Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('all-project-kont-approve') && (
-        <Menu.Item onClick={() => auditKnotEvent()}>结项审批</Menu.Item>
+        <Menu.Item key="audit" onClick={() => auditKnotEvent()}>
+          结项审批
+        </Menu.Item>
       )}
-      {/* {buttonJurisdictionArray?.includes('all-project-kont-no-pass') && (
-        <Menu.Item onClick={() => noAuditKnotEvent()}>结项退回</Menu.Item>
-      )} */}
     </Menu>
   )
 
@@ -822,8 +803,8 @@ const AllProject: React.FC = () => {
             {currentClickTab === '1' && (
               <div className={styles.myProjectList}>
                 <Tabs>
-                  <TabPane tab="我的项目" key="mypro">
-                    111
+                  <TabPane tab="我的项目" key="mypro" style={{ height: 'calc(100vh - 272px)' }}>
+                    <MyProject />
                   </TabPane>
                 </Tabs>
               </div>
@@ -849,7 +830,7 @@ const AllProject: React.FC = () => {
                   <TabPane tab="待安排评审" key="toReview">
                     111
                   </TabPane>
-                  <TabPane tab="公司待办" key="todo" style={{ height: '500px' }}>
+                  <TabPane tab="公司待办" key="todo" style={{ height: 'calc(100vh - 272px)' }}>
                     <ProjectEntrust />
                   </TabPane>
                 </Tabs>

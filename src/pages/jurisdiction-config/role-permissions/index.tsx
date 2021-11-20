@@ -1,11 +1,11 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { Button, Input, Modal, Form, message, Spin } from 'antd';
-import React, { useState } from 'react';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-import '@/assets/icon/iconfont.css';
-import { useRequest, useBoolean } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { Button, Input, Modal, Form, message, Spin } from 'antd'
+import React, { useState } from 'react'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import '@/assets/icon/iconfont.css'
+import { useRequest, useBoolean } from 'ahooks'
 import {
   getAuthorizationDetail,
   updateAuthorizationItem,
@@ -13,49 +13,49 @@ import {
   deleteAuthorizationItem,
   addAuthorizationItem,
   getAuthorizationTreeList,
-} from '@/services/jurisdiction-config/role-permissions';
-import { isArray } from 'lodash';
-import RolePermissionsForm from './components/add-edit-form';
-import CheckboxTreeTable from '@/components/checkbox-tree-table';
-import styles from './index.less';
-import UserAuthorization from './components/user-authorization';
-import CyTag from '@/components/cy-tag';
-import uuid from 'node-uuid';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
+} from '@/services/jurisdiction-config/role-permissions'
+import { isArray } from 'lodash'
+import RolePermissionsForm from './components/add-edit-form'
+import CheckboxTreeTable from '@/components/checkbox-tree-table'
+import styles from './index.less'
+import UserAuthorization from './components/user-authorization'
+import CyTag from '@/components/cy-tag'
+import uuid from 'node-uuid'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input;
+const { Search } = Input
 
 const RolePermissions: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [currentId, setCurrentId] = useState<string>('');
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [currentId, setCurrentId] = useState<string>('')
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [
     authorizationFormVisible,
     { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
-  ] = useBoolean(false);
+  ] = useBoolean(false)
 
   //@ts-ignore
-  const { userType } = JSON.parse(localStorage.getItem('userInfo'));
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'))
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
-  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const { data, run } = useRequest(getAuthorizationDetail, {
     manual: true,
-  });
+  })
 
   const {
     data: MoudleTreeData = [],
     run: getModuleTreeData,
     loading,
-  } = useRequest(getAuthorizationTreeList, { manual: true });
+  } = useRequest(getAuthorizationTreeList, { manual: true })
 
   const columns = [
     {
@@ -70,7 +70,7 @@ const RolePermissions: React.FC = () => {
       index: 'isDisable',
       width: 120,
       render: (text: any, record: any) => {
-        const isChecked = !record.isDisable;
+        const isChecked = !record.isDisable
         return (
           <>
             {buttonJurisdictionArray?.includes('role-permissions-start-using') && (
@@ -98,7 +98,7 @@ const RolePermissions: React.FC = () => {
             {!buttonJurisdictionArray?.includes('role-permissions-start-using') &&
               (isChecked ? <span>启用</span> : <span>禁用</span>)}
           </>
-        );
+        )
       },
     },
     {
@@ -111,10 +111,10 @@ const RolePermissions: React.FC = () => {
             <CyTag className="mr7" key={uuid.v1()}>
               {item.text}
             </CyTag>
-          );
-        });
+          )
+        })
 
-        return roles;
+        return roles
       },
     },
     {
@@ -123,15 +123,15 @@ const RolePermissions: React.FC = () => {
       index: 'remark',
       width: '30%',
     },
-  ];
+  ]
 
   const updateStatus = async (record: any) => {
-    const { id } = record;
+    const { id } = record
 
-    await updateAuthorizationItemStatus(id);
-    tableFresh();
-    message.success('状态修改成功');
-  };
+    await updateAuthorizationItemStatus(id)
+    tableFresh()
+    message.success('状态修改成功')
+  }
 
   const searchElement = () => {
     return (
@@ -146,33 +146,33 @@ const RolePermissions: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search();
+      tableRef.current?.search()
     }
-  };
+  }
 
   const sureDeleteData = async () => {
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteAuthorizationItem(editDataId);
-    tableFresh();
+    await deleteAuthorizationItem(editDataId)
+    tableFresh()
 
-    message.success('删除成功');
-    setTableSelectRows([]);
-  };
+    message.success('删除成功')
+    setTableSelectRows([])
+  }
 
   // const distributeEvent = async () => {
   //   if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -203,22 +203,22 @@ const RolePermissions: React.FC = () => {
   //授权
   const authorizationEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择授权角色模板');
-      return;
+      message.error('请选择授权角色模板')
+      return
     }
-    authorizationFormShow();
-    setCurrentId(tableSelectRows[0].id);
-  };
+    authorizationFormShow()
+    setCurrentId(tableSelectRows[0].id)
+  }
 
   const cancelAuthorization = () => {
-    authorizationFormHide();
-  };
+    authorizationFormHide()
+  }
 
   //添加
   const addEvent = async () => {
-    setAddFormVisible(true);
-    await getModuleTreeData();
-  };
+    setAddFormVisible(true)
+    await getModuleTreeData()
+  }
 
   const sureAddRolePermissions = () => {
     addForm.validateFields().then(async (value) => {
@@ -228,37 +228,37 @@ const RolePermissions: React.FC = () => {
           isDisable: false,
           remark: '',
         },
-        value,
-      );
+        value
+      )
 
-      await addAuthorizationItem(submitInfo);
-      tableFresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+      await addAuthorizationItem(submitInfo)
+      tableFresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    const AuthorizationData = await run(editDataId);
+    const AuthorizationData = await run(editDataId)
 
-    editForm.setFieldsValue(AuthorizationData);
-    setEditFormVisible(true);
-  };
+    editForm.setFieldsValue(AuthorizationData)
+    setEditFormVisible(true)
+  }
 
   const sureEditRolePermissions = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -268,16 +268,16 @@ const RolePermissions: React.FC = () => {
           isDisable: editData.isDisable,
           remark: editData.remark,
         },
-        values,
-      );
+        values
+      )
 
-      await updateAuthorizationItem(submitInfo);
-      tableFresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+      await updateAuthorizationItem(submitInfo)
+      tableFresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const buttonElement = () => {
     return (
@@ -318,8 +318,8 @@ const RolePermissions: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   // const tabsRightSlot = (
   //   <div>
@@ -416,7 +416,7 @@ const RolePermissions: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default RolePermissions;
+export default RolePermissions

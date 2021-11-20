@@ -1,10 +1,10 @@
 import PageCommonWrap from '@/components/page-common-wrap'
-import EngineerTableWrapper from '@/pages/project-management/my-work/components/engineer-table-wrapeer'
+import MyProject from '@/pages/project-management/my-work/components/my-project'
 import React from 'react'
 const Test = () => {
   return (
     <PageCommonWrap noPadding>
-      <EngineerTableWrapper />
+      <MyProject />
     </PageCommonWrap>
   )
 }

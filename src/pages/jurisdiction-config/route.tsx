@@ -1,60 +1,60 @@
-import Loadable from 'react-loadable';
-import Loading from '@ant-design/pro-layout/es/PageLoading';
+import Loadable from 'react-loadable'
+import Loading from '@ant-design/pro-layout/es/PageLoading'
 
 const ManageUser = Loadable({
   loader: () => import('@/pages/jurisdiction-config/manage-user'),
   loading: Loading,
   delay: 150,
-});
+})
 
 const CompanyManage = Loadable({
   loader: () => import('@/pages/jurisdiction-config/company-manage'),
   loading: Loading,
   delay: 150,
-});
+})
 const PlatformRole = Loadable({
   loader: () => import('@/pages/jurisdiction-config/platform-role'),
   loading: Loading,
   delay: 150,
-});
+})
 const CompanyUser = Loadable({
   loader: () => import('@/pages/jurisdiction-config/company-user'),
   loading: Loading,
   delay: 150,
-});
+})
 const RolePermissions = Loadable({
   loader: () => import('@/pages/jurisdiction-config/role-permissions'),
   loading: Loading,
   delay: 150,
-});
+})
 const ProjectPermission = Loadable({
   loader: () => import('@/pages/jurisdiction-config/project-permission'),
   loading: Loading,
   delay: 150,
-});
+})
 
 const SubordinateCompany = Loadable({
   loader: () => import('@/pages/jurisdiction-config/subordinate-company'),
   loading: Loading,
   delay: 150,
-});
+})
 
 const WorkHandover = Loadable({
   loader: () => import('@/pages/jurisdiction-config/work-handover'),
   loading: Loading,
   delay: 150,
-});
+})
 
 const CompanyGroup = Loadable({
   loader: () => import('@/pages/jurisdiction-config/company-group'),
   loading: Loading,
   delay: 150,
-});
+})
 const ApproveGroup = Loadable({
   loader: () => import('@/pages/jurisdiction-config/approve-group'),
   loading: Loading,
   delay: 150,
-});
+})
 
 export default [
   {
@@ -111,4 +111,4 @@ export default [
     path: '/jurisdiction-config/approve-group',
     component: <ApproveGroup />,
   },
-];
+]

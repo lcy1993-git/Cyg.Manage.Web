@@ -1,31 +1,31 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { EditOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message } from 'antd';
-import React, { useRef, useState } from 'react';
-import RoleManageForm from './components/form';
-import { isArray } from 'lodash';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Modal, Form, message } from 'antd'
+import React, { useRef, useState } from 'react'
+import RoleManageForm from './components/form'
+import { isArray } from 'lodash'
 import {
   updateRoleManageItem,
   addRoleManageItem,
   getRoleManageDetail,
-} from '@/services/jurisdiction-config/role-manage';
-import { useRequest } from 'ahooks';
-import TableStatus from '@/components/table-status';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+} from '@/services/jurisdiction-config/role-manage'
+import { useRequest } from 'ahooks'
+import TableStatus from '@/components/table-status'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
 const PlatformRole: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
 
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray();
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
   const { data, run } = useRequest(getRoleManageDetail, {
     manual: true,
-  });
+  })
 
   const rightButton = () => {
     return (
@@ -43,21 +43,21 @@ const PlatformRole: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   //数据修改刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   //
   const addEvent = async () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddRoleManageItem = () => {
     addForm.validateFields().then(async (value) => {
@@ -67,35 +67,35 @@ const PlatformRole: React.FC = () => {
           roleType: '',
           remark: '',
         },
-        value,
-      );
-      await addRoleManageItem(submitInfo);
-      tableFresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addRoleManageItem(submitInfo)
+      tableFresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    const RoleManageData = await run(editDataId);
-    editForm.setFieldsValue(RoleManageData);
+    const RoleManageData = await run(editDataId)
+    editForm.setFieldsValue(RoleManageData)
 
-    setEditFormVisible(true);
-  };
+    setEditFormVisible(true)
+  }
 
   const sureEditRoleManage = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请先选择一条数据进行编辑');
-      return;
+      message.error('请先选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -104,15 +104,15 @@ const PlatformRole: React.FC = () => {
           roleName: editData.roleName,
           remark: editData.remark,
         },
-        values,
-      );
-      await updateRoleManageItem(submitInfo);
-      tableFresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateRoleManageItem(submitInfo)
+      tableFresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
   const columns = [
     {
       title: '角色名称',
@@ -130,7 +130,7 @@ const PlatformRole: React.FC = () => {
           <TableStatus className="mr7" color="greenOne">
             {record.roleTypeText}
           </TableStatus>
-        );
+        )
       },
     },
     {
@@ -138,7 +138,7 @@ const PlatformRole: React.FC = () => {
       dataIndex: 'remark',
       index: 'remark',
     },
-  ];
+  ]
 
   return (
     <PageCommonWrap>
@@ -181,7 +181,7 @@ const PlatformRole: React.FC = () => {
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default PlatformRole;
+export default PlatformRole
