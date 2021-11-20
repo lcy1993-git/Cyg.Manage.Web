@@ -1,9 +1,9 @@
 import GeneralTable from '@/components/general-table';
 import PageCommonWrap from '@/components/page-common-wrap';
 import TableSearch from '@/components/table-search';
-import { Button, Input, Modal, Form, Popconfirm, message, Switch, Spin, Tabs } from 'antd';
+import { Button, Input, Modal, Form, message, Spin } from 'antd';
 import React, { useState } from 'react';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, PlusOutlined } from '@ant-design/icons';
 import '@/assets/icon/iconfont.css';
 import { useRequest, useBoolean } from 'ahooks';
 import {
@@ -19,7 +19,6 @@ import RolePermissionsForm from './components/add-edit-form';
 import CheckboxTreeTable from '@/components/checkbox-tree-table';
 import styles from './index.less';
 import UserAuthorization from './components/user-authorization';
-import RoleAuthorization from './components/role-authorization';
 import CyTag from '@/components/cy-tag';
 import uuid from 'node-uuid';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks';
@@ -46,7 +45,7 @@ const RolePermissions: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray();
 
   const { data, run } = useRequest(getAuthorizationDetail, {
     manual: true,

@@ -40,7 +40,7 @@ const ProjectPermission: React.FC = () => {
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray();
 
   const { data, run, loading } = useRequest(getProPermissionItem, {
     manual: true,

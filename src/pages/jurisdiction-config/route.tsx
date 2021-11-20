@@ -50,6 +50,11 @@ const CompanyGroup = Loadable({
   loading: Loading,
   delay: 150,
 });
+const ApproveGroup = Loadable({
+  loader: () => import('@/pages/jurisdiction-config/approve-group'),
+  loading: Loading,
+  delay: 150,
+});
 
 export default [
   {
@@ -100,5 +105,10 @@ export default [
     title: '工作交接',
     path: '/jurisdiction-config/work-handover',
     component: <WorkHandover />,
+  },
+  {
+    title: '立项审批管理',
+    path: '/jurisdiction-config/approve-group',
+    component: <ApproveGroup />,
   },
 ];

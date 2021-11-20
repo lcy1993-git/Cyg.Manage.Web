@@ -60,7 +60,7 @@ const InfoManage: React.FC = () => {
 
   const editFormRef = useRef<HTMLDivElement>(null);
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray();
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
 
@@ -198,29 +198,6 @@ const InfoManage: React.FC = () => {
               ))}
           </>
         );
-        // const isChecked = !record.isEnable;
-        // return (
-        //   <>
-        //     {buttonJurisdictionArray?.includes('start-forbid') &&
-        //       (record.isEnable === true ? (
-        //         <>
-        //           <Switch
-        //             key={status}
-        //             defaultChecked
-        //             onChange={() => updateStatus(record.id, isChecked)}
-        //           />
-        //           <span className="formSwitchOpenTip">启用</span>
-        //         </>
-        //       ) : (
-        //         <>
-        //           <Switch onChange={() => updateStatus(record.id, isChecked)} />
-        //           <span className="formSwitchCloseTip">禁用</span>
-        //         </>
-        //       ))}
-        //     {!buttonJurisdictionArray?.includes('start-forbid') &&
-        //       (record.isEnable === true ? <span>启用</span> : <span>禁用</span>)}
-        //   </>
-        // );
       },
     },
 
