@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { Input, Col, Row, Select } from 'antd';
-import DisableSelect from '../disable-select';
-import UrlSelect from '@/components/url-select';
-import FormSwitch from '@/components/form-switch';
-import CyFormItem from '@/components/cy-form-item';
-import DateFormItem from '@/components/date-from-item';
-import { getEnums } from '@/pages/technology-economic/utils';
-const { Option } = Select;
+import CyFormItem from '@/components/cy-form-item'
+import DateFormItem from '@/components/date-from-item'
+import FormSwitch from '@/components/form-switch'
+import { getEnums } from '@/pages/technology-economic/utils'
+import { Col, Input, Row, Select } from 'antd'
+import React from 'react'
+import DisableSelect from '../disable-select'
+const { Option } = Select
 const engineeringTemplateTypeList = getEnums('EngineeringTemplateType')
   ? getEnums('EngineeringTemplateType')
-  : [];
+  : [{ value: 1, text: '定额计价' }]
 interface IForm {
-  type?: 'add' | 'edit';
-  selectList?: number[];
+  type?: 'add' | 'edit'
+  selectList?: number[]
 }
 type listType = {
-  value: string;
-  text: string;
-  disabled?: true;
-};
+  value: string
+  text: string
+  disabled?: true
+}
 const DictionaryForm: React.FC<IForm> = (props) => {
-  const { type, selectList } = props;
+  const { type, selectList } = props
+  console.log(engineeringTemplateTypeList)
+
   return (
     <>
       <Row>
@@ -50,7 +51,7 @@ const DictionaryForm: React.FC<IForm> = (props) => {
                       <Option value={item.value} key={index}>
                         {item.text}
                       </Option>
-                    );
+                    )
                   })}
               </Select>
             ) : (
@@ -92,7 +93,7 @@ const DictionaryForm: React.FC<IForm> = (props) => {
         <Input.TextArea rows={3} />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default DictionaryForm;
+export default DictionaryForm
