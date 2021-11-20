@@ -1,43 +1,43 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Switch } from 'antd';
-import React, { useMemo, useRef, useState } from 'react';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
-import { isArray } from 'lodash';
-import '@/assets/icon/iconfont.css';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, Popconfirm, message, Switch } from 'antd'
+import React, { useMemo, useRef, useState } from 'react'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
+import { isArray } from 'lodash'
+import '@/assets/icon/iconfont.css'
 import {
   getNewsItemDetail,
   updateNewsItem,
   deleteNewsItem,
   addNewsItem,
   updateNewsState,
-} from '@/services/news-config/info-manage';
+} from '@/services/news-config/info-manage'
 // import DefaultParams from './components/default-params';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import moment from 'moment';
-import TextEditor from './component/text-editor';
-import EnumSelect from '@/components/enum-select';
-import { BelongManageEnum } from '@/services/personnel-config/manage-user';
-import CyTag from '@/components/cy-tag';
-import CheckInfoModal from './check-info-modal';
-import { getUsersIds } from './utils';
-import ModalConfirm from '@/components/modal-confirm';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import moment from 'moment'
+import TextEditor from './component/text-editor'
+import EnumSelect from '@/components/enum-select'
+import { BelongManageEnum } from '@/services/personnel-config/manage-user'
+import CyTag from '@/components/cy-tag'
+import CheckInfoModal from './check-info-modal'
+import { getUsersIds } from './utils'
+import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input;
+const { Search } = Input
 
 const InfoManage: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [status, setStatus] = useState<number>(0);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [status, setStatus] = useState<number>(0)
 
-  const [checkInfoVisible, setCheckInfoVisible] = useState<boolean>(false);
-  const [currentCheckNewsId, setCurrentCheckNewsId] = useState<string>('');
+  const [checkInfoVisible, setCheckInfoVisible] = useState<boolean>(false)
+  const [currentCheckNewsId, setCurrentCheckNewsId] = useState<string>('')
 
   // const currentCheckNewsId = useMemo(() => {
   //   if (tableSelectRows && tableSelectRows.length > 0) {
@@ -50,23 +50,23 @@ const InfoManage: React.FC = () => {
   // const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
   // 富文本框内容
-  const [content, setContent] = useState<string>('');
-  const [editContent, setEditContent] = useState<string>('');
-  const [addPersonArray, setAddPersonArray] = useState([]);
-  const [editPersonArray, setEditPersonArray] = useState([]);
-  const [editPersonUserIds, setEditPersonUserIds] = useState<any[]>([]);
+  const [content, setContent] = useState<string>('')
+  const [editContent, setEditContent] = useState<string>('')
+  const [addPersonArray, setAddPersonArray] = useState([])
+  const [editPersonArray, setEditPersonArray] = useState([])
+  const [editPersonUserIds, setEditPersonUserIds] = useState<any[]>([])
 
   // const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
-  const editFormRef = useRef<HTMLDivElement>(null);
+  const editFormRef = useRef<HTMLDivElement>(null)
 
-  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray();
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run } = useRequest(getNewsItemDetail, {
     manual: true,
-  });
+  })
 
   // const { data: TreeData = [] } = useRequest(() => getGroupInfo('4'));
   // const mapTreeData = (data: any) => {
@@ -101,44 +101,44 @@ const InfoManage: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteNewsItem(editDataId);
-    refresh();
-    setTableSelectRows([]);
-    message.success('删除成功');
-  };
+    await deleteNewsItem(editDataId)
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const updateStatus = async (id: string, status: boolean) => {
-    await updateNewsState(id, status);
-    search();
-    message.success('状态修改成功');
-  };
+    await updateNewsState(id, status)
+    search()
+    message.success('状态修改成功')
+  }
 
   const columns = [
     {
@@ -156,7 +156,7 @@ const InfoManage: React.FC = () => {
             )}
             {!buttonJurisdictionArray?.includes('check-info') && <span>{record.title}</span>}
           </>
-        );
+        )
       },
     },
     {
@@ -165,7 +165,7 @@ const InfoManage: React.FC = () => {
       index: 'isEnable',
       width: 120,
       render: (text: any, record: any) => {
-        const isChecked = !record.isEnable;
+        const isChecked = !record.isEnable
         return (
           <>
             {buttonJurisdictionArray?.includes('start-forbid') &&
@@ -197,7 +197,7 @@ const InfoManage: React.FC = () => {
                 </span>
               ))}
           </>
-        );
+        )
       },
     },
 
@@ -211,8 +211,8 @@ const InfoManage: React.FC = () => {
             <CyTag key={item.value} className="mr7">
               {item.text}
             </CyTag>
-          );
-        });
+          )
+        })
       },
     },
     {
@@ -227,7 +227,7 @@ const InfoManage: React.FC = () => {
       title: '创建时间',
       width: 160,
       render: (text: any, record: any) => {
-        return moment(record.createdOn).format('YYYY-MM-DD HH:mm');
+        return moment(record.createdOn).format('YYYY-MM-DD HH:mm')
       },
     },
     {
@@ -236,32 +236,32 @@ const InfoManage: React.FC = () => {
       title: '更新时间',
       width: 160,
       render: (text: any, record: any) => {
-        return moment(record.modifiedOn).format('YYYY-MM-DD HH:mm');
+        return moment(record.modifiedOn).format('YYYY-MM-DD HH:mm')
       },
     },
-  ];
+  ]
 
   //按宣贯状态查找
   const searchByStatus = (value: any) => {
-    setStatus(value);
+    setStatus(value)
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.searchByParams({
         state: value,
-      });
+      })
     }
-  };
+  }
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddNews = () => {
     addForm.validateFields().then(async (values) => {
-      const { userIds } = values;
-      const handleIds = addPersonArray.filter((item: any) => userIds?.includes(item.value));
-      const finallyIds = getUsersIds(handleIds);
+      const { userIds } = values
+      const handleIds = addPersonArray.filter((item: any) => userIds?.includes(item.value))
+      const finallyIds = getUsersIds(handleIds)
 
       const submitInfo = {
         title: '',
@@ -270,52 +270,51 @@ const InfoManage: React.FC = () => {
         clientCategorys: '',
         ...values,
         userIds: finallyIds,
-      };
+      }
 
-      await addNewsItem(submitInfo);
-      refresh();
-      message.success('添加成功');
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+      await addNewsItem(submitInfo)
+      refresh()
+      message.success('添加成功')
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    const checkContentData = await run(editDataId);
+    const checkContentData = await run(editDataId)
 
-    const userIds = checkContentData.users?.map((item) => item.value);
+    const userIds = checkContentData.users?.map((item) => item.value)
 
-    const clientCategorys = checkContentData.clientCategorys.map((item) => item.value);
-    setEditFormVisible(true);
-    setEditContent(checkContentData.content);
-    setEditPersonUserIds(userIds);
+    const clientCategorys = checkContentData.clientCategorys.map((item) => item.value)
+    setEditFormVisible(true)
+    setEditContent(checkContentData.content)
+    setEditPersonUserIds(userIds)
     editForm.setFieldsValue({
       title: checkContentData.title,
       isEnable: checkContentData.isEnable,
       clientCategorys,
-    });
-  };
+    })
+  }
 
   const sureEditNewsItem = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
-      const { userIds } = values;
-
-      const handleIds = editPersonArray.filter((item: any) => userIds?.includes(item.value));
-      const finallyIds = getUsersIds(handleIds);
+      const { userIds } = values
+      const handleIds = editPersonArray.filter((item: any) => userIds?.includes(item.value))
+      const finallyIds = getUsersIds(handleIds)
 
       const submitInfo = {
         id: editData.id,
@@ -323,19 +322,19 @@ const InfoManage: React.FC = () => {
         content: content,
         ...values,
         userIds: finallyIds,
-      };
+      }
 
-      await updateNewsItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      setEditFormVisible(false);
-    });
-  };
+      await updateNewsItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      setEditFormVisible(false)
+    })
+  }
 
   const checkEvent = (id: string) => {
-    setCurrentCheckNewsId(id);
-    setCheckInfoVisible(true);
-  };
+    setCurrentCheckNewsId(id)
+    setCheckInfoVisible(true)
+  }
 
   const tableElement = () => {
     return (
@@ -358,8 +357,8 @@ const InfoManage: React.FC = () => {
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <PageCommonWrap>
@@ -385,8 +384,8 @@ const InfoManage: React.FC = () => {
           okText="保存"
           onOk={() => sureAddNews()}
           onCancel={() => {
-            setAddFormVisible(false);
-            addForm.resetFields();
+            setAddFormVisible(false)
+            addForm.resetFields()
           }}
           cancelText="取消"
           destroyOnClose
@@ -428,7 +427,7 @@ const InfoManage: React.FC = () => {
         />
       )}
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default InfoManage;
+export default InfoManage
