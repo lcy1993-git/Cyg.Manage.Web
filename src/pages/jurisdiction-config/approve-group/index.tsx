@@ -200,6 +200,7 @@ const ApproveGroup: React.FC = () => {
     const editDataId = editData.id
     setGroupId(editDataId)
     const ApproveGroupData = await run(editDataId)
+
     const users = ApproveGroupData.users?.map((item: any) => item.value)
     setEditFormVisible(true)
     setEditPersonUserIds(users)

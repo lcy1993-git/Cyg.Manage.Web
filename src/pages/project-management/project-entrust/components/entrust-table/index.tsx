@@ -17,7 +17,6 @@ import uuid from 'node-uuid'
 import { TableContext } from '@/pages/project-management/all-project/components/engineer-table/table-store'
 import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info'
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
-import moment from 'moment'
 
 interface EntrustTableProps {
   extractParams: any

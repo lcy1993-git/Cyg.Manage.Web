@@ -31,15 +31,7 @@ interface treeDataItems {
 const { DirectoryTree } = Tree
 
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
-  const {
-    setVisible,
-    visible,
-    getFavId,
-    finishEvent,
-    getFavName,
-    setStatisticalTitle,
-    favName,
-  } = props
+  const { setVisible, getFavId, finishEvent, getFavName, setStatisticalTitle, favName } = props
   const [treeData, setTreeData] = useState<treeDataItems[]>([])
   const [parentId, setParentId] = useState<string>('')
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()

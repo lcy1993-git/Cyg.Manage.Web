@@ -46,6 +46,7 @@ import AddFavoriteModal from './components/add-favorite-modal'
 import FavoriteList from './components/favorite-list'
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list'
 import { useMemo } from 'react'
+import ProjectEntrust from '../project-entrust'
 
 const { Search } = Input
 const { TabPane } = Tabs
@@ -733,9 +734,11 @@ const AllProject: React.FC = () => {
     )
   }
 
+  console.log(currentClickTab, '111')
+
   return (
     <>
-      {/* {buttonJurisdictionArray?.includes('engineer-favorite') && (
+      {buttonJurisdictionArray?.includes('engineer-favorite') && (
         <Tooltip title="工程收藏夹">
           <div
             className={styles.folderButton}
@@ -743,13 +746,13 @@ const AllProject: React.FC = () => {
               setSideVisible(true)
               setKeyWord('')
             }}
-            style={{ display: sideVisible ? 'none' : 'block' }}
+            style={{ display: sideVisible || currentClickTab !== '1' ? 'none' : 'block' }}
           >
             <img src={imgSrc} alt="" />
             <div>收藏</div>
           </div>
         </Tooltip>
-      )} */}
+      )}
       <PageCommonWrap noPadding={true} noColor={true}>
         <div className={styles.allProjectPage}>
           <div className={styles.allProjectCheckTab}>
@@ -846,8 +849,8 @@ const AllProject: React.FC = () => {
                   <TabPane tab="待安排评审" key="toReview">
                     111
                   </TabPane>
-                  <TabPane tab="公司待办" key="todo">
-                    111
+                  <TabPane tab="公司待办" key="todo" style={{ height: '500px' }}>
+                    <ProjectEntrust />
                   </TabPane>
                 </Tabs>
               </div>

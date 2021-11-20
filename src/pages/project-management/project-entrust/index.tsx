@@ -103,53 +103,57 @@ const ProjectEntrust: React.FC = () => {
   }
 
   return (
-    <PageCommonWrap>
-      <CommonTitle>待办项目</CommonTitle>
+    <>
+      {/* <PageCommonWrap> */}
+      {/* <CommonTitle>待办项目</CommonTitle>
       <div style={{ color: 'red' }}>
         在当前列表中可以查看所属公司被其他单位委托的项目，并且可以将该项目获取至当前个人账号，获取后的项目在【我的工作台】模块中查看。
-      </div>
-      {userType === 2 && (
-        <div className={styles.searchAndButton}>
-          <div className={styles.searchProject}>
-            <TableSearch className="mr22" label="" width="300px">
-              <Search
-                placeholder="请输入工程/项目名称"
-                enterButton
-                value={keyWord}
-                onChange={(e) => setKeyWord(e.target.value)}
-                onSearch={() => searchEvent()}
-              />
-            </TableSearch>
-            <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
-          </div>
+      </div> */}
+      <div style={{ padding: '10px 20px' }}>
+        {userType === 2 && (
+          <div className={styles.searchAndButton}>
+            <div className={styles.searchProject}>
+              <TableSearch className="mr22" label="" width="300px">
+                <Search
+                  placeholder="请输入工程/项目名称"
+                  enterButton
+                  value={keyWord}
+                  onChange={(e) => setKeyWord(e.target.value)}
+                  onSearch={() => searchEvent()}
+                />
+              </TableSearch>
+              <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
+            </div>
 
-          {buttonJurisdictionArray?.includes('get-project-entrust') && (
-            <Button
-              className="mr7"
-              type="primary"
-              style={{ width: '70px', borderRadius: '5px' }}
-              onClick={() => receiveProjectEvent()}
-            >
-              获取
-            </Button>
-          )}
+            {buttonJurisdictionArray?.includes('get-project-entrust') && (
+              <Button
+                className="mr7"
+                type="primary"
+                style={{ width: '70px', borderRadius: '5px' }}
+                onClick={() => receiveProjectEvent()}
+              >
+                获取
+              </Button>
+            )}
+          </div>
+        )}
+        <div className={styles.entrustTableContent}>
+          <EntrustTable
+            ref={tableRef}
+            extractParams={{ ...searchParams, keyWord }}
+            onSelect={tableSelectEvent}
+          />
         </div>
-      )}
-      <div className={styles.entrustTableContent}>
-        <EntrustTable
-          ref={tableRef}
-          extractParams={{ ...searchParams, keyWord }}
-          onSelect={tableSelectEvent}
+        <FilterEntrustModal
+          visible={screenModalVisible}
+          onChange={setScreenModalVisible}
+          finishEvent={screenClickEvent}
+          searchParams={searchParams}
         />
       </div>
 
-      <FilterEntrustModal
-        visible={screenModalVisible}
-        onChange={setScreenModalVisible}
-        finishEvent={screenClickEvent}
-        searchParams={searchParams}
-      />
-    </PageCommonWrap>
+      {/* </PageCommonWrap> */}
+    </>
   )
 }
 
