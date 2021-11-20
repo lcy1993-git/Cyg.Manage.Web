@@ -115,7 +115,7 @@ export const init = ({ location }: InitParams) => {
 
   const initialState: ReducerState = {
     mode,
-    gridMapState: initGridMapState,
+    gridMapState: initGridMapState as any,
     UIStatus: {
       showTitle: true,
       showHistoryLayer: true,

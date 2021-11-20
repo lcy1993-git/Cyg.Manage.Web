@@ -18,7 +18,7 @@ const MapOperator = () => {
   )
 
   return (
-    <FlowLayer bottom={0} right={15}>
+    <FlowLayer className="select-none" bottom={0} right={15}>
       <div className="text-right">
         <div>
           <IconSwitcher
