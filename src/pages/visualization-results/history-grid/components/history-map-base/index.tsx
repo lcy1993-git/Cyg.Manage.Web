@@ -26,7 +26,7 @@ import { checkUserLocation, clear } from './utils'
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
 const HistoryMapBase = () => {
-  const [state, setState] = useGridMap()
+  const [state, setState, mode] = useGridMap()
 
   const {
     mapLayerType,
@@ -103,6 +103,7 @@ const HistoryMapBase = () => {
     ref.current!.innerHTML = ''
     interActionRef.source = new VectorSource()
     interActionRef.hightLightSource = new VectorSource()
+    
   }
   // 初始化layer
   function initLayer() {
@@ -112,9 +113,12 @@ const HistoryMapBase = () => {
     layerRef.streetLayer = streetLayer
     // 添加地域名称图层
     layerRef.annLayer = annLayer
-    // 添加 vectorLayer
+    // 添加 历史网架图层
     layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
+    // 添加高亮图层
     layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
+    // 添加 预设计图层
+    if(mode === "preDesign") layerRef.designLayer = getVectorLayer(interActionRef.designSource = new VectorSource())
   }
   // 初始化view
   function initView() {
@@ -259,6 +263,7 @@ const HistoryMapBase = () => {
           清屏
         </button>
         <button>导入</button>
+        <button>{mode}</button>
         {/* <button onClick={() => setSelectType('')}>不选择</button>{' '}
         <button onClick={() => setSelectType('pointSelect')}>不选择</button>{' '} */}
         {/* <button onClick={() => setSelectType('boxSelect')}>框选</button> */}
