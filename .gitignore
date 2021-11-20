@@ -8,7 +8,6 @@ _roadhog-api-doc
 
 # production
 /dist
-/.vscode
 /config/proxy.ts
 
 # misc
@@ -20,7 +19,6 @@ yarn-error.log
 .idea
 .zip
 *bak
-.vscode
 
 # visual studio code
 .history
@@ -37,4 +35,4 @@ screenshot
 .firebase
 .eslintcache
 
-build
+*.exe.stackdump

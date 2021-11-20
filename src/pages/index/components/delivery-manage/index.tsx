@@ -1,34 +1,33 @@
-import BarChart from '@/components/bar-chart';
-import { CaretDownOutlined } from '@ant-design/icons';
-import { Select, DatePicker, Button, Spin } from 'antd';
-import React, { useEffect, useState } from 'react';
-import ChartBox from '../chart-box';
-import ChartTab from '../chart-tab';
-import * as echarts from 'echarts/lib/echarts';
-const { Option } = Select;
+import BarChart from '@/components/bar-chart'
+import { CaretDownOutlined } from '@ant-design/icons'
+import { Select, DatePicker, Button, Spin } from 'antd'
+import React, { useEffect, useState } from 'react'
+import ChartBox from '../chart-box'
+import ChartTab from '../chart-tab'
+import * as echarts from 'echarts/lib/echarts'
 
-import styles from './index.less';
-import { useRequest } from 'ahooks';
-import { getConsigns, AreaInfo } from '@/services/index';
-import { useMemo } from 'react';
-import { Moment } from 'moment';
-import moment from 'moment';
-import borderStylesHTML from '../../utils/borderStylesHTML';
+import styles from './index.less'
+import { useRequest } from 'ahooks'
+import { getConsigns, AreaInfo } from '@/services/index'
+import { useMemo } from 'react'
+import { Moment } from 'moment'
+import moment from 'moment'
+import borderStylesHTML from '../../utils/borderStylesHTML'
+const { Option } = Select
 
-
-const { RangePicker } = DatePicker;
+const { RangePicker } = DatePicker
 
 interface DeliveyManageProps {
-  componentProps?: string[];
-  currentAreaInfo: AreaInfo;
+  componentProps?: string[]
+  currentAreaInfo: AreaInfo
 }
 
 const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
-  const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props;
-  const [startTime, setStartTime] = useState<Moment | string | null>(null);
-  const [endTime, setEndTime] = useState<Moment | null | string>(null);
+  const { componentProps = ['person', 'department', 'company'], currentAreaInfo } = props
+  const [startTime, setStartTime] = useState<Moment | string | null>(null)
+  const [endTime, setEndTime] = useState<Moment | null | string>(null)
 
-  const [activeKey, setActiveKey] = useState<string>();
+  const [activeKey, setActiveKey] = useState<string>()
 
   const tabData = [
     {
@@ -46,23 +45,23 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
       name: '公司',
       value: '3',
     },
-  ];
+  ]
 
   const showTabData = useMemo(() => {
-    const filterData = tabData.filter((item) => componentProps.includes(item.id));
+    const filterData = tabData.filter((item) => componentProps.includes(item.id))
     if (filterData && filterData.length > 0) {
-      setActiveKey(filterData[0].id);
+      setActiveKey(filterData[0].id)
     }
-    return filterData;
-  }, [JSON.stringify(componentProps)]);
+    return filterData
+  }, [JSON.stringify(componentProps)])
 
   const type = useMemo(() => {
-    const dataIndex = tabData.findIndex((item) => item.id === activeKey);
+    const dataIndex = tabData.findIndex((item) => item.id === activeKey)
     if (dataIndex > -1) {
-      return tabData[dataIndex].value;
+      return tabData[dataIndex].value
     }
-    return undefined;
-  }, [activeKey]);
+    return undefined
+  }, [activeKey])
 
   const { data: consignsData, run, loading } = useRequest(
     () =>
@@ -76,13 +75,13 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
     {
       ready: !!type,
       refreshDeps: [type, currentAreaInfo],
-    },
-  );
+    }
+  )
 
   const option = useMemo(() => {
     if (consignsData) {
-      const dataArray = consignsData?.map((item) => item.key);
-      const valueArray = consignsData?.map((item) => item.value);
+      const dataArray = consignsData?.map((item) => item.key)
+      const valueArray = consignsData?.map((item) => item.value)
 
       return {
         grid: {
@@ -97,14 +96,16 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
           },
           backgroundColor: 'rgba(0,0,0,0.9)',
           borderColor: '#000',
-          formatter(params: any){
-            const { name, value } = params[0];
-            
-            return borderStylesHTML + `<span style="color: #2AFE97">${name}</span><br />
+          formatter(params: any) {
+            const { name, value } = params[0]
+
+            return (
+              borderStylesHTML +
+              `<span style="color: #2AFE97">${name}</span><br />
             <span style="color: #2AFE97">项目数量：</span><span style="color: #FFF">${value}</span>
             `
-            
-          }
+            )
+          },
         },
         xAxis: {
           type: 'value',
@@ -142,30 +143,30 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
             fontSize: 10,
             align: 'right',
             formatter: function (params: any) {
-              let newParamsName = '';
-              let paramsNameNumber = params.length;
+              let newParamsName = ''
+              let paramsNameNumber = params.length
               if (params.length > 12) {
-                params = params.substring(0, 9) + '...';
+                params = params.substring(0, 9) + '...'
               }
-              let provideNumber = 4; //一行显示几个字
-              let rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+              let provideNumber = 4 //一行显示几个字
+              let rowNumber = Math.ceil(paramsNameNumber / provideNumber)
               if (paramsNameNumber > provideNumber) {
                 for (let p = 0; p < rowNumber; p++) {
-                  let tempStr = '';
-                  let start = p * provideNumber;
-                  let end = start + provideNumber;
+                  let tempStr = ''
+                  let start = p * provideNumber
+                  let end = start + provideNumber
                   if (p == rowNumber - 1) {
-                    tempStr = params.substring(start, paramsNameNumber);
+                    tempStr = params.substring(start, paramsNameNumber)
                   } else {
-                    tempStr = params.substring(start, end) + '\n';
+                    tempStr = params.substring(start, end) + '\n'
                   }
-                  newParamsName += tempStr;
+                  newParamsName += tempStr
                 }
               } else {
-                newParamsName = params;
+                newParamsName = params
               }
-              
-              return newParamsName;
+
+              return newParamsName
             },
           },
         },
@@ -186,72 +187,72 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
                       offset: 1,
                       color: '#2AFE97', // 100% 处的颜色
                     },
-                  ]);
+                  ])
                 },
               },
             },
           },
         ],
-      };
+      }
     }
-    return undefined;
-  }, [JSON.stringify(consignsData)]);
+    return undefined
+  }, [JSON.stringify(consignsData)])
 
   const reset = () => {
-    setStartTime(null);
-    setEndTime(null);
-  };
+    setStartTime(null)
+    setEndTime(null)
+  }
 
   useEffect(() => {
-    run();
-  }, [JSON.stringify(startTime), JSON.stringify(endTime)]);
+    run()
+  }, [JSON.stringify(startTime), JSON.stringify(endTime)])
 
   return (
     <ChartBox title="交付统计">
       <Spin delay={300} spinning={loading}>
-      <div className={styles.deliveryMange}>
-        <div className={styles.deliveryManageStatisticCondition}>
-          <div className={styles.deliverySelect}>
-            <Select bordered={false} defaultValue="number" suffixIcon={<CaretDownOutlined />}>
-              <Option value="number">项目数量</Option>
-              {/* <Option value="designFee">设计费</Option> */}
-            </Select>
+        <div className={styles.deliveryMange}>
+          <div className={styles.deliveryManageStatisticCondition}>
+            <div className={styles.deliverySelect}>
+              <Select bordered={false} defaultValue="number" suffixIcon={<CaretDownOutlined />}>
+                <Option value="number">项目数量</Option>
+                {/* <Option value="designFee">设计费</Option> */}
+              </Select>
+            </div>
+            <div className={styles.deliveryTab}>
+              <ChartTab
+                data={showTabData}
+                onChange={(value) => setActiveKey(value)}
+                defaultValue={activeKey}
+              />
+            </div>
           </div>
-          <div className={styles.deliveryTab}>
-            <ChartTab
-              data={showTabData}
-              onChange={(value) => setActiveKey(value)}
-              defaultValue={activeKey}
-            />
+          <div className={styles.deliveryChart}>
+            {type && option && <BarChart options={option} />}
+          </div>
+          <div className={styles.deliveryTime}>
+            <span className={styles.deliveryChooseTimeLabel}>选择日期</span>
+            <div className={styles.delivertChooseTime}>
+              <RangePicker
+                format="YYYY-MM-DD"
+                allowClear={false}
+                value={[startTime ? moment(startTime) : null, endTime ? moment(endTime) : null]}
+                onChange={(dates, dateStrings) => {
+                  setStartTime(dateStrings[0])
+                  setEndTime(dateStrings[1])
+                }}
+                bordered={false}
+                renderExtraFooter={() => [
+                  <Button key="clearDate" onClick={() => reset()}>
+                    清除日期
+                  </Button>,
+                ]}
+              />
+            </div>
           </div>
         </div>
-        <div className={styles.deliveryChart}>
-          {type && option && <BarChart options={option} />}
-        </div>
-        <div className={styles.deliveryTime}>
-          <span className={styles.deliveryChooseTimeLabel}>选择日期</span>
-          <div className={styles.delivertChooseTime}>
-            <RangePicker
-              format="YYYY-MM-DD"
-              allowClear={false}
-              value={[startTime ? moment(startTime) : null, endTime ? moment(endTime) : null]}
-              onChange={(dates, dateStrings) => {
-                setStartTime(dateStrings[0]);
-                setEndTime(dateStrings[1]);
-              }}
-              bordered={false}
-              renderExtraFooter={() => [
-                <Button key="clearDate" onClick={() => reset()}>
-                  清除日期
-                </Button>,
-              ]}
-            />
-          </div>
-        </div>
-      </div>
       </Spin>
     </ChartBox>
-  );
-};
+  )
+}
 
-export default DeliveryManage;
+export default DeliveryManage

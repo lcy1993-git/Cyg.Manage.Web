@@ -8,10 +8,10 @@
   /* 固定单元格背景颜色 */
   --vt-fixed-cell-bg-color: #fff;
 
-  --vt-parent-bg-color: #F2F2F2;
+  --vt-parent-bg-color: #f2f2f2;
 }
 .border {
-  border: var(--vt-border-width) solid var(--vt-border-color)
+  border: var(--vt-border-width) solid var(--vt-border-color);
 }
 .vt-row:last-of-type .vt-cell {
   border-bottom-width: var(--vt-border-width);
@@ -29,12 +29,12 @@
 
 .vt-cell {
   display: inline-block;
-  padding-left: var(--vt-cell-padding-x);
   padding-right: var(--vt-cell-padding-x);
-  border-top-width: var(--vt-border-width);
-  border-left: 1px solid #dbdbdb;
-  border-bottom: 1px solid #dbdbdb;
+  padding-left: var(--vt-cell-padding-x);
   overflow: hidden;
+  border-top-width: var(--vt-border-width);
+  border-bottom: 1px solid #dbdbdb;
+  border-left: 1px solid #dbdbdb;
 }
 
 .vt-cell.sticky {
@@ -44,26 +44,27 @@
 }
 
 .vt-cell.stick-left-last:not(.parent)::after {
-  content: '';
-  width: 30px;
   position: absolute;
-  right: 0;
   top: 0;
+  right: 0;
   bottom: -1px;
-  transform: translate(100%);
-  pointer-events: none;
+  width: 30px;
   box-shadow: 0 0 5px 1px #00000026;
+  transform: translate(100%);
+  content: '';
+  pointer-events: none;
 }
 
 .vt-cell.ellipsis {
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .vt-cell .vt-checkbox {
+  width: 28px;
   margin-right: var(--vt-cell-padding-x);
   padding-right: var(--vt-cell-padding-x);
-  border-right-width: var(--vt-border-width);
   border-right-color: #dbdbdb;
+  border-right-width: var(--vt-border-width);
   border-right-style: solid;
-  width: 28px;
 }

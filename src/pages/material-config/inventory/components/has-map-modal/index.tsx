@@ -1,34 +1,30 @@
-import GeneralTable from '@/components/general-table';
-import { Button, Modal, message, Popconfirm } from 'antd';
-import React, { useState } from 'react';
-import styles from './index.less';
-
-import { deleteResourceInventoryMap } from '@/services/material-config/inventory';
-
-import { ImportOutlined } from '@ant-design/icons';
-
+import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
+import { deleteResourceInventoryMap } from '@/services/material-config/inventory'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { ImportOutlined } from '@ant-design/icons'
+import { Button, message, Modal } from 'antd'
+import React, { useState } from 'react'
+import CheckMapping from '../check-mapping-form'
+import CreateMap from '../create-map'
 // import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import MapLibModal from '../map-lib-modal';
-import CheckMapping from '../check-mapping-form';
-import CreateMap from '../create-map';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
-const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+import MapLibModal from '../map-lib-modal'
+import styles from './index.less'
 
 const HasMapModal: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
+  const tableRef = React.useRef<HTMLDivElement>(null)
   // const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   // const [companyWord, setCompanyWord] = useState<string>('');
-  const [mapLibModalVisible, setMapLibModalVisible] = useState<boolean>(false);
-  const [mappingListModalVisible, setMappingListModalVisible] = useState<boolean>(false);
-  const [editMapListModalVisible, setEditMapListModalVisible] = useState<boolean>(false);
+  const [mapLibModalVisible, setMapLibModalVisible] = useState<boolean>(false)
+  const [mappingListModalVisible, setMappingListModalVisible] = useState<boolean>(false)
+  const [editMapListModalVisible, setEditMapListModalVisible] = useState<boolean>(false)
 
-  const [mappingId, setMappingId] = useState<string>('');
-  const [inventoryId, setInventoryId] = useState<string>('');
-  const [libId, setLibId] = useState<string>('');
-  const [inventoryName, setInventoryName] = useState<string>('');
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const [mappingId, setMappingId] = useState<string>('')
+  const [inventoryId, setInventoryId] = useState<string>('')
+  const [libId, setLibId] = useState<string>('')
+  const [inventoryName, setInventoryName] = useState<string>('')
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const tableElement = () => {
     return (
@@ -52,50 +48,50 @@ const HasMapModal: React.FC = () => {
           />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   //映射操作
   const createMapEvent = () => {
-    setMapLibModalVisible(true);
-  };
+    setMapLibModalVisible(true)
+  }
 
   const deleteMapEvent = async () => {
     if (tableSelectRows && tableSelectRows.length === 0) {
-      message.warning('请选择要删除的映射');
-      return;
+      message.warning('请选择要删除的映射')
+      return
     }
-    await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id });
-    message.success('删除映射成功');
-    setTableSelectRows([]);
-    refresh();
-  };
+    await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id })
+    message.success('删除映射成功')
+    setTableSelectRows([])
+    refresh()
+  }
 
   const editMapEvent = () => {
     if (tableSelectRows && tableSelectRows.length === 0) {
-      message.warning('请选择要编辑的映射');
-      return;
+      message.warning('请选择要编辑的映射')
+      return
     }
-    setMappingId(tableSelectRows[0].id);
-    setInventoryId(tableSelectRows[0].inventoryOverviewId);
-    setLibId(tableSelectRows[0].resourceLibId);
-    setEditMapListModalVisible(true);
-  };
+    setMappingId(tableSelectRows[0].id)
+    setInventoryId(tableSelectRows[0].inventoryOverviewId)
+    setLibId(tableSelectRows[0].resourceLibId)
+    setEditMapListModalVisible(true)
+  }
 
   const checkMapEvent = (inventoryOverviewId: string, name: string, mappingId: string) => {
-    setInventoryId(inventoryOverviewId);
-    setInventoryName(name);
-    setMappingId(mappingId);
-    setMappingListModalVisible(true);
-  };
+    setInventoryId(inventoryOverviewId)
+    setInventoryName(name)
+    setMappingId(mappingId)
+    setMappingListModalVisible(true)
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // const resetEvent = () => {
   //   if (tableRef && tableRef.current) {
@@ -125,7 +121,7 @@ const HasMapModal: React.FC = () => {
               <span>{record.resourceLibName}</span>
             )}
           </>
-        );
+        )
       },
     },
     {
@@ -145,7 +141,7 @@ const HasMapModal: React.FC = () => {
       index: 'remark',
       title: '备注',
     },
-  ];
+  ]
 
   return (
     <>
@@ -191,7 +187,7 @@ const HasMapModal: React.FC = () => {
         libId={libId}
       />
     </>
-  );
-};
+  )
+}
 
-export default HasMapModal;
+export default HasMapModal

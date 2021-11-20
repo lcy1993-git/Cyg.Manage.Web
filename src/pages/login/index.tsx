@@ -1,9 +1,9 @@
-import React from 'react';
-import styles from './index.less';
-import loginBg from '@/assets/image/login/bg.png';
-import bannerSrc from '@/assets/image/login/banner.png';
-import LoginForm from './components/login-form';
-import LogoComponent from '@/components/logo-component';
+import React from 'react'
+import styles from './index.less'
+import loginBg from '@/assets/image/login/bg.png'
+import bannerSrc from '@/assets/image/login/banner.png'
+import LoginForm from './components/login-form'
+import LogoComponent from '@/components/logo-component'
 
 const Login: React.FC = () => {
   return (
@@ -23,10 +23,10 @@ const Login: React.FC = () => {
       <div className={styles.loginPageFooter}>
         {/* <span>©2018- 四川长园工程勘察设计有限公司 版权所有 蜀ICP备18013772号</span> */}
         <span className={styles.copyRightTip}>版权所有</span>
-        <span>©配网云设计平台版权所有</span>
+        <span>©工程智慧云平台版权所有</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

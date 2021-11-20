@@ -1,33 +1,33 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { Input, Button, message } from 'antd';
-import React, { useEffect, useState } from 'react';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { Input, Button, message } from 'antd'
+import React, { useEffect, useState } from 'react'
 // import ElectricCompanyForm from './components/add-edit-form';
-import styles from './index.less';
-import UrlSelect from '@/components/url-select';
-import { getUploadUrl } from '@/services/resource-config/drawing';
-import { useRequest } from 'ahooks';
-import { ImportOutlined } from '@ant-design/icons';
-import ImportChartModal from './component/import-form';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import styles from './index.less'
+import UrlSelect from '@/components/url-select'
+import { getUploadUrl } from '@/services/resource-config/drawing'
+import { useRequest } from 'ahooks'
+import { ImportOutlined } from '@ant-design/icons'
+import ImportChartModal from './component/import-form'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
 interface libParams {
-  libId: string;
+  libId: string
 }
 
-const { Search } = Input;
+const { Search } = Input
 const Drawing: React.FC<libParams> = (props) => {
-  const { libId } = props;
+  const { libId } = props
 
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
-  const [resourceLibId, setResourceLibId] = useState<string | undefined>('');
-  const { data: keyData } = useRequest(() => getUploadUrl());
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [importFormVisible, setImportFormVisible] = useState<boolean>(false)
+  const [resourceLibId, setResourceLibId] = useState<string | undefined>('')
+  const { data: keyData } = useRequest(() => getUploadUrl())
 
-  const chartSecurityKey = keyData?.uploadChartApiSecurity;
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const chartSecurityKey = keyData?.uploadChartApiSecurity
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const searchComponent = () => {
     return (
@@ -41,88 +41,67 @@ const Drawing: React.FC<libParams> = (props) => {
             placeholder="请输入图纸信息"
           />
         </TableSearch>
-        {/* <TableSearch marginLeft="20px" label="选择资源" width="300px">
-          <UrlSelect
-            allowClear
-            showSearch
-            requestSource="resource"
-            url="/ResourceLib/GetList"
-            titleKey="libName"
-            valueKey="id"
-            placeholder="请选择"
-            onChange={(value: any) => searchByLib(value)}
-          />
-        </TableSearch> */}
       </div>
-    );
-  };
+    )
+  }
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    setResourceLibId(value);
-    search();
-  };
+    setResourceLibId(value)
+    search()
+  }
 
   useEffect(() => {
-    searchByLib(resourceLibId);
-  }, [resourceLibId]);
+    searchByLib(resourceLibId)
+  }, [resourceLibId])
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   const uploadFinishEvent = () => {
-    refresh();
-  };
+    refresh()
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
       dataIndex: 'chartId',
       index: 'chartId',
       title: '图纸编号',
-      width: 150,
+      width: 240,
     },
-    {
-      dataIndex: 'fileId',
-      index: 'fileId',
-      title: '文件编号',
-      width: 150,
-    },
+
     {
       dataIndex: 'category',
       index: 'category',
       title: '类别',
-      width: 200,
+      width: 240,
     },
     {
       dataIndex: 'type',
       index: 'type',
       title: '类型',
-      width: 200,
+      width: 240,
     },
-    {
-      dataIndex: 'fileName',
-      index: 'fileName',
-      title: '文件名',
-    },
+
     {
       dataIndex: 'chartName',
       index: 'chartName',
       title: '图纸名称',
     },
-  ];
+  ]
 
   const tableElement = () => {
     return (
@@ -134,16 +113,16 @@ const Drawing: React.FC<libParams> = (props) => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const importChartEvent = () => {
     // if (!resourceLibId) {
     //   message.error('请先选择资源库');
     //   return;
     // }
-    setImportFormVisible(true);
-  };
+    setImportFormVisible(true)
+  }
 
   return (
     <>
@@ -152,7 +131,7 @@ const Drawing: React.FC<libParams> = (props) => {
         rowKey="chartId"
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
-        // buttonRightContentSlot={tableElement}
+        buttonRightContentSlot={tableElement}
         columns={columns}
         requestSource="resource"
         url="/Chart/GetPageList"
@@ -173,7 +152,7 @@ const Drawing: React.FC<libParams> = (props) => {
       />
       {/* </PageCommonWrap> */}
     </>
-  );
-};
+  )
+}
 
-export default Drawing;
+export default Drawing

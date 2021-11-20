@@ -1,48 +1,63 @@
-import React, {useState} from 'react';
-import {history} from 'umi';
-import {Input, Button, Modal, Form, Switch, message, Space, Spin, DatePicker, Row, Col} from 'antd';
-import type {ColumnsType} from 'antd/lib/table';
-import {EyeOutlined, PlusOutlined, DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {isArray} from 'lodash';
+import React, { useState } from 'react'
+import { history } from 'umi'
+import {
+  Input,
+  Button,
+  Modal,
+  Form,
+  Switch,
+  message,
+  Space,
+  Spin,
+  DatePicker,
+  Row,
+  Col,
+} from 'antd'
+import type { ColumnsType } from 'antd/lib/table'
+import {
+  EyeOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
+import { isArray } from 'lodash'
 
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
 
 import {
   // modifyMaterialLibraryStatus,
   addMaterialLibrary,
-  deleteMaterialLibraryById
-} from '@/services/technology-economic/supplies-library';
-import useBoolean from 'ahooks/lib/useBoolean';
-import moment from 'moment';
-import FileUpload from '@/components/file-upload';
+  deleteMaterialLibraryById,
+} from '@/services/technology-economic/supplies-library'
+import useBoolean from 'ahooks/lib/useBoolean'
+import moment from 'moment'
+import FileUpload from '@/components/file-upload'
 
 export interface SuppliesLibraryData {
-  "id"?: string
-  "name": string
-  "publishOrg": string
-  "publishDate": string | moment.Moment
-  "remark": string
+  id?: string
+  name: string
+  publishOrg: string
+  publishDate: string | moment.Moment
+  remark: string
   // "enabled": boolean
-  'file': any
+  file: any
 }
 
-const {Search} = Input;
+const { Search } = Input
 
-const {confirm} = Modal;
+const { confirm } = Modal
 
 const SuppliesLibrary: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [spinning, setSpinning] = useState<boolean>(false);
-  const [
-    triggerUploadFile,
-  ] = useBoolean(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [spinning, setSpinning] = useState<boolean>(false)
+  const [triggerUploadFile] = useBoolean(false)
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const columns: ColumnsType<any> = [
     {
@@ -60,7 +75,7 @@ const SuppliesLibrary: React.FC = () => {
       width: 80,
       render(v: string) {
         return moment(v).format('YYYY-MM-DD')
-      }
+      },
     },
     {
       dataIndex: 'publishOrg',
@@ -93,8 +108,8 @@ const SuppliesLibrary: React.FC = () => {
       align: 'center',
       ellipsis: true,
       width: 150,
-    }
-  ];
+    },
+  ]
   const searchComponent = () => {
     return (
       <TableSearch label="关键词" width="203px">
@@ -106,33 +121,33 @@ const SuppliesLibrary: React.FC = () => {
           placeholder="关键词"
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const tableSearchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   // 添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   // const setStatus = async (status: boolean, record: any) => {
   //   await modifyMaterialLibraryStatus(record.id)
@@ -141,75 +156,77 @@ const SuppliesLibrary: React.FC = () => {
 
   const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
+      message.warning('请选择要操作的行')
+      return
     }
-    const {id} = tableSelectRows?.[0] ?? '';
+    const { id } = tableSelectRows?.[0] ?? ''
     history.push(`/technology-economic/suppliesl-infomation?id=${id}`)
-  };
+  }
   const onFinish = (val: SuppliesLibraryData) => {
     setSpinning(true)
     const data = JSON.parse(JSON.stringify(val))
     data.file = val.file
     // data.enabled = !!data.enabled
     data.name = data.name.trimEnd().trimStart()
-    if (data.name === ''){
+    if (data.name === '') {
       message.warning('物料库名称不能为空')
       setSpinning(false)
       return
     }
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
-     addMaterialLibrary(data).then(()=>{
-       setSpinning(false)
-       setAddFormVisible(false)
-       form.resetFields()
-       refresh()
-     }).finally(()=>{
-       setSpinning(false)
-     })
-
+    addMaterialLibrary(data)
+      .then(() => {
+        setSpinning(false)
+        setAddFormVisible(false)
+        form.resetFields()
+        refresh()
+      })
+      .finally(() => {
+        setSpinning(false)
+      })
   }
   const onRemoveRow = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
+      message.warning('请选择要操作的行')
+      return
     }
     confirm({
       title: '确定要删除该物料吗?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       async onOk() {
         await deleteMaterialLibraryById(tableSelectRows[0].id)
         refresh()
+        setTableSelectRows([])
       },
       onCancel() {
-        console.log('Cancel');
+        console.log('Cancel')
       },
-    });
+    })
   }
 
   const tableElement = () => {
     return (
       <Space>
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined/>
+          <PlusOutlined />
           添加
         </Button>
 
         <Button onClick={onRemoveRow} className="mr7">
-          <DeleteOutlined/>
+          <DeleteOutlined />
           删除
         </Button>
         <Button className="mr7" onClick={() => gotoMoreInfo()}>
-          <EyeOutlined/>
+          <EyeOutlined />
           查看详情
         </Button>
       </Space>
-    );
-  };
+    )
+  }
 
   const tableSelectEvent = (data: SuppliesLibraryData[] | Object) => {
-    setTableSelectRows(data);
-  };
+    setTableSelectRows(data)
+  }
 
   return (
     <PageCommonWrap>
@@ -222,7 +239,7 @@ const SuppliesLibrary: React.FC = () => {
         url="/MaterialLibrary/GetMaterialLibraryList"
         tableTitle="物料库管理"
         getSelectData={tableSelectEvent}
-        requestSource='tecEco1'
+        requestSource="tecEco1"
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
@@ -240,89 +257,78 @@ const SuppliesLibrary: React.FC = () => {
         destroyOnClose
       >
         <Spin tip={'上传中...'} spinning={spinning}>
-        <Form
-          name="basic"
-          initialValues={{remember: true}}
-          form={form}
-          labelCol={{span: 6}}
-          wrapperCol={{span: 18}}
-          onFinish={onFinish}
-        >
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="名称"
-                name="name"
-                rules={[{required: true, message: '请输入名称!'}]}
-              >
-                <Input placeholder={'请输入名称'}/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="发布时间"
-                name="publishDate"
-                rules={[{required: true, message: '请选择发布时间!'}]}
-              >
-                <DatePicker defaultValue={undefined}/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="发布机构"
-                name="publishOrg"
-              >
-                <Input/>
-              </Form.Item>
-            </Col>
-            {/*<Col span={12}>*/}
-            {/*  <Form.Item*/}
-            {/*    label="状态"*/}
-            {/*    name="enabled"*/}
-            {/*  >*/}
-            {/*    <Switch/>*/}
-            {/*  </Form.Item>*/}
-            {/*</Col>*/}
-          </Row>
-          <Row gutter={20}>
-            <Col span={12}>
-              <Form.Item
-                label="说明"
-                name="remark"
-              >
-                <Input.TextArea rows={3}/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="上传文件"
-                name="file"
-                rules={[{required: true, message: '请上传物料库文件!'}]}
-              >
-                <FileUpload
-                            trigger={triggerUploadFile}
-                            maxCount={1}
-                            accept=".xls,.xlsx"/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <div style={{display: 'flex', justifyContent: 'center'}}>
-            <Space>
-              <Button onClick={() => setAddFormVisible(false)}>
-                取消
-              </Button>
-              <Button type="primary" htmlType="submit">
-                确定
-              </Button>
-            </Space>
-          </div>
-        </Form>
+          <Form
+            name="basic"
+            initialValues={{ remember: true }}
+            form={form}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
+            onFinish={onFinish}
+          >
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item
+                  label="名称"
+                  name="name"
+                  rules={[{ required: true, message: '请输入名称!' }]}
+                >
+                  <Input placeholder={'请输入名称'} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="发布时间"
+                  name="publishDate"
+                  rules={[{ required: true, message: '请选择发布时间!' }]}
+                >
+                  <DatePicker defaultValue={undefined} />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item label="发布机构" name="publishOrg">
+                  <Input />
+                </Form.Item>
+              </Col>
+              {/*<Col span={12}>*/}
+              {/*  <Form.Item*/}
+              {/*    label="状态"*/}
+              {/*    name="enabled"*/}
+              {/*  >*/}
+              {/*    <Switch/>*/}
+              {/*  </Form.Item>*/}
+              {/*</Col>*/}
+            </Row>
+            <Row gutter={20}>
+              <Col span={12}>
+                <Form.Item label="说明" name="remark">
+                  <Input.TextArea rows={3} />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  label="上传文件"
+                  name="file"
+                  rules={[{ required: true, message: '请上传物料库文件!' }]}
+                >
+                  <FileUpload trigger={triggerUploadFile} maxCount={1} accept=".xls,.xlsx" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Space>
+                <Button onClick={() => setAddFormVisible(false)}>取消</Button>
+                <Button type="primary" htmlType="submit">
+                  确定
+                </Button>
+              </Space>
+            </div>
+          </Form>
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default SuppliesLibrary;
+export default SuppliesLibrary

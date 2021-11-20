@@ -1,56 +1,58 @@
-import { editUserInfo, getUserInfo } from '@/services/user/user-info';
-import { useControllableValue, useRequest } from 'ahooks';
-import { Input, message } from 'antd';
-import { Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import styles from './index.less';
-import { useEffect } from 'react';
-import PhoneInfo from './components/phone-info';
-import PersonInfoRow from './components/person-info-row';
-import { Button } from 'antd';
+import { editUserInfo, getUserInfo } from '@/services/user/user-info'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Input, message } from 'antd'
+import { Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import styles from './index.less'
+import { useEffect } from 'react'
+import PhoneInfo from './components/phone-info'
+import PersonInfoRow from './components/person-info-row'
+import { Button } from 'antd'
 // import EmailInfo from './components/email-info';
-import { useRef } from 'react';
-import { useGetUserInfo } from '@/utils/hooks';
-import EmailInfo from './components/email-info';
+import { useRef } from 'react'
+import { useGetUserInfo } from '@/utils/hooks'
+import EmailInfo from './components/email-info'
 
 interface PersonInfoModalProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
 }
 
 const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
-  const { userType = '' } = useGetUserInfo();
+  const { userType = '' } = useGetUserInfo()
 
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const [closeState, setCloseState] = useState<boolean>(false);
+  const [closeState, setCloseState] = useState<boolean>(false)
 
-  const nameRef = useRef<Input>(null);
-  const emailRef = useRef<Input>(null);
+  const nameRef = useRef<Input>(null)
+  const emailRef = useRef<Input>(null)
 
   const [refreshPhone, setRefreshPhone] = useState<boolean>(false)
   const [refreshEmail, setRefreshEmail] = useState<boolean>(false)
 
-  const cancelPhone = () => {
-    setRefreshPhone(!refreshPhone)
-  }
+  const { data: userInfo, run: request } = useRequest(() => getUserInfo(), {
+    manual: true,
+  })
 
   const cancelEmail = () => {
     setRefreshEmail(!refreshEmail)
+    request()
   }
 
-  const { data: userInfo, run: request } = useRequest(() => getUserInfo(), {
-    manual: true,
-  });
+  const cancelPhone = () => {
+    setRefreshPhone(!refreshPhone)
+    request()
+  }
 
   const run = () => {
-    request();
-    setCloseState(!closeState);
-  };
+    request()
+    setCloseState(!closeState)
+  }
 
   useEffect(() => {
-    request();
-  }, []);
+    request()
+  }, [])
 
   return (
     <Modal
@@ -77,20 +79,24 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
         </div>
         <div className={styles.companyInfoRow}>
           <div className={styles.title}>角色</div>
-          <div className={styles.content}>{ userInfo?.isSuperAdmin ? "超级管理员" : userInfo?.userTypeText }</div>
+          <div className={styles.content}>
+            {userInfo?.isSuperAdmin ? '超级管理员' : userInfo?.userTypeText}
+          </div>
         </div>
       </div>
       <PersonInfoRow
+        key={userInfo?.phone + 'phone'}
         name={userInfo?.phone}
         title="手机"
         expandState={closeState || refreshPhone}
-        editNode={<PhoneInfo phone={userInfo?.phone} refresh={run} cancelPhone={cancelPhone}/>}
+        editNode={<PhoneInfo phone={userInfo?.phone} refresh={run} cancelPhone={cancelPhone} />}
       />
       <PersonInfoRow
+        key={userInfo?.email + 'email'}
         name={userInfo?.email}
         title="邮箱"
         expandState={closeState || refreshEmail}
-        editNode={<EmailInfo email={userInfo?.email} refresh={run} cancelEmail={cancelEmail}/>}
+        editNode={<EmailInfo email={userInfo?.email} refresh={run} cancelEmail={cancelEmail} />}
         // editNode={
         //   <div className={styles.nodeWrap}>
         //     <div className={styles.input}>
@@ -144,13 +150,13 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
                 <Button
                   type="primary"
                   onClick={() => {
-                    if(nameRef.current!.input.value.length > 12){
-                      message.error("姓名长度不能超过12个字符")
-                    }else{
+                    if (nameRef.current!.input.value.length > 12) {
+                      message.error('姓名长度不能超过12个字符')
+                    } else {
                       editUserInfo({ ...userInfo, name: nameRef.current!.input.value }).then(() => {
-                        run();
-                        message.success('更新成功');
-                      });
+                        run()
+                        message.success('更新成功')
+                      })
                     }
                   }}
                 >
@@ -162,7 +168,7 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
         }
       ></PersonInfoRow>
     </Modal>
-  );
-};
+  )
+}
 
-export default PersonInfoModal;
+export default PersonInfoModal

@@ -1,47 +1,47 @@
-import GeneralTable from '@/components/general-table';
-import { Button, message, Form, Modal } from 'antd';
-import React, { useState } from 'react';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Popconfirm } from 'antd';
+import GeneralTable from '@/components/general-table'
+import { Button, message, Form, Modal } from 'antd'
+import React, { useState } from 'react'
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Popconfirm } from 'antd'
 // import styles from './index.less';
-import { isArray } from 'lodash';
+import { isArray } from 'lodash'
 import {
   getComponentPropertyItem,
   updateComponentPropertyItem,
   addComponentPropertyItem,
   deleteComponentPropertyItem,
-} from '@/services/resource-config/component';
-import { useRequest } from 'ahooks';
-import AddComponentProperty from './add-form';
-import EditComponentProperty from './edit-form';
-import ModalConfirm from '@/components/modal-confirm';
+} from '@/services/resource-config/component'
+import { useRequest } from 'ahooks'
+import AddComponentProperty from './add-form'
+import EditComponentProperty from './edit-form'
+import ModalConfirm from '@/components/modal-confirm'
 interface ModuleDetailParams {
-  libId: string;
-  componentId: string[];
+  libId: string
+  componentId: string[]
 }
 
 const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, componentId } = props;
+  const { libId, componentId } = props
 
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run } = useRequest(getComponentPropertyItem, {
     manual: true,
-  });
+  })
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   const columns = [
     {
@@ -55,12 +55,12 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
       index: 'propertyValue',
       title: '属性值',
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddComponentDetail = () => {
     addForm.validateFields().then(async (value) => {
@@ -69,34 +69,34 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
           libId: libId,
           componentId: componentId[0],
         },
-        value,
-      );
+        value
+      )
 
-      await addComponentPropertyItem(saveInfo);
-      message.success('添加成功');
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+      await addComponentPropertyItem(saveInfo)
+      message.success('添加成功')
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const ComponentDetailData = await run(libId, editDataId);
+    setEditFormVisible(true)
+    const ComponentDetailData = await run(libId, editDataId)
 
-    editForm.setFieldsValue(ComponentDetailData);
-  };
+    editForm.setFieldsValue(ComponentDetailData)
+  }
 
   const sureEditcomponentDetail = () => {
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -106,27 +106,27 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
           propertyName: editData.propertyName,
           propertyValue: editData.propertyValue,
         },
-        values,
-      );
-      await updateComponentPropertyItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateComponentPropertyItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条模块明细删除！');
-      return;
+      message.error('请选择一条模块明细删除！')
+      return
     }
-    const selectDataId = tableSelectRows[0].id;
-    await deleteComponentPropertyItem(libId, selectDataId);
-    refresh();
-    message.success('删除成功');
-    setTableSelectRows([]);
-  };
+    const selectDataId = tableSelectRows[0].id
+    await deleteComponentPropertyItem(libId, selectDataId)
+    refresh()
+    message.success('删除成功')
+    setTableSelectRows([])
+  }
 
   const tableRightSlot = (
     <>
@@ -140,14 +140,14 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
       </Button>
       <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
     </>
-  );
+  )
 
   return (
     <div>
       {/* <Table dataSource={propertyData} columns={columns} /> */}
       <GeneralTable
         noPaging
-        // buttonRightContentSlot={() => tableRightSlot}
+        buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/ComponentProperty/GetList"
         columns={columns}
@@ -193,7 +193,7 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
         </Form>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default ElectricProperty;
+export default ElectricProperty

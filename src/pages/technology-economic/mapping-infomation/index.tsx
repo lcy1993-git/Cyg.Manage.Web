@@ -1,30 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useMount } from 'ahooks';
-import { Tabs } from 'antd';
-import PageCommonWrap from '@/components/page-common-wrap';
-import GeneralTable from '@/components/general-table';
-import { Select } from 'antd';
-import qs from 'qs';
-import styles from './index.less';
-import { Tree } from 'antd';
-import {
-  getMaterialMappingQuotaList,
-  getSourceMaterialMappingLibraryList,
-} from '@/services/technology-economic/material';
-import { getMaterialLibraryTreeById } from '@/services/technology-economic/supplies-library';
-import TableSearch from '@/components/table-search';
-import Search from 'antd/lib/input/Search';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { getSourceMaterialMappingLibraryList } from '@/services/technology-economic/material'
+import { getMaterialLibraryTreeById } from '@/services/technology-economic/supplies-library'
+import { useMount } from 'ahooks'
+import { Select, Tabs, Tree } from 'antd'
+import Search from 'antd/lib/input/Search'
+import qs from 'qs'
+import React, { useEffect, useRef, useState } from 'react'
+import styles from './index.less'
 
-const { Option } = Select;
+const { Option } = Select
 
-const { DirectoryTree } = Tree;
-const { TabPane } = Tabs;
+const { DirectoryTree } = Tree
+const { TabPane } = Tabs
 const columns = [
   {
     title: '序号',
     width: 80,
     render(v: any, record: any, index: number) {
-      return <span>{index + 1}</span>;
+      return <span>{index + 1}</span>
     },
   },
 
@@ -58,156 +53,141 @@ const columns = [
     title: '项目划分',
     ellipsis: true,
   },
-];
+]
 
 interface SelectIten {
-  enabled: boolean;
-  id: string;
-  name: string;
-  publishDate: moment.Moment;
-  publishOrg: string;
-  sourceMaterialLibraryId: string;
-  remark: string;
+  enabled: boolean
+  id: string
+  name: string
+  publishDate: moment.Moment
+  publishOrg: string
+  sourceMaterialLibraryId: string
+  remark: string
 }
 
 const MappingInfomation = () => {
-  const [materialLibraryId, setMaterialLibraryId] = useState<string>('');
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [materialLibList, setMaterialLibList] = useState([]);
-  const [slectLsit, setSlectLsit] = useState<SelectIten[]>([]);
-  const [id, setId] = useState<string>('');
-  const [sourceMaterialLibraryId, setSourceMaterialLibraryId] = useState<string>('');
-  const [visible, setVisible] = useState<boolean>(true);
-  const [mappingType, setMappingType] = useState<string>('1');
-  const [extractParams, setExtractParams] = useState<object>({
-    mappingType: 1,
-    sourceMaterialMappingLibraryId: '',
-    sourceMaterialLibraryId: '',
-    sourceMaterialLibraryCatalogueId: '',
-  });
-  const tableRef = React.useRef<HTMLDivElement>(null);
+  const [materialLibraryId, setMaterialLibraryId] = useState<string>('')
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [materialLibList, setMaterialLibList] = useState([])
+  const [slectLsit, setSlectLsit] = useState<SelectIten[]>([])
+  const [id, setId] = useState<string>('')
+  const [sourceMaterialLibraryId, setSourceMaterialLibraryId] = useState<string>('')
+  const [visible, setVisible] = useState<boolean>(true)
+  const [mappingType, setMappingType] = useState<string>('1')
+  const tableRef = React.useRef<HTMLDivElement>(null)
   const getTree = (arr: any[]) => {
     return arr.map((item) => {
       // eslint-disable-next-line no-param-reassign
-      item.title = item.name;
+      item.title = item.name
       // eslint-disable-next-line no-param-reassign
-      item.value = item.id;
+      item.value = item.id
       // eslint-disable-next-line no-param-reassign
-      item.key = item.id;
+      item.key = item.id
       if (item.children && item.children.length !== 0) {
-        getTree(item.children);
+        getTree(item.children)
       }
-      return item;
-    });
-  };
+      return item
+    })
+  }
   useMount(async () => {
     // 获取id
-    let val = qs.parse(window.location.href.split('?')[1])?.id;
+    let val = qs.parse(window.location.href.split('?')[1])?.id
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    const materialLibraryId = qs.parse(window.location.href.split('?')[1])?.sourceMaterialLibraryId;
-    val = val === 'undefined' ? '' : val;
-    setId(val as string);
-    setSourceMaterialLibraryId(materialLibraryId as string);
-  });
+    const materialLibraryId = qs.parse(window.location.href.split('?')[1])?.sourceMaterialLibraryId
+    val = val === 'undefined' ? '' : val
+    setId(val as string)
+    setSourceMaterialLibraryId(materialLibraryId as string)
+  })
   const getTreeList = async () => {
-    if (id === '') return;
-    // const data = {
-    //   mappingType: mappingType,
-    //   sourceMaterialMappingLibraryId: id,
-    //   sourceMaterialLibraryId: sourceMaterialLibraryId,
-    //   // pageIndex: 1,
-    //   // pageSize: 9999,
-    // };
-    // if (materialLibraryId !== '') {
-    //   // @ts-ignore
-    //   data.sourceMaterialLibraryCatalogueId = materialLibraryId;
-    // }
-    // if (searchKeyWord !== '') {
-    //   // @ts-ignore
-    //   data.keyWord = searchKeyWord;
-    // }
-    // // @ts-ignore
-    // setExtractParams(data);
-    tableRef && tableRef?.current?.reset();
-    tableRef && tableRef?.current?.search();
-  };
+    if (id === '') return
+    tableRef && tableRef?.current?.reset()
+    tableRef && tableRef?.current?.search()
+  }
   const getDirectoryList = async () => {
-    if (id === '') return;
-    const res = await getMaterialLibraryTreeById(sourceMaterialLibraryId);
-    setMaterialLibList(getTree(res) as []);
-  };
+    if (id === '') return
+    const res = await getMaterialLibraryTreeById(sourceMaterialLibraryId)
+    setMaterialLibList(getTree(res) as [])
+  }
   const tableTabChange = (val: string) => {
-    setMappingType(val);
-    setVisible(false);
+    setMappingType(val)
+    setVisible(false)
+    setSearchKeyWord('')
     setTimeout(() => {
-      setVisible(true);
-    });
-  };
+      setVisible(true)
+    })
+  }
   useEffect(() => {
-    getDirectoryList();
-    getTreeList();
-  }, [id]);
+    getDirectoryList()
+    getTreeList()
+  }, [id])
   useEffect(() => {
-    getTreeList();
-  }, [materialLibraryId, mappingType]);
-  const ref = useRef(null);
+    getTreeList()
+  }, [materialLibraryId, mappingType])
+  const ref = useRef(null)
   const typeOnChange = (val: string) => {
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    const item = slectLsit.find((item) => item.id === val);
-    console.log(slectLsit, val, item);
+    const item = slectLsit.find((item) => item.id === val)
+    console.log(slectLsit, val, item)
     if (item) {
-      setId(item.id);
-      setSourceMaterialLibraryId(item.sourceMaterialLibraryId);
+      setId(item.id)
+      setSourceMaterialLibraryId(item.sourceMaterialLibraryId)
     }
-  };
+  }
   const treeOnChange = (val: any) => {
-    setMaterialLibraryId(val[0]);
-    setVisible(false);
+    setMaterialLibraryId(val[0])
+    setVisible(false)
     setTimeout(() => {
-      setVisible(true);
-    });
-  };
+      setVisible(true)
+    })
+  }
   const getSelectList = async () => {
     const data = {
       pageIndex: 1,
       pageSize: 9999,
       keyWord: '',
-    };
-    const res = await getSourceMaterialMappingLibraryList(data);
-    setSlectLsit(res?.items);
-  };
-
+    }
+    const res = await getSourceMaterialMappingLibraryList(data)
+    setSlectLsit(res?.items)
+  }
+  const onSearch = () => {
+    // tableRef && tableRef?.current?.searchByParams({'keyWord':searchKeyWord})
+    setVisible(false)
+    setTimeout(() => {
+      setVisible(true)
+    })
+    // tableRef && tableRef?.current?.search()
+  }
   const searchComponent = () => {
     return (
       <TableSearch label="关键词" width="203px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}
-          onSearch={() => getTreeList()}
+          onSearch={onSearch}
           enterButton
           placeholder="请输入关键词"
         />
       </TableSearch>
-    );
-  };
+    )
+  }
   const getRequest = () => {
-    const url = location.search; //获取url中"?"符后的字串
-    const theRequest = new Object();
+    const url = window.location.search //获取url中"?"符后的字串
+    const theRequest = new Object()
     if (url.indexOf('?') != -1) {
-      let str = url.substr(1);
-      let strs = str.split('&');
+      let str = url.substr(1)
+      let strs = str.split('&')
       for (let i = 0; i < strs.length; i++) {
-        theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1]);
+        theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
       }
     }
-    return theRequest;
-  };
+    return theRequest
+  }
   useEffect(() => {
-    getSelectList();
-  }, []);
+    getSelectList()
+  }, [])
   const tabs = [
     {
-      title: '预算',
+      title: '估算',
       key: 1,
     },
     {
@@ -215,14 +195,14 @@ const MappingInfomation = () => {
       key: 2,
     },
     {
-      title: '估算',
+      title: '预算',
       key: 3,
     },
     {
       title: '拆除',
       key: 4,
     },
-  ];
+  ]
   return (
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
       <div className={styles.wrap} ref={ref}>
@@ -236,7 +216,7 @@ const MappingInfomation = () => {
                       <Option value={item.id} key={item.id}>
                         {item.name}
                       </Option>
-                    );
+                    )
                   })}
                 </Select>
                 <br />
@@ -278,7 +258,7 @@ const MappingInfomation = () => {
                             type="radio"
                             childrenColumnName={'materialMappingQuota'}
                             extractParams={{
-                              keyWord: searchKeyWord,
+                              keyWord: searchKeyWord.trim(),
                               mappingType: mappingType,
                               sourceMaterialMappingLibraryId: id || getRequest()?.id,
                               sourceMaterialLibraryId:
@@ -289,7 +269,7 @@ const MappingInfomation = () => {
                         )}
                       </div>
                     </TabPane>
-                  );
+                  )
                 })}
               </Tabs>
             </div>
@@ -297,7 +277,7 @@ const MappingInfomation = () => {
         </div>
       </div>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default MappingInfomation;
+export default MappingInfomation

@@ -1,0 +1,47 @@
+.projectProcessItem {
+  background-color: @white-color;
+  .projectProcessItemTime {
+    display: flex;
+    margin-bottom: 7px;
+    padding: 10px 16px 0px 16px;
+    color: @gray-color;
+    font-size: 12px;
+    .time {
+      margin-right: 20px;
+    }
+  }
+  .projectProcessItemTitle {
+    padding: 0px 16px 10px 16px;
+    color: @black-color;
+    font-size: 12px;
+    .title {
+      font-weight: 600;
+    }
+  }
+  .usersInfo {
+    padding: 10px 16px;
+    border-top: 1px solid @tab-line-color;
+    .userItem {
+      display: flex;
+      width: 280px;
+      margin-bottom: 10px;
+      .userItemLabel {
+        display: inline-block;
+        margin-right: 10px;
+        color: @gray-color;
+        font-size: 13px;
+        // width: 40px;
+      }
+      .userItemContent {
+        display: inline-block;
+        .gtRight {
+          margin-right: 7px;
+          font-size: 12px;
+        }
+      }
+    }
+    .nextRow {
+      height: 1px;
+    }
+  }
+}

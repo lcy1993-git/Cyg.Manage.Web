@@ -1,16 +1,10 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import {
-  EditOutlined,
-  PlusOutlined,
-
-  FileTextOutlined,
-  FileOutlined,
-} from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin } from 'antd';
-import React, { useState, useEffect } from 'react';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined, FileTextOutlined, FileOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, message, Spin } from 'antd'
+import React, { useState, useEffect } from 'react'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
 import {
   getModulesPropertyDetail,
   updateModulesPropertyItem,
@@ -18,46 +12,46 @@ import {
   addModulesPropertyItem,
   getModuleAttribute,
   saveModuleAttributeItem,
-} from '@/services/resource-config/modules-property';
-import { isArray } from 'lodash';
-import ModulesPropertyForm from './components/add-edit-form';
-import ModuleAttributeForm from './components/attribute-form';
-import ModuleDetailTab from './components/detail-tabs';
-import ModuleDetailTable from './components/detail-table';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
+} from '@/services/resource-config/modules-property'
+import { isArray } from 'lodash'
+import ModulesPropertyForm from './components/add-edit-form'
+import ModuleAttributeForm from './components/attribute-form'
+import ModuleDetailTab from './components/detail-tabs'
+import ModuleDetailTable from './components/detail-table'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input;
+const { Search } = Input
 
 interface CableDesignParams {
-  libId: string;
+  libId: string
 }
 
 const ModulesProperty: React.FC<CableDesignParams> = (props) => {
-  const { libId } = props;
+  const { libId } = props
 
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false);
-  const [detailVisible, setDetailVisible] = useState<boolean>(false);
-  const [moduleDetailVisible, setModuleDetailVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [resourceLibId, setResourceLibId] = useState<string>('')
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false)
+  const [detailVisible, setDetailVisible] = useState<boolean>(false)
+  const [moduleDetailVisible, setModuleDetailVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
-  const [editAttributeForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
+  const [editAttributeForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getModulesPropertyDetail, {
     manual: true,
-  });
+  })
 
   const { data: AttributeData, run: getAttribute } = useRequest(getModuleAttribute, {
     manual: true,
-  });
+  })
 
   const searchComponent = () => {
     return (
@@ -72,52 +66,52 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
-    setResourceLibId(value);
-    search();
-  };
+    setResourceLibId(value)
+    search()
+  }
 
   useEffect(() => {
-    searchByLib(libId);
-  }, [libId]);
+    searchByLib(libId)
+  }, [libId])
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
       dataIndex: 'moduleId',
       index: 'moduleId',
-      title: '编号',
+      title: '模块编码',
       width: 180,
     },
     {
       dataIndex: 'moduleName',
       index: 'moduleName',
-      title: '名称',
+      title: '模块名称',
       width: 500,
     },
     {
-      dataIndex: 'shortName',
-      index: 'shortName',
-      title: '简称',
+      dataIndex: 'poleTypeCode',
+      index: 'poleTypeCode',
+      title: '杆型简号',
       width: 280,
     },
     {
@@ -127,22 +121,10 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       width: 180,
     },
     {
-      dataIndex: 'poleTypeCode',
-      index: 'poleTypeCode',
-      title: '杆型简称编码',
-      width: 220,
-    },
-    {
       dataIndex: 'unit',
       index: 'unit',
       title: '单位',
       width: 100,
-    },
-    {
-      dataIndex: 'moduleType',
-      index: 'moduleType',
-      title: '模块分类',
-      width: 150,
     },
 
     {
@@ -158,21 +140,69 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       width: 200,
     },
     {
-      dataIndex: 'remark',
-      index: 'remark',
-      title: '备注',
-      width: 220,
+      dataIndex: 'height',
+      index: 'height',
+      title: '高度（m）',
+      width: 200,
     },
-  ];
+    {
+      dataIndex: 'depth',
+      index: 'depth',
+      title: '埋深（m）',
+      width: 200,
+    },
+    {
+      dataIndex: 'nominalHeight',
+      index: 'nominalHeight',
+      title: '呼称高（m）',
+      width: 200,
+    },
+    {
+      dataIndex: 'rodDiameter',
+      index: 'rodDiameter',
+      title: '杆梢径（mm）',
+      width: 200,
+    },
+    {
+      dataIndex: 'segmentMode',
+      index: 'segmentMode',
+      title: '分段方式',
+      width: 200,
+    },
+    {
+      dataIndex: 'arrangement',
+      index: 'arrangement',
+      title: '导线排列方式',
+      width: 240,
+    },
+    {
+      dataIndex: 'meteorologic',
+      index: 'meteorologic',
+      title: '气象区',
+      width: 200,
+    },
+    {
+      dataIndex: 'loopNumber',
+      index: 'loopNumber',
+      title: '回路数',
+      width: 200,
+    },
+    {
+      dataIndex: 'lineNumber',
+      index: 'lineNumber',
+      title: '线数',
+      width: 140,
+    },
+  ]
 
   //添加
   const addEvent = () => {
     if (!resourceLibId) {
-      message.warning('请先选择资源库！');
-      return;
+      message.warning('请先选择资源库！')
+      return
     }
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddModuleProperty = () => {
     addForm.validateFields().then(async (value) => {
@@ -189,17 +219,19 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           forProject: '',
           forDesign: '',
           remark: '',
-          chartIds: [],
+          processChartIds: [],
+          designChartIds: [],
+          towerModelChartIds: [],
         },
-        value,
-      );
-      await addModulesPropertyItem(submitInfo);
-      refresh();
-      message.success('添加成功');
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addModulesPropertyItem(submitInfo)
+      refresh()
+      message.success('添加成功')
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
@@ -207,20 +239,20 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
     ) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const ResourceLibData = await run(resourceLibId, editDataId);
+    setEditFormVisible(true)
+    const ResourceLibData = await run(resourceLibId, editDataId)
 
-    editForm.setFieldsValue(ResourceLibData);
-  };
+    editForm.setFieldsValue(ResourceLibData)
+  }
 
   const sureEditModuleProperty = () => {
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -234,22 +266,24 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           forProject: editData.forProject,
           forDesign: editData.forDesign,
           remark: editData.remark,
-          chartIds: editData.chartIds,
+          processChartIds: editData.processChartIds,
+          designChartIds: editData.designChartIds,
+          towerModelChartIds: editData.towerModelChartIds,
         },
-        values,
-      );
-      await updateModulesPropertyItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateModulesPropertyItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('modules-add') && (
+        {buttonJurisdictionArray?.includes('modules-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
@@ -263,22 +297,22 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('modules-property') && (
+        {/* {buttonJurisdictionArray?.includes('modules-property') && (
           <Button className="mr7" onClick={() => editAttributeEvent()}>
             编辑属性
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('modules-delete') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
-        )} */}
+        )}
 
-        {buttonJurisdictionArray?.includes('modules-check') && (
+        {/* {buttonJurisdictionArray?.includes('modules-check') && (
           <Button className="mr7" onClick={() => checkDetailEvent()}>
             <FileOutlined />
             详情
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('modules-detail') && (
           <Button className="mr7" onClick={() => openModuleDetail()}>
@@ -287,72 +321,72 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   //详情
   const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据查看详情');
-      return;
+      message.error('请选择一条数据查看详情')
+      return
     }
-    setDetailVisible(true);
+    setDetailVisible(true)
 
-    await run(resourceLibId, tableSelectRows[0].id);
-  };
+    await run(resourceLibId, tableSelectRows[0].id)
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editDataId = [tableSelectRows[0].id];
+    const editDataId = [tableSelectRows[0].id]
 
-    await deleteModulesPropertyItem(libId, editDataId);
-    refresh();
-    setTableSelectRows([]);
-    message.success('删除成功');
-  };
+    await deleteModulesPropertyItem(libId, editDataId)
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   //展示模块明细
   const openModuleDetail = () => {
     if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
+      message.warning('请先选择资源库')
+      return
     }
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择模块查看明细');
-      return;
+      message.error('请选择模块查看明细')
+      return
     }
-    setModuleDetailVisible(true);
-  };
+    setModuleDetailVisible(true)
+  }
 
   //编辑模块属性
   const editAttributeEvent = async () => {
     if (!resourceLibId) {
-      message.warning('请先选择资源库');
-      return;
+      message.warning('请先选择资源库')
+      return
     }
     if (
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
     ) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    setEditAttributeVisible(true);
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    setEditAttributeVisible(true)
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditAttributeVisible(true);
-    const AttributeData = await getAttribute(resourceLibId, editDataId);
+    setEditAttributeVisible(true)
+    const AttributeData = await getAttribute(resourceLibId, editDataId)
 
-    editAttributeForm.setFieldsValue(AttributeData);
-  };
+    editAttributeForm.setFieldsValue(AttributeData)
+  }
 
   //保存修改的模块属性
   const sureEditAttribute = () => {
-    const editData = AttributeData!;
+    const editData = AttributeData!
     console.log(AttributeData)
     editAttributeForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -375,16 +409,16 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           conductorType: editData.conductorType,
           conductorSpec: editData.conductorSpec,
         },
-        values,
-      );
+        values
+      )
 
-      await saveModuleAttributeItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editAttributeForm.resetFields();
-      setEditAttributeVisible(false);
-    });
-  };
+      await saveModuleAttributeItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editAttributeForm.resetFields()
+      setEditAttributeVisible(false)
+    })
+  }
 
   return (
     <>
@@ -396,7 +430,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         requestSource="resource"
         url="/Modules/GetPageList"
         getSelectData={(data) => setTableSelectRows(data)}
-        type="radio"
+        type="checkbox"
         extractParams={{
           resourceLibId: libId,
           keyWord: searchKeyWord,
@@ -408,6 +442,8 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         width="680px"
         visible={addFormVisible}
         okText="确认"
+        centered
+        bodyStyle={{ overflowY: 'auto', height: 750 }}
         onOk={() => sureAddModuleProperty()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
@@ -422,7 +458,9 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         title="编辑-模块"
         width="680px"
         visible={editFormVisible}
-        okText="确认"
+        okText="保存"
+        bodyStyle={{ overflowY: 'auto', height: 750 }}
+        centered
         onOk={() => sureEditModuleProperty()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
@@ -435,7 +473,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         </Form>
       </Modal>
 
-      <Modal
+      {/* <Modal
         maskClosable={false}
         title="编辑-模块属性"
         width="680px"
@@ -452,8 +490,8 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
             <ModuleAttributeForm resourceLibId={resourceLibId} />
           </Spin>
         </Form>
-      </Modal>
-      <Modal
+      </Modal> */}
+      {/* <Modal
         maskClosable={false}
         footer=""
         title="详情"
@@ -465,7 +503,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         <Spin spinning={loading}>
           <ModuleDetailTab detailData={data} />
         </Spin>
-      </Modal>
+      </Modal> */}
       <Modal
         maskClosable={false}
         footer=""
@@ -480,13 +518,13 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           <ModuleDetailTable
             libId={libId}
             moduleId={tableSelectRows.map((item) => {
-              return item.id;
+              return item.id
             })}
           />
         </Spin>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default ModulesProperty;
+export default ModulesProperty

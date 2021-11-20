@@ -1,49 +1,118 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-
+import React from 'react'
+import { Input, Tooltip } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import EnumSelect from '@/components/enum-select'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import {
+  materialType,
+  supplySideType,
+  kvLevelType,
+  forProjectType,
+  forDesignType,
+} from '@/services/resource-config/resource-enum'
 interface ChartListFromLibParams {
-  resourceLibId: string;
+  resourceLibId: string
 }
 
+// enum materialType {
+//   '材料' = '材料',
+//   '设备' = '设备',
+// }
+
+// enum supplySideType {
+//   '甲供' = '甲供',
+//   '乙供' = '乙供',
+// }
+
+// enum kvLevelType {
+//   '不限' = '不限',
+//   '10kV' = '10kV',
+//   '220V' = '220V',
+//   '380V' = '380V',
+// }
+// enum forProjectType {
+//   '不限' = '不限',
+//   '城网' = '城网',
+//   '农网' = '农网',
+// }
+// enum forDesignType {
+//   '不限' = '不限',
+//   '架空' = '架空',
+//   '电缆' = '电缆',
+// }
+
 const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { resourceLibId } = props;
+  const { resourceLibId } = props
+
+  const unitSlot = () => {
+    return (
+      <>
+        <span>单位</span>
+        <Tooltip title="长度单位请用m/km" placement="top">
+          <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    )
+  }
 
   return (
     <>
       <CyFormItem
-        label="编号"
+        label="物料编码"
         name="materialId"
         required
-        rules={[{ required: true, message: '编号不能为空' }]}
+        rules={[{ required: true, message: '物料编码不能为空' }]}
       >
-        <Input placeholder="请输入编号"></Input>
+        <Input placeholder="请输入物料编码"></Input>
+      </CyFormItem>
+
+      <CyFormItem label="物资编号" name="code">
+        <Input placeholder="请输入物资编号" />
       </CyFormItem>
 
       <CyFormItem
-        label="类型"
+        label="物料类型"
         name="category"
         required
         rules={[{ required: true, message: '类型不能为空' }]}
       >
-        <Input placeholder="请输入类型" />
+        <EnumSelect placeholder="请选择物料类型" enumList={materialType} valueString />
       </CyFormItem>
 
       <CyFormItem
-        label="名称"
+        label="物料名称"
         name="materialName"
         required
-        rules={[{ required: true, message: '名称不能为空' }]}
+        rules={[{ required: true, message: '物料名称不能为空' }]}
       >
         <Input placeholder="请输入物料名称"></Input>
       </CyFormItem>
 
-      <CyFormItem label="规格型号" name="spec">
+      <CyFormItem
+        label="规格型号"
+        name="spec"
+        required
+        rules={[{ required: true, message: '规格型号不能为空' }]}
+      >
         <Input placeholder="请输入规格型号" />
       </CyFormItem>
 
-      <CyFormItem label="单位" name="unit">
+      <CyFormItem
+        label="类别"
+        name="materialType"
+        required
+        rules={[{ required: true, message: '类别不能为空' }]}
+      >
+        <Input placeholder="请输入类别" />
+      </CyFormItem>
+
+      <CyFormItem
+        labelSlot={unitSlot}
+        name="unit"
+        rules={[{ required: true, message: '单位不能为空' }]}
+        required
+      >
         <Input placeholder="请输入单位" />
       </CyFormItem>
 
@@ -51,57 +120,45 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         <Input placeholder="请输入单重" />
       </CyFormItem>
 
-      <CyFormItem label="单价(元)" name="unitPrice">
-        <Input placeholder="请输入单价" />
-      </CyFormItem>
-
-      <CyFormItem label="类别" name="materialType">
-        <Input placeholder="请输入类别" />
-      </CyFormItem>
-
-      <CyFormItem label="用途" name="usage">
-        <Input placeholder="请输入用途" />
-      </CyFormItem>
-      <CyFormItem label="物料(运检)" name="inspection">
-        <Input placeholder="请输入" />
-      </CyFormItem>
-      <CyFormItem label="描述" name="description">
-        <Input placeholder="请输入描述" />
-      </CyFormItem>
-
-      <CyFormItem label="物资编号" name="code">
-        <Input placeholder="请输入物资编号" />
-      </CyFormItem>
-
       <CyFormItem label="供给方" name="supplySide">
-        <Input placeholder="请输入供给方" />
+        <EnumSelect placeholder="请选择供给方" enumList={supplySideType} valueString allowClear />
       </CyFormItem>
 
       <CyFormItem label="运输类型" name="transportationType">
         <Input placeholder="请输入运输类型" />
       </CyFormItem>
 
-      <CyFormItem label="统计类型" name="statisticType">
-        <Input placeholder="请输入统计类型" />
+      <CyFormItem
+        label="电压等级"
+        name="kvLevel"
+        required
+        initialValue="不限"
+        rules={[{ required: true, message: '电压等级不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择电压等级" enumList={kvLevelType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="电压等级" name="kvLevel">
-        <Input placeholder="请输入电压等级" />
+      <CyFormItem
+        label="所属工程"
+        name="forProject"
+        required
+        initialValue="不限"
+        rules={[{ required: true, message: '所属工程不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="所属工程" name="forProject">
-        <Input placeholder="请输入所属工程" />
+      <CyFormItem
+        label="所属设计"
+        name="forDesign"
+        required
+        initialValue="不限"
+        rules={[{ required: true, message: '所属设计不能为空' }]}
+      >
+        <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="所属设计" name="forDesign">
-        <Input placeholder="请输入所属设计" />
-      </CyFormItem>
-
-      <CyFormItem label="备注" name="remark">
-        <Input placeholder="请输入备注" />
-      </CyFormItem>
-
-      <CyFormItem label="图纸" name="chartIds">
+      <CyFormItem label="加工图" name="chartIds">
         <UrlSelect
           requestType="post"
           mode="multiple"
@@ -116,7 +173,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default MaterialForm;
+export default MaterialForm

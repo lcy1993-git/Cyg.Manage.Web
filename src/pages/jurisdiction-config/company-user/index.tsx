@@ -1,10 +1,10 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { EditOutlined, PlusOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, Spin } from 'antd';
-import React, { useMemo, useRef, useState } from 'react';
-import CompanyUserForm from './components/add-edit-form';
-import { isArray } from 'lodash';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { EditOutlined, PlusOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons'
+import { Button, Modal, Form, message, Input, Spin } from 'antd'
+import React, { useMemo, useRef, useState } from 'react'
+import CompanyUserForm from './components/add-edit-form'
+import { isArray } from 'lodash'
 import {
   getCompanyUserDetail,
   addCompanyUserItem,
@@ -13,26 +13,26 @@ import {
   resetItemPwd,
   // batchAddCompanyUserItem,
   getCurrentCompanyInfo,
-} from '@/services/personnel-config/company-user';
-import { getTreeSelectData } from '@/services/operation-config/company-group';
-import { useRequest } from 'ahooks';
-import EnumSelect from '@/components/enum-select';
-import { BelongManageEnum } from '@/services/personnel-config/manage-user';
-import ResetPasswordForm from './components/reset-form';
-import moment from 'moment';
-import TableSearch from '@/components/table-search';
-import styles from './index.less';
+} from '@/services/personnel-config/company-user'
+import { getTreeSelectData } from '@/services/operation-config/company-group'
+import { useRequest } from 'ahooks'
+import EnumSelect from '@/components/enum-select'
+import { BelongManageEnum } from '@/services/personnel-config/manage-user'
+import ResetPasswordForm from './components/reset-form'
+import moment from 'moment'
+import TableSearch from '@/components/table-search'
+import styles from './index.less'
 // import BatchAddCompanyUser from './components/batch-add-form';
-import TableStatus from '@/components/table-status';
-import uuid from 'node-uuid';
-import CyTag from '@/components/cy-tag';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import CommonTitle from '@/components/common-title';
-import AccreditStatistic from './components/accredit-statistic';
-import { history } from 'umi';
-import { useLayoutStore } from '@/layouts/context';
+import TableStatus from '@/components/table-status'
+import uuid from 'node-uuid'
+import CyTag from '@/components/cy-tag'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import CommonTitle from '@/components/common-title'
+import AccreditStatistic from './components/accredit-statistic'
+import { history } from 'umi'
+import { useLayoutStore } from '@/layouts/context'
 
-const { Search } = Input;
+const { Search } = Input
 
 const mapColor = {
   无: 'gray',
@@ -41,48 +41,48 @@ const mapColor = {
   评审端: 'greenThree',
   技经端: 'greenFour',
   设计端: 'greenFive',
-};
+}
 
 const CompanyUser: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [status, setStatus] = useState<number>(0);
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [status, setStatus] = useState<number>(0)
 
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [batchAddFormVisible, setBatchAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [resetFormVisible, setResetFormVisible] = useState<boolean>(false);
-  const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false);
-  const [addForm] = Form.useForm();
-  const [batchAddForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [batchAddFormVisible, setBatchAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [resetFormVisible, setResetFormVisible] = useState<boolean>(false)
+  const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false)
+  const [addForm] = Form.useForm()
+  const [batchAddForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getCompanyUserDetail, {
     manual: true,
-  });
+  })
 
   const { data: selectTreeData = [], run: getSelectTreeData } = useRequest(getTreeSelectData, {
     manual: true,
-  });
+  })
 
-  const { data: accreditData, run: getAccreditData } = useRequest(() => getCurrentCompanyInfo());
+  const { data: accreditData, run: getAccreditData } = useRequest(() => getCurrentCompanyInfo())
 
   const handleData = useMemo(() => {
     if (accreditData) {
       return accreditData.skus.map((item: any) => {
-        return item.value;
-      });
+        return item.value
+      })
     }
-    return;
-  }, [accreditData]);
+    return
+  }, [accreditData])
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   //@ts-ignore
-  const { id } = JSON.parse(window.localStorage.getItem('userInfo'));
+  const { id } = JSON.parse(window.localStorage.getItem('userInfo'))
 
-  const { setWorkHandoverFlag: setWorkHandoverFlag, workHandoverFlag } = useLayoutStore();
+  const { setWorkHandoverFlag, workHandoverFlag } = useLayoutStore()
 
   const rightButton = () => {
     return (
@@ -116,7 +116,7 @@ const CompanyUser: React.FC = () => {
             onClick={() => {
               !workHandoverFlag
                 ? handoverEvent()
-                : message.error('当前已打开“工作交接”界面，是否关闭并打开新的工作交接界面');
+                : message.error('当前已打开“工作交接”界面，是否关闭并打开新的工作交接界面')
             }}
           >
             <SwapOutlined />
@@ -124,66 +124,66 @@ const CompanyUser: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   //工作交接跳转
   const handoverEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择需要工作交接的用户');
-      return;
+      message.warning('请选择需要工作交接的用户')
+      return
     }
-    const userId = tableSelectRows[0].id;
-    const name = tableSelectRows[0].name;
-    const userName = tableSelectRows[0].userName;
+    const userId = tableSelectRows[0].id
+    const name = tableSelectRows[0].name
+    const userName = tableSelectRows[0].userName
     history.push({
       pathname: `/jurisdiction-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`,
-    });
-  };
+    })
+  }
 
   //数据修改刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
-      getAccreditData();
+      tableRef.current.refresh()
+      getAccreditData()
     }
-  };
+  }
 
   const resetEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择需要重置密码的用户');
-      return;
+      message.warning('请选择需要重置密码的用户')
+      return
     }
 
-    const userId = tableSelectRows[0].id;
+    const userId = tableSelectRows[0].id
     if (userId === id) {
-      setIsCurrentUser(true);
-      message.error('没有对当前登录账号执行此操作的权限');
-      return;
+      setIsCurrentUser(true)
+      message.error('没有对当前登录账号执行此操作的权限')
+      return
     }
-    setResetFormVisible(true);
-  };
+    setResetFormVisible(true)
+  }
 
   //重置密码
   const resetPwd = async () => {
     editForm.validateFields().then(async (values) => {
-      const editData = tableSelectRows[0];
-      const editDataId = editData.id;
-      const newPassword = Object.assign({ id: editDataId, pwd: values.pwd });
+      const editData = tableSelectRows[0]
+      const editDataId = editData.id
+      const newPassword = Object.assign({ id: editDataId, pwd: values.pwd })
 
-      await resetItemPwd(newPassword);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setResetFormVisible(false);
-    });
-  };
+      await resetItemPwd(newPassword)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setResetFormVisible(false)
+    })
+  }
 
   const addEvent = async () => {
-    await getSelectTreeData();
-    setAddFormVisible(true);
-  };
+    await getSelectTreeData()
+    setAddFormVisible(true)
+  }
 
   const sureAddCompanyUserItem = () => {
     addForm.validateFields().then(async (value) => {
@@ -195,14 +195,14 @@ const CompanyUser: React.FC = () => {
           name: '',
           idNumber: '',
         },
-        value,
-      );
-      await addCompanyUserItem(submitInfo);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addCompanyUserItem(submitInfo)
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   // const batchAddEvent = async () => {
   //   await getSelectTreeData();
@@ -219,24 +219,24 @@ const CompanyUser: React.FC = () => {
   // };
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const selectId = tableSelectRows[0].id;
+    const selectId = tableSelectRows[0].id
 
     if (selectId === id) {
-      setIsCurrentUser(true);
-      message.error('没有对当前登录账号执行此操作的权限');
-      return;
+      setIsCurrentUser(true)
+      message.error('没有对当前登录账号执行此操作的权限')
+      return
     }
 
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await getSelectTreeData();
-    setEditFormVisible(true);
+    await getSelectTreeData()
+    setEditFormVisible(true)
 
-    const ManageUserData = await run(editDataId);
+    const ManageUserData = await run(editDataId)
 
     editForm.setFieldsValue({
       ...ManageUserData,
@@ -245,11 +245,11 @@ const CompanyUser: React.FC = () => {
       clientCategorys: (ManageUserData.authorizeClientList ?? [])
         .map((item: any) => item.value)
         .filter((item: any) => item > 1),
-    });
-  };
+    })
+  }
 
   const sureEditCompanyUser = () => {
-    const editData = data!;
+    const editData = data!
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
@@ -257,22 +257,22 @@ const CompanyUser: React.FC = () => {
           email: editData.email,
           idNumber: editData.idNumber,
         },
-        values,
-      );
-      await updateCompanyUserItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateCompanyUserItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   //数据改变状态
   const updateStatus = async (record: any) => {
-    await updateItemStatus(record);
-    refresh();
-    message.success('状态修改成功');
-  };
+    await updateItemStatus(record)
+    refresh()
+    message.success('状态修改成功')
+  }
 
   const columns = [
     {
@@ -292,7 +292,7 @@ const CompanyUser: React.FC = () => {
           style: {
             whiteSpace: 'nowrap' as 'nowrap',
           },
-        };
+        }
       },
     },
     {
@@ -312,14 +312,14 @@ const CompanyUser: React.FC = () => {
       dataIndex: 'comapnyGroups',
       index: 'comapnyGroups',
       render: (text: any, record: any) => {
-        const { comapnyGroups } = record;
+        const { comapnyGroups } = record
         return (comapnyGroups ?? []).map((item: any) => {
           return (
             <CyTag key={uuid.v1()} className="mr7">
               {item.text}
             </CyTag>
-          );
-        });
+          )
+        })
       },
     },
     {
@@ -369,7 +369,7 @@ const CompanyUser: React.FC = () => {
             {!buttonJurisdictionArray?.includes('company-user-start-using') &&
               (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
           </>
-        );
+        )
       },
     },
     {
@@ -378,7 +378,7 @@ const CompanyUser: React.FC = () => {
       index: 'authorizeClient',
       width: '18%',
       render: (text: any, record: any) => {
-        const { authorizeClientTexts } = record;
+        const { authorizeClientTexts } = record
 
         const element = (authorizeClientTexts ?? []).map((item: string) => {
           return (
@@ -389,9 +389,9 @@ const CompanyUser: React.FC = () => {
             >
               {item}
             </TableStatus>
-          );
-        });
-        return <>{element}</>;
+          )
+        })
+        return <>{element}</>
       },
     },
     {
@@ -406,28 +406,28 @@ const CompanyUser: React.FC = () => {
       index: 'lastLoginDate',
       width: '7%',
       render: (text: any, record: any) => {
-        return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
+        return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null
       },
     },
-  ];
+  ]
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const searchByStatus = (value: any) => {
-    setStatus(value);
+    setStatus(value)
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.searchByParams({
         userStatus: value,
-      });
+      })
     }
-  };
+  }
 
   const leftSearch = () => {
     return (
@@ -449,18 +449,18 @@ const CompanyUser: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const addModalCloseEvent = () => {
-    setAddFormVisible(false);
-    addForm.resetFields();
-  };
+    setAddFormVisible(false)
+    addForm.resetFields()
+  }
 
   const batchAddCloseEvent = () => {
-    setBatchAddFormVisible(false);
-    batchAddForm.resetFields();
-  };
+    setBatchAddFormVisible(false)
+    batchAddForm.resetFields()
+  }
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -495,8 +495,8 @@ const CompanyUser: React.FC = () => {
             buttonRightContentSlot={rightButton}
             buttonLeftContentSlot={leftSearch}
             getSelectData={(data) => {
-              setIsCurrentUser(false);
-              setTableSelectRows(data);
+              setIsCurrentUser(false)
+              setTableSelectRows(data)
             }}
             tableTitle="用户账号"
             url="/CompanyUser/GetPagedList"
@@ -572,7 +572,7 @@ const CompanyUser: React.FC = () => {
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default CompanyUser;
+export default CompanyUser

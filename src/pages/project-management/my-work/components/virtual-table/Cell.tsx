@@ -15,17 +15,14 @@ export type CellProps<T> = PropsWithChildren<
   }
 >
 
-const VTCell = memo(
-  <T extends Record<string, any>>({ prefix, ...rest }: CellProps<T>) => {
-    const { wrapperStyle, wrapperClass, renderer } = useCell<T>(rest)
-
-    return (
-      <div style={wrapperStyle} className={wrapperClass}>
-        {typeof prefix === 'function' && prefix(rest.columnIndex, rest.rowData)}
-        {renderer}
-      </div>
-    )
-  }
-)
+const VTCell = memo(<T extends Record<string, any>>({ prefix, ...rest }: CellProps<T>) => {
+  const { wrapperStyle, wrapperClass, renderer } = useCell<T>(rest)
+  return (
+    <div style={wrapperStyle} className={wrapperClass}>
+      {typeof prefix === 'function' && prefix(rest.columnIndex, rest.rowData)}
+      {renderer}
+    </div>
+  )
+})
 
 export default VTCell
