@@ -59,7 +59,7 @@ const defaultParams = {
 
 const AllProject: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('')
-  const { setUrlList } = useProjectListStore()
+  const [urlList, setUrlList] = useState<string>('1')
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1')
   // 从列表返回的数据中获取 TODO设置search的参数
   const [searchParams, setSearchParams] = useState({
@@ -716,12 +716,12 @@ const AllProject: React.FC = () => {
     )
   }
 
-  // useEffect(() => {
-  //   setUrlList?.(currentClickTab)
-  // }, [currentClickTab])
+  useEffect(() => {
+    setUrlList(currentClickTab)
+  }, [currentClickTab])
 
   return (
-    <ProjectListContext.Provider value={{ setUrlList }}>
+    <ProjectListContext.Provider value={{ urlList, setUrlList }}>
       {buttonJurisdictionArray?.includes('engineer-favorite') && (
         <Tooltip title="工程收藏夹">
           <div
@@ -756,7 +756,6 @@ const AllProject: React.FC = () => {
               className={styles.projectManagementStatisticItem}
               onClick={() => {
                 setCurrentClickTab('2')
-                setUrlList?.('2')
               }}
             >
               <SingleStatistics
@@ -809,7 +808,12 @@ const AllProject: React.FC = () => {
             {currentClickTab === '1' && (
               <div className={styles.myProjectList}>
                 <Tabs>
-                  <TabPane tab="我的项目" key="mypro" style={{ height: 'calc(100vh - 272px)' }}>
+                  <TabPane
+                    tab="我的项目"
+                    key="mypro"
+                    // className={styles.projectTabPane}
+                    style={{ height: 'calc(100vh - 272px)' }}
+                  >
                     <MyProject />
                   </TabPane>
                 </Tabs>
@@ -825,8 +829,12 @@ const AllProject: React.FC = () => {
                   >
                     <MyProject />
                   </TabPane>
-                  <TabPane tab="立项审批中" key="inApproval">
-                    111
+                  <TabPane
+                    tab="立项审批中"
+                    key="inApproval"
+                    style={{ height: 'calc(100vh - 272px)' }}
+                  >
+                    <MyProject />
                   </TabPane>
                 </Tabs>
               </div>
@@ -835,12 +843,17 @@ const AllProject: React.FC = () => {
               <div className={styles.taskArrangeList}>
                 <Tabs>
                   <TabPane tab="待安排" key="toArrange">
-                    111
+                    <MyProject />
                   </TabPane>
                   <TabPane tab="待安排评审" key="toReview">
-                    111
+                    <MyProject />
                   </TabPane>
-                  <TabPane tab="公司待办" key="todo" style={{ height: 'calc(100vh - 272px)' }}>
+                  <TabPane
+                    tab="公司待办"
+                    key="todo"
+                    // className={styles.projectTabPane}
+                    style={{ height: 'calc(100vh - 272px)' }}
+                  >
                     <ProjectEntrust />
                   </TabPane>
                 </Tabs>
@@ -850,7 +863,7 @@ const AllProject: React.FC = () => {
               <div className={styles.reviewManageList}>
                 <Tabs>
                   <TabPane tab="外审中" key="outAudit">
-                    222
+                    <MyProject />
                   </TabPane>
                 </Tabs>
               </div>
@@ -859,10 +872,10 @@ const AllProject: React.FC = () => {
               <div className={styles.finishProjectList}>
                 <Tabs>
                   <TabPane tab="待结项" key="awaitFinish">
-                    222
+                    <MyProject />
                   </TabPane>
                   <TabPane tab="结项审批" key="finishApproval">
-                    222
+                    <MyProject />
                   </TabPane>
                 </Tabs>
               </div>
