@@ -15,14 +15,14 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { ExclamationCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { Input, Menu, message, Modal, Tabs, Tooltip } from 'antd'
-import { default as React, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import MyProject from '../my-work/components/my-project'
 import ProjectEntrust from '../project-entrust'
 import SingleStatistics from './components/all-project-statistics'
 import { TableItemCheckedInfo } from './components/engineer-table/engineer-table-item'
+import { ProjectListContext, useProjectListStore } from './context'
 import styles from './index.less'
 
-const { Search } = Input
 const { TabPane } = Tabs
 
 const statisticsObject = {
@@ -59,6 +59,7 @@ const defaultParams = {
 
 const AllProject: React.FC = () => {
   const [keyWord, setKeyWord] = useState<string>('')
+  const { setUrlList } = useProjectListStore()
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1')
   // 从列表返回的数据中获取 TODO设置search的参数
   const [searchParams, setSearchParams] = useState({
@@ -715,10 +716,12 @@ const AllProject: React.FC = () => {
     )
   }
 
-  console.log(currentClickTab, '111')
+  // useEffect(() => {
+  //   setUrlList?.(currentClickTab)
+  // }, [currentClickTab])
 
   return (
-    <>
+    <ProjectListContext.Provider value={{ setUrlList }}>
       {buttonJurisdictionArray?.includes('engineer-favorite') && (
         <Tooltip title="工程收藏夹">
           <div
@@ -751,7 +754,10 @@ const AllProject: React.FC = () => {
             </div>
             <div
               className={styles.projectManagementStatisticItem}
-              onClick={() => setCurrentClickTab('2')}
+              onClick={() => {
+                setCurrentClickTab('2')
+                setUrlList?.('2')
+              }}
             >
               <SingleStatistics
                 label="立项审批"
@@ -812,8 +818,12 @@ const AllProject: React.FC = () => {
             {currentClickTab === '2' && (
               <div className={styles.projectApprovalList}>
                 <Tabs>
-                  <TabPane tab="立项待审批" key="awaitApproval">
-                    111
+                  <TabPane
+                    tab="立项待审批"
+                    key="awaitApproval"
+                    style={{ height: 'calc(100vh - 272px)' }}
+                  >
+                    <MyProject />
                   </TabPane>
                   <TabPane tab="立项审批中" key="inApproval">
                     111
@@ -860,7 +870,7 @@ const AllProject: React.FC = () => {
           </div>
         </div>
       </PageCommonWrap>
-    </>
+    </ProjectListContext.Provider>
   )
 }
 

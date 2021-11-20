@@ -18,9 +18,14 @@ import {
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
-import React, { useMemo, useState } from 'react'
+import { uniq } from 'lodash'
+import React, { useMemo, useRef, useState } from 'react'
 import EngineerTableWrapper from '../engineer-table-wrapper'
 import styles from './index.less'
+
+interface MyProjectParams {
+  url?: string
+}
 const MyProject: React.FC = () => {
   const [searchParams, setSearchParams] = useState({})
   const [tableSelectKeys, setTableSelectKeys] = useState<string[]>([])
@@ -49,6 +54,12 @@ const MyProject: React.FC = () => {
   const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false)
   const [ifCanEdit, setIfCanEdit] = useState<any>([])
 
+  //添加收藏夹modal
+  const [addFavoriteModal, setAddFavoriteModal] = useState<boolean>(false)
+  const [favName, setFavName] = useState<string>('')
+
+  const tableRef = useRef<HTMLDivElement>(null)
+
   const addEngineerEvent = () => {
     setAddEngineerModalVisible(true)
   }
@@ -58,16 +69,29 @@ const MyProject: React.FC = () => {
   }
 
   const canDelete = useMemo(() => {
-    console.log(tableSelectRowData)
     return tableSelectRowData.filter(
       (item) =>
         item.stateInfo && (item.stateInfo.inheritStatus === 1 || item.stateInfo.inheritStatus === 3)
     )
   }, [JSON.stringify(tableSelectRowData)])
 
-  const searchEvent = () => {}
+  const searchEvent = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.search()
+    }
+  }
 
-  const refresh = () => {}
+  const engineerIds = useMemo(() => {
+    return uniq(tableSelectRowData.map((item) => item.engineerId))
+  }, [JSON.stringify(tableSelectRowData)])
+
+  const refresh = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.refresh()
+    }
+  }
 
   const addEngineerMenu = (
     <Menu>
@@ -276,14 +300,52 @@ const MyProject: React.FC = () => {
     </Menu>
   )
 
+  const addFavEvent = () => {
+    if (engineerIds && engineerIds.length > 0) {
+      setAddFavoriteModal(true)
+      return
+    }
+    message.warning('您还未选择任何工程')
+  }
+  const removeConfirm = () => {
+    // if (!sideVisible) {
+    //   message.warning('该功能仅能在收藏夹项目列表中使用')
+    //   return
+    // }
+    // if (!selectedFavId) {
+    //   message.warning('您还未选择收藏夹')
+    //   return
+    // }
+    // if (engineerIds && engineerIds.length === 0) {
+    //   message.warning('请选择要移出当前收藏夹的工程')
+    //   return
+    // }
+    // Modal.confirm({
+    //   title: '提示',
+    //   icon: <ExclamationCircleOutlined />,
+    //   content: '确定要移除所选工程',
+    //   okText: '确认',
+    //   cancelText: '取消',
+    //   onOk: removeFavEvent,
+    // })
+  }
+  const removeFavEvent = async () => {
+    // await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds })
+    // message.success('已移出当前收藏夹')
+    // searchEvent()
+  }
   //收藏夹操作
   const favoriteMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('add-favorite-project') && (
-        <Menu.Item key="add">添加至收藏夹</Menu.Item>
+        <Menu.Item key="add" onClick={() => addFavEvent()}>
+          添加至收藏夹
+        </Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('remove-favorite-project') && (
-        <Menu.Item key="out">移出当前收藏夹</Menu.Item>
+        <Menu.Item key="out" onClick={() => removeConfirm()}>
+          移出当前收藏夹
+        </Menu.Item>
       )}
     </Menu>
   )
@@ -443,10 +505,8 @@ const MyProject: React.FC = () => {
       </div>
       <div className={styles.myProjectTableContent}>
         <EngineerTableWrapper
-          getSelectRowData={(data) => {
-            console.log(data)
-            setTableSelectRowData(data)
-          }}
+          ref={tableRef}
+          getSelectRowData={(data) => setTableSelectRowData(data)}
           getSelectRowKeys={(data) => setTableSelectKeys(data as string[])}
           getSearchParams={(params) => setSearchParams(params)}
         />

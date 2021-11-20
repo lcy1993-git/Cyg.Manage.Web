@@ -1,5 +1,9 @@
 import EmptyTip from '@/components/empty-tip'
-import { getProjectTableList } from '@/services/project-management/all-project'
+import {
+  ProjectListContext,
+  useProjectListStore,
+} from '@/pages/project-management/all-project/context'
+import { getProjectTableList, getAwaitApproveList } from '@/services/project-management/all-project'
 import { delay } from '@/utils/utils'
 import { useMount, useRequest } from 'ahooks'
 import { Pagination, Spin } from 'antd'
@@ -35,6 +39,9 @@ interface EngineerTableProps {
 const ROW_HEIGHT = 40
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
+  const { urlList } = useProjectListStore()
+  console.log(urlList, '333')
+
   const {
     columns,
     parentColumns,
@@ -59,8 +66,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const tableResultData = useMemo(() => {
     if (tableData) {
-      const { pagedData, statistics } = tableData
-      const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = pagedData
+      const { pageIndex: resPageIndex, pageSize: resPageSize, total, items } = tableData
+      // const { pageIndex: resPageIndex, pageSize: resPageSize, total } = pagedData
       const afterHandleItems = (items ?? []).reduce((p: any[], c: any) => {
         // _parent 父级
         // _header 表头
@@ -197,81 +204,83 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   })
 
   return (
-    <div className={styles.engineerTable}>
-      {loading && (
-        <div className={styles.loadingContent}>
-          <Spin spinning={loading} tip="数据请求加载中..." />
-        </div>
-      )}
-      <div className={styles.engineerTableContent}>
-        {tableShowDataSource && tableShowDataSource.length === 0 && (
-          <div className={styles.emptyTableContent}>
-            <EmptyTip />
+    <ProjectListContext.Provider value={{ urlList }}>
+      <div className={styles.engineerTable}>
+        {loading && (
+          <div className={styles.loadingContent}>
+            <Spin spinning={loading} tip="数据请求加载中..." />
           </div>
         )}
-        {tableShowDataSource && tableShowDataSource.length > 0 && (
-          <VirtualTable
-            style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
-            className="border"
-            data={tableShowDataSource}
-            ref={tableRef}
-            columns={columns}
-            headerRows={({ _header }) => _header === true}
-            customRow={{
-              custom: ({ _parent }) => _parent === true,
-              row: (props) => (
-                <ParentRow
-                  data={tableShowDataSource}
-                  cache={cache}
-                  update={(data) => setTableShowDataSource(data)}
-                  columns={parentColumns}
-                  {...props}
-                />
-              ),
-            }}
-            rowHeight={ROW_HEIGHT}
-            rowSelection={{
-              defaultSelectedKeys: [],
-              rowKey: ({ id }) => id,
-              onChange: (keys) => {
-                getSelectRowKeys?.(keys)
-              },
-              onSelectRowsChange: (rows) => {
-                getSelectRowData?.(rows)
-              },
-            }}
-          />
-        )}
-      </div>
+        <div className={styles.engineerTableContent}>
+          {tableShowDataSource && tableShowDataSource.length === 0 && (
+            <div className={styles.emptyTableContent}>
+              <EmptyTip />
+            </div>
+          )}
+          {tableShowDataSource && tableShowDataSource.length > 0 && (
+            <VirtualTable
+              style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
+              className="border"
+              data={tableShowDataSource}
+              ref={tableRef}
+              columns={columns}
+              headerRows={({ _header }) => _header === true}
+              customRow={{
+                custom: ({ _parent }) => _parent === true,
+                row: (props) => (
+                  <ParentRow
+                    data={tableShowDataSource}
+                    cache={cache}
+                    update={(data) => setTableShowDataSource(data)}
+                    columns={parentColumns}
+                    {...props}
+                  />
+                ),
+              }}
+              rowHeight={ROW_HEIGHT}
+              rowSelection={{
+                defaultSelectedKeys: [],
+                rowKey: ({ id }) => id,
+                onChange: (keys) => {
+                  getSelectRowKeys?.(keys)
+                },
+                onSelectRowsChange: (rows) => {
+                  getSelectRowData?.(rows)
+                },
+              }}
+            />
+          )}
+        </div>
 
-      <div className={styles.engineerTablePagingContent}>
-        <div className={styles.engineerTablePagingLeft}>
-          <span>显示第</span>
-          <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
-          <span>到第</span>
-          <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
-          <span>条记录，总共</span>
-          <span className={styles.importantTip}>{tableResultData.items.length}</span>
-          <span>个工程，</span>
-          <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+        <div className={styles.engineerTablePagingContent}>
+          <div className={styles.engineerTablePagingLeft}>
+            <span>显示第</span>
+            <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
+            <span>到第</span>
+            <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
+            <span>条记录，总共</span>
+            <span className={styles.importantTip}>{tableResultData.items.length}</span>
+            <span>个工程，</span>
+            <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+          </div>
+          <div className={styles.engineerTablePagingRight}>
+            <Pagination
+              pageSize={pageInfo.pageSize}
+              onChange={currentPageChangeEvent}
+              size="small"
+              total={tableResultData.total}
+              current={pageInfo.pageIndex}
+              // hideOnSinglePage={true}
+              showSizeChanger
+              showQuickJumper
+              onShowSizeChange={currentPageSizeChangeEvent}
+              style={{ display: 'inline-flex', paddingRight: '25px' }}
+            />
+          </div>
+          {pagingSlot}
         </div>
-        <div className={styles.engineerTablePagingRight}>
-          <Pagination
-            pageSize={pageInfo.pageSize}
-            onChange={currentPageChangeEvent}
-            size="small"
-            total={tableResultData.total}
-            current={pageInfo.pageIndex}
-            // hideOnSinglePage={true}
-            showSizeChanger
-            showQuickJumper
-            onShowSizeChange={currentPageSizeChangeEvent}
-            style={{ display: 'inline-flex', paddingRight: '25px' }}
-          />
-        </div>
-        {pagingSlot}
       </div>
-    </div>
+    </ProjectListContext.Provider>
   )
 }
 

@@ -25,7 +25,7 @@ import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-desi
 import { Button, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
 import moment from 'moment'
 import uuid from 'node-uuid'
-import React, { forwardRef, Key, Ref, useRef, useState } from 'react'
+import React, { forwardRef, Key, Ref, useImperativeHandle, useRef, useState } from 'react'
 import EngineerTable from '../engineer-table'
 import styles from './index.less'
 
@@ -852,6 +852,16 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     }
   }
 
+  const searchEvent = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.searchByParams({
+        ...searchParams,
+        keyWord,
+      })
+    }
+  }
+
   const delayRefresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
@@ -866,18 +876,21 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     }
   }
 
-  const searchEvent = () => {
-    // TODO
-    searchByParams({
-      ...searchParams,
-      keyWord,
-    })
-  }
-
   const screenClickEvent = (params: any) => {
     setSearchParams({ ...params, keyWord })
     searchByParams({ ...params, keyWord })
   }
+
+  useImperativeHandle(ref, () => ({
+    // 刷新
+    refresh: () => {
+      refreshEvent()
+    },
+    // 按照目前的参数进行搜索
+    search: () => {
+      searchEvent()
+    },
+  }))
 
   return (
     <div className={styles.engineerTableWrapper}>
@@ -900,7 +913,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <EngineerTable
           getSelectRowData={getSelectRowData}
           getSelectRowKeys={getSelectRowKeys}
-          searchParams={searchParams}
+          searchParams={{ ...searchParams, keyWord }}
           ref={tableRef}
           parentColumns={parentColumns}
           columns={completeConfig}
