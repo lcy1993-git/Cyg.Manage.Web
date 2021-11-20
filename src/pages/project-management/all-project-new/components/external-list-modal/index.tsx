@@ -79,14 +79,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     title: '',
   });
 
-  const setCurrentFileInfo = (info: CurrentFileInfo) => {
-    if (info.extension === '.doc' || info.extension === '.xls') {
-      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件再本地进行预览`);
-    } else {
-      setCurrentFileInfoErr(info);
-    }
-  };
-
   const { data: stepData, run, loading } = useRequest(() => getExternalArrangeStep(projectId));
   const { run: addUser } = useRequest(
     () => addAllotUser({ projectId: projectId, userId: addPeople[0]?.value }),
@@ -97,6 +89,14 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
       },
     },
   );
+
+  const setCurrentFileInfo = (info: CurrentFileInfo) => {
+    if (info.extension === '.doc' || info.extension === '.xls') {
+      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件再本地进行预览`);
+    } else {
+      setCurrentFileInfoErr(info);
+    }
+  };
 
   const checkResultEvent = async () => {
     setCurrent(current + 1);
