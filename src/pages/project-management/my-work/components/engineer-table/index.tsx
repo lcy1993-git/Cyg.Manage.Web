@@ -1,3 +1,4 @@
+import EmptyTip from '@/components/empty-tip'
 import { getProjectTableList } from '@/services/project-management/all-project'
 import { delay } from '@/utils/utils'
 import { useMount, useRequest } from 'ahooks'
@@ -25,37 +26,23 @@ interface EngineerTableProps {
   pagingSlot?: React.ReactNode
   // TODO
   parentColumns: any
+  // TODO
+  getSelectRowKeys?: (selectKeys: Key[]) => void
+  // TODO
+  getSelectRowData?: (selectRowData: any[]) => void
 }
 
 const ROW_HEIGHT = 40
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { columns, parentColumns, pagingSlot, getTableResutData } = props
-  const searchParams = {
-    category: [],
-    stage: [],
-    constructType: [],
-    nature: [],
-    kvLevel: [],
-    status: [],
-    majorCategory: [],
-    pType: [],
-    reformAim: [],
-    classification: [],
-    attribute: [],
-    sourceType: [],
-    identityType: [],
-    areaType: '-1',
-    areaId: '',
-    dataSourceType: [],
-    logicRelation: 2,
-    startTime: '',
-    endTime: '',
-    designUser: '',
-    surveyUser: '',
-    keyWord: '',
-    statisticalCategory: '-1',
-  }
+  const {
+    columns,
+    parentColumns,
+    pagingSlot,
+    searchParams,
+    getSelectRowKeys,
+    getSelectRowData,
+  } = props
   const [pageInfo, setPageInfo] = useState({
     pageSize: 10,
     pageIndex: 1,
@@ -74,8 +61,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     if (tableData) {
       const { pagedData, statistics } = tableData
       const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = pagedData
-
-      const afterHandleItems = items.reduce((p: any[], c: any) => {
+      const afterHandleItems = (items ?? []).reduce((p: any[], c: any) => {
         // _parent 父级
         // _header 表头
         const newProjects = c.projects.map((item: any) => ({ ...item, engineerInfo: c }))
@@ -218,40 +204,44 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         </div>
       )}
       <div className={styles.engineerTableContent}>
-        <VirtualTable
-          style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
-          className="border"
-          data={tableShowDataSource}
-          ref={tableRef}
-          columns={columns}
-          headerRows={({ _header }) => _header === true}
-          customRow={{
-            custom: ({ _parent }) => _parent === true,
-            row: (props) => (
-              <ParentRow
-                data={tableShowDataSource}
-                cache={cache}
-                update={(data) => setTableShowDataSource(data)}
-                columns={parentColumns}
-                {...props}
-              />
-            ),
-          }}
-          rowHeight={ROW_HEIGHT}
-          rowSelection={{
-            defaultSelectedKeys: [],
-            rowKey: ({ id }) => id,
-            onChange: (keys) => {
-              console.log(keys)
-            },
-            onSelect: (key: Key, selected: boolean, rowData: Record<string, any>) => {
-              console.log(key, selected, rowData)
-            },
-            onSelectRowsChange: (rows) => {
-              console.log(rows)
-            },
-          }}
-        />
+        {tableShowDataSource && tableShowDataSource.length === 0 && (
+          <div className={styles.emptyTableContent}>
+            <EmptyTip />
+          </div>
+        )}
+        {tableShowDataSource && tableShowDataSource.length > 0 && (
+          <VirtualTable
+            style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
+            className="border"
+            data={tableShowDataSource}
+            ref={tableRef}
+            columns={columns}
+            headerRows={({ _header }) => _header === true}
+            customRow={{
+              custom: ({ _parent }) => _parent === true,
+              row: (props) => (
+                <ParentRow
+                  data={tableShowDataSource}
+                  cache={cache}
+                  update={(data) => setTableShowDataSource(data)}
+                  columns={parentColumns}
+                  {...props}
+                />
+              ),
+            }}
+            rowHeight={ROW_HEIGHT}
+            rowSelection={{
+              defaultSelectedKeys: [],
+              rowKey: ({ id }) => id,
+              onChange: (keys) => {
+                getSelectRowKeys?.(keys)
+              },
+              onSelectRowsChange: (rows) => {
+                getSelectRowData?.(rows)
+              },
+            }}
+          />
+        )}
       </div>
 
       <div className={styles.engineerTablePagingContent}>

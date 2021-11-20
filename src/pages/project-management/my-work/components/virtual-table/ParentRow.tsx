@@ -1,8 +1,8 @@
 import { Checkbox } from 'antd'
 import { Key } from 'react'
+import VTCell from './Cell'
 import Expander from './Expander'
 import { Column, OriginParams } from './VirtualTable'
-import VTCell from './Cell'
 
 function allocateWidth(width: number, buckets: number) {
   const result = []
@@ -58,13 +58,10 @@ const ParentRow = ({
   }))
 
   const subKeys = rowData.projects.map((p: any) => p.id)
-  const parentKey = rowData.id
-  const allRelatedKeys = [parentKey, ...subKeys]
+  const allRelatedKeys = [...subKeys]
 
   const childChecked = selectedRowKeys.some((k) => subKeys.includes(k))
-  const allChildrenChecked = subKeys.every((k: Key) =>
-    selectedRowKeys.includes(k)
-  )
+  const allChildrenChecked = subKeys.every((k: Key) => selectedRowKeys.includes(k))
 
   const indeterminate = childChecked && !allChildrenChecked
 
@@ -78,9 +75,7 @@ const ParentRow = ({
 
     const parentId = rowData.id
     const parentIndexInData = data.findIndex((d: any) => d.id === parentId)
-    const parentIndexInCache = cachedData.findIndex(
-      (d: any) => d.id === parentId
-    )
+    const parentIndexInCache = cachedData.findIndex((d: any) => d.id === parentId)
     const childrenLength = rowData.projects.length
 
     // 默认是否展开
@@ -122,11 +117,11 @@ const ParentRow = ({
   }
 
   return (
-    <div style={{ width: maxRowWidth }} className='h-full'>
+    <div style={{ width: maxRowWidth }} className="h-full">
       {_columns!.map(({ width, ...rest }, index) => (
         <VTCell
           {...rest}
-          className='parent'
+          className="parent"
           style={{ border: 'none', backgroundColor: '#F2F2F2' }}
           width={width}
           prefix={prefix}
