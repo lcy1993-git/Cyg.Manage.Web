@@ -1,47 +1,47 @@
-import request from '@/utils/request';
-import { cyRequest, baseUrl } from '../common';
+import request from '@/utils/request'
+import { baseUrl, cyRequest } from '../common'
 
 export interface MaterialDataType {
-  description?: string;
-  itemNumber?: number;
-  materialId?: string;
-  name?: string;
-  pieceWeight?: number;
-  spec?: string;
-  state?: string;
-  type: string;
-  unit?: string;
-  unitPrice?: number;
-  remark?: string;
-  code?: string;
-  supplySide?: string;
-  children?: MaterialDataType[];
-  key?: string;
+  description?: string
+  itemNumber?: number
+  materialId?: string
+  name?: string
+  pieceWeight?: number
+  spec?: string
+  state?: string
+  type: string
+  unit?: string
+  unitPrice?: number
+  remark?: string
+  code?: string
+  supplySide?: string
+  children?: MaterialDataType[]
+  key?: string
 }
 
 export interface ProjectCommentListItemType {
-  id: string;
-  createdOn: string;
-  status: number;
-  engineerId: string;
-  projectId: string;
-  companyName: string;
-  projectName: string;
-  deviceType: number;
-  layerType: number;
-  deviceId: string;
-  deviceName: string;
-  title: string;
-  lastUpdateDate: string;
-  createdBy: string;
+  id: string
+  createdOn: string
+  status: number
+  engineerId: string
+  projectId: string
+  companyName: string
+  projectName: string
+  deviceType: number
+  layerType: number
+  deviceId: string
+  deviceName: string
+  title: string
+  lastUpdateDate: string
+  createdBy: string
 }
 
 export interface CommentListParams {
-  projectIds?: string[];
-  engineerId?: string;
-  layerTypes?: number[];
-  deviceType?: number;
-  deviceName?: string;
+  projectIds?: string[]
+  engineerId?: string
+  layerTypes?: number[]
+  deviceType?: number
+  deviceName?: string
 }
 
 /**
@@ -63,42 +63,25 @@ export const fetchMaterialListByProjectIdList = (projectIdList: string[], design
           designType,
           projectIds: projectIdList,
         },
-      },
-    ),
-  );
-};
+      }
+    )
+  )
+}
 
 export const fetchCommentListByParams = (params: CommentListParams) => {
   return cyRequest<ProjectCommentListItemType[]>(() =>
     request(
       `${baseUrl.comment}/Comment/GetProjectCommentList
     `,
-      { method: 'POST', data: params },
-    ),
-  );
-};
+      { method: 'POST', data: params }
+    )
+  )
+}
 
 export const downloadMapPositon = (projectId: string[]) => {
   return request(`${baseUrl.manage}/WebGisDownload/GetProjectFileById`, {
     method: 'POST',
     data: { projectId },
-    responseType: "blob"
-  });
-};
-
-// 获取历史网架版本
-export const getAllGridVersions = (includeDeleted = false) => {
-  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/AllVersions`, {
-    method: 'GET',
-    params: { includeDeleted },
-  });
-};
-// 删除历史网架版本
-export const DeleteGridVersions = (versionId:string,password:string) => {
-  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Version/{versionId}`, {
-    method: 'DELETE',
-    header: {
-      'UserPwd':password
-    },
-  });
-};
+    responseType: 'blob',
+  })
+}
