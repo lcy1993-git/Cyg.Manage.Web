@@ -1,76 +1,112 @@
 import styles from './index.less'
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 import { Button, Checkbox, Input, Modal, Table } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons/lib/icons'
+import {DeleteGridVersions, getAllGridVersions} from "@/services/visualization-results/list-menu";
+import {useMount} from "ahooks";
+import {HistoryGridVersion} from "@/pages/visualization-results/components/history-version-management";
+import moment, {Moment} from "moment";
 
 const GridVersionManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
-  const [showDelete, isShowDelete] = useState<boolean>(false)
-  const dataSource = Array.from({ length: 27 }, (index) => {
-    return {
-      key: index,
-      name: '胡彦斌',
-      age: index,
-      address: '西湖区湖底公园1号',
-    }
-  })
-  const passWordBlur = () => {}
-  const handleDelete = (row) => {
+  const [showDelete, isShowDelete] = useState<boolean>(true)
+  const [list,setList] = useState<HistoryGridVersion[]>([])
+  const [pageSize,setPageSize] = useState<number>(10)
+  const [password,setPassword] = useState<string>('')
+  const passWordBlur = (e:FocusEventHandler<HTMLInputElement>) => {
+    e?.target?.value && setPassword(e?.target?.value)
+  }
+  const confirmDelete =async (id:string)=>{
+    await DeleteGridVersions(id,password)
+  }
+  const handleDelete = (row:HistoryGridVersion) => {
     Modal.confirm({
       title: '提示',
       icon: <ExclamationCircleOutlined />,
       content: (
-        <div>
+        <div >
           此操作将会删除该条历史版本记录相关网架数据,删除后将不可恢复,请输入密码确认删除。
-          <Input placeholder={'请输入密码'} onBlur={passWordBlur} />
+          <Input placeholder={'请输入密码'} onBlur={passWordBlur} style={{marginTop:10}}/>
         </div>
       ),
       okText: '确认',
       cancelText: '取消',
+      onOk:()=>confirmDelete(row.id)
     })
   }
   const columns = [
     {
-      title: '',
-      dataIndex: 'key',
-      key: 'key',
+      title: '序号',
+      width: 50,
+      dataIndex: 'index',
+      key: 'index',
+      align: 'center',
+      fixed: 'left',
+      render: (text, record, idx: number) => {
+        return <>{idx + 1}</>
+      },
     },
     {
       title: '时间',
-      dataIndex: 'age',
-      key: 'age',
-      className: styles.column,
+      dataIndex: 'createdTime',
+      key: 'createdTime',
+      render:(text:Moment)=>{
+        return moment(text).format('YYYY.MM.DD HH:mm:ss')
+      }
     },
     {
       title: '创建人',
-      dataIndex: 'address',
-      key: 'address',
+      width: 70,
+      dataIndex: 'createdBy',
+      key: 'createdBy',
     },
     {
       title: '备注',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'remark',
+      key: 'remark',
     },
     {
       dataIndex: 'address',
       key: 'address',
       title: '',
       align: 'center',
-      render: (row) => {
+      render: (index:number,row:HistoryGridVersion) => {
         return (
-          <Button type={'text'} onClick={() => handleDelete(row)} danger>
-            <span style={{ textDecoration: 'underline' }}>删除</span>
-          </Button>
+          <div>
+            {
+              row?.isDeleted ?
+              <span style={{color:'#777777'}}>
+                已删除
+              </span>
+              :
+              <Button type={'text'} onClick={() => handleDelete(row)} danger>
+                <span style={{ textDecoration: 'underline' }}>删除</span>
+              </Button>
+            }
+          </div>
         )
       },
     },
   ]
+  const getHistoryList = async (del:boolean) => {
+    const res = await getAllGridVersions(del)
+    res?.content && setList(res.content)
+  }
+  const pageChange = (val:any)=>{
+    setPageSize(val.pageSize)
+  }
+  useMount(async ()=>{
+   await getHistoryList(showDelete)
+  })
+  useEffect(()=>{
+    getHistoryList(showDelete)
+  },[showDelete])
   return (
     <div className={styles.versionManageBox}>
       <Modal
         title="版本管理"
         visible={isModalVisible}
-        width={700}
+        width={800}
         onCancel={() => setIsModalVisible(false)}
         onOk={() => setIsModalVisible(false)}
       >
@@ -80,11 +116,12 @@ const GridVersionManagement = () => {
           </Checkbox>
         </div>
         <Table
-          dataSource={dataSource}
+          dataSource={list}
           size={'small'}
           bordered
+          onChange={pageChange}
           pagination={{
-            pageSize: 10,
+            pageSize: pageSize,
             showQuickJumper: true,
             showSizeChanger: true,
           }}
