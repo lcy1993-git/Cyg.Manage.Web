@@ -4,10 +4,14 @@ import { useMount } from 'ahooks'
 import { Button, Form, Input, Popconfirm, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
+import {update} from "lodash";
 
 const { Option } = Select
 export interface ElectricalEquipmentForm {
   name?: string
+  id?: string
+  lat?:number
+  lng?:number
   type?: string
   remark?: string
   length?: number
@@ -25,18 +29,20 @@ interface Props {
     y: number
   }
 }
-const AddElectricalEquipment: React.FC<Props> = (props) => {
+const HistoryGirdForm: React.FC<Props> = (props) => {
   const [state, setState] = useGridMap()
-
-  const {} = state
+  const [position,setPosition] = useState<number[]>([10,155]) // 鼠标位置
+  const [isEdit,setIsEdit] = useState<boolean>(false) // 是否编辑状态
+  const [visible,setVisible] = useState<boolean>(false) // 是否可见
+  const {
+    isDraw, //是否绘制模式
+    dataSource, // 绘制元素的数据源
+    selectedData, //被选中的元素
+    currentMousePosition,  // 当前操作鼠标位置
+  } = state
   const {
     type = 'add',
     showLength = false,
-    position = {
-      x: 10,
-      y: 155,
-    },
-    visible = false,
     data,
     showDetail = false,
   } = props
@@ -59,17 +65,40 @@ const AddElectricalEquipment: React.FC<Props> = (props) => {
       }
     }
   })
+  const hideModel = ()=>{
+    setVisible(false)
+  }
   useEffect(() => {
-    console.log()
-  }, [])
+    setVisible(isDraw)
+    if (isDraw && selectedData.length === 1){
+      setVisible(true)
+      form.setFieldsValue(selectedData[0])
+      setIsEdit(selectedData[0]?.name === '')
+      setPosition(
+        selectedData[0]?.name === '' ?
+          [window?.event?.pageX + 20 ?? 0,window?.event?.pageY - 100 ?? 0]
+          :
+          [10,155]
+      )
+    } else if (isDraw && selectedData.length > 1){
+      form.setFieldsValue({
+        name:'',
+        type:'',
+        remark:'',
+        level:''
+      })
+      setPosition([10,155])
+      setIsEdit(false)
+    }
+  }, [isDraw, dataSource, selectedData, form,currentMousePosition])
   return (
     <div
       className={styles.formBox}
       style={{
         width: data.length !== 0 ? '324px' : '224px',
-        top: position.y,
-        left: position.x,
-        visibility: visible ? 'visible' : 'hidden',
+        top: position[1],
+        left: position[0],
+        display: isDraw && selectedData.length > 0 && visible ? 'block' : 'none',
       }}
     >
       <div className={styles.header}>
@@ -78,17 +107,17 @@ const AddElectricalEquipment: React.FC<Props> = (props) => {
         ) : (
           <div>
             {type === 'LineString'
-              ? data.length === 0
+              ? dataSource?.length === 0
                 ? `添加线路`
                 : '编辑线路'
-              : data.length === 0
+              : dataSource?.length === 0
               ? `添加电气设备`
               : '编辑电气设备'}
           </div>
         )}
-
         <CloseOutlined
           className={styles.closeIcon}
+          onClick={hideModel}
           style={{ color: '#666666', fontSize: '14px' }}
         />
       </div>
@@ -112,7 +141,7 @@ const AddElectricalEquipment: React.FC<Props> = (props) => {
           <Form
             form={form}
             onFinish={handleFinish}
-            layout={data.length !== 0 ? 'horizontal' : 'vertical'}
+            layout={isEdit  ? 'horizontal' : 'vertical'}
           >
             <Form.Item name="name" label="名称">
               <Input placeholder="名称" type="text" />
@@ -172,4 +201,4 @@ const AddElectricalEquipment: React.FC<Props> = (props) => {
   )
 }
 
-export default AddElectricalEquipment
+export default HistoryGirdForm

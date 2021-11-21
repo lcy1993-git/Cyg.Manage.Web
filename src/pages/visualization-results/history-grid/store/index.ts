@@ -2,6 +2,7 @@ import { createContext, Reducer, useContext } from 'react'
 import { Location } from 'umi'
 import { CityWithProvince } from '../components/city-picker/type'
 import { GridMapGlobalState, initGridMapState, mapReducer } from './mapReducer'
+import {HistoryGridVersion} from "@/pages/visualization-results/components/history-version-management";
 
 // ! 使用
 // 子组件中调用 useHistoryGridContext hook
@@ -32,7 +33,8 @@ type ReducerState = {
   currentData?: {
     title?: string
   }
-
+  /** 历史版本网架数据 */
+  historyGridVersion:HistoryGridVersion
   /** UI 状态 */
   UIStatus: {
     /** 是否显示线路和电气设备名称 */
@@ -57,6 +59,7 @@ type ComplexActions =
   | 'changeUIStatus'
   | 'changeGridMap'
   | 'changeCurrentData'
+  | 'changeHistoryGirdVersion'
 type Actions = SimpleActions | ComplexActions
 
 type ComplexActionReflectPayload = {
@@ -66,6 +69,7 @@ type ComplexActionReflectPayload = {
   changeGridMap: [any, any]
   changeUIStatus: ReducerState['UIStatus']
   changeCurrentData: ReducerState['currentData']
+  changeHistoryGirdVersion: ReducerState['historyGridVersion']
 }
 
 type ReducerActionWithPayload = { type: Actions; payload: any }
@@ -101,6 +105,8 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
       return { ...state, gridMapState: { ...mapReducer(state.gridMapState, payload) } }
     case 'changeCurrentData':
       return { ...state, currentData: payload }
+    case 'changeHistoryGirdVersion':
+      return { ...state, historyGridVersion: payload }
     default:
       throw new Error('action type does not exist')
   }
@@ -115,7 +121,8 @@ export const init = ({ location }: InitParams) => {
 
   const initialState: ReducerState = {
     mode,
-    gridMapState: initGridMapState,
+    gridMapState: initGridMapState as any,
+    historyGridVersion:{} as HistoryGridVersion,
     UIStatus: {
       showTitle: true,
       showHistoryLayer: true,

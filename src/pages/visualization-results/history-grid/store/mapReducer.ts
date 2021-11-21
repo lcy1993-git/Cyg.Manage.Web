@@ -16,7 +16,6 @@ export interface GridMapGlobalState {
   moveToByCityLocation: [number, number, boolean]
   showText: boolean
   historyLayerVisible: boolean
-
   onCurrentLocationClick: boolean
   onProjectLocationClick: boolean
 }

@@ -1,14 +1,25 @@
-import { DownOutlined, UpOutlined } from '@ant-design/icons'
-import { Timeline } from 'antd'
-import { forwardRef, Ref, useImperativeHandle, useState } from 'react'
+import {Timeline} from 'antd'
+import {Ref, useEffect, useReducer, useState} from 'react'
 import styles from './index.less'
-import { useMount } from 'ahooks'
+import {useMount} from 'ahooks'
 
 import pickUp from '@/assets/icon-image/pack-up.png'
+import {getAllGridVersions} from "@/services/visualization-results/list-menu";
+import {historyGridReducer, init, useHistoryGridContext} from "@/pages/visualization-results/history-grid/store";
+import {Moment} from "moment/moment";
 
-export interface TimeLine {
+export interface HistoryGridVersion {
   id: string
-  time: string
+  createdTime: Moment
+  isDeleted: boolean
+  deletedTime: Moment
+  updatedTime: Moment
+  remark: string
+  versionCode: string
+  isTemplate: boolean
+  deletedBy: string | null
+  createdBy: string | null
+  updatedBy: string | null
 }
 
 interface Props {
@@ -17,39 +28,47 @@ interface Props {
 }
 
 const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
-  const { onClick, height = '45vh' } = props
-  const [active, setActive] = useState<boolean>(false)
+  const {onClick, height = '45vh'} = props
+  const [active, setActive] = useState<boolean>(true)
   const [activeId, setActiveId] = useState<string>('')
-  const [list, setList] = useState<TimeLine[]>([])
+  const [show,setShow] = useState<boolean>(true)
+  const [list, setList] = useState<HistoryGridVersion[]>([])
+  const {currentData,mode,dispatch} = useHistoryGridContext()
   const activeList = () => {
     setActive(!active)
   }
-  useMount(() => {
-    getHistoryList()
+  useMount(async () => {
+    await getHistoryList()
   })
-  useImperativeHandle(ref, () => ({
-    update: getHistoryList,
-    getList: () => {
-      return list
-    },
-  }))
-  const getHistoryList = () => {
+  const getHistoryList = async () => {
     setActiveId('')
-    let res = Array.from({ length: 25 }, (item, index) => {
-      return {
-        time: `2015-09-01 12:${index}1`,
-        id: Math.random() + '',
-      }
-    })
-    setList(res)
+    const res = await getAllGridVersions(true)
+    setList(res.content)
+    res.content.length !== 0 && onItemClick(res.content[0])
   }
-  const onItemClick = (val: TimeLine) => {
+  const onItemClick = (val: HistoryGridVersion) => {
     onClick?.()
+    dispatch({
+      type:'changeHistoryGirdVersion',
+      payload:val
+    })
     setActiveId(val.id)
-    console.log(val)
   }
+  useEffect(() => {
+    if (mode === 'record'){
+      setShow(true)
+    } else {
+      setShow(false)
+    }
+  }, [currentData,mode])
   return (
-    <div className={styles.versionManagement} style={{ height: height }}>
+    <div
+      className={styles.versionManagement}
+
+      style={{
+        height: height,
+        display: show ?'block':'none'
+      }}>
       <div className={styles.versionManagementButton}>
         <div className={styles.versionManagementText} onClick={activeList}>
           版本管理
@@ -60,6 +79,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
           className={styles.pickUpIcon}
           onClick={activeList}
           style={{
+            cursor:'pointer',
             transform: active ? 'rotate(180deg)' : 'rotate(0deg)',
           }}
         />
@@ -71,9 +91,9 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
           overflow: active ? 'auto' : 'hidden',
         }}
       >
-        <div style={{ height: '12px' }} />
+        <div style={{height: '12px'}}/>
         <Timeline>
-          {list.map((item) => {
+          {list?.map((item) => {
             return (
               <Timeline.Item
                 className={`${styles.listText} ${
@@ -83,7 +103,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
                 // @ts-ignore
                 onClick={() => onItemClick(item)}
               >
-                {item.time}
+                {item.versionCode.replaceAll('/', '.')}
               </Timeline.Item>
             )
           })}
@@ -93,4 +113,4 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     </div>
   )
 }
-export default forwardRef(HistoryVersionManagement)
+export default HistoryVersionManagement

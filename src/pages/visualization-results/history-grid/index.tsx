@@ -1,11 +1,12 @@
 import { useReducer } from 'react'
 import { useLocation } from 'umi'
-import CityPickerWrapper from './CityPickerWrapper'
 import HistoryMapBase from './components/history-map-base'
+import ConsoleWrapper from './ConsoleWrapper'
 import DesignIconWrapper, { DesignLabel, HistoryBtn, Legend } from './DesignIconWrapper'
 import DesignTitle from './DesignTitle'
 import MapOperator from './MapOperator'
 import { HistoryGridContext, historyGridReducer, init } from './store'
+
 const HistoryGrid = () => {
   const location = useLocation()
   const [state, dispatch] = useReducer(historyGridReducer, { location }, init)
@@ -16,14 +17,14 @@ const HistoryGrid = () => {
         <HistoryMapBase />
         <DesignTitle />
         <MapOperator />
-        <CityPickerWrapper />
+        <ConsoleWrapper />
         <DesignIconWrapper beforeIcon={<HistoryBtn />}>
           <DesignLabel />
           <Legend />
         </DesignIconWrapper>
         {/*<GridVersionManagement />*/}
         {/*<HistoryVersionManagement />*/}
-        {/* <AddElectricalEquipment data={[]} type={'Point'} visible /> */}
+        {/* <HistoryGirdForm data={[]} type={'Point'} visible />*/}
       </HistoryGridContext.Provider>
     </div>
   )
