@@ -1,13 +1,13 @@
 import { Feature } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import { SelectEvent } from 'ol/interaction/Select'
-import type { GridMapGlobalState } from '../../../mapReducer'
+import type { GridMapGlobalState } from '../../../store/mapReducer'
 import { addHightStyle, getDataByFeature, getGeometryType } from '../utils'
 import type { InterActionRef, SelectedData } from './../typings'
 
 interface SelectCallbackOptions {
   interActionRef: InterActionRef
-  setState: <T extends GridMapGlobalState, K extends keyof T>(key: K, value: T[K]) => void
+  setState: <T extends GridMapGlobalState, K extends keyof T = keyof T>(key: K, value: T[K]) => void
   showText: boolean
 }
 

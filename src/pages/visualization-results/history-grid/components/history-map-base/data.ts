@@ -94,6 +94,31 @@ const dataSource = {
   ],
 }
 
+const designSource = {
+  equipments: [
+    {
+      id: '00014',
+      name: '设计点位1',
+      type: '无类型',
+      lng: 11428288.308262434,
+      lat: 3791136.272883413,
+      remark: '',
+    }],
+    lines: [
+      {
+        id: '00010',
+        name: '设计线段1',
+        type: '无类型',
+        startLng: 11428288.308262434,
+        startLat: 3591136.202883413,
+        endLng: 12309551.553392634,
+        endLat: 4280473.356898209,
+        remark: '',
+        startId: '',
+        endId: '',
+      }]
+}
+
 export default dataSource
 
 const getData = () => {
@@ -104,4 +129,4 @@ const getData = () => {
   })
 }
 
-export { getData }
+export { getData, designSource }

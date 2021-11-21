@@ -103,7 +103,6 @@ const HistoryMapBase = () => {
     ref.current!.innerHTML = ''
     interActionRef.source = new VectorSource()
     interActionRef.hightLightSource = new VectorSource()
-    
   }
   // 初始化layer
   function initLayer() {
