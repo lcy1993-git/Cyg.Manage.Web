@@ -2,7 +2,7 @@ import { Feature } from 'ol'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import { getStyle } from '../styles'
-import { clearScreen } from '../utils'
+import { clear } from '../utils'
 import { DataSource, InterActionRef } from './../typings/index'
 
 /**
@@ -15,22 +15,27 @@ export function drawByDataSource(
   data: DataSource,
   {
     interActionRef,
+    source,
     showText,
+    mode
   }: {
     interActionRef: InterActionRef
     showText: boolean
+    source: string,
+    mode: string
   }
 ) {
+
   if (data) {
     // 清理缓存
-    clearScreen(interActionRef)
+    clear(interActionRef)
 
     // 渲染设备
     if (Array.isArray(data.equipments)) {
       const points = data.equipments.map((p) => {
         const feature = new Feature()
         feature.setGeometry(new Point([p.lng!, p.lat!]))
-        feature.setStyle(getStyle('Point')(p.type, p.name, showText))
+        feature.setStyle(getStyle('Point')(mode, p.type || "无类型", p.name, showText))
         // feature.setStyle(pointStyle[p.type])
         Object.keys(p).forEach((key) => {
           feature.set(key, p[key])
@@ -38,7 +43,7 @@ export function drawByDataSource(
         return feature
       })
 
-      interActionRef.source?.addFeatures(points)
+      interActionRef[source].addFeatures(points)
     }
 
     // 渲染线路
@@ -52,7 +57,7 @@ export function drawByDataSource(
           ])
         )
 
-        feature.setStyle(getStyle('LineString')(p.type, p.name, showText))
+        feature.setStyle(getStyle('LineString')(mode, p.type || "无类型", p.name, showText))
         // feature.setStyle(lineStyle[p.type])
         Object.keys(p).forEach((key) => {
           feature.set(key, p[key])
@@ -60,7 +65,7 @@ export function drawByDataSource(
         return feature
       })
 
-      interActionRef.source?.addFeatures(lines)
+      interActionRef[source]?.addFeatures(lines)
     }
   }
 }

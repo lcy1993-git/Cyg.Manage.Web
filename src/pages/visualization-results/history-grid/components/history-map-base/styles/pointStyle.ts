@@ -36,10 +36,11 @@ const hightCircle = new ClassStyle({
 })
 
 interface PointOps {
-  fill: string
+  color?: string
 }
 
 export type GetPointStyle = (
+  mode: string,
   type: ElectricPointType,
   name: string,
   showText: boolean,
@@ -57,14 +58,16 @@ export type GetPointStyle = (
  */
 
 export const getPointStyle: GetPointStyle = (
+  mode: string,
   type: ElectricPointType,
   name: string,
   showText: boolean = false,
   isHight: boolean = false,
-  ops: PointOps = {
-    fill: 'rgba(0, 117, 206, 1)',
-  }
+  ops: PointOps = {}
 ): ClassStyle[] => {
+
+  const fillColor = mode === "preDesign" ? 'rgba(20, 168, 107, 1)' : 'rgba(0, 117, 206, 1)'
+
   const textObjet = {
     无类型: '\ue823',
     开闭所: '\ue851',
@@ -82,7 +85,7 @@ export const getPointStyle: GetPointStyle = (
         placement: 'point',
         font: 'Normal 22px iconfontHistoryGrid',
         fill: new Fill({
-          color: ops.fill,
+          color: ops.color || fillColor,
         }),
       }),
     }),
@@ -103,7 +106,7 @@ export const getPointStyle: GetPointStyle = (
         offsetY: 20,
         fill: new Fill({
           //文字填充色
-          color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
+          color: isHight ? 'rgba(249, 149, 52, 1)' : fillColor,
         }),
         // stroke: new Stroke({
         //   //文字边界宽度与颜色
