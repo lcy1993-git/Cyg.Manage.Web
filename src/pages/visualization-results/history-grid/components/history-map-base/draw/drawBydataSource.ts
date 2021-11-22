@@ -27,7 +27,6 @@ export function drawByDataSource(
 ) {
 
   if (data) {
-    console.log(123);
 
     // 清理缓存
     clear(interActionRef)

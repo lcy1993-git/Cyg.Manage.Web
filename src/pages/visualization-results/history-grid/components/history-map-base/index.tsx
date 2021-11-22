@@ -35,6 +35,7 @@ const HistoryMapBase = () => {
     onCurrentLocationClick,
     showText,
     importDesignData,
+    historyLayerVisible
   } = state
 
   // 绘制类型
@@ -103,12 +104,18 @@ const HistoryMapBase = () => {
   // 定位到当前用户位置
   useUpdateEffect(() => checkUserLocation(viewRef), [onCurrentLocationClick])
 
+  // 历史图层开关
+  useUpdateEffect(() => layerRef.vectorLayer.setVisible(historyLayerVisible), [historyLayerVisible])
+
   // before init
   function beforeInit() {
     ref.current!.innerHTML = ''
     interActionRef.source = new VectorSource()
     interActionRef.hightLightSource = new VectorSource()
   }
+
+
+
   // 初始化layer
   function initLayer() {
     // 添加 卫星图
@@ -120,7 +127,6 @@ const HistoryMapBase = () => {
 
     // 添加 历史网架图层
     layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
-
     // 添加高亮图层
     layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
 
@@ -285,6 +291,7 @@ const HistoryMapBase = () => {
           lines: dataSource.lines.slice(0,1),
           equipments: dataSource.equipments.slice(0, 2)
         })}>testData</button>
+        <button onClick={() => setState("historyLayerVisible", !historyLayerVisible)}>历史图层{historyLayerVisible}</button>
       </div>
     </div>
   )
