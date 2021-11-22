@@ -5,6 +5,7 @@ import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import { Layer } from 'ol/layer'
 import 'ol/ol.css'
 import { Source, Vector as VectorSource } from 'ol/source'
+import { GridMapGlobalState } from '../../../store/mapReducer'
 
 export type ElectricPointType =
   | '无类型'
@@ -80,3 +81,5 @@ export interface ViewRef {
 export interface MapRef {
   map: Map
 }
+
+export type SetState = <T extends GridMapGlobalState, K extends keyof T = keyof T>(key: K, value: T[K]) => void

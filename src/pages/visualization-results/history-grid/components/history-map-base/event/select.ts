@@ -1,13 +1,12 @@
 import { Feature } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import { SelectEvent } from 'ol/interaction/Select'
-import type { GridMapGlobalState } from '../../../store/mapReducer'
 import { addHightStyle, getDataByFeature, getGeometryType } from '../utils'
-import type { InterActionRef, SelectedData } from './../typings'
+import type { InterActionRef, SelectedData, SetState } from './../typings'
 
 interface SelectCallbackOptions {
   interActionRef: InterActionRef
-  setState: <T extends GridMapGlobalState, K extends keyof T = keyof T>(key: K, value: T[K]) => void
+  setState: SetState
   showText: boolean
   mode: string
 }
@@ -46,6 +45,8 @@ export function toggleSelectCallback(
   }
 
   if (flag) {
+
+
     setState(
       'selectedData',
       getDataByFeature(interActionRef.hightLightSource!.getFeatures()) as SelectedData
@@ -68,9 +69,9 @@ export function pointSelectCallback(
   e: SelectEvent,
   { interActionRef, setState, showText }: SelectCallbackOptions
 ) {
-  const { selected, deselected, mapBrowserEvent } = e
+  const { selected, deselected } = e
   selected.forEach((f) => {
-    interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText))
+    interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText, ""))
   })
   deselected.forEach((f) => {
     interActionRef.hightLightSource!.removeFeature(f)

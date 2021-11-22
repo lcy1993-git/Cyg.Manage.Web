@@ -104,3 +104,4 @@ function getIdsByDataSource (data:DataSource) {
   const equipmentArr = Array.isArray(data?.equipments) ? data?.equipments : []
   return [...lineArr, ...equipmentArr].map((o) => o.id)
 }
+

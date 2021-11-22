@@ -149,7 +149,7 @@ const HistoryMapBase = () => {
 
   // 绑定事件
   function bindEvent() {
-    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) => mapClick(e, { interActionRef, mapRef }))
+    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) => mapClick(e, { interActionRef, mapRef, setState }))
     mapRef.map.on('pointermove', (e) => pointermove(e))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
