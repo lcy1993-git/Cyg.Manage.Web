@@ -203,10 +203,11 @@ const ApproveGroup: React.FC = () => {
 
     const users = ApproveGroupData.users?.map((item: any) => item.value)
     setEditFormVisible(true)
-    setEditPersonUserIds(users)
+    // setEditPersonUserIds(users)
     editForm.setFieldsValue({
       name: ApproveGroupData.name,
       userId: ApproveGroupData.userId,
+      userIds: users,
       remark: ApproveGroupData.remark,
     })
   }
@@ -219,17 +220,17 @@ const ApproveGroup: React.FC = () => {
     const editData = data!
 
     editForm.validateFields().then(async (values) => {
-      const { userIds } = values
-      const handleIds = editPersonArray.filter((item: any) => userIds?.includes(item.value))
-      const finallyIds = getUsersIds(handleIds)
+      // const { userIds } = values
+      // const handleIds = editPersonArray.filter((item: any) => userIds?.includes(item.value))
+      // const finallyIds = getUsersIds(handleIds)
 
       const submitInfo = {
         id: editData.id,
         name: editData.name,
         remark: editData.remark,
         userId: editData.userId,
+        userIds: editData.userIds,
         ...values,
-        userIds: finallyIds,
       }
       console.log(submitInfo, '555')
 

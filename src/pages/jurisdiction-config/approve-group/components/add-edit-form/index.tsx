@@ -22,7 +22,7 @@ const ApproveGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
   // const { data: approveUser = [] } = useRequest(() =>
   //   getGroupUser({ category: 1, groupId: groupId })
   // )
-  const { data: usersData = [] } = useRequest(() => getGroupUser({ category: 2, groupId: groupId }))
+  // const { data: usersData = [] } = useRequest(() => getGroupUser({ category: 2, groupId: groupId }))
 
   const mapTreeData = (data: any) => {
     const keyValue = uuid.v1()
@@ -35,53 +35,53 @@ const ApproveGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
     }
   }
 
-  const getUserIds = (groupArray: any) => {
-    let allIds: any[] = []
-    ;(function deep(groupArray) {
-      groupArray?.forEach((item: any) => {
-        if (item.children && item.children.length > 0) {
-          deep(item.children)
-        } else {
-          allIds.push(item.id)
-        }
-      })
-    })(groupArray)
-    return allIds
-  }
+  // const getUserIds = (groupArray: any) => {
+  //   let allIds: any[] = []
+  //   ;(function deep(groupArray) {
+  //     groupArray?.forEach((item: any) => {
+  //       if (item.children && item.children.length > 0) {
+  //         deep(item.children)
+  //       } else {
+  //         allIds.push(item.id)
+  //       }
+  //     })
+  //   })(groupArray)
+  //   return allIds
+  // }
 
-  const allUserIds = getUserIds(usersData)
+  // const allUserIds = getUserIds(usersData)
 
-  const handleData = useMemo(() => {
-    const copyOptions = JSON.parse(JSON.stringify(usersData))?.map(mapTreeData)
-    copyOptions?.unshift({ title: '所有人', value: allUserIds, children: usersData })
-    return copyOptions
-      ?.map((item: any) => {
-        return {
-          title: item.title,
-          value: item.value,
-          children: item.children ? item.children?.map(mapTreeData) : [],
-        }
-      })
-      .slice(0, 1)
-  }, [JSON.stringify(usersData)])
+  // const handleData = useMemo(() => {
+  //   const copyOptions = JSON.parse(JSON.stringify(usersData))?.map(mapTreeData)
+  //   copyOptions?.unshift({ title: '所有人', value: allUserIds, children: usersData })
+  //   return copyOptions
+  //     ?.map((item: any) => {
+  //       return {
+  //         title: item.title,
+  //         value: item.value,
+  //         children: item.children ? item.children?.map(mapTreeData) : [],
+  //       }
+  //     })
+  //     .slice(0, 1)
+  // }, [JSON.stringify(usersData)])
 
-  useEffect(() => {
-    if (personDefaultValue) {
-      const flattenArray = flatten(handleData)
+  // useEffect(() => {
+  //   if (personDefaultValue) {
+  //     const flattenArray = flatten(handleData)
 
-      const handlePersonUserIds = flattenArray
-        .filter((item: any) => personDefaultValue.includes(item.chooseValue))
-        .map((item: any) => item.value)
+  //     const handlePersonUserIds = flattenArray
+  //       .filter((item: any) => personDefaultValue.includes(item.chooseValue))
+  //       .map((item: any) => item.value)
 
-      editForm.setFieldsValue({
-        userIds: handlePersonUserIds,
-      })
-    }
-  }, [JSON.stringify(personDefaultValue), JSON.stringify(handleData)])
+  //     editForm.setFieldsValue({
+  //       userIds: handlePersonUserIds,
+  //     })
+  //   }
+  // }, [JSON.stringify(personDefaultValue), JSON.stringify(handleData)])
 
-  useEffect(() => {
-    getPersonArray?.(flatten(handleData))
-  }, [JSON.stringify(handleData)])
+  // useEffect(() => {
+  //   getPersonArray?.(flatten(handleData))
+  // }, [JSON.stringify(handleData)])
 
   return (
     <>
@@ -101,12 +101,15 @@ const ApproveGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="成员" name="userIds">
-        <TreeSelect
+        <UrlSelect
+          showSearch
+          url="/ProjectApproveGroup/GetUserList"
+          titlekey="text"
+          valuekey="value"
           placeholder="请选择成员"
-          treeCheckable
-          treeData={handleData}
-          treeDefaultExpandAll
-          showCheckedStrategy="SHOW_PARENT"
+          requestType="post"
+          mode="multiple"
+          extraParams={{ category: 2, groupId: groupId }}
         />
       </CyFormItem>
 

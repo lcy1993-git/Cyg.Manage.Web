@@ -927,3 +927,36 @@ export const checkReviewResult = (params: EngineerFile) => {
     })
   )
 }
+
+interface ReportApproveParams {
+  projectIds: string[]
+  approveUserId: string
+  remark: string
+}
+
+//立项报审
+export const reportProjectApprove = (params: ReportApproveParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ReportApprove`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+
+interface ApproveParams {
+  projectIds: string[]
+  isApproved: boolean
+  isReserveIdentity?: boolean
+  remark?: string
+}
+
+//立项审批
+export const approveProject = (params: ApproveParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/Approve`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}

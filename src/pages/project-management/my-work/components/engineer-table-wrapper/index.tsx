@@ -12,6 +12,7 @@ import ExternalArrangeModal from '@/pages/project-management/all-project/compone
 import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
 import ProjectInheritModal from '@/pages/project-management/all-project/components/project-inherit-modal'
+import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ScreenModal from '@/pages/project-management/all-project/components/screen-modal'
 import {
   againInherit,
@@ -84,6 +85,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   })
   const [modalNeedInfo, setModalInfo] = useState<any>({
     engineerId: '',
+    projectId: '',
     areaId: '',
     company: '',
     companyName: '',
@@ -116,6 +118,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [copyProjectVisible, setCopyProjectVisible] = useState<boolean>(false)
   // 项目继承
   const [projectInheritVisible, setProjectInheritVisible] = useState<boolean>(false)
+  //立项待审批
+  const [reportApproveVisible, setReportApproveVisible] = useState<boolean>(false)
   // 筛选
   const [screenModalVisible, setScreenModalVisible] = useState(false)
   const tableRef = useRef<HTMLDivElement>(null)
@@ -655,7 +659,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             {buttonJurisdictionArray?.includes('all-project-copy-project') && (
               <span>
                 {!stateInfo.isArrange &&
-                identitys.findIndex((item: any) => item.value === 4) > -1 ? (
+                identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                stateInfo.status === 14 ? (
                   <span
                     className="canClick"
                     onClick={() => arrange(record.id, arrangeType, allotCompanyId)}
@@ -670,6 +675,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                 ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
                   stateInfo.status === 15 ? (
                   <span className="canClick" onClick={() => auditKnotEvent(record.id)}>
+                    {stateInfo?.statusText}
+                  </span>
+                ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
+                  stateInfo.status === 30 ? (
+                  <span className="canClick" onClick={() => reportApprove(record.id)}>
                     {stateInfo?.statusText}
                   </span>
                 ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
@@ -745,6 +755,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       companyName: record.company,
     })
     setApprovalEngineerVisible(true)
+  }
+
+  //立项待审批模态框
+  const reportApprove = (projectId: string) => {
+    setModalInfo({
+      projectId: projectId,
+    })
+    setReportApproveVisible(true)
   }
 
   const parentColumns: any[] = [
@@ -1048,6 +1066,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           visible={projectInheritVisible}
           onChange={setProjectInheritVisible}
           changeFinishEvent={refreshEvent}
+        />
+      )}
+      {reportApproveVisible && (
+        <ReportApproveModal
+          visible={reportApproveVisible}
+          onChange={setReportApproveVisible}
+          finishEvent={refreshEvent}
+          projectIds={modalNeedInfo.projectId}
+          // projectIds={}
         />
       )}
     </div>

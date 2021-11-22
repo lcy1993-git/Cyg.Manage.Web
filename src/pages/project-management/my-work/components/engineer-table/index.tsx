@@ -62,13 +62,14 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     urlList === '1' ? getProjectTableList : getAwaitApproveList,
     {
       manual: true,
+      // loadingDelay: 3000,
       ready: !!urlList,
     }
   )
   useEffect(() => {
     setUrlList?.('')
   }, [tableData])
-  console.log(urlList, '333')
+
   const cache = useRef([])
   const tableRef = useRef<HTMLDivElement>()
 
