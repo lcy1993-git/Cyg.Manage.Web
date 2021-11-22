@@ -10,7 +10,7 @@ const FL_MARGIN_LEFT = 10
 
 const ConsoleWrapper = () => {
   const { city, dispatch } = useHistoryGridContext()
-  const [visible, setVisible] = useState(true)
+  const [visible, setVisible] = useState(false)
 
   return (
     <>
@@ -29,6 +29,7 @@ const ConsoleWrapper = () => {
         left={FL_MARGIN_LEFT}
         top={FL_MARGIN_LEFT + 55}
         visible={visible}
+        className="z-10"
         onClose={() => setVisible(false)}
         title="城市列表"
         showClose

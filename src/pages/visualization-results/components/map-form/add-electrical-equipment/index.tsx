@@ -4,54 +4,37 @@ import { useMount } from 'ahooks'
 import { Button, Form, Input, Popconfirm, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
-import {update} from "lodash";
 
 const { Option } = Select
 export interface ElectricalEquipmentForm {
   name?: string
   id?: string
-  lat?:number
-  lng?:number
+  lat?: number
+  lng?: number
   type?: string
   remark?: string
   length?: number
   level?: number | string
 }
-interface Props {
-  data: ElectricalEquipmentForm[] // 数据源
-  visible: boolean
-  type: 'Point' | 'LineString' // 类型
-  showDetail?: boolean // 展示详情
-  showLength?: boolean //是否显示长度栏
-  position?: {
-    // 窗口位置
-    x: number
-    y: number
-  }
-}
+interface Props {}
 const HistoryGirdForm: React.FC<Props> = (props) => {
   const [state, setState] = useGridMap()
-  const [position,setPosition] = useState<number[]>([10,155]) // 鼠标位置
-  const [isEdit,setIsEdit] = useState<boolean>(false) // 是否编辑状态
-  const [visible,setVisible] = useState<boolean>(false) // 是否可见
+  const [position, setPosition] = useState<number[]>([10, 155]) // 鼠标位置
+  const [isEdit, setIsEdit] = useState<boolean>(false) // 是否编辑状态
+  const [visible, setVisible] = useState<boolean>(false) // 是否可见
+  const [showLength, setShowLength] = useState<boolean>(false) // 是否显示长度
+  const [type, setType] = useState<'LineString' | 'Point'>('LineString') // 是否显示长度
   const {
     isDraw, //是否绘制模式
     dataSource, // 绘制元素的数据源
     selectedData, //被选中的元素
-    currentMousePosition,  // 当前操作鼠标位置
+    currentMousePosition, // 当前操作鼠标位置
   } = state
-  const {
-    type = 'add',
-    showLength = false,
-    data,
-    showDetail = false,
-  } = props
   const [form] = Form.useForm()
   const [KVLevel, setKVLevel] = useState<{ value: string | number; text: string }[]>([])
   const [lineType, setLineType] = useState<{ value: string | number; text: string }[]>([])
   const handleDelete = () => {}
   const handleFinish = (values: ElectricalEquipmentForm) => {}
-  useEffect(() => {}, [type, form])
   useMount(() => {
     const obj = JSON.parse(localStorage.getItem('technologyEconomicEnums') ?? '')
     if (obj) {
@@ -65,44 +48,43 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       }
     }
   })
-  const hideModel = ()=>{
+  const hideModel = () => {
     setVisible(false)
   }
   useEffect(() => {
     setVisible(isDraw)
-    if (isDraw && selectedData.length === 1){
+    if (isDraw && selectedData.length === 1) {
       setVisible(true)
       form.setFieldsValue(selectedData[0])
       setIsEdit(selectedData[0]?.name === '')
       setPosition(
-        selectedData[0]?.name === '' ?
-          [window?.event?.pageX + 20 ?? 0,window?.event?.pageY - 100 ?? 0]
-          :
-          [10,155]
+        selectedData[0]?.name === ''
+          ? [window?.event?.pageX + 20 ?? 0, window?.event?.pageY - 100 ?? 0]
+          : [10, 155]
       )
-    } else if (isDraw && selectedData.length > 1){
+    } else if (isDraw && selectedData.length > 1) {
       form.setFieldsValue({
-        name:'',
-        type:'',
-        remark:'',
-        level:''
+        name: '',
+        type: '',
+        remark: '',
+        level: '',
       })
-      setPosition([10,155])
+      setPosition([10, 155])
       setIsEdit(false)
     }
-  }, [isDraw, dataSource, selectedData, form,currentMousePosition])
+  }, [isDraw, dataSource, selectedData, form, currentMousePosition])
   return (
     <div
       className={styles.formBox}
       style={{
-        width: data.length !== 0 ? '324px' : '224px',
+        width: dataSource?.length !== 0 ? '324px' : '224px',
         top: position[1],
         left: position[0],
         display: isDraw && selectedData.length > 0 && visible ? 'block' : 'none',
       }}
     >
       <div className={styles.header}>
-        {showDetail ? (
+        {!isDraw ? (
           <div>{type === 'LineString' ? '线路' : '电气设备'}</div>
         ) : (
           <div>
@@ -121,7 +103,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
           style={{ color: '#666666', fontSize: '14px' }}
         />
       </div>
-      {showDetail ? (
+      {!isDraw ? (
         <div className={styles.detailBox}>
           <p className={styles.detailInfo}>
             <span className={styles.detailTitle}>名称: </span>111
@@ -138,11 +120,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         </div>
       ) : (
         <div className={styles.form}>
-          <Form
-            form={form}
-            onFinish={handleFinish}
-            layout={isEdit  ? 'horizontal' : 'vertical'}
-          >
+          <Form form={form} onFinish={handleFinish} layout={isEdit ? 'horizontal' : 'vertical'}>
             <Form.Item name="name" label="名称">
               <Input placeholder="名称" type="text" />
             </Form.Item>
@@ -173,7 +151,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
                 长度:<span style={{ textIndent: '10px', display: 'inline-block' }}>{20}km</span>
               </p>
             )}
-            {data.length <= 1 && (
+            {dataSource?.length >= 1 && (
               <Form.Item name="remark" label={'备注'}>
                 <Input.TextArea maxLength={200} rows={2} />
               </Form.Item>

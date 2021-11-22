@@ -1,38 +1,34 @@
 import { HistoryGridVersion } from '@/pages/visualization-results/components/history-version-management'
-import { ExclamationCircleOutlined } from '@ant-design/icons/lib/icons'
+import ExclamationCircleOutlined from '@ant-design/icons/lib/icons/ExclamationCircleOutlined'
+
 import { useMount } from 'ahooks'
-import { Button, Checkbox, Input, Modal, Table } from 'antd'
+import { Button, Checkbox, Input, Modal, Space, Table } from 'antd'
 import moment, { Moment } from 'moment'
-import { FocusEventHandler, useEffect, useState } from 'react'
+import { ChangeEventHandler, useEffect, useState } from 'react'
 import { DeleteGridVersions, getAllGridVersions } from '../../service'
 import styles from './index.less'
 
 const GridVersionManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false)
   const [showDelete, isShowDelete] = useState<boolean>(true)
   const [list, setList] = useState<HistoryGridVersion[]>([])
   const [pageSize, setPageSize] = useState<number>(10)
   const [password, setPassword] = useState<string>('')
-  const passWordBlur = (e: FocusEventHandler<HTMLInputElement>) => {
-    e?.target?.value && setPassword(e?.target?.value)
+  const [row, setRow] = useState<HistoryGridVersion>({} as HistoryGridVersion)
+  const passWordChange = (e: ChangeEventHandler<HTMLInputElement>) => {
+    // @ts-ignore
+    setPassword(e?.target?.value)
   }
-  const confirmDelete = async (id: string) => {
-    await DeleteGridVersions(id, password)
+  const confirmDelete = async () => {
+    await DeleteGridVersions(row?.id, password)
+    setPasswordVisible(false)
+    setRow({})
+    await getHistoryList(showDelete)
   }
-  const handleDelete = (row: HistoryGridVersion) => {
-    Modal.confirm({
-      title: '提示',
-      icon: <ExclamationCircleOutlined />,
-      content: (
-        <div>
-          此操作将会删除该条历史版本记录相关网架数据,删除后将不可恢复,请输入密码确认删除。
-          <Input placeholder={'请输入密码'} onBlur={passWordBlur} style={{ marginTop: 10 }} />
-        </div>
-      ),
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => confirmDelete(row.id),
-    })
+  const onDelete = (row: HistoryGridVersion) => {
+    setRow(row)
+    setPasswordVisible(true)
   }
   const columns = [
     {
@@ -42,7 +38,7 @@ const GridVersionManagement = () => {
       key: 'index',
       align: 'center',
       fixed: 'left',
-      render: (text, record, idx: number) => {
+      render: (text: any, record: any, idx: number) => {
         return <>{idx + 1}</>
       },
     },
@@ -76,7 +72,7 @@ const GridVersionManagement = () => {
             {row?.isDeleted ? (
               <span style={{ color: '#777777' }}>已删除</span>
             ) : (
-              <Button type={'text'} onClick={() => handleDelete(row)} danger>
+              <Button type={'text'} onClick={() => onDelete(row)} danger>
                 <span style={{ textDecoration: 'underline' }}>删除</span>
               </Button>
             )}
@@ -124,6 +120,34 @@ const GridVersionManagement = () => {
           }}
           columns={columns}
         />
+      </Modal>
+      <Modal
+        visible={passwordVisible}
+        closeIcon={<></>}
+        width={400}
+        footer={null}
+        onCancel={() => setPasswordVisible(false)}
+        onOk={confirmDelete}
+      >
+        <div style={{ display: 'flex' }}>
+          <ExclamationCircleOutlined style={{ color: '#FFC400', fontSize: '20px' }} />
+          <div style={{ marginLeft: '6px' }}>
+            此操作将会删除该条历史版本记录相关网架数据,删除后将不可恢复,请输入密码确认删除。
+            <Input
+              placeholder={'请输入密码'}
+              onChange={passWordChange}
+              style={{ marginTop: 10, width: '250px' }}
+            />
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'end', marginTop: '16px' }}>
+          <Space>
+            <Button onClick={() => setPasswordVisible(false)}>取消</Button>
+            <Button onClick={confirmDelete} type={'primary'}>
+              确认
+            </Button>
+          </Space>
+        </div>
       </Modal>
     </div>
   )

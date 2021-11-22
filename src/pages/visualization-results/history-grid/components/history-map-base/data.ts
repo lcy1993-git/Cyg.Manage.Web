@@ -48,6 +48,14 @@ const dataSource = {
       lat: 3229304.80605161,
       remark: '5',
     },
+    {
+      id: '110',
+      name: '',
+      type: '',
+      lng: 10547079.6393076,
+      lat: 3229304.80605161,
+      remark: '5',
+    },
   ],
   lines: [
     {
@@ -99,19 +107,6 @@ const dataSource = {
       startId: '',
       endId: '',
     },
-    {
-      id: '0004',
-      name:
-        '',
-      type: '',
-      startLng: 12757463.275797712,
-      startLat: 3612489.4009415032,
-      endLng: 11947079.6393076,
-      endLat: 3229304.80605161,
-      remark: '',
-      startId: '',
-      endId: '',
-    },
   ],
 }
 
@@ -124,20 +119,22 @@ const designSource = {
       lng: 11428288.308262434,
       lat: 3791136.272883413,
       remark: '',
-    }],
-    lines: [
-      {
-        id: '00011',
-        name: '设计线段1',
-        type: '无类型',
-        startLng: 11428288.308262434,
-        startLat: 3591136.202883413,
-        endLng: 12309551.553392634,
-        endLat: 4280473.356898209,
-        remark: '',
-        startId: '',
-        endId: '',
-      }]
+    },
+  ],
+  lines: [
+    {
+      id: '00011',
+      name: '设计线段1',
+      type: '无类型',
+      startLng: 11428288.308262434,
+      startLat: 3591136.202883413,
+      endLng: 12309551.553392634,
+      endLat: 4280473.356898209,
+      remark: '',
+      startId: '',
+      endId: '',
+    },
+  ],
 }
 
 export default dataSource
