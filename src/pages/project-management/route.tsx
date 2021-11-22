@@ -2,7 +2,7 @@ import Loading from '@ant-design/pro-layout/es/PageLoading'
 import Loadable from 'react-loadable'
 
 const AllProject = Loadable({
-  loader: () => import('@/pages/project-management/all-project/index'),
+  loader: () => import('@/pages/project-management/my-work/index'),
   loading: () => <Loading />,
   delay: 150,
 })
