@@ -4,12 +4,14 @@ import ExclamationCircleOutlined from '@ant-design/icons/lib/icons/ExclamationCi
 import { useMount } from 'ahooks'
 import { Button, Checkbox, Input, Modal, Space, Table } from 'antd'
 import moment, { Moment } from 'moment'
-import { ChangeEventHandler, useEffect, useState } from 'react'
+import { ChangeEventHandler, FC, useEffect, useState } from 'react'
 import { DeleteGridVersions, getAllGridVersions } from '../../service'
 import styles from './index.less'
-
-const GridVersionManagement = () => {
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(true)
+interface Props {
+  onClose: () => void
+}
+const GridVersionManagement: FC<Props> = (props) => {
+  const { onClose } = props
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false)
   const [showDelete, isShowDelete] = useState<boolean>(true)
   const [list, setList] = useState<HistoryGridVersion[]>([])
@@ -96,13 +98,7 @@ const GridVersionManagement = () => {
   }, [showDelete])
   return (
     <div className={styles.versionManageBox}>
-      <Modal
-        title="版本管理"
-        visible={isModalVisible}
-        width={800}
-        onCancel={() => setIsModalVisible(false)}
-        onOk={() => setIsModalVisible(false)}
-      >
+      <Modal title="版本管理" visible={true} width={800} onCancel={onClose} onOk={onClose}>
         <div style={{ marginBottom: '10px' }}>
           <Checkbox onChange={() => isShowDelete(!showDelete)} checked={showDelete}>
             显示已删除

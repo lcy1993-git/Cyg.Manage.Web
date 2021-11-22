@@ -9,6 +9,7 @@ import { useHistoryGridContext } from '@/pages/visualization-results/history-gri
 import { Moment } from 'moment/moment'
 import { getAllGridVersions, getHistoriesById } from '../../history-grid/service'
 import { useGridMap } from '@/pages/visualization-results/history-grid/store/mapReducer'
+import GridVersionManagement from '@/pages/visualization-results/history-grid/components/grid-version-management'
 
 export interface HistoryGridVersion {
   id: string
@@ -32,6 +33,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
   const { height = '45vh' } = props
   const [state, setState] = useGridMap()
   const [active, setActive] = useState<boolean>(true)
+  const [showVersion, setShowVersion] = useState<boolean>(false)
   const [activeId, setActiveId] = useState<string>('')
   const [show, setShow] = useState<boolean>(true)
   const [list, setList] = useState<HistoryGridVersion[]>([])
@@ -57,6 +59,10 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     const res = await getHistoriesById(val.id)
     setState('dataSource', res?.content)
   }
+  const onVersionClose = async () => {
+    setShowVersion(false)
+    await getHistoryList()
+  }
   useEffect(() => {
     if (mode === 'record') {
       setShow(true)
@@ -73,7 +79,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
       }}
     >
       <div className={styles.versionManagementButton}>
-        <div className={styles.versionManagementText} onClick={activeList}>
+        <div className={styles.versionManagementText} onClick={() => setShowVersion(true)}>
           版本管理
         </div>
         <img
@@ -111,8 +117,8 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
             )
           })}
         </Timeline>
-        ,
       </div>
+      {showVersion && <GridVersionManagement onClose={onVersionClose} />}
     </div>
   )
 }
