@@ -23,10 +23,21 @@ import {
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons'
+import { useMount } from 'ahooks'
 import { Button, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
 import moment from 'moment'
 import uuid from 'node-uuid'
-import React, { forwardRef, Key, Ref, useImperativeHandle, useRef, useState } from 'react'
+import React, {
+  forwardRef,
+  Key,
+  Ref,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import { useMyWorkStore } from '../../context'
 import EngineerTable from '../engineer-table'
 import styles from './index.less'
 
@@ -123,6 +134,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   // 筛选
   const [screenModalVisible, setScreenModalVisible] = useState(false)
   const tableRef = useRef<HTMLDivElement>(null)
+  const { currentClickTabChildActiveType, myWorkInitData, currentClickTabType } = useMyWorkStore()
+  const requestUrl = useMemo(() => {
+    return myWorkInitData
+      .find((item) => item.id === currentClickTabType)
+      .children.find((item: any) => item.id === currentClickTabChildActiveType).url
+  }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
+
+  console.log(requestUrl)
 
   const projectNameClickEvent = (engineerId: string) => {
     setModalInfo({
@@ -894,6 +913,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     }
   }
 
+  const initTableData = (url: string, params: any) => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.urlChange(url, params)
+    }
+  }
+
   const screenClickEvent = (params: any) => {
     setSearchParams({ ...params, keyWord })
     searchByParams({ ...params, keyWord })
@@ -909,6 +935,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       searchEvent()
     },
   }))
+
+  useMount(() => {
+    searchByParams({ ...searchParams })
+  })
+
+  useEffect(() => {
+    initTableData(requestUrl, { ...searchParams })
+  }, [requestUrl])
 
   return (
     <div className={styles.engineerTableWrapper}>
@@ -933,6 +967,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           getSelectRowKeys={getSelectRowKeys}
           searchParams={{ ...searchParams, keyWord }}
           ref={tableRef}
+          url={requestUrl}
           parentColumns={parentColumns}
           columns={completeConfig}
         />

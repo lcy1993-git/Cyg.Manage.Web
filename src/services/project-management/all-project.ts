@@ -241,6 +241,12 @@ export const getProjectTableList = (params: AllProjectSearchParams) => {
     request(`${baseUrl.project}/ProjectList/GetAlls`, { method: 'POST', data: params })
   )
 }
+// 获取列表数据
+export const getTableData = (url: string, params: AllProjectSearchParams) => {
+  return cyRequest<TableRequestResult>(() =>
+    request(`${baseUrl.project}${url}`, { method: 'POST', data: params })
+  )
+}
 // 获取立项待审批列表
 export const getAwaitApproveList = (params: AllProjectSearchParams) => {
   return cyRequest<TableRequestResult>(() =>
@@ -957,6 +963,21 @@ export const approveProject = (params: ApproveParams) => {
     request(`${baseUrl.project}/Porject/Approve`, {
       method: 'POST',
       data: params,
+    })
+  )
+}
+
+// 获取我的工作台的统计数据
+export const getMyWorkStatisticsData = (areaType = '0', areaId = '') => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.project}/ProjectList/GetTotal`, {
+      method: 'POST',
+      data: {
+        pageSize: 1000,
+        pageIndex: 1,
+        areaType,
+        areaId,
+      },
     })
   )
 }

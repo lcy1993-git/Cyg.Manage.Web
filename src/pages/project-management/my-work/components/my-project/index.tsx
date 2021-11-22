@@ -25,11 +25,7 @@ import EngineerTableWrapper from '../engineer-table-wrapper'
 import TypeElement from '../type-element'
 import styles from './index.less'
 
-interface MyProjectParams {
-  typeArray: any[]
-}
-const MyProject: React.FC<MyProjectParams> = (props) => {
-  const { typeArray } = props
+const MyProject: React.FC = () => {
   const [searchParams, setSearchParams] = useState({})
   const [tableSelectKeys, setTableSelectKeys] = useState<string[]>([])
   const [tableSelectRowData, setTableSelectRowData] = useState<any[]>([])
@@ -57,7 +53,7 @@ const MyProject: React.FC<MyProjectParams> = (props) => {
   const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false)
   const [ifCanEdit, setIfCanEdit] = useState<any>([])
 
-  const { currentClickTabType } = useMyWorkStore()
+  const { currentClickTabType, myWorkInitData } = useMyWorkStore()
 
   //添加收藏夹modal
   const [addFavoriteModal, setAddFavoriteModal] = useState<boolean>(false)
@@ -81,8 +77,8 @@ const MyProject: React.FC<MyProjectParams> = (props) => {
   }, [JSON.stringify(tableSelectRowData)])
 
   const titleTypeArray = useMemo(() => {
-    return typeArray.find((item) => item.id === currentClickTabType).children
-  }, [JSON.stringify(typeArray), currentClickTabType])
+    return myWorkInitData.find((item) => item.id === currentClickTabType).children
+  }, [JSON.stringify(myWorkInitData), currentClickTabType])
 
   const searchEvent = () => {
     if (tableRef && tableRef.current) {
