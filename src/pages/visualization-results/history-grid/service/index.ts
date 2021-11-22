@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useReducer } from 'react'
+import { useCallback, useEffect, useReducer, useRef } from 'react'
 export * from './fetcher'
 
-type Fetcher<Result, Params extends any[] | never[]> = (...params: Params) => Promise<Result>
+type Fetcher<Result> = () => Promise<Result>
 
-type UseApiOptions<R, E, P> = {
+type UseApiOptions<R, E> = {
   initialData?: R
-  fetcherParams?: P
   onError?: (error?: E) => void
   onSuccess?: (result: R) => void
   filter?: (result: R) => R
@@ -22,11 +21,9 @@ type ApiReducerAction<R> = {
   payload?: R
 }
 
-const initialOption = {}
-
-export const useApi = <Result, Error, Params extends any[]>(
-  fetcher: Fetcher<Result, Params>,
-  options: UseApiOptions<Result, Error, Params> = initialOption
+export const useApi = <Result, Error>(
+  fetcher: Fetcher<Result>,
+  options: UseApiOptions<Result, Error> = {}
 ) => {
   const [state, dispatch] = useReducer(
     (state: ApiReducerState<Result, Error>, action: ApiReducerAction<Result | Error>) => {
@@ -58,15 +55,16 @@ export const useApi = <Result, Error, Params extends any[]>(
     }
   )
 
+  const _options = useRef(options)
+
   const fetchData = useCallback(
     async (flag?: { didCancel: boolean }) => {
-      const { fetcherParams, onError, onSuccess, filter } = options
+      const { onError, onSuccess, filter } = _options.current
 
       dispatch({ type: 'FETCH_INIT' })
 
       try {
-        const params = fetcherParams || []
-        let data: Result = await fetcher(...(params as Params))
+        let data: Result = await fetcher()
 
         if (typeof filter === 'function') {
           data = filter(data)
@@ -87,7 +85,7 @@ export const useApi = <Result, Error, Params extends any[]>(
         return Promise.reject(error)
       }
     },
-    [options, fetcher]
+    [fetcher]
   )
 
   useEffect(() => {

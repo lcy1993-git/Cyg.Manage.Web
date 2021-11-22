@@ -12,6 +12,8 @@ const ConsoleWrapper = () => {
   const { city, dispatch } = useHistoryGridContext()
   const [visible, setVisible] = useState(true)
 
+  // const { data } = useApi(getRegionData)
+
   return (
     <>
       <FlowLayer left={FL_MARGIN_LEFT} top={FL_MARGIN_LEFT}>
