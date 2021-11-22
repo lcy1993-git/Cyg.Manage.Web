@@ -157,6 +157,7 @@ const LoginForm: React.FC<Props> = (props) => {
       try {
         getServerList().then(async (res) => {
           if (res) {
+            console.log(res)
             let val = await run(res.code)
             if (!val) {
               await loginButtonClick()
