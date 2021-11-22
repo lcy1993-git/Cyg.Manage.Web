@@ -1,6 +1,6 @@
 // 引入假数据 后续需要删除
 import { useHistoryGridContext } from '.'
-import dataSource from '../components/history-map-base/data'
+import dataSource, { designSource } from '../components/history-map-base/data'
 import type { DataSource, SelectedData } from '../components/history-map-base/typings'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
@@ -9,6 +9,7 @@ export interface GridMapGlobalState {
   mapLayerType: string
   isDraw: boolean
   dataSource?: DataSource
+  importDesignData?: DataSource
   selectedData: SelectedData
   currentMousePosition: [number, number]
   cleanSelected: boolean
@@ -22,7 +23,8 @@ export interface GridMapGlobalState {
 export const initGridMapState = {
   mapLayerType: 'SATELLITE', // 卫星图 ？ 街道图 ？
   isDraw: false, // 是否为绘制状态
-  dataSource: dataSource, // 绘制元素的数据源 //这里暂时写假数据 后续真实数据过来需要删除
+  dataSource: dataSource, // 绘制历史网架元素的数据源 //这里暂时写假数据 后续真实数据过来需要删除
+  importDesignData: designSource, // 导入预设计时的数据 // ! 注意导入时请传一个新的对象 否则Effect无法监听未变更的老对象
   selectedData: [], //被选中的元素
   currentMousePosition: [0, 0], // 当前操作鼠标位置
   cleanSelected: false, // 清屏(操作完成后)

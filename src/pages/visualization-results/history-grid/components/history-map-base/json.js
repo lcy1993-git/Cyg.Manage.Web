@@ -132,4 +132,3 @@ testData.features.forEach((f, index) => {
   }
 })
 
-console.log(resData)

@@ -5,7 +5,6 @@ import VectorLayer from 'ol/layer/Vector'
 import * as proj from 'ol/proj'
 import { Vector as VectorSource, WMTS as sourceWmts, XYZ } from 'ol/source'
 import tilegridWmts from 'ol/tilegrid/WMTS'
-import { getStyle } from '../styles'
 
 // 卫星图层
 export const vecLayer = new TileLayer({
@@ -63,7 +62,7 @@ export const annLayer = new TileLayer({
 annLayer.set('name', 'annLayer')
 
 // 数据图层Vector层
-export const getVectorLayer = (source: VectorSource<Geometry>) => {
+export const getVectorLayer = (source: VectorSource<Geometry>): VectorLayer<VectorSource<Geometry>> => {
   return new VectorLayer({
     source: source,
   })

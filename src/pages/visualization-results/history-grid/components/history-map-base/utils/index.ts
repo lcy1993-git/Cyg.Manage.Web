@@ -1,10 +1,11 @@
-import { message } from 'antd'
-import JsonP from 'jsonp'
-import { Feature } from 'ol'
-import Geometry from 'ol/geom/Geometry'
-import * as proj from 'ol/proj'
-import { getStyle } from '../styles'
-import { InterActionRef, ViewRef } from '../typings'
+import { message } from 'antd';
+import JsonP from 'jsonp';
+import { Feature } from 'ol';
+import Geometry from 'ol/geom/Geometry';
+import * as proj from 'ol/proj';
+import { getStyle } from '../styles';
+import { InterActionRef, ViewRef } from '../typings';
+import { DataSource } from './../typings/index';
 
 // 清空选择器和高亮图层
 export const clear = (interActionRef: InterActionRef) => {
@@ -28,10 +29,10 @@ export function getGeometryType(f: Feature<Geometry>) {
 }
 
 // 添加高亮样式
-export function addHightStyle(fs: Feature<Geometry>[], showText) {
+export function addHightStyle(fs: Feature<Geometry>[], showText, mode) {
   return fs.map((f) => {
     const geometryType = getGeometryType(f)
-    f.setStyle(getStyle(geometryType)(f.get('type'), f.get('name'), showText, true))
+    f.setStyle(getStyle(geometryType)(mode, f.get('type') || "无类型", f.get('name'), showText, true))
     return f
   })
 }
@@ -65,4 +66,41 @@ export const checkUserLocation = (viewRef: ViewRef) => {
       }
     }
   )
+}
+
+export function getFillColorByMode (mode: string) {
+  return mode === "preDesign" ? 'rgba(20, 168, 107, 1)' : 'rgba(0, 117, 206, 1)'
+}
+
+/**
+ * 校准数据的合法性 判断是否有重复id
+ * @param data
+ * @param interActionRef
+ * @returns
+ */
+export function isValidationData (data: DataSource, interActionRef: InterActionRef): boolean {
+  const historyIds = interActionRef.source!.getFeatures().map((f) => f.get("id"))
+
+  const designIds = interActionRef.designSource!.getFeatures().map((f) => f.get("id"))
+
+  const dataIds = getIdsByDataSource(data)
+  for(let i = 0; i < dataIds.length; i ++) {
+    if(historyIds.includes(dataIds[i]) || designIds.includes(dataIds[i])) {
+      message.error(`数据导入失败，不能重复导入, 发现重复数据ID——${dataIds[i]}`)
+      return false
+    }
+  }
+
+  return true
+}
+
+/**
+ * 根据数据源获取ids
+ * @param data
+ * @returns
+ */
+function getIdsByDataSource (data:DataSource) {
+  const lineArr = Array.isArray(data?.lines) ? data?.lines : []
+  const equipmentArr = Array.isArray(data?.equipments) ? data?.equipments : []
+  return [...lineArr, ...equipmentArr].map((o) => o.id)
 }

@@ -8,10 +8,9 @@ import Geometry from 'ol/geom/Geometry'
 import GeometryType from 'ol/geom/GeometryType'
 import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import { SelectEvent } from 'ol/interaction/Select'
-import { Layer } from 'ol/layer'
 import 'ol/ol.css'
 import * as proj from 'ol/proj'
-import { Source, Vector as VectorSource } from 'ol/source'
+import { Vector as VectorSource } from 'ol/source'
 import { useEffect, useRef, useState } from 'react'
 import { useGridMap } from '../../store/mapReducer'
 import { drawByDataSource, drawEnd } from './draw'
@@ -20,8 +19,8 @@ import { moveend, pointermove, pointSelectCallback, toggleSelectCallback } from 
 import mapClick from './event/mapClick'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
 import { getStyle } from './styles'
-import { InterActionRef, MapRef } from './typings'
-import { checkUserLocation, clear } from './utils'
+import { InterActionRef, LayerRef, MapRef } from './typings'
+import { checkUserLocation, clear, isValidationData } from './utils'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
@@ -35,6 +34,7 @@ const HistoryMapBase = () => {
     onProjectLocationClick,
     onCurrentLocationClick,
     showText,
+    importDesignData
   } = state
 
   // 绘制类型
@@ -44,7 +44,7 @@ const HistoryMapBase = () => {
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
   // 图层缓存数据
-  const layerRef = useCurrentRef<Record<string, Layer<Source | VectorSource<Geometry>>>>({})
+  const layerRef = useCurrentRef<LayerRef>({})
   // 视图实例
   const viewRef = useCurrentRef<{ view: View }>({})
   // 画图缓存数据
@@ -72,11 +72,16 @@ const HistoryMapBase = () => {
   )
   // 根据数据绘制点位线路
   useEffect(() => {
-    if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, showText })
-  }, [dataSource, interActionRef, showText])
+    if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, source: "source", showText, mode: "record" })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataSource, showText])
+
+  useEffect(() => {
+    if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "designSource", showText, mode })
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [importDesignData, showText])
 
   // 当绘制状态改变时
-
   useUpdateEffect(() => {
     clear(interActionRef)
     if (isDraw) {
@@ -103,7 +108,6 @@ const HistoryMapBase = () => {
     ref.current!.innerHTML = ''
     interActionRef.source = new VectorSource()
     interActionRef.hightLightSource = new VectorSource()
-    
   }
   // 初始化layer
   function initLayer() {
@@ -113,10 +117,11 @@ const HistoryMapBase = () => {
     layerRef.streetLayer = streetLayer
     // 添加地域名称图层
     layerRef.annLayer = annLayer
-    // 添加 历史网架图层
-    layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
     // 添加高亮图层
     layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
+    // 添加 历史网架图层
+    layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
+
     // 添加 预设计图层
     if(mode === "preDesign") layerRef.designLayer = getVectorLayer(interActionRef.designSource = new VectorSource())
   }
@@ -173,15 +178,15 @@ const HistoryMapBase = () => {
       toggleCondition: platformModifierKeyOnly,
       style: (feature) => {
         const geometryType = feature.getGeometry()?.getType()
-        return getStyle(geometryType)(feature.get('type'), feature.get('name'), showText)
+        return getStyle(geometryType)(mode, feature.get('type'), feature.get('name'), showText)
       },
     })
     // 绑定单选及多选回调事件
     toggleSelect.on('select', (e: SelectEvent) =>
-      toggleSelectCallback(e, { interActionRef, setState, showText })
+      toggleSelectCallback(e, { interActionRef, setState, showText, mode })
     )
     pointSelect.on('select', (e: SelectEvent) =>
-      pointSelectCallback(e, { interActionRef, setState, showText })
+      pointSelectCallback(e, { interActionRef, setState, showText, mode })
     )
     toggleSelect.setHitTolerance(8)
     pointSelect.setHitTolerance(8)

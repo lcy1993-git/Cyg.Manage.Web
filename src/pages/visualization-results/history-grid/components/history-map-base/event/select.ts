@@ -1,19 +1,20 @@
 import { Feature } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import { SelectEvent } from 'ol/interaction/Select'
-import type { GridMapGlobalState } from '../../../mapReducer'
+import type { GridMapGlobalState } from '../../../store/mapReducer'
 import { addHightStyle, getDataByFeature, getGeometryType } from '../utils'
 import type { InterActionRef, SelectedData } from './../typings'
 
 interface SelectCallbackOptions {
   interActionRef: InterActionRef
-  setState: <T extends GridMapGlobalState, K extends keyof T>(key: K, value: T[K]) => void
+  setState: <T extends GridMapGlobalState, K extends keyof T = keyof T>(key: K, value: T[K]) => void
   showText: boolean
+  mode: string
 }
 
 export function toggleSelectCallback(
   e: SelectEvent,
-  { interActionRef, setState, showText }: SelectCallbackOptions
+  { interActionRef, setState, showText, mode }: SelectCallbackOptions
 ) {
   let flag = false // 是否需要set数据
   const hightFeatures = interActionRef.hightLightSource!.getFeatures()
@@ -22,14 +23,14 @@ export function toggleSelectCallback(
     if (hightFeatures.length === 0) {
       if (!isAdded(selected)) {
         flag = true
-        interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText))
+        interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText, mode))
       }
     } else {
       const currentType = getGeometryType(hightFeatures[0])
       if (currentType === getGeometryType(selected[0])) {
         if (!isAdded(selected)) {
           flag = true
-          interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText))
+          interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText, mode))
         }
       }
     }

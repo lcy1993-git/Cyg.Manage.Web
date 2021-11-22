@@ -8,6 +8,7 @@ interface LineOps {
 }
 
 export type GetLineStyle = (
+  mode: string,
   type: ElectricLineType,
   name: string,
   showText: boolean,
@@ -25,12 +26,16 @@ export type GetLineStyle = (
  */
 
 export const getLineStyle: GetLineStyle = (
+  mode: string,
   type: ElectricLineType,
   name: string,
   showText: boolean = false,
   isHight: boolean = false,
   ops: LineOps = {}
 ) => {
+
+  const fillColor = mode === "preDesign" ? 'rgba(20, 168, 107, 1)' : 'rgba(0, 117, 206, 1)'
+
   const textObject = {
     无类型: [],
     架空线: [2, 6],
@@ -42,7 +47,7 @@ export const getLineStyle: GetLineStyle = (
       stroke: new Stroke({
         //lineJoin:'bevel',
         lineDash: textObject[type],
-        color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
+        color: isHight ? 'rgba(249, 149, 52, 1)' : fillColor,
         width: isHight ? 3 : 2,
         ...ops,
       }),
@@ -61,7 +66,7 @@ export const getLineStyle: GetLineStyle = (
         offsetY: -10,
         fill: new Fill({
           //文字填充色
-          color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
+          color: isHight ? 'rgba(249, 149, 52, 1)' : fillColor,
         }),
         // stroke: new Stroke({
         //   //文字边界宽度与颜色
