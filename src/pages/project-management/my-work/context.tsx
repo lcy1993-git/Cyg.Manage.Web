@@ -2,6 +2,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import { createContext, useContext } from 'react'
 
 interface MyWorkContextProps {
+  myWorkInitData: any[]
   currentClickTabType: string
   currentClickTabChildActiveType: string
   setCurrentClickTabChildActiveType: Dispatch<SetStateAction<string>>

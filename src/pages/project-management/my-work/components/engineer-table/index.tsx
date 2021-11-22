@@ -1,22 +1,13 @@
 import EmptyTip from '@/components/empty-tip'
-import {
-  ProjectListContext,
-  useProjectListStore,
-} from '@/pages/project-management/all-project/context'
-import {
-  getProjectTableList,
-  getAwaitApproveList,
-  approvingProjectList,
-} from '@/services/project-management/all-project'
+import { getTableData } from '@/services/project-management/all-project'
 import { delay } from '@/utils/utils'
-import { useMount, useRequest } from 'ahooks'
+import { useRequest } from 'ahooks'
 import { Pagination, Spin } from 'antd'
 import React, {
   forwardRef,
   Key,
   memo,
   Ref,
-  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
@@ -39,15 +30,15 @@ interface EngineerTableProps {
   getSelectRowKeys?: (selectKeys: Key[]) => void
   // TODO
   getSelectRowData?: (selectRowData: any[]) => void
+  // url
+  url: string
 }
 
 const ROW_HEIGHT = 40
 
 const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
-  const { urlList, setUrlList } = useProjectListStore()
-  console.log(urlList, '333')
-
   const {
+    url,
     columns,
     parentColumns,
     pagingSlot,
@@ -62,23 +53,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const [tableShowDataSource, setTableShowDataSource] = useState<any[]>([])
 
-  const { data: tableData, run, loading } = useRequest(
-    urlList === '1'
-      ? getProjectTableList
-      : urlList === '2'
-      ? getAwaitApproveList
-      : approvingProjectList,
-    {
-      manual: true,
-      // loadingDelay: 3000,
-      ready: !!urlList,
-    }
-  )
-  useEffect(() => {
-    setUrlList?.('')
-  }, [tableData])
-
-  console.log(urlList)
+  const { data: tableData, run, loading } = useRequest(getTableData, {
+    manual: true,
+  })
 
   const cache = useRef([])
   const tableRef = useRef<HTMLDivElement>()
@@ -132,7 +109,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageIndex: page === 0 ? 1 : page,
       })
 
-      run({
+      run(url, {
         ...searchParams,
         pageIndex: page,
         pageSize: size,
@@ -147,7 +124,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       pageSize: size,
     })
 
-    run({
+    run(url, {
       ...searchParams,
       pageIndex: 1,
       pageSize: size,
@@ -159,7 +136,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   useImperativeHandle(ref, () => ({
     // 刷新
     refresh: () => {
-      run({
+      run(url, {
         ...searchParams,
         ...pageInfo,
       })
@@ -171,7 +148,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...pageInfo,
         pageIndex: 1,
       })
-      run({
+      run(url, {
         ...searchParams,
         ...pageInfo,
         pageIndex: 1,
@@ -184,7 +161,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...pageInfo,
         pageIndex: 1,
       })
-      run({
+      run(url, {
         ...params,
         ...pageInfo,
         pageIndex: 1,
@@ -198,11 +175,23 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...pageInfo,
         pageIndex: 1,
       })
-      run({
+      run(url, {
         ...searchParams,
         ...pageInfo,
         pageIndex: 1,
       })
+    },
+    urlChange: (requestUrl: string, params: object) => {
+      setPageInfo({
+        ...pageInfo,
+        pageIndex: 1,
+      })
+      run(requestUrl, {
+        ...params,
+        ...pageInfo,
+        pageIndex: 1,
+      })
+      emptyTableSelect()
     },
   }))
 
@@ -212,14 +201,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       tableRef.current.emptySelectEvent()
     }
   }
-
-  useMount(() => {
-    run({
-      ...searchParams,
-      pageIndex: 1,
-      pageSize: 1000,
-    })
-  })
 
   return (
     <div className={styles.engineerTable}>
