@@ -14,7 +14,7 @@ import { Vector as VectorSource } from 'ol/source'
 import { useEffect, useRef, useState } from 'react'
 import { useGridMap } from '../../store/mapReducer'
 import { drawByDataSource, drawEnd } from './draw'
-import { onMapLayerTypeChange } from './effects'
+import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import { moveend, pointermove, pointSelectCallback, toggleSelectCallback } from './event'
 import mapClick from './event/mapClick'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
@@ -145,14 +145,17 @@ const HistoryMapBase = () => {
     })
     // 清楚地图控件
     mapRef.map.getControls().clear()
+    // 初始化地图比例尺
+    handlerGeographicSize({mode, viewRef})
   }
 
   // 绑定事件
   function bindEvent() {
     mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) => mapClick(e, { interActionRef, mapRef, setState }))
-    mapRef.map.on('pointermove', (e) => pointermove(e))
+    mapRef.map.on('pointermove', (e) => pointermove(e, {mode}))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
+    viewRef.view.on("change:resolution", () => handlerGeographicSize({mode, viewRef}))
   }
 
   // 初始化interaction
