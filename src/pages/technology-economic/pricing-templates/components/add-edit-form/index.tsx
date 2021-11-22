@@ -9,7 +9,7 @@ import { getEnums } from '@/pages/technology-economic/utils';
 const { Option } = Select;
 const engineeringTemplateTypeList = getEnums('EngineeringTemplateType')
   ? getEnums('EngineeringTemplateType')
-  : [];
+  : [{ text: '定额计价', value: 1 }];
 interface IForm {
   type?: 'add' | 'edit';
   selectList?: number[];
