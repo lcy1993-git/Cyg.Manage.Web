@@ -20,13 +20,16 @@ import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-de
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
 import { uniq } from 'lodash'
 import React, { useMemo, useRef, useState } from 'react'
+import { useMyWorkStore } from '../../context'
 import EngineerTableWrapper from '../engineer-table-wrapper'
+import TypeElement from '../type-element'
 import styles from './index.less'
 
 interface MyProjectParams {
-  url?: string
+  typeArray: any[]
 }
-const MyProject: React.FC = () => {
+const MyProject: React.FC<MyProjectParams> = (props) => {
+  const { typeArray } = props
   const [searchParams, setSearchParams] = useState({})
   const [tableSelectKeys, setTableSelectKeys] = useState<string[]>([])
   const [tableSelectRowData, setTableSelectRowData] = useState<any[]>([])
@@ -54,6 +57,8 @@ const MyProject: React.FC = () => {
   const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false)
   const [ifCanEdit, setIfCanEdit] = useState<any>([])
 
+  const { currentClickTabType } = useMyWorkStore()
+
   //添加收藏夹modal
   const [addFavoriteModal, setAddFavoriteModal] = useState<boolean>(false)
   const [favName, setFavName] = useState<string>('')
@@ -74,6 +79,10 @@ const MyProject: React.FC = () => {
         item.stateInfo && (item.stateInfo.inheritStatus === 1 || item.stateInfo.inheritStatus === 3)
     )
   }, [JSON.stringify(tableSelectRowData)])
+
+  const titleTypeArray = useMemo(() => {
+    return typeArray.find((item) => item.id === currentClickTabType).children
+  }, [JSON.stringify(typeArray), currentClickTabType])
 
   const searchEvent = () => {
     if (tableRef && tableRef.current) {
@@ -427,7 +436,9 @@ const MyProject: React.FC = () => {
   return (
     <div className={styles.myProjectContent}>
       <div className={styles.myProjectCommonContent}>
-        <div className={styles.myProjectCommonLeft}></div>
+        <div className={styles.myProjectCommonLeft}>
+          <TypeElement typeArray={titleTypeArray} />
+        </div>
         <div className={styles.myProjectCommonRight}>
           {(buttonJurisdictionArray?.includes('all-project-project-approval') ||
             buttonJurisdictionArray?.includes('all-project-batch-project')) && (

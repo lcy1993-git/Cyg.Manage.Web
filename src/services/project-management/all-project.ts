@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import { Moment } from 'moment'
 import React from 'react'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 import { TableRequestResult } from '../table'
 
 export enum Arrangement {
