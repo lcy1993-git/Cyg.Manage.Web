@@ -1,39 +1,32 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
-import { useMount, useSize } from 'ahooks';
-import { useContainer } from '../../result-page/mobx-store';
-import { observer } from 'mobx-react-lite';
-
-import Footer from '../footer';
-import SidePopup, { TableDataType } from '../side-popup';
-import SurveyTrack from '../survey-track';
-
-import Map from 'ol/Map';
-import LayerGroup from 'ol/layer/Group';
-import { transform } from 'ol/proj';
-import SurveyModal from '../survey-modal/'
-
-
-import {
-  refreshMap,
-  getLayerByName,
-  getLayerGroupByName,
-  relocateMap,
-  loadTrackLayers,
-  clearTrackLayers,
-  loadMediaSign,
-  loadMediaSignData,
-  clearHighlightLayer,
-  checkZoom,
-} from '../../utils/methods';
-import { bd09Towgs84 } from '../../utils';
-import { mapClick, mapPointermove, mapMoveend } from '../../utils/mapClick';
-import { BaseMapProps } from '../../utils/init';
-
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results';
-import styles from './index.less';
+import { useMount, useSize, useUpdateEffect } from 'ahooks';
+import { observer } from 'mobx-react-lite';
+import LayerGroup from 'ol/layer/Group';
+import Map from 'ol/Map';
+import { transform } from 'ol/proj';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useContainer } from '../../result-page/mobx-store';
+import { bd09Towgs84 } from '../../utils';
+import { BaseMapProps } from '../../utils/init';
+import { mapClick, mapMoveend, mapPointermove } from '../../utils/mapClick';
+import {
+  checkZoom, clearHighlightLayer, clearTrackLayers, getLayerByName,
+  getLayerGroupByName, loadMediaSign,
+  loadMediaSignData, loadTrackLayers, refreshMap, relocateMap
+} from '../../utils/methods';
+import Footer from '../footer';
 import MapDisplay from '../map-display';
 import SideMenuTree from '../side-menu-tree';
+import { TableDataType } from '../side-popup';
+import SurveyModal from '../survey-modal/';
+import SurveyTrack from '../survey-track';
+import styles from './index.less';
+
+
+
+
+
+
 
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null);
@@ -41,6 +34,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   const { layers, layerGroups, trackLayers, view, setView, setLayerGroups } = props;
 
   // 图层控制层数据
+  const [preDesignVisible, setPreDesignVisible] = useState<boolean>(false);
   const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(true);
   const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false);
   const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false);
@@ -186,6 +180,11 @@ const BaseMap = observer((props: BaseMapProps) => {
   const layersState = useMemo(() => {
     return [surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible];
   }, [surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible]);
+  // 当预设图层切换时
+  useUpdateEffect(() => {
+    // 处理预设 // ! TODO
+  }, [preDesignVisible])
+
   // 当勘察图层切换时
   useEffect(() => {
     highlight(1, layersState);
@@ -247,6 +246,8 @@ const BaseMap = observer((props: BaseMapProps) => {
     planLayerVisible: planLayerVisible,
     designLayerVisible: designLayerVisible,
     dismantleLayerVisible: dismantleLayerVisible,
+    preDesignVisible,
+    setPreDesignVisible,
     setSurveyLayerVisible: setSurveyLayerVisible,
     setPlanLayerVisible: setPlanLayerVisible,
     setDesignLayerVisible: setDesignLayerVisible,

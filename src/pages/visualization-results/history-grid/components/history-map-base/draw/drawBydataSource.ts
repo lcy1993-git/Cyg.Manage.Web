@@ -30,14 +30,14 @@ export function drawByDataSource(
 
     // 清理缓存
     clear(interActionRef)
-    if(source === "source") interActionRef.source.clear()
+    if(source === "source") interActionRef.source?.clear()
 
     // 渲染设备
     if (Array.isArray(data.equipments)) {
       const points = data.equipments.map((p) => {
         const feature = new Feature()
         feature.setGeometry(new Point([p.lng!, p.lat!]))
-        feature.setStyle(getStyle('Point')(sourceType, p.type || "无类型", p.name, showText))
+        feature.setStyle(getStyle('Point')(sourceType, p.typeStr || "无类型", p.name, showText))
         // feature.setStyle(pointStyle[p.type])
         // Object.keys(p).forEach((key) => {
         //   feature.set(key, p[key])
@@ -61,7 +61,7 @@ export function drawByDataSource(
           ])
         )
 
-        feature.setStyle(getStyle('LineString')(sourceType, p.type || "无类型", p.name, showText))
+        feature.setStyle(getStyle('LineString')(sourceType, p.typeStr || "无类型", p.name, showText))
         // feature.setStyle(lineStyle[p.type])
         // Object.keys(p).forEach((key) => {
         //   feature.set(key, p[key])
