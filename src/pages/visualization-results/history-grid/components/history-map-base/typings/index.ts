@@ -1,11 +1,11 @@
-import '@/assets/icon/history-grid-icon.css'
-import { Map, View } from 'ol'
-import Geometry from 'ol/geom/Geometry'
-import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
-import { Layer } from 'ol/layer'
-import 'ol/ol.css'
-import { Source, Vector as VectorSource } from 'ol/source'
-import { GridMapGlobalState } from '../../../store/mapReducer'
+import '@/assets/icon/history-grid-icon.css';
+import { Map, View } from 'ol';
+import Geometry from 'ol/geom/Geometry';
+import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction';
+import { Layer } from 'ol/layer';
+import 'ol/ol.css';
+import { Source, Vector as VectorSource } from 'ol/source';
+import { GridMapGlobalState } from '../../../store/mapReducer';
 
 export type ElectricPointType =
   | '无类型'
@@ -83,3 +83,14 @@ export interface MapRef {
 }
 
 export type SetState = <T extends GridMapGlobalState, K extends keyof T = keyof T>(key: K, value: T[K]) => void
+
+/**
+ * 数据源属性 是历史数据还是预设计数据
+ * history 历史数据
+ * design 预设计数据
+ */
+export enum SourceType {
+  "history" = "rgba(0, 117, 206, 1)",
+  "design" = "rgba(20, 168, 107, 1)",
+  "highLight" = "rgba(249, 149, 52, 1)"
+}

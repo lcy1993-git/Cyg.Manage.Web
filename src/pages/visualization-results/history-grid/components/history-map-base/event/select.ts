@@ -22,14 +22,14 @@ export function toggleSelectCallback(
     if (hightFeatures.length === 0) {
       if (!isAdded(selected)) {
         flag = true
-        interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText, mode))
+        interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText))
       }
     } else {
       const currentType = getGeometryType(hightFeatures[0])
       if (currentType === getGeometryType(selected[0])) {
         if (!isAdded(selected)) {
           flag = true
-          interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText, mode))
+          interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText))
         }
       }
     }
@@ -69,9 +69,10 @@ export function pointSelectCallback(
   e: SelectEvent,
   { interActionRef, setState, showText }: SelectCallbackOptions
 ) {
+
   const { selected, deselected } = e
   selected.forEach((f) => {
-    interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText, ""))
+    interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText))
   })
   deselected.forEach((f) => {
     interActionRef.hightLightSource!.removeFeature(f)

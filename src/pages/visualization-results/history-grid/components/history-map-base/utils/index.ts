@@ -29,10 +29,11 @@ export function getGeometryType(f: Feature<Geometry>) {
 }
 
 // 添加高亮样式
-export function addHightStyle(fs: Feature<Geometry>[], showText, mode) {
+export function addHightStyle(fs: Feature<Geometry>[], showText) {
   return fs.map((f) => {
+    const sourceType = f.get("sourceType")
     const geometryType = getGeometryType(f)
-    f.setStyle(getStyle(geometryType)(mode, f.get('type') || "无类型", f.get('name'), showText, true))
+    f.setStyle(getStyle(geometryType)(sourceType, f.get('type') || "无类型", f.get('name'), showText, true))
     return f
   })
 }
@@ -104,4 +105,3 @@ function getIdsByDataSource (data:DataSource) {
   const equipmentArr = Array.isArray(data?.equipments) ? data?.equipments : []
   return [...lineArr, ...equipmentArr].map((o) => o.id)
 }
-

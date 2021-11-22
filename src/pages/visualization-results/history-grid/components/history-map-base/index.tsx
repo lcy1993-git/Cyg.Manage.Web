@@ -34,7 +34,7 @@ const HistoryMapBase = () => {
     onProjectLocationClick,
     onCurrentLocationClick,
     showText,
-    importDesignData
+    importDesignData,
   } = state
 
   // 绘制类型
@@ -72,12 +72,12 @@ const HistoryMapBase = () => {
   )
   // 根据数据绘制点位线路
   useEffect(() => {
-    if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, source: "source", showText, mode: "record" })
+    if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, source: "source", showText, sourceType: "history" })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataSource, showText])
 
   useEffect(() => {
-    if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "designSource", showText, mode })
+    if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "designSource", showText, sourceType: "design" })
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [importDesignData, showText])
 
@@ -117,10 +117,12 @@ const HistoryMapBase = () => {
     layerRef.streetLayer = streetLayer
     // 添加地域名称图层
     layerRef.annLayer = annLayer
-    // 添加高亮图层
-    layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
+
     // 添加 历史网架图层
     layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
+
+    // 添加高亮图层
+    layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
 
     // 添加 预设计图层
     if(mode === "preDesign") layerRef.designLayer = getVectorLayer(interActionRef.designSource = new VectorSource())
@@ -181,7 +183,8 @@ const HistoryMapBase = () => {
       toggleCondition: platformModifierKeyOnly,
       style: (feature) => {
         const geometryType = feature.getGeometry()?.getType()
-        return getStyle(geometryType)(mode, feature.get('type'), feature.get('name'), showText)
+
+        return getStyle(geometryType)(feature.get("sourceType"), feature.get('type') || "无类型", feature.get('name'), showText)
       },
     })
     // 绑定单选及多选回调事件
