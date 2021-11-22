@@ -3,7 +3,9 @@ import React, { useMemo, useState } from 'react'
 import SingleStatistics from '../all-project/components/all-project-statistics'
 import MyProject from './components/my-project'
 import { MyWorkProvider } from './context'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import styles from './index.less'
+import { Tooltip } from 'antd'
 
 export const myWorkTypeArray = [
   {
@@ -113,6 +115,11 @@ const MyWork: React.FC = () => {
     'myAllProject'
   )
 
+  //收藏夹
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
+  const [sideVisible, setSideVisible] = useState<boolean>(false)
+  const imgSrc = require('../../../assets/icon-image/favorite.png')
+
   const singleStatisticsTypeClickEvent = (type: string) => {
     const childrenType = myWorkTypeArray.find((item) => item.id === type)?.children
     // 设置children的第一个是激活状态
@@ -150,6 +157,20 @@ const MyWork: React.FC = () => {
         setCurrentClickTabChildActiveType,
       }}
     >
+      {buttonJurisdictionArray?.includes('engineer-favorite') && (
+        <Tooltip title="工程收藏夹">
+          <div
+            className={styles.folderButton}
+            onClick={() => {
+              setSideVisible(true)
+            }}
+            style={{ display: sideVisible || currentClickTabType !== 'allpro' ? 'none' : 'block' }}
+          >
+            <img src={imgSrc} alt="" />
+            <div>收藏</div>
+          </div>
+        </Tooltip>
+      )}
       <PageCommonWrap noPadding>
         <div className={styles.myWorkContent}>
           <div className={styles.myWorkTypeContent}>{statisticsElement}</div>

@@ -960,3 +960,12 @@ export const approveProject = (params: ApproveParams) => {
     })
   )
 }
+
+export const approvingProjectList = (params: AllProjectSearchParams) => {
+  return cyRequest<TableRequestResult>(() =>
+    request(`${baseUrl.project}/ProjectList/GetApproveings`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}

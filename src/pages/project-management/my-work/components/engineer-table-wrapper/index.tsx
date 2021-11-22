@@ -2,6 +2,7 @@ import CyTag from '@/components/cy-tag'
 import TableSearch from '@/components/table-search'
 import AddProjectModal from '@/pages/project-management/all-project/components/add-project-modal'
 import ApprovalProjectModal from '@/pages/project-management/all-project/components/approval-project-modal'
+import ApproveModal from '@/pages/project-management/all-project/components/approve-modal'
 import ArrangeModal from '@/pages/project-management/all-project/components/arrange-modal'
 import AuditKnotModal from '@/pages/project-management/all-project/components/audit-knot-modal'
 import CopyProjectModal from '@/pages/project-management/all-project/components/copy-project-modal'
@@ -120,6 +121,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [projectInheritVisible, setProjectInheritVisible] = useState<boolean>(false)
   //立项待审批
   const [reportApproveVisible, setReportApproveVisible] = useState<boolean>(false)
+  //立项审批
+  const [approvingModalVisible, setApprovingModalVisible] = useState<boolean>(false)
   // 筛选
   const [screenModalVisible, setScreenModalVisible] = useState(false)
   const tableRef = useRef<HTMLDivElement>(null)
@@ -682,6 +685,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                   <span className="canClick" onClick={() => reportApprove(record.id)}>
                     {stateInfo?.statusText}
                   </span>
+                ) : stateInfo.status === 31 ? (
+                  <span className="canClick" onClick={() => approveProjectEvent(record.id)}>
+                    {stateInfo?.statusText}
+                  </span>
                 ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
                   <span
                     className="canClick"
@@ -763,6 +770,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       projectId: projectId,
     })
     setReportApproveVisible(true)
+  }
+
+  //立项审批
+  const approveProjectEvent = (projectId: string) => {
+    setModalInfo({
+      projectId: projectId,
+    })
+    setApprovingModalVisible(true)
   }
 
   const parentColumns: any[] = [
@@ -1074,7 +1089,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           onChange={setReportApproveVisible}
           finishEvent={refreshEvent}
           projectIds={modalNeedInfo.projectId}
-          // projectIds={}
+        />
+      )}
+      {approvingModalVisible && (
+        <ApproveModal
+          visible={approvingModalVisible}
+          onChange={setApprovingModalVisible}
+          finishEvent={refreshEvent}
+          projectIds={modalNeedInfo.projectId}
         />
       )}
     </div>

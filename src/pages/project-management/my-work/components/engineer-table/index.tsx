@@ -3,7 +3,11 @@ import {
   ProjectListContext,
   useProjectListStore,
 } from '@/pages/project-management/all-project/context'
-import { getProjectTableList, getAwaitApproveList } from '@/services/project-management/all-project'
+import {
+  getProjectTableList,
+  getAwaitApproveList,
+  approvingProjectList,
+} from '@/services/project-management/all-project'
 import { delay } from '@/utils/utils'
 import { useMount, useRequest } from 'ahooks'
 import { Pagination, Spin } from 'antd'
@@ -59,7 +63,11 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [tableShowDataSource, setTableShowDataSource] = useState<any[]>([])
 
   const { data: tableData, run, loading } = useRequest(
-    urlList === '1' ? getProjectTableList : getAwaitApproveList,
+    urlList === '1'
+      ? getProjectTableList
+      : urlList === '2'
+      ? getAwaitApproveList
+      : approvingProjectList,
     {
       manual: true,
       // loadingDelay: 3000,
@@ -69,6 +77,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   useEffect(() => {
     setUrlList?.('')
   }, [tableData])
+
+  console.log(urlList)
 
   const cache = useRef([])
   const tableRef = useRef<HTMLDivElement>()

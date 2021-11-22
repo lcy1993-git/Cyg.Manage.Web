@@ -337,9 +337,11 @@ const AllProject: React.FC = () => {
                 </Tabs>
               </div>
             )}
-            {currentClickTab === '2' && (
+            {(currentClickTab === '2' ||
+              currentClickTab === 'inApproval' ||
+              currentClickTab === 'awaitApproval') && (
               <div className={styles.projectApprovalList}>
-                <Tabs>
+                <Tabs onChange={(value) => setCurrentClickTab(value)}>
                   <TabPane
                     tab="立项待审批"
                     key="awaitApproval"

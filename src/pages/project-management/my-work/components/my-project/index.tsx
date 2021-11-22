@@ -81,7 +81,7 @@ const MyProject: React.FC<MyProjectParams> = (props) => {
   }, [JSON.stringify(tableSelectRowData)])
 
   const titleTypeArray = useMemo(() => {
-    return typeArray.find((item) => item.id === currentClickTabType).children
+    return typeArray?.find((item) => item.id === currentClickTabType).children
   }, [JSON.stringify(typeArray), currentClickTabType])
 
   const searchEvent = () => {
