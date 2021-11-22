@@ -74,7 +74,7 @@ const HistoryMapBase = () => {
   useEffect(() => {
     if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, source: "source", showText, sourceType: "history" })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataSource, showText])
+  }, [JSON.stringify(dataSource), showText])
 
   useEffect(() => {
     if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "designSource", showText, sourceType: "design" })
@@ -281,13 +281,10 @@ const HistoryMapBase = () => {
         <button onClick={() => setState('isDraw', !isDraw)} style={{ color: 'red' }}>
           状态{isDraw ? '绘制' : '查看'}
         </button>
-        <div></div>
-        <span id="historyGridPosition" style={{ color: 'red' }}>
-          经维度：
-        </span>
-        <span id="historyGridScale" style={{ color: 'green' }}>
-          比例：
-        </span>
+        <button onClick={() => setState("dataSource", {
+          lines: dataSource.lines.slice(0,1),
+          equipments: dataSource.equipments.slice(0, 2)
+        })}>testData</button>
       </div>
     </div>
   )

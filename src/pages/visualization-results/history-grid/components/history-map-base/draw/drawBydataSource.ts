@@ -27,8 +27,11 @@ export function drawByDataSource(
 ) {
 
   if (data) {
+    console.log(123);
+
     // 清理缓存
     clear(interActionRef)
+    if(source === "source") interActionRef.source.clear()
 
     // 渲染设备
     if (Array.isArray(data.equipments)) {
