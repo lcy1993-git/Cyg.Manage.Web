@@ -99,5 +99,9 @@ export const useApi = <Result, Error, Params extends any[]>(
     }
   }, [fetchData])
 
-  return { ...state, update: fetchData }
+  return {
+    ...state,
+    update: fetchData,
+    setData: (data: Result) => dispatch({ type: 'FETCH_SUCCESS', payload: data }),
+  }
 }
