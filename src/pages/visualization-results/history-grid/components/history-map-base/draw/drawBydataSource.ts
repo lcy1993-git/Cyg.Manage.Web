@@ -3,7 +3,7 @@ import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import { getStyle } from '../styles'
 import { clear } from '../utils'
-import { DataSource, InterActionRef } from './../typings/index'
+import { DataSource, InterActionRef, SourceType } from './../typings/index'
 
 /**
  * 根据数据源渲染当前点位和线段
@@ -17,29 +17,34 @@ export function drawByDataSource(
     interActionRef,
     source,
     showText,
-    mode
+    sourceType
   }: {
     interActionRef: InterActionRef
     showText: boolean
     source: string,
-    mode: string
+    sourceType: keyof typeof SourceType
   }
 ) {
 
   if (data) {
+    console.log(123);
+
     // 清理缓存
     clear(interActionRef)
+    if(source === "source") interActionRef.source.clear()
 
     // 渲染设备
     if (Array.isArray(data.equipments)) {
       const points = data.equipments.map((p) => {
         const feature = new Feature()
         feature.setGeometry(new Point([p.lng!, p.lat!]))
-        feature.setStyle(getStyle('Point')(mode, p.type || "无类型", p.name, showText))
+        feature.setStyle(getStyle('Point')(sourceType, p.type || "无类型", p.name, showText))
         // feature.setStyle(pointStyle[p.type])
-        Object.keys(p).forEach((key) => {
-          feature.set(key, p[key])
-        })
+        // Object.keys(p).forEach((key) => {
+        //   feature.set(key, p[key])
+        // })
+        feature.setProperties(p)
+        feature.set("sourceType", sourceType)
         return feature
       })
 
@@ -57,11 +62,13 @@ export function drawByDataSource(
           ])
         )
 
-        feature.setStyle(getStyle('LineString')(mode, p.type || "无类型", p.name, showText))
+        feature.setStyle(getStyle('LineString')(sourceType, p.type || "无类型", p.name, showText))
         // feature.setStyle(lineStyle[p.type])
-        Object.keys(p).forEach((key) => {
-          feature.set(key, p[key])
-        })
+        // Object.keys(p).forEach((key) => {
+        //   feature.set(key, p[key])
+        // })
+        feature.setProperties(p)
+        feature.set("sourceType", sourceType)
         return feature
       })
 

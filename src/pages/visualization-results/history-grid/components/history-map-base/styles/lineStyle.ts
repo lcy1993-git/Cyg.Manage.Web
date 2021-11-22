@@ -1,14 +1,14 @@
 import { Fill, Stroke, Style } from 'ol/style'
 import ClassStyle from 'ol/style/Style'
 import Text from 'ol/style/Text'
-import type { ElectricLineType } from '../typings'
+import { ElectricLineType, SourceType } from '../typings'
 
 interface LineOps {
   color?: string
 }
 
 export type GetLineStyle = (
-  mode: string,
+  sourceType: keyof typeof SourceType,
   type: ElectricLineType,
   name: string,
   showText: boolean,
@@ -26,7 +26,7 @@ export type GetLineStyle = (
  */
 
 export const getLineStyle: GetLineStyle = (
-  mode: string,
+  sourceType: keyof typeof SourceType,
   type: ElectricLineType,
   name: string,
   showText: boolean = false,
@@ -34,7 +34,7 @@ export const getLineStyle: GetLineStyle = (
   ops: LineOps = {}
 ) => {
 
-  const fillColor = mode === "preDesign" ? 'rgba(20, 168, 107, 1)' : 'rgba(0, 117, 206, 1)'
+  const fillColor = SourceType[sourceType]
 
   const textObject = {
     无类型: [],
@@ -47,7 +47,7 @@ export const getLineStyle: GetLineStyle = (
       stroke: new Stroke({
         //lineJoin:'bevel',
         lineDash: textObject[type],
-        color: isHight ? 'rgba(249, 149, 52, 1)' : fillColor,
+        color: isHight ? SourceType.highLight : fillColor,
         width: isHight ? 3 : 2,
         ...ops,
       }),
@@ -57,7 +57,6 @@ export const getLineStyle: GetLineStyle = (
   if (showText) {
     // 线路名称样式
     const styleMode = new ClassStyle({
-      // stroke: new Stroke(strokeOpts),
       text: new Text({
         text: name?.length > 10 ? `${name.slice(0, 10)}...` : name,
         textAlign: 'center',
@@ -66,13 +65,9 @@ export const getLineStyle: GetLineStyle = (
         offsetY: -10,
         fill: new Fill({
           //文字填充色
-          color: isHight ? 'rgba(249, 149, 52, 1)' : fillColor,
+          color: isHight ? SourceType.highLight : fillColor,
         }),
-        // stroke: new Stroke({
-        //   //文字边界宽度与颜色
-        //   color: isHight ? 'rgba(249, 149, 52, 1)' : 'rgba(21, 32, 32, 1)',
-        //   width: 2,
-        // }),
+
       }),
     })
 
@@ -80,15 +75,4 @@ export const getLineStyle: GetLineStyle = (
   }
 
   return baseStyle
-  // return [
-  //   new Style({
-  //     stroke: new Stroke({
-  //       //lineJoin:'bevel',
-  //       lineDash: textObject[type],
-  //       color: isHight ? 'rgba(249, 149, 52, 1)' : '#1294d0',
-  //       width: isHight ? 3 : 2,
-  //       ...ops,
-  //     }),
-  //   }),
-  // ]
 }

@@ -14,7 +14,7 @@ import { Vector as VectorSource } from 'ol/source'
 import { useEffect, useRef, useState } from 'react'
 import { useGridMap } from '../../store/mapReducer'
 import { drawByDataSource, drawEnd } from './draw'
-import { onMapLayerTypeChange } from './effects'
+import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import { moveend, pointermove, pointSelectCallback, toggleSelectCallback } from './event'
 import mapClick from './event/mapClick'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
@@ -34,7 +34,7 @@ const HistoryMapBase = () => {
     onProjectLocationClick,
     onCurrentLocationClick,
     showText,
-    importDesignData
+    importDesignData,
   } = state
 
   // 绘制类型
@@ -72,12 +72,12 @@ const HistoryMapBase = () => {
   )
   // 根据数据绘制点位线路
   useEffect(() => {
-    if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, source: "source", showText, mode: "record" })
+    if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, source: "source", showText, sourceType: "history" })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataSource, showText])
+  }, [JSON.stringify(dataSource), showText])
 
   useEffect(() => {
-    if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "designSource", showText, mode })
+    if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "designSource", showText, sourceType: "design" })
       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [importDesignData, showText])
 
@@ -117,10 +117,12 @@ const HistoryMapBase = () => {
     layerRef.streetLayer = streetLayer
     // 添加地域名称图层
     layerRef.annLayer = annLayer
-    // 添加高亮图层
-    layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
+
     // 添加 历史网架图层
     layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
+
+    // 添加高亮图层
+    layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
 
     // 添加 预设计图层
     if(mode === "preDesign") layerRef.designLayer = getVectorLayer(interActionRef.designSource = new VectorSource())
@@ -145,14 +147,17 @@ const HistoryMapBase = () => {
     })
     // 清楚地图控件
     mapRef.map.getControls().clear()
+    // 初始化地图比例尺
+    handlerGeographicSize({mode, viewRef})
   }
 
   // 绑定事件
   function bindEvent() {
-    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) => mapClick(e, { interActionRef, mapRef }))
-    mapRef.map.on('pointermove', (e) => pointermove(e))
+    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) => mapClick(e, { interActionRef, mapRef, setState }))
+    mapRef.map.on('pointermove', (e) => pointermove(e, {mode}))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
+    viewRef.view.on("change:resolution", () => handlerGeographicSize({mode, viewRef}))
   }
 
   // 初始化interaction
@@ -178,7 +183,8 @@ const HistoryMapBase = () => {
       toggleCondition: platformModifierKeyOnly,
       style: (feature) => {
         const geometryType = feature.getGeometry()?.getType()
-        return getStyle(geometryType)(mode, feature.get('type'), feature.get('name'), showText)
+
+        return getStyle(geometryType)(feature.get("sourceType"), feature.get('type') || "无类型", feature.get('name'), showText)
       },
     })
     // 绑定单选及多选回调事件
@@ -275,13 +281,10 @@ const HistoryMapBase = () => {
         <button onClick={() => setState('isDraw', !isDraw)} style={{ color: 'red' }}>
           状态{isDraw ? '绘制' : '查看'}
         </button>
-        <div></div>
-        <span id="historyGridPosition" style={{ color: 'red' }}>
-          经维度：
-        </span>
-        <span id="historyGridScale" style={{ color: 'green' }}>
-          比例：
-        </span>
+        <button onClick={() => setState("dataSource", {
+          lines: dataSource.lines.slice(0,1),
+          equipments: dataSource.equipments.slice(0, 2)
+        })}>testData</button>
       </div>
     </div>
   )

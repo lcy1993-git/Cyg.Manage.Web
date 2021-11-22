@@ -2,7 +2,7 @@ import '@/assets/icon/history-grid-icon.css'
 import { Fill, Stroke } from 'ol/style'
 import ClassStyle from 'ol/style/Style'
 import Text from 'ol/style/Text'
-import type { ElectricPointType } from '../typings'
+import { ElectricPointType, SourceType } from '../typings'
 
 // 普通层
 const whiteCircle = new ClassStyle({
@@ -30,7 +30,7 @@ const hightCircle = new ClassStyle({
     placement: 'point',
     font: 'Normal 26px iconfontHistoryGrid',
     fill: new Fill({
-      color: 'rgba(249, 149, 52, 1)',
+      color: SourceType.highLight,
     }),
   }),
 })
@@ -40,7 +40,7 @@ interface PointOps {
 }
 
 export type GetPointStyle = (
-  mode: string,
+  sourceType: keyof typeof SourceType,
   type: ElectricPointType,
   name: string,
   showText: boolean,
@@ -58,7 +58,7 @@ export type GetPointStyle = (
  */
 
 export const getPointStyle: GetPointStyle = (
-  mode: string,
+  sourceType: keyof typeof SourceType,
   type: ElectricPointType,
   name: string,
   showText: boolean = false,
@@ -66,7 +66,7 @@ export const getPointStyle: GetPointStyle = (
   ops: PointOps = {}
 ): ClassStyle[] => {
 
-  const fillColor = mode === "preDesign" ? 'rgba(20, 168, 107, 1)' : 'rgba(0, 117, 206, 1)'
+  const fillColor = SourceType[sourceType]
 
   const textObjet = {
     无类型: '\ue823',
@@ -106,30 +106,11 @@ export const getPointStyle: GetPointStyle = (
         offsetY: 20,
         fill: new Fill({
           //文字填充色
-          color: isHight ? 'rgba(249, 149, 52, 1)' : fillColor,
+          color: isHight ? SourceType.highLight : fillColor,
         }),
-        // stroke: new Stroke({
-        //   //文字边界宽度与颜色
-        //   color: isHight ? 'rgba(249, 149, 52, 1)' : 'rgba(21, 32, 32, 1)',
-        //   width: 2,
-        // }),
       }),
     })
     baseStyle.push(textStyle)
   }
   return baseStyle
-  // return [
-  //   isHight ? hightCircle : whiteCircle,
-  //   new ClassStyle({
-  //     text: new Text({
-  //       text: textObjet[type],
-  //       placement: 'point',
-  //       font: 'Normal 22px iconfontHistoryGrid',
-  //       fill: new Fill({
-  //         color: ops.fill,
-  //       }),
-  //     }),
-  //   }),
-
-  // ]
 }
