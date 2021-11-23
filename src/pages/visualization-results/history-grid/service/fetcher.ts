@@ -1,5 +1,6 @@
-import { baseUrl } from '@/services/common'
+import { baseUrl, cyRequest } from '@/services/common'
 import request from 'umi-request'
+import { CommentType } from '@/services/visualization-results/side-popup'
 
 const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]) => {
   return request(
@@ -51,15 +52,23 @@ export const getAllGridVersions = (includeDeleted = false) => {
     params: { includeDeleted },
   })
 }
+// 通过id获取历史网架版本
+export const getHistoriesById = (versionId: string) => {
+  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Histories/${versionId}`, {
+    method: 'GET',
+  })
+}
 
 // 删除历史网架版本
 export const DeleteGridVersions = (versionId: string, password: string) => {
-  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Version/{versionId}`, {
-    method: 'DELETE',
-    header: {
-      UserPwd: password,
-    },
-  })
+  return cyRequest<CommentType[]>(() =>
+    request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Version/${versionId}`, {
+      method: 'DELETE',
+      headers: {
+        UserPwd: password,
+      },
+    })
+  )
 }
 
 /** 记录版本 */

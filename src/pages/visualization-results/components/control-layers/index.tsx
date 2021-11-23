@@ -47,8 +47,8 @@ const ListItem = (props: ListProps) => {
   const { name, state, onChange, sign } = props;
   return (
     <div className={classnames(styles.listItem, state ? styles.activeBackground : "")} key={'listItem' + name} onClick={onChange}>
-        <div className={state ? styles.active : null}><img className={styles.img} src={state ? imgResourse[sign].light : imgResourse[sign].dark } /></div>
-        <div className={state ? styles.active : null}><span className={styles.text}>{name}</span></div>
+      <div className={state ? styles.active : null}><img className={styles.img} src={state ? imgResourse[sign].light : imgResourse[sign].dark } /></div>
+      <div className={state ? styles.active : null}><span className={styles.text}>{name}</span></div>
     </div>
   );
 };
