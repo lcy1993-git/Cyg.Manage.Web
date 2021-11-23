@@ -14,6 +14,8 @@ const ConsoleWrapper = () => {
 
   // const { data } = useApi(getRegionData)
 
+  // const { data } = useApi(getRegionData)
+
   return (
     <>
       <FlowLayer left={FL_MARGIN_LEFT} top={FL_MARGIN_LEFT}>
