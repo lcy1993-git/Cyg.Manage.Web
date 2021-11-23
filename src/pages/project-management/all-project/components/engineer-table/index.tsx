@@ -1,50 +1,42 @@
 /* eslint-disable no-nested-ternary */
 // import EmptyTip from '@/components/empty-tip';
+import CyTag from '@/components/cy-tag'
+import ImageIcon from '@/components/image-icon'
 import {
+  againInherit,
   AllProjectStatisticsParams,
   applyKnot,
-  auditKnot,
+  deleteProject,
   getExternalArrangeStep,
   getProjectInfo,
   getProjectTableList,
-  getEngineerInfo,
-  againInherit,
-  deleteProject,
+  modifyExportPowerState,
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { delay } from '@/utils/utils'
-import { useRequest, useSize } from 'ahooks'
-import { Button, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
-import { Spin } from 'antd'
-import { Pagination } from 'antd'
-import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState, Key } from 'react'
-
-import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item'
-import ScrollView from 'react-custom-scrollbars'
-import styles from './index.less'
-import CyTag from '@/components/cy-tag'
-import uuid from 'node-uuid'
-import { Dropdown } from 'antd'
 import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons'
-import { TableContext } from './table-store'
-import EngineerDetailInfo from '../engineer-detail-info'
-import ProjectDetailInfo from '../project-detail-info'
-import ArrangeModal from '../arrange-modal'
-import EditEnigneerModal from '../edit-engineer-modal'
-import EditProjectModal from '../edit-project-modal'
-import CopyProjectModal from '../copy-project-modal'
+import { useRequest, useSize } from 'ahooks'
+import { Dropdown, Menu, message, Modal, Pagination, Popconfirm, Spin, Tooltip } from 'antd'
+import moment from 'moment'
+import uuid from 'node-uuid'
+import { forwardRef, memo, Ref, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import ScrollView from 'react-custom-scrollbars'
 import AddProjectModal from '../add-project-modal'
 import ApprovalProjectModal from '../approval-project-modal'
+import ArrangeModal from '../arrange-modal'
+import AuditKnotModal from '../audit-knot-modal'
+import ColumnsConfigModal from '../columns-config-modal'
+import CopyProjectModal from '../copy-project-modal'
+import EditEnigneerModal from '../edit-engineer-modal'
+import EditProjectModal from '../edit-project-modal'
+import EngineerDetailInfo from '../engineer-detail-info'
 import ExternalArrangeModal from '../external-arrange-modal'
 import ExternalListModal from '../external-list-modal'
-import AuditKnotModal from '../audit-knot-modal'
-import moment from 'moment'
-import { modifyExportPowerState } from '@/services/project-management/all-project'
+import ProjectDetailInfo from '../project-detail-info'
 import ProjectInheritModal from '../project-inherit-modal'
-import ImageIcon from '@/components/image-icon'
-import ColumnsConfigModal from '../columns-config-modal'
-// import VirtualTable from '../virtual-table/VirtualTable';
-// import ParentRow from '../virtual-table/ParentRow';
+import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item'
+import styles from './index.less'
+import { TableContext } from './table-store'
 
 const colorMap = {
   立项: 'green',
@@ -455,6 +447,20 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       },
     },
     {
+      title: '现场数据来源',
+      dataIndex: 'dataSourceTypeText',
+      width: 120,
+      render: (record: any) => {
+        return record.dataSourceType === 0 ? (
+          <ImageIcon width={52} height={18} imgUrl="kc.png" />
+        ) : record.dataSourceType === 1 ? (
+          <ImageIcon width={52} height={18} imgUrl="dwdr.png" />
+        ) : (
+          <ImageIcon width={66} height={18} imgUrl="mkc.png" />
+        )
+      },
+    },
+    {
       title: '项目分类',
       dataIndex: 'categoryText',
       width: 100,
@@ -566,11 +572,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataIndex: 'pileRange',
       width: 120,
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-      width: 120,
-    },
+
     {
       title: '导出坐标权限',
       dataIndex: 'exportCoordinate',
@@ -1080,15 +1082,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     },
     {
       render: (_: unknown, record: any) => {
-        return (
-          <>
-            <Button key="0">新增项目</Button>
-            <Button className="space-x-2" key="1">
-              编辑
-            </Button>
-            <Button key="2">批复文件</Button>
-          </>
-        )
+        return <></>
       },
     },
   ]

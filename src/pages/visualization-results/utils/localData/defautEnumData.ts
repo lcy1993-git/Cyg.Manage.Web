@@ -235,8 +235,8 @@ export default [
     key: 'ProjectDataSourceType',
     value: [
       { value: 0, text: '勘察' },
-      { value: 1, text: '点位导入' },
-      { value: 2, text: '无需现场数据' },
+      { value: 1, text: '导入' },
+      { value: 2, text: '免勘察' },
     ],
   },
   {

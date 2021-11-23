@@ -1,15 +1,15 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
+import DataSelect from '@/components/data-select'
 import UrlSelect from '@/components/url-select'
+import { useGetProjectEnum } from '@/utils/hooks'
+import { useControllableValue } from 'ahooks'
+import { DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd'
+import { cloneDeep } from 'lodash'
 // import DataSelect from '@/components/data-select';
 // import EnumSelect from '@/components/enum-select';
 import moment from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Rule from '../../create-project-form/project-form-rule'
-import { useControllableValue } from 'ahooks'
-import { useGetProjectEnum } from '@/utils/hooks'
-import DataSelect from '@/components/data-select'
-import { cloneDeep } from 'lodash'
 
 interface EditBulkProjectProps {
   visible: boolean
@@ -592,7 +592,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 >
                   <InputNumber
                     disabled
-                    placeholder="“无需现场数据”项目，免设置此条目"
+                    placeholder="“免勘察”项目，免设置此条目"
                     style={{ width: '100%' }}
                     value={disRangeValue}
                   />
@@ -608,7 +608,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 >
                   <InputNumber
                     disabled
-                    placeholder="“点位导入”项目，免设置此条目"
+                    placeholder="“导入”项目，免设置此条目"
                     style={{ width: '100%' }}
                     value={disRangeValue}
                   />
@@ -628,11 +628,11 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                     },
                     () => ({
                       validator(_, value) {
-                        if (value <= 99999 && value > -1) {
+                        if (value <= 999 && value > -1) {
                           return Promise.resolve()
                         }
-                        if (value > 99999) {
-                          return Promise.reject('请填写0~99999以内的整数')
+                        if (value > 999) {
+                          return Promise.reject('请填写0~999以内的整数')
                         }
                         return Promise.resolve()
                       },
@@ -664,7 +664,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   <InputNumber
                     value={pileRangeValue}
                     disabled
-                    placeholder="“无需现场数据”项目，免设置此条目"
+                    placeholder="“免勘察”项目，免设置此条目"
                     style={{ width: '100%' }}
                   />
                 </CyFormItem>
@@ -680,7 +680,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   <InputNumber
                     value={pileRangeValue}
                     disabled
-                    placeholder="“点位导入”项目，免设置此条目"
+                    placeholder="“导入”项目，免设置此条目"
                     style={{ width: '100%' }}
                   />
                 </CyFormItem>
@@ -699,11 +699,11 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                     },
                     () => ({
                       validator(_, value) {
-                        if (value <= 99999 && value > -1) {
+                        if (value <= 999 && value > -1) {
                           return Promise.resolve()
                         }
-                        if (value > 99999) {
-                          return Promise.reject('请填写1~99999以内的整数')
+                        if (value > 999) {
+                          return Promise.reject('请填写0~999以内的整数')
                         }
                         return Promise.resolve()
                       },
