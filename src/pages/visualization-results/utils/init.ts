@@ -1,43 +1,48 @@
-import TileLayer from 'ol/layer/Tile';
-import Group from 'ol/layer/Group';
-import XYZ from 'ol/source/XYZ';
-import View from 'ol/View';
-import sourceWmts from 'ol/source/WMTS';
-import * as extent from 'ol/extent';
-import * as proj from 'ol/proj';
+import Control from 'ol/control/Control'
+import * as extent from 'ol/extent'
+import { default as Group, default as LayerGroup } from 'ol/layer/Group'
+import Layer from 'ol/layer/Layer'
+import TileLayer from 'ol/layer/Tile'
+import * as proj from 'ol/proj'
+import sourceWmts from 'ol/source/WMTS'
+import XYZ from 'ol/source/XYZ'
 import tilegridWmts from 'ol/tilegrid/WMTS'
-import LayerGroup from 'ol/layer/Group';
-import Layer from 'ol/layer/Layer';
-import Control from 'ol/control/Control';
+import View from 'ol/View'
 
 export interface BaseMapProps {
-  layers: Layer[];
-  layerGroups: LayerGroup[];
-  trackLayers: LayerGroup[];
-  controls?: Control[];
-  view: View;
-  setLayers: (arg0: Layer[]) => void;
-  setLayerGroups: (arg0: LayerGroup[]) => void;
-  setTrackLayerGroups: (arg0: LayerGroup[]) => void;
-  setView: (arg0: View) => void;
+  layers: Layer[]
+  layerGroups: LayerGroup[]
+  trackLayers: LayerGroup[]
+  controls?: Control[]
+  view: View
+  setLayers: (arg0: Layer[]) => void
+  setLayerGroups: (arg0: LayerGroup[]) => void
+  setTrackLayerGroups: (arg0: LayerGroup[]) => void
+  setView: (arg0: View) => void
 }
 
 export const initLayers = (resData: any): Layer[] => {
   // 初始化data
 
-  if (resData && resData.code !== 200) return [];
+  if (resData && resData.code !== 200) return []
 
-  let vecUrl = '';
-  let imgUrl = '';
+  let vecUrl = ''
+  let imgUrl = ''
 
   resData.data.forEach((item: any) => {
     if (item.layerType === 1) {
       // vecUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
-      vecUrl = item.url.replace('{s}', '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}');
+      vecUrl = item.url.replace(
+        '{s}',
+        '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}'
+      )
     } else if (item.layerType === 2) {
-      imgUrl = item.url.replace('{s}', '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}');
+      imgUrl = item.url.replace(
+        '{s}',
+        '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}'
+      )
     }
-  });
+  })
 
   // 卫星图
   // imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
@@ -46,27 +51,27 @@ export const initLayers = (resData: any): Layer[] => {
       url: decodeURI(vecUrl),
     }),
     preload: 18,
-  });
-  imgLayer.set('name', 'imgLayer');
+  })
+  imgLayer.set('name', 'imgLayer')
 
   // 街道图
   // vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
-  const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5';
+  const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5'
   //分辨率数组
-  var resolutions = [];
+  var resolutions = []
   //瓦片大小
-  var tileSize = 256;
+  var tileSize = 256
   //坐标系信息
-  var projection = proj.get('EPSG:4326');
+  var projection = proj.get('EPSG:4326')
   //获取当前坐标系的范围
 
-  var projectionExtent = projection.getExtent();
-  var size = extent.getWidth(projectionExtent) / 256;
-  var matrixIds = new Array(18);
+  var projectionExtent = projection.getExtent()
+  var size = extent.getWidth(projectionExtent) / 256
+  var matrixIds = new Array(18)
   //初始化分辨率数组
   for (let i = 0; i < 18; i++) {
-    resolutions[i] = size / Math.pow(2, i);
-    matrixIds[i] = i;
+    resolutions[i] = size / Math.pow(2, i)
+    matrixIds[i] = i
   }
   const vecLayer = new TileLayer({
     source: new sourceWmts({
@@ -79,48 +84,53 @@ export const initLayers = (resData: any): Layer[] => {
       tileGrid: new tilegridWmts({
         origin: extent.getTopLeft(projectionExtent),
         resolutions: resolutions,
-        matrixIds: matrixIds
+        matrixIds: matrixIds,
       }),
-      wrapX: false
-    })
-  });
-  vecLayer.setVisible(false);
-  vecLayer.set('name', 'vecLayer');
+      wrapX: false,
+    }),
+  })
+  vecLayer.setVisible(false)
+  vecLayer.set('name', 'vecLayer')
 
   // ann图
   const annUrl =
-    'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5';
+    'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
   const annLayer = new TileLayer({
     source: new XYZ({
       url: decodeURI(annUrl),
     }),
     preload: 18,
-  });
-  annLayer.set('name', 'annLayer');
+  })
+  annLayer.set('name', 'annLayer')
 
-  return [imgLayer, vecLayer, annLayer];
-};
+  return [imgLayer, vecLayer, annLayer]
+}
 
 export const initOtherLayers = (): LayerGroup[] => {
+  // 预设图层
+  const preDesignLayer = new Group()
+  preDesignLayer.setVisible(false)
+  preDesignLayer.set('name', 'preDesignLayer')
+
   // 勘察图
-  const surveyLayer = new Group();
-  surveyLayer.setOpacity(0.5);
-  surveyLayer.setVisible(false);
-  surveyLayer.set('name', 'surveyLayer');
+  const surveyLayer = new Group()
+  surveyLayer.setOpacity(0.5)
+  surveyLayer.setVisible(false)
+  surveyLayer.set('name', 'surveyLayer')
 
   // 方案图
-  const planLayer = new Group();
-  planLayer.setVisible(false);
-  planLayer.set('name', 'planLayer');
+  const planLayer = new Group()
+  planLayer.setVisible(false)
+  planLayer.set('name', 'planLayer')
 
   // 设计图
-  const designLayer = new Group();
-  designLayer.set('name', 'designLayer');
+  const designLayer = new Group()
+  designLayer.set('name', 'designLayer')
 
   // 拆除图
-  const dismantleLayer = new Group();
-  dismantleLayer.setVisible(false);
-  dismantleLayer.set('name', 'dismantleLayer');
+  const dismantleLayer = new Group()
+  dismantleLayer.setVisible(false)
+  dismantleLayer.set('name', 'dismantleLayer')
 
   // 跟踪图
   // const surveyTrackLayer = new Group();
@@ -128,18 +138,18 @@ export const initOtherLayers = (): LayerGroup[] => {
   // 高亮图层
   // const dismantleLayers = new
 
-  return [surveyLayer, planLayer, designLayer, dismantleLayer];
-};
+  return [preDesignLayer, surveyLayer, planLayer, designLayer, dismantleLayer]
+}
 
 // 轨迹图层
 export const initTrackLayers = (): LayerGroup[] => {
   // 勘察轨迹图层
-  const surveyTrackLayers = new Group();
-  surveyTrackLayers.set('name', 'surveyTrackLayers');
+  const surveyTrackLayers = new Group()
+  surveyTrackLayers.set('name', 'surveyTrackLayers')
 
   // 交底轨迹图层
-  const disclosureTrackLayers = new Group();
-  disclosureTrackLayers.set('name', 'disclosureTrackLayers');
+  const disclosureTrackLayers = new Group()
+  disclosureTrackLayers.set('name', 'disclosureTrackLayers')
 
   return [surveyTrackLayers, disclosureTrackLayers]
 }
@@ -175,11 +185,10 @@ export const initView = new View({
   maxZoom: 25,
   minZoom: 1,
   projection: 'EPSG:3857',
-});
+})
 
 export interface ControlLayearsData {
-  name: string;
-  state: boolean;
-  index: number;
+  name: string
+  state: boolean
+  index: number
 }
-
