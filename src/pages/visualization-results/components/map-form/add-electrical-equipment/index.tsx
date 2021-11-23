@@ -4,7 +4,10 @@ import { useMount } from 'ahooks'
 import { Button, Form, Input, Popconfirm, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
-import { getHistoriesEnums, saveData } from '@/pages/visualization-results/history-grid/service'
+import {
+  getHistoriesEnums,
+  SaveHistoryData,
+} from '@/pages/visualization-results/history-grid/service'
 import _ from 'lodash'
 import {
   ElectricLineData,
@@ -30,9 +33,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   // const [state, setState] = useGridMap()
   const [state] = useGridMap()
   const [position, setPosition] = useState<number[]>([10, 155]) // 鼠标位置
-  // const [isEdit, setIsEdit] = useState<boolean>(false) // 是否编辑状态
   const [visible, setVisible] = useState<boolean>(false) // 是否可见
-  // const [showLength, setShowLength] = useState<boolean>(false) // 是否显示长度
   const [showDetail, setShowDetail] = useState<boolean>(false) // 是否显示详情
   const [type, setType] = useState<'LineString' | 'Point'>('LineString') // 是否显示长度
   const {
@@ -46,6 +47,8 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const [lineType, setLineType] = useState<[]>([])
   const handleDelete = () => {}
   const handleFinish = (values: ElectricPointData | ElectricLineData) => {
+    values.type = Number(values.type)
+    values.voltageLevel = Number(values.voltageLevel)
     values.typeStr = lineType.find((item) => item[0] === values.type)?.[1] ?? '无类型'
     values.voltageLevelStr = KVLevel.find((item) => item[0] === values.voltageLevel)?.[1] ?? ''
     const data = _.cloneDeep(dataSource)
@@ -66,7 +69,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
           return item
         }) ?? []
     }
-    saveData(data)
+    data.toBeDeletedEquipmentIds = []
+    data.toBeDeletedLineIds = []
+    SaveHistoryData(data)
   }
   useMount(() => {
     getEnums()

@@ -26,6 +26,11 @@ export const saveData = (data: any) => {
   return historyGridRequest('NetFramework/Save', { method: 'POST', data })
 }
 
+/** 保存历史网架数据 */
+export const SaveHistoryData = (data: any) => {
+  return historyGridRequest('NetFrameworkHistory/SaveHistory', { method: 'POST', data })
+}
+
 /** 清空网架 */
 export const clearDataById = (id: string) => {
   return historyGridRequest(`NetFramework/${id}`, { method: 'DELETE' })

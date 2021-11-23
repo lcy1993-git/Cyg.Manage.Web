@@ -37,7 +37,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
   const [activeId, setActiveId] = useState<string>('')
   const [show, setShow] = useState<boolean>(true)
   const [list, setList] = useState<HistoryGridVersion[]>([])
-  const { currentData, mode, dispatch } = useHistoryGridContext()
+  const { mode, dispatch, historyGridVersion } = useHistoryGridContext()
   const activeList = () => {
     setActive(!active)
   }
@@ -72,7 +72,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     } else {
       setShow(false)
     }
-  }, [currentData, mode])
+  }, [mode, historyGridVersion, state])
   return (
     <div
       className={styles.versionManagement}
