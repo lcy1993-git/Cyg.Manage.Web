@@ -19,7 +19,13 @@ import mapClick from './event/mapClick'
 import init from './init'
 import { getStyle } from './styles'
 import { InterActionRef, LayerRef, MapRef, SourceRef } from './typings'
-import { checkUserLocation, clear, clearScreen, isValidationData, moveToViewByLocation } from './utils'
+import {
+  checkUserLocation,
+  clear,
+  clearScreen,
+  isValidationData,
+  moveToViewByLocation,
+} from './utils'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
@@ -36,7 +42,7 @@ const HistoryMapBase = () => {
     importDesignData,
     historyLayerVisible,
     moveToByCityLocation,
-    cleanSelected
+    cleanSelected,
   } = state
 
   // 绘制类型
@@ -78,20 +84,32 @@ const HistoryMapBase = () => {
   // 根据历史数据绘制点位线路
   useEffect(() => {
     if (interActionRef.source) {
-      drawByDataSource(dataSource!, { interActionRef, source: "history", showText, sourceType: "history" })
+      drawByDataSource(dataSource!, {
+        interActionRef,
+        source: 'history',
+        showText,
+        sourceType: 'history',
+      })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showText])
   // 根据预设计数据绘制点位线路
   useUpdateEffect(() => {
-    if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "design", showText, sourceType: "design" })
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (importDesignData && mode === 'preDesign')
+      isValidationData(importDesignData, interActionRef) &&
+        drawByDataSource(importDesignData!, {
+          interActionRef,
+          source: 'design',
+          showText,
+          sourceType: 'design',
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showText])
 
   // 当绘制状态改变时
   useUpdateEffect(() => {
     clear(interActionRef)
-    setState("selectedData", [])
+    setState('selectedData', [])
     if (isDraw) {
       mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
       mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
@@ -118,17 +136,22 @@ const HistoryMapBase = () => {
   }, [historyLayerVisible])
 
   // 根据城市选择定位
-  useUpdateEffect(() => moveToViewByLocation(viewRef, moveToByCityLocation.slice(0, 2) as [number, number]), [moveToByCityLocation])
+  useUpdateEffect(
+    () => moveToViewByLocation(viewRef, moveToByCityLocation.slice(0, 2) as [number, number]),
+    [moveToByCityLocation]
+  )
 
   useUpdateEffect(() => clearScreen(interActionRef), [cleanSelected])
 
   // 绑定事件
   function bindEvent() {
-    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) => mapClick(e, { interActionRef, mapRef, setState }))
-    mapRef.map.on('pointermove', (e) => pointermove(e, {mode}))
+    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
+      mapClick(e, { interActionRef, mapRef, setState })
+    )
+    mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
-    viewRef.view.on("change:resolution", () => handlerGeographicSize({mode, viewRef}))
+    viewRef.view.on('change:resolution', () => handlerGeographicSize({ mode, viewRef }))
   }
 
   // 初始化interaction
@@ -155,7 +178,12 @@ const HistoryMapBase = () => {
       style: (feature) => {
         const geometryType = feature.getGeometry()?.getType()
 
-        return getStyle(geometryType)(feature.get("sourceType"), feature.get('typeStr') || "无类型", feature.get('name'), showText)
+        return getStyle(geometryType)(
+          feature.get('sourceType'),
+          feature.get('typeStr') || '无类型',
+          feature.get('name'),
+          showText
+        )
       },
     })
     // 绑定单选及多选回调事件
@@ -214,48 +242,57 @@ const HistoryMapBase = () => {
   return (
     <div className="w-full h-full">
       <div ref={ref} className="w-full h-full"></div>
-      <div className="absolute bottom-0">
-        <button onClick={() => setGeometryType(GeometryType.POINT)}>Point</button>
-        <button style={{ color: 'red' }} onClick={() => setGeometryType(GeometryType.LINE_STRING)}>
-          Line
-        </button>
-        <button style={{ color: 'red' }} onClick={() => setGeometryType('')}>
-          None
-        </button>
-        <button
-          onClick={() =>
-            setState('mapLayerType', mapLayerType === 'SATELLITE' ? 'STREET' : 'SATELLITE')
-          }
-        >
-          {mapLayerType === 'SATELLITE' ? '卫星图' : '街道图'}
-        </button>
-        <button>显示名称</button>
-        <button onClick={() => setState('onCurrentLocationClick', !onCurrentLocationClick)}>
-          定位到当前位置
-        </button>
-        <button onClick={() => setState('onProjectLocationClick', !onProjectLocationClick)}>
-          定位到当前项目
-        </button>
-        <button onClick={() => setState('showText', !showText)}>元素名称开关</button>
-        <button
-          onClick={() => setState("cleanSelected", !cleanSelected)}
-        >
-          清屏
-        </button>
-        <button>导入</button>
-        <button>{mode}</button>
-        {/* <button onClick={() => setSelectType('')}>不选择</button>{' '}
+      {false && (
+        <div className="absolute bottom-0">
+          <button onClick={() => setGeometryType(GeometryType.POINT)}>Point</button>
+          <button
+            style={{ color: 'red' }}
+            onClick={() => setGeometryType(GeometryType.LINE_STRING)}
+          >
+            Line
+          </button>
+          <button style={{ color: 'red' }} onClick={() => setGeometryType('')}>
+            None
+          </button>
+          <button
+            onClick={() =>
+              setState('mapLayerType', mapLayerType === 'SATELLITE' ? 'STREET' : 'SATELLITE')
+            }
+          >
+            {mapLayerType === 'SATELLITE' ? '卫星图' : '街道图'}
+          </button>
+          <button>显示名称</button>
+          <button onClick={() => setState('onCurrentLocationClick', !onCurrentLocationClick)}>
+            定位到当前位置
+          </button>
+          <button onClick={() => setState('onProjectLocationClick', !onProjectLocationClick)}>
+            定位到当前项目
+          </button>
+          <button onClick={() => setState('showText', !showText)}>元素名称开关</button>
+          <button onClick={() => setState('cleanSelected', !cleanSelected)}>清屏</button>
+          <button>导入</button>
+          <button>{mode}</button>
+          {/* <button onClick={() => setSelectType('')}>不选择</button>{' '}
         <button onClick={() => setSelectType('pointSelect')}>不选择</button>{' '} */}
-        {/* <button onClick={() => setSelectType('boxSelect')}>框选</button> */}
-        <button onClick={() => setState('isDraw', !isDraw)} style={{ color: 'red' }}>
-          状态{isDraw ? '绘制' : '查看'}
-        </button>
-        <button onClick={() => setState("dataSource", {
-          lines: dataSource?.lines.slice(0,1) ?? [],
-          equipments: dataSource?.equipments.slice(0, 2) ?? []
-        })}>testData</button>
-        <button onClick={() => setState("historyLayerVisible", !historyLayerVisible)}>历史图层{historyLayerVisible}</button>
-      </div>
+          {/* <button onClick={() => setSelectType('boxSelect')}>框选</button> */}
+          <button onClick={() => setState('isDraw', !isDraw)} style={{ color: 'red' }}>
+            状态{isDraw ? '绘制' : '查看'}
+          </button>
+          <button
+            onClick={() =>
+              setState('dataSource', {
+                lines: dataSource?.lines.slice(0, 1) ?? [],
+                equipments: dataSource?.equipments.slice(0, 2) ?? [],
+              })
+            }
+          >
+            testData
+          </button>
+          <button onClick={() => setState('historyLayerVisible', !historyLayerVisible)}>
+            历史图层{historyLayerVisible}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
