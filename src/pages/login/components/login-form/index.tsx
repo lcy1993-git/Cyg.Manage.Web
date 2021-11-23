@@ -155,25 +155,29 @@ const LoginForm: React.FC<Props> = (props) => {
     if (serverCode === '') {
       // 如果前面没有获取到停服信息,在这里再获取一遍
       try {
-        getServerList().then(async (res) => {
-          if (res) {
-            let val = await run(res.code)
-            if (!val) {
-              await loginButtonClick()
-              return
-            }
-            if ([2, 3].includes(val?.stage) && val?.testerAccountPrefix !== '') {
-              // 停服公告,前缀没有也直接放行
-              const data = form.getFieldsValue()
-              if (!data?.userName?.startsWith(val?.testerAccountPrefix)) {
-                props.stopLogin(val)
+        getServerList()
+          .then(async (res) => {
+            if (res) {
+              let val = await run(res.code)
+              if (!val) {
+                await loginButtonClick()
                 return
               }
+              if ([2, 3].includes(val?.stage) && val?.testerAccountPrefix !== '') {
+                // 停服公告,前缀没有也直接放行
+                const data = form.getFieldsValue()
+                if (!data?.userName?.startsWith(val?.testerAccountPrefix)) {
+                  props.stopLogin(val)
+                  return
+                }
+              }
+              await loginButtonClick(val)
+              return
             }
-            await loginButtonClick(val)
-            return
-          }
-        })
+          })
+          .catch(() => {
+            loginButtonClick()
+          })
       } catch {
         await loginButtonClick()
       }
@@ -223,7 +227,7 @@ const LoginForm: React.FC<Props> = (props) => {
   }
 
   const onKeyDownLogin = (e: any) => {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       login('account')
     }
   }
