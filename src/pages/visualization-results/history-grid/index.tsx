@@ -1,7 +1,6 @@
 import { useReducer } from 'react'
 import { useLocation } from 'umi'
 import HistoryVersionManagement from '../components/history-version-management'
-import HistoryGirdForm from '../components/map-form/add-electrical-equipment'
 import HistoryMapBase from './components/history-map-base'
 import ConsoleWrapper from './ConsoleWrapper'
 import DesignIconWrapper, { DesignLabel, HistoryBtn, Legend } from './DesignIconWrapper'
@@ -20,18 +19,20 @@ const HistoryGrid = () => {
 
   return (
     <div className="relative h-full">
-      <HistoryGridContext.Provider value={{ ...state, dispatch }}>
-        <HistoryMapBase />
-        <DesignTitle />
-        <MapOperator />
-        <ConsoleWrapper />
-        <DesignIconWrapper beforeIcon={<HistoryBtn />}>
-          <DesignLabel />
-          <Legend />
-        </DesignIconWrapper>
-        <HistoryVersionManagement />
-        <HistoryGirdForm />
-      </HistoryGridContext.Provider>
+      <div className="relative" style={{ height: 'calc(100% - 40px)' }}>
+        <HistoryGridContext.Provider value={{ ...state, dispatch }}>
+          <HistoryMapBase />
+          <DesignTitle />
+          <MapOperator />
+          <ConsoleWrapper />
+          <DesignIconWrapper beforeIcon={<HistoryBtn />}>
+            <DesignLabel />
+            <Legend />
+          </DesignIconWrapper>
+          <HistoryVersionManagement />
+          {/* <HistoryGirdForm /> */}
+        </HistoryGridContext.Provider>
+      </div>
       <Footer />
     </div>
   )
