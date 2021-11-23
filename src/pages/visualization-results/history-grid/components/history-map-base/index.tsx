@@ -1,7 +1,7 @@
 import '@/assets/icon/history-grid-icon.css'
 import { useCurrentRef } from '@/utils/hooks'
 import { useMount, useUpdateEffect } from 'ahooks'
-import { Map, MapBrowserEvent, MapEvent, View } from 'ol'
+import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { click as conditionClick, platformModifierKeyOnly } from 'ol/events/condition'
 import BaseEvent from 'ol/events/Event'
 import Geometry from 'ol/geom/Geometry'
@@ -9,7 +9,6 @@ import GeometryType from 'ol/geom/GeometryType'
 import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import { SelectEvent } from 'ol/interaction/Select'
 import 'ol/ol.css'
-import * as proj from 'ol/proj'
 import { Vector as VectorSource } from 'ol/source'
 import { useEffect, useRef, useState } from 'react'
 import { useGridMap } from '../../store/mapReducer'
@@ -17,9 +16,9 @@ import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import { moveend, pointermove, pointSelectCallback, toggleSelectCallback } from './event'
 import mapClick from './event/mapClick'
-import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
+import init from './init'
 import { getStyle } from './styles'
-import { InterActionRef, LayerRef, MapRef } from './typings'
+import { InterActionRef, LayerRef, MapRef, SourceRef } from './typings'
 import { checkUserLocation, clear, clearScreen, isValidationData, moveToViewByLocation } from './utils'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
@@ -53,14 +52,17 @@ const HistoryMapBase = () => {
   // 画图缓存数据
   const interActionRef = useCurrentRef<InterActionRef>({})
 
+  const sourceRef = useCurrentRef<SourceRef>({})
+
   // 挂载地图
   useMount(() => {
-    beforeInit()
-    initLayer()
-    initView()
-    initMap()
+    init({ sourceRef, layerRef, viewRef, mapRef, ref: ref.current! })
+    // initSource()
+    // initLayer()
+    // initView()
+    // initMap()
     bindEvent()
-    initInterAction()
+    // initInterAction()
   })
 
   // 处理geometryType变化
@@ -73,16 +75,18 @@ const HistoryMapBase = () => {
     () => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer),
     [mapLayerType]
   )
-  // 根据数据绘制点位线路
+  // 根据历史数据绘制点位线路
   useEffect(() => {
-    if (interActionRef.source) drawByDataSource(dataSource!, { interActionRef, source: "source", showText, sourceType: "history" })
+    if (interActionRef.source) {
+      drawByDataSource(dataSource!, { interActionRef, source: "history", showText, sourceType: "history" })
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(dataSource), showText])
-
-  useEffect(() => {
-    if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "designSource", showText, sourceType: "design" })
+  }, [showText])
+  // 根据预设计数据绘制点位线路
+  useUpdateEffect(() => {
+    if(importDesignData && mode === "preDesign") isValidationData(importDesignData, interActionRef) && drawByDataSource(importDesignData!, { interActionRef, source: "design", showText, sourceType: "design" })
       // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [importDesignData, showText])
+  }, [showText])
 
   // 当绘制状态改变时
   useUpdateEffect(() => {
@@ -108,59 +112,15 @@ const HistoryMapBase = () => {
   useUpdateEffect(() => checkUserLocation(viewRef), [onCurrentLocationClick])
 
   // 历史图层开关
-  useUpdateEffect(() => layerRef.vectorLayer.setVisible(historyLayerVisible), [historyLayerVisible])
+  useUpdateEffect(() => {
+    layerRef.historyPointLayer.setVisible(historyLayerVisible)
+    layerRef.historyLineLayer.setVisible(historyLayerVisible)
+  }, [historyLayerVisible])
 
   // 根据城市选择定位
   useUpdateEffect(() => moveToViewByLocation(viewRef, moveToByCityLocation.slice(0, 2) as [number, number]), [moveToByCityLocation])
 
   useUpdateEffect(() => clearScreen(interActionRef), [cleanSelected])
-  // before init
-  function beforeInit() {
-    ref.current!.innerHTML = ''
-    interActionRef.source = new VectorSource()
-    interActionRef.hightLightSource = new VectorSource()
-  }
-
-  // 初始化layer
-  function initLayer() {
-    // 添加 卫星图
-    layerRef.vecLayer = vecLayer
-    // 添加街道图层
-    layerRef.streetLayer = streetLayer
-    // 添加地域名称图层
-    layerRef.annLayer = annLayer
-
-    // 添加 历史网架图层
-    layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
-    // 添加高亮图层
-    layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
-
-    // 添加 预设计图层
-    if(mode === "preDesign") layerRef.designLayer = getVectorLayer(interActionRef.designSource = new VectorSource())
-  }
-  // 初始化view
-  function initView() {
-    viewRef.view = new View({
-      center: proj.transform([104.08537388, 30.58850819], 'EPSG:4326', 'EPSG:3857'),
-      zoom: 5,
-      maxZoom: 25,
-      minZoom: 1,
-      projection: 'EPSG:3857',
-    })
-  }
-  // 初始化地图实例
-  function initMap() {
-    mapRef.map = new Map({
-      target: ref.current!,
-      layers: Object.values(layerRef),
-      view: viewRef.view,
-      // controls: defaults({attribution: false})
-    })
-    // 清楚地图控件
-    mapRef.map.getControls().clear()
-    // 初始化地图比例尺
-    handlerGeographicSize({mode, viewRef})
-  }
 
   // 绑定事件
   function bindEvent() {
