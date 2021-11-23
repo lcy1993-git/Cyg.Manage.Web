@@ -27,10 +27,13 @@ export interface ElectricalEquipmentForm {
   level?: number | string
 }
 
-interface Props {}
+interface Props {
+  updateHistoryVersion: () => void
+}
 
 const HistoryGirdForm: React.FC<Props> = (props) => {
   // const [state, setState] = useGridMap()
+  const { updateHistoryVersion } = props
   const [state] = useGridMap()
   const [position, setPosition] = useState<number[]>([10, 155]) // 鼠标位置
   const [visible, setVisible] = useState<boolean>(false) // 是否可见
@@ -45,41 +48,84 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const [form] = Form.useForm()
   const [KVLevel, setKVLevel] = useState<[]>([])
   const [lineType, setLineType] = useState<[]>([])
-  const handleDelete = () => {}
-  const handleFinish = (values: ElectricPointData | ElectricLineData) => {
-    values.type = Number(values.type)
-    values.voltageLevel = Number(values.voltageLevel)
-    values.typeStr = lineType.find((item) => item[0] === values.type)?.[1] ?? '无类型'
-    values.voltageLevelStr = KVLevel.find((item) => item[0] === values.voltageLevel)?.[1] ?? ''
-    const data = _.cloneDeep(dataSource)
-    if (type === 'LineString') {
-      data!.lines =
-        data?.lines.map((item) => {
-          if (item.id === selectedData[0]?.id) {
-            item = Object.assign(item, values)
-          }
-          return item
-        }) ?? []
-    } else {
-      data!.equipments =
-        data?.equipments.map((item) => {
-          if (item.id === selectedData[0]?.id) {
-            item = Object.assign(item, values)
-          }
-          return item
-        }) ?? []
+  const [equipmentsType, setEquipmentsType] = useState<[]>([])
+  const handleDelete = async () => {
+    const data = {
+      lines: [],
+      equipments: [],
     }
-    data.toBeDeletedEquipmentIds = []
-    data.toBeDeletedLineIds = []
-    SaveHistoryData(data)
+    if (type === 'Point') {
+      // @ts-ignore
+      data.toBeDeletedEquipmentIds = selectedData.map((item) => item.id)
+    }
+    if (type === 'LineString') {
+      // @ts-ignore
+      data.toBeDeletedLineIds = selectedData.map((item) => item.id)
+    }
+    await SaveHistoryData(data)
+    updateHistoryVersion()
   }
-  useMount(() => {
-    getEnums()
+  const handleFinish = async (values: ElectricPointData | ElectricLineData) => {
+    const data = _.cloneDeep(dataSource)
+    if (selectedData.length === 1) {
+      values.type = Number(values.type)
+      values.voltageLevel = Number(values.voltageLevel)
+      if (type === 'LineString') {
+        data!.lines =
+          data?.lines.map((item) => {
+            if (item.id === selectedData[0]?.id) {
+              item = Object.assign(item, values)
+            }
+            return item
+          }) ?? []
+      } else {
+        data!.equipments =
+          data?.equipments.map((item) => {
+            if (item.id === selectedData[0]?.id) {
+              item = Object.assign(item, values)
+            }
+            return item
+          }) ?? []
+      }
+    } else if (selectedData.length > 1) {
+      const ids = selectedData.map((item) => item.id)
+      if (type === 'LineString') {
+        data!.lines =
+          data?.lines.map((item) => {
+            if (ids.includes(item.id)) {
+              item = Object.assign(item, values)
+              item.type = Number(values.type)
+              item.voltageLevel = Number(values.voltageLevel)
+            }
+            return item
+          }) ?? []
+      } else {
+        data!.equipments =
+          data?.equipments.map((item) => {
+            if (ids.includes(item.id)) {
+              item = Object.assign(item, values)
+              item.type = Number(values.type)
+              item.voltageLevel = Number(values.voltageLevel)
+            }
+            return item
+          }) ?? []
+      }
+    }
+    // @ts-ignore
+    data.toBeDeletedEquipmentIds = []
+    // @ts-ignore
+    data.toBeDeletedLineIds = []
+    await SaveHistoryData(data)
+    updateHistoryVersion()
+  }
+  useMount(async () => {
+    await getEnums()
   })
   const getEnums = async () => {
     const res = await getHistoriesEnums()
     const KV = res?.content?.find((item: { name: string }) => item.name === 'VoltageLevelType')
-    const LT = res?.content?.find(
+    const LT = res?.content?.find((item: { name: string }) => item.name === 'ElectricalLineType')
+    const ET = res?.content?.find(
       (item: { name: string }) => item.name === 'ElectricalEquipmentType'
     )
     if (KV !== undefined) {
@@ -90,6 +136,10 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       // @ts-ignore
       setLineType(Object.entries(LT.valueDesPairs) ?? [])
     }
+    if (ET !== undefined) {
+      // @ts-ignore
+      setEquipmentsType(Object.entries(ET.valueDesPairs) ?? [])
+    }
   }
   const hideModel = () => {
     setVisible(false)
@@ -98,11 +148,12 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     if (isDraw && selectedData.length === 1) {
       setType(selectedData[0]?.startLng ? 'LineString' : 'Point')
       setVisible(true)
-      form.setFieldsValue(selectedData[0])
-      form.setFieldsValue({ id: selectedData[0]?.id })
+      const val = { ...selectedData[0] }
+      val.type = val.type + ''
+      val.voltageLevel = val.voltageLevel + ''
+      form.setFieldsValue(val)
       setShowDetail(false)
       setPosition([10, 155])
-      // setPosition(state.currentMousePosition)
     } else if (isDraw && selectedData.length > 1) {
       form.setFieldsValue({
         name: '',
@@ -111,7 +162,6 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         level: '',
       })
       setPosition([10, 155])
-      // setIsEdit(false)
     } else if (!isDraw && selectedData.length === 1) {
       setType(selectedData[0]?.startLng ? 'LineString' : 'Point')
       setVisible(true)
@@ -195,13 +245,22 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               </Form.Item>
               <Form.Item name="type" label={'类型'}>
                 <Select>
-                  {lineType.map((item) => {
-                    return (
-                      <Option value={item[0]} key={item[0]}>
-                        {item[1]}
-                      </Option>
-                    )
-                  })}
+                  {type === 'LineString' &&
+                    lineType.map((item) => {
+                      return (
+                        <Option value={item[0]} key={item[0]}>
+                          {item[1]}
+                        </Option>
+                      )
+                    })}
+                  {type === 'Point' &&
+                    equipmentsType.map((item) => {
+                      return (
+                        <Option value={item[0]} key={item[0]}>
+                          {item[1]}
+                        </Option>
+                      )
+                    })}
                 </Select>
               </Form.Item>
               <Form.Item name="voltageLevel" label={'电压等级'}>

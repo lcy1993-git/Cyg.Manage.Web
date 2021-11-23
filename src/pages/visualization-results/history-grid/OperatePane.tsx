@@ -24,13 +24,23 @@ const OperationPane: FC = ({ children }) => {
       {
         text: '保存',
         icon: 'icon-baocun',
-        onClick: () => {},
+        onClick: () => {
+          dispatch({
+            type: 'changeRecordVersion',
+            payload: 'save',
+          })
+        },
       },
       {
         text: '记录版本',
         icon: 'icon-jilubanben',
         visible: (mode: HistoryState['mode']) => mode === 'recordEdit',
-        onClick: () => {},
+        onClick: () => {
+          dispatch({
+            type: 'changeRecordVersion',
+            payload: 'record',
+          })
+        },
       },
       {
         text: '导入',

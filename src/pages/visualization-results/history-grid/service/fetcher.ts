@@ -83,8 +83,8 @@ export const DeleteGridVersions = (versionId: string, password: string) => {
 }
 
 /** 记录版本 */
-export const recordVersion = () => {
-  return historyGridRequest('NetFrameworkHistory/CreateNewVersion')
+export const recordVersionData = (data: { force: boolean; remark: string }) => {
+  return historyGridRequest('NetFrameworkHistory/CreateNewVersion', { method: 'POST', data })
 }
 
 /** 保存历史网架数据 */
