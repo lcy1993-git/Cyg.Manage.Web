@@ -20,7 +20,7 @@ import mapClick from './event/mapClick'
 import { annLayer, getVectorLayer, streetLayer, vecLayer } from './layers'
 import { getStyle } from './styles'
 import { InterActionRef, LayerRef, MapRef } from './typings'
-import { checkUserLocation, clear, isValidationData } from './utils'
+import { checkUserLocation, clear, clearScreen, isValidationData, moveToViewByLocation } from './utils'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
@@ -35,6 +35,9 @@ const HistoryMapBase = () => {
     onCurrentLocationClick,
     showText,
     importDesignData,
+    historyLayerVisible,
+    moveToByCityLocation,
+    cleanSelected
   } = state
 
   // 绘制类型
@@ -103,12 +106,20 @@ const HistoryMapBase = () => {
   // 定位到当前用户位置
   useUpdateEffect(() => checkUserLocation(viewRef), [onCurrentLocationClick])
 
+  // 历史图层开关
+  useUpdateEffect(() => layerRef.vectorLayer.setVisible(historyLayerVisible), [historyLayerVisible])
+
+  // 根据城市选择定位
+  useUpdateEffect(() => moveToViewByLocation(viewRef, moveToByCityLocation.slice(0, 2) as [number, number]), [moveToByCityLocation])
+
+  useUpdateEffect(() => clearScreen(interActionRef), [cleanSelected])
   // before init
   function beforeInit() {
     ref.current!.innerHTML = ''
     interActionRef.source = new VectorSource()
     interActionRef.hightLightSource = new VectorSource()
   }
+
   // 初始化layer
   function initLayer() {
     // 添加 卫星图
@@ -120,7 +131,6 @@ const HistoryMapBase = () => {
 
     // 添加 历史网架图层
     layerRef.vectorLayer = getVectorLayer(interActionRef.source!)
-
     // 添加高亮图层
     layerRef.hightLayer = getVectorLayer(interActionRef.hightLightSource!)
 
@@ -184,7 +194,7 @@ const HistoryMapBase = () => {
       style: (feature) => {
         const geometryType = feature.getGeometry()?.getType()
 
-        return getStyle(geometryType)(feature.get("sourceType"), feature.get('type') || "无类型", feature.get('name'), showText)
+        return getStyle(geometryType)(feature.get("sourceType"), feature.get('typeStr') || "无类型", feature.get('name'), showText)
       },
     })
     // 绑定单选及多选回调事件
@@ -267,9 +277,7 @@ const HistoryMapBase = () => {
         </button>
         <button onClick={() => setState('showText', !showText)}>元素名称开关</button>
         <button
-          onClick={() => {
-            interActionRef.source?.clear()
-          }}
+          onClick={() => setState("cleanSelected", !cleanSelected)}
         >
           清屏
         </button>
@@ -282,9 +290,10 @@ const HistoryMapBase = () => {
           状态{isDraw ? '绘制' : '查看'}
         </button>
         <button onClick={() => setState("dataSource", {
-          lines: dataSource.lines.slice(0,1),
-          equipments: dataSource.equipments.slice(0, 2)
+          lines: dataSource?.lines.slice(0,1) ?? [],
+          equipments: dataSource?.equipments.slice(0, 2) ?? []
         })}>testData</button>
+        <button onClick={() => setState("historyLayerVisible", !historyLayerVisible)}>历史图层{historyLayerVisible}</button>
       </div>
     </div>
   )

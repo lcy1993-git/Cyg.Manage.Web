@@ -1,6 +1,5 @@
 import { baseUrl, cyRequest } from '@/services/common'
 import request from 'umi-request'
-import { head } from 'lodash'
 import { CommentType } from '@/services/visualization-results/side-popup'
 
 const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]) => {
@@ -13,7 +12,9 @@ const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]
 /* ----------------------- 地区 ----------------------- */
 
 /** 获取地区数据 */
-export const getRegionData = () => historyGridRequest('Region/Query')
+export const getRegionData = () => {
+  return historyGridRequest('Region/Query', { method: 'POST', data: { topLevel: 2 } })
+}
 
 /* ----------------------- 网架 ----------------------- */
 

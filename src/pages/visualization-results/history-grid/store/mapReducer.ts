@@ -28,7 +28,7 @@ export const initGridMapState = {
   selectedData: [], //被选中的元素
   currentMousePosition: [0, 0], // 当前操作鼠标位置
   cleanSelected: false, // 清屏(操作完成后)
-  moveToByCityLocation: [0, 0, false], // 当城市被点击时  flag用于标识是否被点击
+  moveToByCityLocation: [0, 0, false] as const, // 当城市被点击时  flag用于标识是否被点击
   showText: true, // 是否显示元素名称
   historyLayerVisible: true, // 历史网架开关
   // event

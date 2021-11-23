@@ -1,8 +1,8 @@
+import { HistoryGridVersion } from '@/pages/visualization-results/components/history-version-management'
 import { createContext, Reducer, useContext } from 'react'
-import { Location } from 'umi'
 import { CityWithProvince } from '../components/city-picker/type'
-import { GridMapGlobalState, initGridMapState, mapReducer } from './mapReducer'
-import {HistoryGridVersion} from "@/pages/visualization-results/components/history-version-management";
+import init, { InitParams } from './initialize'
+import { GridMapGlobalState, mapReducer } from './mapReducer'
 
 // ! 使用
 // 子组件中调用 useHistoryGridContext hook
@@ -20,7 +20,7 @@ import {HistoryGridVersion} from "@/pages/visualization-results/components/histo
 // 3. 更新 historyGridReducer 函数，增加 switch 逻辑
 
 /** state */
-type ReducerState = {
+export type ReducerState = {
   /** record 历史网架, recordEdit 历史网架绘制, preDesign 预设计, preDesigning 预设计中 */
   mode: 'record' | 'recordEdit' | 'preDesign' | 'preDesigning'
   /** 当前定位的城市 */
@@ -28,13 +28,13 @@ type ReducerState = {
   /** 触发定位 */
   locate?: boolean
   gridMapState: GridMapGlobalState
-
+  /** 预设计项目相关数据 */
+  preDesignItemData?: any
   /** 当前网架数据 */
-  currentData?: {
-    title?: string
-  }
+  currentGridData?: any
   /** 历史版本网架数据 */
-  historyGridVersion:HistoryGridVersion
+  historyGridVersion: HistoryGridVersion
+
   /** UI 状态 */
   UIStatus: {
     /** 是否显示线路和电气设备名称 */
@@ -58,8 +58,10 @@ type ComplexActions =
   | 'setCity'
   | 'changeUIStatus'
   | 'changeGridMap'
-  | 'changeCurrentData'
   | 'changeHistoryGirdVersion'
+  | 'changePreDesignItemData'
+  | 'changeCurrentGridData'
+
 type Actions = SimpleActions | ComplexActions
 
 type ComplexActionReflectPayload = {
@@ -68,8 +70,9 @@ type ComplexActionReflectPayload = {
   setCity: ReducerState['city']
   changeGridMap: [any, any]
   changeUIStatus: ReducerState['UIStatus']
-  changeCurrentData: ReducerState['currentData']
+  changePreDesignItemData: ReducerState['preDesignItemData']
   changeHistoryGirdVersion: ReducerState['historyGridVersion']
+  changeCurrentGridData: ReducerState['currentGridData']
 }
 
 type ReducerActionWithPayload = { type: Actions; payload: any }
@@ -103,36 +106,15 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
       return init(payload)
     case 'changeGridMap':
       return { ...state, gridMapState: { ...mapReducer(state.gridMapState, payload) } }
-    case 'changeCurrentData':
-      return { ...state, currentData: payload }
+    case 'changePreDesignItemData':
+      return { ...state, preDesignItemData: payload }
+    case 'changeCurrentGridData':
+      return { ...state, currentGridData: payload }
     case 'changeHistoryGirdVersion':
       return { ...state, historyGridVersion: payload }
     default:
       throw new Error('action type does not exist')
   }
-}
-
-type InitParams = { location: Location<unknown> }
-
-/** 惰性初始化 */
-export const init = ({ location }: InitParams) => {
-  const { pathname } = location
-  const mode = pathname.includes('history-grid') ? 'record' : 'preDesign'
-
-  const initialState: ReducerState = {
-    mode,
-    gridMapState: initGridMapState as any,
-    historyGridVersion:{} as HistoryGridVersion,
-    UIStatus: {
-      showTitle: true,
-      showHistoryLayer: true,
-      currentLocation: false,
-      currentProject: false,
-      mapType: 'street',
-    },
-  }
-
-  return initialState
 }
 
 type DispatchParam<T extends ReducerAction> = T extends ReducerActionFn
@@ -147,11 +129,11 @@ type DispatchParam<T extends ReducerAction> = T extends ReducerActionFn
     : ReducerActionWithPayload
   : ReducerActionWithPayload
 
-export type HistoryGridContextType = ReducerState & {
-  dispatch: <T extends ReducerAction>(action: DispatchParam<T>) => void
-}
 export type HistoryState = ReducerState
+export type HistoryDispatch = <T extends ReducerAction>(action: DispatchParam<T>) => void
 
-export const HistoryGridContext = createContext<HistoryGridContextType | null>(null)
-export const useHistoryGridContext = () =>
-  useContext(HistoryGridContext) as NonNullable<HistoryGridContextType>
+export type HistoryGridContextType = ReducerState & { dispatch: HistoryDispatch }
+export const HistoryGridContext = createContext<HistoryGridContextType>(
+  {} as HistoryGridContextType
+)
+export const useHistoryGridContext = () => useContext(HistoryGridContext)

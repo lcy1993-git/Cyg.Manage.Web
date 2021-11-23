@@ -4,12 +4,12 @@ import { useHistoryGridContext } from './store'
 
 /** 预设计标题 */
 const DesignTitle = () => {
-  const { mode, currentData } = useHistoryGridContext()
+  const { mode, preDesignItemData } = useHistoryGridContext()
 
   return mode === 'preDesign' || mode === 'preDesigning' ? (
     <FlowLayer className="text-white left-1/2 top-0 transform -translate-x-1/2">
       <div className={`${styles.designTitle} inline-block relative px-6 py-2`}>
-        <span className="relative">预设计_{currentData?.title}</span>
+        <span className="relative">预设计_{preDesignItemData?.name}</span>
       </div>
     </FlowLayer>
   ) : null

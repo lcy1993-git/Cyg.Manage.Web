@@ -21,6 +21,7 @@ export const clear = (interActionRef: InterActionRef) => {
 export const clearScreen = (interActionRef: InterActionRef) => {
   clear(interActionRef)
   interActionRef.source!.clear()
+  interActionRef?.designSource.clear()
 }
 
 // 获取元素类型
@@ -33,7 +34,7 @@ export function addHightStyle(fs: Feature<Geometry>[], showText) {
   return fs.map((f) => {
     const sourceType = f.get("sourceType")
     const geometryType = getGeometryType(f)
-    f.setStyle(getStyle(geometryType)(sourceType, f.get('type') || "无类型", f.get('name'), showText, true))
+    f.setStyle(getStyle(geometryType)(sourceType, f.get('typeStr') || "无类型", f.get('name'), showText, true))
     return f
   })
 }
@@ -58,15 +59,24 @@ export const checkUserLocation = (viewRef: ViewRef) => {
         if (res?.rgc?.status === 'success') {
           const lat = parseFloat(res?.rgc?.result?.location?.lat)
           const lng = parseFloat(res?.rgc?.result?.location?.lng)
-          if (!isNaN(lat) && !isNaN(lng)) {
-            viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
-          } else {
-            message.error('获取的位置信息无效，无法定位')
-          }
+          moveToViewByLocation(viewRef, [lat, lng])
+          // if (!isNaN(lat) && !isNaN(lng)) {
+          //   viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+          // } else {
+          //   message.error('获取的位置信息无效，无法定位')
+          // }
         }
       }
     }
   )
+}
+
+export function moveToViewByLocation(viewRef: ViewRef, [lng, lat]: [number, number]) {
+  if (!isNaN(lat) && !isNaN(lng)) {
+    viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+  } else {
+    message.error('获取的位置信息有误，无法定位')
+  }
 }
 
 export function getFillColorByMode (mode: string) {
