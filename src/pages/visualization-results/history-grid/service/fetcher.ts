@@ -58,6 +58,12 @@ export const getHistoriesById = (versionId: string) => {
     method: 'GET',
   })
 }
+// 查询枚举
+export const getHistoriesEnums = () => {
+  return request(`${baseUrl.netFrameworkHistory}/System/Enums`, {
+    method: 'GET',
+  })
+}
 
 // 删除历史网架版本
 export const DeleteGridVersions = (versionId: string, password: string) => {

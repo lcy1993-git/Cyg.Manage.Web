@@ -57,7 +57,10 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     })
     setActiveId(val.id)
     const res = await getHistoriesById(val.id)
-    setState('dataSource', res?.content)
+    const data = res?.content
+    data.id = val.id
+    setState('dataSource', data)
+    setState('selectedData', [])
   }
   const onVersionClose = async () => {
     setShowVersion(false)
