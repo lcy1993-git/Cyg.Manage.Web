@@ -87,6 +87,7 @@ const HistoryMapBase = () => {
   // 当绘制状态改变时
   useUpdateEffect(() => {
     clear(interActionRef)
+    setState("selectedData", [])
     if (isDraw) {
       mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
       mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
