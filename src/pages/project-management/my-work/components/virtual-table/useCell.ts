@@ -102,10 +102,7 @@ function computeCellWrapStyle<T extends Record<string, any>>(
     fixed,
     columns,
     columnIndex,
-  }: Pick<
-    CellProps<T>,
-    'fixed' | 'columns' | 'columnIndex' | 'width' | 'height'
-  >
+  }: Pick<CellProps<T>, 'fixed' | 'columns' | 'columnIndex' | 'width' | 'height'>
 ) {
   const defaultStyle = { ...style, width, height, lineHeight: `${height}px` }
 
@@ -139,12 +136,12 @@ function computeCellWrapClass<T extends Record<string, any>>(
 
   if (fixed === 'left' || fixed === 'right') {
     let lastFixedLeftIndex =
-      columns.length -
-      1 -
-      [...columns].reverse().findIndex((c) => c.fixed === 'left')
+      columns.length - 1 - [...columns].reverse().findIndex((c) => c.fixed === 'left')
 
-    const stickyClass = ` sticky${
-      columnIndex === lastFixedLeftIndex ? ' stick-left-last' : ''
+    const firstRightIndex = [...columns].findIndex((c) => c.fixed === 'right')
+
+    const stickyClass = ` sticky${columnIndex === lastFixedLeftIndex ? ' stick-left-last' : ''} ${
+      columnIndex === firstRightIndex ? ' stick-right-first' : ''
     }`
 
     className += stickyClass
@@ -170,10 +167,7 @@ function computeStickyOffset(
   const isStickyLeft = fixed === 'left'
 
   const offset = columns
-    .slice(
-      isStickyLeft ? 0 : columnIndex + 1,
-      isStickyLeft ? columnIndex : undefined
-    )
+    .slice(isStickyLeft ? 0 : columnIndex + 1, isStickyLeft ? columnIndex : undefined)
     .reduce((s, c) => (s += c.width!), 0)
 
   return `${offset}px`

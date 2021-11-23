@@ -24,6 +24,7 @@ const VTRow = memo(
       rowHeight,
       tableHeight,
       tableWidth,
+      maxRowWidth,
       ...rest
     },
     isScrolling,
@@ -37,14 +38,15 @@ const VTRow = memo(
     const needScroll = rawData.length * rowHeight > tableHeight
     // 可用宽度
     const usefulWidth = tableWidth - (needScroll ? SCROLL_BAR_WIDTH : 0)
-
+    // 是否超出容易宽度
+    const isXScroll = usefulWidth < maxRowWidth
     // 分配宽度
     const widthBuckets = allocateWidth(usefulWidth, columns.length)
 
     const _columns = columns.map((c, index) => ({
       ...c,
       // 分配宽度
-      width: widthBuckets[index],
+      width: !isXScroll ? widthBuckets[index] : c.width,
     }))
 
     const renderParams = {
@@ -54,6 +56,7 @@ const VTRow = memo(
       tableHeight,
       tableWidth,
       rowHeight,
+      maxRowWidth,
       originColumns: _columns,
       isScrolling: !!isScrolling,
       selectedRowKeys: selectedKeys,
