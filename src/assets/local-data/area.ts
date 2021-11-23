@@ -117,112 +117,112 @@ export default [
     ],
   },
   {
-    id: "110000",
-    text: "北京市",
+    id: '110000',
+    text: '北京市',
     children: [
-        {
-            id: "110100",
-            text: "北京市",
-            children: [
-                {
-                    id: "110101",
-                    text: "东城区",
-                    children: null
-                },
-                {
-                    id: "110106",
-                    text: "丰台区",
-                    children: null
-                },
-                {
-                    id: "110230",
-                    text: "其它区",
-                    children: null
-                },
-                {
-                    id: "110115",
-                    text: "大兴区",
-                    children: null
-                },
-                {
-                    id: "110104",
-                    text: "宣武区",
-                    children: null
-                },
-                {
-                    id: "110228",
-                    text: "密云县",
-                    children: null
-                },
-                {
-                    id: "110103",
-                    text: "崇文区",
-                    children: null
-                },
-                {
-                    id: "110117",
-                    text: "平谷区",
-                    children: null
-                },
-                {
-                    id: "110229",
-                    text: "延庆县",
-                    children: null
-                },
-                {
-                    id: "110116",
-                    text: "怀柔区",
-                    children: null
-                },
-                {
-                    id: "110111",
-                    text: "房山区",
-                    children: null
-                },
-                {
-                    id: "110114",
-                    text: "昌平区",
-                    children: null
-                },
-                {
-                    id: "110105",
-                    text: "朝阳区",
-                    children: null
-                },
-                {
-                    id: "110108",
-                    text: "海淀区",
-                    children: null
-                },
-                {
-                    id: "110107",
-                    text: "石景山区",
-                    children: null
-                },
-                {
-                    id: "110102",
-                    text: "西城区",
-                    children: null
-                },
-                {
-                    id: "110112",
-                    text: "通州区",
-                    children: null
-                },
-                {
-                    id: "110109",
-                    text: "门头沟区",
-                    children: null
-                },
-                {
-                    id: "110113",
-                    text: "顺义区",
-                    children: null
-                }
-            ]
-        }
-    ]
-},
+      {
+        id: '110100',
+        text: '北京市',
+        children: [
+          {
+            id: '110101',
+            text: '东城区',
+            children: null,
+          },
+          {
+            id: '110106',
+            text: '丰台区',
+            children: null,
+          },
+          {
+            id: '110230',
+            text: '其它区',
+            children: null,
+          },
+          {
+            id: '110115',
+            text: '大兴区',
+            children: null,
+          },
+          {
+            id: '110104',
+            text: '宣武区',
+            children: null,
+          },
+          {
+            id: '110228',
+            text: '密云县',
+            children: null,
+          },
+          {
+            id: '110103',
+            text: '崇文区',
+            children: null,
+          },
+          {
+            id: '110117',
+            text: '平谷区',
+            children: null,
+          },
+          {
+            id: '110229',
+            text: '延庆县',
+            children: null,
+          },
+          {
+            id: '110116',
+            text: '怀柔区',
+            children: null,
+          },
+          {
+            id: '110111',
+            text: '房山区',
+            children: null,
+          },
+          {
+            id: '110114',
+            text: '昌平区',
+            children: null,
+          },
+          {
+            id: '110105',
+            text: '朝阳区',
+            children: null,
+          },
+          {
+            id: '110108',
+            text: '海淀区',
+            children: null,
+          },
+          {
+            id: '110107',
+            text: '石景山区',
+            children: null,
+          },
+          {
+            id: '110102',
+            text: '西城区',
+            children: null,
+          },
+          {
+            id: '110112',
+            text: '通州区',
+            children: null,
+          },
+          {
+            id: '110109',
+            text: '门头沟区',
+            children: null,
+          },
+          {
+            id: '110113',
+            text: '顺义区',
+            children: null,
+          },
+        ],
+      },
+    ],
+  },
   {
     id: '530000',
     text: '云南省',
@@ -7882,6 +7882,11 @@ export default [
     id: '650000',
     text: '新疆维吾尔自治区',
     children: [
+      {
+        id: '659005',
+        text: '北屯市',
+        children: null
+      },
       {
         id: '650100',
         text: '乌鲁木齐市',
