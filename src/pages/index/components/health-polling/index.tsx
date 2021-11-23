@@ -48,9 +48,6 @@ const HealthPolling: React.FC = () => {
               bottom: 40,
               placement: 'bottomRight',
               duration: null,
-              onClick: () => {
-                console.log('Notification Clicked!')
-              },
             })
           }
           if (val.stage === 3) {
@@ -73,7 +70,7 @@ const HealthPolling: React.FC = () => {
     if (requestFlag) {
       await run()
     }
-  }, 3000)
+  }, 5000)
   return <div></div>
 }
 

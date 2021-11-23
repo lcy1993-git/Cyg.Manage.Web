@@ -23,7 +23,7 @@ export type GemotType = 'Point' | 'LineString'
 export interface ElectricLineData {
   id: string
   name: string
-  type: ElectricLineType
+  type: ElectricLineType | number
   typeStr: ElectricLineType
   startLng?: number
   startLat?: number
@@ -39,7 +39,7 @@ export interface ElectricLineData {
 export interface ElectricPointData {
   id: string
   name: string
-  type: ElectricPointType
+  type: ElectricPointType | number
   typeStr: ElectricPointType
   lng?: number
   lat?: number
@@ -49,6 +49,7 @@ export interface ElectricPointData {
 }
 
 export type DataSource = {
+  id?: string
   equipments: ElectricPointData[]
   lines: ElectricLineData[]
 }

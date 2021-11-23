@@ -1,7 +1,6 @@
 import { useReducer } from 'react'
 import { useLocation } from 'umi'
 import HistoryVersionManagement from '../components/history-version-management'
-import HistoryGirdForm from '../components/map-form/add-electrical-equipment'
 import HistoryMapBase from './components/history-map-base'
 import ConsoleWrapper from './ConsoleWrapper'
 import DesignIconWrapper, { DesignLabel, HistoryBtn, Legend } from './DesignIconWrapper'
@@ -30,7 +29,6 @@ const HistoryGrid = () => {
           <Legend />
         </DesignIconWrapper>
         <HistoryVersionManagement />
-        <HistoryGirdForm />
       </HistoryGridContext.Provider>
       <Footer />
     </div>

@@ -28,6 +28,11 @@ export const saveData = (data: any) => {
   return historyGridRequest('NetFramework/Save', { method: 'POST', data })
 }
 
+/** 保存历史网架数据 */
+export const SaveHistoryData = (data: any) => {
+  return historyGridRequest('NetFrameworkHistory/SaveHistory', { method: 'POST', data })
+}
+
 /** 清空网架 */
 export const clearDataById = (id: string) => {
   return historyGridRequest(`NetFramework/${id}`, { method: 'DELETE' })
@@ -60,6 +65,12 @@ export const getHistoriesById = (versionId: string) => {
     method: 'GET',
   })
 }
+// 查询枚举
+export const getHistoriesEnums = () => {
+  return request(`${baseUrl.netFrameworkHistory}/System/Enums`, {
+    method: 'GET',
+  })
+}
 
 // 删除历史网架版本
 export const DeleteGridVersions = (versionId: string, password: string) => {
@@ -74,8 +85,8 @@ export const DeleteGridVersions = (versionId: string, password: string) => {
 }
 
 /** 记录版本 */
-export const recordVersion = () => {
-  return historyGridRequest('NetFrameworkHistory/CreateNewVersion')
+export const recordVersionData = (data: { force: boolean; remark: string }) => {
+  return historyGridRequest('NetFrameworkHistory/CreateNewVersion', { method: 'POST', data })
 }
 
 /** 保存历史网架数据 */
