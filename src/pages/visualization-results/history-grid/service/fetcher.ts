@@ -1,6 +1,6 @@
 import { baseUrl, cyRequest } from '@/services/common'
-import request from 'umi-request'
 import { CommentType } from '@/services/visualization-results/side-popup'
+import request from 'umi-request'
 
 const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]) => {
   return request(
@@ -19,7 +19,9 @@ export const getRegionData = () => {
 /* ----------------------- 网架 ----------------------- */
 
 /** 根据项目获取网架数据 */
-export const getDataByProjectId = (id: string) => historyGridRequest(`NetFramework/project/${id}`)
+export const getDataByProjectId = (data: any) => {
+  return historyGridRequest('NetFramework/projects', { method: 'POST', data })
+}
 
 /** 保存网架数据 */
 export const saveData = (data: any) => {
