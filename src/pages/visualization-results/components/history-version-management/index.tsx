@@ -4,7 +4,7 @@ import styles from './index.less'
 import pickUp from '@/assets/icon-image/pack-up.png'
 import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
 import { Moment } from 'moment/moment'
-import {  getHistoriesById } from '../../history-grid/service'
+import { getHistoriesById } from '../../history-grid/service'
 import { useGridMap } from '@/pages/visualization-results/history-grid/store/mapReducer'
 import GridVersionManagement from '@/pages/visualization-results/history-grid/components/grid-version-management'
 import HistoryGirdForm from '@/pages/visualization-results/components/map-form/add-electrical-equipment'
@@ -30,12 +30,12 @@ interface Props {
 
 const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
   const { height = '45vh' } = props
-  const [state, setState] = useGridMap()
+  const [state] = useGridMap()
   const [active, setActive] = useState<boolean>(true)
   const [showVersion, setShowVersion] = useState<boolean>(false)
   const [activeId, setActiveId] = useState<string>('')
   const [show, setShow] = useState<boolean>(true)
-  const { mode, dispatch,allHistoryGridData } = useHistoryGridContext()
+  const { mode, dispatch, allHistoryGridData, historyDataSource } = useHistoryGridContext()
   const activeList = () => {
     setActive(!active)
   }
@@ -63,12 +63,11 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     } else {
       setShow(false)
     }
-    if (allHistoryGridData?.length !== 0){
-      const isTemplate = allHistoryGridData?.find(item=> item.isTemplate)
-      console.log(isTemplate)
+    if (allHistoryGridData?.length !== 0) {
+      const isTemplate = allHistoryGridData?.find((item) => item.isTemplate)
       isTemplate && onItemClick(isTemplate)
     }
-  }, [mode, state,allHistoryGridData])
+  }, [mode, state, allHistoryGridData])
   return (
     <div>
       <div
