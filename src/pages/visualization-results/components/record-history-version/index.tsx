@@ -27,7 +27,8 @@ interface Props {
 
 const RecordHistoryVersion: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
-  const { recordVersion, dispatch } = useHistoryGridContext()
+  const { UIStatus, dispatch } = useHistoryGridContext()
+  const { recordVersion } = UIStatus
   const [state] = useGridMap()
   const [remark, setRemark] = useState<string>('')
   const handleOk = async () => {
@@ -43,9 +44,11 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
     handleCancel()
   }
   const handleCancel = () => {
+    const data = _.cloneDeep(UIStatus)
+    data.recordVersion = 'hide'
     dispatch({
-      type: 'changeRecordVersion',
-      payload: 'hide',
+      type: 'changeUIStatus',
+      payload: data,
     })
   }
   const remarkChange = (e: ChangeEventHandler<HTMLTextAreaElement>) => {
@@ -53,16 +56,15 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
   }
   const saveVersion = async () => {
     const data = _.cloneDeep(state.dataSource)
-    data.toBeDeletedEquipmentIds = []
-    data.toBeDeletedLineIds = []
     await SaveHistoryData(data)
     message.success('保存成功')
+    setRemark('')
     handleCancel()
     updateHistoryVersion()
   }
-  useEffect(() => {
+  useEffect(async () => {
     if (recordVersion === 'save') {
-      saveVersion()
+      await saveVersion()
     }
   }, [recordVersion])
   return (

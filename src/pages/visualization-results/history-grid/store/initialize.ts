@@ -24,7 +24,7 @@ const initialize = ({ location }: InitParams) => {
       importModalVisible: false,
       drawing: false,
       mapType: 'street',
-      recordVersion: 'record',
+      recordVersion: 'hide',
     },
   }
 
