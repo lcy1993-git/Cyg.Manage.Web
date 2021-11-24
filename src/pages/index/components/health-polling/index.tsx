@@ -47,9 +47,6 @@ const HealthPolling: React.FC = () => {
               bottom: 40,
               placement: 'bottomRight',
               duration: null,
-              onClick: () => {
-                console.log('Notification Clicked!')
-              },
             })
           }
           if (val.stage === 3) {

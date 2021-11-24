@@ -101,9 +101,9 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
 type KeyType =
   | React.Key[]
   | {
-      checked: React.Key[]
-      halfChecked: React.Key[]
-    }
+  checked: React.Key[]
+  halfChecked: React.Key[]
+}
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 项目详情
@@ -128,7 +128,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 勘察轨迹
   // const [surveyModalVisible, setSurveyModalVisible] = useState(false)
   // const [surveyModalData, setSurveyModalData] = useState(null)
-
   // Tree State
   const [selectArrayStuck, setSelectArrayStuck] = useState<string[]>([])
   const [selectedKeys, setSelectedKeys] = useState<string[]>([])
@@ -170,7 +169,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     if (isFirstRequest) {
       if (buttonActive === 2) {
         // 初次请求初始化默认省级状态
-
         deepKeyArray(treeData, false, 2, selectArray)
 
         setSelectedKeys(selectArray)
@@ -206,7 +204,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   // const [startDateValue, setStartDateValue] = useState<Moment>(undefined);
   // const [endDateValue, setEndDateValue] = useState<Moment>(undefined);
-
   const [dateRange, setDateRange] = useState<[Moment, Moment]>([undefined, undefined])
 
   // 判断开始时间不能大于结束时间

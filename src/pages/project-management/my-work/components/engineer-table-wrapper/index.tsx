@@ -49,6 +49,7 @@ import React, {
 import { useMyWorkStore } from '../../context'
 import EngineerTable from '../engineer-table'
 import styles from './index.less'
+import { history } from 'umi'
 
 const { Search } = Input
 
@@ -149,6 +150,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
 
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
+
+  // 预设计
+  const { setPreDesignItem } = useLayoutStore()
 
   const {
     allProjectSearchParams,
@@ -325,6 +329,16 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             项目继承
           </Menu.Item>
         )}
+        {
+          <Menu.Item
+            onClick={() => {
+              setPreDesignItem(tableItemData)
+              history.push('/visualization-results/grid-pre-design')
+            }}
+          >
+            预设计
+          </Menu.Item>
+        }
       </Menu>
     )
   }

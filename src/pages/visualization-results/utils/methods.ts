@@ -1,14 +1,17 @@
+
 import LayerGroup from 'ol/layer/Group'
 import {
   ProjectList,
   loadLayer,
   getMediaSign,
 } from '@/services/visualization-results/visualization-results'
+import Feature from 'ol/Feature'
+import GeoJSON from 'ol/format/GeoJSON'
+import LineString from 'ol/geom/LineString'
 import { layerParams, LayerParams } from './localData/layerParamsData'
 import VectorSource from 'ol/source/Vector'
 import Cluster from 'ol/source/Cluster'
 import Vector from 'ol/layer/Vector'
-import GeoJSON from 'ol/format/GeoJSON'
 import MultiLineString from 'ol/geom/MultiLineString'
 import {
   pointStyle,
@@ -21,11 +24,14 @@ import {
 import Layer from 'ol/layer/Layer'
 import { transform, getPointResolution } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
-import Feature from 'ol/Feature'
 import ClassStyle from 'ol/style/Style'
+import { getStyle } from '../history-grid/components/history-map-base/styles'
+import { getDataByProjectId } from '../history-grid/service'
 import Text from 'ol/style/Text'
 import Stroke from 'ol/style/Stroke'
+import Point from 'ol/geom/Point'
 import { getXmlData, sortByTime, LineCluster } from './utils'
+
 
 var projects: any
 var layerGroups: LayerGroup[]
@@ -62,11 +68,12 @@ const refreshMap = async (
   lineClusters = []
   if (projects.length === 0) return
 
-  const postData = getXmlData(projects, startDate, endDate)
-  await loadSurveyLayers(postData, groupLayers)
-  await loadPlanLayers(postData, groupLayers)
-  await loadDismantleLayers(postData, groupLayers)
-  await loadDesignLayers(postData, groupLayers, view, setView, map)
+  const postData = getXmlData(projects, startDate, endDate);
+  await loadSurveyLayers(postData, groupLayers);
+  await loadPlanLayers(postData, groupLayers);
+  await loadDismantleLayers(postData, groupLayers);
+  await loadDesignLayers(postData, groupLayers, view, setView, map);
+  await loadPreDesignLayers(groupLayers)
   for (let index = 0; index < lineClusters.length; index++) {
     const lineCluster = lineClusters[index]
     lineCluster.updateLabelControlValue(false)
@@ -159,6 +166,80 @@ const loadDismantleLayers = async (postData: string, groupLayers: LayerGroup[]) 
   )
 }
 
+const loadPreDesignLayers = async (groupLayers: LayerGroup[]) => {
+  let groupLayer = getLayerGroupByName('preDesignLayer', groupLayers)
+  let layerType = 'preDesign'
+  // 点位图层
+  if (groupLayers[layerType + '_point']) {
+    groupLayers[layerType + '_point'].getSource().clear()
+  } else {
+    let source = new VectorSource()
+    groupLayers[layerType + '_point'] = new Vector({
+      source,
+      zIndex: 6,
+    })
+    groupLayers[layerType + '_point'].set('name', layerType + '_point')
+    groupLayer.getLayers().push(groupLayers[layerType + '_point'])
+  }
+
+  // 线路图层
+  if (groupLayers[layerType + '_line']) {
+    groupLayers[layerType + '_line'].getSource().clear()
+  } else {
+    let sourceLine = new VectorSource()
+    groupLayers[layerType + '_line'] = new Vector({
+      source: sourceLine,
+      zIndex: 6,
+    })
+    groupLayers[layerType + '_line'].set('name', layerType + '_line')
+    groupLayer.getLayers().push(groupLayers[layerType + '_line'])
+  }
+
+  let projectIds: any = []
+  projects.forEach((item: ProjectList) => {
+    projectIds.push(item.id)
+  })
+  await getDataByProjectId({ projectIds }).then((res) => {
+    res.content.forEach((data: any) => {
+      if (data.equipments) {
+        const points = data.equipments.map((p: any) => {
+          const feature = new Feature()
+          feature.setGeometry(new Point([p.lng!, p.lat!])?.transform('EPSG:4326', 'EPSG:3857'))
+          feature.setStyle(getStyle('Point')('design', p.typeStr || '无类型', p.name, true))
+
+          feature.setProperties(p)
+          feature.set('sourceType', layerType)
+          return feature
+        })
+
+        groupLayers[layerType + '_point'].getSource().addFeatures(points)
+      }
+
+      if (data.lines) {
+        const lines = data.lines.map((p: any) => {
+          const feature = new Feature()
+          feature.setGeometry(
+            new LineString([
+              [p.startLng!, p.startLat!],
+              [p.endLng!, p.endLat!],
+            ])?.transform('EPSG:4326', 'EPSG:3857')
+          )
+
+          feature.setStyle(getStyle('LineString')('design', p.typeStr || '无类型', p.name, true))
+          // feature.setStyle(lineStyle[p.type])
+          // Object.keys(p).forEach((key) => {
+          //   feature.set(key, p[key])
+          // })
+          feature.setProperties(p)
+          feature.set('sourceType', layerType)
+          return feature
+        })
+        groupLayers[layerType + '_line'].getSource().addFeatures(lines)
+      }
+    })
+  })
+}
+
 const loadLayers = (
   postData: string,
   group: LayerGroup,
@@ -237,7 +318,7 @@ const loadWFSData = (
 
               if (!isAdded) {
                 if (lineClusters.length === 130) {
-                  console.log(pJSON[i], props.start_id, props.end_id)
+                  // console.log(pJSON[i], props.start_id, props.end_id);
                 }
                 pJSON[i].setProperties({ line_cluster_id: lineClusters.length + 1 })
                 lineClusters.push(

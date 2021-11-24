@@ -21,6 +21,7 @@ export let webConfig = {
     geoserver: '/geoserver',
     design: '/design/api',
     geoServerUrl: '/geoserver/pdd/ows/',
+    netFrameworkHistory: "/gridpredesign/api"
   },
   logoUrl: {
     '218.6.242.125': 'ke-rui-logo.png',

@@ -13,7 +13,7 @@ export default function onMapLayerTypeChange(
   vecLayer: Layer<Source>,
   streetLayer: Layer<Source>
 ) {
-  if (mapLayerType === 'SATELLITE') {
+  if (mapLayerType === 'satellite') {
     vecLayer.setVisible(true)
     streetLayer.setVisible(false)
   } else {
