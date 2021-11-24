@@ -1,5 +1,4 @@
 import CyTag from '@/components/cy-tag'
-import EmptyTip from '@/components/empty-tip'
 import TableSearch from '@/components/table-search'
 import AddProjectModal from '@/pages/project-management/all-project/components/add-project-modal'
 import ApprovalProjectModal from '@/pages/project-management/all-project/components/approval-project-modal'
@@ -156,6 +155,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     myWorkInitData,
     currentClickTabType,
     selectedFavId,
+    refreshStatistics,
     sideVisible,
   } = useMyWorkStore()
   const requestUrl = useMemo(() => {
@@ -963,10 +963,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     }
   }
 
-  const delayRefresh = () => {
+  const delayRefresh = async () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.delayRefresh()
+      await tableRef.current.delayRefresh()
+      refreshStatistics()
     }
   }
 

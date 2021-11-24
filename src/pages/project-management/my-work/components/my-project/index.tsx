@@ -425,7 +425,7 @@ const MyProject: React.FC = () => {
 
   const applyConfirm = () => {
     if (tableSelectKeys && tableSelectKeys.length === 0) {
-      message.error('请至少选择一个项目')
+      message.warning('请至少选择一个项目')
       return
     }
     Modal.confirm({

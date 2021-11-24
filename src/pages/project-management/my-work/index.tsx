@@ -231,7 +231,7 @@ const MyWork: React.FC = () => {
             <>
               <div className={styles.myWorkTypeContent}>{statisticsElement}</div>
               <div className={styles.singleTypeContent}>
-                {loading && (
+                {loading && myWorkInitData.length === 0 && (
                   <div style={{ width: '100%', paddingTop: '120xpx', textAlign: 'center' }}>
                     <Spin spinning={loading} tip="数据加载中..."></Spin>
                   </div>
