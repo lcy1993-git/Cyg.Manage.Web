@@ -15,14 +15,16 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
     async function refetchData() {
       const isHistory = mode === 'recordEdit' || mode === 'record'
 
-      let payload
-
       if (isHistory) {
         // 历史网架
         const res = await getAllGridVersions()
         dispatch({ type: 'changeAllHistoryGridData', payload: res.content })
 
-        payload = res.content.find((s: any) => s.isTemplate === true)
+        const payload = res.content.find((s: any) => s.isTemplate === true)
+
+        if (!cancel) {
+          dispatch({ type: 'changeCurrentGridData', payload })
+        }
       } else {
         // 预设计
         if (!preDesignItemData) {
@@ -37,11 +39,11 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
           return
         }
 
-        payload = res.content[0]
-      }
+        const payload = res.content[0]
 
-      if (!cancel) {
-        dispatch({ type: 'changeCurrentGridData', payload: payload })
+        if (!cancel) {
+          dispatch({ type: 'changeHistoryDataSource', payload })
+        }
       }
     }
 

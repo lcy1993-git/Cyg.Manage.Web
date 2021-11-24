@@ -16,7 +16,8 @@ const ImportGrid = () => {
 
   const closeModal = useCallback(() => {
     dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, importModalVisible: false } })
-  }, [dispatch, UIStatus])
+    form.resetFields()
+  }, [dispatch, UIStatus, form])
 
   const onOk = useCallback(async () => {
     const files = form.getFieldValue('files')
@@ -45,7 +46,14 @@ const ImportGrid = () => {
   }, [closeModal, currentGridData, form, mode, dispatch])
 
   return (
-    <Modal centered title="导入网架" visible={importModalVisible} onCancel={closeModal} onOk={onOk}>
+    <Modal
+      destroyOnClose
+      centered
+      title="导入网架"
+      visible={importModalVisible}
+      onCancel={closeModal}
+      onOk={onOk}
+    >
       <Form requiredMark={false} colon={false} form={form}>
         <Form.Item label="文件模板">
           <Button type="primary" onClick={download}>
