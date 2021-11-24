@@ -30,7 +30,7 @@ export type ReducerState = {
   gridMapState: GridMapGlobalState
   /** 预设计项目相关数据 */
   preDesignItemData?: any
-  /** 当前网架数据 */
+  /** 当前预设计网架数据 */
   currentGridData?: any
   /** 历史版本网架数据 */
   historyGridVersion: HistoryGridVersion
@@ -45,8 +45,12 @@ export type ReducerState = {
     currentLocation: boolean
     /** 是否定位到现有网架 */
     currentProject: boolean
-    /** 地图类型 */
+    /** 地图类型 street 街道 satellite 卫星 */
     mapType: 'street' | 'satellite'
+    /** 是否为绘制状态 */
+    drawing: boolean
+    /** 是否显示导入模态框 */
+    importModalVisible: boolean
   }
 }
 

@@ -5,7 +5,7 @@ import { HistoryState, useHistoryGridContext } from './store'
 
 /** 左上方操作 */
 const OperationPane: FC = ({ children }) => {
-  const { mode, dispatch } = useHistoryGridContext()
+  const { mode, UIStatus, dispatch } = useHistoryGridContext()
 
   const changeMode = useCallback(
     (changedMode: HistoryState['mode']) => {
@@ -37,7 +37,9 @@ const OperationPane: FC = ({ children }) => {
         icon: 'icon-daoru',
         before: <span>|</span>,
         after: <span>|</span>,
-        onClick: () => {},
+        onClick: () => {
+          dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, importModalVisible: true } })
+        },
       },
       {
         text: '电气设备',
@@ -87,7 +89,7 @@ const OperationPane: FC = ({ children }) => {
       {drawing && (
         <>
           {drawingBtnList.map((props) => (
-            <OperateBtn {...props} key={props.type} />
+            <OperateBtn {...props} key={props.text} />
           ))}
         </>
       )}

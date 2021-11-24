@@ -1,12 +1,10 @@
 import { baseUrl, cyRequest } from '@/services/common'
-import request from 'umi-request'
 import { CommentType } from '@/services/visualization-results/side-popup'
+import request from 'umi-request'
 
 const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]) => {
-  return request(
-    `${baseUrl.netFrameworkHistory}/${url.startsWith('/') ? url.slice(1) : url}`,
-    options
-  )
+  const _url = `${baseUrl.netFrameworkHistory}/${url.startsWith('/') ? url.slice(1) : url}`
+  return request(_url, options)
 }
 
 /* ----------------------- 地区 ----------------------- */
@@ -37,14 +35,16 @@ export const clearDataById = (id: string) => {
 }
 
 /** 下载模板 */
-export const downloadTemplate = () => historyGridRequest('NetFramework/Templates')
+export const downloadTemplate = () => {
+  return historyGridRequest('NetFramework/Templates', { responseType: 'blob' })
+}
 
 /** 导入设备与线缆 */
 export const importEquipments = (data: FormData, id: string) => {
   return historyGridRequest(`NetFramework/Import/${id}`, {
     method: 'POST',
     data,
-    responseType: 'formData',
+    requestType: 'form',
   })
 }
 
@@ -100,7 +100,7 @@ export const importHistoryEquipments = (data: FormData) => {
   return historyGridRequest(`NetFrameworkHistory/Import`, {
     method: 'POST',
     data,
-    responseType: 'formData',
+    requestType: 'form',
   })
 }
 

@@ -21,6 +21,8 @@ const initialize = ({ location }: InitParams) => {
       showHistoryLayer: true,
       currentLocation: false,
       currentProject: false,
+      importModalVisible: false,
+      drawing: false,
       mapType: 'street',
     },
   }

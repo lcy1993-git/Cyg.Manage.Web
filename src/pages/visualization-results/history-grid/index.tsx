@@ -7,6 +7,7 @@ import DesignIconWrapper, { DesignLabel, HistoryBtn, Legend } from './DesignIcon
 import DesignTitle from './DesignTitle'
 import Footer from './Footer'
 import { usePreDesign } from './hooks/usePreDesign'
+import ImportGrid from './ImportGrid'
 import MapOperator from './MapOperator'
 import { HistoryGridContext, historyGridReducer } from './store'
 import initialize from './store/initialize'
@@ -30,6 +31,7 @@ const HistoryGrid = () => {
             <Legend />
           </DesignIconWrapper>
           <HistoryVersionManagement />
+          <ImportGrid />
           {/* <HistoryGirdForm /> */}
         </HistoryGridContext.Provider>
       </div>
