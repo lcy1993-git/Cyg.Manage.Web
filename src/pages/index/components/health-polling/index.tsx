@@ -1,13 +1,14 @@
 import { getStopServerNotice, pollingHealth } from '@/services/index'
-import { useInterval, useRequest } from 'ahooks'
-import React, { useState, useEffect } from 'react'
-import { useLocation } from 'umi'
+import { history } from '@@/core/history'
+import { useInterval, useMount, useRequest } from 'ahooks'
 import { notification } from 'antd'
 import { message } from 'antd/es'
-import { history } from '@@/core/history'
+import React, { useEffect, useState } from 'react'
+import { useLocation } from 'umi'
 
 const HealthPolling: React.FC = () => {
   const [requestFlag, setRequestFlag] = useState(true)
+  const [serverCode, setServerCode] = useState('')
   const location = useLocation()
   //轮询
   const { run } = useRequest(() => pollingHealth(), {
@@ -22,14 +23,14 @@ const HealthPolling: React.FC = () => {
     }
   }, [location.pathname])
 
-  useRequest(
+  const { run: infoRun } = useRequest(
     () =>
       getStopServerNotice({
-        serverCode: sessionStorage.getItem('serverCode') as string,
+        serverCode: serverCode,
         kickOutSeconds: 605,
       }),
     {
-      pollingInterval: 5000,
+      manual: true,
       onSuccess: (val) => {
         if (val) {
           sessionStorage.setItem('stopServerInfo', JSON.stringify(val))
@@ -66,11 +67,17 @@ const HealthPolling: React.FC = () => {
       },
     }
   )
+  useMount(() => {
+    setServerCode(sessionStorage.getItem('serverCode') ?? '')
+  })
   useInterval(async () => {
     if (requestFlag) {
       await run()
     }
-  }, 5000)
+    if (serverCode !== '') {
+      await infoRun()
+    }
+  }, 3000)
   return <div></div>
 }
 

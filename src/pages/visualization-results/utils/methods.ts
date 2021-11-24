@@ -190,17 +190,18 @@ const loadPreDesignLayers = async (groupLayers: LayerGroup[]) => {
     groupLayer.getLayers().push(groupLayers[layerType + '_line'])
   }
 
-  await getDataByProjectId(projects).then((res) => {
+  let projectIds: any = []
+  projects.forEach((item: ProjectList) => {
+    projectIds.push(item.id)
+  })
+  await getDataByProjectId({ projectIds }).then((res) => {
     res.content.forEach((data: any) => {
       if (data.equipments) {
         const points = data.equipments.map((p: any) => {
           const feature = new Feature()
-          feature.setGeometry(new Point([p.lng!, p.lat!]))
+          feature.setGeometry(new Point([p.lng!, p.lat!])?.transform('EPSG:4326', 'EPSG:3857'))
           feature.setStyle(getStyle('Point')('design', p.typeStr || '无类型', p.name, true))
-          // feature.setStyle(pointStyle[p.type])
-          // Object.keys(p).forEach((key) => {
-          //   feature.set(key, p[key])
-          // })
+
           feature.setProperties(p)
           feature.set('sourceType', layerType)
           return feature
@@ -216,7 +217,7 @@ const loadPreDesignLayers = async (groupLayers: LayerGroup[]) => {
             new LineString([
               [p.startLng!, p.startLat!],
               [p.endLng!, p.endLat!],
-            ])
+            ])?.transform('EPSG:4326', 'EPSG:3857')
           )
 
           feature.setStyle(getStyle('LineString')('design', p.typeStr || '无类型', p.name, true))

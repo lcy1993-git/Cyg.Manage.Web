@@ -4,6 +4,7 @@ import { useState } from 'react'
 import CityPicker from './components/city-picker'
 import FlowLayer from './components/flow-layer'
 import OperationPane from './OperatePane'
+import { getRegionData, useApi } from './service'
 import { useHistoryGridContext } from './store'
 
 const FL_MARGIN_LEFT = 10
@@ -12,9 +13,27 @@ const ConsoleWrapper = () => {
   const { city, dispatch } = useHistoryGridContext()
   const [visible, setVisible] = useState(false)
 
-  // const { data } = useApi(getRegionData)
+  const { data } = useApi(getRegionData, {
+    initialData: [],
+    filter: (res) => {
+      const filterEntries = (obj: any) => ({
+        name: obj.name,
+        lat: obj.lat,
+        lng: obj.lng,
+      })
 
-  // const { data } = useApi(getRegionData)
+      const filteredData = res.content.map((p: any) => {
+        return {
+          ...filterEntries(p),
+          letter: (p.pinyin[0] as string).toLowerCase(),
+          cities: p.children
+            .map((c: any) => (c.level === 2 ? filterEntries(c) : undefined))
+            .filter(Boolean),
+        }
+      })
+      return filteredData
+    },
+  })
 
   return (
     <>
@@ -39,6 +58,7 @@ const ConsoleWrapper = () => {
         showClose
       >
         <CityPicker
+          rawData={data}
           value={city}
           onSelect={(city) => {
             dispatch({ type: 'setCity', payload: city })

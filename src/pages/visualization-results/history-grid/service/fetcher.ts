@@ -1,12 +1,10 @@
 import { baseUrl, cyRequest } from '@/services/common'
-import request from 'umi-request'
 import { CommentType } from '@/services/visualization-results/side-popup'
+import request from 'umi-request'
 
 const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]) => {
-  return request(
-    `${baseUrl.netFrameworkHistory}/${url.startsWith('/') ? url.slice(1) : url}`,
-    options
-  )
+  const _url = `${baseUrl.netFrameworkHistory}/${url.startsWith('/') ? url.slice(1) : url}`
+  return request(_url, options)
 }
 
 /* ----------------------- 地区 ----------------------- */
@@ -19,7 +17,9 @@ export const getRegionData = () => {
 /* ----------------------- 网架 ----------------------- */
 
 /** 根据项目获取网架数据 */
-export const getDataByProjectId = (id: string) => historyGridRequest(`NetFramework/project/${id}`)
+export const getDataByProjectId = (data: any) => {
+  return historyGridRequest('NetFramework/projects', { method: 'POST', data })
+}
 
 /** 保存网架数据 */
 export const saveData = (data: any) => {
@@ -37,14 +37,16 @@ export const clearDataById = (id: string) => {
 }
 
 /** 下载模板 */
-export const downloadTemplate = () => historyGridRequest('NetFramework/Templates')
+export const downloadTemplate = () => {
+  return historyGridRequest('NetFramework/Templates', { responseType: 'blob' })
+}
 
 /** 导入设备与线缆 */
 export const importEquipments = (data: FormData, id: string) => {
   return historyGridRequest(`NetFramework/Import/${id}`, {
     method: 'POST',
     data,
-    responseType: 'formData',
+    requestType: 'form',
   })
 }
 
@@ -83,8 +85,8 @@ export const DeleteGridVersions = (versionId: string, password: string) => {
 }
 
 /** 记录版本 */
-export const recordVersion = () => {
-  return historyGridRequest('NetFrameworkHistory/CreateNewVersion')
+export const recordVersionData = (data: { force: boolean; remark: string }) => {
+  return historyGridRequest('NetFrameworkHistory/CreateNewVersion', { method: 'POST', data })
 }
 
 /** 保存历史网架数据 */
@@ -100,7 +102,7 @@ export const importHistoryEquipments = (data: FormData) => {
   return historyGridRequest(`NetFrameworkHistory/Import`, {
     method: 'POST',
     data,
-    responseType: 'formData',
+    requestType: 'form',
   })
 }
 

@@ -5,7 +5,7 @@ import { HistoryState, useHistoryGridContext } from './store'
 
 /** 左上方操作 */
 const OperationPane: FC = ({ children }) => {
-  const { mode, dispatch } = useHistoryGridContext()
+  const { mode, UIStatus, dispatch } = useHistoryGridContext()
 
   const changeMode = useCallback(
     (changedMode: HistoryState['mode']) => {
@@ -24,20 +24,32 @@ const OperationPane: FC = ({ children }) => {
       {
         text: '保存',
         icon: 'icon-baocun',
-        onClick: () => {},
+        onClick: () => {
+          dispatch({
+            type: 'changeUIStatus',
+            payload: { ...UIStatus, recordVersion: 'save' },
+          })
+        },
       },
       {
         text: '记录版本',
         icon: 'icon-jilubanben',
         visible: (mode: HistoryState['mode']) => mode === 'recordEdit',
-        onClick: () => {},
+        onClick: () => {
+          dispatch({
+            type: 'changeUIStatus',
+            payload: { ...UIStatus, recordVersion: 'record' },
+          })
+        },
       },
       {
         text: '导入',
         icon: 'icon-daoru',
         before: <span>|</span>,
         after: <span>|</span>,
-        onClick: () => {},
+        onClick: () => {
+          dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, importModalVisible: true } })
+        },
       },
       {
         text: '电气设备',
@@ -59,7 +71,7 @@ const OperationPane: FC = ({ children }) => {
     ]
 
     return list.filter(({ visible }) => !visible || visible(mode))
-  }, [mode])
+  }, [UIStatus, dispatch, mode])
 
   return (
     <div className="bg-white px-4 py-2 flex justify-between items-center space-x-4">
@@ -67,6 +79,7 @@ const OperationPane: FC = ({ children }) => {
         <OperateBtn
           icon="icon-fanhui"
           onClick={() => {
+            dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, recordVersion: 'save' } })
             changeMode(mode === 'recordEdit' ? 'record' : 'preDesign')
           }}
           type="back"
@@ -87,7 +100,7 @@ const OperationPane: FC = ({ children }) => {
       {drawing && (
         <>
           {drawingBtnList.map((props) => (
-            <OperateBtn {...props} key={props.type} />
+            <OperateBtn {...props} key={props.text} />
           ))}
         </>
       )}
