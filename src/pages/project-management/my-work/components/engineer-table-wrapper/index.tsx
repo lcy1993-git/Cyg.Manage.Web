@@ -74,35 +74,35 @@ interface EngineerTableWrapperProps {
 
   batchButtonSlot?: () => React.ReactNode
 }
-
+const initSearchParams = {
+  category: [],
+  stage: [],
+  constructType: [],
+  nature: [],
+  kvLevel: [],
+  status: [],
+  majorCategory: [],
+  pType: [],
+  reformAim: [],
+  classification: [],
+  attribute: [],
+  sourceType: [],
+  identityType: [],
+  areaType: '-1',
+  areaId: '',
+  dataSourceType: [],
+  logicRelation: 2,
+  startTime: '',
+  endTime: '',
+  designUser: '',
+  surveyUser: '',
+  statisticalCategory: '-1',
+}
 const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) => {
   const { getSelectRowKeys, getSelectRowData, batchButtonSlot } = props
   const [keyWord, setKeyWord] = useState<string>('')
   // 从列表返回的数据中获取 TODO设置search的参数
-  const [searchParams, setSearchParams] = useState({
-    category: [],
-    stage: [],
-    constructType: [],
-    nature: [],
-    kvLevel: [],
-    status: [],
-    majorCategory: [],
-    pType: [],
-    reformAim: [],
-    classification: [],
-    attribute: [],
-    sourceType: [],
-    identityType: [],
-    areaType: '-1',
-    areaId: '',
-    dataSourceType: [],
-    logicRelation: 2,
-    startTime: '',
-    endTime: '',
-    designUser: '',
-    surveyUser: '',
-    statisticalCategory: '-1',
-  })
+  const [searchParams, setSearchParams] = useState(initSearchParams)
   const [modalNeedInfo, setModalInfo] = useState<any>({
     engineerId: '',
     projectId: '',
@@ -1002,7 +1002,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   })
 
   useEffect(() => {
-    initTableData(requestUrl, { ...searchParams })
+    setKeyWord('')
+    setSearchParams(initSearchParams)
+    initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
   }, [requestUrl])
 
   const columnsConfigSetting = () => {
