@@ -7,13 +7,12 @@ import {
   getHistoriesEnums,
   SaveHistoryData,
 } from '@/pages/visualization-results/history-grid/service'
-import _ from 'lodash'
 import {
   ElectricLineData,
   ElectricPointData,
 } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
 import getLineLength from '@/pages/visualization-results/history-grid/components/history-map-base/utils/getLength'
-import {useHistoryGridContext} from "@/pages/visualization-results/history-grid/store";
+import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
 
 const { Option } = Select
 
@@ -36,9 +35,8 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
   const {
     UIStatus,
-    dispatch,
-    selectedData,//被选中的元素
-    historyDataSource// 绘制元素的数据源
+    selectedData = [], //被选中的元素
+    historyDataSource, // 绘制元素的数据源
   } = useHistoryGridContext()
   const [position, setPosition] = useState<number[]>([10, 155]) // 鼠标位置
   const [visible, setVisible] = useState<boolean>(false) // 是否可见
@@ -72,10 +70,11 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   }
   const handleFinish = async (values: ElectricPointData | ElectricLineData) => {
     const data = {}
-    if (selectedData.length === 1) {
+    if (selectedData?.length === 1) {
       values.type = Number(values.type)
       values.voltageLevel = Number(values.voltageLevel)
       if (type === 'LineString') {
+        // @ts-ignore
         data['lines'] =
           historyDataSource?.lines.filter((item: ElectricLineData) => {
             if (item.id === selectedData[0]?.id) {
@@ -84,6 +83,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
             }
           }) ?? []
       } else {
+        // @ts-ignore
         data['equipments'] =
           historyDataSource?.equipments.filter((item: ElectricPointData) => {
             if (item.id === selectedData[0]?.id) {
@@ -92,13 +92,13 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
             }
           }) ?? []
       }
-    } else if (selectedData.length > 1) {
-      const ids = selectedData.map((item) => item.id)
+    } else if (selectedData?.length > 1) {
+      const ids = selectedData?.map((item) => item.id)
       if (type === 'LineString') {
         data['lines'] =
           // @ts-ignore
           historyDataSource?.lines.filter((item: ElectricLineData) => {
-            if (ids.includes(item.id)) {
+            if (ids?.includes(item.id)) {
               item = Object.assign(item, values)
               item.type = Number(values.type)
               item.voltageLevel = Number(values.voltageLevel)
@@ -109,7 +109,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         data['equipments'] =
           // @ts-ignore
           historyDataSource?.equipments.filter((item: ElectricPointData) => {
-            if (ids.includes(item.id)) {
+            if (ids?.includes(item.id)) {
               item = Object.assign(item, values)
               item.type = Number(values.type)
               item.voltageLevel = Number(values.voltageLevel)
@@ -156,8 +156,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     setVisible(false)
   }
   useEffect(() => {
-    console.log(selectedData)
-    if (drawing && selectedData.length === 1) {
+    if (drawing && selectedData?.length === 1) {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
       const val = { ...selectedData[0] }
@@ -173,7 +172,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         )
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
-    } else if (drawing && selectedData.length > 1) {
+    } else if (drawing && selectedData?.length > 1) {
       form.setFieldsValue({
         name: '',
         type: '',
