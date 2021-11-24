@@ -1,11 +1,10 @@
 import { Timeline } from 'antd'
 import { Ref, useEffect, useState } from 'react'
 import styles from './index.less'
-import { useMount } from 'ahooks'
 import pickUp from '@/assets/icon-image/pack-up.png'
 import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
 import { Moment } from 'moment/moment'
-import { getAllGridVersions, getHistoriesById } from '../../history-grid/service'
+import {  getHistoriesById } from '../../history-grid/service'
 import { useGridMap } from '@/pages/visualization-results/history-grid/store/mapReducer'
 import GridVersionManagement from '@/pages/visualization-results/history-grid/components/grid-version-management'
 import HistoryGirdForm from '@/pages/visualization-results/components/map-form/add-electrical-equipment'
@@ -36,35 +35,27 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
   const [showVersion, setShowVersion] = useState<boolean>(false)
   const [activeId, setActiveId] = useState<string>('')
   const [show, setShow] = useState<boolean>(true)
-  const [list, setList] = useState<HistoryGridVersion[]>([])
-  const { mode, dispatch, historyGridVersion } = useHistoryGridContext()
+  const { mode, dispatch,allHistoryGridData } = useHistoryGridContext()
   const activeList = () => {
     setActive(!active)
   }
-  useMount(async () => {
-    await getHistoryList()
-  })
-  const getHistoryList = async () => {
-    setActiveId('')
-    const res = await getAllGridVersions(false)
-    res?.content && setList(res?.content)
-    res?.content?.length !== 0 && (await onItemClick(res?.content[0]))
-  }
   const onItemClick = async (val: HistoryGridVersion) => {
     dispatch({
-      type: 'changeHistoryGirdVersion',
+      type: 'changeCurrentGridData',
       payload: val,
     })
     setActiveId(val.id)
     const res = await getHistoriesById(val.id)
     const data = res?.content
     data.id = val.id
-    setState('dataSource', data)
-    setState('selectedData', [])
+    dispatch({
+      type: 'changeHistoryDataSource',
+      payload: data,
+    })
   }
   const onVersionClose = async () => {
     setShowVersion(false)
-    await getHistoryList()
+    dispatch('refetch')
   }
   useEffect(() => {
     if (mode === 'record') {
@@ -72,7 +63,12 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     } else {
       setShow(false)
     }
-  }, [mode, historyGridVersion, state])
+    if (allHistoryGridData?.length !== 0){
+      const isTemplate = allHistoryGridData?.find(item=> item.isTemplate)
+      console.log(isTemplate)
+      isTemplate && onItemClick(isTemplate)
+    }
+  }, [mode, state,allHistoryGridData])
   return (
     <div>
       <div
@@ -106,7 +102,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
         >
           <div style={{ height: '12px' }} />
           <Timeline>
-            {list?.map((item) => {
+            {allHistoryGridData?.map((item) => {
               return (
                 <Timeline.Item
                   className={`${styles.listText} ${
