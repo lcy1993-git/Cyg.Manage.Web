@@ -1,7 +1,7 @@
 import { useGridMap } from '@/pages/visualization-results/history-grid/store/mapReducer'
 import { CloseOutlined } from '@ant-design/icons'
 import { useMount } from 'ahooks'
-import { Button, Form, Input, Popconfirm, Select, Space } from 'antd'
+import { Button, Form, Input, message, Popconfirm, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
 import {
@@ -13,6 +13,7 @@ import {
   ElectricLineData,
   ElectricPointData,
 } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
+import getLineLength from '@/pages/visualization-results/history-grid/components/history-map-base/utils/getLength'
 
 const { Option } = Select
 
@@ -39,6 +40,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const [visible, setVisible] = useState<boolean>(false) // 是否可见
   const [showDetail, setShowDetail] = useState<boolean>(false) // 是否显示详情
   const [type, setType] = useState<'LineString' | 'Point'>('LineString') // 是否显示长度
+  const [lineLength, setLineLength] = useState<number>(0)
   const {
     isDraw, //是否绘制模式
     dataSource, // 绘制元素的数据源
@@ -63,59 +65,66 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       data.toBeDeletedLineIds = selectedData.map((item) => item.id)
     }
     await SaveHistoryData(data)
+    message.success('删除成功')
     updateHistoryVersion()
   }
   const handleFinish = async (values: ElectricPointData | ElectricLineData) => {
-    const data = _.cloneDeep(dataSource)
+    const data = {}
     if (selectedData.length === 1) {
       values.type = Number(values.type)
       values.voltageLevel = Number(values.voltageLevel)
       if (type === 'LineString') {
-        data!.lines =
-          data?.lines.map((item) => {
+        data['lines'] =
+          dataSource?.lines.filter((item: ElectricLineData) => {
             if (item.id === selectedData[0]?.id) {
               item = Object.assign(item, values)
+              return item
             }
-            return item
           }) ?? []
       } else {
-        data!.equipments =
-          data?.equipments.map((item) => {
+        data['equipments'] =
+          dataSource?.equipments.filter((item: ElectricPointData) => {
             if (item.id === selectedData[0]?.id) {
               item = Object.assign(item, values)
+              return item
             }
-            return item
           }) ?? []
       }
     } else if (selectedData.length > 1) {
       const ids = selectedData.map((item) => item.id)
       if (type === 'LineString') {
-        data!.lines =
-          data?.lines.map((item) => {
+        data['lines'] =
+          // @ts-ignore
+          dataSource?.lines.filter((item: ElectricLineData) => {
             if (ids.includes(item.id)) {
               item = Object.assign(item, values)
               item.type = Number(values.type)
               item.voltageLevel = Number(values.voltageLevel)
+              return item
             }
-            return item
           }) ?? []
       } else {
-        data!.equipments =
-          data?.equipments.map((item) => {
+        data['equipments'] =
+          // @ts-ignore
+          dataSource?.equipments.filter((item: ElectricPointData) => {
             if (ids.includes(item.id)) {
               item = Object.assign(item, values)
               item.type = Number(values.type)
               item.voltageLevel = Number(values.voltageLevel)
+              return item
             }
-            return item
           }) ?? []
       }
     }
-    // @ts-ignore
-    data.toBeDeletedEquipmentIds = []
-    // @ts-ignore
-    data.toBeDeletedLineIds = []
+    if (Object.keys(data).includes('equipments')) {
+      data['lines'] = []
+    } else {
+      data['equipments'] = []
+    }
+    data['toBeDeletedEquipmentIds'] = []
+    data['toBeDeletedLineIds'] = []
     await SaveHistoryData(data)
+    message.success('保存成功')
     updateHistoryVersion()
   }
   useMount(async () => {
@@ -146,7 +155,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   }
   useEffect(() => {
     if (isDraw && selectedData.length === 1) {
-      setType(selectedData[0]?.startLng ? 'LineString' : 'Point')
+      setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
       const val = { ...selectedData[0] }
       val.type = val.type + ''
@@ -154,6 +163,13 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       form.setFieldsValue(val)
       setShowDetail(false)
       setPosition([10, 155])
+      if (Object.keys(selectedData[0]).includes('startLng')) {
+        const l = getLineLength(
+          [Number(selectedData[0]?.startLat), Number(selectedData[0]?.startLng)],
+          [Number(selectedData[0]?.endLat), Number(selectedData[0]?.endLng)]
+        )
+        setLineLength(((l / 1000).toFixed(4) as unknown) as number)
+      }
     } else if (isDraw && selectedData.length > 1) {
       form.setFieldsValue({
         name: '',
@@ -163,10 +179,17 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       })
       setPosition([10, 155])
     } else if (!isDraw && selectedData.length === 1) {
-      setType(selectedData[0]?.startLng ? 'LineString' : 'Point')
+      setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
       setShowDetail(true)
       setPosition(currentMousePosition)
+      if (Object.keys(selectedData[0]).includes('startLng')) {
+        const l = getLineLength(
+          [Number(selectedData[0]?.startLat), Number(selectedData[0]?.startLng)],
+          [Number(selectedData[0]?.endLat), Number(selectedData[0]?.endLng)]
+        )
+        setLineLength(((l / 1000).toFixed(4) as unknown) as number)
+      }
     } else if (selectedData.length === 0) {
       setVisible(false)
     }
@@ -200,6 +223,18 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
             <span className={styles.detailTitle}>{selectedData[0]?.typeStr}</span>
             <span className={styles.detailInfo}>电压等级:</span>
             <span className={styles.detailTitle}>{selectedData[0]?.voltageLevelStr} </span>
+            <span
+              className={styles.detailInfo}
+              style={{ display: type === 'LineString' ? 'inline-block' : 'none' }}
+            >
+              长度:
+            </span>
+            <span
+              className={styles.detailTitle}
+              style={{ display: type === 'LineString' ? 'inline-block' : 'none' }}
+            >
+              {lineLength}km{' '}
+            </span>
             <span className={styles.detailInfo}>备注:</span>
             <span className={styles.detailTitle}> {selectedData[0]?.remark}</span>
           </div>
@@ -276,7 +311,10 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               </Form.Item>
               {type === 'LineString' && (
                 <p className={styles.lengthBox}>
-                  长度:<span style={{ textIndent: '10px', display: 'inline-block' }}>{20}km</span>
+                  长度:
+                  <span style={{ textIndent: '10px', display: 'inline-block' }}>
+                    {lineLength}km
+                  </span>
                 </p>
               )}
               {selectedData?.length === 1 && (
