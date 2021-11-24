@@ -428,10 +428,12 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             <div className="flex1">
               <CyFormItem label="项目状态" align="right" labelWidth={135}>
                 <div style={{ width: '275px' }}>
-                  <EnumSelect
-                    enumList={ProjectStatus}
+                  <UrlSelect
                     {...selectStyle}
                     allowClear
+                    titlekey="text"
+                    valuekey="value"
+                    url="/Porject/GetStatus"
                     mode="multiple"
                     value={status}
                     onChange={(value) => setStatus(value as number[])}
