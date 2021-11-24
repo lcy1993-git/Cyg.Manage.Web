@@ -100,7 +100,7 @@ const MyProject: React.FC = () => {
   }, [JSON.stringify(tableSelectRowData)])
 
   const titleTypeArray = useMemo(() => {
-    return myWorkInitData.find((item) => item.id === currentClickTabType).children
+    return myWorkInitData.find((item) => item.id === currentClickTabType)?.children
   }, [JSON.stringify(myWorkInitData), currentClickTabType])
 
   const searchEvent = () => {
@@ -343,8 +343,6 @@ const MyProject: React.FC = () => {
   )
 
   const addFavEvent = () => {
-    console.log(engineerIds)
-
     if (engineerIds && engineerIds.length > 0) {
       setAddFavoriteModal(true)
       return
@@ -370,8 +368,6 @@ const MyProject: React.FC = () => {
     })
   }
   const removeFavEvent = async () => {
-    console.log(engineerIds, '111')
-
     await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds })
     message.success('已移出当前收藏夹')
     searchByParams()
