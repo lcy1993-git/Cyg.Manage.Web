@@ -1,15 +1,13 @@
-import React from 'react'
-import styles from './index.less'
-import * as echarts from 'echarts/lib/echarts'
+import { getSurveyRate } from '@/services/project-management/project-all-area-statistics'
+import { handleRate } from '@/utils/utils'
+import { useRequest } from 'ahooks'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/component/grid'
 import 'echarts/lib/component/tooltip'
-import { useRef } from 'react'
-import { useRequest } from 'ahooks'
-import { getSurveyRate } from '@/services/project-management/project-all-area-statistics'
+import * as echarts from 'echarts/lib/echarts'
 import moment from 'moment'
-import { useEffect } from 'react'
-import { handleRate } from '@/utils/utils'
+import React, { useEffect, useRef } from 'react'
+import styles from './index.less'
 
 const SurveyRateComponent: React.FC = () => {
   const divRef = useRef<HTMLDivElement>(null)
@@ -117,9 +115,10 @@ const SurveyRateComponent: React.FC = () => {
         resize()
       }
     })
-    ;(() => {
+
+    return () => {
       window.removeEventListener('resize', resize)
-    })()
+    }
   })
 
   // useMount(() => {

@@ -1,8 +1,8 @@
-import DataSelect from '@/components/data-select';
-import { useGetSelectData } from '@/utils/hooks';
-import { DownOutlined } from '@ant-design/icons';
-import { useClickAway } from 'ahooks';
-import { Select } from 'antd';
+import DataSelect from '@/components/data-select'
+import { useGetSelectData } from '@/utils/hooks'
+import { DownOutlined } from '@ant-design/icons'
+import { useClickAway } from 'ahooks'
+import { Select } from 'antd'
 import React, {
   useRef,
   useState,
@@ -11,122 +11,118 @@ import React, {
   useImperativeHandle,
   useMemo,
   useEffect,
-} from 'react';
-import styles from './index.less';
+} from 'react'
+import styles from './index.less'
 
 export interface ChooseDesignAndSurveyValue {
-  survey: string;
-  logicRelation: number;
-  design: string;
+  survey: string
+  logicRelation: number
+  design: string
 }
 
 interface SelectProps {
-  onChange?: (value: ChooseDesignAndSurveyValue) => void;
-  defaultValue?: ChooseDesignAndSurveyValue;
+  onChange?: (value: ChooseDesignAndSurveyValue) => void
+  defaultValue?: ChooseDesignAndSurveyValue
 }
 
-type LogicRelation = 1 | 2;
+type LogicRelation = 1 | 2
 
 const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
-  const [selectAreaVisible, setSelectAreaVisible] = useState<boolean>(false);
+  const [selectAreaVisible, setSelectAreaVisible] = useState<boolean>(false)
 
-  const [survey, setSurvey] = useState<string>('');
-  const [logicRelation, setLogicRelation] = useState<number>(2);
-  const [design, setDesign] = useState<string>('');
+  const [survey, setSurvey] = useState<string>('')
+  const [logicRelation, setLogicRelation] = useState<number>(2)
+  const [design, setDesign] = useState<string>('')
 
   const { data: personData = [] } = useGetSelectData({
     url: '/CompanyUser/GetList',
     extraParams: { clientCategory: '0' },
-  });
+  })
 
-  const { onChange, defaultValue } = props;
+  const { onChange, defaultValue } = props
 
-  const selectRef = useRef<HTMLDivElement>(null);
-  const selectContentRef = useRef<HTMLDivElement>(null);
+  const selectRef = useRef<HTMLDivElement>(null)
+  const selectContentRef = useRef<HTMLDivElement>(null)
 
   const showSelectContent = (e: any) => {
     if (selectContentRef && selectContentRef.current) {
-      const windowWidth = document.body.clientWidth;
+      const windowWidth = document.body.clientWidth
 
-      const offsetInfo = e.currentTarget.getBoundingClientRect();
-      let xOffsetLeft = offsetInfo.left + 260 > windowWidth ? windowWidth - 260 : offsetInfo.left;
+      const offsetInfo = e.currentTarget.getBoundingClientRect()
+      let xOffsetLeft = offsetInfo.left + 260 > windowWidth ? windowWidth - 260 : offsetInfo.left
 
-      selectContentRef.current.style.left = `${xOffsetLeft - 8}px`;
-      selectContentRef.current.style.top = `${offsetInfo.top + 32}px`;
+      selectContentRef.current.style.left = `${xOffsetLeft - 8}px`
+      selectContentRef.current.style.top = `${offsetInfo.top + 32}px`
     }
-    setSelectAreaVisible(true);
-  };
+    setSelectAreaVisible(true)
+  }
 
   useClickAway(() => {
-    setSelectAreaVisible(false);
-  }, [selectRef, selectContentRef]);
+    setSelectAreaVisible(false)
+  }, [selectRef, selectContentRef])
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
     reset: () => {
-      setLogicRelation(2);
-      setSurvey('');
-      setDesign('');
+      setLogicRelation(2)
+      setSurvey('')
+      setDesign('')
       onChange?.({
         logicRelation: 2,
         survey: '',
         design: '',
-      });
+      })
     },
     setValue: (params: any) => {
-      setLogicRelation(params?.logicRelation ?? 2);
-      setSurvey(params?.survey ?? '');
-      setDesign(params?.design ?? '');
+      setLogicRelation(params?.logicRelation ?? 2)
+      setSurvey(params?.survey ?? '')
+      setDesign(params?.design ?? '')
 
       onChange?.({
         logicRelation: params?.logicRelation ?? 2,
         survey: params?.survey ?? '',
         design: params?.design ?? '',
-      });
+      })
     },
-  }));
+  }))
 
   useEffect(() => {
     onChange?.({
       survey: survey === '-1' ? '' : survey,
       logicRelation,
       design: design === '-1' ? '' : design,
-    });
-  }, [survey, logicRelation, design]);
+    })
+  }, [survey, logicRelation, design])
 
   useEffect(() => {
     if (defaultValue) {
-      setDesign(defaultValue?.design);
-      setLogicRelation(defaultValue?.logicRelation);
-      setSurvey(defaultValue?.survey);
+      setDesign(defaultValue?.design)
+      setLogicRelation(defaultValue?.logicRelation)
+      setSurvey(defaultValue?.survey)
     }
-  }, [JSON.stringify(defaultValue)]);
+  }, [JSON.stringify(defaultValue)])
 
   const selectHasChooseInfo = useMemo(() => {
-    const hasSurvey = survey !== '' && survey !== '-1';
-    const hasDesign = design !== '' && design !== '-1';
+    const hasSurvey = survey !== '' && survey !== '-1'
+    const hasDesign = design !== '' && design !== '-1'
 
-    const designName = hasDesign
-      ? personData.find((item: any) => item.value === design)?.label
-      : '';
-    const surveyName = hasSurvey
-      ? personData.find((item: any) => item.value === survey)?.label
-      : '';
-    const logicRelationWord = logicRelation === 2 ? '与' : '或';
+    const designName = hasDesign ? personData.find((item: any) => item.value === design)?.label : ''
+    const surveyName = hasSurvey ? personData.find((item: any) => item.value === survey)?.label : ''
+    const logicRelationWord = logicRelation === 2 ? '与' : '或'
 
     if (hasSurvey && hasDesign) {
-      return `勘察: ${surveyName} ${logicRelationWord} 设计：${designName}`;
+      return `勘察: ${surveyName} ${logicRelationWord} 设计：${designName}`
     }
 
     if (!hasSurvey && hasDesign) {
-      return `设计：${designName}`;
+      return `设计：${designName}`
     }
 
     if (hasSurvey && !hasDesign) {
-      return `勘察: ${surveyName}`;
+      return `勘察: ${surveyName}`
     }
-    return '';
-  }, [survey, logicRelation, design, JSON.stringify(personData)]);
+    return ''
+  }, [survey, logicRelation, design, JSON.stringify(personData)])
 
   return (
     <div className={styles.chooseDesignAndSurveySelect}>
@@ -188,7 +184,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default forwardRef(ChooseDesignAndSurveySelect);
+export default forwardRef(ChooseDesignAndSurveySelect)

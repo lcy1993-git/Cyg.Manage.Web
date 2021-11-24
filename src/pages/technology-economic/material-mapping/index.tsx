@@ -1,59 +1,77 @@
-import React, {useEffect, useState} from 'react';
-import {history} from 'umi';
-import {Input, Button, Modal, Form, Switch, message, Space, Row, Col, DatePicker, Select, Spin} from 'antd';
-import type {ColumnsType} from 'antd/lib/table';
-import {EyeOutlined, PlusOutlined, DeleteOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
-import {isArray} from 'lodash';
-
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-
+import React, { useEffect, useState } from 'react'
+import { history } from 'umi'
 import {
-  GetMaterialLibraryAllListNoUsed,
-} from '@/services/technology-economic/supplies-library';
-import FileUpload from '@/components/file-upload';
-import useBoolean from 'ahooks/lib/useBoolean';
-import moment from 'moment';
-import {addSourceMaterialMappingQuota, deleteMaterialMappingQuota, materialMappingQuotaModifyStatus } from '@/services/technology-economic/material';
+  Input,
+  Button,
+  Modal,
+  Form,
+  Switch,
+  message,
+  Space,
+  Row,
+  Col,
+  DatePicker,
+  Select,
+  Spin,
+} from 'antd'
+import type { ColumnsType } from 'antd/lib/table'
+import {
+  EyeOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
+import { isArray } from 'lodash'
+
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+
+import { GetMaterialLibraryAllListNoUsed } from '@/services/technology-economic/supplies-library'
+import FileUpload from '@/components/file-upload'
+import useBoolean from 'ahooks/lib/useBoolean'
+import moment from 'moment'
+import {
+  addSourceMaterialMappingQuota,
+  deleteMaterialMappingQuota,
+  materialMappingQuotaModifyStatus,
+} from '@/services/technology-economic/material'
 // import AdjustmentFileForm from "@/pages/technology-economic/spread-coefficient/components/adjustment-file-form";
 
 export interface SuppliesLibraryData {
-  "id"?: string
-  "name": string
-  "publishOrg": string
-  "publishDate": string | moment.Moment
-  "remark": string
+  id?: string
+  name: string
+  publishOrg: string
+  publishDate: string | moment.Moment
+  remark: string
   // "enabled": boolean
-  'file': any
+  file: any
 }
 
-const {Search} = Input;
+const { Search } = Input
 
-const {confirm} = Modal;
-const {Option} = Select;
+const { confirm } = Modal
+const { Option } = Select
 
 const MaterialMapping: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [spinning, setSpinning] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [spinning, setSpinning] = useState<boolean>(false)
 
-  const [materialList,setMaterialList] = useState<{name: string,id: string}[]>([])
-  const [
-    triggerUploadFile,
-  ] = useBoolean(false);
+  const [materialList, setMaterialList] = useState<{ name: string; id: string }[]>([])
+  const [triggerUploadFile] = useBoolean(false)
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
-  const getMaterialData = async ()=>{
+  const getMaterialData = async () => {
     const res = await GetMaterialLibraryAllListNoUsed()
     setMaterialList(res)
   }
-  useEffect(()=>{
+  useEffect(() => {
     getMaterialData()
-  },[])
+  }, [])
   const columns: ColumnsType<any> = [
     {
       dataIndex: 'name',
@@ -68,9 +86,9 @@ const MaterialMapping: React.FC = () => {
       title: '发布时间',
       align: 'center',
       width: 80,
-          render(value: string): string {
-      return `${ moment(value).format("YYYY-MM-DD")}`
-    }
+      render(value: string): string {
+        return `${moment(value).format('YYYY-MM-DD')}`
+      },
     },
     {
       dataIndex: 'publishOrg',
@@ -103,8 +121,8 @@ const MaterialMapping: React.FC = () => {
       align: 'center',
       ellipsis: true,
       width: 150,
-    }
-  ];
+    },
+  ]
   const searchComponent = () => {
     return (
       <TableSearch label="关键词" width="203px">
@@ -116,35 +134,35 @@ const MaterialMapping: React.FC = () => {
           placeholder="请输入关键词"
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const tableSearchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   // 添加
   const addEvent = () => {
     getMaterialData()
-    setAddFormVisible(true);
+    setAddFormVisible(true)
     form.resetFields()
-  };
+  }
 
   const setStatus = async (status: boolean, record: any) => {
     await materialMappingQuotaModifyStatus(record.id)
@@ -152,13 +170,15 @@ const MaterialMapping: React.FC = () => {
   }
 
   const gotoMoreInfo = () => {
-    if (tableSelectRows?.length === 0){
-      message.warning('请选择要操作的行');
+    if (tableSelectRows?.length === 0) {
+      message.warning('请选择要操作的行')
       return
     }
-    const {id,sourceMaterialLibraryId} = tableSelectRows?.[0] ?? '';
-    history.push(`/technology-economic/mapping-infomation?id=${id}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`)
-  };
+    const { id, sourceMaterialLibraryId } = tableSelectRows?.[0] ?? ''
+    history.push(
+      `/technology-economic/mapping-infomation?id=${id}&sourceMaterialLibraryId=${sourceMaterialLibraryId}`
+    )
+  }
   const onFinish = (val: SuppliesLibraryData) => {
     setSpinning(true)
 
@@ -166,53 +186,54 @@ const MaterialMapping: React.FC = () => {
     // data.enabled = !!data.enabled
     data.file = val.file
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
-    addSourceMaterialMappingQuota(data).then(()=>{
-      setAddFormVisible(false)
-      refresh()
-    }).finally(()=>{
-      setSpinning(false)
-    })
-
+    addSourceMaterialMappingQuota(data)
+      .then(() => {
+        setAddFormVisible(false)
+        refresh()
+      })
+      .finally(() => {
+        setSpinning(false)
+      })
   }
   const onRemoveRow = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行');
-      return;
+      message.warning('请选择要操作的行')
+      return
     }
     confirm({
       title: '确定要删除该物料映射吗?',
-      icon: <ExclamationCircleOutlined/>,
+      icon: <ExclamationCircleOutlined />,
       async onOk() {
         await deleteMaterialMappingQuota(tableSelectRows[0].id)
         refresh()
         setTableSelectRows([])
-      }
-    });
+      },
+    })
   }
 
   const tableElement = () => {
     return (
       <Space>
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined/>
+          <PlusOutlined />
           添加
         </Button>
 
         <Button onClick={onRemoveRow} className="mr7">
-          <DeleteOutlined/>
+          <DeleteOutlined />
           删除
         </Button>
         <Button className="mr7" onClick={() => gotoMoreInfo()}>
-          <EyeOutlined/>
+          <EyeOutlined />
           查看详情
         </Button>
       </Space>
-    );
-  };
+    )
+  }
 
   const tableSelectEvent = (data: SuppliesLibraryData[] | Object) => {
-    setTableSelectRows(data);
-  };
+    setTableSelectRows(data)
+  }
 
   return (
     <PageCommonWrap>
@@ -225,7 +246,7 @@ const MaterialMapping: React.FC = () => {
         url="/MaterialLibrary/GetSourceMaterialMappingLibraryList"
         tableTitle="物料库映射管理"
         getSelectData={tableSelectEvent}
-        requestSource='tecEco1'
+        requestSource="tecEco1"
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
@@ -245,10 +266,10 @@ const MaterialMapping: React.FC = () => {
         <Spin spinning={spinning}>
           <Form
             name="basic"
-            initialValues={{remember: true}}
+            initialValues={{ remember: true }}
             form={form}
-            labelCol={{span: 6}}
-            wrapperCol={{span: 18}}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
             onFinish={onFinish}
           >
             <Row gutter={20}>
@@ -256,27 +277,21 @@ const MaterialMapping: React.FC = () => {
                 <Form.Item
                   label="名称"
                   name="name"
-                  rules={[{required: true, message: '请输入名称!'}]}
+                  rules={[{ required: true, message: '请输入名称!' }]}
                 >
-                  <Input placeholder={'请输入名称'}/>
+                  <Input placeholder={'请输入名称'} />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item
-                  label="发布时间"
-                  name="publishDate"
-                >
-                  <DatePicker/>
+                <Form.Item label="发布时间" name="publishDate">
+                  <DatePicker />
                 </Form.Item>
               </Col>
             </Row>
             <Row gutter={20}>
               <Col span={12}>
-                <Form.Item
-                  label="发布机构"
-                  name="publishOrg"
-                >
-                  <Input/>
+                <Form.Item label="发布机构" name="publishOrg">
+                  <Input />
                 </Form.Item>
               </Col>
               {/*<Col span={12}>*/}
@@ -292,14 +307,16 @@ const MaterialMapping: React.FC = () => {
                 <Form.Item
                   label="关联物料库"
                   name="sourceMaterialLibraryId"
-                  rules={[{required: true, message: '请选择关联物料库!'}]}
+                  rules={[{ required: true, message: '请选择关联物料库!' }]}
                 >
                   <Select>
-                    {
-                      materialList.map(item=>{
-                        return <Option  key={item.id} value={item.id}>{item.name}</Option>
-                      })
-                    }
+                    {materialList.map((item) => {
+                      return (
+                        <Option key={item.id} value={item.id}>
+                          {item.name}
+                        </Option>
+                      )
+                    })}
                   </Select>
                 </Form.Item>
               </Col>
@@ -309,29 +326,21 @@ const MaterialMapping: React.FC = () => {
                 <Form.Item
                   label="上传文件"
                   name="file"
-                  rules={[{required: true, message: '请上传物料库文件!'}]}
+                  rules={[{ required: true, message: '请上传物料库文件!' }]}
                 >
-                  <FileUpload
-                    trigger={triggerUploadFile}
-                    maxCount={1}
-                    accept=".xls,.xlsx"/>
+                  <FileUpload trigger={triggerUploadFile} maxCount={1} accept=".xls,.xlsx" />
                 </Form.Item>
               </Col>
 
               <Col span={12}>
-                <Form.Item
-                  label="说明"
-                  name="remark"
-                >
-                  <Input.TextArea rows={3}/>
+                <Form.Item label="说明" name="remark">
+                  <Input.TextArea rows={3} />
                 </Form.Item>
               </Col>
             </Row>
-            <div style={{display: 'flex', justifyContent: 'right'}}>
+            <div style={{ display: 'flex', justifyContent: 'right' }}>
               <Space>
-                <Button onClick={() => setAddFormVisible(false)}>
-                  取消
-                </Button>
+                <Button onClick={() => setAddFormVisible(false)}>取消</Button>
                 <Button type="primary" htmlType="submit">
                   确定
                 </Button>
@@ -341,8 +350,7 @@ const MaterialMapping: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default MaterialMapping;
-
+export default MaterialMapping

@@ -1,35 +1,35 @@
-import { Timeline } from 'antd';
-import uuid from 'node-uuid';
-import React from 'react';
-import ProjectProcessItem from '../project-process-item';
-import styles from './index.less';
+import { Timeline } from 'antd'
+import uuid from 'node-uuid'
+import React from 'react'
+import ProjectProcessItem from '../project-process-item'
+import styles from './index.less'
 
 interface ProjectProcessInfoProps {
-  projectInfo: any;
+  projectInfo: any
 }
 
 const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = (props) => {
-  const { projectInfo = {} } = props;
-  const { allots } = projectInfo;
+  const { projectInfo = {} } = props
+  const { allots } = projectInfo
 
   const allotsElement = allots?.map((item: any) => {
-    let showTitle = '';
+    let showTitle = ''
     if (projectInfo?.dataSourceType === 2) {
       item.users.unshift({
         key: { text: '勘察', value: 1 },
         value: [{ userNameText: '无需安排' }],
-      });
+      })
     }
     switch (item.allotType) {
       case 1:
-        showTitle = `项目委托给: ${item.allotOrganizeName}`;
-        break;
+        showTitle = `项目委托给: ${item.allotOrganizeName}`
+        break
       case 3:
-        showTitle = `${item.allotOrganizeName} => 部组: ${item.allotCompanyGroupName}(${item.allotCompanyGroupAdmin})`;
-        break;
+        showTitle = `${item.allotOrganizeName} => 部组: ${item.allotCompanyGroupName}(${item.allotCompanyGroupAdmin})`
+        break
       case 2:
-        showTitle = item.allotOrganizeName;
-        break;
+        showTitle = item.allotOrganizeName
+        break
     }
 
     return (
@@ -41,8 +41,8 @@ const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = (props) => {
           users={item.users}
         />
       </Timeline.Item>
-    );
-  });
+    )
+  })
 
   return (
     <div className={styles.projectProcessInfo}>
@@ -58,7 +58,7 @@ const ProjectProcessInfo: React.FC<ProjectProcessInfoProps> = (props) => {
         {allotsElement}
       </Timeline>
     </div>
-  );
-};
+  )
+}
 
-export default ProjectProcessInfo;
+export default ProjectProcessInfo

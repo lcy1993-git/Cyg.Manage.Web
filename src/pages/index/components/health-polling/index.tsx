@@ -1,10 +1,10 @@
 import { getStopServerNotice, pollingHealth } from '@/services/index'
+import { history } from '@@/core/history'
 import { useInterval, useMount, useRequest } from 'ahooks'
-import React, { useState, useEffect } from 'react'
-import { useLocation } from 'umi'
 import { notification } from 'antd'
 import { message } from 'antd/es'
-import { history } from '@@/core/history'
+import React, { useEffect, useState } from 'react'
+import { useLocation } from 'umi'
 
 const HealthPolling: React.FC = () => {
   const [requestFlag, setRequestFlag] = useState(true)

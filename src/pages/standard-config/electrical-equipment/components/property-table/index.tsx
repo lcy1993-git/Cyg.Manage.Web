@@ -1,12 +1,9 @@
 import GeneralTable from '@/components/general-table'
-import { Button, message, Form, Modal } from 'antd'
-import React, { useState } from 'react'
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Popconfirm } from 'antd'
-// import styles from './index.less';
-import { isArray } from 'lodash'
 import { getPropertyList, updateComponentPropertyItem } from '@/services/resource-config/component'
+import { EditOutlined } from '@ant-design/icons'
 import { useRequest, useUpdateEffect } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
+import React, { useState } from 'react'
 import EditAllPropertyForm from './edit-all-form'
 interface ModuleDetailParams {
   libId: string

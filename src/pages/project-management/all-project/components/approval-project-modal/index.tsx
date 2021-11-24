@@ -2,76 +2,76 @@ import {
   createEngineerFile,
   delEngineerFile,
   GetEngineerFileGetList,
-} from '@/services/project-management/all-project';
-import { downLoadFileItem } from '@/services/operation-config/company-file';
-import { useControllableValue, useMount } from 'ahooks';
-import { getUploadUrl } from '@/services/resource-config/drawing';
-import { Button, Table } from 'antd';
-import { Form, message, Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { useRequest } from 'ahooks';
+} from '@/services/project-management/all-project'
+import { downLoadFileItem } from '@/services/operation-config/company-file'
+import { useControllableValue, useMount } from 'ahooks'
+import { getUploadUrl } from '@/services/resource-config/drawing'
+import { Button, Table } from 'antd'
+import { Form, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { useRequest } from 'ahooks'
 
-import FileUpload from '@/components/file-upload';
+import FileUpload from '@/components/file-upload'
 
-import styles from './index.less';
-import { uploadCompanyFile } from '@/services/operation-config/company-file';
-import moment from 'moment';
+import styles from './index.less'
+import { uploadCompanyFile } from '@/services/operation-config/company-file'
+import moment from 'moment'
 
 interface EditEngineerProps {
-  engineerId: string;
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
+  engineerId: string
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
 }
 
 const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState([])
 
-  const { engineerId } = props;
+  const { engineerId } = props
   const { data = [], run } = useRequest<any[]>(() => GetEngineerFileGetList(engineerId), {
     manual: true,
-  });
+  })
 
-  const { data: keyData } = useRequest(() => getUploadUrl());
+  const { data: keyData } = useRequest(() => getUploadUrl())
 
-  const securityKey = keyData?.uploadCompanyFileApiSecurity;
+  const securityKey = keyData?.uploadCompanyFileApiSecurity
 
   useMount(() => {
-    run();
-  });
+    run()
+  })
 
   const handlerUpload = async (fileId: string, fileName: string) => {
-    const res = await downLoadFileItem({ fileId, securityKey });
-    const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1);
+    const res = await downLoadFileItem({ fileId, securityKey })
+    const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1)
 
     const blob = new Blob([res], {
       type: `application/${suffix}`,
-    });
+    })
     // for IE
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, fileName);
+      window.navigator.msSaveOrOpenBlob(blob, fileName)
     } else {
       // for Non-IE
-      const objectUrl = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = objectUrl;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      window.URL.revokeObjectURL(link.href);
-      document.body.removeChild(link);
+      const objectUrl = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', fileName)
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+      document.body.removeChild(link)
     }
-    message.success('下载成功');
-  };
+    message.success('下载成功')
+  }
 
   const handlerDel = async (id: string) => {
     delEngineerFile(id).then(() => {
-      message.success('删除成功');
-      run();
-    });
-  };
+      message.success('删除成功')
+      run()
+    })
+  }
 
   const columns = [
     {
@@ -91,13 +91,13 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
       index: 'createdOn',
       dataIndex: 'createdOn',
       render(v: string) {
-        return moment(v).format('YYYY-MM-DD');
+        return moment(v).format('YYYY-MM-DD')
       },
     },
     {
       title: '操作',
       render(t, record: any) {
-        const { id, fileId, fileName } = record;
+        const { id, fileId, fileName } = record
         return (
           <div className={styles.buttonArea}>
             <Button type="link" onClick={() => handlerUpload(fileId, fileName)}>
@@ -107,20 +107,20 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
               删除
             </Button>
           </div>
-        );
+        )
       },
       width: 100,
     },
-  ];
+  ]
 
   const upLoadFn = async () => {
-    const fileId = await uploadCompanyFile(fileList, { securityKey }, '/Upload/CompanyFile');
+    const fileId = await uploadCompanyFile(fileList, { securityKey }, '/Upload/CompanyFile')
     createEngineerFile({
       fileId,
       category: 1,
       engineerId,
-    }).then(() => run());
-  };
+    }).then(() => run())
+  }
 
   return (
     <Modal
@@ -150,7 +150,7 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
       </div>
       <Table columns={columns} dataSource={data} pagination={false} />
     </Modal>
-  );
-};
+  )
+}
 
-export default ApprovalProjectModal;
+export default ApprovalProjectModal

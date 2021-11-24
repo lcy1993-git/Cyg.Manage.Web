@@ -1,16 +1,16 @@
-import React from 'react'
-import { Input, Tooltip } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
 import EnumSelect from '@/components/enum-select'
-import { QuestionCircleOutlined } from '@ant-design/icons'
+import UrlSelect from '@/components/url-select'
 import {
+  forDesignType,
+  forProjectType,
+  kvBothLevelType,
   materialType,
   supplySideType,
-  kvBothLevelType,
-  forProjectType,
-  forDesignType,
 } from '@/services/resource-config/resource-enum'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Tooltip } from 'antd'
+import React from 'react'
 interface ChartListFromLibParams {
   resourceLibId: string
 }

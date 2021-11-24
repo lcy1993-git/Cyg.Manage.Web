@@ -6,9 +6,7 @@ import { useMount, useRequest } from 'ahooks'
 import { DatePicker, Input, InputNumber, Select } from 'antd'
 import { isEmpty, isNumber } from 'lodash'
 import moment, { Moment } from 'moment'
-import React, { memo, useEffect, useState } from 'react'
-import { useMemo } from 'react'
-
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import Rule from './project-form-rule'
 
 interface CreateProjectFormProps {

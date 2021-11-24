@@ -1,16 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { useMount } from 'ahooks'
-import { Tabs } from 'antd'
-import PageCommonWrap from '@/components/page-common-wrap'
 import GeneralTable from '@/components/general-table'
-import { Select } from 'antd'
-import qs from 'qs'
-import styles from './index.less'
-import { Tree } from 'antd'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
 import { getSourceMaterialMappingLibraryList } from '@/services/technology-economic/material'
 import { getMaterialLibraryTreeById } from '@/services/technology-economic/supplies-library'
-import TableSearch from '@/components/table-search'
+import { useMount } from 'ahooks'
+import { Select, Tabs, Tree } from 'antd'
 import Search from 'antd/lib/input/Search'
+import qs from 'qs'
+import React, { useEffect, useRef, useState } from 'react'
+import styles from './index.less'
 
 const { Option } = Select
 

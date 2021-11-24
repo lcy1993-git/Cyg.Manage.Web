@@ -1,34 +1,34 @@
-import React, { SetStateAction, useMemo, useState } from 'react';
-import { Button, Form, message, Modal } from 'antd';
+import React, { SetStateAction, useMemo, useState } from 'react'
+import { Button, Form, message, Modal } from 'antd'
 
-import { useControllableValue, useRequest } from 'ahooks';
-import SelectAddListForm from '../select-add-list-form';
-import { Dispatch } from 'react';
-import { UserInfo } from '@/services/project-management/select-add-list-form';
-import { Checkbox } from 'antd';
-import { allotOuterAudit, getAllotUsers } from '@/services/project-management/all-project';
-import styles from './index.less';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { useControllableValue, useRequest } from 'ahooks'
+import SelectAddListForm from '../select-add-list-form'
+import { Dispatch } from 'react'
+import { UserInfo } from '@/services/project-management/select-add-list-form'
+import { Checkbox } from 'antd'
+import { allotOuterAudit, getAllotUsers } from '@/services/project-management/all-project'
+import styles from './index.less'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 interface GetGroupUserProps {
-  onChange?: Dispatch<SetStateAction<boolean>>;
-  getCompanyInfo?: (companyInfo: any) => void;
-  defaultType?: string;
-  allotCompanyId?: string;
-  visible: boolean;
-  projectId: string;
-  search?: () => void;
-  proName?: string;
+  onChange?: Dispatch<SetStateAction<boolean>>
+  getCompanyInfo?: (companyInfo: any) => void
+  defaultType?: string
+  allotCompanyId?: string
+  visible: boolean
+  projectId: string
+  search?: () => void
+  proName?: string
 }
 
 const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
-  const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
-  const [isArrangePeople, setIsArrangePeople] = useState<boolean>(false); //不安排外审status
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]) //添加的外审人员列表
+  const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false) //不安排外审status
+  const [isArrangePeople, setIsArrangePeople] = useState<boolean>(false) //不安排外审status
 
-  const [form] = Form.useForm();
-  const { projectId, search, proName } = props;
+  const [form] = Form.useForm()
+  const { projectId, search, proName } = props
 
   const { data } = useRequest(() => getAllotUsers(projectId, 6), {
     onSuccess: () => {
@@ -36,17 +36,17 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         return {
           value: item.userId,
           text: item.userNameText,
-        };
-      });
-      setArrangePeople(handleData ?? []);
+        }
+      })
+      setArrangePeople(handleData ?? [])
     },
-  });
+  })
 
   const handleExternalMen = useMemo(() => {
     return arrangePeople?.map((item: any) => {
-      return item.value;
-    });
-  }, [arrangePeople]);
+      return item.value
+    })
+  }, [arrangePeople])
 
   const saveExternalArrange = async () => {
     await allotOuterAudit({
@@ -54,11 +54,11 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       userIds: handleExternalMen,
       noNeedAudit: false,
       // auditResult: isPassArrangePeople,
-    });
-    message.success('外审安排成功');
-    setState(false);
-    search?.();
-  };
+    })
+    message.success('外审安排成功')
+    setState(false)
+    search?.()
+  }
 
   const notNeedAuditEvent = async () => {
     await allotOuterAudit({
@@ -66,11 +66,11 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       userIds: handleExternalMen,
       noNeedAudit: true,
       // auditResult: isPassArrangePeople,
-    });
-    message.success('该项目已无需外审');
-    setState(false);
-    search?.();
-  };
+    })
+    message.success('该项目已无需外审')
+    setState(false)
+    search?.()
+  }
 
   const isExternalEvent = () => {
     Modal.confirm({
@@ -80,8 +80,8 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       okText: '确认',
       cancelText: '取消',
       onOk: notNeedAuditEvent,
-    });
-  };
+    })
+  }
 
   return (
     <Modal
@@ -127,7 +127,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         />
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default ExternalArrangeForm;
+export default ExternalArrangeForm

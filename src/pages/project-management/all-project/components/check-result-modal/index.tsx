@@ -7,92 +7,92 @@ import {
   getCompileResultTreeData,
   getAuditResultData,
   downloadAuditFile,
-} from '@/services/project-management/all-project';
-import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons';
-import { useControllableValue, useRequest } from 'ahooks';
-import { Button, Modal, Spin, message, Tabs } from 'antd';
-import React, { Dispatch, SetStateAction, useState, useEffect, useMemo } from 'react';
-import CompileResultTab from '../check-compile-result';
-import DesignResultTab from '../check-design-result';
-import pdfSvg from '@/assets/image/fileIcon/pdf.svg';
-import foldSvg from '@/assets/image/fileIcon/fold.svg';
-import wordSvg from '@/assets/image/fileIcon/word.svg';
-import excelSvg from '@/assets/image/fileIcon/excel.svg';
-import jpgSvg from '@/assets/image/fileIcon/jpg.svg';
+} from '@/services/project-management/all-project'
+import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Modal, Spin, message, Tabs } from 'antd'
+import React, { Dispatch, SetStateAction, useState, useEffect, useMemo } from 'react'
+import CompileResultTab from '../check-compile-result'
+import DesignResultTab from '../check-design-result'
+import pdfSvg from '@/assets/image/fileIcon/pdf.svg'
+import foldSvg from '@/assets/image/fileIcon/fold.svg'
+import wordSvg from '@/assets/image/fileIcon/word.svg'
+import excelSvg from '@/assets/image/fileIcon/excel.svg'
+import jpgSvg from '@/assets/image/fileIcon/jpg.svg'
 
-import styles from './index.less';
-import UrlFileView from '@/components/url-file-view';
-import { FileType } from '@/components/api-file-view/getStrategyComponent';
-import AuditResultTab from '../check-audit-result';
-import ViewAuditFile from '../external-list-modal/components/viewFile';
+import styles from './index.less'
+import UrlFileView from '@/components/url-file-view'
+import { FileType } from '@/components/api-file-view/getStrategyComponent'
+import AuditResultTab from '../check-audit-result'
+import ViewAuditFile from '../external-list-modal/components/viewFile'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 export interface CurrentFileInfo {
-  path: string;
-  type: FileType | undefined;
-  title: string;
+  path: string
+  type: FileType | undefined
+  title: string
 }
 export interface AuditFileInfo {
-  url: string;
-  extension: string | undefined;
-  title: string;
+  url: string
+  extension: string | undefined
+  title: string
 }
 
 interface CheckResultModalProps {
-  visible?: boolean;
-  onChange?: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent?: () => void;
-  projectInfo?: any;
+  visible?: boolean
+  onChange?: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent?: () => void
+  projectInfo?: any
 }
 
 const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   // const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
-  const [auditKeys, setAuditKeys] = useState<React.Key[]>([]);
-  const [compileKeys, setCompileKeys] = useState<React.Key[]>([]);
-  const [currentTab, setCurrentTab] = useState<string>('design');
-  const { projectInfo } = props;
-  const [requestLoading, setRequestLoading] = useState(false);
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
+  const [auditKeys, setAuditKeys] = useState<React.Key[]>([])
+  const [compileKeys, setCompileKeys] = useState<React.Key[]>([])
+  const [currentTab, setCurrentTab] = useState<string>('design')
+  const { projectInfo } = props
+  const [requestLoading, setRequestLoading] = useState(false)
 
   const [currentFileInfo, setCurrentFileInfoErr] = useState<CurrentFileInfo>({
     path: '',
     type: undefined,
     title: '',
-  });
+  })
   const [auditFileInfo, setAuditFileInfoErr] = useState<AuditFileInfo>({
     url: '',
     extension: undefined,
     title: '',
-  });
+  })
 
   const setCurrentFileInfo = (info: CurrentFileInfo) => {
     if (info.type === 'doc' || info.type === 'xls') {
-      message.error(`当前版本暂不支持${info.type}文件预览，请导出该文件在本地进行预览`);
+      message.error(`当前版本暂不支持${info.type}文件预览，请导出该文件在本地进行预览`)
     } else {
-      setCurrentFileInfoErr(info);
+      setCurrentFileInfoErr(info)
     }
-  };
+  }
 
   const setAuditFileInfo = (info: AuditFileInfo) => {
     if (info.extension === '.doc' || info.extension === '.xls') {
-      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件在本地进行预览`);
+      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件在本地进行预览`)
     } else {
-      setAuditFileInfoErr(info);
+      setAuditFileInfoErr(info)
     }
-  };
+  }
 
   const { data: resultData, run } = useRequest(getResultTreeData, {
     manual: true,
-  });
+  })
 
   const { data: compileResultData, run: getCompileTree } = useRequest(getCompileResultTreeData, {
     manual: true,
-  });
+  })
 
   const { data: auditResultData, run: getAuditTree } = useRequest(getAuditResultData, {
     manual: true,
-  });
+  })
 
   // const closeEvent = () => {
   //   setState(false);
@@ -121,146 +121,146 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         ),
 
       children: data.children ? data.children.map(mapTreeData) : [],
-    };
-  };
+    }
+  }
 
   const refresh = () => {
-    message.success('刷新成功');
+    message.success('刷新成功')
     if (currentTab === 'design') {
-      run(projectInfo.projectId);
+      run(projectInfo.projectId)
     } else {
-      getCompileTree(projectInfo.projectId);
+      getCompileTree(projectInfo.projectId)
     }
-  };
+  }
 
   const createFile = async () => {
     if (currentTab === 'design') {
       if (checkedKeys.length === 0) {
-        message.error('请至少选择一个文件进行下载');
-        return;
+        message.error('请至少选择一个文件进行下载')
+        return
       }
 
       try {
-        setRequestLoading(true);
+        setRequestLoading(true)
         const path = await createResult({
           projectId: projectInfo.projectId,
           paths: checkedKeys,
-        });
+        })
         const res = await downloadFile({
           path: path,
-        });
+        })
 
         let blob = new Blob([res], {
           type: 'application/zip',
-        });
-        let finalyFileName = `导出设计成果.zip`;
+        })
+        let finalyFileName = `导出设计成果.zip`
         // for IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
+          window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
-          let objectUrl = URL.createObjectURL(blob);
-          let link = document.createElement('a');
-          link.href = objectUrl;
-          link.setAttribute('download', finalyFileName);
-          document.body.appendChild(link);
-          link.click();
-          window.URL.revokeObjectURL(link.href);
-          document.body.removeChild(link);
+          let objectUrl = URL.createObjectURL(blob)
+          let link = document.createElement('a')
+          link.href = objectUrl
+          link.setAttribute('download', finalyFileName)
+          document.body.appendChild(link)
+          link.click()
+          window.URL.revokeObjectURL(link.href)
+          document.body.removeChild(link)
         }
       } catch (error) {
-        message.error({ error });
+        message.error({ error })
       } finally {
-        setRequestLoading(false);
+        setRequestLoading(false)
       }
     } else if (currentTab === 'compile') {
       if (compileKeys.length === 0) {
-        message.error('请至少选择一个文件进行下载');
-        return;
+        message.error('请至少选择一个文件进行下载')
+        return
       }
       try {
-        setRequestLoading(true);
+        setRequestLoading(true)
         const path = await createCompileResult({
           projectId: projectInfo.projectId,
           paths: compileKeys,
-        });
+        })
         const res = await downloadFileCompile({
           path: path,
-        });
+        })
 
         let blob = new Blob([res], {
           type: 'application/zip',
-        });
-        let finalyFileName = `导出项目需求编制成果.zip`;
+        })
+        let finalyFileName = `导出项目需求编制成果.zip`
         // for IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
+          window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
-          let objectUrl = URL.createObjectURL(blob);
-          let link = document.createElement('a');
-          link.href = objectUrl;
-          link.setAttribute('download', finalyFileName);
-          document.body.appendChild(link);
-          link.click();
-          window.URL.revokeObjectURL(link.href);
-          document.body.removeChild(link);
+          let objectUrl = URL.createObjectURL(blob)
+          let link = document.createElement('a')
+          link.href = objectUrl
+          link.setAttribute('download', finalyFileName)
+          document.body.appendChild(link)
+          link.click()
+          window.URL.revokeObjectURL(link.href)
+          document.body.removeChild(link)
         }
       } catch (error) {
       } finally {
-        setRequestLoading(false);
+        setRequestLoading(false)
       }
     } else {
       if (auditKeys.length === 0) {
-        message.error('请至少选择一个文件进行下载');
-        return;
+        message.error('请至少选择一个文件进行下载')
+        return
       }
       try {
-        setRequestLoading(true);
+        setRequestLoading(true)
         // const path = await createCompileResult({
         //   projectId: projectInfo.projectId,
         //   paths: compileKeys,
         // });
-        const res = await downloadAuditFile(projectInfo.projectId, auditKeys);
+        const res = await downloadAuditFile(projectInfo.projectId, auditKeys)
 
         let blob = new Blob([res], {
           type: 'application/zip',
-        });
-        let finalyFileName = `导出评审成果.zip`;
+        })
+        let finalyFileName = `导出评审成果.zip`
         // for IE
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(blob, finalyFileName);
+          window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
-          let objectUrl = URL.createObjectURL(blob);
-          let link = document.createElement('a');
-          link.href = objectUrl;
-          link.setAttribute('download', finalyFileName);
-          document.body.appendChild(link);
-          link.click();
-          window.URL.revokeObjectURL(link.href);
-          document.body.removeChild(link);
+          let objectUrl = URL.createObjectURL(blob)
+          let link = document.createElement('a')
+          link.href = objectUrl
+          link.setAttribute('download', finalyFileName)
+          document.body.appendChild(link)
+          link.click()
+          window.URL.revokeObjectURL(link.href)
+          document.body.removeChild(link)
         }
       } catch (error) {
       } finally {
-        setRequestLoading(false);
+        setRequestLoading(false)
       }
     }
 
-    message.success('生成成功');
-  };
+    message.success('生成成功')
+  }
 
   useEffect(() => {
     if (currentTab === 'design') {
-      run(projectInfo.projectId);
+      run(projectInfo.projectId)
     }
     if (currentTab === 'compile') {
-      getCompileTree(projectInfo.projectId);
+      getCompileTree(projectInfo.projectId)
     }
     if (currentTab === 'audit') {
-      getAuditTree(projectInfo.projectId);
+      getAuditTree(projectInfo.projectId)
     }
-  }, [currentTab]);
+  }, [currentTab])
 
   const mapAuditTree = (datas: any) => {
     return {
@@ -285,8 +285,8 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           category: 2,
         },
       ],
-    };
-  };
+    }
+  }
 
   const handleAuditData = useMemo(() => {
     if (auditResultData) {
@@ -297,11 +297,11 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           category: 1,
           icon: <img src={foldSvg} className={styles.svg} />,
           children: item.datas.map(mapAuditTree),
-        };
-      });
+        }
+      })
     }
-    return;
-  }, [auditResultData]);
+    return
+  }, [auditResultData])
 
   return (
     <>
@@ -447,7 +447,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         {auditFileInfo.url && <ViewAuditFile params={auditFileInfo} />}
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default CheckResultModal;
+export default CheckResultModal

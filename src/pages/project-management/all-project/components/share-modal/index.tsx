@@ -1,76 +1,74 @@
-import { shareProject } from '@/services/project-management/all-project';
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { useControllableValue } from 'ahooks';
-import { Input, message, Modal } from 'antd';
-import React, { Dispatch, useState } from 'react';
-import { useEffect } from 'react';
-import { SetStateAction } from 'react';
-import ShowCompanyInfoChunk from '../show-company-info-chunk';
+import { shareProject } from '@/services/project-management/all-project'
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
+import { useControllableValue } from 'ahooks'
+import { Input, message, Modal } from 'antd'
+import React, { Dispatch, useState } from 'react'
+import { useEffect } from 'react'
+import { SetStateAction } from 'react'
+import ShowCompanyInfoChunk from '../show-company-info-chunk'
 
-import styles from './index.less';
+import styles from './index.less'
 
 interface ShareModalProps {
-  projectIds: string[];
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent: () => void;
+  projectIds: string[]
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent: () => void
 }
 
 const ShareModal: React.FC<ShareModalProps> = (props) => {
-  const [companyInfoArray, setCompanyInfoArray] = useState<any[]>([
-    { user: '', companyInfo: null },
-  ]);
+  const [companyInfoArray, setCompanyInfoArray] = useState<any[]>([{ user: '', companyInfo: null }])
 
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const { projectIds, finishEvent } = props;
+  const { projectIds, finishEvent } = props
 
   const saveShareInfo = async () => {
     const userIds = companyInfoArray
       .filter((item) => item.companyInfo)
       .map((item) => item.companyInfo)
-      .map((item) => item.value);
+      .map((item) => item.value)
 
     if (userIds.length === 0) {
-      message.error('至少需要一个存在的管理员用户信息');
-      return;
+      message.error('至少需要一个存在的管理员用户信息')
+      return
     }
     await shareProject({
       userIds,
       projectIds,
-    });
-    message.success('共享成功');
-    setState(false);
-    finishEvent?.();
-  };
+    })
+    message.success('共享成功')
+    setState(false)
+    finishEvent?.()
+  }
 
   const addEvent = () => {
-    setCompanyInfoArray([...companyInfoArray, { user: '', companyInfo: null }]);
-  };
+    setCompanyInfoArray([...companyInfoArray, { user: '', companyInfo: null }])
+  }
 
   const removeEvent = (index: number) => {
-    const copyData = JSON.parse(JSON.stringify(companyInfoArray));
-    copyData.splice(index, 1);
-    setCompanyInfoArray(copyData);
-  };
+    const copyData = JSON.parse(JSON.stringify(companyInfoArray))
+    copyData.splice(index, 1)
+    setCompanyInfoArray(copyData)
+  }
 
   const userChangeEvent = async (value: string, index: number) => {
-    const copyData = JSON.parse(JSON.stringify(companyInfoArray));
-    copyData.splice(index, 1, { user: value, companyInfo: copyData[index].companyInfo });
-    setCompanyInfoArray(copyData);
-  };
+    const copyData = JSON.parse(JSON.stringify(companyInfoArray))
+    copyData.splice(index, 1, { user: value, companyInfo: copyData[index].companyInfo })
+    setCompanyInfoArray(copyData)
+  }
 
   const getCompanyInfoChange = (companyInfo: any, index: number) => {
-    const copyData = JSON.parse(JSON.stringify(companyInfoArray));
-    copyData.splice(index, 1, { user: copyData[index].user, companyInfo: companyInfo });
-    setCompanyInfoArray(copyData);
-  };
+    const copyData = JSON.parse(JSON.stringify(companyInfoArray))
+    copyData.splice(index, 1, { user: copyData[index].user, companyInfo: companyInfo })
+    setCompanyInfoArray(copyData)
+  }
 
   useEffect(() => {
     if (state) {
-      setCompanyInfoArray([{ user: '', companyInfo: null }]);
+      setCompanyInfoArray([{ user: '', companyInfo: null }])
     }
-  }, [state]);
+  }, [state])
 
   return (
     <Modal
@@ -122,12 +120,12 @@ const ShareModal: React.FC<ShareModalProps> = (props) => {
                   )}
                 </td>
               </tr>
-            );
+            )
           })}
         </tbody>
       </table>
     </Modal>
-  );
-};
+  )
+}
 
-export default ShareModal;
+export default ShareModal

@@ -1,8 +1,8 @@
-import request from '@/utils/request';
-import { Moment } from 'moment';
-import React from 'react';
-import { cyRequest, baseUrl } from '../common';
-import { TableRequestResult } from '../table';
+import request from '@/utils/request'
+import { Moment } from 'moment'
+import React from 'react'
+import { baseUrl, cyRequest } from '../common'
+import { TableRequestResult } from '../table'
 
 export enum Arrangement {
   '项目委托' = 1,
@@ -208,279 +208,291 @@ export enum DataSourceType {
 }
 
 export interface AllProjectStatisticsParams {
-  keyWord?: string;
-  category?: number[];
-  pCategory?: number[];
-  stage?: number[];
-  constructType?: number[];
-  nature?: number[];
-  kvLevel?: number[];
-  status?: number[];
-  sourceType?: number[];
-  identityType?: number[];
-  logicRelation?: number;
-  surveyUser?: string;
-  designUser?: string;
-  areaInfo?: any;
+  keyWord?: string
+  category?: number[]
+  pCategory?: number[]
+  stage?: number[]
+  constructType?: number[]
+  nature?: number[]
+  kvLevel?: number[]
+  status?: number[]
+  sourceType?: number[]
+  identityType?: number[]
+  logicRelation?: number
+  surveyUser?: string
+  designUser?: string
+  areaInfo?: any
 }
 
 export interface AllProjectSearchParams extends AllProjectStatisticsParams {
-  pageIndex: number;
-  pageSize: number;
-  statisticalCategory?: string;
+  pageIndex: number
+  pageSize: number
+  statisticalCategory?: string
 }
 
-interface ProjectTableRequestData {
-  pagedData: TableRequestResult;
-  statistics: ProjectTableStatisticsResult;
-}
+// export interface ProjectTableRequestData {
+//   pagedData: TableRequestResult
+//   statistics: ProjectTableStatisticsResult
+// }
 
-// 获取列表
+// 获取我的项目列表
 export const getProjectTableList = (params: AllProjectSearchParams) => {
-  return cyRequest<ProjectTableRequestData>(() =>
-    request(`${baseUrl.project}/Porject/GetPagedList`, { method: 'POST', data: params }),
-  );
-};
+  return cyRequest<TableRequestResult>(() =>
+    request(`${baseUrl.project}/ProjectList/GetAlls`, { method: 'POST', data: params })
+  )
+}
+// 获取列表数据
+export const getTableData = (url: string, params: AllProjectSearchParams) => {
+  return cyRequest<TableRequestResult>(() =>
+    request(`${baseUrl.project}${url}`, { method: 'POST', data: params })
+  )
+}
+// 获取立项待审批列表
+export const getAwaitApproveList = (params: AllProjectSearchParams) => {
+  return cyRequest<TableRequestResult>(() =>
+    request(`${baseUrl.project}/ProjectList/GetAwaitApproves`, { method: 'POST', data: params })
+  )
+}
 
 export interface ProjectTableStatisticsResult {
-  total: number;
-  awaitProcess: number;
-  inProgress: number;
-  delegation: number;
-  beShared: number;
+  total: number
+  awaitProcess: number
+  inProgress: number
+  delegation: number
+  beShared: number
 }
 
 // 获取统计的值
 export const getProjectTableStatistics = (params: AllProjectStatisticsParams) => {
   return cyRequest<ProjectTableStatisticsResult>(() =>
-    request(`${baseUrl.project}/Porject/GetStatistical`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Porject/GetStatistical`, { method: 'POST', data: params })
+  )
+}
 
 interface EngineerParams {
-  name: string;
-  province: string;
-  city: string;
-  area: string;
-  libId: string;
-  inventoryOverviewId: string;
-  warehouseId: string;
-  compiler: string;
-  compileTime: Moment;
-  organization: string;
-  startTime: Moment;
-  endTime: Moment;
-  company: string;
-  importance: string;
-  plannedYear: string;
-  grade: string;
+  name: string
+  province: string
+  city: string
+  area: string
+  libId: string
+  inventoryOverviewId: string
+  warehouseId: string
+  compiler: string
+  compileTime: Moment
+  organization: string
+  startTime: Moment
+  endTime: Moment
+  company: string
+  importance: string
+  plannedYear: string
+  grade: string
 }
 
 interface ProjectParams {
-  name: string;
-  category: string;
-  pType: string;
-  kvLevel: string;
-  totalInvest: string;
-  natures: any[];
-  startTime: Moment;
-  endTime: Moment;
-  assetsNature: string;
-  majorCategory: string;
-  isAcrossYear: string;
-  reformCause: string;
-  reformAim: string;
-  powerSupply: string;
-  assetsOrganization: string;
-  cityCompany: string;
-  regionAttribute: string;
-  countyCompany: string;
-  constructType: string;
-  pCategory: string;
-  stage: string;
-  batch: string;
-  pAttribute: string;
-  meteorologic: string;
-  disclosureRange: string;
-  pileRange: string;
-  deadline: Moment;
-  dataSourceType: string;
+  name: string
+  category: string
+  pType: string
+  kvLevel: string
+  totalInvest: string
+  natures: any[]
+  startTime: Moment
+  endTime: Moment
+  assetsNature: string
+  majorCategory: string
+  isAcrossYear: string
+  reformCause: string
+  reformAim: string
+  powerSupply: string
+  assetsOrganization: string
+  cityCompany: string
+  regionAttribute: string
+  countyCompany: string
+  constructType: string
+  pCategory: string
+  stage: string
+  batch: string
+  pAttribute: string
+  meteorologic: string
+  disclosureRange: string
+  pileRange: string
+  deadline: Moment
+  dataSourceType: string
 }
 
 interface AddEngineerParams {
-  engineer: EngineerParams;
-  projects: ProjectParams[];
+  engineer: EngineerParams
+  projects: ProjectParams[]
 }
 
 // 立项保存接口
 export const addEngineer = (params: AddEngineerParams) => {
   return cyRequest<ProjectTableStatisticsResult>(() =>
-    request(`${baseUrl.project}/Porject/CreateMultipleProject`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Porject/CreateMultipleProject`, { method: 'POST', data: params })
+  )
+}
 
 export const editEngineer = (params: EngineerParams) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Engineer/Modify`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Engineer/Modify`, { method: 'POST', data: params })
+  )
+}
 
 interface EngineerInfoParams {
-  id: string;
-  name: string;
-  province: string;
-  provinceName: string;
-  libId: string;
-  libName: string;
-  inventoryOverviewId: string;
-  inventoryOverviewName: string;
-  warehouseId: string;
-  warehouseName: string;
-  compiler: string;
-  compileTime: string;
-  organization: string;
-  startTime: string;
-  endTime: string;
-  company: string;
-  importance: string;
-  importanceText: string;
-  plannedYear: string;
-  grade: string;
-  gradeText: string;
-  cityName: string;
-  areaName: string;
+  id: string
+  name: string
+  province: string
+  provinceName: string
+  libId: string
+  libName: string
+  inventoryOverviewId: string
+  inventoryOverviewName: string
+  warehouseId: string
+  warehouseName: string
+  compiler: string
+  compileTime: string
+  organization: string
+  startTime: string
+  endTime: string
+  company: string
+  importance: string
+  importanceText: string
+  plannedYear: string
+  grade: string
+  gradeText: string
+  cityName: string
+  areaName: string
 }
 
 // 获取工程详细信息接口
 export const getEngineerInfo = (engineerId: string) => {
   return cyRequest<EngineerInfoParams>(() =>
-    request(`${baseUrl.project}/Engineer/GetById`, { method: 'GET', params: { id: engineerId } }),
-  );
-};
+    request(`${baseUrl.project}/Engineer/GetById`, { method: 'GET', params: { id: engineerId } })
+  )
+}
 
 export interface OperateLog {
-  category: number;
-  operationCategory: string;
-  content: string;
-  operator: string;
-  createdByName: string;
-  date: string;
+  category: number
+  operationCategory: string
+  content: string
+  operator: string
+  createdByName: string
+  date: string
 }
 
 interface ProjectInfoParams {
-  id: string;
-  name: string;
-  category: string;
-  categoryText: string;
-  pType: string;
-  pTypeText: string;
-  kvLevel: string;
-  kvLevelText: string;
-  totalInvest: string;
-  natures: string[];
-  startTime: string;
-  endTime: string;
-  assetsNature: string;
-  assetsNatureText: string;
-  majorCategory: string;
-  majorCategoryText: string;
-  isAcrossYear: string;
-  reformCause: string;
-  reformCauseText: string;
-  reformAim: string;
-  reformAimText: string;
-  powerSupply: string;
-  assetsOrganization: string;
-  cityCompany: string;
-  regionAttribute: string;
-  regionAttributeText: string;
-  countyCompany: string;
-  constructType: string;
-  constructTypeText: string;
-  pCategory: string;
-  pCategoryText: string;
-  stage: string;
-  stageText: string;
-  batch: string;
-  batchText: string;
-  pAttribute: string;
-  pAttributeText: string;
-  meteorologic: string;
-  meteorologicText: string;
-  disclosureRange: number;
-  pileRange: number;
-  deadline: string;
-  dataSourceType: number;
-  dataSourceTypeText: string;
-  createdOn: string;
-  createdCompanyName: string;
-  stateInfo: any;
-  sources: string;
-  identitys: string[];
-  allots: any[];
-  operateLog: OperateLog[];
+  id: string
+  name: string
+  category: string
+  categoryText: string
+  pType: string
+  pTypeText: string
+  kvLevel: string
+  kvLevelText: string
+  totalInvest: string
+  natures: string[]
+  startTime: string
+  endTime: string
+  assetsNature: string
+  assetsNatureText: string
+  majorCategory: string
+  majorCategoryText: string
+  isAcrossYear: string
+  reformCause: string
+  reformCauseText: string
+  reformAim: string
+  reformAimText: string
+  powerSupply: string
+  assetsOrganization: string
+  cityCompany: string
+  regionAttribute: string
+  regionAttributeText: string
+  countyCompany: string
+  constructType: string
+  constructTypeText: string
+  pCategory: string
+  pCategoryText: string
+  stage: string
+  stageText: string
+  batch: string
+  batchText: string
+  pAttribute: string
+  pAttributeText: string
+  meteorologic: string
+  meteorologicText: string
+  disclosureRange: number
+  pileRange: number
+  deadline: string
+  dataSourceType: number
+  dataSourceTypeText: string
+  createdOn: string
+  createdCompanyName: string
+  stateInfo: any
+  sources: string
+  identitys: string[]
+  allots: any[]
+  operateLog: OperateLog[]
 }
 
 // 获取项目详细信息接口
 export const getProjectInfo = (projectId: string | undefined) => {
   return cyRequest<ProjectInfoParams>(() =>
-    request(`${baseUrl.project}/Porject/GetById`, { method: 'GET', params: { id: projectId } }),
-  );
-};
+    request(`${baseUrl.project}/Porject/GetById`, { method: 'GET', params: { id: projectId } })
+  )
+}
 
 // 编辑项目信息
 export const editProject = (params: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/Modify`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Porject/Modify`, { method: 'POST', data: params })
+  )
+}
 
 // 继承项目信息
 export const inheritProject = (params: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/Inherit`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Porject/Inherit`, { method: 'POST', data: params })
+  )
+}
 
 // 复制项目信息
 export const copyProject = (params: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/Copy`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Porject/Copy`, { method: 'POST', data: params })
+  )
+}
 
 // 获取项目的枚举
 export const getEngineerEnum = () => {
-  return cyRequest<any>(() => request(`${baseUrl.project}/Engineer/GetEnums`, { method: 'GET' }));
-};
+  return cyRequest<any>(() => request(`${baseUrl.project}/Engineer/GetEnums`, { method: 'GET' }))
+}
 
 // 删除项目
 export const deleteProject = (projectIds: string[]) => {
   return cyRequest<any>(() =>
-    request(`${baseUrl.project}/Porject/Delete`, { method: 'POST', data: { projectIds } }),
-  );
-};
+    request(`${baseUrl.project}/Porject/Delete`, { method: 'POST', data: { projectIds } })
+  )
+}
 
 // 新增项目
 export const addProject = (params: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/Create`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Porject/Create`, { method: 'POST', data: params })
+  )
+}
 
 // 申请结项
 export const applyKnot = (projectIds: string[]) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/ApplyKnot`, { method: 'POST', data: { projectIds } }),
-  );
-};
+    request(`${baseUrl.project}/Porject/ApplyKnot`, { method: 'POST', data: { projectIds } })
+  )
+}
 
 // 撤回结项
 export const revokeKnot = (projectIds: string[]) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/RevokeKnot`, { method: 'POST', data: { projectIds } }),
-  );
-};
+    request(`${baseUrl.project}/Porject/RevokeKnot`, { method: 'POST', data: { projectIds } })
+  )
+}
 
 // 结项通过
 export const auditKnot = (isPass: boolean, projectIds: string[]) => {
@@ -488,9 +500,9 @@ export const auditKnot = (isPass: boolean, projectIds: string[]) => {
     request(`${baseUrl.project}/Porject/AuditKnot`, {
       method: 'POST',
       data: { isPass, projectIds },
-    }),
-  );
-};
+    })
+  )
+}
 
 // 撤回共享
 export const recallShare = (ids: string[]) => {
@@ -498,16 +510,16 @@ export const recallShare = (ids: string[]) => {
     request(`${baseUrl.project}/Porject/RevokeShare`, {
       method: 'POST',
       data: { shareIds: ids },
-    }),
-  );
-};
+    })
+  )
+}
 
 // 撤回安排
 export const revokeAllot = (projectIds: string[]) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/RevokeAllot`, { method: 'POST', data: { projectIds } }),
-  );
-};
+    request(`${baseUrl.project}/Porject/RevokeAllot`, { method: 'POST', data: { projectIds } })
+  )
+}
 
 // 检查是否可以一起被安排
 export const checkCanArrange = (projectIds: string[]) => {
@@ -515,70 +527,70 @@ export const checkCanArrange = (projectIds: string[]) => {
     request(`${baseUrl.project}/Porject/CheckAllotPrerequisites`, {
       method: 'POST',
       data: projectIds,
-    }),
-  );
-};
+    })
+  )
+}
 
 export const getGroupInfo = (clientType: string, companyGroupId: string = '') => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.project}/CompanyUser/GetTreeByGroup`, {
       method: 'POST',
       data: { clientType, companyGroupId },
-    }),
-  );
-};
+    })
+  )
+}
 
 export const getCompanyName = (userName: string): Promise<any> => {
   if (!userName) {
     return new Promise((resolve) => {
-      resolve(undefined);
-    });
+      resolve(undefined)
+    })
   }
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/ManageUser/GetCompanyNameByUserName`, {
       method: 'POST',
       data: { userName },
-    }),
-  );
-};
+    })
+  )
+}
 
 export const shareProject = (params: any) => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/Porject/Share`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 interface AllotParams {
-  allotType: number;
-  allotCompanyGroup: string;
-  allotOrganizeUser: string;
-  surveyUser: string;
-  designUser: string;
-  costUser: string;
-  designAssessUser1: string;
-  designAssessUser2: string;
-  designAssessUser3: string;
-  designAssessUser4: string;
-  costAuditUser1: string;
-  costAuditUser2: string;
-  costAuditUser3: string;
+  allotType: number
+  allotCompanyGroup: string
+  allotOrganizeUser: string
+  surveyUser: string
+  designUser: string
+  costUser: string
+  designAssessUser1: string
+  designAssessUser2: string
+  designAssessUser3: string
+  designAssessUser4: string
+  costAuditUser1: string
+  costAuditUser2: string
+  costAuditUser3: string
 }
 
 export const saveArrange = (params: AllotParams) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.project}/Porject/Allot`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Porject/Allot`, { method: 'POST', data: params })
+  )
+}
 
 //修改安排
 export const editArrange = (params: AllotParams) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.project}/Porject/ModifyProjectAllot`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Porject/ModifyProjectAllot`, { method: 'POST', data: params })
+  )
+}
 
 // 检查是否可以进行修改安排
 export const canEditArrange = (projectIds: string[]) => {
@@ -586,9 +598,9 @@ export const canEditArrange = (projectIds: string[]) => {
     request(`${baseUrl.project}/Porject/CheckModifyAllotPrerequisites`, {
       method: 'POST',
       data: projectIds,
-    }),
-  );
-};
+    })
+  )
+}
 
 // 迭代资源库
 export const modifyMultipleEngineerLib = (params: any) => {
@@ -596,9 +608,9 @@ export const modifyMultipleEngineerLib = (params: any) => {
     request(`${baseUrl.project}/Engineer/ModifyMultipleEngineerLib`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 // 获取设计成果树状结构
 export const getResultTreeData = (projectId: string) => {
@@ -606,9 +618,9 @@ export const getResultTreeData = (projectId: string) => {
     request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory`, {
       method: 'GET',
       params: { projectId },
-    }),
-  );
-};
+    })
+  )
+}
 
 //获取项目编制成果树状结构
 export const getCompileResultTreeData = (projectId: string) => {
@@ -616,9 +628,9 @@ export const getCompileResultTreeData = (projectId: string) => {
     request(`${baseUrl.upload}/Find/ProjectCompilationResultsFileDirectory`, {
       method: 'GET',
       params: { projectId },
-    }),
-  );
-};
+    })
+  )
+}
 
 //获取评审成果树状结构
 export const getAuditResultData = (projectId: string) => {
@@ -626,9 +638,9 @@ export const getAuditResultData = (projectId: string) => {
     request(`${baseUrl.review}/ReviewOpinionFile/GetReivewFileTree`, {
       method: 'GET',
       params: { projectId },
-    }),
-  );
-};
+    })
+  )
+}
 
 // 生成设计成果
 export const createResult = (params: any) => {
@@ -636,9 +648,9 @@ export const createResult = (params: any) => {
     request(`${baseUrl.upload}/Find/GetProjectOutcomeFileDownloadPath`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 //生成项目编制成果
 export const createCompileResult = (params: any) => {
@@ -646,9 +658,9 @@ export const createCompileResult = (params: any) => {
     request(`${baseUrl.upload}/Find/GetProjectCompilationResultsFileDownloadPath`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 // 根据编号下载文件
 export const downloadFile = (params: any) => {
@@ -656,16 +668,16 @@ export const downloadFile = (params: any) => {
     method: 'GET',
     params,
     responseType: 'blob',
-  });
-};
+  })
+}
 
 export const fileRead = (params: any) => {
   return request(`${baseUrl.upload}/Download/GetProjectOutcomeFile`, {
     method: 'GET',
     params,
     responseType: 'arrayBuffer',
-  });
-};
+  })
+}
 
 //下载--项目编制成果
 export const downloadFileCompile = (params: any) => {
@@ -673,8 +685,8 @@ export const downloadFileCompile = (params: any) => {
     method: 'GET',
     params,
     responseType: 'blob',
-  });
-};
+  })
+}
 
 //导出-评审文件
 export const downloadAuditFile = (projectId: string, opinionIds: React.Key[]) => {
@@ -682,9 +694,8 @@ export const downloadAuditFile = (projectId: string, opinionIds: React.Key[]) =>
     method: 'POST',
     data: opinionIds,
     responseType: 'blob',
-    
-  });
-};
+  })
+}
 
 // 获取已经分享的公司
 export const getHasShareDetailData = (projectId: string) => {
@@ -692,24 +703,24 @@ export const getHasShareDetailData = (projectId: string) => {
     request(`${baseUrl.project}/Porject/GetShares`, {
       method: 'GET',
       params: { projectId },
-    }),
-  );
-};
+    })
+  )
+}
 
 export const uploadBulkProject = (files: any[], requestSource: 'project', url: string) => {
-  const formData = new FormData();
+  const formData = new FormData()
   files?.forEach((item) => {
-    formData.append('file', item);
-  });
+    formData.append('file', item)
+  })
 
-  const uploadUrl = `${baseUrl[requestSource]}${url}`;
+  const uploadUrl = `${baseUrl[requestSource]}${url}`
 
   return request(uploadUrl, {
     method: 'POST',
     data: formData,
     requestType: 'form',
-  });
-};
+  })
+}
 
 //批量导入工程项目
 export const importBulkEngineerProject = (params: any) => {
@@ -717,9 +728,9 @@ export const importBulkEngineerProject = (params: any) => {
     request(`${baseUrl.project}/Porject/ImportEngineerProject`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 //获取项目导入工程项目
 export const getAllotUsers = (projectId: string, arrangeType: number) => {
@@ -727,14 +738,14 @@ export const getAllotUsers = (projectId: string, arrangeType: number) => {
     request(`${baseUrl.project}/Porject/GetAllotUsers`, {
       method: 'POST',
       data: { projectId, arrangeType },
-    }),
-  );
-};
+    })
+  )
+}
 
 interface AllotOuterAuditParams {
-  projectId: string;
-  userIds?: string[];
-  noNeedAudit?: boolean;
+  projectId: string
+  userIds?: string[]
+  noNeedAudit?: boolean
   // auditResult?: boolean;
 }
 //安排外审
@@ -743,9 +754,9 @@ export const allotOuterAudit = (params: AllotOuterAuditParams) => {
     request(`${baseUrl.project}/Porject/AllotOuterAudit`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 //获取外审人员列表及当前步骤
 export const getExternalArrangeStep = (projectId: string) => {
@@ -753,9 +764,9 @@ export const getExternalArrangeStep = (projectId: string) => {
     request(`${baseUrl.project}/Porject/GetOuterAuditUsers`, {
       method: 'GET',
       params: { projectId },
-    }),
-  );
-};
+    })
+  )
+}
 
 //删除外审人员
 
@@ -764,9 +775,9 @@ export const removeAllotUser = (params: { projectId: string; userAllotId: string
     request(`${baseUrl.project}/Porject/RemoveOuterAuditUser`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 //添加外审人员
 export const addAllotUser = (params: { projectId: string; userId: string }) => {
@@ -774,14 +785,14 @@ export const addAllotUser = (params: { projectId: string; userId: string }) => {
     request(`${baseUrl.project}/Porject/AddOuterAuditUser`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 interface ConfirmOuterAuditParams {
-  projectId: string;
-  auditPass: boolean;
-  returnToState?: number; // 4:设计中； 11：造价中
+  projectId: string
+  auditPass: boolean
+  returnToState?: number // 4:设计中； 11：造价中
 }
 //确认外审
 export const confirmOuterAudit = (params: ConfirmOuterAuditParams) => {
@@ -789,9 +800,9 @@ export const confirmOuterAudit = (params: ConfirmOuterAuditParams) => {
     request(`${baseUrl.project}/Porject/ConfirmOuterAudit`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 //获取评审结果Url
 export const getReviewFileUrl = (params: { projectId: string; userId: string }) => {
@@ -799,9 +810,9 @@ export const getReviewFileUrl = (params: { projectId: string; userId: string }) 
     request(`${baseUrl.review}/ReviewOpinionFile/GetListByProjectId`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 //返回评审文件流
 export const getFileStream = (params: { url: string; extension: string }) => {
@@ -809,13 +820,13 @@ export const getFileStream = (params: { url: string; extension: string }) => {
     method: 'GET',
     params: params,
     responseType: 'arrayBuffer',
-  });
-};
+  })
+}
 
 interface ModifyOuterAuditParams {
-  projectId: string;
-  addUserIds: any;
-  delUserIds: string[];
+  projectId: string
+  addUserIds: any
+  delUserIds: string[]
 }
 //修改外审安排
 export const modifyExternalArrange = (params: ModifyOuterAuditParams) => {
@@ -823,9 +834,9 @@ export const modifyExternalArrange = (params: ModifyOuterAuditParams) => {
     request(`${baseUrl.project}/Porject/ModifyOuterAudit`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 //导出坐标权限设置
 export const modifyExportPowerState = (params: { isEnable: boolean; projectIds: string[] }) => {
@@ -833,9 +844,9 @@ export const modifyExportPowerState = (params: { isEnable: boolean; projectIds: 
     request(`${baseUrl.project}/Porject/ModifyExportCoordinateState`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 // 保存表头配置
 export const saveColumnsConfig = (params: any) => {
@@ -843,34 +854,34 @@ export const saveColumnsConfig = (params: any) => {
     request(`${baseUrl.project}/Porject/SaveColumnConfig`, {
       method: 'POST',
       data: { config: params },
-    }),
-  );
-};
+    })
+  )
+}
 
 // 获取表头配置
 export const getColumnsConfig = () => {
   return cyRequest<any>(() =>
     request(`${baseUrl.project}/Porject/GetColumnConfig`, {
       method: 'GET',
-    }),
-  );
-};
+    })
+  )
+}
 
 // 批复文件相关API
 type EngineerFile = {
-  engineerId: string;
-  fileId: string;
-  category: number;
-};
+  engineerId: string
+  fileId: string
+  category: number
+}
 
 export const createEngineerFile = (params: EngineerFile) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/EngineerFile/Create`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
 
 export const delEngineerFile = (id: string) => {
   return cyRequest(() =>
@@ -879,9 +890,9 @@ export const delEngineerFile = (id: string) => {
       params: {
         id,
       },
-    }),
-  );
-};
+    })
+  )
+}
 export const getEngineerFile = (id: string) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/EngineerFile/GetById`, {
@@ -889,9 +900,9 @@ export const getEngineerFile = (id: string) => {
       params: {
         id,
       },
-    }),
-  );
-};
+    })
+  )
+}
 
 export const GetEngineerFileGetList = (engineerId: string) => {
   return cyRequest(() =>
@@ -901,17 +912,17 @@ export const GetEngineerFileGetList = (engineerId: string) => {
         engineerId,
         category: 1,
       },
-    }),
-  );
-};
+    })
+  )
+}
 
 // 继承失败重新继承
 // 撤回结项
 export const againInherit = (projectId: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/InheritTryAgain`, { method: 'GET', params: { projectId } }),
-  );
-};
+    request(`${baseUrl.project}/Porject/InheritTryAgain`, { method: 'GET', params: { projectId } })
+  )
+}
 
 //下载预览word&Excel文件
 export const checkReviewResult = (params: EngineerFile) => {
@@ -919,6 +930,64 @@ export const checkReviewResult = (params: EngineerFile) => {
     request(`${baseUrl.review}/ReviewOpinionFile/query`, {
       method: 'POST',
       data: params,
-    }),
-  );
-};
+    })
+  )
+}
+
+interface ReportApproveParams {
+  projectIds: string[]
+  approveUserId: string
+  remark: string
+}
+
+//立项报审
+export const reportProjectApprove = (params: ReportApproveParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ReportApprove`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+
+interface ApproveParams {
+  projectIds: string[]
+  isApproved: boolean
+  isReserveIdentity?: boolean
+  remark?: string
+}
+
+//立项审批
+export const approveProject = (params: ApproveParams) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/Approve`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+
+// 获取我的工作台的统计数据
+export const getMyWorkStatisticsData = (areaType = '0', areaId = '') => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.project}/ProjectList/GetTotal`, {
+      method: 'POST',
+      data: {
+        pageSize: 1000,
+        pageIndex: 1,
+        areaType,
+        areaId,
+      },
+    })
+  )
+}
+
+//获取项目
+export const receiveProject = (projectIds: string[]) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/PorjectAgent/Receive`, {
+      method: 'POST',
+      data: { projectIds },
+    })
+  )
+}

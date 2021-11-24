@@ -1,19 +1,17 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react'
+import { AreaInfo, getProjectNumberData } from '@/services/index'
+import useRequest from '@ahooksjs/use-request'
 import { CaretDownOutlined } from '@ant-design/icons'
+import { useSize } from 'ahooks'
 import { Select, Spin } from 'antd'
-import ChartBox from '../chart-box'
-import borderStylesHTML from '../../utils/borderStylesHTML'
-
-import * as echarts from 'echarts/lib/echarts'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/component/grid'
 import 'echarts/lib/component/tooltip'
-
-import styles from './index.less'
-import useRequest from '@ahooksjs/use-request'
-import { AreaInfo, getProjectNumberData } from '@/services/index'
+import * as echarts from 'echarts/lib/echarts'
 import moment from 'moment'
-import { useSize } from 'ahooks'
+import React, { useEffect, useRef, useState } from 'react'
+import borderStylesHTML from '../../utils/borderStylesHTML'
+import ChartBox from '../chart-box'
+import styles from './index.less'
 
 const { Option } = Select
 

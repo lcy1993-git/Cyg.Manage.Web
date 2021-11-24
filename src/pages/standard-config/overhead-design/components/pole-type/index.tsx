@@ -1,20 +1,20 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
+  addPoleTypeItem,
+  deletePoleTypeItem,
   getPoleTypeDetail,
   updatePoleTypeItem,
-  deletePoleTypeItem,
-  addPoleTypeItem,
 } from '@/services/resource-config/pole-type'
-import { isArray } from 'lodash'
-import PoleTypeForm from './components/add-edit-form'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
+import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import PoleTypeForm from './components/add-edit-form'
+import styles from './index.less'
 
 const { Search } = Input
 

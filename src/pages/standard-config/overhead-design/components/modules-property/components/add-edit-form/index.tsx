@@ -1,17 +1,17 @@
-import React from 'react'
-import { Input, Select, Tooltip } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
 import EnumSelect from '@/components/enum-select'
+import UrlSelect from '@/components/url-select'
 import {
+  arrangement,
   forDesignType,
   forProjectType,
   loopNumber,
-  segment,
-  arrangement,
   meteorologic,
+  segment,
 } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Select, Tooltip } from 'antd'
+import React from 'react'
 
 const { Option } = Select
 interface PoleTypeParams {

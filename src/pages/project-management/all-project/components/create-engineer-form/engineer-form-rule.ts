@@ -32,4 +32,4 @@ export default {
   company: [{ required: true, message: '所属公司不能为空' }],
   importance: [{ required: true, message: '重要程度不能为空' }],
   grade: [{ required: true, message: '项目级别不能为空' }],
-};
+}

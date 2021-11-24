@@ -1,0 +1,23 @@
+.typeTab {
+  display: flex;
+  padding: 10px 10px 30px;
+  color: #8c8c8c;
+  cursor: pointer;
+  .typeSingleTab {
+    padding: 0 35px 0 5px;
+    transition: all 0.3s;
+  }
+  .active {
+    color: #1f1f1f;
+  }
+  .active::after {
+    display: block;
+    width: 80%;
+    height: 6px;
+    margin: 0 auto;
+    padding-top: 10upx;
+    border-bottom: 2px solid #0e7b3b;
+
+    content: '';
+  }
+}

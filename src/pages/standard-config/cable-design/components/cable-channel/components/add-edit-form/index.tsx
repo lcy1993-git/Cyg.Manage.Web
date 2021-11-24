@@ -1,10 +1,10 @@
-import React from 'react'
-import { Input, Tooltip } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
-import { QuestionCircleOutlined } from '@ant-design/icons'
 import EnumSelect from '@/components/enum-select'
+import UrlSelect from '@/components/url-select'
 import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Tooltip } from 'antd'
+import React from 'react'
 
 interface PoleTypeParams {
   type?: 'edit' | 'add'

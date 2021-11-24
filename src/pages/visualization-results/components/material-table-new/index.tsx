@@ -1,11 +1,11 @@
-import { MaterialDataType } from '@/services/visualization-results/list-menu';
-import { Table } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import React, { FC } from 'react';
+import { MaterialDataType } from '@/services/visualization-results/list-menu'
+import { Table } from 'antd'
+import { ColumnsType } from 'antd/es/table'
+import React, { FC } from 'react'
 
 export interface MaterialTableProps {
-  data?: MaterialDataType[];
-  loading: boolean;
+  data?: MaterialDataType[]
+  loading: boolean
 }
 export const columns: ColumnsType<MaterialDataType> = [
   {
@@ -22,13 +22,13 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'type',
     key: 'type',
     fixed: 'left',
-    render(value, record){
-      if(record.children) {
+    render(value, record) {
+      if (record.children) {
         return value
-      }else{
+      } else {
         return value
       }
-    }
+    },
   },
   {
     title: '物料名称',
@@ -67,9 +67,9 @@ export const columns: ColumnsType<MaterialDataType> = [
     width: 80,
     dataIndex: 'itemNumber',
     key: 'itemNumber',
-    render(v: number){
-      return v ? String(v) : ""
-    }
+    render(v: number) {
+      return v ? String(v) : ''
+    },
   },
 
   {
@@ -77,18 +77,18 @@ export const columns: ColumnsType<MaterialDataType> = [
     width: 80,
     dataIndex: 'unitPrice',
     key: 'unitPrice',
-    render(v: number){
-      return v ? String(v) : ""
-    }
+    render(v: number) {
+      return v ? String(v) : ''
+    },
   },
   {
     title: '单重(kg)',
     width: 80,
     dataIndex: 'pieceWeight',
     key: 'pieceWeight',
-    render(v: number){
-      return v ? String(v) : ""
-    }
+    render(v: number) {
+      return v ? String(v) : ''
+    },
   },
   {
     title: '状态',
@@ -114,9 +114,9 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'remark',
     key: 'remark',
   },
-];
+]
 export const MaterialTableNew: FC<MaterialTableProps> = (props) => {
-  const { data, loading } = props;
+  const { data, loading } = props
   return (
     <Table
       columns={columns}
@@ -129,5 +129,5 @@ export const MaterialTableNew: FC<MaterialTableProps> = (props) => {
       scroll={{ x: 1400, y: 1000 }}
       defaultExpandAllRows
     />
-  );
-};
+  )
+}

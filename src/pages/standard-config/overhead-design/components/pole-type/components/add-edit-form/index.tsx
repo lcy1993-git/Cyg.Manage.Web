@@ -1,13 +1,13 @@
-import React from 'react'
-import { Input, Radio } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
+import EnumSelect from '@/components/enum-select'
 import {
-  poleType,
-  poleMaterial,
   loopNumber,
   poleKvLevel,
+  poleMaterial,
+  poleType,
 } from '@/services/resource-config/resource-enum'
-import EnumSelect from '@/components/enum-select'
+import { Input, Radio } from 'antd'
+import React from 'react'
 interface PoleTypeParams {
   type?: 'edit' | 'add'
   resourceLibId: string

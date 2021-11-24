@@ -1,47 +1,41 @@
 /* eslint-disable no-nested-ternary */
-import EmptyTip from '@/components/empty-tip'
+import CyTag from '@/components/cy-tag'
+import ImageIcon from '@/components/image-icon'
 import {
+  againInherit,
   AllProjectStatisticsParams,
   applyKnot,
-  auditKnot,
+  deleteProject,
   getExternalArrangeStep,
   getProjectInfo,
   getProjectTableList,
-  getEngineerInfo,
-  againInherit,
-  deleteProject,
+  modifyExportPowerState,
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { delay } from '@/utils/utils'
-import { useRequest, useSize } from 'ahooks'
-import { Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
-import { Spin } from 'antd'
-import { Pagination } from 'antd'
-import { memo, forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react'
-import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item'
-import ScrollView from 'react-custom-scrollbars'
-import styles from './index.less'
-import CyTag from '@/components/cy-tag'
-import uuid from 'node-uuid'
-import { Dropdown } from 'antd'
 import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons'
-import { TableContext } from './table-store'
-import EngineerDetailInfo from '../engineer-detail-info'
-import ProjectDetailInfo from '../project-detail-info'
-import ArrangeModal from '../arrange-modal'
-import EditEnigneerModal from '../edit-engineer-modal'
-import EditProjectModal from '../edit-project-modal'
-import CopyProjectModal from '../copy-project-modal'
+import { useRequest, useSize } from 'ahooks'
+import { Dropdown, Menu, message, Modal, Pagination, Popconfirm, Spin, Tooltip } from 'antd'
+import moment from 'moment'
+import uuid from 'node-uuid'
+import { forwardRef, memo, Ref, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import ScrollView from 'react-custom-scrollbars'
 import AddProjectModal from '../add-project-modal'
 import ApprovalProjectModal from '../approval-project-modal'
+import ArrangeModal from '../arrange-modal'
+import AuditKnotModal from '../audit-knot-modal'
+import ColumnsConfigModal from '../columns-config-modal'
+import CopyProjectModal from '../copy-project-modal'
+import EditEnigneerModal from '../edit-engineer-modal'
+import EditProjectModal from '../edit-project-modal'
+import EngineerDetailInfo from '../engineer-detail-info'
 import ExternalArrangeModal from '../external-arrange-modal'
 import ExternalListModal from '../external-list-modal'
-import AuditKnotModal from '../audit-knot-modal'
-import moment from 'moment'
-import { modifyExportPowerState } from '@/services/project-management/all-project'
+import ProjectDetailInfo from '../project-detail-info'
 import ProjectInheritModal from '../project-inherit-modal'
-import ImageIcon from '@/components/image-icon'
-import ColumnsConfigModal from '../columns-config-modal'
+import EngineerTableItem, { AddProjectValue, TableItemCheckedInfo } from './engineer-table-item'
+import styles from './index.less'
+import { TableContext } from './table-store'
 
 const colorMap = {
   立项: 'green',
@@ -1045,8 +1039,38 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             renderThumbVertical={scrollBarRenderView}
           >
             <Spin spinning={loading}>
-              {tableResultData.items.length > 0 && engineerTableElement}
-              {tableResultData.items.length === 0 && <EmptyTip className="pt20" />}
+              {/* <VirtualTable
+                style={{ color: '#8C8C8C', borderColor: '#DBDBDB' }}
+                className="border"
+                data={tableData}
+                // columns={subColumns as any[]}
+                headerRows={({ _header }) => _header === true}
+                customRow={{
+                  custom: ({ _parent }) => _parent === true,
+                  row: (props) => (
+                    <ParentRow
+                      data={data}
+                      cache={cache}
+                      update={update}
+                      columns={parentColumns}
+                      {...props}
+                    />
+                  ),
+                }}
+                rowHeight={50}
+                rowSelection={{
+                  defaultSelectedKeys: [],
+                  rowKey: ({ id }) => id,
+                  onChange: (keys) => {
+                    console.log(keys);
+                  },
+                  onSelect: (key: Key, selected: boolean, rowData: Record<string, any>) => {
+                    console.log(key, selected, rowData);
+                  },
+                }}
+              /> */}
+              {/* {tableResultData.items.length > 0 && engineerTableElement} */}
+              {/* {tableResultData.items.length === 0 && <EmptyTip className="pt20" />} */}
             </Spin>
           </ScrollView>
         </div>

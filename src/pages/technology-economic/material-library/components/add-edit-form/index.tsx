@@ -1,17 +1,22 @@
-import React from 'react';
-import { Input, Col, Row } from 'antd';
-import UrlSelect from '@/components/url-select';
-import FormSwitch from '@/components/form-switch';
-import CyFormItem from '@/components/cy-form-item';
-import DateFormItem from '@/components/date-from-item';
-import FileUpload from '@/components/file-upload';
+import React from 'react'
+import { Input, Col, Row } from 'antd'
+import UrlSelect from '@/components/url-select'
+import FormSwitch from '@/components/form-switch'
+import CyFormItem from '@/components/cy-form-item'
+import DateFormItem from '@/components/date-from-item'
+import FileUpload from '@/components/file-upload'
 
 const DictionaryForm: React.FC<{ type?: string }> = () => {
   return (
     <>
       <Row>
         <Col span={11}>
-          <CyFormItem label="名称" name="name" required rules={[{required: true,message:'请输入名称'}]}>
+          <CyFormItem
+            label="名称"
+            name="name"
+            required
+            rules={[{ required: true, message: '请输入名称' }]}
+          >
             <Input placeholder="请输入名称" />
           </CyFormItem>
           <CyFormItem label="发布机构" name="publishOrg">
@@ -29,10 +34,20 @@ const DictionaryForm: React.FC<{ type?: string }> = () => {
         </Col>
         <Col span={2}></Col>
         <Col span={11}>
-          <CyFormItem label="发布时间" name="publishDate" required rules={[{required: true,message:'请选择发布时间'}]}>
+          <CyFormItem
+            label="发布时间"
+            name="publishDate"
+            required
+            rules={[{ required: true, message: '请选择发布时间' }]}
+          >
             <DateFormItem />
           </CyFormItem>
-          <CyFormItem label="价格年度" name="year" required rules={[{required: true,message:'请选择价格年度'}]}>
+          <CyFormItem
+            label="价格年度"
+            name="year"
+            required
+            rules={[{ required: true, message: '请选择价格年度' }]}
+          >
             <DateFormItem picker="year" />
           </CyFormItem>
           {/*<CyFormItem label="状态" name="enabled" required rules={[{required: true}]}>*/}
@@ -44,11 +59,16 @@ const DictionaryForm: React.FC<{ type?: string }> = () => {
         <Input.TextArea rows={3} />
       </CyFormItem>
 
-      <CyFormItem label="上传文件" name="file" required rules={[{required: true,message:'请上传文件'}]}>
+      <CyFormItem
+        label="上传文件"
+        name="file"
+        required
+        rules={[{ required: true, message: '请上传文件' }]}
+      >
         <FileUpload accept=".xls,.xlsx" maxCount={1} trigger={false} />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default DictionaryForm;
+export default DictionaryForm

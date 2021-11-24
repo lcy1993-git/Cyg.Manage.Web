@@ -1,34 +1,34 @@
-import Loadable from 'react-loadable';
-import Loading from '@ant-design/pro-layout/es/PageLoading';
+import Loading from '@ant-design/pro-layout/es/PageLoading'
+import Loadable from 'react-loadable'
 
 const AllProject = Loadable({
-  loader: () => import('@/pages/project-management/all-project'),
+  loader: () => import('@/pages/project-management/my-work/index'),
   loading: () => <Loading />,
   delay: 150,
-});
+})
 
 const ProjectStatistics = Loadable({
   loader: () => import('@/pages/project-management/project-statistics'),
   loading: () => <Loading />,
   delay: 150,
-});
+})
 
 const ProjectGantt = Loadable({
   loader: () => import('@/pages/project-management/project-gantt'),
   loading: () => <Loading />,
   delay: 150,
-});
+})
 
 const ProjectAllAreaStatistics = Loadable({
   loader: () => import('@/pages/project-management/project-all-area-statistics'),
   loading: () => <Loading />,
   delay: 150,
-});
+})
 const ProjectEntrust = Loadable({
   loader: () => import('@/pages/project-management/project-entrust'),
   loading: () => <Loading />,
   delay: 150,
-});
+})
 
 export default [
   {
@@ -56,4 +56,4 @@ export default [
     path: '/project-management/project-entrust',
     component: <ProjectEntrust />,
   },
-];
+]

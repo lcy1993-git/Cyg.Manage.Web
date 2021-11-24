@@ -1,33 +1,33 @@
-import React, { SetStateAction, useEffect, useState } from 'react';
-import { Button, Form, message, Modal } from 'antd';
+import React, { SetStateAction, useEffect, useState } from 'react'
+import { Button, Form, message, Modal } from 'antd'
 
-import { useControllableValue, useRequest } from 'ahooks';
-import SelectAddListForm from '../select-add-list-form';
+import { useControllableValue, useRequest } from 'ahooks'
+import SelectAddListForm from '../select-add-list-form'
 // import uuid from 'node-uuid';
-import { Dispatch } from 'react';
-import { UserInfo } from '@/services/project-management/select-add-list-form';
-import { modifyExternalArrange, getAllotUsers } from '@/services/project-management/all-project';
+import { Dispatch } from 'react'
+import { UserInfo } from '@/services/project-management/select-add-list-form'
+import { modifyExternalArrange, getAllotUsers } from '@/services/project-management/all-project'
 
 interface GetGroupUserProps {
-  onChange?: Dispatch<SetStateAction<boolean>>;
-  getCompanyInfo?: (companyInfo: any) => void;
-  visible: boolean;
-  projectId: string;
+  onChange?: Dispatch<SetStateAction<boolean>>
+  getCompanyInfo?: (companyInfo: any) => void
+  visible: boolean
+  projectId: string
   // notBeginUsers: any;
-  closeModalEvent?: () => void;
+  closeModalEvent?: () => void
 }
 
 const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]); //添加的外审人员列表
-  const [initPeople, setInitPeople] = useState<any[]>([]);
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]) //添加的外审人员列表
+  const [initPeople, setInitPeople] = useState<any[]>([])
 
   // const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false); //不安排外审status
   // const [addUserIds, setAddUserIds] = useState<string[]>([]);
   // const [delUserIds, setDelUserIds] = useState<string[]>([]);
 
-  const [form] = Form.useForm();
-  const { projectId, closeModalEvent } = props;
+  const [form] = Form.useForm()
+  const { projectId, closeModalEvent } = props
 
   //获取新增外审
   function getAddUsers(preArray: any, nexArray: any) {
@@ -35,19 +35,19 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       .map((item: any) => {
         return item.value
       })
-      .filter((item: any) => !preArray.map((ite: any) => ite.value).includes(item));
+      .filter((item: any) => !preArray.map((ite: any) => ite.value).includes(item))
   }
 
   //获取删除外审
   function getDelUsers(preArray: any, nexArray: any) {
     if (preArray.length === 0) {
-      return [];
+      return []
     }
     return preArray
       .map((item: any) => {
-        return item.value;
+        return item.value
       })
-      .filter((item: any) => !nexArray.map((ite: any) => ite.value).includes(item));
+      .filter((item: any) => !nexArray.map((ite: any) => ite.value).includes(item))
   }
 
   const saveExternalArrange = async () => {
@@ -55,11 +55,11 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       projectId: projectId,
       addUserIds: getAddUsers(initPeople, arrangePeople),
       delUserIds: getDelUsers(initPeople, arrangePeople),
-    });
-    message.success('外审修改成功');
-    closeModalEvent?.();
-    setState(false);
-  };
+    })
+    message.success('外审修改成功')
+    closeModalEvent?.()
+    setState(false)
+  }
 
   const { data: AllotUsers, run } = useRequest(() => getAllotUsers(projectId, 6), {
     onSuccess: () => {
@@ -68,20 +68,20 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           return {
             value: item.userId,
             text: item.userNameText,
-          };
+          }
         }
-        return;
-      }).filter(Boolean);
-      setInitPeople(handleData ?? []);
+        return
+      }).filter(Boolean)
+      setInitPeople(handleData ?? [])
     },
     manual: true,
-  });
+  })
 
   useEffect(() => {
     if (state) {
-      run();
+      run()
     }
-  }, [state]);
+  }, [state])
 
   return (
     <Modal
@@ -110,7 +110,7 @@ const EditExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         />
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default EditExternalArrangeForm;
+export default EditExternalArrangeForm

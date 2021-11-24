@@ -1,72 +1,72 @@
-import { useControllableValue } from 'ahooks';
-import { Button } from 'antd';
-import { Form, message, Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
-import { uploadBulkProject } from '@/services/project-management/all-project';
-import BatchEditEngineerInfoTable from '../bulk-import-project/index';
-import CyTip from '@/components/cy-tip';
+import { useControllableValue } from 'ahooks'
+import { Button } from 'antd'
+import { Form, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
+import { uploadBulkProject } from '@/services/project-management/all-project'
+import BatchEditEngineerInfoTable from '../bulk-import-project/index'
+import CyTip from '@/components/cy-tip'
 
 interface UploadAddProjectProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: () => void;
-  defaultSelectType?: string;
-  refreshEvent?: () => void;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent?: () => void
+  defaultSelectType?: string
+  refreshEvent?: () => void
 }
 
 const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
-  const { refreshEvent } = props;
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [bulkImportModalVisible, setBulkImportModalVisible] = useState<boolean>(false);
-  const [excelModalData, setExcelModalData] = useState<any>();
-  const [requestLoading, setRequestLoading] = useState(false);
+  const { refreshEvent } = props
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [bulkImportModalVisible, setBulkImportModalVisible] = useState<boolean>(false)
+  const [excelModalData, setExcelModalData] = useState<any>()
+  const [requestLoading, setRequestLoading] = useState(false)
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const closeModalEvent = () => {
-    setState(false);
-  };
+    setState(false)
+  }
 
   //下载excel批量立项模板
-  const downloadModalFileEvent = () => {};
+  const downloadModalFileEvent = () => {}
 
   //传入上传后获取到的List
   const saveBatchAddListEvent = () => {
     form.validateFields().then(async (values) => {
-      const { file } = values;
+      const { file } = values
       if (file == undefined) {
-        message.warning('您还未上传批量立项模板文件');
-        return;
+        message.warning('您还未上传批量立项模板文件')
+        return
       }
-      setRequestLoading(true);
+      setRequestLoading(true)
 
       // if (file[0].name.indexOf('.xlsx') == -1) {
       //   message.warning('请上传正确的Excel模板文件');
       //   setRequestLoading(false);
       //   return;
       // }
-      const res = await uploadBulkProject(file, 'project', '/Porject/ResolveImportData');
+      const res = await uploadBulkProject(file, 'project', '/Porject/ResolveImportData')
       if (res.code === 5000) {
-        message.error(res.message);
-        setRequestLoading(false);
-        return;
+        message.error(res.message)
+        setRequestLoading(false)
+        return
       }
-      setExcelModalData(res);
-      message.success('导入成功');
-      setState(false);
-      setBulkImportModalVisible(true);
-      setRequestLoading(false);
-      form.resetFields();
-    });
-  };
+      setExcelModalData(res)
+      message.success('导入成功')
+      setState(false)
+      setBulkImportModalVisible(true)
+      setRequestLoading(false)
+      form.resetFields()
+    })
+  }
 
   useEffect(() => {
     if (state) {
-      form.resetFields();
+      form.resetFields()
     }
-  }, [state]);
+  }, [state])
 
   return (
     <>
@@ -126,7 +126,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
         refreshEvent={refreshEvent}
       />
     </>
-  );
-};
+  )
+}
 
-export default UploadAddProjectModal;
+export default UploadAddProjectModal

@@ -1,24 +1,23 @@
 import GeneralTable from '@/components/general-table'
-import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, FileTextOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useState, useEffect } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
-import {
-  getModulesPropertyDetail,
-  updateModulesPropertyItem,
-  deleteModulesPropertyItem,
-  addModulesPropertyItem,
-  getModuleAttribute,
-  saveModuleAttributeItem,
-} from '@/services/resource-config/modules-property'
-import { isArray } from 'lodash'
-import ModulesPropertyForm from './components/add-edit-form'
-
-import ModuleDetailTable from './components/detail-table'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import ModalConfirm from '@/components/modal-confirm'
+import TableSearch from '@/components/table-search'
+import {
+  addModulesPropertyItem,
+  deleteModulesPropertyItem,
+  getModuleAttribute,
+  getModulesPropertyDetail,
+  saveModuleAttributeItem,
+  updateModulesPropertyItem,
+} from '@/services/resource-config/modules-property'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, FileTextOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
+import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import ModulesPropertyForm from './components/add-edit-form'
+import ModuleDetailTable from './components/detail-table'
+import styles from './index.less'
 
 const { Search } = Input
 
