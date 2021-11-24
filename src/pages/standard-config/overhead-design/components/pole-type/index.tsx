@@ -1,20 +1,20 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd'
-import React, { useEffect, useState } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
+  addPoleTypeItem,
+  deletePoleTypeItem,
   getPoleTypeDetail,
   updatePoleTypeItem,
-  deletePoleTypeItem,
-  addPoleTypeItem,
 } from '@/services/resource-config/pole-type'
-import { isArray } from 'lodash'
-import PoleTypeForm from './components/add-edit-form'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
+import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import PoleTypeForm from './components/add-edit-form'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -32,7 +32,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -72,6 +72,13 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.refresh()
+    }
+  }
+
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset()
     }
   }
 
@@ -226,6 +233,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       refresh()
       message.success('更新成功')
       editForm.resetFields()
+      reset()
       setEditFormVisible(false)
     })
   }
@@ -259,10 +267,10 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       message.error('请选择一条数据进行编辑')
       return
     }
-    const editData = tableSelectRows[0]
-    const editDataId = editData.id
+    const editData = tableSelectRows
+    const editDataId = editData.map((item: any) => item.id)
 
-    await deletePoleTypeItem(resourceLibId, editDataId)
+    await deletePoleTypeItem({ libId: resourceLibId, poleTypeIds: editDataId })
     refresh()
     setTableSelectRows([])
     message.success('删除成功')

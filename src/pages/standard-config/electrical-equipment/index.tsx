@@ -1,23 +1,23 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useState, useEffect } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
-  getElectricalEquipmentDetail,
   addElectricalEquipmentItem,
-  updateElectricalEquipmentItem,
   deleteElectricalEquipmentItem,
+  getElectricalEquipmentDetail,
+  updateElectricalEquipmentItem,
 } from '@/services/resource-config/electrical-equipment'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
 import ElectricalEquipmentForm from './components/add-edit-form'
-import ElectricProperty from './components/property-table'
 import ElectricDetail from './components/detail-table'
 import SaveImportElectrical from './components/import-form'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+import ElectricProperty from './components/property-table'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -37,7 +37,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false)
   const [importElectricalVisible, setImportElectricalVisible] = useState<boolean>(false)
   const [detailVisible, setDetailVisible] = useState<boolean>(false)
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -310,6 +310,13 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
     //   message.warning('请先选择资源库');
     //   return;
     // }
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.error('请选择单条数据进行编辑')
+      return
+    }
     setDetailVisible(true)
   }
 
@@ -400,8 +407,11 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         <Spin spinning={loading}>
           <ElectricDetail
             libId={libId}
-            componentId={tableSelectRows.map((item) => {
+            selectId={tableSelectRows.map((item) => {
               return item.id
+            })}
+            componentId={tableSelectRows.map((item) => {
+              return item.componentId
             })}
           />
         </Spin>

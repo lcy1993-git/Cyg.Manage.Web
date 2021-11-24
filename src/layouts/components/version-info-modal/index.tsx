@@ -1,38 +1,40 @@
-import { getVersionUpdate } from '@/services/common';
-import { useControllableValue, useRequest } from 'ahooks';
-import { webConfig } from '@/global';
-import { Modal, Spin } from 'antd';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import styles from './index.less';
-import { useEffect } from 'react';
-import uuid from 'node-uuid';
+import { getVersionUpdate } from '@/services/common'
+import { useControllableValue, useRequest } from 'ahooks'
+import { webConfig } from '@/global'
+import { Modal, Spin } from 'antd'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import styles from './index.less'
+import { useEffect } from 'react'
+import uuid from 'node-uuid'
+import { Stop } from '@/pages/login'
+import StopServer from '@/pages/login/components/stop-server'
 
 interface VersionInfoModalProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  stopServerInfo: Stop
 }
 
 const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [nowClickVersion, setNowClickVersion] = useState<string>('');
-  const [historyVersionModalVisible, setHistoryVersionModalVisible] = useState<boolean>(false);
-  const [historyVersionData, setHistoryVersionData] = useState<any[]>([]);
-  const [versionLoading, setVersionLoading] = useState<boolean>(false);
-
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [nowClickVersion, setNowClickVersion] = useState<string>('')
+  const [historyVersionModalVisible, setHistoryVersionModalVisible] = useState<boolean>(false)
+  const [historyVersionData, setHistoryVersionData] = useState<any[]>([])
+  const [versionLoading, setVersionLoading] = useState<boolean>(false)
   const serverCode =
-    window.location.hostname === 'localhost' ? '10.6.1.36' : window.location.hostname;
+    window.location.hostname === 'localhost' ? '10.6.1.36' : window.location.hostname
 
   // 171.223.214.154 环境需要做特殊处理
   const serverCodeObejct = {
     '171.223.214.154:21563': '171.223.214.154',
     '171.223.214.154:21573': '171_223_214_154_2',
     '171.223.214.154:21583': '171_223_214_154_3',
-  };
+  }
 
   const finalyServerCode =
     window.location.hostname === '171.223.214.154'
       ? serverCodeObejct[`${serverCode}:${window.location.port}`]
-      : serverCode;
+      : serverCode
 
   const { data: versionInfo, run: getVersionInfoEvent, loading } = useRequest(
     () =>
@@ -44,34 +46,34 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       }),
     {
       manual: true,
-    },
-  );
+    }
+  )
 
   useEffect(() => {
     if (state) {
-      getVersionInfoEvent();
+      getVersionInfoEvent()
     }
-  }, [state]);
+  }, [state])
 
   //查看历史版本
   const checkHistoryInfo = async (item: any) => {
-    setNowClickVersion(item);
-    setHistoryVersionModalVisible(true);
-    setVersionLoading(true);
+    setNowClickVersion(item)
+    setHistoryVersionModalVisible(true)
+    setVersionLoading(true)
     try {
       const data = await getVersionUpdate({
         productCode: '1301726010322214912',
         moduleCode: 'ManageWebV2',
         versionNo: item,
         serverCode: serverCode,
-      });
-      setHistoryVersionData(data.data.description);
+      })
+      setHistoryVersionData(data.data.description)
     } catch (msg) {
-      console.error(msg);
+      console.error(msg)
     } finally {
-      setVersionLoading(false);
+      setVersionLoading(false)
     }
-  };
+  }
 
   return (
     <>
@@ -102,6 +104,8 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
       >
         <Spin spinning={loading}>
           <div className={styles.versionItem}>
+            <h3>【通知】</h3>
+            {props.stopServerInfo?.content ? <StopServer data={props.stopServerInfo} /> : '   -'}
             <div className={styles.versionNumber}>版本：{versionInfo?.data?.versionNo}</div>
             <div className={styles.versionItemTitle}>【更新说明】</div>
             <div className={styles.versionItemContent}>{versionInfo?.data.description}</div>
@@ -121,7 +125,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
                     >
                       {`V${item}`}
                     </div>
-                  );
+                  )
                 })
                 .slice(0, 5)
             ) : (
@@ -131,7 +135,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
         </Spin>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default VersionInfoModal;
+export default VersionInfoModal

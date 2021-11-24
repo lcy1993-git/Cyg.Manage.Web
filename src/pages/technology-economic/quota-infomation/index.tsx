@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useRef } from 'react'
 import { useMount, useRequest, useSize } from 'ahooks'
-import { Tabs, Tree, Select } from 'antd'
+import { Tabs, Tree, Select, Button } from 'antd'
 import PageCommonWrap from '@/components/page-common-wrap'
 import ChapterInfo from './components/chapter-info'
 import ListTable from '../components/list-table'
@@ -14,9 +14,9 @@ import {
   queryQuotaLibraryCatalogList,
   getQuotaLibraryCatalogDescription,
 } from '@/services/technology-economic'
-
+import { EyeOutlined } from '@ant-design/icons'
 import styles from './index.less'
-
+import { history } from 'umi'
 const { TabPane } = Tabs
 
 interface DataSource {
@@ -196,6 +196,20 @@ const QuotaProject = () => {
     setActiveQuotaId(e)
     setResourceItem({})
   }
+  const addEvent = () => {
+    const id = ''
+    history.push(`/technology-economic/quota-infomation/components/reinforcement-quota?id=${id}`)
+  }
+  const tableElement = () => {
+    return (
+      <div className={styles.buttonArea}>
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <EyeOutlined />
+          钢筋定额
+        </Button>
+      </div>
+    )
+  }
   return (
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
       <div className={styles.wrap} ref={ref}>
@@ -232,6 +246,7 @@ const QuotaProject = () => {
                 <div className={styles.listTable}>
                   <ListTable
                     catalogueId={catalogueId}
+                    buttonRightContentSlot={tableElement}
                     scrolly={refWrap?.height ? refWrap?.height - 531 : 0}
                     setResourceItem={setResourceItem}
                     url="/QuotaLibraryCatalog/QueryQuotaItemPager"

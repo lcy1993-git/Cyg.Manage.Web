@@ -1,22 +1,21 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
+  addCableWellItem,
+  deleteCableWellItem,
   getCableWellDetail,
   updateCableWellItem,
-  deleteCableWellItem,
-  addCableWellItem,
 } from '@/services/resource-config/cable-well'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
-
+import React, { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react'
 import CableWellForm from './components/add-edit-form'
 import CableWellDetail from './components/detail-table/index'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -24,7 +23,7 @@ interface CableDesignParams {
   libId: string
 }
 
-const CableWell: React.FC<CableDesignParams> = (props) => {
+const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
   const { libId } = props
 
   const tableRef = React.useRef<HTMLDivElement>(null)
@@ -33,8 +32,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-  const [ids, setIds] = useState<string[]>([])
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [detailVisible, setDetailVisible] = useState<boolean>(false)
 
@@ -78,6 +76,10 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       tableRef.current.refresh()
     }
   }
+
+  useImperativeHandle(ref, () => ({
+    refresh,
+  }))
 
   // 列表搜索
   const search = () => {
@@ -141,7 +143,7 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'depth',
       index: 'depth',
-      title: '井深',
+      title: '井深(mm)',
       width: 180,
     },
     {
@@ -149,12 +151,18 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       index: 'isConfined',
       title: '是否封闭',
       width: 140,
+      render: (text: any, record: any) => {
+        return record.isConfined === 0 ? '否' : '是'
+      },
     },
     {
       dataIndex: 'isSwitchingPipe',
       index: 'isSwitchingPipe',
       title: '是否转接孔管',
       width: 200,
+      render: (text: any, record: any) => {
+        return record.isSwitchingPipe === 0 ? '否' : '是'
+      },
     },
     {
       dataIndex: 'feature',
@@ -326,10 +334,8 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
       message.error('请选择一条数据进行编辑')
       return
     }
-    tableSelectRows.map((item) => {
-      ids.push(item.id)
-    })
 
+    const ids = tableSelectRows.map((item: any) => item.id)
     await deleteCableWellItem({ libId, ids })
     refresh()
     message.success('删除成功')
@@ -337,8 +343,11 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
 
   //展示组件明细
   const openDetail = () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库')
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.warning('请选择单行数据查看')
       return
     }
     setDetailVisible(true)
@@ -411,8 +420,11 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
         <Spin spinning={loading}>
           <CableWellDetail
             libId={libId}
-            cableWellId={tableSelectRows.map((item) => {
+            selectId={tableSelectRows.map((item) => {
               return item.id
+            })}
+            cableWellId={tableSelectRows.map((item) => {
+              return item.cableWellId
             })}
           />
         </Spin>
@@ -421,4 +433,4 @@ const CableWell: React.FC<CableDesignParams> = (props) => {
   )
 }
 
-export default CableWell
+export default forwardRef(CableWell)

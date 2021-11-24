@@ -164,13 +164,12 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
             onChange={(v) => setSearchType(v)}
           >
             <Option value="0">全部</Option>
-            {/* TODO */}
-            {/* {componentProps.includes('14') && <Option value="14">待安排</Option>}
-          {componentProps.includes('1') && <Option value="1">未勘察</Option>}
-          {componentProps.includes('2') && <Option value="2">勘察中</Option>}
-          {componentProps.includes('3') && <Option value="3">已勘察</Option>}
-          {componentProps.includes('4') && <Option value="4">设计中</Option>}
-          {componentProps.includes('19') && <Option value="19">已设计</Option>} */}
+            {componentProps.includes('14') && <Option value="14">待安排</Option>}
+            {componentProps.includes('1') && <Option value="1">未勘察</Option>}
+            {componentProps.includes('2') && <Option value="2">勘察中</Option>}
+            {componentProps.includes('3') && <Option value="3">已勘察</Option>}
+            {componentProps.includes('4') && <Option value="4">设计中</Option>}
+            {componentProps.includes('19') && <Option value="19">已设计</Option>}
           </Select>
         </div>
         <div className={styles.chartContent}>

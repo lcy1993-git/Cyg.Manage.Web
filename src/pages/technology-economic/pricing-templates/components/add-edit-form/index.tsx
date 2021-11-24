@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react'
-import { Input, Col, Row, Select } from 'antd'
-import DisableSelect from '../disable-select'
-import UrlSelect from '@/components/url-select'
-import FormSwitch from '@/components/form-switch'
 import CyFormItem from '@/components/cy-form-item'
 import DateFormItem from '@/components/date-from-item'
+import FormSwitch from '@/components/form-switch'
 import { getEnums } from '@/pages/technology-economic/utils'
+import { Col, Input, Row, Select } from 'antd'
+import React from 'react'
+import DisableSelect from '../disable-select'
 const { Option } = Select
 const engineeringTemplateTypeList = getEnums('EngineeringTemplateType')
   ? getEnums('EngineeringTemplateType')
-  : [{ text: '定额计价', value: 1 }]
+  : [{ value: 1, text: '定额计价' }]
 interface IForm {
   type?: 'add' | 'edit'
   selectList?: number[]
@@ -21,6 +20,8 @@ type listType = {
 }
 const DictionaryForm: React.FC<IForm> = (props) => {
   const { type, selectList } = props
+  console.log(engineeringTemplateTypeList)
+
   return (
     <>
       <Row>

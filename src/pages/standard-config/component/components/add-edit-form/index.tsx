@@ -6,7 +6,7 @@ import { QuestionCircleOutlined } from '@ant-design/icons'
 import EnumSelect from '@/components/enum-select'
 import {
   deviceCategoryType,
-  kvLevelType,
+  kvBothLevelType,
   forDesignType,
   forProjectType,
 } from '@/services/resource-config/resource-enum'
@@ -32,16 +32,15 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
 
   return (
     <>
-      {type === 'add' && (
-        <CyFormItem
-          label="组件编码"
-          name="componentId"
-          required
-          rules={[{ required: true, message: '组件编码不能为空' }]}
-        >
-          <Input placeholder="请输入组件编码"></Input>
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="组件编码"
+        name="componentId"
+        required
+        rules={[{ required: true, message: '组件编码不能为空' }]}
+      >
+        <Input placeholder="请输入组件编码"></Input>
+      </CyFormItem>
+
       <CyFormItem
         label="组件名称"
         name="componentName"
@@ -99,7 +98,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         initialValue="不限"
         rules={[{ required: true, message: '电压等级不能为空' }]}
       >
-        <EnumSelect placeholder="请选择电压等级" enumList={kvLevelType} valueString />
+        <EnumSelect placeholder="请选择电压等级" enumList={kvBothLevelType} valueString />
       </CyFormItem>
 
       <CyFormItem
@@ -122,7 +121,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="图纸" name="chartIds">
+      <CyFormItem label="加工图" name="chartIds">
         <UrlSelect
           requestType="post"
           mode="multiple"

@@ -4,7 +4,7 @@ import { useGetUserInfo } from '@/utils/hooks'
 import { flatten } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
 import { Form, Input, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 import { history } from 'umi'
 
 interface EditPasswordProps {

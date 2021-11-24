@@ -1,6 +1,8 @@
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import AddComponentDetail from '@/pages/standard-config/component/components/detail-table/add-form'
+import EditComponentDetail from '@/pages/standard-config/component/components/detail-table/edit-form'
 import {
   addCableChannelDetailItem,
   deleteCableChannelDetailItem,
@@ -14,24 +16,25 @@ import { Button, Form, Input, message, Modal } from 'antd'
 // import styles from './index.less';
 import { isArray } from 'lodash'
 import React, { useState } from 'react'
-import AddcableChannelDetail from './add-form'
-import EditcableChannelDetail from './edit-form'
+
 interface ModuleDetailParams {
   libId: string
   cableChannelId: string[]
+  selectId: string[]
 }
 
 const { Search } = Input
 
 const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, cableChannelId } = props
-
+  const { libId, cableChannelId, selectId } = props
   const tableRef = React.useRef<HTMLDivElement>(null)
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [formData, setFormData] = useState<any>()
+
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
@@ -78,19 +81,6 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'cableChannelId',
-      index: 'cableChannelId',
-      title: '电缆通道编号',
-      width: 180,
-    },
-    {
-      dataIndex: 'channelName',
-      index: 'channelName',
-      title: '电缆通道名称',
-      width: 500,
-    },
-
-    {
       dataIndex: 'itemId',
       index: 'itemId',
       title: '物料/组件编码',
@@ -100,7 +90,14 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       dataIndex: 'itemName',
       index: 'itemName',
       title: '物料/组件名称',
-      width: 220,
+      width: 450,
+    },
+
+    {
+      dataIndex: 'itemSpec',
+      index: 'itemSpec',
+      title: '物料/组件型号',
+      width: 350,
     },
 
     {
@@ -115,7 +112,7 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       title: '是否组件',
       width: 220,
       render: (text: any, record: any) => {
-        return record.isComponent === true ? '是' : '否'
+        return record.isComponent === 1 ? '是' : '否'
       },
     },
   ]
@@ -153,24 +150,16 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     const editDataId = editData.id
 
     setEditFormVisible(true)
-    const cableChannelDetailData = await run(libId, editDataId)
-    const formData =
-      cableChannelDetailData?.isComponent == 1
-        ? {
-            componentId: {
-              id: cableChannelDetailData.itemId,
-              name: cableChannelDetailData.itemName,
-            },
-            itemNumber: cableChannelDetailData.itemNumber,
-          }
-        : {
-            materialId: {
-              id: cableChannelDetailData.itemId,
-              name: cableChannelDetailData.itemName,
-            },
-            itemNumber: cableChannelDetailData.itemNumber,
-          }
-
+    const ComponentDetailData = await run(libId, editDataId)
+    const formData = {
+      componentId: ComponentDetailData.itemName,
+      itemId: ComponentDetailData.itemId,
+      itemNumber: ComponentDetailData.itemNumber,
+      // spec: ComponentDetailData.spec,
+      itemType: ComponentDetailData.isComponent === 1 ? '1' : '0',
+      unit: ComponentDetailData.unit,
+    }
+    setFormData(formData)
     editForm.setFieldsValue(formData)
   }
 
@@ -181,12 +170,11 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
+          componentId: editData.itemName,
           libId: libId,
-          componentId: editData.componentId,
-          materialId: editData.materialId,
           itemId: editData.itemId,
           itemNumber: editData.itemNumber,
-          isComponent: editData.isComponent,
+          itemType: editData.itemType,
         },
         values
       )
@@ -234,7 +222,7 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
     <div>
       <GeneralTable
         buttonLeftContentSlot={() => searchComponent()}
-        // buttonRightContentSlot={() => tableRightSlot}
+        buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/cableChannelDetails/GetPageList"
         columns={columns}
@@ -243,7 +231,7 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           libId: libId,
-          cableChannelIds: cableChannelId,
+          cableChannelIds: selectId,
           keyWord: searchKeyWord,
         }}
       />
@@ -260,7 +248,7 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm}>
-          <AddcableChannelDetail addForm={addForm} resourceLibId={libId} />
+          <AddComponentDetail addForm={addForm} resourceLibId={libId} />
         </Form>
       </Modal>
 
@@ -277,7 +265,7 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <EditcableChannelDetail resourceLibId={libId} />
+          <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
         </Form>
       </Modal>
     </div>

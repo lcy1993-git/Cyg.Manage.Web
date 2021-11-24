@@ -1,56 +1,37 @@
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { Button, message } from 'antd';
-import React, { useState } from 'react';
-import styles from './index.less';
-import CommonTitle from '@/components/common-title';
-import UrlSelect from '@/components/url-select';
-import OverHeadDesignTab from './components/overHeadDesign-tab';
-import { ImportOutlined } from '@ant-design/icons';
-import ImportOverheadModal from './components/import-form';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import { Button } from 'antd'
+import React, { useState } from 'react'
+import styles from './index.less'
+import CommonTitle from '@/components/common-title'
+import OverHeadDesignTab from './components/overHeadDesign-tab'
+import { ImportOutlined } from '@ant-design/icons'
+import ImportOverheadModal from './components/import-form'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
 interface libParams {
-  libId: string;
+  libId: string
 }
 
 const OverheadDesign: React.FC<libParams> = (props) => {
-  const { libId } = props;
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [resourceLibId, setResourceLibId] = useState<string>('');
-  const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
-  //选择资源库传libId
-  const searchByLib = (value: any) => {
-    setResourceLibId(value);
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.searchByParams({
-        libId: value,
-      });
-    }
-  };
+  const { libId } = props
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   const uploadFinishEvent = () => {
-    refresh();
-  };
+    refresh()
+  }
 
   const importOverheadDesignEvent = () => {
-    // if (!resourceLibId) {
-    //   message.error('请先选择资源库');
-    //   return;
-    // }
-    setImportOverheadVisible(true);
-  };
+    setImportOverheadVisible(true)
+  }
 
   return (
     // <PageCommonWrap noPadding={true}>
@@ -61,14 +42,14 @@ const OverheadDesign: React.FC<libParams> = (props) => {
             <div className="flex1 flex">
               <CommonTitle>架空设计</CommonTitle>
             </div>
-            {/* <div>
+            <div>
               {buttonJurisdictionArray?.includes('modules-import') && (
                 <Button className="mr7" onClick={() => importOverheadDesignEvent()}>
                   <ImportOutlined />
                   导入(杆型+模块)
                 </Button>
               )}
-            </div> */}
+            </div>
           </div>
           <OverHeadDesignTab libId={libId} />
         </div>
@@ -82,7 +63,7 @@ const OverheadDesign: React.FC<libParams> = (props) => {
       />
       {/* </PageCommonWrap> */}
     </>
-  );
-};
+  )
+}
 
-export default OverheadDesign;
+export default OverheadDesign

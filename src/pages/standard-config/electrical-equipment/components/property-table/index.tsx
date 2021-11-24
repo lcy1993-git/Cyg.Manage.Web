@@ -1,20 +1,10 @@
 import GeneralTable from '@/components/general-table'
-import { Button, message, Form, Modal } from 'antd'
+import { getPropertyList, updateComponentPropertyItem } from '@/services/resource-config/component'
+import { EditOutlined } from '@ant-design/icons'
+import { useRequest, useUpdateEffect } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
 import React, { useState } from 'react'
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Popconfirm } from 'antd'
-// import styles from './index.less';
-import { isArray } from 'lodash'
-import {
-  getComponentPropertyItem,
-  updateComponentPropertyItem,
-  addComponentPropertyItem,
-  deleteComponentPropertyItem,
-} from '@/services/resource-config/component'
-import { useRequest } from 'ahooks'
-import AddComponentProperty from './add-form'
-import EditComponentProperty from './edit-form'
-import ModalConfirm from '@/components/modal-confirm'
+import EditAllPropertyForm from './edit-all-form'
 interface ModuleDetailParams {
   libId: string
   componentId: string[]
@@ -25,13 +15,12 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRef = React.useRef<HTMLDivElement>(null)
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [formData, setFormData] = useState<any>()
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, run } = useRequest(getComponentPropertyItem, {
+  const { run } = useRequest(getPropertyList, {
     manual: true,
   })
 
@@ -57,96 +46,61 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
     },
   ]
 
-  //添加
-  const addEvent = () => {
-    setAddFormVisible(true)
-  }
-
-  const sureAddComponentDetail = () => {
-    addForm.validateFields().then(async (value) => {
-      const saveInfo = Object.assign(
-        {
-          libId: libId,
-          componentId: componentId[0],
-        },
-        value
-      )
-
-      await addComponentPropertyItem(saveInfo)
-      message.success('添加成功')
-      refresh()
-      setAddFormVisible(false)
-      addForm.resetFields()
-    })
-  }
-
   //编辑
   const editEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
-    const editData = tableSelectRows[0]
-    const editDataId = editData.id
+    const propertyData = await run({ libId: libId, componentId: componentId[0] })
 
+    const formData = propertyData?.map((item: any) => {
+      return {
+        propertyName: item.propertyName,
+        propertyValue: item.propertyValue,
+      }
+    })
+
+    setFormData(formData)
     setEditFormVisible(true)
-    const ComponentDetailData = await run(libId, editDataId)
-
-    editForm.setFieldsValue(ComponentDetailData)
   }
 
   const sureEditcomponentDetail = () => {
-    const editData = data!
-
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          id: editData.id,
           libId: libId,
-          propertyName: editData.propertyName,
-          propertyValue: editData.propertyValue,
+          componentId: componentId[0],
         },
         values
       )
       await updateComponentPropertyItem(submitInfo)
       refresh()
       message.success('更新成功')
-      editForm.resetFields()
+      refresh()
       setEditFormVisible(false)
     })
   }
 
-  const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条模块明细删除！')
-      return
-    }
-    const selectDataId = tableSelectRows[0].id
-    await deleteComponentPropertyItem(libId, selectDataId)
-    refresh()
-    message.success('删除成功')
-    setTableSelectRows([])
-  }
-
   const tableRightSlot = (
     <>
-      <Button type="primary" className="mr7" onClick={() => addEvent()}>
+      {/* <Button type="primary" className="mr7" onClick={() => addEvent()}>
         <PlusOutlined />
         添加
-      </Button>
+      </Button> */}
       <Button className="mr7" onClick={() => editEvent()}>
         <EditOutlined />
         编辑
       </Button>
-      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      {/* <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} /> */}
     </>
   )
 
+  useUpdateEffect(() => {
+    refresh()
+  }, [componentId])
+
   return (
     <div>
-      {/* <Table dataSource={propertyData} columns={columns} /> */}
       <GeneralTable
         noPaging
+        notShowSelect
         buttonRightContentSlot={() => tableRightSlot}
         ref={tableRef}
         url="/ComponentProperty/GetList"
@@ -158,38 +112,22 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
           componentId: componentId[0],
         }}
       />
-      <Modal
-        maskClosable={false}
-        title="添加-组件属性"
-        width="70%"
-        visible={addFormVisible}
-        okText="确认"
-        onOk={() => sureAddComponentDetail()}
-        onCancel={() => setAddFormVisible(false)}
-        cancelText="取消"
-        bodyStyle={{ height: 480 }}
-        centered
-        destroyOnClose
-      >
-        <Form form={addForm} preserve={false}>
-          <AddComponentProperty addForm={addForm} />
-        </Form>
-      </Modal>
 
       <Modal
         maskClosable={false}
         title="编辑-组件属性"
-        width="980px"
+        width="58%"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditcomponentDetail()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         centered
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <EditComponentProperty />
+          <EditAllPropertyForm editForm={editForm} formData={formData} />
         </Form>
       </Modal>
     </div>

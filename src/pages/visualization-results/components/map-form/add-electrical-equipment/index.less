@@ -1,0 +1,34 @@
+.formBox {
+  position: fixed;
+  background: white;
+  .header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 16px;
+    line-height: 36px;
+    border-bottom: 1px solid gainsboro;
+    .closeIcon {
+      position: absolute;
+      top: 11px;
+      right: 10px;
+      cursor: pointer;
+    }
+  }
+  :global .ant-form-item {
+    margin-bottom: 10px;
+  }
+  .lengthBox {
+    margin-bottom: 10px;
+  }
+  .form {
+    padding: 12px;
+    :global .ant-btn {
+      height: 28px;
+      padding: 0 10px !important;
+      line-height: 28px;
+    }
+  }
+}

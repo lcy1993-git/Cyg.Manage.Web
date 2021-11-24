@@ -12,8 +12,8 @@ const Expander = ({ defaultExpanded, callback }: ExpanderProps) => {
   return (
     <CaretDownOutlined
       rotate={expanded ? 0 : 180}
-      className='ant-checkbox-wrapper vt-checkbox'
-      style={{ width: '28px', borderRight: '1px solid #dbdbdb', paddingLeft: "3px"}}
+      className="ant-checkbox-wrapper vt-checkbox"
+      style={{ width: '28px', borderRight: '1px solid #dbdbdb', paddingLeft: '3px' }}
       onClick={() => {
         callback(!expanded)
         setExpanded((v) => !v)

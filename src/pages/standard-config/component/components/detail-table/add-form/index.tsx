@@ -55,8 +55,8 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
           <span>类型</span>
         </>
       ),
-      dataIndex: 'type',
-      index: 'type',
+      dataIndex: 'itemType',
+      index: 'itemType',
       width: 240,
       render: (index: number) => (
         <EnumSelect
@@ -69,9 +69,9 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
               const thisValue = formValues[index]
               formValues.splice(index, 1, {
                 ...thisValue,
-                type: value,
+                itemType: value,
                 componentId: undefined,
-                specifications: undefined,
+                itemId: undefined,
                 unit: undefined,
               })
 
@@ -80,9 +80,9 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
               addForm.setFieldsValue({
                 items: {
                   ...formValues,
-                  type: value,
+                  itemType: value,
                   componentId: undefined,
-                  specifications: undefined,
+                  itemId: undefined,
                   unit: undefined,
                 },
               })
@@ -104,17 +104,16 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       render: (index: number) => {
         return (
           <NameSelect
-            typeEnum={addForm.getFieldValue('items')[index]?.type}
+            typeEnum={addForm.getFieldValue('items')[index]?.itemType}
             componentSelectData={componentSelectData}
             materialNameSelectData={materialNameSelectData}
-            onChange={(value: any) => {
+            onChange={(value: any, option: any) => {
               const formValues = addForm.getFieldValue('items')
               if (isArray(formValues)) {
                 const thisValue = formValues[index]
                 formValues.splice(index, 1, {
                   ...thisValue,
-                  componentId: value,
-                  specifications: undefined,
+                  itemId: undefined,
                   unit: undefined,
                 })
 
@@ -123,8 +122,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
                 addForm.setFieldsValue({
                   items: {
                     ...formValues,
-                    componentId: value,
-                    specifications: undefined,
+                    itemId: undefined,
                     unit: undefined,
                   },
                 })
@@ -133,6 +131,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
           />
         )
       },
+      rules: [{ required: true, message: '物料/组件名称不能为空' }],
     },
     {
       title: (
@@ -141,8 +140,8 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
           <span>物料/组件规格</span>
         </>
       ),
-      dataIndex: 'specifications',
-      index: 'specifications',
+      dataIndex: 'itemId',
+      index: 'itemId',
       width: 240,
       render: (index: number) => {
         return (
@@ -153,7 +152,6 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
                 const thisValue = formValues[index]
                 formValues.splice(index, 1, {
                   ...thisValue,
-                  specifications: value,
                   unit: option.unit,
                 })
 
@@ -162,7 +160,6 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
                 addForm.setFieldsValue({
                   items: {
                     ...formValues,
-                    specifications: value,
                     unit: option.unit,
                   },
                 })
@@ -170,7 +167,7 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
             }}
             libId={resourceLibId}
             name={addForm.getFieldValue('items')[index]?.componentId}
-            typeEnum={addForm.getFieldValue('items')[index]?.type}
+            typeEnum={addForm.getFieldValue('items')[index]?.itemType}
           />
         )
       },
@@ -187,11 +184,19 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       index: 'itemNumber',
       width: 160,
       render: () => {
-        return <Input type="number" min={1} placeholder="请输入数量（正整数）" bordered={false} />
+        return <Input type="number" min={1} placeholder="请输入数量" bordered={false} />
       },
       rules: [
         { required: true, message: '数量不能为空' },
-        { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+        {
+          pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, //匹配正整数
+          message: '输入值必须大于0',
+        },
+
+        {
+          pattern: /^([\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
+          message: '最多保留三位小数',
+        },
       ],
     },
     {

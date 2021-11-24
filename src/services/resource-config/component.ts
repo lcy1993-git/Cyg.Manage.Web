@@ -60,6 +60,7 @@ interface ComponentDetailParams {
   componentId: string
   componentName: string
   materialId: string
+  itemType: number
   itemId: string
   spec: string
   itemName: string
@@ -104,19 +105,25 @@ export const deleteComponentDetailItem = (libId: string, id: string) => {
 
 /**组件属性操作 */
 
+interface PropertyParams {
+  propertyName: string
+  propertyValue: string
+}
+
 interface ComponentPropertyParams {
   id: string
   componentId: string
   propertyName: string
   propertyValue: string
+  items: PropertyParams[]
 }
 
 //获取单条明细数据
-export const getComponentPropertyItem = (libId: string, id: string) => {
+export const getPropertyList = (params: { libId: string; componentId: string }) => {
   return cyRequest<ComponentPropertyParams>(() =>
-    request(`${baseUrl.resource}/ComponentProperty/GetById`, {
-      method: 'GET',
-      params: { libId, id },
+    request(`${baseUrl.resource}/ComponentProperty/GetList`, {
+      method: 'POST',
+      data: params,
     })
   )
 }

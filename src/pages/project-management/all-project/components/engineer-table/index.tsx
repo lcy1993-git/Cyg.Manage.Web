@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-// import EmptyTip from '@/components/empty-tip';
 import CyTag from '@/components/cy-tag'
 import ImageIcon from '@/components/image-icon'
 import {
@@ -121,30 +120,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   // 项目继承状态判断
   const [inheritState, setInheritState] = useState<boolean>(false)
 
-  function onSuccess(data: any) {
-    console.log(data, 'act')
-
-    const allProjects = data.content.pagedData.items.slice(0, 10).reduce((p: any[], c: any) => {
-      // _parent 父级
-      // _header 表头
-      p.push({ ...c, _parent: true }, { _header: true }, ...c.projects)
-      return p
-    }, [])
-
-    return allProjects
-  }
-
-  const { data: tableData, loading, run } = useRequest(getProjectTableList, {
-    manual: true,
-    // onSuccess: (tableData) => {
-    //   const washedData = onSuccess(tableData);
-    //   cache.current = washedData;
-    //   return washedData;
-    // },
-  })
-
-  const cache = useRef(tableData)
-  console.log(tableData, '列表')
+  const { data: tableData, loading, run } = useRequest(getProjectTableList, { manual: true })
 
   const scrollbar = useRef<any>(null)
   const tableContentRef = useRef<HTMLDivElement>(null)
@@ -1046,46 +1022,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }
     return <div style={{ ...style, ...viewStyle }} {...rest} />
   }
-
-  console.log(tableResultData, '列表')
-
-  const parentColumns: any[] = [
-    {
-      dataIndex: 'name',
-      key: 'name',
-      render: (value: string) => {
-        return (
-          <>
-            <span className="pl-2">{value}</span>
-          </>
-        )
-      },
-    },
-    {
-      render: (_: unknown, record: any) => {
-        return <span>共有项目：{record.projects.length} 个</span>
-      },
-    },
-    {
-      render: (_: unknown, record: any) => {
-        return (
-          <span>
-            工程日期：{record.startTime}-{record.endTime}
-          </span>
-        )
-      },
-    },
-    {
-      render: (_: unknown, record: any) => {
-        return <span>编制日期：{record.compileTime}</span>
-      },
-    },
-    {
-      render: (_: unknown, record: any) => {
-        return <></>
-      },
-    },
-  ]
 
   return (
     <TableContext.Provider

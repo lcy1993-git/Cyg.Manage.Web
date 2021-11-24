@@ -1,13 +1,13 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip, Tabs } from 'antd';
-import React, { useEffect, useState } from 'react';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
-import { isArray } from 'lodash';
-import '@/assets/icon/iconfont.css';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip, Tabs } from 'antd'
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
+import { isArray } from 'lodash'
+import '@/assets/icon/iconfont.css'
 import {
   updateSignFileItem,
   addSignFileItem,
@@ -19,58 +19,58 @@ import {
   addSignGroupItem,
   deleteSignGroupItem,
   downLoadSignFileItem,
-} from '@/services/operation-config/sign-manage';
-import DefaultSign from './components/default-sign';
-import { getUploadUrl } from '@/services/resource-config/drawing';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+} from '@/services/operation-config/sign-manage'
+import DefaultSign from './components/default-sign'
+import { getUploadUrl } from '@/services/resource-config/drawing'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 // import UrlSelect from '@/components/url-select';
-import SignGroupForm from './components/add-sign-group';
-import { useGetSelectData } from '@/utils/hooks';
-import DataSelect from '@/components/data-select';
-import { TableRequestResult } from '@/services/table';
-import SignFileForm from './components/add-edit-form';
-import ModalConfirm from '@/components/modal-confirm';
+import SignGroupForm from './components/add-sign-group'
+import { useGetSelectData } from '@/utils/hooks'
+import DataSelect from '@/components/data-select'
+import { TableRequestResult } from '@/services/table'
+import SignFileForm from './components/add-edit-form'
+import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input;
-const { TabPane } = Tabs;
+const { Search } = Input
+const { TabPane } = Tabs
 
 const SignManage: React.FC = () => {
-  const auditRef = React.useRef<HTMLDivElement>(null);
-  const approvalRef = React.useRef<HTMLDivElement>(null);
-  const checkRef = React.useRef<HTMLDivElement>(null);
-  const designRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false);
-  const [signGroupModalVisible, setSignGroupModalVisible] = useState<boolean>(false);
-  const [signGroupId, setSignGroupId] = useState<string>('');
-  const [nowSelectGroup, setNowSelectGroup] = useState<string>('');
-  const [editingFileName, setEditingFileName] = useState<string>('');
-  const [fileId, setFileId] = useState<string>();
-  const [tabKey, setTabKey] = useState<string>('approval');
+  const auditRef = React.useRef<HTMLDivElement>(null)
+  const approvalRef = React.useRef<HTMLDivElement>(null)
+  const checkRef = React.useRef<HTMLDivElement>(null)
+  const designRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false)
+  const [signGroupModalVisible, setSignGroupModalVisible] = useState<boolean>(false)
+  const [signGroupId, setSignGroupId] = useState<string>('')
+  const [nowSelectGroup, setNowSelectGroup] = useState<string>('')
+  const [editingFileName, setEditingFileName] = useState<string>('')
+  const [fileId, setFileId] = useState<string>()
+  const [tabKey, setTabKey] = useState<string>('approval')
   // const [fileCategory, setFileCategory] = useState<number>();
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [tableData, setTableData] = useState<TableRequestResult>();
+  const [tableData, setTableData] = useState<TableRequestResult>()
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
-  const [defaultForm] = Form.useForm();
-  const [addGroupForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
+  const [defaultForm] = Form.useForm()
+  const [addGroupForm] = Form.useForm()
 
-  const { data: keyData } = useRequest(() => getUploadUrl());
+  const { data: keyData } = useRequest(() => getUploadUrl())
 
-  const securityKey = keyData?.uploadCompanyFileApiSecurity;
+  const securityKey = keyData?.uploadCompanyFileApiSecurity
 
   const { data, run, loading } = useRequest(getSignFileDetail, {
     manual: true,
-  });
+  })
 
   const { data: defaultOptions, run: getDefaultOptions } = useRequest(getSignDefaultOptions, {
     manual: true,
-  });
+  })
   const { data: signGroupData = [], run: getSignGroup } = useGetSelectData(
     {
       url: '/CompanySignGroup/GetList',
@@ -78,56 +78,56 @@ const SignManage: React.FC = () => {
     },
     {
       onSuccess: () => {
-        setSignGroupId(signGroupData[0]?.value);
-        setNowSelectGroup(signGroupData[0]?.label);
+        setSignGroupId(signGroupData[0]?.value)
+        setNowSelectGroup(signGroupData[0]?.label)
       },
-    },
-  );
+    }
+  )
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
-    await deleteSignFileItem(editDataId);
-    refresh();
-    setTableSelectRows([]);
-    message.success('删除成功');
-  };
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
+    await deleteSignFileItem(editDataId)
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tabKey === 'approval') {
       if (approvalRef && approvalRef.current) {
         // @ts-ignore
-        approvalRef.current.refresh();
-        return;
+        approvalRef.current.refresh()
+        return
       }
     }
     if (tabKey === 'audit') {
       if (auditRef && auditRef.current) {
         // @ts-ignore
-        auditRef.current.refresh();
-        return;
+        auditRef.current.refresh()
+        return
       }
     }
     if (tabKey === 'check') {
       if (checkRef && checkRef.current) {
         // @ts-ignore
-        checkRef.current.refresh();
-        return;
+        checkRef.current.refresh()
+        return
       }
     }
     if (tabKey === 'design') {
       if (designRef && designRef.current) {
         // @ts-ignore
-        designRef.current.refresh();
-        return;
+        designRef.current.refresh()
+        return
       }
     }
-  };
+  }
 
   const columns = [
     {
@@ -136,7 +136,7 @@ const SignManage: React.FC = () => {
       title: '人员',
       width: 180,
       render: (text: any, record: any) => {
-        return record.userName ? record.userName : '无';
+        return record.userName ? record.userName : '无'
       },
     },
     {
@@ -151,38 +151,38 @@ const SignManage: React.FC = () => {
       index: 'describe',
       title: '备注',
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const addUploadFile = async () => {
     return uploadCompanyFile(
       addForm.getFieldValue('file'),
       { securityKey },
-      '/Upload/CompanyFile',
+      '/Upload/CompanyFile'
     ).then(
       (fileId: string) => {
-        setFileId(fileId);
+        setFileId(fileId)
       },
-      () => {},
-    );
-  };
+      () => {}
+    )
+  }
 
   const editUploadFile = async () => {
     return uploadCompanyFile(
       editForm.getFieldValue('file'),
       { securityKey },
-      '/Upload/CompanyFile',
+      '/Upload/CompanyFile'
     ).then(
       (fileId: string) => {
-        setFileId(fileId);
+        setFileId(fileId)
       },
-      () => {},
-    );
-  };
+      () => {}
+    )
+  }
 
   const sureAddCompanyFile = () => {
     addForm.validateFields().then(async (values) => {
@@ -196,43 +196,43 @@ const SignManage: React.FC = () => {
             userId: '',
             groupId: signGroupId,
           },
-          values,
-        );
+          values
+        )
 
-        await addSignFileItem(submitInfo);
-        refresh();
-        message.success('添加成功');
-        setAddFormVisible(false);
-        addForm.resetFields();
+        await addSignFileItem(submitInfo)
+        refresh()
+        message.success('添加成功')
+        setAddFormVisible(false)
+        addForm.resetFields()
       } else {
-        message.warn('文件未上传或上传失败');
+        message.warn('文件未上传或上传失败')
       }
-    });
-  };
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
+    const editData = tableSelectRows[0]
 
-    const editDataId = editData.id;
-    setEditingFileName(editData.name);
+    const editDataId = editData.id
+    setEditingFileName(editData.name)
 
-    setEditFormVisible(true);
-    const CompanyFileData = await run(editDataId);
+    setEditFormVisible(true)
+    const CompanyFileData = await run(editDataId)
 
-    editForm.setFieldsValue(CompanyFileData);
-  };
+    editForm.setFieldsValue(CompanyFileData)
+  }
 
   const sureEditCompanyFile = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
@@ -242,23 +242,23 @@ const SignManage: React.FC = () => {
           describe: editData.describe,
           groupId: editData.groupId,
         },
-        values,
-      );
-      await updateSignFileItem(submitInfo);
-      message.success('更新成功');
-      setEditFormVisible(false);
-      refresh();
-    });
-  };
+        values
+      )
+      await updateSignFileItem(submitInfo)
+      message.success('更新成功')
+      setEditFormVisible(false)
+      refresh()
+    })
+  }
 
   const defaultParamsEvent = async () => {
-    const defaultOptions = await getDefaultOptions(signGroupId);
-    defaultForm.setFieldsValue(defaultOptions);
-    setDefaultParamsVisible(true);
-  };
+    const defaultOptions = await getDefaultOptions(signGroupId)
+    defaultForm.setFieldsValue(defaultOptions)
+    setDefaultParamsVisible(true)
+  }
 
   const saveDefaultOptionsEvent = () => {
-    const defaultData = defaultOptions!;
+    const defaultData = defaultOptions!
     defaultForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
@@ -268,79 +268,78 @@ const SignManage: React.FC = () => {
           calibration: defaultData.calibration,
           designSurvey: defaultData.designSurvey,
         },
-        values,
-      );
-      await updateSignGroupDefaultOptions(submitInfo);
-      refresh();
-      message.success('更新成功');
-      setDefaultParamsVisible(false);
-    });
-  };
+        values
+      )
+      await updateSignGroupDefaultOptions(submitInfo)
+      refresh()
+      message.success('更新成功')
+      setDefaultParamsVisible(false)
+    })
+  }
 
   //下载公司文件
   const downLoadEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择公司文件下载');
-      return;
+      message.warning('请选择公司文件下载')
+      return
     }
-    const fileId = tableSelectRows[0].fileId;
-    const fileName = tableSelectRows[0].fileName;
+    const fileId = tableSelectRows[0].fileId
+    const fileName = tableSelectRows[0].fileName
 
-    const res = await downLoadSignFileItem({ fileId, securityKey });
+    const res = await downLoadSignFileItem({ fileId, securityKey })
 
-    const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1);
+    const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1)
 
     let blob = new Blob([res], {
       type: `application/${suffix}`,
-    });
-    let finallyFileName = `${tableSelectRows[0].name}.${suffix}`;
+    })
+    let finallyFileName = `${tableSelectRows[0].name}.${suffix}`
     //for IE
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, finallyFileName);
+      window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {
       // for Non-IE
-      let objectUrl = URL.createObjectURL(blob);
-      let link = document.createElement('a');
-      link.href = objectUrl;
-      link.setAttribute('download', finallyFileName);
-      document.body.appendChild(link);
-      link.click();
-      window.URL.revokeObjectURL(link.href);
-      document.body.removeChild(link);
+      let objectUrl = URL.createObjectURL(blob)
+      let link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', finallyFileName)
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+      document.body.removeChild(link)
     }
-    message.success('下载成功');
-  };
-  console.log(signGroupId);
+    message.success('下载成功')
+  }
 
   //公司文件组操作
   const addFileGroupEvent = () => {
-    setSignGroupModalVisible(true);
-    refresh();
-  };
+    setSignGroupModalVisible(true)
+    refresh()
+  }
 
   //选择文件组别获取对应公司文件
   const searchByFileGroup = (value?: any) => {
     const currentTitle = signGroupData.filter((item: any) => {
       if (value === item.value) {
-        return item.label;
+        return item.label
       }
-    });
+    })
 
-    setNowSelectGroup(currentTitle[0]?.label);
+    setNowSelectGroup(currentTitle[0]?.label)
 
-    setSignGroupId(value);
-  };
+    setSignGroupId(value)
+  }
 
   const tabChangeEvent = (value: string) => {
-    setTabKey(value);
+    setTabKey(value)
     if (value === 'approval') {
       if (approvalRef && approvalRef.current) {
         // @ts-ignore
         approvalRef.current.searchByParams({
           groupId: signGroupId,
           category: 1,
-        });
-        return;
+        })
+        return
       }
     }
     if (value === 'audit') {
@@ -349,8 +348,8 @@ const SignManage: React.FC = () => {
         auditRef.current.searchByParams({
           groupId: signGroupId,
           category: 2,
-        });
-        return;
+        })
+        return
       }
     }
     if (value === 'check') {
@@ -359,8 +358,8 @@ const SignManage: React.FC = () => {
         checkRef.current.searchByParams({
           groupId: signGroupId,
           category: 3,
-        });
-        return;
+        })
+        return
       }
     }
     if (value === 'design') {
@@ -369,15 +368,15 @@ const SignManage: React.FC = () => {
         designRef.current.searchByParams({
           groupId: signGroupId,
           category: 4,
-        });
-        return;
+        })
+        return
       }
     }
-  };
+  }
 
   useEffect(() => {
-    refresh();
-  }, [signGroupId]);
+    refresh()
+  }, [signGroupId])
 
   const saveSignGroupEvent = () => {
     addGroupForm.validateFields().then(async (values) => {
@@ -386,49 +385,49 @@ const SignManage: React.FC = () => {
           name: '',
           remark: '',
         },
-        values,
-      );
+        values
+      )
 
-      await addSignGroupItem(submitInfo);
-      message.success('添加成功');
-      getSignGroup();
-      setSignGroupModalVisible(false);
-      addGroupForm.resetFields();
-      refresh();
-      searchByFileGroup();
-    });
-  };
+      await addSignGroupItem(submitInfo)
+      message.success('添加成功')
+      getSignGroup()
+      setSignGroupModalVisible(false)
+      addGroupForm.resetFields()
+      refresh()
+      searchByFileGroup()
+    })
+  }
 
   const deleteFileGroupEvent = async () => {
     if (signGroupId === undefined || signGroupId === '') {
-      message.warning('未选择要删除签批文件组别');
-      return;
+      message.warning('未选择要删除签批文件组别')
+      return
     }
     if (tableData && tableData?.items.length > 0) {
-      message.error('该分组包含签批文件,无法删除');
-      return;
+      message.error('该分组包含签批文件,无法删除')
+      return
     }
-    await deleteSignGroupItem(signGroupId);
-    message.success('已删除');
-    getSignGroup();
-    searchByFileGroup();
-  };
+    await deleteSignGroupItem(signGroupId)
+    message.success('已删除')
+    getSignGroup()
+    searchByFileGroup()
+  }
 
   const titleSlotElement = () => {
-    return <div>{`-${nowSelectGroup}`}</div>;
-  };
+    return <div>{`-${nowSelectGroup}`}</div>
+  }
 
   const onAddFormChange = (changedValues: any) => {
     if (changedValues.file) {
-      setFileId(undefined);
+      setFileId(undefined)
     }
-  };
+  }
 
   const onEditFormChange = (changedValues: any) => {
     if (changedValues.file) {
-      setFileId(undefined);
+      setFileId(undefined)
     }
-  };
+  }
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -656,7 +655,7 @@ const SignManage: React.FC = () => {
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default SignManage;
+export default SignManage

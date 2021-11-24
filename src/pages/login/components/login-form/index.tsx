@@ -1,140 +1,229 @@
-import { history } from 'umi';
-import React, { useRef, useState } from 'react';
-import { Button, Form, Input, message, Tabs } from 'antd';
-import ImageIcon from '@/components/image-icon';
-import VerifycodeImage from '../verifycode-image';
+import { history } from 'umi'
+import React, { useRef, useState } from 'react'
+import { Button, Form, Input, message, Tabs } from 'antd'
+import ImageIcon from '@/components/image-icon'
+import VerifycodeImage from '../verifycode-image'
 
-import { loginRules } from '@/pages/login/components/login-form/rule';
-import VerificationCode from '@/components/verification-code';
-import { phoneNumberRule } from '@/utils/common-rule';
-import { flatten } from '@/utils/utils';
+import { loginRules } from '@/pages/login/components/login-form/rule'
+import VerificationCode from '@/components/verification-code'
+import { phoneNumberRule } from '@/utils/common-rule'
+import { flatten } from '@/utils/utils'
 import {
   phoneLoginRequest,
   compareVerifyCode,
   indexLoginRequest,
   getUserInfoRequest,
   getAuthorityModules,
-} from '@/services/login';
+} from '@/services/login'
 
-import styles from './index.less';
-const { TabPane } = Tabs;
-
-export type LoginType = 'account' | 'phone';
-
-const LoginForm: React.FC = () => {
-  const [needVerifycode, setNeedVerifycode] = useState<boolean>(false);
-  const [imageCode, setImageCode] = useState<string>('');
+import styles from './index.less'
+import { Stop } from '@/pages/login'
+import { useRequest } from 'ahooks'
+import { getProductServerList, getStopServerNotice } from '@/services/index'
+const { TabPane } = Tabs
+const { NODE_ENV } = process.env
+export type LoginType = 'account' | 'phone'
+interface Props {
+  serverCode: string
+  stopLogin: (data?: Stop) => void
+}
+const LoginForm: React.FC<Props> = (props) => {
+  const { serverCode } = props
+  const [needVerifycode, setNeedVerifycode] = useState<boolean>(false)
+  const [imageCode, setImageCode] = useState<string>('')
   // 是否验证码错误
-  const [hasErr, setHasErr] = useState(false);
+  const [hasErr, setHasErr] = useState(false)
   // 刷新验证码的hash值
-  const random = () => Math.random().toString(36).slice(2);
-  const [reloadSign, setReloadSign] = useState(random());
-  const refreshCode = () => setReloadSign(random());
+  const random = () => Math.random().toString(36).slice(2)
+  const [reloadSign, setReloadSign] = useState(random())
+  const refreshCode = () => setReloadSign(random())
+  const [activeKey, setActiveKey] = useState<LoginType>('account')
+  const [formRules, setFormRules] = useState(loginRules['account'])
+  const [phoneNumber, setPhoneNumber] = useState<string>('')
+  const [canSendCode, setCanSendCode] = useState<boolean>(false)
+  const [requestLoading, setRequestLoading] = useState<boolean>(false)
 
-  const [activeKey, setActiveKey] = useState<LoginType>('account');
-  const [formRules, setFormRules] = useState(loginRules['account']);
-
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
-  const [canSendCode, setCanSendCode] = useState<boolean>(false);
-
-  const [requestLoading, setRequestLoading] = useState<boolean>(false);
-
-  const [form] = Form.useForm();
-  const userNameRef = useRef<Input>(null);
-  const phoneRef = useRef<Input>(null);
+  const [form] = Form.useForm()
+  const userNameRef = useRef<Input>(null)
+  const phoneRef = useRef<Input>(null)
 
   const tabChangeEvent = (activeKey: string) => {
-    setActiveKey(activeKey as LoginType);
+    setActiveKey(activeKey as LoginType)
     // 根据不同的type,设置不同的校验规则
-    setFormRules(loginRules[activeKey]);
-  };
+    setFormRules(loginRules[activeKey])
+  }
 
   const getkey = (activeKey: LoginType) => {
-    if (!userNameRef.current) return;
+    if (!userNameRef.current) return
     if (activeKey === 'account') {
-      return userNameRef.current?.input.value;
+      return userNameRef.current?.input.value
     } else {
-      return phoneRef.current?.input.value;
+      return phoneRef.current?.input.value
     }
-  };
+  }
 
-  const login = (type: LoginType) => {
+  const login = (type: LoginType, data?: Stop) => {
     // TODO  校验通过之后进行保存
     form.validateFields().then(async (values) => {
+      if (
+        [2, 3].includes(data?.stage as number) &&
+        values?.userName?.startsWith(data?.testerAccountPrefix)
+      ) {
+        values.userName = values?.userName?.replace(data?.testerAccountPrefix, '')
+      }
       try {
-        setRequestLoading(true);
-        let resData = null;
+        let resData = null
         if (type === 'account') {
-          resData = await indexLoginRequest(values);
+          resData = await indexLoginRequest(values)
         } else {
-          resData = await phoneLoginRequest(values);
+          resData = await phoneLoginRequest(values)
         }
         if (resData.code === 200 && resData.isSuccess) {
-          const { accessToken } = resData.content;
+          const { accessToken } = resData.content
 
-          localStorage.setItem('Authorization', accessToken);
-          const userInfo = await getUserInfoRequest();
-          const modules = await getAuthorityModules();
-    
-          const buttonModules = flatten(modules);
-      
+          localStorage.setItem('Authorization', accessToken)
+          let userInfo = await getUserInfoRequest()
+          if (data?.stage) {
+            const userName = form.getFieldValue('userName')
+            userInfo['isTestUser'] =
+              [2, 3].includes(data?.stage) && userName.startsWith(data?.testerAccountPrefix) // 是否测试账号
+          }
+          const modules = await getAuthorityModules()
+
+          const buttonModules = flatten(modules)
+
           const buttonArray = buttonModules
             .filter((item: any) => item.category === 3)
-            .map((item: any) => item.authCode);
-          
-          localStorage.setItem('functionModules', JSON.stringify(modules));
-          localStorage.setItem('userInfo', JSON.stringify(userInfo));
-          localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray));
+            .map((item: any) => item.authCode)
 
-          setNeedVerifycode(false);
-          message.success('登录成功', 1.5);
-          history.push('/index');
+          localStorage.setItem('functionModules', JSON.stringify(modules))
+          localStorage.setItem('userInfo', JSON.stringify(userInfo))
+          localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
+
+          setNeedVerifycode(false)
+          message.success('登录成功', 1.5)
+          history.push('/index')
         } else if (resData.code === 40100) {
           // 临时关闭验证码，开启时，打开下行代码
-          // setNeedVerifycode(true);
-          message.error(resData.message);
+          message.error(resData.message)
         } else {
-          message.error(resData.message);
+          message.error(resData.message)
         }
       } catch (msg) {
-        console.error(msg);
+        console.error(msg)
       } finally {
-        setRequestLoading(false);
+        setRequestLoading(false)
       }
-    });
-  };
-
-  // 登录前的验证码校准，当needVerifycode存在先行判断验证码
-  const loginButtonClick = async () => {
-    if (needVerifycode) {
-      const fromData = await form.validateFields();
-      const key = activeKey === 'account' ? fromData.userName : fromData.phone;
-      const codeRes = await compareVerifyCode(key, imageCode);
-      if (codeRes.content === true) {
-        login(activeKey);
+    })
+  }
+  const { run } = useRequest(
+    (serverCode) =>
+      getStopServerNotice({
+        serverCode: serverCode,
+        kickOutSeconds: 605,
+      }),
+    {
+      manual: true,
+      onSuccess: (val) => {
+        return val
+      },
+    }
+  )
+  const getServerList = async () => {
+    const res = await getProductServerList({
+      productCode: '1301726010322214912',
+      category: 0,
+      status: 0,
+      province: '',
+    })
+    const currenServer = res?.find((item: { propertys: { webSite: string } }) => {
+      if (NODE_ENV === 'development') {
+        return item.propertys?.webSite === 'http://10.6.1.40:21528/login'
       } else {
-        message.error('验证码校验错误');
-        refreshCode();
-        setHasErr(true);
+        return item.propertys?.webSite === window.location.href
+      }
+    })
+    if (currenServer) {
+      sessionStorage.setItem('serverCode', currenServer?.code || '')
+      return currenServer
+    } else {
+      return ''
+    }
+  }
+  const getStopInfo = async () => {
+    setRequestLoading(true)
+    if (serverCode === '') {
+      // 如果前面没有获取到停服信息,在这里再获取一遍
+      try {
+        getServerList().then(async (res) => {
+          if (res) {
+            console.log(res)
+            let val = await run(res.code)
+            if (!val) {
+              await loginButtonClick()
+              return
+            }
+            if ([2, 3].includes(val?.stage) && val?.testerAccountPrefix !== '') {
+              // 停服公告,前缀没有也直接放行
+              const data = form.getFieldsValue()
+              if (!data?.userName?.startsWith(val?.testerAccountPrefix)) {
+                props.stopLogin(val)
+                return
+              }
+            }
+            await loginButtonClick(val)
+            return
+          }
+        })
+      } catch {
+        await loginButtonClick()
       }
     } else {
-      login(activeKey);
+      // 停服公告,前缀没有也直接放行
+      const data = form.getFieldsValue()
+      let val = await run(serverCode)
+      if (
+        val !== null &&
+        !data?.userName?.startsWith(val?.testerAccountPrefix) &&
+        [2, 3].includes(val?.stage)
+      ) {
+        props.stopLogin(val)
+        return
+      }
+      await loginButtonClick(val)
     }
-  };
+  }
+  // 登录前的验证码校准，当needVerifycode存在先行判断验证码
+  const loginButtonClick = async (data?: Stop) => {
+    if (needVerifycode) {
+      let fromData = await form.validateFields()
+      const key = activeKey === 'account' ? fromData.userName : fromData.phone
+      const codeRes = await compareVerifyCode(key, imageCode)
+      if (codeRes.content === true) {
+        login(activeKey, data)
+      } else {
+        message.error('验证码校验错误')
+        refreshCode()
+        setHasErr(true)
+      }
+    } else {
+      login(activeKey, data)
+    }
+  }
 
   const formChangeEvent = (changedValues: object) => {
     if (changedValues.hasOwnProperty('phone')) {
-      setPhoneNumber(changedValues['phone']);
-      const canSendSms = phoneNumberRule.test(changedValues['phone']);
-      setCanSendCode(canSendSms);
+      setPhoneNumber(changedValues['phone'])
+      const canSendSms = phoneNumberRule.test(changedValues['phone'])
+      setCanSendCode(canSendSms)
     }
-  };
+  }
 
   const onKeyDownLogin = (e: any) => {
     if (e.keyCode == 13) {
-      login('account');
+      login('account')
     }
-  };
+  }
 
   return (
     <Form form={form} onValuesChange={formChangeEvent} onKeyDown={(e) => onKeyDownLogin(e)}>
@@ -177,7 +266,7 @@ const LoginForm: React.FC = () => {
             <div>
               <Button
                 className={styles.loginButton}
-                onClick={loginButtonClick}
+                onClick={getStopInfo}
                 loading={requestLoading}
                 type="primary"
               >
@@ -218,7 +307,7 @@ const LoginForm: React.FC = () => {
               refreshCode={refreshCode}
             />
             <div>
-              <Button className={styles.loginButton} onClick={loginButtonClick} type="primary">
+              <Button className={styles.loginButton} onClick={getStopInfo} type="primary">
                 立即登录
               </Button>
             </div>
@@ -226,7 +315,7 @@ const LoginForm: React.FC = () => {
         </Tabs>
       </div>
     </Form>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default LoginForm

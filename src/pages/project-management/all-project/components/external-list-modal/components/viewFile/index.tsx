@@ -2,8 +2,7 @@ import FileDocxView from '@/components/api-file-view/componnents/file-docx-view'
 import XlsxViewer from '@/components/api-file-view/componnents/file-excel-view'
 import { baseUrl } from '@/services/common'
 import { getFileStream } from '@/services/project-management/all-project'
-import { useRequest } from 'ahooks'
-import React from 'react'
+import React, { useState } from 'react'
 
 interface UrlFileViewProps {
   url?: string
@@ -20,6 +19,7 @@ const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   requestSource = 'review',
   ...rest
 }) => {
+  const [data, setData] = useState(null)
   let api: any = null
   if (params.extension === '.xlsx') {
     api = `${baseUrl[requestSource]}${url}?url=${encodeURIComponent(params.url)}&extension=${
@@ -29,10 +29,14 @@ const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
     return <XlsxViewer url={api} />
   } else {
     const { url, extension } = params
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { data } = useRequest(() => getFileStream({ url, extension }))
+    getFileStream({ url, extension }).then((res) => {
+      setData(res)
+    })
+    // const { data } = useRequest((res) => {
+    //   setData(res)
+    // });
 
-    return <FileDocxView data={data} />
+    return data ? <FileDocxView data={data} /> : null
   }
 }
 

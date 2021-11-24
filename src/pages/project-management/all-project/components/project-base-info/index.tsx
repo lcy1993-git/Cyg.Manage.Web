@@ -75,10 +75,11 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
-          <ReadonlyItem label="勘察评审状态" labelWidth={100}>
-            {projectInfo?.stateInfo?.isResetSurvey ? '已评审' : '未评审'}
+          <ReadonlyItem label="项目批次" labelWidth={100}>
+            {projectInfo?.batchText}
           </ReadonlyItem>
         </div>
+
         <div className="flex1">
           <ReadonlyItem label="电压等级" labelWidth={100}>
             {projectInfo?.kvLevelText}
@@ -202,8 +203,8 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
-          <ReadonlyItem label="项目批次" labelWidth={100}>
-            {projectInfo?.batchText}
+          <ReadonlyItem label="现场数据来源" labelWidth={100}>
+            {projectInfo?.dataSourceTypeText}
           </ReadonlyItem>
         </div>
         <div className="flex1">
@@ -230,11 +231,6 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
         <div className="flex1">
           <ReadonlyItem label="截止日期" labelWidth={100}>
             {projectInfo?.deadline ? moment(projectInfo?.deadline).format('YYYY-MM-DD') : ''}
-          </ReadonlyItem>
-        </div>
-        <div className="flex1">
-          <ReadonlyItem label="现场数据来源" labelWidth={100}>
-            {projectInfo?.dataSourceTypeText}
           </ReadonlyItem>
         </div>
       </div>

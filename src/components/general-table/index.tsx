@@ -1,14 +1,14 @@
-import type { Ref } from 'react'
-import React, { forwardRef, useMemo, useState, useImperativeHandle, useRef, useEffect } from 'react'
-import { useRequest } from 'ahooks'
 import type { TableRequestResult } from '@/services/table'
 import { tableCommonRequest } from '@/services/table'
-import { Table, Pagination, message, Tooltip, Menu, Popover, Checkbox } from 'antd'
-import styles from './index.less'
-import CommonTitle from '../common-title'
 import { FullscreenOutlined, RedoOutlined, UnorderedListOutlined } from '@ant-design/icons'
-import EmptyTip from '../empty-tip'
+import { useRequest } from 'ahooks'
+import { Checkbox, Menu, message, Pagination, Popover, Table, Tooltip } from 'antd'
 import type { CheckboxChangeEvent } from 'antd/lib/checkbox'
+import type { Ref } from 'react'
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import CommonTitle from '../common-title'
+import EmptyTip from '../empty-tip'
+import styles from './index.less'
 
 interface GeneralTableProps {
   // 列表请求的url
@@ -101,7 +101,6 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const { data, run, loading } = useRequest(tableCommonRequest, {
     manual: true,
     onSuccess: () => {
-      console.log(data)
       getTableRequestData?.(data!)
     },
   })

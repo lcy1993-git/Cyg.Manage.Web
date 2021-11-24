@@ -1,24 +1,24 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useState, useEffect } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
+  addMaterialItem,
+  deleteMaterialItem,
   getMaterialDetail,
   updateMaterialItem,
-  deleteMaterialItem,
-  addMaterialItem,
 } from '@/services/resource-config/material'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
 // import UrlSelect from '@/components/url-select';
 import MaterialForm from './component/add-edit-form'
-import LineProperty from './component/line-property'
 import CableMapping from './component/cable-mapping'
 import SaveImportMaterial from './component/import-form'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+import LineProperty from './component/line-property'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -35,7 +35,7 @@ const Material: React.FC<libParams> = (props) => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [importMaterialVisible, setImportMaterialVisible] = useState<boolean>(false)
 
@@ -302,7 +302,7 @@ const Material: React.FC<libParams> = (props) => {
           remark: editData.remark,
           chartIds: editData.chartIds,
         },
-        values
+        { ...values, pieceWeight: values.pieceWeight ? values.pieceWeight : 0 }
       )
       await updateMaterialItem(submitInfo)
       refresh()
@@ -393,10 +393,6 @@ const Material: React.FC<libParams> = (props) => {
 
   //展示电缆终端头映射
   const openCableTerminal = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请先选择资源库');
-    //   return;
-    // }
     setCableTerminalVisible(true)
   }
 
@@ -470,7 +466,12 @@ const Material: React.FC<libParams> = (props) => {
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <LineProperty libId={libId} materialIds={[]} />
+        <LineProperty
+          libId={libId}
+          materialIds={tableSelectRows.map((item: any) => {
+            return item.id
+          })}
+        />
       </Modal>
 
       <Modal
@@ -485,7 +486,12 @@ const Material: React.FC<libParams> = (props) => {
         bodyStyle={{ height: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <CableMapping libId={libId} materialIds={[]} />
+        <CableMapping
+          libId={libId}
+          materialIds={tableSelectRows.map((item: any) => {
+            return item.id
+          })}
+        />
       </Modal>
       <SaveImportMaterial
         libId={libId}

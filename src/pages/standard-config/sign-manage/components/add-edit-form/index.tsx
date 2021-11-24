@@ -1,43 +1,41 @@
-import React, { useMemo, useState } from 'react';
-import { Input, Tooltip } from 'antd';
-import FileUpload, { UploadStatus } from '@/components/file-upload';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import rules from './rule';
-import { getCompanyUserDetail } from '@/services/personnel-config/company-user';
-import { useRequest } from 'ahooks';
-import { useGetSelectData } from '@/utils/hooks';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import React, { useMemo, useState } from 'react'
+import { Input, Tooltip } from 'antd'
+import FileUpload, { UploadStatus } from '@/components/file-upload'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import rules from './rule'
+import { getCompanyUserDetail } from '@/services/personnel-config/company-user'
+import { useRequest } from 'ahooks'
+import { useGetSelectData } from '@/utils/hooks'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 interface CompanyFileForm {
-  type?: 'add' | 'edit';
-  securityKey?: string;
-  groupData?: any;
-  editingName?: string;
-  uploadFileFn: () => Promise<void>;
+  type?: 'add' | 'edit'
+  securityKey?: string
+  groupData?: any
+  editingName?: string
+  uploadFileFn: () => Promise<void>
 }
 
 const SignFileForm: React.FC<CompanyFileForm> = (props) => {
-  const { type = 'edit', groupData, editingName, uploadFileFn } = props;
+  const { type = 'edit', groupData, editingName, uploadFileFn } = props
   const groupName = groupData?.items?.map((item: any) => {
-    return item.name;
-  });
+    return item.name
+  })
 
   const { data: allUsers = [] } = useGetSelectData({
     url: '/CompanyUser/GetList?clientCategory=0',
-  });
-
-  console.log(allUsers);
+  })
 
   const handleData = useMemo(() => {
-    const copyOptions = JSON.parse(JSON.stringify(allUsers));
-    copyOptions?.unshift({ value: 'none', label: '无' });
+    const copyOptions = JSON.parse(JSON.stringify(allUsers))
+    copyOptions?.unshift({ value: 'none', label: '无' })
     return copyOptions?.map((item: any) => {
       return {
         title: item.label,
         value: item.value,
-      };
-    });
-  }, [allUsers]);
+      }
+    })
+  }, [allUsers])
 
   const personSlot = () => {
     return (
@@ -50,8 +48,8 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
           <QuestionCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
         </Tooltip>
       </>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -103,9 +101,9 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
           () => ({
             validator(_, value) {
               if (groupName.includes(value) && editingName != value) {
-                return Promise.reject('文件名已存在');
+                return Promise.reject('文件名已存在')
               }
-              return Promise.resolve();
+              return Promise.resolve()
             },
           }),
         ]}
@@ -129,7 +127,7 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
         <Input.TextArea showCount maxLength={100} placeholder="请输入备注信息" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default SignFileForm;
+export default SignFileForm
