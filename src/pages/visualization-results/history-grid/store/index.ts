@@ -24,7 +24,7 @@ export type ReducerState = {
   /** 当前网架数据 */
   selectedData?: SelectedData
   /** 预设计项目相关数据 */
-  preDesignItemData?: DataSource
+  preDesignItemData?: any
   /** 所有历史版本网架数据 */
   allHistoryGridData?: HistoryGridVersion[]
   /** 历史版本网架数据 */
