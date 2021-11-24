@@ -148,7 +148,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
 
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
-  const [cacheColumns, setCacheColumns] = useState<string[]>([])
+
   const tableRef = useRef<HTMLDivElement>(null)
   const { currentClickTabChildActiveType, myWorkInitData, currentClickTabType } = useMyWorkStore()
   const requestUrl = useMemo(() => {
@@ -157,36 +157,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       .children.find((item: any) => item.id === currentClickTabChildActiveType).url
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
 
-  useEffect(() => {
-    const typeColumns = myWorkInitData
+  const typeColumns = useMemo(() => {
+    return myWorkInitData
       .find((item) => item.id === currentClickTabType)
       .children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
-    if (typeColumns) {
-      setChooseColumns(typeColumns)
-    } else {
-      setChooseColumns(cacheColumns)
-    }
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
 
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
       setChooseColumns(
-        columnsData
-          ? JSON.parse(columnsData)
-          : [
-              'categoryText',
-              'kvLevelText',
-              'natureTexts',
-              'majorCategoryText',
-              'constructTypeText',
-              'stageText',
-              'exportCoordinate',
-              'surveyUser',
-              'designUser',
-              'identitys',
-            ]
-      )
-      setCacheColumns(
         columnsData
           ? JSON.parse(columnsData)
           : [
@@ -1049,8 +1028,12 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }, [JSON.stringify(chooseColumns)])
 
   const showColumns = useMemo(() => {
-    return completeConfig.filter((item) => finalyColumns.includes(item.dataIndex))
-  }, [finalyColumns])
+    if (!typeColumns) {
+      return completeConfig.filter((item) => finalyColumns.includes(item.dataIndex))
+    } else {
+      return completeConfig.filter((item) => typeColumns.includes(item.dataIndex))
+    }
+  }, [finalyColumns, typeColumns])
 
   const columnsIcon = (
     <span style={{ cursor: 'pointer' }} onClick={() => columnsConfigSetting()}>
@@ -1060,7 +1043,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   const columnsSettingFinish = (checkedValue: string[]) => {
     setChooseColumns(checkedValue)
-    setCacheColumns(checkedValue)
     refreshEvent()
   }
 
@@ -1090,7 +1072,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           url={requestUrl}
           parentColumns={parentColumns}
           columns={showColumns}
-          pagingSlot={columnsIcon}
+          pagingSlot={typeColumns ? undefined : columnsIcon}
         />
       </div>
       <ScreenModal
@@ -1228,7 +1210,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <ReportApproveModal
           visible={reportApproveVisible}
           onChange={setReportApproveVisible}
-          finishEvent={refreshEvent}
+          finishEvent={delayRefresh}
           projectIds={modalNeedInfo.projectId}
         />
       )}
@@ -1236,7 +1218,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <ApproveModal
           visible={approvingModalVisible}
           onChange={setApprovingModalVisible}
-          finishEvent={searchEvent}
+          finishEvent={delayRefresh}
           projectIds={modalNeedInfo.projectId}
         />
       )}
