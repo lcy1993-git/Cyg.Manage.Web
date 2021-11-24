@@ -25,9 +25,19 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
         payload = res.content.find((s: any) => s.isTemplate === true)
       } else {
         // 预设计
-        if (!preDesignItemData) return
+        if (!preDesignItemData) {
+          // 没有项目数据
+          return
+        }
 
-        payload = await getDataByProjectId(preDesignItemData.id)
+        const res = await getDataByProjectId({ projectIds: [preDesignItemData.id] })
+
+        if (!Array.isArray(res.content) || res.content.length === 0) {
+          // 没有数据
+          return
+        }
+
+        payload = res.content[0]
       }
 
       if (!cancel) {

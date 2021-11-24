@@ -69,7 +69,7 @@ export type ReducerState = {
 }
 
 /** action */
-type SimpleActions = 'locate'
+type SimpleActions = 'locate' | 'refetch'
 type ComplexActions =
   | 'reset'
   | 'changeMode'
@@ -110,6 +110,8 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
     switch (action) {
       case 'locate':
         return { ...state, locate: !state.locate }
+      case 'refetch':
+        return { ...state, refetch: !state.refetch }
       default:
         throw new Error('action does not exist')
     }
