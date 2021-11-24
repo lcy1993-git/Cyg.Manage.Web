@@ -47,7 +47,9 @@ export const historyGridReducer: Reducer<HistoryState, HistoryAction> = (state, 
       return { ...state, historyGridVersion: payload }
     case 'changeAllHistoryGridData':
       return { ...state, allHistoryGridData: payload }
+    case 'changeHistoryDataSource':
+      return { ...state, historyGridData: payload }
     default:
-      throw new Error('action type does not exist')
+      throw new Error(`action type does not exist, the type is ${type} `)
   }
 }
