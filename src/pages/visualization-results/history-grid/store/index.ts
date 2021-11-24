@@ -61,6 +61,7 @@ export type ReducerState = {
 
 /** action */
 type SimpleActions = 'locate' | 'refetch'
+type ComplexActions = keyof ComplexActionReflectPayload
 
 type ComplexActionReflectPayload = {
   reset: InitParams
@@ -76,24 +77,11 @@ type ComplexActionReflectPayload = {
   changeHistoryDataSource: ReducerState['historyDataSource']
 }
 
-type ComplexActions =
-  | 'reset'
-  | 'changeMode'
-  | 'setCity'
-  | 'changeGridMap'
-  | 'changeUIStatus'
-  | 'changePreDesignItemData'
-  | 'changeAllHistoryGridData'
-  | 'changeHistoryGirdVersion'
-  | 'changeCurrentGridData'
-  | 'changeSelectedData'
-  | 'changeHistoryDataSource'
-
 type Actions = SimpleActions | ComplexActions
 type ReducerActionWithPayload = { type: Actions; payload: any }
 type ReducerActionFn = (state: ReducerState) => ReducerState
 
-type DispatchParam<T extends HistoryAction> = T extends HistoryDispatch
+type DispatchParam<T extends HistoryAction> = T extends ReducerActionFn
   ? T
   : T extends string
   ? SimpleActions
