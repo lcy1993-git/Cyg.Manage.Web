@@ -31,7 +31,7 @@ const ImportGrid = () => {
 
     try {
       mode === 'preDesigning'
-        ? await importEquipments(data, currentGridData.id)
+        ? await importEquipments(data, currentGridData!.id as string)
         : await importHistoryEquipments(data)
 
       message.success('上传成功')

@@ -8,7 +8,7 @@ export type InitParams = {
 }
 
 /** 惰性初始化 */
-const initialize = ({ location }: InitParams) => {
+export const initializeHistoryState = ({ location }: InitParams) => {
   const { pathname } = location
   const mode = pathname.includes('history-grid') ? 'record' : 'preDesign'
 
@@ -32,5 +32,3 @@ const initialize = ({ location }: InitParams) => {
 
   return initialState
 }
-
-export default initialize
