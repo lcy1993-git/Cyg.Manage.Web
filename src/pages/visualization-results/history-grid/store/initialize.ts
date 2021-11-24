@@ -26,6 +26,7 @@ const initialize = ({ location }: InitParams) => {
       drawing: false,
       mapType: 'street',
       recordVersion: 'hide',
+      cleanSelected: false,
     },
   }
 

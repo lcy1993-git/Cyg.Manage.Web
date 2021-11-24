@@ -12,7 +12,7 @@ import 'ol/ol.css'
 import * as proj from 'ol/proj'
 import { Vector as VectorSource } from 'ol/source'
 import { useEffect, useRef, useState } from 'react'
-import { useGridMap } from '../../store/mapReducer'
+import { useHistoryGridContext } from '../../store'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import { moveend, pointermove, pointSelectCallback, toggleSelectCallback } from './event'
@@ -31,20 +31,40 @@ import {
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
 const HistoryMapBase = () => {
-  const [state, setState, mode] = useGridMap()
+  // const [state, setState, mode] = useGridMap()
 
   const {
-    mapLayerType,
-    isDraw,
-    dataSource,
-    onProjectLocationClick,
-    onCurrentLocationClick,
-    showText,
-    importDesignData,
-    historyLayerVisible,
-    moveToByCityLocation,
+    dispatch: setState,
+    UIStatus,
+    mode,
+    city,
+    locate,
+    currentGridData: dataSource,
+    preDesignItemData: importDesignData,
+  } = useHistoryGridContext()
+
+  const {
+    showTitle: showText,
+    showHistoryLayer: historyLayerVisible,
+    currentLocation: onCurrentLocationClick,
+    currentProject: onProjectLocationClick,
+    mapType: mapLayerType,
+    drawing: isDraw,
     cleanSelected,
-  } = state
+  } = UIStatus
+
+  // const {
+  // mapLayerType,
+  // isDraw,
+  // dataSource,
+  // onProjectLocationClick,
+  // onCurrentLocationClick,
+  // showText,
+  // importDesignData,
+  // historyLayerVisible,
+  // moveToByCityLocation,
+  // cleanSelected,
+  // } = state
 
   // 绘制类型
   const [geometryType, setGeometryType] = useState<string>('')
@@ -106,7 +126,10 @@ const HistoryMapBase = () => {
   // 当绘制状态改变时
   useUpdateEffect(() => {
     clear(interActionRef)
-    setState('selectedData', [])
+    setState({
+      type: 'changeSelectedData',
+      payload: [],
+    })
     if (isDraw) {
       mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
       mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
@@ -131,8 +154,8 @@ const HistoryMapBase = () => {
 
   // 根据城市选择定位
   useUpdateEffect(
-    () => moveToViewByLocation(viewRef, moveToByCityLocation.slice(0, 2) as [number, number]),
-    [moveToByCityLocation]
+    () => moveToViewByLocation(viewRef, [city?.lng || 0, city?.lat || 0] as [number, number]),
+    [locate]
   )
 
   useUpdateEffect(() => clearScreen(interActionRef), [cleanSelected])

@@ -1,6 +1,7 @@
 import { HistoryGridVersion } from '@/pages/visualization-results/components/history-version-management'
 import { createContext, Reducer, useContext } from 'react'
 import { CityWithProvince } from '../components/city-picker/type'
+import { DataSource, SelectedData } from './../components/history-map-base/typings'
 import init, { InitParams } from './initialize'
 import { GridMapGlobalState, mapReducer } from './mapReducer'
 
@@ -32,9 +33,11 @@ export type ReducerState = {
   /** 触发请求网架数据 */
   refetch: boolean
   /** 当前网架数据 */
-  currentGridData?: any
+  currentGridData?: DataSource
+  /** 当前网架数据 */
+  selectedData?: SelectedData
   /** 预设计项目相关数据 */
-  preDesignItemData?: any
+  preDesignItemData?: DataSource
   /** 所有历史版本网架数据 */
   allHistoryGridData?: HistoryGridVersion[]
   /** 历史版本网架数据 */
@@ -60,6 +63,8 @@ export type ReducerState = {
     importModalVisible: boolean
     /** 记录版本和保存 */
     recordVersion: 'hide' | 'save' | 'record'
+    /** 清屏 */
+    cleanSelected: boolean
   }
 }
 
@@ -74,7 +79,9 @@ type ComplexActions =
   | 'changeHistoryGirdVersion'
   | 'changePreDesignItemData'
   | 'changeCurrentGridData'
+  | 'changeSelectedData'
   | 'changeAllHistoryGridData'
+  | 'changeCleanSelected'
 
 type Actions = SimpleActions | ComplexActions
 
@@ -125,9 +132,13 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
       return { ...state, preDesignItemData: payload }
     case 'changeCurrentGridData':
       return { ...state, currentGridData: payload }
+    case 'changeSelectedData':
+      return { ...state, selectedData: payload }
     case 'changeHistoryGirdVersion':
       return { ...state, historyGridVersion: payload }
     case 'changeAllHistoryGridData':
+      return { ...state, allHistoryGridData: payload }
+    case 'changeCleanSelected':
       return { ...state, allHistoryGridData: payload }
     default:
       throw new Error('action type does not exist')
