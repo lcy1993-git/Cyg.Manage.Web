@@ -59,10 +59,12 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     if (type === 'Point') {
       // @ts-ignore
       data.toBeDeletedEquipmentIds = selectedData.map((item) => item.id)
+      data['toBeDeletedLineIds'] = []
     }
     if (type === 'LineString') {
       // @ts-ignore
       data.toBeDeletedLineIds = selectedData.map((item) => item.id)
+      data['toBeDeletedEquipmentIds'] = []
     }
     await SaveHistoryData(data)
     message.success('删除成功')
