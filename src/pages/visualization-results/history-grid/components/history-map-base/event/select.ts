@@ -1,12 +1,13 @@
 import { Feature } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import { SelectEvent } from 'ol/interaction/Select'
+import { HistoryDispatch } from '../../../store'
 import { addHightStyle, getDataByFeature, getGeometryType } from '../utils'
-import type { InterActionRef, SelectedData, SetState } from './../typings'
+import type { InterActionRef, SelectedData } from './../typings'
 
 interface SelectCallbackOptions {
   interActionRef: InterActionRef
-  setState: SetState
+  setState: HistoryDispatch
   showText: boolean
   mode: string
 }
@@ -45,12 +46,14 @@ export function toggleSelectCallback(
   }
 
   if (flag) {
-
-
-    setState(
-      'selectedData',
-      getDataByFeature(interActionRef.hightLightSource!.getFeatures()) as SelectedData
-    )
+    setState({
+      type: 'changeSelectedData',
+      payload: getDataByFeature(interActionRef.hightLightSource!.getFeatures()) as SelectedData,
+    })
+    // setState(
+    //   'selectedData',
+    //   getDataByFeature(interActionRef.hightLightSource!.getFeatures()) as SelectedData
+    // )
   }
   // 判断是否已经被添加
   function isAdded(selected: Feature<Geometry>[]) {
@@ -69,7 +72,6 @@ export function pointSelectCallback(
   e: SelectEvent,
   { interActionRef, setState, showText }: SelectCallbackOptions
 ) {
-
   const { selected, deselected } = e
   selected.forEach((f) => {
     interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText))
@@ -78,8 +80,13 @@ export function pointSelectCallback(
     interActionRef.hightLightSource!.removeFeature(f)
   })
 
-  setState(
-    'selectedData',
-    getDataByFeature(interActionRef.hightLightSource!.getFeatures()) as SelectedData
-  )
+  // setState(
+  //   'selectedData',
+  //   getDataByFeature(interActionRef.hightLightSource!.getFeatures()) as SelectedData
+  // )
+
+  setState({
+    type: 'changeSelectedData',
+    payload: getDataByFeature(interActionRef.hightLightSource!.getFeatures()) as SelectedData,
+  })
 }

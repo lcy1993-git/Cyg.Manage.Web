@@ -31,16 +31,18 @@ const ImportGrid = () => {
 
     try {
       mode === 'preDesigning'
-        ? await importEquipments(data, currentGridData.id)
+        ? await importEquipments(data, currentGridData!.id as string)
         : await importHistoryEquipments(data)
 
       message.success('上传成功')
+
+      dispatch('refetch')
       closeModal()
     } catch (e: any) {
       console.error('上传出错', e)
       message.error(e.message || '上传出错，请重试')
     }
-  }, [closeModal, currentGridData, form, mode])
+  }, [closeModal, currentGridData, form, mode, dispatch])
 
   return (
     <Modal centered title="导入网架" visible={importModalVisible} onCancel={closeModal} onOk={onOk}>

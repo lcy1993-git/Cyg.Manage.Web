@@ -1,37 +1,54 @@
 import '@/assets/icon/history-grid-icon.css'
 import { useCurrentRef } from '@/utils/hooks'
 import { useMount, useUpdateEffect } from 'ahooks'
-import { MapBrowserEvent, MapEvent, View } from 'ol'
+import { MapEvent, View } from 'ol'
 import GeometryType from 'ol/geom/GeometryType'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
 import { useRef, useState } from 'react'
-import { useGridMap } from '../../store/mapReducer'
+import { useHistoryGridContext } from '../../store'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
-import { moveend, pointermove } from './event'
-import mapClick from './event/mapClick'
+import { mapClick, moveend, pointermove } from './event'
 import init from './init'
 import { InterActionRef, LayerRef, MapRef, SourceRef } from './typings'
 import { checkUserLocation, clear, clearScreen, moveToViewByLocation } from './utils'
 
-export type MapLayerType = 'STREET' | 'SATELLITE'
-
 const HistoryMapBase = () => {
-  const [state, setState, mode] = useGridMap()
+  // const [state, setState, mode] = useGridMap()
 
   const {
-    mapLayerType,
-    isDraw,
-    dataSource,
-    onProjectLocationClick,
-    onCurrentLocationClick,
-    showText,
-    importDesignData,
-    historyLayerVisible,
-    moveToByCityLocation,
+    dispatch: setState,
+    UIStatus,
+    mode,
+    city,
+    locate,
+    historyDataSource: dataSource,
+    preDesignItemData: importDesignData,
+  } = useHistoryGridContext()
+
+  const {
+    showTitle: showText,
+    showHistoryLayer: historyLayerVisible,
+    currentLocation: onCurrentLocationClick,
+    currentProject: onProjectLocationClick,
+    mapType: mapLayerType,
+    drawing: isDraw,
     cleanSelected,
-  } = state
+  } = UIStatus
+
+  // const {
+  // mapLayerType,
+  // isDraw,
+  // dataSource,
+  // onProjectLocationClick,
+  // onCurrentLocationClick,
+  // showText,
+  // importDesignData,
+  // historyLayerVisible,
+  // moveToByCityLocation,
+  // cleanSelected,
+  // } = state
 
   // 绘制类型
   const [geometryType, setGeometryType] = useState<string>('')
@@ -47,6 +64,15 @@ const HistoryMapBase = () => {
   const interActionRef = useCurrentRef<InterActionRef>({})
 
   const sourceRef = useCurrentRef<SourceRef>({})
+
+  // const bindEvent = useCallback(() => {
+  //   mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
+  //     mapClick(e, { interActionRef, mapRef, setState, UIStatus }))
+  //     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
+  // // 地图拖动事件
+  // mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
+  // viewRef.view.on('change:resolution', () => handlerGeographicSize({ mode, viewRef }))
+  // }, [])
 
   // 挂载地图
   useMount(() => {
@@ -96,7 +122,10 @@ const HistoryMapBase = () => {
   // 当绘制状态改变时
   useUpdateEffect(() => {
     clear(interActionRef)
-    setState('selectedData', [])
+    setState({
+      type: 'changeSelectedData',
+      payload: [],
+    })
     if (isDraw) {
       mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
       mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
@@ -125,8 +154,8 @@ const HistoryMapBase = () => {
 
   // 根据城市选择定位
   useUpdateEffect(
-    () => moveToViewByLocation(viewRef, moveToByCityLocation.slice(0, 2) as [number, number]),
-    [moveToByCityLocation]
+    () => moveToViewByLocation(viewRef, [city?.lng || 0, city?.lat || 0] as [number, number]),
+    [locate]
   )
 
   useUpdateEffect(() => clearScreen(interActionRef), [cleanSelected])
@@ -134,7 +163,7 @@ const HistoryMapBase = () => {
   // 绑定事件
   function bindEvent() {
     mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
-      mapClick(e, { interActionRef, mapRef, setState, sourceRef })
+      mapClick(e, { interActionRef, mapRef, setState, UIStatus })
     )
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件

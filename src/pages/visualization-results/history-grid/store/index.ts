@@ -1,23 +1,11 @@
 import { HistoryGridVersion } from '@/pages/visualization-results/components/history-version-management'
-import { createContext, Reducer, useContext } from 'react'
+import { createContext, useContext } from 'react'
 import { CityWithProvince } from '../components/city-picker/type'
-import init, { InitParams } from './initialize'
-import { GridMapGlobalState, mapReducer } from './mapReducer'
-
-// ! 使用
-// 子组件中调用 useHistoryGridContext hook
-// 如：const { city, dispatch } = useHistoryGridContext()
-// dispatch('reset')
-// dispatch({ type: 'setCity', payload: city })
-// dispatch((state: ReducerState) => ({...state})) 尽量不使用
-
-// ! 新增状态
-// 1. 在 ReducerState 增加新的 state 类型
-// 2. 如果有初始状态，修改 init 函数
-// 2. 如果需要传入参数对该 state 进行更新，首先在 ComplexActions 增加 action，
-//    然后在 ComplexActionReflectPayload 中更新对应的传入参数类型
-//    如不需要则在 SimpleActions 增加 action 即可
-// 3. 更新 historyGridReducer 函数，增加 switch 逻辑
+import { DataSource, SelectedData } from './../components/history-map-base/typings'
+import { InitParams } from './initialize'
+import { GridMapGlobalState } from './mapReducer'
+export * from './initialize'
+export * from './reducer'
 
 /** state */
 export type ReducerState = {
@@ -32,7 +20,9 @@ export type ReducerState = {
   /** 触发请求网架数据 */
   refetch: boolean
   /** 当前网架数据 */
-  currentGridData?: any
+  currentGridData?: HistoryGridVersion
+  /** 当前网架数据 */
+  selectedData?: SelectedData
   /** 预设计项目相关数据 */
   preDesignItemData?: any
   /** 所有历史版本网架数据 */
@@ -40,6 +30,8 @@ export type ReducerState = {
   /** 历史版本网架数据 */
   historyGridVersion: HistoryGridVersion
 
+  // 历史网架点线的数据
+  historyDataSource: DataSource
   gridMapState: GridMapGlobalState
 
   /** UI 状态 */
@@ -60,81 +52,49 @@ export type ReducerState = {
     importModalVisible: boolean
     /** 记录版本和保存 */
     recordVersion: 'hide' | 'save' | 'record'
+    /** 清屏 */
+    cleanSelected: boolean
+    /** 鼠标位置 */
+    currentMousePosition: [number, number]
   }
 }
 
 /** action */
-type SimpleActions = 'locate'
-type ComplexActions =
-  | 'reset'
-  | 'changeMode'
-  | 'setCity'
-  | 'changeUIStatus'
-  | 'changeGridMap'
-  | 'changeHistoryGirdVersion'
-  | 'changePreDesignItemData'
-  | 'changeCurrentGridData'
-  | 'changeAllHistoryGridData'
-
-type Actions = SimpleActions | ComplexActions
+type SimpleActions = 'locate' | 'refetch'
 
 type ComplexActionReflectPayload = {
   reset: InitParams
   changeMode: ReducerState['mode']
   setCity: ReducerState['city']
-  changeGridMap: [any, any]
+  changeGridMap: ReducerState['gridMapState']
   changeUIStatus: ReducerState['UIStatus']
   changePreDesignItemData: ReducerState['preDesignItemData']
   changeAllHistoryGridData: ReducerState['allHistoryGridData']
   changeHistoryGirdVersion: ReducerState['historyGridVersion']
   changeCurrentGridData: ReducerState['currentGridData']
+  changeSelectedData: ReducerState['selectedData']
+  changeHistoryDataSource: ReducerState['historyDataSource']
 }
 
+type ComplexActions =
+  | 'reset'
+  | 'changeMode'
+  | 'setCity'
+  | 'changeGridMap'
+  | 'changeUIStatus'
+  | 'changePreDesignItemData'
+  | 'changeAllHistoryGridData'
+  | 'changeHistoryGirdVersion'
+  | 'changeCurrentGridData'
+  | 'changeSelectedData'
+  | 'changeHistoryDataSource'
+  | 'changeCurrentMousePosition'
+
+type Actions = SimpleActions | ComplexActions
 type ReducerActionWithPayload = { type: Actions; payload: any }
 type ReducerActionFn = (state: ReducerState) => ReducerState
-type ReducerAction = Actions | ReducerActionWithPayload | ReducerActionFn
 
-export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, action) => {
-  if (typeof action === 'function') {
-    return action(state)
-  }
-
-  if (typeof action === 'string') {
-    switch (action) {
-      case 'locate':
-        return { ...state, locate: !state.locate }
-      default:
-        throw new Error('action does not exist')
-    }
-  }
-
-  const { type, payload } = action
-
-  switch (type) {
-    case 'changeMode':
-      return { ...state, mode: payload }
-    case 'changeUIStatus':
-      return { ...state, UIStatus: payload }
-    case 'setCity':
-      return { ...state, city: payload }
-    case 'reset':
-      return init(payload)
-    case 'changeGridMap':
-      return { ...state, gridMapState: { ...mapReducer(state.gridMapState, payload) } }
-    case 'changePreDesignItemData':
-      return { ...state, preDesignItemData: payload }
-    case 'changeCurrentGridData':
-      return { ...state, currentGridData: payload }
-    case 'changeHistoryGirdVersion':
-      return { ...state, historyGridVersion: payload }
-    case 'changeAllHistoryGridData':
-      return { ...state, allHistoryGridData: payload }
-    default:
-      throw new Error('action type does not exist')
-  }
-}
-
-type DispatchParam<T extends ReducerAction> = T extends ReducerActionFn
+type DispatchParam<T extends HistoryAction> = T extends HistoryDispatch
   ? T
   : T extends string
   ? SimpleActions
@@ -146,11 +106,12 @@ type DispatchParam<T extends ReducerAction> = T extends ReducerActionFn
     : ReducerActionWithPayload
   : ReducerActionWithPayload
 
-export type HistoryState = ReducerState
-export type HistoryDispatch = <T extends ReducerAction>(action: DispatchParam<T>) => void
-
 export type HistoryGridContextType = ReducerState & { dispatch: HistoryDispatch }
 export const HistoryGridContext = createContext<HistoryGridContextType>(
   {} as HistoryGridContextType
 )
 export const useHistoryGridContext = () => useContext(HistoryGridContext)
+
+export type HistoryState = ReducerState
+export type HistoryAction = Actions | ReducerActionWithPayload | ReducerActionFn
+export type HistoryDispatch = <T extends HistoryAction>(action: DispatchParam<T>) => void

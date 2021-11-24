@@ -10,12 +10,11 @@ import { usePreDesign } from './hooks/usePreDesign'
 import { useRefetch } from './hooks/useRefetch'
 import ImportGrid from './ImportGrid'
 import MapOperator from './MapOperator'
-import { HistoryGridContext, historyGridReducer } from './store'
-import initialize from './store/initialize'
+import { HistoryGridContext, historyGridReducer, initializeHistoryState } from './store'
 
 const HistoryGrid = () => {
   const location = useLocation()
-  const [state, dispatch] = useReducer(historyGridReducer, { location }, initialize)
+  const [state, dispatch] = useReducer(historyGridReducer, { location }, initializeHistoryState)
 
   const { refetch, mode, preDesignItemData } = state
 

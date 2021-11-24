@@ -1,11 +1,11 @@
-import { message } from 'antd';
-import JsonP from 'jsonp';
-import { Feature } from 'ol';
-import Geometry from 'ol/geom/Geometry';
-import * as proj from 'ol/proj';
-import { getStyle } from '../styles';
-import { InterActionRef, ViewRef } from '../typings';
-import { DataSource } from './../typings/index';
+import { message } from 'antd'
+import JsonP from 'jsonp'
+import { Feature } from 'ol'
+import Geometry from 'ol/geom/Geometry'
+import * as proj from 'ol/proj'
+import { getStyle } from '../styles'
+import { InterActionRef, ViewRef } from '../typings'
+import { DataSource } from './../typings/index'
 
 // 清空选择器和高亮图层
 export const clear = (interActionRef: InterActionRef) => {
@@ -32,9 +32,17 @@ export function getGeometryType(f: Feature<Geometry>) {
 // 添加高亮样式
 export function addHightStyle(fs: Feature<Geometry>[], showText) {
   return fs.map((f) => {
-    const sourceType = f.get("sourceType")
+    const sourceType = f.get('sourceType')
     const geometryType = getGeometryType(f)
-    f.setStyle(getStyle(geometryType)(sourceType, f.get('typeStr') || "无类型", f.get('name'), showText, true))
+    f.setStyle(
+      getStyle(geometryType)(
+        sourceType,
+        f.get('typeStr') || '无类型',
+        f.get('name'),
+        showText,
+        true
+      )
+    )
     return f
   })
 }
@@ -79,8 +87,8 @@ export function moveToViewByLocation(viewRef: ViewRef, [lng, lat]: [number, numb
   }
 }
 
-export function getFillColorByMode (mode: string) {
-  return mode === "preDesign" ? 'rgba(20, 168, 107, 1)' : 'rgba(0, 117, 206, 1)'
+export function getFillColorByMode(mode: string) {
+  return mode === 'preDesign' ? 'rgba(20, 168, 107, 1)' : 'rgba(0, 117, 206, 1)'
 }
 
 /**
@@ -89,14 +97,14 @@ export function getFillColorByMode (mode: string) {
  * @param interActionRef
  * @returns
  */
-export function isValidationData (data: DataSource, interActionRef: InterActionRef): boolean {
-  const historyIds = interActionRef.source!.getFeatures().map((f) => f.get("id"))
+export function isValidationData(data: DataSource, interActionRef: InterActionRef): boolean {
+  const historyIds = interActionRef.source!.getFeatures().map((f) => f.get('id'))
 
-  const designIds = interActionRef.designSource!.getFeatures().map((f) => f.get("id"))
+  const designIds = interActionRef.designSource!.getFeatures().map((f) => f.get('id'))
 
   const dataIds = getIdsByDataSource(data)
-  for(let i = 0; i < dataIds.length; i ++) {
-    if(historyIds.includes(dataIds[i]) || designIds.includes(dataIds[i])) {
+  for (let i = 0; i < dataIds.length; i++) {
+    if (historyIds.includes(dataIds[i]) || designIds.includes(dataIds[i])) {
       message.error(`数据导入失败，不能重复导入, 发现重复数据ID——${dataIds[i]}`)
       return false
     }
@@ -110,7 +118,7 @@ export function isValidationData (data: DataSource, interActionRef: InterActionR
  * @param data
  * @returns
  */
-function getIdsByDataSource (data:DataSource) {
+function getIdsByDataSource(data: DataSource) {
   const lineArr = Array.isArray(data?.lines) ? data?.lines : []
   const equipmentArr = Array.isArray(data?.equipments) ? data?.equipments : []
   return [...lineArr, ...equipmentArr].map((o) => o.id)

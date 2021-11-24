@@ -8,7 +8,7 @@ export type InitParams = {
 }
 
 /** 惰性初始化 */
-const initialize = ({ location }: InitParams) => {
+export const initializeHistoryState = ({ location }: InitParams) => {
   const { pathname } = location
   const mode = pathname.includes('history-grid') ? 'record' : 'preDesign'
 
@@ -17,6 +17,12 @@ const initialize = ({ location }: InitParams) => {
     refetch: false,
     gridMapState: initGridMapState as any,
     historyGridVersion: {} as HistoryGridVersion,
+    historyDataSource: {
+      id: '',
+      equipments: [],
+      lines: [],
+    },
+    selectedData: [],
     UIStatus: {
       showTitle: true,
       showHistoryLayer: true,
@@ -26,10 +32,10 @@ const initialize = ({ location }: InitParams) => {
       drawing: false,
       mapType: 'street',
       recordVersion: 'hide',
+      cleanSelected: false,
+      currentMousePosition: [0, 0],
     },
   }
 
   return initialState
 }
-
-export default initialize

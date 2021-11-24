@@ -79,7 +79,10 @@ const OperationPane: FC = ({ children }) => {
         <OperateBtn
           icon="icon-fanhui"
           onClick={() => {
-            dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, recordVersion: 'save' } })
+            dispatch({
+              type: 'changeUIStatus',
+              payload: { ...UIStatus, recordVersion: 'save', drawing: false },
+            })
             changeMode(mode === 'recordEdit' ? 'record' : 'preDesign')
           }}
           type="back"
@@ -91,7 +94,10 @@ const OperationPane: FC = ({ children }) => {
       {!drawing && (
         <Button
           type="primary"
-          onClick={() => changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')}
+          onClick={() => {
+            changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')
+            dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, drawing: true } })
+          }}
         >
           网架{changeModeBtnText}
         </Button>

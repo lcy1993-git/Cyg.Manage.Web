@@ -4,7 +4,6 @@ import FlowLayer from './components/flow-layer'
 import Iconfont from './components/iconfont'
 import { Satellite, Street } from './Images'
 import { HistoryState, useHistoryGridContext } from './store'
-import { useGridMap } from './store/mapReducer'
 
 const MapOperator = () => {
   const { UIStatus, dispatch } = useHistoryGridContext()
@@ -130,11 +129,21 @@ export const MapSwitcher = () => {
 export const GEOGRAPHIC_LOCATION = 'GeographicLocation'
 
 export const GeographicLocation = () => {
-  const [state, setState, mode] = useGridMap()
+  const { UIStatus, dispatch, mode } = useHistoryGridContext()
+
+  const { currentLocation } = UIStatus
+
+  const action = {
+    type: 'changeUIStatus',
+    payload: {
+      ...UIStatus,
+      currentLocation: !currentLocation,
+    },
+  }
   return (
     <div className="bg-black bg-opacity-80 mt-1 px-2 py-1 text-white" id={GEOGRAPHIC_LOCATION}>
       <span
-        onClick={() => setState('onCurrentLocationClick', !state.onCurrentLocationClick)}
+        onClick={() => dispatch(action)}
         className="hover:text-theme-green-light cursor-pointer"
       >
         定位
