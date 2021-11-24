@@ -1,9 +1,11 @@
 import PageCommonWrap from '@/components/page-common-wrap'
 import { getMyWorkStatisticsData } from '@/services/project-management/all-project'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import useRequest from '@ahooksjs/use-request'
-import { Spin } from 'antd'
+import { Spin, Tooltip } from 'antd'
 import React, { useMemo, useState } from 'react'
 import SingleStatistics from '../all-project/components/all-project-statistics'
+import FavoriteList from '../all-project/components/favorite-list'
 import MyProject from './components/my-project'
 import { MyWorkProvider } from './context'
 import styles from './index.less'
@@ -22,7 +24,10 @@ const MyWork: React.FC = () => {
   const [currentClickTabType, setCurrentClickType] = useState('allpro')
   const [currentClickTabChildActiveType, setCurrentClickTabChildActiveType] = useState('my')
   const [myWorkInitData, setMyWorkInitData] = useState<any[]>([])
-  const { data, loading } = useRequest(() => getMyWorkStatisticsData(), {
+  const [selectedFavId, setSelectedFavId] = useState<string>('')
+  const [statisticalCategory, setStatisticalCategory] = useState<string>('-1')
+  const [favName, setFavName] = useState<string>('')
+  const { data, run: refreshStatistics, loading } = useRequest(() => getMyWorkStatisticsData(), {
     onSuccess: () => {
       setMyWorkInitData([
         {
@@ -91,7 +96,7 @@ const MyWork: React.FC = () => {
             {
               label: '待安排评审',
               id: 'waitArrangAudit',
-              number: data.arrange.waitArrangAudit,
+              number: data.arrange.awaitAllotExternalReview,
               url: '/ProjectList/GetAwaitAllotExternalReviews',
             },
             {
@@ -158,6 +163,11 @@ const MyWork: React.FC = () => {
     },
   })
 
+  //收藏夹
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
+  const [sideVisible, setSideVisible] = useState<boolean>(false)
+  const imgSrc = require('../../../assets/icon-image/favorite.png')
+
   const singleStatisticsTypeClickEvent = (type: string) => {
     const childrenType = myWorkInitData.find((item) => item.id === type)?.children
     // 设置children的第一个是激活状态
@@ -194,19 +204,58 @@ const MyWork: React.FC = () => {
         currentClickTabType,
         currentClickTabChildActiveType,
         setCurrentClickTabChildActiveType,
+        refreshStatistics,
       }}
     >
+      {buttonJurisdictionArray?.includes('engineer-favorite') && (
+        <Tooltip title="工程收藏夹">
+          <div
+            className={styles.folderButton}
+            onClick={() => {
+              setSideVisible(true)
+            }}
+            style={{ display: sideVisible || currentClickTabType !== 'allpro' ? 'none' : 'block' }}
+          >
+            <img src={imgSrc} alt="" />
+            <div>收藏</div>
+          </div>
+        </Tooltip>
+      )}
+      <div
+        className={styles.allProjectsFavorite}
+        style={{ display: sideVisible ? 'block' : 'none' }}
+      >
+        <Spin spinning={loading}>
+          <FavoriteList
+            getFavId={setSelectedFavId}
+            setVisible={setSideVisible}
+            setStatisticalTitle={setStatisticalCategory}
+            getFavName={setFavName}
+            favName={favName}
+            // finishEvent={refresh}
+            visible={sideVisible}
+          />
+        </Spin>
+      </div>
       <PageCommonWrap noPadding>
         <div className={styles.myWorkContent}>
-          <div className={styles.myWorkTypeContent}>{statisticsElement}</div>
-          <div className={styles.singleTypeContent}>
-            {loading && myWorkInitData.length === 0 && (
-              <div style={{ width: '100%', paddingTop: '120xpx', textAlign: 'center' }}>
-                <Spin spinning={loading} tip="数据加载中..."></Spin>
+          {!sideVisible ? (
+            <>
+              <div className={styles.myWorkTypeContent}>{statisticsElement}</div>
+              <div className={styles.singleTypeContent}>
+                {loading && (
+                  <div style={{ width: '100%', paddingTop: '120xpx', textAlign: 'center' }}>
+                    <Spin spinning={loading} tip="数据加载中..."></Spin>
+                  </div>
+                )}
+                {myWorkInitData.length > 0 && <MyProject />}
               </div>
-            )}
-            {myWorkInitData.length > 0 && <MyProject />}
-          </div>
+            </>
+          ) : (
+            <>
+              <MyProject />
+            </>
+          )}
         </div>
       </PageCommonWrap>
     </MyWorkProvider>

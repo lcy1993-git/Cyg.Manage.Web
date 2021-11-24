@@ -6,6 +6,7 @@ interface MyWorkContextProps {
   currentClickTabType: string
   currentClickTabChildActiveType: string
   setCurrentClickTabChildActiveType: Dispatch<SetStateAction<string>>
+  refreshStatistics: any
 }
 
 export const MyWorkContext = createContext({} as MyWorkContextProps)

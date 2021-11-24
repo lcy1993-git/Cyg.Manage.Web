@@ -21,7 +21,7 @@ const TypeTab: React.FC<TypeTabProps> = (props) => {
             setCurrentClickTabChildActiveType(item.id)
           }}
         >
-          {item.label}
+          {`${item.label}(${item.number})`}
         </div>
       )
     })

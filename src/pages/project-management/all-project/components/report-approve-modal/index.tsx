@@ -32,7 +32,7 @@ const ReportApproveModal: React.FC<ReportApproveParams> = (props) => {
   const approveEvent = async () => {
     form.validateFields().then(async (values) => {
       const submitInfo = {
-        projectIds: [projectIds],
+        projectIds: projectIds,
         ...values,
       }
       await reportProjectApprove(submitInfo)
