@@ -28,13 +28,3 @@ export const getEntrustProjectList = (params: ProjectEntrustTableParams) => {
     request(`${baseUrl.project}/ProjectList/GetAgents`, { method: 'POST', data: params })
   )
 }
-
-//获取项目
-export const receiveProject = (projectIds: string[]) => {
-  return cyRequest(() =>
-    request(`${baseUrl.project}/PorjectAgent/Receive`, {
-      method: 'POST',
-      data: { projectIds },
-    })
-  )
-}

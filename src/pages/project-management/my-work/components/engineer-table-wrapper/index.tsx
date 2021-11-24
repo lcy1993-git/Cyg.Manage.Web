@@ -24,8 +24,8 @@ import {
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons'
-import { useMount } from 'ahooks'
-import { Button, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
+import { useMount, useUpdateEffect } from 'ahooks'
+import { Button, Divider, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
 import moment from 'moment'
 import uuid from 'node-uuid'
 import React, {
@@ -64,11 +64,12 @@ interface EngineerTableWrapperProps {
   getSelectRowData?: (selectRowData: any[]) => void
   // TODO
   getSearchParams?: (searchParams: any) => void
+
+  batchButtonSlot?: () => React.ReactNode
 }
 
 const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) => {
-  const { getSelectRowKeys, getSelectRowData } = props
-
+  const { getSelectRowKeys, getSelectRowData, batchButtonSlot } = props
   const [keyWord, setKeyWord] = useState<string>('')
   // 从列表返回的数据中获取 TODO设置search的参数
   const [searchParams, setSearchParams] = useState({
@@ -143,8 +144,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       .find((item) => item.id === currentClickTabType)
       .children.find((item: any) => item.id === currentClickTabChildActiveType).url
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
-
-  console.log(requestUrl)
 
   const projectNameClickEvent = (engineerId: string) => {
     setModalInfo({
@@ -701,11 +700,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                   </span>
                 ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
                   stateInfo.status === 30 ? (
-                  <span className="canClick" onClick={() => reportApprove(record.id)}>
+                  <span className="canClick" onClick={() => reportApprove([record.id])}>
                     {stateInfo?.statusText}
                   </span>
                 ) : stateInfo.status === 31 ? (
-                  <span className="canClick" onClick={() => approveProjectEvent(record.id)}>
+                  <span className="canClick" onClick={() => approveProjectEvent([record.id])}>
                     {stateInfo?.statusText}
                   </span>
                 ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
@@ -784,19 +783,27 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }
 
   //立项待审批模态框
-  const reportApprove = (projectId: string) => {
-    setModalInfo({
-      projectId: projectId,
-    })
-    setReportApproveVisible(true)
+  const reportApprove = (projectId: string[]) => {
+    if (projectId && projectId.length > 0) {
+      setModalInfo({
+        projectId: projectId,
+      })
+      setReportApproveVisible(true)
+      return
+    }
+    message.info('请选择需要报审的项目')
   }
 
   //立项审批
-  const approveProjectEvent = (projectId: string) => {
-    setModalInfo({
-      projectId: projectId,
-    })
-    setApprovingModalVisible(true)
+  const approveProjectEvent = (projectId: string[]) => {
+    if (projectId && projectId.length > 0) {
+      setModalInfo({
+        projectId: projectId,
+      })
+      setApprovingModalVisible(true)
+      return
+    }
+    message.info('请选择需要审批的项目')
   }
 
   const parentColumns: any[] = [
@@ -961,6 +968,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   return (
     <div className={styles.engineerTableWrapper}>
+      <Divider style={{ margin: '0', padding: '8px 0' }} />
       <div className={styles.engineerTableWrapperSearch}>
         <div className={styles.engineerTableWrapperSearchLeft}>
           <TableSearch className="mr22" label="" width="300px">
@@ -972,9 +980,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
               onSearch={() => searchEvent()}
             />
           </TableSearch>
-          <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
         </div>
-        <div className={styles.engineerTableWrapperSearchRight}></div>
+        <div className={styles.engineerTableWrapperSearchRight}>{batchButtonSlot?.()}</div>
       </div>
       <div className={styles.engineerTableContent}>
         <EngineerTable
@@ -1130,7 +1137,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <ApproveModal
           visible={approvingModalVisible}
           onChange={setApprovingModalVisible}
-          finishEvent={refreshEvent}
+          finishEvent={searchEvent}
           projectIds={modalNeedInfo.projectId}
         />
       )}

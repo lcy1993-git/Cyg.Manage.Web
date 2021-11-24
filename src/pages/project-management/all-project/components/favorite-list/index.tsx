@@ -19,7 +19,7 @@ interface FavoriteListParams {
   getFavName?: Dispatch<SetStateAction<string>>
   favName?: string
   setStatisticalTitle?: Dispatch<SetStateAction<string>>
-  finishEvent: () => void
+  finishEvent?: () => void
 }
 
 interface treeDataItems {

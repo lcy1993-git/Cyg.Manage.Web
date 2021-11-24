@@ -4,9 +4,8 @@ import React, { Dispatch, useState } from 'react'
 import { SetStateAction } from 'react'
 import CyFormItem from '@/components/cy-form-item'
 import { approveProject } from '@/services/project-management/all-project'
-import UrlSelect from '@/components/url-select'
 import { useGetSelectData } from '@/utils/hooks'
-import CyTip from '@/components/cy-tip'
+import { useMyWorkStore } from '@/pages/project-management/my-work/context'
 // import styles from './index.less';
 
 interface ReportApproveParams {
@@ -19,6 +18,7 @@ interface ReportApproveParams {
 const ApproveModal: React.FC<ReportApproveParams> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [isPass, setIsPass] = useState<boolean>(true)
+  const { refreshStatistics } = useMyWorkStore()
   const [isSaveAccount, setIsSaveAccount] = useState<boolean>(false)
   const [form] = Form.useForm()
   const { projectIds, finishEvent } = props
@@ -35,7 +35,7 @@ const ApproveModal: React.FC<ReportApproveParams> = (props) => {
   const approveEvent = async () => {
     form.validateFields().then(async (values) => {
       const submitInfo = {
-        projectIds: [projectIds],
+        projectIds: projectIds,
         isApproved: isPass,
         isReserveIdentity: isSaveAccount,
         ...values,
@@ -43,8 +43,9 @@ const ApproveModal: React.FC<ReportApproveParams> = (props) => {
       await approveProject(submitInfo)
     })
     message.success('审批完成')
-    setState(false)
+    refreshStatistics()
     finishEvent?.()
+    setState(false)
   }
 
   return (

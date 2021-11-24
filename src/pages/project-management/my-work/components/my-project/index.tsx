@@ -1,9 +1,11 @@
 import TableExportButton from '@/components/table-export-button'
 import AddEngineerModal from '@/pages/project-management/all-project/components/add-engineer-modal'
+import ApproveModal from '@/pages/project-management/all-project/components/approve-modal'
 import ArrangeModal from '@/pages/project-management/all-project/components/arrange-modal'
 import AuditKnotModal from '@/pages/project-management/all-project/components/audit-knot-modal'
 import EditArrangeModal from '@/pages/project-management/all-project/components/edit-arrange-modal'
 import ProjectRecallModal from '@/pages/project-management/all-project/components/project-recall-modal'
+import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
 import UploadAddProjectModal from '@/pages/project-management/all-project/components/upload-batch-modal'
 import {
@@ -12,6 +14,7 @@ import {
   checkCanArrange,
   deleteProject,
   getProjectInfo,
+  receiveProject,
   revokeAllot,
   revokeKnot,
 } from '@/services/project-management/all-project'
@@ -51,9 +54,13 @@ const MyProject: React.FC = () => {
   // 编辑安排的时候需要用到的数据
   const [editCurrentAllotCompanyId, setEditCurrentAllotCompanyId] = useState<string>('')
   const [projectAuditKnotModal, setProjectAuditKnotModal] = useState<boolean>(false)
+
+  const [reportApproveVisible, setReportApproveVisible] = useState<boolean>(false)
+  //立项审批
+  const [approvingModalVisible, setApprovingModalVisible] = useState<boolean>(false)
   const [ifCanEdit, setIfCanEdit] = useState<any>([])
 
-  const { currentClickTabType, myWorkInitData } = useMyWorkStore()
+  const { currentClickTabType, myWorkInitData, currentClickTabChildActiveType } = useMyWorkStore()
 
   //添加收藏夹modal
   const [addFavoriteModal, setAddFavoriteModal] = useState<boolean>(false)
@@ -115,11 +122,11 @@ const MyProject: React.FC = () => {
 
   const arrangeMenu = (
     <Menu>
-      {buttonJurisdictionArray?.includes('all-project-arrange-project') && (
+      {/* {buttonJurisdictionArray?.includes('all-project-arrange-project') && (
         <Menu.Item key="arrange" onClick={() => arrangeEvent()}>
           安排
         </Menu.Item>
-      )}
+      )} */}
       {buttonJurisdictionArray?.includes('all-project-edit-arrange') && (
         <Menu.Item key="editArrange" onClick={() => editArrangeEvent()}>
           修改安排
@@ -429,6 +436,82 @@ const MyProject: React.FC = () => {
     refresh()
   }
 
+  const batchButtonElement = () => {
+    return currentClickTabChildActiveType === 'awaitApprove' ? (
+      <Button type="primary" onClick={() => reportApprove(tableSelectKeys)}>
+        报审
+      </Button>
+    ) : currentClickTabChildActiveType === 'approveing' ? (
+      <Button type="primary" onClick={() => approveProjectEvent(tableSelectKeys)}>
+        审批
+      </Button>
+    ) : currentClickTabChildActiveType === 'awaitAllot' ? (
+      <Button type="primary" onClick={() => arrangeEvent()}>
+        安排
+      </Button>
+    ) : currentClickTabChildActiveType === 'waitArrangAudit' ? (
+      <Button type="primary" onClick={() => arrangeEvent()}>
+        安排外审
+      </Button>
+    ) : currentClickTabChildActiveType === 'agent' ? (
+      <Button type="primary" onClick={() => receiveProjectEvent()}>
+        获取
+      </Button>
+    ) : currentClickTabChildActiveType === 'externalReviewing' ? (
+      <Button type="primary" onClick={() => arrangeEvent()}>
+        评审管理
+      </Button>
+    ) : currentClickTabChildActiveType === 'awaitApplyKnot' ? (
+      <Button type="primary" onClick={() => applyConfirm()}>
+        结项申请
+      </Button>
+    ) : currentClickTabChildActiveType === 'approveKnot' ? (
+      <Button type="primary" onClick={() => auditKnotEvent()}>
+        结项审批
+      </Button>
+    ) : null
+  }
+
+  //立项待审批模态框
+  const reportApprove = (projectId: string[]) => {
+    if (projectId && projectId.length > 0) {
+      setReportApproveVisible(true)
+      return
+    }
+    message.info('请选择需要报审的项目')
+  }
+
+  //立项审批
+  const approveProjectEvent = (projectId: string[]) => {
+    if (projectId && projectId.length > 0) {
+      setApprovingModalVisible(true)
+      return
+    }
+    message.info('请选择需要审批的项目')
+  }
+
+  //项目获取
+  const receiveProjectEvent = async () => {
+    if (tableSelectKeys && tableSelectKeys.length === 0) {
+      message.info('请选择您要获取的待办项目')
+      return
+    }
+    Modal.confirm({
+      title: '获取待办项目',
+      icon: <ExclamationCircleOutlined />,
+      content: `确认将选中的项目获取至当前账号的项目列表？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: sureReceiveProject,
+    })
+  }
+
+  const sureReceiveProject = async () => {
+    await receiveProject(tableSelectKeys)
+    message.success('项目获取成功')
+    refresh()
+  }
+
   return (
     <div className={styles.myProjectContent}>
       <div className={styles.myProjectCommonContent}>
@@ -499,7 +582,7 @@ const MyProject: React.FC = () => {
               />
             </div>
           )}
-          {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
+          {/* {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
             buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
             buttonJurisdictionArray?.includes('all-project-kont-approve')) && (
             <Dropdown overlay={postProjectMenu}>
@@ -507,12 +590,13 @@ const MyProject: React.FC = () => {
                 结项 <DownOutlined />
               </Button>
             </Dropdown>
-          )}
+          )} */}
         </div>
       </div>
       <div className={styles.myProjectTableContent}>
         <EngineerTableWrapper
           ref={tableRef}
+          batchButtonSlot={batchButtonElement}
           getSelectRowData={(data) => setTableSelectRowData(data)}
           getSelectRowKeys={(data) => setTableSelectKeys(data as string[])}
           getSearchParams={(params) => setSearchParams(params)}
@@ -576,6 +660,22 @@ const MyProject: React.FC = () => {
           visible={recallModalVisible}
           projectId={currentRecallProjectId}
           onChange={setRecallModalVisible}
+        />
+      )}
+      {reportApproveVisible && (
+        <ReportApproveModal
+          visible={reportApproveVisible}
+          onChange={setReportApproveVisible}
+          finishEvent={refresh}
+          projectIds={tableSelectKeys}
+        />
+      )}
+      {approvingModalVisible && (
+        <ApproveModal
+          visible={approvingModalVisible}
+          onChange={setApprovingModalVisible}
+          finishEvent={refresh}
+          projectIds={tableSelectKeys}
         />
       )}
     </div>
