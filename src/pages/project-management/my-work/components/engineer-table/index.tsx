@@ -13,6 +13,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { useMyWorkStore } from '../../context'
 import ParentRow from '../virtual-table/ParentRow'
 import VirtualTable from '../virtual-table/VirtualTable'
 import styles from './index.less'
@@ -52,7 +53,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   })
 
   const [tableShowDataSource, setTableShowDataSource] = useState<any[]>([])
-
+  const { sideVisible, selectedFavId } = useMyWorkStore()
   const { data: tableData, run, loading } = useRequest(getTableData, {
     manual: true,
   })
@@ -249,34 +250,35 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           />
         )}
       </div>
-
-      <div className={styles.engineerTablePagingContent}>
-        <div className={styles.engineerTablePagingLeft}>
-          <span>显示第</span>
-          <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
-          <span>到第</span>
-          <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
-          <span>条记录，总共</span>
-          <span className={styles.importantTip}>{tableResultData.items.length}</span>
-          <span>个工程，</span>
-          <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+      {(!sideVisible || selectedFavId) && (
+        <div className={styles.engineerTablePagingContent}>
+          <div className={styles.engineerTablePagingLeft}>
+            <span>显示第</span>
+            <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
+            <span>到第</span>
+            <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
+            <span>条记录，总共</span>
+            <span className={styles.importantTip}>{tableResultData.items.length}</span>
+            <span>个工程，</span>
+            <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+          </div>
+          <div className={styles.engineerTablePagingRight}>
+            <Pagination
+              pageSize={pageInfo.pageSize}
+              onChange={currentPageChangeEvent}
+              size="small"
+              total={tableResultData.total}
+              current={pageInfo.pageIndex}
+              // hideOnSinglePage={true}
+              showSizeChanger
+              showQuickJumper
+              onShowSizeChange={currentPageSizeChangeEvent}
+              style={{ display: 'inline-flex', paddingRight: '25px' }}
+            />
+          </div>
+          {pagingSlot}
         </div>
-        <div className={styles.engineerTablePagingRight}>
-          <Pagination
-            pageSize={pageInfo.pageSize}
-            onChange={currentPageChangeEvent}
-            size="small"
-            total={tableResultData.total}
-            current={pageInfo.pageIndex}
-            // hideOnSinglePage={true}
-            showSizeChanger
-            showQuickJumper
-            onShowSizeChange={currentPageSizeChangeEvent}
-            style={{ display: 'inline-flex', paddingRight: '25px' }}
-          />
-        </div>
-        {pagingSlot}
-      </div>
+      )}
     </div>
   )
 }

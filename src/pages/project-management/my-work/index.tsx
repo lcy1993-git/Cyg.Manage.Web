@@ -162,7 +162,10 @@ const MyWork: React.FC = () => {
       value={{
         myWorkInitData,
         currentClickTabType,
+        selectedFavId,
         currentClickTabChildActiveType,
+        sideVisible,
+        favName,
         setCurrentClickTabChildActiveType,
         refreshStatistics,
       }}
@@ -181,22 +184,7 @@ const MyWork: React.FC = () => {
           </div>
         </Tooltip>
       )}
-      <div
-        className={styles.allProjectsFavorite}
-        style={{ display: sideVisible ? 'block' : 'none' }}
-      >
-        <Spin spinning={loading}>
-          <FavoriteList
-            getFavId={setSelectedFavId}
-            setVisible={setSideVisible}
-            setStatisticalTitle={setStatisticalCategory}
-            getFavName={setFavName}
-            favName={favName}
-            // finishEvent={refresh}
-            visible={sideVisible}
-          />
-        </Spin>
-      </div>
+
       <PageCommonWrap noPadding>
         <div className={styles.myWorkContent}>
           {!sideVisible ? (
@@ -212,9 +200,27 @@ const MyWork: React.FC = () => {
               </div>
             </>
           ) : (
-            <>
-              <MyProject />
-            </>
+            <div className={styles.projectsAndFavorite}>
+              <div
+                className={styles.allProjectsFavorite}
+                style={{ display: sideVisible ? 'block' : 'none' }}
+              >
+                <Spin spinning={loading}>
+                  <FavoriteList
+                    getFavId={setSelectedFavId}
+                    setVisible={setSideVisible}
+                    setStatisticalTitle={setStatisticalCategory}
+                    getFavName={setFavName}
+                    favName={favName}
+                    // finishEvent={refresh}
+                    visible={sideVisible}
+                  />
+                </Spin>
+              </div>
+              <div className={styles.allProjectTableContent}>
+                <MyProject />
+              </div>
+            </div>
           )}
         </div>
       </PageCommonWrap>

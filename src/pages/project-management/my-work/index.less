@@ -13,6 +13,47 @@
     width: 100%;
     height: calc(100% - 90px);
   }
+
+  .projectsAndFavorite {
+    display: flex;
+    height: 100%;
+    background-color: #f6f6f6;
+    .tableAndStatistics {
+      width: 100%;
+    }
+    .allProjectsFavorite {
+      box-sizing: border-box;
+      width: 25%;
+      height: calc(100vh - 130px);
+      margin-right: 10px;
+      padding: 20px 20px 0px 20px;
+      background-color: #ffffff;
+    }
+    .allProjectTableContent {
+      box-sizing: border-box;
+      width: 100%;
+      height: calc(100vh - 128px);
+      padding: 20px 20px 0px 20px;
+      background-color: #ffffff;
+
+      .allProjectSearch {
+        display: flex;
+        height: 32px;
+
+        .allProjectSearchContent {
+          display: flex;
+          flex: 1;
+        }
+        .allProjectFunctionButtonContent {
+          display: flex;
+        }
+      }
+
+      .engineerTableContent {
+        height: calc(100% - 72px);
+      }
+    }
+  }
 }
 
 .folderButton {

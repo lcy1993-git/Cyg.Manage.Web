@@ -1,4 +1,5 @@
 import CyTag from '@/components/cy-tag'
+import EmptyTip from '@/components/empty-tip'
 import TableSearch from '@/components/table-search'
 import AddProjectModal from '@/pages/project-management/all-project/components/add-project-modal'
 import ApprovalProjectModal from '@/pages/project-management/all-project/components/approval-project-modal'
@@ -149,7 +150,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
   const tableRef = useRef<HTMLDivElement>(null)
-  const { currentClickTabChildActiveType, myWorkInitData, currentClickTabType } = useMyWorkStore()
+  const {
+    currentClickTabChildActiveType,
+    myWorkInitData,
+    currentClickTabType,
+    selectedFavId,
+    sideVisible,
+  } = useMyWorkStore()
   const requestUrl = useMemo(() => {
     return myWorkInitData
       .find((item) => item.id === currentClickTabType)
@@ -446,10 +453,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }
 
   // 外审安排
-  const externalArrange = async (projectId: string, proName?: string) => {
+  const externalArrange = async (projectId: string[]) => {
     setModalInfo({
-      projectId,
-      proName,
+      projectId: projectId,
     })
     setExternalArrangeModalVisible(true)
   }
@@ -740,10 +746,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                     {stateInfo?.statusText}
                   </span>
                 ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
-                  <span
-                    className="canClick"
-                    onClick={() => externalArrange(record.id, record.name)}
-                  >
+                  <span className="canClick" onClick={() => externalArrange([record.id])}>
                     {stateInfo?.outsideStatusText}
                   </span>
                 ) : stateInfo.status === 8 && stateInfo.outsideStatus === 100 ? (
@@ -988,6 +991,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     search: () => {
       searchEvent()
     },
+
+    searchByParams: () => {
+      searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
+    },
+    delayRefresh: () => {
+      delayRefresh()
+    },
   }))
 
   useMount(() => {
@@ -1001,6 +1011,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const columnsConfigSetting = () => {
     setChooseColumnsModal(true)
   }
+
+  useEffect(() => {
+    searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
+  }, [selectedFavId])
 
   const finalyColumns = useMemo(() => {
     if (chooseColumns) {
@@ -1049,9 +1063,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
               onSearch={() => searchEvent()}
             />
           </TableSearch>
+          <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
         </div>
         <div className={styles.engineerTableWrapperSearchRight}>{batchButtonSlot?.()}</div>
       </div>
+
       <div className={styles.engineerTableContent}>
         <EngineerTable
           getSelectRowData={getSelectRowData}
@@ -1064,6 +1080,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           pagingSlot={columnsIcon}
         />
       </div>
+
       <ScreenModal
         visible={screenModalVisible}
         onChange={setScreenModalVisible}
@@ -1135,7 +1152,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       {externalArrangeModalVisible && (
         <ExternalArrangeModal
           projectId={modalNeedInfo.projectId}
-          proName={modalNeedInfo.proName}
           onChange={setExternalArrangeModalVisible}
           visible={externalArrangeModalVisible}
           search={delayRefresh}

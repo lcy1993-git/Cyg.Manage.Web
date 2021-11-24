@@ -1,11 +1,15 @@
+import CommonTitle from '@/components/common-title'
+import EmptyTip from '@/components/empty-tip'
 import TableExportButton from '@/components/table-export-button'
 import AddEngineerModal from '@/pages/project-management/all-project/components/add-engineer-modal'
+import AddFavoriteModal from '@/pages/project-management/all-project/components/add-favorite-modal'
 import ApproveModal from '@/pages/project-management/all-project/components/approve-modal'
 import ArrangeModal from '@/pages/project-management/all-project/components/arrange-modal'
 import AuditKnotModal from '@/pages/project-management/all-project/components/audit-knot-modal'
 import EditArrangeModal from '@/pages/project-management/all-project/components/edit-arrange-modal'
 import ProjectRecallModal from '@/pages/project-management/all-project/components/project-recall-modal'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
+import ExternalArrangeModal from '@/pages/project-management/all-project/components/external-arrange-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
 import UploadAddProjectModal from '@/pages/project-management/all-project/components/upload-batch-modal'
 import {
@@ -18,6 +22,7 @@ import {
   revokeAllot,
   revokeKnot,
 } from '@/services/project-management/all-project'
+import { removeCollectionEngineers } from '@/services/project-management/favorite-list'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
@@ -27,6 +32,7 @@ import { useMyWorkStore } from '../../context'
 import EngineerTableWrapper from '../engineer-table-wrapper'
 import TypeElement from '../type-element'
 import styles from './index.less'
+import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 
 const MyProject: React.FC = () => {
   const [searchParams, setSearchParams] = useState({})
@@ -60,11 +66,22 @@ const MyProject: React.FC = () => {
   const [approvingModalVisible, setApprovingModalVisible] = useState<boolean>(false)
   const [ifCanEdit, setIfCanEdit] = useState<any>([])
 
-  const { currentClickTabType, myWorkInitData, currentClickTabChildActiveType } = useMyWorkStore()
+  //外审
+  const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false)
+  const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false)
+
+  const {
+    currentClickTabType,
+    myWorkInitData,
+    currentClickTabChildActiveType,
+    sideVisible,
+    selectedFavId,
+    favName,
+  } = useMyWorkStore()
 
   //添加收藏夹modal
   const [addFavoriteModal, setAddFavoriteModal] = useState<boolean>(false)
-  const [favName, setFavName] = useState<string>('')
+  // const [favName, setFavName] = useState<string>('')
 
   const tableRef = useRef<HTMLDivElement>(null)
 
@@ -94,6 +111,13 @@ const MyProject: React.FC = () => {
     }
   }
 
+  const searchByParams = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.searchByParams()
+    }
+  }
+
   const engineerIds = useMemo(() => {
     return uniq(tableSelectRowData.map((item) => item.engineerId))
   }, [JSON.stringify(tableSelectRowData)])
@@ -102,6 +126,13 @@ const MyProject: React.FC = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
       tableRef.current.refresh()
+    }
+  }
+
+  const delayRefresh = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.delayRefresh()
     }
   }
 
@@ -313,6 +344,8 @@ const MyProject: React.FC = () => {
   )
 
   const addFavEvent = () => {
+    console.log(engineerIds)
+
     if (engineerIds && engineerIds.length > 0) {
       setAddFavoriteModal(true)
       return
@@ -320,31 +353,29 @@ const MyProject: React.FC = () => {
     message.warning('您还未选择任何工程')
   }
   const removeConfirm = () => {
-    // if (!sideVisible) {
-    //   message.warning('该功能仅能在收藏夹项目列表中使用')
-    //   return
-    // }
-    // if (!selectedFavId) {
-    //   message.warning('您还未选择收藏夹')
-    //   return
-    // }
-    // if (engineerIds && engineerIds.length === 0) {
-    //   message.warning('请选择要移出当前收藏夹的工程')
-    //   return
-    // }
-    // Modal.confirm({
-    //   title: '提示',
-    //   icon: <ExclamationCircleOutlined />,
-    //   content: '确定要移除所选工程',
-    //   okText: '确认',
-    //   cancelText: '取消',
-    //   onOk: removeFavEvent,
-    // })
+    if (!selectedFavId) {
+      message.warning('您还未选择收藏夹')
+      return
+    }
+    if (engineerIds && engineerIds.length === 0) {
+      message.warning('请选择要移出当前收藏夹的工程')
+      return
+    }
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '确定要移除所选工程',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: removeFavEvent,
+    })
   }
   const removeFavEvent = async () => {
-    // await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds })
-    // message.success('已移出当前收藏夹')
-    // searchEvent()
+    console.log(engineerIds, '111')
+
+    await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds })
+    message.success('已移出当前收藏夹')
+    searchByParams()
   }
   //收藏夹操作
   const favoriteMenu = (
@@ -436,6 +467,11 @@ const MyProject: React.FC = () => {
     refresh()
   }
 
+  // 外审安排
+  const externalArrange = () => {
+    setExternalArrangeModalVisible(true)
+  }
+
   const batchButtonElement = () => {
     return currentClickTabChildActiveType === 'awaitApprove' ? (
       <Button type="primary" onClick={() => reportApprove(tableSelectKeys)}>
@@ -450,7 +486,7 @@ const MyProject: React.FC = () => {
         安排
       </Button>
     ) : currentClickTabChildActiveType === 'waitArrangAudit' ? (
-      <Button type="primary" onClick={() => arrangeEvent()}>
+      <Button type="primary" onClick={() => externalArrange()}>
         安排外审
       </Button>
     ) : currentClickTabChildActiveType === 'agent' ? (
@@ -458,7 +494,7 @@ const MyProject: React.FC = () => {
         获取
       </Button>
     ) : currentClickTabChildActiveType === 'externalReviewing' ? (
-      <Button type="primary" onClick={() => arrangeEvent()}>
+      <Button type="primary" onClick={() => externalEdit()}>
         评审管理
       </Button>
     ) : currentClickTabChildActiveType === 'awaitApplyKnot' ? (
@@ -469,7 +505,19 @@ const MyProject: React.FC = () => {
       <Button type="primary" onClick={() => auditKnotEvent()}>
         结项审批
       </Button>
+    ) : sideVisible ? (
+      <Button type="primary" onClick={() => removeConfirm()}>
+        移出收藏夹
+      </Button>
     ) : null
+  }
+
+  const externalEdit = async () => {
+    if (tableSelectKeys && tableSelectKeys.length === 1) {
+      setExternalListModalVisible(true)
+      return
+    }
+    message.warning('请选择单条数据查看评审')
   }
 
   //立项待审批模态框
@@ -516,83 +564,83 @@ const MyProject: React.FC = () => {
     <div className={styles.myProjectContent}>
       <div className={styles.myProjectCommonContent}>
         <div className={styles.myProjectCommonLeft}>
-          <TypeElement typeArray={titleTypeArray} />
+          {favName ? (
+            <CommonTitle>{favName}</CommonTitle>
+          ) : (
+            <TypeElement typeArray={titleTypeArray} />
+          )}
         </div>
-        <div className={styles.myProjectCommonRight}>
-          {(buttonJurisdictionArray?.includes('all-project-project-approval') ||
-            buttonJurisdictionArray?.includes('all-project-batch-project')) && (
-            <Dropdown overlay={addEngineerMenu}>
-              <Button className="mr7" type="primary">
-                立项 <DownOutlined />
-              </Button>
-            </Dropdown>
-          )}
-          {buttonJurisdictionArray?.includes('all-project-delete-project') && (
-            <>
-              {canDelete.length > 0 && (
-                <Tooltip title="您勾选的项目中含有继承中的项目，不能进行删除操作">
-                  <Button disabled={true} className="mr7">
-                    <DeleteOutlined />
-                    删除
+        {currentClickTabChildActiveType !== 'agent' &&
+          currentClickTabChildActiveType !== 'approveing' && (
+            <div className={styles.myProjectCommonRight}>
+              {(buttonJurisdictionArray?.includes('all-project-project-approval') ||
+                buttonJurisdictionArray?.includes('all-project-batch-project')) && (
+                <Dropdown overlay={addEngineerMenu}>
+                  <Button className="mr7" type="primary">
+                    立项 <DownOutlined />
                   </Button>
-                </Tooltip>
+                </Dropdown>
               )}
-              {canDelete.length === 0 && (
-                <Button className="mr7" onClick={() => deleteConfirm()}>
-                  <DeleteOutlined />
-                  删除
-                </Button>
+
+              {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
+                buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
+                buttonJurisdictionArray?.includes('all-project-recall-project')) && (
+                <Dropdown overlay={arrangeMenu}>
+                  <Button className="mr7">
+                    修改安排 <DownOutlined />
+                  </Button>
+                </Dropdown>
               )}
-            </>
-          )}
-          {(buttonJurisdictionArray?.includes('all-project-arrange-project') ||
-            buttonJurisdictionArray?.includes('all-project-edit-arrange') ||
-            buttonJurisdictionArray?.includes('all-project-recall-project')) && (
-            <Dropdown overlay={arrangeMenu}>
-              <Button className="mr7">
-                安排 <DownOutlined />
-              </Button>
-            </Dropdown>
-          )}
-          {(buttonJurisdictionArray?.includes('all-project-share') ||
-            buttonJurisdictionArray?.includes('all-project-share-recall')) && (
-            <Dropdown overlay={shareMenu}>
-              <Button className="mr7">
-                共享 <DownOutlined />
-              </Button>
-            </Dropdown>
-          )}
-          {(buttonJurisdictionArray?.includes('add-favorite-project') ||
-            buttonJurisdictionArray?.includes('remove-favorite-project')) && (
-            <Dropdown overlay={favoriteMenu}>
-              <Button className="mr7">
-                收藏 <DownOutlined />
-              </Button>
-            </Dropdown>
-          )}
-          {(buttonJurisdictionArray?.includes('all-project-export-all') ||
-            buttonJurisdictionArray?.includes('all-project-export-selected')) && (
-            <div className="mr7">
-              <TableExportButton
-                exportUrl="/Porject/Export"
-                selectIds={tableSelectKeys as string[]}
-                extraParams={{
-                  ...searchParams,
-                }}
-              />
+              {buttonJurisdictionArray?.includes('all-project-delete-project') && (
+                <>
+                  {canDelete.length > 0 && (
+                    <Tooltip title="您勾选的项目中含有继承中的项目，不能进行删除操作">
+                      <Button disabled={true} className="mr7">
+                        <DeleteOutlined />
+                        删除
+                      </Button>
+                    </Tooltip>
+                  )}
+                  {canDelete.length === 0 && (
+                    <Button className="mr7" onClick={() => deleteConfirm()}>
+                      <DeleteOutlined />
+                      删除
+                    </Button>
+                  )}
+                </>
+              )}
+              {(buttonJurisdictionArray?.includes('all-project-share') ||
+                buttonJurisdictionArray?.includes('all-project-share-recall')) && (
+                <Dropdown overlay={shareMenu}>
+                  <Button className="mr7">
+                    共享 <DownOutlined />
+                  </Button>
+                </Dropdown>
+              )}
+              {(buttonJurisdictionArray?.includes('add-favorite-project') ||
+                buttonJurisdictionArray?.includes('remove-favorite-project')) &&
+                !sideVisible && (
+                  <Button className="mr7" onClick={() => addFavEvent()}>
+                    收藏
+                  </Button>
+                )}
+              {(buttonJurisdictionArray?.includes('all-project-export-all') ||
+                buttonJurisdictionArray?.includes('all-project-export-selected')) &&
+                currentClickTabType === 'allpro' && (
+                  <div className="mr7">
+                    <TableExportButton
+                      exportUrl="/Porject/Export"
+                      selectIds={tableSelectKeys as string[]}
+                      extraParams={{
+                        ...searchParams,
+                      }}
+                    />
+                  </div>
+                )}
             </div>
           )}
-          {/* {(buttonJurisdictionArray?.includes('all-project-apply-knot') ||
-            buttonJurisdictionArray?.includes('all-project-recall-apply-knot') ||
-            buttonJurisdictionArray?.includes('all-project-kont-approve')) && (
-            <Dropdown overlay={postProjectMenu}>
-              <Button className="mr7">
-                结项 <DownOutlined />
-              </Button>
-            </Dropdown>
-          )} */}
-        </div>
       </div>
+
       <div className={styles.myProjectTableContent}>
         <EngineerTableWrapper
           ref={tableRef}
@@ -602,6 +650,7 @@ const MyProject: React.FC = () => {
           getSearchParams={(params) => setSearchParams(params)}
         />
       </div>
+
       {addEngineerModalVisible && (
         <AddEngineerModal
           finishEvent={searchEvent}
@@ -676,6 +725,31 @@ const MyProject: React.FC = () => {
           onChange={setApprovingModalVisible}
           finishEvent={refresh}
           projectIds={tableSelectKeys}
+        />
+      )}
+      {addFavoriteModal && (
+        <AddFavoriteModal
+          visible={addFavoriteModal}
+          onChange={setAddFavoriteModal}
+          finishEvent={refresh}
+          engineerIds={engineerIds}
+        />
+      )}
+      {externalArrangeModalVisible && (
+        <ExternalArrangeModal
+          projectId={tableSelectKeys}
+          onChange={setExternalArrangeModalVisible}
+          visible={externalArrangeModalVisible}
+          search={delayRefresh}
+        />
+      )}
+      {externalListModalVisible && (
+        <ExternalListModal
+          projectId={tableSelectKeys[0]}
+          visible={externalListModalVisible}
+          onChange={setExternalListModalVisible}
+          // stepData={externalStepData}
+          refresh={delayRefresh}
         />
       )}
     </div>
