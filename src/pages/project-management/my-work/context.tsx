@@ -5,6 +5,9 @@ interface MyWorkContextProps {
   myWorkInitData: any[]
   currentClickTabType: string
   currentClickTabChildActiveType: string
+  selectedFavId: string
+  favName?: string
+  sideVisible?: boolean
   setCurrentClickTabChildActiveType: Dispatch<SetStateAction<string>>
   refreshStatistics: any
 }

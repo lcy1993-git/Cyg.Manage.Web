@@ -5,7 +5,6 @@ import { useControllableValue, useRequest } from 'ahooks'
 import SelectAddListForm from '../select-add-list-form'
 import { Dispatch } from 'react'
 import { UserInfo } from '@/services/project-management/select-add-list-form'
-import { Checkbox } from 'antd'
 import { allotOuterAudit, getAllotUsers } from '@/services/project-management/all-project'
 import styles from './index.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
@@ -16,9 +15,9 @@ interface GetGroupUserProps {
   defaultType?: string
   allotCompanyId?: string
   visible: boolean
-  projectId: string
+  projectId: string[]
   search?: () => void
-  proName?: string
+  // proName?: string
 }
 
 const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
@@ -28,19 +27,19 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const [isArrangePeople, setIsArrangePeople] = useState<boolean>(false) //不安排外审status
 
   const [form] = Form.useForm()
-  const { projectId, search, proName } = props
+  const { projectId, search } = props
 
-  const { data } = useRequest(() => getAllotUsers(projectId, 6), {
-    onSuccess: () => {
-      const handleData = data?.map((item: any) => {
-        return {
-          value: item.userId,
-          text: item.userNameText,
-        }
-      })
-      setArrangePeople(handleData ?? [])
-    },
-  })
+  // const { data } = useRequest(() => getAllotUsers(projectId[0], 6), {
+  //   onSuccess: () => {
+  //     const handleData = data?.map((item: any) => {
+  //       return {
+  //         value: item.userId,
+  //         text: item.userNameText,
+  //       }
+  //     })
+  //     setArrangePeople(handleData ?? [])
+  //   },
+  // })
 
   const handleExternalMen = useMemo(() => {
     return arrangePeople?.map((item: any) => {
@@ -50,7 +49,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
   const saveExternalArrange = async () => {
     await allotOuterAudit({
-      projectId: projectId,
+      projectIds: projectId,
       userIds: handleExternalMen,
       noNeedAudit: false,
       // auditResult: isPassArrangePeople,
@@ -62,7 +61,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
   const notNeedAuditEvent = async () => {
     await allotOuterAudit({
-      projectId: projectId,
+      projectIds: projectId,
       userIds: handleExternalMen,
       noNeedAudit: true,
       // auditResult: isPassArrangePeople,
@@ -120,7 +119,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       <Form style={{ width: '100%' }} form={form}>
         <SelectAddListForm
           initPeople={arrangePeople}
-          projectName={proName}
+          // projectName={proName}
           onChange={(people) => setArrangePeople(people)}
           notArrangeShow={isArrangePeople}
           onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}

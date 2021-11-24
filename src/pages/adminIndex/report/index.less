@@ -1,67 +1,67 @@
-.reportBox{
+.reportBox {
   display: flex;
   flex: 1;
   height: 99%;
-  .leftSide{
+  .leftSide {
     width: 240px;
     height: 100%;
     margin-right: 12px;
-    background: #fff;
     padding: 12px 0px;
-    .leftSideTitle{
+    background: #fff;
+    .leftSideTitle {
+      color: #1f1f1f;
+      font-weight: 500;
       font-size: 16px;
       font-family: Source Han Sans CN;
-      font-weight: 500;
       line-height: 16px;
-      color: #1F1F1F;
-      opacity: 1;
       text-indent: 42px;
+      opacity: 1;
     }
-    .leftSideTree{
+    .leftSideTree {
       margin-top: 12px;
-      :global .ant-tree-switcher-noop{
+      :global .ant-tree-switcher-noop {
         display: none;
       }
-      :global .ant-tree-indent-unit::before{
+      :global .ant-tree-indent-unit::before {
+        display: none;
         border-color: white;
-        display: none;
       }
-      :global .ant-tree-treenode{
+      :global .ant-tree-treenode {
         padding: 0;
       }
-      :global .ant-tree-switcher{
-        line-height: 36px;
+      :global .ant-tree-switcher {
         position: relative;
         left: 36px;
-        background: transparent;
         //display: none;
         z-index: 99;
+        line-height: 36px;
+        background: transparent;
       }
-      :global .ant-tree-node-content-wrapper{
-        height: 36px;
+      :global .ant-tree-node-content-wrapper {
         //padding: 0 36px;
         width: 190px;
+        height: 36px;
         line-height: 36px;
         text-indent: 36px;
       }
-      :global .ant-tree-title{
-        color: #8C8C8C;
+      :global .ant-tree-title {
+        color: #8c8c8c;
+        font-weight: 400;
         font-size: 16px;
         font-family: PingFang SC;
-        font-weight: 400;
       }
-      :global .ant-tree-node-selected{
-        background: #E4F5EB;
+      :global .ant-tree-node-selected {
         height: 36px;
         //padding: 0 30px;
         line-height: 36px;
-        .ant-tree-title{
-          color: #0E7B3B;
+        background: #e4f5eb;
+        .ant-tree-title {
+          color: #0e7b3b;
         }
       }
     }
   }
-  .rightSide{
+  .rightSide {
     width: calc(100% - 252px);
   }
 }

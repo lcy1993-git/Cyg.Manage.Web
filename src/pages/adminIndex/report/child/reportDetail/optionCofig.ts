@@ -1,6 +1,6 @@
-import * as echarts from 'echarts/lib/echarts';
-import 'echarts/lib/component/grid';
-import 'echarts/lib/component/tooltip';
+import * as echarts from 'echarts/lib/echarts'
+import 'echarts/lib/component/grid'
+import 'echarts/lib/component/tooltip'
 
 export const optionConfig = {
   allAll: [
@@ -27,43 +27,43 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
-              position: 'insideLeft'
+              position: 'insideLeft',
             },
             data: [
               {
                 value: 50,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#E2DE49'},
-                    {offset: 1, color: '#667707'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
                 value: 110,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#50DFD4'},
-                    {offset: 1, color: '#087070'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
                 value: 200,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-
-                    {offset: 0, color: 'rgba(74, 191, 63, 1)'},
-                    {offset: 1, color: 'rgba(14, 123, 59, 1)'},
-                  ])
-                }
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
               },
             ],
           },
         ],
       },
-
     },
     {
       tab: '时间',
@@ -131,15 +131,15 @@ export const optionConfig = {
             axisLabel: {
               interval: 1000,
               formatter: function (value: number, index: number) {
-                let val;
+                let val
                 if (value >= 10000) {
-                  val = value / 10000 + 'w';
+                  val = value / 10000 + 'w'
                 } else if (value >= 1000) {
-                  val = value / 1000 + 'k';
+                  val = value / 1000 + 'k'
                 } else if (value < 1000) {
-                  val = value;
+                  val = value
                 }
-                return val;
+                return val
               },
             },
             nameGap: 35,
@@ -171,22 +171,7 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [
-              1200,
-              1320,
-              11,
-              134,
-              590,
-              50,
-              2140,
-              20,
-              655,
-              2101,
-              4,
-              790,
-              1130,
-              210,
-            ],
+            data: [1200, 1320, 11, 134, 590, 50, 2140, 20, 655, 2101, 4, 790, 1130, 210],
           },
         ],
       },
@@ -216,37 +201,38 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
-              position: 'insideLeft'
+              position: 'insideLeft',
             },
             data: [
               {
                 value: 2201,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#E2DE49'},
-                    {offset: 1, color: '#667707'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
                 value: 437,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#50DFD4'},
-                    {offset: 1, color: '#087070'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
                 value: 777,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-
-                    {offset: 0, color: 'rgba(74, 191, 63, 1)'},
-                    {offset: 1, color: 'rgba(14, 123, 59, 1)'},
-                  ])
-                }
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
               },
             ],
           },
@@ -320,15 +306,15 @@ export const optionConfig = {
             axisLabel: {
               interval: 1000,
               formatter: function (value: number, index: number) {
-                let val;
+                let val
                 if (value >= 10000) {
-                  val = value / 10000 + 'w';
+                  val = value / 10000 + 'w'
                 } else if (value >= 1000) {
-                  val = value / 1000 + 'k';
+                  val = value / 1000 + 'k'
                 } else if (value < 1000) {
-                  val = value;
+                  val = value
                 }
-                return val;
+                return val
               },
             },
             nameGap: 35,
@@ -360,27 +346,11 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [
-              10,
-              10,
-              101,
-              44,
-              55,
-              50,
-              2140,
-              10,
-              65,
-              21,
-              64,
-              70,
-              10,
-              2,
-            ],
+            data: [10, 10, 101, 44, 55, 50, 2140, 10, 65, 21, 64, 70, 10, 2],
           },
         ],
       },
     },
-
   ],
   allBusiness: [
     {
@@ -406,37 +376,38 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
-              position: 'insideLeft'
+              position: 'insideLeft',
             },
             data: [
               {
                 value: 221,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#E2DE49'},
-                    {offset: 1, color: '#667707'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
                 value: 4447,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#50DFD4'},
-                    {offset: 1, color: '#087070'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
                 value: 777,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-
-                    {offset: 0, color: 'rgba(74, 191, 63, 1)'},
-                    {offset: 1, color: 'rgba(14, 123, 59, 1)'},
-                  ])
-                }
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
               },
             ],
           },
@@ -509,15 +480,15 @@ export const optionConfig = {
             axisLabel: {
               interval: 1000,
               formatter: function (value: number, index: number) {
-                let val;
+                let val
                 if (value >= 10000) {
-                  val = value / 10000 + 'w';
+                  val = value / 10000 + 'w'
                 } else if (value >= 1000) {
-                  val = value / 1000 + 'k';
+                  val = value / 1000 + 'k'
                 } else if (value < 1000) {
-                  val = value;
+                  val = value
                 }
-                return val;
+                return val
               },
             },
             nameGap: 35,
@@ -569,7 +540,6 @@ export const optionConfig = {
         ],
       },
     },
-
   ],
   sysLogin: [
     {
@@ -595,43 +565,43 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
-              position: 'insideLeft'
+              position: 'insideLeft',
             },
             data: [
               {
                 value: 50,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#E2DE49'},
-                    {offset: 1, color: '#667707'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
                 value: 110,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#50DFD4'},
-                    {offset: 1, color: '#087070'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
                 value: 200,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-
-                    {offset: 0, color: 'rgba(74, 191, 63, 1)'},
-                    {offset: 1, color: 'rgba(14, 123, 59, 1)'},
-                  ])
-                }
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
               },
             ],
           },
         ],
       },
-
     },
     {
       tab: '登陆趋势',
@@ -705,15 +675,15 @@ export const optionConfig = {
             axisLabel: {
               interval: 1000,
               formatter: function (value: number, index: number) {
-                let val;
+                let val
                 if (value >= 10000) {
-                  val = value / 10000 + 'w';
+                  val = value / 10000 + 'w'
                 } else if (value >= 1000) {
-                  val = value / 1000 + 'k';
+                  val = value / 1000 + 'k'
                 } else if (value < 1000) {
-                  val = value;
+                  val = value
                 }
-                return val;
+                return val
               },
             },
             nameGap: 35,
@@ -727,12 +697,12 @@ export const optionConfig = {
             name: '管理端',
             lineStyle: {
               color: '#2A9B3D',
-              width: 3
+              width: 3,
             },
             itemStyle: {
               normal: {
                 color: '#2A9B3D',
-              }
+              },
             },
             symbol: 'triangle',
             showSymbol: true,
@@ -742,32 +712,18 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [
-              11,
-              22,
-              335,
-              44,
-              56,
-              66,
-              77,
-              828,
-              66,
-              55,
-              22,
-              959,
-              22,
-              445,
-            ],
-          }, {
+            data: [11, 22, 335, 44, 56, 66, 77, 828, 66, 55, 22, 959, 22, 445],
+          },
+          {
             name: '勘察端',
             lineStyle: {
               color: '#30BABF',
-              width: 3
+              width: 3,
             },
             itemStyle: {
               normal: {
                 color: '#30BABF',
-              }
+              },
             },
             symbol: 'rect',
             symbolSize: 8,
@@ -777,32 +733,18 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [
-              123,
-              223,
-              441,
-              226,
-              336,
-              124,
-              778,
-              542,
-              147,
-              455,
-              441,
-              112,
-              483,
-              453,
-            ],
-          }, {
+            data: [123, 223, 441, 226, 336, 124, 778, 542, 147, 455, 441, 112, 483, 453],
+          },
+          {
             name: '设计端',
             lineStyle: {
               color: '#C3C813',
-              width: 3
+              width: 3,
             },
             itemStyle: {
               normal: {
                 color: '#C3C813',
-              }
+              },
             },
             symbol: 'rect',
             symbolRotate: 45,
@@ -813,26 +755,10 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [
-              737,
-              88,
-              11,
-              888,
-              590,
-              50,
-              77,
-              20,
-              2,
-              22,
-              444,
-              790,
-              453,
-              783,
-            ],
+            data: [737, 88, 11, 888, 590, 50, 77, 20, 2, 22, 444, 790, 453, 783],
           },
         ],
       },
-
     },
   ],
   sysExitLogin: [
@@ -859,37 +785,38 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
-              position: 'insideLeft'
+              position: 'insideLeft',
             },
             data: [
               {
                 value: 50,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#E2DE49'},
-                    {offset: 1, color: '#667707'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
                 value: 110,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#50DFD4'},
-                    {offset: 1, color: '#087070'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
                 value: 200,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-
-                    {offset: 0, color: 'rgba(74, 191, 63, 1)'},
-                    {offset: 1, color: 'rgba(14, 123, 59, 1)'},
-                  ])
-                }
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
               },
             ],
           },
@@ -968,15 +895,15 @@ export const optionConfig = {
             axisLabel: {
               interval: 1000,
               formatter: function (value: number, index: number) {
-                let val;
+                let val
                 if (value >= 10000) {
-                  val = value / 10000 + 'w';
+                  val = value / 10000 + 'w'
                 } else if (value >= 1000) {
-                  val = value / 1000 + 'k';
+                  val = value / 1000 + 'k'
                 } else if (value < 1000) {
-                  val = value;
+                  val = value
                 }
-                return val;
+                return val
               },
             },
             nameGap: 35,
@@ -990,12 +917,12 @@ export const optionConfig = {
             name: '管理端',
             lineStyle: {
               color: '#2A9B3D',
-              width: 3
+              width: 3,
             },
             itemStyle: {
               normal: {
                 color: '#2A9B3D',
-              }
+              },
             },
             symbol: 'triangle',
             showSymbol: true,
@@ -1005,32 +932,18 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [
-              11,
-              22,
-              335,
-              44,
-              56,
-              66,
-              77,
-              828,
-              66,
-              55,
-              22,
-              959,
-              22,
-              445,
-            ],
-          }, {
+            data: [11, 22, 335, 44, 56, 66, 77, 828, 66, 55, 22, 959, 22, 445],
+          },
+          {
             name: '勘察端',
             lineStyle: {
               color: '#30BABF',
-              width: 3
+              width: 3,
             },
             itemStyle: {
               normal: {
                 color: '#30BABF',
-              }
+              },
             },
             symbol: 'rect',
             symbolSize: 8,
@@ -1040,32 +953,18 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [
-              123,
-              223,
-              441,
-              226,
-              336,
-              124,
-              778,
-              542,
-              147,
-              455,
-              441,
-              112,
-              483,
-              453,
-            ],
-          }, {
+            data: [123, 223, 441, 226, 336, 124, 778, 542, 147, 455, 441, 112, 483, 453],
+          },
+          {
             name: '设计端',
             lineStyle: {
               color: '#C3C813',
-              width: 3
+              width: 3,
             },
             itemStyle: {
               normal: {
                 color: '#C3C813',
-              }
+              },
             },
             symbol: 'rect',
             symbolRotate: 45,
@@ -1076,22 +975,7 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [
-              737,
-              88,
-              11,
-              888,
-              590,
-              50,
-              77,
-              20,
-              2,
-              22,
-              444,
-              790,
-              453,
-              783,
-            ],
+            data: [737, 88, 11, 888, 590, 50, 77, 20, 2, 22, 444, 790, 453, 783],
           },
         ],
       },
@@ -1104,7 +988,7 @@ export const optionConfig = {
       options: {
         animation: false,
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
         },
         color: ['#358FDE', '#8C8E9D', '#F67443', '#4DA944'],
         series: [
@@ -1112,13 +996,13 @@ export const optionConfig = {
             type: 'pie',
             itemStyle: {
               borderColor: '#fff',
-              borderWidth: 1
+              borderWidth: 1,
             },
             data: [
-              {value: 22, name: '启用'},
-              {value: 55, name: '注销'},
-              {value: 12, name: '禁用'},
-              {value: 43, name: '新建'},
+              { value: 22, name: '启用' },
+              { value: 55, name: '注销' },
+              { value: 12, name: '禁用' },
+              { value: 43, name: '新建' },
             ],
             emphasis: {
               // itemStyle: {
@@ -1127,12 +1011,11 @@ export const optionConfig = {
               //   shadowColor: 'rgba(0, 0, 0, 0.5)'
               // }
             },
-            radius: ['15%', '75%']
+            radius: ['15%', '75%'],
           },
-        ]
-      }
-
-    }
+        ],
+      },
+    },
   ],
   sysChangingPasswordStatus: [
     {
@@ -1159,44 +1042,48 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
               position: 'insideLeft',
-              color: '#fff'
+              color: '#fff',
             },
             data: [
               {
                 value: 10,
                 itemStyle: {
-                  color: '#F17453'
-                }
-              }, {
+                  color: '#F17453',
+                },
+              },
+              {
                 value: 8,
                 itemStyle: {
-                  color: '#EE9B48'
-                }
-              }, {
+                  color: '#EE9B48',
+                },
+              },
+              {
                 value: 7,
                 itemStyle: {
-                  color: '#DEC72D'
-                }
-              }, {
+                  color: '#DEC72D',
+                },
+              },
+              {
                 value: 5,
                 itemStyle: {
-                  color: '#A3CC4F'
-                }
-              }, {
+                  color: '#A3CC4F',
+                },
+              },
+              {
                 value: 3,
                 itemStyle: {
-                  color: '#61CB92'
-                }
+                  color: '#61CB92',
+                },
               },
             ],
           },
         ],
       },
-    }
+    },
   ],
   sysFileTransfer: [
     {
@@ -1234,41 +1121,37 @@ export const optionConfig = {
           },
         },
         yAxis: {
-
           type: 'category',
           data: ['管理端', '勘察端', '设计端'],
-
         },
         series: [
           {
             name: '文件上传',
             type: 'bar',
-            barWidth: 14,//柱图宽度
-            data: [
-              10, 20, 30
-            ],
+            barWidth: 14, //柱图宽度
+            data: [10, 20, 30],
             itemStyle: {
               color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                {offset: 0, color: '#5093DF'},
-                {offset: 1, color: '#1245AB'}
-              ])
+                { offset: 0, color: '#5093DF' },
+                { offset: 1, color: '#1245AB' },
+              ]),
             },
-          }, {
+          },
+          {
             name: '文件下载',
             type: 'bar',
-            barWidth: 14,//柱图宽度
-            data: [
-              12, 55, 65
-            ], itemStyle: {
+            barWidth: 14, //柱图宽度
+            data: [12, 55, 65],
+            itemStyle: {
               color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                {offset: 0, color: '#3FBF6E'},
-                {offset: 1, color: '#0E7B56'}
-              ])
+                { offset: 0, color: '#3FBF6E' },
+                { offset: 1, color: '#0E7B56' },
+              ]),
             },
           },
         ],
       },
-    }
+    },
   ],
   sysConnectionTimeout: [
     {
@@ -1294,43 +1177,44 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
-              position: 'insideLeft'
+              position: 'insideLeft',
             },
             data: [
               {
                 value: 50,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#E2DE49'},
-                    {offset: 1, color: '#667707'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
                 value: 110,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#50DFD4'},
-                    {offset: 1, color: '#087070'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
                 value: 200,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-
-                    {offset: 0, color: 'rgba(74, 191, 63, 1)'},
-                    {offset: 1, color: 'rgba(14, 123, 59, 1)'},
-                  ])
-                }
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
               },
             ],
           },
         ],
       },
-    }
+    },
   ],
   businessProjectDataChange: [
     {
@@ -1356,43 +1240,44 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
-              position: 'insideLeft'
+              position: 'insideLeft',
             },
             data: [
               {
                 value: 50,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#E2DE49'},
-                    {offset: 1, color: '#667707'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
                 value: 110,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#50DFD4'},
-                    {offset: 1, color: '#087070'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
                 value: 200,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-
-                    {offset: 0, color: 'rgba(74, 191, 63, 1)'},
-                    {offset: 1, color: 'rgba(14, 123, 59, 1)'},
-                  ])
-                }
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
               },
             ],
           },
         ],
       },
-    }
+    },
   ],
   businessProjectFlowChange: [
     {
@@ -1418,42 +1303,43 @@ export const optionConfig = {
           {
             name: '2011',
             type: 'bar',
-            barWidth: 24,//柱图宽度
+            barWidth: 24, //柱图宽度
             label: {
               show: true,
-              position: 'insideLeft'
+              position: 'insideLeft',
             },
             data: [
               {
                 value: 50,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#E2DE49'},
-                    {offset: 1, color: '#667707'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
                 value: 110,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    {offset: 0, color: '#50DFD4'},
-                    {offset: 1, color: '#087070'}
-                  ])
-                }
-              }, {
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
                 value: 200,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-
-                    {offset: 0, color: 'rgba(74, 191, 63, 1)'},
-                    {offset: 1, color: 'rgba(14, 123, 59, 1)'},
-                  ])
-                }
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
               },
             ],
           },
         ],
       },
-    }
+    },
   ],
-};
+}

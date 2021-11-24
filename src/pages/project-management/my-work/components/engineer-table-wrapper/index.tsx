@@ -36,7 +36,16 @@ import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Divider, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
 import moment from 'moment'
 import uuid from 'node-uuid'
-import React, { forwardRef, Key, Ref, useImperativeHandle, useMemo, useRef, useState } from 'react'
+import React, {
+  forwardRef,
+  Key,
+  Ref,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useMyWorkStore } from '../../context'
 import EngineerTable from '../engineer-table'
 import styles from './index.less'
@@ -149,7 +158,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   } = useLayoutStore()
 
   const tableRef = useRef<HTMLDivElement>(null)
-  const { currentClickTabChildActiveType, myWorkInitData, currentClickTabType } = useMyWorkStore()
+  const {
+    currentClickTabChildActiveType,
+    myWorkInitData,
+    currentClickTabType,
+    selectedFavId,
+    refreshStatistics,
+  } = useMyWorkStore()
   const requestUrl = useMemo(() => {
     return myWorkInitData
       .find((item) => item.id === currentClickTabType)
@@ -452,10 +467,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }
 
   // 外审安排
-  const externalArrange = async (projectId: string, proName?: string) => {
+  const externalArrange = async (projectId: string[]) => {
     setModalInfo({
-      projectId,
-      proName,
+      projectId: projectId,
     })
     setExternalArrangeModalVisible(true)
   }
@@ -746,10 +760,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                     {stateInfo?.statusText}
                   </span>
                 ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
-                  <span
-                    className="canClick"
-                    onClick={() => externalArrange(record.id, record.name)}
-                  >
+                  <span className="canClick" onClick={() => externalArrange([record.id])}>
                     {stateInfo?.outsideStatusText}
                   </span>
                 ) : stateInfo.status === 8 && stateInfo.outsideStatus === 100 ? (
@@ -959,10 +970,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     }
   }
 
-  const delayRefresh = () => {
+  const delayRefresh = async () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.delayRefresh()
+      await tableRef.current.delayRefresh()
+      refreshStatistics()
     }
   }
 
@@ -993,6 +1005,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     // 按照目前的参数进行搜索
     search: () => {
       searchEvent()
+    },
+
+    searchByParams: () => {
+      searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
+    },
+    delayRefresh: () => {
+      delayRefresh()
     },
   }))
 
@@ -1047,6 +1066,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     setChooseColumnsModal(true)
   }
 
+  useEffect(() => {
+    searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
+  }, [selectedFavId])
   useMount(() => {
     initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
   })
@@ -1102,9 +1124,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
               onSearch={() => searchEvent()}
             />
           </TableSearch>
+          <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
         </div>
         <div className={styles.engineerTableWrapperSearchRight}>{batchButtonSlot?.()}</div>
       </div>
+
       <div className={styles.engineerTableContent}>
         <EngineerTable
           getSelectRowData={getSelectRowData}
@@ -1117,6 +1141,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           pagingSlot={typeColumns ? undefined : columnsIcon}
         />
       </div>
+
       <ScreenModal
         visible={screenModalVisible}
         onChange={setScreenModalVisible}
@@ -1188,7 +1213,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       {externalArrangeModalVisible && (
         <ExternalArrangeModal
           projectId={modalNeedInfo.projectId}
-          proName={modalNeedInfo.proName}
           onChange={setExternalArrangeModalVisible}
           visible={externalArrangeModalVisible}
           search={delayRefresh}

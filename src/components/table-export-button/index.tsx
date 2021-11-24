@@ -15,7 +15,7 @@ const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
   const { selectIds = [], exportUrl = '', extraParams, fileName = '表格', selectSlot } = props
   const exportChoosedRow = async () => {
     if (selectIds && selectIds.length === 0) {
-      message.error('请选择需要导出的行')
+      message.error('请选择需要导出的数据')
       return
     }
     const res = await commonExport(exportUrl, extraParams, selectIds)

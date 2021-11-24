@@ -43,7 +43,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       setTreeData(mixinDeps(data, 0))
     },
   })
-  const [arr, setArr] = useState<string[]>([])
+  const [arr] = useState<string[]>([])
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(getParentIds(data, arr))
 
   const createChildNode = (id: string) => {

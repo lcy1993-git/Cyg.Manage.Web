@@ -577,6 +577,7 @@ interface AllotParams {
   costAuditUser1: string
   costAuditUser2: string
   costAuditUser3: string
+  projectIds: string[]
 }
 
 export const saveArrange = (params: AllotParams) => {
@@ -743,7 +744,7 @@ export const getAllotUsers = (projectId: string, arrangeType: number) => {
 }
 
 interface AllotOuterAuditParams {
-  projectId: string
+  projectIds: string[]
   userIds?: string[]
   noNeedAudit?: boolean
   // auditResult?: boolean;

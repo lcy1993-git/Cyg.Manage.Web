@@ -3,77 +3,77 @@
   height: 100%;
 
   .reportDetailTitle {
-    width: 100%;
-    height: 60px;
-    background: #FFFFFF;
-    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.16);
-    opacity: 1;
-    border-radius: 1px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: 100%;
+    height: 60px;
+    background: #ffffff;
+    border-radius: 1px;
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.16);
+    opacity: 1;
 
     .leftSideTitleBorder {
-      border-left: 2px solid #0E7B3B;
-      margin-left: 36px;
       height: 16px;
+      margin-left: 36px;
+      color: #1f1f1f;
+      font-weight: 500;
       font-size: 16px;
       font-family: Source Han Sans CN;
-      font-weight: 500;
       line-height: 16px;
-      color: #1F1F1F;
       text-indent: 12px;
+      border-left: 2px solid #0e7b3b;
       opacity: 1;
     }
   }
 
   .reportDetailBg {
-    background: #F3F3F3;
     height: calc(100% - 60px);
     padding: 12px;
-    .exportButton{
-      float: right;
+    background: #f3f3f3;
+    .exportButton {
       position: relative;
       top: -42px;
+      float: right;
     }
     .reportTabs {
-      height: 50px;
-      width: 100%;
       display: flex;
-      .reportTabsItemTitle{
+      width: 100%;
+      height: 50px;
+      .reportTabsItemTitle {
         width: 150px;
         text-align: center;
         cursor: pointer;
-        p{
-          line-height: 50px;
+        p {
           margin: 0;
+          color: #1f1f1f;
+          font-weight: 500;
           font-size: 16px;
           font-family: Source Han Sans CN;
-          font-weight: 500;
-          color: #1F1F1F;
+          line-height: 50px;
           opacity: 1;
         }
       }
     }
-    .chartBox{
-      height: 300px;
+    .chartBox {
       width: 100%;
-      background: white;
+      height: 300px;
       padding: 12px;
       padding-top: 0;
       padding-bottom: 24px;
+      background: white;
     }
-    .tableBox{
+    .tableBox {
       width: 100%;
       height: calc(100% - 360px);
-      background: white;
       margin-top: 12px;
       padding: 24px 12px;
-      .tableBoxTool{
-        height: 40px;
-        width: 100%;
+      background: white;
+      .tableBoxTool {
         display: flex;
         justify-content: space-between;
+        width: 100%;
+        height: 40px;
         margin-bottom: 6px;
       }
     }

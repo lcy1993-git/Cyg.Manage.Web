@@ -275,13 +275,13 @@
 //                 setCurrentClickTab('2')
 //               }}
 //             >
-//               <SingleStatistics
-//                 label="立项审批"
-//                 icon="approval"
-//                 clickTab={currentClickTab === '2' ? '2' : ''}
-//               >
-//                 22{/* {handleStatisticsData(statisticsData?.total)} */}
-//               </SingleStatistics>
+//   <SingleStatistics
+//     label="立项审批"
+//     icon="approval"
+//     clickTab={currentClickTab === '2' ? '2' : ''}
+//   >
+//     22{/* {handleStatisticsData(statisticsData?.total)} */}
+//   </SingleStatistics>
 //             </div>
 //             <div
 //               className={styles.projectManagementStatisticItem}
