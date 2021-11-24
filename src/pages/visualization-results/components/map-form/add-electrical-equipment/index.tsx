@@ -59,10 +59,12 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     if (type === 'Point') {
       // @ts-ignore
       data.toBeDeletedEquipmentIds = selectedData.map((item) => item.id)
+      data['toBeDeletedLineIds'] = []
     }
     if (type === 'LineString') {
       // @ts-ignore
       data.toBeDeletedLineIds = selectedData.map((item) => item.id)
+      data['toBeDeletedEquipmentIds'] = []
     }
     await SaveHistoryData(data)
     message.success('删除成功')
@@ -125,6 +127,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     }
     data['toBeDeletedEquipmentIds'] = []
     data['toBeDeletedLineIds'] = []
+    setVisible(false)
     await SaveHistoryData(data)
     message.success('保存成功')
     updateHistoryVersion()
@@ -160,14 +163,18 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
       const val = { ...selectedData[0] }
+      // @ts-ignore
       val.type = val.type + ''
+      // @ts-ignore
       val.voltageLevel = val.voltageLevel + ''
       form.setFieldsValue(val)
       setShowDetail(false)
       setPosition([10, 155])
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLineLength(
+          // @ts-ignore
           [Number(selectedData[0]?.startLat), Number(selectedData[0]?.startLng)],
+          // @ts-ignore
           [Number(selectedData[0]?.endLat), Number(selectedData[0]?.endLng)]
         )
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
@@ -187,7 +194,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setPosition(currentMousePosition)
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLineLength(
-          [Number(selectedData[0]?.startLat), Number(selectedData[0]?.startLng)],
+          // @ts-ignore
+          [Number(selectedData[0]?.startLat!), Number(selectedData[0]?.startLng)],
+          // @ts-ignore
           [Number(selectedData[0]?.endLat), Number(selectedData[0]?.endLng)]
         )
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
@@ -195,7 +204,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     } else if (selectedData.length === 0) {
       setVisible(false)
     }
-  }, [drawing, selectedData, form, currentMousePosition])
+  }, [drawing, selectedData, form])
   return (
     <div>
       {showDetail && visible && (
@@ -227,7 +236,10 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
             <span className={styles.detailTitle}>{selectedData[0]?.voltageLevelStr} </span>
             <span
               className={styles.detailInfo}
-              style={{ display: type === 'LineString' ? 'inline-block' : 'none' }}
+              style={{
+                display:
+                  type === 'LineString' && selectedData.length === 1 ? 'inline-block' : 'none',
+              }}
             >
               长度:
             </span>
@@ -311,7 +323,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
                   })}
                 </Select>
               </Form.Item>
-              {type === 'LineString' && (
+              {type === 'LineString' && selectedData.length === 1 && (
                 <p className={styles.lengthBox}>
                   长度:
                   <span style={{ textIndent: '10px', display: 'inline-block' }}>

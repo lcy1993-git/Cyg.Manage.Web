@@ -3,11 +3,9 @@ import { useHistoryGridContext } from '@/pages/visualization-results/history-gri
 import { Input, message, Modal } from 'antd'
 import styles from './index.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import {
-  recordVersionData,
-  SaveHistoryData,
-} from '@/pages/visualization-results/history-grid/service'
+import { recordVersionData } from '@/pages/visualization-results/history-grid/service'
 import _ from 'lodash'
+import { useSavaData } from '@/pages/visualization-results/history-grid/hooks/useSaveData'
 
 export interface ElectricalEquipmentForm {
   name: string
@@ -26,9 +24,9 @@ interface Props {
 
 const RecordHistoryVersion: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
-  const { UIStatus, dispatch, historyDataSource } = useHistoryGridContext()
+  const { UIStatus, dispatch, historyDataSource, mode, preDesignItemData } = useHistoryGridContext()
   const { recordVersion } = UIStatus
-
+  useSavaData({ mode, historyDataSource, recordVersion, preDesignItemData })
   const [remark, setRemark] = useState<string>('')
   const handleOk = async () => {
     const res = await recordVersionData({
@@ -52,21 +50,20 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
     })
   }
   const remarkChange = (e: ChangeEventHandler<HTMLTextAreaElement>) => {
+    // @ts-ignore
     setRemark(e.target.value)
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const saveVersion = async () => {
-    const data = _.cloneDeep(historyDataSource)
-    await SaveHistoryData(data)
-    message.success('保存成功')
     setRemark('')
     handleCancel()
     updateHistoryVersion()
   }
   useEffect(() => {
     if (recordVersion === 'save') {
-      saveVersion()
+      saveVersion().then()
     }
-  }, [recordVersion])
+  }, [recordVersion, saveVersion])
   return (
     <div>
       <Modal
@@ -93,6 +90,7 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
             style={{ width: '400' }}
             rows={3}
             maxLength={200}
+            // @ts-ignore
             onChange={remarkChange}
           />
         </div>

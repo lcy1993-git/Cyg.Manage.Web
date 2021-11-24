@@ -19,7 +19,7 @@ export type ReducerState = {
 
   /** 触发请求网架数据 */
   refetch: boolean
-  /** 当前网架数据 */
+  /** 最新历史网架 */
   currentGridData?: HistoryGridVersion
   /** 当前网架数据 */
   selectedData?: SelectedData
@@ -61,6 +61,7 @@ export type ReducerState = {
 
 /** action */
 type SimpleActions = 'locate' | 'refetch'
+type ComplexActions = keyof ComplexActionReflectPayload
 
 type ComplexActionReflectPayload = {
   reset: InitParams
@@ -76,25 +77,11 @@ type ComplexActionReflectPayload = {
   changeHistoryDataSource: ReducerState['historyDataSource']
 }
 
-type ComplexActions =
-  | 'reset'
-  | 'changeMode'
-  | 'setCity'
-  | 'changeGridMap'
-  | 'changeUIStatus'
-  | 'changePreDesignItemData'
-  | 'changeAllHistoryGridData'
-  | 'changeHistoryGirdVersion'
-  | 'changeCurrentGridData'
-  | 'changeSelectedData'
-  | 'changeHistoryDataSource'
-  | 'changeCurrentMousePosition'
-
 type Actions = SimpleActions | ComplexActions
 type ReducerActionWithPayload = { type: Actions; payload: any }
 type ReducerActionFn = (state: ReducerState) => ReducerState
 
-type DispatchParam<T extends HistoryAction> = T extends HistoryDispatch
+type DispatchParam<T extends HistoryAction> = T extends ReducerActionFn
   ? T
   : T extends string
   ? SimpleActions
