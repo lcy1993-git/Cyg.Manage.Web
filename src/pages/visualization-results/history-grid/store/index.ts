@@ -76,7 +76,19 @@ type ComplexActionReflectPayload = {
   changeHistoryDataSource: ReducerState['historyDataSource']
 }
 
-type ComplexActions = keyof ComplexActionReflectPayload
+type ComplexActions =
+  | 'reset'
+  | 'changeMode'
+  | 'setCity'
+  | 'changeGridMap'
+  | 'changeUIStatus'
+  | 'changePreDesignItemData'
+  | 'changeAllHistoryGridData'
+  | 'changeHistoryGirdVersion'
+  | 'changeCurrentGridData'
+  | 'changeSelectedData'
+  | 'changeHistoryDataSource'
+
 type Actions = SimpleActions | ComplexActions
 type ReducerActionWithPayload = { type: Actions; payload: any }
 type ReducerActionFn = (state: ReducerState) => ReducerState
