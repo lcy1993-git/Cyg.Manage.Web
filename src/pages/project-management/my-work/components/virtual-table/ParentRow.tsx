@@ -4,7 +4,7 @@ import VTCell from './Cell'
 import Expander from './Expander'
 import { Column, OriginParams } from './VirtualTable'
 
-function allocateWidth(width: number, buckets: number) {
+export function allocateWidth(width: number, buckets: number) {
   const result = []
 
   while (buckets) {
@@ -47,6 +47,7 @@ const ParentRow = ({
   const needScroll = data.length * rowHeight > tableHeight
   // 可用宽度
   const usefulWidth = tableWidth - (needScroll ? SCROLL_BAR_WIDTH : 0)
+
   // 分配宽度
   const widthBuckets = allocateWidth(usefulWidth, columns.length)
 
@@ -117,7 +118,10 @@ const ParentRow = ({
   }
 
   return (
-    <div style={{ width: maxRowWidth }} className="h-full">
+    <div
+      style={{ width: maxRowWidth < usefulWidth ? usefulWidth : maxRowWidth }}
+      className="h-full"
+    >
       {_columns!.map(({ width, ...rest }, index) => (
         <VTCell
           {...rest}

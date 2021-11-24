@@ -5,6 +5,7 @@ import ApprovalProjectModal from '@/pages/project-management/all-project/compone
 import ApproveModal from '@/pages/project-management/all-project/components/approve-modal'
 import ArrangeModal from '@/pages/project-management/all-project/components/arrange-modal'
 import AuditKnotModal from '@/pages/project-management/all-project/components/audit-knot-modal'
+import ColumnsConfigModal from '@/pages/project-management/all-project/components/columns-config-modal'
 import CopyProjectModal from '@/pages/project-management/all-project/components/copy-project-modal'
 import EditEnigneerModal from '@/pages/project-management/all-project/components/edit-engineer-modal'
 import EditProjectModal from '@/pages/project-management/all-project/components/edit-project-modal'
@@ -19,12 +20,18 @@ import {
   againInherit,
   applyKnot,
   deleteProject,
+  getColumnsConfig,
   getProjectInfo,
   modifyExportPowerState,
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { BarsOutlined, ExclamationCircleOutlined, LinkOutlined } from '@ant-design/icons'
-import { useMount, useUpdateEffect } from 'ahooks'
+import {
+  BarsOutlined,
+  ExclamationCircleOutlined,
+  LinkOutlined,
+  SettingOutlined,
+} from '@ant-design/icons'
+import { useMount, useRequest } from 'ahooks'
 import { Button, Divider, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
 import moment from 'moment'
 import uuid from 'node-uuid'
@@ -137,6 +144,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [approvingModalVisible, setApprovingModalVisible] = useState<boolean>(false)
   // 筛选
   const [screenModalVisible, setScreenModalVisible] = useState(false)
+  // 列设置
+  const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
+
+  const [chooseColumns, setChooseColumns] = useState<string[]>([])
   const tableRef = useRef<HTMLDivElement>(null)
   const { currentClickTabChildActiveType, myWorkInitData, currentClickTabType } = useMyWorkStore()
   const requestUrl = useMemo(() => {
@@ -144,6 +155,27 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       .find((item) => item.id === currentClickTabType)
       .children.find((item: any) => item.id === currentClickTabChildActiveType).url
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
+
+  const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
+    onSuccess: () => {
+      setChooseColumns(
+        columnsData
+          ? JSON.parse(columnsData)
+          : [
+              'categoryText',
+              'kvLevelText',
+              'natureTexts',
+              'majorCategoryText',
+              'constructTypeText',
+              'stageText',
+              'exportCoordinate',
+              'surveyUser',
+              'designUser',
+              'identitys',
+            ]
+      )
+    },
+  })
 
   const projectNameClickEvent = (engineerId: string) => {
     setModalInfo({
@@ -966,6 +998,43 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     initTableData(requestUrl, { ...searchParams })
   }, [requestUrl])
 
+  const columnsConfigSetting = () => {
+    setChooseColumnsModal(true)
+  }
+
+  const finalyColumns = useMemo(() => {
+    if (chooseColumns) {
+      return ['name', ...chooseColumns, 'sources', 'identitys', 'status', 'action']
+    }
+    return [
+      'categoryText',
+      'kvLevelText',
+      'natureTexts',
+      'majorCategoryText',
+      'constructTypeText',
+      'stageText',
+      'exportCoordinate',
+      'surveyUser',
+      'designUser',
+      'identitys',
+    ]
+  }, [JSON.stringify(chooseColumns)])
+
+  const showColumns = useMemo(() => {
+    return completeConfig.filter((item) => finalyColumns.includes(item.dataIndex))
+  }, [finalyColumns])
+
+  const columnsIcon = (
+    <span style={{ cursor: 'pointer' }} onClick={() => columnsConfigSetting()}>
+      <SettingOutlined />
+    </span>
+  )
+
+  const columnsSettingFinish = (checkedValue: string[]) => {
+    setChooseColumns(checkedValue)
+    refreshEvent()
+  }
+
   return (
     <div className={styles.engineerTableWrapper}>
       <Divider style={{ margin: '0', padding: '8px 0' }} />
@@ -991,7 +1060,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           ref={tableRef}
           url={requestUrl}
           parentColumns={parentColumns}
-          columns={completeConfig}
+          columns={showColumns}
+          pagingSlot={columnsIcon}
         />
       </div>
       <ScreenModal
@@ -1139,6 +1209,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           onChange={setApprovingModalVisible}
           finishEvent={searchEvent}
           projectIds={modalNeedInfo.projectId}
+        />
+      )}
+      {chooseColumnsModal && (
+        <ColumnsConfigModal
+          hasCheckColumns={chooseColumns}
+          visible={chooseColumnsModal}
+          onChange={setChooseColumnsModal}
+          finishEvent={columnsSettingFinish}
         />
       )}
     </div>

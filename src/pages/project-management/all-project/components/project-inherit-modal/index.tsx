@@ -1,16 +1,10 @@
-import {
-  editProject,
-  getProjectInfo,
-  inheritProject,
-} from '@/services/project-management/all-project'
-import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { useRequest } from 'ahooks'
-import moment, { Moment } from 'moment'
-import CreateProjectForm from '../create-project-form'
+import { getProjectInfo, inheritProject } from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
 import { isNumber } from 'lodash'
+import moment, { Moment } from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import CreateProjectForm from '../create-project-form'
 
 interface ProjectInheritModalProps {
   projectId: string
@@ -50,8 +44,8 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
     onSuccess: (res) => {
       const { dataSourceType, disclosureRange, pileRange } = projectInfo!
       const handleDisclosureRange =
-        dataSourceType === 2 ? '“无需现场数据”项目，免设置此条目' : disclosureRange
-      const handlePileRange = dataSourceType === 2 ? '“无需现场数据”项目，免设置此条目' : pileRange
+        dataSourceType === 2 ? '“免勘察”项目，免设置此条目' : disclosureRange
+      const handlePileRange = dataSourceType === 2 ? '“免勘察”项目，免设置此条目' : pileRange
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
@@ -83,13 +77,13 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
           disclosureRange:
-            value.disclosureRange === '“无需现场数据”项目，免设置此条目' ||
-            value.disclosureRange === '“点位导入”项目，免设置此条目'
+            value.disclosureRange === '“免勘察”项目，免设置此条目' ||
+            value.disclosureRange === '“导入”项目，免设置此条目'
               ? 0
               : value.disclosureRange,
           pileRange:
-            value.pileRange === '“无需现场数据”项目，免设置此条目' ||
-            value.pileRange === '“点位导入”项目，免设置此条目'
+            value.pileRange === '“免勘察”项目，免设置此条目' ||
+            value.pileRange === '“导入”项目，免设置此条目'
               ? 0
               : value.pileRange,
         })

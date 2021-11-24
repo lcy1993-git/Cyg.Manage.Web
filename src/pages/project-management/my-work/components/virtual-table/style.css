@@ -55,6 +55,18 @@
   pointer-events: none;
 }
 
+.vt-cell.stick-right-first:not(.parent)::before {
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  left: -10px;
+  width: 5px;
+  box-shadow: 1px 0 3px 1px #00000026;
+  transform: translate(100%);
+  content: '';
+  pointer-events: none;
+}
+
 .vt-cell.ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
