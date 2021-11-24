@@ -7,6 +7,7 @@ import DesignIconWrapper, { DesignLabel, HistoryBtn, Legend } from './DesignIcon
 import DesignTitle from './DesignTitle'
 import Footer from './Footer'
 import { usePreDesign } from './hooks/usePreDesign'
+import { useRefetch } from './hooks/useRefetch'
 import ImportGrid from './ImportGrid'
 import MapOperator from './MapOperator'
 import { HistoryGridContext, historyGridReducer } from './store'
@@ -16,7 +17,10 @@ const HistoryGrid = () => {
   const location = useLocation()
   const [state, dispatch] = useReducer(historyGridReducer, { location }, initialize)
 
+  const { refetch, mode, preDesignItemData } = state
+
   usePreDesign(location, dispatch)
+  useRefetch({ refetch, mode, preDesignItemData }, dispatch)
 
   return (
     <div className="relative h-full">
