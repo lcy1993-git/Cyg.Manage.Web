@@ -17,7 +17,9 @@ export const getRegionData = () => {
 /* ----------------------- 网架 ----------------------- */
 
 /** 根据项目获取网架数据 */
-export const getDataByProjectId = (id: string) => historyGridRequest(`NetFramework/project/${id}`)
+export const getDataByProjectId = (data: any) => {
+  return historyGridRequest('NetFramework/projects', { method: 'POST', data })
+}
 
 /** 保存网架数据 */
 export const saveData = (data: any) => {
@@ -83,8 +85,8 @@ export const DeleteGridVersions = (versionId: string, password: string) => {
 }
 
 /** 记录版本 */
-export const recordVersion = () => {
-  return historyGridRequest('NetFrameworkHistory/CreateNewVersion')
+export const recordVersionData = (data: { force: boolean; remark: string }) => {
+  return historyGridRequest('NetFrameworkHistory/CreateNewVersion', { method: 'POST', data })
 }
 
 /** 保存历史网架数据 */

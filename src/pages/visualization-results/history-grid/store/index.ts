@@ -34,6 +34,8 @@ export type ReducerState = {
   currentGridData?: any
   /** 历史版本网架数据 */
   historyGridVersion: HistoryGridVersion
+  /** 记录版本和保存 */
+  recordVersion: 'hide' | 'save' | 'record'
 
   /** UI 状态 */
   UIStatus: {
@@ -65,6 +67,7 @@ type ComplexActions =
   | 'changeHistoryGirdVersion'
   | 'changePreDesignItemData'
   | 'changeCurrentGridData'
+  | 'changeRecordVersion'
 
 type Actions = SimpleActions | ComplexActions
 
@@ -76,6 +79,7 @@ type ComplexActionReflectPayload = {
   changeUIStatus: ReducerState['UIStatus']
   changePreDesignItemData: ReducerState['preDesignItemData']
   changeHistoryGirdVersion: ReducerState['historyGridVersion']
+  changeRecordVersion: ReducerState['recordVersion']
   changeCurrentGridData: ReducerState['currentGridData']
 }
 
@@ -116,6 +120,8 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
       return { ...state, currentGridData: payload }
     case 'changeHistoryGirdVersion':
       return { ...state, historyGridVersion: payload }
+    case 'changeRecordVersion':
+      return { ...state, recordVersion: payload }
     default:
       throw new Error('action type does not exist')
   }
