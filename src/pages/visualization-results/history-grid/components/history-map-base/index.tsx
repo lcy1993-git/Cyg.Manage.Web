@@ -10,7 +10,7 @@ import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import { SelectEvent } from 'ol/interaction/Select'
 import 'ol/ol.css'
 import { Vector as VectorSource } from 'ol/source'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useGridMap } from '../../store/mapReducer'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
@@ -19,13 +19,7 @@ import mapClick from './event/mapClick'
 import init from './init'
 import { getStyle } from './styles'
 import { InterActionRef, LayerRef, MapRef, SourceRef } from './typings'
-import {
-  checkUserLocation,
-  clear,
-  clearScreen,
-  isValidationData,
-  moveToViewByLocation,
-} from './utils'
+import { checkUserLocation, clear, clearScreen, moveToViewByLocation } from './utils'
 
 export type MapLayerType = 'STREET' | 'SATELLITE'
 
@@ -82,29 +76,28 @@ const HistoryMapBase = () => {
     [mapLayerType]
   )
   // 根据历史数据绘制点位线路
-  useEffect(() => {
-    if (interActionRef.source) {
+  useUpdateEffect(() => {
+    if (dataSource) {
       drawByDataSource(dataSource!, {
-        interActionRef,
         source: 'history',
         showText,
         sourceType: 'history',
+        sourceRef,
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showText])
+  }, [dataSource, showText])
   // 根据预设计数据绘制点位线路
   useUpdateEffect(() => {
-    if (importDesignData && mode === 'preDesign')
-      isValidationData(importDesignData, interActionRef) &&
-        drawByDataSource(importDesignData!, {
-          interActionRef,
-          source: 'design',
-          showText,
-          sourceType: 'design',
-        })
+    if (mode === 'preDesign')
+      drawByDataSource(importDesignData!, {
+        source: 'design',
+        showText,
+        sourceType: 'design',
+        sourceRef,
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showText])
+  }, [importDesignData, showText])
 
   // 当绘制状态改变时
   useUpdateEffect(() => {
@@ -155,66 +148,66 @@ const HistoryMapBase = () => {
   }
 
   // 初始化interaction
-  function initInterAction() {
-    interActionRef.modify = new Modify({
-      source: interActionRef.source,
-      // 设置容差
-      style: undefined,
-      pixelTolerance: 25,
-    })
-    interActionRef.modify.on(['modifyend'], (e: Event | BaseEvent) => {
-      // e.features.getArray()[0].setStyle(pointStyle.hight)
-      // e.features.getArray()[0].setStyle(featureStyle.type2)
-    })
-    // 暂时屏蔽编辑功能
-    false && mapRef.map.addInteraction(interActionRef.modify!)
+  // function initInterAction() {
+  //   interActionRef.modify = new Modify({
+  //     source: interActionRef.source,
+  //     // 设置容差
+  //     style: undefined,
+  //     pixelTolerance: 25,
+  //   })
+  //   interActionRef.modify.on(['modifyend'], (e: Event | BaseEvent) => {
+  //     // e.features.getArray()[0].setStyle(pointStyle.hight)
+  //     // e.features.getArray()[0].setStyle(featureStyle.type2)
+  //   })
+  //   // 暂时屏蔽编辑功能
+  //   false && mapRef.map.addInteraction(interActionRef.modify!)
 
-    const pointSelect = new Select()
-    const dragBox = new DragBox({})
-    const boxSelect = new Select()
-    const toggleSelect = new Select({
-      condition: conditionClick,
-      toggleCondition: platformModifierKeyOnly,
-      style: (feature) => {
-        const geometryType = feature.getGeometry()?.getType()
+  //   const pointSelect = new Select()
+  //   const dragBox = new DragBox({})
+  //   const boxSelect = new Select()
+  //   const toggleSelect = new Select({
+  //     condition: conditionClick,
+  //     toggleCondition: platformModifierKeyOnly,
+  //     style: (feature) => {
+  //       const geometryType = feature.getGeometry()?.getType()
 
-        return getStyle(geometryType)(
-          feature.get('sourceType'),
-          feature.get('typeStr') || '无类型',
-          feature.get('name'),
-          showText
-        )
-      },
-    })
-    // 绑定单选及多选回调事件
-    toggleSelect.on('select', (e: SelectEvent) =>
-      toggleSelectCallback(e, { interActionRef, setState, showText, mode })
-    )
-    pointSelect.on('select', (e: SelectEvent) =>
-      pointSelectCallback(e, { interActionRef, setState, showText, mode })
-    )
-    toggleSelect.setHitTolerance(8)
-    pointSelect.setHitTolerance(8)
-    interActionRef.select = {
-      pointSelect,
-      toggleSelect,
-    }
+  //       return getStyle(geometryType)(
+  //         feature.get('sourceType'),
+  //         feature.get('typeStr') || '无类型',
+  //         feature.get('name'),
+  //         showText
+  //       )
+  //     },
+  //   })
+  //   // 绑定单选及多选回调事件
+  //   toggleSelect.on('select', (e: SelectEvent) =>
+  //     toggleSelectCallback(e, { interActionRef, setState, showText, mode })
+  //   )
+  //   pointSelect.on('select', (e: SelectEvent) =>
+  //     pointSelectCallback(e, { interActionRef, setState, showText, mode })
+  //   )
+  //   toggleSelect.setHitTolerance(8)
+  //   pointSelect.setHitTolerance(8)
+  //   interActionRef.select = {
+  //     pointSelect,
+  //     toggleSelect,
+  //   }
 
-    mapRef.map.addInteraction(interActionRef.select.pointSelect)
+  //   mapRef.map.addInteraction(interActionRef.select.pointSelect)
 
-    interActionRef.dragBox = dragBox
-    const selectedFeatures = boxSelect.getFeatures()
-    dragBox.on('boxend', function () {
-      var extent = dragBox.getGeometry().getExtent()
-      interActionRef.source!.forEachFeatureIntersectingExtent(extent, function (feature) {
-        selectedFeatures.push(feature)
-      })
-    })
-    // 框选鼠标按下清除高亮
-    dragBox.on('boxstart', function () {
-      selectedFeatures.clear()
-    })
-  }
+  //   interActionRef.dragBox = dragBox
+  //   const selectedFeatures = boxSelect.getFeatures()
+  //   dragBox.on('boxend', function () {
+  //     var extent = dragBox.getGeometry().getExtent()
+  //     interActionRef.source!.forEachFeatureIntersectingExtent(extent, function (feature) {
+  //       selectedFeatures.push(feature)
+  //     })
+  //   })
+  //   // 框选鼠标按下清除高亮
+  //   dragBox.on('boxstart', function () {
+  //     selectedFeatures.clear()
+  //   })
+  // }
 
   // 删除draw交互行为
   function removeaddInteractions() {
@@ -242,7 +235,7 @@ const HistoryMapBase = () => {
   return (
     <div className="w-full h-full">
       <div ref={ref} className="w-full h-full"></div>
-      {false && (
+      {true && (
         <div className="absolute bottom-0">
           <button onClick={() => setGeometryType(GeometryType.POINT)}>Point</button>
           <button

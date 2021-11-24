@@ -1,10 +1,8 @@
-import { history } from 'umi';
 import { Feature } from 'ol'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import * as proj from 'ol/proj'
 import { getStyle } from '../styles'
-import { clear } from '../utils'
 import { DataSource, InterActionRef, SourceRef, SourceType } from './../typings'
 
 /**
@@ -16,29 +14,22 @@ import { DataSource, InterActionRef, SourceRef, SourceType } from './../typings'
 export function drawByDataSource(
   data: DataSource,
   {
-    interActionRef,
     source,
     showText,
     sourceType,
-    sourceRef
+    sourceRef,
   }: {
-    interActionRef: InterActionRef
     showText: boolean
-    source: "history" | "design"
+    source: 'history' | 'design'
     sourceRef: SourceRef
     sourceType: keyof typeof SourceType
   }
 ) {
-
   if (data) {
-
     // 清理缓存
-    if(source === "history") {
-      sourceRef.historyPointSource.clear()
+    if (source === 'history') {
       sourceRef.historyLineSource.clear()
-    } else if (source === "design") {
-      sourceRef.designPointSource.clear()
-      sourceRef.designLineSource.clear()
+      sourceRef.historyLineSource.clear()
     }
 
     // 渲染设备
@@ -46,9 +37,9 @@ export function drawByDataSource(
       const points = data.equipments.map((p) => {
         const feature = new Feature<Point>()
         feature.setGeometry(new Point(proj.transform([p.lng!, p.lat!], 'EPSG:4326', 'EPSG:3857')))
-        feature.setStyle(getStyle('Point')(sourceType, p.typeStr || "无类型", p.name, showText))
+        feature.setStyle(getStyle('Point')(sourceType, p.typeStr || '无类型', p.name, showText))
         feature.setProperties(p)
-        feature.set("sourceType", sourceType)
+        feature.set('sourceType', sourceType)
         return feature
       })
       sourceRef[`${source}PointSource`].addFeatures(points)
@@ -57,26 +48,26 @@ export function drawByDataSource(
     // 渲染线路
     if (Array.isArray(data.lines)) {
       const lines = data.lines.map((p) => {
-        const feature = new Feature()
+        const feature = new Feature<LineString>()
         feature.setGeometry(
           new LineString([
-            proj.transform([p.startLng!, p.startLat!], 'EPSG:4326', 'EPSG:3857')
-            ,
-            proj.transform([p.endLng!, p.endLat!], 'EPSG:4326', 'EPSG:3857')
+            proj.transform([p.startLng!, p.startLat!], 'EPSG:4326', 'EPSG:3857'),
+            proj.transform([p.endLng!, p.endLat!], 'EPSG:4326', 'EPSG:3857'),
           ])
         )
 
-        feature.setStyle(getStyle('LineString')(sourceType, p.typeStr || "无类型", p.name, showText))
+        feature.setStyle(
+          getStyle('LineString')(sourceType, p.typeStr || '无类型', p.name, showText)
+        )
         // feature.setStyle(lineStyle[p.type])
         // Object.keys(p).forEach((key) => {
         //   feature.set(key, p[key])
         // })
         feature.setProperties(p)
-        feature.set("sourceType", sourceType)
+        feature.set('sourceType', sourceType)
         return feature
       })
-
-      interActionRef[source]?.addFeatures(lines)
+      sourceRef[`${source}LineSource`].addFeatures(lines)
     }
   }
 }
