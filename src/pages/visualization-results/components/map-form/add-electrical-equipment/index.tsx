@@ -160,7 +160,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
       const val = { ...selectedData[0] }
+      // @ts-ignore
       val.type = val.type + ''
+      // @ts-ignore
       val.voltageLevel = val.voltageLevel + ''
       form.setFieldsValue(val)
       setShowDetail(false)
@@ -198,6 +200,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   }, [drawing, selectedData, form, currentMousePosition])
   return (
     <div>
+      {JSON.stringify(showDetail)}
       {showDetail && visible && (
         <div
           className={styles.detailBox}
