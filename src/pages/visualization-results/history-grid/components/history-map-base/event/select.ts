@@ -57,14 +57,14 @@ export function toggleSelectCallback(
   }
   // 判断是否已经被添加
   function isAdded(selected: Feature<Geometry>[]) {
-    return hightFeatures.some((f) => f.get('name') === selected[0].get('name'))
+    return hightFeatures.some((f) => f.get('id') === selected[0].get('id'))
   }
 
   // 判断是否能删除
   function canRemove(o: Feature<Geometry>) {
     return interActionRef
       .hightLightSource!.getFeatures()
-      .some((f) => f.get('name') === o.get('name'))
+      .some((f) => f.get('id') === o.get('id'))
   }
 }
 
