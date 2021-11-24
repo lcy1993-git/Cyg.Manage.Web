@@ -28,19 +28,23 @@ const ImportGrid = () => {
     }
 
     const data = new FormData()
-    files.forEach((f) => data.append(f.name, f))
+    files.forEach((f) => data.append('files', f.originFileObj, f.name))
 
     try {
-      mode === 'preDesigning'
-        ? await importEquipments(data, currentGridData!.id as string)
-        : await importHistoryEquipments(data)
+      const res =
+        mode === 'preDesigning'
+          ? await importEquipments(data, currentGridData!.id as string)
+          : await importHistoryEquipments(data)
 
-      message.success('上传成功')
+      if (res.isSuccess) {
+        message.success('上传成功')
 
-      dispatch('refetch')
-      closeModal()
+        dispatch('refetch')
+        closeModal()
+      } else {
+        message.error(res.message)
+      }
     } catch (e: any) {
-      console.error('上传出错', e)
       message.error(e.message || '上传出错，请重试')
     }
   }, [closeModal, currentGridData, form, mode, dispatch])
