@@ -16,7 +16,6 @@ const initialize = ({ location }: InitParams) => {
     mode,
     gridMapState: initGridMapState as any,
     historyGridVersion: {} as HistoryGridVersion,
-    recordVersion: 'record',
     UIStatus: {
       showTitle: true,
       showHistoryLayer: true,
@@ -25,6 +24,7 @@ const initialize = ({ location }: InitParams) => {
       importModalVisible: false,
       drawing: false,
       mapType: 'street',
+      recordVersion: 'record',
     },
   }
 

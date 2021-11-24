@@ -23,19 +23,21 @@ import { GridMapGlobalState, mapReducer } from './mapReducer'
 export type ReducerState = {
   /** record 历史网架, recordEdit 历史网架绘制, preDesign 预设计, preDesigning 预设计中 */
   mode: 'record' | 'recordEdit' | 'preDesign' | 'preDesigning'
+
   /** 当前定位的城市 */
   city?: CityWithProvince
   /** 触发定位 */
   locate?: boolean
-  gridMapState: GridMapGlobalState
+
+  /** 当前网架数据 */
+  currentGridData?: any
+
   /** 预设计项目相关数据 */
   preDesignItemData?: any
-  /** 当前预设计网架数据 */
-  currentGridData?: any
   /** 历史版本网架数据 */
   historyGridVersion: HistoryGridVersion
-  /** 记录版本和保存 */
-  recordVersion: 'hide' | 'save' | 'record'
+
+  gridMapState: GridMapGlobalState
 
   /** UI 状态 */
   UIStatus: {
@@ -53,6 +55,8 @@ export type ReducerState = {
     drawing: boolean
     /** 是否显示导入模态框 */
     importModalVisible: boolean
+    /** 记录版本和保存 */
+    recordVersion: 'hide' | 'save' | 'record'
   }
 }
 
@@ -67,7 +71,6 @@ type ComplexActions =
   | 'changeHistoryGirdVersion'
   | 'changePreDesignItemData'
   | 'changeCurrentGridData'
-  | 'changeRecordVersion'
 
 type Actions = SimpleActions | ComplexActions
 
@@ -79,7 +82,6 @@ type ComplexActionReflectPayload = {
   changeUIStatus: ReducerState['UIStatus']
   changePreDesignItemData: ReducerState['preDesignItemData']
   changeHistoryGirdVersion: ReducerState['historyGridVersion']
-  changeRecordVersion: ReducerState['recordVersion']
   changeCurrentGridData: ReducerState['currentGridData']
 }
 
@@ -120,8 +122,6 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
       return { ...state, currentGridData: payload }
     case 'changeHistoryGirdVersion':
       return { ...state, historyGridVersion: payload }
-    case 'changeRecordVersion':
-      return { ...state, recordVersion: payload }
     default:
       throw new Error('action type does not exist')
   }

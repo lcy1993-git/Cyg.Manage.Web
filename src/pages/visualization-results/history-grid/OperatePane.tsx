@@ -26,8 +26,8 @@ const OperationPane: FC = ({ children }) => {
         icon: 'icon-baocun',
         onClick: () => {
           dispatch({
-            type: 'changeRecordVersion',
-            payload: 'save',
+            type: 'changeUIStatus',
+            payload: { ...UIStatus, recordVersion: 'save' },
           })
         },
       },
@@ -37,8 +37,8 @@ const OperationPane: FC = ({ children }) => {
         visible: (mode: HistoryState['mode']) => mode === 'recordEdit',
         onClick: () => {
           dispatch({
-            type: 'changeRecordVersion',
-            payload: 'record',
+            type: 'changeUIStatus',
+            payload: { ...UIStatus, recordVersion: 'record' },
           })
         },
       },
@@ -71,7 +71,7 @@ const OperationPane: FC = ({ children }) => {
     ]
 
     return list.filter(({ visible }) => !visible || visible(mode))
-  }, [mode])
+  }, [UIStatus, dispatch, mode])
 
   return (
     <div className="bg-white px-4 py-2 flex justify-between items-center space-x-4">
@@ -79,6 +79,7 @@ const OperationPane: FC = ({ children }) => {
         <OperateBtn
           icon="icon-fanhui"
           onClick={() => {
+            dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, recordVersion: 'save' } })
             changeMode(mode === 'recordEdit' ? 'record' : 'preDesign')
           }}
           type="back"
