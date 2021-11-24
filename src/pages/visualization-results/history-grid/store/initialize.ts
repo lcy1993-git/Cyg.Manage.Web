@@ -17,6 +17,12 @@ const initialize = ({ location }: InitParams) => {
     refetch: false,
     gridMapState: initGridMapState as any,
     historyGridVersion: {} as HistoryGridVersion,
+    historyDataSource:{
+      id:'',
+      equipments:[],
+      lines:[]
+    },
+    selectedData:[],
     UIStatus: {
       showTitle: true,
       showHistoryLayer: true,
@@ -27,6 +33,7 @@ const initialize = ({ location }: InitParams) => {
       mapType: 'street',
       recordVersion: 'hide',
       cleanSelected: false,
+      currentMousePosition:[0,0]
     },
   }
 

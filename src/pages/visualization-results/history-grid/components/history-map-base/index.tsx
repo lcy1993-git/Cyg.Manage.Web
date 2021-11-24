@@ -39,7 +39,7 @@ const HistoryMapBase = () => {
     mode,
     city,
     locate,
-    currentGridData: dataSource,
+    historyDataSource: dataSource,
     preDesignItemData: importDesignData,
   } = useHistoryGridContext()
 

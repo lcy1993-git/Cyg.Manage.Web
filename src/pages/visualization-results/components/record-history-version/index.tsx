@@ -7,7 +7,6 @@ import {
   recordVersionData,
   SaveHistoryData,
 } from '@/pages/visualization-results/history-grid/service'
-import { useGridMap } from '@/pages/visualization-results/history-grid/store/mapReducer'
 import _ from 'lodash'
 
 export interface ElectricalEquipmentForm {
@@ -27,9 +26,9 @@ interface Props {
 
 const RecordHistoryVersion: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
-  const { UIStatus, dispatch } = useHistoryGridContext()
+  const { UIStatus, dispatch,historyDataSource } = useHistoryGridContext()
   const { recordVersion } = UIStatus
-  const [state] = useGridMap()
+
   const [remark, setRemark] = useState<string>('')
   const handleOk = async () => {
     const res = await recordVersionData({
@@ -41,6 +40,7 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
       return
     }
     message.success('保存成功')
+    setRemark('')
     handleCancel()
   }
   const handleCancel = () => {
@@ -55,16 +55,16 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
     setRemark(e.target.value)
   }
   const saveVersion = async () => {
-    const data = _.cloneDeep(state.dataSource)
+    const data = _.cloneDeep(historyDataSource)
     await SaveHistoryData(data)
     message.success('保存成功')
     setRemark('')
     handleCancel()
     updateHistoryVersion()
   }
-  useEffect(async () => {
+  useEffect(() => {
     if (recordVersion === 'save') {
-      await saveVersion()
+      saveVersion()
     }
   }, [recordVersion])
   return (

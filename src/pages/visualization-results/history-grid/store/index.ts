@@ -33,7 +33,7 @@ export type ReducerState = {
   /** 触发请求网架数据 */
   refetch: boolean
   /** 当前网架数据 */
-  currentGridData?: DataSource
+  currentGridData?: HistoryGridVersion
   /** 当前网架数据 */
   selectedData?: SelectedData
   /** 预设计项目相关数据 */
@@ -43,6 +43,8 @@ export type ReducerState = {
   /** 历史版本网架数据 */
   historyGridVersion: HistoryGridVersion
 
+  // 历史网架点线的数据
+  historyDataSource:DataSource
   gridMapState: GridMapGlobalState
 
   /** UI 状态 */
@@ -65,6 +67,8 @@ export type ReducerState = {
     recordVersion: 'hide' | 'save' | 'record'
     /** 清屏 */
     cleanSelected: boolean
+    //* 鼠标位置*/
+    currentMousePosition:[number,number]
   }
 }
 
@@ -82,6 +86,7 @@ type ComplexActions =
   | 'changeSelectedData'
   | 'changeAllHistoryGridData'
   | 'changeCleanSelected'
+  | 'changeHistoryDataSource'
 
 type Actions = SimpleActions | ComplexActions
 
@@ -95,6 +100,7 @@ type ComplexActionReflectPayload = {
   changeAllHistoryGridData: ReducerState['allHistoryGridData']
   changeHistoryGirdVersion: ReducerState['historyGridVersion']
   changeCurrentGridData: ReducerState['currentGridData']
+  changeHistoryDataSource: ReducerState['historyDataSource']
 }
 
 type ReducerActionWithPayload = { type: Actions; payload: any }
@@ -142,6 +148,8 @@ export const historyGridReducer: Reducer<ReducerState, ReducerAction> = (state, 
       return { ...state, allHistoryGridData: payload }
     case 'changeCleanSelected':
       return { ...state, allHistoryGridData: payload }
+    case 'changeHistoryDataSource':
+      return { ...state, historyDataSource: payload }
     default:
       throw new Error('action type does not exist')
   }

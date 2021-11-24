@@ -1,4 +1,3 @@
-import { useGridMap } from '@/pages/visualization-results/history-grid/store/mapReducer'
 import { CloseOutlined } from '@ant-design/icons'
 import { useMount } from 'ahooks'
 import { Button, Form, Input, message, Popconfirm, Select, Space } from 'antd'
@@ -14,6 +13,7 @@ import {
   ElectricPointData,
 } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
 import getLineLength from '@/pages/visualization-results/history-grid/components/history-map-base/utils/getLength'
+import {useHistoryGridContext} from "@/pages/visualization-results/history-grid/store";
 
 const { Option } = Select
 
@@ -33,20 +33,22 @@ interface Props {
 }
 
 const HistoryGirdForm: React.FC<Props> = (props) => {
-  // const [state, setState] = useGridMap()
   const { updateHistoryVersion } = props
-  const [state] = useGridMap()
+  const {
+    UIStatus,
+    dispatch,
+    selectedData,//被选中的元素
+    historyDataSource// 绘制元素的数据源
+  } = useHistoryGridContext()
   const [position, setPosition] = useState<number[]>([10, 155]) // 鼠标位置
   const [visible, setVisible] = useState<boolean>(false) // 是否可见
   const [showDetail, setShowDetail] = useState<boolean>(false) // 是否显示详情
   const [type, setType] = useState<'LineString' | 'Point'>('LineString') // 是否显示长度
   const [lineLength, setLineLength] = useState<number>(0)
   const {
-    isDraw, //是否绘制模式
-    dataSource, // 绘制元素的数据源
-    selectedData, //被选中的元素
+    drawing, //是否绘制模式
     currentMousePosition, // 当前操作鼠标位置
-  } = state
+  } = UIStatus
   const [form] = Form.useForm()
   const [KVLevel, setKVLevel] = useState<[]>([])
   const [lineType, setLineType] = useState<[]>([])
@@ -75,7 +77,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       values.voltageLevel = Number(values.voltageLevel)
       if (type === 'LineString') {
         data['lines'] =
-          dataSource?.lines.filter((item: ElectricLineData) => {
+          historyDataSource?.lines.filter((item: ElectricLineData) => {
             if (item.id === selectedData[0]?.id) {
               item = Object.assign(item, values)
               return item
@@ -83,7 +85,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
           }) ?? []
       } else {
         data['equipments'] =
-          dataSource?.equipments.filter((item: ElectricPointData) => {
+          historyDataSource?.equipments.filter((item: ElectricPointData) => {
             if (item.id === selectedData[0]?.id) {
               item = Object.assign(item, values)
               return item
@@ -95,7 +97,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       if (type === 'LineString') {
         data['lines'] =
           // @ts-ignore
-          dataSource?.lines.filter((item: ElectricLineData) => {
+          historyDataSource?.lines.filter((item: ElectricLineData) => {
             if (ids.includes(item.id)) {
               item = Object.assign(item, values)
               item.type = Number(values.type)
@@ -106,7 +108,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       } else {
         data['equipments'] =
           // @ts-ignore
-          dataSource?.equipments.filter((item: ElectricPointData) => {
+          historyDataSource?.equipments.filter((item: ElectricPointData) => {
             if (ids.includes(item.id)) {
               item = Object.assign(item, values)
               item.type = Number(values.type)
@@ -154,7 +156,8 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     setVisible(false)
   }
   useEffect(() => {
-    if (isDraw && selectedData.length === 1) {
+    console.log(selectedData)
+    if (drawing && selectedData.length === 1) {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
       const val = { ...selectedData[0] }
@@ -170,7 +173,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         )
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
-    } else if (isDraw && selectedData.length > 1) {
+    } else if (drawing && selectedData.length > 1) {
       form.setFieldsValue({
         name: '',
         type: '',
@@ -178,7 +181,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         level: '',
       })
       setPosition([10, 155])
-    } else if (!isDraw && selectedData.length === 1) {
+    } else if (!drawing && selectedData.length === 1) {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
       setShowDetail(true)
@@ -193,7 +196,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     } else if (selectedData.length === 0) {
       setVisible(false)
     }
-  }, [isDraw, selectedData, form, currentMousePosition])
+  }, [drawing, selectedData, form, currentMousePosition])
   return (
     <div>
       {showDetail && visible && (
@@ -250,7 +253,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
           }}
         >
           <div className={styles.header}>
-            {!isDraw ? (
+            {!drawing ? (
               <div>{type === 'LineString' ? '线路' : '电气设备'}</div>
             ) : (
               <div>
