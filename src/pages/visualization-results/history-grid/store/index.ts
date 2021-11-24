@@ -19,7 +19,7 @@ export type ReducerState = {
 
   /** 触发请求网架数据 */
   refetch: boolean
-  /** 当前网架数据 */
+  /** 最新历史网架 */
   currentGridData?: HistoryGridVersion
   /** 当前网架数据 */
   selectedData?: SelectedData
