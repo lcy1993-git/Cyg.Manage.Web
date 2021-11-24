@@ -1,5 +1,6 @@
 import CyTag from '@/components/cy-tag'
 import TableSearch from '@/components/table-search'
+import { useLayoutStore } from '@/layouts/context'
 import AddProjectModal from '@/pages/project-management/all-project/components/add-project-modal'
 import ApprovalProjectModal from '@/pages/project-management/all-project/components/approval-project-modal'
 import ApproveModal from '@/pages/project-management/all-project/components/approve-modal'
@@ -31,20 +32,11 @@ import {
   LinkOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
-import { useMount, useRequest } from 'ahooks'
+import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Divider, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
 import moment from 'moment'
 import uuid from 'node-uuid'
-import React, {
-  forwardRef,
-  Key,
-  Ref,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { forwardRef, Key, Ref, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import { useMyWorkStore } from '../../context'
 import EngineerTable from '../engineer-table'
 import styles from './index.less'
@@ -148,6 +140,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
 
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
+
+  const {
+    allProjectSearchParams,
+    setAllProjectSearchParams,
+    allProjectSearchProjectId,
+    setAllProjectSearchProjectId,
+  } = useLayoutStore()
 
   const tableRef = useRef<HTMLDivElement>(null)
   const { currentClickTabChildActiveType, myWorkInitData, currentClickTabType } = useMyWorkStore()
@@ -997,19 +996,60 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     },
   }))
 
-  useMount(() => {
-    searchByParams({ ...searchParams })
-  })
-
-  useEffect(() => {
+  useUpdateEffect(() => {
     setKeyWord('')
     setSearchParams(initSearchParams)
     initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
   }, [requestUrl])
 
+  useUpdateEffect(() => {
+    setKeyWord('')
+    if (allProjectSearchProjectId) {
+      const searchParams = {
+        ...initSearchParams,
+        keyWord: '',
+        projectIds: [allProjectSearchProjectId],
+      }
+      setSearchParams(initSearchParams)
+      initTableData(requestUrl, { ...searchParams, keyWord: '' })
+      setAllProjectSearchProjectId?.('')
+      return
+    }
+    if (allProjectSearchParams.searchPerson) {
+      setAllProjectSearchParams?.({
+        areaLevel: '-1',
+        areaId: '',
+        cityId: '',
+        searchPerson: '',
+        searchType: '',
+      })
+      setSearchParams({
+        ...initSearchParams,
+        surveyUser: String(allProjectSearchParams.searchPerson),
+        logicRelation: 1,
+        designUser: String(allProjectSearchParams.searchPerson),
+        areaType: allProjectSearchParams.areaLevel!,
+        areaId: allProjectSearchParams.areaId!,
+      })
+      initTableData(requestUrl, {
+        ...initSearchParams,
+        surveyUser: String(allProjectSearchParams.searchPerson),
+        logicRelation: 1,
+        designUser: String(allProjectSearchParams.searchPerson),
+        areaType: allProjectSearchParams.areaLevel!,
+        areaId: allProjectSearchParams.areaId!,
+        keyWord: '',
+      })
+      return
+    }
+  }, [allProjectSearchParams.searchPerson, allProjectSearchProjectId])
   const columnsConfigSetting = () => {
     setChooseColumnsModal(true)
   }
+
+  useMount(() => {
+    initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
+  })
 
   const finalyColumns = useMemo(() => {
     if (chooseColumns) {

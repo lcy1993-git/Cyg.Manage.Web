@@ -1,9 +1,10 @@
 import PageCommonWrap from '@/components/page-common-wrap'
+import { useLayoutStore } from '@/layouts/context'
 import { getMyWorkStatisticsData } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import useRequest from '@ahooksjs/use-request'
 import { Spin, Tooltip } from 'antd'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import SingleStatistics from '../all-project/components/all-project-statistics'
 import FavoriteList from '../all-project/components/favorite-list'
 import MyProject from './components/my-project'
@@ -45,7 +46,7 @@ const MyWork: React.FC = () => {
         },
         {
           label: '立项审批',
-          id: 'approval',
+          id: 'approve',
           number: data.approve.total,
           children: [
             {
@@ -84,7 +85,7 @@ const MyWork: React.FC = () => {
         },
         {
           label: '任务安排',
-          id: 'mission',
+          id: 'arrange',
           number: data.arrange.total,
           children: [
             {
@@ -142,7 +143,7 @@ const MyWork: React.FC = () => {
         },
         {
           label: '结项管理',
-          id: 'finish',
+          id: 'knot',
           number: data.knot.total,
           children: [
             {
@@ -162,6 +163,8 @@ const MyWork: React.FC = () => {
       ])
     },
   })
+
+  const { allProjectSearchParams } = useLayoutStore()
 
   //收藏夹
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
@@ -196,6 +199,20 @@ const MyWork: React.FC = () => {
       )
     })
   }, [myWorkInitData, currentClickTabType])
+
+  useEffect(() => {
+    if (allProjectSearchParams.searchType && myWorkInitData && myWorkInitData.length > 0) {
+      setCurrentClickType(allProjectSearchParams.searchType)
+      const childrenType = myWorkInitData.find(
+        (item) => item.id === allProjectSearchParams.searchType
+      )?.children
+
+      // 设置children的第一个是激活状态
+      if (childrenType && childrenType.length > 0) {
+        setCurrentClickTabChildActiveType(childrenType[0].id)
+      }
+    }
+  }, [allProjectSearchParams.searchType, myWorkInitData])
 
   return (
     <MyWorkProvider

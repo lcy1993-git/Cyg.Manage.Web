@@ -1,32 +1,39 @@
-import React, { FC, useRef } from 'react';
-import styles from './index.less';
-import { Link } from 'umi';
-import { useLayoutStore } from '@/layouts/context';
+import { useLayoutStore } from '@/layouts/context'
+import React, { FC } from 'react'
+import { Link } from 'umi'
+import styles from './index.less'
 export interface ProjectItemProps {
-  name: string;
-  id: string;
+  name: string
+  id: string
   //content: string;
-  date: string;
-  operator: string;
-  operationCategory: string;
+  date: string
+  operator: string
+  operationCategory: string
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ operator, name, id, date, operationCategory }) => {
-  const { setAllProjectSearchProjectId } = useLayoutStore();
+  const { setAllProjectSearchProjectId, setAllProjectSearchParams } = useLayoutStore()
 
   const onClickProject = () => {
     // setAllProjectSearchProjectId(name);
-    setAllProjectSearchProjectId?.(id);
-  };
+    setAllProjectSearchProjectId?.(id)
+    setAllProjectSearchParams?.({
+      areaLevel: '-1',
+      areaId: '',
+      cityId: '',
+      searchPerson: '',
+      searchType: 'allpro',
+    })
+  }
 
   /**
    * count表示是可视条数是多少
    *
    */
   const handle0perator = (propName: string) => {
-    if(propName && propName.length > 6) {
-      const newOperator = propName.substring(0,6);
-      return `${newOperator}...`;
+    if (propName && propName.length > 6) {
+      const newOperator = propName.substring(0, 6)
+      return `${newOperator}...`
     }
     return propName
   }
@@ -45,6 +52,6 @@ const ProjectItem: FC<ProjectItemProps> = ({ operator, name, id, date, operation
       </div>
       <div className={styles.date}>{date}</div>
     </div>
-  );
-};
-export default ProjectItem;
+  )
+}
+export default ProjectItem
