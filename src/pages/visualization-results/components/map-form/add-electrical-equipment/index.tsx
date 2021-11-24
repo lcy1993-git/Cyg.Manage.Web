@@ -36,6 +36,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const {
     UIStatus,
     selectedData = [], //被选中的元素
+    currentGridData,
     historyDataSource, // 绘制元素的数据源
   } = useHistoryGridContext()
   const [position, setPosition] = useState<number[]>([10, 155]) // 鼠标位置
@@ -158,6 +159,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const hideModel = () => {
     setVisible(false)
   }
+  useEffect(() => {
+    setVisible(false)
+  }, [currentGridData])
   useEffect(() => {
     if (drawing && selectedData?.length === 1) {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')

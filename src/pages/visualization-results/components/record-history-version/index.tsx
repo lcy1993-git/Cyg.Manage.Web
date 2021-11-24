@@ -42,6 +42,7 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
     handleCancel()
   }
   const handleCancel = () => {
+    setRemark('')
     const data = _.cloneDeep(UIStatus)
     data.recordVersion = 'hide'
     dispatch({
@@ -89,6 +90,7 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
           <Input.TextArea
             style={{ width: '400' }}
             rows={3}
+            value={remark}
             maxLength={200}
             // @ts-ignore
             onChange={remarkChange}
