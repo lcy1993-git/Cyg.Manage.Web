@@ -1,4 +1,5 @@
 import CyTag from '@/components/cy-tag'
+import ImageIcon from '@/components/image-icon'
 import TableSearch from '@/components/table-search'
 import { useLayoutStore } from '@/layouts/context'
 import AddProjectModal from '@/pages/project-management/all-project/components/add-project-modal'
@@ -492,6 +493,20 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       ellipsis: true,
     },
     {
+      title: '现场数据来源',
+      dataIndex: 'dataSourceTypeText',
+      width: 120,
+      render: (text: any, record: any) => {
+        return record.dataSourceType === 0 ? (
+          <ImageIcon width={52} height={18} imgUrl="kc.png" />
+        ) : record.dataSourceType === 1 ? (
+          <ImageIcon width={52} height={18} imgUrl="dwdr.png" />
+        ) : (
+          <ImageIcon width={66} height={18} imgUrl="mkc.png" />
+        )
+      },
+    },
+    {
       title: '项目分类',
       dataIndex: 'categoryText',
       width: 100,
@@ -603,11 +618,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       dataIndex: 'pileRange',
       width: 120,
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-      width: 120,
-    },
+
     {
       title: '导出坐标权限',
       dataIndex: 'exportCoordinate',
@@ -753,10 +764,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                 ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
                   stateInfo.status === 30 ? (
                   <span className="canClick" onClick={() => reportApprove([record.id])}>
-                    {stateInfo?.statusText}
-                  </span>
-                ) : stateInfo.status === 31 ? (
-                  <span className="canClick" onClick={() => approveProjectEvent([record.id])}>
                     {stateInfo?.statusText}
                   </span>
                 ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (

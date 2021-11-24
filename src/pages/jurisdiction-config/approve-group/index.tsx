@@ -174,12 +174,13 @@ const ApproveGroup: React.FC = () => {
 
   const sureAddApproveGroup = () => {
     addForm.validateFields().then(async (value) => {
-      const { userIds } = value
-      const handleIds = addPersonArray.filter((item: any) => userIds?.includes(item.value))
-      const finallyIds = getUsersIds(handleIds)
+      // const { userIds } = value
+      // const handleIds = addPersonArray.filter((item: any) => userIds?.includes(item.value))
+      // const finallyIds = getUsersIds(handleIds)
+      console.log(value, '33')
+
       const submitInfo = {
         ...value,
-        userIds: finallyIds,
       }
 
       await createApproveGroup(submitInfo)

@@ -43,7 +43,6 @@ const ApproveModal: React.FC<ReportApproveParams> = (props) => {
       await approveProject(submitInfo)
     })
     message.success('审批完成')
-    refreshStatistics()
     finishEvent?.()
     setState(false)
   }

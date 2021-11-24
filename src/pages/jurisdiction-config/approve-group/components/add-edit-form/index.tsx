@@ -92,11 +92,12 @@ const ApproveGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
       <CyFormItem label="审批责任人" name="userId" required rules={rules.userId}>
         <UrlSelect
           showSearch
-          url="/CompanyUser/GetList"
+          url="/ProjectApproveGroup/GetUserList"
           titlekey="text"
           valuekey="value"
-          placeholder="请选择审批责任人"
-          extraParams={{ clientCategory: 0 }}
+          placeholder="请选择成员"
+          requestType="post"
+          extraParams={{ category: 1, groupId: groupId }}
         />
       </CyFormItem>
 

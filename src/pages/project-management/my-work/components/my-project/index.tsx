@@ -1,5 +1,4 @@
 import CommonTitle from '@/components/common-title'
-import EmptyTip from '@/components/empty-tip'
 import TableExportButton from '@/components/table-export-button'
 import AddEngineerModal from '@/pages/project-management/all-project/components/add-engineer-modal'
 import AddFavoriteModal from '@/pages/project-management/all-project/components/add-favorite-modal'
@@ -7,9 +6,10 @@ import ApproveModal from '@/pages/project-management/all-project/components/appr
 import ArrangeModal from '@/pages/project-management/all-project/components/arrange-modal'
 import AuditKnotModal from '@/pages/project-management/all-project/components/audit-knot-modal'
 import EditArrangeModal from '@/pages/project-management/all-project/components/edit-arrange-modal'
+import ExternalArrangeModal from '@/pages/project-management/all-project/components/external-arrange-modal'
+import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectRecallModal from '@/pages/project-management/all-project/components/project-recall-modal'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
-import ExternalArrangeModal from '@/pages/project-management/all-project/components/external-arrange-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
 import UploadAddProjectModal from '@/pages/project-management/all-project/components/upload-batch-modal'
 import {
@@ -32,7 +32,6 @@ import { useMyWorkStore } from '../../context'
 import EngineerTableWrapper from '../engineer-table-wrapper'
 import TypeElement from '../type-element'
 import styles from './index.less'
-import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 
 const MyProject: React.FC = () => {
   const [searchParams, setSearchParams] = useState({})
@@ -653,7 +652,7 @@ const MyProject: React.FC = () => {
 
       {addEngineerModalVisible && (
         <AddEngineerModal
-          finishEvent={searchEvent}
+          finishEvent={delayRefresh}
           visible={addEngineerModalVisible}
           onChange={setAddEngineerModalVisible}
         />
@@ -679,13 +678,13 @@ const MyProject: React.FC = () => {
           visible={projectAuditKnotModal}
           onChange={setProjectAuditKnotModal}
           projectIds={selectProjectIds}
-          finishEvent={refresh}
+          finishEvent={delayRefresh}
         />
       )}
 
       {arrangeModalVisible && (
         <ArrangeModal
-          finishEvent={refresh}
+          finishEvent={delayRefresh}
           visible={arrangeModalVisible}
           onChange={setArrangeModalVisible}
           defaultSelectType={currentArrangeProjectType}
@@ -715,7 +714,7 @@ const MyProject: React.FC = () => {
         <ReportApproveModal
           visible={reportApproveVisible}
           onChange={setReportApproveVisible}
-          finishEvent={refresh}
+          finishEvent={delayRefresh}
           projectIds={tableSelectKeys}
         />
       )}
@@ -723,7 +722,7 @@ const MyProject: React.FC = () => {
         <ApproveModal
           visible={approvingModalVisible}
           onChange={setApprovingModalVisible}
-          finishEvent={refresh}
+          finishEvent={delayRefresh}
           projectIds={tableSelectKeys}
         />
       )}
@@ -748,7 +747,6 @@ const MyProject: React.FC = () => {
           projectId={tableSelectKeys[0]}
           visible={externalListModalVisible}
           onChange={setExternalListModalVisible}
-          // stepData={externalStepData}
           refresh={delayRefresh}
         />
       )}
