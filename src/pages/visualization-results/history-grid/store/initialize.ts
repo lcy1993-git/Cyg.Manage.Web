@@ -14,6 +14,7 @@ const initialize = ({ location }: InitParams) => {
 
   const initialState: ReducerState = {
     mode,
+    refetch: false,
     gridMapState: initGridMapState as any,
     historyGridVersion: {} as HistoryGridVersion,
     UIStatus: {
