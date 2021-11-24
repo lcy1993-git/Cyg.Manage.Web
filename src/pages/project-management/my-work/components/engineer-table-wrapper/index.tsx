@@ -75,35 +75,35 @@ interface EngineerTableWrapperProps {
 
   batchButtonSlot?: () => React.ReactNode
 }
-
+const initSearchParams = {
+  category: [],
+  stage: [],
+  constructType: [],
+  nature: [],
+  kvLevel: [],
+  status: [],
+  majorCategory: [],
+  pType: [],
+  reformAim: [],
+  classification: [],
+  attribute: [],
+  sourceType: [],
+  identityType: [],
+  areaType: '-1',
+  areaId: '',
+  dataSourceType: [],
+  logicRelation: 2,
+  startTime: '',
+  endTime: '',
+  designUser: '',
+  surveyUser: '',
+  statisticalCategory: '-1',
+}
 const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) => {
   const { getSelectRowKeys, getSelectRowData, batchButtonSlot } = props
   const [keyWord, setKeyWord] = useState<string>('')
   // 从列表返回的数据中获取 TODO设置search的参数
-  const [searchParams, setSearchParams] = useState({
-    category: [],
-    stage: [],
-    constructType: [],
-    nature: [],
-    kvLevel: [],
-    status: [],
-    majorCategory: [],
-    pType: [],
-    reformAim: [],
-    classification: [],
-    attribute: [],
-    sourceType: [],
-    identityType: [],
-    areaType: '-1',
-    areaId: '',
-    dataSourceType: [],
-    logicRelation: 2,
-    startTime: '',
-    endTime: '',
-    designUser: '',
-    surveyUser: '',
-    statisticalCategory: '-1',
-  })
+  const [searchParams, setSearchParams] = useState(initSearchParams)
   const [modalNeedInfo, setModalInfo] = useState<any>({
     engineerId: '',
     projectId: '',
@@ -149,6 +149,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
 
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
+
   const tableRef = useRef<HTMLDivElement>(null)
   const {
     currentClickTabChildActiveType,
@@ -161,6 +162,12 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     return myWorkInitData
       .find((item) => item.id === currentClickTabType)
       .children.find((item: any) => item.id === currentClickTabChildActiveType).url
+  }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
+
+  const typeColumns = useMemo(() => {
+    return myWorkInitData
+      .find((item) => item.id === currentClickTabType)
+      .children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
 
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
@@ -1005,7 +1012,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   })
 
   useEffect(() => {
-    initTableData(requestUrl, { ...searchParams })
+    setKeyWord('')
+    setSearchParams(initSearchParams)
+    initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
   }, [requestUrl])
 
   const columnsConfigSetting = () => {
@@ -1035,8 +1044,12 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }, [JSON.stringify(chooseColumns)])
 
   const showColumns = useMemo(() => {
-    return completeConfig.filter((item) => finalyColumns.includes(item.dataIndex))
-  }, [finalyColumns])
+    if (!typeColumns) {
+      return completeConfig.filter((item) => finalyColumns.includes(item.dataIndex))
+    } else {
+      return completeConfig.filter((item) => typeColumns.includes(item.dataIndex))
+    }
+  }, [finalyColumns, typeColumns])
 
   const columnsIcon = (
     <span style={{ cursor: 'pointer' }} onClick={() => columnsConfigSetting()}>
@@ -1077,7 +1090,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           url={requestUrl}
           parentColumns={parentColumns}
           columns={showColumns}
-          pagingSlot={columnsIcon}
+          pagingSlot={typeColumns ? undefined : columnsIcon}
         />
       </div>
 
@@ -1215,7 +1228,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <ReportApproveModal
           visible={reportApproveVisible}
           onChange={setReportApproveVisible}
-          finishEvent={refreshEvent}
+          finishEvent={delayRefresh}
           projectIds={modalNeedInfo.projectId}
         />
       )}
@@ -1223,7 +1236,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <ApproveModal
           visible={approvingModalVisible}
           onChange={setApprovingModalVisible}
-          finishEvent={searchEvent}
+          finishEvent={delayRefresh}
           projectIds={modalNeedInfo.projectId}
         />
       )}
