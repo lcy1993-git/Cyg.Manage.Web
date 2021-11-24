@@ -4,9 +4,10 @@ import ExclamationCircleOutlined from '@ant-design/icons/lib/icons/ExclamationCi
 import { useMount } from 'ahooks'
 import { Button, Checkbox, Input, Modal, Space, Table } from 'antd'
 import moment, { Moment } from 'moment'
-import { ChangeEventHandler, FC, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { DeleteGridVersions, getAllGridVersions } from '../../service'
 import styles from './index.less'
+import { message } from 'antd/es'
 interface Props {
   onClose: () => void
 }
@@ -18,17 +19,27 @@ const GridVersionManagement: FC<Props> = (props) => {
   const [pageSize, setPageSize] = useState<number>(10)
   const [password, setPassword] = useState<string>('')
   const [row, setRow] = useState<HistoryGridVersion>({} as HistoryGridVersion)
-  const passWordChange = (e: ChangeEventHandler<HTMLInputElement>) => {
+  const passWordChange = (e: any) => {
     // @ts-ignore
     setPassword(e?.target?.value)
   }
-  const confirmDelete = async () => {
-    await DeleteGridVersions(row?.id, password)
-    setPasswordVisible(false)
-    setRow({})
-    await getHistoryList(showDelete)
+  const confirmDelete = () => {
+    DeleteGridVersions(row?.id, password).then((res) => {
+      if (res?.code === 200 && res?.isSuccess) {
+        setPasswordVisible(false)
+        setRow({} as HistoryGridVersion)
+        getHistoryList(showDelete)
+        message.success('删除成功')
+        setPassword('')
+      } else if (res?.code === 5000 && !res?.isSuccess) {
+        message.warning(res?.message)
+      } else if (typeof res === 'string') {
+        message.warning(res)
+      }
+    })
   }
   const onDelete = (row: HistoryGridVersion) => {
+    setPassword('')
     setRow(row)
     setPasswordVisible(true)
   }
@@ -108,12 +119,16 @@ const GridVersionManagement: FC<Props> = (props) => {
           dataSource={list}
           size={'small'}
           bordered
+          scroll={{
+            y: 600,
+          }}
           onChange={pageChange}
           pagination={{
             pageSize: pageSize,
             showQuickJumper: true,
             showSizeChanger: true,
           }}
+          // @ts-ignore
           columns={columns}
         />
       </Modal>
@@ -131,6 +146,7 @@ const GridVersionManagement: FC<Props> = (props) => {
             此操作将会删除该条历史版本记录相关网架数据,删除后将不可恢复,请输入密码确认删除。
             <Input
               placeholder={'请输入密码'}
+              type={'password'}
               onChange={passWordChange}
               style={{ marginTop: 10, width: '250px' }}
             />

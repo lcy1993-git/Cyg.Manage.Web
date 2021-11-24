@@ -74,14 +74,14 @@ export const getHistoriesEnums = () => {
 
 // 删除历史网架版本
 export const DeleteGridVersions = (versionId: string, password: string) => {
-  return cyRequest<CommentType[]>(() =>
-    request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Version/${versionId}`, {
-      method: 'DELETE',
-      headers: {
-        UserPwd: password,
-      },
-    })
-  )
+  // return cyRequest<CommentType[]>(() =>
+  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Version/${versionId}`, {
+    method: 'DELETE',
+    headers: {
+      UserPwd: password,
+    },
+  })
+  // )
 }
 
 /** 记录版本 */

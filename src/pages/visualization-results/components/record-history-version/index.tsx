@@ -24,9 +24,9 @@ interface Props {
 
 const RecordHistoryVersion: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
-  const { UIStatus, dispatch, historyDataSource, mode } = useHistoryGridContext()
+  const { UIStatus, dispatch, historyDataSource, mode, preDesignItemData } = useHistoryGridContext()
   const { recordVersion } = UIStatus
-  useSavaData({ mode, historyDataSource, recordVersion })
+  useSavaData({ mode, historyDataSource, recordVersion, preDesignItemData })
   const [remark, setRemark] = useState<string>('')
   const handleOk = async () => {
     const res = await recordVersionData({
@@ -50,6 +50,7 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
     })
   }
   const remarkChange = (e: ChangeEventHandler<HTMLTextAreaElement>) => {
+    // @ts-ignore
     setRemark(e.target.value)
   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,6 +90,7 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
             style={{ width: '400' }}
             rows={3}
             maxLength={200}
+            // @ts-ignore
             onChange={remarkChange}
           />
         </div>
