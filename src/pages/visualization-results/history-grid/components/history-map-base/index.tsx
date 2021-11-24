@@ -2,22 +2,16 @@ import '@/assets/icon/history-grid-icon.css'
 import { useCurrentRef } from '@/utils/hooks'
 import { useMount, useUpdateEffect } from 'ahooks'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
-import { click as conditionClick, platformModifierKeyOnly } from 'ol/events/condition'
-import BaseEvent from 'ol/events/Event'
-import Geometry from 'ol/geom/Geometry'
 import GeometryType from 'ol/geom/GeometryType'
-import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
-import { SelectEvent } from 'ol/interaction/Select'
+import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
-import { Vector as VectorSource } from 'ol/source'
 import { useRef, useState } from 'react'
 import { useGridMap } from '../../store/mapReducer'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
-import { moveend, pointermove, pointSelectCallback, toggleSelectCallback } from './event'
+import { moveend, pointermove } from './event'
 import mapClick from './event/mapClick'
 import init from './init'
-import { getStyle } from './styles'
 import { InterActionRef, LayerRef, MapRef, SourceRef } from './typings'
 import { checkUserLocation, clear, clearScreen, moveToViewByLocation } from './utils'
 
@@ -89,13 +83,13 @@ const HistoryMapBase = () => {
   }, [dataSource, showText])
   // 根据预设计数据绘制点位线路
   useUpdateEffect(() => {
-    if (mode === 'preDesign')
-      drawByDataSource(importDesignData!, {
-        source: 'design',
-        showText,
-        sourceType: 'design',
-        sourceRef,
-      })
+    // if (mode === 'preDesign')
+    //   drawByDataSource(importDesignData!, {
+    //     source: 'design',
+    //     showText,
+    //     sourceType: 'design',
+    //     sourceRef,
+    //   })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [importDesignData, showText])
 
@@ -113,11 +107,12 @@ const HistoryMapBase = () => {
   }, [isDraw])
 
   // 定位当当前项目位置
-  useUpdateEffect(
-    () =>
-      viewRef.view.fit((layerRef.vectorLayer.getSource() as VectorSource<Geometry>).getExtent()),
-    [onProjectLocationClick]
-  )
+  useUpdateEffect(() => {
+    viewRef.view.fit([
+      ...sourceRef.historyPointSource.getExtent(),
+      ...sourceRef.historyLineSource.getExtent(),
+    ])
+  }, [onProjectLocationClick])
 
   // 定位到当前用户位置
   useUpdateEffect(() => checkUserLocation(viewRef), [onCurrentLocationClick])
@@ -139,7 +134,7 @@ const HistoryMapBase = () => {
   // 绑定事件
   function bindEvent() {
     mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
-      mapClick(e, { interActionRef, mapRef, setState })
+      mapClick(e, { interActionRef, mapRef, setState, sourceRef })
     )
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
